@@ -38,11 +38,43 @@ async function connect(key) {
   } catch (error) { supabaseKey = null; button.disabled = false; button.textContent = 'Connect'; status(`Connection failed: ${error.message || error}`, 'error'); message(`Connection failed: ${error.message || error}`, 'error'); }
 }
 function saveSession(nextSession) { session = nextSession || null; if (session?.access_token) localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); else localStorage.removeItem(SESSION_STORAGE); }
-async function restoreSession() { const saved = localStorage.getItem(SESSION_STORAGE); if (!saved) { refreshSessionUI(null); return; } try { const parsed = JSON.parse(saved); if (!parsed?.access_token) throw new Error('Invalid saved session.'); session = parsed; const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); refreshSessionUI(session); } catch { saveSession(null); refreshSessionUI(null); } }
+async function restoreSession() { const saved = localStorage.getItem(SESSION_STORAGE); if (!saved) { refreshSessionUI(null); return; } try { const parsed = JSON.parse(saved); if (!parsed?.access_token) throw new Error('Invalid saved session.'); session = parsed; const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); refreshSessionUI(session); await resolveExistingCustomer(); } catch { saveSession(null); refreshSessionUI(null); } }
 function refreshSessionUI(currentSession) { if (currentSession?.user) { $('session-panel').hidden = false; $('auth-panel').hidden = true; $('session-email').textContent = currentSession.user.email || ''; $('onboarding-panel').hidden = false; $('ready-panel').hidden = true; } else { $('session-panel').hidden = true; $('auth-panel').hidden = false; $('onboarding-panel').hidden = true; $('ready-panel').hidden = true; } }
+async function resolveExistingCustomer() {
+  if (!session?.access_token) return false;
+  const profiles = {};
+  for (const key of ['a', 'b']) {
+    try {
+      const data = await api(`/rest/v1/rpc/customer_get_profile?p_tenant_id=${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' });
+      profiles[key] = Array.isArray(data) ? data : (data ? [data] : []);
+    } catch (error) {
+      message(`Could not check existing customer registration: ${error.message || error}`, 'error');
+      return false;
+    }
+  }
+  const ownKeys = ['a', 'b'].filter((key) => profiles[key].length > 0);
+  if (ownKeys.length === 1) {
+    const ownKey = ownKeys[0];
+    const profile = profiles[ownKey][0] || {};
+    $('onboarding-panel').hidden = true;
+    $('ready-panel').hidden = false;
+    $('ready-text').textContent = `${TENANTS[ownKey].label} is already registered for this Auth account${profile.id ? `. Customer ID: ${profile.id}` : '.'}`;
+    message('Existing customer registration found. You can continue to the security test.', 'success');
+    return true;
+  }
+  if (ownKeys.length > 1) {
+    $('onboarding-panel').hidden = false;
+    $('ready-panel').hidden = true;
+    message('Security check stopped: this Auth account appears linked to both test tenants. No customer records were changed.', 'error');
+    return false;
+  }
+  $('onboarding-panel').hidden = false;
+  $('ready-panel').hidden = true;
+  return false;
+}
 async function signUp(email, password) { const data = await api('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password }) }); if (data?.access_token) { saveSession(data); return true; } return false; }
 async function signIn(email, password) { const data = await api('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) }); saveSession(data); const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); }
-async function completeOnboarding() { const firstName = $('onboard-first-name').value.trim(); const lastName = $('onboard-last-name').value.trim() || null; const tenantSlug = $('tenant-slug').value; if (!firstName) return message('First name is required.', 'error'); message('Creating the customer record…'); try { const data = await api('/rest/v1/rpc/customer_complete_test_registration', { method: 'POST', body: JSON.stringify({ p_tenant_slug: tenantSlug, p_first_name: firstName, p_last_name: lastName }) }); const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B'; $('onboarding-panel').hidden = true; $('ready-panel').hidden = false; $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`; message('Customer record created.', 'success'); } catch (error) { message(error.message || String(error), 'error'); } }
+async function completeOnboarding() { const firstName = $('onboard-first-name').value.trim(); const lastName = $('onboard-last-name').value.trim() || null; const tenantSlug = $('tenant-slug').value; if (!firstName) return message('First name is required.', 'error'); message('Checking whether this Auth account is already registered…'); try { const existing = await resolveExistingCustomer(); if (existing) return; message('Creating the customer record…'); const data = await api('/rest/v1/rpc/customer_complete_test_registration', { method: 'POST', body: JSON.stringify({ p_tenant_slug: tenantSlug, p_first_name: firstName, p_last_name: lastName }) }); const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B'; $('onboarding-panel').hidden = true; $('ready-panel').hidden = false; $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`; message('Customer record created.', 'success'); } catch (error) { message(error.message || String(error), 'error'); } }
 function resultRow(label, passed, detail) { return `<div class="security-result ${passed ? 'pass' : 'fail'}"><strong>${passed ? 'PASS' : 'FAIL'} — ${label}</strong><span>${detail}</span></div>`; }
 async function runSecurityTest() {
   const button = $('run-security-test'), results = $('security-results'); button.disabled = true; button.textContent = 'Running security test…'; results.hidden = false; results.innerHTML = '<p>Testing the current authenticated session against both test tenants and protected tables…</p>';
@@ -77,7 +109,7 @@ async function runSecurityTest() {
 }
 function initialise() {
   status('Test Lab loaded. Enter the publishable key and click Connect.'); $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim())); document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
-  $('auth-form').addEventListener('submit', async (event) => { event.preventDefault(); message('Working…'); const email = $('email').value.trim(), password = $('password').value; try { if (mode === 'signup') { $('onboard-first-name').value = $('first-name').value.trim(); $('onboard-last-name').value = $('last-name').value.trim(); const hasSession = await signUp(email, password); if (!hasSession) { message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success'); return; } refreshSessionUI(session); } else { await signIn(email, password); refreshSessionUI(session); } } catch (error) { message(error.message || String(error), 'error'); } });
+  $('auth-form').addEventListener('submit', async (event) => { event.preventDefault(); message('Working…'); const email = $('email').value.trim(), password = $('password').value; try { if (mode === 'signup') { $('onboard-first-name').value = $('first-name').value.trim(); $('onboard-last-name').value = $('last-name').value.trim(); const hasSession = await signUp(email, password); if (!hasSession) { message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success'); return; } refreshSessionUI(session); await resolveExistingCustomer(); } else { await signIn(email, password); refreshSessionUI(session); await resolveExistingCustomer(); } } catch (error) { message(error.message || String(error), 'error'); } });
   $('complete-onboarding').addEventListener('click', completeOnboarding); $('run-security-test').addEventListener('click', runSecurityTest); $('sign-out').addEventListener('click', async () => { try { if (session?.access_token) await api('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null); message('Signed out.'); refreshSessionUI(null); }); setMode('signup'); const savedKey = localStorage.getItem(KEY_STORAGE); if (savedKey) { $('supabase-key').value = savedKey; status('Saved publishable key found. Click Connect to test the connection.'); }
 }
 initialise();

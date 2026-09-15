@@ -7,7 +7,7 @@ const $ = (id) => document.getElementById(id);
 
 function message(text, type = '') {
   const el = $('message');
-  el.className = type ? type : '';
+  el.className = type;
   el.textContent = text;
 }
 
@@ -20,18 +20,8 @@ function setMode(nextMode) {
   message('');
 }
 
-async function initialise() {
-  const key = localStorage.getItem(KEY_STORAGE);
-  if (!key) return;
-  $('supabase-key').value = key;
-  connect(key);
-}
-
 function connect(key) {
-  if (!key || !key.startsWith('sb_')) {
-    message('Enter the TradeFlow Supabase publishable key.', 'error');
-    return;
-  }
+  if (!key || !key.startsWith('sb_')) return message('Enter the TradeFlow Supabase publishable key.', 'error');
   supabase = window.supabase.createClient(SUPABASE_URL, key);
   localStorage.setItem(KEY_STORAGE, key);
   $('config').hidden = true;
@@ -46,7 +36,8 @@ async function refreshSession() {
     $('session-panel').hidden = false;
     $('auth-panel').hidden = true;
     $('session-email').textContent = data.session.user.email || '';
-    await showCustomerState(data.session.user);
+    $('onboarding-panel').hidden = false;
+    $('ready-panel').hidden = true;
   } else {
     $('session-panel').hidden = true;
     $('auth-panel').hidden = false;
@@ -55,23 +46,7 @@ async function refreshSession() {
   }
 }
 
-async function showCustomerState(user) {
-  const { data, error } = await supabase.rpc('customer_get_profile', {
-    p_tenant_id: '00000000-0000-0000-0000-000000000000'
-  });
-  // The controlled customer profile RPC requires a tenant id, so it is not a discovery API.
-  // Instead, query only the current user's own customer rows through a small test-lab RPC below.
-  if (error && !String(error.message || '').toLowerCase().includes('not found')) {
-    $('onboarding-panel').hidden = false;
-    $('ready-panel').hidden = true;
-    return;
-  }
-  $('onboarding-panel').hidden = false;
-  $('ready-panel').hidden = true;
-}
-
 $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim()));
-
 document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
 $('auth-form').addEventListener('submit', async (event) => {
@@ -122,6 +97,9 @@ $('sign-out').addEventListener('click', async () => {
   await refreshSession();
 });
 
-supabase = null;
 setMode('signup');
-initialise();
+const savedKey = localStorage.getItem(KEY_STORAGE);
+if (savedKey) {
+  $('supabase-key').value = savedKey;
+  connect(savedKey);
+}

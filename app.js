@@ -1,12 +1,9 @@
 const SUPABASE_URL = 'https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE = 'tradeflow_testlab_publishable_key';
-const SUPABASE_CDNS = [
-  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
-  'https://unpkg.com/@supabase/supabase-js@2'
-];
-let supabase = null;
+const SESSION_STORAGE = 'tradeflow_testlab_session';
+let supabaseKey = null;
+let session = null;
 let mode = 'signup';
-let supabaseLibraryPromise = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -34,43 +31,24 @@ function setMode(nextMode) {
   message('');
 }
 
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    const existing = document.querySelector(`script[data-supabase-loader="${src}"]`);
-    if (existing) {
-      existing.addEventListener('load', () => resolve(), { once: true });
-      existing.addEventListener('error', () => reject(new Error(`Could not load ${src}`)), { once: true });
-      if (window.supabase?.createClient) resolve();
-      return;
-    }
+async function api(path, options = {}) {
+  if (!supabaseKey) throw new Error('TradeFlow Supabase is not connected.');
 
-    const script = document.createElement('script');
-    script.src = src;
-    script.async = true;
-    script.dataset.supabaseLoader = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Could not load ${src}`));
-    document.head.appendChild(script);
-  });
-}
+  const headers = new Headers(options.headers || {});
+  headers.set('apikey', supabaseKey);
+  headers.set('Content-Type', 'application/json');
+  if (session?.access_token) headers.set('Authorization', `Bearer ${session.access_token}`);
 
-async function ensureSupabaseLibrary() {
-  if (window.supabase?.createClient) return;
-  if (!supabaseLibraryPromise) {
-    supabaseLibraryPromise = (async () => {
-      let lastError = null;
-      for (const cdn of SUPABASE_CDNS) {
-        try {
-          await loadScript(cdn);
-          if (window.supabase?.createClient) return;
-        } catch (error) {
-          lastError = error;
-        }
-      }
-      throw lastError || new Error('Supabase browser library did not load.');
-    })();
+  const response = await fetch(`${SUPABASE_URL}${path}`, { ...options, headers });
+  const text = await response.text();
+  let body = null;
+  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+
+  if (!response.ok) {
+    const detail = body?.msg || body?.message || body?.error_description || body?.error || text || `HTTP ${response.status}`;
+    throw new Error(detail);
   }
-  await supabaseLibraryPromise;
+  return body;
 }
 
 async function connect(key) {
@@ -85,21 +63,18 @@ async function connect(key) {
 
     button.disabled = true;
     button.textContent = 'Connecting…';
-    status('Loading the Supabase browser library…');
-    await ensureSupabaseLibrary();
+    status('Testing the TradeFlow Supabase HTTPS API…');
 
-    status('Connecting to TradeFlow Supabase…');
-    const client = window.supabase.createClient(SUPABASE_URL, key);
-    const { error } = await client.auth.getSession();
-    if (error) throw error;
-
-    supabase = client;
+    supabaseKey = key;
     localStorage.setItem(KEY_STORAGE, key);
+
+    await api('/auth/v1/settings');
+    status('Connected.');
     $('config').hidden = true;
     $('app').hidden = false;
-    status('Connected.');
-    await refreshSession();
+    await restoreSession();
   } catch (error) {
+    supabaseKey = null;
     button.disabled = false;
     button.textContent = 'Connect';
     status(`Connection failed: ${error.message || error}`, 'error');
@@ -107,33 +82,106 @@ async function connect(key) {
   }
 }
 
-async function refreshSession() {
-  try {
-    const { data, error } = await supabase.auth.getSession();
-    if (error) throw error;
+function saveSession(nextSession) {
+  session = nextSession || null;
+  if (session?.access_token) {
+    localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+  } else {
+    localStorage.removeItem(SESSION_STORAGE);
+  }
+}
 
-    if (data.session) {
-      $('session-panel').hidden = false;
-      $('auth-panel').hidden = true;
-      $('session-email').textContent = data.session.user.email || '';
-      $('onboarding-panel').hidden = false;
-      $('ready-panel').hidden = true;
-    } else {
-      $('session-panel').hidden = true;
-      $('auth-panel').hidden = false;
-      $('onboarding-panel').hidden = true;
-      $('ready-panel').hidden = true;
-    }
+async function restoreSession() {
+  const saved = localStorage.getItem(SESSION_STORAGE);
+  if (!saved) {
+    refreshSessionUI(null);
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(saved);
+    if (!parsed?.access_token) throw new Error('Invalid saved session.');
+    session = parsed;
+    const user = await api('/auth/v1/user');
+    session.user = user;
+    localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+    refreshSessionUI(session);
+  } catch {
+    saveSession(null);
+    refreshSessionUI(null);
+  }
+}
+
+function refreshSessionUI(currentSession) {
+  if (currentSession?.user) {
+    $('session-panel').hidden = false;
+    $('auth-panel').hidden = true;
+    $('session-email').textContent = currentSession.user.email || '';
+    $('onboarding-panel').hidden = false;
+    $('ready-panel').hidden = true;
+  } else {
+    $('session-panel').hidden = true;
+    $('auth-panel').hidden = false;
+    $('onboarding-panel').hidden = true;
+    $('ready-panel').hidden = true;
+  }
+}
+
+async function signUp(email, password) {
+  const data = await api('/auth/v1/signup', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+
+  if (data?.access_token) {
+    saveSession(data);
+    return true;
+  }
+
+  return false;
+}
+
+async function signIn(email, password) {
+  const data = await api('/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+  saveSession(data);
+  const user = await api('/auth/v1/user');
+  session.user = user;
+  localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+}
+
+async function completeOnboarding() {
+  const firstName = $('onboard-first-name').value.trim();
+  const lastName = $('onboard-last-name').value.trim() || null;
+  const tenantSlug = $('tenant-slug').value;
+  if (!firstName) return message('First name is required.', 'error');
+  message('Creating the customer record…');
+
+  try {
+    const data = await api('/rest/v1/rpc/customer_complete_test_registration', {
+      method: 'POST',
+      body: JSON.stringify({
+        p_tenant_slug: tenantSlug,
+        p_first_name: firstName,
+        p_last_name: lastName
+      })
+    });
+    const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B';
+    $('onboarding-panel').hidden = true;
+    $('ready-panel').hidden = false;
+    $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`;
+    message('Customer record created.', 'success');
   } catch (error) {
-    message(`Session check failed: ${error.message || error}`, 'error');
+    message(error.message || String(error), 'error');
   }
 }
 
 function initialise() {
   status('Test Lab loaded. Enter the publishable key and click Connect.');
 
-  const connectButton = $('save-config');
-  connectButton.addEventListener('click', () => connect($('supabase-key').value.trim()));
+  $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim()));
 
   document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
@@ -145,53 +193,34 @@ function initialise() {
 
     try {
       if (mode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        if (error) throw error;
         $('onboard-first-name').value = $('first-name').value.trim();
         $('onboard-last-name').value = $('last-name').value.trim();
-        if (!data.session) {
+        const hasSession = await signUp(email, password);
+        if (!hasSession) {
           message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success');
           return;
         }
-        await refreshSession();
+        refreshSessionUI(session);
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        await refreshSession();
+        await signIn(email, password);
+        refreshSessionUI(session);
       }
     } catch (error) {
       message(error.message || String(error), 'error');
     }
   });
 
-  $('complete-onboarding').addEventListener('click', async () => {
-    const firstName = $('onboard-first-name').value.trim();
-    const lastName = $('onboard-last-name').value.trim() || null;
-    const tenantSlug = $('tenant-slug').value;
-    if (!firstName) return message('First name is required.', 'error');
-    message('Creating the customer record…');
-
-    try {
-      const { data, error } = await supabase.rpc('customer_complete_test_registration', {
-        p_tenant_slug: tenantSlug,
-        p_first_name: firstName,
-        p_last_name: lastName
-      });
-      if (error) throw error;
-      const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B';
-      $('onboarding-panel').hidden = true;
-      $('ready-panel').hidden = false;
-      $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`;
-      message('Customer record created.', 'success');
-    } catch (error) {
-      message(error.message || String(error), 'error');
-    }
-  });
+  $('complete-onboarding').addEventListener('click', completeOnboarding);
 
   $('sign-out').addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    try {
+      if (session?.access_token) await api('/auth/v1/logout', { method: 'POST' });
+    } catch {
+      // Clear the local test session even if remote logout fails.
+    }
+    saveSession(null);
     message('Signed out.');
-    await refreshSession();
+    refreshSessionUI(null);
   });
 
   setMode('signup');

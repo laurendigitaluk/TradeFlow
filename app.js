@@ -5,6 +5,14 @@ let mode = 'signup';
 
 const $ = (id) => document.getElementById(id);
 
+function status(text, type = '') {
+  const el = $('connection-status');
+  if (el) {
+    el.className = `small ${type}`.trim();
+    el.textContent = text || '';
+  }
+}
+
 function message(text, type = '') {
   const el = $('message');
   if (!el) return;
@@ -22,22 +30,24 @@ function setMode(nextMode) {
 }
 
 async function connect(key) {
-  if (!key || !key.startsWith('sb_')) {
-    message('Enter the TradeFlow Supabase publishable key beginning with sb_.', 'error');
-    return;
-  }
-
-  if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-    message('The Supabase browser library did not load. Refresh this page and try again.', 'error');
-    return;
-  }
-
   const button = $('save-config');
-  button.disabled = true;
-  button.textContent = 'Connecting…';
-  message('Connecting to TradeFlow Supabase…');
-
   try {
+    status('Connect button clicked. Checking Supabase browser library…');
+
+    if (!key || !key.startsWith('sb_')) {
+      status('Enter the TradeFlow Supabase publishable key beginning with sb_.', 'error');
+      return;
+    }
+
+    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+      status('The Supabase browser library did not load. The CDN script is unavailable in this browser.', 'error');
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Connecting…';
+    status('Connecting to TradeFlow Supabase…');
+
     const client = window.supabase.createClient(SUPABASE_URL, key);
     const { error } = await client.auth.getSession();
     if (error) throw error;
@@ -46,11 +56,13 @@ async function connect(key) {
     localStorage.setItem(KEY_STORAGE, key);
     $('config').hidden = true;
     $('app').hidden = false;
+    status('Connected.');
     await refreshSession();
   } catch (error) {
-    message(`Connection failed: ${error.message || error}`, 'error');
     button.disabled = false;
     button.textContent = 'Connect';
+    status(`Connection failed: ${error.message || error}`, 'error');
+    message(`Connection failed: ${error.message || error}`, 'error');
   }
 }
 
@@ -76,8 +88,10 @@ async function refreshSession() {
   }
 }
 
-async function initialise() {
-  $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim()));
+function initialise() {
+  const connectButton = $('save-config');
+  connectButton.addEventListener('click', () => connect($('supabase-key').value.trim()));
+
   document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
 
   $('auth-form').addEventListener('submit', async (event) => {
@@ -138,11 +152,15 @@ async function initialise() {
   });
 
   setMode('signup');
+
   const savedKey = localStorage.getItem(KEY_STORAGE);
   if (savedKey) {
     $('supabase-key').value = savedKey;
-    await connect(savedKey);
+    status('Saved publishable key found. Click Connect to test the connection.');
+  } else {
+    status('Ready. Enter the publishable key and click Connect.');
   }
 }
 
-document.addEventListener('DOMContentLoaded', initialise);
+// app.js is loaded with defer, so the document is already parsed and the Supabase CDN script has run first.
+initialise();

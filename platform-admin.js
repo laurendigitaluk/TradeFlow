@@ -11,6 +11,15 @@ function isAccessDeniedError(e){
   const text=String([e?.message,e?.details,e?.hint,e?.code].filter(Boolean).join(' ')).toLowerCase();
   return e?.status===401 || e?.status===403 || e?.status===400 || text.includes('platform owner access required') || text.includes('platform owner') || text.includes('authentication required') || text.includes('identity mismatch');
 }
+function tokenExpiry(token){
+  try{
+    const part=token.split('.')[1];
+    if(!part)return 0;
+    const b64=part.replace(/-/g,'+').replace(/_/g,'/');
+    const json=decodeURIComponent(atob(b64.padEnd(b64.length+((4-b64.length%4)%4),'=')).split('').map(c=>`%${('00'+c.charCodeAt(0).toString(16)).slice(-2)}`).join(''));
+    return Number(JSON.parse(json).exp||0);
+  }catch{return 0}
+}
 async function refreshSession(){
   if(!key||!session?.refresh_token)throw new Error('Your TradeFlow session has expired. Please sign in again.');
   const h=new Headers();h.set('apikey',key);h.set('Content-Type','application/json');
@@ -19,8 +28,14 @@ async function refreshSession(){
   if(!r.ok){saveSession(null);const e=new Error(j?.msg||j?.message||j?.error_description||j?.error||'Your TradeFlow session has expired. Please sign in again.');e.status=r.status;throw e;}
   saveSession(j);return j;
 }
+async function ensureFreshSession(){
+  if(!session?.access_token)return;
+  const exp=tokenExpiry(session.access_token);
+  if(exp && exp <= Math.floor(Date.now()/1000)+60)await refreshSession();
+}
 async function api(path,options={},allowRefresh=true){
   if(!key)throw new Error('TradeFlow Supabase is not connected.');
+  if(allowRefresh)await ensureFreshSession();
   const h=new Headers(options.headers||{});
   h.set('apikey',key);h.set('Content-Type','application/json');
   if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);
@@ -28,7 +43,7 @@ async function api(path,options={},allowRefresh=true){
   const t=await r.text();
   let b=null;try{b=t?JSON.parse(t):null}catch{b=t}
   if(!r.ok){
-    if(r.status===401&&allowRefresh&&session?.refresh_token){
+    if((r.status===401||r.status===403)&&allowRefresh&&session?.refresh_token){
       await refreshSession();
       return api(path,options,false);
     }

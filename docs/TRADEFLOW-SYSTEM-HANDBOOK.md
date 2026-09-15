@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 1.2  
+**Version:** 1.4  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -128,7 +128,26 @@ Transactional verification proved submission events are recorded and that reques
 ### Buying status
 **BLUE / partial.** Database authority and key validation are tested transactionally. A persistent real-data UI journey from customer submission through valuation/offer readiness has not yet been completed and must not be marked GREEN.
 
-## 13. Workflow authority rule
+## 13. Trading Value / valuation security audit — migration 052
+The first concrete valuation-layer defect was identified during the 16 September 2026 audit.
+
+Before migration 052, `trading_values` had broad tenant-member policies for SELECT/INSERT/UPDATE and an admin DELETE policy. `trading_value_components` had broad tenant-member INSERT/SELECT/UPDATE plus an admin DELETE policy. `valuation_rules` had broad member/admin policies as well. These permissive policies could be combined with the intended subscription/permission policies and therefore bypass the intended `valuation.view` / `valuation.manage` and `module.valuation` boundary.
+
+Migration **052 — `harden_valuation_rls_boundaries`** removed those broad policies and replaced them with explicit valuation policies on all three valuation tables:
+- SELECT requires `valuation.view` + `module.valuation`;
+- INSERT requires `valuation.manage` + `module.valuation`;
+- UPDATE requires `valuation.manage` + `module.valuation`;
+- DELETE requires `valuation.manage` + `module.valuation`.
+
+The same rule is now applied consistently to `trading_values`, `trading_value_components` and `valuation_rules`.
+
+Live database inspection after migration 052 confirmed that each of the three tables now has only the four valuation-scoped policies and that the broad member/admin policies are absent.
+
+This repair is **Implemented + database-inspected**, but the full valuation calculation, authoritative record-creation path, approval/superseding journey, role matrix and browser/live workflow are **not yet fully verified**.
+
+The existing `transition_workflow_entity()` already maps `trading_value` to `valuation.manage`, `module.valuation`, and the controlled transitions `draft → approved → superseded`. This existing authority should be reused rather than creating a second lifecycle mechanism.
+
+## 14. Workflow authority rule
 Business status changes must use an authoritative transactional service/RPC where one exists. A browser must not be treated as the source of truth for lifecycle transitions.
 
 For every workflow audit, check:
@@ -143,7 +162,7 @@ For every workflow audit, check:
 9. failure and rollback behaviour;
 10. visible UI result.
 
-## 14. Business-domain roadmap
+## 15. Business-domain roadmap
 Current domain position:
 
 | Domain | Status | Position |
@@ -153,7 +172,7 @@ Current domain position:
 | Customers | GREEN | 34/34 customer isolation/security test recorded. |
 | Dynamic categories | AMBER | Backend Buying option validation hardened; full domain/UI audit remains. |
 | Buying | BLUE | Migrations 049–051 hardened validation, submission events and authoritative transitions; persistent UI flow remains. |
-| Trading Value / valuation | AMBER | Next business-domain audit. |
+| Trading Value / valuation | AMBER | Migration 052 hardened the direct-table RLS boundary; calculation, authoritative creation/approval, role matrix and UI/live workflow audit remain. |
 | Offers | AMBER | Lifecycle and event authority not fully audited. |
 | Acquisition | AMBER | Receipt/inspection/payment/inventory lifecycle not fully audited. |
 | Inventory | AMBER | Full live trace not completed. |
@@ -169,14 +188,14 @@ Current domain position:
 | Premium messenger | RED | Future module. |
 | System-wide RLS/grants/workflow | BLUE | Multiple paths audited; final system-wide pass remains. |
 
-## 15. Diagnostic standard
+## 16. Diagnostic standard
 For every major feature document the full chain:
 
 **User action → page → front-end controller → Supabase call → database object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Record exact filenames, handlers, RPCs/queries, tables/views, statuses, functions, triggers, constraints, RLS policies, grants, external services, failure modes and recovery. If a connection has not been inspected, write **Roadmap status: Not yet audited** rather than guessing.
 
-## 16. Testing standard
+## 17. Testing standard
 Security/UI tests requested for manual browser verification are performed **one test at a time** with:
 - exact URL;
 - exact account;
@@ -186,7 +205,7 @@ Security/UI tests requested for manual browser verification are performed **one 
 
 Database audit tests may use transactions and rollback where persistent test records are not desirable. A rollback test proves database behaviour, not a complete persistent UI journey.
 
-## 17. Documentation/change-control rule
+## 18. Documentation/change-control rule
 Every material change should capture:
 - what changed;
 - why it changed;
@@ -200,12 +219,14 @@ Every material change should capture:
 
 The Human/Developer Handbook, AI Operating Manual and Master Roadmap are the continuity record. Structured Supabase project-memory/checkpoint data should also be updated where available.
 
-## 18. Current stopping point — 16 September 2026
+## 19. Current stopping point — 16 September 2026
 The customer security/subscription layer remains verified and must not be disturbed without a specific reason. Tenant role boundaries are inspected. Platform Owner security and privileged administration foundations are implemented, and the Platform Owner has been provisioned. Production onboarding is still not finalised for public SaaS use.
 
 The Buying audit has progressed through migrations **049, 050 and 051**. Dynamic select/multiselect validation, Buying request/item workflow authority and customer submission workflow events have been transactionally verified. No persistent records were left by those audit tests.
 
-**Next technical/business-domain audit:**
-**Trading Value → valuation rules → authoritative valuation workflow → Offers → Acquisition.**
+The Trading Value audit identified a direct-table RLS boundary defect and repaired it through migration **052**. Live policy inspection confirms that `trading_values`, `trading_value_components` and `valuation_rules` are now guarded consistently by valuation permission plus `module.valuation`. Full valuation workflow and browser/live verification remain open.
+
+**Next safe technical/business-domain action:**
+**Complete Trading Value / valuation audit → then Offers → Acquisition.**
 
 Do not mark later domains complete by assumption. Continue the trace from the current verified state and update this handbook and the AI manual after each material change.

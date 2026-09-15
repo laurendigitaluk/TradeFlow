@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TradeFlow Platform Administration</title>
-<link rel="stylesheet" href="platform-admin.css?v=2">
+<link rel="stylesheet" href="platform-admin.css?v=3">
 </head>
 <body>
 <main class="shell">
@@ -15,6 +15,14 @@
 <h2>Connect</h2><p class="small">Enter the TradeFlow Supabase publishable key. It is safe for browser use and stored only in this browser.</p>
 <label>Supabase publishable key<input id="supabase-key" type="password" autocomplete="off" placeholder="sb_publishable_…"></label>
 <button id="connect" type="button">Connect</button><p id="connection-status" class="small" role="status"></p>
+</div>
+<div id="auth" class="box" hidden>
+<h2>Sign in</h2><p class="small">Sign in with the TradeFlow account you want to test. This page uses its own session and does not reuse another TradeFlow test page's login.</p>
+<form id="auth-form">
+<label>Email<input id="auth-email" type="email" autocomplete="username" required></label>
+<label>Password<input id="auth-password" type="password" autocomplete="current-password" required></label>
+<button id="sign-in" type="submit">Sign in</button><p id="auth-status" class="small" role="status"></p>
+</form>
 </div>
 <div id="app" hidden>
 <div id="session" class="box"><div class="session-row"><strong id="session-email"></strong><button id="sign-out" class="secondary" type="button">Sign out</button></div></div>
@@ -33,6 +41,6 @@
 </div>
 </section>
 </main>
-<script src="platform-admin.js?v=20260915-3" defer></script>
+<script src="platform-admin.js?v=20260915-4" defer></script>
 </body>
 </html>

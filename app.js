@@ -1,7 +1,12 @@
 const SUPABASE_URL = 'https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE = 'tradeflow_testlab_publishable_key';
+const SUPABASE_CDNS = [
+  'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2',
+  'https://unpkg.com/@supabase/supabase-js@2'
+];
 let supabase = null;
 let mode = 'signup';
+let supabaseLibraryPromise = null;
 
 const $ = (id) => document.getElementById(id);
 
@@ -29,25 +34,61 @@ function setMode(nextMode) {
   message('');
 }
 
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[data-supabase-loader="${src}"]`);
+    if (existing) {
+      existing.addEventListener('load', () => resolve(), { once: true });
+      existing.addEventListener('error', () => reject(new Error(`Could not load ${src}`)), { once: true });
+      if (window.supabase?.createClient) resolve();
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.dataset.supabaseLoader = src;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error(`Could not load ${src}`));
+    document.head.appendChild(script);
+  });
+}
+
+async function ensureSupabaseLibrary() {
+  if (window.supabase?.createClient) return;
+  if (!supabaseLibraryPromise) {
+    supabaseLibraryPromise = (async () => {
+      let lastError = null;
+      for (const cdn of SUPABASE_CDNS) {
+        try {
+          await loadScript(cdn);
+          if (window.supabase?.createClient) return;
+        } catch (error) {
+          lastError = error;
+        }
+      }
+      throw lastError || new Error('Supabase browser library did not load.');
+    })();
+  }
+  await supabaseLibraryPromise;
+}
+
 async function connect(key) {
   const button = $('save-config');
   try {
-    status('Connect button clicked. Checking Supabase browser library…');
+    status('Connect button clicked. Starting connection test…');
 
     if (!key || !key.startsWith('sb_')) {
       status('Enter the TradeFlow Supabase publishable key beginning with sb_.', 'error');
       return;
     }
 
-    if (!window.supabase || typeof window.supabase.createClient !== 'function') {
-      status('The Supabase browser library did not load. The CDN script is unavailable in this browser.', 'error');
-      return;
-    }
-
     button.disabled = true;
     button.textContent = 'Connecting…';
-    status('Connecting to TradeFlow Supabase…');
+    status('Loading the Supabase browser library…');
+    await ensureSupabaseLibrary();
 
+    status('Connecting to TradeFlow Supabase…');
     const client = window.supabase.createClient(SUPABASE_URL, key);
     const { error } = await client.auth.getSession();
     if (error) throw error;
@@ -89,6 +130,8 @@ async function refreshSession() {
 }
 
 function initialise() {
+  status('Test Lab loaded. Enter the publishable key and click Connect.');
+
   const connectButton = $('save-config');
   connectButton.addEventListener('click', () => connect($('supabase-key').value.trim()));
 
@@ -157,10 +200,7 @@ function initialise() {
   if (savedKey) {
     $('supabase-key').value = savedKey;
     status('Saved publishable key found. Click Connect to test the connection.');
-  } else {
-    status('Ready. Enter the publishable key and click Connect.');
   }
 }
 
-// app.js is loaded with defer, so the document is already parsed and the Supabase CDN script has run first.
 initialise();

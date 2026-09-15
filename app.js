@@ -37,16 +37,21 @@ async function api(path, options = {}) {
 }
 async function findExistingCustomer() {
   if (!session?.user?.id) return [];
+  const rows = await api('/rest/v1/rpc/test_lab_current_customer', { method: 'GET' });
   const existing = [];
-  for (const key of ['a', 'b']) {
-    try {
-      const rows = await api(`/rest/v1/rpc/customer_get_profile?p_tenant_id=${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' });
-      if (Array.isArray(rows) && rows.length) existing.push({ key, row: { id: rows[0].customer_id, tenant_id: TENANTS[key].id } });
-    } catch (error) {
-      if (error.status !== 401 && error.status !== 403) throw error;
-    }
+  for (const row of Array.isArray(rows) ? rows : []) {
+    const key = row.tenant_id === TENANTS.a.id ? 'a' : row.tenant_id === TENANTS.b.id ? 'b' : null;
+    if (!key) throw new Error('Authenticated account is linked to a non-test tenant.');
+    existing.push({
+      key,
+      row: {
+        id: row.customer_id,
+        tenant_id: row.tenant_id
+      }
+    });
   }
   return existing;
+} return existing;
 }
 async function showExistingCustomerIfPresent() {
   try {

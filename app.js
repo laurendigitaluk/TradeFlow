@@ -7,8 +7,9 @@ const $ = (id) => document.getElementById(id);
 
 function message(text, type = '') {
   const el = $('message');
+  if (!el) return;
   el.className = type;
-  el.textContent = text;
+  el.textContent = text || '';
 }
 
 function setMode(nextMode) {
@@ -20,86 +21,128 @@ function setMode(nextMode) {
   message('');
 }
 
-function connect(key) {
-  if (!key || !key.startsWith('sb_')) return message('Enter the TradeFlow Supabase publishable key.', 'error');
-  supabase = window.supabase.createClient(SUPABASE_URL, key);
-  localStorage.setItem(KEY_STORAGE, key);
-  $('config').hidden = true;
-  $('app').hidden = false;
-  refreshSession();
+async function connect(key) {
+  if (!key || !key.startsWith('sb_')) {
+    message('Enter the TradeFlow Supabase publishable key beginning with sb_.', 'error');
+    return;
+  }
+
+  if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+    message('The Supabase browser library did not load. Refresh this page and try again.', 'error');
+    return;
+  }
+
+  const button = $('save-config');
+  button.disabled = true;
+  button.textContent = 'Connecting…';
+  message('Connecting to TradeFlow Supabase…');
+
+  try {
+    const client = window.supabase.createClient(SUPABASE_URL, key);
+    const { error } = await client.auth.getSession();
+    if (error) throw error;
+
+    supabase = client;
+    localStorage.setItem(KEY_STORAGE, key);
+    $('config').hidden = true;
+    $('app').hidden = false;
+    await refreshSession();
+  } catch (error) {
+    message(`Connection failed: ${error.message || error}`, 'error');
+    button.disabled = false;
+    button.textContent = 'Connect';
+  }
 }
 
 async function refreshSession() {
-  const { data, error } = await supabase.auth.getSession();
-  if (error) return message(error.message, 'error');
-  if (data.session) {
-    $('session-panel').hidden = false;
-    $('auth-panel').hidden = true;
-    $('session-email').textContent = data.session.user.email || '';
-    $('onboarding-panel').hidden = false;
-    $('ready-panel').hidden = true;
-  } else {
-    $('session-panel').hidden = true;
-    $('auth-panel').hidden = false;
-    $('onboarding-panel').hidden = true;
-    $('ready-panel').hidden = true;
-  }
-}
+  try {
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
 
-$('save-config').addEventListener('click', () => connect($('supabase-key').value.trim()));
-document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
-
-$('auth-form').addEventListener('submit', async (event) => {
-  event.preventDefault();
-  message('Working…');
-  const email = $('email').value.trim();
-  const password = $('password').value;
-
-  if (mode === 'signup') {
-    const { data, error } = await supabase.auth.signUp({ email, password });
-    if (error) return message(error.message, 'error');
-    $('onboard-first-name').value = $('first-name').value.trim();
-    $('onboard-last-name').value = $('last-name').value.trim();
-    if (!data.session) {
-      message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success');
-      return;
+    if (data.session) {
+      $('session-panel').hidden = false;
+      $('auth-panel').hidden = true;
+      $('session-email').textContent = data.session.user.email || '';
+      $('onboarding-panel').hidden = false;
+      $('ready-panel').hidden = true;
+    } else {
+      $('session-panel').hidden = true;
+      $('auth-panel').hidden = false;
+      $('onboarding-panel').hidden = true;
+      $('ready-panel').hidden = true;
     }
-    await refreshSession();
-  } else {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) return message(error.message, 'error');
-    await refreshSession();
+  } catch (error) {
+    message(`Session check failed: ${error.message || error}`, 'error');
   }
-});
-
-$('complete-onboarding').addEventListener('click', async () => {
-  const firstName = $('onboard-first-name').value.trim();
-  const lastName = $('onboard-last-name').value.trim() || null;
-  const tenantSlug = $('tenant-slug').value;
-  if (!firstName) return message('First name is required.', 'error');
-  message('Creating the customer record…');
-  const { data, error } = await supabase.rpc('customer_complete_test_registration', {
-    p_tenant_slug: tenantSlug,
-    p_first_name: firstName,
-    p_last_name: lastName
-  });
-  if (error) return message(error.message, 'error');
-  const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B';
-  $('onboarding-panel').hidden = true;
-  $('ready-panel').hidden = false;
-  $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`;
-  message('Customer record created.', 'success');
-});
-
-$('sign-out').addEventListener('click', async () => {
-  await supabase.auth.signOut();
-  message('Signed out.');
-  await refreshSession();
-});
-
-setMode('signup');
-const savedKey = localStorage.getItem(KEY_STORAGE);
-if (savedKey) {
-  $('supabase-key').value = savedKey;
-  connect(savedKey);
 }
+
+async function initialise() {
+  $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim()));
+  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
+
+  $('auth-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    message('Working…');
+    const email = $('email').value.trim();
+    const password = $('password').value;
+
+    try {
+      if (mode === 'signup') {
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        if (error) throw error;
+        $('onboard-first-name').value = $('first-name').value.trim();
+        $('onboard-last-name').value = $('last-name').value.trim();
+        if (!data.session) {
+          message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success');
+          return;
+        }
+        await refreshSession();
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        await refreshSession();
+      }
+    } catch (error) {
+      message(error.message || String(error), 'error');
+    }
+  });
+
+  $('complete-onboarding').addEventListener('click', async () => {
+    const firstName = $('onboard-first-name').value.trim();
+    const lastName = $('onboard-last-name').value.trim() || null;
+    const tenantSlug = $('tenant-slug').value;
+    if (!firstName) return message('First name is required.', 'error');
+    message('Creating the customer record…');
+
+    try {
+      const { data, error } = await supabase.rpc('customer_complete_test_registration', {
+        p_tenant_slug: tenantSlug,
+        p_first_name: firstName,
+        p_last_name: lastName
+      });
+      if (error) throw error;
+      const label = tenantSlug === 'test-business-a' ? 'Customer A / Test Business A' : 'Customer B / Test Business B';
+      $('onboarding-panel').hidden = true;
+      $('ready-panel').hidden = false;
+      $('ready-text').textContent = `${label} is ready. Customer ID: ${data}`;
+      message('Customer record created.', 'success');
+    } catch (error) {
+      message(error.message || String(error), 'error');
+    }
+  });
+
+  $('sign-out').addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    message('Signed out.');
+    await refreshSession();
+  });
+
+  setMode('signup');
+  const savedKey = localStorage.getItem(KEY_STORAGE);
+  if (savedKey) {
+    $('supabase-key').value = savedKey;
+    await connect(savedKey);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initialise);

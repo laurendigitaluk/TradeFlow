@@ -35,6 +35,34 @@ async function api(path, options = {}) {
   if (!response.ok) { const detail = body?.msg || body?.message || body?.error_description || body?.error || text || `HTTP ${response.status}`; const error = new Error(detail); error.status = response.status; throw error; }
   return body;
 }
+async function findExistingCustomer() {
+  if (!session?.user?.id) return [];
+  const existing = [];
+  for (const key of ['a', 'b']) {
+    try {
+      const rows = await api(`/rest/v1/customers?select=id,tenant_id&auth_user_id=eq.${encodeURIComponent(session.user.id)}&tenant_id=eq.${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' });
+      if (Array.isArray(rows) && rows.length) existing.push({ key, row: rows[0] });
+    } catch (error) {
+      if (error.status !== 401 && error.status !== 403) throw error;
+    }
+  }
+  return existing;
+}
+async function showExistingCustomerIfPresent() {
+  try {
+    const existing = await findExistingCustomer();
+    if (existing.length > 1) throw new Error('Security test data error: this Auth account is linked to more than one test tenant.');
+    if (existing.length === 1) {
+      const found = existing[0];
+      showReady('Customer account ready.', `${TENANTS[found.key].label} is already registered for this Auth account. Customer ID: ${found.row.id}`);
+      return true;
+    }
+  } catch (error) {
+    message(error.message || String(error), 'error');
+    return false;
+  }
+  return false;
+}
 async function connect(key) {
   const button = $('save-config');
   try { status('Connect button clicked. Starting connection test…'); if (!key || !key.startsWith('sb_')) { status('Enter the TradeFlow Supabase publishable key beginning with sb_.', 'error'); return; }
@@ -42,7 +70,7 @@ async function connect(key) {
   } catch (error) { supabaseKey = null; button.disabled = false; button.textContent = 'Connect'; status(`Connection failed: ${error.message || error}`, 'error'); message(`Connection failed: ${error.message || error}`, 'error'); }
 }
 function saveSession(nextSession) { session = nextSession || null; if (session?.access_token) localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); else localStorage.removeItem(SESSION_STORAGE); }
-async function restoreSession() { const saved = localStorage.getItem(SESSION_STORAGE); if (!saved) { refreshSessionUI(null); return; } try { const parsed = JSON.parse(saved); if (!parsed?.access_token) throw new Error('Invalid saved session.'); session = parsed; const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); refreshSessionUI(session); } catch { saveSession(null); refreshSessionUI(null); } }
+async function restoreSession() { const saved = localStorage.getItem(SESSION_STORAGE); if (!saved) { refreshSessionUI(null); return; } try { const parsed = JSON.parse(saved); if (!parsed?.access_token) throw new Error('Invalid saved session.'); session = parsed; const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); refreshSessionUI(session); await showExistingCustomerIfPresent(); } catch { saveSession(null); refreshSessionUI(null); } }
 function refreshSessionUI(currentSession) { if (currentSession?.user) { $('session-panel').hidden = false; $('auth-panel').hidden = true; $('session-email').textContent = currentSession.user.email || ''; $('onboarding-panel').hidden = false; $('ready-panel').hidden = true; } else { $('session-panel').hidden = true; $('auth-panel').hidden = false; $('onboarding-panel').hidden = true; $('ready-panel').hidden = true; } }
 async function signUp(email, password) { const data = await api('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password }) }); if (data?.access_token) { saveSession(data); return true; } return false; }
 async function signIn(email, password) { const data = await api('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) }); saveSession(data); const user = await api('/auth/v1/user'); session.user = user; localStorage.setItem(SESSION_STORAGE, JSON.stringify(session)); }
@@ -52,11 +80,7 @@ async function completeOnboarding() {
   if (!firstName) return message('First name is required.', 'error');
   message('Checking for an existing customer registration…');
   try {
-    const existing = [];
-    for (const key of ['a', 'b']) {
-      try { const rows = await api(`/rest/v1/customers?select=id,tenant_id&auth_user_id=eq.${encodeURIComponent(session.user.id)}&tenant_id=eq.${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' }); if (Array.isArray(rows) && rows.length) existing.push({ key, row: rows[0] }); }
-      catch (error) { if (error.status !== 401 && error.status !== 403) throw error; }
-    }
+    const existing = await findExistingCustomer();
     if (existing.length === 1) {
       const found = existing[0]; const label = TENANTS[found.key].label;
       showReady('Existing customer registration found. You can continue to the security test.', `${label} is already registered for this Auth account. Customer ID: ${found.row.id}`);
@@ -122,7 +146,9 @@ async function runSecurityTest() {
 }
 function initialise() {
   status('Test Lab loaded. Enter the publishable key and click Connect.'); $('save-config').addEventListener('click', () => connect($('supabase-key').value.trim())); document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.mode)));
-  $('auth-form').addEventListener('submit', async (event) => { event.preventDefault(); message('Working…'); const email = $('email').value.trim(), password = $('password').value; try { if (mode === 'signup') { $('onboard-first-name').value = $('first-name').value.trim(); $('onboard-last-name').value = $('last-name').value.trim(); const hasSession = await signUp(email, password); if (!hasSession) { message('Account created. Check the email address and confirm the account, then return here and sign in.', 'success'); return; } refreshSessionUI(session); } else { await signIn(email, password); refreshSessionUI(session); } } catch (error) { message(error.message || String(error), 'error'); } });
-  $('complete-onboarding').addEventListener('click', completeOnboarding); $('run-security-test').addEventListener('click', runSecurityTest); $('sign-out').addEventListener('click', async () => { try { if (session?.access_token) await api('/auth/v1/logout', { method: 'POST' }); } catch {} saveSession(null); message('Signed out.'); refreshSessionUI(null); }); setMode('signup'); const savedKey = localStorage.getItem(KEY_STORAGE); if (savedKey) { $('supabase-key').value = savedKey; status('Saved publishable key found. Click Connect to test the connection.'); }
+  $('auth-form').addEventListener('submit', async (event) => { event.preventDefault(); message('Working…'); const email = $('email').value.trim(), password = $('password').value; try { if (mode === 'signup') { $('onboard-first-name').value = $('first-name').value.trim(); $('onboard-last-name').value = $('last-name').value.trim(); const hasSession = await signUp(email, password); if (!hasSession) { message('Account created. Check your email to confirm the account, then sign in.'); setMode('login'); return; } } else { await signIn(email, password); } refreshSessionUI(session); await showExistingCustomerIfPresent(); if ($('onboarding-panel').hidden === false && !$('message').classList.contains('error')) message('Signed in. Complete customer setup below.'); } catch (error) { message(error.message || String(error), 'error'); } });
+  $('complete-onboarding').addEventListener('click', completeOnboarding); $('sign-out').addEventListener('click', () => { saveSession(null); refreshSessionUI(null); message('Signed out.'); });
+  const savedKey = localStorage.getItem(KEY_STORAGE); if (savedKey) $('supabase-key').value = savedKey;
+  if (savedKey) connect(savedKey); else refreshSessionUI(null);
 }
-initialise();
+window.addEventListener('DOMContentLoaded', initialise);

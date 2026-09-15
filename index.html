@@ -57,13 +57,15 @@
         <div id="ready-panel" class="box" hidden>
           <h2>Customer account ready</h2>
           <p id="ready-text"></p>
-          <p class="small">You can now use this authenticated session for the security tests. Sign out and create/sign in with the other test account to test the opposite direction.</p>
+          <p class="small">Run the authenticated isolation test below. It deliberately requests the opposite test tenant and protected tables using this customer's real session.</p>
+          <button id="run-security-test" type="button">Run tenant-isolation security test</button>
+          <div id="security-results" class="security-results" hidden></div>
         </div>
 
         <div id="message" role="status" aria-live="polite"></div>
       </div>
     </section>
   </main>
-  <script src="app.js?v=20260915-5" defer></script>
+  <script src="app.js?v=20260915-6" defer></script>
 </body>
 </html>

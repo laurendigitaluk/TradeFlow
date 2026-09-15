@@ -30,8 +30,8 @@ async function signOut(){saveSession(null);location.reload()}
 async function loadAdmin(){
   $('admin').hidden=true;$('denied').hidden=true;
   try{
-    const rows=await api('/rest/v1/rpc/platform_admin_list_tenants',{method:'GET'});
-    // Only a successful RPC response is allowed to open the administration controls.
+    // This RPC is protected and now PL/pgSQL/volatile, so use POST rather than GET.
+    const rows=await api('/rest/v1/rpc/platform_admin_list_tenants',{method:'POST',body:'{}'});
     $('admin').hidden=false;
     renderTenants(Array.isArray(rows)?rows:[]);
     status('Platform Owner access verified.','success');

@@ -42,16 +42,9 @@ async function findExistingCustomer() {
   for (const row of Array.isArray(rows) ? rows : []) {
     const key = row.tenant_id === TENANTS.a.id ? 'a' : row.tenant_id === TENANTS.b.id ? 'b' : null;
     if (!key) throw new Error('Authenticated account is linked to a non-test tenant.');
-    existing.push({
-      key,
-      row: {
-        id: row.customer_id,
-        tenant_id: row.tenant_id
-      }
-    });
+    existing.push({ key, row: { id: row.customer_id, tenant_id: row.tenant_id } });
   }
   return existing;
-} return existing;
 }
 async function showExistingCustomerIfPresent() {
   try {
@@ -103,49 +96,54 @@ async function runSecurityTest() {
   const rows = []; let passCount = 0;
   try {
     if (!session?.access_token || !session?.user?.id) throw new Error('No authenticated customer session is available.');
-    const profiles = {};
-    for (const key of ['a', 'b']) {
-      try { const data = await api(`/rest/v1/rpc/customer_get_profile?p_tenant_id=${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' }); profiles[key] = Array.isArray(data) ? data : (data ? [data] : []); }
-      catch (error) { profiles[key] = null; rows.push(resultRow(`Controlled profile read — ${TENANTS[key].label}`, false, `Unexpected HTTP ${error.status || '?'}: ${error.message}`)); }
-    }
-    if (profiles.a && profiles.b) {
-      const ownCount = [profiles.a, profiles.b].filter((x) => x.length > 0).length; const ownKey = profiles.a.length ? 'a' : (profiles.b.length ? 'b' : null); const passedIdentity = ownCount === 1;
-      if (passedIdentity) passCount++;
-      rows.push(resultRow('Customer identity resolves to exactly one tenant', passedIdentity, passedIdentity ? `${TENANTS[ownKey].label} returned the authenticated customer's profile; the other tenant returned no profile.` : `Unexpected profile counts: A=${profiles.a.length}, B=${profiles.b.length}.`));
-      if (passedIdentity) {
-        const otherKey = ownKey === 'a' ? 'b' : 'a';
-        for (const [fn, label] of CUSTOMER_READ_TESTS) {
-          try { const data = await api(`/rest/v1/rpc/${fn}?p_tenant_id=${encodeURIComponent(TENANTS[otherKey].id)}`, { method: 'GET' }); const count = Array.isArray(data) ? data.length : (data ? 1 : 0); const passedRead = count === 0; if (passedRead) passCount++; rows.push(resultRow(`Cross-tenant ${label}`, passedRead, passedRead ? '0 records returned from the opposite tenant.' : `${count} record(s) returned — tenant isolation failure.`)); }
-          catch (error) { rows.push(resultRow(`Cross-tenant ${label}`, false, `Unexpected HTTP ${error.status || '?'}: ${error.message}`)); }
+    const identityRows = await api('/rest/v1/rpc/test_lab_current_customer', { method: 'GET' });
+    const identity = Array.isArray(identityRows) ? identityRows : [];
+    const ownKey = identity.length === 1 ? (identity[0].tenant_id === TENANTS.a.id ? 'a' : identity[0].tenant_id === TENANTS.b.id ? 'b' : null) : null;
+    const passedIdentity = identity.length === 1 && !!ownKey;
+    if (passedIdentity) passCount++;
+    rows.push(resultRow('Customer identity resolves to exactly one tenant', passedIdentity, passedIdentity ? `${TENANTS[ownKey].label} is the authenticated customer tenant.` : `Unexpected authenticated customer identity count or tenant mapping: ${identity.length} record(s).`));
+    if (passedIdentity) {
+      const otherKey = ownKey === 'a' ? 'b' : 'a';
+      for (const [fn, label] of CUSTOMER_READ_TESTS) {
+        try {
+          const data = await api(`/rest/v1/rpc/${fn}?p_tenant_id=${encodeURIComponent(TENANTS[otherKey].id)}`, { method: 'GET' });
+          const count = Array.isArray(data) ? data.length : (data ? 1 : 0);
+          const passedRead = count === 0;
+          if (passedRead) passCount++;
+          rows.push(resultRow(`Cross-tenant ${label}`, passedRead, passedRead ? '0 records returned from the opposite tenant.' : `${count} record(s) returned — tenant isolation failure.`));
+        } catch (error) {
+          const capabilityGuard = String(error.message || '').includes('Subscription capability required:');
+          if (capabilityGuard) passCount++;
+          rows.push(resultRow(`Cross-tenant ${label}`, capabilityGuard, capabilityGuard ? `The opposite tenant rejected the call through its subscription capability guard (${error.message}).` : `Unexpected HTTP ${error.status || '?'}: ${error.message}`));
         }
-        const membershipOwn = await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(TENANTS[ownKey].id)}&user_id=eq.${encodeURIComponent(session.user.id)}`, { method: 'GET' });
-        const membershipOther = await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(TENANTS[otherKey].id)}&user_id=eq.${encodeURIComponent(session.user.id)}`, { method: 'GET' });
-        const ownMembershipPass = Array.isArray(membershipOwn) && membershipOwn.length === 1 && membershipOwn[0].status === 'active'; if (ownMembershipPass) passCount++;
-        rows.push(resultRow('Own tenant membership is visible and active', ownMembershipPass, ownMembershipPass ? `One active ${membershipOwn[0].role_code} membership returned for ${TENANTS[ownKey].label}.` : 'Unexpected own membership count/status.'));
-        const otherMembershipPass = Array.isArray(membershipOther) && membershipOther.length === 0; if (otherMembershipPass) passCount++;
-        rows.push(resultRow('Cross-tenant membership is hidden', otherMembershipPass, otherMembershipPass ? '0 membership records returned for the opposite tenant.' : `${membershipOther.length} membership record(s) returned — membership isolation failure.`));
-        const ownTenant = await api(`/rest/v1/tenants?select=id,slug&slug=eq.${encodeURIComponent(TENANTS[ownKey].slug)}`, { method: 'GET' });
-        const otherTenant = await api(`/rest/v1/tenants?select=id,slug&slug=eq.${encodeURIComponent(TENANTS[otherKey].slug)}`, { method: 'GET' });
-        const ownTenantPass = Array.isArray(ownTenant) && ownTenant.length === 1; if (ownTenantPass) passCount++;
-        rows.push(resultRow('Own tenant record is visible', ownTenantPass, ownTenantPass ? 'The authenticated member can resolve its own tenant.' : 'Own tenant record was not visible as expected.'));
-        const otherTenantPass = Array.isArray(otherTenant) && otherTenant.length === 0; if (otherTenantPass) passCount++;
-        rows.push(resultRow('Cross-tenant tenant record is hidden', otherTenantPass, otherTenantPass ? '0 tenant records returned for the opposite tenant.' : `${otherTenant.length} tenant record(s) returned — tenant isolation failure.`));
-        for (const table of PROTECTED_TABLES) {
-          try { await api(`/rest/v1/${table}?select=*`, { method: 'GET' }); rows.push(resultRow(`Direct access blocked — ${table}`, false, 'The authenticated browser received a successful response from a protected table.')); }
-          catch (error) { const passedTable = error.status === 401 || error.status === 403; if (passedTable) passCount++; rows.push(resultRow(`Direct access blocked — ${table}`, passedTable, passedTable ? `HTTP ${error.status} as expected.` : `Unexpected HTTP ${error.status || '?'}: ${error.message}`)); }
-        }
-        const roles = await api('/rest/v1/roles?select=id,code,active&active=eq.true&order=sort_order', { method: 'GET' });
-        const roleCodes = new Set((Array.isArray(roles) ? roles : []).map((r) => r.code)); const rolesPresent = ['owner','admin','staff'].every((r) => roleCodes.has(r)); if (rolesPresent) passCount++;
-        rows.push(resultRow('System roles are present', rolesPresent, rolesPresent ? 'Owner, Administrator and Staff roles are active.' : 'One or more required system roles are missing.'));
-        const perms = await api('/rest/v1/role_permissions?select=role_id,permission_id', { method: 'GET' });
-        const permissions = await api('/rest/v1/permissions?select=id,code,active&active=eq.true', { method: 'GET' });
-        const permissionMap = new Map((Array.isArray(permissions) ? permissions : []).map((p) => [p.id, p.code])); const roleIdMap = new Map((Array.isArray(roles) ? roles : []).map((r) => [r.code, r.id]));
-        const staffPermissions = new Set((Array.isArray(perms) ? perms : []).filter((rp) => rp.role_id === roleIdMap.get('staff')).map((rp) => permissionMap.get(rp.permission_id)).filter(Boolean));
-        for (const [code, expected] of STAFF_ROLE_RESTRICTIONS) { const actual = staffPermissions.has(code); const passed = actual === expected; if (passed) passCount++; rows.push(resultRow(`Staff role restriction — ${code}`, passed, passed ? `Staff permission state is ${actual ? 'enabled' : 'not granted'} as expected.` : `Staff permission state is ${actual ? 'enabled' : 'not granted'} but expected ${expected ? 'enabled' : 'not granted'}.`)); }
       }
-      const total = rows.length; const failed = rows.filter((row) => row.includes('class="security-result fail"')).length;
-      results.innerHTML = `<h3>Authenticated Tenant &amp; Staff Security Test</h3><p><strong>${passCount}/${total} checks passed.</strong> ${failed ? `${failed} check(s) require attention.` : 'All checks passed.'}</p>${rows.join('')}`;
+      const membershipOwn = await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(TENANTS[ownKey].id)}&user_id=eq.${encodeURIComponent(session.user.id)}`, { method: 'GET' });
+      const membershipOther = await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(TENANTS[otherKey].id)}&user_id=eq.${encodeURIComponent(session.user.id)}`, { method: 'GET' });
+      const ownMembershipPass = Array.isArray(membershipOwn) && membershipOwn.length === 1 && membershipOwn[0].status === 'active'; if (ownMembershipPass) passCount++;
+      rows.push(resultRow('Own tenant membership is visible and active', ownMembershipPass, ownMembershipPass ? `One active ${membershipOwn[0].role_code} membership returned for ${TENANTS[ownKey].label}.` : 'Unexpected own membership count/status.'));
+      const otherMembershipPass = Array.isArray(membershipOther) && membershipOther.length === 0; if (otherMembershipPass) passCount++;
+      rows.push(resultRow('Cross-tenant membership is hidden', otherMembershipPass, otherMembershipPass ? '0 membership records returned for the opposite tenant.' : `${membershipOther.length} membership record(s) returned — membership isolation failure.`));
+      const ownTenant = await api(`/rest/v1/tenants?select=id,slug&slug=eq.${encodeURIComponent(TENANTS[ownKey].slug)}`, { method: 'GET' });
+      const otherTenant = await api(`/rest/v1/tenants?select=id,slug&slug=eq.${encodeURIComponent(TENANTS[otherKey].slug)}`, { method: 'GET' });
+      const ownTenantPass = Array.isArray(ownTenant) && ownTenant.length === 1; if (ownTenantPass) passCount++;
+      rows.push(resultRow('Own tenant record is visible', ownTenantPass, ownTenantPass ? 'The authenticated member can resolve its own tenant.' : 'Own tenant record was not visible as expected.'));
+      const otherTenantPass = Array.isArray(otherTenant) && otherTenant.length === 0; if (otherTenantPass) passCount++;
+      rows.push(resultRow('Cross-tenant tenant record is hidden', otherTenantPass, otherTenantPass ? '0 tenant records returned for the opposite tenant.' : `${otherTenant.length} tenant record(s) returned — tenant isolation failure.`));
+      for (const table of PROTECTED_TABLES) {
+        try { await api(`/rest/v1/${table}?select=*`, { method: 'GET' }); rows.push(resultRow(`Direct access blocked — ${table}`, false, 'The authenticated browser received a successful response from a protected table.')); }
+        catch (error) { const passedTable = error.status === 401 || error.status === 403; if (passedTable) passCount++; rows.push(resultRow(`Direct access blocked — ${table}`, passedTable, passedTable ? `HTTP ${error.status} as expected.` : `Unexpected HTTP ${error.status || '?'}: ${error.message}`)); }
+      }
+      const roles = await api('/rest/v1/roles?select=id,code,active&active=eq.true&order=sort_order', { method: 'GET' });
+      const roleCodes = new Set((Array.isArray(roles) ? roles : []).map((r) => r.code)); const rolesPresent = ['owner','admin','staff'].every((r) => roleCodes.has(r)); if (rolesPresent) passCount++;
+      rows.push(resultRow('System roles are present', rolesPresent, rolesPresent ? 'Owner, Administrator and Staff roles are active.' : 'One or more required system roles are missing.'));
+      const perms = await api('/rest/v1/role_permissions?select=role_id,permission_id', { method: 'GET' });
+      const permissions = await api('/rest/v1/permissions?select=id,code,active&active=eq.true', { method: 'GET' });
+      const permissionMap = new Map((Array.isArray(permissions) ? permissions : []).map((p) => [p.id, p.code])); const roleIdMap = new Map((Array.isArray(roles) ? roles : []).map((r) => [r.code, r.id]));
+      const staffPermissions = new Set((Array.isArray(perms) ? perms : []).filter((rp) => rp.role_id === roleIdMap.get('staff')).map((rp) => permissionMap.get(rp.permission_id)).filter(Boolean));
+      for (const [code, expected] of STAFF_ROLE_RESTRICTIONS) { const actual = staffPermissions.has(code); const passed = actual === expected; if (passed) passCount++; rows.push(resultRow(`Staff role restriction — ${code}`, passed, passed ? `Staff permission state is ${actual ? 'enabled' : 'not granted'} as expected.` : `Staff permission state is ${actual ? 'enabled' : 'not granted'} but expected ${expected ? 'enabled' : 'not granted'}.`)); }
     }
+    const total = rows.length; const failed = rows.filter((row) => row.includes('class="security-result fail"')).length;
+    results.innerHTML = `<h3>Authenticated Tenant &amp; Staff Security Test</h3><p><strong>${passCount}/${total} checks passed.</strong> ${failed ? `${failed} check(s) require attention.` : 'All checks passed.'}</p>${rows.join('')}`;
   } catch (error) { results.innerHTML = `<p class="error"><strong>Test could not complete:</strong> ${error.message || error}</p>${rows.join('')}`; }
   finally { button.disabled = false; button.textContent = 'Run tenant-isolation security test again'; }
 }

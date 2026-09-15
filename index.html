@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>TradeFlow Test Lab</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <main class="shell">
@@ -17,17 +17,18 @@
         <h2>One-time connection setup</h2>
         <p>Enter the TradeFlow Supabase publishable key. It is safe for browser use. It is stored only in this browser.</p>
         <label>Supabase publishable key<input id="supabase-key" type="password" autocomplete="off" placeholder="sb_publishable_…"></label>
-        <button id="save-config">Connect</button>
+        <button id="save-config" type="button">Connect</button>
+        <p id="connection-status" class="small" role="status" aria-live="polite"></p>
         <p class="small">Project: <strong>twfbmjwwqzxdxvclxbun</strong> · Region: eu-west-2</p>
       </div>
 
       <div id="app" hidden>
         <div id="session-panel" class="box" hidden>
-          <div class="session-row"><span id="session-email"></span><button id="sign-out" class="secondary">Sign out</button></div>
+          <div class="session-row"><span id="session-email"></span><button id="sign-out" class="secondary" type="button">Sign out</button></div>
         </div>
 
         <div id="auth-panel">
-          <div class="tabs"><button class="tab active" data-mode="signup">Create account</button><button class="tab" data-mode="login">Sign in</button></div>
+          <div class="tabs"><button class="tab active" type="button" data-mode="signup">Create account</button><button class="tab" type="button" data-mode="login">Sign in</button></div>
           <form id="auth-form">
             <label>Email<input id="email" type="email" required autocomplete="email"></label>
             <label>Password<input id="password" type="password" required minlength="8" autocomplete="new-password"></label>
@@ -50,7 +51,7 @@
           </label>
           <label>First name<input id="onboard-first-name" type="text"></label>
           <label>Last name<input id="onboard-last-name" type="text"></label>
-          <button id="complete-onboarding">Create customer record</button>
+          <button id="complete-onboarding" type="button">Create customer record</button>
         </div>
 
         <div id="ready-panel" class="box" hidden>
@@ -63,7 +64,7 @@
       </div>
     </section>
   </main>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="app.js?v=20260915-1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="app.js?v=20260915-2" defer></script>
 </body>
 </html>

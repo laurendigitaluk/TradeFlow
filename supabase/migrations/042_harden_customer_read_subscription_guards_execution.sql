@@ -4,7 +4,7 @@
 -- converted to PL/pgSQL so the guard is executed with PERFORM before RETURN QUERY.
 
 CREATE OR REPLACE FUNCTION public.customer_get_trade_ins(p_tenant_id uuid)
-RETURNS TABLE(trade_in_id uuid, trade_in_reference text, status text, valuation_method text, trading_value numeric, cash_price numeric, trade_in_price numeric, credit_amount numeric, currency timestamptz, requested_at timestamptz, valued_at timestamptz, accepted_at timestamptz, received_at timestamptz, credited_at timestamptz, completed_at timestamptz)
+RETURNS TABLE(trade_in_id uuid, trade_in_reference text, status text, valuation_method text, trading_value numeric, cash_price numeric, trade_in_price numeric, credit_amount numeric, currency text, requested_at timestamptz, valued_at timestamptz, accepted_at timestamptz, received_at timestamptz, credited_at timestamptz, completed_at timestamptz)
 LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path TO 'pg_catalog','public'
 AS $function$
 begin

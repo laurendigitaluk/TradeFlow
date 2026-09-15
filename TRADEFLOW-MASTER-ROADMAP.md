@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.0  
+**Version:** 1.1  
 **Date:** 15 September 2026  
 **Purpose:** Reconcile the original clean SaaS build plan with the current TradeFlow implementation and verified testing.
 
@@ -21,15 +21,15 @@ TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary 
 
 ### Role hierarchy to preserve
 
-**TradeFlow platform → subscriber tenant → tenant owner/admin/staff → tenant customers**
+**TradeFlow platform → Platform Owner → subscriber tenant → tenant owner/admin/staff → tenant customers**
 
-The current database role catalogue contains `owner`, `admin`, and `staff`. A separate TradeFlow platform-owner implementation must be verified against the original plan before being assumed complete.
+The current database role catalogue contains `owner`, `admin`, and `staff`. A separate platform-owner implementation is **not currently verified**. It must remain a platform-level boundary, not be implemented by pretending `platform_owner` is an ordinary tenant membership role.
 
 ## Master roadmap
 
 | # | Domain | Status | Current evidence / next audit |
 |---|---|---|---|
-| 1 | Tenant & identity foundation | GREEN | Tenant-first model, memberships, roles, permissions and RLS implemented. Security labs verify tenant isolation. |
+| 1 | Tenant & identity foundation | GREEN with onboarding boundary AMBER | Tenant-first model, memberships, roles, permissions and RLS implemented. Tenant role boundary audited; unrestricted authenticated tenant INSERT policy remains an onboarding/control-plane issue. |
 | 2 | Subscription plans & capability gating | GREEN | Plans, plan_features, tenant_subscriptions and capability guards implemented. Buying and Selling customer subscription tests both pass 17/17. |
 | 3 | Dynamic categories, fields & options | AMBER | Domain model is defined; full live workflow audit still required. |
 | 4 | Customers & addresses | GREEN | Customer model and guarded RPCs implemented. Customer Test Lab passes 34/34 for the tested tenant/isolation boundary. |
@@ -45,7 +45,7 @@ The current database role catalogue contains `owner`, `admin`, and `staff`. A se
 | 14 | Returns & resolutions | AMBER | Buying-side and retail-side distinction is established; full lifecycle requires audit. |
 | 15 | Finance, ledger & payment records | AMBER | Finance domain is planned; payment architecture is provider-neutral. Full live implementation requires audit. |
 | 16 | Notifications & email | AMBER | Notification abstraction is planned; exact TradeFlow implementation and provider integration require audit. |
-| 17 | Staff roles, permissions & audit | GREEN for tested boundary; AMBER for complete workflow | Staff security lab previously passed 19/19. Full management/audit workflow still needs tracing. |
+| 17 | Staff roles, permissions & audit | GREEN for tested boundary; AMBER for complete workflow | Staff security lab previously passed 19/19. Database role/permission mapping audited; full management/audit workflow still needs tracing. |
 | 18 | Premium staff messenger | RED / future module | Planned for Business tier; no verified core implementation recorded. |
 | 19 | Public storefront read model | AMBER | Architecture is defined; live published-read implementation requires audit. |
 | 20 | Authoritative workflow RPCs/services + final RLS/grant verification | BLUE | Several authoritative RPCs and guards are implemented and verified; complete system-wide verification remains. |
@@ -58,6 +58,21 @@ The current database role catalogue contains `owner`, `admin`, and `staff`. A se
 - Staff security lab: **19/19 PASS** at the current checkpoint.
 - RLS is enabled across the recorded public-table checkpoint.
 - Subscription guard hardening was completed through migration 043.
+
+## Platform / tenant boundary audit — 15 September 2026
+
+Current Supabase inspection confirms:
+
+- `tenant_memberships.role_code` is constrained to `owner`, `admin`, `staff`.
+- `private.is_tenant_member()` checks active membership.
+- `private.is_tenant_admin()` recognises active owner/admin memberships.
+- `private.has_tenant_permission()` resolves permissions from active tenant membership and role mappings.
+- Owner currently has the full permission catalogue.
+- Admin does not have `staff.manage`, `tenant.manage` or `audit.view`.
+- Staff does not have `staff.manage`, `tenant.manage`, `website.manage`, `website.publish`, `finance.manage` or `audit.view`.
+- The foundation currently contains an authenticated tenant INSERT policy with `with check (true)` and temporary test-lab onboarding functions. These must not be treated as the final production onboarding/control-plane design.
+
+**Result:** tenant role mapping is verified at database level; the separate Platform Owner control plane and production tenant creation/onboarding remain **AMBER / not yet implemented or verified**.
 
 ## Deliberately outside the generic core
 
@@ -73,8 +88,8 @@ These may later return as optional TradeFlow modules such as Market Intelligence
 
 ## Required next audit sequence
 
-1. Platform owner / platform administration boundary.
-2. Tenant owner/admin/staff permissions and management workflow.
+1. Implement and verify Platform Owner / platform administration boundary and production tenant onboarding.
+2. Complete tenant owner/admin/staff permissions and management workflow.
 3. Dynamic categories and fields.
 4. Complete Buying workflow.
 5. Trading Value and valuation workflow.
@@ -88,14 +103,19 @@ These may later return as optional TradeFlow modules such as Market Intelligence
 13. Media/storage implementation.
 14. Final system-wide RLS, grants, RPC and integration audit.
 
-## Documentation rule
+## Documentation
 
-For each audited system record:
+TradeFlow now has two repository documentation layers:
+
+- `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` — human/developer operational and diagnostic handbook.
+- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` — AI continuity and operational truth.
+
+For every audited system use:
 
 **User action → page → front-end controller → Supabase call → database object → trigger/function/RLS → status transition → external integration → visible result → verification state.**
 
-Every material change must update the relevant human/developer documentation, AI continuity documentation, structured project-memory/checkpoint record where available, and verification status.
+Every material change must update the relevant handbook, AI manual, structured project-memory/checkpoint layer where available, and verification status.
 
 ## Current stopping point
 
-The customer subscription boundary is verified in both directions. Do not alter that layer without a new defect. The next technical audit is the platform-owner and tenant-role boundary, followed by the first AMBER business workflow in the sequence above.
+The customer subscription boundary is verified in both directions. The tenant role/permission model has now been inspected against live Supabase state. The next technical task is the Platform Owner control boundary and production tenant onboarding; only after that should the audit continue into the first AMBER business workflow.

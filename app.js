@@ -40,8 +40,8 @@ async function findExistingCustomer() {
   const existing = [];
   for (const key of ['a', 'b']) {
     try {
-      const rows = await api(`/rest/v1/customers?select=id,tenant_id&auth_user_id=eq.${encodeURIComponent(session.user.id)}&tenant_id=eq.${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' });
-      if (Array.isArray(rows) && rows.length) existing.push({ key, row: rows[0] });
+      const rows = await api(`/rest/v1/rpc/customer_get_profile?p_tenant_id=${encodeURIComponent(TENANTS[key].id)}`, { method: 'GET' });
+      if (Array.isArray(rows) && rows.length) existing.push({ key, row: { id: rows[0].customer_id, tenant_id: TENANTS[key].id } });
     } catch (error) {
       if (error.status !== 401 && error.status !== 403) throw error;
     }

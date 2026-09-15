@@ -11,7 +11,15 @@ function isAccessDeniedError(e){
   const text=String([e?.message,e?.details,e?.hint,e?.code].filter(Boolean).join(' ')).toLowerCase();
   return e?.status===401 || e?.status===403 || e?.status===400 || text.includes('platform owner access required') || text.includes('platform owner') || text.includes('authentication required') || text.includes('identity mismatch');
 }
-async function api(path,options={}){
+async function refreshSession(){
+  if(!key||!session?.refresh_token)throw new Error('Your TradeFlow session has expired. Please sign in again.');
+  const h=new Headers();h.set('apikey',key);h.set('Content-Type','application/json');
+  const r=await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`,{method:'POST',headers:h,body:JSON.stringify({refresh_token:session.refresh_token})});
+  const t=await r.text();let j=null;try{j=t?JSON.parse(t):null}catch{j=null}
+  if(!r.ok){saveSession(null);const e=new Error(j?.msg||j?.message||j?.error_description||j?.error||'Your TradeFlow session has expired. Please sign in again.');e.status=r.status;throw e;}
+  saveSession(j);return j;
+}
+async function api(path,options={},allowRefresh=true){
   if(!key)throw new Error('TradeFlow Supabase is not connected.');
   const h=new Headers(options.headers||{});
   h.set('apikey',key);h.set('Content-Type','application/json');
@@ -20,6 +28,10 @@ async function api(path,options={}){
   const t=await r.text();
   let b=null;try{b=t?JSON.parse(t):null}catch{b=t}
   if(!r.ok){
+    if(r.status===401&&allowRefresh&&session?.refresh_token){
+      await refreshSession();
+      return api(path,options,false);
+    }
     const d=b?.message||b?.msg||b?.error_description||b?.error||t||`HTTP ${r.status}`;
     const e=new Error(d);e.status=r.status;e.details=b?.details;e.hint=b?.hint;e.code=b?.code;throw e;
   }
@@ -30,7 +42,7 @@ async function signOut(){saveSession(null);location.reload()}
 async function loadAdmin(){
   $('admin').hidden=true;$('denied').hidden=true;
   try{
-    // This RPC is protected and now PL/pgSQL/volatile, so use POST rather than GET.
+    // This RPC is protected and PL/pgSQL/volatile, so use POST rather than GET.
     const rows=await api('/rest/v1/rpc/platform_admin_list_tenants',{method:'POST',body:'{}'});
     $('admin').hidden=false;
     renderTenants(Array.isArray(rows)?rows:[]);

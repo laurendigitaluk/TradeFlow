@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.1  
+**Version:** 2.2  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -73,11 +73,15 @@ Direct listing status PATCH is deliberately not used.
 ## 12. Retail Orders
 062 hardens `retail_orders` and `retail_order_items` to `orders.view/manage` plus `module.orders`. Retail order trade-in rows additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-`orders-dashboard.html` / `.js` creates an `initiated` order from a published listing, creates its linked order item and advances the order to `pending_payment`. It does not automatically reserve or sell the listing because the live schema does not establish that handoff.
+`orders-dashboard.html` / `.js` provides the subscriber operational layer: it creates an `initiated` order from a published listing, creates the linked order item and advances the order to `pending_payment`.
+
+Customer checkout is now backed by `customer_get_store_listings()` and `customer_create_retail_order()`. The authenticated customer must belong to the tenant and have an active customer record. Checkout accepts only a currently published listing, creates a `pending_payment` order and linked order item, reserves the listing, and records workflow transitions for both the order and listing. Payment collection is not yet integrated.
+
+A trigger synchronises retail order `payment_status` with terminal order states `paid`, `partially_refunded` and `refunded`.
 
 Order authority is `initiated → pending_payment → paid → fulfilment → completed`, with the supported cancellation/refund branches.
 
-The current order UI is a subscriber operational layer. A complete customer checkout/payment integration remains open.
+All checkout functionality is **Implemented / browser verification open**.
 
 ## 13. Fulfilment and returns
 The existing fulfilment and returns model remains the next operational build. Use the existing central workflow authority and do not invent automatic handoffs not established by the live database.
@@ -94,8 +98,8 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 17. Current stopping point — 16 September 2026
-Operational path now reaches **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order.**
+Operational path now reaches **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout**.
 
-Selling/Listings and Retail Orders are **BLUE / Implemented, browser verification open**. Production onboarding, customer checkout completion, fulfilment/returns and persistent browser verification remain tracked open items.
+Selling/Listings, Retail Orders and customer checkout are **BLUE / Implemented, browser verification open**. Production onboarding, payment integration, fulfilment/returns and persistent browser verification remain tracked open items.
 
-**Next build action:** fulfilment and returns, then complete customer checkout/payment integration.
+**Next build action:** fulfilment and returns, then payment integration and persistent browser verification.

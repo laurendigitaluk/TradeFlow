@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.9  
+**Version:** 3.0  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -51,18 +51,20 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 ## Customer dashboard browser repair — 16 September 2026
 The persistent browser test exposed two browser-layer faults: the Sign in action initially gave no visible response, and the navigation controller prevented native hash navigation while `#portal` was hidden. Navigation was corrected so it only intercepts hashes after the portal is visible.
 
-The dashboard HTML was then hardened with an inline capture-phase Supabase Auth fallback, removing dependency on a separate authentication-fix file being loaded correctly. The fallback uses only the public publishable key and performs the standard password-token exchange.
+The dashboard HTML was hardened with an inline capture-phase Supabase Auth fallback, removing dependency on a separate authentication-fix file being loaded correctly. The fallback uses only the public publishable key and performs the standard password-token exchange.
 
-A reload-based session handoff failed in the browser because the page returned to the authentication panel. The handoff was changed to an in-page session handoff. A subsequent repair removed an unnecessary `/auth/v1/user` request from the successful-auth handoff. The latest repair also cache-busts the controller to `customer-dashboard.js?v=9` and makes the inline fallback immediately reveal the portal after a successful token exchange. If the main controller is not loaded, the fallback now reports that deterministically instead of leaving the user indefinitely on “Loading your customer portal…”.
+A reload-based session handoff failed in the browser because the page returned to the authentication panel. The handoff was changed to an in-page session handoff. A subsequent repair removed an unnecessary `/auth/v1/user` request from the successful-auth handoff. The controller was then loaded synchronously so it would execute before the inline fallback. Browser testing still showed the controller-unavailable message, which established that the remaining failure was inside the controller load/execution boundary rather than Supabase authentication.
 
-Latest relevant commits:
-- current dashboard HTML/cache/auth fallback: `bfda2436b9cbf1fdd96e313e3715cc07410553cc`
-- current main controller auth handoff: `b3fea037f6e9164e29f45171e6333c4318f8e78d`
-- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
+Inspection of the live GitHub controller identified the actual fault: the `esc()` helper contained an incorrectly escaped quote key in its character replacement map, producing invalid JavaScript and preventing the controller from executing far enough to assign `window.tradeflowHandleCustomerAuthSuccess`. The helper was corrected, the existing portal functionality was preserved, and the controller cache-buster was advanced to `customer-dashboard.js?v=11`.
+
+Latest repair commits:
+- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
+- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
+- previous navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
-**Verification state:** Implemented in GitHub; persistent live browser confirmation still required.
+**Verification state:** Controller syntax repair implemented in GitHub; persistent live browser confirmation of v11 remains required.
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed Stripe events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.
@@ -89,6 +91,6 @@ Do not mark a feature complete solely because code is committed. A transactional
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The latest browser repair is deployed to GitHub: the dashboard HTML now cache-busts the main controller and the successful password-token fallback immediately reveals the portal before handing the session to the controller. The next browser test is to hard-refresh the deployed customer dashboard, enter the existing Test Business A customer credentials and click Sign in once. The expected result is that the authentication panel disappears; if the controller is unavailable, a deterministic error is shown rather than an indefinite loading message. If the portal appears, continue Shop → Buy → Stripe Checkout. Persistent Stripe payment verification, shipping-provider integration and production onboarding remain open.
+The latest browser evidence proves Supabase password authentication succeeds and the portal can be revealed by the inline fallback, but the controller handler was previously unavailable. The controller syntax fault has now been corrected and the HTML cache-bust is v11. The next browser test is to hard-refresh the deployed customer dashboard, enter the existing Test Business A customer credentials and click Sign in once. Expected result: authentication succeeds, the controller handler is available, the portal remains visible, and portal data loads. If that passes, continue Shop → Buy → Stripe Checkout. Persistent Stripe payment verification, shipping-provider integration and production onboarding remain open.
 
-**Next build action:** verify the latest customer auth handoff in the live browser, then continue the persistent customer checkout/payment journey.
+**Next build action:** verify the v11 customer controller repair in the live browser, then continue the persistent customer checkout/payment journey.

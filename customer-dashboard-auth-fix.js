@@ -5,7 +5,7 @@
  */
 (()=>{
   const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-  const KEY='sb_publishable_Plc9kcyye1asKxTJOmGdhQ_dP_LX59o';
+  const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
   const KEY_STORAGE='tradeflow_testlab_publishable_key';
   const SESSION_STORAGE='tradeflow_testlab_session';
 

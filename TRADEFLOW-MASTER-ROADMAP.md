@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.1  
+**Version:** 2.2  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -38,7 +38,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
-| 13 | Retail orders | BLUE | 062 hardened; Orders workspace creates orders from published listings and controls order lifecycle. Customer-facing checkout remains to be completed. |
+| 13 | Retail orders | BLUE | 062 hardening plus customer checkout RPC/UI. Customer checkout creates a pending-payment order, links the listing/item and reserves the published listing; browser verification remains. |
 | 14 | Returns | AMBER | Full lifecycle remains. |
 | 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening plus Finance workspace. Persistent browser verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
@@ -58,6 +58,8 @@ Implemented in GitHub:
 - Explicit inventory creation from received acquisition items.
 - Selling listings created from `ready_for_sale` inventory and advanced through the central workflow authority.
 - Retail orders created from published listings, with linked order items and controlled status progression.
+- Customer store listing RPC and authenticated one-item checkout RPC.
+- Customer dashboard now exposes Shop and My Orders.
 
 These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
@@ -69,9 +71,9 @@ The Selling workspace loads active channels, selling-enabled categories and read
 
 Migration 062 hardens retail orders and order items to `orders.view/manage` plus `module.orders`; retail order trade-ins additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-The Orders workspace creates an `initiated` order from a published listing, creates the linked order item, then advances the order to `pending_payment`. It deliberately does **not** automatically reserve or sell the listing because the live schema does not establish that automatic handoff.
+The customer checkout implementation adds `customer_get_store_listings()` and `customer_create_retail_order()`. Checkout requires an authenticated active customer for the tenant, accepts only a published listing, creates the order as `pending_payment`, creates its linked order item, and reserves the listing. The checkout operation records workflow transitions for the order and listing. Payment processing itself is not integrated yet.
 
-Retail order lifecycle authority is:
+Order lifecycle authority is:
 **initiated → pending_payment → paid → fulfilment → completed**, with supported cancellation/refund branches.
 
 ## Acquisition → Finance → Inventory → Selling → Orders
@@ -103,6 +105,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-Selling/Listings and Retail Orders operational UI work is implemented in GitHub. No persistent browser journey has yet been marked verified for these new actions.
+Retail Orders now has an authenticated customer checkout path in addition to the subscriber Orders workspace. Checkout/payment integration and persistent browser verification remain open.
 
-**Next build action:** continue into fulfilment and returns, while retaining customer checkout completion, production onboarding and persistent browser verification as tracked open items.
+**Next build action:** continue into fulfilment and returns, then complete payment integration and persistent browser verification.

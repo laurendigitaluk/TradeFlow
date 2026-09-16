@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.9  
+**Version:** 3.0  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -93,18 +93,20 @@ Returns legacy broad policies have been removed and direct status edits are bloc
 ## 15. Customer dashboard browser repair
 The persistent browser test exposed two browser-layer faults: Sign in initially produced no visible response, and the navigation controller intercepted hashes while the portal was hidden. Navigation was corrected to leave native hash navigation available until authentication succeeds.
 
-The dashboard HTML now contains an inline capture-phase Supabase Auth fallback using only the public publishable key. The earlier reload-based session handoff failed because reload returned to the authentication panel. The later in-page handoff removed the reload and then removed an unnecessary `/auth/v1/user` request from the successful-auth path.
+The dashboard HTML contains an inline capture-phase Supabase Auth fallback using only the public publishable key. The earlier reload-based handoff failed because reload returned to the authentication panel. The later in-page handoff removed the reload and an unnecessary `/auth/v1/user` request from the successful-auth path.
 
-The latest repair also changes the dashboard script cache-buster to `customer-dashboard.js?v=9` and makes the inline fallback immediately reveal `#portal` after a successful password-token exchange. It then hands the session to `window.tradeflowHandleCustomerAuthSuccess`. If the main controller is unavailable, the fallback now reports that explicitly rather than leaving the user indefinitely on “Signing in. Loading your customer portal…”.
+The controller was then loaded synchronously before the inline fallback and cache-busted. Browser testing still showed “Authentication succeeded, but the customer controller did not load.” This established that authentication and portal reveal were working, while the controller itself was failing before assigning its global handoff function.
+
+Inspection of the live GitHub controller identified the actual fault in `esc()`: the quote character mapping contained an incorrectly escaped key, producing invalid JavaScript. The helper was corrected without removing the existing customer portal functionality. The HTML controller cache-buster is now `customer-dashboard.js?v=11`.
 
 Latest commits:
-- dashboard HTML/auth fallback/cache repair: `bfda2436b9cbf1fdd96e313e3715cc07410553cc`
-- main controller handoff: `b3fea037f6e9164e29f45171e6333c4318f8e78d`
+- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
+- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
 - navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
-**Verification state:** Implemented in GitHub; persistent live browser confirmation remains open.
+**Verification state:** Implemented in GitHub; persistent live browser confirmation of the v11 controller repair remains open.
 
 ## 16. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
@@ -118,6 +120,6 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 19. Current stopping point — 16 September 2026
-The latest customer dashboard repair is deployed to GitHub. The HTML now forces a fresh `customer-dashboard.js?v=9` load and the inline successful-auth path immediately hides the authentication panel and reveals the portal. Persistent live browser confirmation is still required. External payment architecture is BLUE / Implemented, with Stripe Sandbox configuration complete and persistent payment verification still open. Shipping-provider integration and production onboarding remain open.
+The latest customer dashboard controller syntax repair is deployed to GitHub and the HTML now requests `customer-dashboard.js?v=11`. The preceding browser screenshot proves Supabase password authentication succeeds and the inline fallback can reveal the portal; the remaining v11 question is whether the repaired controller now executes and hands off correctly. Persistent live browser confirmation is required before moving on.
 
-**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the authentication panel disappears and the portal loads. If it does, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state.
+**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the controller-unavailable message is gone and portal data loads. If that passes, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state.

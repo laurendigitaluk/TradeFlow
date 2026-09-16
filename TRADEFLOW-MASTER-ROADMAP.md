@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.8  
+**Version:** 2.9  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -38,7 +38,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
-| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; provider configuration and browser verification remain. |
+| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; browser verification remains. |
 | 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; customer visibility/actions implemented. Browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe secrets/configuration and live payment verification remain. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
@@ -53,11 +53,11 @@ The persistent browser test exposed two browser-layer faults: the Sign in action
 
 The dashboard HTML was then hardened with an inline capture-phase Supabase Auth fallback, removing dependency on a separate authentication-fix file being loaded correctly. The fallback uses only the public publishable key and performs the standard password-token exchange.
 
-The first version stored the session and forced a page reload. Browser testing showed that the reload returned to the authentication panel, so the handoff was changed: after successful token exchange the inline fallback dispatches `tradeflow-auth-success`; the main controller now receives that event, adopts the authenticated session, validates `/auth/v1/user`, and calls the existing portal initialisation without a reload. This directly tests the real session handoff instead of relying on a second page startup.
+A reload-based session handoff failed in the browser because the page returned to the authentication panel. The handoff was changed to an in-page session handoff. A subsequent repair removed an unnecessary `/auth/v1/user` request from the successful-auth handoff. The latest repair also cache-busts the controller to `customer-dashboard.js?v=9` and makes the inline fallback immediately reveal the portal after a successful token exchange. If the main controller is not loaded, the fallback now reports that deterministically instead of leaving the user indefinitely on “Loading your customer portal…”.
 
 Latest relevant commits:
-- dashboard inline fallback: `b8fabeee759d10f8a7585b6e64d01610aec668f2`
-- main controller session handoff: `0e1a56cefd2f9c96c7005d4a76109cbb93dd1929`
+- current dashboard HTML/cache/auth fallback: `bfda2436b9cbf1fdd96e313e3715cc07410553cc`
+- current main controller auth handoff: `b3fea037f6e9164e29f45171e6333c4318f8e78d`
 - navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
@@ -89,6 +89,6 @@ Do not mark a feature complete solely because code is committed. A transactional
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The navigation fault is repaired and the customer authentication handoff has been changed from reload-based restoration to a direct in-page session handoff. The next browser test is to hard-refresh the deployed customer dashboard, enter the existing Test Business A customer credentials and click Sign in once. If the portal appears, continue Shop → Buy → Stripe Checkout. Persistent Stripe payment verification, shipping-provider integration and production onboarding remain open.
+The latest browser repair is deployed to GitHub: the dashboard HTML now cache-busts the main controller and the successful password-token fallback immediately reveals the portal before handing the session to the controller. The next browser test is to hard-refresh the deployed customer dashboard, enter the existing Test Business A customer credentials and click Sign in once. The expected result is that the authentication panel disappears; if the controller is unavailable, a deterministic error is shown rather than an indefinite loading message. If the portal appears, continue Shop → Buy → Stripe Checkout. Persistent Stripe payment verification, shipping-provider integration and production onboarding remain open.
 
-**Next build action:** verify the direct customer auth handoff in the live browser, then continue the persistent customer checkout/payment journey.
+**Next build action:** verify the latest customer auth handoff in the live browser, then continue the persistent customer checkout/payment journey.

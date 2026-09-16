@@ -1,192 +1,102 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 1.9  
+**Version:** 2.0  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
-This handbook records verified TradeFlow architecture, security boundaries, workflow rules, implementation decisions, faults, lessons and exact build position.
+This handbook records TradeFlow architecture, security boundaries, workflow rules, implementation decisions, faults, lessons and exact build position.
 
 Authority order: **current GitHub code + current Supabase state + structured project memory/checkpoints + verified live behaviour**. A Git commit is implementation evidence, not proof of live behaviour.
 
 ## 2. Architecture baseline
 TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary tenant boundary.
 
-```text
-TradeFlow Platform
-└── Platform Owner
-    ├── Subscriber Tenant
-    │   ├── Owner
-    │   ├── Admin
-    │   ├── Staff
-    │   ├── Public Website
-    │   └── Customers
-    │       └── Customer Dashboard
-    └── ...
-```
+Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate platform-level boundary and is never a tenant role. GearCashOut is reference material only and must never be modified during TradeFlow work.
 
-Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate platform-level boundary and is never a tenant role.
-
-GearCashOut is reference material only and must never be modified during TradeFlow work.
-
-## 3. Verified security checkpoints
-- Customer isolation/security: **34/34 passed** at the recorded checkpoint.
+## 3. Security checkpoints
+- Customer isolation/security: **34/34 passed**.
 - Customer subscription tests: **Buying 17/17; Selling 17/17 passed**.
 - Staff security lab: **19/19 passed**.
-- RLS enabled across the recorded 60/60 public-table checkpoint.
-- Platform Owner security foundation: migrations 044–045.
-- Platform-admin privileged provisioning/read guards: migrations 046–048.
+- Recorded RLS checkpoint: **60/60 public tables enabled**.
+- Platform Owner foundation: 044–045.
+- Platform-admin privileged paths: 046–048; final browser regression remains open.
 - Buying hardening: 049–051.
 - Valuation/Offer hardening: 052–055.
 - Acquisition hardening: 056–057.
 - Inventory hardening: 058.
-- Finance permission hardening: 059.
+- Finance permission/workflow hardening: 059–060.
 
 ## 4. Production onboarding — OPEN
-The development tenant foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding functions. These are not approved for public SaaS onboarding.
+Development tenant insertion/test-lab paths are not the production SaaS onboarding model.
 
-Required production sequence:
-**Platform Owner / approved onboarding → tenant creation → initial owner provisioning → subscription assignment → owner/admin/staff management.**
-
-Never permit self-claimed Platform Owner access or create a `platform_owner` tenant role.
+Required sequence: **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.** Never permit self-claimed Platform Owner access or create a `platform_owner` tenant role.
 
 ## 5. Subscription and permission architecture
-Tenant capabilities use plans, `plan_features`, `tenant_subscriptions`, `private.has_tenant_feature()` and `private.require_tenant_feature()`.
+Capabilities use plans, `plan_features`, `tenant_subscriptions`, `private.has_tenant_feature()` and `private.require_tenant_feature()`.
 
-Inspected permissions include `acquisitions.view/manage`, `buying.view/manage`, `valuation.view/manage`, `offers.view/manage`, `inventory.view/manage` and `finance.view/manage`.
+Relevant permissions include `buying.view/manage`, `valuation.view/manage`, `offers.view/manage`, `acquisitions.view/manage`, `inventory.view/manage`, `selling.view/manage` and `finance.view/manage`. No `module.finance` feature is assumed or invented.
 
-No `module.finance` feature is assumed or invented; Finance uses its existing permission boundary.
+## 6. Customer-facing build
+Implemented UI paths include Website Builder, public storefront renderer, customer authentication/dashboard, buying request submission, offer Accept/Refuse, subscriber Buying, Acquisition, Inventory, Finance and now Selling/Listings workspaces.
 
-## 6. Customer-facing SaaS build — IMPLEMENTED / LIVE VERIFICATION OPEN
-The current build track uses the existing security and data model rather than parallel stores.
+These are implementation milestones. They are not GREEN until authenticated browser journeys are persistently tested.
 
-Implemented UI paths include:
-- Website Builder backed by `tenant_site_state`, `site_revisions` and `publish_site_revision`.
-- Tenant-specific public storefront renderer.
-- Customer sign-in/test-lab registration and tenant-specific customer dashboard.
-- Customer buying request submission.
-- Customer Accept/Refuse actions for published offers through existing secure customer RPCs.
-- Subscriber Buying workspace for review, valuation and offer publication.
-- Subscriber Acquisition workspace for acquisition/item lifecycle operations.
-- Explicit inventory creation from an acquisition item.
-- Dedicated Subscriber Inventory workspace for asset listing, filtering, editable asset details and controlled lifecycle transitions.
-- Subscriber Finance workspace for payment and ledger records, creation and controlled status actions.
+## 7. Buying → Valuation → Offer
+049–051 harden dynamic options and Buying workflow. 052–055 harden valuation/offer RLS, same-item valuation binding and state entry. Published offers require an approved valuation for the same tenant and buying item.
 
-These are implementation milestones. They are not marked GREEN until authenticated browser journeys have been persistently tested.
+## 8. Acquisition
+056–057 harden acquisition access and status entry. Lifecycle authority is:
+`accepted → awaiting_item → received → inspection → finalised → paid → completed`, with cancellation branches as supported.
 
-## 7. Buying, valuation and offers — migrations 049–055
-049 made dynamic select/multiselect validation authoritative inside `customer_submit_buying_request`.
+Inventory creation from an acquisition item is an explicit operation; it is not inferred from acquisition status.
 
-050 made Buying request/item lifecycle transitions authoritative through `transition_workflow_entity`.
+## 9. Inventory
+058 removes broad legacy access and protects inventory status entry. `inventory-dashboard.html` / `.js` lists tenant assets, filters status, edits non-status details and routes lifecycle changes through `transition_workflow_entity()`.
 
-051 records customer submission workflow events.
+Lifecycle: `received → inspection → testing → repair → ready_for_sale → listed → reserved → sold`, with supported return/write-off/archive branches.
 
-052 removed broad valuation-table member/admin policies and enforced valuation permission plus module capability.
+## 10. Finance
+059 applies permission-bound access to `payment_records` and `ledger_entries`. 060 extends the central workflow authority to payment and ledger status transitions and adds status-entry guards.
 
-053 removed broad offer/offer-event access and enforced offer permission plus module capability.
+Finance workspace creates payment/ledger records in `pending` and routes status changes through the central workflow RPC. No automatic payment or ledger creation is inferred from acquisition status.
 
-054 binds an offer to a valuation for the same tenant and same buying item.
+## 11. Selling / Listings — NEW IMPLEMENTATION
+The dedicated `selling-dashboard.html` / `selling-dashboard.js` workspace is now implemented.
 
-055 protects valuation/offer state entry and requires an approved same-item valuation for a published offer.
+It:
+- lists tenant-scoped listings and filters by status;
+- loads active tenant sales channels;
+- loads active tenant categories where `selling_enabled=true`;
+- offers only tenant inventory currently at `ready_for_sale` when creating a listing;
+- creates listings in `draft`, then advances them to `ready` through `transition_workflow_entity()`;
+- supports `ready → published`, `published → reserved/sold/delisted`, and `reserved → published/sold/delisted` through the same authoritative RPC;
+- displays listing detail and linked inventory/channel/category information.
 
-The subscriber Buying workspace provides UI actions over these services; persistent browser verification remains open.
+The live database confirms subscription/permission-aware RLS for `listings`, `listing_events` and `sales_channels`, plus the `listing` transitions in the central workflow authority.
 
-## 8. Acquisition — migrations 056–057
-056 hardened acquisition access and source-offer uniqueness.
+Direct listing status PATCH is deliberately not used.
 
-057 added status-entry guards so authorised client roles cannot bypass `transition_workflow_entity` by directly changing acquisition status.
+## 12. Selling → Orders → Fulfilment → Returns
+The next operational build is retail orders/customer checkout using the existing `retail_orders`, `retail_order_items`, `retail_order_trade_ins`, fulfilment and returns schema. Do not invent automatic handoffs not established by the live database.
 
-Allowed lifecycle:
-```text
-accepted → awaiting_item → received → inspection → finalised → paid → completed
-                         ↘ cancelled
-```
-
-The subscriber Acquisition workspace exposes acquisition and acquisition-item progression and can explicitly create a linked inventory asset from an acquisition item.
-
-## 9. Inventory — migration 058 and dedicated workspace
-Migration 058 removed broad legacy member/admin inventory policies and added authoritative status-entry protection for `inventory_assets`.
-
-The dedicated `inventory-dashboard.html` / `inventory-dashboard.js` workspace:
-- lists tenant inventory assets;
-- filters by inventory status;
-- shows linked acquisition/buying/category identifiers;
-- edits non-status asset details such as title, condition, serial number, quantity, purchase/current value, location, description and notes;
-- routes lifecycle changes through `transition_workflow_entity()` with entity type `inventory_asset`.
-
-The implemented lifecycle authority is:
-```text
-received → inspection → testing → repair → ready_for_sale → listed → reserved → sold
-                                                               ↘ returned
-```
-
-The workspace is implemented in GitHub but remains **not yet browser-verified live**. Direct status PATCH is deliberately not used.
-
-## 10. Finance — migration 059 and operational workspace
-Migration 059 removed broad finance policies and recreated permission-bound policies for `payment_records` and `ledger_entries` using the existing `finance.view` / `finance.manage` permissions.
-
-The live tables support:
-- payment types: `customer_payment`, `seller_payment`, `refund`, `payout`, `expense`, `other`;
-- payment states: `pending`, `processing`, `paid`, `failed`, `cancelled`, `refunded`, `partially_refunded`;
-- ledger types: `sale`, `purchase`, `refund`, `expense`, `fee`, `adjustment`, `payment`, `other`;
-- ledger directions: `debit`, `credit`;
-- ledger states: `pending`, `posted`, `voided`, `reversed`.
-
-The Finance workspace now:
-- reads tenant-scoped payment and ledger records;
-- creates new payment records in `pending` state;
-- creates new ledger entries in `pending` state;
-- routes payment and ledger status changes through `transition_workflow_entity()` rather than direct status updates;
-- keeps acquisition/customer/inventory links optional and tenant-scoped through the existing foreign keys.
-
-No automatic ledger creation or payment creation is inferred from acquisition status. Reconciliation rules remain a later workflow concern.
-
-## 11. Acquisition → Finance → Inventory handoff
-The live schema contains structural links between these domains, but live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely because acquisition status changes.
-
-The operational model is therefore explicit:
-**Offer accepted → Acquisition → Receipt/Inspection → Finance records as required → Inventory asset creation/management → Selling.**
-
-This avoids hidden side effects and keeps each domain's workflow authority explicit.
-
-## 12. Verification standard
-For every business domain trace:
+## 13. Diagnostic and verification standard
+Trace every domain as:
 **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
-Do not mark a domain GREEN merely because tables/functions exist or a commit succeeds.
+Verification states are **Proposed → Implemented → Tested → Verified Live**. Commit success is not live verification. Transactional rollback testing proves database behaviour, not a persistent browser journey.
 
-## 13. Manual testing standard
-Manual browser security tests are performed one at a time with exact URL, account, action and expected result; screenshot/result is captured before moving on.
-
-Transactional database tests may be rolled back, but a rollback test proves database behaviour only, not a complete persistent UI journey.
-
-## 14. Domain status
-| Domain | Status | Current position |
-|---|---|---|
-| Tenant/identity | AMBER | Production onboarding open. |
-| Subscriptions | GREEN | Capability architecture and recorded 17/17 customer tests. |
-| Customers | GREEN | 34/34 security/isolation checkpoint. |
-| Buying | BLUE | Subscriber workspace implemented; persistent journey remains. |
-| Trading Value | BLUE | Database hardening plus subscriber valuation UI; live journey remains. |
-| Offers | BLUE | Database hardening plus customer response UI; live journey remains. |
-| Acquisition | BLUE | Operational workspace implemented; live journey remains. |
-| Inventory | BLUE | Dedicated workspace implemented with controlled lifecycle; browser verification remains. |
-| Finance/payment | BLUE | Finance workspace implemented with creation and controlled status actions; browser verification remains. |
-| Selling/listings | AMBER | Build remains. |
-| Orders/fulfilment/returns | AMBER | Build remains. |
-| Notifications/email | AMBER | Integration remains. |
-| Public storefront/media | BLUE | Renderer implemented; production public-read/custom-domain/auth journey remains. |
-| Staff roles | BLUE | Security lab 19/19; management workflow remains. |
-| Platform Owner/Admin | BLUE | Foundation implemented; final browser regression remains. |
-| System-wide RLS/workflow | BLUE | Multiple paths repaired; final pass remains. |
+## 14. Manual testing
+One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
 ## 15. Documentation/change control
-Every material change records what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap and the AI Operating Manual when architecture/build position changes, and update structured project memory/checkpoint data where available.
+After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 16. Current stopping point — 16 September 2026
-Inventory and Finance operational UI work is implemented in GitHub. The new browser actions have not yet been marked verified live.
+Operational path now reaches:
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing.**
 
-**Current operational path:** Buying → Valuation → Offer → Customer response → Acquisition → Receiving/Inspection → Finance/Payment → Inventory → Selling/Listing.
+Selling/Listings is **BLUE / Implemented, browser verification open**. Production onboarding and persistent browser verification remain tracked open items.
 
-**Next build action:** continue into Selling/Listings using the existing tenant, permission and workflow architecture. Production onboarding and persistent browser verification remain tracked open items.
+**Next build action:** retail orders/customer checkout, followed by fulfilment and returns.

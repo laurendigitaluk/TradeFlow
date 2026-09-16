@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.7  
+**Version:** 1.8  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -35,13 +35,13 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
 | 7 | Trading Value / valuation | BLUE | 052 RLS plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
-| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; subscriber acquisition workspace now supports operational status progression and inventory hand-off. Live browser verification remains. |
+| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; subscriber acquisition workspace supports lifecycle progression and explicit inventory hand-off. Live browser verification remains. |
 | 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
-| 11 | Inventory | BLUE | Subscriber inventory hand-off UI now creates linked received assets; dedicated inventory workspace and full lifecycle remain. |
+| 11 | Inventory | BLUE | 058 hardened; acquisition workspace creates linked received assets and dedicated Inventory workspace now manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | AMBER | Lifecycle remains to be built/audited. |
 | 13 | Retail orders | AMBER | Customer boundary tested; complete workflow remains. |
 | 14 | Returns | AMBER | Full lifecycle remains. |
-| 15 | Finance/payment | BLUE | Subscriber Finance workspace now exposes existing payment and ledger structures; posting/payment workflow and live verification remain. |
+| 15 | Finance/payment | BLUE | 059 permission hardening plus Subscriber Finance workspace; payment creation/posting/reconciliation workflow and live verification remain. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -61,15 +61,19 @@ Implemented in GitHub:
 - Subscriber Buying workspace for review, valuation and offer publication.
 - Subscriber Acquisition workspace for acquisition/item lifecycle progression.
 - Inventory asset creation from received acquisition items with tenant-scoped source links.
+- Dedicated Inventory workspace for tenant inventory listing, filtering, asset-detail editing and lifecycle transitions through the existing workflow RPC.
 - Subscriber Finance workspace for existing payment and ledger records.
 
 These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
 ## Acquisition → Finance → Inventory workflow position
-The live schema contains structural links from acquisitions to payment records and from acquisitions/inventory to ledger entries. Live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely from acquisition status changes. The new subscriber workspaces therefore use explicit user actions and existing authoritative workflow services rather than assuming automation.
+The live schema contains structural links from acquisitions to payment records and from acquisitions/inventory to ledger entries. Live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely from acquisition status changes. The subscriber workspaces therefore use explicit user actions and existing authoritative workflow services rather than assuming automation.
 
 Current operational path:
 **Offer accepted → acquisition created → awaiting item → received → inspection → finalised → paid → completed**, with explicit inventory creation from the acquisition-item hand-off and explicit finance records rather than implicit status side effects.
+
+Inventory lifecycle authority is:
+**received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with the verified live transition function also supporting the documented return/write-off/archive branches.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
@@ -98,4 +102,4 @@ Material changes must capture what/why, affected code/backend objects, decision,
 ## Current stopping point — 16 September 2026
 The security hardening baseline remains intact. The active build track is now the operational subscriber SaaS: Buying → Offers → Acquisitions → Finance/Inventory, followed by Selling, Listings, Orders, Fulfilment and Returns.
 
-**Next build action:** continue the dedicated Inventory workspace and connect its lifecycle to the existing acquisition hand-off, then complete Finance payment/ledger actions. Keep production onboarding and final browser verification as tracked open items rather than blocking forward development.
+**Next build action:** complete Finance payment/ledger operational actions, then continue into Selling/Listings. Keep production onboarding and final browser verification as tracked open items rather than blocking forward development.

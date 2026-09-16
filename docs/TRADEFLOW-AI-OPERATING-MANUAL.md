@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.0  
+**Version:** 2.1  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -38,14 +38,14 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - Customer security: 34/34.
 - Customer subscription tests: Buying 17/17; Selling 17/17.
 - Staff security lab: 19/19.
-- Hardening sequence through Finance workflow authority: 044–060.
+- Hardening sequence through Retail Orders: 044–062.
 
 ## 6. Production onboarding remains OPEN
 Development tenant insertion/test-lab onboarding remains separate from the required production sequence:
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 ## 7. Current operational chain
-**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing.**
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order.**
 
 The acquisition-to-finance/inventory handoff is deliberately explicit because live inspection did not establish automatic status-driven creation of payment, ledger or inventory records.
 
@@ -61,37 +61,42 @@ The Inventory workspace is implemented but not yet browser-verified live.
 
 Finance UI creates pending payment/ledger records and uses the workflow authority for status changes. No `module.finance` feature is to be invented.
 
-## 10. Selling/Listings checkpoint — NEW
+## 10. Selling/Listings checkpoint — 061
 The dedicated `selling-dashboard.html` / `selling-dashboard.js` workspace is implemented against the live schema.
 
 It loads tenant listings, active sales channels, selling-enabled active categories and `ready_for_sale` inventory. It creates listings in `draft`, advances them to `ready`, and exposes the existing authoritative listing lifecycle:
+`draft → ready → published → reserved/sold/delisted`.
 
-`draft → ready → published → reserved/sold/delisted`
+All status changes use `transition_workflow_entity()` with entity type `listing`; direct status PATCH is not used.
 
-Reserved listings can return to published or progress to sold/delisted. All status changes use `transition_workflow_entity()` with entity type `listing`; direct status PATCH is not used.
+## 11. Retail Orders checkpoint — 062
+Migration 062 hardens `retail_orders` and `retail_order_items` to `orders.view/manage` plus `module.orders`; retail order trade-in rows additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-Live RLS inspection confirms subscription/permission-aware policies for listings, listing events and sales channels.
+`orders-dashboard.html` / `.js` creates an `initiated` order from a published listing, creates its linked order item and advances it to `pending_payment`. It deliberately does not automatically reserve or sell the listing because the live schema does not establish that handoff.
 
-Verification state: **Implemented; persistent browser verification remains open.**
+Order lifecycle authority is:
+`initiated → pending_payment → paid → fulfilment → completed`, with supported cancellation/refund branches.
 
-## 11. Next build
-Continue into **retail orders/customer checkout**, then fulfilment and returns, using the existing `retail_orders`, `retail_order_items`, fulfilment and returns model and central workflow authority. Do not invent automatic handoffs.
+The current order UI is a subscriber operational layer. Customer checkout/payment integration remains open.
 
-## 12. Diagnostic standard
+## 12. Next build
+Continue into **fulfilment and returns**, then complete customer checkout/payment integration. Use the existing schema and central workflow authority. Do not invent automatic handoffs.
+
+## 13. Diagnostic standard
 Always record:
 **User action → page → front-end controller → Supabase call → DB object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Record actual filenames and database objects. If not inspected, write **Not yet audited**.
 
-## 13. Manual UI testing
+## 14. Manual UI testing
 One manual test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 14. Change-control and memory
+## 15. Change-control and memory
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
 
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
-## 15. Current stopping point — 16 September 2026
-Selling/Listings has moved from AMBER to **BLUE / Implemented, browser verification open**. Finance workflow authority is hardened through 060.
+## 16. Current stopping point — 16 September 2026
+Selling/Listings and Retail Orders are **BLUE / Implemented, persistent browser verification open**. Finance workflow authority is hardened through 060; Selling through 061; Retail Orders through 062.
 
-**Next safe action:** build the retail order/customer checkout operational layer, then fulfilment and returns. Keep production onboarding and persistent browser verification tracked separately.
+**Next safe action:** build fulfilment and returns, then customer checkout/payment integration, while retaining production onboarding and persistent browser verification as tracked open items.

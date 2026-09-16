@@ -75,7 +75,7 @@ Implemented:
 - `media_assets` now records retention policy and expiry metadata.
 - Inventory/listing sold-status triggers set photograph retention to **90 days after sale** and clear the expiry if the item returns from sold.
 
-Physical storage deletion must use the Storage API; deleting only the database metadata row is not sufficient to reclaim object storage. Supabase supports private buckets, signed URLs and scheduled Edge Function calls through Cron/pg_net; the production cleanup scheduler remains a configuration step. citeturn0search3turn1search0
+Physical storage deletion must use the Storage API; deleting only the database metadata row is not sufficient to reclaim object storage. The production cleanup scheduler remains a configuration step.
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed Stripe events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.

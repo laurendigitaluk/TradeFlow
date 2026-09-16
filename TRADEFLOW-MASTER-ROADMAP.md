@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.0  
+**Version:** 3.1  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -28,16 +28,16 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 |---|---|---|---|
 | 1 | Tenant & identity | AMBER | Production onboarding still must replace/harden development authenticated tenant-insert/test-lab paths. |
 | 2 | Subscriptions & capability gating | GREEN | Capability layer implemented; Buying 17/17 and Selling 17/17 customer subscription tests recorded. |
-| 3 | Categories, fields & options | AMBER | Buying dynamic option validation hardened; complete category/UI audit remains. |
+| 3 | Categories, fields & options | BLUE | Subscriber Categories & Properties workspace now creates categories and product properties/options independently of Buying. Browser verification remains. |
 | 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
 | 5 | Buying | BLUE | Customer submission and subscriber buying workspace implemented; persistent browser verification remains. |
-| 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
+| 6 | Media/storage | BLUE | Private `tradeflow-media` bucket plus tenant-scoped inventory/listing media links and 90-day post-sale retention metadata implemented. Automated physical object cleanup scheduling remains to be configured. |
 | 7 | Trading Value / valuation | BLUE | 052 plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; workspace supports lifecycle progression and explicit inventory hand-off. |
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
-| 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
-| 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
+| 11 | Inventory | BLUE | 058 hardened; subscriber can now add products, assign categories/properties and attach photographs. Browser verification remains. |
+| 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and now carries inventory photographs into the listing. Browser verification remains. |
 | 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; browser verification remains. |
 | 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; customer visibility/actions implemented. Browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe secrets/configuration and live payment verification remain. |
@@ -49,22 +49,33 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
 ## Customer dashboard browser repair — 16 September 2026
-The persistent browser test exposed two browser-layer faults: the Sign in action initially gave no visible response, and the navigation controller prevented native hash navigation while `#portal` was hidden. Navigation was corrected so it only intercepts hashes after the portal is visible.
+The browser-layer authentication/controller fault is now **Verified Live**. Supabase password authentication succeeds, the portal is revealed, the corrected synchronous controller executes and the customer portal loads without the previous controller-unavailable message.
 
-The dashboard HTML was hardened with an inline capture-phase Supabase Auth fallback, removing dependency on a separate authentication-fix file being loaded correctly. The fallback uses only the public publishable key and performs the standard password-token exchange.
-
-A reload-based session handoff failed in the browser because the page returned to the authentication panel. The handoff was changed to an in-page session handoff. A subsequent repair removed an unnecessary `/auth/v1/user` request from the successful-auth handoff. The controller was then loaded synchronously so it would execute before the inline fallback. Browser testing still showed the controller-unavailable message, which established that the remaining failure was inside the controller load/execution boundary rather than Supabase authentication.
-
-Inspection of the live GitHub controller identified the actual fault: the `esc()` helper contained an incorrectly escaped quote key in its character replacement map, producing invalid JavaScript and preventing the controller from executing far enough to assign `window.tradeflowHandleCustomerAuthSuccess`. The helper was corrected, the existing portal functionality was preserved, and the controller cache-buster was advanced to `customer-dashboard.js?v=11`.
+Root cause was an invalid JavaScript quote mapping in `customer-dashboard.js` `esc()`. The helper was corrected and the controller cache-buster advanced to `customer-dashboard.js?v=11`.
 
 Latest repair commits:
 - controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
 - dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
-- previous navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
+- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
-**Verification state:** Controller syntax repair implemented in GitHub; persistent live browser confirmation of v11 remains required.
+## Category / product / media foundation — 16 September 2026
+The subscriber UI previously had a Selling listing form but no independent category/property management and no way to add an inventory product. That dependency has been removed.
+
+New operational path:
+**Categories & Properties → create category → define product properties/options → Inventory → add product → attach photographs → controlled lifecycle → Selling → create listing → publish → Customer Shop.**
+
+Implemented:
+- `category-management.html` / `.js` for tenant category creation and product property/option setup.
+- `inventory-dashboard.html` / `.js` product creation with category assignment, dynamic property values and photograph upload.
+- private Supabase Storage bucket `tradeflow-media`.
+- `inventory_asset_media` and `listing_media` tenant-scoped link tables.
+- Selling automatically carries inventory photographs into newly created listings.
+- `media_assets` now records retention policy and expiry metadata.
+- Inventory/listing sold-status triggers set photograph retention to **90 days after sale** and clear the expiry if the item returns from sold.
+
+Physical storage deletion must use the Storage API; deleting only the database metadata row is not sufficient to reclaim object storage. Supabase supports private buckets, signed URLs and scheduled Edge Function calls through Cron/pg_net; the production cleanup scheduler remains a configuration step. citeturn0search3turn1search0
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed Stripe events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.
@@ -91,6 +102,6 @@ Do not mark a feature complete solely because code is committed. A transactional
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The latest browser evidence proves Supabase password authentication succeeds and the portal can be revealed by the inline fallback, but the controller handler was previously unavailable. The controller syntax fault has now been corrected and the HTML cache-bust is v11. The next browser test is to hard-refresh the deployed customer dashboard, enter the existing Test Business A customer credentials and click Sign in once. Expected result: authentication succeeds, the controller handler is available, the portal remains visible, and portal data loads. If that passes, continue Shop → Buy → Stripe Checkout. Persistent Stripe payment verification, shipping-provider integration and production onboarding remain open.
+Customer authentication/controller is verified live. The next build/test sequence is now the newly added operational product path: create a Test Business A category, add a product with at least one photograph and product property, move it through `ready_for_sale`, create/publish a listing, confirm the listing appears in Customer Shop, then run the persistent Stripe Sandbox purchase and verify payment/order/ledger reconciliation.
 
-**Next build action:** verify the v11 customer controller repair in the live browser, then continue the persistent customer checkout/payment journey.
+**Next build action:** browser-verify Categories → Product → Photograph → Ready for Sale → Listing → Customer Shop, then run the Stripe Sandbox transaction end-to-end.

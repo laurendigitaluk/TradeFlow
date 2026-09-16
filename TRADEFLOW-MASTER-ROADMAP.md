@@ -1,134 +1,153 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.3  
+**Version:** 1.4  
 **Date:** 16 September 2026  
-**Purpose:** Maintain a living record of the TradeFlow build, verified security boundaries, business-domain audit progress, implementation evidence and the exact stopping point for future work.
+**Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain audit progress, implementation evidence and exact stopping point.
 
 ## Authority
-This register is based on the original clean SaaS build plan, the Buy/Sell SaaS Extraction Register v1.6, retained project decisions, current GitHub code, current Supabase state and verified test-lab behaviour. Uninspected connections are marked **AMBER** or **Not yet audited**.
+Current GitHub code + current Supabase state + structured project memory/checkpoints + verified live behaviour. Uninspected connections are **AMBER / Not yet audited**.
 
 **Status meanings:** GREEN = verified live; AMBER = audit/implementation required; BLUE = partially implemented/tested; RED = not built; OUTSIDE CORE = deliberately excluded.
 
 ## Architecture baseline
 TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary tenant security boundary.
 
-**TradeFlow platform → Platform Owner → subscriber tenant → tenant owner/admin/staff → tenant customers**
+**TradeFlow Platform → Platform Owner → subscriber tenant → tenant owner/admin/staff → customers**
 
-Tenant roles remain exactly `owner`, `admin`, `staff`. **Platform Owner is a separate platform-level security boundary and is not a tenant role.**
+Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separate platform-level security boundary and is never a tenant role.**
 
-## Current platform state
-- GitHub repository: `laurendigitaluk/TradeFlow`, branch `main`.
-- Supabase project: `TradeFlow`, ref `twfbmjwwqzxdxvclxbun`, region `eu-west-2`.
-- Supabase recorded health checkpoint: ACTIVE_HEALTHY.
-- Public-table checkpoint: RLS enabled across all 60/60 recorded public tables.
-- Platform Owner account has been provisioned through the trusted administrative path and the platform-owner boundary is no longer an unprovisioned foundation.
-- Test tenants remain development/test fixtures and must not be treated as the production onboarding model.
+## Current environment
+- GitHub: `laurendigitaluk/TradeFlow`, branch `main`.
+- Supabase: `twfbmjwwqzxdxvclxbun`, region `eu-west-2`.
+- Recorded health checkpoint: ACTIVE_HEALTHY.
+- Recorded public-table checkpoint: RLS enabled across 60/60 public tables.
+- Platform Owner has been provisioned through the trusted administrative path.
+- Test tenants remain development/test fixtures and are not the production onboarding model.
+- GearCashOut is reference material only and must not be modified during TradeFlow work.
 
 ## Master roadmap
 
-| # | Domain | Status | Current evidence / next audit |
+| # | Domain | Status | Current evidence / next action |
 |---|---|---|---|
-| 1 | Tenant & identity foundation | AMBER at production onboarding boundary | Tenant-first model, memberships, roles, permissions and RLS implemented. Production onboarding must replace/harden the development authenticated tenant-insert/test-lab paths. |
-| 2 | Subscription plans & capability gating | GREEN | Plans, `plan_features`, `tenant_subscriptions` and capability guards implemented. Buying and Selling customer subscription tests recorded 17/17. |
-| 3 | Dynamic categories, fields & options | AMBER | Schema and dynamic validation inspected. Select/multiselect option enforcement is now authoritative inside Buying submission. Full category management/UI workflow remains to be audited. |
-| 4 | Customers & addresses | GREEN | Customer model and guarded RPCs verified; Customer Test Lab 34/34 at the recorded checkpoint. |
-| 5 | Buying requests/items & dynamic values | BLUE | Core customer submission, dynamic-value validation and request/item workflow authority have been hardened and transactionally tested through migrations 049–051. Persistent UI end-to-end workflow is not yet verified. |
-| 6 | Media metadata & storage access | AMBER | Exact live implementation, object paths, ownership and published/private access require audit. |
-| 7 | Trading Value & valuation rules | AMBER | Domain/schema and guards require complete authority, calculation, permissions and workflow audit. **Next business-domain audit.** |
-| 8 | Offers & offer events | AMBER | Guarded customer actions exist; offer lifecycle, expiry, response and event authority remain to be audited. |
-| 9 | Acquisition & acquisition items | AMBER | Domain present; acceptance-to-acquisition, receipt, inspection, payment and inventory creation lifecycle remains to be audited. |
-| 10 | Fulfilment | AMBER | Boundary tested; operational workflow audit remains. |
-| 11 | Inventory | AMBER | Full live trace not completed. |
-| 12 | Selling/listings | AMBER | Channel/listing lifecycle audit remains. |
-| 13 | Retail orders | AMBER | Customer boundary tested; complete order workflow audit remains. |
+| 1 | Tenant & identity | AMBER | Production onboarding still must replace/harden development authenticated tenant-insert/test-lab paths. |
+| 2 | Subscriptions & capability gating | GREEN | Capability layer implemented; Buying 17/17 and Selling 17/17 customer subscription tests recorded. |
+| 3 | Categories, fields & options | AMBER | Buying dynamic option validation hardened; complete category/UI audit remains. |
+| 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
+| 5 | Buying | BLUE | Migrations 049–051 hardened validation, submission events and authoritative workflow. Persistent UI flow remains unverified. |
+| 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
+| 7 | Trading Value / valuation | BLUE | RLS boundary repaired in 052; offer-binding/state-entry repairs through 054–055. Full calculation/approval/UI audit remains. |
+| 8 | Offers & offer events | BLUE | RLS, same-item valuation binding and published-offer validation repaired. Full lifecycle/UI audit remains. |
+| 9 | Acquisition & acquisition items | BLUE | RLS hardened in 056; source-offer uniqueness added; lifecycle authority verified and direct status entry hardened in 057. Receipt/inspection/payment/inventory handoff UI remains. |
+| 10 | Fulfilment | AMBER | Operational workflow audit remains. |
+| 11 | Inventory | AMBER | Acquisition-to-inventory handoff is schema-connected but no automatic creation path was found in inspected public functions/triggers; inventory RLS still contains broad legacy policies and requires its own audit. |
+| 12 | Selling/listings | AMBER | Lifecycle audit remains. |
+| 13 | Retail orders | AMBER | Customer boundary tested; complete workflow audit remains. |
 | 14 | Returns | AMBER | Full lifecycle audit remains. |
-| 15 | Finance/payment | AMBER | Provider-neutral architecture exists; live implementation, authority and reconciliation audit remains. |
-| 16 | Notifications/email | AMBER | Exact implementation/provider integration audit remains. |
-| 17 | Staff roles/permissions/audit | BLUE | Staff security lab 19/19 passed and role/permission mapping inspected. Complete management UI/workflow remains to be traced. |
-| 18 | Premium staff messenger | RED / future module | No verified core implementation. |
-| 19 | Public storefront | AMBER | Published read model, tenant resolution and publication workflow require audit. |
-| 20 | Authoritative workflow/RLS/grants | BLUE | Multiple authoritative guards/RPCs verified. Buying workflow authority has now been hardened; system-wide RLS, grants, RPC and workflow audit remains. |
-| 21 | Platform Owner & Platform Administration | BLUE | Separate platform membership boundary and guards implemented through migrations 044–048. Platform Owner provisioning and tenant-administration path have been exercised; final live UI regression and complete platform administration workflow still require verification. |
+| 15 | Finance/payment | AMBER | Acquisition/payment/ledger FKs exist, but no inspected public function automatically posts acquisition payment or ledger entries; finance RLS retains broad legacy member/admin policies and requires audit/hardening. |
+| 16 | Notifications/email | AMBER | Provider/integration audit remains. |
+| 17 | Staff roles/permissions/audit | BLUE | Staff security lab 19/19; complete management workflow remains. |
+| 18 | Premium staff messenger | RED / future | No verified core implementation. |
+| 19 | Public storefront | AMBER | Published read model and tenant/publication workflow require audit. |
+| 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains now have explicit authority; system-wide final pass remains. |
+| 21 | Platform Owner/Admin | BLUE | Security foundation and privileged paths implemented; final browser regression remains. |
 
 ## Verified security checkpoints
-- Customer A subscription guard: **17/17 PASS**.
-- Customer B subscription guard: **17/17 PASS**.
-- Customer tenant-isolation lab: **34/34 PASS**.
+- Customer isolation/security: **34/34 PASS**.
+- Customer subscription tests: **Buying 17/17 PASS; Selling 17/17 PASS**.
 - Staff security lab: **19/19 PASS**.
 - RLS enabled across the recorded 60/60 public-table checkpoint.
-- Customer subscription guard hardening through migration 043.
-- Platform-owner security foundation through migrations 044–045.
-- Platform-admin privileged provisioning/read guards through migrations 046–048.
+- Platform-owner boundary: migrations 044–045.
+- Platform-admin privileged provisioning/read guards: migrations 046–048.
 
-## Platform Owner boundary — updated 16 September 2026
-Migrations **044** and **045** implement the platform-owner security boundary:
-- `public.platform_memberships` is separate from tenant memberships.
-- Platform membership has controlled status and a unique authenticated `user_id`.
-- RLS is enabled and no client insert/update/delete path is exposed.
-- `private.is_platform_owner()` checks explicit active platform membership.
-- `private.require_platform_owner()` and `private.has_platform_owner_access()` are restricted guards bound to the current authenticated identity.
-
-The Platform Owner has since been provisioned through the trusted administrative path. Platform administration RPCs and tenant creation were exercised using the platform-owner boundary. A later Platform Administration UI issue was traced to the HTTP method used for a volatile PostgREST function; the client was repaired to use **POST** for the affected RPCs. Final regression verification of the repaired browser flow remains part of the platform-admin verification queue.
-
-## Platform Administration implementation notes
-- Platform Administration page: `platform-admin.html`.
-- Client controller: `platform-admin.js`.
-- Current client uses the dedicated platform-admin publishable key/session storage and signs the Platform Owner into Supabase Auth.
-- Privileged tenant listing and user/tenant provisioning calls use POST because the underlying PL/pgSQL functions are VOLATILE under PostgREST semantics.
-- Access-denied responses are surfaced as `Platform Owner access required` rather than exposing privileged data.
-- Platform-admin tenant creation was previously verified at database level and through the intended privileged path.
-
-## Production onboarding finding — still open
-The original tenant foundation still exposes an authenticated tenant insertion path with `with check (true)`, and temporary test-lab onboarding functions exist. These must not become public SaaS onboarding.
+## Production onboarding — OPEN
+The original tenant foundation still contains an authenticated tenant insertion path with `with check (true)`, plus temporary test-lab onboarding functions. These must not be public SaaS onboarding.
 
 Required production sequence:
-**Platform Owner / approved onboarding → tenant creation → initial tenant owner → subscription assignment → tenant owner/admin/staff management.**
+**Platform Owner / approved onboarding → tenant creation → initial owner provisioning → subscription assignment → owner/admin/staff management.**
 
-Do not create a `platform_owner` tenant role and do not permit self-claiming platform ownership.
+Never create a `platform_owner` tenant role or permit self-claiming platform ownership.
 
-## Buying domain audit — migrations 049–051
-### Migration 049 — `harden_buying_dynamic_option_validation`
-`customer_submit_buying_request` now validates dynamic select/multiselect values against active `category_field_options` for the relevant category field. Invalid select values and invalid multiselect members are rejected inside the authoritative database function rather than relying on browser validation.
+## Buying audit — migrations 049–051
+Migration 049 makes select/multiselect option validation authoritative inside `customer_submit_buying_request`. Migration 050 makes request/item workflow transitions authoritative through `transition_workflow_entity`. Migration 051 records customer submission workflow events for the request and each item. Transactional tests passed and were rolled back.
 
-A transactional test demonstrated the previous defect: an invalid select value could be accepted before the repair. After migration 049, the invalid value is rejected and a valid submission succeeds. Tests were rolled back so no test data was left behind.
-
-### Migration 050 — `harden_buying_workflow_transitions`
-`transition_workflow_entity` now supports `buying_request` and `buying_item` with the `buying.manage` permission and `module.buying` capability. The supported progression is:
-
+Authoritative Buying progression:
 ```text
-Buying Request: draft → submitted → under_review → valued → offer_ready → closed
-Buying Item:    draft → submitted → under_review → valued → offer_ready → closed
+Request: draft → submitted → under_review → valued → offer_ready → closed
+Item:    draft → submitted → under_review → valued → offer_ready → closed
 ```
 
-The function updates the authoritative business record and records the workflow transition.
+## Valuation / Offer audit — migrations 052–055
+**052 — `harden_valuation_rls_boundaries`** removed broad valuation-table member/admin policies and enforced `valuation.view/manage` plus `module.valuation`.
 
-### Migration 051 — `record_buying_submission_workflow_events`
-`customer_submit_buying_request` now records the initial `draft → submitted` workflow event for the buying request and every submitted buying item, with metadata identifying `source: customer_portal`.
+**053 — `harden_offer_rls_boundaries`** removed broad offer/offer-event access and enforced `offers.view/manage` plus `module.offers`, with actor checks on offer-event inserts.
 
-Transactional verification proved that submission events are recorded and that request/item transitions through `submitted → under_review → valued` work through the authoritative workflow function. Tests were rolled back.
+**054 — `bind_offer_to_same_buying_item_valuation`** added a composite tenant/item/valuation foreign-key relationship so an offer cannot reference a valuation belonging to a different buying item in the same tenant. The one-approved-valuation-per-item and one-live-published-offer-per-item constraints were verified.
 
-## Business-domain audit method
-For every domain, trace and record:
-**User action → page → JavaScript/controller → Supabase call → RPC/query → database table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
+**055 — `harden_valuation_offer_state_entry`** protects lifecycle entry and requires a published offer to reference an approved valuation for the same buying item. Live inspection confirmed `offers_validate_published_valuation`.
 
-Do not mark a domain GREEN merely because its tables or functions exist. Where persistent domain records do not exist in the test tenants, use transactional rollback tests for database authority and clearly mark UI/business-flow verification as outstanding.
+Current state: the valuation/offer integrity layer is **implemented and database-inspected**, but full calculation, staff role matrix, persistent browser workflow and live UI verification remain open.
 
-## Deliberately outside the generic core
-GearCashOut specialist catalogue, evidence/research, AI research queue and specialist pricing structures remain outside the generic TradeFlow core unless later added as explicit modules.
+## Acquisition audit — migrations 056–057
+### Migration 056 — acquisition RLS/source-offer uniqueness
+Broad legacy tenant-member/admin policies were removed from `acquisitions` and `acquisition_items`. The remaining direct-table policies are subscription-aware and require `acquisitions.view/manage` plus `module.buying`.
+
+A partial unique index `acquisitions_one_per_source_offer` now prevents more than one acquisition per tenant/source offer when a source offer is present.
+
+Live verification confirmed:
+- migration 056 is present;
+- the unique index exists with the intended `(tenant_id, source_offer_id)` definition;
+- acquisition/acquisition-item RLS exposes only the subscription-aware policies;
+- acquisition and acquisition-item tenant-scoped foreign keys remain intact.
+
+### Acquisition lifecycle authority
+`transition_workflow_entity` is the authoritative workflow service for both `acquisition` and `acquisition_item` and requires `acquisitions.manage` plus `module.buying`.
+
+Allowed progression:
+```text
+accepted → awaiting_item → received → inspection → finalised → paid → completed
+                         ↘ cancelled
+```
+
+`received`, `finalised`, `paid`, `completed` and `cancelled` timestamps are set by the authoritative function. The database contained no acquisition status trigger before the new repair.
+
+### Migration 057 — acquisition status-entry guard
+A direct-status-entry bypass was found: subscription-aware UPDATE RLS still allowed an authorised tenant user to update acquisition status directly rather than using the central workflow RPC. Migration 057 added BEFORE UPDATE status guards to `acquisitions` and `acquisition_items`.
+
+The guards reject status changes from ordinary client roles and permit the existing SECURITY DEFINER `transition_workflow_entity()` path, whose function owner is `postgres`. This preserves the single authoritative lifecycle mechanism without creating a second workflow service.
+
+Live verification confirmed both new triggers exist:
+- `acquisitions_status_entry_guard`
+- `acquisition_items_status_entry_guard`
+
+GitHub commit for migration 057: `00254f9558a33f75c5c3f21bd7e87d356c998532`.
+
+### Acquisition handoff finding
+The acquisition tables are structurally connected to inventory and finance:
+- `inventory_assets` has tenant-scoped FKs to `acquisition_items` and `buying_items`;
+- `payment_records` has a tenant-scoped FK to `acquisitions`;
+- `ledger_entries` has a tenant-scoped FK to `acquisitions` and `inventory_assets`.
+
+However, live inspection found no public acquisition/inventory/payment/ledger function or trigger that automatically creates inventory, payment or ledger records when an acquisition reaches `received`, `finalised`, `paid` or `completed`. This is recorded as **Not yet audited / not automatically connected**, not as an assumed feature.
+
+## Workflow audit standard
+For every domain trace:
+**User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
+
+Do not mark a domain GREEN merely because tables/functions exist. A transactional rollback test proves database behaviour, not a complete persistent UI journey.
+
+## Deliberately outside generic core
+GearCashOut specialist catalogue, evidence/research, AI research queue and specialist pricing structures remain outside TradeFlow unless later added as explicit modules.
 
 ## Documentation set
-- `TRADEFLOW-MASTER-ROADMAP.md` — master build and verification register.
-- `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` — Human/Developer System Handbook.
-- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` — AI continuity and operating manual.
+- `TRADEFLOW-MASTER-ROADMAP.md`
+- `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
 
-These documents are living records. A material change is not closed until implementation evidence, test result, live verification state and the stopping point are captured.
+Material changes must capture what/why, affected code/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The verified customer security/subscription layer remains intact. Tenant role boundaries are inspected. Platform Owner security and privileged administration foundations are implemented and the Platform Owner has been provisioned. Production tenant onboarding remains open and must be hardened before public SaaS onboarding.
+The customer security/subscription layer remains verified. Platform Owner security foundations are implemented; final browser regression for the repaired Platform Administration POST flow remains open. Production onboarding remains open.
 
-The Buying domain has now been materially hardened through migrations **049–051** and transactionally verified. No persistent test business data was created by these audit tests.
+Buying has been hardened through 049–051. Valuation/offer integrity has been hardened through 052–055. Acquisition RLS/source-offer uniqueness has been hardened through 056, and the direct acquisition status bypass was repaired through 057.
 
-**Next technical/business-domain audit:**
-**Trading Value → valuation rules → authoritative valuation workflow → Offers → Acquisition.**
-
-Do not skip ahead to later domains until the current audit evidence is captured. Do not modify GearCashOut production as part of TradeFlow work.
+**Next safe audit:** complete the acquisition operational handoff trace, beginning with Inventory RLS/status authority and then Finance/Payment/ledger authority. Do not assume automatic inventory/payment/ledger creation until an actual implementation is found and verified.

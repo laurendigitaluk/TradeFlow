@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.4  
+**Version:** 2.5  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -38,9 +38,9 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
-| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Orders can now use controlled payment capture that creates the payment record, posts the matching ledger entry and advances the order to paid. Browser verification remains. |
+| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; provider configuration and browser verification remain. |
 | 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; customer visibility/actions implemented. Browser verification remains. |
-| 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening plus Finance workspace and retail-order payment capture. External payment-provider integration remains open. |
+| 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe secrets/configuration and live payment verification remain. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -54,12 +54,22 @@ Migration `harden_fulfilment_returns_workflow_v2` applied live. Fulfilment retai
 Customer return creation is hardened through `customer_request_return()`: an authenticated active customer may request a return only for their own tenant order item and only when the order is `paid`, `fulfilment` or `completed`. The return is created in `requested` status and recorded in workflow history. Customer dashboard visibility uses the existing secure `customer_get_returns()` and `customer_get_fulfilments()` functions.
 
 ## Retail payment capture checkpoint — 16 September 2026
-A new SECURITY DEFINER RPC, `record_retail_order_payment()`, is live. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`. It locks the target order, requires `pending_payment`, requires the supplied amount to equal the current `amount_due`, creates a `payment_records` row as an inbound paid customer payment, creates a matching posted `ledger_entries` credit, sets the retail order payment status to `paid` and amount due to zero, then advances the order through the central workflow authority to `paid`.
+`record_retail_order_payment()` remains the internal subscriber-controlled payment path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`, locks the target `pending_payment` order, requires payment equal to current `amount_due`, creates a paid inbound payment record and matching posted ledger credit, clears amount due and advances the order to `paid`.
 
-The subscriber Orders workspace now uses this RPC for **Record payment & mark paid** instead of directly changing the order status. This deliberately represents internal/subscriber-recorded payment; it is **not** a Stripe/PayPal or other external gateway integration. External provider collection/webhooks remain open.
+A customer payment-intent RPC, `customer_create_order_payment()`, already provides the customer-side payment-record creation/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order and creates or reuses a pending payment record.
+
+An external Stripe boundary is now implemented in Supabase Edge Functions:
+- `create-stripe-checkout-session` requires a customer JWT, validates customer order ownership through `customer_get_orders()`, creates/reuses the pending payment record and creates a Stripe Checkout Session using the server-side `STRIPE_SECRET_KEY` only.
+- `stripe-payment-webhook` accepts Stripe webhooks without a user JWT, verifies the Stripe signature using `STRIPE_WEBHOOK_SECRET`, and delegates event processing to `process_external_payment_event()`.
+- `payment_provider_events` provides provider/event idempotency.
+- `process_external_payment_event()` validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, marks the payment paid/failed and, for a paid retail order, moves the order to `paid` and creates the matching posted ledger credit.
+
+The customer dashboard now exposes **Pay now** for `pending_payment` orders and routes the customer to the server-created Stripe Checkout Session. Provider secrets are not placed in browser code.
+
+**Important:** Stripe configuration has not been completed or live-tested yet. Until the Stripe secret and webhook secret are configured and a real/test-mode payment is verified end-to-end, external payment remains **BLUE / Implemented, verification open**.
 
 ## Selling / fulfilment operational chain
-Selling creates listings from `ready_for_sale` inventory. Customer checkout creates a `pending_payment` retail order and reserves the listing. Subscriber payment capture can move that order to `paid`, after which the Fulfilment workspace can create an `awaiting` fulfilment and progress it through dispatch/delivery.
+Selling creates listings from `ready_for_sale` inventory. Customer checkout creates a `pending_payment` retail order and reserves the listing. Payment can now be captured internally or routed through the external Stripe boundary. A confirmed paid order can then enter Fulfilment, followed by dispatch/delivery and return handling.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
@@ -86,6 +96,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-Customer return visibility/actions and internal retail payment capture are implemented. External payment-provider integration, shipping-provider integration, production onboarding and persistent browser verification remain open.
+External payment-provider architecture is **BLUE / Implemented**. The Stripe Edge Functions, payment-provider event idempotency and customer Pay now path are deployed/committed, but Stripe secrets/configuration and persistent browser payment verification remain open. Shipping-provider integration, production onboarding and the full persistent Orders → Payment → Fulfilment → Returns browser journey also remain open.
 
-**Next build action:** integrate an external payment-provider boundary without putting provider secrets in the browser, then perform the persistent browser verification pass across Orders → Payment → Fulfilment → Returns.
+**Next build action:** configure/test Stripe in test mode and perform one persistent browser journey from customer checkout through confirmed payment, then continue into fulfilment and returns verification.

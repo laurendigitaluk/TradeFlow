@@ -68,10 +68,12 @@
     });
     window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
     window.addEventListener('tradeflow-auth-success',()=>loadBuyingCategories());
+    const portal=document.getElementById('portal');
+    if(portal)new MutationObserver(()=>{if(!portal.hidden)loadBuyingCategories()}).observe(portal,{attributes:true,attributeFilter:['hidden']});
     if(!show(location.hash.slice(1)||'overview',false)){
       document.querySelectorAll('a[href^="#"]').forEach(link=>link.classList.remove('active'));
     }
-    if(!document.getElementById('portal')?.hidden)loadBuyingCategories();
+    if(!portal?.hidden)loadBuyingCategories();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
   else bind();

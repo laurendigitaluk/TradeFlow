@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 1.6  
+**Version:** 1.7  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -53,58 +53,43 @@ Inspected permissions include `acquisitions.view/manage`, `buying.view/manage`, 
 
 Future modules must enforce both tenant permission and required module capability where that capability exists.
 
-## 6. Subscriber website architecture — IMPLEMENTED / LIVE-BACKED, UI VERIFICATION OPEN
-The existing website data model is the source of truth:
-- `tenant_site_state` identifies each tenant's current draft and published revision;
-- `site_revisions` stores versioned draft/published/archived content;
-- `published_site_index` is the public read model;
-- `public.publish_site_revision(p_tenant_id,p_revision_id)` is the existing publication service.
+## 6. Customer-facing SaaS build — IMPLEMENTED / LIVE VERIFICATION OPEN
+The current build track uses the existing security and data model rather than parallel stores.
 
-The publication service is `SECURITY DEFINER`, requires authentication and checks `private.can_tenant(p_tenant_id, 'website.publish', 'website.publish')`. It publishes only the tenant's current draft, creates the next draft revision, and refreshes the public read model for active tenant hostnames.
+Implemented UI paths include:
+- Website Builder backed by `tenant_site_state`, `site_revisions` and `publish_site_revision`.
+- Tenant-specific public storefront renderer.
+- Customer sign-in/test-lab registration and tenant-specific customer dashboard.
+- Customer buying request submission.
+- Customer Accept/Refuse actions for published offers through existing secure customer RPCs.
+- Subscriber Buying workspace for review, valuation and offer publication.
+- Subscriber Acquisition workspace for acquisition/item lifecycle operations.
+- Explicit inventory creation from an acquisition item.
+- Subscriber Finance workspace exposing existing payment and ledger structures.
 
-The Website Builder now uses this existing architecture rather than browser-only `localStorage`:
-1. restore the authenticated TradeFlow session;
-2. resolve the user's active tenant membership, or require an explicit `tenant_id` for a multi-tenant account;
-3. load `tenant_site_state` and its current draft `site_revisions` row;
-4. map builder fields into `site_revisions.content` with `schema_version: 1`;
-5. save through the existing RLS-protected draft UPDATE policy requiring `website.manage` + `website.editor`;
-6. publish through `publish_site_revision` rather than directly changing status;
-7. reload the newly-created draft after publication.
+These are implementation milestones. They are not marked GREEN until authenticated browser journeys have been persistently tested.
 
-Affected files:
-- `website-builder.html`
-- `website-builder.js`
+## 7. Buying, valuation and offers — migrations 049–055
+049 made dynamic select/multiselect validation authoritative inside `customer_submit_buying_request`.
 
-Verification state: **Implemented in GitHub; authenticated browser verification remains open.** The public storefront renderer, customer authentication journey and custom-domain routing are not yet claimed complete.
+050 made Buying request/item lifecycle transitions authoritative through `transition_workflow_entity`.
 
-## 7. Buying checkpoint — migrations 049–051
-Migration 049 made dynamic select/multiselect validation authoritative inside `customer_submit_buying_request`.
+051 records customer submission workflow events.
 
-Migration 050 made Buying request/item lifecycle transitions authoritative through `transition_workflow_entity`:
-```text
-Request: draft → submitted → under_review → valued → offer_ready → closed
-Item:    draft → submitted → under_review → valued → offer_ready → closed
-```
+052 removed broad valuation-table member/admin policies and enforced valuation permission plus module capability.
 
-Migration 051 records customer submission workflow events for the request and each item. Transactional tests passed and were rolled back.
+053 removed broad offer/offer-event access and enforced offer permission plus module capability.
 
-Buying remains **BLUE / partial** because a persistent browser journey through review, valuation and offer readiness has not been completed.
+054 binds an offer to a valuation for the same tenant and same buying item.
 
-## 8. Valuation and Offer checkpoint — migrations 052–055
-Migration 052 removed broad valuation-table member/admin policies and enforced valuation permission plus `module.valuation`.
+055 protects valuation/offer state entry and requires an approved same-item valuation for a published offer.
 
-Migration 053 removed broad offer/offer-event access and enforced offer permission plus `module.offers`, with actor checks on offer-event inserts.
+The subscriber Buying workspace now provides UI actions over these services; persistent browser verification remains open.
 
-Migration 054 binds an offer to a valuation for the **same tenant and same buying item** through a composite foreign key. Existing one-approved-valuation-per-item and one-live-published-offer-per-item indexes were verified.
+## 8. Acquisition — migrations 056–057
+056 hardened acquisition access and source-offer uniqueness.
 
-Migration 055 protects valuation/offer state entry and validates that a published offer references an approved valuation for the same buying item. Live inspection confirmed the `offers_validate_published_valuation` trigger.
-
-Valuation/Offers remain **BLUE / partial**: integrity guards are implemented and database-inspected; complete calculation, staff role matrix, persistent UI and live workflow verification remain open.
-
-## 9. Acquisition and acquisition-item domain — migrations 056–057
-Migration 056 removed broad legacy access from acquisitions/acquisition_items and added source-offer uniqueness. Direct-table access is subscription-aware.
-
-`transition_workflow_entity` is the authoritative workflow service. Migration 057 added status-entry guards so authorised client roles cannot bypass that service by directly changing acquisition status.
+057 added status-entry guards so authorised client roles cannot bypass `transition_workflow_entity` by directly changing acquisition status.
 
 Allowed lifecycle:
 ```text
@@ -112,23 +97,33 @@ accepted → awaiting_item → received → inspection → finalised → paid �
                          ↘ cancelled
 ```
 
-Verification state: **Implemented + live database inspected.** Full authenticated browser status-transition journey remains open.
+The subscriber Acquisition workspace now exposes acquisition and acquisition-item progression and can explicitly create a linked inventory asset from an acquisition item.
 
-## 10. Acquisition → Inventory / Finance handoff finding
-The schema contains the expected structural links:
+## 9. Finance and inventory handoff
+The live schema contains tenant-scoped structural links:
 - `inventory_assets` → `acquisition_items` and `buying_items`;
 - `payment_records` → `acquisitions`;
 - `ledger_entries` → `acquisitions` and `inventory_assets`.
 
-Live inspection found no public acquisition/inventory/payment/ledger function or trigger that automatically creates inventory, payment or ledger records merely because acquisition status changes. This remains an open implementation/verification item and must not be assumed.
+Live inspection did not find an automatic function/trigger that creates payment, ledger or inventory records merely because an acquisition status changes. The UI therefore uses explicit operations rather than assuming hidden automation.
 
-## 11. Current workflow audit method
+`payment_records` supports payment types including seller payment/payout and statuses including pending, processing, paid, failed, cancelled, refunded and partially_refunded.
+
+`ledger_entries` supports purchase, payment, refund, expense, fee and adjustment entries with pending/posted/voided/reversed states.
+
+The current Finance workspace exposes these existing structures. Payment creation/posting rules and full inventory lifecycle remain implementation/verification work.
+
+## 10. Inventory lifecycle
+Existing inventory status values are:
+`received`, `inspection`, `testing`, `repair`, `ready_for_sale`, `listed`, `reserved`, `sold`, `returned`, `written_off`, `archived`.
+
+Inventory status changes are subject to the authoritative workflow guard introduced in migration 058. The acquisition workspace can create an initial `received` asset linked to the acquisition item. A dedicated Inventory workspace remains the next build step.
+
+## 11. Verification standard
 For every business domain trace:
 **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
-Check allowed/forbidden states, role permission, subscription capability, tenant boundary, record update, event/audit row, triggers/side effects, failure/rollback, UI result and external integration.
-
-Do not mark a domain GREEN merely because tables/functions exist.
+Do not mark a domain GREEN merely because tables/functions exist or a commit succeeds.
 
 ## 12. Manual testing standard
 Manual browser security tests are performed one at a time with exact URL, account, action and expected result; screenshot/result is captured before moving on.
@@ -141,16 +136,16 @@ Transactional database tests may be rolled back, but a rollback test proves data
 | Tenant/identity | AMBER | Production onboarding open. |
 | Subscriptions | GREEN | Capability architecture and recorded 17/17 customer tests. |
 | Customers | GREEN | 34/34 security/isolation checkpoint. |
-| Buying | BLUE | 049–051 hardened; persistent UI remains. |
-| Trading Value | BLUE | 052 plus 054–055 integrity/state-entry repairs; full workflow remains. |
-| Offers | BLUE | 053–055 integrity repairs; full lifecycle/UI remains. |
-| Acquisition | BLUE | 056–057 hardened; operational handoff remains. |
-| Inventory | AMBER | Handoff and complete RLS/status audit remain. |
-| Finance/payment | AMBER | Handoff and complete RLS/authority audit remain. |
-| Selling/listings | AMBER | Audit remains. |
-| Orders/fulfilment/returns | AMBER | Audits remain. |
-| Notifications/email | AMBER | Integration audit remains. |
-| Public storefront/media | BLUE | Subscriber draft/publish path implemented; public renderer/custom domains/customer journey remain. |
+| Buying | BLUE | Subscriber workspace implemented; persistent journey remains. |
+| Trading Value | BLUE | Database hardening plus subscriber valuation UI; live journey remains. |
+| Offers | BLUE | Database hardening plus customer response UI; live journey remains. |
+| Acquisition | BLUE | Operational workspace implemented; live journey remains. |
+| Inventory | BLUE | Explicit acquisition-item handoff implemented; dedicated lifecycle workspace remains. |
+| Finance/payment | BLUE | Finance workspace implemented against existing tables; payment/ledger actions and live journey remain. |
+| Selling/listings | AMBER | Build remains. |
+| Orders/fulfilment/returns | AMBER | Build remains. |
+| Notifications/email | AMBER | Integration remains. |
+| Public storefront/media | BLUE | Renderer implemented; production public-read/custom-domain/auth journey remains. |
 | Staff roles | BLUE | Security lab 19/19; management workflow remains. |
 | Platform Owner/Admin | BLUE | Foundation implemented; final browser regression remains. |
 | System-wide RLS/workflow | BLUE | Multiple paths repaired; final pass remains. |
@@ -159,6 +154,8 @@ Transactional database tests may be rolled back, but a rollback test proves data
 Every material change records what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap and the AI Operating Manual when architecture/build position changes, and update structured project memory/checkpoint data where available.
 
 ## 15. Current stopping point — 16 September 2026
-Migrations 049–057 remain the verified database hardening baseline. The prolonged domain audit is no longer the immediate build track. The subscriber Website Builder is now connected to the existing tenant site revision/publication architecture in GitHub.
+The prolonged broad audit is no longer the immediate build track. TradeFlow is being developed forward through the subscriber operational workflow while preserving the verified security baseline.
 
-**Next build action:** wire the subscriber dashboard's Website entry directly into the builder, then build the tenant-specific public storefront renderer and customer account/dashboard journey. Keep acquisition/inventory/finance handoff as a separate open workflow item rather than blocking the customer-facing build.
+**Current operational path:** Buying → Valuation → Offer → Customer response → Acquisition → Receiving/Inspection → Finance/Payment → Inventory → Selling/Listing.
+
+**Next build action:** dedicated Inventory workspace and lifecycle, then complete Finance payment/ledger actions. Production onboarding and persistent browser verification remain tracked open items.

@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.0  
+**Version:** 3.1  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -30,6 +30,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 - Selling/listing hardening: 061.
 - Retail order hardening: 062.
 - Fulfilment/returns hardening: current live migration.
+- Category/inventory media foundation: current live migration adds tenant-scoped inventory/listing media links, private storage bucket and retention metadata/triggers.
 - External payment boundary: `add_external_payment_webhook_authority` plus correction migration; Edge Functions deployed for Stripe Checkout and webhook handling.
 
 ## 4. Production onboarding — OPEN
@@ -45,7 +46,11 @@ Relevant permissions include `buying.view/manage`, `valuation.view/manage`, `off
 ## 6. Customer-facing and subscriber build
 Implemented UI paths include Website Builder, public storefront renderer, customer authentication/dashboard, buying request submission, offer Accept/Refuse, subscriber Buying, Acquisition, Inventory, Finance, Selling/Listings, Orders, Fulfilment and Returns workspaces.
 
-These are implementation milestones. They are not GREEN until authenticated browser journeys are persistently tested.
+Category/property management is now independent of Buying. Subscribers can create a category for Buying, Selling or both and define category-specific product properties/options.
+
+Inventory now supports direct product creation, category assignment, dynamic property values and photographs. Selling carries inventory photographs into a new listing.
+
+These are implementation milestones. They are not GREEN until the new authenticated browser journey is persistently tested.
 
 ## 7. Buying → Valuation → Offer
 049–051 harden dynamic options and Buying workflow. 052–055 harden valuation/offer RLS, same-item valuation binding and state entry. Published offers require an approved valuation for the same tenant and buying item.
@@ -55,12 +60,28 @@ These are implementation milestones. They are not GREEN until authenticated brow
 
 Inventory creation from an acquisition item is an explicit operation; it is not inferred from acquisition status.
 
-## 9. Inventory
-058 removes broad legacy access and protects inventory status entry. `inventory-dashboard.html` / `.js` lists tenant assets, filters status, edits non-status details and routes lifecycle changes through `transition_workflow_entity()`.
+## 9. Categories, product properties and inventory media
+`categories`, `category_fields` and `category_field_options` already provide the database-authoritative category/property model. The new subscriber workspace exposes that model directly instead of forcing products through Buying first.
+
+`inventory_assets.dynamic_values` stores category-specific product values. `category_fields` controls field type, Buying/Selling requirements, customer/staff visibility and valuation relevance. Select/multiselect properties use `category_field_options`.
+
+The live media foundation now includes:
+- private Storage bucket: `tradeflow-media`;
+- `media_assets` retention metadata;
+- `inventory_asset_media` tenant-scoped inventory links;
+- `listing_media` tenant-scoped listing links;
+- inventory/listing sold-status triggers setting a **90-day post-sale retention expiry**.
+
+The browser uses tenant-authenticated Storage access and time-limited signed URLs for private images. Physical object deletion is intentionally separate from SQL metadata deletion: the Storage API must remove the object to reclaim storage space.
+
+The automatic cleanup scheduler is **not yet configured**. Supabase supports scheduled Edge Function calls using Cron/pg_net, with secrets kept outside source code; this will be added after the browser media journey is verified.
+
+## 10. Inventory
+058 protects inventory status entry. `inventory-dashboard.html` / `.js` now lists tenant assets, filters status, edits non-status details, creates new products, captures category-specific dynamic values, uploads photographs and routes lifecycle changes through `transition_workflow_entity()`.
 
 Lifecycle: `received → inspection → testing → repair → ready_for_sale → listed → reserved → sold`, with supported return/write-off/archive branches.
 
-## 10. Finance
+## 11. Finance
 059 applies permission-bound access to `payment_records` and `ledger_entries`. 060 extends `transition_workflow_entity()` to payment and ledger status transitions and adds status-entry guards.
 
 Finance workspace creates payment/ledger records and routes status changes through the workflow RPC. No automatic payment or ledger creation is inferred from acquisition status.
@@ -78,48 +99,46 @@ TradeFlow has a dedicated Stripe Sandbox within the existing Stripe account. The
 
 Configuration is complete for the Stripe test environment, but persistent customer browser payment verification remains open.
 
-## 11. Selling / Listings
-061 hardens listings and related access; selling creates listings from ready-for-sale inventory and uses workflow authority for status changes.
+## 12. Selling / Listings
+061 hardens listings and related access; selling creates listings from ready-for-sale inventory and uses workflow authority for status changes. New listings inherit the inventory asset's media links.
 
-## 12. Retail Orders
+## 13. Retail Orders
 062 hardens retail order access and status entry. Subscriber Orders creates an order from a published listing and advances it to pending payment. Customer checkout creates a pending-payment order, reserves the listing and uses the external Stripe boundary for payment.
 
-## 13. Fulfilment
+## 14. Fulfilment
 Fulfilment retains subscription-aware access and controlled lifecycle progression. No carrier API or automatic fulfilment creation is assumed. Customer visibility uses secure `customer_get_fulfilments()`.
 
-## 14. Returns
+## 15. Returns
 Returns legacy broad policies have been removed and direct status edits are blocked. `customer_request_return()` validates customer ownership and eligible order states. Customer visibility uses secure `customer_get_returns()`.
 
-## 15. Customer dashboard browser repair
+## 16. Customer dashboard browser repair — VERIFIED LIVE
 The persistent browser test exposed two browser-layer faults: Sign in initially produced no visible response, and the navigation controller intercepted hashes while the portal was hidden. Navigation was corrected to leave native hash navigation available until authentication succeeds.
 
 The dashboard HTML contains an inline capture-phase Supabase Auth fallback using only the public publishable key. The earlier reload-based handoff failed because reload returned to the authentication panel. The later in-page handoff removed the reload and an unnecessary `/auth/v1/user` request from the successful-auth path.
 
-The controller was then loaded synchronously before the inline fallback and cache-busted. Browser testing still showed “Authentication succeeded, but the customer controller did not load.” This established that authentication and portal reveal were working, while the controller itself was failing before assigning its global handoff function.
+The controller was loaded synchronously before the inline fallback. The remaining failure was then identified in live GitHub source: the `esc()` helper contained an incorrectly escaped quote key, producing invalid JavaScript. Correcting the helper and cache-busting the controller to `v11` resolved the fault.
 
-Inspection of the live GitHub controller identified the actual fault in `esc()`: the quote character mapping contained an incorrectly escaped key, producing invalid JavaScript. The helper was corrected without removing the existing customer portal functionality. The HTML controller cache-buster is now `customer-dashboard.js?v=11`.
+Verified browser result: authentication succeeds, the portal remains visible, the customer controller executes and the previous “customer controller did not load” message is gone.
 
-Latest commits:
+Latest repair commits:
 - controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
 - dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
 - navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
-**Verification state:** Implemented in GitHub; persistent live browser confirmation of the v11 controller repair remains open.
-
-## 16. Diagnostic and verification standard
+## 17. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Verification states are **Proposed → Implemented → Tested → Verified Live**. Commit success is not live verification. Transactional rollback testing proves database behaviour, not a persistent browser journey.
 
-## 17. Manual testing
+## 18. Manual testing
 One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 18. Documentation/change control
+## 19. Documentation/change control
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
-## 19. Current stopping point — 16 September 2026
-The latest customer dashboard controller syntax repair is deployed to GitHub and the HTML now requests `customer-dashboard.js?v=11`. The preceding browser screenshot proves Supabase password authentication succeeds and the inline fallback can reveal the portal; the remaining v11 question is whether the repaired controller now executes and hands off correctly. Persistent live browser confirmation is required before moving on.
+## 20. Current stopping point — 16 September 2026
+Customer authentication/controller is now Verified Live. The new product foundation is implemented but browser verification remains open.
 
-**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the controller-unavailable message is gone and portal data loads. If that passes, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state.
+**Next action:** in Test Business A, create a category, add a product property, add a product with a photograph, move it to `ready_for_sale`, create/publish a listing and confirm it appears in Customer Shop. Then run the Stripe Sandbox transaction and verify payment/order/ledger reconciliation.

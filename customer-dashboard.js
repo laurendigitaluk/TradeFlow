@@ -1,0 +1,221 @@
+const SUPABASE_URL = 'https://twfbmjwwqzxdxvclxbun.supabase.co';
+const KEY_STORAGE = 'tradeflow_testlab_publishable_key';
+const SESSION_STORAGE = 'tradeflow_testlab_session';
+const TENANTS = {
+  'test-business-a': { id: 'f50fb889-c615-4e55-84d4-f0fd9f48b0b0', label: 'Test Business A' },
+  'test-business-b': { id: '373598f0-7d35-41be-8ed2-3cc7ee9709c7', label: 'Test Business B' }
+};
+
+let key = localStorage.getItem(KEY_STORAGE) || null;
+let session = null;
+let tenantId = new URLSearchParams(location.search).get('tenant_id') || null;
+let profile = null;
+
+const $ = (id) => document.getElementById(id);
+
+function setMessage(text, type = '') {
+  const el = $('customer-message');
+  if (!el) return;
+  el.textContent = text || '';
+  el.className = type;
+}
+
+function setBusy(button, busy, label) {
+  if (!button) return;
+  button.disabled = busy;
+  if (busy && label) button.dataset.label = button.textContent;
+  if (!busy && button.dataset.label) button.textContent = button.dataset.label;
+  if (busy && label) button.textContent = label;
+}
+
+async function api(path, options = {}) {
+  if (!key) throw new Error('TradeFlow Supabase is not connected.');
+  const headers = new Headers(options.headers || {});
+  headers.set('apikey', key);
+  headers.set('Content-Type', 'application/json');
+  if (session?.access_token) headers.set('Authorization', `Bearer ${session.access_token}`);
+  const response = await fetch(`${SUPABASE_URL}${path}`, { ...options, headers });
+  const text = await response.text();
+  let body = null;
+  try { body = text ? JSON.parse(text) : null; } catch { body = text; }
+  if (!response.ok) {
+    const detail = body?.msg || body?.message || body?.error_description || body?.error || text || `HTTP ${response.status}`;
+    const error = new Error(detail); error.status = response.status; throw error;
+  }
+  return body;
+}
+
+function saveSession(value) {
+  session = value || null;
+  if (session?.access_token) localStorage.setItem(SESSION_STORAGE, JSON.stringify(session));
+  else localStorage.removeItem(SESSION_STORAGE);
+}
+
+async function restoreSession() {
+  const raw = localStorage.getItem(SESSION_STORAGE);
+  if (!raw || !key) return false;
+  try {
+    session = JSON.parse(raw);
+    if (!session?.access_token) throw new Error('Invalid saved session.');
+    session.user = await api('/auth/v1/user');
+    return true;
+  } catch {
+    saveSession(null);
+    return false;
+  }
+}
+
+async function signIn() {
+  const email = $('auth-email').value.trim();
+  const password = $('auth-password').value;
+  if (!email || !password) return setMessage('Enter your email and password.', 'error');
+  const button = $('auth-sign-in');
+  setBusy(button, true, 'Signing in…'); setMessage('');
+  try {
+    const data = await api('/auth/v1/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) });
+    saveSession(data);
+    session.user = await api('/auth/v1/user');
+    await initialisePortal();
+  } catch (error) { setMessage(error.message || String(error), 'error'); }
+  finally { setBusy(button, false); }
+}
+
+async function signUp() {
+  const email = $('auth-email').value.trim();
+  const password = $('auth-password').value;
+  const tenantSlug = $('auth-tenant').value;
+  const firstName = $('auth-first-name').value.trim();
+  const lastName = $('auth-last-name').value.trim();
+  if (!email || !password || !firstName) return setMessage('Email, password and first name are required.', 'error');
+  const button = $('auth-sign-up');
+  setBusy(button, true, 'Creating account…'); setMessage('');
+  try {
+    const data = await api('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password }) });
+    if (!data?.access_token) {
+      setMessage('Account created. If email confirmation is enabled, confirm your email and then sign in.', 'success');
+      return;
+    }
+    saveSession(data);
+    session.user = await api('/auth/v1/user');
+    const createdId = await api('/rest/v1/rpc/customer_complete_test_registration', {
+      method: 'POST',
+      body: JSON.stringify({ p_tenant_slug: tenantSlug, p_first_name: firstName, p_last_name: lastName || null })
+    });
+    setMessage(`Customer account created (${createdId}).`, 'success');
+    await initialisePortal();
+  } catch (error) { setMessage(error.message || String(error), 'error'); }
+  finally { setBusy(button, false); }
+}
+
+function showAuth(show) {
+  $('auth-panel').hidden = !show;
+  $('portal').hidden = show;
+}
+
+function money(amount, currency = 'GBP') {
+  if (amount === null || amount === undefined) return '—';
+  try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP' }).format(Number(amount)); }
+  catch { return `${currency || ''} ${amount}`.trim(); }
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+}
+
+function renderRows(rows, columns, empty) {
+  if (!Array.isArray(rows) || !rows.length) return `<div class="empty">${esc(empty)}</div>`;
+  return `<div class="data-table"><div class="data-head">${columns.map(c => `<span>${esc(c.label)}</span>`).join('')}</div>${rows.map(row => `<div class="data-row">${columns.map(c => `<span>${c.render ? c.render(row) : esc(row[c.key])}</span>`).join('')}</div>`).join('')}</div>`;
+}
+
+async function rpcGet(name) {
+  return api(`/rest/v1/rpc/${name}?p_tenant_id=${encodeURIComponent(tenantId)}`, { method: 'GET' });
+}
+
+async function loadPortalData() {
+  const [buying, items, values, offers, acquisitions, addresses] = await Promise.all([
+    rpcGet('customer_get_buying_requests'), rpcGet('customer_get_buying_items'),
+    rpcGet('customer_get_trading_values'), rpcGet('customer_get_offers'),
+    rpcGet('customer_get_acquisitions'), rpcGet('customer_get_addresses')
+  ]);
+  profile = (await rpcGet('customer_get_profile'))?.[0] || null;
+
+  $('customer-name').textContent = profile ? `${profile.first_name || ''} ${profile.last_name || ''}`.trim() || 'Customer' : 'Customer';
+  $('brand').textContent = TENANTS[Object.keys(TENANTS).find(s => TENANTS[s].id === tenantId)]?.label || 'TradeFlow';
+  $('buying-count').textContent = Array.isArray(buying) ? buying.length : 0;
+  $('offer-count').textContent = Array.isArray(offers) ? offers.filter(o => o.status === 'published').length : 0;
+  $('acquisition-count').textContent = Array.isArray(acquisitions) ? acquisitions.length : 0;
+
+  $('buying-list').innerHTML = renderRows(buying, [
+    { key:'request_reference', label:'Reference' }, { key:'status', label:'Status' },
+    { key:'source', label:'Source' }, { key:'submitted_at', label:'Submitted', render:r => r.submitted_at ? new Date(r.submitted_at).toLocaleDateString('en-GB') : '—' }
+  ], 'No buying requests yet.');
+  $('offer-list').innerHTML = renderRows(offers, [
+    { key:'offer_reference', label:'Offer' }, { key:'offer_type', label:'Type' },
+    { key:'status', label:'Status' }, { key:'amount', label:'Amount', render:r => money(r.amount, r.currency) },
+    { key:'expires_at', label:'Expires', render:r => r.expires_at ? new Date(r.expires_at).toLocaleDateString('en-GB') : '—' }
+  ], 'No offers have been published to you.');
+  $('acquisition-list').innerHTML = renderRows(acquisitions, [
+    { key:'acquisition_reference', label:'Reference' }, { key:'status', label:'Status' },
+    { key:'agreed_total', label:'Agreed', render:r => money(r.agreed_total, r.currency) },
+    { key:'payment_total', label:'Paid', render:r => money(r.payment_total, r.currency) }
+  ], 'No acquisitions yet.');
+
+  const valueNote = Array.isArray(values) && values.length ? `${values.length} valuation record(s) available.` : 'No approved valuation is currently available.';
+  $('valuation-summary').textContent = valueNote;
+  $('profile-list').innerHTML = renderRows(profile ? [profile] : [], [
+    { key:'customer_reference', label:'Customer reference' }, { key:'email', label:'Email' },
+    { key:'phone', label:'Phone' }, { key:'status', label:'Status' }
+  ], 'Profile not available.');
+  $('address-list').innerHTML = renderRows(addresses, [
+    { key:'address_type', label:'Type' }, { key:'recipient_name', label:'Recipient' },
+    { key:'line1', label:'Address' }, { key:'city', label:'City' }, { key:'postcode', label:'Postcode' }
+  ], 'No saved addresses.');
+}
+
+async function submitBuyingRequest() {
+  const notes = $('request-notes').value.trim();
+  const title = $('request-title').value.trim();
+  if (!title) return setMessage('Enter what you want to sell.', 'error');
+  const button = $('submit-request'); setBusy(button, true, 'Submitting…'); setMessage('');
+  try {
+    const result = await api('/rest/v1/rpc/customer_submit_buying_request', {
+      method: 'POST', body: JSON.stringify({ p_tenant_id: tenantId, p_notes: notes || null, p_items: [{ title, quantity: 1 }] })
+    });
+    $('request-title').value = ''; $('request-notes').value = '';
+    setMessage(`Buying request submitted (${result}).`, 'success');
+    await loadPortalData();
+  } catch (error) { setMessage(error.message || String(error), 'error'); }
+  finally { setBusy(button, false); }
+}
+
+async function initialisePortal() {
+  if (!tenantId || !TENANTS[Object.keys(TENANTS).find(s => TENANTS[s].id === tenantId)]) {
+    setMessage('This customer portal needs a valid subscriber tenant.', 'error');
+    showAuth(true); return;
+  }
+  if (!session?.access_token) { showAuth(true); return; }
+  showAuth(false);
+  try {
+    setMessage('');
+    await loadPortalData();
+  } catch (error) {
+    showAuth(false);
+    setMessage(error.message || String(error), 'error');
+  }
+}
+
+function signOut() { saveSession(null); profile = null; showAuth(true); setMessage('Signed out.', 'success'); }
+
+$('auth-sign-in')?.addEventListener('click', signIn);
+$('auth-sign-up')?.addEventListener('click', signUp);
+$('submit-request')?.addEventListener('click', submitBuyingRequest);
+$('sign-out')?.addEventListener('click', signOut);
+
+(async function boot() {
+  if (!key) {
+    setMessage('This test-lab customer portal needs the TradeFlow publishable key stored by the test environment.', 'error');
+    return;
+  }
+  await restoreSession();
+  await initialisePortal();
+})();

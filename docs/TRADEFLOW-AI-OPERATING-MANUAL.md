@@ -1,8 +1,8 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 3.1  
-**Date:** 16 September 2026  
+**Version:** 3.2  
+**Date:** 17 September 2026  
 **Project:** TradeFlow
 
 ## 1. Purpose
@@ -54,6 +54,8 @@ A separate direct product path now also exists for subscriber inventory: **Categ
 `categories`, `category_fields` and `category_field_options` are the authoritative category/property model. `category-management.html` / `.js` exposes category creation plus product property and option creation.
 
 `inventory_assets.dynamic_values` stores product-specific values for the category fields. Properties can be marked required for Buying or Selling, customer/staff visible and valuation relevant.
+
+Test Business A now contains the active, Buying-enabled and Selling-enabled `Drones` category. This is test data, not a production seed requirement.
 
 ## 9. Inventory/media foundation
 Inventory remains protected by `guard_inventory_asset_status_entry()` and `transition_workflow_entity()`.
@@ -112,14 +114,15 @@ Return lifecycle authority: `requested → authorised/rejected/closed → awaiti
 ## 15. Customer dashboard browser repair — VERIFIED LIVE
 The browser-layer faults were traced to navigation interception, session handoff timing and finally an invalid quote mapping in the controller `esc()` helper. The helper was corrected and the controller cache-buster advanced to `customer-dashboard.js?v=11`.
 
-Verified browser result: authentication succeeds, the portal remains visible, the customer controller executes and the previous controller-unavailable message is gone.
+A further live fault was isolated during the customer Buying test. `loadPortalData()` aggregates optional module calls with one `Promise.all()`. Test Business A does not currently have `module.orders`, so `customer_get_orders()` can reject before the controller reaches `loadCategories()`. The category itself was present in the live database, so the empty/loading UI was a frontend dependency failure rather than missing category data.
 
-Latest repair commits:
-- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
-- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
-- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
+`customer-dashboard-nav.js` now independently calls the secure `customer_get_buying_categories()` RPC after authentication/portal reveal and observes the portal `hidden` state so it also works with the existing in-page authentication fallback. This isolates the category selector from unrelated optional customer modules.
 
-No service-role credential is exposed in browser code.
+Repair commits:
+- `1aa84323f91ad8b5971d7cd4025e493ccf23f7ba`
+- `38355ccfbe4258df39fd4dd5cb5b59b1daa5b469`
+
+Browser verification remains open: hard refresh the Customer Dashboard, open **My Buying**, and confirm **Drones** appears in the Category selector.
 
 ## 16. Diagnostic standard
 Always record:
@@ -135,7 +138,7 @@ After each material change record what/why, affected files/backend objects, arch
 
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
-## 19. Current stopping point — 16 September 2026
-Customer authentication/controller is Verified Live. Category/property management, direct product creation, product photographs and media retention metadata are implemented. Browser verification of that new path remains open.
+## 19. Current stopping point — 17 September 2026
+Customer authentication/controller is Verified Live. Category/property management, direct product creation, product photographs and media retention metadata are implemented. Test Business A has the `Drones` category. Customer category-loading repair is deployed but browser verification remains open.
 
-**Next safe action:** browser-verify Category → Product → Property → Photograph → Ready for Sale → Listing → Customer Shop, then run the Stripe Sandbox transaction and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.
+**Next safe action:** hard-refresh Customer Dashboard → My Buying → confirm `Drones`; then continue Subscriber Dashboard → Categories & Properties → Property → Inventory Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox, verifying each stage before moving to the next.

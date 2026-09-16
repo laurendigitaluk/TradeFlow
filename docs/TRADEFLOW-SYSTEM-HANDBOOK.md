@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.3  
+**Version:** 2.4  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -62,7 +62,9 @@ Lifecycle: `received → inspection → testing → repair → ready_for_sale �
 ## 10. Finance
 059 applies permission-bound access to `payment_records` and `ledger_entries`. 060 extends `transition_workflow_entity()` to payment and ledger status transitions and adds status-entry guards.
 
-Finance workspace creates payment/ledger records in `pending` and routes status changes through the workflow RPC. No automatic payment or ledger creation is inferred from acquisition status.
+Finance workspace creates payment/ledger records and routes status changes through the workflow RPC. No automatic payment or ledger creation is inferred from acquisition status.
+
+A live SECURITY DEFINER RPC, `record_retail_order_payment()`, now provides an internal subscriber-controlled payment capture path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`; locks a `pending_payment` retail order; requires payment equal to current `amount_due`; creates an inbound paid `payment_records` row and matching posted credit `ledger_entries` row; sets the order payment status to `paid`, clears amount due and advances the order through `transition_workflow_entity()` to `paid`. This is not an external gateway integration.
 
 ## 11. Selling / Listings
 061 hardens `listings`, `listing_events` and `sales_channels` to subscription/permission-aware policies and protects listing status entry with `guard_listing_status_entry()`.
@@ -74,27 +76,27 @@ Direct listing status PATCH is deliberately not used.
 ## 12. Retail Orders
 062 hardens `retail_orders` and `retail_order_items` to `orders.view/manage` plus `module.orders`. Retail order trade-in rows additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-Subscriber Orders creates an `initiated` order from a published listing, creates its linked order item and advances it to `pending_payment`.
+Subscriber Orders creates an `initiated` order from a published listing, creates its linked order item and advances it to `pending_payment`. The Orders workspace now uses `record_retail_order_payment()` for the paid transition, so the payment and ledger records are created atomically with the order payment update.
 
-Customer checkout is backed by `customer_get_store_listings()` and `customer_create_retail_order()`. An authenticated active customer may buy only a currently published listing; checkout creates a `pending_payment` order and linked item, reserves the listing and records workflow transitions. Payment collection remains open.
+Customer checkout is backed by `customer_get_store_listings()` and `customer_create_retail_order()`. An authenticated active customer may buy only a currently published listing; checkout creates a `pending_payment` order and linked item, reserves the listing and records workflow transitions.
 
 ## 13. Fulfilment
 Fulfilment retains subscription-aware access through `fulfilment.view/manage` plus `module.fulfilment`. The new `fulfilment-dashboard.html` / `.js` creates fulfilment records for paid/fulfilment orders and exposes controlled status progression through `transition_workflow_entity()`.
 
-Lifecycle authority:
-**awaiting → label → dispatched → delivered**, with dispatched/delivered → returned.
+Lifecycle authority: **awaiting → label → dispatched → delivered**, with dispatched/delivered → returned.
 
 Direct fulfilment status edits are blocked by `guard_fulfilment_status_entry()`. No carrier API, shipping-label provider or automatic fulfilment creation is assumed.
 
+Customer dashboard uses secure `customer_get_fulfilments()` visibility.
+
 ## 14. Returns
-Returns legacy broad member/admin policies have been removed. Subscription-aware returns policies are now authoritative, requiring `returns.view/manage` and either the buying or orders capability as defined by the live policies. Direct return status edits are blocked by `guard_return_status_entry()`.
+Returns legacy broad member/admin policies have been removed. Subscription-aware returns policies are now authoritative, requiring the live permission/capability conditions. Direct return status edits are blocked by `guard_return_status_entry()`.
 
-`customer_request_return()` now validates the authenticated active customer against the tenant and order item, and permits retail return requests only where the customer's order is `paid`, `fulfilment` or `completed`. Requests enter `requested` and are recorded in workflow history.
+`customer_request_return()` validates the authenticated active customer against the tenant and order item, and permits retail return requests only where the customer's order is `paid`, `fulfilment` or `completed`. Requests enter `requested` and are recorded in workflow history. Customer dashboard uses secure `customer_get_returns()` visibility and exposes return-request actions.
 
-Return lifecycle authority:
-**requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed**.
+Return lifecycle authority: **requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed**.
 
-`returns-dashboard.html` / `.js` provides the subscriber operational review and status controls. Customer-facing return display/actions remain a UI follow-up item.
+`returns-dashboard.html` / `.js` provides the subscriber operational review and status controls.
 
 ## 15. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
@@ -108,8 +110,8 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 18. Current stopping point — 16 September 2026
-Operational path now reaches **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → Fulfilment → Returns**.
+The operational chain now includes **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → Payment capture → Fulfilment → Returns**.
 
-Fulfilment and Returns are **BLUE / Implemented, browser verification open**. Customer-facing return actions/display, payment integration, carrier integration, production onboarding and persistent browser verification remain tracked open items.
+Internal subscriber payment capture is **BLUE / Implemented, browser verification open**. External payment-provider integration, shipping-provider integration, production onboarding and persistent browser verification remain open.
 
-**Next build action:** finish customer return visibility/actions, then payment integration and persistent browser verification.
+**Next build action:** integrate an external payment-provider boundary without exposing provider secrets in browser code, then run the persistent browser verification pass.

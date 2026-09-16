@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Customer Dashboard</title>
+<link rel="stylesheet" href="customer-dashboard.css?v=1">
+</head>
+<body>
+<header class="topbar"><div class="brand" id="brand">TradeFlow</div><div class="account"><span id="customer-name">Customer</span><button id="sign-out" type="button">Sign out</button></div></header>
+<main class="layout">
+<aside class="sidebar"><nav>
+<a class="active" href="#overview">Overview</a><a href="#buying">My Buying</a><a href="#selling">My Selling</a><a href="#offers">Offers</a><a href="#acquisitions">Acquisitions</a><a href="#profile">My Details</a>
+</nav></aside>
+<section class="content">
+<div class="eyebrow">Customer portal</div><h1>Welcome back</h1><p class="intro">Your account, requests, valuations and offers in one place.</p>
+<div class="cards"><article><span>Buying requests</span><strong id="buying-count">0</strong></article><article><span>Active offers</span><strong id="offer-count">0</strong></article><article><span>Acquisitions</span><strong id="acquisition-count">0</strong></article></div>
+<section id="overview" class="panel"><h2>What would you like to do?</h2><div class="actions"><a href="#buying">Sell something</a><a href="#selling">Buy something</a><a href="#offers">View my offers</a></div></section>
+<section id="buying" class="panel"><h2>My Buying</h2><p>Buying requests and their current progress will appear here.</p><div id="buying-list" class="empty">No requests loaded.</div></section>
+<section id="selling" class="panel"><h2>My Selling</h2><p>Your selling activity will appear here when the subscriber enables the selling module.</p><div class="empty">Selling dashboard ready for module connection.</div></section>
+<section id="offers" class="panel"><h2>Offers & valuations</h2><div id="offer-list" class="empty">No offers loaded.</div></section>
+<section id="acquisitions" class="panel"><h2>My Acquisitions</h2><div id="acquisition-list" class="empty">No acquisitions loaded.</div></section>
+<section id="profile" class="panel"><h2>My Details</h2><p>Your customer profile and addresses will be managed here.</p></section>
+</section></main>
+<script src="customer-dashboard.js?v=1" defer></script>
+</body>
+</html>

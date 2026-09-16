@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 1.3  
+**Version:** 1.5  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -45,6 +45,8 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - Buying hardening: 049–051.
 - Valuation/Offer hardening: 052–055.
 - Acquisition hardening: 056–057.
+- Inventory hardening: 058.
+- Finance/payment hardening: 059.
 
 ## 6. Production onboarding remains OPEN
 The development foundation still contains an authenticated tenant insert path with `with check (true)` and temporary test-lab onboarding. Required production sequence remains:
@@ -58,78 +60,66 @@ The development foundation still contains an authenticated tenant insert path wi
 
 Buying, valuation and offers remain **BLUE / partial** because persistent browser/live business journeys remain incomplete even though the relevant database boundaries have been repaired and inspected.
 
-## 8. Acquisition audit checkpoint — 056–057
-### 8.1 Migration 056
-Removed broad legacy tenant-member/admin RLS policies from `acquisitions` and `acquisition_items`.
+## 8. Acquisition checkpoint — 056–057
+056 hardened acquisition access and source-offer uniqueness. 057 added status-entry guards so authorised client roles cannot bypass `transition_workflow_entity` by directly changing acquisition status.
 
-Remaining direct-table access is subscription-aware:
-- SELECT: `acquisitions.view` + `module.buying`;
-- INSERT/UPDATE/DELETE: `acquisitions.manage` + `module.buying`.
-
-Added `acquisitions_one_per_source_offer` partial unique index on `(tenant_id, source_offer_id)` where source offer is non-null.
-
-Live inspection confirmed the index and intended acquisition policies.
-
-### 8.2 Existing workflow authority
-`public.transition_workflow_entity()` is SECURITY DEFINER, owned by `postgres`, and maps:
-- `acquisition` → `acquisitions.manage` + `module.buying`;
-- `acquisition_item` → `acquisitions.manage` + `module.buying`.
-
-Allowed lifecycle:
+Allowed lifecycle remains:
 ```text
 accepted → awaiting_item → received → inspection → finalised → paid → completed
                          ↘ cancelled
 ```
 
-The function performs the status update, sets lifecycle timestamps and inserts a `workflow_transitions` record.
-
-### 8.3 Defect found
-RLS permissions alone still allowed an authorised tenant member with acquisition-management access to update `status` directly. That could bypass the central workflow function.
-
-### 8.4 Migration 057
-Added status-entry trigger guards:
-- `acquisitions_status_entry_guard` → `guard_acquisition_status_entry()`;
-- `acquisition_items_status_entry_guard` → `guard_acquisition_item_status_entry()`.
-
-Direct client-role status changes are rejected. The existing SECURITY DEFINER workflow function is owned by `postgres`, so its controlled status updates remain permitted.
-
-Live inspection confirmed both triggers. GitHub commit: `00254f9558a33f75c5c3f21bd7e87d356c998532`.
-
 Verification state: **Implemented + live database inspected**. Full authenticated browser transition testing remains open.
 
-## 9. Acquisition handoff finding
-The schema is structurally connected:
-- `inventory_assets` has tenant-scoped FKs to `acquisition_items` and `buying_items`;
-- `payment_records` has a tenant-scoped FK to `acquisitions`;
-- `ledger_entries` has tenant-scoped FKs to `acquisitions` and `inventory_assets`.
+## 9. Acquisition → Finance → Inventory operational position
+The schema contains tenant-scoped relationships between acquisitions, acquisition items, payments, ledger entries and inventory assets. These relationships do not by themselves create records.
 
-Live function/trigger inspection found **no public acquisition/inventory/payment/ledger function or trigger that automatically creates those records when acquisition status changes**. Record this as **Not yet implemented/verified**, not as an assumed connection.
+Current implementation deliberately treats the handoff as explicit operational work:
+1. Offer acceptance creates the acquisition and acquisition item.
+2. Acquisition workspace advances receipt/inspection/finalisation/payment/completion states through the central workflow authority.
+3. Inventory creation is an explicit action against an acquisition item; it is not assumed to happen merely because an acquisition reaches a status.
+4. Finance records are explicit payment and ledger records associated with acquisitions and/or inventory.
 
-## 10. New audit finding for next domain
-Inventory currently retains broad legacy member/admin RLS policies alongside subscription-aware inventory policies. Finance/payment tables also retain broad member/admin policies. Existing permission catalogue includes `inventory.view/manage` and `finance.view/manage`; the subscription catalogue contains `module.inventory` but no `module.finance` feature was found.
+No automatic status-driven creation of inventory, payment or ledger records has been established as a business rule.
 
-Therefore the next audit must inspect and, where justified, harden:
-1. Inventory RLS and direct status mutation authority;
-2. acquisition-item → inventory creation/handoff;
-3. Finance/payment RLS and creation/update authority;
-4. payment record → acquisition state relationship;
-5. ledger posting/reconciliation and duplicate/idempotency rules.
+## 10. Inventory hardening — 058
+Migration 058 removed broad legacy inventory member/admin policies and retained permission/subscription-aware access. `inventory_assets` status entry is protected by `guard_inventory_asset_status_entry()` so direct client-role status changes cannot bypass `transition_workflow_entity()`.
 
-Do not create automatic handoff logic until the intended business rule is established from the existing schema/workflow and UI.
+Inventory lifecycle:
+```text
+received → inspection → testing → repair → ready_for_sale → listed → reserved → sold
+                                                               ↘ returned
+```
 
-## 11. Diagnostic standard
+The dedicated Inventory workspace lists/filter assets, edits non-status asset details and routes lifecycle changes through the workflow authority. It is implemented but not yet browser-verified live.
+
+## 11. Finance hardening and operational UI
+Migration 059 removed broad finance policies and recreated permission-bound policies for `payment_records` and `ledger_entries` using the existing `finance.view` / `finance.manage` permissions. No `module.finance` feature is to be invented.
+
+The Finance workspace now reads tenant-scoped payment and ledger records, creates new payment/ledger records in `pending` state, and routes payment/ledger status changes through `transition_workflow_entity()` rather than direct status mutation.
+
+Payment states include pending, processing, paid, failed, cancelled, refunded and partially_refunded. Ledger states include pending, posted, voided and reversed.
+
+No automatic ledger creation or payment creation is inferred from acquisition status. Reconciliation rules remain a later workflow concern.
+
+## 12. Diagnostic standard
 Always record:
 **User action → page → front-end controller → Supabase call → DB object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Record actual filenames and database objects. If not inspected, write **Not yet audited**. Never invent a connection to fill a documentation gap.
 
-## 12. Manual UI testing
+## 13. Manual UI testing
 One manual security/UI test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 13. Change-control record
+## 14. Change-control record
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
 
-## 14. Current stopping point — 16 September 2026
-Customer security/subscription checkpoints remain intact. Production onboarding remains open. Buying 049–051 is hardened. Valuation/Offer 052–055 is hardened at the database boundary. Acquisition 056–057 is hardened for tenant access, source-offer uniqueness and authoritative status entry.
+## 15. Memory/checkpoint rule
+TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. If structured project memory is maintained separately, identify the real project key/schema before writing. Do not invent memory tables, columns or records. GitHub documentation remains a continuity source alongside confirmed project-level memory/checkpoints.
 
-**Next safe action:** continue the acquisition operational handoff audit with Inventory RLS/status authority, then Finance/Payment/ledger authority. Do not assume automatic inventory/payment/ledger creation until actual implementation is verified.
+## 16. Current stopping point — 16 September 2026
+Customer security/subscription checkpoints remain intact. Production onboarding remains open. Buying 049–051 is hardened. Valuation/Offer 052–055 is hardened. Acquisition 056–057 is hardened. Inventory 058 and Finance 059 are hardened at the database boundary.
+
+The subscriber UI now has Website Builder, public storefront, customer dashboard/auth flow, Buying, Offers, Acquisitions, Inventory and Finance workspaces. Inventory and Finance operational actions are implemented in GitHub but remain **not yet browser-verified live**.
+
+**Next safe action:** continue into Selling/Listings using the existing tenant, permission and workflow architecture. Do not invent automatic handoff behaviour.

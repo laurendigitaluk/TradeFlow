@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.9  
+**Version:** 2.0  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -14,7 +14,7 @@ TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary 
 
 **TradeFlow Platform → Platform Owner → subscriber tenant → tenant owner/admin/staff → customers**
 
-Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separate platform-level security boundary and is never a tenant role.**
+Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate platform-level security boundary and is never a tenant role.
 
 ## Current environment
 - GitHub: `laurendigitaluk/TradeFlow`, branch `main`.
@@ -24,7 +24,6 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 - GearCashOut is reference material only and must not be modified during TradeFlow work.
 
 ## Master roadmap
-
 | # | Domain | Status | Current evidence / next action |
 |---|---|---|---|
 | 1 | Tenant & identity | AMBER | Production onboarding still must replace/harden development authenticated tenant-insert/test-lab paths. |
@@ -35,13 +34,13 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
 | 7 | Trading Value / valuation | BLUE | 052 RLS plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
-| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; subscriber acquisition workspace supports lifecycle progression and explicit inventory hand-off. Live browser verification remains. |
+| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; workspace supports lifecycle progression and explicit inventory hand-off. |
 | 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
-| 11 | Inventory | BLUE | 058 hardened; dedicated Inventory workspace manages assets, editable details and controlled lifecycle. Browser verification remains. |
-| 12 | Selling/listings | AMBER | Lifecycle remains to be built/audited. |
+| 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
+| 12 | Selling/listings | BLUE | Selling workspace now implemented: tenant-scoped listings, sales-channel/category/ready-inventory selection, creation and controlled listing lifecycle. Browser verification remains. |
 | 13 | Retail orders | AMBER | Customer boundary tested; complete workflow remains. |
 | 14 | Returns | AMBER | Full lifecycle remains. |
-| 15 | Finance/payment | BLUE | 059 permission hardening plus Finance workspace with payment/ledger creation and controlled status actions. Persistent browser verification remains. |
+| 15 | Finance/payment | BLUE | 059 permission hardening plus 060 workflow authority; Finance workspace has payment/ledger creation and controlled status actions. Browser verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -60,40 +59,42 @@ Implemented in GitHub:
 - Explicit inventory creation from received acquisition items.
 - Dedicated Inventory workspace for tenant inventory listing, filtering, asset-detail editing and lifecycle transitions through `transition_workflow_entity()`.
 - Subscriber Finance workspace for payment and ledger records, with controlled creation and lifecycle actions through the existing workflow authority.
+- Dedicated Selling/Listings workspace using the existing `listings`, `sales_channels`, `categories` and `inventory_assets` model.
 
 These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
-## Acquisition → Finance → Inventory workflow position
-The live schema contains structural links from acquisitions to payment records and from acquisitions/inventory to ledger entries. Live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely from acquisition status changes. The subscriber workspaces therefore use explicit user actions and existing authoritative workflow services rather than assuming automation.
+## Acquisition → Finance → Inventory → Selling position
+The live schema contains structural links across these domains. Live inspection did not find an automatic trigger/function that creates payment, ledger, or inventory records merely from acquisition status changes. The operational handoff is therefore explicit.
 
-Current operational path:
-**Offer accepted → acquisition created → awaiting item → received → inspection → finalised → paid → completed**, with explicit inventory creation from acquisition items and explicit finance records.
+**Offer accepted → acquisition → receipt/inspection → finance records as required → inventory asset → ready for sale → listing.**
 
-Inventory lifecycle authority is:
-**received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with supported return/write-off/archive branches.
+Inventory authority: **received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with supported return/write-off/archive branches.
 
-Finance payment statuses are:
-**pending → processing → paid/failed/cancelled**, with paid/partially-refunded/refunded branches as supported by the existing workflow authority.
+Listing authority: **draft → ready → published → reserved/sold/delisted**, with reserved able to return to published or progress to sold/delisted.
 
-Ledger statuses are:
-**pending → posted**, with void/reverse branches as supported.
+## Selling/Listings implementation
+The new `selling-dashboard.html` / `selling-dashboard.js` workspace:
+- loads tenant listings with status filtering;
+- loads active tenant sales channels;
+- loads active tenant categories with `selling_enabled=true`;
+- offers only tenant inventory currently at `ready_for_sale` for new listings;
+- creates a listing in `draft` and immediately advances it to `ready` through `transition_workflow_entity()`;
+- exposes publish/reserve/sold/delist lifecycle actions through the same authoritative workflow RPC;
+- displays listing detail and inventory/channel/category links.
+
+The live database confirms `listings`, `listing_events`, `sales_channels` and the central `listing` workflow transitions, plus permission/subscription-aware RLS on listings, events and channels.
+
+No direct listing status PATCH is used by the workspace.
 
 ## Production onboarding — OPEN
-The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
-
-Required sequence:
+The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. Required sequence:
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
-
-Never create a `platform_owner` tenant role or permit self-claiming platform ownership.
 
 ## Verification standard
 For every business domain trace:
 **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Do not mark a feature complete solely because code is committed. A transactional rollback test proves database behaviour, not a persistent browser journey.
-
-## Deliberately outside generic core
-GearCashOut specialist catalogue, evidence/research, AI research queue and specialist pricing structures remain outside TradeFlow unless explicitly added as modules.
 
 ## Documentation set
 - `TRADEFLOW-MASTER-ROADMAP.md`
@@ -103,6 +104,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected code/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-Inventory and Finance operational UI work is implemented in GitHub. No persistent browser journey has yet been marked verified for these new actions.
+Selling/Listings has now moved from AMBER build status to **BLUE / Implemented, browser verification open**. Finance workflow authority is also hardened through migration 060.
 
-**Next build action:** continue into Selling/Listings using the existing tenant, permission and workflow architecture. Keep production onboarding and persistent browser verification as tracked open items rather than blocking forward development.
+**Next build action:** continue the Selling operational layer into retail orders/customer checkout, using the existing listing → order → fulfilment → returns architecture. Do not invent automatic handoffs where the live schema does not establish them.

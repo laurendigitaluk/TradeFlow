@@ -3,13 +3,16 @@ const KEY_STORAGE='tradeflow_testlab_publishable_key';
 const SESSION_STORAGE='tradeflow_testlab_session';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null;
 let session=null;
-let tenantId=new URLSearchParams(location.search).get('tenant_id');
+const params=new URLSearchParams(location.search);
+let tenantId=params.get('tenant_id');
+const requestedTemplate=params.get('template');
 let draftRevisionId=null;
 const $=id=>document.getElementById(id);
 const name=$('business-name'),headline=$('headline'),accent=$('accent');
 const brand=$('preview-brand'),title=$('preview-headline'),status=$('status');
 function setStatus(text,type=''){status.textContent=text||'';status.dataset.type=type;}
 function render(){brand.textContent=name.value||'Your Business';title.textContent=headline.value||'Buy, sell and trade with us';document.documentElement.style.setProperty('--accent',accent.value);}
+function applyTemplate(template){if(template==='business')headline.value='A better way to buy and sell';if(template==='marketplace')headline.value='Buy, sell and trade with confidence';if(template==='services')headline.value='Professional service, made simple';render();}
 async function api(path,options={}){
   if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow sign-in page first.');
   const headers=new Headers(options.headers||{});headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');
@@ -36,7 +39,7 @@ async function resolveTenant(){
   tenantId=rows[0].tenant_id;return tenantId;
 }
 function buildContent(){
-  return {schema_version:1,site:{name:name.value.trim()||'Your Business',pages:[],theme:{accent:accent.value},homepage:{headline:headline.value.trim()||'Buy, sell and trade with us'},navigation:[{label:'Home',path:'/'},{label:'Buy',path:'/buy'},{label:'Sell',path:'/sell'},{label:'Contact',path:'/contact'},{label:'Customer Login',path:'/customer'}],category_manifest:[],template:'customised'}};
+  return {schema_version:1,site:{name:name.value.trim()||'Your Business',pages:[],theme:{accent:accent.value},homepage:{headline:headline.value.trim()||'Buy, sell and trade with us'},navigation:[{label:'Home',path:'/'},{label:'Buy',path:'/buy'},{label:'Sell',path:'/sell'},{label:'Contact',path:'/contact'},{label:'Customer Login',path:'/customer'}],category_manifest:[],template:requestedTemplate||'customised'}};
 }
 function loadContent(content){
   const site=content?.site||{};name.value=site.name||'Your Business';headline.value=site.homepage?.headline||'Buy, sell and trade with us';accent.value=site.theme?.accent||'#c46a2b';render();
@@ -48,6 +51,7 @@ async function loadDraft(){
   const drafts=await api(`/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.${encodeURIComponent(tenantId)}&id=eq.${encodeURIComponent(draftRevisionId)}&status=eq.draft`,{method:'GET'});
   if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
   loadContent(drafts[0].content);
+  if(requestedTemplate)applyTemplate(requestedTemplate);
   setStatus(`Draft revision ${drafts[0].revision_number} loaded.`,'success');
 }
 async function saveDraft(){
@@ -64,7 +68,7 @@ async function publish(){
   setStatus('Website published. A new draft revision is now ready for further edits.','success');
 }
 [name,headline,accent].forEach(el=>el.addEventListener('input',render));
-document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>{const t=button.dataset.template;if(t==='business')headline.value='A better way to buy and sell';if(t==='marketplace')headline.value='Buy, sell and trade with confidence';if(t==='services')headline.value='Professional service, made simple';render();setStatus(`${button.textContent} template selected. Save the draft when ready.`);}));
+document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>{applyTemplate(button.dataset.template);setStatus(`${button.textContent} template selected. Save the draft when ready.`);}));
 $('save-draft').addEventListener('click',()=>saveDraft().catch(error=>setStatus(error.message||String(error),'error')));
 $('publish').addEventListener('click',()=>publish().catch(error=>setStatus(error.message||String(error),'error')));
 $('preview-customer').addEventListener('click',()=>window.location.href=`customer-dashboard.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`);

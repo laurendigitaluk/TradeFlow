@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.1  
+**Version:** 2.2  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -45,7 +45,7 @@ Development tenant insertion/test-lab onboarding remains separate from the requi
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 ## 7. Current operational chain
-**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order.**
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout.**
 
 The acquisition-to-finance/inventory handoff is deliberately explicit because live inspection did not establish automatic status-driven creation of payment, ledger or inventory records.
 
@@ -72,15 +72,14 @@ All status changes use `transition_workflow_entity()` with entity type `listing`
 ## 11. Retail Orders checkpoint — 062
 Migration 062 hardens `retail_orders` and `retail_order_items` to `orders.view/manage` plus `module.orders`; retail order trade-in rows additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-`orders-dashboard.html` / `.js` creates an `initiated` order from a published listing, creates its linked order item and advances it to `pending_payment`. It deliberately does not automatically reserve or sell the listing because the live schema does not establish that handoff.
+`orders-dashboard.html` / `.js` is the subscriber operational layer. Customer checkout is now also implemented through `customer_get_store_listings()` and `customer_create_retail_order()`.
 
-Order lifecycle authority is:
-`initiated → pending_payment → paid → fulfilment → completed`, with supported cancellation/refund branches.
+Customer checkout requires an authenticated active customer for the tenant, accepts only a published listing, creates a `pending_payment` order and linked order item, reserves the listing, and records workflow transitions for the order and listing. A database trigger synchronises retail-order `payment_status` for paid/refunded terminal order states. Payment collection itself is not yet integrated.
 
-The current order UI is a subscriber operational layer. Customer checkout/payment integration remains open.
+The customer dashboard exposes Shop and My Orders. These paths are **Implemented / browser verification open**.
 
 ## 12. Next build
-Continue into **fulfilment and returns**, then complete customer checkout/payment integration. Use the existing schema and central workflow authority. Do not invent automatic handoffs.
+Continue into **fulfilment and returns**, then payment integration. Use the existing schema and central workflow authority. Do not invent automatic handoffs.
 
 ## 13. Diagnostic standard
 Always record:
@@ -97,6 +96,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 16. Current stopping point — 16 September 2026
-Selling/Listings and Retail Orders are **BLUE / Implemented, persistent browser verification open**. Finance workflow authority is hardened through 060; Selling through 061; Retail Orders through 062.
+Retail Orders now has both subscriber operational controls and an authenticated customer checkout path. Customer checkout reserves the selected published listing and creates a pending-payment order. **Browser verification remains open.** Payment integration, fulfilment/returns and production onboarding remain open.
 
-**Next safe action:** build fulfilment and returns, then customer checkout/payment integration, while retaining production onboarding and persistent browser verification as tracked open items.
+**Next safe action:** build fulfilment and returns, then payment integration and persistent browser verification.

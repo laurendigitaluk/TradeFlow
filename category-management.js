@@ -1,7 +1,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_testlab_publishable_key',SESSION_STORAGE='tradeflow_testlab_session';
 const TENANTS={'test-business-a':{id:'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',label:'Test Business A'},'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'}};
-const key=localStorage.getItem(KEY_STORAGE),session=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null'),tenantId=new URLSearchParams(location.search).get('tenant_id'),$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c));
+const key=localStorage.getItem(KEY_STORAGE),session=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null'),tenantId=new URLSearchParams(location.search).get('tenant_id'),$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||''}
 async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 let categories=[],fields=[],options=[];

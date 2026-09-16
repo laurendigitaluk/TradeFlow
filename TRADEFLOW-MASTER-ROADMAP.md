@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.2  
+**Version:** 2.3  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -35,11 +35,11 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 7 | Trading Value / valuation | BLUE | 052 plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; workspace supports lifecycle progression and explicit inventory hand-off. |
-| 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
+| 10 | Fulfilment | BLUE | New subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
 | 13 | Retail orders | BLUE | 062 hardening plus customer checkout RPC/UI. Customer checkout creates a pending-payment order, links the listing/item and reserves the published listing; browser verification remains. |
-| 14 | Returns | AMBER | Full lifecycle remains. |
+| 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening plus Finance workspace. Persistent browser verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
@@ -48,37 +48,27 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains now have explicit authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
-## Customer-facing and subscriber operational build checkpoint — 16 September 2026
-Implemented in GitHub:
-- Website Builder and tenant-specific public storefront renderer.
-- Customer authentication/test-lab registration and tenant-specific dashboard.
-- Customer buying-request submission.
-- Customer published-offer Accept/Refuse actions using existing secure RPCs.
-- Subscriber Buying, Acquisition, Inventory, Finance, Selling/Listings and Orders workspaces.
-- Explicit inventory creation from received acquisition items.
-- Selling listings created from `ready_for_sale` inventory and advanced through the central workflow authority.
-- Retail orders created from published listings, with linked order items and controlled status progression.
-- Customer store listing RPC and authenticated one-item checkout RPC.
-- Customer dashboard now exposes Shop and My Orders.
+## Fulfilment and Returns checkpoint — 16 September 2026
+Migration `harden_fulfilment_returns_workflow_v2` applied live. Fulfilment retains subscription-aware `fulfilment.view/manage` access and now has a status-entry guard preventing direct client status edits. Returns legacy broad member/admin policies were removed so the subscription-aware returns policies are authoritative. Returns also has a status-entry guard.
 
-These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
+Existing workflow authority is used for:
+- Fulfilment: `awaiting → label → dispatched → delivered`, with dispatched/delivered → returned.
+- Returns: `requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed`.
 
-## Selling → Orders position
-Migration 061 hardens listings, listing events and sales channels to subscription/permission-aware policies and prevents direct listing status edits. The central workflow authority supports:
-**draft → ready → published → reserved/sold/delisted**, with reserved → published/sold/delisted.
+Customer return creation was hardened through `customer_request_return()`: an authenticated active customer may request a return only for their own tenant order item and only when the order is `paid`, `fulfilment` or `completed`. The return is created in `requested` status and recorded in workflow history.
 
-The Selling workspace loads active channels, selling-enabled categories and ready-for-sale inventory, and creates draft listings before moving them to ready through the workflow RPC.
+Implemented GitHub workspaces:
+- `fulfilment-dashboard.html` / `fulfilment-dashboard.js` — subscriber fulfilment creation and controlled status progression.
+- `returns-dashboard.html` / `returns-dashboard.js` — subscriber return review and controlled status progression.
+- Customer dashboard updated to expose the existing order/shop flow and customer return/fulfilment data endpoints.
+- Subscriber dashboard navigation now exposes Fulfilment and Returns.
 
-Migration 062 hardens retail orders and order items to `orders.view/manage` plus `module.orders`; retail order trade-ins additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
+These are **Implemented**, not **Verified Live**. No external carrier, shipping-label provider or automatic fulfilment creation has been assumed.
 
-The customer checkout implementation adds `customer_get_store_listings()` and `customer_create_retail_order()`. Checkout requires an authenticated active customer for the tenant, accepts only a published listing, creates the order as `pending_payment`, creates its linked order item, and reserves the listing. The checkout operation records workflow transitions for the order and listing. Payment processing itself is not integrated yet.
+## Operational chain
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer Checkout → Fulfilment → Return (when applicable).**
 
-Order lifecycle authority is:
-**initiated → pending_payment → paid → fulfilment → completed**, with supported cancellation/refund branches.
-
-## Acquisition → Finance → Inventory → Selling → Orders
-The live schema contains structural links between these domains, but automatic record creation must not be assumed. Explicit operational actions currently move the process forward:
-**Offer accepted → acquisition → receipt/inspection → finance/payment → inventory → ready_for_sale → listing → order.**
+Automatic handoffs remain deliberately limited to database behaviour actually established by the live schema/RPCs. Explicit operational actions are used where automatic creation was not established.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
@@ -105,6 +95,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-Retail Orders now has an authenticated customer checkout path in addition to the subscriber Orders workspace. Checkout/payment integration and persistent browser verification remain open.
+Fulfilment and Returns operational workspaces and workflow hardening are implemented. Persistent browser verification remains open. Payment integration, shipping-provider integration and production onboarding remain open.
 
-**Next build action:** continue into fulfilment and returns, then complete payment integration and persistent browser verification.
+**Next build action:** complete customer return UI and fulfilment visibility, then move into payment integration and persistent browser verification.

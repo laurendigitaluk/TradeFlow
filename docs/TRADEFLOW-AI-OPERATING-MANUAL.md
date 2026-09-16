@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.9  
+**Version:** 3.0  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -98,16 +98,18 @@ Navigation was corrected so hash links are intercepted only after `#portal` is v
 
 The first fallback stored the token and forced a page reload. Browser testing showed that reload returned to the authentication panel, so the handoff was changed to an in-page session handoff. A later repair removed an unnecessary `/auth/v1/user` request from the successful-auth path.
 
-The latest repair cache-busts the main controller as `customer-dashboard.js?v=9` and makes the inline fallback immediately reveal `#portal` after a successful password-token exchange. It then hands the session to `window.tradeflowHandleCustomerAuthSuccess`. If the main controller is unavailable, the fallback reports that explicitly instead of leaving the user indefinitely on “Signing in. Loading your customer portal…”.
+The controller was then loaded synchronously before the inline fallback. Browser testing still showed “Authentication succeeded, but the customer controller did not load.” Inspection of the live GitHub source identified the actual execution fault: the `esc()` helper contained an incorrectly escaped quote key, producing invalid JavaScript before `window.tradeflowHandleCustomerAuthSuccess` could be assigned.
 
-Latest commits:
-- dashboard HTML/auth fallback/cache repair: `bfda2436b9cbf1fdd96e313e3715cc07410553cc`
-- main controller handoff: `b3fea037f6e9164e29f45171e6333c4318f8e78d`
+The helper was corrected without removing the existing portal/payment functionality, and the HTML cache-buster was advanced to `customer-dashboard.js?v=11`.
+
+Latest repair commits:
+- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
+- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
 - navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
-**Verification state:** Implemented in GitHub; persistent live browser confirmation remains open.
+**Verification state:** Implemented in GitHub; persistent live browser confirmation of the v11 controller repair remains open.
 
 ## 15. Diagnostic standard
 Always record:
@@ -124,6 +126,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 18. Current stopping point — 16 September 2026
-The latest customer dashboard repair is deployed to GitHub. The HTML now forces a fresh `customer-dashboard.js?v=9` load and the inline successful-auth path immediately hides the authentication panel and reveals the portal. Persistent live browser confirmation is still required. External payment architecture is **BLUE / Implemented, verification open**. Stripe Sandbox configuration, webhook, server-side secrets and retry hardening are in place. Shipping-provider integration and production onboarding remain open.
+The latest customer dashboard controller syntax repair is deployed to GitHub and the HTML now requests `customer-dashboard.js?v=11`. The preceding browser screenshot proves Supabase password authentication succeeds and the inline fallback can reveal the portal; the remaining v11 question is whether the repaired controller now executes and hands off correctly. Persistent live browser confirmation is required before moving on.
 
-**Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the authentication panel disappears and the portal loads. If it does, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.
+**Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the controller-unavailable message is gone and portal data loads. If that passes, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.

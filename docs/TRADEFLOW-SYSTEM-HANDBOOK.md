@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.6  
+**Version:** 2.7  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -83,7 +83,7 @@ This is configuration evidence only. No persistent customer browser payment has 
 ## 11. Selling / Listings
 061 hardens `listings`, `listing_events` and `sales_channels` to subscription/permission-aware policies and protects listing status entry with `guard_listing_status_entry()`.
 
-`selling-dashboard.html` / `.js` loads active channels, selling-enabled categories and tenant inventory at `ready_for_sale`; it creates listings in `draft`, advances them to `ready`, and exposes the authoritative listing lifecycle.
+`selling-dashboard.html` / `.js` loads active channels, selling-enabled categories and `ready_for_sale` inventory; it creates listings in `draft`, advances them to `ready`, and exposes the authoritative listing lifecycle.
 
 Direct listing status PATCH is deliberately not used.
 
@@ -114,20 +114,29 @@ Return lifecycle authority: **requested → authorised/rejected/closed → await
 
 `returns-dashboard.html` / `.js` provides the subscriber operational review and status controls.
 
-## 15. Diagnostic and verification standard
+## 15. Customer dashboard browser repair
+The persistent browser test exposed a dashboard-layer fault before payment verification. The authentication panel rendered, but Sign in did not respond visibly. The navigation controller also intercepted hash links while `#portal` was hidden, making the page appear inert.
+
+The navigation controller was corrected so hash links are intercepted only when the authenticated portal is visible. The latest dashboard HTML now contains an inline capture-phase Supabase Auth fallback. This fallback uses only the public publishable key, performs the password-token exchange, stores `tradeflow_testlab_session` and reloads the page so the existing controller can restore the session and execute `showAuth(false)`. No service-role credential is exposed.
+
+The earlier external `customer-dashboard-auth-fix.js` remains in the repository for traceability, but the dashboard no longer depends on that separate file for Sign in. The authoritative current HTML repair is commit `d454c10730ed6b5e81c4eb817a21d1ef14463ae8`.
+
+**Verification state:** Implemented in GitHub; persistent live browser confirmation remains open.
+
+## 16. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Verification states are **Proposed → Implemented → Tested → Verified Live**. Commit success is not live verification. Transactional rollback testing proves database behaviour, not a persistent browser journey.
 
-## 16. Manual testing
+## 17. Manual testing
 One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 17. Documentation/change control
+## 18. Documentation/change control
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
-## 18. Current stopping point — 16 September 2026
+## 19. Current stopping point — 16 September 2026
 The operational chain now includes **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → External Payment boundary → Fulfilment → Returns**.
 
-External payment architecture is **BLUE / Implemented**. TradeFlow Stripe Sandbox configuration is complete, the active webhook is connected, the two Stripe test secrets are stored server-side, and payment retry handling has been hardened. Persistent browser verification remains open. Shipping-provider integration and production onboarding also remain open.
+The immediate customer dashboard navigation/authentication faults have been repaired in code. External payment architecture is **BLUE / Implemented** and Stripe Sandbox configuration is complete, but persistent browser payment verification remains open. Shipping-provider integration and production onboarding also remain open.
 
-**Next build action:** perform one persistent customer checkout through Stripe Sandbox using a Stripe test payment, verify the signed webhook updates the payment/order/ledger state, then continue into fulfilment and returns verification.
+**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then perform one persistent Shop → Buy → Stripe Sandbox payment journey and verify the signed webhook updates payment/order/ledger state.

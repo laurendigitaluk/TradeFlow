@@ -19,7 +19,7 @@
       if(!data?.access_token)throw new Error('Authentication succeeded without a session token.');
       localStorage.setItem('tradeflow_testlab_session',JSON.stringify(data));
       message('Signed in. Loading your customer portal…','success');
-      window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
+      window.addEventListener('DOMContentLoaded',()=>window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data})),{once:true});
     }catch(err){console.error('TradeFlow customer sign-in failed:',err);message(err?.message||String(err));button.disabled=false;button.textContent=oldLabel;}
   },true);
 })();

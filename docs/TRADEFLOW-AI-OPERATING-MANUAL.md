@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.6  
+**Version:** 2.7  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -99,21 +99,30 @@ Returns had overlapping legacy member/admin policies. These were removed so the 
 
 Return lifecycle authority: `requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed`.
 
-## 14. Diagnostic standard
+## 14. Customer dashboard browser repair
+The persistent browser test exposed two browser-layer faults: the Sign in action had no visible response, and the navigation controller prevented native hash navigation while the authentication portal was hidden.
+
+The navigation controller was corrected so it only intercepts hash links after `#portal` is visible. To remove the separate authentication-fix file as a deployment/cache dependency, the dashboard HTML now contains an inline capture-phase Supabase Auth fallback. It uses only the public publishable key, performs the password-token exchange, stores `tradeflow_testlab_session`, and reloads the dashboard so the existing controller restores the authenticated session and calls `showAuth(false)`. No service-role credential is exposed.
+
+The older `customer-dashboard-auth-fix.js` remains for traceability but is no longer required by the dashboard HTML. Latest repair commit: `d454c10730ed6b5e81c4eb817a21d1ef14463ae8`.
+
+**Verification state:** Implemented in GitHub; live browser confirmation remains open.
+
+## 15. Diagnostic standard
 Always record:
 **User action → page → front-end controller → Supabase call → DB object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Record actual filenames and database objects. If not inspected, write **Not yet audited**.
 
-## 15. Manual UI testing
+## 16. Manual UI testing
 One manual test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 16. Change-control and memory
+## 17. Change-control and memory
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
 
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
-## 17. Current stopping point — 16 September 2026
-External payment architecture is **BLUE / Implemented, verification open**. The TradeFlow Stripe Sandbox, active webhook, two server-side Stripe test secrets, retry hardening and deployed Edge Functions are in place. Persistent browser payment verification remains open. Shipping-provider integration and production onboarding remain open.
+## 18. Current stopping point — 16 September 2026
+The customer dashboard navigation/authentication browser faults have been repaired in code, but persistent live browser verification is still open. External payment architecture is **BLUE / Implemented, verification open**. The TradeFlow Stripe Sandbox, active webhook, two server-side Stripe test secrets, retry hardening and deployed Edge Functions are in place. Shipping-provider integration and production onboarding remain open.
 
-**Next safe action:** run one persistent customer checkout/payment journey using a Stripe Sandbox test payment, verify the signed webhook updates the payment/order/ledger state, then continue into fulfilment and returns browser verification.
+**Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then perform one persistent customer checkout/payment journey using a Stripe Sandbox test payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.

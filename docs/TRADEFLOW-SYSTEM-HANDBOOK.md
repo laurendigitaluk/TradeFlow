@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 1.7  
+**Version:** 1.8  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -65,6 +65,7 @@ Implemented UI paths include:
 - Subscriber Buying workspace for review, valuation and offer publication.
 - Subscriber Acquisition workspace for acquisition/item lifecycle operations.
 - Explicit inventory creation from an acquisition item.
+- Dedicated Subscriber Inventory workspace for asset listing, filtering, editable asset details and controlled lifecycle transitions.
 - Subscriber Finance workspace exposing existing payment and ledger structures.
 
 These are implementation milestones. They are not marked GREEN until authenticated browser journeys have been persistently tested.
@@ -97,9 +98,31 @@ accepted → awaiting_item → received → inspection → finalised → paid �
                          ↘ cancelled
 ```
 
-The subscriber Acquisition workspace now exposes acquisition and acquisition-item progression and can explicitly create a linked inventory asset from an acquisition item.
+The subscriber Acquisition workspace exposes acquisition and acquisition-item progression and can explicitly create a linked inventory asset from an acquisition item.
 
-## 9. Finance and inventory handoff
+## 9. Inventory — migration 058 and dedicated workspace
+Migration 058 removed broad legacy member/admin inventory policies and added authoritative status-entry protection for `inventory_assets`.
+
+The dedicated `inventory-dashboard.html` / `inventory-dashboard.js` workspace now:
+- lists tenant inventory assets;
+- filters by inventory status;
+- shows linked acquisition/buying/category identifiers;
+- edits non-status asset details such as title, condition, serial number, quantity, purchase/current value, location, description and notes;
+- routes lifecycle changes through `transition_workflow_entity()` with entity type `inventory_asset`.
+
+The implemented lifecycle authority is:
+```text
+received → inspection → testing → repair → ready_for_sale → listed → reserved → sold
+                                      ↘ returned
+                                      ↘ written_off
+                                      ↘ archived
+```
+
+Other controlled transitions include testing/repair returning to testing or ready-for-sale, listed/reserved movement, sold→returned, returned→inspection/written_off/archived, and written_off→archived, exactly as supported by the live workflow function.
+
+The workspace is implemented in GitHub but remains **not yet browser-verified live**. Direct status PATCH is deliberately not used.
+
+## 10. Finance and inventory handoff
 The live schema contains tenant-scoped structural links:
 - `inventory_assets` → `acquisition_items` and `buying_items`;
 - `payment_records` → `acquisitions`;
@@ -111,13 +134,7 @@ Live inspection did not find an automatic function/trigger that creates payment,
 
 `ledger_entries` supports purchase, payment, refund, expense, fee and adjustment entries with pending/posted/voided/reversed states.
 
-The current Finance workspace exposes these existing structures. Payment creation/posting rules and full inventory lifecycle remain implementation/verification work.
-
-## 10. Inventory lifecycle
-Existing inventory status values are:
-`received`, `inspection`, `testing`, `repair`, `ready_for_sale`, `listed`, `reserved`, `sold`, `returned`, `written_off`, `archived`.
-
-Inventory status changes are subject to the authoritative workflow guard introduced in migration 058. The acquisition workspace can create an initial `received` asset linked to the acquisition item. A dedicated Inventory workspace remains the next build step.
+The current Finance workspace exposes these existing structures. Payment creation/posting rules and full browser verification remain implementation/verification work.
 
 ## 11. Verification standard
 For every business domain trace:
@@ -140,7 +157,7 @@ Transactional database tests may be rolled back, but a rollback test proves data
 | Trading Value | BLUE | Database hardening plus subscriber valuation UI; live journey remains. |
 | Offers | BLUE | Database hardening plus customer response UI; live journey remains. |
 | Acquisition | BLUE | Operational workspace implemented; live journey remains. |
-| Inventory | BLUE | Explicit acquisition-item handoff implemented; dedicated lifecycle workspace remains. |
+| Inventory | BLUE | Dedicated workspace implemented with controlled lifecycle; browser verification remains. |
 | Finance/payment | BLUE | Finance workspace implemented against existing tables; payment/ledger actions and live journey remain. |
 | Selling/listings | AMBER | Build remains. |
 | Orders/fulfilment/returns | AMBER | Build remains. |
@@ -158,4 +175,4 @@ The prolonged broad audit is no longer the immediate build track. TradeFlow is b
 
 **Current operational path:** Buying → Valuation → Offer → Customer response → Acquisition → Receiving/Inspection → Finance/Payment → Inventory → Selling/Listing.
 
-**Next build action:** dedicated Inventory workspace and lifecycle, then complete Finance payment/ledger actions. Production onboarding and persistent browser verification remain tracked open items.
+**Next build action:** complete Finance payment/ledger operational actions, then continue into Selling/Listings. Production onboarding and persistent browser verification remain tracked open items.

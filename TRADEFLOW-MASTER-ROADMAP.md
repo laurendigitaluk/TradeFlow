@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.6  
+**Version:** 2.7  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -66,10 +66,14 @@ An external Stripe boundary is implemented in Supabase Edge Functions:
 
 The customer dashboard exposes **Pay now** for `pending_payment` orders and routes the customer to the server-created Stripe Checkout Session. Provider secrets are not placed in browser code.
 
-## Customer authentication repair — 16 September 2026
-During the first persistent checkout test, the customer dashboard loaded the authentication form but the **Sign in** action did not respond visibly. The deployed dashboard already contained the normal Supabase password-login controller, but the browser test exposed an unreliable authentication-handler path. A small capture-phase fallback was added as `customer-dashboard-auth-fix.js`. It uses only the public Supabase publishable key, performs the same password-token exchange, stores the normal TradeFlow session and reloads the dashboard so the existing portal controller restores the authenticated session. This is a browser reliability repair, not a replacement for Supabase Auth or an elevation of privilege.
+## Customer dashboard browser repair — 16 September 2026
+The first persistent customer checkout test showed that the customer dashboard rendered its authentication panel but the Sign in action gave no visible response. Investigation identified two browser-layer faults: the navigation controller was preventing native hash navigation while the portal was hidden, and the external authentication fallback remained an additional cached/deployment dependency.
 
-**Important:** Stripe configuration has been completed server-side, but the external payment path is still **BLUE / Implemented, verification open** until the persistent browser payment journey succeeds.
+The navigation controller was corrected so it only intercepts hash links once `#portal` is visible. The dashboard HTML was then hardened with an **inline capture-phase Supabase Auth fallback** so the Sign in action no longer depends on the separate authentication-fix JavaScript file being loaded correctly. The fallback uses only the public publishable key, performs the standard password-token exchange, stores the normal TradeFlow session and reloads the dashboard for the existing controller to restore the authenticated portal. No service-role credential is exposed.
+
+Latest dashboard repair commit: `d454c10730ed6b5e81c4eb817a21d1ef14463ae8` (`customer-dashboard.html`). Navigation repair remains in `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`.
+
+**Verification state:** Implemented; persistent browser confirmation still required.
 
 ## Selling / fulfilment operational chain
 Selling creates listings from `ready_for_sale` inventory. Customer checkout creates a `pending_payment` retail order and reserves the listing. Payment can be captured internally or routed through the external Stripe boundary. A confirmed paid order can then enter Fulfilment, followed by dispatch/delivery and return handling.
@@ -88,9 +92,6 @@ For every business domain trace:
 
 Do not mark a feature complete solely because code is committed. A transactional rollback test proves database behaviour, not a persistent browser journey.
 
-## Deliberately outside generic core
-GearCashOut specialist catalogue, evidence/research, AI research queue and specialist pricing structures remain outside TradeFlow unless explicitly added as modules.
-
 ## Documentation set
 - `TRADEFLOW-MASTER-ROADMAP.md`
 - `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
@@ -99,6 +100,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-External payment-provider architecture is **BLUE / Implemented**. The Stripe Edge Functions, payment-provider event idempotency, retry repair and customer Pay now path are deployed/committed. The first persistent browser test exposed a customer Sign in reliability fault; the authentication fallback repair is now deployed. The next test is to reload the customer dashboard, sign in, and proceed to Shop → Buy → Stripe Checkout. Shipping-provider integration, production onboarding and the full persistent Orders → Payment → Fulfilment → Returns browser journey remain open.
+The immediate customer dashboard navigation/authentication browser faults have been repaired in code. The next browser test is to hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears, then continue Shop → Buy → Stripe Checkout. External payment architecture is BLUE / Implemented with persistent payment verification still open. Shipping-provider integration and production onboarding remain open.
 
-**Next build action:** verify the repaired customer sign-in, then perform one persistent browser journey from customer checkout through confirmed payment, then continue into fulfilment and returns verification.
+**Next build action:** verify the repaired customer sign-in in the live browser. If successful, perform one persistent customer checkout/payment journey using a Stripe Sandbox test payment, verify the signed webhook updates payment/order/ledger state, then continue into fulfilment and returns verification.

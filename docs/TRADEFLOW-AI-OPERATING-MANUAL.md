@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.7  
+**Version:** 2.8  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -64,26 +64,18 @@ Finance UI creates payment/ledger records and uses the workflow authority for st
 
 `customer_create_order_payment()` provides the customer-side pending payment-record/idempotency boundary. It validates the authenticated customer owns the pending order, reuses an active pending/processing attempt, and permits a fresh payment record after a failed attempt.
 
-The external payment boundary is implemented with two deployed Supabase Edge Functions:
-- `create-stripe-checkout-session`: JWT-protected; validates the authenticated customer's order access, creates/reuses the pending payment record, generates an attempt-specific Stripe idempotency key, reuses an already-open Stripe Checkout Session where possible, otherwise creates a new Stripe Checkout Session server-side, and stores the Stripe session ID against the payment record. It requires the server-side `STRIPE_SECRET_KEY`.
-- `stripe-payment-webhook`: JWT verification is deliberately disabled because Stripe webhooks do not carry a TradeFlow user JWT. The function verifies the `stripe-signature` using `STRIPE_WEBHOOK_SECRET` and then calls the protected `process_external_payment_event()` database function.
-
-The database contains `payment_provider_events` for provider/event idempotency and `process_external_payment_event()` for provider-to-TradeFlow state reconciliation. The reconciliation function validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, updates payment status and, for a confirmed paid retail order, marks the order paid and creates the matching posted ledger credit.
+The external payment boundary is implemented with two deployed Supabase Edge Functions: `create-stripe-checkout-session` for JWT-protected server-side checkout creation and `stripe-payment-webhook` for signed Stripe event reconciliation through `process_external_payment_event()`.
 
 ### Stripe test configuration checkpoint — 16 September 2026
-TradeFlow now has a dedicated Stripe Sandbox within the existing Stripe account. The active **TradeFlow Payment Webhook** listens for `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `payment_intent.succeeded` and `payment_intent.payment_failed`.
+TradeFlow has a dedicated Stripe Sandbox within the existing Stripe account. The active TradeFlow Payment Webhook listens for the required checkout/payment events. The two Stripe test secrets are configured server-side and are not stored in browser code, GitHub, documentation or project memory.
 
-The TradeFlow Supabase Edge Function environment has both Stripe test credentials configured: the server-side Stripe test secret and the webhook signing secret. Secret values are not stored in browser code, GitHub, documentation or project memory.
-
-The retry hardening was added after inspection showed the previous checkout function reused one order-wide idempotency key. The database RPC now reuses active pending/processing attempts but does not let a failed attempt block a new attempt. The checkout Edge Function version 5 generates a fresh attempt-specific Stripe idempotency key and reuses an already-open checkout session when possible. This is intended to prevent both failed-attempt lockout and duplicate active checkout sessions.
-
-Configuration is complete for the Stripe test environment, but no persistent customer browser payment has yet been verified. External payment therefore remains **BLUE / Implemented, verification open**.
+Configuration is complete for the Stripe test environment, but persistent customer browser payment verification remains open.
 
 ## 10. Selling/Listings checkpoint — 061
 Selling workspace is implemented against the live schema. It loads active channels, selling-enabled categories and `ready_for_sale` inventory, creates draft listings, advances them to ready and uses the central workflow for subsequent listing lifecycle changes.
 
 ## 11. Retail Orders checkpoint — 062
-Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment advances an order to paid and creates its finance records transactionally. External customer payment now has a server-side Stripe Checkout boundary and signed webhook reconciliation path.
+Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment advances an order to paid and creates its finance records transactionally. External customer payment has a server-side Stripe Checkout boundary and signed webhook reconciliation path.
 
 ## 12. Fulfilment checkpoint
 Live inspection confirmed fulfilment has subscription-aware `fulfilment.view/manage` access and an existing central workflow. `fulfilment-dashboard.html` / `.js` provides subscriber creation and lifecycle controls.
@@ -102,11 +94,15 @@ Return lifecycle authority: `requested → authorised/rejected/closed → awaiti
 ## 14. Customer dashboard browser repair
 The persistent browser test exposed two browser-layer faults: the Sign in action had no visible response, and the navigation controller prevented native hash navigation while the authentication portal was hidden.
 
-The navigation controller was corrected so it only intercepts hash links after `#portal` is visible. To remove the separate authentication-fix file as a deployment/cache dependency, the dashboard HTML now contains an inline capture-phase Supabase Auth fallback. It uses only the public publishable key, performs the password-token exchange, stores `tradeflow_testlab_session`, and reloads the dashboard so the existing controller restores the authenticated session and calls `showAuth(false)`. No service-role credential is exposed.
+Navigation was corrected so hash links are intercepted only after `#portal` is visible. The dashboard HTML contains an inline capture-phase Supabase Auth fallback using only the public publishable key.
 
-The older `customer-dashboard-auth-fix.js` remains for traceability but is no longer required by the dashboard HTML. Latest repair commit: `d454c10730ed6b5e81c4eb817a21d1ef14463ae8`.
+The first fallback stored the token and forced a page reload. Browser testing showed that reload returned to the authentication panel, so the handoff was changed to an in-page event. After successful password-token exchange the inline fallback dispatches `tradeflow-auth-success`; the main controller adopts the session, validates `/auth/v1/user`, and calls `initialisePortal()` directly. This removes the reload as a failure boundary.
 
-**Verification state:** Implemented in GitHub; live browser confirmation remains open.
+Relevant commits: main controller `0e1a56cefd2f9c96c7005d4a76109cbb93dd1929`, dashboard HTML `b8fabeee759d10f8a7585b6e64d01610aec668f2`, navigation `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`.
+
+No service-role credential is exposed in browser code.
+
+**Verification state:** Implemented in GitHub; persistent live browser confirmation remains open.
 
 ## 15. Diagnostic standard
 Always record:
@@ -123,6 +119,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 18. Current stopping point — 16 September 2026
-The customer dashboard navigation/authentication browser faults have been repaired in code, but persistent live browser verification is still open. External payment architecture is **BLUE / Implemented, verification open**. The TradeFlow Stripe Sandbox, active webhook, two server-side Stripe test secrets, retry hardening and deployed Edge Functions are in place. Shipping-provider integration and production onboarding remain open.
+The customer dashboard authentication flow has been changed from reload-based session restoration to a direct in-page session handoff. Navigation is repaired. Persistent live browser confirmation remains open. External payment architecture is **BLUE / Implemented, verification open**. Stripe Sandbox configuration, webhook, server-side secrets and retry hardening are in place. Shipping-provider integration and production onboarding remain open.
 
 **Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then perform one persistent customer checkout/payment journey using a Stripe Sandbox test payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.

@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.3  
+**Version:** 2.4  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -26,6 +26,7 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - Do not mark a feature complete solely because code is committed.
 - Do not expose test-lab onboarding as production onboarding.
 - Never store secrets in docs or project memory.
+- Do not invent `module.finance`; finance uses permission checks and the live capability model actually present.
 
 ## 4. Verification states
 **Proposed → Implemented → Tested → Verified Live** are separate states. A commit is not live verification. A transactional rollback test proves database behaviour, not a persistent browser journey.
@@ -45,7 +46,7 @@ Development tenant insertion/test-lab onboarding remains separate from the requi
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 ## 7. Current operational chain
-**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → Fulfilment → Returns.**
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → Payment capture → Fulfilment → Returns.**
 
 The acquisition-to-finance/inventory handoff remains deliberately explicit because live inspection did not establish automatic status-driven creation of payment, ledger or inventory records.
 
@@ -57,29 +58,29 @@ Lifecycle: `received → inspection → testing → repair → ready_for_sale �
 ## 9. Finance checkpoint — 059–060
 059 applies permission-bound access to payment and ledger tables. 060 extends `transition_workflow_entity()` to payment and ledger entities and adds status-entry guards.
 
-Finance UI creates pending payment/ledger records and uses the workflow authority for status changes. No `module.finance` feature is to be invented.
+Finance UI creates payment/ledger records and uses the workflow authority for status changes. No `module.finance` feature is to be invented.
+
+New RPC `record_retail_order_payment()` provides an internal subscriber-controlled payment capture path. It requires authentication, `module.orders`, `finance.manage` and `orders.manage`; locks a `pending_payment` order; requires the payment to equal `amount_due`; creates an inbound paid `payment_records` row and matching posted credit `ledger_entries` row; sets the order to paid and clears amount due; then calls the central order workflow transition. The Orders UI calls this RPC for **Record payment & mark paid**. This is not an external payment gateway.
 
 ## 10. Selling/Listings checkpoint — 061
 Selling workspace is implemented against the live schema. It loads active channels, selling-enabled categories and `ready_for_sale` inventory, creates draft listings, advances them to ready and uses the central workflow for subsequent listing lifecycle changes.
 
 ## 11. Retail Orders checkpoint — 062
-Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the listing and records workflow transitions. Payment collection remains open.
+Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment now advances that order to paid and creates its finance records transactionally.
 
 ## 12. Fulfilment checkpoint
-Live inspection confirmed fulfilment has subscription-aware `fulfilment.view/manage` access and an existing central workflow. `fulfilment-dashboard.html` / `.js` now provides subscriber creation and lifecycle controls.
+Live inspection confirmed fulfilment has subscription-aware `fulfilment.view/manage` access and an existing central workflow. `fulfilment-dashboard.html` / `.js` provides subscriber creation and lifecycle controls.
 
 Lifecycle authority: `awaiting → label → dispatched → delivered`, with dispatched/delivered → returned.
 
-`guard_fulfilment_status_entry()` prevents direct client status edits. No carrier API, shipping-label provider or automatic fulfilment creation is assumed.
+`guard_fulfilment_status_entry()` prevents direct client status edits. No carrier API, shipping-label provider or automatic fulfilment creation is assumed. Customer visibility uses `customer_get_fulfilments()`.
 
 ## 13. Returns checkpoint
 Returns had overlapping legacy member/admin policies. These were removed so the subscription-aware returns policies are authoritative. `guard_return_status_entry()` prevents direct client status edits.
 
-`customer_request_return()` was recreated with the existing signature and hardened to require an authenticated active customer belonging to the tenant, with an order item belonging to that customer and an order in `paid`, `fulfilment` or `completed`. The new request enters `requested` and is recorded in workflow history.
+`customer_request_return()` requires an authenticated active customer belonging to the tenant, with an eligible order item and an order in `paid`, `fulfilment` or `completed`. The request enters `requested` and is recorded in workflow history. Customer visibility uses `customer_get_returns()` and the customer dashboard exposes return actions.
 
 Return lifecycle authority: `requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed`.
-
-`returns-dashboard.html` / `.js` provides subscriber review and lifecycle controls. Customer-facing return display/action UI is still open.
 
 ## 14. Diagnostic standard
 Always record:
@@ -96,6 +97,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 17. Current stopping point — 16 September 2026
-Fulfilment and Returns are **BLUE / Implemented, persistent browser verification open**. Customer return display/actions, payment integration, shipping-provider integration, production onboarding and final browser verification remain open.
+Customer return visibility/actions and internal retail payment capture are **BLUE / Implemented, persistent browser verification open**. External payment-provider integration, shipping-provider integration, production onboarding and final browser verification remain open.
 
-**Next safe action:** finish customer return visibility/actions, then payment integration and persistent browser verification.
+**Next safe action:** integrate an external payment-provider boundary without putting provider secrets in browser code, then perform persistent browser verification across Orders → Payment → Fulfilment → Returns.

@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.4  
+**Version:** 2.5  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -39,14 +39,14 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - Customer security: 34/34.
 - Customer subscription tests: Buying 17/17; Selling 17/17.
 - Staff security lab: 19/19.
-- Hardening sequence through Retail Orders: 044–062, followed by fulfilment/returns hardening.
+- Hardening sequence through Retail Orders: 044–062, followed by fulfilment/returns hardening and external payment boundary migrations.
 
 ## 6. Production onboarding remains OPEN
 Development tenant insertion/test-lab onboarding remains separate from the required production sequence:
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 ## 7. Current operational chain
-**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → Payment capture → Fulfilment → Returns.**
+**Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → External Payment → Fulfilment → Returns.**
 
 The acquisition-to-finance/inventory handoff remains deliberately explicit because live inspection did not establish automatic status-driven creation of payment, ledger or inventory records.
 
@@ -55,18 +55,28 @@ Inventory status entry is protected by `guard_inventory_asset_status_entry()` an
 
 Lifecycle: `received → inspection → testing → repair → ready_for_sale → listed → reserved → sold`, with supported return/write-off/archive branches.
 
-## 9. Finance checkpoint — 059–060
+## 9. Finance checkpoint — 059–060 plus external payment boundary
 059 applies permission-bound access to payment and ledger tables. 060 extends `transition_workflow_entity()` to payment and ledger entities and adds status-entry guards.
 
 Finance UI creates payment/ledger records and uses the workflow authority for status changes. No `module.finance` feature is to be invented.
 
-New RPC `record_retail_order_payment()` provides an internal subscriber-controlled payment capture path. It requires authentication, `module.orders`, `finance.manage` and `orders.manage`; locks a `pending_payment` order; requires the payment to equal `amount_due`; creates an inbound paid `payment_records` row and matching posted credit `ledger_entries` row; sets the order to paid and clears amount due; then calls the central order workflow transition. The Orders UI calls this RPC for **Record payment & mark paid**. This is not an external payment gateway.
+`record_retail_order_payment()` provides the internal subscriber-controlled payment capture path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`; locks a `pending_payment` retail order; requires payment equal to current `amount_due`; creates an inbound paid payment record and matching posted ledger credit; clears amount due and advances the order to `paid`. This is not an external gateway.
+
+`customer_create_order_payment()` provides the customer-side pending payment-record/idempotency boundary. It validates the authenticated customer owns the pending order and creates or reuses a pending payment record.
+
+The external payment boundary is implemented with two deployed Supabase Edge Functions:
+- `create-stripe-checkout-session`: JWT-protected; validates the authenticated customer's order access, creates/reuses the pending payment record, creates a Stripe Checkout Session server-side and stores the Stripe session ID against the payment record. It requires the server-side `STRIPE_SECRET_KEY`.
+- `stripe-payment-webhook`: JWT verification is deliberately disabled because Stripe webhooks do not carry a TradeFlow user JWT. The function verifies the `stripe-signature` using `STRIPE_WEBHOOK_SECRET` and then calls the protected `process_external_payment_event()` database function.
+
+The database now contains `payment_provider_events` for provider/event idempotency and `process_external_payment_event()` for provider-to-TradeFlow state reconciliation. The reconciliation function validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, updates payment status and, for a confirmed paid retail order, marks the order paid and creates the matching posted ledger credit.
+
+Stripe secrets are not stored in browser code or documentation. They have not yet been configured for this environment, so external payment remains **BLUE / Implemented, verification open**.
 
 ## 10. Selling/Listings checkpoint — 061
 Selling workspace is implemented against the live schema. It loads active channels, selling-enabled categories and `ready_for_sale` inventory, creates draft listings, advances them to ready and uses the central workflow for subsequent listing lifecycle changes.
 
 ## 11. Retail Orders checkpoint — 062
-Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment now advances that order to paid and creates its finance records transactionally.
+Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment advances an order to paid and creates its finance records transactionally. External customer payment now has a server-side Stripe Checkout boundary and signed webhook reconciliation path.
 
 ## 12. Fulfilment checkpoint
 Live inspection confirmed fulfilment has subscription-aware `fulfilment.view/manage` access and an existing central workflow. `fulfilment-dashboard.html` / `.js` provides subscriber creation and lifecycle controls.
@@ -97,6 +107,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 17. Current stopping point — 16 September 2026
-Customer return visibility/actions and internal retail payment capture are **BLUE / Implemented, persistent browser verification open**. External payment-provider integration, shipping-provider integration, production onboarding and final browser verification remain open.
+External payment architecture is **BLUE / Implemented, verification open**. The customer portal now exposes Pay now for pending-payment orders and calls the deployed Stripe Checkout boundary. Signed Stripe webhook reconciliation is deployed, provider event idempotency is stored in the database, and the internal subscriber payment path remains available. Stripe secrets/configuration and persistent browser payment verification remain open. Shipping-provider integration and production onboarding remain open.
 
-**Next safe action:** integrate an external payment-provider boundary without putting provider secrets in browser code, then perform persistent browser verification across Orders → Payment → Fulfilment → Returns.
+**Next safe action:** configure Stripe test-mode secrets, connect the webhook endpoint, run one persistent customer checkout/payment journey, verify the order/payment/ledger transitions, then continue into fulfilment and returns browser verification.

@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.5  
+**Version:** 1.7  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -31,41 +31,45 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 2 | Subscriptions & capability gating | GREEN | Capability layer implemented; Buying 17/17 and Selling 17/17 customer subscription tests recorded. |
 | 3 | Categories, fields & options | AMBER | Buying dynamic option validation hardened; complete category/UI audit remains. |
 | 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
-| 5 | Buying | BLUE | 049–051 hardened validation, submission events and authoritative workflow. Persistent UI flow remains unverified. |
+| 5 | Buying | BLUE | Customer submission and subscriber buying workspace implemented; persistent browser verification remains. |
 | 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
-| 7 | Trading Value / valuation | BLUE | 052 RLS plus 054–055 integrity/state-entry repairs. Full calculation/approval/UI audit remains. |
-| 8 | Offers & offer events | BLUE | 053–055 integrity repairs. Full lifecycle/UI remains. |
-| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened tenant access, source-offer uniqueness and status authority. Receipt/inspection/payment/inventory handoff remains. |
-| 10 | Fulfilment | AMBER | Operational workflow audit remains. |
-| 11 | Inventory | AMBER | Handoff is schema-connected but automatic creation was not found; audit remains. |
-| 12 | Selling/listings | AMBER | Lifecycle audit remains. |
-| 13 | Retail orders | AMBER | Customer boundary tested; complete workflow audit remains. |
-| 14 | Returns | AMBER | Full lifecycle audit remains. |
-| 15 | Finance/payment | AMBER | FKs exist but automatic posting was not found; audit/hardening remains. |
+| 7 | Trading Value / valuation | BLUE | 052 RLS plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
+| 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
+| 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; subscriber acquisition workspace now supports operational status progression and inventory hand-off. Live browser verification remains. |
+| 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
+| 11 | Inventory | BLUE | Subscriber inventory hand-off UI now creates linked received assets; dedicated inventory workspace and full lifecycle remain. |
+| 12 | Selling/listings | AMBER | Lifecycle remains to be built/audited. |
+| 13 | Retail orders | AMBER | Customer boundary tested; complete workflow remains. |
+| 14 | Returns | AMBER | Full lifecycle remains. |
+| 15 | Finance/payment | BLUE | Subscriber Finance workspace now exposes existing payment and ledger structures; posting/payment workflow and live verification remain. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
-| 19 | Public storefront / subscriber websites | BLUE | Website revision architecture exists; subscriber Website Builder now reads/saves drafts and publishes through the existing `publish_site_revision` service. Full public rendering, custom domains and customer-auth journey remain. |
+| 19 | Public storefront / subscriber websites | BLUE | Website revision architecture and public renderer implemented; full public read/auth/custom-domain journey remains. |
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains now have explicit authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
-## Subscriber website build checkpoint — 16 September 2026
-The existing website architecture was used rather than creating a second content store. The live database contains `tenant_site_state`, `site_revisions` and `published_site_index`, and the existing `public.publish_site_revision(p_tenant_id,p_revision_id)` service controls publication.
+## Customer-facing SaaS build checkpoint — 16 September 2026
+The build has moved from the prolonged broad audit into the subscriber/customer-facing SaaS layer while retaining the existing database security architecture.
 
-The GitHub Website Builder was connected to that architecture:
-- resolves the authenticated subscriber's active tenant membership, or accepts an explicit `tenant_id` when the account belongs to multiple tenants;
-- loads the tenant's current draft revision;
-- maps the builder's business name, headline, accent colour and template selection into `site_revisions.content` using `schema_version: 1`;
-- saves the draft through the existing RLS-protected `site_revisions` update path;
-- publishes through the existing `publish_site_revision` RPC rather than directly changing publication state;
-- after publication, reloads the newly-created current draft revision;
-- carries the selected tenant through the customer-dashboard preview link.
+Implemented in GitHub:
+- Website Builder connected to tenant site revisions and publication service.
+- Tenant-specific public storefront renderer.
+- Customer authentication/test-lab registration and tenant-specific dashboard.
+- Customer buying-request submission.
+- Customer published-offer Accept/Refuse actions using the existing secure RPCs.
+- Subscriber Buying workspace for review, valuation and offer publication.
+- Subscriber Acquisition workspace for acquisition/item lifecycle progression.
+- Inventory asset creation from received acquisition items with tenant-scoped source links.
+- Subscriber Finance workspace for existing payment and ledger records.
 
-Affected files:
-- `website-builder.html`
-- `website-builder.js`
+These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
-Verification state: **Implemented in GitHub; live authenticated browser verification still required.** No claim is made that the public storefront renderer or custom-domain routing is complete.
+## Acquisition → Finance → Inventory workflow position
+The live schema contains structural links from acquisitions to payment records and from acquisitions/inventory to ledger entries. Live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely from acquisition status changes. The new subscriber workspaces therefore use explicit user actions and existing authoritative workflow services rather than assuming automation.
+
+Current operational path:
+**Offer accepted → acquisition created → awaiting item → received → inspection → finalised → paid → completed**, with explicit inventory creation from the acquisition-item hand-off and explicit finance records rather than implicit status side effects.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
@@ -74,9 +78,6 @@ Required sequence:
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 Never create a `platform_owner` tenant role or permit self-claiming platform ownership.
-
-## Acquisition handoff finding
-The acquisition tables are structurally connected to inventory and finance, but live inspection did not find an automatic public function/trigger that creates inventory, payment or ledger records from acquisition status changes. This remains an implementation/verification item and is not assumed to exist.
 
 ## Verification standard
 For every business domain trace:
@@ -92,9 +93,9 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 - `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
 - `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
 
-Material changes must capture what/why, affected code/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Structured project memory/checkpoint data should also be updated where available.
+Material changes must capture what/why, affected code/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The core security checkpoints remain intact. The build has now moved from the prolonged domain audit into the subscriber/customer-facing SaaS layer. The first live-backed Website Builder path is implemented against the existing tenant website revision architecture.
+The security hardening baseline remains intact. The active build track is now the operational subscriber SaaS: Buying → Offers → Acquisitions → Finance/Inventory, followed by Selling, Listings, Orders, Fulfilment and Returns.
 
-**Next build action:** continue the subscriber website/customer experience: make the subscriber dashboard invoke the builder cleanly, then build the tenant-specific public storefront renderer and customer account/dashboard journey. Keep acquisition/inventory/finance handoff as a separate open workflow item rather than blocking the customer-facing build.
+**Next build action:** continue the dedicated Inventory workspace and connect its lifecycle to the existing acquisition hand-off, then complete Finance payment/ledger actions. Keep production onboarding and final browser verification as tracked open items rather than blocking forward development.

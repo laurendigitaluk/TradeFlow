@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 3.2  
+**Version:** 3.3  
 **Date:** 17 September 2026  
 **Project:** TradeFlow
 
@@ -60,7 +60,7 @@ Test Business A now contains the active, Buying-enabled and Selling-enabled `Dro
 ## 9. Inventory/media foundation
 Inventory remains protected by `guard_inventory_asset_status_entry()` and `transition_workflow_entity()`.
 
-New product creation is exposed in `inventory-dashboard.html` / `.js`. It creates a `received` inventory asset, assigns a category, stores dynamic property values and can upload multiple photographs.
+New product creation is exposed in `inventory-dashboard.html`. It creates a `received` inventory asset, assigns a category, stores dynamic property values and can upload multiple photographs.
 
 Media architecture:
 - private Storage bucket: `tradeflow-media`;
@@ -124,21 +124,40 @@ Repair commits:
 
 Browser verification remains open: hard refresh the Customer Dashboard, open **My Buying**, and confirm **Drones** appears in the Category selector.
 
-## 16. Diagnostic standard
+## 16. Subscriber dashboard loading repair — 17 September 2026
+The Categories, Inventory and Selling screenshots all showed their data controls stuck at `Loading…`. Inspection of the current GitHub source found the same malformed `esc()` quote mapping in the subscriber controllers. This is a JavaScript parse error, so the controllers never reached their Supabase requests.
+
+Repair approach:
+- `category-management.js` repaired in place.
+- `inventory-dashboard-fixed.js` created as a clean runtime and `inventory-dashboard.html` switched to it.
+- `selling-dashboard-fixed.js` created as a clean runtime and `selling-dashboard.html` switched to it.
+- The Inventory signed-URL request also explicitly sends `Content-Type: application/json`.
+- No subscription capability was enabled or changed to work around the fault.
+
+Commits:
+- Category: `11bcc0922f368918a26be6c7e8362109fde2ae4f`.
+- Inventory runtime: `ccfb93a889903131f24c2a9769b04b095e611c22`.
+- Inventory HTML: `22b17000105860bdadc03377b4828410d95f9e04`.
+- Selling runtime: `1692b3f2d7c512fc528f91ead22e07b6ccac0eec`.
+- Selling HTML: `693ef64cbba12540c9f32856224b0d20c831fb1d`.
+
+The live `private` schema `USAGE` repair remains in force. Browser verification is now the next checkpoint.
+
+## 17. Diagnostic standard
 Always record:
 **User action → page → front-end controller → Supabase call → DB object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Record actual filenames and database objects. If not inspected, write **Not yet audited**.
 
-## 17. Manual UI testing
+## 18. Manual UI testing
 One manual test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
-## 18. Change-control and memory
+## 19. Change-control and memory
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
 
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
-## 19. Current stopping point — 17 September 2026
-Customer authentication/controller is Verified Live. Category/property management, direct product creation, product photographs and media retention metadata are implemented. Test Business A has the `Drones` category. Customer category-loading repair is deployed but browser verification remains open.
+## 20. Current stopping point — 17 September 2026
+The shared subscriber JavaScript parse fault is repaired in Categories, Inventory and Selling. Browser verification remains open. Test Business A has the `Drones` category. Subscription capabilities have not been altered as part of this repair.
 
-**Next safe action:** hard-refresh Customer Dashboard → My Buying → confirm `Drones`; then continue Subscriber Dashboard → Categories & Properties → Property → Inventory Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox, verifying each stage before moving to the next.
+**Next safe action:** hard-refresh Categories and confirm `Drones`; then hard-refresh Inventory and confirm its Category dropdown loads; then hard-refresh Selling and confirm its Inventory asset, Sales channel and Category controls load. Only after these checks continue with Property → Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox, verifying each stage before moving to the next.

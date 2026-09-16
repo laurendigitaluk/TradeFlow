@@ -1,11 +1,13 @@
 /* TradeFlow customer-dashboard bootstrap.
- * The customer dashboard uses the Supabase publishable key only.
+ * The customer dashboard uses the TradeFlow Supabase publishable key only.
  * This file runs before the main dashboard controller so the controller
- * always has its test-lab connection key on first load. Authentication,
+ * always has the correct test-lab connection key on first load. Authentication,
  * navigation and sign-out remain owned by customer-dashboard.js.
  */
 (()=>{
-  const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+  const KEY='sb_publishable_Plc9kcyye1asKxTJOmGdhQ_dP_LX59o';
   const STORAGE='tradeflow_testlab_publishable_key';
-  if(!localStorage.getItem(STORAGE))localStorage.setItem(STORAGE,KEY);
+  // Replace any stale test-lab key from the previous repair so the main
+  // dashboard controller cannot initialise against the wrong Supabase project.
+  localStorage.setItem(STORAGE,KEY);
 })();

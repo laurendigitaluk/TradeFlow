@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.0  
+**Version:** 2.1  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -14,7 +14,7 @@ TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary 
 
 **TradeFlow Platform → Platform Owner → subscriber tenant → tenant owner/admin/staff → customers**
 
-Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate platform-level security boundary and is never a tenant role.
+Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separate platform-level security boundary and is never a tenant role.**
 
 ## Current environment
 - GitHub: `laurendigitaluk/TradeFlow`, branch `main`.
@@ -32,15 +32,15 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
 | 5 | Buying | BLUE | Customer submission and subscriber buying workspace implemented; persistent browser verification remains. |
 | 6 | Media/storage | AMBER | Exact ownership, object paths and access workflow remain to be audited. |
-| 7 | Trading Value / valuation | BLUE | 052 RLS plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
+| 7 | Trading Value / valuation | BLUE | 052 plus 054–055 integrity/state-entry repairs and subscriber valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; workspace supports lifecycle progression and explicit inventory hand-off. |
 | 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
-| 12 | Selling/listings | BLUE | Selling workspace now implemented: tenant-scoped listings, sales-channel/category/ready-inventory selection, creation and controlled listing lifecycle. Browser verification remains. |
-| 13 | Retail orders | AMBER | Customer boundary tested; complete workflow remains. |
+| 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
+| 13 | Retail orders | BLUE | 062 hardened; Orders workspace creates orders from published listings and controls order lifecycle. Customer-facing checkout remains to be completed. |
 | 14 | Returns | AMBER | Full lifecycle remains. |
-| 15 | Finance/payment | BLUE | 059 permission hardening plus 060 workflow authority; Finance workspace has payment/ledger creation and controlled status actions. Browser verification remains. |
+| 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening plus Finance workspace. Persistent browser verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -48,47 +48,43 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains now have explicit authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
-## Customer-facing SaaS build checkpoint — 16 September 2026
+## Customer-facing and subscriber operational build checkpoint — 16 September 2026
 Implemented in GitHub:
 - Website Builder and tenant-specific public storefront renderer.
 - Customer authentication/test-lab registration and tenant-specific dashboard.
 - Customer buying-request submission.
 - Customer published-offer Accept/Refuse actions using existing secure RPCs.
-- Subscriber Buying workspace for review, valuation and offer publication.
-- Subscriber Acquisition workspace for acquisition/item lifecycle progression.
+- Subscriber Buying, Acquisition, Inventory, Finance, Selling/Listings and Orders workspaces.
 - Explicit inventory creation from received acquisition items.
-- Dedicated Inventory workspace for tenant inventory listing, filtering, asset-detail editing and lifecycle transitions through `transition_workflow_entity()`.
-- Subscriber Finance workspace for payment and ledger records, with controlled creation and lifecycle actions through the existing workflow authority.
-- Dedicated Selling/Listings workspace using the existing `listings`, `sales_channels`, `categories` and `inventory_assets` model.
+- Selling listings created from `ready_for_sale` inventory and advanced through the central workflow authority.
+- Retail orders created from published listings, with linked order items and controlled status progression.
 
 These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
-## Acquisition → Finance → Inventory → Selling position
-The live schema contains structural links across these domains. Live inspection did not find an automatic trigger/function that creates payment, ledger, or inventory records merely from acquisition status changes. The operational handoff is therefore explicit.
+## Selling → Orders position
+Migration 061 hardens listings, listing events and sales channels to subscription/permission-aware policies and prevents direct listing status edits. The central workflow authority supports:
+**draft → ready → published → reserved/sold/delisted**, with reserved → published/sold/delisted.
 
-**Offer accepted → acquisition → receipt/inspection → finance records as required → inventory asset → ready for sale → listing.**
+The Selling workspace loads active channels, selling-enabled categories and ready-for-sale inventory, and creates draft listings before moving them to ready through the workflow RPC.
 
-Inventory authority: **received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with supported return/write-off/archive branches.
+Migration 062 hardens retail orders and order items to `orders.view/manage` plus `module.orders`; retail order trade-ins additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
 
-Listing authority: **draft → ready → published → reserved/sold/delisted**, with reserved able to return to published or progress to sold/delisted.
+The Orders workspace creates an `initiated` order from a published listing, creates the linked order item, then advances the order to `pending_payment`. It deliberately does **not** automatically reserve or sell the listing because the live schema does not establish that automatic handoff.
 
-## Selling/Listings implementation
-The new `selling-dashboard.html` / `selling-dashboard.js` workspace:
-- loads tenant listings with status filtering;
-- loads active tenant sales channels;
-- loads active tenant categories with `selling_enabled=true`;
-- offers only tenant inventory currently at `ready_for_sale` for new listings;
-- creates a listing in `draft` and immediately advances it to `ready` through `transition_workflow_entity()`;
-- exposes publish/reserve/sold/delist lifecycle actions through the same authoritative workflow RPC;
-- displays listing detail and inventory/channel/category links.
+Retail order lifecycle authority is:
+**initiated → pending_payment → paid → fulfilment → completed**, with supported cancellation/refund branches.
 
-The live database confirms `listings`, `listing_events`, `sales_channels` and the central `listing` workflow transitions, plus permission/subscription-aware RLS on listings, events and channels.
-
-No direct listing status PATCH is used by the workspace.
+## Acquisition → Finance → Inventory → Selling → Orders
+The live schema contains structural links between these domains, but automatic record creation must not be assumed. Explicit operational actions currently move the process forward:
+**Offer accepted → acquisition → receipt/inspection → finance/payment → inventory → ready_for_sale → listing → order.**
 
 ## Production onboarding — OPEN
-The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. Required sequence:
+The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
+
+Required sequence:
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
+
+Never create a `platform_owner` tenant role or permit self-claiming platform ownership.
 
 ## Verification standard
 For every business domain trace:
@@ -96,14 +92,17 @@ For every business domain trace:
 
 Do not mark a feature complete solely because code is committed. A transactional rollback test proves database behaviour, not a persistent browser journey.
 
+## Deliberately outside generic core
+GearCashOut specialist catalogue, evidence/research, AI research queue and specialist pricing structures remain outside TradeFlow unless explicitly added as modules.
+
 ## Documentation set
 - `TRADEFLOW-MASTER-ROADMAP.md`
 - `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
 - `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
 
-Material changes must capture what/why, affected code/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
+Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-Selling/Listings has now moved from AMBER build status to **BLUE / Implemented, browser verification open**. Finance workflow authority is also hardened through migration 060.
+Selling/Listings and Retail Orders operational UI work is implemented in GitHub. No persistent browser journey has yet been marked verified for these new actions.
 
-**Next build action:** continue the Selling operational layer into retail orders/customer checkout, using the existing listing → order → fulfilment → returns architecture. Do not invent automatic handoffs where the live schema does not establish them.
+**Next build action:** continue into fulfilment and returns, while retaining customer checkout completion, production onboarding and persistent browser verification as tracked open items.

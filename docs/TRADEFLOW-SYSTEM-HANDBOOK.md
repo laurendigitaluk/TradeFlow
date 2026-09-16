@@ -1,8 +1,8 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.1  
-**Date:** 16 September 2026  
+**Version:** 3.2  
+**Date:** 17 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
@@ -118,14 +118,15 @@ The dashboard HTML contains an inline capture-phase Supabase Auth fallback using
 
 The controller was loaded synchronously before the inline fallback. The remaining failure was then identified in live GitHub source: the `esc()` helper contained an incorrectly escaped quote key, producing invalid JavaScript. Correcting the helper and cache-busting the controller to `v11` resolved the fault.
 
-Verified browser result: authentication succeeds, the portal remains visible, the customer controller executes and the previous “customer controller did not load” message is gone.
+A subsequent category-loading fault was traced to `loadPortalData()` using one `Promise.all()` across optional modules. Test Business A currently lacks `module.orders`, so `customer_get_orders()` can reject before the controller reaches its category-loading call. The category loader is now also present in `customer-dashboard-nav.js`, independent of the optional-module aggregate, and is triggered after the portal becomes visible.
 
-Latest repair commits:
-- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
-- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
-- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
+Test Business A now has the live category `Drones` with Buying and Selling enabled. The browser verification step is **hard refresh → My Buying → Category → confirm `Drones` appears**.
 
-No service-role credential is exposed in browser code.
+Latest category-loading repair commits:
+- `1aa84323f91ad8b5971d7cd4025e493ccf23f7ba`
+- `38355ccfbe4258df39fd4dd5cb5b59b1daa5b469`
+
+Verified browser result for this repair remains **open** until the user's browser confirms the dropdown.
 
 ## 17. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
@@ -138,7 +139,7 @@ One browser test at a time: exact URL → exact account → exact action → exp
 ## 19. Documentation/change control
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
-## 20. Current stopping point — 16 September 2026
-Customer authentication/controller is now Verified Live. The new product foundation is implemented but browser verification remains open.
+## 20. Current stopping point — 17 September 2026
+Customer authentication/controller remains Verified Live. The new category/product/media path is implemented. The `Drones` category exists for Test Business A. Customer category-loading repair is deployed but browser verification remains open.
 
-**Next action:** in Test Business A, create a category, add a product property, add a product with a photograph, move it to `ready_for_sale`, create/publish a listing and confirm it appears in Customer Shop. Then run the Stripe Sandbox transaction and verify payment/order/ledger reconciliation.
+**Next action:** hard-refresh Customer Dashboard and confirm `Drones` in My Buying. Then continue in the Subscriber Dashboard with Category → Property → Product → Photograph → Ready for Sale → Listing → Customer Shop, followed by Stripe Sandbox verification.

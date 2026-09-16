@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.5  
+**Version:** 2.6  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -65,15 +65,20 @@ Lifecycle: `received → inspection → testing → repair → ready_for_sale �
 
 Finance workspace creates payment/ledger records and routes status changes through the workflow RPC. No automatic payment or ledger creation is inferred from acquisition status.
 
-`record_retail_order_payment()` provides the internal subscriber-controlled payment capture path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`, locks a `pending_payment` retail order, requires payment equal to current `amount_due`, creates a paid inbound payment record and matching posted ledger credit, clears amount due and advances the order to `paid`. This remains a manual/internal payment path.
+`record_retail_order_payment()` provides the internal subscriber-controlled payment capture path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`, locks a `pending_payment` order, requires payment equal to current `amount_due`, creates a paid inbound payment record and matching posted ledger credit, clears amount due and advances the order to `paid`. This remains a manual/internal payment path.
 
-`customer_create_order_payment()` provides the customer-side pending payment-record/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order and creates or reuses a pending payment record.
+`customer_create_order_payment()` provides the customer-side pending payment-record/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order, reuses an active pending/processing attempt, and permits a fresh payment record after a failed attempt.
 
-The external Stripe boundary is implemented in Supabase Edge Functions. `create-stripe-checkout-session` requires a customer JWT and creates the Stripe Checkout Session server-side using `STRIPE_SECRET_KEY`; browser code never receives the Stripe secret. `stripe-payment-webhook` has JWT verification disabled because Stripe cannot supply a TradeFlow user JWT; it instead verifies the Stripe signature using `STRIPE_WEBHOOK_SECRET` before calling the protected `process_external_payment_event()` database function.
+The external Stripe boundary is implemented in Supabase Edge Functions. `create-stripe-checkout-session` requires a customer JWT and creates the Stripe Checkout Session server-side using `STRIPE_SECRET_KEY`; browser code never receives the Stripe secret. The current deployed version generates a fresh attempt-specific Stripe idempotency key, while reusing an already-open Stripe Checkout Session for an active payment attempt to avoid duplicate active sessions. `stripe-payment-webhook` has JWT verification disabled because Stripe cannot supply a TradeFlow user JWT; it instead verifies the Stripe signature using `STRIPE_WEBHOOK_SECRET` before calling the protected `process_external_payment_event()` database function.
 
 `payment_provider_events` provides provider/event idempotency. `process_external_payment_event()` validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, updates the payment state and, on a confirmed paid retail order, updates the order to `paid` and creates the corresponding posted ledger credit.
 
-Stripe secrets have **not** yet been configured in this environment and no real/test-mode payment has yet been browser-verified. Therefore the external provider path remains BLUE / Implemented, verification open.
+### Stripe test configuration checkpoint — 16 September 2026
+TradeFlow now has a dedicated Stripe Sandbox within the existing Stripe account. The active **TradeFlow Payment Webhook** listens for `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `payment_intent.succeeded` and `payment_intent.payment_failed`.
+
+The TradeFlow Supabase Edge Function environment has both Stripe test credentials configured: the server-side Stripe test secret and the webhook signing secret. Secret values are not stored in browser code, GitHub, documentation or project memory.
+
+This is configuration evidence only. No persistent customer browser payment has yet been verified, so the external payment path remains **BLUE / Implemented, verification open**.
 
 ## 11. Selling / Listings
 061 hardens `listings`, `listing_events` and `sales_channels` to subscription/permission-aware policies and protects listing status entry with `guard_listing_status_entry()`.
@@ -123,6 +128,6 @@ After each material change record what changed, why, affected files/backend obje
 ## 18. Current stopping point — 16 September 2026
 The operational chain now includes **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → External Payment boundary → Fulfilment → Returns**.
 
-External payment architecture is **BLUE / Implemented**. Edge Functions are deployed, payment-provider event idempotency is in the database, and the customer portal has a Pay now path. Stripe secrets/configuration and persistent browser verification remain open. Shipping-provider integration and production onboarding also remain open.
+External payment architecture is **BLUE / Implemented**. TradeFlow Stripe Sandbox configuration is complete, the active webhook is connected, the two Stripe test secrets are stored server-side, and payment retry handling has been hardened. Persistent browser verification remains open. Shipping-provider integration and production onboarding also remain open.
 
-**Next build action:** configure Stripe in test mode and perform one persistent browser journey from customer checkout through confirmed payment, then continue into fulfilment and returns verification.
+**Next build action:** perform one persistent customer checkout through Stripe Sandbox using a Stripe test payment, verify the signed webhook updates the payment/order/ledger state, then continue into fulfilment and returns verification.

@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 2.7  
+**Version:** 2.8  
 **Date:** 16 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -69,57 +69,35 @@ Finance workspace creates payment/ledger records and routes status changes throu
 
 `customer_create_order_payment()` provides the customer-side pending payment-record/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order, reuses an active pending/processing attempt, and permits a fresh payment record after a failed attempt.
 
-The external Stripe boundary is implemented in Supabase Edge Functions. `create-stripe-checkout-session` requires a customer JWT and creates the Stripe Checkout Session server-side using `STRIPE_SECRET_KEY`; browser code never receives the Stripe secret. The current deployed version generates a fresh attempt-specific Stripe idempotency key, while reusing an already-open Stripe Checkout Session for an active payment attempt to avoid duplicate active sessions. `stripe-payment-webhook` has JWT verification disabled because Stripe cannot supply a TradeFlow user JWT; it instead verifies the Stripe signature using `STRIPE_WEBHOOK_SECRET` before calling the protected `process_external_payment_event()` database function.
+The external Stripe boundary is implemented in Supabase Edge Functions. `create-stripe-checkout-session` requires a customer JWT and creates the Stripe Checkout Session server-side using `STRIPE_SECRET_KEY`; browser code never receives the Stripe secret. `stripe-payment-webhook` has JWT verification disabled because Stripe webhooks do not carry a TradeFlow user JWT; it instead verifies the `stripe-signature` using `STRIPE_WEBHOOK_SECRET` before calling the protected `process_external_payment_event()` database function.
 
 `payment_provider_events` provides provider/event idempotency. `process_external_payment_event()` validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, updates the payment state and, on a confirmed paid retail order, updates the order to `paid` and creates the corresponding posted ledger credit.
 
 ### Stripe test configuration checkpoint — 16 September 2026
-TradeFlow now has a dedicated Stripe Sandbox within the existing Stripe account. The active **TradeFlow Payment Webhook** listens for `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `payment_intent.succeeded` and `payment_intent.payment_failed`.
+TradeFlow has a dedicated Stripe Sandbox within the existing Stripe account. The active TradeFlow Payment Webhook listens for the required checkout/payment events. The two Stripe test secrets are configured server-side and are not stored in browser code, GitHub, documentation or project memory.
 
-The TradeFlow Supabase Edge Function environment has both Stripe test credentials configured: the server-side Stripe test secret and the webhook signing secret. Secret values are not stored in browser code, GitHub, documentation or project memory.
-
-This is configuration evidence only. No persistent customer browser payment has yet been verified, so the external payment path remains **BLUE / Implemented, verification open**.
+Configuration is complete for the Stripe test environment, but persistent customer browser payment verification remains open.
 
 ## 11. Selling / Listings
-061 hardens `listings`, `listing_events` and `sales_channels` to subscription/permission-aware policies and protects listing status entry with `guard_listing_status_entry()`.
-
-`selling-dashboard.html` / `.js` loads active channels, selling-enabled categories and `ready_for_sale` inventory; it creates listings in `draft`, advances them to `ready`, and exposes the authoritative listing lifecycle.
-
-Direct listing status PATCH is deliberately not used.
+061 hardens listings and related access; selling creates listings from ready-for-sale inventory and uses workflow authority for status changes.
 
 ## 12. Retail Orders
-062 hardens `retail_orders` and `retail_order_items` to `orders.view/manage` plus `module.orders`. Retail order trade-in rows additionally require `module.trade_in`. Direct retail-order status changes are blocked by `guard_retail_order_status_entry()`.
-
-Subscriber Orders creates an `initiated` order from a published listing, creates its linked order item and advances it to `pending_payment`. Internal subscriber payment uses `record_retail_order_payment()`; external customer payment uses the Stripe Checkout boundary.
-
-Customer checkout is backed by `customer_get_store_listings()` and `customer_create_retail_order()`. An authenticated active customer may buy only a currently published listing; checkout creates a `pending_payment` order and linked item, reserves the published listing and records workflow transitions.
-
-The customer dashboard now shows **Pay now** for `pending_payment` orders. The browser calls the authenticated `create-stripe-checkout-session` Edge Function and is redirected to the provider-hosted checkout page. The browser does not create or trust payment amounts independently.
+062 hardens retail order access and status entry. Subscriber Orders creates an order from a published listing and advances it to pending payment. Customer checkout creates a pending-payment order, reserves the listing and uses the external Stripe boundary for payment.
 
 ## 13. Fulfilment
-Fulfilment retains subscription-aware access through `fulfilment.view/manage` plus `module.fulfilment`. The new `fulfilment-dashboard.html` / `.js` creates fulfilment records for paid/fulfilment orders and exposes controlled status progression through `transition_workflow_entity()`.
-
-Lifecycle authority: **awaiting → label → dispatched → delivered**, with dispatched/delivered → returned.
-
-Direct fulfilment status edits are blocked by `guard_fulfilment_status_entry()`. No carrier API, shipping-label provider or automatic fulfilment creation is assumed.
-
-Customer dashboard uses secure `customer_get_fulfilments()` visibility.
+Fulfilment retains subscription-aware access and controlled lifecycle progression. No carrier API or automatic fulfilment creation is assumed. Customer visibility uses secure `customer_get_fulfilments()`.
 
 ## 14. Returns
-Returns legacy broad member/admin policies have been removed. Subscription-aware returns policies are now authoritative, requiring the live permission/capability conditions. Direct return status edits are blocked by `guard_return_status_entry()`.
-
-`customer_request_return()` validates the authenticated active customer against the tenant and order item, and permits retail return requests only where the customer's order is `paid`, `fulfilment` or `completed`. Requests enter `requested` and are recorded in workflow history. Customer dashboard uses secure `customer_get_returns()` visibility and exposes return-request actions.
-
-Return lifecycle authority: **requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed**.
-
-`returns-dashboard.html` / `.js` provides the subscriber operational review and status controls.
+Returns legacy broad policies have been removed and direct status edits are blocked. `customer_request_return()` validates customer ownership and eligible order states. Customer visibility uses secure `customer_get_returns()`.
 
 ## 15. Customer dashboard browser repair
-The persistent browser test exposed a dashboard-layer fault before payment verification. The authentication panel rendered, but Sign in did not respond visibly. The navigation controller also intercepted hash links while `#portal` was hidden, making the page appear inert.
+The browser test exposed two faults: Sign in initially produced no visible response, and navigation was intercepting hashes while the portal was hidden. Navigation was corrected to leave native hash navigation available until authentication succeeds.
 
-The navigation controller was corrected so hash links are intercepted only when the authenticated portal is visible. The latest dashboard HTML now contains an inline capture-phase Supabase Auth fallback. This fallback uses only the public publishable key, performs the password-token exchange, stores `tradeflow_testlab_session` and reloads the page so the existing controller can restore the session and execute `showAuth(false)`. No service-role credential is exposed.
+The dashboard HTML now contains an inline capture-phase Supabase Auth fallback. The first fallback version saved the token and forced a reload; the browser returned to the sign-in panel, so the session handoff was changed to an in-page event. After a successful password-token exchange, the inline fallback dispatches `tradeflow-auth-success`. The main controller listens for that event, adopts the session, validates `/auth/v1/user`, and calls `initialisePortal()` directly. This removes the reload as a failure boundary.
 
-The earlier external `customer-dashboard-auth-fix.js` remains in the repository for traceability, but the dashboard no longer depends on that separate file for Sign in. The authoritative current HTML repair is commit `d454c10730ed6b5e81c4eb817a21d1ef14463ae8`.
+Latest main controller commit: `0e1a56cefd2f9c96c7005d4a76109cbb93dd1929`. Latest dashboard HTML commit: `b8fabeee759d10f8a7585b6e64d01610aec668f2`. Navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`.
+
+No service-role credential is exposed in browser code.
 
 **Verification state:** Implemented in GitHub; persistent live browser confirmation remains open.
 
@@ -135,8 +113,6 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what changed, why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 19. Current stopping point — 16 September 2026
-The operational chain now includes **Buying → Valuation → Offer → Customer response → Acquisition → Finance/Payment → Inventory → Selling/Listing → Retail Order → Customer checkout → External Payment boundary → Fulfilment → Returns**.
+Customer dashboard authentication and navigation are repaired in code, with the reload-based session restoration replaced by a direct in-page session handoff. Persistent live browser confirmation remains open. External payment architecture is BLUE / Implemented, with Stripe Sandbox configuration complete and persistent payment verification still open. Shipping-provider integration and production onboarding remain open.
 
-The immediate customer dashboard navigation/authentication faults have been repaired in code. External payment architecture is **BLUE / Implemented** and Stripe Sandbox configuration is complete, but persistent browser payment verification remains open. Shipping-provider integration and production onboarding also remain open.
-
-**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then perform one persistent Shop → Buy → Stripe Sandbox payment journey and verify the signed webhook updates payment/order/ledger state.
+**Next build action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state.

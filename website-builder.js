@@ -11,66 +11,14 @@ const $=id=>document.getElementById(id);
 const name=$('business-name'),headline=$('headline'),accent=$('accent');
 const brand=$('preview-brand'),title=$('preview-headline'),status=$('status');
 function setStatus(text,type=''){status.textContent=text||'';status.dataset.type=type;}
-function render(){brand.textContent=name.value||'Your Business';title.textContent=headline.value||'Buy, sell and trade with us';document.documentElement.style.setProperty('--accent',accent.value);}
+function render(){brand.textContent=name.value||'Your Business';title.textContent=headline.value||'Buy, sell and trade with us';document.documentElement.style.setProperty('--accent',accent.value);const target=`customer-dashboard.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`;if($('preview-login'))$('preview-login').href=target;if($('preview-site'))$('preview-site').href=`public-site.html?tenant_id=${encodeURIComponent(tenantId||'')}`;}
 function applyTemplate(template){if(template==='business')headline.value='A better way to buy and sell';if(template==='marketplace')headline.value='Buy, sell and trade with confidence';if(template==='services')headline.value='Professional service, made simple';render();}
-async function api(path,options={}){
-  if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow sign-in page first.');
-  const headers=new Headers(options.headers||{});headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');
-  if(session?.access_token)headers.set('Authorization',`Bearer ${session.access_token}`);
-  const response=await fetch(`${SUPABASE_URL}${path}`,{...options,headers});
-  const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
-  if(!response.ok){const detail=body?.msg||body?.message||body?.error_description||body?.error||text||`HTTP ${response.status}`;const error=new Error(detail);error.status=response.status;throw error;}
-  return body;
-}
-async function restoreSession(){
-  const saved=localStorage.getItem(SESSION_STORAGE);if(!saved)throw new Error('No TradeFlow session found. Sign in before opening the Website Builder.');
-  session=JSON.parse(saved);if(!session?.access_token)throw new Error('Saved TradeFlow session is invalid.');
-  session.user=await api('/auth/v1/user');
-}
-async function resolveTenant(){
-  if(tenantId){
-    const rows=await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(tenantId)}&user_id=eq.${encodeURIComponent(session.user.id)}&status=eq.active`,{method:'GET'});
-    if(!Array.isArray(rows)||rows.length!==1)throw new Error('You do not have an active membership for this subscriber business.');
-    return tenantId;
-  }
-  const rows=await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&user_id=eq.${encodeURIComponent(session.user.id)}&status=eq.active`,{method:'GET'});
-  if(!Array.isArray(rows)||rows.length===0)throw new Error('No active subscriber business membership was found for this account.');
-  if(rows.length>1)throw new Error('This account belongs to more than one business. Open the Website Builder with the required tenant_id.');
-  tenantId=rows[0].tenant_id;return tenantId;
-}
-function buildContent(){
-  return {schema_version:1,site:{name:name.value.trim()||'Your Business',pages:[],theme:{accent:accent.value},homepage:{headline:headline.value.trim()||'Buy, sell and trade with us'},navigation:[{label:'Home',path:'/'},{label:'Buy',path:'/buy'},{label:'Sell',path:'/sell'},{label:'Contact',path:'/contact'},{label:'Customer Login',path:'/customer'}],category_manifest:[],template:requestedTemplate||'customised'}};
-}
-function loadContent(content){
-  const site=content?.site||{};name.value=site.name||'Your Business';headline.value=site.homepage?.headline||'Buy, sell and trade with us';accent.value=site.theme?.accent||'#c46a2b';render();
-}
-async function loadDraft(){
-  const rows=await api(`/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'GET'});
-  if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');
-  draftRevisionId=rows[0].draft_revision_id;
-  const drafts=await api(`/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.${encodeURIComponent(tenantId)}&id=eq.${encodeURIComponent(draftRevisionId)}&status=eq.draft`,{method:'GET'});
-  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
-  loadContent(drafts[0].content);
-  if(requestedTemplate)applyTemplate(requestedTemplate);
-  setStatus(`Draft revision ${drafts[0].revision_number} loaded.`,'success');
-}
-async function saveDraft(){
-  if(!draftRevisionId)await loadDraft();
-  setStatus('Saving website draft…');
-  await api(`/rest/v1/site_revisions?id=eq.${encodeURIComponent(draftRevisionId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});
-  setStatus('Website draft saved to TradeFlow.','success');
-}
-async function publish(){
-  if(!draftRevisionId)await loadDraft();
-  setStatus('Publishing website…');
-  await api('/rest/v1/rpc/publish_site_revision',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_revision_id:draftRevisionId})});
-  await loadDraft();
-  setStatus('Website published. A new draft revision is now ready for further edits.','success');
-}
-[name,headline,accent].forEach(el=>el.addEventListener('input',render));
-document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>{applyTemplate(button.dataset.template);setStatus(`${button.textContent} template selected. Save the draft when ready.`);}));
-$('save-draft').addEventListener('click',()=>saveDraft().catch(error=>setStatus(error.message||String(error),'error')));
-$('publish').addEventListener('click',()=>publish().catch(error=>setStatus(error.message||String(error),'error')));
-$('preview-customer').addEventListener('click',()=>window.location.href=`customer-dashboard.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`);
-(async()=>{try{await restoreSession();await resolveTenant();await loadDraft();}catch(error){setStatus(error.message||String(error),'error');}})();
-render();
+async function api(path,options={}){if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow sign-in page first.');const headers=new Headers(options.headers||{});headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');if(session?.access_token)headers.set('Authorization',`Bearer ${session.access_token}`);const response=await fetch(`${SUPABASE_URL}${path}`,{...options,headers});const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}if(!response.ok){const detail=body?.msg||body?.message||body?.error_description||body?.error||text||`HTTP ${response.status}`;const error=new Error(detail);error.status=response.status;throw error;}return body;}
+async function restoreSession(){const saved=localStorage.getItem(SESSION_STORAGE);if(!saved)throw new Error('No TradeFlow session found. Sign in before opening the Website Builder.');session=JSON.parse(saved);if(!session?.access_token)throw new Error('Saved TradeFlow session is invalid.');session.user=await api('/auth/v1/user');}
+async function resolveTenant(){if(tenantId){const rows=await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&tenant_id=eq.${encodeURIComponent(tenantId)}&user_id=eq.${encodeURIComponent(session.user.id)}&status=eq.active`,{method:'GET'});if(!Array.isArray(rows)||rows.length!==1)throw new Error('You do not have an active membership for this subscriber business.');return tenantId;}const rows=await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&user_id=eq.${encodeURIComponent(session.user.id)}&status=eq.active`,{method:'GET'});if(!Array.isArray(rows)||rows.length===0)throw new Error('No active subscriber business membership was found for this account.');if(rows.length>1)throw new Error('This account belongs to more than one business. Open the Website Builder with the required tenant_id.');tenantId=rows[0].tenant_id;return tenantId;}
+function buildContent(){return {schema_version:1,site:{name:name.value.trim()||'Your Business',pages:[],theme:{accent:accent.value},homepage:{headline:headline.value.trim()||'Buy, sell and trade with us'},navigation:[{label:'Home',path:'/'},{label:'Buy',path:'/buy'},{label:'Sell',path:'/sell'},{label:'Contact',path:'/contact'},{label:'Customer Login',path:'/customer'}],category_manifest:[],template:requestedTemplate||'customised'}};}
+function loadContent(content){const site=content?.site||{};name.value=site.name||'Your Business';headline.value=site.homepage?.headline||'Buy, sell and trade with us';accent.value=site.theme?.accent||'#c46a2b';render();}
+async function loadDraft(){const rows=await api(`/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'GET'});if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');draftRevisionId=rows[0].draft_revision_id;const drafts=await api(`/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.${encodeURIComponent(tenantId)}&id=eq.${encodeURIComponent(draftRevisionId)}&status=eq.draft`,{method:'GET'});if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');loadContent(drafts[0].content);if(requestedTemplate)applyTemplate(requestedTemplate);setStatus(`Draft revision ${drafts[0].revision_number} loaded.`,'success');}
+async function saveDraft(){if(!draftRevisionId)await loadDraft();setStatus('Saving website draft…');await api(`/rest/v1/site_revisions?id=eq.${encodeURIComponent(draftRevisionId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});setStatus('Website draft saved to TradeFlow.','success');}
+async function publish(){if(!draftRevisionId)await loadDraft();setStatus('Publishing website…');await api('/rest/v1/rpc/publish_site_revision',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_revision_id:draftRevisionId})});await loadDraft();setStatus('Website published. A new draft revision is now ready for further edits.','success');}
+[name,headline,accent].forEach(el=>el.addEventListener('input',render));document.querySelectorAll('[data-template]').forEach(button=>button.addEventListener('click',()=>{applyTemplate(button.dataset.template);setStatus(`${button.textContent} template selected. Save the draft when ready.`);}));$('save-draft').addEventListener('click',()=>saveDraft().catch(error=>setStatus(error.message||String(error),'error')));$('publish').addEventListener('click',()=>publish().catch(error=>setStatus(error.message||String(error),'error')));$('preview-customer').addEventListener('click',()=>window.location.href=`customer-dashboard.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`);(async()=>{try{await restoreSession();await resolveTenant();await loadDraft();}catch(error){setStatus(error.message||String(error),'error');}})();render();

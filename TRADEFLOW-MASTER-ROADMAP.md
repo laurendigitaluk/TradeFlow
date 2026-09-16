@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 2.5  
+**Version:** 2.6  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -38,9 +38,9 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
 | 11 | Inventory | BLUE | 058 hardened; dedicated workspace manages assets and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and controls listing lifecycle. Browser verification remains. |
-| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; provider configuration and browser verification remain. |
+| 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; persistent browser verification remains. |
 | 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; customer visibility/actions implemented. Browser verification remains. |
-| 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe secrets/configuration and live payment verification remain. |
+| 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe test secrets/webhook are now configured; persistent payment verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -56,17 +56,28 @@ Customer return creation is hardened through `customer_request_return()`: an aut
 ## Retail payment capture checkpoint — 16 September 2026
 `record_retail_order_payment()` remains the internal subscriber-controlled payment path. It requires authentication, the tenant `orders` capability, `finance.manage` and `orders.manage`, locks the target `pending_payment` order, requires payment equal to current `amount_due`, creates a paid inbound payment record and matching posted ledger credit, clears amount due and advances the order to `paid`.
 
-A customer payment-intent RPC, `customer_create_order_payment()`, already provides the customer-side payment-record creation/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order and creates or reuses a pending payment record.
+A customer payment-intent RPC, `customer_create_order_payment()`, provides the customer-side payment-record creation/idempotency boundary. It validates the authenticated customer owns the `pending_payment` order and creates or reuses an active pending/processing payment attempt. Failed attempts no longer block a later retry.
 
-An external Stripe boundary is now implemented in Supabase Edge Functions:
+The external Stripe boundary is implemented in Supabase Edge Functions:
 - `create-stripe-checkout-session` requires a customer JWT, validates customer order ownership through `customer_get_orders()`, creates/reuses the pending payment record and creates a Stripe Checkout Session using the server-side `STRIPE_SECRET_KEY` only.
 - `stripe-payment-webhook` accepts Stripe webhooks without a user JWT, verifies the Stripe signature using `STRIPE_WEBHOOK_SECRET`, and delegates event processing to `process_external_payment_event()`.
 - `payment_provider_events` provides provider/event idempotency.
 - `process_external_payment_event()` validates tenant/payment identity, provider payment ID, amount and currency, records payment workflow history, marks the payment paid/failed and, for a paid retail order, moves the order to `paid` and creates the matching posted ledger credit.
 
-The customer dashboard now exposes **Pay now** for `pending_payment` orders and routes the customer to the server-created Stripe Checkout Session. Provider secrets are not placed in browser code.
+The customer dashboard exposes **Pay now** for `pending_payment` orders and routes the customer to the server-created Stripe Checkout Session. Provider secrets are not placed in browser code.
 
-**Important:** Stripe configuration has not been completed or live-tested yet. Until the Stripe secret and webhook secret are configured and a real/test-mode payment is verified end-to-end, external payment remains **BLUE / Implemented, verification open**.
+### Stripe test configuration checkpoint — 16 September 2026
+A dedicated **TradeFlow Stripe Sandbox** has been configured in the existing Stripe account. The sandbox webhook destination **TradeFlow Payment Webhook** is active and listens for the four required events:
+- `checkout.session.completed`
+- `checkout.session.async_payment_succeeded`
+- `payment_intent.succeeded`
+- `payment_intent.payment_failed`
+
+The TradeFlow Supabase Edge Function environment now contains the Stripe test secret and webhook signing secret. The actual secret values are never stored in GitHub, documentation or project memory.
+
+The payment retry boundary was hardened after inspection showed the previous checkout function reused a single order-wide idempotency key. `customer_create_order_payment()` now reuses an active pending/processing attempt but permits a new payment record after a failed attempt, and `create-stripe-checkout-session` version 5 generates a fresh attempt-specific Stripe idempotency key and reuses an already-open Stripe Checkout Session when appropriate. This prevents failed attempts from blocking legitimate retries while avoiding duplicate active checkout sessions from repeated clicks.
+
+**Important:** Stripe configuration is now complete for the test environment, but no persistent browser payment has yet been verified. External payment therefore remains **BLUE / Implemented, verification open** until the customer checkout, Stripe test payment, signed webhook, payment record, order transition and ledger entry are observed end-to-end.
 
 ## Selling / fulfilment operational chain
 Selling creates listings from `ready_for_sale` inventory. Customer checkout creates a `pending_payment` retail order and reserves the listing. Payment can now be captured internally or routed through the external Stripe boundary. A confirmed paid order can then enter Fulfilment, followed by dispatch/delivery and return handling.
@@ -96,6 +107,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-External payment-provider architecture is **BLUE / Implemented**. The Stripe Edge Functions, payment-provider event idempotency and customer Pay now path are deployed/committed, but Stripe secrets/configuration and persistent browser payment verification remain open. Shipping-provider integration, production onboarding and the full persistent Orders → Payment → Fulfilment → Returns browser journey also remain open.
+External payment-provider architecture is **BLUE / Implemented**. The TradeFlow Stripe Sandbox, active webhook destination, Supabase Stripe secrets, retry hardening and deployed Edge Functions are in place. Persistent browser verification remains open. Shipping-provider integration, production onboarding and the full persistent Orders → Payment → Fulfilment → Returns browser journey also remain open.
 
-**Next build action:** configure/test Stripe in test mode and perform one persistent browser journey from customer checkout through confirmed payment, then continue into fulfilment and returns verification.
+**Next build action:** perform one persistent customer checkout through Stripe Sandbox using a Stripe test payment, verify the signed webhook updates the payment/order/ledger state, then continue into fulfilment and returns verification.

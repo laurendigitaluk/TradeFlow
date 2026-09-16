@@ -1,7 +1,7 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.1  
-**Date:** 16 September 2026  
+**Version:** 3.2  
+**Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
 ## Authority
@@ -28,7 +28,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 |---|---|---|---|
 | 1 | Tenant & identity | AMBER | Production onboarding still must replace/harden development authenticated tenant-insert/test-lab paths. |
 | 2 | Subscriptions & capability gating | GREEN | Capability layer implemented; Buying 17/17 and Selling 17/17 customer subscription tests recorded. |
-| 3 | Categories, fields & options | BLUE | Subscriber Categories & Properties workspace now creates categories and product properties/options independently of Buying. Browser verification remains. |
+| 3 | Categories, fields & options | BLUE | Subscriber Categories & Properties workspace now creates categories and product properties/options independently of Buying. Browser verification remains. Test Business A now has active Buying/Selling category `Drones`. |
 | 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
 | 5 | Buying | BLUE | Customer submission and subscriber buying workspace implemented; persistent browser verification remains. |
 | 6 | Media/storage | BLUE | Private `tradeflow-media` bucket plus tenant-scoped inventory/listing media links and 90-day post-sale retention metadata implemented. Automated physical object cleanup scheduling remains to be configured. |
@@ -48,19 +48,28 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains now have explicit authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
-## Customer dashboard browser repair — 16 September 2026
-The browser-layer authentication/controller fault is now **Verified Live**. Supabase password authentication succeeds, the portal is revealed, the corrected synchronous controller executes and the customer portal loads without the previous controller-unavailable message.
+## Customer dashboard browser repair — 16–17 September 2026
+The browser-layer authentication/controller fault is **Verified Live**. Supabase password authentication succeeds, the portal is revealed, the corrected synchronous controller executes and the customer portal loads without the previous controller-unavailable message.
 
 Root cause was an invalid JavaScript quote mapping in `customer-dashboard.js` `esc()`. The helper was corrected and the controller cache-buster advanced to `customer-dashboard.js?v=11`.
 
-Latest repair commits:
-- controller syntax repair: `ae47d539f23324bcce78537f865502e4adfb8bea`
-- dashboard HTML/cache-bust v11: `271d52c2c079810bdf657b3d17e8aa37e9a89c84`
-- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
+A second live browser fault was then isolated: `loadPortalData()` uses a single `Promise.all()` for optional customer modules, including `customer_get_orders()`. Test Business A's current test subscription did not have `module.orders` enabled, so the rejected orders call prevented the later `loadCategories()` call from running. This left the Buying category control permanently at `Loading categories…` even though the live database contained a valid category.
 
-No service-role credential is exposed in browser code.
+The customer navigation controller now independently loads `customer_get_buying_categories()` after authentication/portal reveal, so category loading is no longer dependent on unrelated optional modules completing successfully. The repair also watches the portal's `hidden` state so it works with the existing in-page authentication fallback.
 
-## Category / product / media foundation — 16 September 2026
+Latest category-loading repair commits:
+- `1aa84323f91ad8b5971d7cd4025e493ccf23f7ba`
+- `38355ccfbe4258df39fd4dd5cb5b59b1daa5b469`
+
+Test Business A live category:
+- name: `Drones`
+- active: yes
+- Buying enabled: yes
+- Selling enabled: yes
+
+The browser verification step is now **Ctrl+F5 → My Buying → Category → confirm `Drones` appears**.
+
+## Category / product / media foundation — 16–17 September 2026
 The subscriber UI previously had a Selling listing form but no independent category/property management and no way to add an inventory product. That dependency has been removed.
 
 New operational path:
@@ -101,7 +110,7 @@ Do not mark a feature complete solely because code is committed. A transactional
 
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
-## Current stopping point — 16 September 2026
-Customer authentication/controller is verified live. The next build/test sequence is now the newly added operational product path: create a Test Business A category, add a product with at least one photograph and product property, move it through `ready_for_sale`, create/publish a listing, confirm the listing appears in Customer Shop, then run the persistent Stripe Sandbox purchase and verify payment/order/ledger reconciliation.
+## Current stopping point — 17 September 2026
+Customer authentication/controller is verified live. Test Business A has the `Drones` category. The customer Buying category-loading repair is deployed; browser confirmation remains open. The next build/test sequence is the operational product path: confirm `Drones` in Customer My Buying, then create/verify a product property, create a product with at least one photograph, move it through `ready_for_sale`, create/publish a listing, confirm the listing appears in Customer Shop, then run the persistent Stripe Sandbox purchase and verify payment/order/ledger reconciliation.
 
-**Next build action:** browser-verify Categories → Product → Photograph → Ready for Sale → Listing → Customer Shop, then run the Stripe Sandbox transaction end-to-end.
+**Next build/test action:** hard refresh Customer Dashboard → My Buying → confirm `Drones`; then Subscriber Dashboard → Categories & Properties → Inventory → Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

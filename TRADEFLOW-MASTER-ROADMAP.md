@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 1.8  
+**Version:** 1.9  
 **Date:** 16 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -37,11 +37,11 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; subscriber acquisition workspace supports lifecycle progression and explicit inventory hand-off. Live browser verification remains. |
 | 10 | Fulfilment | AMBER | Operational workflow remains to be built/audited. |
-| 11 | Inventory | BLUE | 058 hardened; acquisition workspace creates linked received assets and dedicated Inventory workspace now manages assets and controlled lifecycle. Browser verification remains. |
+| 11 | Inventory | BLUE | 058 hardened; dedicated Inventory workspace manages assets, editable details and controlled lifecycle. Browser verification remains. |
 | 12 | Selling/listings | AMBER | Lifecycle remains to be built/audited. |
 | 13 | Retail orders | AMBER | Customer boundary tested; complete workflow remains. |
 | 14 | Returns | AMBER | Full lifecycle remains. |
-| 15 | Finance/payment | BLUE | 059 permission hardening plus Subscriber Finance workspace; payment creation/posting/reconciliation workflow and live verification remain. |
+| 15 | Finance/payment | BLUE | 059 permission hardening plus Finance workspace with payment/ledger creation and controlled status actions. Persistent browser verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
@@ -50,19 +50,16 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
 ## Customer-facing SaaS build checkpoint — 16 September 2026
-The build has moved from the prolonged broad audit into the subscriber/customer-facing SaaS layer while retaining the existing database security architecture.
-
 Implemented in GitHub:
-- Website Builder connected to tenant site revisions and publication service.
-- Tenant-specific public storefront renderer.
+- Website Builder and tenant-specific public storefront renderer.
 - Customer authentication/test-lab registration and tenant-specific dashboard.
 - Customer buying-request submission.
-- Customer published-offer Accept/Refuse actions using the existing secure RPCs.
+- Customer published-offer Accept/Refuse actions using existing secure RPCs.
 - Subscriber Buying workspace for review, valuation and offer publication.
 - Subscriber Acquisition workspace for acquisition/item lifecycle progression.
-- Inventory asset creation from received acquisition items with tenant-scoped source links.
-- Dedicated Inventory workspace for tenant inventory listing, filtering, asset-detail editing and lifecycle transitions through the existing workflow RPC.
-- Subscriber Finance workspace for existing payment and ledger records.
+- Explicit inventory creation from received acquisition items.
+- Dedicated Inventory workspace for tenant inventory listing, filtering, asset-detail editing and lifecycle transitions through `transition_workflow_entity()`.
+- Subscriber Finance workspace for payment and ledger records, with controlled creation and lifecycle actions through the existing workflow authority.
 
 These are **Implemented**, not automatically **Verified Live**. Persistent authenticated browser testing remains the verification step.
 
@@ -70,10 +67,16 @@ These are **Implemented**, not automatically **Verified Live**. Persistent authe
 The live schema contains structural links from acquisitions to payment records and from acquisitions/inventory to ledger entries. Live inspection did not find an automatic trigger/function that creates payment, ledger or inventory records merely from acquisition status changes. The subscriber workspaces therefore use explicit user actions and existing authoritative workflow services rather than assuming automation.
 
 Current operational path:
-**Offer accepted → acquisition created → awaiting item → received → inspection → finalised → paid → completed**, with explicit inventory creation from the acquisition-item hand-off and explicit finance records rather than implicit status side effects.
+**Offer accepted → acquisition created → awaiting item → received → inspection → finalised → paid → completed**, with explicit inventory creation from acquisition items and explicit finance records.
 
 Inventory lifecycle authority is:
-**received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with the verified live transition function also supporting the documented return/write-off/archive branches.
+**received → inspection → testing → repair → ready_for_sale → listed → reserved → sold**, with supported return/write-off/archive branches.
+
+Finance payment statuses are:
+**pending → processing → paid/failed/cancelled**, with paid/partially-refunded/refunded branches as supported by the existing workflow authority.
+
+Ledger statuses are:
+**pending → posted**, with void/reverse branches as supported.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. These are not the production SaaS onboarding model.
@@ -100,6 +103,6 @@ GearCashOut specialist catalogue, evidence/research, AI research queue and speci
 Material changes must capture what/why, affected code/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 16 September 2026
-The security hardening baseline remains intact. The active build track is now the operational subscriber SaaS: Buying → Offers → Acquisitions → Finance/Inventory, followed by Selling, Listings, Orders, Fulfilment and Returns.
+Inventory and Finance operational UI work is implemented in GitHub. No persistent browser journey has yet been marked verified for these new actions.
 
-**Next build action:** complete Finance payment/ledger operational actions, then continue into Selling/Listings. Keep production onboarding and final browser verification as tracked open items rather than blocking forward development.
+**Next build action:** continue into Selling/Listings using the existing tenant, permission and workflow architecture. Keep production onboarding and persistent browser verification as tracked open items rather than blocking forward development.

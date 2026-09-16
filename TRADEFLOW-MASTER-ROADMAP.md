@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.2  
+**Version:** 3.3  
 **Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -37,7 +37,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. **Platform Owner is a separa
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; workspace supports lifecycle progression and explicit inventory hand-off. |
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
 | 11 | Inventory | BLUE | 058 hardened; subscriber can now add products, assign categories/properties and attach photographs. Browser verification remains. |
-| 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and now carries inventory photographs into the listing. Browser verification remains. |
+| 12 | Selling/listings | BLUE | 061 hardened; Selling workspace creates listings from ready-for-sale inventory and carries inventory photographs into the listing. Browser verification remains. |
 | 13 | Retail orders | BLUE | 062 hardening plus customer checkout and subscriber Orders workspace. Internal payment capture and external Stripe checkout boundary are implemented; browser verification remains. |
 | 14 | Returns | BLUE | Return-request security hardened and subscriber Returns workspace implemented; customer visibility/actions implemented. Browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 permission/workflow hardening, internal payment capture, provider-payment records and external Stripe checkout/webhook boundary implemented. Stripe secrets/configuration and live payment verification remain. |
@@ -57,17 +57,17 @@ A second live browser fault was then isolated: `loadPortalData()` uses a single 
 
 The customer navigation controller now independently loads `customer_get_buying_categories()` after authentication/portal reveal, so category loading is no longer dependent on unrelated optional modules completing successfully. The repair also watches the portal's `hidden` state so it works with the existing in-page authentication fallback.
 
-Latest category-loading repair commits:
-- `1aa84323f91ad8b5971d7cd4025e493ccf23f7ba`
-- `38355ccfbe4258df39fd4dd5cb5b59b1daa5b469`
+## Subscriber workspace JavaScript loading repair — 17 September 2026
+The same malformed `esc()` quote mapping was found in the subscriber `category-management.js`, `inventory-dashboard.js` and `selling-dashboard.js` sources. The malformed mapping is a JavaScript parse error, so the page controllers never reached their Supabase calls; this explains the three shared `Loading categories…`/`Loading assets…` symptoms seen in Categories, Inventory and Selling.
 
-Test Business A live category:
-- name: `Drones`
-- active: yes
-- Buying enabled: yes
-- Selling enabled: yes
+Repairs applied:
+- `category-management.js` repaired in place; commit `11bcc0922f368918a26be6c7e8362109fde2ae4f`.
+- New clean `inventory-dashboard-fixed.js` created; commit `ccfb93a889903131f24c2a9769b04b095e611c22`.
+- `inventory-dashboard.html` now loads the repaired runtime; commit `22b17000105860bdadc03377b4828410d95f9e04`.
+- New clean `selling-dashboard-fixed.js` created; commit `1692b3f2d7c512fc528f91ead22e07b6ccac0eec`.
+- `selling-dashboard.html` now loads the repaired runtime; commit `693ef64cbba12540c9f32856224b0d20c831fb1d`.
 
-The browser verification step is now **Ctrl+F5 → My Buying → Category → confirm `Drones` appears**.
+The database repair `repair_category_private_schema_usage` remains valid: `USAGE` on schema `private` is granted to `authenticated` and `CREATE` is revoked from `public`. No subscription capability was changed to hide the fault.
 
 ## Category / product / media foundation — 16–17 September 2026
 The subscriber UI previously had a Selling listing form but no independent category/property management and no way to add an inventory product. That dependency has been removed.
@@ -77,7 +77,7 @@ New operational path:
 
 Implemented:
 - `category-management.html` / `.js` for tenant category creation and product property/option setup.
-- `inventory-dashboard.html` / `.js` product creation with category assignment, dynamic property values and photograph upload.
+- `inventory-dashboard.html` / repaired runtime for product creation with category assignment, dynamic property values and photograph upload.
 - private Supabase Storage bucket `tradeflow-media`.
 - `inventory_asset_media` and `listing_media` tenant-scoped link tables.
 - Selling automatically carries inventory photographs into newly created listings.
@@ -111,6 +111,6 @@ Do not mark a feature complete solely because code is committed. A transactional
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 17 September 2026
-Customer authentication/controller is verified live. Test Business A has the `Drones` category. The customer Buying category-loading repair is deployed; browser confirmation remains open. The next build/test sequence is the operational product path: confirm `Drones` in Customer My Buying, then create/verify a product property, create a product with at least one photograph, move it through `ready_for_sale`, create/publish a listing, confirm the listing appears in Customer Shop, then run the persistent Stripe Sandbox purchase and verify payment/order/ledger reconciliation.
+The shared subscriber JavaScript parse fault is repaired in the Category, Inventory and Selling workspaces. Browser verification remains open. Test Business A has the `Drones` category. Do not change the subscription to work around the fault.
 
-**Next build/test action:** hard refresh Customer Dashboard → My Buying → confirm `Drones`; then Subscriber Dashboard → Categories & Properties → Inventory → Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next build/test action:** hard refresh the Subscriber Categories page and confirm `Drones` loads. Then test Properties, Inventory and Selling one page at a time. After those browser checks, continue Category → Property → Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

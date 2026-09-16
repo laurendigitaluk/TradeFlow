@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 2.8  
+**Version:** 2.9  
 **Date:** 16 September 2026  
 **Project:** TradeFlow
 
@@ -75,7 +75,7 @@ Configuration is complete for the Stripe test environment, but persistent custom
 Selling workspace is implemented against the live schema. It loads active channels, selling-enabled categories and `ready_for_sale` inventory, creates draft listings, advances them to ready and uses the central workflow for subsequent listing lifecycle changes.
 
 ## 11. Retail Orders checkpoint — 062
-Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the published listing and records workflow transitions. Subscriber-recorded payment advances an order to paid and creates its finance records transactionally. External customer payment has a server-side Stripe Checkout boundary and signed webhook reconciliation path.
+Subscriber Orders and customer checkout are implemented. Customer checkout requires an authenticated active customer, accepts only a published listing, creates a pending-payment order and linked item, reserves the listing and records workflow transitions. Subscriber-recorded payment advances an order to paid and creates its finance records transactionally. External customer payment has a server-side Stripe Checkout boundary and signed webhook reconciliation path.
 
 ## 12. Fulfilment checkpoint
 Live inspection confirmed fulfilment has subscription-aware `fulfilment.view/manage` access and an existing central workflow. `fulfilment-dashboard.html` / `.js` provides subscriber creation and lifecycle controls.
@@ -92,13 +92,18 @@ Returns had overlapping legacy member/admin policies. These were removed so the 
 Return lifecycle authority: `requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed`.
 
 ## 14. Customer dashboard browser repair
-The persistent browser test exposed two browser-layer faults: the Sign in action had no visible response, and the navigation controller prevented native hash navigation while the authentication portal was hidden.
+The persistent browser test exposed two browser-layer faults: Sign in initially produced no visible response, and the navigation controller intercepted hashes while the portal was hidden.
 
 Navigation was corrected so hash links are intercepted only after `#portal` is visible. The dashboard HTML contains an inline capture-phase Supabase Auth fallback using only the public publishable key.
 
-The first fallback stored the token and forced a page reload. Browser testing showed that reload returned to the authentication panel, so the handoff was changed to an in-page event. After successful password-token exchange the inline fallback dispatches `tradeflow-auth-success`; the main controller adopts the session, validates `/auth/v1/user`, and calls `initialisePortal()` directly. This removes the reload as a failure boundary.
+The first fallback stored the token and forced a page reload. Browser testing showed that reload returned to the authentication panel, so the handoff was changed to an in-page session handoff. A later repair removed an unnecessary `/auth/v1/user` request from the successful-auth path.
 
-Relevant commits: main controller `0e1a56cefd2f9c96c7005d4a76109cbb93dd1929`, dashboard HTML `b8fabeee759d10f8a7585b6e64d01610aec668f2`, navigation `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`.
+The latest repair cache-busts the main controller as `customer-dashboard.js?v=9` and makes the inline fallback immediately reveal `#portal` after a successful password-token exchange. It then hands the session to `window.tradeflowHandleCustomerAuthSuccess`. If the main controller is unavailable, the fallback reports that explicitly instead of leaving the user indefinitely on “Signing in. Loading your customer portal…”.
+
+Latest commits:
+- dashboard HTML/auth fallback/cache repair: `bfda2436b9cbf1fdd96e313e3715cc07410553cc`
+- main controller handoff: `b3fea037f6e9164e29f45171e6333c4318f8e78d`
+- navigation repair: `8c84b2ae8c9c666f92e7dea51a92af9e170e03ad`
 
 No service-role credential is exposed in browser code.
 
@@ -119,6 +124,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 18. Current stopping point — 16 September 2026
-The customer dashboard authentication flow has been changed from reload-based session restoration to a direct in-page session handoff. Navigation is repaired. Persistent live browser confirmation remains open. External payment architecture is **BLUE / Implemented, verification open**. Stripe Sandbox configuration, webhook, server-side secrets and retry hardening are in place. Shipping-provider integration and production onboarding remain open.
+The latest customer dashboard repair is deployed to GitHub. The HTML now forces a fresh `customer-dashboard.js?v=9` load and the inline successful-auth path immediately hides the authentication panel and reveals the portal. Persistent live browser confirmation is still required. External payment architecture is **BLUE / Implemented, verification open**. Stripe Sandbox configuration, webhook, server-side secrets and retry hardening are in place. Shipping-provider integration and production onboarding remain open.
 
-**Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the portal appears and navigation works, then perform one persistent customer checkout/payment journey using a Stripe Sandbox test payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.
+**Next safe action:** hard-refresh the deployed customer dashboard, sign in with the existing Test Business A customer, confirm the authentication panel disappears and the portal loads. If it does, continue Shop → Buy → Stripe Sandbox payment and verify the signed webhook updates payment/order/ledger state before continuing into fulfilment and returns browser verification.

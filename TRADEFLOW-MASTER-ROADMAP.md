@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.7  
+**Version:** 3.8  
 **Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -56,7 +56,7 @@ Categories, Inventory and Selling shared the same malformed `esc()` quote mappin
 
 Repairs:
 - Category controller: `11bcc0922f368918a26be6c7e8362109fde2ae4f`.
-- Inventory repaired runtime: `ccfb93a889903131f24c2a9769b04b095e611c22`; HTML switch `22b17000105860bdadc03377b4828410d95f9e04`.
+- Inventory repaired runtime: `ccfb93a889903131f24c2a9769b04b095e611c22`; HTML switch `22b17000105860bdadc0337b4828410d95f9e04`.
 - Selling repaired runtime: `1692b3f2d7c512fc528f91ead22e07b6ccac0eec`; HTML switch `693ef64cbba12540c9f32856224b0d20c831fb1d`.
 
 ## Category / product / media foundation
@@ -95,6 +95,25 @@ Commits:
 
 No Supabase schema, category records, subscription features or RLS policies were changed.
 
+## Deep category transport/runtime check — 17 September 2026
+The browser symptom remained after the second runtime repair, so the full path was checked rather than making another database change.
+
+Backend verification now includes:
+- Supabase project status `ACTIVE_HEALTHY` in `eu-west-2`.
+- Test Business A category `Drones` exists and is active for both Buying and Selling.
+- The exact category SELECT returns `Drones` under the `authenticated` role with the known Test Business A owner identity and therefore passes the live RLS boundary.
+- Test Business A owner/admin identities have `categories.view` and `categories.manage`; staff has `categories.view`.
+
+The remaining common browser-side weakness was identified in the subscriber REST helper: it was adding `Content-Type: application/json` to **GET** requests. That is unnecessary for Supabase REST reads and can introduce a CORS preflight before the actual category request. The helper also had no timeout, allowing a failed/stalled browser request to leave `Loading categories…` indefinitely. The page's previous runtime error listener was also registered after the controller script, so a bootstrap exception could occur before diagnostics were installed.
+
+Repairs:
+- `category-management.js` now omits JSON `Content-Type` for GET/HEAD, applies a 10-second timeout and displays the current request phase or concrete error.
+- `categories.html` installs `error` and `unhandledrejection` listeners before subscriber scripts and cache-busts the controller to `v10`.
+- `subscriber-tenant-context.js` safely establishes tenant context and normalises subscriber GET/HEAD requests before workspace controllers run.
+- Subscriber Dashboard, Inventory, Selling and Buying pages now cache-bust the shared context to `v4`.
+
+No database, subscription or RLS workaround was introduced.
+
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.
 
@@ -118,6 +137,6 @@ Verification states: **Proposed → Implemented → Tested → Verified Live**. 
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 17 September 2026
-The database category exists and is verified. The shared tenant-context repair did not resolve the live browser symptom, so the category controller was hardened independently. **Browser verification is still open.**
+The database category and RLS path are verified. The shared tenant-context repair did not resolve the browser symptom. The second repair exposed and hardened the subscriber REST transport/bootstrap path: GET requests no longer carry unnecessary JSON Content-Type, category reads now time out visibly, and runtime diagnostics are installed before the controller.
 
-**Next browser action:** open the fresh Categories page and hard refresh. If the page still does not load categories, the visible `Categories runtime error:` message should now identify the first browser-side failure instead of leaving a silent loading state. Do not change subscriptions or Supabase category data as a workaround. Once Categories passes, verify Inventory's Category selector, then continue Product → Property → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next browser verification:** hard refresh the current Categories page. It should now either populate `Drones` or show a concrete runtime/API/timeout error instead of silently remaining on `Loading categories…`. Do not change subscriptions or database policies as a workaround. Once Categories passes, verify Inventory and Selling selectors using the same shared context.

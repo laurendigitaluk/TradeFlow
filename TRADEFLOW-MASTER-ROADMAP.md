@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.5  
+**Version:** 3.6  
 **Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -65,16 +65,20 @@ Operational path:
 
 Implemented category/property management, direct inventory product creation, dynamic property values, private `tradeflow-media`, tenant-scoped media link tables, listing photo carryover and 90-day post-sale retention metadata/triggers. Physical Storage cleanup scheduling is not yet configured.
 
-## Category tenant-context repair — 17 September 2026
-The Categories screenshot remained at `Loading categories…` after the first tenant-aware repair. Current repository code showed the subscriber navigation opening `category-management.html` without `tenant_id`; the visible browser page also did not execute the newly deployed fallback. The repair therefore used a fresh URL rather than continuing to fight the cached page entry.
+## Root cause: subscriber category selectors lacked tenant context — 17 September 2026
+The same failure was visible across the subscriber category selectors: the page controllers expected `tenant_id` in the URL, while the subscriber navigation used plain workspace URLs. The database is not missing the category: Test Business A currently contains active Buying/Selling `Drones`.
 
-A new `categories.html` entry page now loads `category-management.js?v=6`, resolves the authenticated user's active TradeFlow test tenant, displays categories and populates the property category selector. Subscriber navigation was changed from `category-management.html` to `categories.html`.
+The durable test-lab repair is now a shared `subscriber-tenant-context.js` preloader. It runs before subscriber workspace controllers and establishes the tenant URL context from the existing test-lab session/local tenant context, then stores the selected test tenant for subsequent workspace navigation. It is loaded before the Category, Inventory, Selling and Buying controllers. Inventory and Selling navigation now also points to the fresh Categories entry.
 
 Commits:
-- fresh Categories entry: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
-- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
+- shared tenant context: `695fbd26e47531c76b2a3fe053dfc0f49abb91c9`
+- Subscriber Dashboard context: `eb9ee51f743e2e7a9f01d7e61745113d352f12e3`
+- Inventory context: `b73b23c96c8e797fb3c5be9b9c9e1c0f4c715e15`
+- Selling context: `da905ec27731054067720386cf714bf89cf7d108`
+- Buying context: `edab6b403a8c9cc277644c5bc2c9b898d10ec8d4`
+- Categories fresh runtime/context: `a9b9d6fc7adfc475567f147d16cbec24fd0b0c28`
 
-This is a browser delivery/cache repair only. No subscription, RLS or category data was changed.
+This is a front-end tenant-context repair. No subscription, RLS or category data was changed.
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.
@@ -99,6 +103,6 @@ Verification states: **Proposed → Implemented → Tested → Verified Live**. 
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The Categories page still failed to deliver the current runtime through the old cached URL, so a fresh `categories.html` entry point has been deployed. Browser verification is still open.
+The database category exists and is verified. The common subscriber failure was tenant context: category selector pages were being opened without `tenant_id`, so their controllers could not populate category options. A shared preloader now establishes the test-lab tenant context before the relevant subscriber controllers execute.
 
-**Next browser action:** open the fresh Categories entry from the Subscriber Dashboard and confirm Test Business A / `Drones`. Then test Properties, create the first property, and proceed one page at a time through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next browser action:** hard refresh the Subscriber Dashboard, open Categories & Properties and confirm `Drones` appears. Then open Inventory and confirm the Category selector also contains `Drones`. Once both are confirmed, create the first product property and continue through Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.5  
+**Version:** 3.6  
 **Date:** 17 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -68,16 +68,22 @@ Media foundation:
 
 Private images use authenticated Storage and signed URLs. Physical object deletion must use the Storage API. Automatic cleanup scheduling is not configured.
 
-## 10. Category browser tenant-context and cache delivery repair — 17 September 2026
-The Categories page remained at `Loading categories…` after the first tenant-aware repair. The page URL had no `tenant_id` because the subscriber navigation opened `category-management.html` directly, and the visible browser entry did not appear to execute the newly deployed fallback.
+## 10. Common subscriber category tenant-context repair — 17 September 2026
+The category selector failure was not a missing database category. Test Business A contains active Buying/Selling `Drones`. The common front-end problem was that subscriber workspace controllers expected `tenant_id` in the URL while workspace navigation used plain page URLs.
 
-The controller had already been changed to resolve a single active test tenant from authenticated `tenant_memberships` when no query tenant exists. To avoid continuing to depend on a repeatedly cached page entry, a fresh `categories.html` entry point was created. It loads `category-management.js?v=6`, resolves the authenticated active test tenant, displays categories and populates the property selector. Subscriber navigation now points to `categories.html`.
+A shared `subscriber-tenant-context.js` preloader now runs before subscriber workspace controllers. In the temporary test-lab environment it establishes tenant context from the existing URL/local tenant context or the authenticated test-lab session mapping, writes the selected tenant into the URL and stores it for subsequent subscriber navigation.
+
+The preloader is now loaded before the Category, Inventory, Selling and Buying controllers. Inventory and Selling also route their Categories navigation through the fresh `categories.html` entry. This is test-lab subscriber infrastructure, not the production tenant-selection model.
 
 Commits:
-- fresh Categories entry: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
-- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
+- `695fbd26e47531c76b2a3fe053dfc0f49abb91c9` — shared tenant context.
+- `eb9ee51f743e2e7a9f01d7e61745113d352f12e3` — Subscriber Dashboard.
+- `b73b23c96c8e797fb3c5be9b9c9e1c0f4c715e15` — Inventory.
+- `da905ec27731054067720386cf714bf89cf7d108` — Selling.
+- `edab6b403a8c9cc277644c5bc2c9b898d10ec8d4` — Buying.
+- `a9b9d6fc7adfc475567f147d16cbec24fd0b0c28` — Categories fresh entry/runtime.
 
-This is a browser delivery/cache repair only. No subscription, RLS or database category data was changed.
+No subscription, RLS or category data was changed.
 
 ## 11. Inventory
 058 protects inventory status entry. The repaired Inventory runtime supports product creation, category-specific dynamic values, multiple photographs and workflow-controlled lifecycle changes.
@@ -120,6 +126,6 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 21. Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The old Categories URL continued to deliver a stale/non-executing page, so a fresh `categories.html` entry point and Subscriber navigation route have now been deployed. Browser verification remains open.
+The database category is present and verified. The common subscriber category failure has now been addressed at the shared tenant-context layer instead of adding further page-specific database workarounds.
 
-**Next action:** open the fresh Categories entry from the Subscriber Dashboard, confirm Test Business A / `Drones`, then test Properties and create the first property. Continue one verified stage at a time through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next action:** hard refresh the Subscriber Dashboard, open Categories & Properties and confirm `Drones`. Then open Inventory and confirm its Category selector also contains `Drones`. Once both are confirmed, create the first product property and proceed through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

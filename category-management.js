@@ -1,58 +1,32 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY_STORAGE='tradeflow_testlab_publishable_key',SESSION_STORAGE='tradeflow_testlab_session';
-const TENANTS={'test-business-a':{id:'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',label:'Test Business A'},'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'}};
 const $=id=>document.getElementById(id);
-const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c));
-let key=null,session=null,tenantId=null,categories=[],fields=[],options=[];
-try{key=localStorage.getItem(KEY_STORAGE)}catch{}
-try{session=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null')}catch{session=null}
-
+const TENANTS={'f50fb889-c615-4e55-84d4-f0fd9f48b0b0':'Test Business A','373598f0-7d35-41be-8ed2-3cc7ee9709c7':'Test Business B'};
+let key=null,accessToken=null,tenantId=null,categories=[],fields=[],options=[];
 function msg(t,type=''){const m=$('message');if(m){m.className=`small ${type}`.trim();m.textContent=t||''}}
-function getTenantId(){
-  const params=new URLSearchParams(location.search);
-  const fromUrl=params.get('tenant_id');
-  if(TENANTS[fromUrl]) return fromUrl;
-  const fromContext=document.documentElement.dataset.tradeflowTenantId;
-  if(TENANTS[fromContext]) return fromContext;
-  let stored=null;try{stored=localStorage.getItem('tradeflow_testlab_tenant_id')}catch{}
-  if(TENANTS[stored]) return stored;
-  const mapped={
-    '46cee9fa-2ead-42b2-8e55-b81c79c5b728':'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',
-    '9cc88fc3-7d03-4e99-b97f-6205ac658daf':'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',
-    '52f51902-cbc3-45c9-838c-1326f2e65906':'f50fb889-c615-4e55-84f0fd9f48c0b0',
-    '5ba9ac5d-53a0-4edf-bcdb-c9003e5a5eee':'373598f0-7d35-41be-8ed2-3cc7ee9709c7'
-  };
-  return mapped[session?.user?.id]||null;
-}
+function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 async function api(path,options={}){
-  if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');
-  const h=new Headers(options.headers||{});h.set('apikey',key);if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);
+  if(!key)throw Error('TradeFlow subscriber Supabase key is not available.');
+  const h=new Headers(options.headers||{});h.set('apikey',key);if(accessToken)h.set('Authorization',`Bearer ${accessToken}`);
   const method=(options.method||'GET').toUpperCase();if(options.body||!['GET','HEAD'].includes(method))h.set('Content-Type','application/json');
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);
-  let r;try{r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h,signal:controller.signal})}catch(e){if(e?.name==='AbortError')throw Error('Supabase category request timed out after 10 seconds.');throw e}finally{clearTimeout(timer)}
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);let r;
+  try{r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h,signal:controller.signal})}catch(e){if(e?.name==='AbortError')throw Error('Supabase category request timed out after 10 seconds.');throw e}finally{clearTimeout(timer)}
   const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
-  if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b;
+  if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||text||`HTTP ${r.status}`);return b;
 }
-async function resolveTenant(){
-  tenantId=getTenantId();
-  if(TENANTS[tenantId]){
-    try{localStorage.setItem('tradeflow_testlab_tenant_id',tenantId)}catch{}
-    const params=new URLSearchParams(location.search);if(params.get('tenant_id')!==tenantId){params.set('tenant_id',tenantId);history.replaceState(null,'',`${location.pathname}?${params.toString()}`)}
-    return TENANTS[tenantId];
-  }
-  if(!session?.access_token)throw Error('Sign in through the TradeFlow test environment before opening Categories.');
-  const rows=await api(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&user_id=eq.${encodeURIComponent(session.user?.id||'')}&status=eq.active`);
-  const ids=[...new Set((Array.isArray(rows)?rows:[]).map(r=>r.tenant_id).filter(id=>Object.values(TENANTS).some(t=>t.id===id)))];
-  if(ids.length!==1)throw Error(ids.length?'The current account is linked to more than one TradeFlow test tenant.':'No active TradeFlow test tenant is linked to the current account.');
-  tenantId=ids[0];try{localStorage.setItem('tradeflow_testlab_tenant_id',tenantId)}catch{}
-  const params=new URLSearchParams(location.search);params.set('tenant_id',tenantId);history.replaceState(null,'',`${location.pathname}?${params.toString()}`);return TENANTS[tenantId];
+async function waitForSubscriber(){
+  if(!window.tradeflowSubscriberAuthReady)throw Error('Subscriber authentication layer did not load.');
+  const auth=await window.tradeflowSubscriberAuthReady;
+  if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');
+  key=auth.key;accessToken=auth.session.access_token;tenantId=auth.tenantId;
+  if(!TENANTS[tenantId])throw Error('Subscriber authentication did not provide a valid TradeFlow test tenant.');
+  document.documentElement.dataset.tradeflowTenantId=tenantId;
+  return TENANTS[tenantId];
 }
-function slug(v){return v.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 async function load(){
   try{
-    msg('Connecting to TradeFlow data…');
-    const tenant=await resolveTenant();
-    $('business-name').textContent=tenant.label;
+    msg('Waiting for subscriber authentication…');
+    const tenant=await waitForSubscriber();
+    $('business-name').textContent=tenant;
     msg('Loading categories from Supabase…');
     categories=await api(`/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`)||[];
     renderCategories();fillCategorySelects();
@@ -65,10 +39,10 @@ function renderCategories(){if(!categories.length){$('categories').innerHTML='<d
 async function selectCategory(id){if(!id)return;$('field-category').value=id;try{fields=await api(`/rest/v1/category_fields?select=id,category_id,field_key,label,field_type,required_for_buying,required_for_selling,customer_visible,staff_visible,valuation_relevant,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&category_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];renderFields();$('option-field').innerHTML='<option value="">Select property…</option>'+fields.filter(f=>['select','multiselect'].includes(f.field_type)).map(f=>`<option value="${f.id}">${esc(f.label)}</option>`).join('');if(fields[0])await selectField(fields[0].id);else $('options').innerHTML='<div class="empty">No property options yet.</div>'}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow category property load failed',e)}}
 function renderFields(){if(!fields.length){$('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';return}$('fields').innerHTML=`<div class="data-table"><div class="data-head"><span>Property</span><span>Type</span><span>Buying</span><span>Selling</span><span>Valuation</span><span>Action</span></div>${fields.map(f=>`<div class="data-row"><span><strong>${esc(f.label)}</strong><br><span class="small">${esc(f.field_key)}</span></span><span>${esc(f.field_type)}</span><span>${f.required_for_buying?'Required':'Optional'}</span><span>${f.required_for_selling?'Required':'Optional'}</span><span>${f.valuation_relevant?'Yes':'No'}</span><span>${['select','multiselect'].includes(f.field_type)?`<button type="button" data-select-field="${f.id}">Options</button>`:'—'}</span></div>`).join('')}</div>`;document.querySelectorAll('[data-select-field]').forEach(b=>b.onclick=()=>selectField(b.dataset.selectField))}
 async function selectField(id){if(!id)return;$('option-field').value=id;try{options=await api(`/rest/v1/category_field_options?select=id,field_id,value,label,sort_order,active&tenant_id=eq.${encodeURIComponent(tenantId)}&field_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];$('options').innerHTML=options.length?`<div class="data-table"><div class="data-head"><span>Value</span><span>Label</span><span>Active</span></div>${options.map(o=>`<div class="data-row"><span>${esc(o.value)}</span><span>${esc(o.label)}</span><span>${o.active?'Yes':'No'}</span></div>`).join('')}</div>`:'<div class="empty">No options for this property yet.</div>'}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow property options load failed',e)}}
-$('category-name').oninput=e=>{if(!$('category-slug').dataset.edited)$('category-slug').value=slug(e.target.value);};$('category-slug').oninput=()=>{$('category-slug').dataset.edited='1'};
-$('category-form').onsubmit=async e=>{e.preventDefault();try{const name=$('category-name').value.trim();if(!name)throw Error('Category name is required.');const body={tenant_id:tenantId,name,slug:$('category-slug').value.trim()||slug(name),description:$('category-description').value.trim()||null,buying_enabled:$('buying-enabled').checked,selling_enabled:$('selling-enabled').checked,active:true};await api('/rest/v1/categories',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});e.target.reset();$('buying-enabled').checked=true;$('selling-enabled').checked=true;$('category-slug').dataset.edited='';await load();msg('Category created.','success')}catch(e){msg(e.message||String(e),'error')}};
+$('category-name').oninput=e=>{if(!$('category-slug').dataset.edited)$('category-slug').value=e.target.value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')};$('category-slug').oninput=()=>{$('category-slug').dataset.edited='1'};
+$('category-form').onsubmit=async e=>{e.preventDefault();try{const name=$('category-name').value.trim();if(!name)throw Error('Category name is required.');await api('/rest/v1/categories',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,name,slug:$('category-slug').value.trim()||name.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''),description:$('category-description').value.trim()||null,buying_enabled:$('buying-enabled').checked,selling_enabled:$('selling-enabled').checked,active:true})});e.target.reset();$('buying-enabled').checked=true;$('selling-enabled').checked=true;$('category-slug').dataset.edited='';await load();msg('Category created.','success')}catch(e){msg(e.message||String(e),'error')}};
 $('field-form').onsubmit=async e=>{e.preventDefault();try{const categoryId=$('field-category').value;if(!categoryId)throw Error('Select a category.');const keyValue=$('field-key').value.trim();if(!keyValue)throw Error('Property key is required.');await api('/rest/v1/category_fields',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:categoryId,field_key:keyValue,label:$('field-label').value.trim(),field_type:$('field-type').value,required_for_buying:$('field-buying').checked,required_for_selling:$('field-selling').checked,customer_visible:$('field-customer').checked,staff_visible:$('field-staff').checked,valuation_relevant:$('field-valuation').checked,sort_order:fields.length,validation_config:{}})});e.target.reset();$('field-customer').checked=true;$('field-staff').checked=true;await selectCategory(categoryId);msg('Product property added.','success')}catch(e){msg(e.message||String(e),'error')}};
 $('option-form').onsubmit=async e=>{e.preventDefault();try{const fieldId=$('option-field').value;if(!fieldId)throw Error('Select a select/multiselect property.');await api('/rest/v1/category_field_options',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:fields.find(f=>f.id===fieldId)?.category_id,field_id:fieldId,value:$('option-value').value.trim(),label:$('option-label').value.trim(),sort_order:options.length,active:true})});e.target.reset();await selectField(fieldId);msg('Property option added.','success')}catch(e){msg(e.message||String(e),'error')}};
-$('option-field').onchange=()=>selectField($('option-field').value);$('sign-out').onclick=()=>{try{localStorage.removeItem(SESSION_STORAGE)}catch{}location.href='customer-dashboard.html'};
-window.addEventListener('unhandledrejection',e=>msg(`Categories runtime error: ${e.reason?.message||e.reason||'Unhandled promise rejection'}`,'error'));
+$('option-field').onchange=()=>selectField($('option-field').value);
+$('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?window.tradeflowSubscriberSignOut():location.reload();
 load();

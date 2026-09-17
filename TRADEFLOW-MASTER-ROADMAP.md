@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.9  
+**Version:** 3.10  
 **Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -28,7 +28,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 |---|---|---|---|
 | 1 | Tenant & identity | AMBER | Production onboarding must replace/harden development authenticated tenant-insert/test-lab paths. |
 | 2 | Subscriptions & capability gating | GREEN | Capability layer implemented; Buying 17/17 and Selling 17/17 customer subscription tests recorded. |
-| 3 | Categories, fields & options | BLUE | Independent Categories & Properties workspace implemented. Test Business A has active Buying/Selling `Drones`. Browser verification is open. |
+| 3 | Categories, fields & options | BLUE | **Category loading is Verified Live** with Test Business A Admin; `Drones` appears. Property creation/options still require browser verification. |
 | 4 | Customers & addresses | GREEN | Customer security/isolation checkpoint 34/34. |
 | 5 | Buying | BLUE | Customer submission and subscriber buying workspace implemented; persistent browser verification remains. |
 | 6 | Media/storage | BLUE | Private `tradeflow-media`, tenant-scoped inventory/listing media links and 90-day post-sale retention metadata/triggers implemented. Physical cleanup scheduler remains open. |
@@ -48,51 +48,24 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains have explicit workflow authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
-## Customer dashboard browser repair — 16–17 September 2026
-Customer authentication/controller is **Verified Live**. Customer category loading was separately isolated from optional `Promise.all()` modules because Test Business A lacks `module.orders`; `customer-dashboard-nav.js` independently loads `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
-
-## Subscriber JavaScript loading repair — 17 September 2026
-Categories, Inventory and Selling shared the same malformed `esc()` quote mapping, a JavaScript parse fault preventing their controllers from reaching Supabase. Clean repaired runtimes were deployed.
-
 ## Category / product / media foundation
 Operational path:
 **Categories & Properties → create category → define properties/options → Inventory → add product → attach photographs → controlled lifecycle → Selling → create listing → Customer Shop.**
 
 Implemented category/property management, direct inventory product creation, dynamic property values, private `tradeflow-media`, tenant-scoped media link tables, listing photo carryover and 90-day post-sale retention metadata/triggers. Physical Storage cleanup scheduling is not yet configured.
 
-## Category investigation — tenant context and REST transport — 17 September 2026
-Test Business A contains active Buying/Selling `Drones`. The exact category SELECT returns `Drones` under the authenticated database role with the known Test Business A owner identity. Category permissions are present. Therefore the database, category data and category RLS are not the primary cause of the browser symptom.
+## Category investigation and subscriber authentication — 17 September 2026
+Test Business A contains active Buying/Selling `Drones`. The exact category SELECT returns `Drones` under the authenticated database role. The browser initially failed because subscriber pages were using customer test-lab session storage rather than a dedicated subscriber session. A dedicated subscriber authentication layer was added for the test environment.
 
-The subscriber front-end was found to depend on temporary customer test-lab storage keys. The Category page was reading `tradeflow_testlab_session` / `tradeflow_testlab_publishable_key`, while the current browser was not signed into that customer test-lab session. The screenshot state `Sign in through the TradeFlow test environment before opening Categories.` proves the controller reached its authentication guard but had no appropriate subscriber session. This is a **subscriber authentication/session architecture problem**, not a category-data problem.
+The live browser test is now **PASSED**: using the Test Business A **Admin** account, Categories loads successfully and `Drones` is visible. This proves the current chain:
+**Subscriber Admin sign-in → active Test Business A membership → subscriber tenant context → authenticated category query → RLS → `Drones` rendered.**
 
-The earlier REST repair remains in place: GET/HEAD requests no longer add JSON `Content-Type`, category reads have a 10-second timeout, and runtime diagnostics load before the controller.
-
-## Dedicated subscriber authentication repair — 17 September 2026
-A dedicated `subscriber-auth.js` test-environment authentication layer has now been added. It is intentionally separate from Customer and Platform Owner sessions.
-
-It:
-- uses the same TradeFlow Supabase project publishable key, falling back to the already-connected Platform Admin key only as a browser convenience;
-- stores subscriber sessions under `tradeflow_subscriber_session` and the key under `tradeflow_subscriber_publishable_key`;
-- signs in an Owner/Admin/Staff account with email/password;
-- verifies the authenticated user has an active membership in the selected test tenant;
-- resolves Test Business A or B and writes the tenant context;
-- does not store the password.
-
-`subscriber-auth-bridge.js` provides compatibility for the existing subscriber controllers by translating their legacy test-lab storage reads to the dedicated subscriber session **on subscriber workspace pages only**. It never changes the Customer Test Lab storage itself. After a new subscriber sign-in, it reloads the workspace so the existing controllers start with the authenticated subscriber session.
-
-`subscriber-auth-controls.js` intercepts the legacy page sign-out button and signs out the dedicated subscriber session.
-
-The dedicated authentication layer is currently wired into:
-- `categories.html`
-- `inventory-dashboard.html`
-- `selling-dashboard.html`
-
-This is a test-environment repair. It is not the final production authentication architecture; production onboarding and subscriber tenant selection remain open.
+Owner remains reserved for owner-specific testing; Admin is the primary subscriber workspace test account; Staff remains for permission/restriction testing.
 
 ## Current stopping point — 17 September 2026
-The browser symptom has now been traced to the missing **subscriber** session rather than the category query. The next live test is to open Categories, sign in as an active Test Business A Owner/Admin/Staff account, and verify that `Drones` loads. Once that is proven, Inventory and Selling use the same dedicated subscriber session and tenant context.
+**Categories loading: VERIFIED LIVE.** Do not change authentication, category RLS or subscriptions for this issue.
 
-Do not change category records, RLS policies or subscription capabilities to work around this authentication issue.
+Next browser test is deliberately narrow: on Categories, select `Drones` in the Product Property Category selector and create the first product property (using the existing UI). Then verify Inventory's Category selector with the same Admin session. Do not move to Selling or Stripe until the Category → Property → Inventory selector chain is verified.
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.

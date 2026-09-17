@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 3.5  
+**Version:** 3.6  
 **Date:** 17 September 2026  
 **Project:** TradeFlow
 
@@ -57,7 +57,22 @@ Separate direct product path: **Category → Product → Properties → Photogra
 
 Test Business A contains the active Buying/Selling `Drones` category. This is test data, not a production seed requirement.
 
-## 9. Inventory/media foundation
+## 9. Common subscriber category tenant-context repair — 17 September 2026
+The same blank-category failure appeared across subscriber category selectors. The database was verified to contain active Buying/Selling `Drones`; the failure was front-end tenant context. Subscriber controllers expected `tenant_id` in the URL while workspace navigation used plain page URLs.
+
+A shared `subscriber-tenant-context.js` preloader now executes before the Category, Inventory, Selling and Buying controllers. In the temporary test-lab environment it establishes the tenant from the current URL/local test tenant context or authenticated test-lab session mapping, writes it into the URL and stores it for subsequent subscriber navigation.
+
+Commits:
+- shared context: `695fbd26e47531c76b2a3fe053dfc0f49abb91c9`
+- Subscriber Dashboard: `eb9ee51f743e2e7a9f01d7e61745113d352f12e3`
+- Inventory: `b73b23c96c8e797fb3c5be9b9c9e1c0f4c715e15`
+- Selling: `da905ec27731054067720386cf714bf89cf7d108`
+- Buying: `edab6b403a8c9cc277644c5bc2c9b898d10ec8d4`
+- Categories: `a9b9d6fc7adfc475567f147d16cbec24fd0b0c28`
+
+This is test-lab subscriber infrastructure only. It does not replace the eventual production tenant-selection model and does not change subscriptions, RLS or category data.
+
+## 10. Inventory/media foundation
 Inventory remains protected by `guard_inventory_asset_status_entry()` and `transition_workflow_entity()`.
 
 New product creation is exposed in `inventory-dashboard.html`. It creates a `received` inventory asset, assigns a category, stores dynamic property values and can upload multiple photographs.
@@ -71,7 +86,7 @@ Media architecture:
 
 When an inventory asset or listing enters `sold`, attached media receives a 90-day retention expiry; leaving `sold` clears the expiry. This is a retention timer, not yet the physical deletion job. Physical deletion must use Supabase Storage. Scheduled cleanup via Cron/pg_net is not yet configured.
 
-## 10. Finance / external payment checkpoint
+## 11. Finance / external payment checkpoint
 059–060 harden payment/ledger access and workflow authority. No `module.finance` feature is to be invented.
 
 `record_retail_order_payment()` is the internal subscriber capture path. `customer_create_order_payment()` is the customer-side idempotency boundary.
@@ -84,34 +99,23 @@ External Stripe boundary:
 
 Stripe test configuration is complete server-side, but persistent browser payment verification remains open.
 
-## 11. Selling/Listings and Orders
+## 12. Selling/Listings and Orders
 Selling uses ready-for-sale inventory, active selling channels/categories and central workflow authority. New listings inherit inventory media.
 
 Retail Orders hardening is 062. Customer checkout requires an authenticated active customer, accepts a published listing, creates a pending-payment order, reserves the listing and enters the Stripe boundary. Subscriber internal payment capture advances paid orders and creates finance records.
 
-## 12. Fulfilment and Returns
+## 13. Fulfilment and Returns
 Fulfilment lifecycle authority: `awaiting → label → dispatched → delivered`, with return branches. Direct status edits are guarded.
 
 Returns require authenticated customer ownership and eligible order state. Lifecycle authority is `requested → authorised/rejected/closed → awaiting_return → received → inspected → approved/rejected → refunded/replaced/closed`.
 
-## 13. Customer dashboard browser repair — VERIFIED LIVE
+## 14. Customer dashboard browser repair — VERIFIED LIVE
 Customer browser faults were traced to navigation interception, session handoff timing and an invalid `esc()` quote mapping. The controller was repaired and cache-busted to `v11`.
 
 Customer Buying category loading was separately isolated because Test Business A lacks `module.orders`; the aggregate customer data `Promise.all()` can reject before categories load. `customer-dashboard-nav.js` independently calls secure `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
 
-## 14. Subscriber dashboard loading repair — 17 September 2026
+## 15. Subscriber JavaScript loading repair — 17 September 2026
 Categories, Inventory and Selling all showed `Loading…`. The shared malformed `esc()` mapping was a JavaScript parse fault. Category was repaired in place; clean repaired Inventory and Selling runtimes were deployed. Inventory signed-URL requests also explicitly send JSON content type.
-
-## 15. Category tenant-context and GitHub Pages cache repair — 17 September 2026
-The Categories screenshot continued to show `Loading categories…` after the tenant-aware controller/fallback repair. The current browser URL remained the old `category-management.html` entry without a tenant query, and the visible page did not execute the newly deployed fallback. The evidence is consistent with the browser/GitHub Pages serving a stale page entry rather than the current repository content.
-
-A fresh entry page, `categories.html`, was created so the next browser test uses a new URL rather than the repeatedly cached `category-management.html` resource. It loads `category-management.js?v=6`, independently resolves the authenticated user's active test tenant, displays the category list, and populates the property category selector. Subscriber navigation was changed to use `categories.html`.
-
-Commits:
-- fresh entry page: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
-- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
-
-This remains a browser delivery/cache repair only. No subscription, RLS or category data was changed.
 
 ## 16. Diagnostic standard
 Always record:
@@ -120,7 +124,7 @@ Always record:
 Record actual filenames and database objects. If not inspected, write **Not yet audited**.
 
 ## 17. Manual UI testing
-One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
+One manual test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
 ## 18. Change-control and memory
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
@@ -128,6 +132,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 19. Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The Categories browser delivery issue is now bypassed by a fresh `categories.html` entry point with a new URL and JavaScript cache-buster. Browser verification is still open.
+The common subscriber category-selector failure is now addressed at the shared tenant-context layer rather than with additional database workarounds. Browser verification remains open.
 
-**Next safe action:** open the fresh Categories entry page from the Subscriber Dashboard, confirm Test Business A and `Drones`, then test Properties and create the first product property. Continue one verified stage at a time through Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next safe action:** hard refresh the Subscriber Dashboard, open Categories & Properties and confirm `Drones`; then open Inventory and confirm its Category selector also contains `Drones`. Once both pass, create the first property and proceed one verified stage at a time through Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

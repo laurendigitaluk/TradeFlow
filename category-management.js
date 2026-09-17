@@ -19,15 +19,17 @@ function getTenantId(){
   const mapped={
     '46cee9fa-2ead-42b2-8e55-b81c79c5b728':'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',
     '9cc88fc3-7d03-4e99-b97f-6205ac658daf':'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',
-    '52f51902-cbc3-45c9-838c-1326f2e65906':'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',
+    '52f51902-cbc3-45c9-838c-1326f2e65906':'f50fb889-c615-4e55-84f0fd9f48c0b0',
     '5ba9ac5d-53a0-4edf-bcdb-c9003e5a5eee':'373598f0-7d35-41be-8ed2-3cc7ee9709c7'
   };
   return mapped[session?.user?.id]||null;
 }
 async function api(path,options={}){
   if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');
-  const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);
-  const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});
+  const h=new Headers(options.headers||{});h.set('apikey',key);if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);
+  const method=(options.method||'GET').toUpperCase();if(options.body||!['GET','HEAD'].includes(method))h.set('Content-Type','application/json');
+  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);
+  let r;try{r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h,signal:controller.signal})}catch(e){if(e?.name==='AbortError')throw Error('Supabase category request timed out after 10 seconds.');throw e}finally{clearTimeout(timer)}
   const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
   if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b;
 }
@@ -48,9 +50,10 @@ async function resolveTenant(){
 function slug(v){return v.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
 async function load(){
   try{
-    msg('Loading categories…');
+    msg('Connecting to TradeFlow data…');
     const tenant=await resolveTenant();
     $('business-name').textContent=tenant.label;
+    msg('Loading categories from Supabase…');
     categories=await api(`/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`)||[];
     renderCategories();fillCategorySelects();
     if(categories[0])await selectCategory(categories[0].id);else $('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';
@@ -62,10 +65,10 @@ function renderCategories(){if(!categories.length){$('categories').innerHTML='<d
 async function selectCategory(id){if(!id)return;$('field-category').value=id;try{fields=await api(`/rest/v1/category_fields?select=id,category_id,field_key,label,field_type,required_for_buying,required_for_selling,customer_visible,staff_visible,valuation_relevant,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&category_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];renderFields();$('option-field').innerHTML='<option value="">Select property…</option>'+fields.filter(f=>['select','multiselect'].includes(f.field_type)).map(f=>`<option value="${f.id}">${esc(f.label)}</option>`).join('');if(fields[0])await selectField(fields[0].id);else $('options').innerHTML='<div class="empty">No property options yet.</div>'}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow category property load failed',e)}}
 function renderFields(){if(!fields.length){$('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';return}$('fields').innerHTML=`<div class="data-table"><div class="data-head"><span>Property</span><span>Type</span><span>Buying</span><span>Selling</span><span>Valuation</span><span>Action</span></div>${fields.map(f=>`<div class="data-row"><span><strong>${esc(f.label)}</strong><br><span class="small">${esc(f.field_key)}</span></span><span>${esc(f.field_type)}</span><span>${f.required_for_buying?'Required':'Optional'}</span><span>${f.required_for_selling?'Required':'Optional'}</span><span>${f.valuation_relevant?'Yes':'No'}</span><span>${['select','multiselect'].includes(f.field_type)?`<button type="button" data-select-field="${f.id}">Options</button>`:'—'}</span></div>`).join('')}</div>`;document.querySelectorAll('[data-select-field]').forEach(b=>b.onclick=()=>selectField(b.dataset.selectField))}
 async function selectField(id){if(!id)return;$('option-field').value=id;try{options=await api(`/rest/v1/category_field_options?select=id,field_id,value,label,sort_order,active&tenant_id=eq.${encodeURIComponent(tenantId)}&field_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];$('options').innerHTML=options.length?`<div class="data-table"><div class="data-head"><span>Value</span><span>Label</span><span>Active</span></div>${options.map(o=>`<div class="data-row"><span>${esc(o.value)}</span><span>${esc(o.label)}</span><span>${o.active?'Yes':'No'}</span></div>`).join('')}</div>`:'<div class="empty">No options for this property yet.</div>'}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow property options load failed',e)}}
-$('category-name').oninput=e=>{if(!$('category-slug').dataset.edited)$('category-slug').value=slug(e.target.value)};$('category-slug').oninput=()=>{$('category-slug').dataset.edited='1'};
+$('category-name').oninput=e=>{if(!$('category-slug').dataset.edited)$('category-slug').value=slug(e.target.value);};$('category-slug').oninput=()=>{$('category-slug').dataset.edited='1'};
 $('category-form').onsubmit=async e=>{e.preventDefault();try{const name=$('category-name').value.trim();if(!name)throw Error('Category name is required.');const body={tenant_id:tenantId,name,slug:$('category-slug').value.trim()||slug(name),description:$('category-description').value.trim()||null,buying_enabled:$('buying-enabled').checked,selling_enabled:$('selling-enabled').checked,active:true};await api('/rest/v1/categories',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(body)});e.target.reset();$('buying-enabled').checked=true;$('selling-enabled').checked=true;$('category-slug').dataset.edited='';await load();msg('Category created.','success')}catch(e){msg(e.message||String(e),'error')}};
 $('field-form').onsubmit=async e=>{e.preventDefault();try{const categoryId=$('field-category').value;if(!categoryId)throw Error('Select a category.');const keyValue=$('field-key').value.trim();if(!keyValue)throw Error('Property key is required.');await api('/rest/v1/category_fields',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:categoryId,field_key:keyValue,label:$('field-label').value.trim(),field_type:$('field-type').value,required_for_buying:$('field-buying').checked,required_for_selling:$('field-selling').checked,customer_visible:$('field-customer').checked,staff_visible:$('field-staff').checked,valuation_relevant:$('field-valuation').checked,sort_order:fields.length,validation_config:{}})});e.target.reset();$('field-customer').checked=true;$('field-staff').checked=true;await selectCategory(categoryId);msg('Product property added.','success')}catch(e){msg(e.message||String(e),'error')}};
 $('option-form').onsubmit=async e=>{e.preventDefault();try{const fieldId=$('option-field').value;if(!fieldId)throw Error('Select a select/multiselect property.');await api('/rest/v1/category_field_options',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:fields.find(f=>f.id===fieldId)?.category_id,field_id:fieldId,value:$('option-value').value.trim(),label:$('option-label').value.trim(),sort_order:options.length,active:true})});e.target.reset();await selectField(fieldId);msg('Property option added.','success')}catch(e){msg(e.message||String(e),'error')}};
-$('option-field').onchange=()=>selectField($('option-field').value);$('sign-out').onclick=()=>{localStorage.removeItem(SESSION_STORAGE);location.href='customer-dashboard.html'};
+$('option-field').onchange=()=>selectField($('option-field').value);$('sign-out').onclick=()=>{try{localStorage.removeItem(SESSION_STORAGE)}catch{}location.href='customer-dashboard.html'};
 window.addEventListener('unhandledrejection',e=>msg(`Categories runtime error: ${e.reason?.message||e.reason||'Unhandled promise rejection'}`,'error'));
 load();

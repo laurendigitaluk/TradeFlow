@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 3.4  
+**Version:** 3.5  
 **Date:** 17 September 2026  
 **Project:** TradeFlow
 
@@ -67,7 +67,7 @@ Media architecture:
 - `media_assets` stores object metadata and retention fields;
 - `inventory_asset_media` links photographs to products;
 - `listing_media` links photographs to listings;
-- Selling carries inventory media links into new listings.
+- Selling carries inventory media links into a newly created listing.
 
 When an inventory asset or listing enters `sold`, attached media receives a 90-day retention expiry; leaving `sold` clears the expiry. This is a retention timer, not yet the physical deletion job. Physical deletion must use Supabase Storage. Scheduled cleanup via Cron/pg_net is not yet configured.
 
@@ -102,23 +102,16 @@ Customer Buying category loading was separately isolated because Test Business A
 ## 14. Subscriber dashboard loading repair — 17 September 2026
 Categories, Inventory and Selling all showed `Loading…`. The shared malformed `esc()` mapping was a JavaScript parse fault. Category was repaired in place; clean repaired Inventory and Selling runtimes were deployed. Inventory signed-URL requests also explicitly send JSON content type.
 
-## 15. Latest Category tenant-context repair — 17 September 2026
-The user screenshot showed Categories still at `Loading categories…`. Current GitHub source and page structure established the actual browser-context fault: the subscriber dashboard navigates to `category-management.html` without `tenant_id`, while the controller previously required the tenant from the query string.
+## 15. Category tenant-context and GitHub Pages cache repair — 17 September 2026
+The Categories screenshot continued to show `Loading categories…` after the tenant-aware controller/fallback repair. The current browser URL remained the old `category-management.html` entry without a tenant query, and the visible page did not execute the newly deployed fallback. The evidence is consistent with the browser/GitHub Pages serving a stale page entry rather than the current repository content.
 
-The repair in `category-management.js` now:
-1. accepts a valid query `tenant_id` when present;
-2. otherwise queries authenticated `tenant_memberships` for the current session user;
-3. requires exactly one active matching TradeFlow test tenant;
-4. sets the resolved tenant in the URL with `history.replaceState()`;
-5. uses that resolved `tenant_id` for category/property/option reads and writes.
-
-The page cache-buster is now `category-management.js?v=5`. The inline fallback in `category-management.html` was updated to use the same authenticated tenant resolution rather than assuming a query tenant.
+A fresh entry page, `categories.html`, was created so the next browser test uses a new URL rather than the repeatedly cached `category-management.html` resource. It loads `category-management.js?v=6`, independently resolves the authenticated user's active test tenant, displays the category list, and populates the property category selector. Subscriber navigation was changed to use `categories.html`.
 
 Commits:
-- `682ce22d8e5dcec9dd2d30815e565f05a3442c11` — controller.
-- `96474f2a346cc1598aeaacf39b37a3702c8d5574` — page/fallback.
+- fresh entry page: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
+- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
 
-This is a browser-context repair only. Do not alter subscriptions or database category data to work around it.
+This remains a browser delivery/cache repair only. No subscription, RLS or category data was changed.
 
 ## 16. Diagnostic standard
 Always record:
@@ -127,7 +120,7 @@ Always record:
 Record actual filenames and database objects. If not inspected, write **Not yet audited**.
 
 ## 17. Manual UI testing
-One manual test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
+One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
 ## 18. Change-control and memory
 After each material change record what/why, affected files/backend objects, architectural decision, fault/lesson, test, live verification, stopping point and next safe action. Update the Master Roadmap, System Handbook, this AI manual and structured project memory/checkpoint where available.
@@ -135,6 +128,6 @@ After each material change record what/why, affected files/backend objects, arch
 TradeFlow's live database must not be assumed to contain a project-memory table unless its actual schema is inspected. Do not invent memory tables, columns or records.
 
 ## 19. Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The Categories loading screenshot is now traced to missing tenant context caused by navigation without a `tenant_id`. The controller and fallback now resolve the authenticated active test tenant.
+The shared subscriber JavaScript parse fault is repaired. The Categories browser delivery issue is now bypassed by a fresh `categories.html` entry point with a new URL and JavaScript cache-buster. Browser verification is still open.
 
-**Next safe action:** hard refresh/open Categories again and confirm Test Business A and `Drones`. Then test Properties and create the first product property. Continue one verified stage at a time through Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next safe action:** open the fresh Categories entry page from the Subscriber Dashboard, confirm Test Business A and `Drones`, then test Properties and create the first product property. Continue one verified stage at a time through Product → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

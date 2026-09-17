@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.4  
+**Version:** 3.5  
 **Date:** 17 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -46,11 +46,9 @@ Relevant permissions include `buying.view/manage`, `valuation.view/manage`, `off
 ## 6. Customer-facing and subscriber build
 Implemented UI paths include Website Builder, public storefront renderer, customer authentication/dashboard, Buying, Offers, Acquisitions, Inventory, Finance, Selling/Listings, Orders, Fulfilment and Returns.
 
-Category/property management is independent of Buying. Subscribers can create a category for Buying, Selling or both and define category-specific product properties/options.
+Category/property management is independent of Buying. Subscribers can create categories for Buying, Selling or both and define category-specific properties/options. Inventory supports direct product creation, category assignment, dynamic property values and photographs. Selling carries inventory photographs into new listings.
 
-Inventory supports direct product creation, category assignment, dynamic property values and photographs. Selling carries inventory photographs into new listings.
-
-These are implementation milestones and remain BLUE until the authenticated browser journeys are persistently tested.
+These remain BLUE until authenticated browser journeys are persistently tested.
 
 ## 7. Buying → Valuation → Offer
 049–051 harden dynamic options and Buying workflow. 052–055 harden valuation/offer RLS, same-item valuation binding and state entry. Published offers require an approved valuation for the same tenant and buying item.
@@ -59,9 +57,7 @@ These are implementation milestones and remain BLUE until the authenticated brow
 056–057 harden acquisition access and status entry. Inventory creation from an acquisition item is an explicit operation and is not inferred from acquisition status.
 
 ## 9. Categories, product properties and inventory media
-`categories`, `category_fields` and `category_field_options` are the database-authoritative model. `category-management.html` / `.js` exposes category creation plus property and option creation.
-
-`inventory_assets.dynamic_values` stores category-specific product values. `category_fields` controls type, Buying/Selling requirements, customer/staff visibility and valuation relevance. Select/multiselect properties use `category_field_options`.
+`categories`, `category_fields` and `category_field_options` are the database-authoritative model. `category-management.html` / `.js` exposes category creation plus property and option creation. `inventory_assets.dynamic_values` stores category-specific product values.
 
 Media foundation:
 - private Storage bucket: `tradeflow-media`;
@@ -70,25 +66,18 @@ Media foundation:
 - `listing_media` tenant-scoped listing links;
 - inventory/listing sold-status triggers setting a **90-day post-sale retention expiry**.
 
-Private images are accessed through authenticated Storage and time-limited signed URLs. Physical object deletion must use the Storage API. The automatic cleanup scheduler is **not configured**.
+Private images use authenticated Storage and signed URLs. Physical object deletion must use the Storage API. Automatic cleanup scheduling is not configured.
 
-## 10. Category browser tenant-context rule — 17 September 2026
-The Categories screenshot remained at `Loading categories…` even though Test Business A contained `Drones`. The page URL had no `tenant_id` because the subscriber dashboard's Categories link is a plain `category-management.html` link.
+## 10. Category browser tenant-context and cache delivery repair — 17 September 2026
+The Categories page remained at `Loading categories…` after the first tenant-aware repair. The page URL had no `tenant_id` because the subscriber navigation opened `category-management.html` directly, and the visible browser entry did not appear to execute the newly deployed fallback.
 
-The controller previously required the tenant exclusively from the query string. It now resolves tenant context as follows:
-1. use a valid `tenant_id` query parameter when present;
-2. otherwise use the authenticated test-lab session and query active `tenant_memberships` for the current user;
-3. require exactly one matching TradeFlow test tenant;
-4. store the resolved tenant in the URL using `history.replaceState()`;
-5. use that tenant ID for all category/property/option queries and writes.
-
-`category-management.html` was cache-busted to `category-management.js?v=5` and its browser fallback was updated to use the same tenant-membership resolution.
+The controller had already been changed to resolve a single active test tenant from authenticated `tenant_memberships` when no query tenant exists. To avoid continuing to depend on a repeatedly cached page entry, a fresh `categories.html` entry point was created. It loads `category-management.js?v=6`, resolves the authenticated active test tenant, displays categories and populates the property selector. Subscriber navigation now points to `categories.html`.
 
 Commits:
-- controller `682ce22d8e5dcec9dd2d30815e565f05a3442c11`
-- page/fallback `96474f2a346cc1598aeaacf39b37a3702c8d5574`
+- fresh Categories entry: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
+- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
 
-This is a browser context repair. It does not alter subscriptions, RLS or database category data.
+This is a browser delivery/cache repair only. No subscription, RLS or database category data was changed.
 
 ## 11. Inventory
 058 protects inventory status entry. The repaired Inventory runtime supports product creation, category-specific dynamic values, multiple photographs and workflow-controlled lifecycle changes.
@@ -103,7 +92,7 @@ Lifecycle: `received → inspection → testing → repair → ready_for_sale �
 External Stripe architecture is server-side: `create-stripe-checkout-session` requires a customer JWT; `stripe-payment-webhook` verifies `stripe-signature` and calls protected `process_external_payment_event()`. `payment_provider_events` provides provider/event idempotency. Stripe test configuration is complete, but persistent browser payment verification remains open.
 
 ## 13. Selling / Listings
-061 hardens listings and related access. Selling creates listings from ready-for-sale inventory and uses workflow authority. New listings inherit inventory media links.
+061 hardens listings and related access. Selling creates listings from ready-for-sale inventory and uses workflow authority. New listings inherit inventory media.
 
 ## 14. Retail Orders
 062 hardens retail order access/status entry. Subscriber Orders creates orders from published listings. Customer checkout creates a pending-payment order, reserves the listing and uses the Stripe boundary for payment.
@@ -115,12 +104,10 @@ Fulfilment has subscription-aware access and controlled lifecycle progression: `
 Legacy broad returns policies were removed and direct status edits are blocked. `customer_request_return()` validates customer ownership and eligible order states; customer visibility uses secure `customer_get_returns()`.
 
 ## 17. Customer dashboard browser repair — VERIFIED LIVE
-Customer sign-in/controller timing and navigation interception faults were repaired. The controller `esc()` parse fault was corrected and cache-busted to `v11`.
-
-Customer category loading was then isolated from optional `Promise.all()` modules because Test Business A lacks `module.orders`. `customer-dashboard-nav.js` independently loads `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
+Customer sign-in/controller timing and navigation interception faults were repaired. The controller `esc()` parse fault was corrected and cache-busted to `v11`. Customer Buying category loading was isolated from optional modules because Test Business A lacks `module.orders`; `customer-dashboard-nav.js` independently loads `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
 
 ## 18. Subscriber JavaScript loading repair — 17 September 2026
-Categories, Inventory and Selling shared a malformed `esc()` quote mapping, causing JavaScript parse failure before Supabase requests. Category was repaired in place; clean repaired runtimes were created for Inventory and Selling. Inventory signed-URL requests also received an explicit JSON content type.
+Categories, Inventory and Selling shared a malformed `esc()` quote mapping, causing JavaScript parse failure before Supabase requests. Category was repaired in place; clean repaired Inventory and Selling runtimes were created. Inventory signed-URL requests also explicitly send JSON content type.
 
 ## 19. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
@@ -133,6 +120,6 @@ One browser test at a time: exact URL → exact account → exact action → exp
 After each material change record what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
 ## 21. Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The latest Categories fault is traced to missing tenant context when navigation opens `category-management.html` without a query tenant. The controller and fallback now resolve the authenticated active test tenant.
+The shared subscriber JavaScript parse fault is repaired. The old Categories URL continued to deliver a stale/non-executing page, so a fresh `categories.html` entry point and Subscriber navigation route have now been deployed. Browser verification remains open.
 
-**Next action:** hard refresh Categories and confirm Test Business A / `Drones`. Then test Properties, create the first property, and proceed through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox one verified stage at a time.
+**Next action:** open the fresh Categories entry from the Subscriber Dashboard, confirm Test Business A / `Drones`, then test Properties and create the first property. Continue one verified stage at a time through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

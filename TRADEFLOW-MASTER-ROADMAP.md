@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.4  
+**Version:** 3.5  
 **Date:** 17 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -49,53 +49,35 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
 ## Customer dashboard browser repair — 16–17 September 2026
-Customer authentication/controller is **Verified Live**. The browser fault was traced to an invalid JavaScript quote mapping in `customer-dashboard.js` and repaired; controller cache-buster reached `v11`.
-
-Customer category loading was separately isolated from the aggregate `Promise.all()` in `loadPortalData()`: Test Business A does not currently have `module.orders`, so `customer_get_orders()` can reject before category loading. `customer-dashboard-nav.js` now independently loads `customer_get_buying_categories()` after portal reveal and observes the portal hidden state. No subscription capability was changed to mask the fault.
+Customer authentication/controller is **Verified Live**. Customer category loading was separately isolated from optional `Promise.all()` modules because Test Business A lacks `module.orders`; `customer-dashboard-nav.js` independently loads `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
 
 ## Subscriber workspace JavaScript loading repair — 17 September 2026
-Categories, Inventory and Selling shared the same malformed `esc()` quote mapping. Because it was a JavaScript parse fault, the controllers never reached their Supabase calls.
+Categories, Inventory and Selling shared the same malformed `esc()` quote mapping, a JavaScript parse fault preventing their controllers from reaching Supabase.
 
 Repairs:
-- `category-management.js` repaired in place: `11bcc0922f368918a26be6c7e8362109fde2ae4f`.
-- `inventory-dashboard-fixed.js` created: `ccfb93a889903131f24c2a9769b04b095e611c22`.
-- `inventory-dashboard.html` switched to repaired runtime: `22b17000105860bdadc03377b4828410d95f9e04`.
-- `selling-dashboard-fixed.js` created: `1692b3f2d7c512fc528f91ead22e07b6ccac0eec`.
-- `selling-dashboard.html` switched to repaired runtime: `693ef64cbba12540c9f32856224b0d20c831fb1d`.
-
-The live `private` schema `USAGE` repair remains valid. No subscription capability was changed.
+- Category controller: `11bcc0922f368918a26be6c7e8362109fde2ae4f`.
+- Inventory repaired runtime: `ccfb93a889903131f24c2a9769b04b095e611c22`; HTML switch `22b17000105860bdadc03377b4828410d95f9e04`.
+- Selling repaired runtime: `1692b3f2d7c512fc528f91ead22e07b6ccac0eec`; HTML switch `693ef64cbba12540c9f32856224b0d20c831fb1d`.
 
 ## Category / product / media foundation
 Operational path:
 **Categories & Properties → create category → define properties/options → Inventory → add product → attach photographs → controlled lifecycle → Selling → create listing → Customer Shop.**
 
-Implemented:
-- `category-management.html` / `.js` for category/property/option management.
-- `inventory-dashboard.html` / repaired runtime for product creation, dynamic values and photographs.
-- private Storage bucket `tradeflow-media`.
-- `inventory_asset_media` and `listing_media` tenant-scoped link tables.
-- Selling carries inventory photographs into new listings.
-- `media_assets` retention metadata and sold-status 90-day expiry triggers.
-
-Physical storage deletion must use the Storage API. Automated cleanup scheduling is not yet configured.
+Implemented category/property management, direct inventory product creation, dynamic property values, private `tradeflow-media`, tenant-scoped media link tables, listing photo carryover and 90-day post-sale retention metadata/triggers. Physical Storage cleanup scheduling is not yet configured.
 
 ## Category tenant-context repair — 17 September 2026
-The live screenshot showed Categories still stuck at `Loading categories…` even though the database contained `Drones`. Inspection of the current page URL identified the missing tenant context: the subscriber navigation links to `category-management.html` without `tenant_id`.
+The Categories screenshot remained at `Loading categories…` after the first tenant-aware repair. Current repository code showed the subscriber navigation opening `category-management.html` without `tenant_id`; the visible browser page also did not execute the newly deployed fallback. The repair therefore used a fresh URL rather than continuing to fight the cached page entry.
 
-The Category controller previously required `tenant_id` from the query string, so navigation from the subscriber dashboard could open the page without a tenant. The controller is now tenant-context aware:
-- if a valid `tenant_id` query parameter exists, it is used;
-- otherwise the authenticated session's active `tenant_memberships` is queried;
-- exactly one active TradeFlow test tenant must match; the resolved tenant is then placed into the URL with `history.replaceState()`;
-- category/property/option requests continue to use the resolved tenant boundary.
+A new `categories.html` entry page now loads `category-management.js?v=6`, resolves the authenticated user's active TradeFlow test tenant, displays categories and populates the property category selector. Subscriber navigation was changed from `category-management.html` to `categories.html`.
 
-`category-management.html` cache-buster was advanced from `v4` to `v5`, and its browser fallback was updated to use the same authenticated tenant-membership resolution. Commits:
-- controller: `682ce22d8e5dcec9dd2d30815e565f05a3442c11`
-- page/fallback: `96474f2a346cc1598aeaacf39b37a3702c8d5574`
+Commits:
+- fresh Categories entry: `8e4be72483ddd1e46f4a24d87df5782159b9216d`
+- Subscriber navigation: `028c2bf18b5306ba140ca99e0c9220188afe4998`
 
-This is a browser-context repair, not a database or subscription change.
+This is a browser delivery/cache repair only. No subscription, RLS or category data was changed.
 
 ## Retail payment / external Stripe
-External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed Stripe events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented. Stripe secrets/configuration remain server-side.
+External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.
 
 ## Production onboarding — OPEN
 The development foundation still contains an authenticated tenant insertion path with `with check (true)` and temporary test-lab onboarding. Required production sequence:
@@ -117,6 +99,6 @@ Verification states: **Proposed → Implemented → Tested → Verified Live**. 
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
 
 ## Current stopping point — 17 September 2026
-The shared subscriber JavaScript parse fault is repaired. The latest Categories fault is now traced to missing tenant context when the subscriber navigation opens the page without a `tenant_id`. The controller and fallback have been repaired to resolve the authenticated active test tenant.
+The shared subscriber JavaScript parse fault is repaired. The Categories page still failed to deliver the current runtime through the old cached URL, so a fresh `categories.html` entry point has been deployed. Browser verification is still open.
 
-**Next browser action:** hard refresh/open the Categories page again. Confirm the page resolves Test Business A and displays `Drones`. Then test Properties, create the first product property, and proceed one page at a time through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next browser action:** open the fresh Categories entry from the Subscriber Dashboard and confirm Test Business A / `Drones`. Then test Properties, create the first property, and proceed one page at a time through Inventory → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

@@ -1,40 +1,14 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const $=id=>document.getElementById(id);
-const TENANTS={'f50fb889-c615-4e55-84d4-f0fd9f48b0b0':'Test Business A','373598f0-7d35-41be-8ed2-3cc7ee9709c7':'Test Business B'};
+const TENANTS={'f50fb889-c615-4e55-84d4-f0fd9f48b0b0':'Test Business A','373598f0-7d03-4e99-b97f-6205ac658daf':'Test Business B'};
 let key=null,accessToken=null,tenantId=null,categories=[],fields=[],options=[];
 function msg(t,type=''){const m=$('message');if(m){m.className=`small ${type}`.trim();m.textContent=t||''}}
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
-async function api(path,options={}){
-  if(!key)throw Error('TradeFlow subscriber Supabase key is not available.');
-  const h=new Headers(options.headers||{});h.set('apikey',key);if(accessToken)h.set('Authorization',`Bearer ${accessToken}`);
-  const method=(options.method||'GET').toUpperCase();if(options.body||!['GET','HEAD'].includes(method))h.set('Content-Type','application/json');
-  const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);let r;
-  try{r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h,signal:controller.signal})}catch(e){if(e?.name==='AbortError')throw Error('Supabase category request timed out after 10 seconds.');throw e}finally{clearTimeout(timer)}
-  const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
-  if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||text||`HTTP ${r.status}`);return b;
-}
-async function waitForSubscriber(){
-  if(!window.tradeflowSubscriberAuthReady)throw Error('Subscriber authentication layer did not load.');
-  const auth=await window.tradeflowSubscriberAuthReady;
-  if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');
-  key=auth.key;accessToken=auth.session.access_token;tenantId=auth.tenantId;
-  if(!TENANTS[tenantId])throw Error('Subscriber authentication did not provide a valid TradeFlow test tenant.');
-  document.documentElement.dataset.tradeflowTenantId=tenantId;
-  return TENANTS[tenantId];
-}
-async function load(){
-  try{
-    msg('Waiting for subscriber authentication…');
-    const tenant=await waitForSubscriber();
-    $('business-name').textContent=tenant;
-    msg('Loading categories from Supabase…');
-    categories=await api(`/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`)||[];
-    renderCategories();fillCategorySelects();
-    if(categories[0])await selectCategory(categories[0].id);else $('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';
-    msg(`${categories.length} categor${categories.length===1?'y':'ies'} loaded.`,'success');
-  }catch(e){msg(e.message||String(e),'error');console.error('TradeFlow Categories load failed',e)}
-}
-function fillCategorySelects(){const html='<option value="">Select category…</option>'+categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');$('field-category').innerHTML=html;$('field-category').onchange=()=>selectCategory($('field-category').value)}
+async function api(path,options={}){if(!key)throw Error('TradeFlow subscriber Supabase key is not available.');const h=new Headers(options.headers||{});h.set('apikey',key);if(accessToken)h.set('Authorization',`Bearer ${accessToken}`);const method=(options.method||'GET').toUpperCase();if(options.body||!['GET','HEAD'].includes(method))h.set('Content-Type','application/json');const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),10000);let r;try{r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h,signal:controller.signal})}catch(e){if(e?.name==='AbortError')throw Error('Supabase category request timed out after 10 seconds.');throw e}finally{clearTimeout(timer)}const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||text||`HTTP ${r.status}`);return b}
+async function waitForSubscriber(){if(!window.tradeflowSubscriberAuthReady)throw Error('Subscriber authentication layer did not load.');const auth=await window.tradeflowSubscriberAuthReady;if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');key=auth.key;accessToken=auth.session.access_token;tenantId=auth.tenantId;if(!TENANTS[tenantId])throw Error('Subscriber authentication did not provide a valid TradeFlow test tenant.');document.documentElement.dataset.tradeflowTenantId=tenantId;return TENANTS[tenantId]}
+async function load(){try{msg('Waiting for subscriber authentication…');const tenant=await waitForSubscriber();$('business-name').textContent=tenant;msg('Loading categories from Supabase…');categories=await api(`/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`)||[];renderCategories();fillCategorySelects();if(categories[0])await selectCategory(categories[0].id);else{$('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';renderCategorySelectDisabled('No categories available');}msg(`${categories.length} categor${categories.length===1?'y':'ies'} loaded.`,'success')}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow Categories load failed',e)}}
+function renderCategorySelectDisabled(text){const s=$('field-category');s.disabled=true;s.innerHTML=`<option value="">${esc(text)}</option>`}
+function fillCategorySelects(){const s=$('field-category');s.disabled=false;s.innerHTML='';const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Select category…';s.appendChild(placeholder);categories.forEach(c=>{const o=document.createElement('option');o.value=c.id;o.textContent=c.name;s.appendChild(o)});s.onchange=()=>{const id=s.value;if(id)selectCategory(id)};if(categories[0])s.value=categories[0].id}
 function renderCategories(){if(!categories.length){$('categories').innerHTML='<div class="empty">No categories yet. Create your first category above.</div>';return}$('categories').innerHTML=`<div class="data-table"><div class="data-head"><span>Name</span><span>Slug</span><span>Buying</span><span>Selling</span><span>Active</span><span>Action</span></div>${categories.map(c=>`<div class="data-row"><span><strong>${esc(c.name)}</strong><br><span class="small">${esc(c.description||'')}</span></span><span>${esc(c.slug)}</span><span>${c.buying_enabled?'Yes':'No'}</span><span>${c.selling_enabled?'Yes':'No'}</span><span>${c.active?'Yes':'No'}</span><span><button type="button" data-select-cat="${c.id}">Properties</button></span></div>`).join('')}</div>`;document.querySelectorAll('[data-select-cat]').forEach(b=>b.onclick=()=>selectCategory(b.dataset.selectCat))}
 async function selectCategory(id){if(!id)return;$('field-category').value=id;try{fields=await api(`/rest/v1/category_fields?select=id,category_id,field_key,label,field_type,required_for_buying,required_for_selling,customer_visible,staff_visible,valuation_relevant,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&category_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];renderFields();$('option-field').innerHTML='<option value="">Select property…</option>'+fields.filter(f=>['select','multiselect'].includes(f.field_type)).map(f=>`<option value="${f.id}">${esc(f.label)}</option>`).join('');if(fields[0])await selectField(fields[0].id);else $('options').innerHTML='<div class="empty">No property options yet.</div>'}catch(e){msg(e.message||String(e),'error');console.error('TradeFlow category property load failed',e)}}
 function renderFields(){if(!fields.length){$('fields').innerHTML='<div class="empty">No properties defined for this category.</div>';return}$('fields').innerHTML=`<div class="data-table"><div class="data-head"><span>Property</span><span>Type</span><span>Buying</span><span>Selling</span><span>Valuation</span><span>Action</span></div>${fields.map(f=>`<div class="data-row"><span><strong>${esc(f.label)}</strong><br><span class="small">${esc(f.field_key)}</span></span><span>${esc(f.field_type)}</span><span>${f.required_for_buying?'Required':'Optional'}</span><span>${f.required_for_selling?'Required':'Optional'}</span><span>${f.valuation_relevant?'Yes':'No'}</span><span>${['select','multiselect'].includes(f.field_type)?`<button type="button" data-select-field="${f.id}">Options</button>`:'—'}</span></div>`).join('')}</div>`;document.querySelectorAll('[data-select-field]').forEach(b=>b.onclick=()=>selectField(b.dataset.selectField))}

@@ -16,15 +16,29 @@
   let session=null;try{session=JSON.parse(localStorage.getItem(KEY)||'null')}catch{}
   const params=new URLSearchParams(location.search);
   let tenantId=params.get('tenant_id');
-  if(!TENANTS[tenantId]) tenantId=localStorage.getItem('tradeflow_testlab_tenant_id');
+  let stored=null;try{stored=localStorage.getItem('tradeflow_testlab_tenant_id')}catch{}
+  if(!TENANTS[tenantId]) tenantId=stored;
   if(!TENANTS[tenantId]) tenantId=USER_TENANT[session?.user?.id];
   if(TENANTS[tenantId]){
-    localStorage.setItem('tradeflow_testlab_tenant_id',tenantId);
+    document.documentElement.dataset.tradeflowTenantId=tenantId;
+    document.documentElement.dataset.tradeflowTenantName=TENANTS[tenantId];
+    try{localStorage.setItem('tradeflow_testlab_tenant_id',tenantId)}catch{}
     if(params.get('tenant_id')!==tenantId){
       params.set('tenant_id',tenantId);
       history.replaceState(null,'',`${location.pathname}?${params.toString()}`);
     }
-    document.documentElement.dataset.tradeflowTenantId=tenantId;
-    document.documentElement.dataset.tradeflowTenantName=TENANTS[tenantId];
   }
+  // Supabase REST GETs do not need a JSON Content-Type header. Subscriber
+  // controllers historically added it to every request, which can turn a
+  // simple read into an unnecessary CORS preflight. Normalize those requests
+  // before the controllers run; POST/PATCH/DELETE bodies remain unchanged.
+  const nativeFetch=window.fetch.bind(window);
+  window.fetch=(input,init={})=>{
+    const method=String(init.method||'GET').toUpperCase();
+    if(['GET','HEAD'].includes(method)&&init.headers){
+      const h=new Headers(init.headers);h.delete('Content-Type');
+      return nativeFetch(input,{...init,headers:h});
+    }
+    return nativeFetch(input,init);
+  };
 })();

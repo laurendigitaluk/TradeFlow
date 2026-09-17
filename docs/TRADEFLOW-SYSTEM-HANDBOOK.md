@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.7  
+**Version:** 3.8  
 **Date:** 17 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -84,47 +84,60 @@ Commits: `92bed1ba6319ce3a7ae1c6d8901ae7939d74c71d` and `7872d4bd06a1a53eb150c2f
 
 No Supabase schema, category records, subscriptions or RLS policies were changed.
 
-## 12. Inventory
+## 12. Deep category transport/runtime check — 17 September 2026
+Backend verification confirms the Supabase project is `ACTIVE_HEALTHY`, Test Business A contains active Buying/Selling `Drones`, and the exact category SELECT returns `Drones` under the `authenticated` role with the known owner identity. The owner/admin test identities have `categories.view/manage`; staff has `categories.view`.
+
+The subscriber REST helper was then traced. It added `Content-Type: application/json` to every request, including GET category reads. That header is unnecessary for Supabase REST GETs and can introduce a CORS preflight. The helper also had no timeout, allowing a stalled browser request to remain visibly stuck on `Loading categories…`. The previous page error listener was registered after the controller, so an early controller exception could escape the visible diagnostic.
+
+Repairs:
+- `category-management.js`: omit JSON `Content-Type` on GET/HEAD, add a 10-second request timeout, and show request-phase/concrete errors.
+- `categories.html`: install `error`/`unhandledrejection` listeners before subscriber scripts; cache-bust controller `v10` and shared context `v4`.
+- `subscriber-tenant-context.js`: safely establish tenant context and normalise subscriber GET/HEAD requests before workspace controllers run.
+- Subscriber Dashboard, Inventory, Selling and Buying HTML now cache-bust the shared context to `v4`.
+
+No subscription, RLS or category-data workaround was introduced.
+
+## 13. Inventory
 058 protects inventory status entry. The repaired Inventory runtime supports product creation, category-specific dynamic values, multiple photographs and workflow-controlled lifecycle changes.
 
 Lifecycle: `received → inspection → testing → repair → ready_for_sale → listed → reserved → sold`, with supported return/write-off/archive branches.
 
-## 13. Finance and payment
+## 14. Finance and payment
 059 applies permission-bound access to payment/ledger tables. 060 extends `transition_workflow_entity()` to payment and ledger entities and adds status-entry guards. No automatic payment or ledger creation is inferred from acquisition status.
 
 `record_retail_order_payment()` is the internal subscriber payment path. `customer_create_order_payment()` provides the customer-side idempotent pending-payment boundary.
 
 External Stripe architecture is server-side: `create-stripe-checkout-session` requires a customer JWT; `stripe-payment-webhook` verifies `stripe-signature` and calls protected `process_external_payment_event()`. `payment_provider_events` provides provider/event idempotency. Stripe test configuration is complete, but persistent browser payment verification remains open.
 
-## 14. Selling / Listings
+## 15. Selling / Listings
 061 hardens listings and related access. Selling creates listings from ready-for-sale inventory and uses workflow authority. New listings inherit inventory media.
 
-## 15. Retail Orders
+## 16. Retail Orders
 062 hardens retail order access/status entry. Subscriber Orders creates orders from published listings. Customer checkout creates a pending-payment order, reserves the listing and uses the Stripe boundary for payment.
 
-## 16. Fulfilment
+## 17. Fulfilment
 Fulfilment has subscription-aware access and controlled lifecycle progression: `awaiting → label → dispatched → delivered`, with returned branches. No carrier API or automatic fulfilment creation is assumed.
 
-## 17. Returns
+## 18. Returns
 Legacy broad returns policies were removed and direct status edits are blocked. `customer_request_return()` validates customer ownership and eligible order states; customer visibility uses secure `customer_get_returns()`.
 
-## 18. Customer dashboard browser repair — VERIFIED LIVE
+## 19. Customer dashboard browser repair — VERIFIED LIVE
 Customer sign-in/controller timing and navigation interception faults were repaired. The controller `esc()` parse fault was corrected and cache-busted to `v11`. Customer Buying category loading was isolated from optional modules because Test Business A lacks `module.orders`; `customer-dashboard-nav.js` independently loads `customer_get_buying_categories()` after portal reveal. No subscription capability was changed.
 
-## 19. Subscriber JavaScript loading repair — 17 September 2026
+## 20. Subscriber JavaScript loading repair — 17 September 2026
 Categories, Inventory and Selling shared a malformed `esc()` quote mapping, causing JavaScript parse failure before Supabase requests. Category was repaired in place; clean repaired Inventory and Selling runtimes were created. Inventory signed-URL requests also explicitly send JSON content type.
 
-## 20. Diagnostic and verification standard
+## 21. Diagnostic and verification standard
 Trace every domain as: **User action → page → front-end controller → Supabase call → RPC/query → table/view → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**
 
 Verification states: **Proposed → Implemented → Tested → Verified Live**. Commit success is not live verification. Transactional rollback testing proves database behaviour, not a persistent browser journey.
 
-## 21. Manual testing and change control
+## 22. Manual testing and change control
 One browser test at a time: exact URL → exact account → exact action → expected result → screenshot/result → PASS/FAIL → next test.
 
 After each material change record what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Update this handbook, the Master Roadmap, the AI Operating Manual and structured project memory/checkpoint data where available.
 
-## 22. Current stopping point — 17 September 2026
-The database category is present and verified. The shared tenant-context repair did not resolve the live browser symptom, so the Category controller was hardened independently and cache-busted. **Browser verification is still open.**
+## 23. Current stopping point — 17 September 2026
+The database and RLS path are verified. The shared tenant-context repair did not resolve the live browser symptom. The latest repair targets the subscriber REST transport/bootstrap layer: GET requests no longer carry unnecessary JSON Content-Type, category reads now have a visible 10-second timeout, and runtime diagnostics load before the controller.
 
-**Next action:** hard refresh the fresh Categories page. If it still fails, the page should now replace the static loading state with a visible `Categories runtime error:` or `TradeFlow test-lab publishable key is not connected.` message if the browser-side prerequisite is missing. Do not change subscriptions or Supabase category data as a workaround. Once Categories passes, verify Inventory's Category selector, then continue Product → Property → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.
+**Next action:** hard refresh the current Categories page. It should now either show `Drones` or a concrete runtime/API/timeout error rather than silently remaining on `Loading categories…`. Do not change subscriptions or Supabase category data as a workaround. Once Categories passes, verify Inventory and Selling selectors and continue Product → Property → Photograph → Ready for Sale → Listing → Customer Shop → Stripe Sandbox.

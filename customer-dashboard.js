@@ -3,7 +3,8 @@ const KEY_STORAGE='tradeflow_testlab_publishable_key';
 const SESSION_STORAGE='tradeflow_testlab_session';
 const TENANTS={
   'test-business-a':{id:'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',label:'Test Business A'},
-  'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'}
+  'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'},
+  'test-business-c':{id:'50641519-2aa5-4093-95e5-7e92bea733a6',label:'Test Business C'}
 };
 let key=localStorage.getItem(KEY_STORAGE),session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const $=id=>document.getElementById(id);

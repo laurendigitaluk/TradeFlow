@@ -26,7 +26,7 @@
   };
 
   const style=document.createElement('style');
-  style.textContent='.tradeflow-auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px}.tradeflow-auth-card{width:min(440px,100%);background:#fff;border-radius:12px;padding:28px;box-shadow:0 18px 60px rgba(0,0,0,.25)}.tradeflow-auth-card h2{margin-top:0}.tradeflow-auth-card label{display:block;margin:14px 0 6px}.tradeflow-auth-card input,.tradeflow-auth-card select{width:100%;box-sizing:border-box;padding:10px}.tradeflow-auth-card button{margin-top:16px;padding:10px 16px}.tradeflow-auth-error{color:#a00;margin-top:12px}.tradeflow-auth-small{font-size:13px;opacity:.75}';
+  style.textContent='.tradeflow-auth-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:9999;padding:24px}.tradeflow-auth-overlay[hidden]{display:none!important}.tradeflow-auth-card{width:min(440px,100%);background:#fff;border-radius:12px;padding:28px;box-shadow:0 18px 60px rgba(0,0,0,.25)}.tradeflow-auth-card h2{margin-top:0}.tradeflow-auth-card label{display:block;margin:14px 0 6px}.tradeflow-auth-card input,.tradeflow-auth-card select{width:100%;box-sizing:border-box;padding:10px}.tradeflow-auth-card button{margin-top:16px;padding:10px 16px}.tradeflow-auth-error{color:#a00;margin-top:12px}.tradeflow-auth-small{font-size:13px;opacity:.75}';
   document.head.appendChild(style);
 
   function save(){if(session?.access_token)localStorage.setItem(SESSION_STORAGE,JSON.stringify(session));else localStorage.removeItem(SESSION_STORAGE)}

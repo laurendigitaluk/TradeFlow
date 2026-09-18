@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.4  
+**Version:** 5.5  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -44,7 +44,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
-| 19 | Public storefront / subscriber websites | BLUE | Published website renderer is live; customer storefront shell now loads published subscriber listings through a controlled anonymous RPC. Browser verification remains. |
+| 19 | Public storefront / subscriber websites | BLUE | Tenant websites remain a downstream feature. The TradeFlow root page is now the SaaS marketing/onboarding entry point; tenant storefront remains separate. |
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains have explicit workflow authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
@@ -309,3 +309,16 @@ The existing fulfilment workspace was found to be using the older test-lab sessi
 The existing fulfilment RLS boundary remains unchanged. Live checks confirm Test Business C has `module.fulfilment` enabled and the Admin test account has `fulfilment.manage` permission. No RLS or subscription rule was weakened.
 
 **Status:** Implemented Live. Next browser test: open Fulfilment as Test Business C Admin and create the fulfilment for `ORD-20260918-DB2A42EF`. Then move the fulfilment through its controlled lifecycle one transition at a time.
+
+
+## Corrected top-level customer flow — 18 September 2026
+
+The intended TradeFlow product hierarchy is now explicit: **TradeFlow SaaS website → plan selection/subscriber signup → subscriber business account → subscriber Buy & Sell workspace → subscriber builds/publishes their own customer-facing website → that tenant website serves the subscriber's customers.**
+
+The root `index.html` is now the TradeFlow SaaS website rather than the Customer Test Lab. The former test-lab page has been preserved as `test-lab.html` so test infrastructure is no longer the product homepage.
+
+The SaaS homepage now presents the two active plans, Basic and Enhanced, and routes plan selection into subscriber onboarding. A secure authenticated `subscriber_create_business()` RPC creates the new tenant, owner membership and trialing subscription for the selected active plan. Anonymous execution is explicitly revoked. The current live database does not yet contain Stripe provider price IDs for these SaaS plans, so paid recurring subscription checkout is intentionally not represented as complete yet.
+
+Subscriber authentication has also been changed from a hard-coded Test Business A/B/C allowlist to the authenticated `subscriber_get_my_memberships()` result. This is required for real subscriber businesses created through onboarding while retaining tenant isolation.
+
+**Status:** Implemented Live at the product-entry/onboarding boundary. Browser verification of new subscriber signup and subsequent Buy & Sell dashboard entry is the next test.

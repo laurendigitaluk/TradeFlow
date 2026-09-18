@@ -348,3 +348,16 @@ Migration 065_repair_subscriber_trial_entitlement_window.sql makes the signup RP
 Do not weaken tenant_site_state or site_revisions RLS to solve this class of error. First verify membership, active subscription status/window and the required plan feature.
 
 **Status:** Implemented Live; browser refresh still required for final UI verification.
+
+
+## Website branding, social and review settings — 18 September 2026
+
+When extending subscriber website presentation, keep layout/template selection separate from tenant-controlled brand settings. The current Builder stores colour values under site.theme, social profiles under site.social and review links under site.reviews.
+
+The supported colour controls are accent, text, page background, header/navigation, buying section, selling section and footer. Quick palettes are convenience presets only and can be edited afterwards.
+
+Social settings support Facebook, Instagram, LinkedIn, YouTube, TikTok and X. Subscribers may enable website share buttons. Review links are subscriber-supplied labels and HTTPS/HTTP URLs, limited to four entries in the current UI.
+
+Do not treat third-party reviews or social profiles as TradeFlow-verified information. Do not expose arbitrary non-web protocols from subscriber-entered URLs.
+
+**Status:** Implemented in GitHub; live browser verification remains open.

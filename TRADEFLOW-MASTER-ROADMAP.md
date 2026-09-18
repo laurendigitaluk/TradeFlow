@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.2  
+**Version:** 5.3  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -77,6 +77,13 @@ A selling listing was then created from that inventory asset and published succe
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
 
 ## Stripe payment return URL repair — 18 September 2026
+
+The corrected Stripe return path was browser-tested successfully. The existing customer checkout for **ORD-20260918-DB2A42EF** completed in Stripe Sandbox and returned to the TradeFlow Customer Portal rather than the GitHub Pages 404. The portal displayed the order as **placed/paid**.
+
+Live database verification confirms the complete payment boundary: the retail order is `paid`, payment status is `paid`, amount due is £0.00, a new Stripe payment record is linked with status `paid`, and the Stripe Checkout session is stored against that payment record. The listing remains `reserved` and the inventory asset remains `ready_for_sale`; those states are therefore the next fulfilment/sales-lifecycle boundary rather than part of payment completion.
+
+**Status:** Verified Live. Customer checkout → Stripe Sandbox → successful payment → TradeFlow return → paid order is now working. Next boundary: **paid order → fulfilment / completed sale → listing and inventory final state → customer delivery/returns**.
+
 
 Stripe Sandbox payment for the existing test order **ORD-20260918-DB2A42EF** completed successfully. Live database verification shows the payment record is **paid**, the retail order is **paid**, and the Stripe provider session is linked. The browser then returned to the GitHub Pages host root and displayed a 404 because the deployed TradeFlow site is served from the repository path **/TradeFlow/**; the checkout Edge Function was constructing the success/cancel URL without that project path.
 

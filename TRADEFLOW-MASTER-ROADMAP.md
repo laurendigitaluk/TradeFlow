@@ -108,6 +108,16 @@ The frontend was deliberately returned to the last known-good Inventory runtime 
 
 **Next narrow test:** with Inventory loading normally, upload exactly one photograph to the existing `DJI Mini 4 Pro Test 3` asset, then verify all three layers: Storage object → `media_assets` row → `inventory_asset_media` link. If successful, verify the photograph renders, then move separately to lifecycle transitions. Do not change Selling until that chain passes.
 
+## Selling workspace null-reference repair — 18 September 2026
+
+The first attempt to enter Selling after subscriber tenant switching exposed a frontend null-reference: the subscriber authentication layer replaces `#business-name` with the tenant switcher when multiple memberships are available, while the Selling controller still attempted to write to the removed `business-name` element during load. This stopped the Selling workspace before listings/lookups could load.
+
+Minimal repair applied to `selling-dashboard-fixed.js`: the business-name update is now null-safe. `selling-dashboard.html` cache version was incremented from `v=5` to `v=6` so the repaired controller is loaded. No authentication, tenant context, RLS, subscription or workflow authority was changed.
+
+Test Business C also required an active sales channel for the intended listing test. A single `TradeFlow Storefront` channel was created for that tenant (`channel_type=storefront`, active). Drones remains active and selling-enabled, and the existing `DJI Mini 4 Pro Test 3` asset is `ready_for_sale`.
+
+Verification state: frontend repair **Implemented**, browser retest required. Next narrow test: refresh Selling with the new cache version and confirm the workspace loads and the three Create Listing selectors populate from Test Business C. Then create exactly one listing and verify inventory media carryover.
+
 ## Verification standard
 For every business domain trace:
 **User action → page → front-end controller → Supabase call → DB object → trigger/function/RLS/grants → status transition → external integration → visible result → verification state.**

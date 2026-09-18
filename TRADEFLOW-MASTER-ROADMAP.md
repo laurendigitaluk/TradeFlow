@@ -394,3 +394,14 @@ The Owner Dashboard now displays plan and subscription status and provides an Up
 This is a platform subscription-management layer, not yet the final Stripe recurring billing implementation. Owner plan changes currently update the TradeFlow subscription record; provider price IDs and production Stripe subscription lifecycle remain a separate billing boundary.
 
 **Verification state:** Database migration and entitlement/RPC boundary **Implemented and database-verified**. Owner Dashboard browser verification of the new three-plan display and controls remains required. No test subscriber has been upgraded or closed merely to test the controls.
+
+
+## Stage 1D — SaaS homepage visual redesign — 18 September 2026
+
+The TradeFlow SaaS homepage has been redesigned as a customer-facing marketing landing page. It now includes a branded TradeFlow SVG logo, navy/orange visual identity, hero section, workflow explanation, feature grid, three-plan presentation, example website previews, facts CTA, legal/support navigation and primary signup/sign-in CTAs.
+
+The subscriber signup architecture remains separate from website configuration: the initial signup page should collect account/business identity and plan selection, while the subscriber dashboard will handle website URL/domain configuration. Do not add a customer-facing website slug field back to the public signup flow without an explicit architecture decision.
+
+Example website previews on the homepage are illustrative UI compositions, not claims that the displayed businesses are live TradeFlow customers. Real GearCashOut screenshots should only be added from an authorised/verified source and must remain reference material; GearCashOut itself is not to be modified.
+
+**Verification state:** Landing page/logo redesign **Implemented in GitHub; browser verification still required.**

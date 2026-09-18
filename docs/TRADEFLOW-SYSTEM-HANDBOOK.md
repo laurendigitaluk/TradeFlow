@@ -293,3 +293,12 @@ The public TradeFlow SaaS homepage uses the GearCashOut website as a reference p
 This is illustrative marketing content only. It does not make GearCashOut a TradeFlow customer and does not alter the GearCashOut system.
 
 **Current state:** Implemented in GitHub; visual browser verification remains required.
+
+
+## Homepage hero visual hierarchy — 18 September 2026
+
+The homepage hero visual is intentionally generic and TradeFlow-led. A neutral “Your Business” customer website is shown inside a browser frame, with a smaller mobile version demonstrating responsive presentation. Named reference businesses are kept out of the primary hero so they cannot visually compete with the TradeFlow brand.
+
+The hero contains no floating white explanatory labels. Customer examples remain in the dedicated Examples section.
+
+**Current state:** Implemented in GitHub; visual browser verification remains required.

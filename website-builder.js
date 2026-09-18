@@ -1,53 +1,152 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
-const SESSION_STORAGE='tradeflow_subscriber_session';
-let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null;
-const params=new URLSearchParams(location.search),tenantIdParam=params.get('tenant_id'),requestedTemplate=params.get('template');
-let tenantId=tenantIdParam,draftRevisionId=null,currentTemplate=requestedTemplate||'business';
-const $=id=>document.getElementById(id),name=$('builder-business-name'),headline=$('headline'),intro=$('intro'),accent=$('accent'),brand=$('preview-brand'),title=$('preview-headline'),introPreview=$('preview-intro'),status=$('status'),site=$('site');
+let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='business';
+const params=new URLSearchParams(location.search),requestedTemplate=params.get('template');
+const $=id=>document.getElementById(id);
 
-const templateHeadlines={
- business:'A better way to buy and sell',marketplace:'Buy, sell and trade with confidence',services:'Professional service, made simple',editorial:'Good products. Properly presented.',minimal:'Quality products, simply presented.',retail:'Shop, sell and trade in one place',
- professional:'Trusted service. Clear information. Straightforward business.',bold:'Make your business stand out.',classic:'Established service with a personal approach.',local:'Local service. Clear advice. People you can talk to.'
-};
+const templateHeadlines={business:'A better way to buy and sell',marketplace:'Buy, sell and trade with confidence',services:'Professional service, made simple',editorial:'Good products. Properly presented.',minimal:'Quality products, simply presented.',retail:'Shop, sell and trade in one place',professional:'Trusted service. Clear information. Straightforward business.',bold:'Make your business stand out.',classic:'Established service with a personal approach.',local:'Local service. Clear advice. People you can talk to.'};
+
 const pageDefinitions=[
- {slug:'about',title:'About us',hint:'Recommended',prompt:'Explain who you are, what the business does, your experience, values or the story behind the business.'},
- {slug:'contact',title:'Contact',hint:'Recommended',prompt:'Add your phone, email, address, opening hours and any preferred contact method.'},
- {slug:'terms',title:'Terms & Conditions',hint:'Recommended',prompt:'Add the terms that govern purchases, selling requests, services, payments and use of your website. Obtain appropriate legal advice for your business.'},
- {slug:'privacy',title:'Privacy Policy',hint:'Recommended',prompt:'Explain what customer information you collect, why you use it, how long you keep it and how customers can contact you about their data.'},
- {slug:'faq',title:'Frequently Asked Questions',hint:'Optional',prompt:'Answer the questions customers ask most often: buying, selling, delivery, payments, returns and support.'},
- {slug:'delivery-returns',title:'Delivery & Returns',hint:'Recommended',prompt:'Explain delivery areas, times, costs, collection options and your returns process.'},
- {slug:'buying',title:'Sell to us',hint:'Optional',prompt:'Explain what you buy, what customers should provide and what happens after they submit an item.'},
- {slug:'shop',title:'Shop',hint:'Built in',prompt:'Your published products and categories appear here automatically. Use Inventory and Selling to control what is listed.'},
- {slug:'customer-account',title:'Customer account',hint:'Built in',prompt:'Customers use this page to sign in, view orders, submit selling requests and manage returns.'}
+{slug:'about',title:'About us',hint:'Recommended',enabled:true,prompt:'Explain who you are, what the business does, your experience, values or the story behind the business.'},
+{slug:'business-information',title:'Business Information',hint:'Recommended',enabled:true,prompt:'Add the important facts customers may need: business name, company or registration details where relevant, trading address, service area, opening hours and other useful business information.'},
+{slug:'contact',title:'Contact',hint:'Recommended',enabled:true,prompt:'Add your phone, email, address, opening hours and preferred contact methods.'},
+{slug:'terms',title:'Terms & Conditions',hint:'Recommended',enabled:true,prompt:'Set out the terms governing purchases, selling requests, services, payments, cancellations and use of the website. Obtain appropriate legal advice for your business.'},
+{slug:'privacy',title:'Privacy Policy',hint:'Recommended',enabled:true,prompt:'Explain what customer information you collect, why you use it, how you protect and retain it, and how customers can contact you about their data.'},
+{slug:'cookies',title:'Cookie Policy',hint:'Recommended',enabled:true,prompt:'Explain which cookies or similar technologies the website uses, what they do and how visitors can manage them.'},
+{slug:'delivery-returns',title:'Delivery & Returns',hint:'Recommended',enabled:true,prompt:'Explain delivery areas, times, costs, collection options, cancellations and your returns process.'},
+{slug:'buying',title:'Sell to us',hint:'Recommended',enabled:true,prompt:'Explain what you buy, what customers should provide, how valuations work and what happens after an item is submitted.'},
+{slug:'how-it-works',title:'How it works',hint:'Optional',enabled:false,prompt:'Give customers a simple step-by-step explanation of buying from you, selling to you, ordering and receiving their item.'},
+{slug:'faq',title:'Frequently Asked Questions',hint:'Optional',enabled:false,prompt:'Answer common questions about buying, selling, delivery, payments, returns, warranties and support.'},
+{slug:'payments',title:'Payments',hint:'Optional',enabled:false,prompt:'Explain accepted payment methods, when payment is taken, refunds and any payment restrictions relevant to your business.'},
+{slug:'warranty',title:'Warranty & Guarantees',hint:'Optional',enabled:false,prompt:'Explain any warranties, guarantees or condition assurances you provide, including exclusions and how customers make a claim.'},
+{slug:'complaints',title:'Complaints',hint:'Optional',enabled:false,prompt:'Explain how customers can raise a complaint, what information they should provide and how you will handle it.'},
+{slug:'shop',title:'Shop',hint:'Built in',enabled:true,prompt:'Published products appear here automatically from Inventory and Selling. No manual product list is required in this page editor.'},
+{slug:'customer-account',title:'Customer account',hint:'Built in',enabled:true,prompt:'Customers use this area to sign in, view orders, submit selling requests and manage returns.'}
 ];
-function defaultPages(){return pageDefinitions.map(p=>({slug:p.slug,title:p.title,enabled:true,body:p.slug==='shop'||p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',seo_title:'',seo_description:''}))}
+
+function defaultPages(){return pageDefinitions.map(function(p){return{slug:p.slug,title:p.title,enabled:p.enabled,body:p.slug==='shop'||p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',seo_title:'',seo_description:''}})}
 let pages=defaultPages();
-function setStatus(text,type=''){status.textContent=text||'';status.dataset.type=type}
+
+function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c})}
+function setStatus(text,type){var el=$('status');if(el){el.textContent=text||'';el.dataset.type=type||''}}
+
+function renderPageIndex(){
+ var box=$('page-index');if(!box)return;
+ box.innerHTML=pages.map(function(p,i){
+   var d=pageDefinitions.find(function(x){return x.slug===p.slug})||{title:p.title,hint:'Optional'};
+   return '<div class="page-index-card"><div><strong>'+esc(d.title)+'</strong><span>'+esc(d.hint)+'</span><small>'+(p.enabled?'Shown in navigation':'Available to edit · not shown in navigation')+'</small></div><a href="#page-edit-'+i+'">Edit page</a></div>';
+ }).join('');
+}
+
 function renderPageEditor(){
- const box=$('page-editor');if(!box)return;
- box.innerHTML=pages.map((p,i)=>{const d=pageDefinitions.find(x=>x.slug===p.slug)||{title:p.title,hint:'Optional',prompt:'Add the information customers need on this page.'};return `<details class="page-editor" ${i===0?'open':''}><summary><span><strong>${esc(d.title)}</strong><small>${esc(d.hint)} · ${esc(d.prompt)}</small></span><span class="page-status">${p.enabled?'Enabled':'Hidden'}</span></summary><div class="page-fields"><label><input type="checkbox" data-page-enabled="${i}" ${p.enabled?'checked':''}> Show this page in the website navigation</label><label>Page title<input data-page-title="${i}" value="${esc(p.title)}"></label><label>Page content<textarea data-page-body="${i}" rows="6" placeholder="${esc(d.prompt)}">${esc(p.body||'')}</textarea></label><label>SEO title <small>Optional browser/search title.</small><input data-page-seo-title="${i}" value="${esc(p.seo_title||'')}" placeholder="${esc(p.title)}"></label><label>SEO description <small>Optional short description for search engines.</small><textarea data-page-seo-description="${i}" rows="2">${esc(p.seo_description||'')}</textarea></label></div></details>`}).join('');
- box.querySelectorAll('[data-page-enabled]').forEach(e=>e.onchange=()=>{pages[Number(e.dataset.pageEnabled)].enabled=e.checked;render()});
- box.querySelectorAll('[data-page-title]').forEach(e=>e.oninput=()=>pages[Number(e.dataset.pageTitle)].title=e.value);
- box.querySelectorAll('[data-page-body]').forEach(e=>e.oninput=()=>pages[Number(e.dataset.pageBody)].body=e.value);
- box.querySelectorAll('[data-page-seo-title]').forEach(e=>e.oninput=()=>pages[Number(e.dataset.pageSeoTitle)].seo_title=e.value);
- box.querySelectorAll('[data-page-seo-description]').forEach(e=>e.oninput=()=>pages[Number(e.dataset.pageSeoDescription)].seo_description=e.value);
+ var box=$('page-editor');if(!box)return;
+ box.innerHTML=pages.map(function(p,i){
+   var d=pageDefinitions.find(function(x){return x.slug===p.slug})||{title:p.title,hint:'Optional',prompt:'Add the information customers need on this page.'};
+   var builtIn=['shop','customer-account'].includes(p.slug);
+   return '<details class="page-editor" id="page-edit-'+i+'"><summary><span><strong>'+esc(d.title)+'</strong><small>'+esc(d.hint)+' · '+esc(d.prompt)+'</small></span><span class="page-status">'+(p.enabled?'Shown':'Hidden')+'</span></summary><div class="page-fields">'+
+   '<label><input type="checkbox" data-page-enabled="'+i+'" '+(p.enabled?'checked ':'')+(builtIn?'disabled':'')+'> Show this page in the website navigation '+(builtIn?'<small>Built-in TradeFlow page.</small>':'')+'</label>'+
+   '<label>Page title<input data-page-title="'+i+'" value="'+esc(p.title)+'" '+(builtIn?'disabled':'')+'></label>'+
+   '<label>What to put on this page<textarea data-page-body="'+i+'" rows="8" placeholder="'+esc(d.prompt)+'" '+(builtIn?'disabled':'')+'>'+esc(p.body||'')+'</textarea></label>'+
+   '<label>SEO title <small>Optional browser/search title.</small><input data-page-seo-title="'+i+'" value="'+esc(p.seo_title||'')+'" placeholder="'+esc(p.title)+'"></label>'+
+   '<label>SEO description <small>Optional short description for search engines.</small><textarea data-page-seo-description="'+i+'" rows="2" placeholder="Describe this page in one or two sentences.">'+esc(p.seo_description||'')+'</textarea></label>'+
+   '</div></details>';
+ }).join('');
+
+ box.querySelectorAll('[data-page-enabled]').forEach(function(e){e.onchange=function(){var i=Number(e.dataset.pageEnabled);pages[i].enabled=e.checked;renderPageIndex();renderPageEditor();render();var d=document.getElementById('page-edit-'+i);if(d)d.open=true}});
+ box.querySelectorAll('[data-page-title]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageTitle)].title=e.value}});
+ box.querySelectorAll('[data-page-body]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageBody)].body=e.value}});
+ box.querySelectorAll('[data-page-seo-title]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageSeoTitle)].seo_title=e.value}});
+ box.querySelectorAll('[data-page-seo-description]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageSeoDescription)].seo_description=e.value}});
 }
-function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
+
 function render(){
- brand.textContent=name.value||'Your Business';title.textContent=headline.value||'Buy, sell and trade with us';introPreview.textContent=intro.value||'A clear introduction to your business appears here.';document.documentElement.style.setProperty('--accent',accent.value);site.className=`site template-${currentTemplate}`;
- const target=`customer-dashboard-preview.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`;if($('preview-login'))$('preview-login').href=target;
- if($('preview-site'))$('preview-site').href=`public-site.html?tenant_id=${encodeURIComponent(tenantId||'')}`;
- const nav=$('preview-nav');if(nav){nav.querySelectorAll('a[data-preview-page]').forEach(e=>e.remove());const enabled=pages.filter(p=>p.enabled&&['shop','about','contact','buying'].includes(p.slug));enabled.forEach(p=>{const a=document.createElement('a');a.dataset.previewPage='1';a.textContent=p.title;a.href=`public-site.html?tenant_id=${encodeURIComponent(tenantId||'')}&page=${encodeURIComponent(p.slug)}`;a.style.cssText='background:transparent;color:inherit';nav.insertBefore(a,nav.querySelector('#preview-login'))}}
+ var name=$('builder-business-name'),headline=$('headline'),intro=$('intro'),accent=$('accent');
+ $('preview-brand').textContent=name&&name.value||'Your Business';
+ $('preview-headline').textContent=headline&&headline.value||'Buy, sell and trade with us';
+ $('preview-intro').textContent=intro&&intro.value||'A clear introduction to your business appears here.';
+ document.documentElement.style.setProperty('--accent',accent&&accent.value||'#c46a2b');
+ $('site').className='site template-'+currentTemplate;
+ var pageUrl=function(slug){return 'public-site.html?tenant_id='+encodeURIComponent(tenantId||'')+'&page='+encodeURIComponent(slug)};
+ var login=$('preview-login');if(login)login.href='customer-dashboard-preview.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):'');
+ var preview=$('preview-site');if(preview)preview.href='public-site.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):'');
+ var nav=$('preview-nav');
+ if(nav){
+   nav.querySelectorAll('a[data-dynamic-preview]').forEach(function(e){e.remove()});
+   pages.filter(function(p){return p.enabled&&p.slug!=='home'&&p.slug!=='shop'&&p.slug!=='buying'&&p.slug!=='customer-account'}).forEach(function(p){
+     var a=document.createElement('a');a.dataset.dynamicPreview='1';a.textContent=p.title;a.href=pageUrl(p.slug);nav.insertBefore(a,login||null);
+   });
+   var home=nav.querySelector('[data-home-preview]'),shop=nav.querySelector('[data-shop-preview]'),buying=nav.querySelector('[data-buying-preview]');
+   if(home)home.href=pageUrl('home');if(shop)shop.href=pageUrl('shop');if(buying)buying.href=pageUrl('buying');
+ }
 }
-function applyTemplate(template){currentTemplate=templateHeadlines[template]?template:'business';headline.value=templateHeadlines[currentTemplate];render();document.querySelectorAll('[data-template]').forEach(b=>b.classList.toggle('selected',b.dataset.template===currentTemplate));setStatus(`${document.querySelector(`[data-template="${currentTemplate}"]`)?.querySelector('strong')?.textContent||'Template'} selected. Work through the page fields below before publishing.`)}
-function buildContent(){return {schema_version:2,site:{name:name.value.trim()||'Your Business',pages,theme:{accent:accent.value},homepage:{headline:headline.value.trim()||'Buy, sell and trade with us',intro:intro.value.trim()||null},navigation:pages.filter(p=>p.enabled).map(p=>({label:p.title,path:`?page=${p.slug}`})),category_manifest:[],template:currentTemplate,contact:{text:(pages.find(p=>p.slug==='contact')?.body||'').trim()||null}}}}
-function loadContent(content){const s=content?.site||{};name.value=s.name||'Your Business';headline.value=s.homepage?.headline||'Buy, sell and trade with us';intro.value=s.homepage?.intro||'';accent.value=s.theme?.accent||'#c46a2b';currentTemplate=s.template&&templateHeadlines[s.template]?s.template:'business';pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>({...p,enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||''})):defaultPages();renderPageEditor();render();document.querySelectorAll('[data-template]').forEach(b=>b.classList.toggle('selected',b.dataset.template===currentTemplate))}
-async function api(path,options={}){if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow sign-in page first.');const headers=new Headers(options.headers||{});headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');if(session?.access_token)headers.set('Authorization',`Bearer ${session.access_token}`);const response=await fetch(`${SUPABASE_URL}${path}`,{...options,headers});const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}if(!response.ok){const detail=body?.msg||body?.message||body?.error_description||body?.error||text||`HTTP ${response.status}`;throw new Error(detail)}return body}
-async function restoreSession(){if(!window.tradeflowSubscriberAuthReady)throw new Error('Subscriber authentication layer did not load.');const auth=await window.tradeflowSubscriberAuthReady;if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;return tenantId}
-function buildContentFromUi(){return buildContent()}
-async function loadDraft(){const rows=await api(`/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.${encodeURIComponent(tenantId)}`);if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');draftRevisionId=rows[0].draft_revision_id;const drafts=await api(`/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.${encodeURIComponent(tenantId)}&id=eq.${encodeURIComponent(draftRevisionId)}&status=eq.draft`);if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');loadContent(drafts[0].content);if(requestedTemplate)applyTemplate(requestedTemplate);setStatus(`Draft revision ${drafts[0].revision_number} loaded.`,'success')}
-async function saveDraft(){if(!draftRevisionId)await loadDraft();setStatus('Saving website draft…');await api(`/rest/v1/site_revisions?id=eq.${encodeURIComponent(draftRevisionId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContentFromUi()})});setStatus('Website draft saved to TradeFlow.','success')}
-async function publish(){if(!draftRevisionId)await loadDraft();setStatus('Publishing website…');await api('/rest/v1/rpc/publish_site_revision',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_revision_id:draftRevisionId})});await loadDraft();setStatus('Website published. A new draft revision is now ready for further edits.','success')}
-[name,headline,intro,accent].forEach(el=>el.addEventListener('input',render));document.querySelectorAll('[data-template]').forEach(b=>b.addEventListener('click',()=>applyTemplate(b.dataset.template)));$('save-draft').addEventListener('click',()=>saveDraft().catch(e=>setStatus(e.message||String(e),'error')));$('publish').addEventListener('click',()=>publish().catch(e=>setStatus(e.message||String(e),'error')));$('preview-customer').addEventListener('click',()=>window.location.href=`customer-dashboard-preview.html${tenantId?`?tenant_id=${encodeURIComponent(tenantId)}`:''}`);renderPageEditor();
-(async()=>{try{await restoreSession();if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');await loadDraft()}catch(error){setStatus(error.message||String(error),'error')}})();render();
+
+function applyTemplate(template){
+ currentTemplate=templateHeadlines[template]?template:'business';
+ $('headline').value=templateHeadlines[currentTemplate];
+ render();
+ document.querySelectorAll('[data-template]').forEach(function(b){b.classList.toggle('selected',b.dataset.template===currentTemplate)});
+ var label=document.querySelector('[data-template="'+currentTemplate+'"] strong');
+ setStatus((label?label.textContent:'Template')+' selected. Your page text and business details have been kept. Continue with the Website Pages section.','success');
+}
+
+function buildContent(){
+ return {schema_version:2,site:{
+   name:$('builder-business-name').value.trim()||'Your Business',
+   pages:pages,
+   theme:{accent:$('accent').value||'#c46a2b'},
+   homepage:{headline:$('headline').value.trim()||'Buy, sell and trade with us',intro:$('intro').value.trim()||null},
+   navigation:pages.filter(function(p){return p.enabled}).map(function(p){return{label:p.title,path:'?page='+p.slug}}),
+   category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
+   template:currentTemplate,
+   contact:{text:(pages.find(function(p){return p.slug==='contact'})?.body||'').trim()||null}
+ }};
+}
+
+function loadContent(content){
+ var s=content&&content.site||{};
+ window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
+ $('builder-business-name').value=s.name||'Your Business';
+ $('headline').value=s.homepage&&s.homepage.headline||'Buy, sell and trade with us';
+ $('intro').value=s.homepage&&s.homepage.intro||'';
+ $('accent').value=s.theme&&s.theme.accent||'#c46a2b';
+ currentTemplate=s.template&&templateHeadlines[s.template]?s.template:'business';
+ pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
+ renderPageIndex();renderPageEditor();render();
+ document.querySelectorAll('[data-template]').forEach(function(b){b.classList.toggle('selected',b.dataset.template===currentTemplate)});
+}
+
+async function api(path,options){
+ options=options||{};if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow subscriber sign-in page first.');
+ var headers=new Headers(options.headers||{});headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');if(session&&session.access_token)headers.set('Authorization','Bearer '+session.access_token);
+ var response=await fetch(SUPABASE_URL+path,Object.assign({},options,{headers:headers}));var text=await response.text();var body=null;try{body=text?JSON.parse(text):null}catch(e){body=text}
+ if(!response.ok){var detail=body&& (body.msg||body.message||body.error_description||body.error)||text||('HTTP '+response.status);throw new Error(detail)}return body;
+}
+
+async function restoreSession(){
+ if(!window.tradeflowSubscriberAuthReady)throw new Error('Subscriber authentication layer did not load.');
+ var auth=await window.tradeflowSubscriberAuthReady;if(!auth||!auth.session||!auth.session.access_token)throw new Error('Subscriber authentication did not provide an access token.');
+ supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');return tenantId;
+}
+async function loadDraft(){
+ var rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');
+ draftRevisionId=rows[0].draft_revision_id;
+ var drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
+ loadContent(drafts[0].content);if(requestedTemplate)applyTemplate(requestedTemplate);setStatus('Draft revision '+drafts[0].revision_number+' loaded.','success');
+}
+async function saveDraft(){
+ if(!draftRevisionId)await loadDraft();setStatus('Saving website draft…');await api('/rest/v1/site_revisions?id=eq.'+encodeURIComponent(draftRevisionId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});setStatus('Website draft saved to TradeFlow.','success');
+}
+async function publish(){
+ if(!draftRevisionId)await loadDraft();setStatus('Publishing website…');await api('/rest/v1/rpc/publish_site_revision',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_revision_id:draftRevisionId})});await loadDraft();setStatus('Website published. A new draft revision is now ready for further edits.','success');
+}
+
+function initBuilder(){
+ ['builder-business-name','headline','intro','accent'].forEach(function(id){$(id).addEventListener('input',render)});
+ $('templates').addEventListener('click',function(event){var button=event.target.closest('[data-template]');if(button)applyTemplate(button.dataset.template)});
+ $('save-draft').addEventListener('click',function(){saveDraft().catch(function(e){setStatus(e.message||String(e),'error')})});
+ $('publish').addEventListener('click',function(){publish().catch(function(e){setStatus(e.message||String(e),'error')})});
+ $('preview-customer').addEventListener('click',function(){window.location.href='customer-dashboard-preview.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):'')});
+ renderPageIndex();renderPageEditor();render();
+ (async function(){try{await restoreSession();await loadDraft()}catch(error){setStatus(error.message||String(error),'error')}})();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();

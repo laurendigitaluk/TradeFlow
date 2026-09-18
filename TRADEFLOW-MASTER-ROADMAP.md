@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.6  
+**Version:** 4.7  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,16 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Stripe checkout customer-order lookup repair — 18 September 2026
+
+The browser checkout successfully created the Test Business C customer order, but the Stripe checkout Edge Function then returned `Order not found for this customer`. Investigation of the live `create-stripe-checkout-session` function showed it called `customer_get_orders()`, whose return field is `order_id`, while the Edge Function searched for `o.id`.
+
+Minimal Edge Function repair applied in version 6: customer-order validation now accepts the actual RPC field `order_id` (while retaining compatibility with `id`). JWT verification remains enabled. No customer access policy, RLS rule, tenant boundary or Stripe configuration was changed.
+
+Current live state: the browser-created order remains `pending_payment` and the listing is reserved, so the existing order should be used for the next payment test rather than creating another order.
+
+**Status:** Edge Function repair **Implemented Live**. Next browser test: use the existing **Pay now** action for the £499 Test Business C order and verify Stripe Sandbox opens.
 
 ## Customer checkout ambiguity repair — 18 September 2026
 

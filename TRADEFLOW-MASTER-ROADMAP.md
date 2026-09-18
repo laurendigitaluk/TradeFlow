@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.8  
+**Version:** 5.9  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -368,3 +368,29 @@ Categories and Website Builder are not being made a separate owner-side product 
 Raw subscriber customer records are not part of the Owner Dashboard subscriber directory. Subscriber customers remain tenant-scoped. If platform-level customer reporting is later required, it should be an explicitly designed aggregate/support capability rather than exposing tenant customer records by default.
 
 **Verification state:** Implemented Live at database/code boundary. Browser verification of the filtered directory and View website action remains open.
+
+
+## Stage 1C — Three-plan subscription catalogue and Owner controls — 18 September 2026
+
+The commercial subscription model is now defined as three active plans:
+
+- **Basic** — self-configured Buy & Sell core. The subscriber chooses from the configured website template/colour options, can add their logo and images, and creates their own categories and subcategories for the business.
+- **Enhanced** — Basic plus staff management, staff messaging, audit, analytics, integrations and market intelligence.
+- **Catalogue** — Enhanced plus a TradeFlow-provided starting catalogue of categories, subcategories and products.
+
+The live plan catalogue now contains basic, enhanced and catalogue as the active customer-facing plan codes. The legacy buying, selling, buy_sell, business and advanced codes remain inactive for historical auditability.
+
+The catalogue.pre_filled capability records the pre-filled catalogue entitlement. Its quantity configuration is intentionally left unset until the commercial limits for categories, subcategories and products are decided; no arbitrary quantities have been invented.
+
+The existing website editor entitlement now records the Basic/Enhanced website capabilities for template selection, colour selection, logo upload, image content and custom categories/subcategories. Catalogue carries the same website editor capability.
+
+A new platform-owner-only subscription management RPC provides two controlled platform actions:
+
+- upgrade — moves a subscriber to a higher active plan only.
+- close — cancels the latest subscription record and archives the tenant while retaining its stored business data.
+
+The Owner Dashboard now displays plan and subscription status and provides an Upgrade action and Close account action. It does not expose subscriber customer records.
+
+This is a platform subscription-management layer, not yet the final Stripe recurring billing implementation. Owner plan changes currently update the TradeFlow subscription record; provider price IDs and production Stripe subscription lifecycle remain a separate billing boundary.
+
+**Verification state:** Database migration and entitlement/RPC boundary **Implemented and database-verified**. Owner Dashboard browser verification of the new three-plan display and controls remains required. No test subscriber has been upgraded or closed merely to test the controls.

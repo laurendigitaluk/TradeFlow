@@ -1,8 +1,8 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 3.9  
-**Date:** 17 September 2026  
+**Version:** 4.0  
+**Date:** 18 September 2026  
 **Project:** TradeFlow
 
 ## 1. Purpose
@@ -160,3 +160,8 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 - subscriber-tenant-context.js no longer reads Customer/Test-Lab session storage or hard-coded user-to-tenant mappings; it waits for the dedicated subscriber auth promise and synchronises the URL tenant_id from that authenticated tenant.
 - Categories controller now recognises Test Business C as well as A and B.
 - Live verification: Test Business C has active Drones category; the Admin test user has inventory.view and inventory.manage; the Buy & Sell subscription has module.inventory enabled. Inventory RLS therefore remains unchanged.
+
+
+## Subscription catalogue simplification — 18 September 2026
+
+When reasoning about subscriber capability, treat **Basic** as the complete operational Buy & Sell core and **Enhanced** as Basic plus all currently defined add-ons. Do not revive the retired Buying/Selling/Buy & Sell/Business/Advanced plan structure in new code. Capability enforcement remains feature-based through the existing subscription layer; plan names are presentation/catalogue concepts.

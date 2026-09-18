@@ -34,8 +34,7 @@ async function submitBuyingRequest(){const notes=$('request-notes').value.trim()
 async function ensureCustomerRegistration(){
   const existing=await rpc('customer_get_profile');
   if(Array.isArray(existing)&&existing.length)return;
-  const first=$('auth-first-name')?.value.trim()||'',last=$('auth-last-name')?.value.trim()||'';
-  if(!first)throw Error('Customer account created, but first name is required to complete the customer profile.');
+  const first=$('auth-first-name')?.value.trim()||'TradeFlow Test Customer',last=$('auth-last-name')?.value.trim()||'';
   await api('/rest/v1/rpc/customer_complete_test_registration',{method:'POST',body:JSON.stringify({p_tenant_slug:Object.keys(TENANTS).find(s=>TENANTS[s].id===tenantId),p_first_name:first,p_last_name:last||null})});
 }
 async function initialisePortal(){if(!tenantId||!Object.values(TENANTS).some(t=>t.id===tenantId))return setMessage('This customer portal needs a valid subscriber tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();await loadPortalData();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}

@@ -338,3 +338,13 @@ Treat the subscriber homepage as a two-sided customer entry point. Do not reduce
 The subscriber can choose 6, 8 or 10 homepage tiles. Tile copy and images are edited directly on the page. Product records must not be created in the Website Builder; selling tiles route to the existing Retail Shop, whose actual listings remain controlled by Inventory and Selling.
 
 The Premium Marketplace template is a starting visual design, not a replacement for the subscriber's existing content.
+
+## Subscriber Website Builder entitlement repair — 18 September 2026
+
+When a newly created subscriber can authenticate but the Website Builder shows **Website could not be loaded**, check the subscription capability path before changing Builder RLS. The failure found here was a trialing subscription with trial_end null; private.has_tenant_feature() therefore returned false for website.editor and website.publish, correctly blocking the tenant's website state under existing RLS.
+
+Migration 065_repair_subscriber_trial_entitlement_window.sql makes the signup RPC create the same 30-day trial window already used by the existing subscriber test pattern and backfills the affected trialing record. Live feature checks for the affected subscriber now return true for website.editor and website.publish.
+
+Do not weaken tenant_site_state or site_revisions RLS to solve this class of error. First verify membership, active subscription status/window and the required plan feature.
+
+**Status:** Implemented Live; browser refresh still required for final UI verification.

@@ -269,3 +269,22 @@ Buying/Selling category behaviour remains one category row with capability flags
 `category-management.js` and `inventory-dashboard-fixed.js` now obtain the active tenant from the authenticated subscriber context instead of hardcoded test tenant maps. Browser verification must confirm a newly provisioned subscriber can open both linked areas without losing tenant isolation.
 
 **Current state:** Implemented on main; browser verification required.
+
+
+## Website Builder media/domain expansion — 18 September 2026
+
+### Media path
+Subscriber Dashboard → Website → Website Builder → Business Details / Website Pages → choose image → tenant-scoped Supabase Storage upload → media_assets metadata → image URL stored in website draft → Save Draft → Publish → public website renders the image.
+
+The Storage bucket is tradeflow-site-media, with a tenant UUID as the first path segment. The bucket is public for published-site delivery; authenticated upload/update/delete policies require tenant website-management permissions. Supabase's current documentation confirms that public buckets expose file URLs publicly while write operations can remain protected by RLS policies. citeturn0search0turn0search1
+
+### Selling-side branding
+The shop page is now labelled Retail Shop in the builder and can contain subscriber-written introductory text and a page image. Published product cards remain supplied by get_published_store_listings().
+
+### Domain path
+Subscriber Dashboard → Website URL → enter hostname → tenant_domains pending record. Final automatic activation requires an agreed multi-subscriber hosting/DNS target and ownership verification. Once a domain is active, publish_site_revision() refreshes published_site_index, and public-site.js already resolves a site by hostname.
+
+### Publication compatibility
+publish_site_revision() now accepts schema versions 1 and 2 so the current builder's schema_version:2 content can be published without changing the existing draft/published architecture.
+
+**Current state:** Implemented on main; browser verification required.

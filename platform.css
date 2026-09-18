@@ -327,3 +327,7 @@ body{background:#f4f6f8}
  .step-icon{margin-bottom:18px}
  .example-previews{grid-template-columns:1fr!important}
 }
+
+
+/* Plans page heading refinement */
+.plan-details-page .plans-title{color:#f97316}

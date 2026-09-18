@@ -312,3 +312,20 @@ Known failure points to test:
 8. Custom domain remains pending until DNS/ownership/hosting routing is actually implemented.
 
 **Verification state:** Code implemented on main. Browser verification remains open.
+
+## Stage 1O — Premium homepage diagnostic checkpoint — 18 September 2026
+
+User action → Website Builder → Home page → premium visual homepage → edit headline/introduction → edit buying/selling headings → select 6/8/10 tiles → edit tile copy → add/replace tile images → Save Draft → existing `site_revisions` draft content → Publish → public `public-site.html` renderer.
+
+Homepage data path:
+- `site.homepage.headline`
+- `site.homepage.intro`
+- `site.homepage.image_url`
+- `site.homepage.tile_count`
+- `site.homepage.buy_heading` / `buy_intro`
+- `site.homepage.sell_heading` / `sell_intro`
+- `site.homepage.tiles[]`
+
+Selling tile content is presentation-only. Published product records continue to come from `get_published_store_listings()` and the Inventory → Selling workflow.
+
+Verification required: confirm 6/8/10 tile selection, direct text editing, per-tile image upload, save, publish and public rendering for a real subscriber tenant.

@@ -288,3 +288,27 @@ Subscriber Dashboard → Website URL → enter hostname → tenant_domains pendi
 publish_site_revision() now accepts schema versions 1 and 2 so the current builder's schema_version:2 content can be published without changing the existing draft/published architecture.
 
 **Current state:** Implemented on main; browser verification required.
+
+
+## Stage 1N — Visual Website Builder diagnostic checkpoint — 18 September 2026
+
+User action → `subscriber-dashboard.html` → Website Management → `website-builder.html` → authenticated subscriber session/tenant context → `tenant_site_state` → current draft `site_revisions` → visual page editor → `site.branding`, `site.homepage`, `site.pages`, `site.theme`, `site.template` → tenant-scoped `tradeflow-site-media` Storage upload → `media_assets` metadata → Save Draft PATCH to current draft → Publish via `public.publish_site_revision()` → `published_site_index` / public website renderer.
+
+Direct editing paths:
+- Home page: site name, homepage headline, introduction and homepage image.
+- Sell to us / Buying: page title, body and page image.
+- Retail Shop: page title, body and page image; product listings remain supplied by Inventory → Selling.
+- Other pages: page title, body and optional page image.
+- Customer Account: TradeFlow-managed preview/portal boundary; not a normal editable content page.
+
+Known failure points to test:
+1. Subscriber authentication/tenant context missing.
+2. Current draft revision missing or not tenant-scoped.
+3. Storage policy rejects a tenant-scoped image upload.
+4. `media_assets` metadata insert fails after a successful upload, leaving a possible orphaned object.
+5. Draft save fails because the current revision is stale or inaccessible.
+6. Publish fails at the existing website permission/RPC boundary.
+7. Public renderer fails to load published content or product listings.
+8. Custom domain remains pending until DNS/ownership/hosting routing is actually implemented.
+
+**Verification state:** Code implemented on main. Browser verification remains open.

@@ -78,7 +78,7 @@ function renderTemplates(){
 function navMarkup(){
  const enabled=pages.filter(p=>p.enabled&&p.slug!=='customer-account');
  const links=enabled.map(p=>'<button type="button" class="preview-nav-link" data-nav-page="'+esc(p.slug)+'">'+esc(p.title)+'</button>').join('');
- return '<nav class="editor-nav"><button type="button" class="editor-brand" data-edit="site-name">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="">':'')+'<span contenteditable="true" data-edit="site-name" data-placeholder="Your business name">'+esc(siteName)+'</span></button><div class="editor-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
+ return '<nav class="editor-nav"><div class="editor-brand">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="">':'')+'<span contenteditable="true" data-edit="site-name" data-placeholder="Your business name">'+esc(siteName)+'</span></div><div class="editor-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
 }
 
 function imageBlock(url,kind,label,alt){

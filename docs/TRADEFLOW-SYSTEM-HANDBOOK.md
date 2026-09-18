@@ -458,3 +458,14 @@ Migration 065_repair_subscriber_trial_entitlement_window.sql updates subscriber_
 Live verification with the subscriber owner identity and tenant f3435be3-242e-4086-ad81-c4c6e8045aea confirms is_tenant_member=true, website.editor=true and website.publish=true. No RLS policy or tenant boundary was weakened.
 
 **Status:** Implemented Live and database entitlement path verified. Browser reload of the Website Builder remains the final UI verification step.
+
+
+## 21. Subscriber website branding and business extras — 18 September 2026
+
+The Website Builder now includes subscriber-controlled brand colours for accent, text, page background, header/navigation, buying section, selling section and footer. These values are stored inside the existing website content JSON under site.theme and do not alter the application shell or tenant security model.
+
+The Builder also stores subscriber social profile links (Facebook, Instagram, LinkedIn, YouTube, TikTok and X), an optional website share-button setting, and up to four review-site links. The published customer-facing website renders valid subscriber-supplied external links and provides native sharing where the browser supports it, with Facebook and LinkedIn sharing fallbacks.
+
+These are presentation/business-profile settings only. TradeFlow does not create or verify third-party social or review accounts. Subscriber-entered URLs are restricted at render time to HTTP/HTTPS links.
+
+**Status:** Implemented in GitHub; browser verification remains open for colour preview, Save Draft, Publish and public rendering.

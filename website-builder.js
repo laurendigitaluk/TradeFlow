@@ -24,7 +24,7 @@ const pageDefinitions=[
 {slug:'customer-account',title:'Customer account',hint:'Built in',enabled:true,prompt:'Customers use this area to sign in, view orders, submit selling requests and manage returns.'}
 ];
 
-function defaultPages(){return pageDefinitions.map(function(p){return{slug:p.slug,title:p.title,enabled:p.enabled,body:p.slug==='shop'||p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',seo_title:'',seo_description:''}})}
+function defaultPages(){return pageDefinitions.map(function(p){return{slug:p.slug,title:p.title,enabled:p.enabled,body:p.slug==='shop'?'Welcome to our shop. Browse our current products below.':p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',image_url:'',image_alt:'',seo_title:'',seo_description:''}})}
 let pages=defaultPages();
 
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c})}
@@ -46,7 +46,8 @@ function renderPageEditor(){
    return '<details class="page-editor" id="page-edit-'+i+'"><summary><span><strong>'+esc(d.title)+'</strong><small>'+esc(d.hint)+' · '+esc(d.prompt)+'</small></span><span class="page-status">'+(p.enabled?'Shown':'Hidden')+'</span></summary><div class="page-fields">'+
    '<label><input type="checkbox" data-page-enabled="'+i+'" '+(p.enabled?'checked ':'')+(builtIn?'disabled':'')+'> Show this page in the website navigation '+(builtIn?'<small>Built-in TradeFlow page.</small>':'')+'</label>'+
    '<label>Page title<input data-page-title="'+i+'" value="'+esc(p.title)+'" '+(builtIn?'disabled':'')+'></label>'+
-   '<label>What to put on this page<textarea data-page-body="'+i+'" rows="8" placeholder="'+esc(d.prompt)+'" '+(builtIn?'disabled':'')+'>'+esc(p.body||'')+'</textarea></label>'+
+   '<label>What to put on this page<textarea data-page-body="'+i+'" rows="8" placeholder="'+esc(d.prompt)+'">'+esc(p.body||'')+'</textarea></label>'+
+   '<label>Page image <input type="file" accept="image/png,image/jpeg,image/webp" data-page-image="'+i+'"><small>Optional branded image for this page. Maximum 5 MB.</small></label>'+ (p.image_url?'<div class="page-image-current"><img src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||'')+'"><button type="button" data-page-image-remove="'+i+'">Remove image</button></div>':'')+
    '<label>SEO title <small>Optional browser/search title.</small><input data-page-seo-title="'+i+'" value="'+esc(p.seo_title||'')+'" placeholder="'+esc(p.title)+'"></label>'+
    '<label>SEO description <small>Optional short description for search engines.</small><textarea data-page-seo-description="'+i+'" rows="2" placeholder="Describe this page in one or two sentences.">'+esc(p.seo_description||'')+'</textarea></label>'+
    '</div></details>';
@@ -55,6 +56,8 @@ function renderPageEditor(){
  box.querySelectorAll('[data-page-enabled]').forEach(function(e){e.onchange=function(){var i=Number(e.dataset.pageEnabled);pages[i].enabled=e.checked;renderPageIndex();renderPageEditor();render();var d=document.getElementById('page-edit-'+i);if(d)d.open=true}});
  box.querySelectorAll('[data-page-title]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageTitle)].title=e.value}});
  box.querySelectorAll('[data-page-body]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageBody)].body=e.value}});
+ box.querySelectorAll('[data-page-image]').forEach(function(e){e.onchange=function(){var i=Number(e.dataset.pageImage);if(e.files&&e.files[0])uploadImage(e.files[0],pages[i].slug,i).catch(function(err){setStatus(err.message||String(err),'error')})}});
+ box.querySelectorAll('[data-page-image-remove]').forEach(function(e){e.onclick=function(){var i=Number(e.dataset.pageImageRemove);pages[i].image_url='';pages[i].image_alt='';renderPageEditor();render();}});
  box.querySelectorAll('[data-page-seo-title]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageSeoTitle)].seo_title=e.value}});
  box.querySelectorAll('[data-page-seo-description]').forEach(function(e){e.oninput=function(){pages[Number(e.dataset.pageSeoDescription)].seo_description=e.value}});
 }
@@ -64,6 +67,7 @@ function render(){
  $('preview-brand').textContent=name&&name.value||'Your Business';
  $('preview-headline').textContent=headline&&headline.value||'Buy, sell and trade with us';
  $('preview-intro').textContent=intro&&intro.value||'A clear introduction to your business appears here.';
+ var hi=$('preview-hero-image-wrap'),him=$('preview-hero-image');if(hi&&him){him.src=window.__homeImageUrl||'';hi.hidden=!window.__homeImageUrl;him.alt='Homepage image';}
  document.documentElement.style.setProperty('--accent',accent&&accent.value||'#c46a2b');
  $('site').className='site template-'+currentTemplate;
  var pageUrl=function(slug){return 'public-site.html?tenant_id='+encodeURIComponent(tenantId||'')+'&page='+encodeURIComponent(slug)};
@@ -94,7 +98,7 @@ function buildContent(){
    name:$('builder-business-name').value.trim()||'Your Business',
    pages:pages,
    theme:{accent:$('accent').value||'#c46a2b'},
-   homepage:{headline:$('headline').value.trim()||'Buy, sell and trade with us',intro:$('intro').value.trim()||null},
+   homepage:{headline:$('headline').value.trim()||'Buy, sell and trade with us',intro:$('intro').value.trim()||null,image_url:window.__homeImageUrl||'',image_alt:'Homepage image'},
    navigation:pages.filter(function(p){return p.enabled}).map(function(p){return{label:p.title,path:'?page='+p.slug}}),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,
@@ -110,9 +114,26 @@ function loadContent(content){
  $('intro').value=s.homepage&&s.homepage.intro||'';
  $('accent').value=s.theme&&s.theme.accent||'#c46a2b';
  currentTemplate=s.template&&templateHeadlines[s.template]?s.template:'business';
- pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
+ window.__homeImageUrl=s.homepage?.image_url||'';
+ window.__homeImageUrl=s.homepage?.image_url||'';
+ pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
  renderPageIndex();renderPageEditor();render();
  document.querySelectorAll('[data-template]').forEach(function(b){b.classList.toggle('selected',b.dataset.template===currentTemplate)});
+}
+
+async function uploadImage(file,slug,index){
+ if(!file)return;if(file.size>5242880)throw new Error('Image is larger than 5 MB.');if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
+ if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
+ setStatus('Uploading '+slug+' image…');
+ var safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
+ var path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
+ var r=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+encodeURIComponent(path),{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file});
+ var text=await r.text();if(!r.ok)throw new Error(text||'Image upload failed.');
+ var url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
+ if(index===-1){window.__homeImageUrl=url;}else{pages[index].image_url=url;pages[index].image_alt=slug==='shop'?'Shop image':slug==='buying'?'Buying page image':pages[index].title;}
+ try{await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,mime_type:file.type,byte_size:file.size,status:'active',created_by:session.user?.id||null,asset_kind:'site_image',retention_policy:'permanent'})})}catch(e){console.warn('Site image metadata insert failed',e)}
+ if(index===-1){render();}else{renderPageEditor();render();}
+ setStatus('Image uploaded. Save the website draft to keep the change.','success');
 }
 
 async function api(path,options){
@@ -142,6 +163,7 @@ async function publish(){
 
 function initBuilder(){
  ['builder-business-name','headline','intro','accent'].forEach(function(id){$(id).addEventListener('input',render)});
+ $('home-image-file').addEventListener('change',function(e){if(e.target.files&&e.target.files[0])uploadImage(e.target.files[0],'home',-1).catch(function(err){setStatus(err.message||String(err),'error')})});
  $('templates').addEventListener('click',function(event){var button=event.target.closest('[data-template]');if(button)applyTemplate(button.dataset.template)});
  $('save-draft').addEventListener('click',function(){saveDraft().catch(function(e){setStatus(e.message||String(e),'error')})});
  $('publish').addEventListener('click',function(){publish().catch(function(e){setStatus(e.message||String(e),'error')})});

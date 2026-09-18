@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.11  
+**Version:** 5.12  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -442,6 +442,14 @@ This is a presentation-only change. No subscriber, tenant, customer, buying, inv
 
 **Verification state:** Implemented in GitHub. Browser/live visual verification remains required.
 
+
+## Stage 1I — Homepage hero copy simplification — 18 September 2026
+
+The small eyebrow text **BUY & SELL BUSINESS PLATFORM** has been removed from the homepage hero because it repeated the message already communicated by the main headline **Your Buy & Sell Business. Built Your Way.** The hero now leads directly with the primary value proposition, keeping the above-the-fold message simpler and more focused.
+
+This is a presentation-only copy change. No platform, subscriber, tenant, customer, buying, inventory, selling, payment or fulfilment behaviour was changed.
+
+**Verification state:** Implemented in GitHub. Browser/live visual verification remains required.
 
 ## Stage 1H — Homepage hero website presentation refinement — 18 September 2026
 

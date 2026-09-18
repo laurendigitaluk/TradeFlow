@@ -405,3 +405,21 @@ The subscriber signup architecture remains separate from website configuration: 
 Example website previews on the homepage are illustrative UI compositions, not claims that the displayed businesses are live TradeFlow customers. Real GearCashOut screenshots should only be added from an authorised/verified source and must remain reference material; GearCashOut itself is not to be modified.
 
 **Verification state:** Landing page/logo redesign **Implemented in GitHub; browser verification still required.**
+
+
+## Stage 1E — Public front-end pages and signup presentation — 18 September 2026
+
+The public TradeFlow front end has been extended beyond the landing page so the primary navigation now resolves to actual front-end pages rather than unfinished destinations.
+
+Implemented:
+- `facts.html` — TradeFlow platform facts and architecture overview.
+- `examples.html` — illustrative camera/drone, technology and fashion resale website examples.
+- `terms.html` — structured Terms & Conditions draft page, clearly marked as requiring final legal completion/review.
+- `privacy.html` — structured Privacy Policy draft page, clearly marked as requiring final legal completion/review.
+- The shared `platform.css` now supplies the branded information-page and example-page presentation.
+- The subscriber signup page no longer asks the prospective subscriber to choose a public website URL/slug. The internal onboarding slug is generated from the business name so the existing `subscriber_create_business` RPC contract remains intact.
+- Signup copy now explains that the customer-facing website address is configured later from the authenticated subscriber workspace.
+
+The example website panels are front-end compositions for now. They provide the intended placement for later authorised screenshots or real website imagery without changing the page structure.
+
+**Verification state:** Front-end files are implemented in GitHub. Browser verification remains required before marking the new pages Verified Live.

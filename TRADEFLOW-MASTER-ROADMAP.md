@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.9  
+**Version:** 5.0  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,14 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Stripe payment ID field mismatch — 18 September 2026
+
+The customer portal continued to report `Unable to create payment record` after the previous repair. The live `customer_create_order_payment()` RPC returns its primary key as `payment_id`, while the Stripe checkout Edge Function was checking `payment.id`. The payment record itself was therefore valid, but the Edge Function rejected the RPC response as if no payment had been created.
+
+Minimal repair applied in `create-stripe-checkout-session` Edge Function version 8: normalize the returned payment identifier as `payment.payment_id || payment.id` and use that identifier for subsequent payment-record lookup and response handling. JWT verification remains enabled and no database/RLS/security rules were changed.
+
+**Status:** Implemented Live. Next browser test: click **Pay now** on the existing pending £499 order. Do not create another order.
 
 ## Payment record creation/response repair — 18 September 2026
 

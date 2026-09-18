@@ -1,6 +1,6 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
-const KEY=localStorage.getItem(KEY_STORAGE)||null;
+const KEY=localStorage.getItem(KEY_STORAGE)||localStorage.getItem('tradeflow_testlab_publishable_key')||localStorage.getItem('tradeflow_platform_admin_publishable_key')||null;
 const params=new URLSearchParams(location.search);
 const tenantId=params.get('tenant_id');
 const hostname=location.hostname;

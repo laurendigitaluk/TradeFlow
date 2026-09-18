@@ -482,3 +482,11 @@ A separate subscriber website-management page now provides Website Builder, publ
 Subscriber authentication now hides protected page content until the dedicated subscriber session and active tenant membership are verified.
 
 **Status:** Implemented on staging; browser verification required before merge.
+
+## Sign-in entry correction — 18 September 2026
+
+The public TradeFlow **Sign in** links now point to a dedicated `subscriber-login.html` page rather than sending a visitor directly to the protected subscriber dashboard. The login page provides an explicit subscriber sign-in form and a clear **Create account** path to `subscriber-signup.html`.
+
+A separate auth-overlay visibility issue was also corrected: the protected-page guard hides dashboard content while authentication is unresolved, but it no longer hides the sign-in overlay itself.
+
+**State:** Implemented on main; browser verification is required against the deployed GitHub Pages site.

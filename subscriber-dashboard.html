@@ -1,167 +1,71 @@
+
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TradeFlow Subscriber Dashboard</title>
-<link rel="stylesheet" href="subscriber-dashboard.css?v=5">
-</head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=6"></head>
 <body>
 <header class="topbar">
-  <a class="brand brand-link" href="subscriber-dashboard.html" aria-label="TradeFlow dashboard">TradeFlow</a>
+  <a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a>
   <div class="account">
-    <div class="account-identity">
-      <strong id="business-name">Subscriber Business</strong>
-      <span id="account-email">Loading account…</span>
-      <span id="account-role"></span>
-    </div>
-    <button id="account-details" type="button">Account</button>
-    <button id="sign-out" type="button">Sign out</button>
+    <div class="account-identity"><strong id="business-name">Subscriber Business</strong><span id="account-email">Loading account…</span><span id="account-role"></span></div>
+    <button id="account-details" type="button">Account</button><button id="sign-out" type="button">Sign out</button>
   </div>
 </header>
 <main class="layout">
-  <aside class="sidebar" aria-label="Business navigation">
-    <div class="sidebar-heading">Business workspace</div>
-    <nav>
-      <a class="active" href="subscriber-dashboard.html" aria-current="page">Dashboard</a>
-      <div class="nav-section">Buy &amp; sell</div>
-      <a href="buying-dashboard.html">Buying</a>
-      <a href="acquisition-dashboard.html">Acquisitions</a>
-      <a href="inventory-dashboard.html">Inventory</a>
-      <a href="selling-dashboard.html">Selling</a>
-      <a href="orders-dashboard.html">Orders</a>
-      <a href="fulfilment-dashboard.html">Fulfilment</a>
-      <a href="returns-dashboard.html">Returns</a>
-      <div class="nav-section">Customers</div>
-      <a href="#customers">Customers</a>
-      <div class="nav-section">Website</div>
-      <a href="website-builder.html">Website Builder</a>
-      <a href="categories.html">Categories &amp; Properties</a>
-      <div class="nav-section">Business</div>
-      <a href="finance-dashboard.html">Finance</a>
-      <a href="#offers">Offers</a>
-      <div class="nav-section">Settings</div>
-      <a href="#settings">Settings</a>
-    </nav>
-    <div class="sidebar-note">
-      <strong>Catalogue</strong>
-      <span>Catalogue management will be added when Gemma is ready to maintain the product catalogue.</span>
-    </div>
-  </aside>
+<aside class="sidebar" aria-label="Business navigation">
+<div class="sidebar-heading">Business workspace</div>
+<nav>
+<a class="active" href="subscriber-dashboard.html">Dashboard</a>
+<div class="nav-section">Business flow</div>
+<a href="buying-dashboard.html">Buying</a>
+<a href="acquisition-dashboard.html">Acquisitions</a>
+<a href="inventory-dashboard.html">Inventory</a>
+<a href="selling-dashboard.html">Selling</a>
+<a href="orders-dashboard.html">Orders</a>
+<a href="fulfilment-dashboard.html">Fulfilment</a>
+<a href="returns-dashboard.html">Returns</a>
+<div class="nav-section">Business</div>
+<a href="#customers">Customers</a><a href="finance-dashboard.html">Finance</a>
+<div class="nav-section">Website</div>
+<a href="subscriber-website.html">Website</a>
+<div class="nav-section">Settings</div>
+<a href="#settings">Settings</a>
+</nav>
+<div class="sidebar-note"><strong>Catalogue</strong><span>Catalogue management will be added when Gemma is ready to maintain the product catalogue.</span></div>
+</aside>
+<section class="content">
+<div class="page-heading"><div><div class="eyebrow">Subscriber administration</div><h1>Business dashboard</h1><p class="intro">Run the day-to-day Buy &amp; Sell operation from one clear workflow. Your customer website is managed separately.</p></div></div>
+<section class="welcome-panel panel"><div><div class="eyebrow">Your business</div><h2 id="welcome-business">Your business</h2><p id="welcome-copy">Your signed-in business workspace.</p></div><div class="account-summary"><div><span>Email</span><strong id="summary-email">Loading…</strong></div><div><span>Role</span><strong id="summary-role">Loading…</strong></div></div></section>
 
-  <section class="content">
-    <div class="page-heading">
-      <div>
-        <div class="eyebrow">Subscriber workspace</div>
-        <h1>Business dashboard</h1>
-        <p class="intro">Your central starting point for buying, inventory, selling, customers and your customer-facing website.</p>
-      </div>
-    </div>
-
-    <section class="welcome-panel panel">
-      <div>
-        <div class="eyebrow">Your account</div>
-        <h2 id="welcome-business">Your business</h2>
-        <p id="welcome-copy">Your signed-in business account is active.</p>
-      </div>
-      <div class="account-summary">
-        <div><span>Email</span><strong id="summary-email">Loading…</strong></div>
-        <div><span>Role</span><strong id="summary-role">Loading…</strong></div>
-      </div>
-    </section>
-
-    <section class="dashboard-grid" aria-label="Business workspaces">
-      <a class="dashboard-card" href="buying-dashboard.html"><span class="card-kicker">01 · Buy</span><strong>Buying</strong><span>Review customer requests, valuations and offers.</span></a>
-      <a class="dashboard-card" href="acquisition-dashboard.html"><span class="card-kicker">02 · Acquire</span><strong>Acquisitions</strong><span>Move accepted items through receipt, inspection and payment.</span></a>
-      <a class="dashboard-card" href="inventory-dashboard.html"><span class="card-kicker">03 · Stock</span><strong>Inventory</strong><span>Manage products, properties, photographs and lifecycle status.</span></a>
-      <a class="dashboard-card" href="selling-dashboard.html"><span class="card-kicker">04 · Sell</span><strong>Selling</strong><span>Create and manage listings across configured sales channels.</span></a>
-      <a class="dashboard-card" href="orders-dashboard.html"><span class="card-kicker">05 · Orders</span><strong>Orders</strong><span>Manage customer orders and their existing payment workflow.</span></a>
-      <a class="dashboard-card" href="fulfilment-dashboard.html"><span class="card-kicker">06 · Complete</span><strong>Fulfilment</strong><span>Prepare, dispatch and track orders.</span></a>
-    </section>
-
-    <section class="panel dashboard-panel" id="overview">
-      <div class="panel-heading"><div><div class="eyebrow">Business control centre</div><h2>Continue working</h2></div><span class="status-pill">Existing workflows preserved</span></div>
-      <div class="quick-links">
-        <a href="buying-dashboard.html"><strong>Buying</strong><span>Customer requests and valuation workflow</span></a>
-        <a href="acquisition-dashboard.html"><strong>Acquisitions</strong><span>Accepted items and payment</span></a>
-        <a href="inventory-dashboard.html"><strong>Inventory</strong><span>Products and stock lifecycle</span></a>
-        <a href="selling-dashboard.html"><strong>Selling</strong><span>Listings and sales channels</span></a>
-        <a href="orders-dashboard.html"><strong>Orders</strong><span>Customer orders</span></a>
-        <a href="fulfilment-dashboard.html"><strong>Fulfilment</strong><span>Dispatch and tracking</span></a>
-        <a href="returns-dashboard.html"><strong>Returns</strong><span>Returned orders and resolutions</span></a>
-        <a href="finance-dashboard.html"><strong>Finance</strong><span>Payments and financial records</span></a>
-      </div>
-    </section>
-
-    <section class="panel" id="website">
-      <div class="panel-heading"><div><div class="eyebrow">Customer-facing website</div><h2>Website</h2></div><span class="status-pill">Separate from business admin</span></div>
-      <p>Build and publish the website your customers see. Website content is stored through the existing tenant site revision and publishing architecture.</p>
-      <div class="actions"><a href="website-builder.html">Open Website Builder</a><a href="categories.html">Categories &amp; Properties</a></div>
-    </section>
-
-    <section class="panel" id="customers">
-      <div class="panel-heading"><div><div class="eyebrow">Customer records</div><h2>Customers</h2></div></div>
-      <p>Customer management remains tenant-scoped. This dashboard does not expose another subscriber's customers.</p>
-    </section>
-
-    <section class="panel" id="offers">
-      <div class="panel-heading"><div><div class="eyebrow">Buying workflow</div><h2>Offers</h2></div></div>
-      <p>Offers remain connected to the existing buying and acquisition workflow.</p>
-      <div class="actions"><a href="buying-dashboard.html">Open Buying Workspace</a></div>
-    </section>
-
-    <section class="panel" id="settings">
-      <div class="panel-heading"><div><div class="eyebrow">Business configuration</div><h2>Settings</h2></div></div>
-      <p>Account and business configuration will remain behind the existing permission and subscription architecture.</p>
-      <div class="actions"><button id="settings-account" type="button">View account details</button></div>
-    </section>
-  </section>
-</main>
-<div class="modal" id="account-modal" hidden>
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="account-modal-title">
-    <button class="modal-close" id="account-modal-close" type="button" aria-label="Close account details">×</button>
-    <div class="eyebrow">Signed-in account</div>
-    <h2 id="account-modal-title">Account details</h2>
-    <dl class="account-details">
-      <div><dt>Business</dt><dd id="modal-business">Loading…</dd></div>
-      <div><dt>Email</dt><dd id="modal-email">Loading…</dd></div>
-      <div><dt>Role</dt><dd id="modal-role">Loading…</dd></div>
-      <div><dt>Tenant</dt><dd id="modal-tenant">Loading…</dd></div>
-    </dl>
-    <p class="modal-note">This identifies the subscriber account and active business used by this workspace. Platform Owner access is separate from this subscriber account.</p>
-  </div>
+<section class="panel flow-panel">
+<div class="panel-heading"><div><div class="eyebrow">Core operation</div><h2>Buying to selling</h2></div><span class="status-pill">Existing workflows</span></div>
+<p class="section-intro">Follow the item through the business: receive the request, acquire the item, put it into stock, sell it, fulfil the order and handle returns.</p>
+<div class="business-flow">
+<a class="flow-step" href="buying-dashboard.html"><span>01</span><strong>Buying</strong><small>Requests, valuations &amp; offers</small></a>
+<a class="flow-step" href="acquisition-dashboard.html"><span>02</span><strong>Acquisitions</strong><small>Accepted items &amp; payment</small></a>
+<a class="flow-step" href="inventory-dashboard.html"><span>03</span><strong>Inventory</strong><small>Products, media &amp; lifecycle</small></a>
+<a class="flow-step" href="selling-dashboard.html"><span>04</span><strong>Selling</strong><small>Listings &amp; sales channels</small></a>
+<a class="flow-step" href="orders-dashboard.html"><span>05</span><strong>Orders</strong><small>Customer orders &amp; payment</small></a>
+<a class="flow-step" href="fulfilment-dashboard.html"><span>06</span><strong>Fulfilment</strong><small>Dispatch &amp; tracking</small></a>
+<a class="flow-step" href="returns-dashboard.html"><span>07</span><strong>Returns</strong><small>Returns &amp; resolutions</small></a>
 </div>
-<script src="subscriber-auth.js?v=7"></script>
-<script src="subscriber-tenant-context.js?v=5"></script>
+</section>
+
+<section class="dashboard-grid">
+<a class="dashboard-card" href="buying-dashboard.html"><span class="card-kicker">Start</span><strong>Buying</strong><span>Customer requests, valuations and offers.</span></a>
+<a class="dashboard-card" href="inventory-dashboard.html"><span class="card-kicker">Stock</span><strong>Inventory</strong><span>Manage products, properties, photographs and lifecycle.</span></a>
+<a class="dashboard-card" href="selling-dashboard.html"><span class="card-kicker">Sell</span><strong>Selling</strong><span>Create and manage listings across configured channels.</span></a>
+<a class="dashboard-card" href="orders-dashboard.html"><span class="card-kicker">Trade</span><strong>Orders</strong><span>Manage customer orders and existing payment workflow.</span></a>
+<a class="dashboard-card" href="fulfilment-dashboard.html"><span class="card-kicker">Complete</span><strong>Fulfilment</strong><span>Prepare, dispatch and track orders.</span></a>
+<a class="dashboard-card" href="finance-dashboard.html"><span class="card-kicker">Control</span><strong>Finance</strong><span>Payments and financial records.</span></a>
+</section>
+
+<section class="panel" id="customers"><div class="panel-heading"><div><div class="eyebrow">Business records</div><h2>Customers</h2></div></div><p>Customer management remains tenant-scoped. Customer records are not shared with other subscriber businesses.</p></section>
+<section class="panel website-separate"><div class="panel-heading"><div><div class="eyebrow">Separate website area</div><h2>Your website</h2></div><span class="status-pill">Managed separately</span></div><p>Your website is a set-up and maintenance area, not part of the daily buying-to-selling workflow.</p><div class="actions"><a href="subscriber-website.html">Open Website Area</a></div></section>
+<section class="panel" id="settings"><div class="panel-heading"><div><div class="eyebrow">Business configuration</div><h2>Settings</h2></div></div><p>Business settings and account configuration remain behind the existing permission and subscription architecture.</p><div class="actions"><button id="settings-account" type="button">View account details</button></div></section>
+</section></main>
+
+<div class="modal" id="account-modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><button class="modal-close" id="account-modal-close" type="button" aria-label="Close account details">×</button><div class="eyebrow">Signed-in account</div><h2 id="account-modal-title">Account details</h2><dl class="account-details"><div><dt>Business</dt><dd id="modal-business">Loading…</dd></div><div><dt>Email</dt><dd id="modal-email">Loading…</dd></div><div><dt>Role</dt><dd id="modal-role">Loading…</dd></div><div><dt>Tenant</dt><dd id="modal-tenant">Loading…</dd></div></dl><p class="modal-note">This is the subscriber account and active business used by this workspace. Platform Owner access is separate.</p></div></div>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script>
 <script>
-window.addEventListener('DOMContentLoaded', async () => {
-  const signOut=document.getElementById('sign-out');
-  if(signOut && window.tradeflowSubscriberSignOut) signOut.addEventListener('click',window.tradeflowSubscriberSignOut);
-  const modal=document.getElementById('account-modal');
-  const close=()=>{modal.hidden=true};
-  document.getElementById('account-modal-close').addEventListener('click',close);
-  document.getElementById('account-details').addEventListener('click',()=>{modal.hidden=false});
-  document.getElementById('settings-account').addEventListener('click',()=>{modal.hidden=false});
-  modal.addEventListener('click',e=>{if(e.target===modal)close()});
-  try{
-    const auth=await window.tradeflowSubscriberAuthReady;
-    const email=auth?.user?.email||'Unknown';
-    const role=auth?.role||'Unknown';
-    const business=auth?.tenants?.[auth?.tenantId]||'TradeFlow business';
-    document.getElementById('account-email').textContent=email;
-    document.getElementById('account-role').textContent=role;
-    document.getElementById('summary-email').textContent=email;
-    document.getElementById('summary-role').textContent=role;
-    document.getElementById('welcome-business').textContent=business;
-    document.getElementById('welcome-copy').textContent='You are signed in to this subscriber business workspace.';
-    document.getElementById('modal-business').textContent=business;
-    document.getElementById('modal-email').textContent=email;
-    document.getElementById('modal-role').textContent=role;
-    document.getElementById('modal-tenant').textContent=auth?.tenantId||'Unknown';
-  }catch(error){
-    document.getElementById('account-email').textContent='Account unavailable';
-  }
-});
-</script>
-</body>
-</html>
+window.addEventListener('DOMContentLoaded',async()=>{const s=document.getElementById('sign-out');if(s&&window.tradeflowSubscriberSignOut)s.addEventListener('click',window.tradeflowSubscriberSignOut);const m=document.getElementById('account-modal'),close=()=>m.hidden=true;document.getElementById('account-modal-close').onclick=close;document.getElementById('account-details').onclick=()=>m.hidden=false;document.getElementById('settings-account').onclick=()=>m.hidden=false;m.onclick=e=>{if(e.target===m)close()};try{const a=await window.tradeflowSubscriberAuthReady,email=a?.user?.email||'Unknown',role=a?.role||'Unknown',business=a?.tenants?.[a?.tenantId]||'TradeFlow business';document.getElementById('account-email').textContent=email;document.getElementById('account-role').textContent=role;document.getElementById('summary-email').textContent=email;document.getElementById('summary-role').textContent=role;document.getElementById('welcome-business').textContent=business;document.getElementById('welcome-copy').textContent='You are signed in to this subscriber business workspace.';document.getElementById('modal-business').textContent=business;document.getElementById('modal-email').textContent=email;document.getElementById('modal-role').textContent=role;document.getElementById('modal-tenant').textContent=a?.tenantId||'Unknown'}catch{}});
+</script></body></html>

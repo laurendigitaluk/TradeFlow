@@ -410,3 +410,23 @@ The Website Builder has been extended so subscribers can establish a visual bran
 - publish_site_revision() was corrected to accept website content schema versions 1 and 2. The current builder uses schema version 2.
 
 **State:** Implemented on main; browser verification required for image upload, page editing, template variety, domain entry and publishing.
+
+
+## Stage 1N — Visual on-page Website Builder — 18 September 2026
+
+The subscriber Website Builder has been reworked from a form-heavy editor into a visual, page-first editing experience. The subscriber now selects a website page from the left-hand page list and sees the complete page in the main browser-style canvas. Editable text is changed directly in place using click-to-edit contenteditable areas rather than separate title/body fields.
+
+Implemented in the visual builder:
+- Home page editing directly on the page: business name, homepage headline and introduction.
+- Buying / Sell to us page editing directly on the page, including its own title, body and image.
+- Retail Shop page editing directly on the page, including its own title, introduction/body and image.
+- Other content pages use the same direct page editing pattern.
+- Customer Account remains explicitly TradeFlow-managed because it is connected to the customer portal rather than being a normal content page.
+- Image add/replace/remove controls appear on the page itself. Uploads remain tenant-scoped through the existing tradeflow-site-media bucket and media_assets metadata flow.
+- Subscriber logo upload is now wired to site branding and the public website renderer can display it.
+- Template selection now uses visual miniature previews rather than text-only template buttons. The ten existing templates remain starting designs; switching a design does not intentionally replace subscriber-entered page content.
+- The sidebar is now for page navigation, design selection, connected operational links and save/publish actions. It is no longer the primary place where page copy is entered.
+
+The visual editor continues to save the existing schema_version 2 website content through the existing tenant_site_state/site_revisions and publish_site_revision path. Product listings remain system-driven from Inventory → Selling; the visual editor does not create or duplicate product records.
+
+**Status:** Implemented on main; browser verification is required for direct text editing, page switching, image upload, logo upload, draft save, publish and public-site rendering.

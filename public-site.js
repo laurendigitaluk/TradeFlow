@@ -15,7 +15,7 @@ function pageUrl(slug){return `public-site.html?tenant_id=${encodeURIComponent(t
 function applyContent(content){
  const site=content?.site||{},theme=site.theme||{},template=site.template||'business';document.documentElement.style.setProperty('--accent',theme.accent||'#c46a2b');document.body.dataset.template=template;
  const name=site.name||'TradeFlow';$('site-name').textContent=name;$('footer-name').textContent=name;const brandText=$('site-brand-text');if(brandText)brandText.textContent=name;const logo=$('site-logo');if(logo){logo.src=site.branding?.logo_url||site.logo_url||'';logo.alt=name;logo.hidden=!logo.src;}$('headline').textContent=site.homepage?.headline||'Buy, sell and trade with confidence.';document.title=name;
- renderPremiumHome(site);const homeImage=$('home-image-wrap'),homeImg=$('home-image');if(homeImage&&homeImg){homeImg.src=site.homepage?.image_url||'';homeImg.alt=site.homepage?.image_alt||name;homeImage.hidden=!site.homepage?.image_url;}
+ renderPremiumHome(site);const homeImage=$('home-image-wrap'),homeImg=$('home-image');$('home').hidden=true;$('home-features').hidden=true;$('premium-home').hidden=false;if(homeImage&&homeImg){homeImg.src=site.homepage?.image_url||'';homeImg.alt=site.homepage?.image_alt||name;homeImage.hidden=!site.homepage?.image_url;}
  const pages=Array.isArray(site.pages)?site.pages:[];const nav=$('site-nav');nav.innerHTML='';
  const home=document.createElement('a');home.href=pageUrl('home');home.textContent='Home';nav.appendChild(home);
  pages.filter(p=>p.enabled!==false&&p.slug!=='home').forEach(p=>{const a=document.createElement('a');a.href=p.slug==='customer-account'?customerUrl():pageUrl(p.slug);a.textContent=p.title||p.slug;nav.appendChild(a)});

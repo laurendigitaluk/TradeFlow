@@ -430,3 +430,21 @@ Implemented in the visual builder:
 The visual editor continues to save the existing schema_version 2 website content through the existing tenant_site_state/site_revisions and publish_site_revision path. Product listings remain system-driven from Inventory → Selling; the visual editor does not create or duplicate product records.
 
 **Status:** Implemented on main; browser verification is required for direct text editing, page switching, image upload, logo upload, draft save, publish and public-site rendering.
+
+## Stage 1O — Premium two-sided homepage — 18 September 2026
+
+The public subscriber homepage now uses a premium marketplace structure rather than the previous basic hero-plus-cards layout. The homepage is designed around the two distinct customer intents: people who want to sell items to the business and people who want to browse/buy from the business. The structure uses a strong hero, explicit buying/selling routes, visual buying-category tiles, retail showcase tiles and a trust/process strip. This follows established two-sided marketplace design patterns without changing the underlying TradeFlow transaction architecture.
+
+Subscriber-editable homepage controls now include:
+- Homepage headline and introduction directly on the visual canvas.
+- Main homepage image directly on the canvas.
+- Separate editable `What we buy` and `What we sell` headings/intros.
+- 6, 8 or 10 visual homepage tiles.
+- Separate buying and selling tile groups, balanced across the selected tile count.
+- Each tile has directly editable title/body and its own image add/replace/remove control.
+- Buying tiles route to the existing Sell to us / Buying page.
+- Selling tiles route to the existing Retail Shop; actual retail product records remain controlled by Inventory → Selling.
+
+The `premium` / Premium Marketplace template is now available as an additional starting design. Existing template architecture remains intact.
+
+**Status:** Implemented on main; browser verification is still required.

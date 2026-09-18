@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.9  
+**Version:** 5.10  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -432,3 +432,12 @@ The public homepage CTAs no longer open subscriber account creation directly. Th
 Subscriber signup now requires an explicit Basic, Enhanced or Catalogue selection before account creation. A direct visit to the signup page without a plan no longer silently defaults to Basic.
 
 **Verification state:** Implemented in GitHub; browser verification of the CTA → plan → signup flow remains required.
+
+
+## Stage 1G — Homepage hero device proportion refinement — 18 September 2026
+
+The TradeFlow SaaS homepage hero device presentation has been refined after visual review. The GearCashOut reference website is now displayed inside a more realistic laptop-sized screen proportion rather than an overly wide display. The laptop includes a restrained lower base, with the existing mobile device retained as the secondary responsive example.
+
+This is a presentation-only change. No subscriber, tenant, customer, buying, inventory, selling, payment or fulfilment behaviour was changed.
+
+**Verification state:** Implemented in GitHub. Browser/live visual verification remains required.

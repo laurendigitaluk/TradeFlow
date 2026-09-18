@@ -67,14 +67,18 @@ async function loadTenants(){
   const error=$('error');error.textContent='';
   $('tenant-rows').innerHTML='<tr><td colspan="7">Loading…</td></tr>';
   try{
-    const rows=await request('/rest/v1/rpc/platform_admin_list_tenants',{method:'POST',body:'{}'});
+    const [rows,accounts]=await Promise.all([
+      request('/rest/v1/rpc/platform_admin_list_tenants',{method:'POST',body:'{}'}),
+      request('/rest/v1/rpc/platform_admin_list_subscriber_accounts',{method:'POST',body:'{}'})
+    ]);
     const tenants=Array.isArray(rows)?rows:[];
+    const subscriberAccounts=Array.isArray(accounts)?accounts:[];
     $('tenant-count').textContent=tenants.length;
     $('active-count').textContent=tenants.filter(x=>x.tenant_status==='active').length;
     $('basic-count').textContent=tenants.filter(x=>x.plan_code==='basic').length;
     $('enhanced-count').textContent=tenants.filter(x=>x.plan_code==='enhanced').length;
-    if(!tenants.length){$('tenant-rows').innerHTML='<tr><td colspan="7">No subscriber businesses found.</td></tr>';return}
-    $('tenant-rows').innerHTML=tenants.map(t=>`<tr><td><strong>${escapeHtml(t.tenant_name||'—')}</strong></td><td>${escapeHtml(t.tenant_slug||'—')}</td><td>${escapeHtml(t.tenant_status||'—')}</td><td>${escapeHtml(t.plan_name||t.plan_code||'—')}</td><td>${escapeHtml(t.subscription_status||'—')}</td><td>${Number(t.member_count||0)}</td><td>${formatDate(t.created_at)}</td></tr>`).join('');
+    if(!subscriberAccounts.length){$('tenant-rows').innerHTML='<tr><td colspan="6">No subscriber businesses found.</td></tr>';return}
+    $('tenant-rows').innerHTML=subscriberAccounts.map(t=>`<tr><td><strong>${escapeHtml(t.business_name||'—')}</strong></td><td>${escapeHtml(t.owner_name||'—')}</td><td>${escapeHtml(t.owner_email||'—')}</td><td>${escapeHtml(t.business_slug||'—')}</td><td>${escapeHtml(t.business_status||'—')}</td><td>${formatDate(t.joined_at)}</td></tr>`).join('');
   }catch(e){
     error.textContent=e.message||String(e);
     $('tenant-rows').innerHTML='<tr><td colspan="7">Unable to load platform data.</td></tr>';

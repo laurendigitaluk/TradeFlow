@@ -472,3 +472,13 @@ Catalogue remains a planned capability but is deliberately not exposed in the su
 Website Builder now provides six distinct starting layouts: Business, Buy & Sell, Services, Editorial, Minimal and Retail. The existing site revision/publishing architecture remains in place; the selected template is stored as part of the site's existing content and the public renderer applies the corresponding layout variation.
 
 **Status:** database cleanup **Verified**; subscriber dashboard and template changes **Implemented on staging branch, browser verification required**. Next test is a fresh subscriber signup through the normal TradeFlow onboarding flow.
+
+## Stage 1K — Business workflow and website separation — 18 September 2026
+
+The subscriber Business Dashboard has been reorganised around the real operational chain: Buying → Acquisitions → Inventory → Selling → Orders → Fulfilment → Returns. Customers and Finance remain supporting business areas. Website Builder has been removed from the daily operational dashboard.
+
+A separate subscriber website-management page now provides Website Builder, public website preview and return to the Business Dashboard. The expected subscriber pattern is to build/publish the website, then return to the operational dashboard and only revisit Website management for later maintenance.
+
+Subscriber authentication now hides protected page content until the dedicated subscriber session and active tenant membership are verified.
+
+**Status:** Implemented on staging; browser verification required before merge.

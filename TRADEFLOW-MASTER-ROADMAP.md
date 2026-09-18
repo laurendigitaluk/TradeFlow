@@ -460,3 +460,25 @@ The hero now presents a neutral, TradeFlow-branded **customer website preview** 
 This follows current SaaS/website-builder presentation patterns: product/website previews are shown in context, with a clear visual hierarchy and the product itself remaining the subject rather than a reference customer brand. Web research also supports using focused product visuals and browser/device framing to make the experience tangible. 
 
 **Verification state:** Implemented in GitHub. Browser/live visual verification remains required.
+
+## Stage 1J — Subscriber test reset, dashboard usability and website templates — 18 September 2026
+
+The legacy test environment has been closed ahead of the next real subscriber onboarding test. Test-lab tenants were archived and their subscriptions cancelled. The Platform Owner Auth account `leannelaurenlowe@hotmail.com` was retained and remains a platform-level account, not a subscriber tenant member. Two orphaned test Auth users were deleted.
+
+The subscriber dashboard shell was refined to make the active business, signed-in email, role and tenant identity visible without requiring the user to infer which account is active. An Account dialog provides the same identity information in one place. Existing operational workspaces remain the destination for their actual controllers and backend workflows.
+
+Catalogue remains a planned capability but is deliberately not exposed in the subscriber operational rollout until Gemma can maintain/update the product catalogue.
+
+Website Builder now provides six distinct starting layouts: Business, Buy & Sell, Services, Editorial, Minimal and Retail. The existing site revision/publishing architecture remains in place; the selected template is stored as part of the site's existing content and the public renderer applies the corresponding layout variation.
+
+**Status:** database cleanup **Verified**; subscriber dashboard and template changes **Implemented on staging branch, browser verification required**. Next test is a fresh subscriber signup through the normal TradeFlow onboarding flow.
+
+## Stage 1K — Business workflow and website separation — 18 September 2026
+
+The subscriber Business Dashboard has been reorganised around the real operational chain: Buying → Acquisitions → Inventory → Selling → Orders → Fulfilment → Returns. Customers and Finance remain supporting business areas. Website Builder has been removed from the daily operational dashboard.
+
+A separate subscriber website-management page now provides Website Builder, public website preview and return to the Business Dashboard. The expected subscriber pattern is to build/publish the website, then return to the operational dashboard and only revisit Website management for later maintenance.
+
+Subscriber authentication now hides protected page content until the dedicated subscriber session and active tenant membership are verified.
+
+**Status:** Implemented on staging; browser verification required before merge.

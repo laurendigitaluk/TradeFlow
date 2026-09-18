@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.5  
+**Version:** 5.6  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -322,3 +322,23 @@ The SaaS homepage now presents the two active plans, Basic and Enhanced, and rou
 Subscriber authentication has also been changed from a hard-coded Test Business A/B/C allowlist to the authenticated `subscriber_get_my_memberships()` result. This is required for real subscriber businesses created through onboarding while retaining tenant isolation.
 
 **Status:** Implemented Live at the product-entry/onboarding boundary. Browser verification of new subscriber signup and subsequent Buy & Sell dashboard entry is the next test.
+
+
+## Stage 1 — TradeFlow SaaS homepage and Platform Owner dashboard — 18 September 2026
+
+Stage 1 is explicitly the TradeFlow SaaS layer. The public root page is the TradeFlow commercial homepage where businesses learn about the platform, choose Basic or Enhanced and enter subscriber onboarding. It is not a subscriber's storefront and does not handle a subscriber's customer transactions.
+
+Implemented:
+- index.html is the TradeFlow SaaS homepage.
+- subscriber-signup.html is the subscriber onboarding entry point.
+- subscriber-dashboard.html is the private subscriber business workspace reached after authentication.
+- platform-owner-dashboard.html is the separate private Platform Owner dashboard.
+- platform-owner-dashboard.js authenticates through Supabase Auth, verifies an active platform_memberships record for the signed-in user, then reads subscriber businesses through the existing privileged platform_admin_list_tenants() RPC.
+- platform-owner-dashboard.css provides the platform administration presentation.
+- The Platform Owner dashboard is deliberately separate from tenant dashboards and does not expose tenant customer/order data directly.
+
+The Platform Owner dashboard currently provides the platform-level foundation: subscriber business count, active business count, Basic/Enhanced counts and a tenant/subscription overview. Platform-level commercial administration can be extended without turning the dashboard into a tenant workspace.
+
+Verification state: Implemented in GitHub. Browser verification of Platform Owner sign-in/dashboard rendering remains open.
+
+Next Stage 1 test: open the SaaS homepage, verify the Basic/Enhanced routes, then open the Platform Owner dashboard and sign in with the existing platform-owner account. Separately verify the subscriber dashboard route with an authenticated subscriber account. Do not create another test tenant unless onboarding itself is the test.

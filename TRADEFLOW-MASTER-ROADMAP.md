@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.10  
+**Version:** 5.11  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -439,5 +439,16 @@ Subscriber signup now requires an explicit Basic, Enhanced or Catalogue selectio
 The TradeFlow SaaS homepage hero device presentation has been refined after visual review. The GearCashOut reference website is now displayed inside a more realistic laptop-sized screen proportion rather than an overly wide display. The laptop includes a restrained lower base, with the existing mobile device retained as the secondary responsive example.
 
 This is a presentation-only change. No subscriber, tenant, customer, buying, inventory, selling, payment or fulfilment behaviour was changed.
+
+**Verification state:** Implemented in GitHub. Browser/live visual verification remains required.
+
+
+## Stage 1H — Homepage hero website presentation refinement — 18 September 2026
+
+Following visual review, the hero no longer uses the GearCashOut-branded laptop and phone as the primary homepage visual. Those reference visuals made the example business visually dominant and the previous device treatment looked like an artificial mockup.
+
+The hero now presents a neutral, TradeFlow-branded **customer website preview** inside a clean browser-window frame, with a restrained secondary mobile preview. The sample content uses generic “Your Business” branding rather than a named reference business. The floating white labels identifying “Example customer website / GearCashOut” and “Your brand / Your website” have been removed.
+
+This follows current SaaS/website-builder presentation patterns: product/website previews are shown in context, with a clear visual hierarchy and the product itself remaining the subject rather than a reference customer brand. Web research also supports using focused product visuals and browser/device framing to make the experience tangible. 
 
 **Verification state:** Implemented in GitHub. Browser/live visual verification remains required.

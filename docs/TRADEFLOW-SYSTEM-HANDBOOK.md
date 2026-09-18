@@ -394,3 +394,19 @@ The Website Builder has been revised after browser inspection showed that the te
 The category-management and inventory dashboard controllers were also corrected to use the authenticated subscriber tenant supplied by `subscriber-tenant-context.js`, rather than a hardcoded test-tenant allow-list. This is necessary for the normal new-subscriber flow to reach Categories and Inventory safely.
 
 **State:** Implemented on main; browser verification remains required for template clicks, page jump links, category access and the new-subscriber Inventory path.
+
+
+## Website Builder branded media, selling-page editing and domain entry — 18 September 2026
+
+The Website Builder has been extended so subscribers can establish a visual brand rather than only editing text.
+
+- Subscribers can upload a homepage image and images for editable website pages.
+- Page image uploads are stored in the tenant-scoped tradeflow-site-media public asset bucket. Upload/delete/update operations are protected by authenticated tenant website-management policies; public read is intentional because these are published customer-facing website assets. Supabase documents that public buckets make objects publicly retrievable while upload/delete operations remain policy-controlled. citeturn0search0turn0search1
+- Site image metadata is also recorded in the existing tenant-scoped media_assets table.
+- The Buying / Sell to us page and the Retail Shop page can now carry their own text and branded image. The Retail Shop remains system-driven for live product data; the subscriber controls its introduction, title and presentation while products continue to come from Inventory/Selling.
+- Template CSS was expanded so the ten starting designs have more distinct navigation, hero, card, spacing and background treatments.
+- The subscriber Business Dashboard now contains a Website URL entry point. domain-settings.html stores a subscriber domain in the existing tenant_domains model as pending and displays its connection state.
+- Existing publish_site_revision() already refreshes published_site_index for domains whose status is active, so the final hostname-to-tenant routing is preserved. The external DNS/hosting target and ownership verification mechanism are intentionally not invented yet; a multi-subscriber hosting layer must be selected before a domain can be automatically activated.
+- publish_site_revision() was corrected to accept website content schema versions 1 and 2. The current builder uses schema version 2.
+
+**State:** Implemented on main; browser verification required for image upload, page editing, template variety, domain entry and publishing.

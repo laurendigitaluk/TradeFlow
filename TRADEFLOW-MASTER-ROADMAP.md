@@ -88,3 +88,13 @@ Verification states: **Proposed → Implemented → Tested → Verified Live**. 
 - `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
 
 Material changes must capture what/why, affected files/backend objects, decision, fault/lesson, test, live verification, stopping point and next action. Structured project memory/checkpoint data should also be updated where available.
+
+
+## Test Business C — Buy & Sell end-to-end test tenant — 18 September 2026
+
+- Created dedicated test tenant Test Business C (50641519-2aa5-4093-95e5-7e92bea733a6) on the live TradeFlow test environment.
+- Assigned the existing Test Business A Admin test identity as an Admin member; no Owner account is required for routine workflow testing.
+- Assigned the buy_sell plan in trialing state so Inventory/Selling capability checks can be exercised without weakening RLS or changing Test Business A's Buying-only subscription.
+- Seeded a Drones category with model_number (text) and condition (select) plus New/Excellent/Good/Fair/Poor options for end-to-end product testing.
+- Added Test Business C to the subscriber authentication and tenant-context allowlists and cache-busted Categories, Inventory and Selling runtimes.
+- Test Business A remains the Buying subscription test tenant; Test Business B remains the Selling subscription test tenant. This separation preserves subscription-boundary tests.

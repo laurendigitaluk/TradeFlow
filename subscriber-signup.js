@@ -1,5 +1,5 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co',KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9',params=new URLSearchParams(location.search),$=id=>document.getElementById(id);
-$('plan').value=params.get('plan')==='enhanced'?'enhanced':'basic';
+$('plan').value=['basic','enhanced','catalogue'].includes(params.get('plan'))?params.get('plan'):'basic';
 $('business-name').oninput=()=>{if(!$('slug').dataset.edited)$('slug').value=$('business-name').value.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')};
 $('slug').oninput=()=>{$('slug').dataset.edited='1'};
 $('signup-form').onsubmit=async e=>{e.preventDefault();const b=$('submit'),m=$('message');b.disabled=true;b.textContent='Creating account…';m.textContent='';try{

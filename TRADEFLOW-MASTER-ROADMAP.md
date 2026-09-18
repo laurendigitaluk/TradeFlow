@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.4  
+**Version:** 4.5  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -77,6 +77,8 @@ A selling listing was then created from that inventory asset and published succe
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
 
 ## Customer portal simplification — 18 September 2026
+
+The customer Overview was then simplified further: top-level summary cards now show **Selling requests, Orders and Returns** only. Offers and completed-sale/acquisition information remain within **Sell to us**, rather than being presented as separate customer-level concepts.
 
 The customer portal UI was simplified so it does not mirror the subscriber workspace. Customer-facing navigation is now limited to **Overview, Shop, My Orders, Sell to us, Returns and My Details**. Delivery is grouped into My Orders; selling requests, offers and completed sales are grouped into Sell to us. Internal subscriber concepts such as standalone Acquisitions and separate Offers navigation are no longer exposed as top-level customer sections.
 

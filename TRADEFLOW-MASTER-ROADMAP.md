@@ -575,3 +575,11 @@ The subscriber website homepage has been expanded into a premium two-sided buyin
 The architecture deliberately separates website presentation from operational data: the homepage can visually promote products and buying categories, but actual retail listings remain controlled by Inventory → Selling and published through the existing storefront RPC.
 
 Next verification: browser-test the premium homepage end-to-end and inspect it at desktop/mobile widths before marking Verified Live.
+
+## Website Builder load entitlement repair — 18 September 2026
+
+A newly registered subscriber reached the Website Builder but the canvas did not load. The live database contained the tenant, owner membership, website state and draft revision. The failure was the subscription capability window: signup created trialing with no trial_end, while private.has_tenant_feature() requires a future trial_end for trialing subscriptions.
+
+Migration 065_repair_subscriber_trial_entitlement_window.sql now gives new subscriber onboarding the established 30-day trial window and backfills affected trialing subscriptions without a trial end. Live checks for the affected subscriber confirm tenant membership plus website.editor and website.publish capability.
+
+**Status:** Implemented Live; final browser reload of Website Builder remains open. No RLS/security boundary was weakened.

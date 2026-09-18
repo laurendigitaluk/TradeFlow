@@ -375,3 +375,22 @@ The current verified test account `scenesource1@gmail.com` had no tenant members
 - Added editable page definitions for About, Contact, Terms & Conditions, Privacy Policy, FAQ, Delivery & Returns, Sell to us, Shop and Customer account. Each page can be enabled/hidden and given a title, body content and optional SEO fields. Shop and Customer account remain system-driven areas; product/category data comes from the existing operational workflow.
 - Public subscriber websites now build navigation from enabled page definitions and can render the selected page through the existing published website content path.
 - This is a frontend/content-schema expansion over the existing tenant website state and revision architecture; it does not bypass tenant security or replace the existing category/inventory/listing workflow.
+
+
+## Website Builder usability correction — 18 September 2026
+
+The Website Builder has been revised after browser inspection showed that the template choices were not reliably usable and the editable page controls were not sufficiently discoverable.
+
+- Template choices now use explicit buttons with delegated click handling, selected-state feedback and a clear “Use this design” instruction.
+- A four-step builder index provides direct links to Template, Business Details, Website Pages and Preview/Publish.
+- The Website Pages section now has a visible page index with an **Edit page** link for every page, so the subscriber does not need to discover the editors by scrolling.
+- The editable page library now includes About us, Business Information, Contact, Terms & Conditions, Privacy Policy, Cookie Policy, Delivery & Returns, Sell to us, How it works, FAQ, Payments, Warranty & Guarantees and Complaints, plus the built-in Shop and Customer account pages.
+- Recommended pages are enabled by default; optional pages remain available to edit but can be kept out of navigation.
+- Each editable page has a clear explanation of what belongs there, editable title/body fields and optional SEO title/description fields.
+- The live builder preview now exposes the enabled website pages in its navigation so the subscriber can see the page structure while building.
+- The category explanation now explicitly distinguishes the database behaviour: Buying and Selling use the same category record with capability flags; TradeFlow does not create a duplicate selling category.
+- Existing `category_manifest` content is preserved when the draft is saved rather than being overwritten with an empty array.
+
+The category-management and inventory dashboard controllers were also corrected to use the authenticated subscriber tenant supplied by `subscriber-tenant-context.js`, rather than a hardcoded test-tenant allow-list. This is necessary for the normal new-subscriber flow to reach Categories and Inventory safely.
+
+**State:** Implemented on main; browser verification remains required for template clicks, page jump links, category access and the new-subscriber Inventory path.

@@ -113,3 +113,57 @@ body{background:#f4f6f8}
   .facts-strip{padding:35px 5%}
   .final-cta{padding:65px 6%;margin-bottom:45px}
 }
+
+/* Hero device proportions — use a realistic laptop display rather than an ultra-wide screen */
+.hero-visual .laptop.gear-example{
+  width:72%;
+  height:350px;
+  left:4%;
+  top:48px;
+  padding:10px 10px 16px;
+  border-radius:14px 14px 10px 10px;
+}
+.hero-visual .laptop.gear-example:after{
+  content:"";
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  bottom:-13px;
+  height:14px;
+  background:#09131f;
+  clip-path:polygon(7% 0,93% 0,100% 100%,0 100%);
+  border-radius:0 0 8px 8px;
+}
+.hero-visual .laptop.gear-example .gear-site{
+  height:324px;
+}
+.hero-visual .laptop.gear-example .gear-hero{
+  height:240px;
+}
+.hero-visual .laptop.gear-example .gear-links{
+  height:45px;
+}
+.hero-visual .laptop.gear-example .gear-nav{
+  height:40px;
+}
+@media(max-width:1050px){
+  .hero-visual .laptop.gear-example{
+    width:76%;
+  }
+}
+@media(max-width:760px){
+  .hero-visual .laptop.gear-example{
+    width:82%;
+    height:285px;
+    top:38px;
+  }
+  .hero-visual .laptop.gear-example .gear-site{
+    height:259px;
+  }
+  .hero-visual .laptop.gear-example .gear-hero{
+    height:185px;
+  }
+  .hero-visual .laptop.gear-example .gear-links{
+    height:34px;
+  }
+}

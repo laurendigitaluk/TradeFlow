@@ -291,3 +291,18 @@ The current verified test account `scenesource1@gmail.com` had no tenant members
 - Added editable page definitions for About, Contact, Terms & Conditions, Privacy Policy, FAQ, Delivery & Returns, Sell to us, Shop and Customer account. Each page can be enabled/hidden and given a title, body content and optional SEO fields. Shop and Customer account remain system-driven areas; product/category data comes from the existing operational workflow.
 - Public subscriber websites now build navigation from enabled page definitions and can render the selected page through the existing published website content path.
 - This is a frontend/content-schema expansion over the existing tenant website state and revision architecture; it does not bypass tenant security or replace the existing category/inventory/listing workflow.
+
+
+## Website Builder usability correction — 18 September 2026
+
+The Website Builder was revised so a subscriber can understand and operate the template/page workflow without relying on hidden controls.
+
+The builder now has explicit template buttons, a four-step navigation strip and a page index with an **Edit page** link for every available page. The page library covers business information, contact, legal/policy content, buying, FAQs, delivery/returns, payments, warranty/guarantees, complaints, Shop and Customer account. Recommended pages are shown by default; optional pages can be written without being placed in site navigation.
+
+The builder preview also shows enabled page links. Page guidance is deliberately written as instructions for a business owner, including what information belongs on Terms & Conditions, Privacy Policy, Cookie Policy, Business Information and other customer-facing pages.
+
+Important data-model rule: a Buying/Selling category is one `categories` record with `buying_enabled` and `selling_enabled` flags. Do not implement or document a second automatically-created selling category unless the database model is deliberately changed and audited.
+
+The category and inventory frontend controllers now take the active tenant from the authenticated subscriber context instead of hardcoded test tenant maps. This preserves the existing tenant/RLS boundary while allowing newly provisioned subscribers to use those workspaces.
+
+**State:** Implemented on main; browser verification remains open.

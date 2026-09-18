@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.7  
+**Version:** 4.8  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,14 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Customer Pay Now field mismatch — 18 September 2026
+
+The customer order was successfully created, but the **Pay now** action sent no `order_id` to the Stripe checkout function. Root cause: `customer_get_orders()` returns the order primary key as `order_id`, while the customer UI renderer was reading `id`, which does not exist in that RPC response. This produced the `tenant_id and order_id are required` error.
+
+Minimal frontend repair applied: the Pay now button now uses `order_id` from the customer orders RPC. Customer dashboard cache bumped to v19. No database or security changes were required.
+
+**Status:** Implemented. Next browser test: refresh the customer portal and click **Pay now** on the existing pending £499 order. Do not create another order.
 
 ## Stripe checkout customer-order lookup repair — 18 September 2026
 

@@ -70,12 +70,34 @@
       const rows=await request('/rest/v1/rpc/subscriber_get_my_memberships',{method:'POST',body:'{}'});
       const allowed=(Array.isArray(rows)?rows:[]).filter(r=>TENANTS[r.tenant_id]);
       if(!allowed.some(r=>r.tenant_id===selectedTenant))throw Error('This subscriber account is not an active member of the selected test business.');
-      const member=allowed.find(r=>r.tenant_id===selectedTenant);setTenant(member.tenant_id);window.tradeflowSubscriberAuth.role=member.role_code;window.tradeflowSubscriberAuth.user=user;window.tradeflowSubscriberAuth.tenantId=tenantId;hide();resolveReady(window.tradeflowSubscriberAuth);
+      const member=allowed.find(r=>r.tenant_id===selectedTenant);setTenant(member.tenant_id);window.tradeflowSubscriberAuth.role=member.role_code;window.tradeflowSubscriberAuth.user=user;window.tradeflowSubscriberAuth.tenantId=tenantId;hide();await renderTenantSwitcher();resolveReady(window.tradeflowSubscriberAuth);
     }catch(e){session=null;save();error.textContent=e.message||String(e)}finally{button.disabled=false;button.textContent='Sign in'}
+  }
+  async function renderTenantSwitcher(){
+    const host=document.getElementById('business-name');
+    if(!host||!session?.access_token)return;
+    try{
+      const rows=await request('/rest/v1/rpc/subscriber_get_my_memberships',{method:'POST',body:'{}'});
+      const allowed=(Array.isArray(rows)?rows:[]).filter(r=>TENANTS[r.tenant_id]);
+      if(allowed.length<2){host.textContent=TENANTS[tenantId]||'TradeFlow';return}
+      const select=document.createElement('select');
+      select.id='tradeflow-tenant-switcher';
+      select.title='Switch test business';
+      select.style.cssText='padding:5px 8px;margin-right:8px';
+      allowed.forEach(r=>{const o=document.createElement('option');o.value=r.tenant_id;o.textContent=TENANTS[r.tenant_id];select.appendChild(o)});
+      select.value=tenantId;
+      select.onchange=async()=>{
+        const next=select.value;
+        if(!TENANTS[next])return;
+        setTenant(next);
+        location.reload();
+      };
+      host.replaceWith(select);
+    }catch{}
   }
   window.tradeflowSubscriberSignOut=()=>{session=null;save();location.reload()};
   (async()=>{
-    if(await verify()){hide();resolveReady(window.tradeflowSubscriberAuth);return}
+    if(await verify()){hide();await renderTenantSwitcher();resolveReady(window.tradeflowSubscriberAuth);return}
     overlay();
   })();
 })();

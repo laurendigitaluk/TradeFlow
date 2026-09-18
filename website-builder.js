@@ -18,7 +18,7 @@ function defaultHomepageTiles(){return [
  {id:'sell-5',side:'sell',title:'New in',body:'Highlight new products as your inventory grows.',image_url:'',image_alt:'',cta:'View shop'}
 ]};
 homepageTiles=defaultHomepageTiles();
-const params=new URLSearchParams(location.search),requestedTemplate=params.get('template');
+const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
 const $=id=>document.getElementById(id);
 
 const templates=[
@@ -76,7 +76,8 @@ function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;',
 function setStatus(text,type){const el=$('status');if(el){el.textContent=text||'';el.dataset.type=type||''}}
 function markDirty(){dirty=true;const el=$('save-state');if(el)el.textContent='Unsaved changes';}
 function pageDef(slug){return pageDefinitions.find(p=>p.slug===slug)||{slug:slug,title:slug,hint:'Optional',enabled:true,prompt:'Add the information customers need on this page.'}}
-function currentPage(){return pages.find(p=>p.slug===selectedPage)||pages[0]}
+function validPageSlug(slug){return slug==='home'||pages.some(p=>p.slug===slug)}
+function currentPage(){return selectedPage==='home'?{slug:'home',title:'Home page'}:(pages.find(p=>p.slug===selectedPage)||pages[0])}
 
 function renderPageList(){
  const box=$('page-list');if(!box)return;
@@ -171,8 +172,12 @@ function bindEditor(){
 }
 
 function selectPage(slug){
- if(slug!=='home'&&!pages.some(p=>p.slug===slug))return;
- selectedPage=slug;renderPageList();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
+ if(!validPageSlug(slug))return;
+ selectedPage=slug;
+ const next=new URL(location.href);
+ next.searchParams.set('page',slug);
+ history.replaceState(null,'',next.toString());
+ renderPageList();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function applyTemplate(template){
@@ -213,7 +218,7 @@ function loadContent(content){
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
    body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
- selectedPage='home';dirty=false;
+ selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
  renderPageList();renderTemplates();renderHomepageControls();renderEditor();
 }
 
@@ -282,6 +287,7 @@ async function loadDraft(){
  const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
  loadContent(drafts[0].content);
+ if(validPageSlug(requestedPage))selectedPage=requestedPage;
  if(requestedTemplate)applyTemplate(requestedTemplate);
  setStatus('Website loaded. Click the page and edit directly on the preview.','success');
 }

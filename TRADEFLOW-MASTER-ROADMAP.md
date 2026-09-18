@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.0  
+**Version:** 4.1  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,22 @@ The development foundation still contains an authenticated tenant insertion path
 **Platform Owner / approved onboarding → tenant → initial owner → subscription → tenant owner/admin/staff management.**
 
 Never create a `platform_owner` tenant role or permit self-claiming platform ownership.
+
+## Inventory photograph fault investigation — 18 September 2026
+
+The first photograph implementation was traced before making another frontend change. Storage upload was confirmed to be succeeding: physical objects were being created under the Test Business C inventory asset path, but no corresponding `media_assets` rows or `inventory_asset_media` links were being created.
+
+Live RLS/grant inspection identified the concrete fault: `public.media_assets` had the required authenticated INSERT/UPDATE/DELETE privileges and a permissive tenant-member RLS policy, but the `authenticated` role did **not** have SELECT privilege. The original browser code used `Prefer: return=representation` for the metadata INSERT, which requires the newly inserted row to be returned; the missing SELECT privilege prevented that path from completing correctly. Supabase's current documentation also confirms that INSERT/RETURNING behaviour can require SELECT access under RLS.
+
+**Minimal backend repair applied:** `GRANT SELECT ON public.media_assets TO authenticated;`
+
+No RLS policy was weakened, no tenant boundary was changed, and no Inventory permissions/subscriptions were changed. The existing tenant-member SELECT policy remains the data boundary.
+
+The frontend was deliberately returned to the last known-good Inventory runtime while this backend fault was isolated. This prevents another photograph repair from being allowed to destabilise Inventory loading.
+
+**Current verification state:** backend diagnosis and grant repair **Implemented and database-tested**; persistent browser photograph upload remains **Not yet Verified Live**.
+
+**Next narrow test:** with Inventory loading normally, upload exactly one photograph to the existing `DJI Mini 4 Pro Test 3` asset, then verify all three layers: Storage object → `media_assets` row → `inventory_asset_media` link. If successful, verify the photograph renders, then move separately to lifecycle transitions. Do not change Selling until that chain passes.
 
 ## Verification standard
 For every business domain trace:

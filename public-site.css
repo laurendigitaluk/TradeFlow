@@ -16,3 +16,15 @@ body[data-template="retail"] .hero{background:linear-gradient(110deg,#f8f3ee,#ff
 body[data-template="retail"] .product-card{border:0;box-shadow:0 10px 30px rgba(20,30,40,.07)}.body[data-template="retail"]{}
 body[data-template="retail"] .features article{background:#17202a;color:#fff;border-color:#17202a}.body[data-template="retail"]{}
 @media(max-width:760px){.topbar nav a:not(.login){display:none}.product-grid,.features{grid-template-columns:1fr}.section-heading{display:block}.hero{padding:65px 6%}footer{gap:15px;flex-direction:column}}
+
+.public-image-wrap{margin:18px 0 28px;max-width:1100px}.public-image-wrap img{display:block;width:100%;max-height:430px;object-fit:cover;border-radius:14px;border:1px solid #e3e6e9}.public-image-wrap[hidden]{display:none!important}
+body[data-template="bold"] .hero{background:var(--accent,#c46a2b);color:#fff}.body[data-template="bold"]{}.body[data-template="bold"]{}
+body[data-template="bold"] .hero p:not(.eyebrow){color:#fff}.body[data-template="bold"]{}
+body[data-template="classic"] .hero{background:#f5efe5;border-bottom:5px solid var(--accent,#c46a2b)}body[data-template="classic"] h1{font-family:Georgia,serif;font-weight:500}body[data-template="classic"] .features article{border-radius:2px}
+body[data-template="professional"] .topbar{background:#18212b;color:#fff;border-bottom:0}body[data-template="professional"] .topbar a{color:#fff}body[data-template="professional"] .hero{background:#eaf0f4}body[data-template="professional"] .product-card{border-top:4px solid var(--accent,#c46a2b);border-radius:6px}
+body[data-template="local"] .hero{background:#eaf3ec}body[data-template="local"] .features article{border-left:4px solid var(--accent,#c46a2b);border-radius:4px}
+body[data-template="bold"] .features article{background:#18212b;color:#fff;border-color:#18212b}body[data-template="bold"] .features article p{color:#d8dde1}
+body[data-template="marketplace"] .topbar{background:#18212b;color:#fff;border-bottom:0}body[data-template="marketplace"] .topbar a{color:#fff}
+body[data-template="editorial"] .topbar{height:82px}body[data-template="editorial"] .hero{padding-left:10%;padding-right:10%}
+body[data-template="retail"] .hero{min-height:500px}body[data-template="retail"] .shop-section{background:#faf7f2;max-width:none;padding-left:7%;padding-right:7%}
+body[data-template="services"] .hero{min-height:360px}body[data-template="services"] .features article{box-shadow:0 8px 25px rgba(20,30,40,.06);border-radius:4px}

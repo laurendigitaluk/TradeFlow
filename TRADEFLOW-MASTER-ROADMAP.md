@@ -1,7 +1,7 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 3.10  
-**Date:** 17 September 2026  
+**Version:** 4.0  
+**Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
 ## Authority
@@ -112,3 +112,15 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 - subscriber-tenant-context.js no longer reads Customer/Test-Lab session storage or hard-coded user-to-tenant mappings; it waits for the dedicated subscriber auth promise and synchronises the URL tenant_id from that authenticated tenant.
 - Categories controller now recognises Test Business C as well as A and B.
 - Live verification: Test Business C has active Drones category; the Admin test user has inventory.view and inventory.manage; the Buy & Sell subscription has module.inventory enabled. Inventory RLS therefore remains unchanged.
+
+
+## Subscription catalogue simplified to Basic and Enhanced — 18 September 2026
+
+- The active customer-facing subscription catalogue is now deliberately reduced to **two plans**: `Basic` and `Enhanced`.
+- `Basic` contains the complete operational Buy & Sell core: buying, customer portal, valuation, offers, inventory, selling, orders, fulfilment, storefront, trade-in and website editor/preview/publish capabilities.
+- `Enhanced` contains the full Basic set plus all currently defined add-on capabilities: staff, staff messaging, audit, analytics, integrations and market intelligence.
+- Legacy plan codes `buying`, `selling`, `buy_sell`, `business` and `advanced` are retained as inactive historical records rather than deleted, preserving auditability while preventing new subscriptions from selecting them.
+- Existing active/trialing test subscriptions were reassigned to the two-plan model: Test Business C is the Enhanced end-to-end tenant; the other active test subscriptions are Basic.
+- Platform Owner tenant creation UI now exposes only Basic and Enhanced.
+- This is a replacement of the customer-facing plan structure, not a relaxation of subscription capability enforcement. `private.has_tenant_feature()` remains the capability authority.
+- Live migration recorded as `064_simplify_subscription_catalog.sql`.

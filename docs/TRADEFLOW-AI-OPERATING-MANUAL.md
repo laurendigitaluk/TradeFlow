@@ -361,3 +361,8 @@ Social settings support Facebook, Instagram, LinkedIn, YouTube, TikTok and X. Su
 Do not treat third-party reviews or social profiles as TradeFlow-verified information. Do not expose arbitrary non-web protocols from subscriber-entered URLs.
 
 **Status:** Implemented in GitHub; live browser verification remains open.
+
+
+## Restore checkpoint — 18 September 2026
+
+This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.

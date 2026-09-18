@@ -29,7 +29,7 @@ function applyContent(content){
 }
 async function loadByTenant(){
   if(!tenantId)throw new Error('No subscriber tenant was supplied. Open the public site with its tenant_id or active domain.');
-  const rows=await api('/rest/v1/rpc/get_published_site_preview',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});
+  const rows=await api(`/rest/v1/published_site_preview?select=tenant_id,revision_number,content,published_at&tenant_id=eq.${encodeURIComponent(tenantId)}&limit=1`);
   if(!Array.isArray(rows)||rows.length!==1)throw new Error('No published website was found for this subscriber.');
   applyContent(rows[0].content);
 }

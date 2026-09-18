@@ -514,3 +514,25 @@ The current verified test account `scenesource1@gmail.com` had no tenant members
 - Added editable page definitions for About, Contact, Terms & Conditions, Privacy Policy, FAQ, Delivery & Returns, Sell to us, Shop and Customer account. Each page can be enabled/hidden and given a title, body content and optional SEO fields. Shop and Customer account remain system-driven areas; product/category data comes from the existing operational workflow.
 - Public subscriber websites now build navigation from enabled page definitions and can render the selected page through the existing published website content path.
 - This is a frontend/content-schema expansion over the existing tenant website state and revision architecture; it does not bypass tenant security or replace the existing category/inventory/listing workflow.
+
+
+## Stage 1L — Website Builder usability and page library correction — 18 September 2026
+
+The Website Builder was corrected after browser inspection showed two usability problems: template choices were not reliably actionable, and the available editable pages were not obvious to a subscriber.
+
+The builder now provides:
+- explicit clickable template buttons with selected-state feedback;
+- direct four-step navigation through the builder;
+- a visible page index with an **Edit page** action for every page;
+- editable Business Information, Contact, Terms & Conditions, Privacy Policy, Cookie Policy, Delivery & Returns, About, Sell to us, How it works, FAQ, Payments, Warranty & Guarantees and Complaints pages;
+- built-in Shop and Customer account entries;
+- optional pages that can be edited without being shown in navigation;
+- page title/body/SEO editing and page-specific instructions;
+- live preview navigation for the enabled pages;
+- preservation of any existing website `category_manifest` content when saving a draft.
+
+The category explanation was also tightened to match the actual database model: Buying and Selling are capability flags on the same category record, not two automatically generated duplicate categories.
+
+The linked Categories and Inventory controllers were corrected to use the authenticated subscriber tenant context instead of hardcoded test tenant lists. This is required for newly created subscribers to use those linked operational areas without weakening tenant security.
+
+**Status:** Implemented on main; browser verification required for template selection, page editing/navigation, category access and Inventory access for a newly provisioned subscriber.

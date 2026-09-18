@@ -223,3 +223,44 @@ The directory exposes business registration details and a controlled **View webs
 Categories and Website Builder are currently part of the Basic operational core under the live two-plan catalogue; they are not being invented as separate owner-side offers. Subscription billing and entitlement administration remain the next dedicated stage.
 
 The subscriber-directory SECURITY DEFINER wrapper is restricted to authenticated callers and uses a schema-qualified empty `search_path`, consistent with Supabase's guidance for protected SECURITY DEFINER functions. citeturn0search1turn0search2
+
+
+## Subscription model — Stage 1C
+
+TradeFlow now has three active customer-facing subscription plans.
+
+**Basic**
+- Core Buy & Sell operational workspace.
+- Subscriber-configured categories and subcategories.
+- Website template and colour selection, logo upload and image content.
+- Customer-facing website, customer portal, buying, inventory, selling, orders and fulfilment.
+
+**Enhanced**
+- Everything in Basic.
+- Staff management and staff messaging.
+- Audit, analytics, integrations and market intelligence.
+
+**Catalogue**
+- Everything in Enhanced.
+- A TradeFlow-provided starting catalogue of categories, subcategories and products.
+- The exact commercial quantity limits for the supplied catalogue are not yet set.
+
+The plan capability model remains the authoritative subscription boundary. TradeFlow uses one application and changes tenant capability through plan entitlements; it does not maintain separate Basic/Enhanced/Catalogue applications.
+
+### Platform Owner subscription controls
+
+The Platform Owner layer now has a controlled subscription management RPC. It requires Platform Owner access.
+
+Supported actions:
+- upgrade: target plan must be active and have a higher plan sort order than the current plan.
+- close: latest subscription is cancelled and the tenant is archived. Business data is retained; account closure is not data deletion.
+
+The Owner Dashboard uses these controls without exposing tenant customer records.
+
+### Billing boundary
+
+The Owner Dashboard subscription controls currently update the internal TradeFlow subscription record. Production Stripe recurring billing, provider price IDs, webhook-driven subscription state changes and automatic non-payment enforcement remain separate work and must not be represented as complete until implemented and tested.
+
+### Catalogue seeding boundary
+
+The Catalogue plan currently records the catalogue.pre_filled entitlement. The actual mechanism that copies a controlled set of TradeFlow catalogue data into a new tenant has not yet been implemented. The number of categories, subcategories and products to seed remains a commercial configuration decision.

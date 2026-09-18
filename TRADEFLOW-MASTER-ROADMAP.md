@@ -124,3 +124,15 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 - Platform Owner tenant creation UI now exposes only Basic and Enhanced.
 - This is a replacement of the customer-facing plan structure, not a relaxation of subscription capability enforcement. `private.has_tenant_feature()` remains the capability authority.
 - Live migration recorded as `064_simplify_subscription_catalog.sql`.
+
+
+## New-chat continuation checkpoint — 18 September 2026
+
+- The long-running Categories issue is now resolved and **Verified Live**. Subscriber Admin authentication works; Categories loads and the Drones category is selectable.
+- Product property workflow is **Verified Live**: Drones → `model_number` (text) and `condition` (select). Condition options New, Excellent, Good, Fair, Poor were added successfully.
+- Inventory correctly rejected product creation under Test Business A because its Buying-only subscription does not include `module.inventory`. Do not weaken RLS or alter Test Business A to bypass this.
+- A dedicated **Test Business C** was created for end-to-end Buy & Sell testing: tenant ID `50641519-2aa5-4093-95e5-7e92bea733a6`, slug `test-business-c`, active Admin membership for `leannelauren07@gmail.com`, Buy & Sell plan in `trialing` state. It has a Drones category and the same model_number/condition properties/options for end-to-end testing.
+- Subscriber authentication was updated to include Test Business C and to verify memberships through `subscriber_get_my_memberships()`. Inventory/Selling runtimes use the dedicated subscriber session. Relevant pages were cache-busted.
+- **Immediate next action:** open Inventory fresh, sign out if necessary, select Test Business C, sign in as `leannelauren07@gmail.com`, verify the top-right says Test Business C, then retry the single test product. Do not change subscription or RLS unless a new, evidenced fault appears.
+- Keep Test Business A for Buying subscription tests, Test Business B for Selling subscription tests, and Test Business C for full Buy & Sell end-to-end workflow testing. Owner remains reserved for Owner-only tests; Admin is the routine workspace test account; Staff is for permission/restriction tests.
+- Do not restart broad audits or repeat already-verified category work. Continue from this exact checkpoint and inspect current GitHub/live Supabase state before any material change.

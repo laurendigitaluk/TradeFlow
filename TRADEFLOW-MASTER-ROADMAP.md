@@ -423,3 +423,12 @@ Implemented:
 The example website panels are front-end compositions for now. They provide the intended placement for later authorised screenshots or real website imagery without changing the page structure.
 
 **Verification state:** Front-end files are implemented in GitHub. Browser verification remains required before marking the new pages Verified Live.
+
+
+## Stage 1F — Homepage CTA and subscription-selection gate — 18 September 2026
+
+The public homepage CTAs no longer open subscriber account creation directly. The header **Get started** and hero **Start your free trial** actions now take the visitor to the public plan-selection section. Each plan card then passes its selected plan into subscriber signup.
+
+Subscriber signup now requires an explicit Basic, Enhanced or Catalogue selection before account creation. A direct visit to the signup page without a plan no longer silently defaults to Basic.
+
+**Verification state:** Implemented in GitHub; browser verification of the CTA → plan → signup flow remains required.

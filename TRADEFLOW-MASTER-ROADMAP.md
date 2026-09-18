@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.5  
+**Version:** 4.6  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,16 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Customer checkout ambiguity repair — 18 September 2026
+
+The first live Shop → Buy attempt reached the backend and exposed a PostgreSQL PL/pgSQL ambiguity in `customer_create_retail_order`: the function's output column names conflicted with unqualified `order_reference` and `status` references inside the function. The fault was reproduced directly under the authenticated role using the Test Business C customer identity.
+
+Minimal repair applied: the `retail_orders` INSERT now uses a target alias for qualified `id`/`order_reference` RETURNING, and the listing reservation UPDATE qualifies the listing `status` and tenant/id columns. No customer permissions, RLS policies, subscription rules or payment architecture were changed.
+
+The repaired function was then executed in a transaction using the authenticated Test Business C customer context and returned a valid test result: `pending_payment`, £499.00 GBP. The transaction was rolled back, so no test order or reservation was left behind.
+
+**Status:** Backend repair **Implemented and database-tested**. Next browser test: click Buy once; expect a real `pending_payment` order to be created and the secure Stripe Sandbox checkout route to open.
 
 ## Customer portal simplification — 18 September 2026
 

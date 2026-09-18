@@ -107,8 +107,7 @@ function imageBlock(url,kind,label,alt){
 }
 
 function renderHome(){
- const tiles=homepageTiles.slice(0,homepageTileCount);
- const buyTiles=tiles.filter(t=>t.side==='buy'),sellTiles=tiles.filter(t=>t.side==='sell');
+ const buyCount=Math.ceil(homepageTileCount/2),sellCount=Math.floor(homepageTileCount/2);const buyTiles=homepageTiles.filter(t=>t.side==='buy').slice(0,buyCount),sellTiles=homepageTiles.filter(t=>t.side==='sell').slice(0,sellCount);const tiles=buyTiles.concat(sellTiles);
  const tileMarkup=(t,index)=>'<article class="home-tile '+t.side+'"><div class="home-tile-image">'+(t.image_url?'<img src="'+esc(t.image_url)+'" alt="'+esc(t.image_alt||t.title)+'"><div class="tile-image-tools"><button type="button" data-image-action="replace" data-image-target="tile:'+esc(t.id)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="tile:'+esc(t.id)+'">Remove</button></div>':'<button type="button" class="tile-add-image" data-image-action="add" data-image-target="tile:'+esc(t.id)+'">Add image</button>')+'</div><div class="tile-number">0'+(index+1)+'</div><h3 class="editable-tile-title" contenteditable="true" data-tile-field="title" data-tile-id="'+esc(t.id)+'">'+esc(t.title)+'</h3><p class="editable-tile-body" contenteditable="true" data-tile-field="body" data-tile-id="'+esc(t.id)+'">'+esc(t.body)+'</p><span class="tile-cta">'+esc(t.cta)+'</span></article>';
  return navMarkup()+
  '<section class="premium-hero"><div class="premium-hero-copy"><div class="edit-label">PREMIUM MARKETPLACE HOMEPAGE</div><p class="editable-kicker">YOUR BUSINESS</p><h1 class="editable-title" contenteditable="true" data-edit="headline" data-placeholder="Write your main headline">'+esc(headline)+'</h1><div class="editable-body hero-copy" contenteditable="true" data-edit="intro" data-placeholder="Explain in one or two sentences what you buy, what you sell and why customers should use your business.">'+esc(intro)+'</div><div class="hero-actions"><span>Browse what we sell</span><span>See what we buy</span></div></div><div class="premium-hero-visual">'+imageBlock(homeImageUrl,'home','Add your main brand image, shop image or business photograph.',siteName)+'</div></section>'+
@@ -156,7 +155,7 @@ function bindEditor(){
      if(field==='page-title'){currentPage().title=el.innerText.trim()||pageDef(currentPage().slug).title;renderPageList();}
      if(field==='page-body')currentPage().body=el.innerText.replace(/\r/g,'').trim();
      if(el.dataset.tileField){const tile=homepageTiles.find(t=>t.id===el.dataset.tileId);if(tile)tile[el.dataset.tileField]=el.innerText.trim();}
-     if(el.dataset.homeField){const fieldMap={buyHeading:'homeBuyHeading',buyIntro:'homeBuyIntro',sellHeading:'homeSellHeading',sellIntro:'homeSellIntro'};const key=fieldMap[el.dataset.homeField];if(key)window[key]=el.innerText.trim();}
+     if(el.dataset.homeField){const fieldMap={buyHeading:'homeBuyHeading',buyIntro:'homeBuyIntro',sellHeading:'homeSellHeading',sellIntro:'homeSellIntro'};const key=fieldMap[el.dataset.homeField];if(key){if(key==='homeBuyHeading')homeBuyHeading=el.innerText.trim();if(key==='homeBuyIntro')homeBuyIntro=el.innerText.trim();if(key==='homeSellHeading')homeSellHeading=el.innerText.trim();if(key==='homeSellIntro')homeSellIntro=el.innerText.trim();}}
      markDirty();
    });
    el.addEventListener('focus',()=>el.classList.add('editing'));

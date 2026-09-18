@@ -47,7 +47,7 @@
     try{
       const user=await request('/auth/v1/user');
       session.user=user;save();
-      const rows=await request(`/rest/v1/tenant_memberships?select=tenant_id,role_code,status&user_id=eq.${encodeURIComponent(user.id)}&status=eq.active`);
+      const rows=await request('/rest/v1/rpc/subscriber_get_my_memberships',{method:'POST',body:'{}'});
       const allowed=(Array.isArray(rows)?rows:[]).filter(r=>TENANTS[r.tenant_id]);
       if(!allowed.length)return false;
       const selected=allowed.find(r=>r.tenant_id===tenantId)||allowed[0];

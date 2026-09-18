@@ -306,3 +306,16 @@ Important data-model rule: a Buying/Selling category is one `categories` record 
 The category and inventory frontend controllers now take the active tenant from the authenticated subscriber context instead of hardcoded test tenant maps. This preserves the existing tenant/RLS boundary while allowing newly provisioned subscribers to use those workspaces.
 
 **State:** Implemented on main; browser verification remains open.
+
+
+## Website Builder branded media, selling-page editing and domain entry — 18 September 2026
+
+The Website Builder now supports a real visual-branding workflow. Homepage and page images can be uploaded to the tenant-scoped public website-media bucket, while upload/delete/update operations remain protected by tenant website permissions. Public visibility is intentional for assets used by published customer websites. citeturn0search0turn0search1
+
+The Buying/Sell-to-us page and Retail Shop page are editable for business-specific presentation. Retail product records remain driven by Inventory and Selling; the builder does not duplicate operational product data.
+
+The dashboard now links to Website URL management. Custom domains are stored in tenant_domains as pending until the hosting/DNS verification layer is defined. Do not hard-code a DNS target or mark a domain active without ownership/connection verification.
+
+The publish RPC now accepts content schema version 2 as well as the legacy version 1.
+
+**State:** Implemented on main; browser verification required.

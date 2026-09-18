@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.7  
+**Version:** 5.8  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -353,3 +353,18 @@ A dedicated owner-only RPC, `public.platform_admin_list_subscriber_accounts()`, 
 The existing tenant/subscription summary remains available for the platform overview, but subscription management is deliberately a later Stage 1 step. No retail/customer transaction data is exposed by this subscriber-registration view.
 
 **Verification state:** Implemented Live at database/code boundary. Browser verification of the new subscriber details table is the next narrow test.
+
+
+## Stage 1B — Owner Dashboard subscriber directory cleanup and website access — 18 September 2026
+
+The Owner Dashboard subscriber directory has been separated from development/test tenants. Five current tenant records are explicitly marked `settings.test_lab=true`: Test Business A, Test Business B, Test Business C, TradeFlow Platform Test 01 and TradeFlow Security Test 03. These records are not real SaaS subscribers and are excluded from the commercial Subscriber Businesses directory.
+
+The dedicated `public.platform_admin_list_subscriber_accounts()` RPC now filters out `test_lab` tenants and remains restricted to authenticated callers, with the underlying private function enforcing Platform Owner access. The function uses an empty search path with schema-qualified objects for the SECURITY DEFINER boundary.
+
+The subscriber directory now includes a **View website** action. This opens the tenant public renderer for the selected subscriber. It is a viewing link, not an owner-side substitute for the subscriber's Website Builder.
+
+Categories and Website Builder are not being made a separate owner-side product for each subscriber at this stage. The current active plan model already places the operational Buy & Sell core, categories and website editor/preview/publish capabilities in Basic; subscription entitlements will be handled in the dedicated subscription stage.
+
+Raw subscriber customer records are not part of the Owner Dashboard subscriber directory. Subscriber customers remain tenant-scoped. If platform-level customer reporting is later required, it should be an explicitly designed aggregate/support capability rather than exposing tenant customer records by default.
+
+**Verification state:** Implemented Live at database/code boundary. Browser verification of the filtered directory and View website action remains open.

@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.6  
+**Version:** 5.7  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -342,3 +342,14 @@ The Platform Owner dashboard currently provides the platform-level foundation: s
 Verification state: Implemented in GitHub. Browser verification of Platform Owner sign-in/dashboard rendering remains open.
 
 Next Stage 1 test: open the SaaS homepage, verify the Basic/Enhanced routes, then open the Platform Owner dashboard and sign in with the existing platform-owner account. Separately verify the subscriber dashboard route with an authenticated subscriber account. Do not create another test tenant unless onboarding itself is the test.
+
+
+## Stage 1A — Owner Dashboard subscriber registration details — 18 September 2026
+
+The first Owner Dashboard step is now focused on businesses entering TradeFlow through the SaaS homepage. The Owner Dashboard receives platform-level subscriber account details: business name, owner name, owner email, business slug, business status and joined date.
+
+A dedicated owner-only RPC, `public.platform_admin_list_subscriber_accounts()`, calls the existing platform-owner access check and returns the subscriber account summary. Anonymous execution is explicitly revoked; only authenticated callers can execute the public wrapper, and the underlying private function enforces Platform Owner access.
+
+The existing tenant/subscription summary remains available for the platform overview, but subscription management is deliberately a later Stage 1 step. No retail/customer transaction data is exposed by this subscriber-registration view.
+
+**Verification state:** Implemented Live at database/code boundary. Browser verification of the new subscriber details table is the next narrow test.

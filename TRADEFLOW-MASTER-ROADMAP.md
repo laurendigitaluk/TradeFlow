@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.8  
+**Version:** 4.9  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,14 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Payment record creation/response repair — 18 September 2026
+
+The existing Test Business C order reached payment creation, and the live database contains a valid pending `payment_records` row for the £499 order. The customer-facing Edge Function was nevertheless returning `Unable to create payment record`, indicating the REST RPC response path was failing even though the payment record had been created.
+
+Minimal repair applied to `create-stripe-checkout-session` Edge Function version 7: after the customer/order access check succeeds, if the payment RPC returns a non-2xx response, the function now safely looks for the already-created active payment record for that same tenant/order and continues when one exists. If no active record exists, it returns the underlying error. JWT verification remains enabled and the tenant/customer validation is unchanged.
+
+**Status:** Implemented Live. Next browser test: refresh and click **Pay now** on the existing order. No new order should be created.
 
 ## Customer Pay Now field mismatch — 18 September 2026
 

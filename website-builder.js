@@ -59,7 +59,7 @@ let pages=defaultPages();
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 function setStatus(text,type){const el=$('status');if(el){el.textContent=text||'';el.dataset.type=type||''}}
 function markDirty(){dirty=true;const el=$('save-state');if(el)el.textContent='Unsaved changes';}
-function pageDef(slug){return pageDefinitions.find(p=>p.slug===slug)||{slug,title:slug,hint:'Optional',enabled:true,prompt:'Add the information customers need on this page.'}}
+function pageDef(slug){return pageDefinitions.find(p=>p.slug===slug)||{slug:slug,title:slug,hint:'Optional',enabled:true,prompt:'Add the information customers need on this page.'}}
 function currentPage(){return pages.find(p=>p.slug===selectedPage)||pages[0]}
 
 function renderPageList(){

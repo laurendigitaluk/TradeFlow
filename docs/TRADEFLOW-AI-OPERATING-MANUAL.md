@@ -330,3 +330,11 @@ The Buying / Sell to us page and Retail Shop page are intentionally editable con
 The builder stores branding logo_url under site.branding and continues using tenant-scoped Storage uploads plus media_assets metadata. The public renderer reads the branding logo and page content from published site content.
 
 Do not claim custom-domain automatic hosting is complete merely because the Website URL page exists. Domain records are still pending until the hosting target and ownership verification/routing boundary are implemented.
+
+## Premium homepage checkpoint — 18 September 2026
+
+Treat the subscriber homepage as a two-sided customer entry point. Do not reduce it to a generic brochure page. The intended structure is: premium hero → clear buying/selling split → visual `What we buy` tiles → visual `What we sell` tiles → trust/process strip → retail shop content.
+
+The subscriber can choose 6, 8 or 10 homepage tiles. Tile copy and images are edited directly on the page. Product records must not be created in the Website Builder; selling tiles route to the existing Retail Shop, whose actual listings remain controlled by Inventory and Selling.
+
+The Premium Marketplace template is a starting visual design, not a replacement for the subscriber's existing content.

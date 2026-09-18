@@ -38,10 +38,10 @@ function showAuth(message=''){
     $('owner-signin').onclick=signIn;
     $('owner-password-input').onkeydown=e=>{if(e.key==='Enter')signIn()};
   }
-  overlay.hidden=false;$('owner-auth-error').textContent=message;
+  overlay.hidden=false;overlay.style.display='flex';$('owner-auth-error').textContent=message;
 }
 
-function hideAuth(){const el=$('owner-auth');if(el)el.hidden=true}
+function hideAuth(){const el=$('owner-auth');if(el){el.hidden=true;el.style.display='none'}}
 
 async function establish(){
   const user=await request('/auth/v1/user');

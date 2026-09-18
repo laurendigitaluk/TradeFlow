@@ -1,8 +1,8 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 3.9  
-**Date:** 17 September 2026  
+**Version:** 4.0  
+**Date:** 18 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
@@ -157,3 +157,8 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 - subscriber-tenant-context.js no longer reads Customer/Test-Lab session storage or hard-coded user-to-tenant mappings; it waits for the dedicated subscriber auth promise and synchronises the URL tenant_id from that authenticated tenant.
 - Categories controller now recognises Test Business C as well as A and B.
 - Live verification: Test Business C has active Drones category; the Admin test user has inventory.view and inventory.manage; the Buy & Sell subscription has module.inventory enabled. Inventory RLS therefore remains unchanged.
+
+
+## Subscription catalogue simplification — 18 September 2026
+
+TradeFlow now has exactly two active customer-facing plans: **Basic** and **Enhanced**. Basic is the complete operational Buy & Sell core. Enhanced includes Basic plus every currently defined add-on capability (staff, staff messaging, audit, analytics, integrations and market intelligence). Legacy five-tier plan records remain inactive for historical traceability. The subscription capability layer remains unchanged as the enforcement boundary; code must continue to call the existing feature checks rather than hard-code plan names.

@@ -349,3 +349,12 @@ Verification required: confirm 6/8/10 tile selection, direct text editing, per-t
 **Expected flow after repair:** authenticated subscriber → tenant context → active website capability → tenant_site_state draft → site_revisions draft content → visual editor render.
 
 **Final browser verification:** hard refresh Website Builder and confirm the stored draft renders in the canvas.
+
+
+## Stage 1Q — Website Builder Home navigation repair — 18 September 2026
+
+The Website Builder could render a stored page but leave the editor on About us, making the premium Home canvas difficult to reach. The navigation runtime has been hardened so page selection is explicit, the Home selection is represented as page=home in the Builder URL, and a requested page is accepted only when it matches a valid Builder page.
+
+The runtime cache has been bumped to website-builder.js?v=12.
+
+**Status:** Implemented in GitHub. Final browser verification: hard refresh the Builder, click **Home page** in the left Website Pages list, then confirm the premium homepage canvas appears and can be edited.

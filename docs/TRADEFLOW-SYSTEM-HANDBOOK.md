@@ -469,3 +469,8 @@ The Builder also stores subscriber social profile links (Facebook, Instagram, Li
 These are presentation/business-profile settings only. TradeFlow does not create or verify third-party social or review accounts. Subscriber-entered URLs are restricted at render time to HTTP/HTTPS links.
 
 **Status:** Implemented in GitHub; browser verification remains open for colour preview, Save Draft, Publish and public rendering.
+
+
+## Restore checkpoint — 18 September 2026
+
+This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.

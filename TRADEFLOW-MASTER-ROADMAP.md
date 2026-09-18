@@ -36,7 +36,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; lifecycle and explicit inventory hand-off implemented. |
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
-| 11 | Inventory | BLUE | 058 hardened; add products, categories/properties and photographs implemented; browser verification remains. |
+| 11 | Inventory | BLUE | 058 hardened; add products, category properties and photographs implemented. Product creation and `model_number` persistence are now browser-tested against live Supabase; photograph/storage verification remains. |
 | 12 | Selling/listings | BLUE | 061 hardened; listings can be created from ready-for-sale inventory and inherit inventory photographs; browser verification remains. |
 | 13 | Retail orders | BLUE | 062 hardening, customer checkout, subscriber Orders and Stripe boundary implemented; browser verification remains. |
 | 14 | Returns | BLUE | Return-request security and subscriber/customer workflows implemented; browser verification remains. |
@@ -50,7 +50,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 
 ## Category / product / media foundation
 Operational path:
-**Categories & Properties → create category → define properties/options → Inventory → add product → attach photographs → controlled lifecycle → Selling → create listing → Customer Shop.**
+**Categories & Properties → define genuine product-specific properties → Inventory → add product with one core Condition field → attach photographs → controlled lifecycle → Selling → create listing → Customer Shop.**
 
 Implemented category/property management, direct inventory product creation, dynamic property values, private `tradeflow-media`, tenant-scoped media link tables, listing photo carryover and 90-day post-sale retention metadata/triggers. Physical Storage cleanup scheduling is not yet configured.
 
@@ -95,7 +95,7 @@ Material changes must capture what/why, affected files/backend objects, decision
 - Created dedicated test tenant Test Business C (50641519-2aa5-4093-95e5-7e92bea733a6) on the live TradeFlow test environment.
 - Assigned the existing Test Business A Admin test identity as an Admin member; no Owner account is required for routine workflow testing.
 - Assigned the buy_sell plan in trialing state so Inventory/Selling capability checks can be exercised without weakening RLS or changing Test Business A's Buying-only subscription.
-- Seeded a Drones category with model_number (text) and condition (select) plus New/Excellent/Good/Fair/Poor options for end-to-end product testing.
+- Drones uses `model_number` as its category-specific Product Property. The duplicate Drones `condition` Product Property and its options were removed; Inventory now uses one core Condition field.
 - Added Test Business C to the subscriber authentication and tenant-context allowlists and cache-busted Categories, Inventory and Selling runtimes.
 - Test Business A remains the Buying subscription test tenant; Test Business B remains the Selling subscription test tenant. This separation preserves subscription-boundary tests.
 
@@ -129,10 +129,10 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 ## New-chat continuation checkpoint — 18 September 2026
 
 - The long-running Categories issue is now resolved and **Verified Live**. Subscriber Admin authentication works; Categories loads and the Drones category is selectable.
-- Product property workflow is **Verified Live**: Drones → `model_number` (text) and `condition` (select). Condition options New, Excellent, Good, Fair, Poor were added successfully.
+- Product property workflow is **Verified Live** for Drones → `model_number` (text). The separate Drones `condition` Product Property was removed to keep Inventory condition simple and avoid duplicate condition fields.
 - Inventory correctly rejected product creation under Test Business A because its Buying-only subscription does not include `module.inventory`. Do not weaken RLS or alter Test Business A to bypass this.
 - A dedicated **Test Business C** was created for end-to-end Buy & Sell testing: tenant ID `50641519-2aa5-4093-95e5-7e92bea733a6`, slug `test-business-c`, active Admin membership for `leannelauren07@gmail.com`, Buy & Sell plan in `trialing` state. It has a Drones category and the same model_number/condition properties/options for end-to-end testing.
 - Subscriber authentication was updated to include Test Business C and to verify memberships through `subscriber_get_my_memberships()`. Inventory/Selling runtimes use the dedicated subscriber session. Relevant pages were cache-busted.
-- **Immediate next action:** open Inventory fresh, sign out if necessary, select Test Business C, sign in as `leannelauren07@gmail.com`, verify the top-right says Test Business C, then retry the single test product. Do not change subscription or RLS unless a new, evidenced fault appears.
+- **Immediate next action:** continue Inventory verification with photographs and private media storage for the successfully created Test Business C product. Then verify media links and lifecycle transitions before moving to Selling. Do not move to Selling or Stripe until the Inventory → media → lifecycle chain is verified.
 - Keep Test Business A for Buying subscription tests, Test Business B for Selling subscription tests, and Test Business C for full Buy & Sell end-to-end workflow testing. Owner remains reserved for Owner-only tests; Admin is the routine workspace test account; Staff is for permission/restriction tests.
 - Do not restart broad audits or repeat already-verified category work. Continue from this exact checkpoint and inspect current GitHub/live Supabase state before any material change.

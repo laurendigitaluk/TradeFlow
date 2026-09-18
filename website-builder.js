@@ -65,13 +65,13 @@ function currentPage(){return pages.find(p=>p.slug===selectedPage)||pages[0]}
 function renderPageList(){
  const box=$('page-list');if(!box)return;
  const items=[{slug:'home',title:'Home page',hint:'Main landing page',enabled:true},...pages.map(p=>({slug:p.slug,title:p.title,hint:p.slug==='shop'?'Retail selling page':p.slug==='buying'?'Buying page':pageDef(p.slug).hint,enabled:p.enabled}))];
- box.innerHTML=items.map(p=>'<button type="button" class="page-link '+(p.slug===selectedPage?'selected':'')+'" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'⌂':p.slug==='shop'?'🛒':p.slug==='buying'?'↗':'•')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>').join('');
+ box.innerHTML=items.map(p=>'<button type="button" class="page-link '+(p.slug===selectedPage?'selected':'')+'" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>').join('');
  box.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>selectPage(b.dataset.page)));
 }
 
 function renderTemplates(){
  const box=$('templates');if(!box)return;
- box.innerHTML=templates.map(t=>'<button type="button" class="template-card '+(t.id===currentTemplate?'selected':'')+'" data-template="'+t.id"><span class="template-mini template-mini-'+t.id+'"><i></i><b></b><em></em><u></u></span><strong>'+esc(t.name)+'</strong><small>'+esc(t.desc)+'</small></button>').join('');
+ box.innerHTML=templates.map(t=>'<button type="button" class="template-card '+(t.id===currentTemplate?'selected':'')+'" data-template="'+t.id+'"><span class="template-mini template-mini-'+t.id+'"><i></i><b></b><em></em><u></u></span><strong>'+esc(t.name)+'</strong><small>'+esc(t.desc)+'</small></button>').join('');
  box.querySelectorAll('[data-template]').forEach(b=>b.addEventListener('click',()=>applyTemplate(b.dataset.template)));
 }
 

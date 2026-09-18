@@ -358,3 +358,24 @@ The Website Builder could render a stored page but leave the editor on About us,
 The runtime cache has been bumped to website-builder.js?v=12.
 
 **Status:** Implemented in GitHub. Final browser verification: hard refresh the Builder, click **Home page** in the left Website Pages list, then confirm the premium homepage canvas appears and can be edited.
+
+
+## Stage 1R — Website branding and business extras — 18 September 2026
+
+**Builder controls:** website-builder.html → design-controls / business-extras.
+
+**Stored state:** website-builder.js → buildContent() → site.theme, site.social, site.reviews inside the existing site JSON.
+
+**Public rendering:** public-site.html → site-extras → public-site.js → renderBusinessExtras(site).
+
+**Colours:** accent, text, page background, header/navigation, buying section, selling section and footer are applied as CSS custom properties. The selected template remains the layout/typography layer.
+
+**Social:** Facebook, Instagram, LinkedIn, YouTube, TikTok and X profile links are rendered when supplied.
+
+**Sharing:** optional website share controls use the browser Web Share API where available, with Facebook/LinkedIn share links as fallbacks.
+
+**Reviews:** up to four subscriber-supplied review-site links are rendered as external links.
+
+**Security boundary:** no tenant/RLS changes were made. External URLs are restricted to HTTP/HTTPS at public render time.
+
+**Final browser verification:** change a colour, add one social link, add one review link, Save Draft, Publish, then verify the public site.

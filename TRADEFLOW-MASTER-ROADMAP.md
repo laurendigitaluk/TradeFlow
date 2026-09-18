@@ -567,3 +567,11 @@ Scope implemented:
 Next verification: browser-test a newly provisioned subscriber through page switching, direct editing, image/logo upload, Save Draft, Publish and public website rendering. Do not mark Verified Live until those actions are observed working.
 
 The custom Website URL entry remains a separate domain/hosting workstream; a saved pending domain is not the same as a fully routed custom domain.
+
+## Stage 1O — Premium two-sided homepage — 18 September 2026
+
+The subscriber website homepage has been expanded into a premium two-sided buying/selling presentation. It now supports a strong hero, separate buying and retail narratives, configurable 6/8/10 visual tiles, per-tile images and direct on-page editing. A Premium Marketplace starting template has been added.
+
+The architecture deliberately separates website presentation from operational data: the homepage can visually promote products and buying categories, but actual retail listings remain controlled by Inventory → Selling and published through the existing storefront RPC.
+
+Next verification: browser-test the premium homepage end-to-end and inspect it at desktop/mobile widths before marking Verified Live.

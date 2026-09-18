@@ -73,12 +73,14 @@ async function loadTenants(){
     ]);
     const tenants=Array.isArray(rows)?rows:[];
     const subscriberAccounts=Array.isArray(accounts)?accounts:[];
-    $('tenant-count').textContent=tenants.length;
-    $('active-count').textContent=tenants.filter(x=>x.tenant_status==='active').length;
-    $('basic-count').textContent=tenants.filter(x=>x.plan_code==='basic').length;
-    $('enhanced-count').textContent=tenants.filter(x=>x.plan_code==='enhanced').length;
-    if(!subscriberAccounts.length){$('tenant-rows').innerHTML='<tr><td colspan="6">No subscriber businesses found.</td></tr>';return}
-    $('tenant-rows').innerHTML=subscriberAccounts.map(t=>`<tr><td><strong>${escapeHtml(t.business_name||'—')}</strong></td><td>${escapeHtml(t.owner_name||'—')}</td><td>${escapeHtml(t.owner_email||'—')}</td><td>${escapeHtml(t.business_slug||'—')}</td><td>${escapeHtml(t.business_status||'—')}</td><td>${formatDate(t.joined_at)}</td></tr>`).join('');
+    const subscriberIds=new Set(subscriberAccounts.map(x=>x.tenant_id));
+    const subscriberTenants=tenants.filter(x=>subscriberIds.has(x.tenant_id));
+    $('tenant-count').textContent=subscriberAccounts.length;
+    $('active-count').textContent=subscriberAccounts.filter(x=>x.business_status==='active').length;
+    $('basic-count').textContent=subscriberTenants.filter(x=>x.plan_code==='basic').length;
+    $('enhanced-count').textContent=subscriberTenants.filter(x=>x.plan_code==='enhanced').length;
+    if(!subscriberAccounts.length){$('tenant-rows').innerHTML='<tr><td colspan="7">No subscriber businesses found.</td></tr>';return}
+    $('tenant-rows').innerHTML=subscriberAccounts.map(t=>`<tr><td><strong>${escapeHtml(t.business_name||'—')}</strong></td><td>${escapeHtml(t.owner_name||'—')}</td><td>${escapeHtml(t.owner_email||'—')}</td><td>${escapeHtml(t.business_slug||'—')}</td><td>${escapeHtml(t.business_status||'—')}</td><td>${formatDate(t.joined_at)}</td><td><a class="table-action" href="public-site.html?tenant_id=${encodeURIComponent(t.tenant_id)}" target="_blank" rel="noopener">View website</a></td></tr>`).join('');
   }catch(e){
     error.textContent=e.message||String(e);
     $('tenant-rows').innerHTML='<tr><td colspan="7">Unable to load platform data.</td></tr>';

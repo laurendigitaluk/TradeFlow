@@ -264,3 +264,23 @@ The Owner Dashboard subscription controls currently update the internal TradeFlo
 ### Catalogue seeding boundary
 
 The Catalogue plan currently records the catalogue.pre_filled entitlement. The actual mechanism that copies a controlled set of TradeFlow catalogue data into a new tenant has not yet been implemented. The number of categories, subcategories and products to seed remains a commercial configuration decision.
+
+
+## Public TradeFlow marketing layer — 18 September 2026
+
+The TradeFlow SaaS public layer is separate from subscriber workspaces and subscriber customer storefronts.
+
+Current public front-end structure:
+- `index.html` — TradeFlow SaaS marketing homepage.
+- `facts.html` — platform facts/about page.
+- `examples.html` — illustrative website examples.
+- `terms.html` — Terms & Conditions draft page.
+- `privacy.html` — Privacy Policy draft page.
+- `subscriber-signup.html` — subscriber account onboarding.
+- `subscriber-dashboard.html` — private subscriber workspace after authentication.
+
+The public visual system uses `tradeflow-logo.svg` and the shared `platform.css` navy/orange branding. Example website visuals are illustrative until authorised real screenshots are supplied.
+
+Public signup deliberately does not collect the subscriber's eventual customer-facing website slug. The existing backend onboarding RPC still receives an internally generated slug derived from the business name; the public website address is a later subscriber workspace configuration concern.
+
+Legal pages currently contain structured draft copy and must not be treated as final legal advice or final production contractual wording until the correct legal entity, commercial terms, privacy details and final review have been completed.

@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.1  
+**Version:** 4.2  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -88,9 +88,9 @@ No RLS policy was weakened, no tenant boundary was changed, and no Inventory per
 
 The frontend was deliberately returned to the last known-good Inventory runtime while this backend fault was isolated. This prevents another photograph repair from being allowed to destabilise Inventory loading.
 
-**Current verification state:** backend diagnosis and grant repair **Implemented and database-tested**; persistent browser photograph upload remains **Not yet Verified Live**.
+**Current verification state:** backend diagnosis and grant repair **Implemented and database-tested**; photograph upload is now **browser-tested successfully** with four complete Storage → media metadata → inventory-media link records confirmed for the test asset. The remaining issue is duplicate submission protection, not the media pipeline itself.
 
-**Next narrow test:** with Inventory loading normally, upload exactly one photograph to the existing `DJI Mini 4 Pro Test 3` asset, then verify all three layers: Storage object → `media_assets` row → `inventory_asset_media` link. If successful, verify the photograph renders, then move separately to lifecycle transitions. Do not change Selling until that chain passes.
+**Next narrow test:** after the duplicate-submission hardening is cache-busted, verify Inventory still loads and upload exactly one photograph once. The upload button now disables during an active upload, media links receive sequential sort_order, and metadata registration uses return=minimal followed by a tenant-filtered lookup. Verify one user action produces one Storage object, one media_assets row and one inventory_asset_media link. Then verify the photograph renders. Only after that move separately to lifecycle transitions. Do not change Selling until that chain passes.
 
 ## Inventory photograph fault investigation — 18 September 2026
 
@@ -168,3 +168,20 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 - **Immediate next action:** continue Inventory verification with photographs and private media storage for the successfully created Test Business C product. Then verify media links and lifecycle transitions before moving to Selling. Do not move to Selling or Stripe until the Inventory → media → lifecycle chain is verified.
 - Keep Test Business A for Buying subscription tests, Test Business B for Selling subscription tests, and Test Business C for full Buy & Sell end-to-end workflow testing. Owner remains reserved for Owner-only tests; Admin is the routine workspace test account; Staff is for permission/restriction tests.
 - Do not restart broad audits or repeat already-verified category work. Continue from this exact checkpoint and inspect current GitHub/live Supabase state before any material change.
+
+
+## Inventory photograph duplicate-submission hardening — 18 September 2026
+
+The first successful browser upload produced four copies of the same selected image in the live database. Inspection confirmed four complete records were created within approximately one second: each had a distinct Storage path, a corresponding media_assets record and a corresponding inventory_asset_media link. This establishes that the media pipeline itself is now functioning end-to-end; the remaining issue is duplicate submission during an active upload, not tenant/RLS failure.
+
+Minimal frontend hardening applied to inventory-dashboard-fixed.js:
+- the upload button is disabled for the duration of the active upload;
+- repeated clicks while the operation is running are ignored;
+- multiple deliberately selected files remain supported;
+- sequential sort_order values are assigned rather than every new photograph being order 0;
+- metadata registration uses return=minimal followed by a tenant-filtered SELECT;
+- if a later stage fails, the newly uploaded Storage object is deleted to avoid an orphan.
+
+The HTML cache version was incremented to ensure the browser receives the repaired runtime. No RLS, subscription, tenant, authentication, Inventory lifecycle or Selling code was changed.
+
+Verification state: duplicate-production cause identified and frontend repair Implemented. The four existing duplicate test records are retained temporarily for traceability; do not treat them as four intended product photographs. Before lifecycle testing, confirm one fresh single-click upload creates exactly one new media chain and renders correctly.

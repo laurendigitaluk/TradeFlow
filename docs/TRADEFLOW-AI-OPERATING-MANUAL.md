@@ -1,7 +1,7 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 4.0  
+**Version:** 4.1  
 **Date:** 18 September 2026  
 **Project:** TradeFlow
 
@@ -165,3 +165,18 @@ The Inventory RLS error was traced to the active browser workspace remaining on 
 ## Subscription catalogue simplification — 18 September 2026
 
 When reasoning about subscriber capability, treat **Basic** as the complete operational Buy & Sell core and **Enhanced** as Basic plus all currently defined add-ons. Do not revive the retired Buying/Selling/Buy & Sell/Business/Advanced plan structure in new code. Capability enforcement remains feature-based through the existing subscription layer; plan names are presentation/catalogue concepts.
+
+
+## 21. Stage 1 build checkpoint — 18 September 2026
+
+Stage 1 means building the TradeFlow SaaS product-entry layer and the Platform Owner control layer.
+
+Do not merge these concepts:
+1. TradeFlow SaaS homepage — markets the subscription.
+2. Platform Owner dashboard — manages the TradeFlow platform.
+3. Subscriber business dashboard — private operational workspace for one subscriber tenant.
+4. Subscriber customer-facing website — built by the subscriber and used by that subscriber's customers.
+
+The current Stage 1 implementation adds platform-owner-dashboard.html, platform-owner-dashboard.js and platform-owner-dashboard.css. The owner page authenticates through Supabase Auth, verifies active platform membership through the tenant-independent platform_memberships boundary and uses the existing platform_admin_list_tenants() RPC for platform-level tenant/subscription summaries.
+
+Next safe test: verify the SaaS homepage and its Basic/Enhanced onboarding routes, then verify Platform Owner sign-in and subscriber dashboard entry separately. Do not use the tenant public storefront as the TradeFlow homepage.

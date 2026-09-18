@@ -4,7 +4,7 @@
  * otherwise the navigation script itself can make the page appear completely inert.
  */
 (()=>{
-  const sectionIds=['overview','shop','orders','fulfilments','returns','buying','selling','offers','acquisitions','profile'];
+  const sectionIds=['overview','shop','orders','selling','returns','profile'];
   const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
   const KEY_STORAGE='tradeflow_testlab_publishable_key';
   const SESSION_STORAGE='tradeflow_testlab_session';

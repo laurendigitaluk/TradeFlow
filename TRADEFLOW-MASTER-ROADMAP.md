@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 4.2  
+**Version:** 4.3  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -36,9 +36,9 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; lifecycle and explicit inventory hand-off implemented. |
 | 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
-| 11 | Inventory | BLUE | 058 hardened; add products, category properties and photographs implemented. Product creation and `model_number` persistence are now browser-tested against live Supabase; photograph/storage verification remains. |
-| 12 | Selling/listings | BLUE | 061 hardened; listings can be created from ready-for-sale inventory and inherit inventory photographs; browser verification remains. |
-| 13 | Retail orders | BLUE | 062 hardening, customer checkout, subscriber Orders and Stripe boundary implemented; browser verification remains. |
+| 11 | Inventory | GREEN | Product creation, `model_number`, photographs and controlled lifecycle were browser-tested against live Supabase. Test asset reached `ready_for_sale` through the workflow authority. |
+| 12 | Selling/listings | GREEN | Listing creation and publish were browser-tested from the ready-for-sale Test Business C asset. `LST-20260918-17216BDF` is published at £499 GBP on TradeFlow Storefront. |
+| 13 | Retail orders | BLUE | 062 hardening, customer checkout, subscriber Orders and Stripe boundary implemented; customer Shop is the next live verification point. |
 | 14 | Returns | BLUE | Return-request security and subscriber/customer workflows implemented; browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 and external Stripe boundary implemented; persistent payment verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
@@ -66,6 +66,23 @@ Owner remains reserved for owner-specific testing; Admin is the primary subscrib
 **Categories loading: VERIFIED LIVE.** Do not change authentication, category RLS or subscriptions for this issue.
 
 Next browser test is deliberately narrow: on Categories, select `Drones` in the Product Property Category selector and create the first product property (using the existing UI). Then verify Inventory's Category selector with the same Admin session. Do not move to Selling or Stripe until the Category → Property → Inventory selector chain is verified.
+
+## Inventory → Selling verification — 18 September 2026
+
+The Test Business C product `DJI Mini 4 Pro Test 3` was taken through the controlled inventory lifecycle from `received` → `inspection` → `testing` → `repair` → `ready_for_sale`. The final inventory row was verified as `ready_for_sale`, condition `Good`, with the expected listing action.
+
+A selling listing was then created from that inventory asset and published successfully: `LST-20260918-17216BDF`, asking price £499.00 GBP, channel `TradeFlow Storefront`, category `Drones`. This verifies the live boundary:
+**Inventory ready-for-sale → Selling listing → Published listing.**
+
+The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Customer registration repair — 18 September 2026
+
+Test Business C uses a separate customer identity, `tradeflow1@yahoo.com`, rather than a subscriber/admin identity. The live database showed the Auth account had not been linked to a `public.customers` row after email-confirmed signup, while the customer portal's other RPCs correctly require an active customer account. The existing `customer_complete_test_registration()` RPC already provides the intended tenant-scoped registration path.
+
+A minimal frontend repair was applied so an authenticated customer session first checks `customer_get_profile()` and, when no customer row exists, completes the tenant-scoped customer registration before loading the portal data. This also runs for restored sessions, preventing the previous `Active customer account required` state after email-confirmed signup. No RLS, subscription, or tenant-security rules were weakened.
+
+**Status:** Implemented. Browser re-test required: refresh/sign in as `tradeflow1@yahoo.com`, confirm the Shop loads the published DJI listing, then continue to checkout.
 
 ## Retail payment / external Stripe
 External payment architecture remains **BLUE / Implemented, verification open**. `create-stripe-checkout-session` is JWT-protected and server-side; `stripe-payment-webhook` verifies signed events and delegates reconciliation to `process_external_payment_event()`. Provider/event idempotency and retry handling are implemented.

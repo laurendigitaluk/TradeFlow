@@ -448,3 +448,13 @@ Subscriber-editable homepage controls now include:
 The `premium` / Premium Marketplace template is now available as an additional starting design. Existing template architecture remains intact.
 
 **Status:** Implemented on main; browser verification is still required.
+
+## 20. Subscriber Website Builder entitlement repair — 18 September 2026
+
+The new subscriber account subscriber test 1 could authenticate and had a tenant, membership and Website Builder draft, but the Builder reported **Website could not be loaded**. The live root cause was the subscription capability gate: the onboarding RPC created a trialing subscription with trial_end = null, while private.has_tenant_feature() requires a non-null future trial_end for trialing subscriptions.
+
+Migration 065_repair_subscriber_trial_entitlement_window.sql updates subscriber_create_business() to establish the existing 30-day trial pattern (trial_end and current_period_end) and backfills any current trialing subscription that has no trial end.
+
+Live verification with the subscriber owner identity and tenant f3435be3-242e-4086-ad81-c4c6e8045aea confirms is_tenant_member=true, website.editor=true and website.publish=true. No RLS policy or tenant boundary was weakened.
+
+**Status:** Implemented Live and database entitlement path verified. Browser reload of the Website Builder remains the final UI verification step.

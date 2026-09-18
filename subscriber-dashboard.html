@@ -1,1 +1,153 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Subscriber Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=3"></head><body><header class="topbar"><div class="brand">TradeFlow</div><div><span id="business-name">Subscriber Business</span><button id="sign-out" type="button">Sign out</button></div></header><main class="layout"><aside class="sidebar"><nav><a class="active" href="#overview">Dashboard</a><a href="#website">Website</a><a href="#customers">Customers</a><a href="categories.html">Categories &amp; Properties</a><a href="buying-dashboard.html">Buying</a><a href="acquisition-dashboard.html">Acquisitions</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a><a href="finance-dashboard.html">Finance</a><a href="#offers">Offers</a><a href="#settings">Settings</a></nav></aside><section class="content"><div class="eyebrow">Subscriber administration</div><h1>Business dashboard</h1><p class="intro">Manage your TradeFlow business and the customer-facing website connected to your subscription.</p><div class="cards"><article><span>Customers</span><strong>—</strong></article><article><span>Buying activity</span><strong>—</strong></article><article><span>Website status</span><strong>Draft</strong></article></div><section id="overview" class="panel"><h2>Website and customer experience</h2><p>Your public website and customer dashboard are separate from this business administration area.</p><div class="actions"><a href="#website">Open Website Builder</a><a href="#customers">Customer Management</a><a href="categories.html">Categories &amp; Properties</a><a href="buying-dashboard.html">Open Buying Workspace</a><a href="acquisition-dashboard.html">Open Acquisitions</a><a href="inventory-dashboard.html">Open Inventory</a><a href="selling-dashboard.html">Open Selling</a><a href="orders-dashboard.html">Open Orders</a><a href="fulfilment-dashboard.html">Open Fulfilment</a><a href="returns-dashboard.html">Open Returns</a><a href="finance-dashboard.html">Open Finance</a></div></section><section id="website" class="panel"><h2>Website Builder</h2><p>Choose a starting template, then open the live-backed builder to customise and publish the subscriber website.</p><div class="template-grid"><div class="template"><strong>Template One</strong><span>Clean business layout</span><a href="website-builder.html?template=business">Choose template</a></div><div class="template"><strong>Template Two</strong><span>Trade &amp; marketplace layout</span><a href="website-builder.html?template=marketplace">Choose template</a></div><div class="template"><strong>Template Three</strong><span>Service-led layout</span><a href="website-builder.html?template=services">Choose template</a></div></div><p class="actions"><a href="website-builder.html">Open full Website Builder</a></p></section><section id="customers" class="panel"><h2>Customers</h2><p>Customers belonging to this subscriber tenant will be managed here.</p></section><section id="buying" class="panel"><h2>Buying</h2><p>Buying requests, valuations and offers.</p></section><section id="selling" class="panel"><h2>Selling</h2><p>Selling, listings and orders when enabled by the subscription.</p><p class="actions"><a href="selling-dashboard.html">Open Selling Workspace</a><a href="orders-dashboard.html">Open Orders Workspace</a></p></section><section id="offers" class="panel"><h2>Offers</h2><p>Offer management.</p></section><section id="inventory" class="panel"><h2>Inventory</h2><p>Inventory management is available in the dedicated Inventory workspace.</p></section><section id="settings" class="panel"><h2>Settings</h2><p>Business settings, subscription features and website configuration.</p></section></section></main><script src="subscriber-tenant-context.js?v=4"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Subscriber Dashboard</title>
+<link rel="stylesheet" href="subscriber-dashboard.css?v=4">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand brand-link" href="subscriber-dashboard.html" aria-label="TradeFlow dashboard">TradeFlow</a>
+  <div class="account">
+    <span class="account-label">Business</span>
+    <span id="business-name">Subscriber Business</span>
+    <button id="sign-out" type="button">Sign out</button>
+  </div>
+</header>
+<main class="layout">
+  <aside class="sidebar" aria-label="Business navigation">
+    <div class="sidebar-heading">Business workspace</div>
+    <nav>
+      <a class="active" href="subscriber-dashboard.html" aria-current="page">Dashboard</a>
+
+      <div class="nav-section">Buy &amp; sell</div>
+      <a href="buying-dashboard.html">Buying</a>
+      <a href="acquisition-dashboard.html">Acquisitions</a>
+      <a href="inventory-dashboard.html">Inventory</a>
+      <a href="selling-dashboard.html">Selling</a>
+      <a href="orders-dashboard.html">Orders</a>
+      <a href="fulfilment-dashboard.html">Fulfilment</a>
+      <a href="returns-dashboard.html">Returns</a>
+
+      <div class="nav-section">Customers</div>
+      <a href="#customers">Customers</a>
+
+      <div class="nav-section">Website</div>
+      <a href="website-builder.html">Website Builder</a>
+      <a href="categories.html">Categories &amp; Properties</a>
+
+      <div class="nav-section">Business</div>
+      <a href="finance-dashboard.html">Finance</a>
+      <a href="#offers">Offers</a>
+
+      <div class="nav-section">Settings</div>
+      <a href="#settings">Settings</a>
+    </nav>
+    <div class="sidebar-note">
+      <strong>Catalogue</strong>
+      <span>Available to add when catalogue management is ready.</span>
+    </div>
+  </aside>
+
+  <section class="content">
+    <div class="page-heading">
+      <div>
+        <div class="eyebrow">Subscriber workspace</div>
+        <h1>Business dashboard</h1>
+        <p class="intro">One workspace for your TradeFlow business. The navigation connects to the existing operational areas without changing their underlying workflows.</p>
+      </div>
+    </div>
+
+    <section class="dashboard-grid" aria-label="Business workspaces">
+      <a class="dashboard-card" href="buying-dashboard.html">
+        <span class="card-kicker">01 · Buy</span>
+        <strong>Buying</strong>
+        <span>Review customer requests, valuations and offers.</span>
+      </a>
+      <a class="dashboard-card" href="acquisition-dashboard.html">
+        <span class="card-kicker">02 · Acquire</span>
+        <strong>Acquisitions</strong>
+        <span>Move accepted items through receipt, inspection and payment.</span>
+      </a>
+      <a class="dashboard-card" href="inventory-dashboard.html">
+        <span class="card-kicker">03 · Stock</span>
+        <strong>Inventory</strong>
+        <span>Manage products, properties, photographs and lifecycle status.</span>
+      </a>
+      <a class="dashboard-card" href="selling-dashboard.html">
+        <span class="card-kicker">04 · Sell</span>
+        <strong>Selling</strong>
+        <span>Create and manage listings across configured sales channels.</span>
+      </a>
+      <a class="dashboard-card" href="orders-dashboard.html">
+        <span class="card-kicker">05 · Orders</span>
+        <strong>Orders</strong>
+        <span>Manage customer orders and their existing payment workflow.</span>
+      </a>
+      <a class="dashboard-card" href="fulfilment-dashboard.html">
+        <span class="card-kicker">06 · Complete</span>
+        <strong>Fulfilment</strong>
+        <span>Prepare, dispatch and track orders.</span>
+      </a>
+    </section>
+
+    <section class="panel dashboard-panel" id="overview">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">Business control centre</div>
+          <h2>Continue working</h2>
+        </div>
+        <span class="status-pill">Existing workflows preserved</span>
+      </div>
+      <div class="quick-links">
+        <a href="buying-dashboard.html"><strong>Buying</strong><span>Customer requests and valuation workflow</span></a>
+        <a href="inventory-dashboard.html"><strong>Inventory</strong><span>Products and stock lifecycle</span></a>
+        <a href="selling-dashboard.html"><strong>Selling</strong><span>Listings and sales channels</span></a>
+        <a href="orders-dashboard.html"><strong>Orders</strong><span>Customer orders</span></a>
+        <a href="fulfilment-dashboard.html"><strong>Fulfilment</strong><span>Dispatch and tracking</span></a>
+        <a href="returns-dashboard.html"><strong>Returns</strong><span>Returned orders and resolutions</span></a>
+      </div>
+    </section>
+
+    <section class="panel" id="website">
+      <div class="panel-heading">
+        <div>
+          <div class="eyebrow">Customer-facing website</div>
+          <h2>Website</h2>
+        </div>
+        <span class="status-pill">Separate from business admin</span>
+      </div>
+      <p>The Website Builder remains a separate customer-facing website system backed by tenant site revisions. This dashboard provides the entry point; the existing builder and publishing workflow remain unchanged.</p>
+      <div class="actions">
+        <a href="website-builder.html">Open Website Builder</a>
+        <a href="categories.html">Categories &amp; Properties</a>
+      </div>
+    </section>
+
+    <section class="panel" id="customers">
+      <div class="panel-heading"><div><div class="eyebrow">Customer records</div><h2>Customers</h2></div></div>
+      <p>Customer management remains a dedicated workspace. The shell does not replace or duplicate its underlying data.</p>
+    </section>
+
+    <section class="panel" id="offers">
+      <div class="panel-heading"><div><div class="eyebrow">Buying workflow</div><h2>Offers</h2></div></div>
+      <p>Offers remain part of the existing buying and acquisition workflow. A dedicated offers workspace can be surfaced here when its existing controller is ready.</p>
+    </section>
+
+    <section class="panel" id="settings">
+      <div class="panel-heading"><div><div class="eyebrow">Business configuration</div><h2>Settings</h2></div></div>
+      <p>Tenant settings, subscription capabilities and other business configuration will remain behind the existing permission and feature-gating architecture.</p>
+    </section>
+  </section>
+</main>
+<script src="subscriber-auth.js?v=7"></script>
+<script src="subscriber-tenant-context.js?v=5"></script>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+  const signOut=document.getElementById('sign-out');
+  if(signOut && window.tradeflowSubscriberSignOut) signOut.addEventListener('click',window.tradeflowSubscriberSignOut);
+});
+</script>
+</body>
+</html>

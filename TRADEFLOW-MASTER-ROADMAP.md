@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.1  
+**Version:** 5.2  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,14 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Stripe payment return URL repair — 18 September 2026
+
+Stripe Sandbox payment for the existing test order **ORD-20260918-DB2A42EF** completed successfully. Live database verification shows the payment record is **paid**, the retail order is **paid**, and the Stripe provider session is linked. The browser then returned to the GitHub Pages host root and displayed a 404 because the deployed TradeFlow site is served from the repository path **/TradeFlow/**; the checkout Edge Function was constructing the success/cancel URL without that project path.
+
+Minimal repair applied to `create-stripe-checkout-session`, now live as version 10: GitHub Pages requests use `https://laurendigitaluk.github.io/TradeFlow` as the public application base while non-GitHub origins continue to use their origin. JWT verification remains enabled and no RLS, tenant, customer or payment-security boundary was changed.
+
+**Status:** Implemented Live. The next test should confirm a fresh Stripe Sandbox checkout returns to `customer-dashboard.html` under the TradeFlow GitHub Pages path. Do not create another order unless the existing test order has been intentionally reset.
 
 ## Stripe payment-record linking repair — 18 September 2026
 

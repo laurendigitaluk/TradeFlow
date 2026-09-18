@@ -583,3 +583,10 @@ A newly registered subscriber reached the Website Builder but the canvas did not
 Migration 065_repair_subscriber_trial_entitlement_window.sql now gives new subscriber onboarding the established 30-day trial window and backfills affected trialing subscriptions without a trial end. Live checks for the affected subscriber confirm tenant membership plus website.editor and website.publish capability.
 
 **Status:** Implemented Live; final browser reload of Website Builder remains open. No RLS/security boundary was weakened.
+
+
+## Website branding and business extras — 18 September 2026
+
+The subscriber Website Builder now supports a broader professional website layer: custom brand colours across the page, text, header/navigation, buying section, selling section and footer; social profile links; optional website sharing; and up to four review-site links. These settings are stored within the existing published site JSON and do not create separate tenant data or weaken security boundaries.
+
+**Status:** Implemented in GitHub. Browser verification remains open.

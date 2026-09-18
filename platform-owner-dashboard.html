@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Owner Dashboard</title>
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=1">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="index.html">TradeFlow</a>
+  <div class="top-actions"><span id="owner-email">Platform Owner</span><button id="sign-out" type="button">Sign out</button></div>
+</header>
+<main class="shell">
+  <aside class="sidebar">
+    <div class="side-title">Platform</div>
+    <nav>
+      <a class="active" href="#overview">Overview</a>
+      <a href="#businesses">Subscriber businesses</a>
+      <a href="#plans">Plans</a>
+      <a href="#settings">Platform settings</a>
+    </nav>
+  </aside>
+  <section class="content">
+    <div class="eyebrow">TradeFlow SaaS</div>
+    <h1>Owner Dashboard</h1>
+    <p class="intro">Manage the TradeFlow platform and its subscriber businesses. Subscriber operational data remains inside each business tenant.</p>
+
+    <section id="overview" class="stats">
+      <article><span>Subscriber businesses</span><strong id="tenant-count">—</strong></article>
+      <article><span>Active businesses</span><strong id="active-count">—</strong></article>
+      <article><span>Basic plans</span><strong id="basic-count">—</strong></article>
+      <article><span>Enhanced plans</span><strong id="enhanced-count">—</strong></article>
+    </section>
+
+    <section id="businesses" class="panel">
+      <div class="panel-head"><div><div class="eyebrow">Tenants</div><h2>Subscriber businesses</h2></div><button id="refresh" type="button">Refresh</button></div>
+      <p class="muted">This view uses the platform-owner RPC and shows platform-level tenant and subscription information only.</p>
+      <div id="error" class="error" role="alert"></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Business</th><th>Slug</th><th>Status</th><th>Plan</th><th>Subscription</th><th>Members</th><th>Created</th></tr></thead>
+          <tbody id="tenant-rows"><tr><td colspan="7">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="plans" class="panel">
+      <div class="eyebrow">Commercial model</div>
+      <h2>Plans</h2>
+      <div class="plan-grid">
+        <article><h3>Basic</h3><p>Active TradeFlow SaaS plan.</p></article>
+        <article><h3>Enhanced</h3><p>Active TradeFlow SaaS plan with additional platform capabilities.</p></article>
+      </div>
+      <p class="note">Paid recurring Stripe subscription billing is a separate boundary and is not represented as complete by this dashboard.</p>
+    </section>
+
+    <section id="settings" class="panel">
+      <div class="eyebrow">Platform administration</div>
+      <h2>Platform settings</h2>
+      <p>Platform-level administration will be added here as the SaaS control layer is built. Tenant settings remain inside the subscriber workspace.</p>
+    </section>
+  </section>
+</main>
+<script src="platform-owner-dashboard.js?v=1" defer></script>
+</body>
+</html>

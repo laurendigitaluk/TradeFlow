@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.3  
+**Version:** 5.4  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -35,16 +35,16 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 | 7 | Trading Value / valuation | BLUE | 052 plus 054–055 integrity/state-entry repairs and valuation UI. Persistent live journey remains. |
 | 8 | Offers & offer events | BLUE | 053–055 integrity repairs plus customer accept/refuse UI. Persistent live journey remains. |
 | 9 | Acquisition & acquisition items | BLUE | 056–057 hardened; lifecycle and explicit inventory hand-off implemented. |
-| 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; browser verification remains. |
+| 10 | Fulfilment | BLUE | Subscriber fulfilment workspace and lifecycle controls implemented; dedicated subscriber-auth repair is now live; browser verification remains. |
 | 11 | Inventory | GREEN | Product creation, `model_number`, photographs and controlled lifecycle were browser-tested against live Supabase. Test asset reached `ready_for_sale` through the workflow authority. |
 | 12 | Selling/listings | GREEN | Listing creation and publish were browser-tested from the ready-for-sale Test Business C asset. `LST-20260918-17216BDF` is published at £499 GBP on TradeFlow Storefront. |
-| 13 | Retail orders | BLUE | 062 hardening, customer checkout, subscriber Orders and Stripe boundary implemented; customer Shop is the next live verification point. |
+| 13 | Retail orders | GREEN | Customer Shop → order → Stripe Sandbox → paid order and payment record were browser-tested and verified live for Test Business C. Fulfilment remains the next lifecycle boundary. |
 | 14 | Returns | BLUE | Return-request security and subscriber/customer workflows implemented; browser verification remains. |
 | 15 | Finance/payment | BLUE | 059–060 and external Stripe boundary implemented; persistent payment verification remains. |
 | 16 | Notifications/email | AMBER | Provider/integration audit remains. |
 | 17 | Staff roles/permissions/audit | BLUE | Security lab 19/19; complete management workflow remains. |
 | 18 | Premium staff messenger | RED / future | No verified core implementation. |
-| 19 | Public storefront / subscriber websites | BLUE | Website revision architecture/public renderer implemented; full public journey remains. |
+| 19 | Public storefront / subscriber websites | BLUE | Published website renderer is live; customer storefront shell now loads published subscriber listings through a controlled anonymous RPC. Browser verification remains. |
 | 20 | Authoritative workflow/RLS/grants | BLUE | Multiple domains have explicit workflow authority; final pass remains. |
 | 21 | Platform Owner/Admin | BLUE | Foundation and privileged paths implemented; final browser regression remains. |
 
@@ -289,3 +289,23 @@ Minimal frontend hardening applied to inventory-dashboard-fixed.js:
 The HTML cache version was incremented to ensure the browser receives the repaired runtime. No RLS, subscription, tenant, authentication, Inventory lifecycle or Selling code was changed.
 
 Verification state: duplicate-production cause identified and frontend repair Implemented. The four existing duplicate test records are retained temporarily for traceability; do not treat them as four intended product photographs. Before lifecycle testing, confirm one fresh single-click upload creates exactly one new media chain and renders correctly.
+
+## Customer storefront build — 18 September 2026
+
+The public customer website has now moved beyond a static landing-page shell. The published storefront renders the subscriber's published site content and requests only listings that satisfy the public publication boundary: the tenant has a published website revision, the listing is published, its category is active and selling-enabled, and its sales channel is active.
+
+A new `public.get_published_store_listings(uuid)` SECURITY DEFINER read function was added with execution granted to `anon` and `authenticated`. It returns only public listing fields needed by the storefront: listing reference, title, description, asking price, currency, quantity and category name. It does not expose operational tenant/customer/order/payment data.
+
+The public site now has a real **Shop** section and links customers into the tenant-specific Customer Portal to view and purchase available products. The existing paid test order has reserved the DJI listing, so the current public Shop correctly has no available product from that test listing. A populated-storefront browser test should use a clean published listing rather than altering the paid order's state.
+
+The Website Builder and public renderer remain separate from subscriber operational data. Website publication continues to use the published revision architecture.
+
+**Status:** Implemented Live at the code/database boundary. Browser verification of the public storefront and anonymous listing read remains open.
+
+## Fulfilment workspace auth repair — 18 September 2026
+
+The existing fulfilment workspace was found to be using the older test-lab session/key and only contained Test Business A/B tenant mappings. It has now been switched to the dedicated subscriber authentication layer used by the current subscriber workspace and can resolve the active subscriber tenant from the authenticated session.
+
+The existing fulfilment RLS boundary remains unchanged. Live checks confirm Test Business C has `module.fulfilment` enabled and the Admin test account has `fulfilment.manage` permission. No RLS or subscription rule was weakened.
+
+**Status:** Implemented Live. Next browser test: open Fulfilment as Test Business C Admin and create the fulfilment for `ORD-20260918-DB2A42EF`. Then move the fulfilment through its controlled lifecycle one transition at a time.

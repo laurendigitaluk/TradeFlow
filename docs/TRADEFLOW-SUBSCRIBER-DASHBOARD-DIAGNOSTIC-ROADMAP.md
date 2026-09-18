@@ -329,3 +329,23 @@ Homepage data path:
 Selling tile content is presentation-only. Published product records continue to come from `get_published_store_listings()` and the Inventory → Selling workflow.
 
 Verification required: confirm 6/8/10 tile selection, direct text editing, per-tile image upload, save, publish and public rendering for a real subscriber tenant.
+
+## Stage 1P — Website Builder load entitlement repair — 18 September 2026
+
+**Observed user action:** Subscriber opens Website Builder.
+
+**Browser page:** website-builder.html.
+
+**Frontend chain:** subscriber-auth.js → subscriber-tenant-context.js → website-builder.js → loadDraft().
+
+**Failure point:** loadDraft() requests tenant_site_state and site_revisions. Their SELECT policies require tenant membership plus the website.editor feature.
+
+**Root cause:** subscriber_create_business() created the new subscription as trialing without trial_end. The existing private.has_tenant_feature() capability rule requires trial_end to be in the future for a trialing subscription, so the authenticated subscriber could exist without receiving website capability.
+
+**Repair:** Migration 065_repair_subscriber_trial_entitlement_window.sql sets a 30-day trial window for new subscriber onboarding and backfills the affected trialing record.
+
+**Live database verification:** affected subscriber is an active tenant member; website.editor=true; website.publish=true.
+
+**Expected flow after repair:** authenticated subscriber → tenant context → active website capability → tenant_site_state draft → site_revisions draft content → visual editor render.
+
+**Final browser verification:** hard refresh Website Builder and confirm the stored draft renders in the canvas.

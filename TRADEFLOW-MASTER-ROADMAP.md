@@ -1,6 +1,6 @@
 # TradeFlow Master Build Roadmap & Verification Register
 
-**Version:** 5.0  
+**Version:** 5.1  
 **Date:** 18 September 2026  
 **Purpose:** Living record of TradeFlow architecture, verified security boundaries, business-domain build progress and exact stopping point.
 
@@ -75,6 +75,16 @@ A selling listing was then created from that inventory asset and published succe
 **Inventory ready-for-sale → Selling listing → Published listing.**
 
 The next boundary is deliberately customer-facing: **Published listing → Customer Shop → retail checkout → Stripe Sandbox → payment → order → fulfilment → returns.**
+
+## Stripe payment-record linking repair — 18 September 2026
+
+The Stripe Checkout session was successfully created, but the Edge Function returned `Payment session created but payment record could not be linked`. The live function had been corrected to read the payment RPC's `payment_id`, but two downstream Stripe metadata/PATCH references still used the old `payment.id` field. This caused the link/update request to use the wrong identifier.
+
+Minimal repair applied to `create-stripe-checkout-session`, now live as version 9: all downstream payment-record references use the normalized `paymentId`. JWT verification remains enabled and no RLS, tenant, customer or Stripe security boundaries were changed.
+
+Live verification shows the existing order `ORD-20260918-DB2A42EF` still has exactly one pending payment record (`99f624be-1113-44e5-9753-9d5dc4dec992`) with no provider session linked, so it remains the correct test order.
+
+**Status:** Implemented Live. Next browser test: use **Pay now** on the existing order. Do not create another order.
 
 ## Stripe payment ID field mismatch — 18 September 2026
 

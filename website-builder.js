@@ -20,7 +20,7 @@ const pageDefinitions=[
 {slug:'payments',title:'Payments',hint:'Optional',enabled:false,prompt:'Explain accepted payment methods, when payment is taken, refunds and any payment restrictions relevant to your business.'},
 {slug:'warranty',title:'Warranty & Guarantees',hint:'Optional',enabled:false,prompt:'Explain any warranties, guarantees or condition assurances you provide, including exclusions and how customers make a claim.'},
 {slug:'complaints',title:'Complaints',hint:'Optional',enabled:false,prompt:'Explain how customers can raise a complaint, what information they should provide and how you will handle it.'},
-{slug:'shop',title:'Shop',hint:'Built in',enabled:true,prompt:'Published products appear here automatically from Inventory and Selling. No manual product list is required in this page editor.'},
+{slug:'shop',title:'Retail Shop',hint:'Built in',enabled:true,prompt:'Build your retail selling page here: introduce your shop, explain what customers can buy, add your own branded image and set the page title. Published products continue to come automatically from Inventory and Selling.'},
 {slug:'customer-account',title:'Customer account',hint:'Built in',enabled:true,prompt:'Customers use this area to sign in, view orders, submit selling requests and manage returns.'}
 ];
 
@@ -115,7 +115,6 @@ function loadContent(content){
  $('accent').value=s.theme&&s.theme.accent||'#c46a2b';
  currentTemplate=s.template&&templateHeadlines[s.template]?s.template:'business';
  window.__homeImageUrl=s.homepage?.image_url||'';
- window.__homeImageUrl=s.homepage?.image_url||'';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
  renderPageIndex();renderPageEditor();render();
  document.querySelectorAll('[data-template]').forEach(function(b){b.classList.toggle('selected',b.dataset.template===currentTemplate)});
@@ -127,7 +126,7 @@ async function uploadImage(file,slug,index){
  setStatus('Uploading '+slug+' image…');
  var safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  var path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
- var r=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+encodeURIComponent(path),{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file});
+ var r=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file});
  var text=await r.text();if(!r.ok)throw new Error(text||'Image upload failed.');
  var url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(index===-1){window.__homeImageUrl=url;}else{pages[index].image_url=url;pages[index].image_alt=slug==='shop'?'Shop image':slug==='buying'?'Buying page image':pages[index].title;}

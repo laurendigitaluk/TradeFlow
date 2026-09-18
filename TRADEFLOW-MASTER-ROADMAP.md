@@ -549,3 +549,21 @@ The Business Dashboard now exposes Website URL management. Domains are saved aga
 The publish RPC was updated to accept website content schema versions 1 and 2, matching the current Website Builder.
 
 **Status:** Implemented on main; browser verification required.
+
+
+## Stage 1N — Visual Website Builder — 18 September 2026
+
+The Website Builder is now being changed to a visual page-first editor rather than a form-heavy configuration screen. The subscriber selects a page in the sidebar and edits the actual page shown in the main canvas. This directly addresses usability for subscribers who do not understand website terminology or separate form fields.
+
+Scope implemented:
+- Full-page visual canvas with direct click-to-edit text.
+- Home, Sell to us / Buying and Retail Shop pages are visibly editable in context.
+- Page-specific image add/replace/remove controls.
+- Subscriber logo upload wired into site branding and public rendering.
+- Visual miniature template choices for the ten existing starting designs.
+- Clear separation between editable website content and TradeFlow-managed operational data.
+- Existing draft/revision/publish architecture retained.
+
+Next verification: browser-test a newly provisioned subscriber through page switching, direct editing, image/logo upload, Save Draft, Publish and public website rendering. Do not mark Verified Live until those actions are observed working.
+
+The custom Website URL entry remains a separate domain/hosting workstream; a saved pending domain is not the same as a fully routed custom domain.

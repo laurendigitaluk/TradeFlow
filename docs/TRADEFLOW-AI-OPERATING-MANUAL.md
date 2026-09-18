@@ -319,3 +319,14 @@ The dashboard now links to Website URL management. Custom domains are stored in 
 The publish RPC now accepts content schema version 2 as well as the legacy version 1.
 
 **State:** Implemented on main; browser verification required.
+
+
+## Visual Website Builder checkpoint — 18 September 2026
+
+The Website Builder now follows a visual page-first workflow. Do not reintroduce a form-first page editor unless explicitly requested. The intended subscriber interaction is: choose a page → see the full page → click text to edit → add/replace an image on the page → save draft → publish.
+
+The Buying / Sell to us page and Retail Shop page are intentionally editable content areas. Their transaction/product data remains connected to the existing operational workflow. Retail products are supplied by Inventory and Selling; buying requests remain connected to the Buying/Acquisitions chain.
+
+The builder stores branding logo_url under site.branding and continues using tenant-scoped Storage uploads plus media_assets metadata. The public renderer reads the branding logo and page content from published site content.
+
+Do not claim custom-domain automatic hosting is complete merely because the Website URL page exists. Domain records are still pending until the hosting target and ownership verification/routing boundary are implemented.

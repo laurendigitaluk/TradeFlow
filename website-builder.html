@@ -1,60 +1,38 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Website Builder</title><link rel="stylesheet" href="website-builder.css?v=6"></head>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Website Builder</title><link rel="stylesheet" href="website-builder.css?v=7"></head>
 <body>
 <header class="topbar"><div class="brand">TradeFlow Website Builder</div><a href="subscriber-dashboard.html">Back to Business Dashboard</a></header>
 <main class="builder">
 <aside class="controls">
-<div class="eyebrow">Step 1 · Choose a starting point</div><h1>Build your customer website</h1>
-<p>Start with a template, then work through the sections below. You do not need to be a designer. Each section explains what to enter and where it appears.</p>
-
-<section class="builder-help"><strong>How the website works</strong><ol><li>Choose a template.</li><li>Enter your business identity and main message.</li><li>Set up your buying categories. These categories also define the selling category used when products are added to inventory.</li><li>Add products in Inventory and assign the correct category and properties.</li><li>Complete every website page below, especially Contact, About, Terms and Privacy.</li><li>Preview everything, save the draft, then publish.</li></ol></section>
-
-<div class="eyebrow">Step 2 · Template</div>
-<div class="templates" id="templates"><h2>Choose a design</h2>
-<button data-template="business"><strong>Business</strong><span>Balanced, professional starting layout</span></button>
-<button data-template="marketplace"><strong>Buy &amp; Sell</strong><span>Product-led marketplace layout</span></button>
-<button data-template="services"><strong>Services</strong><span>Service and enquiry focused</span></button>
-<button data-template="editorial"><strong>Editorial</strong><span>Large headings and story-led content</span></button>
-<button data-template="minimal"><strong>Minimal</strong><span>Clean, compact product-first layout</span></button>
-<button data-template="retail"><strong>Retail</strong><span>Shop-focused storefront</span></button>
-<button data-template="professional"><strong>Professional</strong><span>Structured business and trust layout</span></button>
-<button data-template="bold"><strong>Bold</strong><span>Strong visual hierarchy and calls to action</span></button>
-<button data-template="classic"><strong>Classic</strong><span>Traditional business website layout</span></button>
-<button data-template="local"><strong>Local Business</strong><span>Ideal for trades, services and local businesses</span></button>
-</div>
-
-<div class="eyebrow">Step 3 · Business identity</div>
-<label>Business name<input id="builder-business-name" value="Your Business"><small>Shown in your website header, customer pages and published website.</small></label>
-<label>Logo image <input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp"><small>Logo upload will be connected to tenant-scoped media storage as part of the asset stage. For now use your business name in the preview.</small></label>
-<label>Headline<input id="headline" value="Buy, sell and trade with us"><small>The main sentence visitors see at the top of your home page.</small></label>
-<label>Intro text<textarea id="intro" rows="3" placeholder="Tell visitors what your business does and who you help."></textarea><small>Keep this short: 1–3 sentences.</small></label>
-<label>Accent colour<input id="accent" type="color" value="#c46a2b"><small>Used for buttons, highlights and selected design elements.</small></label>
-
-<section class="builder-help"><strong>Buying categories and selling products</strong>
-<p><b>First create your categories.</b> Go to <a href="categories.html">Categories &amp; Properties</a>. A category such as <b>DJI Drones</b>, <b>Cameras</b> or <b>Power Tools</b> can be enabled for Buying and Selling.</p>
-<p>When Buying is enabled, customers can use that category when submitting items to you. When the item is acquired and added to Inventory, the same category is used for the product. If Selling is enabled, that product category can then be used for your shop/listings. You do not need to build a separate duplicate category just to sell the item.</p>
-<p>Use <a href="inventory-dashboard.html">Inventory</a> to add the actual products. Use category properties for things such as model, condition, colour, storage, serial number or other information that belongs to that type of product.</p>
-</section>
-
-<div class="builder-links"><a href="categories.html"><strong>Set up Buying Categories</strong><span>Create categories and product properties</span></a><a href="inventory-dashboard.html"><strong>Add Products</strong><span>Add stock, properties and photographs</span></a><a href="selling-dashboard.html"><strong>Manage Selling</strong><span>Create and manage listings</span></a></div>
-
-<div class="eyebrow">Step 4 · Website pages</div>
-<p class="small">Every page below is available to complete. Pages marked “Recommended” should normally be filled before publishing. Leave a page empty only if you deliberately do not want to use it.</p>
-<div id="page-editor"></div>
-
-<div class="eyebrow">Step 5 · Save and publish</div>
-<button id="preview-customer" type="button">Preview customer dashboard</button>
-<a id="preview-site" class="button" href="public-site.html">Preview public website</a>
-<button id="save-draft" type="button">Save draft</button>
-<button id="publish" class="primary" type="button">Publish website</button>
-<p id="status" role="status" aria-live="polite"></p>
+<div class="builder-intro"><div class="eyebrow">Website setup</div><h1>Build your customer website</h1><p>Choose a starting design, enter your business information, then complete the pages your customers need. Nothing is published until you choose Publish.</p></div>
+<nav class="builder-steps" aria-label="Website builder steps"><a href="#template-section">1. Choose template</a><a href="#identity-section">2. Business details</a><a href="#pages-section">3. Website pages</a><a href="#publish-section">4. Preview &amp; publish</a></nav>
+<section class="builder-help"><strong>How the website connects to TradeFlow</strong><ol><li>Choose a template. It changes the visual starting layout, not your TradeFlow data.</li><li>Enter your business name, headline, introduction and brand colour.</li><li>Build your Buying Categories in <a href="categories.html">Categories &amp; Properties</a>.</li><li>When a category is enabled for Buying and Selling, the same category can be used for both sides of the business. You do not create a duplicate selling category.</li><li>Add the actual stock in <a href="inventory-dashboard.html">Inventory</a> and assign the category and product properties.</li><li>Use <a href="selling-dashboard.html">Selling</a> to control which products become customer-facing listings.</li><li>Complete the website pages below, preview them, save the draft and then publish.</li></ol></section>
+<section id="template-section"><div class="eyebrow">Step 1 · Choose a template</div><h2>Choose a starting design</h2><p class="section-help">Select any design below. You can switch between templates while building; your business information and page text are kept.</p>
+<div class="templates" id="templates">
+<button type="button" data-template="business"><strong>Business</strong><span>Balanced, professional starting layout</span><em>Use this design</em></button>
+<button type="button" data-template="marketplace"><strong>Buy &amp; Sell</strong><span>Product-led marketplace layout</span><em>Use this design</em></button>
+<button type="button" data-template="services"><strong>Services</strong><span>Service and enquiry focused</span><em>Use this design</em></button>
+<button type="button" data-template="editorial"><strong>Editorial</strong><span>Large headings and story-led content</span><em>Use this design</em></button>
+<button type="button" data-template="minimal"><strong>Minimal</strong><span>Clean, compact product-first layout</span><em>Use this design</em></button>
+<button type="button" data-template="retail"><strong>Retail</strong><span>Shop-focused storefront</span><em>Use this design</em></button>
+<button type="button" data-template="professional"><strong>Professional</strong><span>Structured business and trust layout</span><em>Use this design</em></button>
+<button type="button" data-template="bold"><strong>Bold</strong><span>Strong visual hierarchy and calls to action</span><em>Use this design</em></button>
+<button type="button" data-template="classic"><strong>Classic</strong><span>Traditional business website layout</span><em>Use this design</em></button>
+<button type="button" data-template="local"><strong>Local Business</strong><span>Ideal for trades, services and local businesses</span><em>Use this design</em></button>
+</div></section>
+<section id="identity-section"><div class="eyebrow">Step 2 · Business details</div><h2>Tell customers who you are</h2><p class="section-help">These fields control the main identity and message shown on your customer website.</p>
+<label>Business name<input id="builder-business-name" value="Your Business"><small>Shown in the website header and published customer website.</small></label>
+<label>Logo image<input id="logo-file" type="file" accept="image/png,image/jpeg,image/webp"><small>Logo storage is a separate tenant-media stage and is not connected by this builder yet. For now the business name is used as the visible brand.</small></label>
+<label>Homepage headline<input id="headline" value="Buy, sell and trade with us"><small>The main sentence visitors see at the top of your home page.</small></label>
+<label>Homepage introduction<textarea id="intro" rows="4" placeholder="Tell visitors what your business does, what you sell or buy, and who you help."></textarea><small>A short 1–3 sentence introduction works well.</small></label>
+<label>Accent colour<input id="accent" type="color" value="#c46a2b"><small>Used for buttons, highlights and selected design elements.</small></label></section>
+<section class="builder-help"><strong>Buying categories create the structure for your products</strong><p>Start with <a href="categories.html">Categories &amp; Properties</a>. For example: DJI Drones, Cameras, Lenses or Power Tools.</p><p>Enable <b>Buying</b> when customers can submit that type of item to you. Enable <b>Selling</b> when products in that category can be sold through the shop. The database uses one category with Buying/Selling flags; it does not create a second duplicate category.</p><p>Then add category properties such as model, condition, colour, storage, serial number or other information that applies to that product type. Add stock in Inventory and assign the category and properties.</p></section>
+<div class="builder-links"><a href="categories.html"><strong>Set up Buying Categories</strong><span>Build the categories used for buying and selling, then add product properties.</span></a><a href="inventory-dashboard.html"><strong>Add Products</strong><span>Add stock, category, properties and photographs.</span></a><a href="selling-dashboard.html"><strong>Manage Selling</strong><span>Control products and customer-facing listings.</span></a></div>
+<section id="pages-section"><div class="eyebrow">Step 3 · Website pages</div><h2>Complete your website pages</h2><p class="section-help">Every page is available here. Use the Edit buttons to jump straight to a page. A page can be written and saved even when it is not currently shown in navigation.</p><div id="page-index" class="page-index"></div><div id="page-editor"></div></section>
+<section id="publish-section"><div class="eyebrow">Step 4 · Preview &amp; publish</div><h2>Check everything before it goes live</h2><p class="section-help">Preview the public website and customer account view. Save the draft as often as you like. Publishing updates the subscriber website.</p><button id="preview-customer" type="button">Preview customer account</button><a id="preview-site" class="button" href="public-site.html">Preview public website</a><button id="save-draft" type="button">Save draft</button><button id="publish" class="primary" type="button">Publish website</button><p id="status" role="status" aria-live="polite"></p></section>
 </aside>
-<section class="preview"><div class="browser"><div class="browserbar">Live visual preview · changes are not published until you save and publish</div>
-<div id="site" class="site template-business">
-<nav id="preview-nav"><strong id="preview-brand">Your Business</strong><span>Home</span><span>Shop</span><span>Sell to us</span><span>About</span><span>Contact</span><a href="#" id="preview-login">Customer Login</a></nav>
-<section class="hero"><p class="eyebrow">Your business</p><h2 id="preview-headline">Buy, sell and trade with us</h2><p id="preview-intro" class="hero-copy">A clear introduction to your business appears here.</p><div><button type="button">Start a request</button><button class="light" type="button">Explore products</button></div></section>
-<section class="features"><article><b>Buy from us</b><span>Products and categories from your shop.</span></article><article><b>Sell to us</b><span>Customers can submit items for review.</span></article><article><b>Your account</b><span>Customers can view requests, orders and returns.</span></article></section>
-</div></div></section>
+<section class="preview"><div class="browser"><div class="browserbar">Live visual preview · template and text changes are not published until you save and publish</div><div id="site" class="site template-business"><nav id="preview-nav"><strong id="preview-brand">Your Business</strong><a href="#" data-home-preview>Home</a><a href="#" data-shop-preview>Shop</a><a href="#" data-buying-preview>Sell to us</a><a href="#" id="preview-login">Customer Login</a></nav><section class="hero"><p class="eyebrow">Your business</p><h2 id="preview-headline">Buy, sell and trade with us</h2><p id="preview-intro" class="hero-copy">A clear introduction to your business appears here.</p><div><button type="button">Start a request</button><button class="light" type="button">Explore products</button></div></section><section class="features"><article><b>Buy from us</b><span>Products and categories from your shop.</span></article><article><b>Sell to us</b><span>Customers can submit items for review.</span></article><article><b>Your account</b><span>Customers can view requests, orders and returns.</span></article></section></div></div></section>
 </main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="website-builder.js?v=6" defer></script>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="website-builder.js?v=7" defer></script>
 </body></html>

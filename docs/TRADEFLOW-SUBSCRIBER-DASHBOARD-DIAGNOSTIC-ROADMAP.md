@@ -242,3 +242,30 @@ The current verified test account `scenesource1@gmail.com` had no tenant members
 - Added editable page definitions for About, Contact, Terms & Conditions, Privacy Policy, FAQ, Delivery & Returns, Sell to us, Shop and Customer account. Each page can be enabled/hidden and given a title, body content and optional SEO fields. Shop and Customer account remain system-driven areas; product/category data comes from the existing operational workflow.
 - Public subscriber websites now build navigation from enabled page definitions and can render the selected page through the existing published website content path.
 - This is a frontend/content-schema expansion over the existing tenant website state and revision architecture; it does not bypass tenant security or replace the existing category/inventory/listing workflow.
+
+
+## Website Builder usability correction — 18 September 2026
+
+### User path
+Subscriber Dashboard → Website → Website Builder → choose template → Business Details → Website Pages → Edit page → Preview → Save Draft → Publish.
+
+### Template controller
+- `website-builder.html` renders ten starting-template buttons.
+- `website-builder.js` uses delegated template-button handling and persists the selected template in the existing website revision content.
+- `website-builder.css` supplies the visual variants.
+
+### Page controller
+- `website-builder.html` renders the page index and editor host.
+- `website-builder.js` renders each page editor from `pageDefinitions` and stores page title/body/SEO fields in `site.pages` inside the existing revision content.
+- The public renderer in `public-site.js` builds navigation from enabled pages and renders a selected page from published content.
+
+### Available page library
+About us; Business Information; Contact; Terms & Conditions; Privacy Policy; Cookie Policy; Delivery & Returns; Sell to us; How it works; FAQ; Payments; Warranty & Guarantees; Complaints; Shop; Customer account.
+
+### Data-flow note
+Buying/Selling category behaviour remains one category row with capability flags. The builder guidance must not imply a second database category is automatically created.
+
+### Additional controller hardening
+`category-management.js` and `inventory-dashboard-fixed.js` now obtain the active tenant from the authenticated subscriber context instead of hardcoded test tenant maps. Browser verification must confirm a newly provisioned subscriber can open both linked areas without losing tenant isolation.
+
+**Current state:** Implemented on main; browser verification required.

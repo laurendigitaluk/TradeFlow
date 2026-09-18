@@ -1,7 +1,7 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 4.1  
+**Version:** 4.2  
 **Date:** 18 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -203,3 +203,12 @@ The Platform Owner dashboard is a separate platform-level administration boundar
 The first owner dashboard implementation is intentionally platform-level: it reads subscriber tenant/subscription summaries through the existing platform_admin_list_tenants() privileged RPC. It does not replace or bypass tenant RLS and it does not expose subscriber customer/order records as a platform-wide browser dataset.
 
 Verification state: Stage 1 owner dashboard is Implemented in GitHub. Live browser verification remains open.
+
+
+## 24. Owner Dashboard Stage 1A — subscriber registration details — 18 September 2026
+
+The Owner Dashboard first handles the SaaS intake boundary: businesses subscribe/sign up through the TradeFlow homepage and their business/owner registration details become visible to the Platform Owner. This is distinct from later subscription billing administration and from the subscriber's own customers.
+
+`platform-owner-dashboard.html` and `platform-owner-dashboard.js` now use `public.platform_admin_list_subscriber_accounts()` for a platform-owner-only subscriber account table showing business, owner, email, slug, status and joined date. The RPC uses `private.require_platform_owner()` and anonymous execution is revoked. Tenant RLS is not bypassed.
+
+**Verification:** Implemented in GitHub and live Supabase. Browser verification remains open.

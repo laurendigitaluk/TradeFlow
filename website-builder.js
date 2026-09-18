@@ -5,6 +5,9 @@ let selectedPage='home',dirty=false;
 let siteName='Your Business',headline='Buy, sell and trade with us',intro='A clear introduction to your business appears here.',accent='#c46a2b',homeImageUrl='',logoUrl='';
 let homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
+let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
+let socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};
+let reviewLinks=[];
 function defaultHomepageTiles(){return [
  {id:'buy-1',side:'buy',title:'Cameras & Photography',body:'Tell customers what cameras and photography equipment you are looking for.',image_url:'',image_alt:'',cta:'Sell to us'},
  {id:'buy-2',side:'buy',title:'Lenses & Accessories',body:'Show the types of lenses, lighting and accessories you purchase.',image_url:'',image_alt:'',cta:'Sell to us'},
@@ -91,6 +94,23 @@ function renderHomepageControls(){
  box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[6,8,10].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><small>Choose how many visual tiles appear on your premium homepage. You can edit every tile directly on the page.</small>';
  box.querySelectorAll('[data-tile-count]').forEach(b=>b.addEventListener('click',()=>{homepageTileCount=Number(b.dataset.tileCount);renderHomepageControls();renderEditor();markDirty();}));
 }
+function renderDesignControls(){
+ const box=$('design-controls');if(!box)return;
+ const colors=[['accent','Brand / accent'],['text','Text'],['page_bg','Page background'],['header_bg','Header / navigation'],['buy_bg','Buying section'],['sell_bg','Selling section'],['footer_bg','Footer']];
+ box.innerHTML='<div class="control-title">Brand colours</div><small>Change the main colours of your customer-facing website. The selected design still controls layout and typography.</small><div class="color-grid">'+colors.map(([key,label])=>'<label class="color-control"><span>'+label+'</span><input type="color" data-color="'+key+'" value="'+esc(themeColors[key])+'"><code>'+esc(themeColors[key])+'</code></label>').join('')+'</div><div class="preset-row"><span>Quick palettes</span><button type="button" data-palette="professional">Professional</button><button type="button" data-palette="warm">Warm</button><button type="button" data-palette="dark">Dark</button><button type="button" data-palette="clean">Clean</button></div>';
+ box.querySelectorAll('[data-color]').forEach(input=>input.addEventListener('input',()=>{themeColors[input.dataset.color]=input.value;renderEditor();renderDesignControls();markDirty();}));
+ const palettes={professional:{accent:'#c46a2b',text:'#17202a',page_bg:'#f5f6f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#eef1f4',footer_bg:'#17202a'},warm:{accent:'#a84f2d',text:'#2b211d',page_bg:'#fbf7f2',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#3a2b25'},dark:{accent:'#d79a55',text:'#f2f4f5',page_bg:'#151b20',header_bg:'#101419',buy_bg:'#182027',sell_bg:'#202a32',footer_bg:'#0b0f12'},clean:{accent:'#1769aa',text:'#17202a',page_bg:'#f7f9fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#edf3f8',footer_bg:'#172b3a'}};
+ box.querySelectorAll('[data-palette]').forEach(b=>b.addEventListener('click',()=>{themeColors={...palettes[b.dataset.palette]};renderDesignControls();renderEditor();markDirty();}));
+}
+function renderBusinessExtras(){
+ const box=$('business-extras');if(!box)return;
+ const socials=[['facebook','Facebook'],['instagram','Instagram'],['linkedin','LinkedIn'],['youtube','YouTube'],['tiktok','TikTok'],['x','X']];
+ box.innerHTML='<div class="control-title">Social media & reviews</div><small>Add your own profile links. Leave a field blank if you do not use it.</small><div class="social-grid">'+socials.map(([key,label])=>'<label><span>'+label+'</span><input type="url" data-social="'+key+'" value="'+esc(socialLinks[key]||'')+'" placeholder="https://"></label>').join('')+'</div><label class="check-control"><input type="checkbox" data-share-toggle '+(socialLinks.show_share!==false?'checked':'')+'> Show website share buttons</label><div class="review-editor"><strong>Review sites</strong><small>Add up to four review profiles, such as Google, Trustpilot or another review service.</small><div id="review-list">'+[0,1,2,3].map(i=>{const r=reviewLinks[i]||{};return '<div class="review-row"><input type="text" data-review-label="'+i+'" value="'+esc(r.label||'')+'" placeholder="Review site name"><input type="url" data-review-url="'+i+'" value="'+esc(r.url||'')+'" placeholder="https://"></div>'}).join('')+'</div></div>';
+ box.querySelectorAll('[data-social]').forEach(input=>input.addEventListener('change',()=>{socialLinks[input.dataset.social]=input.value.trim();markDirty();}));
+ const share=box.querySelector('[data-share-toggle]');if(share)share.addEventListener('change',()=>{socialLinks.show_share=share.checked;markDirty();});
+ box.querySelectorAll('[data-review-label],[data-review-url]').forEach(input=>input.addEventListener('change',()=>{const i=Number(input.dataset.reviewLabel??input.dataset.reviewUrl);reviewLinks[i]={label:box.querySelector('[data-review-label="'+i+'"]').value.trim(),url:box.querySelector('[data-review-url="'+i+'"]').value.trim()};reviewLinks=reviewLinks.filter(r=>r.label||r.url);markDirty();}));
+}
+
 function renderTemplates(){
  const box=$('templates');if(!box)return;
  box.innerHTML=templates.map(t=>'<button type="button" class="template-card '+(t.id===currentTemplate?'selected':'')+'" data-template="'+t.id+'"><span class="template-mini template-mini-'+t.id+'"><i></i><b></b><em></em><u></u></span><strong>'+esc(t.name)+'</strong><small>'+esc(t.desc)+'</small></button>').join('');
@@ -142,7 +162,7 @@ function renderEditor(){
  $('browser-label').textContent=siteName+' · '+(p.slug==='home'?'Home':p.title);
  $('site-editor').className='site-editor template-'+currentTemplate;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
- $('site-editor').style.setProperty('--accent',accent);
+ $('site-editor').style.setProperty('--accent',themeColors.accent);$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
  bindEditor();
 }
 
@@ -192,7 +212,9 @@ function buildContent(){
  return {schema_version:2,site:{
    name:siteName.trim()||'Your Business',
    pages:pages,
-   theme:{accent:accent||'#c46a2b'},
+   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg},
+   social:socialLinks,
+   reviews:reviewLinks,
    branding:{logo_url:logoUrl||''},
    homepage:{headline:headline.trim()||'Buy, sell and trade with us',intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
@@ -209,6 +231,9 @@ function loadContent(content){
  headline=s.homepage?.headline||'Buy, sell and trade with us';
  intro=s.homepage?.intro||'';
  accent=s.theme?.accent||'#c46a2b';
+ themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a'};
+ socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
+ reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';
  homeImageUrl=s.homepage?.image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?s.homepage.tiles:defaultHomepageTiles();
@@ -219,7 +244,7 @@ function loadContent(content){
    body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
- renderPageList();renderTemplates();renderHomepageControls();renderEditor();
+ renderPageList();renderTemplates();renderHomepageControls();renderDesignControls();renderBusinessExtras();renderEditor();
 }
 
 async function uploadImage(file,target){
@@ -314,6 +339,8 @@ async function publish(){
 function initBuilder(){
  $('templates')&&renderTemplates();
  $('page-list')&&renderPageList();
+ renderDesignControls();
+ renderBusinessExtras();
  $('image-file-input').addEventListener('change',e=>{
    const file=e.target.files?.[0],target=e.target.dataset.target;
    if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));

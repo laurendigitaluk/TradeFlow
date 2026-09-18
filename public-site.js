@@ -13,32 +13,45 @@ async function api(path){
   if(!response.ok)throw new Error(body?.message||body?.msg||body?.error||text||`HTTP ${response.status}`);
   return body;
 }
+function customerUrl(){return tenantId?`customer-dashboard.html?tenant_id=${encodeURIComponent(tenantId)}`:'customer-dashboard.html';}
 function applyContent(content){
-  const site=content?.site||{};
-  const theme=site.theme||{};
+  const site=content?.site||{},theme=site.theme||{};
   document.documentElement.style.setProperty('--accent',theme.accent||'#c46a2b');
   const name=site.name||'TradeFlow';
-  $('site-name').textContent=name;
-  $('footer-name').textContent=name;
+  $('site-name').textContent=name;$('footer-name').textContent=name;$('site-brand').textContent=name;
   $('headline').textContent=site.homepage?.headline||'Buy, sell and trade with confidence.';
   document.title=name;
-  const target=tenantId?`customer-dashboard.html?tenant_id=${encodeURIComponent(tenantId)}`:'customer-dashboard.html';
-  $('customer-login').href=target;
-  $('start-buying').href=target;
-  document.querySelectorAll('.features a').forEach(a=>a.href=target);
+  const target=customerUrl();
+  $('customer-login').href=target;$('sell-link').href=target;$('account-link').href=target;
+  $('contact-text').textContent=site.contact?.text||'Contact the business for assistance.';
+}
+function money(value,currency='GBP'){try{return new Intl.NumberFormat('en-GB',{style:'currency',currency}).format(Number(value));}catch{return `${currency} ${value}`;}}
+function renderListings(listings){
+  const box=$('shop-list');
+  if(!Array.isArray(listings)||!listings.length){box.innerHTML='<div class="empty-card">No products are currently available.</div>';return;}
+  box.innerHTML=listings.map(l=>`<article class="product-card"><div class="category">${escapeHtml(l.category_name||'Product')}</div><h3>${escapeHtml(l.title)}</h3><p>${escapeHtml(l.description||'Available from this business.')}</p><div class="product-price">${money(l.asking_price,l.currency)}</div><a class="buy" href="${customerUrl()}">View &amp; buy</a></article>`).join('');
+}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+async function loadListings(){
+  if(!tenantId)return;
+  const listings=await api(`/rest/v1/rpc/get_published_store_listings?p_tenant_id=${encodeURIComponent(tenantId)}`);
+  renderListings(listings);
 }
 async function loadByTenant(){
   if(!tenantId)throw new Error('No subscriber tenant was supplied. Open the public site with its tenant_id or active domain.');
   const rows=await api('/rest/v1/rpc/get_published_sites');
   const selected=Array.isArray(rows)?rows.find(r=>r.tenant_id===tenantId):null;
   if(!selected)throw new Error('No published website was found for this subscriber.');
-  applyContent(selected.content);
+  applyContent(selected.content);await loadListings();
 }
 async function loadByHostname(){
   if(tenantId)return loadByTenant();
   if(!hostname||hostname==='localhost')return loadByTenant();
   const rows=await api(`/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.${encodeURIComponent(hostname)}&limit=1`);
   if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');
+  const siteTenantId=rows[0].tenant_id;
   applyContent(rows[0].content);
+  const listings=await api(`/rest/v1/rpc/get_published_store_listings?p_tenant_id=${encodeURIComponent(siteTenantId)}`);
+  renderListings(listings);
 }
 (async()=>{try{await loadByHostname();}catch(error){$('site-name').textContent='Website unavailable';$('headline').textContent=error.message||String(error);$('status').textContent='Unable to load subscriber website';$('status').style.display='block';}})();

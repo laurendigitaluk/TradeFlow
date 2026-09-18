@@ -23,6 +23,7 @@ const $=id=>document.getElementById(id);
 
 const templates=[
  {id:'business',name:'Business',desc:'Balanced and professional'},
+ {id:'premium',name:'Premium Marketplace',desc:'High-end two-sided buying & selling'},
  {id:'marketplace',name:'Buy & Sell',desc:'Product-led marketplace'},
  {id:'services',name:'Services',desc:'Service and enquiry focused'},
  {id:'editorial',name:'Editorial',desc:'Large, story-led presentation'},
@@ -35,7 +36,7 @@ const templates=[
 ];
 
 const templateHeadlines={
- business:'A better way to buy and sell',marketplace:'Buy, sell and trade with confidence',
+ business:'A better way to buy and sell',premium:'Buy, sell and trade with confidence',marketplace:'Buy, sell and trade with confidence',
  services:'Professional service, made simple',editorial:'Good products. Properly presented.',
  minimal:'Quality products, simply presented.',retail:'Shop, sell and trade in one place',
  professional:'Trusted service. Clear information. Straightforward business.',
@@ -206,7 +207,7 @@ function loadContent(content){
  logoUrl=s.branding?.logo_url||s.logo_url||'';
  homeImageUrl=s.homepage?.image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?s.homepage.tiles:defaultHomepageTiles();
- currentTemplate=templateHeadlines[s.template]?s.template:'business';
+ currentTemplate=templateHeadlines[s.template]?s.template:'premium';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),

@@ -6,7 +6,8 @@
   const SESSION_STORAGE='tradeflow_subscriber_session';
   const TENANTS={
     'f50fb889-c615-4e55-84d4-f0fd9f48b0b0':'Test Business A',
-    '373598f0-7d35-41be-8ed2-3cc7ee9709c7':'Test Business B'
+    '373598f0-7d35-41be-8ed2-3cc7ee9709c7':'Test Business B',
+    '50641519-2aa5-4093-95e5-7e92bea733a6':'Test Business C'
   };
   const params=new URLSearchParams(location.search);
   let key=localStorage.getItem(KEY_STORAGE)||localStorage.getItem('tradeflow_platform_admin_publishable_key')||localStorage.getItem('tradeflow_testlab_publishable_key')||null;

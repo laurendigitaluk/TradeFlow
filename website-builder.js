@@ -115,7 +115,7 @@ function loadContent(content){
  $('accent').value=s.theme&&s.theme.accent||'#c46a2b';
  currentTemplate=s.template&&templateHeadlines[s.template]?s.template:'business';
  window.__homeImageUrl=s.homepage?.image_url||'';
- pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.title||p.slug,body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
+ pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(function(p){return Object.assign({},p,{enabled:p.enabled!==false,title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''})}):defaultPages();
  renderPageIndex();renderPageEditor();render();
  document.querySelectorAll('[data-template]').forEach(function(b){b.classList.toggle('selected',b.dataset.template===currentTemplate)});
 }

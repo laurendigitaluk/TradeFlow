@@ -184,3 +184,19 @@ Changed:
 No Supabase schema, RLS policy, RPC, Edge Function or existing operational controller was changed.
 
 Live browser verification remains open before merging this staging branch to main.
+
+## Checkpoint — legacy test reset and subscriber UX update — 18 September 2026
+
+### Security boundary
+The Platform Owner account remains separate from subscriber tenant membership. The legacy test tenants were archived and their subscriptions cancelled. The Platform Owner Auth identity `leannelaurenlowe@hotmail.com` was retained. Future subscriber-approved maintenance access is a separate capability to design and audit; it is not implemented by granting Platform Owner normal tenant membership.
+
+### Subscriber dashboard
+The dashboard is now the clear private business entry point. It identifies the active business, signed-in email, tenant role and tenant ID, while retaining links to the existing operational workspaces. The dashboard shell does not create replacement controllers or duplicate backend workflows.
+
+### Website templates
+The builder now presents six starting layouts and persists the selected template in the existing `site_revisions.content.site.template` field. The public renderer reads that value and applies a matching visual layout. The six current templates are Business, Buy & Sell, Services, Editorial, Minimal and Retail.
+
+### Test protocol
+Do not use the archived test tenants for the new subscriber browser test. Create a new account through `subscriber-signup.html` using a selected current plan, then verify: signup → Auth account → `subscriber_create_business()` → tenant membership → subscription → subscriber dashboard → visible account identity. Only after that should the operational workspace links be tested.
+
+**Current state:** database reset verified; dashboard/template implementation staged; live browser verification open.

@@ -536,3 +536,16 @@ The category explanation was also tightened to match the actual database model: 
 The linked Categories and Inventory controllers were corrected to use the authenticated subscriber tenant context instead of hardcoded test tenant lists. This is required for newly created subscribers to use those linked operational areas without weakening tenant security.
 
 **Status:** Implemented on main; browser verification required for template selection, page editing/navigation, category access and Inventory access for a newly provisioned subscriber.
+
+
+## Stage 1M — Website Builder media, selling-page branding and domain entry — 18 September 2026
+
+The Website Builder has moved beyond text/template selection into visual brand building. Subscribers can upload a homepage image and page-specific images, including separate branding for the Sell to us / Buying page and Retail Shop page. Images use the tenant-scoped tradeflow-site-media Storage bucket and existing media_assets metadata architecture.
+
+The ten template starting points now have more visible differences in navigation, hero treatment, cards, spacing and colour application. They remain starting layouts rather than a full drag-and-drop page builder.
+
+The Business Dashboard now exposes Website URL management. Domains are saved against the tenant in tenant_domains as pending. Automatic public routing already exists for active domains through published_site_index; however, the actual DNS/hosting target and ownership verification service must be selected before automatic domain activation is implemented.
+
+The publish RPC was updated to accept website content schema versions 1 and 2, matching the current Website Builder.
+
+**Status:** Implemented on main; browser verification required.

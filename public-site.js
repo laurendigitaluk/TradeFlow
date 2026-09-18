@@ -1,5 +1,5 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY_STORAGE='tradeflow_testlab_publishable_key';
+const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 const KEY=localStorage.getItem(KEY_STORAGE)||null;
 const params=new URLSearchParams(location.search);
 const tenantId=params.get('tenant_id');
@@ -34,6 +34,7 @@ async function loadByTenant(){
   applyContent(rows[0].content);
 }
 async function loadByHostname(){
+  if(tenantId)return loadByTenant();
   if(!hostname||hostname==='localhost')return loadByTenant();
   const rows=await api(`/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.${encodeURIComponent(hostname)}&limit=1`);
   if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');

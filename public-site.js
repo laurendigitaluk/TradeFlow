@@ -161,7 +161,7 @@ function renderHome(site,catalogue,listings){
  };
  let out=renderPublicNav(site,catalogue);
  const ordered=order.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- if(sections.hero!==false)out+=ordered.replace(/(<section class="tpl-hero[\\s\\S]*?<\\/section>)/,'$1'+renderSellPrompt());
+ if(sections.hero!==false)out+=ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderSellPrompt());
  else out+=ordered;
  out+=renderHomepageTiles(site);
  return out+renderFooter(site);

@@ -118,7 +118,7 @@ function renderMaster(){
  $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages; $("top-page-summary").textContent=totalProducts?("Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages):"No products to show";
  $("master-body").innerHTML=master.length?master.map(p=>{
   const s=stateFor(p);
-  const mode=s.key==="inactive"?"":'<select class="mode-select" data-mode="'+p.product_id+'"><option value="manual" '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'>Manual</option><option value="automatic" '+(s.key==="auto"?"selected":"")+'>Automatic</option></select>';
+  const mode=s.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button></div>';
   return '<tr class="status-'+s.key+'">'+
    '<td class="select-cell">'+(s.key==="inactive"?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
@@ -126,7 +126,7 @@ function renderMaster(){
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
    '<td>'+refSummary(p)+'</td></tr>';
  }).join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
- document.querySelectorAll(".mode-select").forEach(e=>e.addEventListener("change",()=>changeMode(e.dataset.mode,e.value)));
+ document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>changeMode(e.dataset.modeProduct,e.dataset.modeValue)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));

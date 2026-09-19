@@ -19,3 +19,13 @@
 .editable-home-tile .tile-image{height:180px;background:#edf1f4;display:flex;align-items:center;justify-content:center;overflow:hidden}.editable-home-tile .tile-image img{width:100%;height:100%;object-fit:cover;display:block}.editable-home-tile .tile-image span{font-size:9px;color:#87939c;text-transform:uppercase;letter-spacing:.1em}
 .editable-home-tile .tile-copy{padding:18px}.editable-home-tile .tile-copy span{font-size:9px;letter-spacing:.14em;color:var(--accent,#c46a2b);font-weight:700}.editable-home-tile .tile-copy h3{margin:8px 0 7px}.editable-home-tile .tile-copy p{min-height:48px;font-size:11px;line-height:1.5;color:#68747e}.editable-home-tile .tile-copy b{display:block;margin-top:12px;color:var(--accent,#c46a2b);font-size:10px;font-weight:900}
 @media(max-width:900px){.homepage-tile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.homepage-tile-grid{grid-template-columns:1fr}.homepage-tiles{padding-left:6%;padding-right:6%}}
+
+/* What We Buy: keep the live page aligned with the builder preview. */
+.buying-section .buying-intro{display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center}
+.buying-section .buying-intro>div:first-child{min-width:0}
+.buying-section .section-intro-image{min-height:190px;background:#e7ecef;border-radius:10px;border:1px solid rgba(20,30,40,.12);display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.buying-section .buy-category-card{display:grid;grid-template-columns:160px 1fr;gap:18px;min-height:190px;padding:0;overflow:hidden}
+.buying-section .buy-category-image{min-height:190px;background:#e7ecef;display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.buying-section .buy-category-copy{padding:19px 19px 19px 0;display:flex;flex-direction:column;justify-content:center}
+.buying-section .buy-category-copy a{margin-top:10px}
+@media(max-width:900px){.buying-section .buying-intro{grid-template-columns:1fr}.buying-section .buy-category-card{grid-template-columns:1fr}.buying-section .buy-category-copy{padding:0 19px 19px}.buying-section .buy-category-image{min-height:160px}}

@@ -98,14 +98,12 @@ function renderHero(site){
 function renderBuyingSection(site,catalogue){
  const home=site.homepage||{};
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
- const products=Array.isArray(catalogue?.products)?catalogue.products:[];
  const heading=home.buy_heading||'What we buy';
  const intro=home.buy_intro||'Show customers the categories and products you are currently looking for.';
  const cards=cats.slice(0,8).map(cat=>{
-   const items=products.filter(p=>p.category_id===cat.id);
-   return '<article class="buy-category-card"><div><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Selected products from our current buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">See '+esc(cat.name)+' →</a></article>';
+   return '<article class="buy-category-card"><div class="buy-category-image"><span>Category image</span></div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><p>'+esc(cat.description||'Selected products from our buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Sell this type →</a></div></article>';
  }).join('');
- return '<section class="public-section buying-section"><div class="section-intro"><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('buying')+'">View all categories</a></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
+ return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
 }
 
 function renderSellingSection(site,listings){

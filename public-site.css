@@ -29,3 +29,7 @@
 .buying-section .buy-category-copy{padding:19px 19px 19px 0;display:flex;flex-direction:column;justify-content:center}
 .buying-section .buy-category-copy a{margin-top:10px}
 @media(max-width:900px){.buying-section .buying-intro{grid-template-columns:1fr}.buying-section .buy-category-card{grid-template-columns:1fr}.buying-section .buy-category-copy{padding:0 19px 19px}.buying-section .buy-category-image{min-height:160px}}
+
+/* Clean homepage content blocks: no fixed labels or instructional copy. */
+.selling-section .selling-intro{display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center}.selling-section .section-intro-image{min-height:190px;background:#e7ecef;border-radius:10px;border:1px solid rgba(20,30,40,.12);display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.editable-home-tile .tile-copy h3{margin:0 0 7px}.editable-home-tile .tile-copy p{min-height:0}.editable-home-tile .tile-copy b{display:block;margin-top:12px;color:var(--accent);font-size:10px;font-weight:900}.editable-home-tile .tile-copy h3:empty,.editable-home-tile .tile-copy p:empty,.editable-home-tile .tile-copy b:empty{display:none}
+@media(max-width:900px){.selling-block .section-intro,.selling-section .selling-intro{grid-template-columns:1fr}}

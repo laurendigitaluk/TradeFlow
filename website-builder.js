@@ -11,19 +11,19 @@ let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#f
 let socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};
 let reviewLinks=[];
 let typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
-let homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};
-let headerLinks=[],footerLinks=[],homepageOrder=['hero','buy','sell','trust'];
+let homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:false,shop:true};
+let headerLinks=[],footerLinks=[],homepageOrder=['hero','buy','sell'];
 function defaultHomepageTiles(){return [
- {id:'buy-1',side:'buy',title:'Your buying category',body:'Add a short description of what you are looking to buy.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-2',side:'buy',title:'Another category',body:'Tell customers what equipment or products you are interested in.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-3',side:'buy',title:'Specialist buying',body:'Highlight a specialist area of your buying list.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-4',side:'buy',title:'More of what you buy',body:'Use this space for another important buying category.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'sell-1',side:'sell',title:'Featured product',body:'Highlight a product you want customers to notice.',image_url:'',image_alt:'',cta:'View product'},
- {id:'sell-2',side:'sell',title:'New in',body:'Showcase a recent addition to your shop.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'sell-3',side:'sell',title:'Popular range',body:'Feature a collection or product range.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'sell-4',side:'sell',title:'Explore the shop',body:'Invite customers to browse your published products.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'buy-5',side:'buy',title:'More buying opportunities',body:'Add another buying category when needed.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'sell-5',side:'sell',title:'Latest additions',body:'Give another part of your retail range a place to stand out.',image_url:'',image_alt:'',cta:'View shop'}
+ {id:'buy-1',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-2',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-3',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-4',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-1',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-2',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-3',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-4',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-5',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
 ]}
 homepageTiles=defaultHomepageTiles();
 const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
@@ -237,14 +237,14 @@ function renderBuilderSellPrompt(){
 }
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
- const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><span>'+esc(tile.side==='buy'?'WHAT WE BUY':'WHAT WE SELL')+'</span><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
+ const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
   hero:homepageSections.hero!==false?templateHero():'',
   buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+buyingPreview()+'</section>':'',
-  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro">'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>':'',
-  trust:homepageSections.trust!==false?'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Edit your wording, images and branding in the builder.</span></div></section>':''
+  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+sellingPreview()+'</section>':'',
+  trust:''
  };
- const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="section-intro"><span>FEATURED CONTENT</span><h2>More to explore</h2><p>Drag the tiles to change their order. Edit the text or add an image directly on each tile.</p></div><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
+ const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
  const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
  return navMarkup()+withSellPrompt+tiles+footerMarkup();
@@ -344,6 +344,11 @@ function buildContent(){
  }};
 }
 
+function cleanHomepageTiles(tiles){
+ const defaults=new Map(defaultHomepageTiles().map(t=>[t.id,t]));
+ return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
+}
+
 function loadContent(content){
  const s=content?.site||{}; templateCopy=Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{});
  window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
@@ -357,7 +362,7 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?s.homepage.tiles:defaultHomepageTiles();
+ homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,

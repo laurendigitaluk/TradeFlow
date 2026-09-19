@@ -599,3 +599,10 @@ What We Buy condition cells now expose the effective pricing state: ACTIVE BUYIN
 
 ## Reset Pricing Path — 19 September 2026
 User action: select products → Reset selected prices → first click arms warning → second click within six seconds confirms → upsert selected `tenant_buying_condition_rules` rows with null percentages, reference types and manual prices → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.
+
+
+## Catalogue Loading Repair — 19 September 2026
+- Added a 15-second timeout to catalogue REST requests so a stalled Supabase request cannot leave the page apparently frozen indefinitely.
+- Category loading is now isolated from manufacturer loading: categories and branches can initialise even if the manufacturer endpoint fails.
+- Loading failures are surfaced in the page message area rather than silently leaving empty selectors.
+- The catalogue script cache-buster is now v13.

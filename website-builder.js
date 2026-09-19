@@ -164,9 +164,11 @@ function renderTemplates(){
 }
 
 function navMarkup(){
- const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
- const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<button type="button" data-nav-page="'+esc(slug)+'">'+esc(findTitle(slug))+'</button>').join('');
- return '<header class="template-header"><nav class="template-nav"><div class="template-brand">'+logoEditor()+'<small>'+esc(headerTagline)+'</small></div><div class="template-nav-links">'+links+'<span class="managed-login">Customer Login</span></div></nav></header>';
+ const links=pages.filter(p=>p.enabled&&['about','contact'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.title)+'</button>').join('');
+ const cats=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ const categoryLinks=cats.map(cat=>'<button type="button" data-nav-page="buying"><b>'+esc(cat.name)+'</b><small>'+Number(cat.product_count||0)+' products</small></button>').join('');
+ const buyingMenu='<details class="builder-buy-dropdown"><summary>What We Buy</summary><div class="builder-buy-menu"><b>WHAT WE BUY</b><span>Categories are connected to your Buying Catalogue.</span>'+(categoryLinks||'<small>No buying categories selected yet.</small>')+'</div></details>';
+ return '<header class="template-header"><nav class="template-nav"><div class="template-brand">'+logoEditor()+'<small>'+esc(headerTagline)+'</small></div><div class="template-nav-links">'+links+buyingMenu+'<button type="button" data-nav-page="shop">What We Sell</button><span class="managed-login">Customer Login</span></div></nav></header>';
 }
 function footerMarkup(){
  const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);

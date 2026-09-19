@@ -232,17 +232,22 @@ function templateHero(){
  default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
+function renderBuilderSellPrompt(){
+ return '<section class="sell-prompt"><div><span>READY TO SELL?</span><h2>What do you have to sell?</h2><p>Tell customers what they have and guide them through category, type, make, model and condition.</p></div><b>Start your selling request →</b></section>';
+}
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><span>'+esc(tile.side==='buy'?'WHAT WE BUY':'WHAT WE SELL')+'</span><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
   hero:homepageSections.hero!==false?templateHero():'',
-  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>':'',
-  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>':'',
+  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro">'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>':'',
+  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro">'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>':'',
   trust:homepageSections.trust!==false?'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Edit your wording, images and branding in the builder.</span></div></section>':''
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="section-intro"><span>FEATURED CONTENT</span><h2>More to explore</h2><p>Drag the tiles to change their order. Edit the text or add an image directly on each tile.</p></div><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
- return navMarkup()+homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('')+tiles+footerMarkup();
+ const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
+ const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\\s\\S]*?<\\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
+ return navMarkup()+withSellPrompt+tiles+footerMarkup();
 }
 
 function renderPage(p){

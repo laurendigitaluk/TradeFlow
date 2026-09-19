@@ -768,3 +768,61 @@ Verification: TradeFlow master catalogue counts match the copied source dataset 
 
 ### Post-change verification — 2026-09-19
 Authenticated test of get_master_catalogue_for_selection returned 3,822 products for the Enhanced test tenant. Transaction-scoped activation of a sample Autel Alpha returned the expected subscriber category/branch and blank buying-price fields; rollback confirmed no test data was persisted.
+
+## 2026-09-19 — Unified Buying Pricing & Master Catalogue diagnostic roadmap
+
+### User action
+Subscriber opens **Buying → What We Buy / Buying Pricing** and searches the TradeFlow master catalogue.
+
+### Entry
+- `buying-catalogue.html`
+- `buying-catalogue.js`
+- `subscriber-auth.js`
+- `subscriber-auth-controls.js`
+- `subscriber-tenant-context.js`
+
+### Master read path
+Subscriber auth
+→ `get_master_catalogue_for_selection(tenant_id)`
+→ `catalogue_master_categories` / `catalogue_master_branches` / `catalogue_master_manufacturers` / `catalogue_master_products`
+→ client-side category / branch / manufacturer / model filters
+→ product row.
+
+### Pricing write path
+Product row → Mode = Manual or Automatic
+→ `configure_master_catalogue_buying_product(tenant_id, master_product_id, mode, pricing)`
+→ tenant `categories`
+→ tenant `category_branches`
+→ tenant `tenant_buying_manufacturers`
+→ tenant `tenant_catalogue_selections`
+→ tenant `tenant_buying_products`
+→ if Automatic: `tenant_buying_condition_rules`.
+
+Mode = Off / Reset:
+→ same protected RPC
+→ tenant selection `buying_enabled=false`
+→ tenant buying product inactive
+→ manual/automatic buying price configuration cleared
+→ master catalogue product remains untouched.
+
+### Downstream valuation
+Buying item + condition
+→ `calculate_buying_item_valuation()`
+→ product-level manual price first
+→ otherwise condition manual override
+→ otherwise selected UK New/UK Used research × percentage
+→ otherwise manual valuation/quote fallback.
+
+### Visual state
+- Inactive: light red/pink
+- Active Buying without price: light green
+- Manual offer: light yellow
+- Automatic rule: light grey
+
+### Security / separation
+The master catalogue is TradeFlow-owned and independent of GearCashOut. No runtime GearCashOut request is used. Subscriber writes are protected by tenant permission and subscription feature checks inside the RPC.
+
+### Verification
+Code syntax check: PASS.
+Database migrations: applied successfully.
+Authenticated browser test of the new consolidated pricing workflow: OPEN.

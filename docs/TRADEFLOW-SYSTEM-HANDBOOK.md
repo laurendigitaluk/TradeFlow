@@ -711,3 +711,17 @@ External market research reviewed for terminology only: UK camera dealers common
 The independent TradeFlow master catalogue remains a separate snapshot from GearCashOut / Action Buyer UK. The catalogue.pre_filled entitlement has now been enabled for all three active customer-facing plans: **Basic, Enhanced and Catalogue**. Each plan receives the same unlimited category/product/subcategory entitlement configuration. This changes access entitlement only; it does not create a runtime dependency on GearCashOut and does not import GearCashOut research or pricing evidence into subscriber buying references.
 
 Verification: live plan_features confirms catalogue.pre_filled enabled for Basic, Enhanced and Catalogue. The actual tenant catalogue seed/copy path remains tenant-owned and must continue to use the TradeFlow master snapshot.
+
+
+## 19 September 2026 — Master Catalogue duplicate-category cleanup
+
+The standalone TradeFlow master catalogue was inspected after the GearCashOut snapshot import. GearCashOut remains untouched and is not queried at runtime. Two clear duplicate category structures were found in the TradeFlow copy and cleaned up:
+
+- Drone → Drones: the singular Drone category and its one product were moved into the canonical Drones category. Its Drone branch was moved under Drones and retained so the product/branch relationship was not lost.
+- Tripod/Support → Tripods: the Tripod/Support category and its two products were moved into the canonical Tripods category. Its duplicate Tripods branch was merged into the existing canonical Tripods branch before the old branch/category were deleted.
+
+The cleanup was applied only to catalogue_master_categories, catalogue_master_branches and catalogue_master_products in the TradeFlow Supabase project. No GearCashOut database objects or data were changed. The canonical categories now present are Drones and Tripods; the duplicate category records no longer exist.
+
+Broader names such as Camera & Video, Cameras, Audio & Video, Audio, Camera Equipment and Video Equipment were not automatically merged because their names alone do not establish that they are duplicates. This avoids silently moving distinct product classes.
+
+Verification: the merge migration completed successfully; the duplicate category names were re-queried and only Drones and Tripods remain from those pairs. The Drones category now contains 541 products across its retained branches, and Tripods contains 4 products in its single canonical Tripods branch. Browser verification of the subscriber selector remains open.

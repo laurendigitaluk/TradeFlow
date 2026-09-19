@@ -763,3 +763,16 @@ The tenant still retains its unrelated custom `Accessories` category and its man
 
 Database verification completed for the master-copy counts, package feature flags, test-tenant alias cleanup and absence of duplicate category slugs. The code change is committed. **Browser verification of the repaired selector is still OPEN**: hard-refresh the deployed Buying Catalogue and confirm Category → Manufacturer → Branch populate, then select Cameras → Canon → Digital and confirm the product matrix loads.
 
+
+## 24. Buying Catalogue master-copy rollout and browser cache repair — 19 September 2026
+
+The Buying Catalogue master-copy design is confirmed as the intended Enhanced/Catalogue feature. TradeFlow has its own master catalogue tables containing 32 categories, 178 branches, 73 manufacturers and 3,845 products. The tenant seed RPC reads only those TradeFlow master tables; it does not query GearCashOut at runtime and GearCashOut research/pricing is not used for tenant buying valuations.
+
+Package entitlement is confirmed live: Basic = disabled, Enhanced = enabled, Catalogue = enabled for catalogue.pre_filled.
+
+The current subscriber test tenant subscriber test 1 is on Basic, so it is not entitled to auto-seed the master catalogue. Its existing custom catalogue remains separate. An Enhanced/Catalogue tenant is the correct browser test for the pre-filled catalogue.
+
+The Buying Catalogue page had a deployed-browser cache mismatch: the screenshot reported loadCategoryScope is not defined even though the current controller contains that function. The page script cache-buster has therefore been advanced from v17 to v18. The temporary on-page master-catalogue explanatory banner has also been removed so product pages do not carry development/prompt text.
+
+Browser verification remains OPEN until the deployed page is hard-refreshed and tested against an Enhanced/Catalogue tenant.
+

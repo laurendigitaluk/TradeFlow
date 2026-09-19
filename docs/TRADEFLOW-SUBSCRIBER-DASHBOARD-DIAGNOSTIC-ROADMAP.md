@@ -579,3 +579,7 @@ For each condition the user can choose UK New or UK Used as the automatic basis,
 
 ## Catalogue Management Navigation — 19 September 2026
 Management flow: open What We Buy → Manage → select Category → view all Branches / Types for that category → select Branch → view manufacturers/products in that branch. This replaces the previous ambiguous side-by-side category/branch editing layout. Main catalogue filtering follows the same Category → Branch → Manufacturer → Model hierarchy.
+
+
+## Bulk Pricing Profile Path — 19 September 2026
+User action: What We Buy → select branch → choose Quick pricing rule → Update all products. Frontend builds one condition-rule payload per product and upserts `tenant_buying_condition_rules`. Scope is the selected branch. Research and manual override fields are deliberately excluded from the bulk update.

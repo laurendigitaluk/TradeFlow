@@ -595,3 +595,7 @@ Bulk pricing flow now previews the selected UK New/UK Used reference across ever
 
 ## Active Buying Price Display — 19 September 2026
 What We Buy condition cells now expose the effective pricing state: ACTIVE BUYING PRICE — MANUAL or ACTIVE BUYING PRICE — AUTOMATIC. Manual override input changes update the active-price preview immediately. Clearing the input switches the preview back to automatic. Persistence remains through `tenant_buying_condition_rules`, and valuation RPC precedence is manual override before automatic calculation.
+
+
+## Reset Pricing Path — 19 September 2026
+User action: select products → Reset selected prices → first click arms warning → second click within six seconds confirms → upsert selected `tenant_buying_condition_rules` rows with null percentages, reference types and manual prices → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.

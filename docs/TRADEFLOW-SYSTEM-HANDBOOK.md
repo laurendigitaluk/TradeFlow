@@ -474,3 +474,29 @@ These are presentation/business-profile settings only. TradeFlow does not create
 ## Restore checkpoint — 18 September 2026
 
 This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.
+
+
+## Domain purchasing foundation — 19 September 2026
+
+The existing `tenant_domains` table already provides the tenant-scoped custom-domain connection/routing layer. This change extends that model so TradeFlow can later offer Shopify-style domain purchasing without replacing the existing website publication architecture.
+
+Database foundation added live:
+- `domain_tld_catalog` — platform TLD catalogue, registration/renewal/transfer pricing fields, currency, registration-term limits and provider-neutral product metadata.
+- `tenant_domain_orders` — tenant-scoped registration, renewal and transfer order ledger with retail amount, registrar cost, payment references, provider references, lifecycle status, expiry and auto-renew state.
+- `tenant_domains.acquisition_source` — `connected`, `purchased` or `transferred`.
+- `tenant_domains.registrar_provider`, `registrar_domain_id`, `registered_at`, `expires_at`, `auto_renew` and `provider_metadata`.
+
+Security:
+- Both new tables have RLS enabled.
+- TLD catalogue is read-only to public/authenticated clients and only active rows are exposed.
+- Domain orders are tenant-isolated and writable only through existing tenant website-management/editor permission boundaries.
+- Registrar credentials/secrets are not stored in the database.
+
+The TLD catalogue is a pricing/configuration foundation, not an availability cache. Real-time availability and final pricing must come from the selected registrar/provider immediately before purchase.
+
+Current domain UI remains a **connection** screen only: `domain-settings.html` saves a pending custom domain. The purchase UI, payment flow, registrar API integration, automatic DNS/hosting activation and renewal automation are separate implementation work.
+
+Current commercial plan pricing/entitlement for domain purchasing is intentionally not decided and must not be invented.
+
+**Status:** Database foundation implemented and schema-verified. Full purchase journey remains Proposed/Planned.
+

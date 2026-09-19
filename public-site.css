@@ -73,3 +73,7 @@ body[data-footer-style="business"] footer{padding-top:38px;padding-bottom:38px}b
 
 /* Uploaded photographs: show the complete image inside its frame; never crop to fill. */
 .public-image-wrap img,.public-premium-intro>img,.public-hero-images img,.page-image-wrap img,.public-home-tile-image img{object-fit:contain!important;object-position:center center!important;}
+
+/* Public header branding: preserve the complete logo and let the header adapt to its natural proportions. */
+.topbar{min-height:70px;height:auto}.brand{min-width:0;max-width:280px;overflow:visible}.brand .site-logo{display:block;width:auto;height:auto;max-width:220px;max-height:54px;object-fit:contain;object-position:left center}.brand #site-brand-text{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:260px}
+@media(max-width:1000px){.brand{max-width:220px}.brand .site-logo{max-width:190px;max-height:48px}.brand #site-brand-text{max-width:200px}}

@@ -511,3 +511,10 @@ The preview now applies the draft content first and treats shop listings as a se
 The public subscriber website reported 'Uncaught SyntaxError: Identifier \'brandText\' has already been declared' during startup. The error was caused by two const brandText declarations in public-site.js within applyContent(). The duplicate declaration was removed so the existing branding logic uses the single brandText reference. This was a JavaScript startup error, so the browser could not execute the public-site loader at all and remained on the static loading screen.
 
 Fix commit: 26e698c5fdac77a0618a402ecd2b26da5a3582ba.
+
+
+## 19 September 2026 — Homepage hero image editing made explicit
+
+The premium homepage already stored two independent hero image fields (`homepage.image_url` and `homepage.image_url2`) and the visual editor rendered both. The builder UI was made more explicit so subscribers now have a dedicated Homepage hero photos control showing separate Main hero image and Second hero image actions, in addition to the direct Replace/Add controls on the page preview. Builder asset cache-busting was advanced to v17.
+
+The two hero images remain independent and are not reused automatically by the builder or public website.

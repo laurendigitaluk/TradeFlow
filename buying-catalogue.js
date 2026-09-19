@@ -5,6 +5,7 @@ let master=[],facets={categories:[],branches:[],manufacturers:[]};
 let masterPage=1,totalProducts=0;
 const pageSize=50;
 let searchTimer=null;
+let buyingSelectionAllMatching=false;
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
 function money(v,c="GBP"){if(v===null||v===undefined||v==="")return"—";try{return new Intl.NumberFormat("en-GB",{style:"currency",currency:c||"GBP"}).format(Number(v))}catch{return(c||"")+" "+v}}
@@ -100,13 +101,16 @@ function renderMaster(){
  const selectedIds=window.buyingSelected||new Set();
  const selectableCount=inactiveIds.length;
  const selectedCount=inactiveIds.filter(id=>selectedIds.has(id)).length;
+ const bulkAll=buyingSelectionAllMatching;
  const selectAll=$("select-all-products");
  if(selectAll){
-  selectAll.checked=selectableCount>0&&selectedCount===selectableCount;
-  selectAll.indeterminate=selectedCount>0&&selectedCount<selectableCount;
+  selectAll.checked=bulkAll||(selectableCount>0&&selectedCount===selectableCount);
+  selectAll.indeterminate=!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
  }
- $("selected-count").textContent=selectedCount?selectedCount+" selected":"";
- $("bulk-add").disabled=selectedCount===0;
+ $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
+ $("bulk-add").disabled=!(bulkAll||selectedCount>0);
+ const allMatching=$("select-all-matching");
+ if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching";allMatching.disabled=totalProducts===0;}
 
  $("master-count").textContent=totalProducts+" matching products";
  const start=(masterPage-1)*pageSize;
@@ -126,25 +130,114 @@ function renderMaster(){
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
- document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
+ document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
 }
 async function addSelectedProducts(){
  const ids=Array.from(window.buyingSelected||[]);
- if(!ids.length)return;
+ if(!buyingSelectionAllMatching&&!ids.length)return;
+ const mode=$("bulk-mode")?.value||"manual";
  const button=$("bulk-add");button.disabled=true;
+ const payload={p_tenant_id:tenantId,p_mode:mode};
+ if(mode==="automatic"){
+  const fields=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"];
+  for(const field of fields){const raw=$("bulk-"+field)?.value||"";const value=Number(raw);if(raw===""||!Number.isFinite(value)||value<0||value>100){button.disabled=false;return msg("Enter all five automatic percentages between 0 and 100 before adding products automatically.","error")}payload["p_"+field]=value}
+ }
  try{
-  const result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_bulk",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_ids:ids,p_mode:"manual"})});
-  window.buyingSelected=new Set();
+  let result;
+  if(buyingSelectionAllMatching){
+   const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
+   result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_filtered",{method:"POST",body:JSON.stringify({...payload,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q}),timeoutMs:45000});
+  }else{
+   result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
+  }
+  window.buyingSelected=new Set();buyingSelectionAllMatching=false;
   await loadPage();
-  msg((result?.added||0)+" product(s) added to your Buying Catalogue as Manual valuation"+((result?.skipped||0)?"; "+result.skipped+" already active and skipped.":".")+" You can now configure their pricing individually.","success");
+  msg((result?.added||0)+" product(s) added to your Buying Catalogue as "+(mode==="automatic"?"Automatic pricing":"Manual valuation")+((result?.skipped||0)?"; "+result.skipped+" already active and skipped.":".")+" You can now configure their pricing individually.","success");
  }catch(e){msg(e.message||String(e),"error");button.disabled=false;renderMaster()}
 }
-function toggleSelectAll(){
+async function addProduct(masterId,button){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ button.disabled=true;
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:null})});
+  await loadPage();msg("Product added. It is now Manual valuation until you enter a fixed price or configure Automatic pricing.","success");
+ }catch(e){button.disabled=false;msg(e.message||String(e),"error")}
+}
+async function changeMode(masterId,mode){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ if(mode==="automatic"){
+  const values={sealed_percentage:p.sealed_percentage,opened_never_used_percentage:p.opened_never_used_percentage,excellent_percentage:p.excellent_percentage,good_percentage:p.good_percentage,poor_percentage:p.poor_percentage};
+  try{
+   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:p.manual_offer_price??null})});
+   await loadPage();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
+  }catch(e){renderMaster();msg(e.message||String(e),"error")}
+  return;
+ }
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:p.manual_offer_price??null})});
+  await loadPage();msg("Manual mode enabled. Leave the price blank for Manual valuation or enter a fixed buying price.","success");
+ }catch(e){renderMaster();msg(e.message||String(e),"error")}
+}
+async function saveManual(masterId,button){
+ const input=document.querySelector('[data-master="'+masterId+'"].manual-input');if(!input)return;
+ const value=input.value===""?null:Number(input.value);if(value!==null&&(!Number.isFinite(value)||value<0))return msg("Enter a valid manual buying price.","error");
+ button.disabled=true;try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:value})});
+  await loadPage();msg(value===null?"Manual valuation enabled. A staff member can value this product when a customer request arrives.":"Manual buying price saved. The fixed price now takes precedence over automatic pricing if a rule is retained.","success");
+ }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
+}
+async function saveAuto(masterId,button){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
+ for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
+ const override=document.querySelector('.auto-override-input[data-master="'+masterId+'"]');
+ const manualPrice=(override?.value||"")===""?null:Number(override.value);
+ if(manualPrice!==null&&(!Number.isFinite(manualPrice)||manualPrice<0))return msg("Enter a valid fixed buying price or leave the override blank.","error");
+ button.disabled=true;try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:manualPrice})});
+  await loadPage();msg("Automatic buying rule saved. Research remains separate and read-only.","success");
+ }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
+}
+async function resetProduct(masterId){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ if(!confirm("Reset this product to Inactive Buying? This clears the subscriber's buying price configuration."))return;
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"off"})});
+  await loadPage();msg("Product reset to Inactive. It remains in the master catalogue but is no longer active for this subscriber.","success");
+ }catch(e){msg(e.message||String(e),"error")}
+}
+async function refreshForCategory(){
+ masterPage=1;
+ $("master-branch").value="";
+ $("master-manufacturer").value="";
+ await loadFacets();
+ await loadPage();
+}
+$("select-all-products").addEventListener("change",toggleSelectAll);
+$("bulk-add").addEventListener("click",addSelectedProducts);
+$("master-category").addEventListener("change",refreshForCategory);
+$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
+$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
+$("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});
+$("next-page").addEventListener("click",async()=>{if(masterPage<Math.ceil(totalProducts/pageSize)){masterPage++;await loadPage()}});
+$("sign-out").addEventListener("click",()=>{if(window.tradeflowSubscriberSignOut)window.tradeflowSubscriberSignOut();else{localStorage.removeItem("tradeflow_subscriber_session");location.href="subscriber-login.html"}});
+if(window.tradeflowSubscriberAuthReady)window.tradeflowSubscriberAuthReady.then(init).catch(e=>msg(e.message||String(e),"error"));else msg("Subscriber authentication layer did not load.","error");function toggleSelectAll(){
  window.buyingSelected=window.buyingSelected||new Set();
+ buyingSelectionAllMatching=false;
  const selectable=master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
  const allSelected=selectable.length&&selectable.every(id=>window.buyingSelected.has(id));
  selectable.forEach(id=>allSelected?window.buyingSelected.delete(id):window.buyingSelected.add(id));
  renderMaster();
+}
+function toggleAllMatching(){
+ buyingSelectionAllMatching=!buyingSelectionAllMatching;
+ window.buyingSelected=new Set();
+ renderMaster();
+}
+function toggleBulkMode(){
+ const automatic=$("bulk-mode")?.value==="automatic";
+ $("bulk-automatic-fields")?.classList.toggle("hidden",!automatic);
 }
 async function addProduct(masterId,button){
  const p=master.find(x=>x.product_id===masterId);if(!p)return;

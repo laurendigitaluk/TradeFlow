@@ -214,10 +214,13 @@ function templateHero(){
  }
 }
 function renderHome(){
- const buy='<section class="template-section buying-block"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>';
- const sell='<section class="template-section selling-block"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>';
- const trust='<section class="trust-row"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Change the wording, images and branding whenever you need.</span></div></section>';
- return navMarkup()+templateHero()+buy+sell+trust+footerMarkup();
+ const blocks={
+  hero:templateHero(),
+  buy:'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>',
+  sell:'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>',
+  trust:'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Change the wording, images and branding whenever you need.</span></div></section>'
+ };
+ return navMarkup()+homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('')+footerMarkup();
 }
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
@@ -257,6 +260,14 @@ function bindEditor(){
    el.addEventListener('blur',()=>el.classList.remove('editing'));
  });
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
+ let dragged=null;
+ root.querySelectorAll('[data-home-block]').forEach(el=>{
+   el.addEventListener('dragstart',()=>{dragged=el.dataset.homeBlock;el.classList.add('dragging')});
+   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+   el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('drag-over')});
+   el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+   el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');const target=el.dataset.homeBlock;if(!dragged||dragged===target)return;homepageOrder=homepageOrder.filter(k=>k!==dragged);const at=homepageOrder.indexOf(target);homepageOrder.splice(at<0?homepageOrder.length:at,0,dragged);markDirty();renderEditor()});
+ });
  root.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return}
@@ -290,7 +301,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||''},
-   homepage:{headline:headline.trim()||'Buy, sell and trade with us',intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' second image',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{block_order:homepageOrder,headline:headline.trim()||'Buy, sell and trade with us',intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' second image',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,
@@ -305,7 +316,7 @@ function loadContent(content){
  headline=s.homepage?.headline||'Buy, sell and trade with us';
  intro=s.homepage?.intro||'';
  accent=s.theme?.accent||'#c46a2b';
- typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
+ typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];

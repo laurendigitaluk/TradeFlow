@@ -2,6 +2,7 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const params=new URLSearchParams(location.search);
 const tenantId=params.get('tenant_id');
+let activeTenantId=tenantId;
 const page=params.get('page')||'home';
 const preview=params.get('preview')==='draft';
 const hostname=location.hostname;
@@ -18,11 +19,11 @@ async function api(path){
 }
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));}
 function customerUrl(extra){
- const base=tenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(tenantId):'customer-dashboard.html';
+ const base=activeTenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId):'customer-dashboard.html';
  return extra?base+'&'+extra:base;
 }
 function pageUrl(slug,extra){
- let u='public-site.html?tenant_id='+encodeURIComponent(tenantId||'')+'&page='+encodeURIComponent(slug);
+ let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);
  if(preview)u+='&preview=draft';
  if(extra)u+='&'+extra;
  return u;
@@ -265,6 +266,7 @@ async function loadByHostname(){
  const rows=await api('/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1');
  if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');
  const siteTenantId=rows[0].tenant_id;
+ activeTenantId=siteTenantId;
  try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(siteTenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
  await loadListings(siteTenantId);
  applyContent(rows[0].content);

@@ -242,7 +242,21 @@ async function applySelectedBuyingCatalogue(){
   }
  }
  try{
-  const result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
+  let result;
+  if(!buyingSelectionAllMatching && ids.length){
+   const calls=ids.map(id=>{
+    const body={p_tenant_id:tenantId,p_master_product_id:id,p_mode:mode};
+    if(mode==="automatic"){
+     body.p_sealed_percentage=payload.p_sealed_percentage;body.p_opened_never_used_percentage=payload.p_opened_never_used_percentage;body.p_excellent_percentage=payload.p_excellent_percentage;body.p_good_percentage=payload.p_good_percentage;body.p_poor_percentage=payload.p_poor_percentage;
+     body.p_manual_price=null;
+    }
+    if(mode==="manual") body.p_manual_price=null;
+    return api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify(body),timeoutMs:45000});
+   });
+   await Promise.all(calls); result={updated:ids.length};
+  }else{
+   result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
+  }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
   await loadPage();
   const actionLabel=mode==="automatic"?"Automatic pricing":mode==="manual"?"Manual valuation":"Turned off";

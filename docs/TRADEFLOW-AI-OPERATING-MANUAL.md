@@ -1,8 +1,8 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
 **Status:** Living operational document  
-**Version:** 4.2  
-**Date:** 18 September 2026  
+**Version:** 4.3  
+**Date:** 19 September 2026  
 **Project:** TradeFlow
 
 ## 1. Purpose
@@ -197,7 +197,6 @@ The Catalogue plan currently has a catalogue.pre_filled entitlement with unset q
 The Platform Owner layer now has the protected platform_admin_manage_subscription boundary:
 - upgrade can move a tenant only to a higher active plan;
 - close cancels the latest subscription and archives the tenant while retaining stored business data.
-
 These controls are internal platform administration, not completed Stripe recurring billing. Provider price IDs, Stripe subscription lifecycle/webhooks and automatic non-payment enforcement remain separate implementation work. Never describe the current Owner controls as a complete payment/subscription billing system.
 
 The SaaS homepage, subscriber signup and Owner Dashboard have been updated for the three-plan model. Current state is **Implemented / database-verified** for the plan catalogue, entitlements, signup acceptance and protected Owner RPC boundary. The latest three-plan homepage/signup/Owner Dashboard UI changes still require browser verification. Do not mark them Verified Live until that browser test has been completed.
@@ -397,7 +396,6 @@ TradeFlow should eventually expose a Shopify-style flow:
 The database now supports that lifecycle without choosing a registrar or storing provider secrets.
 
 The current `domain-settings.html` page remains a custom-domain connection screen and must not be described as a domain purchasing system. It currently creates/updates a pending `tenant_domains` record.
-
 ### Provider boundary
 
 Registrar integration must be server-side. Do not place registrar API credentials in browser JavaScript, public GitHub code or tenant-visible database fields. Provider-specific identifiers may be stored; secrets must remain in server-side secrets/Edge Function configuration.
@@ -598,7 +596,6 @@ The live TradeFlow master catalogue was cleaned as follows:
 - Drone was merged into canonical Drones, including its product and branch.
 - Tripod/Support was merged into canonical Tripods; its products were moved and its duplicate Tripods branch was merged into the existing canonical branch.
 - The duplicate category records were then deleted.
-
 Do not automatically merge broader/similar category names merely because they contain overlapping words. Categories such as Cameras and Camera & Video require a deliberate taxonomy decision before consolidation.
 
 The migration was applied to TradeFlow only and verified by re-querying the category records. The next browser step is to refresh What We Buy and verify that the cleaned master category list is what the subscriber selector consumes.
@@ -611,3 +608,27 @@ The migration was applied to TradeFlow only and verified by re-querying the cate
 - Buying Catalogue selectors are now cascading: Category → relevant Manufacturers → relevant Branches for the selected manufacturer → Models in the selected branch/manufacturer. Changing an upstream selection resets and reloads downstream selections rather than leaving unrelated values available.
 - buying-catalogue.js commit ff575e5204f7cb3efc12284a5109be0610334a5b implements the selector dependency logic. buying-catalogue.html commit 34771b980131a4be683179ecf6f6f8b5a21ce2c9 changes Model to a dependent select and cache-busts the JS to v16.
 - Syntax check passed with new Function() after the selector change. Live browser verification is still required after a hard refresh.
+
+## 21. Buying master catalogue and selector repair — 19 September 2026
+
+The subscriber Buying Catalogue is now backed by a standalone TradeFlow master catalogue copy rather than any live GearCashOut query.
+
+Verified live TradeFlow master data:
+- 32 categories
+- 178 branches
+- 73 manufacturers
+- 3,845 products
+
+The subscriber seed RPC copies from `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_manufacturers` and `catalogue_master_products` only. It does not reference GearCashOut.
+
+Package boundary:
+- Basic: `catalogue.pre_filled = false`
+- Enhanced: `catalogue.pre_filled = true`
+- Catalogue: `catalogue.pre_filled = true`
+
+A current source inspection found the Buying Catalogue calling an undefined `loadCategoryScope()` during category startup. This was repaired so category products are loaded before the manufacturer filter and branch selection are initialised. The controller cache-buster is now `v17`.
+
+The existing test tenant was cleaned of stale `Drone` and `Tripod/Support` aliases while preserving the unrelated custom `Accessories` category and the manually entered Canon product.
+
+State: **Implemented + database tested; browser verification remains open.**
+

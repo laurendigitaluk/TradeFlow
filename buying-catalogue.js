@@ -16,8 +16,14 @@ function msg(t,type=""){const el=$("message");if(el){el.textContent=t||"";el.cla
 async function api(path,options={}){
  const h=new Headers(options.headers||{});h.set("apikey",key);h.set("Authorization","Bearer "+token);
  if(options.body)h.set("Content-Type","application/json");
- const r=await fetch(SUPABASE_URL+path,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
- if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));return b;
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+ try{
+  const r=await fetch(SUPABASE_URL+path,{...options,headers:h,signal:controller.signal});
+  const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
+  if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));
+  return b;
+ }catch(e){if(e.name==="AbortError")throw Error("TradeFlow catalogue request timed out. Please refresh and try again.");throw e}
+ finally{clearTimeout(timer)}
 }
 async function init(){
  try{
@@ -29,12 +35,17 @@ async function init(){
  }catch(e){msg(e.message||String(e),"error")}
 }
 async function loadCategories(){
- manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];
- categories=await api("/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
- const sel=$("category-select");sel.innerHTML=categories.length?categories.map(c=>"<option value=\""+c.id+"\">"+esc(c.name)+"</option>").join(""):"<option value=\"\">No Buying categories</option>";
- if(categories.length){selectedCategory=categories[0].id;await loadBranches()}else renderEmpty("Create a Buying category first.");
- renderCategoryList();
- populateManufacturers();
+ try{
+  categories=await api("/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
+  const sel=$("category-select");
+  sel.innerHTML=categories.length?categories.map(c=>"<option value=\""+c.id+"\">"+esc(c.name)+"</option>").join(""):"<option value=\"\">No Buying categories</option>";
+  if(categories.length){selectedCategory=categories[0].id;await loadBranches()}else renderEmpty("Create a Buying category first.");
+  try{
+   manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];
+  }catch(e){manufacturers=[];msg("Categories loaded, but the manufacturer list could not be loaded: "+e.message,"error")}
+  renderCategoryList();
+  populateManufacturers();
+ }catch(e){msg("Could not load the Buying catalogue: "+(e.message||String(e)),"error")}
 }
 async function loadBranches(){
  branches=await api("/rest/v1/category_branches?select=id,category_id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&category_id=eq."+encodeURIComponent(selectedCategory)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];

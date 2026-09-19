@@ -676,3 +676,11 @@ External market research reviewed for terminology only: UK camera dealers common
 - The UI previews the selected reference immediately for selected rows; `Apply pricing to selected` persists the reference type and percentage profile.
 - TradeFlow does not silently substitute UK New for missing UK Used evidence or vice versa. If the chosen research basis has no evidence, the automatic price remains unavailable until research or a manual override exists.
 - What We Buy now has clear CTAs for Main Dashboard, Buying Dashboard and Research Centre.
+
+
+## Active Buying Price / Manual Override — 19 September 2026
+- The catalogue now labels the price that TradeFlow will actually use as **ACTIVE BUYING PRICE**.
+- If a condition has a manual override, that exact price is the active price and takes precedence over its automatic percentage calculation.
+- The automatic calculation remains visible as `Automatic would be £X` for comparison, but it is not the active buying price while a manual override exists.
+- To return a condition to automatic pricing, the subscriber clears the manual override field and leaves it blank, then saves the buying prices.
+- The UI explicitly tells the subscriber that clearing the manual field returns the condition to automatic pricing.

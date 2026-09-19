@@ -559,3 +559,7 @@ The subscriber can apply a predefined percentage ladder to all products in the s
 
 ## Selectable Bulk Pricing — 19 September 2026
 When bulk pricing is applied, update only `tenant_buying_condition_rules` reference-type and percentage fields. Never overwrite research evidence or manual override prices. The selected manufacturer/model filters define the visible selection scope; explicit product selection is authoritative.
+
+
+## Universal Research Basis Rule — 19 September 2026
+The selected automatic reference is product-level, not condition-level. For a selected product, all five conditions use the same chosen research basis; only their percentages differ. Missing selected-basis research must not be replaced with another evidence type without explicit subscriber action.

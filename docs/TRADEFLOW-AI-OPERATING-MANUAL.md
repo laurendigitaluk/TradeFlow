@@ -632,3 +632,14 @@ The existing test tenant was cleaned of stale `Drone` and `Tripod/Support` alias
 
 State: **Implemented + database tested; browser verification remains open.**
 
+
+## 2026-09-19 — Master catalogue package boundary and cache repair
+
+The TradeFlow master catalogue is a standalone copy used to seed eligible subscriber catalogues. It contains 32 categories, 178 branches, 73 manufacturers and 3,845 products. Runtime tenant buying logic reads tenant-owned catalogue records after seeding; it does not query GearCashOut.
+
+The catalogue.pre_filled feature is enabled for Enhanced and Catalogue and disabled for Basic. The current browser test tenant is Basic, so it should not be expected to receive the master catalogue until the test entitlement is changed or an Enhanced/Catalogue tenant is used.
+
+The Buying Catalogue controller contains loadCategoryScope(). The deployed page was still reporting that function as undefined, indicating stale deployed JavaScript rather than a missing current source function. buying-catalogue.html now loads controller version v18. Development-only explanatory master-catalogue banner text was removed from the page.
+
+State: Implemented + database verified; browser verification OPEN.
+

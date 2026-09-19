@@ -645,3 +645,11 @@ External market research reviewed for terminology only: UK camera dealers common
 - Each condition also has an optional exact **manual override** price. A manual override takes precedence over the automatic calculation.
 - If no suitable research exists for the selected basis, the subscriber can still enter a manual price; automatic calculation remains unavailable until research is available or the manual override is removed.
 - The valuation RPC returns `automatic`, `manual_override`, or manual-fallback states and identifies the selected reference type.
+
+
+## Buying Catalogue Hierarchy — 19 September 2026
+- The subscriber catalogue is intentionally structured **Category → Branch / Type → Manufacturer → Model**.
+- Example: **Cameras → Digital → Canon → EOS 750D**; **Cameras → Lenses → Canon → EF 50mm**; **Cameras → Tripods → Manfrotto → [model]**.
+- Category management now shows each category with its branch count. Selecting a category loads and displays all branches belonging to that category.
+- Selecting a branch makes the working context explicit and shows manufacturers used within that branch. Manufacturers remain tenant-shared because the same manufacturer can legitimately appear across multiple branches.
+- Products remain assigned to the selected category and branch, preventing the catalogue from becoming an ambiguous flat list.

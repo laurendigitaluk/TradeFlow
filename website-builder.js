@@ -246,7 +246,7 @@ function renderHome(){
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="section-intro"><span>FEATURED CONTENT</span><h2>More to explore</h2><p>Drag the tiles to change their order. Edit the text or add an image directly on each tile.</p></div><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\\s\\S]*?<\\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
+ const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
  return navMarkup()+withSellPrompt+tiles+footerMarkup();
 }
 

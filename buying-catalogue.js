@@ -99,15 +99,15 @@ function refSummary(bp){
  if(!bp)return '<div class="ref-summary">Not active for Buying.</div>';
  const rs=rules.find(r=>r.buying_product_id===bp.id);
  if(bp.manual_offer_price!==null&&bp.manual_offer_price!==undefined)return '<div class="ref-summary"><strong>Manual:</strong> '+money(bp.manual_offer_price)+'</div>';
- if(rs)return '<div class="ref-summary"><strong>Automatic rule:</strong><br>Sealed '+(rs.sealed_percentage??"—")+"% · Opened "+(rs.opened_never_used_percentage??"—")+"% · Excellent "+(rs.excellent_percentage??"—")+"% · Good "+(rs.good_percentage??"—")+"% · Poor "+(rs.poor_percentage??"—")+"%</div>";
- return '<div class="ref-summary">No price configured — manual valuation / quote.</div>';
+ if(rs)return '<div class="ref-summary"><strong>Automatic rule:</strong>'+(bp.manual_offer_price!==null&&bp.manual_offer_price!==undefined?'<br><strong>Override:</strong> '+money(bp.manual_offer_price):'')+'<br>Sealed '+(rs.sealed_percentage??"—")+"% · Opened "+(rs.opened_never_used_percentage??"—")+"% · Excellent "+(rs.excellent_percentage??"—")+"% · Good "+(rs.good_percentage??"—")+"% · Poor "+(rs.poor_percentage??"—")+"%</div>";
+ return '<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
 }
 function editorHtml(p,s){
  const bp=s.product,r=s.rule;
- if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Manual buying offer (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(bp?.manual_offer_price??"")+'" placeholder="Enter fixed buying offer"><button class="save-price" data-save-manual="'+p.product_id+'">Save manual price</button></div>';
+ if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Buying price / override (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(bp?.manual_offer_price??"")+'" placeholder="Enter price you are willing to pay"><button class="save-price" data-save-manual="'+p.product_id+'">Save price</button><div class="price-help">This fixed price overrides automatic pricing for this product.</div></div>';
  if(s.key==="auto")return '<div class="price-editor"><div class="price-grid">'+
   [['Sealed','sealed_percentage'],['Opened','opened_never_used_percentage'],['Excellent','excellent_percentage'],['Good','good_percentage'],['Poor','poor_percentage']].map(([l,f])=>'<label>'+l+' %<input class="auto-input" data-master="'+p.product_id+'" data-field="'+f+'" type="number" min="0" max="100" step="0.01" value="'+esc(r?.[f]??"")+'" placeholder="%"></label>').join("")+
-  '</div><button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Sealed and Opened use UK New research by default. Excellent, Good and Poor use UK Used research by default. If the selected research is missing, the buying workflow remains manual.</div></div>';
+  '</div><label class="price-help" style="display:block;margin-top:10px">Optional fixed buying price / override (£)<input class="manual-input auto-override-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(bp?.manual_offer_price??"")+'" placeholder="Leave blank to use automatic pricing"></label><button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Leave the override blank to calculate from research. Enter a price to override the calculated price for this product. Sealed and Opened use UK New; Excellent, Good and Poor use UK Used by default.</div></div>';
  return "";
 }
 function renderMaster(){
@@ -142,7 +142,8 @@ async function changeMode(masterId,mode){
    p_opened_never_used_percentage:mode==="automatic"?(current.rule?.opened_never_used_percentage??null):null,
    p_excellent_percentage:mode==="automatic"?(current.rule?.excellent_percentage??null):null,
    p_good_percentage:mode==="automatic"?(current.rule?.good_percentage??null):null,
-   p_poor_percentage:mode==="automatic"?(current.rule?.poor_percentage??null):null
+   p_poor_percentage:mode==="automatic"?(current.rule?.poor_percentage??null):null,
+   p_manual_price:mode==="automatic"?(current.product?.manual_offer_price??null):null
   })});
   await loadAll();
   msg(mode==="off"?"Buying disabled and price configuration reset.":"Buying mode changed. The subscriber category, branch, manufacturer and buying product are now linked automatically.","success");
@@ -164,7 +165,8 @@ async function saveAuto(masterId,button){
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({
    p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",
    p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,
-   p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage
+   p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,
+   p_manual_price:(document.querySelector('.auto-override-input[data-master="'+masterId+'"]')?.value||"") === "" ? null : Number(document.querySelector('.auto-override-input[data-master="'+masterId+'"]')?.value)
   })});
   await loadAll();msg("Automatic buying rule saved. Research remains separate and read-only.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}

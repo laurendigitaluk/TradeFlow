@@ -688,3 +688,47 @@ The protected RPC `configure_master_catalogue_buying_product()` is the authorita
 Research remains separate from subscriber pricing configuration. The subscriber pricing page must not edit research evidence. Automatic valuation continues to use `calculate_buying_item_valuation()`; product-level manual buying price now takes precedence before condition-based automatic pricing.
 
 No runtime integration with GearCashOut is permitted for this workflow.
+
+
+## Website Builder / Subscriber Template Rebuild — 20 September 2026
+
+The subscriber website system has been rebuilt on branch `website-template-unification` so the visual template selected in Website Builder is the same template family rendered by the public subscriber website.
+
+### Customer-facing design rules
+- Both sides of the business are first-class: **What We Buy** and **What We Sell**.
+- The public header contains a prominent **What We Buy** menu, populated from the subscriber's connected Buying Catalogue.
+- The public header contains a direct **What We Sell** link to the retail shop.
+- The What We Buy menu expands as new catalogue categories are added; it is not a fixed list of categories.
+- Buying category pages show the current connected products and provide a **Start selling this category** route into the customer account flow.
+- Retail products are loaded from the subscriber's published Inventory → Selling data.
+- A site with a small buying catalogue stays compact; the same layout can expand as categories and products are added.
+- The template does not require subscribers to re-enter catalogue products, prices or inventory.
+
+### Four-step subscriber setup
+1. Add business name and logo.
+2. Choose brand colours.
+3. Choose one of the ten templates.
+4. Save, preview and publish.
+
+Content, buying categories and retail products remain connected to TradeFlow rather than being duplicated inside the website editor.
+
+### Ten supported templates
+Editorial, Classic, Grid, Studio, Horizon, Field, Business, Luxe, Commerce and Impact.
+
+The public renderer now contains the same ten template layouts and responsive rules used by the builder. The previous public-site shell and legacy template styling were removed so an old static header cannot appear underneath the new template.
+
+### Business-name handling
+A blank subscriber business name is now displayed as **Your business** rather than the platform name. The old public fallback to **TradeFlow** was removed. TradeFlow remains only as the platform attribution in the footer.
+
+### Preview / deployment
+The public website assets were cache-bumped to version 40. This is intentional so browsers do not continue serving the previous public-site CSS/JavaScript after the template rebuild.
+
+### Architecture
+- `website-builder.js` remains responsible for editing and saving subscriber website content.
+- `public-site.js` is now a clean public renderer for the same ten template IDs.
+- `public-site.css` was replaced with a public-only stylesheet matching the ten fresh template designs rather than carrying the previous legacy template family.
+- The public page shell is now only a loading container; the renderer owns the header, hero, buying section, selling section and footer.
+- Custom-domain public links now retain the active tenant ID after hostname resolution.
+
+### Important future rule
+Do not add separate visual layouts to the public renderer. Any future template must be added to the shared ten-template system and tested in both Website Builder and public Preview before publication.

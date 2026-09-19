@@ -112,44 +112,61 @@ function renderMaster(){
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
  const allMatching=$("select-all-matching");
  if(allMatching){
-  allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";
+  allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+pages+" pages)";
   allMatching.disabled=totalProducts===0;
  }
-
  $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching master products");
  const start=(masterPage-1)*pageSize;
- $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages;
- $("top-page-summary").textContent=totalProducts?("Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages):"No products to show";
+ const rangeStart=master.length?start+1:0;
+ const rangeEnd=start+master.length;
+ $("page-info").textContent="Showing "+rangeStart+"–"+rangeEnd+" of "+totalProducts+" · Page "+masterPage+" of "+pages;
+ $("top-page-summary").textContent=totalProducts?"Showing "+rangeStart+"–"+rangeEnd+" of "+totalProducts+" · Page "+masterPage+" of "+pages:"No products to show";
 
  const rows=[];
  let lastModel="";
  for(const p of master){
-  const s=stateFor(p);
+  const st=stateFor(p);
   const modelKey=(p.manufacturer_name||"")+"|"+(p.model||"");
   if(modelKey!==lastModel){
-   rows.push('<tr class="model-group"><td colspan="7"><strong>'+esc(p.manufacturer_name)+" "+esc(p.model)+'</strong><span>'+esc(p.category_name)+" · "+esc(p.branch_name||"—")+"</span></td></tr>");
+   rows.push("<tr class='model-group'><td colspan='7'><strong>"+esc(p.manufacturer_name)+" "+esc(p.model)+"</strong><span>"+esc(p.category_name)+" · "+esc(p.branch_name||"—")+"</span></td></tr>");
    lastModel=modelKey;
   }
   const packageLabel=p.package_name||"Standard / base configuration";
-  const mode=s.key==="inactive"?'<span class="not-added">Available to add</span>':'<select class="mode-select" data-mode="'+p.product_id+'"><option value="manual" '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'>Manual</option><option value="automatic" '+(s.key==="auto"?"selected":"")+'>Automatic</option></select>';
-  const checkbox=s.key==="inactive"
-   ? '<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc((p.manufacturer_name||"")+" "+(p.model||"")+" "+packageLabel)+'">'
-   : '<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">';
-  const addedBadge=s.key==="inactive"?"":'<span class="added-badge">Already added</span>';
-  rows.push('<tr class="status-'+s.key+'">'+
-   '<td class="select-cell">'+checkbox+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(packageLabel)+'</span><small>'+esc(p.product_type||"")+(p.notes?" · "+esc(p.notes):"")+'</small>'+addedBadge+'</td>'+
-   '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
-   '<td>'+refSummary(p)+'</td></tr>');
+  let checkbox;
+  if(st.key==="inactive"){
+   checkbox="<input type='checkbox' class='product-select' data-product-id='"+p.product_id+"' "+(selectedIds.has(p.product_id)?"checked":"")+" aria-label='Select "+esc((p.manufacturer_name||"")+" "+(p.model||"")+" "+packageLabel)+"'>";
+  }else{
+   checkbox="<input type='checkbox' class='product-select added-checkbox' checked disabled aria-label='Already added'>";
+  }
+  const addedBadge=st.key==="inactive"?"":"<span class='added-badge'>Already added</span>";
+  let mode="";
+  if(st.key==="inactive") mode="<span class='not-added'>Available to add</span>";
+  else mode="<select class='mode-select' data-mode='"+p.product_id+"'><option value='manual' "+(st.key==="manual"||st.key==="valuation"?"selected":"")+">Manual</option><option value='automatic' "+(st.key==="auto"?"selected":"")+">Automatic</option></select>";
+  const reset=st.key!=="inactive"?"<button class='reset-link' data-reset='"+p.product_id+"'>Reset / turn off</button>":"";
+  rows.push(
+   "<tr class='status-"+st.key+"'>"+
+   "<td class='select-cell'>"+checkbox+"</td>"+
+   "<td class='product-name'><strong>"+esc(p.model)+"</strong><span class='package-name'>"+esc(packageLabel)+"</span><small>"+esc(p.product_type||"")+(p.notes?" · "+esc(p.notes):"")+"</small>"+addedBadge+"</td>"+
+   "<td>"+esc(p.category_name)+"</td>"+
+   "<td>"+esc(p.branch_name||"—")+"</td>"+
+   "<td>"+esc(p.manufacturer_name)+"</td>"+
+   "<td><div class='state "+st.key+"'>"+esc(st.label)+"</div>"+mode+editorHtml(p,st)+reset+"</td>"+
+   "<td>"+refSummary(p)+"</td>"+
+   "</tr>"
+  );
  }
- $("master-body").innerHTML=rows.length?rows.join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
+ $("master-body").innerHTML=rows.length?rows.join(""):"<tr><td colspan='7' class='empty'>"+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll(".mode-select").forEach(e=>e.addEventListener("change",()=>changeMode(e.dataset.mode,e.value)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
- document.querySelectorAll(".product-select:not(:disabled)").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
+ document.querySelectorAll(".product-select:not(:disabled)").forEach(e=>e.addEventListener("change",()=>{
+  window.buyingSelected=window.buyingSelected||new Set();
+  buyingSelectionAllMatching=false;
+  if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);
+  renderMaster();
+ }));
 }
 async function addSelectedProducts(){
  const ids=Array.from(window.buyingSelected||[]);

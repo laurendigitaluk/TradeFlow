@@ -591,3 +591,7 @@ User flow: Category → Branch → optional Manufacturer/Model filter → checkb
 
 ## Universal Reference Preview — 19 September 2026
 Bulk pricing flow now previews the selected UK New/UK Used reference across every condition of selected products before persistence. `Apply pricing to selected` upserts the same reference type into all five condition-rule reference fields plus the selected percentage profile. Missing research on the chosen basis is surfaced rather than silently substituted.
+
+
+## Active Buying Price Display — 19 September 2026
+What We Buy condition cells now expose the effective pricing state: ACTIVE BUYING PRICE — MANUAL or ACTIVE BUYING PRICE — AUTOMATIC. Manual override input changes update the active-price preview immediately. Clearing the input switches the preview back to automatic. Persistence remains through `tenant_buying_condition_rules`, and valuation RPC precedence is manual override before automatic calculation.

@@ -688,6 +688,19 @@ External market research reviewed for terminology only: UK camera dealers common
 
 ## Reset Selected Buying Prices — 19 September 2026
 - What We Buy now has a protected **Reset selected prices** action.
-- First click arms the reset and displays a warning; a second click within six seconds confirms the destructive action.
-- Reset clears the selected products' five automatic percentages, five research-reference selections, and five manual overrides. The products then have no configured catalogue buying price and can fall back to manual quote/valuation handling.
+- First click arms the reset and displays a warning; a second click within five seconds confirms the destructive action.
+- Reset deletes the selected products' condition-pricing rule rows and clears the legacy product-level automatic/manual base-price fields. The products then have no configured catalogue buying price and can fall back to manual quote/valuation handling.
 - Selecting UK New or UK Used previews the selected basis immediately. If the selected basis has no research, automatic prices show unavailable/manual quote required rather than retaining a stale calculation from the other basis.
+
+
+## Standalone TradeFlow Master Catalogue — 19 September 2026
+- TradeFlow now has its own standalone master catalogue tables: `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_manufacturers`, `catalogue_master_products` and `catalogue_master_product_identifiers`.
+- The initial seed was copied from the separate GearCashOut / Action Buyer UK catalogue as a one-time data import. TradeFlow does not query GearCashOut at runtime and there are no foreign keys or live catalogue dependencies back to GearCashOut.
+- Imported catalogue scope is product metadata and identifiers: 34 top-level categories, 179 branches/types, 73 manufacturers, 3,845 products and 108 product identifiers.
+- GearCashOut retailer-price evidence, research evidence and market-pricing fields were deliberately not copied into the TradeFlow master catalogue. Subscriber buying prices remain independently configured through TradeFlow research and condition rules.
+- The live plan definition currently assigns `catalogue.pre_filled` to the **Catalogue** plan, not Enhanced. Enhanced remains the separate higher-tier feature set already defined in `plan_features`.
+- Catalogue-plan seeding is performed by the protected `public.seed_tenant_master_catalogue(uuid)` RPC. It copies the master catalogue into the subscriber's own `categories`, `category_branches`, `tenant_buying_manufacturers` and `tenant_buying_products` records. Once seeded, the tenant operates on its own copy.
+- `tenant_catalogue_state` records the seed version and counts so the operation is idempotent.
+- The What We Buy page now attempts the protected catalogue seed during startup for eligible Catalogue-plan tenants. Non-Catalogue plans continue to use their existing tenant catalogue path.
+- Buying-catalogue JavaScript cache-buster is now v15.
+- A startup blocker was identified and repaired: the page referenced an undefined `armOrResetSelectedPrices` handler before authentication initialisation, which could stop the script before Category/Manufacturer/Branch loading. The handler is now defined and performs the intended two-step reset.

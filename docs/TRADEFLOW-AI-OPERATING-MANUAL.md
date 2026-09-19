@@ -555,3 +555,7 @@ Use the canonical hierarchy Category → Branch / Type → Manufacturer → Mode
 
 ## Bulk Buying Pricing Profiles — 19 September 2026
 The subscriber can apply a predefined percentage ladder to all products in the selected branch. The four current profiles start at 70%, 60%, 50%, or 40% for Sealed and step down through Opened Never Used, Excellent, Good and Poor. Bulk application must not overwrite research or manual override fields.
+
+
+## Selectable Bulk Pricing — 19 September 2026
+When bulk pricing is applied, update only `tenant_buying_condition_rules` reference-type and percentage fields. Never overwrite research evidence or manual override prices. The selected manufacturer/model filters define the visible selection scope; explicit product selection is authoritative.

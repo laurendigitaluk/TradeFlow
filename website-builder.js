@@ -82,8 +82,15 @@ function currentPage(){return selectedPage==='home'?{slug:'home',title:'Home pag
 function renderPageList(){
  const box=$('page-list');if(!box)return;
  const items=[{slug:'home',title:'Home page',hint:'Main landing page',enabled:true},...pages.map(p=>({slug:p.slug,title:p.title,hint:p.slug==='shop'?'Retail selling page':p.slug==='buying'?'Buying page':pageDef(p.slug).hint,enabled:p.enabled}))];
- box.innerHTML=items.map(p=>'<button type="button" class="page-link '+(p.slug===selectedPage?'selected':'')+'" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>').join('');
+ box.innerHTML=items.map(p=>'<div class="page-row '+(p.slug===selectedPage?'selected':'')+'"><button type="button" class="page-link" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>'+(p.slug==='home'||p.slug==='customer-account'?'':'<button type="button" class="page-delete" data-delete-page="'+esc(p.slug)+'" title="Delete page">Delete</button>')+'</div>').join('');
  box.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>selectPage(b.dataset.page)));
+ box.querySelectorAll('[data-delete-page]').forEach(b=>b.addEventListener('click',()=>{
+   const slug=b.dataset.deletePage,page=pages.find(p=>p.slug===slug);if(!page)return;
+   if(!window.confirm('Delete the page "'+page.title+'"? This will remove it from this website draft.'))return;
+   if(!window.confirm('Are you sure you want to permanently remove "'+page.title+'" from this website draft?'))return;
+   pages=pages.filter(p=>p.slug!==slug);headerLinks=headerLinks.filter(x=>x!==slug);footerLinks=footerLinks.filter(x=>x!==slug);
+   selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
+ }));
 }
 
 function renderHeroImageControls(){
@@ -156,9 +163,14 @@ function renderTemplates(){
 }
 
 function navMarkup(){
- const enabled=pages.filter(p=>p.enabled&&p.slug!=='customer-account');
- const links=enabled.map(p=>'<button type="button" class="preview-nav-link" data-nav-page="'+esc(p.slug)+'">'+esc(p.title)+'</button>').join('');
- return '<nav class="editor-nav"><div class="editor-brand">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'">':'<span contenteditable="true" data-edit="site-name" data-placeholder="Your business name">'+esc(siteName)+'</span>')+'</div><div class="editor-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
+ const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
+ const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<button type="button" data-nav-page="'+esc(slug)+'">'+esc(findTitle(slug))+'</button>').join('');
+ return '<header class="template-header"><nav class="template-nav"><div class="template-brand">'+logoEditor()+'<small>'+esc(headerTagline)+'</small></div><div class="template-nav-links">'+links+'<span class="managed-login">Customer Login</span></div></nav></header>';
+}
+function footerMarkup(){
+ const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
+ const links=footerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<button type="button" data-nav-page="'+esc(slug)+'">'+esc(findTitle(slug))+'</button>').join('');
+ return '<footer class="template-footer"><div><strong>'+esc(siteName)+'</strong><p>'+esc(footerText||'Your business website powered by TradeFlow.')+'</p></div><div class="template-footer-links">'+links+'</div></footer>';
 }
 
 function imageBlock(url,kind,label,alt){

@@ -257,47 +257,26 @@ async function addManufacturer(e){
 function previewBulkReference(){
  const ref=document.querySelector('input[name="bulk-reference"]:checked')?.value||"uk_new";
  const ids=new Set(selectedProductIds);
- document.querySelectorAll(".reference-select").forEach(sel=>{
-   if(!ids.has(sel.dataset.product))return;
-   const c=conditions.find(x=>x.key===sel.dataset.field.replace("_reference_type",""));if(!c)return;
-   sel.value=ref;
-   const p=products.find(x=>x.id===sel.dataset.product);
-   const pct=document.querySelector('[data-product="'+p.id+'"][data-field="'+c.key+'_percentage"]')?.value||"";
-   const base=refPrice(p,ref==="uk_new"?"new":"used");
-   const amount=pct!==""&&base!==null?Number(base)*Number(pct)/100:null;
-   const box=document.querySelector('[data-calc="'+p.id+"-"+c.key+'"]');
-   if(box)box.innerHTML=amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>';
-   const help=box?.nextElementSibling;
-   if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
+ ids.forEach(id=>{
+   const p=products.find(x=>x.id===id); if(!p)return;
+   conditions.forEach(c=>{
+     const sel=document.querySelector('[data-product="'+id+'"][data-field="'+c.key+'_reference_type"]');
+     if(sel)sel.value=ref;
+     const pct=document.querySelector('[data-product="'+id+'"][data-field="'+c.key+'_percentage"]')?.value||"";
+     const manual=document.querySelector('[data-product="'+id+'"][data-field="'+c.key+'_manual_price"]')?.value||"";
+     const base=refPrice(p,ref==="uk_new"?"new":"used");
+     const amount=pct!==""&&base!==null?Number(base)*Number(pct)/100:null;
+     const active=document.querySelector('[data-active="'+id+"-"+c.key+'"]');
+     if(active){
+       active.className="active-price "+(manual!==""?"manual-active":"automatic-active");
+       active.innerHTML='<span class="active-label">'+(manual!==""?"ACTIVE BUYING PRICE — MANUAL":"ACTIVE BUYING PRICE — AUTOMATIC")+'</span><strong>'+(manual!==""?money(manual):(amount!==null?money(amount):"Not available"))+'</strong>';
+     }
+     const box=document.querySelector('[data-calc="'+id+"-"+c.key+'"]');
+     if(box)box.innerHTML=amount!==null?'Automatic would be '+money(amount):'<span class="not-set">Automatic price unavailable — manual quote/valuation required</span>';
+     const help=box?.nextElementSibling;
+     if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
+   });
  });
-}
-let resetArmedUntil=0;
-function armOrResetSelectedPrices(){
- const ids=[...selectedProductIds];
- if(!ids.length)return msg("Select at least one product first.","error");
- const btn=$("reset-selected-prices"),now=Date.now();
- if(now>resetArmedUntil){
-   resetArmedUntil=now+6000;
-   btn.classList.add("armed");btn.textContent="Click again to reset selected prices";
-   msg("Warning: click Reset again within 6 seconds to clear automatic percentages, reference choices and manual overrides for the selected products.","error");
-   setTimeout(()=>{if(Date.now()>resetArmedUntil){resetArmedUntil=0;btn.classList.remove("armed");btn.textContent="Reset selected prices"}},6100);
-   return;
- }
- resetArmedUntil=0;btn.classList.remove("armed");btn.textContent="Resetting…";
- resetSelectedPrices(ids);
-}
-async function resetSelectedPrices(ids){
- try{
-  const rows=ids.map(id=>({tenant_id:tenantId,buying_product_id:id,
-    sealed_percentage:null,opened_never_used_percentage:null,excellent_percentage:null,good_percentage:null,poor_percentage:null,
-    sealed_reference_type:null,opened_never_used_reference_type:null,excellent_reference_type:null,good_reference_type:null,poor_reference_type:null,
-    sealed_manual_price:null,opened_never_used_manual_price:null,excellent_manual_price:null,good_manual_price:null,poor_manual_price:null
-  }));
-  await api("/rest/v1/tenant_buying_condition_rules?on_conflict=tenant_id,buying_product_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(rows)});
-  msg("Selected pricing has been reset. These products now have no automatic percentage or manual override, so they can return to manual quote/valuation handling.","success");
-  await loadMatrix();
- }catch(e){msg(e.message||String(e),"error")}
- finally{const btn=$("reset-selected-prices");if(btn){btn.disabled=false;btn.classList.remove("armed");btn.textContent="Reset selected prices"}}
 }
 async function applySelectedReference(){
  const ids=[...selectedProductIds];

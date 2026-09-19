@@ -40,7 +40,7 @@ async function loadAll(){
  selections=new Map((sel||[]).map(x=>[x.master_product_id,x]));
  products=Array.isArray(prod)?prod:[];
  const ids=products.map(p=>p.id);
- rules=ids.length?await api("/rest/v1/tenant_buying_condition_rules?select=id,buying_product_id,sealed_percentage,opened_never_used_percentage,excellent_percentage,good_percentage,poor_percentage,sealed_reference_type,opened_never_used_reference_type,excellent_reference_type,good_reference_type,poor_reference_type&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")"):[]; 
+ rules=await api("/rest/v1/tenant_buying_condition_rules?select=id,buying_product_id,sealed_percentage,opened_never_used_percentage,excellent_percentage,good_percentage,poor_percentage,sealed_reference_type,opened_never_used_reference_type,excellent_reference_type,good_reference_type,poor_reference_type&tenant_id=eq."+encodeURIComponent(tenantId)); 
  $("catalogue-status").textContent=master.length+" products available";
  $("catalogue-status").classList.add("live");
  $("catalogue-help").textContent="Standalone TradeFlow catalogue. Subscriber selections and prices are tenant-specific; GearCashOut is not queried by this page.";

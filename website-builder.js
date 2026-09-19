@@ -376,6 +376,6 @@ function initBuilder(){
  $('preview-site').addEventListener('click',e=>{
    e.currentTarget.href='public-site.html?preview=draft'+(tenantId?'&tenant_id='+encodeURIComponent(tenantId):'');
  });
- (async()=>{try{await restoreSession();await loadDraft()}catch(error){setStatus(error.message||String(error),'error');const s=$('save-state');if(s)s.textContent='Website could not be loaded'}})();
+ (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();

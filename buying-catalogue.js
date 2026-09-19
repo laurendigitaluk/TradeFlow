@@ -8,6 +8,7 @@ let searchTimer=null;
 let buyingSelectionAllMatching=false;
 let catalogueView="my";
 const collapsedPricing=new Set();
+const pendingAutomatic=new Set();
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
 function money(v,c="GBP"){if(v===null||v===undefined||v==="")return"—";try{return new Intl.NumberFormat("en-GB",{style:"currency",currency:c||"GBP"}).format(Number(v))}catch{return(c||"")+" "+v}}
@@ -155,16 +156,18 @@ function renderMaster(){
  $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages; $("top-page-summary").textContent=totalProducts?("Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages):"No products to show";
  $("master-body").innerHTML=master.length?master.map(p=>{
   const s=stateFor(p);
-  const mode=s.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(s.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
+  const editingAuto=pendingAutomatic.has(p.product_id);
+  const displayState=editingAuto?{...s,key:"auto",label:"Automatic pricing — not active until saved"}:s;
+  const mode=displayState.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(displayState.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
   return '<tr class="status-'+s.key+'">'+
    '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+((s.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,s))+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
+   '<td><div class="state '+displayState.key+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>{
  const id=e.dataset.modeProduct;
- if(e.dataset.modeValue==="automatic") collapsedPricing.delete(id); else collapsedPricing.delete(id);
+ if(e.dataset.modeValue==="automatic") collapsedPricing.delete(id); else {collapsedPricing.delete(id);pendingAutomatic.delete(id);}
  changeMode(id,e.dataset.modeValue);
 }));
  document.querySelectorAll("[data-collapse-product]").forEach(e=>e.addEventListener("click",()=>{const id=e.dataset.collapseProduct;if(collapsedPricing.has(id))collapsedPricing.delete(id);else collapsedPricing.add(id);renderMaster();}));
@@ -275,12 +278,21 @@ async function changeMode(masterId,mode){
  const p=master.find(x=>x.product_id===masterId);if(!p)return;
  if(mode==="automatic"){
   const values={sealed_percentage:p.sealed_percentage,opened_never_used_percentage:p.opened_never_used_percentage,excellent_percentage:p.excellent_percentage,good_percentage:p.good_percentage,poor_percentage:p.poor_percentage};
+  const complete=Object.values(values).every(v=>v!==null&&v!==undefined&&v!=="");
+  collapsedPricing.delete(masterId);
+  if(!complete){
+   pendingAutomatic.add(masterId);
+   renderMaster();
+   msg("Automatic pricing is being prepared, but it will not become active until all five percentages are entered and saved.","info");
+   return;
+  }
   try{
    await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:p.manual_offer_price??null})});
-   await loadPage();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
+   pendingAutomatic.delete(masterId);await loadPage();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
   }catch(e){renderMaster();msg(e.message||String(e),"error")}
   return;
  }
+ pendingAutomatic.delete(masterId);
  try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:p.manual_offer_price??null})});
   await loadPage();msg("Manual mode enabled. Leave the price blank for Manual valuation or enter a fixed buying price.","success");
@@ -296,6 +308,7 @@ async function saveManual(masterId,button){
 }
 async function saveAuto(masterId,button){
  const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
+ const refs={};document.querySelectorAll('.reference-select[data-master="'+masterId+'"]').forEach(i=>refs[i.dataset.field]=i.value);
  const overrides={};document.querySelectorAll('.condition-override-input[data-master="'+masterId+'"]').forEach(i=>overrides[i.dataset.field]=i.value===""?null:Number(i.value));
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
  for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Condition overrides must be valid non-negative prices.","error");

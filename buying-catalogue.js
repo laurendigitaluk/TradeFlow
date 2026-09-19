@@ -90,16 +90,18 @@ function ruleFor(id){return rules.find(r=>r.buying_product_id===id)||null}
 function stateFor(p){
  const s=selections.get(p.product_id),bp=productForMaster(p);
  if(!s||!s.buying_enabled||!s.active)return {key:"inactive",label:"Inactive",product:bp,rule:null};
- if(bp?.manual_offer_price!==null&&bp?.manual_offer_price!==undefined)return {key:"manual",label:"Manual offer",product:bp,rule:null};
  const r=bp?ruleFor(bp.id):null;
+ if(bp?.manual_offer_price!==null&&bp?.manual_offer_price!==undefined)return {key:"manual",label:"Manual price / override",product:bp,rule:r};
  if(r)return {key:"auto",label:"Automatic pricing",product:bp,rule:r};
- return {key:"active",label:"Active for Buying",product:bp,rule:null};
+ return {key:"valuation",label:"Manual valuation",product:bp,rule:null};
 }
 function refSummary(bp){
  if(!bp)return '<div class="ref-summary">Not active for Buying.</div>';
  const rs=rules.find(r=>r.buying_product_id===bp.id);
- if(bp.manual_offer_price!==null&&bp.manual_offer_price!==undefined)return '<div class="ref-summary"><strong>Manual:</strong> '+money(bp.manual_offer_price)+'</div>';
- if(rs)return '<div class="ref-summary"><strong>Automatic rule:</strong>'+(bp.manual_offer_price!==null&&bp.manual_offer_price!==undefined?'<br><strong>Override:</strong> '+money(bp.manual_offer_price):'')+'<br>Sealed '+(rs.sealed_percentage??"—")+"% · Opened "+(rs.opened_never_used_percentage??"—")+"% · Excellent "+(rs.excellent_percentage??"—")+"% · Good "+(rs.good_percentage??"—")+"% · Poor "+(rs.poor_percentage??"—")+"%</div>";
+ if(bp.manual_offer_price!==null&&bp.manual_offer_price!==undefined){
+  return '<div class="ref-summary"><strong>Manual price / override:</strong> '+money(bp.manual_offer_price)+(rs?'<br><span class="muted">Automatic rule retained as fallback.</span>':'')+'</div>';
+ }
+ if(rs)return '<div class="ref-summary"><strong>Automatic rule:</strong><br>Sealed '+(rs.sealed_percentage??"—")+"% · Opened "+(rs.opened_never_used_percentage??"—")+"% · Excellent "+(rs.excellent_percentage??"—")+"% · Good "+(rs.good_percentage??"—")+"% · Poor "+(rs.poor_percentage??"—")+"%</div>";
  return '<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
 }
 function editorHtml(p,s){

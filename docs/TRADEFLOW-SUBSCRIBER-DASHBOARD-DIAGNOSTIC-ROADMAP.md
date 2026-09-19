@@ -613,3 +613,19 @@ User flow for an eligible Catalogue-plan subscriber: sign in → What We Buy →
 Master data path: `catalogue_master_categories` → `catalogue_master_branches` → `catalogue_master_manufacturers` → `catalogue_master_products` → tenant `categories`, `category_branches`, `tenant_buying_manufacturers`, `tenant_buying_products`.
 No runtime request goes to GearCashOut. GearCashOut research/retailer pricing is not used by this path.
 Initial imported snapshot verified at 34 categories, 179 branches, 73 manufacturers, 3,845 products and 108 identifiers.
+
+
+## 19 September 2026 — Master catalogue duplicate-category cleanup
+
+Diagnostic path: GearCashOut source snapshot → one-time TradeFlow master import → TradeFlow catalogue_master_* tables → subscriber catalogue seeding → tenant-owned category/branch/manufacturer/product records. There is no runtime GearCashOut dependency.
+
+The imported TradeFlow master catalogue contained two clear duplicate category structures:
+
+1. Drone was merged into Drones. The one product and its Drone branch were moved to the canonical Drones category.
+2. Tripod/Support was merged into Tripods. Its two products were moved to the canonical category and its duplicate Tripods branch was merged into the existing canonical branch before the old branch/category were removed.
+
+The cleanup was executed only in the TradeFlow Supabase project. It does not modify GearCashOut. The duplicate category records were re-queried and confirmed absent. Drones now has 541 products and Tripods has 4 products in the canonical branch.
+
+The remaining similarly named categories have deliberately not been auto-merged because the current evidence does not prove they represent the same taxonomy. This prevents an over-aggressive cleanup from moving legitimate product classes.
+
+Verification state: database cleanup Tested/Verified at database boundary. Subscriber browser selector open for live verification.

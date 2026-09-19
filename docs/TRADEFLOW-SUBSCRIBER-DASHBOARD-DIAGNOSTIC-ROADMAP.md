@@ -571,3 +571,7 @@ External market research reviewed for terminology only: UK camera dealers common
 
 ## Buying Catalogue / Research Centre — 19 September 2026
 User path: Subscriber → Buying → What We Buy → category/branch/manufacturer/model → condition percentages. Management actions use `categories`, `category_branches`, and `tenant_buying_manufacturers`; product rules use `tenant_buying_products` and `tenant_buying_condition_rules`; research is read-only here from `tenant_buying_research`. Research path: Subscriber → Research Centre → product → UK New/UK Used evidence → save → latest evidence becomes the reference price in What We Buy. Automatic valuation calls `calculate_buying_item_valuation`; missing condition pricing or research returns manual fallback. Security depends on existing tenant RLS plus `private.can_tenant` for buying-managed tables.
+
+
+## Buying Price Basis / Override Path — 19 September 2026
+For each condition the user can choose UK New or UK Used as the automatic basis, enter a percentage, and optionally enter an exact manual override. Frontend state is persisted in `tenant_buying_condition_rules`; the valuation path is `buying-dashboard.js` → `calculate_buying_item_valuation`. RPC precedence: manual override → selected research basis + percentage → manual fallback if research/percentage is unavailable. Research remains read-only on What We Buy.

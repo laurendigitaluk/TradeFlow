@@ -1,35 +1,136 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL="https://twfbmjwwqzxdxvclxbun.supabase.co";
 const $=id=>document.getElementById(id);
-let key=null,accessToken=null,tenantId=null,categories=[],branches=[],fields=[],selectedCategoryId=null,selectedBranchId=null;
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
-function msg(t,type=''){const m=$('message');if(m){m.className=`small ${type}`.trim();m.textContent=t||''}}
-async function api(path,options={}){if(!key)throw Error('TradeFlow subscriber Supabase key is not available.');const h=new Headers(options.headers||{});h.set('apikey',key);if(accessToken)h.set('Authorization',`Bearer ${accessToken}`);const method=(options.method||'GET').toUpperCase();if(options.body||!['GET','HEAD'].includes(method))h.set('Content-Type','application/json');const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||text||`HTTP ${r.status}`);return b}
-async function waitForSubscriber(){if(!window.tradeflowSubscriberAuthReady)throw Error('Subscriber authentication layer did not load.');const auth=await window.tradeflowSubscriberAuthReady;if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');key=auth.key;accessToken=auth.session.access_token;tenantId=auth.tenantId;if(!tenantId)throw Error('Subscriber authentication did not provide a valid tenant.');$('business-name').textContent=auth?.tenants?.[tenantId]||tenantId}
-function badge(on,label){return `<span class="badge ${on?'on':''}">${label}: ${on?'Live':'Off'}</span>`}
-function slugify(v){return String(v||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
-async function load(){try{await waitForSubscriber();msg('Loading category structure…');[categories,branches]=await Promise.all([
-api(`/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`),
-api(`/rest/v1/category_branches?select=id,category_id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&order=sort_order,name`)
-]);categories=categories||[];branches=branches||[];renderTree();if(selectedBranchId&&branches.some(b=>b.id===selectedBranchId))await selectBranch(selectedBranchId);else if(branches[0])await selectBranch(branches[0].id);else renderEmptyEditor();msg(`${categories.length} categor${categories.length===1?'y':'ies'} · ${branches.length} branch${branches.length===1?'':'es'} loaded.`,'success')}catch(e){msg(e.message||String(e),'error');console.error(e)}}
-function renderTree(){if(!categories.length){$('tree').innerHTML='<div class="empty">No categories yet. Create the first category above.</div>';return}
-$('tree').innerHTML=categories.map(c=>{const bs=branches.filter(b=>b.category_id===c.id);return `<div class="tree-category"><div class="tree-category-head"><div><strong>${esc(c.name)}</strong><div class="badges">${badge(c.buying_enabled,'Buying')}${badge(c.selling_enabled,'Selling')}${badge(c.active,'Active')}</div></div><button type="button" data-add-branch="${c.id}">+ Branch</button></div><div class="tree-branches">${bs.length?bs.map(b=>`<div class="tree-branch ${b.id===selectedBranchId?'active':''}"><button type="button" data-branch="${b.id}"><span class="tree-branch-name">${esc(b.name)}</span><div class="badges">${badge(b.buying_enabled,'Buy')}${badge(b.selling_enabled,'Sell')}${badge(b.active,'Active')}</div></button></div>`).join(''):'<div class="status-note" style="padding:8px">No branches yet.</div>'}</div></div>`}).join('');
-document.querySelectorAll('[data-branch]').forEach(b=>b.onclick=()=>selectBranch(b.dataset.branch));
-document.querySelectorAll('[data-add-branch]').forEach(b=>b.onclick=()=>showBranchCreator(b.dataset.addBranch))}
-function renderEmptyEditor(){$('editor').innerHTML='<div class="empty">Select a branch from the category tree.</div>'}
-async function selectBranch(id){selectedBranchId=id;const b=branches.find(x=>x.id===id);if(!b)return;selectedCategoryId=b.category_id;renderTree();try{fields=await api(`/rest/v1/category_fields?select=id,branch_id,category_id,field_key,label,field_type,required_for_buying,required_for_selling,enabled_for_buying,enabled_for_selling,customer_visible,staff_visible,valuation_relevant,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&branch_id=eq.${encodeURIComponent(id)}&order=sort_order,label`)||[];renderEditor(b)}catch(e){msg(e.message||String(e),'error')}}
-function renderEditor(b){const c=categories.find(x=>x.id===b.category_id);$('editor').innerHTML=`
-<div class="editor-header"><div><div class="eyebrow">${esc(c?.name||'Category')}</div><h2>${esc(b.name)}</h2><p class="status-note">This branch is the shared structure used by Buying, Inventory and Selling.</p></div><div class="badges">${badge(b.buying_enabled,'Buying')}${badge(b.selling_enabled,'Selling')}${badge(b.active,'Active')}</div></div>
-<div class="control-card"><h3>Branch settings</h3><form id="branch-form"><div class="editor-grid"><label>Name<input id="branch-name" value="${esc(b.name)}" required></label><label>Slug<input id="branch-slug" value="${esc(b.slug)}" required></label><label class="full">Description<textarea id="branch-description" rows="2">${esc(b.description||'')}</textarea></label></div><div class="switches" style="margin-top:10px"><label><input id="branch-buying" type="checkbox" ${b.buying_enabled?'checked':''}> Live for Buying</label><label><input id="branch-selling" type="checkbox" ${b.selling_enabled?'checked':''}> Live for Selling</label><label><input id="branch-active" type="checkbox" ${b.active?'checked':''}> Active</label></div><p><button type="submit">Save branch settings</button></p></form></div>
-<div class="control-card"><h3>Product properties</h3><p class="status-note">A property can be live for Buying, Selling, both, or neither. “Required” controls whether that live field must be completed in that workflow.</p>
-<form id="field-form"><div class="editor-grid"><label>Property key<input id="field-key" placeholder="model_number" required></label><label>Label<input id="field-label" placeholder="Model number" required></label><label>Type<select id="field-type"><option value="text">Text</option><option value="textarea">Long text</option><option value="number">Number</option><option value="currency">Currency</option><option value="boolean">Yes/No</option><option value="date">Date</option><option value="select">Select</option><option value="multiselect">Multi-select</option></select></label></div><div class="switches" style="margin-top:10px"><label><input id="field-buying" type="checkbox" checked> Use in Buying</label><label><input id="field-selling" type="checkbox" checked> Use in Selling</label><label><input id="field-required-buying" type="checkbox"> Required for Buying</label><label><input id="field-required-selling" type="checkbox"> Required for Selling</label><label><input id="field-customer" type="checkbox" checked> Customer visible</label><label><input id="field-staff" type="checkbox" checked> Staff visible</label><label><input id="field-valuation" type="checkbox"> Valuation relevant</label></div><p><button type="submit">Add property to branch</button></p></form>
-<div id="fields">${renderFieldTable()}</div></div>`;
-$('branch-form').onsubmit=saveBranch;$('field-form').onsubmit=addField;
-document.querySelectorAll('[data-field-toggle]').forEach(b=>b.onclick=()=>toggleField(b.dataset.fieldId,b.dataset.fieldToggle));
+let key=null,token=null,tenantId=null,master=[],selections=new Map(),selected=new Set(),categoryFilter="",branchFilter="",manufacturerFilter="",searchTerm="",page=1;
+const pageSize=100;
+
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
+function msg(t,type=""){const e=$("message");if(e){e.textContent=t||"";e.className="message "+type}}
+async function api(path,options={}){
+ const h=new Headers(options.headers||{});h.set("apikey",key);h.set("Authorization","Bearer "+token);
+ if(options.body)h.set("Content-Type","application/json");
+ const r=await fetch(SUPABASE_URL+path,{...options,headers:h});
+ const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
+ if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));
+ return b;
 }
-function renderFieldTable(){if(!fields.length)return '<div class="empty">No properties in this branch yet.</div>';return `<div class="data-table"><div class="data-head"><span>Property</span><span>Type</span><span>Buying</span><span>Selling</span><span>Action</span></div>${fields.map(f=>`<div class="data-row"><span><strong>${esc(f.label)}</strong><br><span class="status-note">${esc(f.field_key)}</span></span><span>${esc(f.field_type)}</span><span>${f.enabled_for_buying?(f.required_for_buying?'Required':'Live'):'Off'}</span><span>${f.enabled_for_selling?(f.required_for_selling?'Required':'Live'):'Off'}</span><span><button class="mini-btn" type="button" data-field-toggle="buying" data-field-id="${f.id}">Buy ${f.enabled_for_buying?'Off':'On'}</button> <button class="mini-btn" type="button" data-field-toggle="selling" data-field-id="${f.id}">Sell ${f.enabled_for_selling?'Off':'On'}</button></span></div>`).join('')}</div>`}
-async function saveBranch(e){e.preventDefault();try{const b=branches.find(x=>x.id===selectedBranchId);if(!b)return;await api(`/rest/v1/category_branches?id=eq.${encodeURIComponent(b.id)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({name:$('branch-name').value.trim(),slug:slugify($('branch-slug').value)||slugify($('branch-name').value),description:$('branch-description').value.trim()||null,buying_enabled:$('branch-buying').checked,selling_enabled:$('branch-selling').checked,active:$('branch-active').checked})});msg('Branch settings saved.','success');await load()}catch(e){msg(e.message||String(e),'error')}}
-async function addField(e){e.preventDefault();try{if(!selectedBranchId)throw Error('Select a branch first.');const keyv=$('field-key').value.trim();if(!keyv)throw Error('Property key is required.');await api('/rest/v1/category_fields',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:selectedCategoryId,branch_id:selectedBranchId,field_key:keyv,label:$('field-label').value.trim(),field_type:$('field-type').value,enabled_for_buying:$('field-buying').checked,enabled_for_selling:$('field-selling').checked,required_for_buying:$('field-required-buying').checked,required_for_selling:$('field-required-selling').checked,customer_visible:$('field-customer').checked,staff_visible:$('field-staff').checked,valuation_relevant:$('field-valuation').checked,sort_order:fields.length,validation_config:{}})});msg('Property added to branch.','success');await selectBranch(selectedBranchId)}catch(e){msg(e.message||String(e),'error')}}
-async function toggleField(id,side){const f=fields.find(x=>x.id===id);if(!f)return;try{const patch=side==='buying'?{enabled_for_buying:!f.enabled_for_buying}:{enabled_for_selling:!f.enabled_for_selling};await api(`/rest/v1/category_fields?id=eq.${encodeURIComponent(id)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(patch)});await selectBranch(selectedBranchId);msg('Property visibility updated.','success')}catch(e){msg(e.message||String(e),'error')}}
-function showBranchCreator(categoryId){const c=categories.find(x=>x.id===categoryId);if(!c)return;selectedCategoryId=categoryId;$('editor').innerHTML=`<div class="eyebrow">${esc(c.name)}</div><h2>Create branch</h2><p class="status-note">Create a branch inside this category, then choose which Buying and Selling paths use it.</p><form id="new-branch-form"><div class="editor-grid"><label>Name<input id="new-branch-name" required></label><label>Slug<input id="new-branch-slug" placeholder="auto-generated"></label><label class="full">Description<textarea id="new-branch-description" rows="2"></textarea></label></div><div class="switches" style="margin-top:10px"><label><input id="new-branch-buying" type="checkbox" checked> Live for Buying</label><label><input id="new-branch-selling" type="checkbox" checked> Live for Selling</label><label><input id="new-branch-active" type="checkbox" checked> Active</label></div><p><button type="submit">Create branch</button></p></form>`;$('new-branch-name').oninput=e=>{if(!$('new-branch-slug').dataset.edited)$('new-branch-slug').value=slugify(e.target.value)};$('new-branch-slug').oninput=()=>{$('new-branch-slug').dataset.edited='1'};$('new-branch-form').onsubmit=async e=>{e.preventDefault();try{const name=$('new-branch-name').value.trim();if(!name)throw Error('Branch name is required.');const rows=await api('/rest/v1/category_branches',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,category_id:categoryId,name,slug:slugify($('new-branch-slug').value)||slugify(name),description:$('new-branch-description').value.trim()||null,buying_enabled:$('new-branch-buying').checked,selling_enabled:$('new-branch-selling').checked,active:$('new-branch-active').checked,sort_order:branches.filter(b=>b.category_id===categoryId).length})});const created=Array.isArray(rows)?rows[0]:rows;msg('Branch created.','success');await load();if(created?.id)await selectBranch(created.id)}catch(e){msg(e.message||String(e),'error')}}}
-function bindPage(){const nameEl=$('category-name'),slugEl=$('category-slug'),form=$('category-form'),signOut=$('sign-out');if(!nameEl||!slugEl||!form){msg('Categories page markup is incomplete. Please refresh the page.','error');return}nameEl.oninput=e=>{if(!slugEl.dataset.edited)slugEl.value=slugify(e.target.value)};slugEl.oninput=()=>{slugEl.dataset.edited='1'};form.onsubmit=async e=>{e.preventDefault();try{const name=nameEl.value.trim();if(!name)throw Error('Category name is required.');const rows=await api('/rest/v1/categories',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,name,slug:slugify(slugEl.value)||slugify(name),description:$('category-description').value.trim()||null,buying_enabled:$('buying-enabled').checked,selling_enabled:$('selling-enabled').checked,active:$('category-active').checked,sort_order:categories.length})});const created=Array.isArray(rows)?rows[0]:rows;e.target.reset();$('buying-enabled').checked=true;$('selling-enabled').checked=true;$('category-active').checked=true;slugEl.dataset.edited='';await load();msg('Category created.','success');if(created?.id){const b=branches.find(x=>x.category_id===created.id);if(b)await selectBranch(b.id)}}catch(e){msg(e.message||String(e),'error')}};if(signOut)signOut.onclick=()=>window.tradeflowSubscriberSignOut?window.tradeflowSubscriberSignOut():location.reload();load()}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindPage,{once:true});else bindPage();
+async function init(){
+ try{
+  const auth=await window.tradeflowSubscriberAuthReady;
+  if(!auth?.session?.access_token||!auth.tenantId)throw Error("Subscriber sign-in required.");
+  key=auth.key;token=auth.session.access_token;tenantId=auth.tenantId;
+  $("business-name").textContent=auth.tenants?.[tenantId]||"Catalogue & Categories";
+  await loadMaster();
+ }catch(e){msg(e.message||String(e),"error");$("catalogue-status").textContent="Catalogue unavailable";$("catalogue-status").classList.add("pill")}
+}
+async function loadMaster(){
+ msg("Loading the TradeFlow master catalogue…");
+ const rows=await api("/rest/v1/rpc/get_master_catalogue_for_selection",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId})});
+ master=Array.isArray(rows)?rows:[];
+ const current=await api("/rest/v1/tenant_catalogue_selections?select=master_product_id,buying_enabled,selling_enabled,active&tenant_id=eq."+encodeURIComponent(tenantId));
+ selections=new Map((current||[]).map(x=>[x.master_product_id,x]));
+ populateFilters();
+ $("catalogue-status").textContent=master.length+" master products available";
+ $("catalogue-status").classList.add("live");
+ renderCategories();renderBranches();renderProducts();
+ msg("Catalogue loaded. Select products to activate them for your business.","success");
+}
+function categories(){
+ const map=new Map();
+ master.forEach(p=>{if(!map.has(p.category_id))map.set(p.category_id,{id:p.category_id,name:p.category_name,count:0});map.get(p.category_id).count++});
+ return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+}
+function branches(){
+ const map=new Map();
+ master.filter(p=>!categoryFilter||p.category_id===categoryFilter).forEach(p=>{if(p.branch_id&&!map.has(p.branch_id))map.set(p.branch_id,{id:p.branch_id,name:p.branch_name,count:0});if(p.branch_id)map.get(p.branch_id).count++});
+ return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+}
+function manufacturers(){
+ const map=new Map();
+ master.filter(p=>!categoryFilter||p.category_id===categoryFilter).filter(p=>!branchFilter||p.branch_id===branchFilter).forEach(p=>map.set(p.manufacturer_id,{id:p.manufacturer_id,name:p.manufacturer_name}));
+ return [...map.values()].sort((a,b)=>a.name.localeCompare(b.name));
+}
+function populateFilters(){
+ $("category-filter").innerHTML='<option value="">All categories</option>'+categories().map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+" ("+c.count+")</option>").join("");
+ populateBranchFilter();populateManufacturerFilter();
+}
+function populateBranchFilter(){
+ const valid=branches();
+ if(branchFilter&&!valid.some(b=>b.id===branchFilter))branchFilter="";
+ $("branch-filter").innerHTML='<option value="">All branches</option>'+valid.map(b=>'<option value="'+esc(b.id)+'">'+esc(b.name)+" ("+b.count+")</option>").join("");
+ $("branch-filter").value=branchFilter;
+}
+function populateManufacturerFilter(){
+ const valid=manufacturers();
+ if(manufacturerFilter&&!valid.some(m=>m.id===manufacturerFilter))manufacturerFilter="";
+ $("manufacturer-filter").innerHTML='<option value="">All manufacturers</option>'+valid.map(m=>'<option value="'+esc(m.id)+'">'+esc(m.name)+"</option>").join("");
+ $("manufacturer-filter").value=manufacturerFilter;
+}
+function renderCategories(){
+ const box=$("category-list");const cats=categories();
+ box.innerHTML='<div class="cat-item '+(!categoryFilter?"active":"")+'"><button data-cat=""><div class="cat-name">All categories</div><div class="cat-meta">'+master.length+" products</div></button></div>"+cats.map(c=>'<div class="cat-item '+(c.id===categoryFilter?"active":"")+'"><button data-cat="'+esc(c.id)+'"><div class="cat-name">'+esc(c.name)+'</div><div class="cat-meta">'+c.count+" products</div></button></div>").join("");
+ box.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{categoryFilter=b.dataset.cat;branchFilter="";manufacturerFilter="";page=1;populateBranchFilter();populateManufacturerFilter();renderCategories();renderBranches();renderProducts()});
+}
+function renderBranches(){
+ const box=$("branch-strip");const bs=branches();
+ box.innerHTML='<button class="branch '+(!branchFilter?"active":"")+'" data-branch="">All branches</button>'+bs.map(b=>'<button class="branch '+(b.id===branchFilter?"active":"")+'" data-branch="'+esc(b.id)+'">'+esc(b.name)+' <span>('+b.count+')</span></button>').join("");
+ box.querySelectorAll("[data-branch]").forEach(b=>b.onclick=()=>{branchFilter=b.dataset.branch;manufacturerFilter="";page=1;populateManufacturerFilter();renderBranches();renderProducts()});
+}
+function filtered(){
+ const q=searchTerm.toLowerCase();
+ return master.filter(p=>
+  (!categoryFilter||p.category_id===categoryFilter)&&
+  (!branchFilter||p.branch_id===branchFilter)&&
+  (!manufacturerFilter||p.manufacturer_id===manufacturerFilter)&&
+  (!q||[p.model,p.package_name,p.catalogue_category,p.main_category,p.product_type,p.manufacturer_name,p.branch_name,p.category_name].some(v=>String(v||"").toLowerCase().includes(q)))
+ );
+}
+function state(p){return selections.get(p.product_id)||{buying_enabled:false,selling_enabled:false,active:false}}
+function renderProducts(){
+ const rows=filtered(),totalPages=Math.max(1,Math.ceil(rows.length/pageSize));if(page>totalPages)page=totalPages;
+ const start=(page-1)*pageSize,visible=rows.slice(start,start+pageSize);
+ $("result-count").textContent=rows.length+" matching products · page "+page+" of "+totalPages;
+ $("catalogue-title").textContent=categoryFilter?(categories().find(c=>c.id===categoryFilter)?.name||"Catalogue")+" products":"Master products";
+ $("product-body").innerHTML=visible.length?visible.map(p=>{const s=state(p);return '<tr><td><input class="product-check" type="checkbox" data-product="'+p.product_id+'" '+(selected.has(p.product_id)?"checked":"")+'></td><td class="product-name"><strong>'+esc(p.manufacturer_name+" "+p.model)+'</strong><small>'+esc(p.package_name)+(p.product_type?" · "+esc(p.product_type):"")+'</small></td><td>'+esc(p.category_name)+(p.branch_name?"<br><small>"+esc(p.branch_name)+"</small>":"")+'</td><td>'+esc(p.manufacturer_name)+'</td><td><label class="toggle '+(s.buying_enabled?"live-buy":"")+'"><input class="buy-toggle" type="checkbox" data-product="'+p.product_id+'" '+(s.buying_enabled?"checked":"")+'> '+(s.buying_enabled?"Live":"Off")+'</label></td><td><label class="toggle '+(s.selling_enabled?"live-sell":"")+'"><input class="sell-toggle" type="checkbox" data-product="'+p.product_id+'" '+(s.selling_enabled?"checked":"")+'> '+(s.selling_enabled?"Live":"Off")+'</label></td></tr>'}).join(""):'<tr><td colspan="6" class="empty">No catalogue products match these filters.</td></tr>';
+ document.querySelectorAll(".product-check").forEach(i=>i.onchange=()=>{i.checked?selected.add(i.dataset.product):selected.delete(i.dataset.product);updateSelectionCount()});
+ document.querySelectorAll(".buy-toggle").forEach(i=>i.onchange=()=>toggleOne(i.dataset.product,i.checked,(state(master.find(p=>p.product_id===i.dataset.product))).selling_enabled));
+ document.querySelectorAll(".sell-toggle").forEach(i=>i.onchange=()=>toggleOne(i.dataset.product,(state(master.find(p=>p.product_id===i.dataset.product))).buying_enabled,i.checked));
+ $("page-info").textContent="Showing "+(visible.length?start+1:0)+"–"+(start+visible.length)+" of "+rows.length;
+ $("prev-page").disabled=page<=1;$("next-page").disabled=page>=totalPages;
+ updateSelectionCount();
+}
+function updateSelectionCount(){ $("select-visible").textContent=selected.size?"Select all visible ("+selected.size+")":"Select visible"; }
+async function toggleOne(id,buy,sell){
+ try{await applySelection([id],buy,sell)}catch(e){renderProducts();msg(e.message||String(e),"error")}
+}
+async function applySelection(ids,buy,sell){
+ if(!ids.length)return msg("Select at least one product first.","error");
+ const result=await api("/rest/v1/rpc/activate_master_catalogue_products",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_ids:ids,p_buying_enabled:!!buy,p_selling_enabled:!!sell})});
+ ids.forEach(id=>selections.set(id,{master_product_id:id,buying_enabled:!!buy,selling_enabled:!!sell,active:true}));
+ renderCategories();renderBranches();renderProducts();
+ msg((result?.products||ids.length)+" catalogue product"+((result?.products||ids.length)===1?"":"s")+" updated. Required categories and branches were created automatically.","success");
+}
+function visibleIds(){return filtered().map(p=>p.product_id)}
+$("select-visible").onclick=()=>{visibleIds().forEach(id=>selected.add(id));renderProducts()};
+$("clear-selected").onclick=()=>{selected.clear();renderProducts()};
+$("select-all").onchange=e=>{e.target.checked?visibleIds().forEach(id=>selected.add(id)):visibleIds().forEach(id=>selected.delete(id));renderProducts()};
+$("enable-buying").onclick=()=>applySelection([...selected],true,false);
+$("enable-selling").onclick=()=>applySelection([...selected],false,true);
+$("enable-both").onclick=()=>applySelection([...selected],true,true);
+$("disable-both").onclick=()=>applySelection([...selected],false,false);
+$("category-filter").onchange=e=>{categoryFilter=e.target.value;branchFilter="";manufacturerFilter="";page=1;populateBranchFilter();populateManufacturerFilter();renderCategories();renderBranches();renderProducts()};
+$("branch-filter").onchange=e=>{branchFilter=e.target.value;manufacturerFilter="";page=1;populateManufacturerFilter();renderBranches();renderProducts()};
+$("manufacturer-filter").onchange=e=>{manufacturerFilter=e.target.value;page=1;renderProducts()};
+$("model-search").oninput=e=>{searchTerm=e.target.value.trim();page=1;renderProducts()};
+$("prev-page").onclick=()=>{if(page>1){page--;renderProducts()}};
+$("next-page").onclick=()=>{if(page<Math.ceil(filtered().length/pageSize)){page++;renderProducts()}};
+$("custom-category-form").onsubmit=async e=>{
+ e.preventDefault();
+ try{
+  const name=$("custom-category-name").value.trim();if(!name)throw Error("Category name is required.");
+  await api("/rest/v1/categories",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,slug:name.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""),description:$("custom-category-description").value.trim()||null,active:true,buying_enabled:false,selling_enabled:false,sort_order:9999})});
+  $("custom-category-name").value="";$("custom-category-description").value="";
+  msg("Custom category created. Add its branch and properties from the category structure tools when required.","success");
+ }catch(e){msg(e.message||String(e),"error")}
+};
+$("sign-out").onclick=()=>{if(window.tradeflowSubscriberSignOut)window.tradeflowSubscriberSignOut();else location.href="subscriber-login.html"};
+if(window.tradeflowSubscriberAuthReady)window.tradeflowSubscriberAuthReady.then(init).catch(e=>msg(e.message||String(e),"error"));else msg("Subscriber authentication layer did not load.","error");

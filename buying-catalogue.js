@@ -285,9 +285,9 @@ async function addSelectedProducts(){
   let result;
   if(buyingSelectionAllMatching){
    const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
-   result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_filtered",{method:"POST",body:JSON.stringify({...payload,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q}),timeoutMs:45000});
+   result=await api("/rest/v1/rpc/add_master_buying_products_filtered",{method:"POST",body:JSON.stringify({...payload,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q}),timeoutMs:45000});
   }else{
-   result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
+   result=await api("/rest/v1/rpc/add_master_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
   }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
   await loadPage();

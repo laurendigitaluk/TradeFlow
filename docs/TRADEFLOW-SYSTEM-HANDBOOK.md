@@ -653,3 +653,10 @@ External market research reviewed for terminology only: UK camera dealers common
 - Category management now shows each category with its branch count. Selecting a category loads and displays all branches belonging to that category.
 - Selecting a branch makes the working context explicit and shows manufacturers used within that branch. Manufacturers remain tenant-shared because the same manufacturer can legitimately appear across multiple branches.
 - Products remain assigned to the selected category and branch, preventing the catalogue from becoming an ambiguous flat list.
+
+
+## Bulk Buying Pricing Profiles — 19 September 2026
+- What We Buy now provides four ready-made pricing profiles that apply percentage rules across every product in the selected branch.
+- Profiles are based on the Sealed percentage: **70%, 60%, 50%, 40%**. Current ladders are respectively 70/65/60/50/40, 60/55/50/40/30, 50/45/40/30/20, and 40/35/30/20/10 for Sealed / Opened Never Used / Excellent / Good / Poor.
+- Applying a profile changes only automatic percentages. It does not change research evidence, reference selection, or manual override prices.
+- Individual products can still be adjusted after a bulk profile is applied.

@@ -242,9 +242,9 @@ function renderHome(){
   hero:homepageSections.hero!==false?templateHero():'',
   buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+buyingPreview()+'</section>':'',
   sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+sellingPreview()+'</section>':'',
-  trust:homepageSections.trust!==false?'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Edit your wording, images and branding in the builder.</span></div></section>':''
+  trust:''
  };
- const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="section-intro"><span>FEATURED CONTENT</span><h2>More to explore</h2><p>Drag the tiles to change their order. Edit the text or add an image directly on each tile.</p></div><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
+ const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
  const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
  return navMarkup()+withSellPrompt+tiles+footerMarkup();

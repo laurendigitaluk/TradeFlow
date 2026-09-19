@@ -10,6 +10,19 @@ function renderPremiumHome(site,buyingCatalogue){
  return sections;
 }
 
+function renderPublicBuyingSection(catalogue){
+ const products=Array.isArray(catalogue?.products)?catalogue.products:[];
+ const categories=Array.isArray(catalogue?.categories)?catalogue.categories:[];
+ if(!categories.length)return '<section class="public-tile-section public-buying-section"><div class="public-section-head"><div><span>What we buy</span><h2>What we are looking for</h2></div><p>This business is not currently showing a buying list online.</p></div></section>';
+ const cards=categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);return '<article class="public-buying-category"><div class="public-buying-category-head"><div><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div>'+(cat.description?'<p class="public-buying-description">'+esc(cat.description)+'</p>':'')+'<ul>'+items.slice(0,8).map(p=>'<li><strong>'+esc(((p.manufacturer||'')+' '+(p.model||'')).trim()||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+'</li>').join('')+'</ul>'+(items.length>8?'<p class="public-buying-more">+'+(items.length-8)+' more products</p>':'')+'<a class="public-buying-link" href="'+pageUrl('buying')+'">View full buying list</a></article>'}).join('');
+ return '<section class="public-tile-section public-buying-section"><div class="public-section-head"><div><span>What we buy</span><h2>Sell your items to us</h2></div><p>These categories and products are selected from this business buying catalogue.</p></div><div class="public-buying-category-grid">'+cards+'</div></section>';
+}
+function renderPublicBuyingPage(catalogue){
+ const products=Array.isArray(catalogue?.products)?catalogue.products:[];
+ const categories=Array.isArray(catalogue?.categories)?catalogue.categories:[];
+ if(!categories.length)return '<div class="public-buying-page-empty">This business is not currently showing a buying list online.</div>';
+ return categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});const groups=Object.entries(grouped).map(([maker,list])=>'<div class="public-buying-manufacturer"><h3>'+esc(maker)+'</h3><div class="public-buying-product-list">'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+(p.branch_name?'<small>'+esc(p.branch_name)+'</small>':'')+'</article>').join('')+'</div></div>').join('');return '<section class="public-buying-page-category"><div class="public-section-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><p>'+esc(cat.description||'Products currently selected by this business.')+'</p></div>'+groups+'</section>'}).join('');
+}
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';const params=new URLSearchParams(location.search),tenantId=params.get('tenant_id'),page=params.get('page')||'home',preview=params.get('preview')==='draft',hostname=location.hostname,$=id=>document.getElementById(id);
 async function api(path){if(!KEY)throw new Error('TradeFlow connection is not configured.');const response=await fetch(`${SUPABASE_URL}${path}`,{headers:{apikey:KEY,'Content-Type':'application/json'}});const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}if(!response.ok)throw new Error(body?.message||body?.msg||body?.error||text||`HTTP ${response.status}`);return body}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}

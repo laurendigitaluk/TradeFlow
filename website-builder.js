@@ -202,20 +202,24 @@ function navMarkup(){
  return '<nav class="template-nav"><div class="template-brand">'+logoEditor()+'</div><div class="template-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
 }
 function templateHero(){
- const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName)+'">':'<div class="demo-image">Add your main image</div>';
- const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName)+'">':'<div class="demo-image">Add a second image</div>';
+ const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
+ const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image">Add main image</div>';
+ const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image">Add second image</div>';
+ const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
+ const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
+ const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
  switch(currentTemplate){
- case 'modern': return '<section class="tpl-hero modern-hero"><div><span class="tpl-eyebrow">'+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>What We Sell</b></div></div><div class="hero-collage">'+img1+img2+'</div></section>';
- case 'heritage': return '<section class="tpl-hero heritage-hero"><div class="heritage-copy"><span class="tpl-eyebrow">Established service</span>'+h+i+'<div class="tpl-actions"><b>Sell to us</b><b>Browse our shop</b></div></div><div class="heritage-image">'+img1+'</div></section>';
- case 'tech': return '<section class="tpl-hero tech-hero"><div><span class="tpl-code">TRADEFLOW / '+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tech-actions"><b>01 / WHAT WE BUY</b><b>02 / WHAT WE SELL</b></div></div>'+img1+'</section>';
- case 'creative': return '<section class="tpl-hero creative-hero"><div class="creative-image">'+img1+'</div><div class="creative-copy"><span class="tpl-eyebrow">Your business</span>'+h+i+'<b class="creative-cta">Explore the business →</b></div></section>';
- case 'aerial': return '<section class="tpl-hero aerial-hero"><div class="aerial-copy"><span class="tpl-code">BUYING / SELLING / TRADEFLOW</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Retail Shop</b></div></div><div class="aerial-image">'+img1+'</div></section>';
- case 'adventure': return '<section class="tpl-hero adventure-hero">'+img1+'<div class="adventure-copy"><span class="tpl-eyebrow">'+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Explore the shop</b></div></div></section>';
- case 'professional': return '<section class="tpl-hero professional-hero"><div><span class="tpl-eyebrow">Business information</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Retail Shop</b></div></div><div class="professional-facts"><strong>BUYING</strong><span>Selected categories</span><strong>SELLING</strong><span>Published products</span></div></section>';
- case 'premium': return '<section class="tpl-hero premium-hero-new"><div>'+h+i+'<div class="tpl-actions"><b>Sell to us</b><b>Shop products</b></div></div>'+img1+'</section>';
- case 'marketplace': return '<section class="tpl-hero marketplace-hero"><div><span class="tpl-code">BUY / SELL / TRADE</span>'+h+i+'<div class="market-search">Search products or categories</div></div>'+img1+'</section>';
- default: return '<section class="tpl-hero statement-hero"><div class="statement-word">WE BUY.</div><div class="statement-copy">'+h+i+'<div class="tpl-actions"><b>See What We Buy</b><b>See What We Sell</b></div></div>'+img1+'</section>';
+ case 'editorial': return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+img1+img2+'</div></section>';
+ case 'classic': return '<section class="tpl-hero classic-hero"><div class="classic-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+img1+'</div></section>';
+ case 'grid': return '<section class="tpl-hero grid-hero"><div><div class="tpl-code">'+kicker+'</div>'+h+i+'<div class="grid-cta-row">'+a1+a2+'</div></div><div class="grid-image">'+img1+'</div></section>';
+ case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
+ case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
+ case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
+ case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"><strong>BUYING</strong><span>Selected categories</span><strong>SELLING</strong><span>Published products</span></div></section>';
+ case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
+ case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"><div>BUYING CATEGORIES</div><strong>Connected to your catalogue</strong><span>Products and categories update automatically.</span></div></section>';
+ default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
 function renderHome(){

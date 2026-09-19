@@ -226,14 +226,18 @@ function templateHero(){
  }
 }
 function renderHome(){
+ const visibleTiles=homepageTiles.slice(0,homepageTileCount);
+ const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><span>'+esc(tile.side==='buy'?'WHAT WE BUY':'WHAT WE SELL')+'</span><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
-  hero:templateHero(),
-  buy:'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>',
-  sell:'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>',
-  trust:'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Change the wording, images and branding whenever you need.</span></div></section>'
+  hero:homepageSections.hero!==false?templateHero():'',
+  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>':'',
+  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>':'',
+  trust:homepageSections.trust!==false?'<section class="trust-row" draggable="true" data-home-block="trust"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Edit your wording, images and branding in the builder.</span></div></section>':''
  };
- return navMarkup()+homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('')+footerMarkup();
+ const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="section-intro"><span>FEATURED CONTENT</span><h2>More to explore</h2><p>Drag the tiles to change their order. Edit the text or add an image directly on each tile.</p></div><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
+ return navMarkup()+homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('')+tiles+footerMarkup();
 }
+
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
  if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block"><span>WHAT WE BUY</span>'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'Tell customers what you are looking for and how selling to you works.','p')+'</div>'+buyingPreview()+'</section>'+footerMarkup();
@@ -265,26 +269,32 @@ function bindEditor(){
      if(field==='buyIntro')homeBuyIntro=el.innerText.trim();
      if(field==='sellHeading')homeSellHeading=el.innerText.trim();
      if(field==='sellIntro')homeSellIntro=el.innerText.trim();
-     if(el.dataset.homeField){const fieldMap={buyHeading:'homeBuyHeading',buyIntro:'homeBuyIntro',sellHeading:'homeSellHeading',sellIntro:'homeSellIntro'};const key=fieldMap[el.dataset.homeField];if(key){if(key==='homeBuyHeading')homeBuyHeading=el.innerText.trim();if(key==='homeBuyIntro')homeBuyIntro=el.innerText.trim();if(key==='homeSellHeading')homeSellHeading=el.innerText.trim();if(key==='homeSellIntro')homeSellIntro=el.innerText.trim();}}
      markDirty();
    });
    el.addEventListener('focus',()=>el.classList.add('editing'));
    el.addEventListener('blur',()=>el.classList.remove('editing'));
  });
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
- let dragged=null;
- root.querySelectorAll('[data-home-block]').forEach(el=>{
-   el.addEventListener('dragstart',()=>{dragged=el.dataset.homeBlock;el.classList.add('dragging')});
-   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
-   el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('drag-over')});
-   el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
-   el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');const target=el.dataset.homeBlock;if(!dragged||dragged===target)return;homepageOrder=homepageOrder.filter(k=>k!==dragged);const at=homepageOrder.indexOf(target);homepageOrder.splice(at<0?homepageOrder.length:at,0,dragged);markDirty();renderEditor()});
- });
  root.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  }));
+ let draggedBlock=null;
+ root.querySelectorAll('[data-home-block]').forEach(el=>{
+   el.addEventListener('dragstart',()=>{draggedBlock=el.dataset.homeBlock;el.classList.add('dragging')});
+   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+   el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('drag-over')});
+   el.addEventListener('dragleave',()=>el.classList.remove('drag-over'));
+   el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');const target=el.dataset.homeBlock;if(!draggedBlock||draggedBlock===target)return;homepageOrder=homepageOrder.filter(k=>k!==draggedBlock);const at=homepageOrder.indexOf(target);homepageOrder.splice(at<0?homepageOrder.length:at,0,draggedBlock);markDirty();renderEditor()});
+ });
+ let draggedTile=null;
+ root.querySelectorAll('[data-tile-id]').forEach(el=>{
+   if(el.matches('.editable-home-tile'))el.addEventListener('dragstart',()=>{draggedTile=el.dataset.tileId;el.classList.add('dragging')});
+   if(el.matches('.editable-home-tile'))el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+   if(el.matches('.editable-home-tile'))el.addEventListener('dragover',e=>{e.preventDefault();el.classList.add('drag-over')});
+   if(el.matches('.editable-home-tile'))el.addEventListener('drop',e=>{e.preventDefault();el.classList.remove('drag-over');if(!draggedTile||draggedTile===el.dataset.tileId)return;const from=homepageTiles.findIndex(t=>t.id===draggedTile),to=homepageTiles.findIndex(t=>t.id===el.dataset.tileId);if(from<0||to<0)return;const [item]=homepageTiles.splice(from,1);homepageTiles.splice(to,0,item);markDirty();renderEditor()});
+ });
 }
 
 function selectPage(slug){

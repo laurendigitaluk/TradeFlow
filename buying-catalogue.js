@@ -291,7 +291,9 @@ $("sign-out").addEventListener("click",()=>{if(window.tradeflowSubscriberSignOut
 if(window.tradeflowSubscriberAuthReady)window.tradeflowSubscriberAuthReady.then(init).catch(e=>msg(e.message||String(e),"error"));else msg("Subscriber authentication layer did not load.","error");function toggleSelectAll(){
  window.buyingSelected=window.buyingSelected||new Set();
  buyingSelectionAllMatching=false;
- const selectable=master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const selectable=catalogueView==="my"
+  ? master.map(p=>p.product_id)
+  : master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
  const allSelected=selectable.length&&selectable.every(id=>window.buyingSelected.has(id));
  selectable.forEach(id=>allSelected?window.buyingSelected.delete(id):window.buyingSelected.add(id));
  renderMaster();

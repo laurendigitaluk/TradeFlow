@@ -56,3 +56,7 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor[data-nav-size="small"] .editor-nav{font-size:.72rem}.site-editor[data-nav-size="standard"] .editor-nav{font-size:.82rem}.site-editor[data-nav-size="large"] .editor-nav{font-size:.95rem}.site-editor[data-nav-size="xlarge"] .editor-nav{font-size:1.05rem}
 .site-editor[data-button-style="outline"] .hero-actions span{background:transparent;color:var(--accent,#c46a2b)}.site-editor[data-button-style="rounded"] .hero-actions span{border-radius:999px}.site-editor[data-button-style="solid"] .hero-actions span{background:var(--accent,#c46a2b);color:#fff}
 @media(max-width:650px){.image-pair{grid-template-columns:1fr}.image-pair .visual-image img,.image-pair .image-drop{height:auto;min-height:160px}}
+
+/* Uploaded photographs: show the complete image inside its frame; never crop to fill. */
+.public-image-wrap img,.public-premium-intro>img,.public-hero-images img,.page-image-wrap img,.public-home-tile-image img{object-fit:contain!important;object-position:center center!important;}
+.visual-image img,.premium-hero-visual .visual-image img,.home-tile-image img,.image-pair .visual-image img{object-fit:contain!important;object-position:center center!important;}

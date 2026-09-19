@@ -61,21 +61,27 @@ function renderHero(site){
  const intro=home.intro||'Make it simple for customers to see what you buy, what you sell and how to get started.';
  const copy=site.template_copy||{};
  const defaults={
-  editorial:{kicker:'YOUR BUSINESS',cta1:'What do you have to sell?',cta2:'What we sell'},
-  classic:{kicker:'ESTABLISHED SERVICE',cta1:'Sell to us',cta2:'Browse the shop'},
-  grid:{kicker:'BUY / SELL / TRADE',cta1:'01 / WHAT WE BUY',cta2:'02 / WHAT WE SELL'},
-  studio:{kicker:'YOUR BUSINESS',cta1:'Sell to us',cta2:'Explore the shop'},
-  horizon:{kicker:'BUYING / SELLING',cta1:'What we buy',cta2:'What we sell'},
-  field:{kicker:'BUYING / SELLING',cta1:'Sell your items',cta2:'Browse products'},
-  business:{kicker:'BUSINESS INFORMATION',cta1:'What we buy',cta2:'What we sell'},
-  luxe:{kicker:'PRIVATE SERVICE',cta1:'Sell to us',cta2:'Shop products'},
-  commerce:{kicker:'BUY / SELL',cta1:'Start selling',cta2:'Shop products'},
-  impact:{kicker:'BUY · SELL · TRADE',cta1:'What we buy',cta2:'What we sell'}
+  editorial:{kicker:'',cta1:'',cta2:''},
+  classic:{kicker:'',cta1:'',cta2:''},
+  grid:{kicker:'',cta1:'',cta2:''},
+  studio:{kicker:'',cta1:'',cta2:''},
+  horizon:{kicker:'',cta1:'',cta2:''},
+  field:{kicker:'',cta1:'',cta2:''},
+  business:{kicker:'',cta1:'',cta2:''},
+  luxe:{kicker:'',cta1:'',cta2:''},
+  commerce:{kicker:'',cta1:'',cta2:''},
+  impact:{kicker:'',cta1:'',cta2:''}
  };
  const d=defaults[t]||defaults.editorial;
- const kicker=esc(copy.kicker||d.kicker);
- const cta1=esc(copy.cta1||d.cta1);
- const cta2=esc(copy.cta2||d.cta2);
+ const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
+ const cta=['What do you have to sell?','What we buy','What we sell','Sell to us','Browse the shop','Explore the shop','Sell your items','Browse products','Retail shop','Shop products','Start selling','01 / WHAT WE BUY','02 / WHAT WE SELL'];
+ const safeCopy=Object.assign({},copy||{});
+ if(known.includes(String(safeCopy.kicker||'')))safeCopy.kicker='';
+ if(cta.includes(String(safeCopy.cta1||'')))safeCopy.cta1='';
+ if(cta.includes(String(safeCopy.cta2||'')))safeCopy.cta2='';
+ const kicker=esc(safeCopy.kicker||d.kicker);
+ const cta1=esc(safeCopy.cta1||d.cta1);
+ const cta2=esc(safeCopy.cta2||d.cta2);
  const a1='<a href="'+pageUrl('sell')+'">'+cta1+'</a>';
  const a2='<a href="'+pageUrl('shop')+'">'+cta2+'</a>';
  const i1=heroImage(home.image_url,name+' main image');
@@ -88,9 +94,9 @@ function renderHero(site){
  case 'studio':return '<section class="tpl-hero studio-hero"><div class="studio-image">'+i1+'</div><div class="studio-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div></section>';
  case 'horizon':return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+i1+'</div></section>';
  case 'field':return '<section class="tpl-hero field-hero"><div class="field-image">'+i1+'</div><div class="field-overlay"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business':return '<section class="tpl-hero business-hero"><div class="business-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"><strong>BUYING</strong><span>Selected categories</span><strong>SELLING</strong><span>Published products</span></div></section>';
+ case 'business':return '<section class="tpl-hero business-hero"><div class="business-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"></div></section>';
  case 'luxe':return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+i1+'</div></section>';
- case 'commerce':return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"><b>CONNECTED CATALOGUE</b><strong>Buying and selling stay current.</strong><span>Categories and published products update from TradeFlow.</span></div></section>';
+ case 'commerce':return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"></div></section>';
  case 'impact':return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+i1+'</div></section>';default:return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
  }
 }
@@ -107,7 +113,7 @@ function renderSellingSection(site,listings){
  const heading=home.sell_heading||'What we sell';
  const intro=home.sell_intro||'Browse the products currently published by this business.';
  const list=Array.isArray(listings)?listings:[];
- const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'View product')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'View product')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 
@@ -161,9 +167,6 @@ function renderHome(site,catalogue,listings){
  return out+renderFooter(site);
 }
 
-function renderSellPrompt(){
- return '<section class="sell-prompt"><div><span>READY TO SELL?</span><h2>What do you have to sell?</h2><p>Tell us what you have. We will guide you through category, type, make, model and condition so you can send a complete selling request.</p></div><a href="'+pageUrl('sell')+'">Start your selling request →</a></section>';
-}
 
 function renderSellPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];

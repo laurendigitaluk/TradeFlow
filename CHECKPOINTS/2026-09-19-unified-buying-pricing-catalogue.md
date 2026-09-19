@@ -53,3 +53,13 @@ Off/Reset clears the subscriber's manual/automatic buying price configuration an
 - Supabase migrations: PASS
 - Browser verification of Manual/Automatic/Off workflow: OPEN
 - GearCashOut: unchanged
+
+
+## Post-change verification
+
+- `buying-catalogue.js` passes `new Function()` syntax validation.
+- `configure_master_catalogue_buying_product()` exists with the expected authenticated signature.
+- Transaction-scoped authenticated test passed for Manual mode; it returned tenant category, branch, buying-product and master-product IDs and was rolled back.
+- Transaction-scoped authenticated test passed for Automatic mode followed by Off/reset; the transaction was rolled back.
+- No GearCashOut database or runtime request was added.
+- Browser verification remains open.

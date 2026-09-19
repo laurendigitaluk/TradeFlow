@@ -1,0 +1,3 @@
+alter table public.category_branches add column if not exists default_buying_percentage numeric(6,2);
+alter table public.category_branches drop constraint if exists category_branches_default_buying_percentage_ck;
+alter table public.category_branches add constraint category_branches_default_buying_percentage_ck check (default_buying_percentage is null or (default_buying_percentage>=0 and default_buying_percentage<=100));

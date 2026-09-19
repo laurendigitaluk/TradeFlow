@@ -670,3 +670,21 @@ For subscriber catalogue work, treat the TradeFlow master catalogue as an indepe
 
 ### Post-change verification — 2026-09-19
 Verified the catalogue selection RPC under an authenticated test identity: 3,822 active/customer-visible master products were returned. Transaction-scoped activation produced the expected tenant category/branch/product and blank pricing, then was rolled back.
+
+## 19 September 2026 — Buying Catalogue / Pricing architecture update
+
+Gemma and future TradeFlow automation must treat the TradeFlow master catalogue as an independent product taxonomy. The source tables are `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_manufacturers` and `catalogue_master_products`. GearCashOut is not a runtime data source for TradeFlow and must not be queried for subscriber pricing.
+
+Subscriber Buying configuration is now controlled from `buying-catalogue.html` / `buying-catalogue.js`. The automation boundary is:
+**master product → subscriber buying mode → tenant category/branch/manufacturer/product → pricing configuration → Buying valuation**.
+
+Modes are:
+- `off`: product is not active for the subscriber's Buying workflow;
+- `manual`: a tenant product-level manual buying price may be stored;
+- `automatic`: condition percentages are stored in `tenant_buying_condition_rules` and use the configured UK New/UK Used research references.
+
+The protected RPC `configure_master_catalogue_buying_product()` is the authoritative write path for this master-product-to-tenant configuration. Automation must not bypass it by directly creating tenant categories/products when the user is selecting a master catalogue item.
+
+Research remains separate from subscriber pricing configuration. The subscriber pricing page must not edit research evidence. Automatic valuation continues to use `calculate_buying_item_valuation()`; product-level manual buying price now takes precedence before condition-based automatic pricing.
+
+No runtime integration with GearCashOut is permitted for this workflow.

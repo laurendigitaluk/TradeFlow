@@ -668,3 +668,11 @@ External market research reviewed for terminology only: UK camera dealers common
 - Bulk pricing lets the subscriber choose **UK New** or **UK Used** as the automatic reference for all five conditions and choose one of the four percentage profiles at the same time.
 - `Apply pricing to selected` updates the selected products' condition reference types and automatic percentages. Research evidence and manual override prices are preserved.
 - The purpose is to make a large catalogue manageable without forcing the subscriber to edit every condition cell individually.
+
+
+## Universal Reference Selection — 19 September 2026
+- The bulk reference choice is universal across the five conditions for each selected product. Choosing UK New means Sealed, Opened Never Used, Excellent, Good and Poor all calculate from that product's UK New research; choosing UK Used makes all five calculate from UK Used research.
+- Condition does not select the research basis. Condition only selects the percentage rule.
+- The UI previews the selected reference immediately for selected rows; `Apply pricing to selected` persists the reference type and percentage profile.
+- TradeFlow does not silently substitute UK New for missing UK Used evidence or vice versa. If the chosen research basis has no evidence, the automatic price remains unavailable until research or a manual override exists.
+- What We Buy now has clear CTAs for Main Dashboard, Buying Dashboard and Research Centre.

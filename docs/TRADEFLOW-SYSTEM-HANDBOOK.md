@@ -815,3 +815,7 @@ The subscriber buying setup is now a single workflow rather than separate Catalo
 - `categories.html` is now a legacy redirect to the unified buying catalogue.
 - The master selection RPC now uses the copied product's `catalogue_category` label for subscriber-facing category creation.
 - The test subscriber tenant `subscriber test 1` is on the Enhanced trial so the pre-filled catalogue entitlement can be exercised.
+
+
+### Post-change verification — 2026-09-19
+The authenticated RPC test returned 3,822 master products for the Enhanced test tenant. A transaction-scoped activation test for an Autel Alpha master product produced category "Drone", branch "Camera Drones", manufacturer "Autel Robotics", with both automatic_percentage and manual_offer_price null; the transaction was rolled back, so no test product was left behind.

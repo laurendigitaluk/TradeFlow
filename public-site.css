@@ -80,3 +80,47 @@ body[data-footer-style="business"] footer{padding-top:38px;padding-bottom:38px}b
 
 /* Logo/header refinement: accommodate either a full logo image or plain business text without clipping. */
 .topbar{height:auto;min-height:70px;padding-top:8px;padding-bottom:8px;overflow:visible}.brand{min-width:0;flex:0 0 auto;max-width:32%;overflow:visible;white-space:nowrap}.site-logo{display:block;width:auto;height:auto;max-width:220px;max-height:54px;object-fit:contain!important;object-position:left center!important;flex:0 0 auto}.brand span{display:block;overflow:visible;text-overflow:clip;white-space:nowrap;max-width:100%}
+
+/* Second template family — structural layouts */
+body[data-template="retail"] .topbar{position:fixed;left:0;top:0;bottom:0;width:220px;height:100vh;min-height:100vh;display:flex;flex-direction:column;align-items:stretch;padding:26px 16px;gap:24px;z-index:20;border-right:1px solid #ded7ce}
+body[data-template="retail"] .brand{padding:6px 8px}
+body[data-template="retail"] #site-nav{display:flex;flex-direction:column;align-items:stretch;gap:5px}
+body[data-template="retail"] #site-nav a{display:block;text-align:left;padding:10px 11px;border-radius:6px}
+body[data-template="retail"] #app,body[data-template="retail"] #site-extras{margin-left:220px}
+body[data-template="retail"] .public-premium-intro{min-height:620px}
+
+/* Professional — right utility sidebar */
+body[data-template="professional"] .topbar{position:fixed;right:0;top:0;bottom:0;width:200px;height:100vh;min-height:100vh;display:flex;flex-direction:column;align-items:stretch;padding:28px 15px;gap:24px;z-index:20;border-left:1px solid #d7dfe4}
+body[data-template="professional"] .brand{padding:6px 8px}
+body[data-template="professional"] #site-nav{display:flex;flex-direction:column;align-items:stretch;gap:5px}
+body[data-template="professional"] #site-nav a{display:block;text-align:right;padding:9px 10px;border-radius:5px}
+body[data-template="professional"] #app,body[data-template="professional"] #site-extras{margin-right:200px}
+body[data-template="professional"] .public-premium-intro{min-height:560px}
+
+/* Bold — strong permanent dark navigation rail */
+body[data-template="bold"] .topbar{position:fixed;left:0;top:0;bottom:0;width:235px;height:100vh;min-height:100vh;display:flex;flex-direction:column;align-items:stretch;padding:30px 17px;gap:28px;z-index:20;background:#101820;border-right:0}
+body[data-template="bold"] .brand{padding:7px 8px;color:#fff}
+body[data-template="bold"] #site-nav{display:flex;flex-direction:column;align-items:stretch;gap:7px}
+body[data-template="bold"] #site-nav a{display:block;text-align:left;color:#fff;background:transparent;border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:11px}
+body[data-template="bold"] #app,body[data-template="bold"] #site-extras{margin-left:235px}
+body[data-template="bold"] .public-premium-intro{min-height:650px}
+
+/* Classic — centred masthead and separate navigation band */
+body[data-template="classic"] .topbar{display:flex;flex-direction:column;align-items:center;gap:14px;height:auto;padding:25px 30px 18px;border-bottom:1px solid #d8cdbd}
+body[data-template="classic"] .brand{font-family:Georgia,serif;font-size:1.4rem}
+body[data-template="classic"] #site-nav{justify-content:center;flex-wrap:wrap;gap:6px}
+body[data-template="classic"] .public-premium-intro{min-height:500px}
+
+/* Local Business — compact split header with pill navigation */
+body[data-template="local"] .topbar{display:grid;grid-template-columns:190px 1fr;align-items:center;gap:22px;height:auto;padding:15px 24px;border-bottom:1px solid #d5e1d8}
+body[data-template="local"] #site-nav{justify-content:flex-end;flex-wrap:wrap;gap:5px}
+body[data-template="local"] #site-nav a{border-radius:18px;padding:8px 12px}
+body[data-template="local"] .public-premium-intro{min-height:470px}
+
+@media(max-width:760px){
+ body[data-template="retail"] .topbar,body[data-template="professional"] .topbar,body[data-template="bold"] .topbar{position:relative;left:auto;right:auto;top:auto;bottom:auto;width:auto;height:auto;min-height:0;display:flex;padding:15px;gap:10px}
+ body[data-template="retail"] #app,body[data-template="retail"] #site-extras,body[data-template="professional"] #app,body[data-template="professional"] #site-extras,body[data-template="bold"] #app,body[data-template="bold"] #site-extras{margin:0}
+ body[data-template="retail"] #site-nav,body[data-template="professional"] #site-nav,body[data-template="bold"] #site-nav{flex-direction:row;flex-wrap:wrap}
+ body[data-template="retail"] #site-nav a,body[data-template="professional"] #site-nav a,body[data-template="bold"] #site-nav a{text-align:center}
+ body[data-template="local"] .topbar{display:flex}
+}

@@ -194,7 +194,7 @@ async function saveAuto(masterId,button){
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
  for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Condition overrides must be valid non-negative prices.","error");
  button.disabled=true;try{
-  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product_pricing",{method:"POST",body:JSON.stringify({
    p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",
    p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,
    p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,

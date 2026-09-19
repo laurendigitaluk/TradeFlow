@@ -44,6 +44,14 @@ async function loadFacets(){
 }
 async function loadPage(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
+ if(!man&&!q){
+  master=[];totalProducts=0;
+  $("catalogue-status").textContent="Choose a manufacturer or search";
+  $("catalogue-status").classList.remove("live");
+  $("catalogue-help").textContent="No product records are downloaded until you choose a manufacturer or enter a product search. Category and branch selections only narrow the available choices.";
+  renderMaster();
+  return;
+ }
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_page",{method:"POST",body:JSON.stringify({
   p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize
  }),timeoutMs:45000});

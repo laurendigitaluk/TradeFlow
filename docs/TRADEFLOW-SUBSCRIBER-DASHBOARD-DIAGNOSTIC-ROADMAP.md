@@ -384,3 +384,61 @@ The runtime cache has been bumped to website-builder.js?v=12.
 ## Restore checkpoint — 18 September 2026
 
 This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.
+
+
+## Stage 1S — Domain purchasing database foundation — 19 September 2026
+
+### User path
+
+Future target:
+
+**Subscriber Dashboard → Website/Domain → domain search → authoritative availability/price check → payment → registrar registration → tenant domain activation → DNS/hosting → SSL → published site.**
+
+Current implemented path:
+
+**Subscriber Dashboard → Website URL → `domain-settings.html` → `domain-settings.js` → `tenant_domains` pending record.**
+
+### Database objects
+
+Existing:
+- `tenant_domains`
+- `published_site_index`
+- `publish_site_revision()`
+
+Added:
+- `domain_tld_catalog`
+- `tenant_domain_orders`
+
+Extended:
+- `tenant_domains.acquisition_source`
+- `tenant_domains.registrar_provider`
+- `tenant_domains.registrar_domain_id`
+- `tenant_domains.registered_at`
+- `tenant_domains.expires_at`
+- `tenant_domains.auto_renew`
+- `tenant_domains.provider_metadata`
+
+### Failure points
+
+1. Domain search data is stale or not authoritative.
+2. Domain becomes unavailable between search and purchase.
+3. Registrar/provider does not support the selected TLD or premium domain.
+4. Payment succeeds but registrar registration fails or remains asynchronous.
+5. Registrar succeeds but tenant domain activation is not reconciled.
+6. DNS/hosting target is not configured for multi-subscriber routing.
+7. SSL issuance/renewal fails.
+8. Auto-renew state diverges between TradeFlow and registrar.
+9. Provider secrets are exposed to the browser or database.
+10. Domain order can be accessed across tenants.
+
+### Diagnostic rule
+
+Trace domain purchase as:
+
+**User action → domain UI → server-side availability/check → payment boundary → registrar registration → provider status/reconciliation → `tenant_domain_orders` → `tenant_domains` → DNS/hosting → `published_site_index` → public renderer.**
+
+Do not mark domain purchasing Verified Live until a real end-to-end test has demonstrated the full chain. Do not invent the registrar, DNS target or provider-specific API path before those components are selected and inspected.
+
+**Database foundation:** Implemented and schema-verified.  
+**Purchase flow:** Planned.
+

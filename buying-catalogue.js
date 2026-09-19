@@ -271,6 +271,34 @@ function previewBulkReference(){
    if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
  });
 }
+let resetArmedUntil=0;
+function armOrResetSelectedPrices(){
+ const ids=[...selectedProductIds];
+ if(!ids.length)return msg("Select at least one product first.","error");
+ const btn=$("reset-selected-prices"),now=Date.now();
+ if(now>resetArmedUntil){
+   resetArmedUntil=now+6000;
+   btn.classList.add("armed");btn.textContent="Click again to reset selected prices";
+   msg("Warning: click Reset again within 6 seconds to clear automatic percentages, reference choices and manual overrides for the selected products.","error");
+   setTimeout(()=>{if(Date.now()>resetArmedUntil){resetArmedUntil=0;btn.classList.remove("armed");btn.textContent="Reset selected prices"}},6100);
+   return;
+ }
+ resetArmedUntil=0;btn.classList.remove("armed");btn.textContent="Resetting…";
+ resetSelectedPrices(ids);
+}
+async function resetSelectedPrices(ids){
+ try{
+  const rows=ids.map(id=>({tenant_id:tenantId,buying_product_id:id,
+    sealed_percentage:null,opened_never_used_percentage:null,excellent_percentage:null,good_percentage:null,poor_percentage:null,
+    sealed_reference_type:null,opened_never_used_reference_type:null,excellent_reference_type:null,good_reference_type:null,poor_reference_type:null,
+    sealed_manual_price:null,opened_never_used_manual_price:null,excellent_manual_price:null,good_manual_price:null,poor_manual_price:null
+  }));
+  await api("/rest/v1/tenant_buying_condition_rules?on_conflict=tenant_id,buying_product_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(rows)});
+  msg("Selected pricing has been reset. These products now have no automatic percentage or manual override, so they can return to manual quote/valuation handling.","success");
+  await loadMatrix();
+ }catch(e){msg(e.message||String(e),"error")}
+ finally{const btn=$("reset-selected-prices");if(btn){btn.disabled=false;btn.classList.remove("armed");btn.textContent="Reset selected prices"}}
+}
 async function applySelectedReference(){
  const ids=[...selectedProductIds];
  if(!ids.length)return msg("Select at least one product first.","error");
@@ -314,6 +342,7 @@ async function addProduct(e){
 document.querySelectorAll('input[name="bulk-reference"]').forEach(r=>r.addEventListener("change",previewBulkReference));
 $("select-all-visible").addEventListener("click",()=>{visibleProducts().forEach(p=>selectedProductIds.add(p.id));renderMatrix()});
 $("clear-selection").addEventListener("click",()=>{selectedProductIds.clear();renderMatrix()});
+$("reset-selected-prices").addEventListener("click",armOrResetSelectedPrices);
 $("apply-selected-reference").addEventListener("click",applySelectedReference);
 $("pricing-profile").addEventListener("change",renderPricingProfile);$("apply-pricing-profile").addEventListener("click",applyPricingProfile);renderPricingProfile();
 $("manage-categories").addEventListener("click",toggleManagement);

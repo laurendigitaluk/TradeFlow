@@ -543,3 +543,7 @@ External market research reviewed for terminology only: UK camera dealers common
 
 ## Buying Research / Condition Model Update — 19 September 2026
 The subscriber buying catalogue now has five conditions: Sealed, Opened Never Used, Excellent, Good, Poor. UK New research feeds the first two; UK Used research feeds the last three. Research evidence is read-only in What We Buy. Subscriber-entered research is recorded through Research Centre in `tenant_buying_research`. Future Gemma research should write compatible evidence into the same tenant-scoped table and must not bypass RLS or fabricate evidence.
+
+
+## Buying Price Calculation Update — 19 September 2026
+Gemma/research automation must continue to write evidence into `tenant_buying_research`. Subscriber pricing is not locked to one research type: each condition has its own selected reference (`uk_new` or `uk_used`), percentage, and optional exact manual override. Manual override takes priority over research-based calculation. Do not fabricate a reference price when research is absent.

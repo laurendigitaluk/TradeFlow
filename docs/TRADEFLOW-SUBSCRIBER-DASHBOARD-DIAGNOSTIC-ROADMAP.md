@@ -708,3 +708,18 @@ Database checks passed for:
 - Browser serves stale controller despite cache-buster.
 - Existing custom categories coexist with the master catalogue by design; only exact duplicate slugs are suppressed in the selector.
 
+
+## 2026-09-19 — Master catalogue test boundary and cache repair
+
+The master catalogue remains a TradeFlow-owned copy: 32 categories, 178 branches, 73 manufacturers and 3,845 products. The seed path is:
+
+Subscriber auth → tenant context → seed_tenant_master_catalogue(tenant_id) when catalogue.pre_filled is enabled → tenant categories → category_branches → tenant_buying_manufacturers → tenant_buying_products → Buying Catalogue selectors.
+
+No GearCashOut runtime dependency is present in the seed function definition. GearCashOut research/pricing is not used for TradeFlow buying valuation.
+
+The live feature boundary is Basic disabled, Enhanced enabled, Catalogue enabled. The current test tenant is Basic, so a blank/limited tenant catalogue is expected until an eligible test subscription is used.
+
+The browser screenshot reported loadCategoryScope is not defined; current source contains that function, so the deployed page was treated as stale-controller/caching rather than a database selector failure. The page controller cache-buster is now v18 and the temporary development explanatory banner has been removed.
+
+Next browser verification: hard-refresh with an Enhanced/Catalogue test tenant, confirm the master categories populate, then test Category → Manufacturer → Branch → Model and confirm tenant-specific pricing/research remains separate.
+

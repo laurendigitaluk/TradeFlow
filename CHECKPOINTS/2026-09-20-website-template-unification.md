@@ -57,7 +57,7 @@ Draft Preview continues to read the current draft revision for the authenticated
 - Confirmed public-site HTML no longer contains the old static `site-brand`, `site-name`, topbar shell or TradeFlow title fallback.
 - Confirmed public CSS no longer contains the old legacy template selector family.
 - Confirmed public renderer contains the What We Buy dropdown and What We Sell navigation.
-- Compared branch with main: 10 commits ahead, 0 behind at checkpoint creation.
+- Compared branch with main after the complete rebuild/documentation pass: 16 commits ahead, 0 behind.
 
 ## Not done
 - No third-party website template was purchased or copied into TradeFlow.

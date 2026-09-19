@@ -776,3 +776,24 @@ The Buying Catalogue page had a deployed-browser cache mismatch: the screenshot 
 
 Browser verification remains OPEN until the deployed page is hard-refreshed and tested against an Enhanced/Catalogue tenant.
 
+
+
+
+## 19 September 2026 — Unified subscriber catalogue selection architecture
+
+The subscriber category page is being consolidated with the master catalogue. The intended model is now:
+
+**TradeFlow master catalogue → subscriber selects products → TradeFlow automatically creates the required tenant category/branch → product is enabled for Buying and/or the Selling Website.**
+
+The subscriber does not have to manually create a live category before selecting a catalogue product. Categories and branches remain tenant-owned copies and can diverge from the master catalogue. Products can be enabled for Buying only, Selling Website only, or both.
+
+A new tenant-scoped table, `tenant_catalogue_selections`, records the subscriber's relationship to each master product without making the master catalogue tenant-specific. A protected `activate_master_catalogue_products()` RPC creates any required tenant category/branch/manufacturer records and, when Buying is enabled, creates the corresponding `tenant_buying_products` record so the existing Buying/Valuation path remains intact.
+
+The unified UI is `categories.html` / `category-management.js`. It reads the standalone TradeFlow master snapshot through `get_master_catalogue_for_selection()`. It does not query GearCashOut / Action Buyer UK.
+
+The master snapshot currently verified in TradeFlow contains 32 categories, 178 branches, 73 manufacturers and 3,845 products. This is a TradeFlow-local snapshot. GearCashOut remains outside the runtime dependency graph and is not used as buying research or valuation evidence.
+
+Subscription boundary remains explicit: `catalogue.pre_filled` is currently disabled for Basic and enabled for Enhanced/Catalogue. The current Basic test tenant therefore cannot be used to browser-test the master catalogue selection until an eligible tenant/plan is used.
+
+State: **Implemented at database and GitHub boundary; browser verification remains open.**
+

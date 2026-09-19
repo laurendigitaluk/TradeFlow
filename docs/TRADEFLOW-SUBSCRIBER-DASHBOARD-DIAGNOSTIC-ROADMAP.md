@@ -1,7 +1,7 @@
 # TradeFlow Subscriber Dashboard — Developer Diagnostic Roadmap
 
 **Status:** Living roadmap  
-**Date:** 18 September 2026  
+**Date:** 19 September 2026  
 **Purpose:** Map the subscriber business application shell without duplicating or replacing the existing backend workflows.
 
 ## 1. Product boundary
@@ -198,7 +198,6 @@ The builder now presents six starting layouts and persists the selected template
 
 ### Test protocol
 Do not use the archived test tenants for the new subscriber browser test. Create a new account through `subscriber-signup.html` using a selected current plan, then verify: signup → Auth account → `subscriber_create_business()` → tenant membership → subscription → subscriber dashboard → visible account identity. Only after that should the operational workspace links be tested.
-
 **Current state:** database reset verified; dashboard/template implementation staged; live browser verification open.
 
 ## Workflow and website separation checkpoint — 18 September 2026
@@ -397,7 +396,6 @@ Future target:
 Current implemented path:
 
 **Subscriber Dashboard → Website URL → `domain-settings.html` → `domain-settings.js` → `tenant_domains` pending record.**
-
 ### Database objects
 
 Existing:
@@ -597,8 +595,7 @@ Bulk pricing flow now previews the selected UK New/UK Used reference across ever
 What We Buy condition cells now expose the effective pricing state: ACTIVE BUYING PRICE — MANUAL or ACTIVE BUYING PRICE — AUTOMATIC. Manual override input changes update the active-price preview immediately. Clearing the input switches the preview back to automatic. Persistence remains through `tenant_buying_condition_rules`, and valuation RPC precedence is manual override before automatic calculation.
 
 
-## Reset Pricing Path — 19 September 2026
-User action: select products → Reset selected prices → first click arms a warning → second click within five seconds confirms → delete the selected `tenant_buying_condition_rules` rows and clear legacy product-level automatic/manual base-price fields → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.
+## Reset Pricing Path — 19 September 2026User action: select products → Reset selected prices → first click arms a warning → second click within five seconds confirms → delete the selected `tenant_buying_condition_rules` rows and clear legacy product-level automatic/manual base-price fields → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.
 
 
 ## Catalogue Loading Repair — 19 September 2026
@@ -638,3 +635,76 @@ Verification state: database cleanup Tested/Verified at database boundary. Subsc
 - Buying Catalogue selectors are now cascading: Category → relevant Manufacturers → relevant Branches for the selected manufacturer → Models in the selected branch/manufacturer. Changing an upstream selection resets and reloads downstream selections rather than leaving unrelated values available.
 - buying-catalogue.js commit ff575e5204f7cb3efc12284a5109be0610334a5b implements the selector dependency logic. buying-catalogue.html commit 34771b980131a4be683179ecf6f6f8b5a21ce2c9 changes Model to a dependent select and cache-busts the JS to v16.
 - Syntax check passed with new Function() after the selector change. Live browser verification is still required after a hard refresh.
+
+## Buying Catalogue — master catalogue, entitlement and selector diagnostic — 19 September 2026
+
+### User action
+Subscriber opens **What We Buy / Buying Catalogue**.
+
+### Entry page
+- `buying-catalogue.html`
+- `buying-catalogue.js`
+- `subscriber-auth.js`
+- `subscriber-auth-controls.js`
+- `subscriber-tenant-context.js`
+
+### Intended data flow
+Subscriber Auth
+→ authenticated session
+→ active tenant membership
+→ `seed_tenant_master_catalogue(tenant_id)` when the tenant has the pre-filled catalogue entitlement
+→ tenant-owned `categories` / `category_branches` / `tenant_buying_manufacturers` / `tenant_buying_products`
+→ selected Category
+→ category product scope
+→ Manufacturer filter
+→ Branch
+→ product/research/condition-rule matrix.
+
+The master catalogue is a TradeFlow-owned copy in:
+- `catalogue_master_categories`
+- `catalogue_master_branches`
+- `catalogue_master_manufacturers`
+- `catalogue_master_products`
+
+It does not read GearCashOut at runtime and is not used as a GearCashOut pricing/research reference.
+
+### Actual selector repair
+The current GitHub controller called `loadCategoryScope()` but did not define it. The repair adds that function so the selected tenant category first loads its products and then populates the manufacturer filter. `loadBranches()` then runs for the selected category. Category slugs are de-duplicated before rendering. HTML now loads `buying-catalogue.js?v=17`.
+
+The screenshot supplied during the repair reported **“LocalStorage is not defined”**. The current GitHub source did not contain a matching `LocalStorage` identifier, so that exact deployed-browser message is treated as a stale/deployed-runtime symptom rather than being attributed to a source line that does not exist. The cache-buster was advanced and the definite selector initialisation fault was repaired.
+
+### Subscription boundary
+The live `catalogue.pre_filled` feature is enabled for Enhanced and Catalogue and disabled for Basic. The active Catalogue plan remains present.
+
+### Current verification
+Database checks passed for:
+- master catalogue counts;
+- package feature flags;
+- no duplicate tenant category slugs;
+- removal of the known stale `Drone` and `Tripod/Support` test-tenant aliases;
+- canonical Drones branch structure;
+- preservation of the unrelated custom Accessories category and manually added Canon product.
+
+**Browser verification remains OPEN.**
+
+### Browser test to run next
+1. Hard refresh the deployed Buying Catalogue (Ctrl+F5).
+2. Confirm Category is populated.
+3. Select **Cameras**.
+4. Confirm Manufacturer populates and select **Canon**.
+5. Confirm Branch populates and select **Digital**.
+6. Confirm the matrix loads Canon products.
+7. Confirm New/Used research remains read-only.
+8. Confirm condition percentages/manual overrides remain tenant-specific.
+9. Do not expect Basic tenants to auto-seed the pre-filled catalogue; use an Enhanced/Catalogue entitlement for that test.
+
+### Known failure points
+- Subscriber auth/session not resolved.
+- Pre-filled feature not entitled.
+- Category scope request fails.
+- Manufacturer scope request fails.
+- Branch request fails.
+- Tenant product/research request fails.
+- Browser serves stale controller despite cache-buster.
+- Existing custom categories coexist with the master catalogue by design; only exact duplicate slugs are suppressed in the selector.
+

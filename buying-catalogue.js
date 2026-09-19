@@ -122,37 +122,55 @@ function populateManufacturers(){
 }
 function renderEmpty(text){$("matrix-body").innerHTML='<tr><td colspan="8" class="empty">'+esc(text)+"</td></tr>";$("row-count").textContent=""}
 function slugify(v){return String(v||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||crypto.randomUUID()}
-function toggleManagement(){const p=$("management-panel");p.hidden=!p.hidden;if(!p.hidden){renderCategoryList();renderBranchList();renderManufacturerList()}}
+function toggleManagement(){
+ const p=$("management-panel");p.hidden=!p.hidden;
+ if(!p.hidden){renderCategoryList();renderBranchList();renderManufacturerList();updateBuilderContext()}
+}
+function updateBuilderContext(){
+ const cat=categories.find(c=>c.id===selectedCategory);
+ const branch=branches.find(b=>b.id===selectedBranch);
+ $("branch-builder-title").textContent=cat?"Branches / Types in "+cat.name:"Branches / Types";
+ $("branch-builder-help").textContent=cat?"Select a branch to see exactly where you are building.":"Select a category first";
+ $("manufacturer-builder-title").textContent=branch?"Manufacturers in "+(cat?.name||"")+" → "+branch.name:"Manufacturers";
+ $("manufacturer-builder-help").textContent=branch?"Manufacturers are shared; products are assigned to this category and branch.":"Shared manufacturer list";
+ $("new-branch-name").placeholder=cat?"e.g. Digital, Lenses, Tripods":"Select a category first";
+ $("add-branch-button").disabled=!cat;
+}
 function renderCategoryList(){
  const box=$("category-list");if(!box)return;
- box.innerHTML=categories.map(c=>'<div class="manage-row"><input data-cat="'+c.id+'" value="'+esc(c.name)+'"><button type="button" class="mini" data-save-cat="'+c.id+'">Save</button></div>').join("")||'<div class="muted">No categories.</div>';
+ box.innerHTML=categories.map(c=>'<div class="manage-row '+(c.id===selectedCategory?"selected":"")+'"><button type="button" class="select-row" data-select-cat="'+c.id+'"><div class="row-info"><strong>'+esc(c.name)+'</strong><small>'+(branches.filter(b=>b.category_id===c.id).length)+' branch'+(branches.filter(b=>b.category_id===c.id).length===1?"":"es")+'</small></div></button><div class="row-actions"><button type="button" class="mini" data-save-cat="'+c.id+'">Save</button></div></div>').join("")||'<div class="muted">No categories.</div>';
+ box.querySelectorAll("[data-select-cat]").forEach(b=>b.onclick=async()=>{selectedCategory=b.dataset.selectCat;await loadBranches();renderCategoryList();updateBuilderContext()});
  box.querySelectorAll("[data-save-cat]").forEach(b=>b.onclick=()=>saveCategory(b.dataset.saveCat));
 }
 function renderBranchList(){
  const box=$("branch-list");if(!box)return;
- box.innerHTML=branches.map(b=>'<div class="manage-row"><input data-branch-name="'+b.id+'" value="'+esc(b.name)+'"><button type="button" class="mini" data-save-branch="'+b.id+'">Save</button></div>').join("")||'<div class="muted">No branches for the selected category.</div>';
+ const cat=categories.find(c=>c.id===selectedCategory);
+ box.innerHTML=branches.map(b=>'<div class="manage-row '+(b.id===selectedBranch?"selected":"")+'"><button type="button" class="select-row" data-select-branch="'+b.id+'"><div class="row-info"><strong>'+esc(b.name)+'</strong><small>'+esc(cat?.name||"Category")+' → '+esc(b.name)+'</small></div></button><div class="row-actions"><button type="button" class="mini" data-save-branch="'+b.id+'">Save</button></div></div>').join("")||'<div class="muted">'+(cat?"No branches in "+esc(cat.name)+" yet.":"Select a category to see its branches.")+'</div>';
+ box.querySelectorAll("[data-select-branch]").forEach(b=>b.onclick=async()=>{selectedBranch=b.dataset.selectBranch;$("branch-select").value=selectedBranch;renderBranchTabs();await loadMatrix();renderBranchList();updateBuilderContext()});
  box.querySelectorAll("[data-save-branch]").forEach(b=>b.onclick=()=>saveBranch(b.dataset.saveBranch));
 }
 function renderManufacturerList(){
  const box=$("manufacturer-list");if(!box)return;
- box.innerHTML=manufacturers.map(m=>'<div class="manage-row"><input data-manufacturer-name="'+m.id+'" value="'+esc(m.name)+'"><button type="button" class="mini" data-save-manufacturer="'+m.id+'">Save</button></div>').join("")||'<div class="muted">No manufacturers yet.</div>';
+ const cat=categories.find(c=>c.id===selectedCategory),branch=branches.find(b=>b.id===selectedBranch);
+ const names=manufacturers.filter(m=>!branch||products.some(p=>p.branch_id===branch.id&&p.manufacturer===m.name));
+ box.innerHTML=names.map(m=>'<div class="manage-row"><div class="row-info"><strong>'+esc(m.name)+'</strong><small>'+(branch?("Used in "+esc(cat?.name||"")+" → "+esc(branch.name)):"Available to the catalogue")+'</small></div><div class="row-actions"><button type="button" class="mini" data-save-manufacturer="'+m.id+'">Save</button></div></div>').join("")||'<div class="muted">'+(branch?"No products from a manufacturer have been added to this branch yet.":"No manufacturers yet.")+'</div>';
  box.querySelectorAll("[data-save-manufacturer]").forEach(b=>b.onclick=()=>saveManufacturer(b.dataset.saveManufacturer));
 }
 async function saveCategory(id){
  const input=document.querySelector('[data-cat="'+id+'"]'),name=input?.value.trim();if(!name)return msg("Enter a category name.","error");
- try{await api("/rest/v1/categories?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,slug:slugify(name),updated_at:new Date().toISOString()})});msg("Category updated.","success");await loadCategories()}catch(e){msg(e.message||String(e),"error")}
+ try{await api("/rest/v1/categories?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,slug:slugify(name),updated_at:new Date().toISOString()})});msg("Category updated.","success");await loadCategories();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
 async function addCategory(e){
  e.preventDefault();const name=$("new-category-name").value.trim();if(!name)return;
- try{await api("/rest/v1/categories",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,slug:slugify(name),description:$("new-category-description").value.trim()||null,active:true,buying_enabled:true,selling_enabled:true,sort_order:categories.length})});$("new-category-name").value="";$("new-category-description").value="";msg("Category added.","success");await loadCategories()}catch(e){msg(e.message||String(e),"error")}
+ try{await api("/rest/v1/categories",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,slug:slugify(name),description:$("new-category-description").value.trim()||null,active:true,buying_enabled:true,selling_enabled:true,sort_order:categories.length})});$("new-category-name").value="";$("new-category-description").value="";msg("Category added.","success");await loadCategories();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
 async function saveBranch(id){
  const input=document.querySelector('[data-branch-name="'+id+'"]'),name=input?.value.trim();if(!name)return msg("Enter a branch name.","error");
- try{await api("/rest/v1/category_branches?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,slug:slugify(name),updated_at:new Date().toISOString()})});msg("Branch updated.","success");await loadBranches()}catch(e){msg(e.message||String(e),"error")}
+ try{await api("/rest/v1/category_branches?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,slug:slugify(name),updated_at:new Date().toISOString()})});msg("Branch updated.","success");await loadBranches();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
 async function addBranch(e){
  e.preventDefault();if(!selectedCategory)return msg("Select a category first.","error");const name=$("new-branch-name").value.trim();if(!name)return;
- try{await api("/rest/v1/category_branches",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,category_id:selectedCategory,name,slug:slugify(name),description:$("new-branch-description").value.trim()||null,active:true,buying_enabled:true,selling_enabled:true,sort_order:branches.length})});$("new-branch-name").value="";$("new-branch-description").value="";msg("Branch added.","success");await loadBranches()}catch(e){msg(e.message||String(e),"error")}
+ try{await api("/rest/v1/category_branches",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,category_id:selectedCategory,name,slug:slugify(name),description:$("new-branch-description").value.trim()||null,active:true,buying_enabled:true,selling_enabled:true,sort_order:branches.length})});$("new-branch-name").value="";$("new-branch-description").value="";msg("Branch added.","success");await loadBranches();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
 async function saveManufacturer(id){
  const input=document.querySelector('[data-manufacturer-name="'+id+'"]'),name=input?.value.trim();if(!name)return msg("Enter a manufacturer name.","error");
@@ -160,12 +178,12 @@ async function saveManufacturer(id){
  try{
   await api("/rest/v1/tenant_buying_manufacturers?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,updated_at:new Date().toISOString()})});
   await api("/rest/v1/tenant_buying_products?tenant_id=eq."+encodeURIComponent(tenantId)+"&manufacturer=eq."+encodeURIComponent(old.name),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({manufacturer:name,updated_at:new Date().toISOString()})});
-  msg("Manufacturer updated and linked products renamed.","success");await loadMatrix();
+  msg("Manufacturer updated and linked products renamed.","success");await loadMatrix();renderManufacturerList();updateBuilderContext();
  }catch(e){msg(e.message||String(e),"error")}
 }
 async function addManufacturer(e){
  e.preventDefault();const name=$("new-manufacturer-name").value.trim();if(!name)return;
- try{await api("/rest/v1/tenant_buying_manufacturers",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,active:true})});$("new-manufacturer-name").value="";msg("Manufacturer added.","success");manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id="+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];populateManufacturers()}catch(e){msg(e.message||String(e),"error")}
+ try{await api("/rest/v1/tenant_buying_manufacturers",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,active:true})});$("new-manufacturer-name").value="";msg("Manufacturer added.","success");manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id="+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];populateManufacturers();renderManufacturerList();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
 async function saveAll(){
  const payload=[];

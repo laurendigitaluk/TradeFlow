@@ -67,3 +67,38 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 
 /* Independent homepage hero image controls */
 .hero-image-controls{margin-top:10px;padding:10px;background:#f7f9fa;border:1px solid #e1e6e9;border-radius:8px}.hero-image-controls>small{display:block;color:#74808a;font-size:9px;line-height:1.4;margin:4px 0 9px}.hero-image-control{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #e4e8eb}.hero-image-control>div{min-width:0}.hero-image-control b,.hero-image-control span{display:block}.hero-image-control b{font-size:10px}.hero-image-control span{font-size:9px;color:#7a858d;margin-top:2px}.hero-image-control button{border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:6px;padding:6px 8px;font-size:9px;font-weight:800;white-space:nowrap}.hero-image-control button:hover{background:#eef2f4}
+
+/* Second template family — structural layouts, not colour variants */
+/* Retail: left-hand shop navigation */
+.site-editor.template-retail .editor-nav{position:absolute;left:0;top:0;width:205px;min-height:100%;height:auto;display:flex;flex-direction:column;align-items:stretch;padding:22px 14px;gap:22px;border-right:1px solid #ded7ce;border-radius:0;z-index:5}
+.site-editor.template-retail .editor-brand{padding:4px 8px}
+.site-editor.template-retail .editor-nav-links{display:flex;flex-direction:column;align-items:stretch;gap:5px}
+.site-editor.template-retail .editor-nav-links button,.site-editor.template-retail .managed-login{text-align:left;border-radius:6px;padding:10px 11px}
+.site-editor.template-retail .premium-hero,.site-editor.template-retail .dual-intro,.site-editor.template-retail .home-tile-section,.site-editor.template-retail .premium-trust{margin-left:205px}
+.site-editor.template-retail .premium-hero{min-height:540px;border-radius:0}
+
+/* Professional: right-hand utility sidebar */
+.site-editor.template-professional .editor-nav{position:absolute;right:0;top:0;width:190px;min-height:100%;height:auto;display:flex;flex-direction:column;align-items:stretch;padding:24px 14px;gap:24px;border-left:1px solid #d7dfe4;border-radius:0;z-index:5}
+.site-editor.template-professional .editor-nav-links{display:flex;flex-direction:column;align-items:stretch;gap:5px}
+.site-editor.template-professional .editor-nav-links button,.site-editor.template-professional .managed-login{text-align:right;border-radius:5px;padding:9px 10px}
+.site-editor.template-professional .premium-hero,.site-editor.template-professional .dual-intro,.site-editor.template-professional .home-tile-section,.site-editor.template-professional .premium-trust{margin-right:190px}
+.site-editor.template-professional .premium-hero{min-height:500px}
+
+/* Bold: permanent dark navigation rail */
+.site-editor.template-bold .editor-nav{position:absolute;left:0;top:0;width:225px;min-height:100%;height:auto;display:flex;flex-direction:column;align-items:stretch;padding:28px 16px;gap:28px;background:#101820;color:#fff;border-radius:0;z-index:5}
+.site-editor.template-bold .editor-nav-links{display:flex;flex-direction:column;align-items:stretch;gap:7px}
+.site-editor.template-bold .editor-nav-links button,.site-editor.template-bold .managed-login{color:#fff;text-align:left;background:transparent;border:1px solid rgba(255,255,255,.16);border-radius:4px;padding:11px}
+.site-editor.template-bold .premium-hero,.site-editor.template-bold .dual-intro,.site-editor.template-bold .home-tile-section,.site-editor.template-bold .premium-trust{margin-left:225px}
+.site-editor.template-bold .premium-hero{min-height:560px}
+
+/* Classic: centred masthead with a separate navigation band */
+.site-editor.template-classic .editor-nav{display:flex;flex-direction:column;align-items:center;gap:14px;padding:26px 30px 18px;border-radius:0;border-bottom:1px solid #d8cdbd}
+.site-editor.template-classic .editor-brand{font-family:Georgia,serif;font-size:25px}
+.site-editor.template-classic .editor-nav-links{justify-content:center;flex-wrap:wrap;gap:6px}
+.site-editor.template-classic .premium-hero{min-height:470px}
+
+/* Local Business: compact split navigation with menu grouped to the side */
+.site-editor.template-local .editor-nav{display:grid;grid-template-columns:190px 1fr;align-items:center;gap:22px;padding:16px 24px;border-radius:0;border-bottom:1px solid #d5e1d8}
+.site-editor.template-local .editor-nav-links{justify-content:flex-end;flex-wrap:wrap;gap:5px}
+.site-editor.template-local .editor-nav-links button{border-radius:18px;padding:8px 12px}
+.site-editor.template-local .premium-hero{min-height:450px}

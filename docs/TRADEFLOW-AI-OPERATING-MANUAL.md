@@ -656,3 +656,8 @@ The subscriber UI now supports product-level Buying and Selling Website activati
 
 AI agents must not silently enable products, alter subscription entitlement, or import external pricing evidence as a consequence of catalogue selection. Catalogue identity, subscriber activation, research evidence and buying-price configuration are separate concerns.
 
+
+
+### 19 September 2026 — Buying Prices no longer seeds the entire tenant catalogue
+
+The separate Buying Prices workspace no longer calls `seed_tenant_master_catalogue()` when it opens. Catalogue activation is now an explicit subscriber action on Catalogue & Categories. Buying Prices works on products already selected for Buying and remains responsible for condition percentages, research basis and manual overrides. The legacy seed RPC remains available for controlled migration/maintenance but is no longer the normal subscriber page startup path.

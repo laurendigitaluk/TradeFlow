@@ -571,3 +571,13 @@ A non-null manual override is authoritative for that condition. Automatic percen
 
 ## Buying Price Reset Safety — 19 September 2026
 Never silently delete pricing rules when a research basis changes. A basis change may make automatic pricing unavailable, but stored rules remain until the subscriber explicitly uses the two-step Reset selected prices action. Resetting clears percentages, reference choices and manual overrides for the selected products.
+
+
+## Standalone Master Catalogue — 19 September 2026
+- The TradeFlow master catalogue is an independent snapshot. GearCashOut / Action Buyer UK may be used only as the initial import source; never query its live catalogue for subscriber operations.
+- Do not copy or use GearCashOut retailer-price evidence, research evidence or market-pricing fields as TradeFlow buying references. Subscriber pricing must come from TradeFlow's own research and condition-pricing rules.
+- Current imported master snapshot: 34 categories, 179 branches/types, 73 manufacturers, 3,845 products and 108 product identifiers.
+- The current live entitlement is `catalogue.pre_filled` on the **Catalogue** plan. Do not silently move this entitlement to Enhanced.
+- The protected seed RPC copies master data into tenant-owned catalogue tables. After seeding, treat tenant data as independent and do not create runtime dependencies on the source snapshot.
+- Buying-catalogue startup now calls the seed RPC for eligible Catalogue tenants. The seed is idempotent through `tenant_catalogue_state`.
+- The What We Buy script also contains the two-step reset handler. Never replace the protected reset with a one-click destructive action.

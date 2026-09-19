@@ -583,3 +583,7 @@ Management flow: open What We Buy → Manage → select Category → view all Br
 
 ## Bulk Pricing Profile Path — 19 September 2026
 User action: What We Buy → select branch → choose Quick pricing rule → Update all products. Frontend builds one condition-rule payload per product and upserts `tenant_buying_condition_rules`. Scope is the selected branch. Research and manual override fields are deliberately excluded from the bulk update.
+
+
+## Selectable Product Pricing Path — 19 September 2026
+User flow: Category → Branch → optional Manufacturer/Model filter → checkbox products → choose UK New or UK Used → choose percentage profile → Apply pricing to selected. The frontend upserts only condition rule reference and percentage fields for selected product IDs. The matrix then recalculates against the selected research basis. Manual overrides remain stored and take precedence during valuation.

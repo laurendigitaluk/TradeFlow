@@ -661,3 +661,8 @@ AI agents must not silently enable products, alter subscription entitlement, or 
 ### 19 September 2026 — Buying Prices no longer seeds the entire tenant catalogue
 
 The separate Buying Prices workspace no longer calls `seed_tenant_master_catalogue()` when it opens. Catalogue activation is now an explicit subscriber action on Catalogue & Categories. Buying Prices works on products already selected for Buying and remains responsible for condition percentages, research basis and manual overrides. The legacy seed RPC remains available for controlled migration/maintenance but is no longer the normal subscriber page startup path.
+
+
+## 2026-09-19 — Catalogue workflow rule
+
+For subscriber catalogue work, treat the TradeFlow master catalogue as an independent copy. Do not introduce runtime reads from GearCashOut / Action Buyer UK. Enhanced/Catalogue subscribers select master products from the unified Buying Catalogue; selection creates the tenant category/branch/manufacturer and buying product automatically. If no research-based or manual buying price is configured, valuation must remain manual rather than inventing a price.

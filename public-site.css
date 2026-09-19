@@ -77,3 +77,6 @@ body[data-footer-style="business"] footer{padding-top:38px;padding-bottom:38px}b
 /* Public header branding: preserve the complete logo and let the header adapt to its natural proportions. */
 .topbar{min-height:70px;height:auto}.brand{min-width:0;max-width:280px;overflow:visible}.brand .site-logo{display:block;width:auto;height:auto;max-width:220px;max-height:54px;object-fit:contain;object-position:left center}.brand #site-brand-text{white-space:nowrap;overflow:visible;text-overflow:clip;max-width:260px}
 @media(max-width:1000px){.brand{max-width:220px}.brand .site-logo{max-width:190px;max-height:48px}.brand #site-brand-text{max-width:200px}}
+
+/* Logo/header refinement: accommodate either a full logo image or plain business text without clipping. */
+.topbar{height:auto;min-height:70px;padding-top:8px;padding-bottom:8px;overflow:visible}.brand{min-width:0;flex:0 0 auto;max-width:32%;overflow:visible;white-space:nowrap}.site-logo{display:block;width:auto;height:auto;max-width:220px;max-height:54px;object-fit:contain!important;object-position:left center!important;flex:0 0 auto}.brand span{display:block;overflow:visible;text-overflow:clip;white-space:nowrap;max-width:100%}

@@ -9,7 +9,7 @@ const conditions=[
  {key:"good",label:"Good",base:"used"},
  {key:"poor",label:"Poor",base:"used"}
 ];
-function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",""":"&quot;","'":"&#39;"}[c]||c))}
+function esc(v){return String(v??"").replace(/[&<>"\']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
 function money(v,c="GBP"){if(v===null||v===undefined||v==="")return"—";try{return new Intl.NumberFormat("en-GB",{style:"currency",currency:c||"GBP"}).format(Number(v))}catch{return(c||"")+" "+v}}
 function msg(t,type=""){const el=$("message");if(el){el.textContent=t||"";el.className="message "+type}}
 async function api(path,options={}){const h=new Headers(options.headers||{});h.set("apikey",key);h.set("Authorization","Bearer "+token);if(options.body)h.set("Content-Type","application/json");const r=await fetch(SUPABASE_URL+path,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));return b}

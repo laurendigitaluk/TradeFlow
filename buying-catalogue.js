@@ -96,18 +96,19 @@ function editorHtml(p,s){
 }
 function renderMaster(){
  const isMy=catalogueView==="my";
- $("bulk-toolbar").hidden=isMy;
+ $("bulk-toolbar").hidden=false;
+ updateBulkControls(isMy);
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));
- const inactiveIds=isMy?[]:master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const selectableIds=isMy?master.map(p=>p.product_id):master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
  const selectedIds=window.buyingSelected||new Set();
- const selectableCount=inactiveIds.length;
- const selectedCount=inactiveIds.filter(id=>selectedIds.has(id)).length;
+ const selectableCount=selectableIds.length;
+ const selectedCount=selectableIds.filter(id=>selectedIds.has(id)).length;
  const bulkAll=buyingSelectionAllMatching;
  const selectAll=$("select-all-products");
  if(selectAll){
-  selectAll.disabled=isMy||selectableCount===0;
-  selectAll.checked=!isMy&&(bulkAll||(selectableCount>0&&selectedCount===selectableCount));
-  selectAll.indeterminate=!isMy&&!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
+  selectAll.disabled=selectableCount===0;
+  selectAll.checked=bulkAll||(selectableCount>0&&selectedCount===selectableCount);
+  selectAll.indeterminate=!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
  }
  $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
@@ -121,7 +122,7 @@ function renderMaster(){
   const s=stateFor(p);
   const mode=s.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button></div>';
   return '<tr class="status-'+s.key+'">'+
-   '<td class="select-cell">'+(s.key==="inactive"?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
+   '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
@@ -133,6 +134,59 @@ function renderMaster(){
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
  document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
+}
+function updateBulkControls(isMy){
+ const mode=$("bulk-mode");
+ const profile=$("bulk-profile-wrap");
+ const action=$("bulk-add");
+ const label=$("select-all-label");
+ if(!mode||!action)return;
+ mode.innerHTML=isMy
+  ? '<option value="automatic">Automatic pricing</option><option value="manual">Manual valuation</option><option value="off">Turn off Buying</option>'
+  : '<option value="manual">Add as Manual valuation</option><option value="automatic">Add with Automatic pricing</option>';
+ action.textContent=isMy?"Apply to selected":"Add selected to Buying Catalogue";
+ if(label)label.textContent=isMy?"Select all shown":"Select all shown";
+ if(profile)profile.hidden=mode.value!=="automatic";
+ toggleBulkMode();
+}
+function applyBulkPreset(){
+ const profiles={
+  "70":{sealed:70,opened_never_used:65,excellent:60,good:50,poor:40},
+  "60":{sealed:60,opened_never_used:55,excellent:50,good:40,poor:30},
+  "50":{sealed:50,opened_never_used:45,excellent:40,good:30,poor:20},
+  "40":{sealed:40,opened_never_used:35,excellent:30,good:20,poor:10}
+ };
+ const p=profiles[$("bulk-pricing-profile")?.value||"70"];
+ if(!p)return;
+ for(const k of Object.keys(p)){const e=$("bulk-"+k+"_percentage");if(e)e.value=p[k];}
+}
+async function applySelectedBuyingCatalogue(){
+ const ids=Array.from(window.buyingSelected||[]);
+ if(!buyingSelectionAllMatching&&!ids.length)return msg("Select at least one product first.","error");
+ const mode=$("bulk-mode")?.value||"automatic";
+ const button=$("bulk-add");button.disabled=true;
+ const payload={p_tenant_id:tenantId,p_mode:mode,p_master_product_ids:ids,p_all_matching:buyingSelectionAllMatching,
+  p_category_id:$("master-category").value||null,p_branch_id:$("master-branch").value||null,p_manufacturer_id:$("master-manufacturer").value||null,p_search:($("master-search").value||"").trim()||null};
+ if(mode==="automatic"){
+  const fields=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"];
+  for(const field of fields){
+   const raw=$("bulk-"+field)?.value||"";const value=Number(raw);
+   if(raw===""||!Number.isFinite(value)||value<0||value>100){button.disabled=false;return msg("Enter all five automatic percentages between 0 and 100.","error")}
+   payload["p_"+field]=value;
+  }
+  for(const field of ["sealed_manual_price","opened_never_used_manual_price","excellent_manual_price","good_manual_price","poor_manual_price"]){
+   const raw=$("bulk-"+field)?.value||"";const value=raw===""?null:Number(raw);
+   if(value!==null&&(!Number.isFinite(value)||value<0)){button.disabled=false;return msg("Automatic condition overrides must be valid non-negative prices.","error")}
+   payload["p_"+field]=value;
+  }
+ }
+ try{
+  const result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
+  window.buyingSelected=new Set();buyingSelectionAllMatching=false;
+  await loadPage();
+  const actionLabel=mode==="automatic"?"Automatic pricing":mode==="manual"?"Manual valuation":"Turned off";
+  msg((result?.updated||0)+" product(s) updated: "+actionLabel+".","success");
+ }catch(e){msg(e.message||String(e),"error");button.disabled=false;renderMaster()}
 }
 async function addSelectedProducts(){
  const ids=Array.from(window.buyingSelected||[]);
@@ -224,7 +278,9 @@ async function refreshForCategory(){
 $("select-all-products").addEventListener("change",toggleSelectAll);
 $("select-all-matching").addEventListener("click",toggleAllMatching);
 document.querySelectorAll(".catalogue-tab").forEach(b=>b.addEventListener("click",()=>setCatalogueView(b.dataset.view)));
-$("bulk-add").addEventListener("click",addSelectedProducts);
+$("bulk-add").addEventListener("click",()=>catalogueView==="my"?applySelectedBuyingCatalogue():addSelectedProducts());
+$("bulk-mode").addEventListener("change",()=>{toggleBulkMode();if($("bulk-mode").value==="automatic")applyBulkPreset()});
+$("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
@@ -255,6 +311,8 @@ function setCatalogueView(view){
 function toggleBulkMode(){
  const automatic=$("bulk-mode")?.value==="automatic";
  $("bulk-automatic-fields")?.classList.toggle("hidden",!automatic);
+ $("bulk-profile-wrap")?.classList.toggle("hidden",!automatic);
+ if(automatic&&Object.values(["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"]).some(k=>!($("bulk-"+k)?.value)))applyBulkPreset();
 }
 
 

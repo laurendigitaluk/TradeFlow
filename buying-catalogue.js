@@ -82,7 +82,10 @@ function populateFilters(){
 }
 function stateFor(p){
  let s;
- if(!p?.buying_enabled||!p?.selection_active||!p?.buying_product_active)s={key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
+ if(catalogueView==="master"){
+  if(p?.selection_active&&p?.buying_enabled)s={key:"added",label:"Already added",product:p,rule:p?.rule_id?true:null};
+  else s={key:"available",label:"Available to add",product:p,rule:null};
+ } else if(catalogueView!=="master"&&!p?.buying_enabled||catalogueView!=="master"&&!p?.selection_active||catalogueView!=="master"&&!p?.buying_product_active)s={key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
  else if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)s={key:"manual",label:"Manual price / override",product:p,rule:p.rule_id?true:null};
  else if(p.rule_id)s={key:"auto",label:"Automatic pricing",product:p,rule:p};
  else s={key:"valuation",label:"Manual valuation",product:p,rule:null};
@@ -142,7 +145,7 @@ function renderMaster(){
  $("bulk-toolbar").hidden=false;
  updateBulkControls(isMy);
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));
- const selectableIds=isMy?master.map(p=>p.product_id):master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const selectableIds=isMy?master.map(p=>p.product_id):master.filter(p=>stateFor(p).key==="available").map(p=>p.product_id);
  const selectedIds=window.buyingSelected||new Set();
  const selectableCount=selectableIds.length;
  const selectedCount=selectableIds.filter(id=>selectedIds.has(id)).length;
@@ -167,10 +170,10 @@ function renderMaster(){
   const displayState=editingAuto?{...s,key:"auto",label:"Automatic pricing — not active until saved"}:s;
   const mode=displayState.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(displayState.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
   return '<tr class="status-'+(editingAuto?"auto-pending":s.key)+'">'+
-   '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td class="select-cell">'+((isMy||s.key==="available")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
+   '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(isMy?'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':""):"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>{
  const id=e.dataset.modeProduct;

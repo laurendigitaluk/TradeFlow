@@ -33,11 +33,11 @@ const templates=[
  {id:'services',name:'Services',desc:'Service and enquiry focused'},
  {id:'editorial',name:'Editorial',desc:'Large, story-led presentation'},
  {id:'minimal',name:'Minimal',desc:'Clean and product-first'},
- {id:'retail',name:'Retail',desc:'Shop-focused storefront'},
- {id:'professional',name:'Professional',desc:'Structured and trust-led'},
- {id:'bold',name:'Bold',desc:'Strong visual hierarchy'},
- {id:'classic',name:'Classic',desc:'Traditional business style'},
- {id:'local',name:'Local Business',desc:'Friendly local presentation'}
+ {id:'retail',name:'Retail Sidebar',desc:'Shop-focused layout with left navigation'},
+ {id:'professional',name:'Professional Sidebar',desc:'Corporate layout with right utility navigation'},
+ {id:'bold',name:'Bold Rail',desc:'High-impact layout with dark navigation rail'},
+ {id:'classic',name:'Classic Masthead',desc:'Traditional centred masthead and menu band'},
+ {id:'local',name:'Local Business',desc:'Compact local layout with grouped navigation'}
 ];
 
 const templateHeadlines={

@@ -10,7 +10,7 @@ function renderPremiumHome(site,buyingCatalogue){
  return sections;
 }
 
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';const KEY_STORAGE='tradeflow_subscriber_publishable_key';const KEY=localStorage.getItem(KEY_STORAGE)||localStorage.getItem('tradeflow_testlab_publishable_key')||null;const params=new URLSearchParams(location.search),tenantId=params.get('tenant_id'),page=params.get('page')||'home',preview=params.get('preview')==='draft',hostname=location.hostname,$=id=>document.getElementById(id);
+const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';const params=new URLSearchParams(location.search),tenantId=params.get('tenant_id'),page=params.get('page')||'home',preview=params.get('preview')==='draft',hostname=location.hostname,$=id=>document.getElementById(id);
 async function api(path){if(!KEY)throw new Error('TradeFlow connection is not configured.');const response=await fetch(`${SUPABASE_URL}${path}`,{headers:{apikey:KEY,'Content-Type':'application/json'}});const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}if(!response.ok)throw new Error(body?.message||body?.msg||body?.error||text||`HTTP ${response.status}`);return body}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 function customerUrl(){return tenantId?`customer-dashboard.html?tenant_id=${encodeURIComponent(tenantId)}`:'customer-dashboard.html'}

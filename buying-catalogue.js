@@ -141,7 +141,7 @@ function renderMaster(){
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(packageLabel)+'</span><small>'+esc(p.product_type||"")+(p.notes?" · "+esc(p.notes):"")+'</small>'+addedBadge+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
-   '<td>'+refSummary(p)+'</td></tr>';
+   '<td>'+refSummary(p)+'</td></tr>');
  }
  $("master-body").innerHTML=rows.length?rows.join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll(".mode-select").forEach(e=>e.addEventListener("change",()=>changeMode(e.dataset.mode,e.value)));

@@ -33,3 +33,8 @@
 /* Clean homepage content blocks: no fixed labels or instructional copy. */
 .selling-section .selling-intro{display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center}.selling-section .section-intro-image{min-height:190px;background:#e7ecef;border-radius:10px;border:1px solid rgba(20,30,40,.12);display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.editable-home-tile .tile-copy h3{margin:0 0 7px}.editable-home-tile .tile-copy p{min-height:0}.editable-home-tile .tile-copy b{display:block;margin-top:12px;color:var(--accent);font-size:10px;font-weight:900}.editable-home-tile .tile-copy h3:empty,.editable-home-tile .tile-copy p:empty,.editable-home-tile .tile-copy b:empty{display:none}
 @media(max-width:900px){.selling-block .section-intro,.selling-section .selling-intro{grid-template-columns:1fr}}
+
+/* All ten templates: shared homepage section parity. */
+.public-section.buying-section,.public-section.selling-section{width:100%}
+.public-section .section-intro{grid-template-columns:1fr 1fr;align-items:center}
+@media(max-width:900px){.public-section .section-intro{grid-template-columns:1fr}}

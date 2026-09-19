@@ -230,9 +230,6 @@ function templateHero(){
  default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
-function renderBuilderSellPrompt(){
- return '<section class="sell-prompt"><div><span>READY TO SELL?</span><h2>What do you have to sell?</h2><p>Tell customers what they have and guide them through category, type, make, model and condition.</p></div><b>Start your selling request →</b></section>';
-}
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
@@ -244,8 +241,7 @@ function renderHome(){
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- const withSellPrompt=homepageSections.hero!==false?ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderBuilderSellPrompt()):ordered;
- return navMarkup()+withSellPrompt+tiles+footerMarkup();
+ return navMarkup()+ordered+tiles+footerMarkup();
 }
 
 function renderPage(p){

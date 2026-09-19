@@ -42,3 +42,6 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor{background:var(--page-bg,#fff);color:var(--text-color,#17212b)}.site-editor .editor-nav{background:var(--header-bg,#fff);color:var(--text-color,#17212b)}.site-editor .buy-section{background:var(--buy-bg,#fff)}.site-editor .sell-section{background:var(--sell-bg,#f4f6f7)}.site-editor .premium-trust{background:var(--footer-bg,#17212b)}
 
 .site-editor .premium-hero{background:var(--page-bg,#fff);color:var(--text-color,#17212b)}.site-editor .dual-intro{background:var(--header-bg,#fff);color:var(--text-color,#17212b)}.site-editor .dual-intro>div{border-color:rgba(20,30,40,.12)}.site-editor .sell-section{background:var(--sell-bg,#f4f6f7)}.site-editor .home-tile{background:var(--header-bg,#fff);color:var(--text-color,#17212b)}
+
+/* Homepage tiles: no fixed numbering; content/image controls remain editable */
+.editable-tile-title:empty:before,.editable-tile-body:empty:before{content:attr(data-placeholder);color:#8a949d;pointer-events:none}

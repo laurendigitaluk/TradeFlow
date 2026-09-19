@@ -21,6 +21,7 @@ async function api(path,options={}){
  }catch(e){if(e.name==="AbortError")throw Error("TradeFlow catalogue request timed out. Please refresh and try again.");throw e}
  finally{clearTimeout(timer)}
 }
+window.buyingSelected=new Set();
 async function init(){
  try{
   const auth=await window.tradeflowSubscriberAuthReady;
@@ -95,6 +96,18 @@ function editorHtml(p,s){
 }
 function renderMaster(){
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));
+ const inactiveIds=master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const selectedIds=window.buyingSelected||new Set();
+ const selectableCount=inactiveIds.length;
+ const selectedCount=inactiveIds.filter(id=>selectedIds.has(id)).length;
+ const selectAll=$("select-all-products");
+ if(selectAll){
+  selectAll.checked=selectableCount>0&&selectedCount===selectableCount;
+  selectAll.indeterminate=selectedCount>0&&selectedCount<selectableCount;
+ }
+ $("selected-count").textContent=selectedCount?selectedCount+" selected":"";
+ $("bulk-add").disabled=selectedCount===0;
+
  $("master-count").textContent=totalProducts+" matching products";
  const start=(masterPage-1)*pageSize;
  $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages;
@@ -102,6 +115,7 @@ function renderMaster(){
   const s=stateFor(p);
   const mode=s.key==="inactive"?"":'<select class="mode-select" data-mode="'+p.product_id+'"><option value="manual" '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'>Manual</option><option value="automatic" '+(s.key==="auto"?"selected":"")+'>Automatic</option></select>';
   return '<tr class="status-'+s.key+'">'+
+   '<td class="select-cell"><input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(s.key!=="inactive"?"disabled":"")+' '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model)+'"></td>'+
    '<td class="product-name"><strong>'+esc(p.manufacturer_name+" "+p.model)+'</strong><small>'+esc(p.package_name)+(p.product_type?" · "+esc(p.product_type):"")+(p.notes?"<br>"+esc(p.notes):"")+'</small></td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
@@ -112,6 +126,25 @@ function renderMaster(){
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
+ document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
+}
+async function addSelectedProducts(){
+ const ids=Array.from(window.buyingSelected||[]);
+ if(!ids.length)return;
+ const button=$("bulk-add");button.disabled=true;
+ try{
+  const result=await api("/rest/v1/rpc/configure_master_catalogue_buying_products_bulk",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_ids:ids,p_mode:"manual"})});
+  window.buyingSelected=new Set();
+  await loadPage();
+  msg((result?.added||0)+" product(s) added to your Buying Catalogue as Manual valuation"+((result?.skipped||0)?"; "+result.skipped+" already active and skipped.":".")+" You can now configure their pricing individually.","success");
+ }catch(e){msg(e.message||String(e),"error");button.disabled=false;renderMaster()}
+}
+function toggleSelectAll(){
+ window.buyingSelected=window.buyingSelected||new Set();
+ const selectable=master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const allSelected=selectable.length&&selectable.every(id=>window.buyingSelected.has(id));
+ selectable.forEach(id=>allSelected?window.buyingSelected.delete(id):window.buyingSelected.add(id));
+ renderMaster();
 }
 async function addProduct(masterId,button){
  const p=master.find(x=>x.product_id===masterId);if(!p)return;

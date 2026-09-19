@@ -704,3 +704,10 @@ External market research reviewed for terminology only: UK camera dealers common
 - The What We Buy page now attempts the protected catalogue seed during startup for eligible Catalogue-plan tenants. Non-Catalogue plans continue to use their existing tenant catalogue path.
 - Buying-catalogue JavaScript cache-buster is now v15.
 - A startup blocker was identified and repaired: the page referenced an undefined `armOrResetSelectedPrices` handler before authentication initialisation, which could stop the script before Category/Manufacturer/Branch loading. The handler is now defined and performs the intended two-step reset.
+
+
+## 19 September 2026 — Master catalogue entitlement expanded
+
+The independent TradeFlow master catalogue remains a separate snapshot from GearCashOut / Action Buyer UK. The catalogue.pre_filled entitlement has now been enabled for all three active customer-facing plans: **Basic, Enhanced and Catalogue**. Each plan receives the same unlimited category/product/subcategory entitlement configuration. This changes access entitlement only; it does not create a runtime dependency on GearCashOut and does not import GearCashOut research or pricing evidence into subscriber buying references.
+
+Verification: live plan_features confirms catalogue.pre_filled enabled for Basic, Enhanced and Catalogue. The actual tenant catalogue seed/copy path remains tenant-owned and must continue to use the TradeFlow master snapshot.

@@ -50,7 +50,7 @@ async function loadStatusCounts(){
 async function loadCatalogue(){
  msg("Loading catalogue filters…");
  await loadFacets();
- await loadPage();
+ await loadPage();await loadStatusCounts();
  await loadStatusCounts();
  msg(catalogueView==="my"?"Your Buying Catalogue is ready.":"Master catalogue ready. Select products to add them to your Buying Catalogue.","success");
 }
@@ -209,7 +209,7 @@ function renderMaster(){
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
  document.querySelectorAll("[data-visibility-product]").forEach(e=>e.addEventListener("click",async()=>{
   const hidden=e.dataset.visibility!=="true";
-  try{await api("/rest/v1/rpc/set_buying_catalogue_website_visibility",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:e.dataset.visibilityProduct,p_visible:!hidden})});await loadPage();msg(hidden?"Product hidden from website. Its buying/pricing configuration was retained.":"Product shown on website again. Its existing buying/pricing configuration was retained.","success");}catch(err){msg(err.message||String(err),"error");}
+  try{await api("/rest/v1/rpc/set_buying_catalogue_website_visibility",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:e.dataset.visibilityProduct,p_visible:!hidden})});await loadPage();await loadStatusCounts();msg(hidden?"Product hidden from website. Its buying/pricing configuration was retained.":"Product shown on website again. Its existing buying/pricing configuration was retained.","success");}catch(err){msg(err.message||String(err),"error");}
  }));
  document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
 }
@@ -278,7 +278,7 @@ async function applySelectedBuyingCatalogue(){
    result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
   }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
-  await loadPage();
+  await loadPage();await loadStatusCounts();
   const actionLabel=mode==="automatic"?"Automatic pricing":mode==="manual"?"Manual valuation":"Turned off";
   msg((result?.updated||0)+" product(s) updated: "+actionLabel+".","success");
  }catch(e){msg(e.message||String(e),"error");button.disabled=false;renderMaster()}
@@ -303,7 +303,7 @@ async function addSelectedProducts(){
    result=await api("/rest/v1/rpc/add_master_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
   }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
-  await loadPage();
+  await loadPage();await loadStatusCounts();
   msg((result?.added||0)+" product(s) added to your Buying Catalogue as "+(mode==="automatic"?"Automatic pricing":"Manual valuation")+((result?.skipped||0)?"; "+result.skipped+" already active and skipped.":".")+" You can now configure their pricing individually.","success");
  }catch(e){msg(e.message||String(e),"error");button.disabled=false;renderMaster()}
 }
@@ -312,7 +312,7 @@ async function addProduct(masterId,button){
  button.disabled=true;
  try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:null})});
-  await loadPage();msg("Product added. It is now Manual valuation until you enter a fixed price or configure Automatic pricing.","success");
+  await loadPage();await loadStatusCounts();msg("Product added. It is now Manual valuation until you enter a fixed price or configure Automatic pricing.","success");
  }catch(e){button.disabled=false;msg(e.message||String(e),"error")}
 }
 async function changeMode(masterId,mode){
@@ -329,14 +329,14 @@ async function changeMode(masterId,mode){
   }
   try{
    await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:p.manual_offer_price??null})});
-   pendingAutomatic.delete(masterId);await loadPage();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
+   pendingAutomatic.delete(masterId);await loadPage();await loadStatusCounts();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
   }catch(e){renderMaster();msg(e.message||String(e),"error")}
   return;
  }
  pendingAutomatic.delete(masterId);
  try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:p.manual_offer_price??null})});
-  await loadPage();msg("Manual mode enabled. Leave the price blank for Manual valuation or enter a fixed buying price.","success");
+  await loadPage();await loadStatusCounts();msg("Manual mode enabled. Leave the price blank for Manual valuation or enter a fixed buying price.","success");
  }catch(e){renderMaster();msg(e.message||String(e),"error")}
 }
 async function saveManual(masterId,button){
@@ -385,7 +385,7 @@ async function refreshForCategory(){
  $("master-branch").value="";
  $("master-manufacturer").value="";
  await loadFacets();
- await loadPage();
+ await loadPage();await loadStatusCounts();
 }
 $("select-all-products").addEventListener("change",toggleSelectAll);
 $("select-all-matching").addEventListener("click",toggleAllMatching);

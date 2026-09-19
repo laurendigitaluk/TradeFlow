@@ -1,6 +1,6 @@
 const SUPABASE_URL="https://twfbmjwwqzxdxvclxbun.supabase.co";
 const $=id=>document.getElementById(id);
-let key=null,token=null,tenantId=null,categories=[],branches=[],manufacturers=[],products=[],research=[],rules=[],selectedCategory=null,selectedBranch=null,selectedProductIds=new Set();
+let key=null,token=null,tenantId=null,categories=[],branches=[],manufacturers=[],products=[],research=[],rules=[],categoryScopeProducts=[],selectedCategory=null,selectedBranch=null,selectedProductIds=new Set();
 
 const conditions=[
  {key:"sealed",label:"Sealed",base:"new",defaultRef:"uk_new"},
@@ -109,6 +109,7 @@ async function loadCategories(){
    sel.value=selectedCategory;
    renderCategoryList();
    updateBuilderContext();
+   await loadCategoryScope();
    await loadBranches();
   }else{
    selectedCategory=null;selectedBranch=null;renderCategoryList();renderBranchTabs();renderEmpty("Create a Buying category first.");updateBuilderContext();
@@ -137,7 +138,7 @@ async function loadMatrix(){
  const ids=products.map(p=>p.id);
  research=ids.length?await api("/rest/v1/tenant_buying_research?select=id,buying_product_id,evidence_type,source_name,source_url,observed_price,price_currency,item_condition,checked_at&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")&order=checked_at.desc")||[]:[];
  rules=ids.length?await api("/rest/v1/tenant_buying_condition_rules?select=id,buying_product_id,sealed_percentage,opened_never_used_percentage,excellent_percentage,good_percentage,poor_percentage,sealed_reference_type,opened_never_used_reference_type,excellent_reference_type,good_reference_type,poor_reference_type,sealed_manual_price,opened_never_used_manual_price,excellent_manual_price,good_manual_price,poor_manual_price&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")")||[]:[];
- populateManufacturers();renderMatrix();msg("Research prices loaded. Enter your percentages and save when ready.","success");
+ populateManufacturers();populateModelFilter(products);renderMatrix();msg("Research prices loaded. Enter your percentages and save when ready.","success");
 }
 function latest(p,type){return research.find(r=>r.buying_product_id===p.id&&r.evidence_type===type&&r.observed_price!==null&&String(r.price_currency||"GBP").toUpperCase()==="GBP")||null}
 function ruleFor(p){return rules.find(r=>r.buying_product_id===p.id)||{buying_product_id:p.id}}
@@ -171,8 +172,17 @@ function conditionCell(p,c){
    '</td>';
 }
 function visibleProducts(){
- const manufacturer=$("manufacturer-select").value||"",filter=($("model-filter").value||"").trim().toLowerCase();
- return products.filter(p=>(!manufacturer||p.manufacturer===manufacturer)&&(!filter||((p.model||"")+" "+(p.package_name||"")).toLowerCase().includes(filter)));
+ const manufacturer=$("manufacturer-select").value||"",model=$("model-filter").value||"";
+ return products.filter(p=>(!manufacturer||p.manufacturer===manufacturer)&&(!model||p.model===model));
+}
+
+function populateModelFilter(sourceProducts){
+ const sel=$("model-filter");
+ if(!sel)return;
+ const current=sel.value||"";
+ const names=[...new Set((sourceProducts||[]).filter(p=>!$("manufacturer-select").value||p.manufacturer===$("manufacturer-select").value).map(p=>p.model).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ sel.innerHTML='<option value="">All models</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+'</option>').join("");
+ if(names.includes(current))sel.value=current;else sel.value="";
 }
 function renderMatrix(){
  const visible=visibleProducts();
@@ -234,9 +244,14 @@ function updatePricingCell(e){
 }
 function populateManufacturers(){
  const current=$("manufacturer-select").value;
- const names=manufacturers.map(m=>m.name).sort((a,b)=>a.localeCompare(b));
- $("manufacturer-select").innerHTML='<option value="">All manufacturers</option>'+names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+"</option>").join("");
+ const allowed=new Set(categoryScopeProducts.map(p=>p.manufacturer).filter(Boolean));
+ const names=manufacturers.map(m=>m.name).filter(n=>allowed.has(n)).sort((a,b)=>a.localeCompare(b));
+ $("manufacturer-select").innerHTML=names.length
+   ?names.map(n=>'<option value="'+esc(n)+'">'+esc(n)+"</option>").join("")
+   :'<option value="">No manufacturers in this category</option>';
  if(names.includes(current))$("manufacturer-select").value=current;
+ else if(names.length)$("manufacturer-select").value=names[0];
+ else $("manufacturer-select").value="";
  renderManufacturerList();
 }
 function renderEmpty(text){$("matrix-body").innerHTML='<tr><td colspan="8" class="empty">'+esc(text)+"</td></tr>";$("row-count").textContent=""}
@@ -331,7 +346,7 @@ async function saveManufacturer(id){
  try{
   await api("/rest/v1/tenant_buying_manufacturers?id=eq."+encodeURIComponent(id)+"&tenant_id=eq."+encodeURIComponent(tenantId),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({name,updated_at:new Date().toISOString()})});
   await api("/rest/v1/tenant_buying_products?tenant_id=eq."+encodeURIComponent(tenantId)+"&manufacturer=eq."+encodeURIComponent(old.name),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify({manufacturer:name,updated_at:new Date().toISOString()})});
-  msg("Manufacturer updated and linked products renamed.","success");await loadMatrix();renderManufacturerList();updateBuilderContext();
+  msg("Manufacturer updated and linked products renamed.","success");await loadCategoryScope();await loadBranches();renderManufacturerList();updateBuilderContext();
  }catch(e){msg(e.message||String(e),"error")}
 }
 async function addManufacturer(e){
@@ -414,10 +429,10 @@ $("manage-manufacturers").addEventListener("click",toggleManagement);
 $("category-form").addEventListener("submit",addCategory);
 $("branch-form").addEventListener("submit",addBranch);
 $("manufacturer-form").addEventListener("submit",addManufacturer);
-$("category-select").addEventListener("change",async e=>{selectedCategory=e.target.value;await loadBranches()});
+$("category-select").addEventListener("change",async e=>{selectedCategory=e.target.value;selectedBranch=null;await loadCategoryScope();await loadBranches()});
 $("branch-select").addEventListener("change",async e=>{selectedBranch=e.target.value;renderBranchTabs();await loadMatrix()});
-$("manufacturer-select").addEventListener("change",()=>{renderMatrix();});
-$("model-filter").addEventListener("input",renderMatrix);
+$("manufacturer-select").addEventListener("change",async e=>{selectedBranch=null;await loadBranches()});
+$("model-filter").addEventListener("change",renderMatrix);
 $("save-all").addEventListener("click",saveAll);
 $("add-product-form").addEventListener("submit",addProduct);
 $("sign-out").addEventListener("click",()=>{localStorage.removeItem("tradeflow_subscriber_session");location.href="subscriber-login.html"});

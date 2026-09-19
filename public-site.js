@@ -42,7 +42,7 @@ function renderPublicNav(site,catalogue){
  const headerLinks=Array.isArray(site.header?.links)?site.header.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
- const categoryLinks=cats.map(cat=>'<a href="'+pageUrl('buying','category='+encodeURIComponent(cat.id))+'"><strong>'+esc(cat.name)+'</strong><span>'+(Number(cat.product_count)||0)+' products</span></a>').join('');
+ const categoryLinks=cats.map(cat=>'<a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'"><strong>'+esc(cat.name)+'</strong><span>'+(Number(cat.product_count)||0)+' products</span></a>').join('');
  const buying='<details class="public-nav-dropdown"><summary>What We Buy</summary><div class="public-buy-menu"><div><b>WHAT WE BUY</b><p>Select a category to see the products currently being sought.</p><a class="menu-all" href="'+pageUrl('buying')+'">View all buying categories →</a></div><div class="public-buy-menu-cats">'+(categoryLinks||'<span class="menu-empty">Buying categories will appear here when selected.</span>')+'</div></div></details>';
  const normal=links.filter(slug=>slug!=='buying'&&slug!=='shop').map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">What We Sell</a><a class="public-account-link" href="'+customerUrl()+'">Customer Login</a></div></div></header>';
@@ -103,7 +103,7 @@ function renderBuyingSection(site,catalogue){
  const intro=home.buy_intro||'Show customers the categories and products you are currently looking for.';
  const cards=cats.slice(0,8).map(cat=>{
    const items=products.filter(p=>p.category_id===cat.id);
-   return '<article class="buy-category-card"><div><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Selected products from our current buying list.')+'</p><a href="'+pageUrl('buying','category='+encodeURIComponent(cat.id))+'">See '+esc(cat.name)+' →</a></article>';
+   return '<article class="buy-category-card"><div><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Selected products from our current buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">See '+esc(cat.name)+' →</a></article>';
  }).join('');
  return '<section class="public-section buying-section"><div class="section-intro"><span>01 / WHAT WE BUY</span><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('buying')+'">View all categories</a></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
 }
@@ -205,7 +205,7 @@ function renderBuyingPage(site,catalogue){
    const items=products.filter(p=>p.category_id===cat.id);
    const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});
    const groups=Object.entries(grouped).map(([maker,list])=>'<div class="manufacturer-group"><h3>'+esc(maker)+'</h3><div class="product-list">'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+(p.branch_name?'<small>'+esc(p.branch_name)+'</small>':'')+'</article>').join('')+'</div></div>').join('');
-   return '<section class="buying-category-page"><div class="category-page-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div><p>'+esc(cat.description||'')+'</p>'+groups+'<a class="start-selling" href="'+customerUrl('selling_category='+encodeURIComponent(cat.id))+'">Start selling this category →</a></section>';
+   return '<section class="buying-category-page"><div class="category-page-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div><p>'+esc(cat.description||'')+'</p>'+groups+'<a class="start-selling" href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Start selling this category →</a></section>';
  }).join('');
  return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><span>WHAT WE BUY</span><h1>Sell your items to us</h1><p>Choose a category, see what we are currently looking for, then start your selling request.</p></div>'+selector+(cards||'<div class="connected-empty">This business has not published a buying list yet.</div>')+'</main>'+renderFooter(site);
 }

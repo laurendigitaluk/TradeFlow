@@ -36,22 +36,33 @@ async function init(){
 }
 async function loadCategories(){
  try{
+  // Load shared manufacturers first so the manufacturer filter is available independently.
+  manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];
+  populateManufacturers();
   categories=await api("/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
   const sel=$("category-select");
   sel.innerHTML=categories.length?categories.map(c=>"<option value=\""+c.id+"\">"+esc(c.name)+"</option>").join(""):"<option value=\"\">No Buying categories</option>";
-  if(categories.length){selectedCategory=categories[0].id;await loadBranches()}else renderEmpty("Create a Buying category first.");
-  try{
-   manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];
-  }catch(e){manufacturers=[];msg("Categories loaded, but the manufacturer list could not be loaded: "+e.message,"error")}
-  renderCategoryList();
-  populateManufacturers();
+  if(categories.length){
+   selectedCategory=categories[0].id;
+   sel.value=selectedCategory;
+   renderCategoryList();
+   updateBuilderContext();
+   await loadBranches();
+  }else{
+   selectedCategory=null;selectedBranch=null;renderCategoryList();renderBranchTabs();renderEmpty("Create a Buying category first.");updateBuilderContext();
+  }
  }catch(e){msg("Could not load the Buying catalogue: "+(e.message||String(e)),"error")}
 }
 async function loadBranches(){
  branches=await api("/rest/v1/category_branches?select=id,category_id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&category_id=eq."+encodeURIComponent(selectedCategory)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
- const sel=$("branch-select");sel.innerHTML=branches.length?branches.map(b=>"<option value=\""+b.id+"\">"+esc(b.name)+"</option>").join(""):"<option value=\"\">No Buying branches</option>";
- if(branches.length){selectedBranch=branches[0].id;renderBranchTabs();await loadMatrix()}else{selectedBranch=null;renderBranchTabs();renderEmpty("No Buying branches have been created for this category yet.")}
- renderBranchList();
+ const sel=$("branch-select");
+ sel.innerHTML=branches.length?branches.map(b=>"<option value=\""+b.id+"\">"+esc(b.name)+"</option>").join(""):"<option value=\"\">No Buying branches</option>";
+ if(branches.length){
+  selectedBranch=branches[0].id;sel.value=selectedBranch;renderBranchTabs();renderBranchList();updateBuilderContext();
+  loadMatrix().catch(e=>msg("Products or research could not be loaded: "+(e.message||String(e)),"error"));
+ }else{
+  selectedBranch=null;renderBranchTabs();renderBranchList();renderEmpty("No Buying branches have been created for this category yet.");updateBuilderContext();
+ }
 }
 function renderBranchTabs(){
  const box=$("branch-tabs");box.innerHTML=branches.map(b=>"<button type=\"button\" class=\"branch-tab "+(b.id===selectedBranch?"active":"")+"\" data-branch=\""+b.id+"\">"+esc(b.name)+"</button>").join("");

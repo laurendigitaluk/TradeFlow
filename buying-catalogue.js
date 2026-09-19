@@ -35,6 +35,18 @@ async function init(){
   await loadCatalogue();
  }catch(e){msg(e.message||String(e),"error")}
 }
+async function loadStatusCounts(){
+ try{
+  const data=await api("/rest/v1/rpc/get_buying_catalogue_status_counts",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId})});
+  $("count-inactive").textContent=Number(data?.inactive||0);
+  $("count-live").textContent=Number(data?.live||0);
+  $("count-automatic").textContent=Number(data?.automatic||0);
+  $("count-manual").textContent=Number(data?.manual_valuation||0);
+  $("count-available").textContent=Number(data?.available||0);
+ }catch(e){
+  ["count-inactive","count-live","count-automatic","count-manual","count-available"].forEach(id=>{if($(id))$(id).textContent="—"});
+ }
+}
 async function loadCatalogue(){
  msg("Loading catalogue filters…");
  await loadFacets();
@@ -331,7 +343,7 @@ async function saveManual(masterId,button){
  const value=input.value===""?null:Number(input.value);if(value!==null&&(!Number.isFinite(value)||value<0))return msg("Enter a valid manual buying price.","error");
  button.disabled=true;try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:value})});
-  await loadPage();msg(value===null?"Manual valuation enabled. A staff member can value this product when a customer request arrives.":"Manual buying price saved. The fixed price now takes precedence over automatic pricing if a rule is retained.","success");
+  await loadPage();await loadStatusCounts();msg(value===null?"Manual valuation enabled. A staff member can value this product when a customer request arrives.":"Manual buying price saved. The fixed price now takes precedence over automatic pricing if a rule is retained.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
 }
 async function saveAuto(masterId,button){
@@ -356,7 +368,7 @@ async function saveAuto(masterId,button){
    p_good_reference_type:refs.good_reference_type||"uk_used",
    p_poor_reference_type:refs.poor_reference_type||"uk_used"
   })});
-  await loadPage();msg("Automatic buying rule saved. Each condition now has its own optional override.","success");
+  await loadPage();await loadStatusCounts();msg("Automatic buying rule saved. Each condition now has its own optional override.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
 }
 async function resetProduct(masterId){
@@ -364,7 +376,7 @@ async function resetProduct(masterId){
  if(!confirm("Reset this product to Inactive Buying? This clears the subscriber's buying price configuration."))return;
  try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"off"})});
-  await loadPage();msg("Product reset to Inactive. It remains in the master catalogue but is no longer active for this subscriber.","success");
+  await loadPage();await loadStatusCounts();msg("Product reset to Inactive. It remains in the master catalogue but is no longer active for this subscriber.","success");
  }catch(e){msg(e.message||String(e),"error")}
 }
 async function refreshForCategory(){

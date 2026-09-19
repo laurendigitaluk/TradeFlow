@@ -244,7 +244,7 @@ function renderPage(p){
 function renderEditor(){
  const p=currentPage();
  $('editing-page-name').textContent=p.slug==='home'?'Home page':p.title;
- $('browser-label').textContent=siteName+' · '+(p.slug==='home'?'Home':p.title);
+ $('browser-label').textContent=(siteName||'Your business')+' · '+(p.slug==='home'?'Home':p.title);
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
  $('site-editor').style.setProperty('--accent',themeColors.accent);$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
@@ -427,13 +427,31 @@ async function loadRetailListings(tenant){
  try{const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenant));return Array.isArray(rows)?rows:[]}
  catch(e){console.warn('TradeFlow retail preview listings unavailable:',e);return []}
 }
+async function clearFreshStartMedia(){
+ try{
+   const assets=await api('/rest/v1/media_assets?select=storage_path&tenant_id=eq.'+encodeURIComponent(tenantId));
+   const paths=Array.isArray(assets)?assets.map(a=>a.storage_path).filter(Boolean):[];
+   if(paths.length)await fetch(SUPABASE_URL+'/storage/v1/object/remove',{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({prefixes:paths})});
+   await api('/rest/v1/media_assets?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'DELETE',headers:{Prefer:'return=minimal'}});
+ }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
+}
+function resetToFreshWebsite(){
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';logoUrl='';
+ templateCopy=Object.assign({},templateDefaults.editorial);
+ homepageTileCount=8;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
+ homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
+ homepageTiles=defaultHomepageTiles();themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
+ socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
+ homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
+ pages=defaultPages();selectedPage='home';currentTemplate='editorial';window.__existingCategoryManifest=[];
+}
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));
  if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');
  draftRevisionId=rows[0].draft_revision_id;
  const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
- loadContent(drafts[0].content);
+ if(Number(drafts[0].content?.template_reset_version||0)<2){await clearFreshStartMedia();resetToFreshWebsite();dirty=true;renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();setStatus('Fresh website templates loaded. Previous website text, branding and images have been cleared. Review the new design, then save the draft.','success');}else{loadContent(drafts[0].content);}
  try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
  retailListings=await loadRetailListings(tenantId);
  renderEditor();

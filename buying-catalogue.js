@@ -55,6 +55,16 @@ async function seedCatalogueIfEnabled(){
  }
 }
 
+async function loadCategoryScope(){
+  if(!selectedCategory){
+    categoryScopeProducts=[];
+    populateManufacturers();
+    return;
+  }
+  categoryScopeProducts=await api("/rest/v1/tenant_buying_products?select=id,category_id,branch_id,manufacturer,model,package_name&tenant_id=eq."+encodeURIComponent(tenantId)+"&category_id=eq."+encodeURIComponent(selectedCategory)+"&active=eq.true&order=manufacturer,model")||[];
+  populateManufacturers();
+}
+
 async function armOrResetSelectedPrices(){
  const ids=[...selectedProductIds];
  if(!ids.length)return msg("Select at least one product first.","error");
@@ -101,7 +111,14 @@ async function loadCategories(){
   // Load shared manufacturers first so the manufacturer filter is available independently.
   manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];
   populateManufacturers();
-  categories=await api("/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
+  const rawCategories=await api("/rest/v1/categories?select=id,name,slug,description,active,buying_enabled,selling_enabled,sort_order&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_enabled=eq.true&active=eq.true&order=sort_order,name")||[];
+  const seenCategorySlugs=new Set();
+  categories=rawCategories.filter(c=>{
+    const slug=String(c.slug||c.name||"").trim().toLowerCase();
+    if(seenCategorySlugs.has(slug))return false;
+    seenCategorySlugs.add(slug);
+    return true;
+  });
   const sel=$("category-select");
   sel.innerHTML=categories.length?categories.map(c=>"<option value=\""+c.id+"\">"+esc(c.name)+"</option>").join(""):"<option value=\"\">No Buying categories</option>";
   if(categories.length){

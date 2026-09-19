@@ -755,3 +755,12 @@ Next browser verification: hard-refresh with an Enhanced/Catalogue test tenant, 
 ### 19 September 2026 — Buying Prices no longer seeds the entire tenant catalogue
 
 The separate Buying Prices workspace no longer calls `seed_tenant_master_catalogue()` when it opens. Catalogue activation is now an explicit subscriber action on Catalogue & Categories. Buying Prices works on products already selected for Buying and remains responsible for condition percentages, research basis and manual overrides. The legacy seed RPC remains available for controlled migration/maintenance but is no longer the normal subscriber page startup path.
+
+
+## 2026-09-19 — Buying Catalogue consolidation repair
+
+Observed failure: the subscriber test account showed an empty master catalogue because it was on Basic, while `catalogue.pre_filled` is intentionally an Enhanced/Catalogue entitlement. The test tenant was moved to Enhanced trial for testing.
+
+Architecture change: `buying-catalogue.html` is now the single subscriber workflow for master-product selection and buying-price configuration. `categories.html` redirects to it. The page loads the TradeFlow master catalogue through `get_master_catalogue_for_selection()`, filters category/branch/manufacturer/model client-side, and activates selections through `activate_master_catalogue_products()`. Activation creates tenant category/branch/manufacturer records and a tenant buying product automatically. No buying price means manual valuation/quote.
+
+Verification: TradeFlow master catalogue counts match the copied source dataset (3,845 total; 3,822 active/customer-visible; 102 catalogue categories; 34 main categories; 155 product types; 73 manufacturers). Test tenant entitlement now reports both `catalogue.pre_filled=true` and `module.buying=true`. `buying-catalogue.js` syntax checked successfully after the consolidation.

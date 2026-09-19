@@ -141,11 +141,14 @@ function updateBulkControls(isMy){
  const action=$("bulk-add");
  const label=$("select-all-label");
  if(!mode||!action)return;
+ const previous=mode.value;
  mode.innerHTML=isMy
   ? '<option value="automatic">Automatic pricing</option><option value="manual">Manual valuation</option><option value="off">Turn off Buying</option>'
   : '<option value="manual">Add as Manual valuation</option><option value="automatic">Add with Automatic pricing</option>';
+ const allowed=isMy?["automatic","manual","off"]:["manual","automatic"];
+ if(allowed.includes(previous))mode.value=previous;
  action.textContent=isMy?"Apply to selected":"Add selected to Buying Catalogue";
- if(label)label.textContent=isMy?"Select all shown":"Select all shown";
+ if(label)label.textContent="Select all shown";
  if(profile)profile.hidden=mode.value!=="automatic";
  toggleBulkMode();
 }

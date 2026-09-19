@@ -60,3 +60,7 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 /* Uploaded photographs: show the complete image inside its frame; never crop to fill. */
 .public-image-wrap img,.public-premium-intro>img,.public-hero-images img,.page-image-wrap img,.public-home-tile-image img{object-fit:contain!important;object-position:center center!important;}
 .visual-image img,.premium-hero-visual .visual-image img,.home-tile-image img,.image-pair .visual-image img{object-fit:contain!important;object-position:center center!important;}
+
+/* Header branding: show either the uploaded logo or editable business name, never both; preserve full logo proportions. */
+.editor-brand{min-width:0;flex:0 1 auto;max-width:280px;overflow:visible}.editor-brand img{display:block;width:auto;height:auto;max-width:240px;max-height:54px;object-fit:contain;object-position:left center}.editor-brand span{display:block;white-space:nowrap;overflow:visible;text-overflow:clip;max-width:260px}
+@media(max-width:1000px){.editor-brand{max-width:220px}.editor-brand img{max-width:190px;max-height:48px}.editor-brand span{max-width:200px}}

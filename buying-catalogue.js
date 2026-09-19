@@ -15,7 +15,7 @@ async function api(path,options={}){
  try{
   const r=await fetch(SUPABASE_URL+path,{...options,headers:h,signal:controller.signal});
   const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
-  if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));
+  if(!r.ok){const detail=b?.message||b?.msg||b?.error||text||("HTTP "+r.status);throw Error("Catalogue request failed ("+r.status+") at "+path+": "+detail);}
   return b;
  }catch(e){if(e.name==="AbortError")throw Error("TradeFlow catalogue request timed out. Please refresh and try again.");throw e}
  finally{clearTimeout(timer)}

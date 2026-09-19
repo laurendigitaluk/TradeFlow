@@ -898,3 +898,33 @@ The public website assets were cache-bumped to version 40. This is intentional s
 
 ### Important future rule
 Do not add separate visual layouts to the public renderer. Any future template must be added to the shared ten-template system and tested in both Website Builder and public Preview before publication.
+
+
+## Guided Customer Selling Journey — 20 September 2026
+
+The public subscriber website now treats **selling to the subscriber** as a guided valuation/request journey rather than a catalogue list.
+
+### Customer journey
+1. **What do you have to sell?** — choose the subscriber's buying category.
+2. **What type?** — choose the product type/branch derived from the connected buying catalogue.
+3. **What make?** — manufacturer options are narrowed from the connected catalogue.
+4. **What model?** — model options are narrowed from the previous selections; package/version is shown when available.
+5. **What condition is it in?** — sealed, opened-unused, excellent, good, fair, damaged, or not working/spares.
+6. **Final questions** — missing package items, legal right to sell, DJI serial number when applicable, and additional notes.
+7. **Review** — the customer reviews the complete request before continuing to their customer account.
+
+The completed answers are carried in browser session state into the customer portal so the customer does not have to enter the same information again. The customer portal pre-fills the category, item title and a structured notes summary before submission.
+
+### Navigation behaviour
+- The homepage now includes a prominent **What do you have to sell?** prompt.
+- What We Buy category menu entries route into the guided selling journey with the selected category preselected.
+- Start Selling links from buying categories route into the same journey.
+- The old buying catalogue remains available as an information view, but it is no longer the primary selling path.
+
+### Future-proofing
+The hierarchy is generated from the subscriber's connected buying catalogue rather than hard-coded DJI/drone choices. New categories, product types, manufacturers, models and packages therefore become available to the customer as the subscriber expands the catalogue.
+
+The TradeFlow `category_fields` system remains the intended extension point for category-specific questions beyond the common selling questions. Those fields can later be surfaced dynamically in this journey without creating a separate page for each category.
+
+### Current scope limitation
+Photos are not falsely represented as uploaded by this public wizard. The current journey captures the structured information and hands it into the authenticated customer portal. Photo upload should be added as an authenticated evidence step when the existing media/storage workflow is connected to customer buying requests.

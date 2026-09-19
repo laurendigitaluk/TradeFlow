@@ -33,7 +33,6 @@ async function init(){
   if(!auth?.session?.access_token||!auth.tenantId)throw Error("Subscriber sign-in required.");
   key=auth.key;token=auth.session.access_token;tenantId=auth.tenantId;
   $("business-name").textContent=auth.tenants?.[tenantId]||"What We Buy";
-  await seedCatalogueIfEnabled();
   await loadCategories();
  }catch(e){msg(e.message||String(e),"error")}
 }

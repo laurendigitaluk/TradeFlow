@@ -563,3 +563,7 @@ When bulk pricing is applied, update only `tenant_buying_condition_rules` refere
 
 ## Universal Research Basis Rule — 19 September 2026
 The selected automatic reference is product-level, not condition-level. For a selected product, all five conditions use the same chosen research basis; only their percentages differ. Missing selected-basis research must not be replaced with another evidence type without explicit subscriber action.
+
+
+## Manual Override Precedence — 19 September 2026
+A non-null manual override is authoritative for that condition. Automatic percentage output may still be displayed for comparison but must not be treated as the active buying price. Clearing the manual override returns the condition to the automatic percentage path.

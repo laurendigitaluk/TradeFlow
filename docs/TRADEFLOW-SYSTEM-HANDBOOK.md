@@ -637,3 +637,11 @@ External market research reviewed for terminology only: UK camera dealers common
 - Research Centre (`buying-research.html/js`) writes subscriber-entered UK New/UK Used evidence to `tenant_buying_research`. What We Buy reads the latest checked GBP evidence as read-only reference prices.
 - Gemma/other research automation can use the same `tenant_buying_research` table later; no external automated research source is claimed as live by this change.
 - Manual offer remains the fallback when a condition rule or appropriate research is unavailable.
+
+
+## Buying Price Basis & Manual Override — 19 September 2026
+- Each of the five buying conditions can independently choose its automatic research basis: **UK New** or **UK Used**.
+- Each condition has an automatic percentage against that selected reference price.
+- Each condition also has an optional exact **manual override** price. A manual override takes precedence over the automatic calculation.
+- If no suitable research exists for the selected basis, the subscriber can still enter a manual price; automatic calculation remains unavailable until research is available or the manual override is removed.
+- The valuation RPC returns `automatic`, `manual_override`, or manual-fallback states and identifies the selected reference type.

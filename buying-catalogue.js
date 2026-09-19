@@ -85,7 +85,7 @@ function stateFor(p){
  if(catalogueView==="master"){
   if(p?.selection_active&&p?.buying_enabled)s={key:"added",label:"Already added",product:p,rule:p?.rule_id?true:null};
   else s={key:"available",label:"Available to add",product:p,rule:null};
- } else if(catalogueView!=="master"&&!p?.buying_enabled||catalogueView!=="master"&&!p?.selection_active||catalogueView!=="master"&&!p?.buying_product_active)s={key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
+ } else if(!p?.buying_enabled||!p?.selection_active||!p?.buying_product_active)s={key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
  else if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)s={key:"manual",label:"Manual price / override",product:p,rule:p.rule_id?true:null};
  else if(p.rule_id)s={key:"auto",label:"Automatic pricing",product:p,rule:p};
  else s={key:"valuation",label:"Manual valuation",product:p,rule:null};

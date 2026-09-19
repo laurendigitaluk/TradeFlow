@@ -239,6 +239,23 @@ async function addManufacturer(e){
  e.preventDefault();const name=$("new-manufacturer-name").value.trim();if(!name)return;
  try{await api("/rest/v1/tenant_buying_manufacturers",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,active:true})});$("new-manufacturer-name").value="";msg("Manufacturer added.","success");manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id="+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];populateManufacturers();renderManufacturerList();updateBuilderContext()}catch(e){msg(e.message||String(e),"error")}
 }
+function previewBulkReference(){
+ const ref=document.querySelector('input[name="bulk-reference"]:checked')?.value||"uk_new";
+ const ids=new Set(selectedProductIds);
+ document.querySelectorAll(".reference-select").forEach(sel=>{
+   if(!ids.has(sel.dataset.product))return;
+   const c=conditions.find(x=>x.key===sel.dataset.field.replace("_reference_type",""));if(!c)return;
+   sel.value=ref;
+   const p=products.find(x=>x.id===sel.dataset.product);
+   const pct=document.querySelector('[data-product="'+p.id+'"][data-field="'+c.key+'_percentage"]')?.value||"";
+   const base=refPrice(p,ref==="uk_new"?"new":"used");
+   const amount=pct!==""&&base!==null?Number(base)*Number(pct)/100:null;
+   const box=document.querySelector('[data-calc="'+p.id+"-"+c.key+'"]');
+   if(box)box.innerHTML=amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>';
+   const help=box?.nextElementSibling;
+   if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
+ });
+}
 async function applySelectedReference(){
  const ids=[...selectedProductIds];
  if(!ids.length)return msg("Select at least one product first.","error");
@@ -279,6 +296,7 @@ async function addProduct(e){
  }catch(e){msg(e.message||String(e),"error")}
 }
 
+document.querySelectorAll('input[name="bulk-reference"]').forEach(r=>r.addEventListener("change",previewBulkReference));
 $("select-all-visible").addEventListener("click",()=>{visibleProducts().forEach(p=>selectedProductIds.add(p.id));renderMatrix()});
 $("clear-selection").addEventListener("click",()=>{selectedProductIds.clear();renderMatrix()});
 $("apply-selected-reference").addEventListener("click",applySelectedReference);

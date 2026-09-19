@@ -111,62 +111,27 @@ function renderMaster(){
  $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
  const allMatching=$("select-all-matching");
- if(allMatching){
-  allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+pages+" pages)";
-  allMatching.disabled=totalProducts===0;
- }
- $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching master products");
- const start=(masterPage-1)*pageSize;
- const rangeStart=master.length?start+1:0;
- const rangeEnd=start+master.length;
- $("page-info").textContent="Showing "+rangeStart+"–"+rangeEnd+" of "+totalProducts+" · Page "+masterPage+" of "+pages;
- $("top-page-summary").textContent=totalProducts?"Showing "+rangeStart+"–"+rangeEnd+" of "+totalProducts+" · Page "+masterPage+" of "+pages:"No products to show";
+ if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";allMatching.disabled=totalProducts===0;}
 
- const rows=[];
- let lastModel="";
- for(const p of master){
-  const st=stateFor(p);
-  const modelKey=(p.manufacturer_name||"")+"|"+(p.model||"");
-  if(modelKey!==lastModel){
-   rows.push("<tr class='model-group'><td colspan='7'><strong>"+esc(p.manufacturer_name)+" "+esc(p.model)+"</strong><span>"+esc(p.category_name)+" · "+esc(p.branch_name||"—")+"</span></td></tr>");
-   lastModel=modelKey;
-  }
-  const packageLabel=p.package_name||"Standard / base configuration";
-  let checkbox;
-  if(st.key==="inactive"){
-   checkbox="<input type='checkbox' class='product-select' data-product-id='"+p.product_id+"' "+(selectedIds.has(p.product_id)?"checked":"")+" aria-label='Select "+esc((p.manufacturer_name||"")+" "+(p.model||"")+" "+packageLabel)+"'>";
-  }else{
-   checkbox="<input type='checkbox' class='product-select added-checkbox' checked disabled aria-label='Already added'>";
-  }
-  const addedBadge=st.key==="inactive"?"":"<span class='added-badge'>Already added</span>";
-  let mode="";
-  if(st.key==="inactive") mode="<span class='not-added'>Available to add</span>";
-  else mode="<select class='mode-select' data-mode='"+p.product_id+"'><option value='manual' "+(st.key==="manual"||st.key==="valuation"?"selected":"")+">Manual</option><option value='automatic' "+(st.key==="auto"?"selected":"")+">Automatic</option></select>";
-  const reset=st.key!=="inactive"?"<button class='reset-link' data-reset='"+p.product_id+"'>Reset / turn off</button>":"";
-  rows.push(
-   "<tr class='status-"+st.key+"'>"+
-   "<td class='select-cell'>"+checkbox+"</td>"+
-   "<td class='product-name'><strong>"+esc(p.model)+"</strong><span class='package-name'>"+esc(packageLabel)+"</span><small>"+esc(p.product_type||"")+(p.notes?" · "+esc(p.notes):"")+"</small>"+addedBadge+"</td>"+
-   "<td>"+esc(p.category_name)+"</td>"+
-   "<td>"+esc(p.branch_name||"—")+"</td>"+
-   "<td>"+esc(p.manufacturer_name)+"</td>"+
-   "<td><div class='state "+st.key+"'>"+esc(st.label)+"</div>"+mode+editorHtml(p,st)+reset+"</td>"+
-   "<td>"+refSummary(p)+"</td>"+
-   "</tr>"
-  );
- }
- $("master-body").innerHTML=rows.length?rows.join(""):"<tr><td colspan='7' class='empty'>"+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
+ $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching products");
+ const start=(masterPage-1)*pageSize;
+ $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages; $("top-page-summary").textContent=totalProducts?("Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages):"No products to show";
+ $("master-body").innerHTML=master.length?master.map(p=>{
+  const s=stateFor(p);
+  const mode=s.key==="inactive"?"":'<select class="mode-select" data-mode="'+p.product_id+'"><option value="manual" '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'>Manual</option><option value="automatic" '+(s.key==="auto"?"selected":"")+'>Automatic</option></select>';
+  return '<tr class="status-'+s.key+'">'+
+   '<td class="select-cell">'+(s.key==="inactive"?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
+   '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
+   '<td>'+refSummary(p)+'</td></tr>';
+ }).join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll(".mode-select").forEach(e=>e.addEventListener("change",()=>changeMode(e.dataset.mode,e.value)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
- document.querySelectorAll(".product-select:not(:disabled)").forEach(e=>e.addEventListener("change",()=>{
-  window.buyingSelected=window.buyingSelected||new Set();
-  buyingSelectionAllMatching=false;
-  if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);
-  renderMaster();
- }));
+ document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
 }
 async function addSelectedProducts(){
  const ids=Array.from(window.buyingSelected||[]);
@@ -255,7 +220,8 @@ async function refreshForCategory(){
  await loadFacets();
  await loadPage();
 }
-$("select-all-products").addEventListener("change",toggleSelectAll);\n$("select-all-matching").addEventListener("click",toggleAllMatching);
+$("select-all-products").addEventListener("change",toggleSelectAll);
+$("select-all-matching").addEventListener("click",toggleAllMatching);
 document.querySelectorAll(".catalogue-tab").forEach(b=>b.addEventListener("click",()=>setCatalogueView(b.dataset.view)));
 $("bulk-add").addEventListener("click",addSelectedProducts);
 $("master-category").addEventListener("change",refreshForCategory);
@@ -289,10 +255,71 @@ function toggleBulkMode(){
  const automatic=$("bulk-mode")?.value==="automatic";
  $("bulk-automatic-fields")?.classList.toggle("hidden",!automatic);
 }
-
-
-
-
-
-
-
+async function addProduct(masterId,button){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ button.disabled=true;
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:null})});
+  await loadPage();msg("Product added. It is now Manual valuation until you enter a fixed price or configure Automatic pricing.","success");
+ }catch(e){button.disabled=false;msg(e.message||String(e),"error")}
+}
+async function changeMode(masterId,mode){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ if(mode==="automatic"){
+  const values={sealed_percentage:p.sealed_percentage,opened_never_used_percentage:p.opened_never_used_percentage,excellent_percentage:p.excellent_percentage,good_percentage:p.good_percentage,poor_percentage:p.poor_percentage};
+  try{
+   await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:p.manual_offer_price??null})});
+   await loadPage();msg("Automatic pricing mode enabled. Set the percentages and optional override below.","success");
+  }catch(e){renderMaster();msg(e.message||String(e),"error")}
+  return;
+ }
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:p.manual_offer_price??null})});
+  await loadPage();msg("Manual mode enabled. Leave the price blank for Manual valuation or enter a fixed buying price.","success");
+ }catch(e){renderMaster();msg(e.message||String(e),"error")}
+}
+async function saveManual(masterId,button){
+ const input=document.querySelector('[data-master="'+masterId+'"].manual-input');if(!input)return;
+ const value=input.value===""?null:Number(input.value);if(value!==null&&(!Number.isFinite(value)||value<0))return msg("Enter a valid manual buying price.","error");
+ button.disabled=true;try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"manual",p_manual_price:value})});
+  await loadPage();msg(value===null?"Manual valuation enabled. A staff member can value this product when a customer request arrives.":"Manual buying price saved. The fixed price now takes precedence over automatic pricing if a rule is retained.","success");
+ }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
+}
+async function saveAuto(masterId,button){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
+ for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
+ const override=document.querySelector('.auto-override-input[data-master="'+masterId+'"]');
+ const manualPrice=(override?.value||"")===""?null:Number(override.value);
+ if(manualPrice!==null&&(!Number.isFinite(manualPrice)||manualPrice<0))return msg("Enter a valid fixed buying price or leave the override blank.","error");
+ button.disabled=true;try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:manualPrice})});
+  await loadPage();msg("Automatic buying rule saved. Research remains separate and read-only.","success");
+ }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
+}
+async function resetProduct(masterId){
+ const p=master.find(x=>x.product_id===masterId);if(!p)return;
+ if(!confirm("Reset this product to Inactive Buying? This clears the subscriber's buying price configuration."))return;
+ try{
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"off"})});
+  await loadPage();msg("Product reset to Inactive. It remains in the master catalogue but is no longer active for this subscriber.","success");
+ }catch(e){msg(e.message||String(e),"error")}
+}
+async function refreshForCategory(){
+ masterPage=1;
+ $("master-branch").value="";
+ $("master-manufacturer").value="";
+ await loadFacets();
+ await loadPage();
+}
+$("select-all-products").addEventListener("change",toggleSelectAll);
+$("bulk-add").addEventListener("click",addSelectedProducts);
+$("master-category").addEventListener("change",refreshForCategory);
+$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
+$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
+$("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});
+$("next-page").addEventListener("click",async()=>{if(masterPage<Math.ceil(totalProducts/pageSize)){masterPage++;await loadPage()}});
+$("sign-out").addEventListener("click",()=>{if(window.tradeflowSubscriberSignOut)window.tradeflowSubscriberSignOut();else{localStorage.removeItem("tradeflow_subscriber_session");location.href="subscriber-login.html"}});
+if(window.tradeflowSubscriberAuthReady)window.tradeflowSubscriberAuthReady.then(init).catch(e=>msg(e.message||String(e),"error"));else msg("Subscriber authentication layer did not load.","error");

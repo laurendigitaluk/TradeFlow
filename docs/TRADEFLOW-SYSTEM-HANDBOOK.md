@@ -797,3 +797,8 @@ Subscription boundary remains explicit: `catalogue.pre_filled` is currently disa
 
 State: **Implemented at database and GitHub boundary; browser verification remains open.**
 
+
+
+### 19 September 2026 — Buying Prices no longer seeds the entire tenant catalogue
+
+The separate Buying Prices workspace no longer calls `seed_tenant_master_catalogue()` when it opens. Catalogue activation is now an explicit subscriber action on Catalogue & Categories. Buying Prices works on products already selected for Buying and remains responsible for condition percentages, research basis and manual overrides. The legacy seed RPC remains available for controlled migration/maintenance but is no longer the normal subscriber page startup path.

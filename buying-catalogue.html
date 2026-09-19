@@ -28,7 +28,7 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 <div id="message" class="message"></div>
 <section class="panel">
 <div class="catalogue-head"><div><h2>Master catalogue</h2><div id="catalogue-help" class="count">Loading the standalone TradeFlow catalogue…</div></div><span id="catalogue-status" class="pill">Loading…</span></div>
-<div class="notice" style="margin-top:14px"><strong>Pricing controls the buying catalogue.</strong> Choose <strong>Manual</strong> for a single fixed buying offer, or <strong>Automatic</strong> for condition percentages against the selected research reference. The first time either mode is saved, TradeFlow creates/links the category, branch and manufacturer and creates the subscriber buying product. <strong>Off</strong> removes the product from active Buying and clears its buying price configuration. Research remains separate and read-only here.</div>
+<div class="notice" style="margin-top:14px"><strong>Pricing controls the buying catalogue.</strong> Choose the category, branch and manufacturer you actually buy, then select only the products you want in your Buying Catalogue. TradeFlow loads products on demand rather than downloading the full master catalogue. Selecting a product creates/links its category, branch and manufacturer automatically. After selection, use <strong>Manual valuation</strong>, <strong>Manual price / override</strong> or <strong>Automatic</strong> pricing. <strong>Off</strong> removes the product from active Buying and clears its buying price configuration. Research remains separate and read-only here.</div>
 <div class="filters">
 <div class="field"><label>Category</label><select id="master-category"><option value="">All categories</option></select></div>
 <div class="field"><label>Branch / Type</label><select id="master-branch"><option value="">All branches</option></select></div>
@@ -45,5 +45,5 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing page error: '+(e.message||'Unknown browser error')});
 window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});
 </script>
-<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=23"></script>
+<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=24"></script>
 </body></html>

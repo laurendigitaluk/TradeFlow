@@ -65,8 +65,13 @@ function conditionCell(p,c){
  const value=rule[pctField]??"", ref=rule[refField]||c.defaultRef, manual=rule[manualField]??"";
  const base=refPrice(p,ref==="uk_new"?"new":"used");
  const amount=value!==""&&base!==null?(Number(base)*Number(value)/100):null;
+ const hasManual=manual!==""&&manual!==null;
  return '<td class="condition-cell">'+
    '<div class="condition-name">'+c.label+'</div>'+
+   '<div class="active-price '+(hasManual?'manual-active':'automatic-active')+'" data-active="'+p.id+"-"+c.key+'">'+
+     '<span class="active-label">'+(hasManual?'ACTIVE BUYING PRICE — MANUAL':'ACTIVE BUYING PRICE — AUTOMATIC')+'</span>'+
+     '<strong>'+(hasManual?money(manual):(amount!==null?money(amount):'Not available'))+'</strong>'+
+   '</div>'+
    '<div class="pricing-label">Automatic price basis</div>'+
    '<select class="reference-select" data-product="'+p.id+'" data-field="'+refField+'">'+
      '<option value="uk_new" '+(ref==="uk_new"?"selected":"")+'>UK New research</option>'+
@@ -74,11 +79,11 @@ function conditionCell(p,c){
    '</select>'+
    '<div class="pricing-label">Automatic percentage</div>'+
    '<input class="pct" data-product="'+p.id+'" data-field="'+pctField+'" type="number" min="0" max="100" step="0.01" value="'+esc(value)+'" placeholder="%">'+
-   '<div class="automatic-result" data-calc="'+p.id+"-"+c.key+'">'+(amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>')+'</div>'+
+   '<div class="automatic-result" data-calc="'+p.id+"-"+c.key+'">'+(amount!==null?'Automatic would be '+money(amount):'<span class="not-set">Automatic price unavailable</span>')+'</div>'+
    '<div class="pricing-help">'+(base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference": "No "+(ref==="uk_new"?"UK New":"UK Used")+" research found")+'</div>'+
-   '<div class="pricing-label">Manual override</div>'+
+   '<div class="pricing-label">Manual override <span class="field-hint">(leave blank to use automatic)</span></div>'+
    '<input class="manual-price" data-product="'+p.id+'" data-field="'+manualField+'" type="number" min="0" step="0.01" value="'+esc(manual)+'" placeholder="Exact buying price £">'+
-   '<div class="manual-result" data-manual="'+p.id+"-"+c.key+'">'+(manual!==""&&manual!==null?money(manual)+" manual override":'<span class="not-set">No manual override</span>')+'</div>'+
+   '<div class="manual-result '+(hasManual?'manual-active-text':'')+'" data-manual="'+p.id+"-"+c.key+'">'+(hasManual?'Manual override active — '+money(manual)+'. Clear this field to return to automatic pricing.':'No manual override — automatic pricing is active.')+'</div>'+
    '</td>';
 }
 function visibleProducts(){
@@ -122,16 +127,26 @@ function bindPercentInputs(){
 }
 function updatePricingCell(e){
  const productId=e.target.dataset.product;
- const c=conditions.find(x=>x.key===e.target.dataset.field.replace("_percentage","").replace("_reference_type",""));
+ const field=e.target.dataset.field||"";
+ const c=conditions.find(x=>x.key===field.replace("_percentage","").replace("_reference_type",""));
  if(!c)return;
  const ref=document.querySelector('[data-product="'+productId+'"][data-field="'+c.key+'_reference_type"]')?.value||c.defaultRef;
  const pct=document.querySelector('[data-product="'+productId+'"][data-field="'+c.key+'_percentage"]')?.value||"";
+ const manual=document.querySelector('[data-product="'+productId+'"][data-field="'+c.key+'_manual_price"]')?.value||"";
  const p=products.find(x=>x.id===productId),base=p?refPrice(p,ref==="uk_new"?"new":"used"):null;
  const amount=pct!==""&&base!==null?Number(base)*Number(pct)/100:null;
+ const active=document.querySelector('[data-active="'+productId+"-"+c.key+'"]');
+ if(active){
+   const hasManual=manual!=="";
+   active.className="active-price "+(hasManual?"manual-active":"automatic-active");
+   active.innerHTML='<span class="active-label">'+(hasManual?'ACTIVE BUYING PRICE — MANUAL':'ACTIVE BUYING PRICE — AUTOMATIC')+'</span><strong>'+(hasManual?money(manual):(amount!==null?money(amount):'Not available'))+'</strong>';
+ }
  const box=document.querySelector('[data-calc="'+productId+"-"+c.key+'"]');
- if(box)box.innerHTML=amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>';
+ if(box)box.innerHTML=amount!==null?'Automatic would be '+money(amount):'<span class="not-set">Automatic price unavailable</span>';
  const help=box?.nextElementSibling;
  if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
+ const manualBox=document.querySelector('[data-manual="'+productId+"-"+c.key+'"]');
+ if(manualBox)manualBox.textContent=manual!==""?'Manual override active — '+money(manual)+'. Clear this field to return to automatic pricing.':'No manual override — automatic pricing is active.';
 }
 function populateManufacturers(){
  const current=$("manufacturer-select").value;

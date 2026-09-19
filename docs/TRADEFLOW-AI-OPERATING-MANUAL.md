@@ -643,3 +643,16 @@ The Buying Catalogue controller contains loadCategoryScope(). The deployed page 
 
 State: Implemented + database verified; browser verification OPEN.
 
+
+
+
+## 19 September 2026 — Master catalogue selection boundary
+
+Gemma and future research automation must treat the TradeFlow master catalogue as a separate taxonomy/product snapshot. Subscriber selection is recorded in `tenant_catalogue_selections`; do not query GearCashOut / Action Buyer UK at runtime.
+
+Research and pricing evidence remain separate from catalogue identity. Selecting a master product for Buying creates/activates the tenant-owned `tenant_buying_products` record; it does not copy or adopt GearCashOut retailer prices, research evidence or valuation decisions.
+
+The subscriber UI now supports product-level Buying and Selling Website activation. Category and branch records are created automatically for selected master products. Custom categories remain tenant-only and are used when a required product is not present in the master catalogue.
+
+AI agents must not silently enable products, alter subscription entitlement, or import external pricing evidence as a consequence of catalogue selection. Catalogue identity, subscriber activation, research evidence and buying-price configuration are separate concerns.
+

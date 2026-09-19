@@ -167,3 +167,12 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .sell-prompt span{font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:800;color:var(--accent,#c46a2b)}
 .sell-prompt h2{margin:5px 0;font-size:34px;line-height:1.05}.sell-prompt p{margin:6px 0 0;color:#66737d;max-width:650px}.sell-prompt>b{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;background:var(--accent,#c46a2b);color:#fff;border-radius:7px;padding:12px 17px;font-weight:800;font-size:13px}
 @media(max-width:700px){.sell-prompt{display:block;padding:30px 18px}.sell-prompt h2{font-size:29px}.sell-prompt>b{margin-top:18px}}
+
+/* What We Buy preview: match the published visual structure. */
+.buying-block .section-intro{grid-template-columns:1fr 1fr;align-items:center}
+.buying-block .section-intro-image{min-height:190px;background:#e7ecef;border-radius:10px;border:1px solid rgba(20,30,40,.12);display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.buying-block .buy-category-card{display:grid;grid-template-columns:160px 1fr;gap:18px;min-height:190px;padding:0;overflow:hidden}
+.buying-block .buy-category-image{min-height:190px;background:#e7ecef;display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}
+.buying-block .buy-category-copy{padding:19px 19px 19px 0;display:flex;flex-direction:column;justify-content:center}
+.buying-block .buy-category-copy>b{margin-top:10px;color:var(--accent);font-size:10px}
+@media(max-width:900px){.buying-block .section-intro{grid-template-columns:1fr}.buying-block .buy-category-card{grid-template-columns:1fr}.buying-block .buy-category-copy{padding:0 19px 19px}.buying-block .buy-category-image{min-height:160px}}

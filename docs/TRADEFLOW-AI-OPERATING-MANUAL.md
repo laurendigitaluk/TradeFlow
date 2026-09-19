@@ -551,3 +551,7 @@ Gemma/research automation must continue to write evidence into `tenant_buying_re
 
 ## Buying Catalogue Structure — 19 September 2026
 Use the canonical hierarchy Category → Branch / Type → Manufacturer → Model. Do not treat manufacturer as the first subdivision of a category. Research, pricing rules and products should retain their tenant/category/branch/product relationships. Example: Cameras → Digital → Canon → EOS 750D.
+
+
+## Bulk Buying Pricing Profiles — 19 September 2026
+The subscriber can apply a predefined percentage ladder to all products in the selected branch. The four current profiles start at 70%, 60%, 50%, or 40% for Sealed and step down through Opened Never Used, Excellent, Good and Poor. Bulk application must not overwrite research or manual override fields.

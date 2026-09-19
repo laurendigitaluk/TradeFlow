@@ -5,6 +5,7 @@ let selectedPage='home',dirty=false;
 let siteName='Your Business',headline='Buy, sell and trade with us',intro='A clear introduction to your business appears here.',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
 let homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
+let buyingCatalogue={categories:[],products:[]};
 let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
 let socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};
 let reviewLinks=[];
@@ -154,13 +155,26 @@ function imageBlock(url,kind,label,alt){
  return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="image-drop"><button type="button" data-image-action="add" data-image-target="'+esc(kind)+'">Add image</button><span>'+esc(label)+'</span><small>PNG, JPEG or WebP · maximum 5 MB</small></div></div>';
 }
 
+function renderBuilderBuyingSection(){
+ const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
+ const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ if(!categories.length)return '<section class="home-tile-section buy-section"><div class="section-head"><div><span>WHAT WE BUY</span><h2>No buying categories selected yet</h2></div><p>Select products in the Buying Catalogue and they will appear here automatically.</p></div></section>';
+ const cards=categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);return '<article class="connected-buy-category"><div><span>CONNECTED CATEGORY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' products</strong><p>'+(cat.description?esc(cat.description):'Products selected for this business buying list.')+'</p><ul>'+items.slice(0,6).map(p=>'<li>'+esc(((p.manufacturer||'')+' '+(p.model||'')).trim()||'Product')+(p.package_name?' — '+esc(p.package_name):'')+'</li>').join('')+'</ul>'+(items.length>6?'<small>+'+(items.length-6)+' more products on the full buying page</small>':'')+'</article>'}).join('');
+ return '<section class="home-tile-section buy-section connected-buying-section"><div class="section-head"><div><span>WHAT WE BUY · CONNECTED</span><h2>These categories come from your Buying Catalogue</h2></div><p>Nothing is retyped here. When you select or hide products in Buying Catalogue, the customer website follows those choices.</p></div><div class="connected-buy-grid">'+cards+'</div></section>';
+}
+function renderBuilderBuyingPage(){
+ const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
+ const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ if(!categories.length)return '<div class="managed-area"><span>TRADEFLOW CONNECTED</span><h3>No buying products selected yet</h3><p>Select products in Buying Catalogue and they will appear here automatically.</p></div>';
+ return '<div class="connected-buy-page">'+categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});return '<section><div class="section-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><p>'+esc(cat.description||'Products selected by this business.')+'</p></div>'+Object.entries(grouped).map(([maker,list])=>'<div class="connected-buy-manufacturer"><h3>'+esc(maker)+'</h3><div>'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+'</article>').join('')+'</div></div>').join('')+'</section>'}).join('')+'</div>';
+}
 function renderHome(){
  const buyCount=Math.ceil(homepageTileCount/2),sellCount=Math.floor(homepageTileCount/2);
  const buyTiles=homepageTiles.filter(t=>t.side==='buy').slice(0,buyCount),sellTiles=homepageTiles.filter(t=>t.side==='sell').slice(0,sellCount);
  const tileMarkup=t=>'<article class="home-tile '+t.side+'"><div class="home-tile-image">'+(t.image_url?'<img src="'+esc(t.image_url)+'" alt="'+esc(t.image_alt||t.title)+'"><div class="tile-image-tools"><button type="button" data-image-action="replace" data-image-target="tile:'+esc(t.id)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="tile:'+esc(t.id)+'">Remove</button></div>':'<button type="button" class="tile-add-image" data-image-action="add" data-image-target="tile:'+esc(t.id)+'">Add image</button>')+'</div><h3 class="editable-tile-title" contenteditable="true" data-tile-field="title" data-tile-id="'+esc(t.id)+'" data-placeholder="Add a title">'+esc(t.title)+'</h3><p class="editable-tile-body" contenteditable="true" data-tile-field="body" data-tile-id="'+esc(t.id)+'" data-placeholder="Add a short description">'+esc(t.body)+'</p><span class="tile-cta">'+esc(t.cta)+'</span></article>';
   const hero=homepageSections.hero ? '<section class="premium-hero"><div class="premium-hero-copy"><div class="edit-label">PREMIUM MARKETPLACE HOMEPAGE</div><p class="editable-kicker">YOUR BUSINESS</p><h1 class="editable-title" contenteditable="true" data-edit="headline" data-placeholder="Write your main headline">'+esc(headline)+'</h1><div class="editable-body hero-copy" contenteditable="true" data-edit="intro" data-placeholder="Explain in one or two sentences what you buy, what you sell and why customers should use your business.">'+esc(intro)+'</div><div class="hero-actions"><span>Browse what we sell</span><span>See what we buy</span></div></div>'+(homepageSections.hero_image ? '<div class="premium-hero-visual"><div class="image-pair">'+imageBlock(homeImageUrl,'home','Main hero image — independent from all tile images.',siteName)+imageBlock(homeImageUrl2,'home2','Second hero image — independent from all tile images.',siteName+' second image')+'</div></div>' : '')+'</section>' : '';
  const dual=homepageSections.dual?'<section class="dual-intro"><div><p class="section-kicker">BUYING</p><h2 class="editable-section-title" contenteditable="true" data-home-field="buyHeading">'+esc(homeBuyHeading)+'</h2><p class="editable-section-body" contenteditable="true" data-home-field="buyIntro">'+esc(homeBuyIntro)+'</p></div><div><p class="section-kicker sell-kicker">SELLING</p><h2 class="editable-section-title" contenteditable="true" data-home-field="sellHeading">'+esc(homeSellHeading)+'</h2><p class="editable-section-body" contenteditable="true" data-home-field="sellIntro">'+esc(homeSellIntro)+'</p></div></section>':'';
- const buy=homepageSections.buy?'<section class="home-tile-section buy-section"><div class="section-head"><div><span>What we buy</span><h2>Make your buying categories visual</h2></div><p>Use these tiles to show visitors exactly what you are looking for.</p></div><div class="home-tile-grid count-'+homepageTileCount+'">'+buyTiles.map(tileMarkup).join('')+'</div></section>':'';
+ const buy=homepageSections.buy?renderBuilderBuyingSection():'';
  const sell=homepageSections.sell?'<section class="home-tile-section sell-section"><div class="section-head"><div><span>What we sell</span><h2>Showcase your retail business</h2></div><p>Use images and short descriptions to make your products and collections stand out.</p></div><div class="home-tile-grid count-'+homepageTileCount+'">'+sellTiles.map(tileMarkup).join('')+'</div></section>':'';
  const trust=homepageSections.trust?'<section class="premium-trust"><div><b>Buy from us</b><span>Clear buying categories and a straightforward selling request.</span></div><div><b>Sell with confidence</b><span>Your published products are connected to TradeFlow Inventory and Selling.</span></div><div><b>Customer account</b><span>Orders, selling requests and returns stay connected to TradeFlow.</span></div></section>':'';
  return navMarkup()+hero+dual+buy+sell+trust;
@@ -172,7 +186,7 @@ function renderPage(p){
  const isBuying=p.slug==='buying';
  let extra='';
  if(isShop)extra='<div class="managed-area"><span>TRADEFLOW CONNECTED</span><h3>Your products appear here automatically</h3><p>Products published through Inventory → Selling are shown in this retail shop. You do not type product listings here.</p><div class="product-placeholder"><i></i><i></i><i></i></div></div>';
- if(isBuying)extra='<div class="workflow-note"><b>How this page connects</b><span>Customers use this page to start a selling request. TradeFlow then handles the request through Buying → Acquisitions → Valuation → Offer.</span></div>';
+ if(isBuying)extra=renderBuilderBuyingPage();
  return navMarkup()+
  '<section class="editor-page"><div class="page-hero-row"><div><div class="edit-label">'+esc(isShop?'RETAIL SELLING PAGE':isBuying?'BUYING PAGE':'WEBSITE PAGE')+'</div>'+
  (managed?'<h1>'+esc(p.title)+'</h1>':'<h1 class="editable-title page-title" contenteditable="true" data-edit="page-title" data-placeholder="Page title">'+esc(p.title)+'</h1>')+
@@ -337,6 +351,13 @@ async function restoreSession(){
  return tenantId;
 }
 
+async function loadBuyingCatalogue(){
+ const rows=await api('/rest/v1/rpc/get_public_buying_catalogue?p_tenant_id='+encodeURIComponent(tenantId));
+ const products=Array.isArray(rows)?rows:[];
+ const map=new Map();
+ for(const p of products){if(!map.has(p.category_id))map.set(p.category_id,{id:p.category_id,name:p.category_name,slug:p.category_slug,description:p.category_description||'',product_count:0});map.get(p.category_id).product_count++;}
+ buyingCatalogue={categories:Array.from(map.values()),products};
+}
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));
  if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');
@@ -344,6 +365,8 @@ async function loadDraft(){
  const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
  loadContent(drafts[0].content);
+ await loadBuyingCatalogue();
+ renderEditor();
  if(validPageSlug(requestedPage))selectedPage=requestedPage;
  if(requestedTemplate)applyTemplate(requestedTemplate);
  setStatus('Website loaded. Click the page and edit directly on the preview.','success');

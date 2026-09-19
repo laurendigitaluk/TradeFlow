@@ -105,8 +105,9 @@ function renderMaster(){
  const bulkAll=buyingSelectionAllMatching;
  const selectAll=$("select-all-products");
  if(selectAll){
-  selectAll.checked=bulkAll||(selectableCount>0&&selectedCount===selectableCount);
-  selectAll.indeterminate=!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
+  selectAll.disabled=isMy||selectableCount===0;
+  selectAll.checked=!isMy&&(bulkAll||(selectableCount>0&&selectedCount===selectableCount));
+  selectAll.indeterminate=!isMy&&!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
  }
  $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);

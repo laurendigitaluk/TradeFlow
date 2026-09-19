@@ -414,3 +414,10 @@ As of 19 September 2026, current Cloudflare Registrar documentation describes a 
 
 Do not add provider-specific purchase code until the registrar, payment boundary, ownership/registrant model and multi-subscriber hosting/DNS architecture have been selected and audited against current GitHub/Supabase state.
 
+
+
+## Website Builder final refinement pass — 19 September 2026
+
+The subscriber Website Builder has now received the agreed refinement pass before final browser review. Added: controlled typography options (font style, hero/section/body/navigation size levels), button styles, header styles, footer styles, optional homepage section visibility, optional second images for the homepage hero and content pages, and cleaner image controls with Add/Replace/Remove behavior. Homepage tiles remain unnumbered and directly editable.
+
+Public rendering now consumes the saved typography, section visibility and multi-image settings. Asset cache versions are refreshed and both Builder and public runtime syntax have been checked. This is **Implemented in GitHub, not yet browser-verified**. Final verification should cover Builder preview, Save Draft, Publish, public site, responsive layout and the new controls.

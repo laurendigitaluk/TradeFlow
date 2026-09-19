@@ -660,3 +660,11 @@ External market research reviewed for terminology only: UK camera dealers common
 - Profiles are based on the Sealed percentage: **70%, 60%, 50%, 40%**. Current ladders are respectively 70/65/60/50/40, 60/55/50/40/30, 50/45/40/30/20, and 40/35/30/20/10 for Sealed / Opened Never Used / Excellent / Good / Poor.
 - Applying a profile changes only automatic percentages. It does not change research evidence, reference selection, or manual override prices.
 - Individual products can still be adjusted after a bulk profile is applied.
+
+
+## Selectable Bulk Pricing — 19 September 2026
+- What We Buy now supports product-level selection with a checkbox on every visible product.
+- `Select all visible` respects the current manufacturer and model filters, so a subscriber can select an entire manufacturer, a filtered subset, or individual products.
+- Bulk pricing lets the subscriber choose **UK New** or **UK Used** as the automatic reference for all five conditions and choose one of the four percentage profiles at the same time.
+- `Apply pricing to selected` updates the selected products' condition reference types and automatic percentages. Research evidence and manual override prices are preserved.
+- The purpose is to make a large catalogue manageable without forcing the subscriber to edit every condition cell individually.

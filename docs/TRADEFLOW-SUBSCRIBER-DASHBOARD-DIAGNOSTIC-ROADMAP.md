@@ -723,3 +723,30 @@ The browser screenshot reported loadCategoryScope is not defined; current source
 
 Next browser verification: hard-refresh with an Enhanced/Catalogue test tenant, confirm the master categories populate, then test Category → Manufacturer → Branch → Model and confirm tenant-specific pricing/research remains separate.
 
+
+
+
+## 19 September 2026 — Unified Catalogue & Categories diagnostic path
+
+**User action:** Open Catalogue & Categories → choose category/branch/product → toggle Buying and/or Selling Website.
+
+**Page:** `categories.html`
+
+**Controller:** `category-management.js`
+
+**Master read path:** `get_master_catalogue_for_selection(tenant_id)` → `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_manufacturers`, `catalogue_master_products`.
+
+**Tenant selection path:** `tenant_catalogue_selections` stores the subscriber's master-product activation state.
+
+**Activation path:** `activate_master_catalogue_products(tenant_id, master_product_ids, buying_enabled, selling_enabled)`.
+
+**Automatic tenant structure:** the activation RPC creates missing `categories`, `category_branches` and `tenant_buying_manufacturers` records. If Buying is enabled it creates the normal tenant `tenant_buying_products` record used by the existing Buying/Valuation flow.
+
+**Selling boundary:** product selection marks the tenant catalogue product as live for the Selling Website; actual inventory/listing publication remains downstream in the existing Inventory → Selling workflow.
+
+**Security:** the read RPC and activation RPC require authenticated tenant permission and the relevant Buying/Selling feature. No GearCashOut table or runtime API is called.
+
+**Failure points to test:** subscriber auth/tenant context; catalogue feature entitlement; master RPC response; selection RLS; activation RPC; automatic category/branch creation; tenant buying-product creation; Selling Website visibility downstream.
+
+**Verification state:** Implemented; authenticated browser journey still OPEN.
+

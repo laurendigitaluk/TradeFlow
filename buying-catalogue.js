@@ -16,9 +16,11 @@ function msg(t,type=""){const el=$("message");if(el){el.textContent=t||"";el.cla
 async function api(path,options={}){
  const h=new Headers(options.headers||{});h.set("apikey",key);h.set("Authorization","Bearer "+token);
  if(options.body)h.set("Content-Type","application/json");
- const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),15000);
+ const timeoutMs=Number(options.timeoutMs)||15000;
+ const fetchOptions={...options};delete fetchOptions.timeoutMs;
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
  try{
-  const r=await fetch(SUPABASE_URL+path,{...options,headers:h,signal:controller.signal});
+  const r=await fetch(SUPABASE_URL+path,{...fetchOptions,headers:h,signal:controller.signal});
   const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}
   if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||("HTTP "+r.status));
   return b;
@@ -31,9 +33,69 @@ async function init(){
   if(!auth?.session?.access_token||!auth.tenantId)throw Error("Subscriber sign-in required.");
   key=auth.key;token=auth.session.access_token;tenantId=auth.tenantId;
   $("business-name").textContent=auth.tenants?.[tenantId]||"What We Buy";
+  await seedCatalogueIfEnabled();
   await loadCategories();
  }catch(e){msg(e.message||String(e),"error")}
 }
+let resetArmed=false,resetTimer=null;
+
+async function seedCatalogueIfEnabled(){
+ try{
+  const result=await api("/rest/v1/rpc/seed_tenant_master_catalogue",{
+   method:"POST",timeoutMs:60000,
+   body:JSON.stringify({p_tenant_id:tenantId})
+  });
+  if(result?.products){
+   msg((result.already_seeded?"TradeFlow master catalogue is already loaded.":"TradeFlow master catalogue loaded.")+" — "+result.products+" products available.","success");
+  }
+ }catch(e){
+  const text=String(e.message||e);
+  if(/pre-filled catalogue is not enabled for this subscription/i.test(text))return;
+  throw e;
+ }
+}
+
+async function armOrResetSelectedPrices(){
+ const ids=[...selectedProductIds];
+ if(!ids.length)return msg("Select at least one product first.","error");
+ const btn=$("reset-selected-prices");
+ if(!resetArmed){
+  resetArmed=true;
+  btn.classList.add("armed");
+  btn.textContent="Click again to confirm reset";
+  if(resetTimer)clearTimeout(resetTimer);
+  resetTimer=setTimeout(()=>{
+   resetArmed=false;
+   btn.classList.remove("armed");
+   btn.textContent="Reset selected prices";
+  },5000);
+  return msg("Warning: the selected products' condition pricing rules and manual/automatic base prices will be cleared. Click Reset selected prices again within 5 seconds to confirm.","error");
+ }
+ resetArmed=false;
+ if(resetTimer)clearTimeout(resetTimer);
+ btn.disabled=true;
+ btn.textContent="Resetting…";
+ try{
+  const idList=ids.join(",");
+  await api("/rest/v1/tenant_buying_condition_rules?tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+idList+")",{
+   method:"DELETE",headers:{Prefer:"return=minimal"}
+  });
+  await api("/rest/v1/tenant_buying_products?tenant_id=eq."+encodeURIComponent(tenantId)+"&id=in.("+idList+")",{
+   method:"PATCH",headers:{Prefer:"return=minimal"},
+   body:JSON.stringify({automatic_percentage:null,manual_offer_price:null})
+  });
+  msg("Reset complete for "+ids.length+" selected product"+(ids.length===1?"":"s")+". Automatic condition pricing has been cleared and the products now require manual quote/valuation until pricing is configured again.","success");
+  selectedProductIds.clear();
+  await loadMatrix();
+ }catch(e){
+  msg(e.message||String(e),"error");
+ }finally{
+  btn.disabled=false;
+  btn.classList.remove("armed");
+  btn.textContent="Reset selected prices";
+ }
+}
+
 async function loadCategories(){
  try{
   // Load shared manufacturers first so the manufacturer filter is available independently.

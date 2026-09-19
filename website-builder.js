@@ -55,6 +55,14 @@ const templateDefaults={
  impact:{kicker:'BUY · SELL · TRADE',cta1:'What we buy',cta2:'What we sell'}
 };
 
+const pageDefinitions=[
+ {slug:'buying',title:'What We Buy',enabled:true,hint:'Buying page',prompt:'Show customers what you are looking to buy and how they can start a selling request.'},
+ {slug:'shop',title:'Retail Shop',enabled:true,hint:'Selling page',prompt:'Show customers the products you currently have available to buy.'},
+ {slug:'about',title:'About',enabled:true,hint:'About your business',prompt:'Tell customers about your business, service and experience.'},
+ {slug:'contact',title:'Contact',enabled:true,hint:'Contact details',prompt:'Add the contact information customers need to reach your business.'},
+ {slug:'customer-account',title:'Customer Account',enabled:true,hint:'Customer account area',prompt:'Customer account area managed by TradeFlow.'}
+];
+
 function defaultPages(){
  return pageDefinitions.map(p=>({
    slug:p.slug,title:p.title,enabled:p.enabled,

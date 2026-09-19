@@ -198,9 +198,9 @@ function renderBuilderBuyingPage(){
 function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
 function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){
- const cats=buyingCatalogue.categories||[],products=buyingCatalogue.products||[];
+ const cats=buyingCatalogue.categories||[];
  if(!cats.length)return '<div class="connected-empty">Select products in Buying Catalogue and your What We Buy section will appear here.</div>';
- return '<div class="buy-category-grid">'+cats.slice(0,8).map(cat=>{const items=products.filter(p=>p.category_id===cat.id);return '<article class="buy-category-card"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><p>'+(cat.description?esc(cat.description):'Selected products from your buying list.')+'</p><div class="buy-product-list">'+items.slice(0,5).map(p=>'<b>'+esc(((p.manufacturer||'')+' '+(p.model||'')).trim()||'Product')+'</b>').join('')+'</div><small>'+items.length+' selected products</small></article>'}).join('')+'</div>';
+ return '<div class="buy-category-grid">'+cats.slice(0,8).map(cat=>'<article class="buy-category-card"><div class="buy-category-image"><span>Category image</span></div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><p>'+(cat.description?esc(cat.description):'Selected products from your buying list.')+'</p><b>Sell this type →</b></div></article>').join('')+'</div>';
 }
 function sellingPreview(){
  const list=Array.isArray(retailListings)?retailListings:[];

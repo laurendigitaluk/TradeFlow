@@ -332,8 +332,8 @@ function buildContent(){
 function loadContent(content){
  const s=content?.site||{}; templateCopy=Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{});
  window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
- siteName=s.name||'Your Business';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
- headline=s.homepage?.headline||'Buy, sell and trade with us';
+ siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
+ headline=s.homepage?.headline||'';
  intro=s.homepage?.intro||'';
  accent=s.theme?.accent||'#c46a2b';
  typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});

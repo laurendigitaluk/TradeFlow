@@ -310,6 +310,8 @@ async function saveAuto(masterId,button){
  const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
  const refs={};document.querySelectorAll('.reference-select[data-master="'+masterId+'"]').forEach(i=>refs[i.dataset.field]=i.value);
  const overrides={};document.querySelectorAll('.condition-override-input[data-master="'+masterId+'"]').forEach(i=>overrides[i.dataset.field]=i.value===""?null:Number(i.value));
+ const missing=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"].filter(k=>values[k]===null||values[k]===undefined||values[k]==="");
+ if(missing.length)return msg("Automatic pricing cannot be saved until all five condition percentages are entered.","error");
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
  for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Condition overrides must be valid non-negative prices.","error");
  button.disabled=true;try{

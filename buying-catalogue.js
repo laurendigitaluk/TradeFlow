@@ -121,6 +121,40 @@ function populateManufacturers(){
  renderManufacturerList();
 }
 function renderEmpty(text){$("matrix-body").innerHTML='<tr><td colspan="8" class="empty">'+esc(text)+"</td></tr>";$("row-count").textContent=""}
+const pricingProfiles={
+ "70":{sealed:70,opened_never_used:65,excellent:60,good:50,poor:40},
+ "60":{sealed:60,opened_never_used:55,excellent:50,good:40,poor:30},
+ "50":{sealed:50,opened_never_used:45,excellent:40,good:30,poor:20},
+ "40":{sealed:40,opened_never_used:35,excellent:30,good:20,poor:10}
+};
+function renderPricingProfile(){
+ const key=$("pricing-profile")?.value||"70",p=pricingProfiles[key];if(!p)return;
+ const labels={sealed:"Sealed",opened_never_used:"Opened, Never Used",excellent:"Excellent",good:"Good",poor:"Poor"};
+ const box=$("pricing-rule-preview");if(!box)return;
+ box.innerHTML=Object.entries(p).map(([k,v])=>'<div class="rule-chip"><strong>'+v+'%</strong><small>'+labels[k]+'</small></div>').join("");
+}
+async function applyPricingProfile(){
+ const profile=pricingProfiles[$("pricing-profile").value||"70"];
+ if(!profile)return;
+ if(!selectedBranch)return msg("Select a branch before applying a pricing profile.","error");
+ if(!products.length)return msg("There are no products in this branch to update.","error");
+ const rows=products.map(p=>({
+   tenant_id:tenantId,buying_product_id:p.id,
+   sealed_percentage:profile.sealed,
+   opened_never_used_percentage:profile.opened_never_used,
+   excellent_percentage:profile.excellent,
+   good_percentage:profile.good,
+   poor_percentage:profile.poor
+ }));
+ const btn=$("apply-pricing-profile");btn.disabled=true;btn.textContent="Updating…";
+ try{
+   await api("/rest/v1/tenant_buying_condition_rules?on_conflict=tenant_id,buying_product_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(rows)});
+   msg("Pricing profile applied to all "+products.length+" products in this branch. Manual overrides and research were left unchanged.","success");
+   await loadMatrix();
+ }catch(e){msg(e.message||String(e),"error")}
+ finally{btn.disabled=false;btn.textContent="Update all products"}
+}
+
 function slugify(v){return String(v||"").trim().toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"")||crypto.randomUUID()}
 function toggleManagement(){
  const p=$("management-panel");p.hidden=!p.hidden;
@@ -208,6 +242,7 @@ async function addProduct(e){
  }catch(e){msg(e.message||String(e),"error")}
 }
 
+$("pricing-profile").addEventListener("change",renderPricingProfile);$("apply-pricing-profile").addEventListener("click",applyPricingProfile);renderPricingProfile();
 $("manage-categories").addEventListener("click",toggleManagement);
 $("manage-branches").addEventListener("click",toggleManagement);
 $("manage-manufacturers").addEventListener("click",toggleManagement);

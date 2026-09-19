@@ -666,3 +666,7 @@ The separate Buying Prices workspace no longer calls `seed_tenant_master_catalog
 ## 2026-09-19 — Catalogue workflow rule
 
 For subscriber catalogue work, treat the TradeFlow master catalogue as an independent copy. Do not introduce runtime reads from GearCashOut / Action Buyer UK. Enhanced/Catalogue subscribers select master products from the unified Buying Catalogue; selection creates the tenant category/branch/manufacturer and buying product automatically. If no research-based or manual buying price is configured, valuation must remain manual rather than inventing a price.
+
+
+### Post-change verification — 2026-09-19
+Verified the catalogue selection RPC under an authenticated test identity: 3,822 active/customer-visible master products were returned. Transaction-scoped activation produced the expected tenant category/branch/product and blank pricing, then was rolled back.

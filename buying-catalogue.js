@@ -80,18 +80,48 @@ function stateFor(p){
  if(p.rule_id)return {key:"auto",label:"Automatic pricing",product:p,rule:p};
  return {key:"valuation",label:"Manual valuation",product:p,rule:null};
 }
+function researchText(p,type){
+ const isNew=type==="uk_new";
+ const price=isNew?p.uk_new_research_price:p.uk_used_research_price;
+ const source=isNew?p.uk_new_research_source:p.uk_used_research_source;
+ const checked=isNew?p.uk_new_research_checked_at:p.uk_used_research_checked_at;
+ if(price===null||price===undefined||price==="")return "No research";
+ const label=isNew?"UK New":"UK Used";
+ const when=checked?" · "+new Date(checked).toLocaleDateString("en-GB"):"";
+ return label+" "+money(price)+when+(source?" · "+esc(source):"");
+}
+function researchInlineHtml(p){
+ return '<div class="research-inline"><strong>Research:</strong> <span>UK New: '+researchText(p,"uk_new")+'</span> <span>UK Used: '+researchText(p,"uk_used")+'</span></div>';
+}
+function conditionAutoAmount(p,ref,pct){
+ const base=ref==="uk_new"?p.uk_new_research_price:p.uk_used_research_price;
+ return pct!==null&&pct!==undefined&&pct!==""&&base!==null&&base!==undefined?Number(base)*Number(pct)/100:null;
+}
 function refSummary(p){
- if(!p||stateFor(p).key==="inactive")return '<div class="ref-summary">Not active for Buying. Select the product to add it.</div>';
- if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)return '<div class="ref-summary"><strong>Manual price / override:</strong> '+money(p.manual_offer_price)+(p.rule_id?'<br><span class="muted">Automatic rule retained as fallback.</span>':'')+'</div>';
- if(p.rule_id)return '<div class="ref-summary"><strong>Automatic rule:</strong><br>Sealed '+(p.sealed_percentage??"—")+"% · Opened "+(p.opened_never_used_percentage??"—")+"% · Excellent "+(p.excellent_percentage??"—")+"% · Good "+(p.good_percentage??"—")+"% · Poor "+(p.poor_percentage??"—")+"%</div>";
- return '<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
+ if(!p||stateFor(p).key==="inactive")return researchInlineHtml(p||{})+'<div class="ref-summary">Not active for Buying. Select the product to add it.</div>';
+ if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Manual price / override:</strong> '+money(p.manual_offer_price)+(p.rule_id?'<br><span class="muted">Automatic rule retained as fallback.</span>':'')+'</div>';
+ if(p.rule_id)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Automatic rule:</strong> '+(p.sealed_percentage??"—")+"% new · "+(p.opened_never_used_percentage??"—")+"% new · "+(p.excellent_percentage??"—")+"% used · "+(p.good_percentage??"—")+"% used · "+(p.poor_percentage??"—")+"% used</div>";
+ return researchInlineHtml(p)+'<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
 }
 function editorHtml(p,s){
  if(s.key==="inactive")return '<button class="save-price add-product" data-add-product="'+p.product_id+'">Add to Buying Catalogue</button><div class="price-help">Selecting this product automatically creates/links its category, branch and manufacturer for this subscriber.</div>';
  if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Buying price / override (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(p.manual_offer_price??"")+'" placeholder="Enter price you are willing to pay"><button class="save-price" data-save-manual="'+p.product_id+'">Save price</button><div class="price-help">This fixed price overrides automatic pricing for this product.</div></div>';
- if(s.key==="auto")return '<div class="price-editor"><div class="condition-grid">'+
- [["Sealed","sealed_percentage","sealed_manual_price"],["Opened","opened_never_used_percentage","opened_never_used_manual_price"],["Excellent","excellent_percentage","excellent_manual_price"],["Good","good_percentage","good_manual_price"],["Poor","poor_percentage","poor_manual_price"]].map(([l,pct,ov])=>'<div class="condition-row"><strong>'+l+'</strong><label>%<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><label>Override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label></div>').join("")+
- '</div><button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Each condition has its own optional fixed override. Leave a condition override blank to use the automatic research calculation for that condition.</div></div>';
+ if(s.key==="auto"){
+  const conditions=[
+   ["Sealed","sealed_percentage","sealed_manual_price","uk_new"],
+   ["Opened","opened_never_used_percentage","opened_never_used_manual_price","uk_new"],
+   ["Excellent","excellent_percentage","excellent_manual_price","uk_used"],
+   ["Good","good_percentage","good_manual_price","uk_used"],
+   ["Poor","poor_percentage","poor_manual_price","uk_used"]
+  ];
+  return '<div class="price-editor">'+
+   '<div class="research-basis"><strong>Research prices used for automatic calculation:</strong> <span>UK New: '+researchText(p,"uk_new")+'</span> <span>UK Used: '+researchText(p,"uk_used")+'</span></div>'+
+   '<div class="condition-grid">'+conditions.map(([l,pct,ov,ref])=>{
+    const amount=conditionAutoAmount(p,ref,p[pct]);
+    return '<div class="condition-row"><strong>'+l+'</strong><span class="basis-price">'+(ref==="uk_new"?"New":"Used")+': '+(ref==="uk_new"?researchText(p,"uk_new"):researchText(p,"uk_used"))+'</span><label>%<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><span class="calculated-price">Auto: '+(amount!==null?money(amount):"No research")+'</span><label>Override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label></div>';
+   }).join("")+'</div>'+
+   '<button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Sealed and Opened use UK New research. Excellent, Good and Poor use UK Used research. If research is missing, the percentage is saved and the automatic amount will populate when research is available. An override can be entered at any time.</div></div>';
+ }
  return "";
 }
 function renderMaster(){
@@ -123,15 +153,22 @@ function renderMaster(){
   const mode=s.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button></div>';
   return '<tr class="status-'+s.key+'">'+
    '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
    '<td>'+refSummary(p)+'</td></tr>';
- }).join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
+ }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>changeMode(e.dataset.modeProduct,e.dataset.modeValue)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
+ document.querySelectorAll(".auto-input").forEach(e=>e.addEventListener("input",()=>{
+   const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;
+   const conditions={sealed_percentage:"uk_new",opened_never_used_percentage:"uk_new",excellent_percentage:"uk_used",good_percentage:"uk_used",poor_percentage:"uk_used"};
+   const ref=conditions[e.dataset.field],amount=conditionAutoAmount(p,ref,e.value);
+   const row=e.closest(".condition-row"),out=row?.querySelector(".calculated-price");
+   if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research");
+ }));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
  document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
 }

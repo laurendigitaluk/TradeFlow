@@ -10,4 +10,11 @@
 <section class="contact" id="contact"><h2 id="page-heading">Contact</h2><div id="page-image-wrap" class="public-image-wrap" hidden><img id="page-image" alt=""></div><div id="page-body">Contact the business for assistance.</div></section>
 </main>
 <section id="site-extras" class="site-extras" hidden><div id="review-links" class="review-links"></div><div id="share-links" class="share-links"></div><div id="social-links" class="social-links"></div></section><footer><span id="footer-name">TradeFlow</span><span>Powered by TradeFlow</span></footer><p class="status" id="status" role="status"></p>
-<script src="public-site.js?v=11" defer></script></body></html>
+<script>
+window.addEventListener('error',function(e){
+ const status=document.getElementById('status'),headline=document.getElementById('headline');
+ if(status){status.textContent='Website script error: '+(e.message||'Unknown JavaScript error');status.style.display='block'}
+ if(headline&&headline.textContent.indexOf('Please wait')===0)headline.textContent='The website could not start. Please refresh and try again.';
+});
+</script>
+<script src="public-site.js?v=12" defer onerror="document.getElementById('status').textContent='Unable to load the website script (public-site.js).';document.getElementById('status').style.display='block';"></script></body></html>

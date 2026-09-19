@@ -1,8 +1,8 @@
 # TradeFlow Human / Developer System Handbook
 
 **Status:** Living document  
-**Version:** 4.3  
-**Date:** 18 September 2026  
+**Version:** 4.4  
+**Date:** 19 September 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
@@ -197,7 +197,6 @@ The first product layer is the TradeFlow SaaS itself. The public TradeFlow homep
 The platform hierarchy is:
 
 TradeFlow SaaS homepage → subscriber plan/signup → subscriber private business dashboard → subscriber Website Builder → subscriber's own customer-facing website → that subscriber's customers.
-
 The Platform Owner dashboard is a separate platform-level administration boundary. platform-owner-dashboard.html uses its own platform-owner session storage and verifies the signed-in Auth user against public.platform_memberships. Tenant membership is not treated as Platform Owner access.
 
 The first owner dashboard implementation is intentionally platform-level: it reads subscriber tenant/subscription summaries through the existing platform_admin_list_tenants() privileged RPC. It does not replace or bypass tenant RLS and it does not expose subscriber customer/order records as a platform-wide browser dataset.
@@ -397,7 +396,6 @@ The category-management and inventory dashboard controllers were also corrected 
 
 
 ## Website Builder branded media, selling-page editing and domain entry — 18 September 2026
-
 The Website Builder has been extended so subscribers can establish a visual brand rather than only editing text.
 
 - Subscribers can upload a homepage image and images for editable website pages.
@@ -597,8 +595,7 @@ Builder CSS cache was advanced to v18 and public-site CSS to v9. Responsive rule
 The existing Categories & Properties screen was too abstract for the actual Buying workflow. A separate subscriber workspace, `buying-catalogue.html` / `buying-catalogue.js`, now provides a clearer path: **Category → Buying Branch → Products We Buy → Research & Pricing**. This keeps the shared category/branch structure but gives each buying branch a practical product list.
 
 New tenant-scoped tables:
-- `tenant_buying_products`: exact manufacturer/model/package records that a subscriber buys, with active status, automatic percentage of researched UK New price, optional manual offer price, and pricing notes.
-- `tenant_buying_research`: product-level research evidence with UK New, UK Used/Other and Overseas evidence types, source, URL, observed price, currency, condition, availability, notes and checked timestamp.
+- `tenant_buying_products`: exact manufacturer/model/package records that a subscriber buys, with active status, automatic percentage of researched UK New price, optional manual offer price, and pricing notes.- `tenant_buying_research`: product-level research evidence with UK New, UK Used/Other and Overseas evidence types, source, URL, observed price, currency, condition, availability, notes and checked timestamp.
 
 Pricing rule is deliberately simple at this stage: **automatic percentage populated = automatic valuation basis; percentage blank = manual offer required**. Automatic percentage and manual price cannot be entered together. Existing GearCashOut remains reference-only.
 
@@ -734,3 +731,35 @@ Verification: the merge migration completed successfully; the duplicate category
 - Buying Catalogue selectors are now cascading: Category → relevant Manufacturers → relevant Branches for the selected manufacturer → Models in the selected branch/manufacturer. Changing an upstream selection resets and reloads downstream selections rather than leaving unrelated values available.
 - buying-catalogue.js commit ff575e5204f7cb3efc12284a5109be0610334a5b implements the selector dependency logic. buying-catalogue.html commit 34771b980131a4be683179ecf6f6f8b5a21ce2c9 changes Model to a dependent select and cache-busts the JS to v16.
 - Syntax check passed with new Function() after the selector change. Live browser verification is still required after a hard refresh.
+
+## 23. Buying catalogue master-copy architecture and selector repair — 19 September 2026
+
+The Buying Catalogue now uses a **TradeFlow-owned master catalogue copy**. The source data was copied into these TradeFlow tables and is no longer queried from GearCashOut:
+
+- `catalogue_master_categories`: 32 master categories
+- `catalogue_master_branches`: 178 master branches
+- `catalogue_master_manufacturers`: 73 manufacturers
+- `catalogue_master_products`: 3,845 products
+
+The live `seed_tenant_master_catalogue(uuid)` function reads only the TradeFlow `catalogue_master_*` tables. A direct function-definition check found no GearCashOut reference. Subscriber copies remain tenant-owned in `categories`, `category_branches`, `tenant_buying_manufacturers` and `tenant_buying_products`.
+
+The pre-filled catalogue entitlement is now enabled for **Enhanced** and **Catalogue**, and disabled for **Basic**. This matches the intended package boundary. The active Catalogue plan remains in the database.
+
+### Buying selector fault
+
+The Buying Catalogue source was calling `loadCategoryScope()` during category initialisation, but the current `buying-catalogue.js` did not contain that function. That prevented the category → manufacturer → branch initialisation chain from completing. The repair added `loadCategoryScope()`, loads the selected category's tenant products first, then derives the manufacturer filter from those products before loading the selected category's branches.
+
+The HTML cache-buster was advanced to `buying-catalogue.js?v=17` so the browser does not continue serving the previous controller.
+
+The category selector also now de-duplicates category slugs in the rendered list.
+
+### Legacy test-tenant cleanup
+
+The existing subscriber test tenant had stale pre-master catalogue aliases left from earlier catalogue work. The known legacy `Drone` category was merged into the canonical `Drones` category and its product retained. The stale `Tripod/Support` category was merged into canonical `Tripods`. The empty legacy `Drones` branch was removed; the canonical `Drone` branch was restored under `Drones`.
+
+The tenant still retains its unrelated custom `Accessories` category and its manually added Canon product. These were not deleted.
+
+### Verification state
+
+Database verification completed for the master-copy counts, package feature flags, test-tenant alias cleanup and absence of duplicate category slugs. The code change is committed. **Browser verification of the repaired selector is still OPEN**: hard-refresh the deployed Buying Catalogue and confirm Category → Manufacturer → Branch populate, then select Cameras → Canon → Digital and confirm the product matrix loads.
+

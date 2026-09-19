@@ -265,7 +265,7 @@ function bindEditor(){
      if(field==='buyHeading')homeBuyHeading=el.innerText.trim();
      if(field==='buyIntro')homeBuyIntro=el.innerText.trim();
      if(field==='sellHeading')homeSellHeading=el.innerText.trim();
-     if(field==='sellIntro')homeSellIntro=el.innerText.trim();
+     if(field==='sellIntro')homeSellIntro=el.innerText.trim(); if(field==='templateKicker')templateCopy.kicker=el.innerText.trim(); if(el.dataset.templateField)templateCopy[el.dataset.templateField]=el.innerText.trim();
      markDirty();
    });
    el.addEventListener('focus',()=>el.classList.add('editing'));
@@ -312,7 +312,7 @@ function applyTemplate(template){
 }
 
 function buildContent(){
- return {schema_version:2,site:{
+ return {schema_version:2,template_reset_version:2,site:{
    name:siteName.trim()||'Your Business',
    pages:pages,
    theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,typography:typography},
@@ -323,13 +323,13 @@ function buildContent(){
    homepage:{block_order:homepageOrder,headline:headline.trim()||'Buy, sell and trade with us',intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' second image',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
-   template:currentTemplate,
+   template:currentTemplate,template_copy:templateCopy,
    contact:{text:(pages.find(p=>p.slug==='contact')?.body||'').trim()||null}
  }};
 }
 
 function loadContent(content){
- const s=content?.site||{};
+ const s=content?.site||{}; templateCopy=Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{});
  window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
  siteName=s.name||'Your Business';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
  headline=s.homepage?.headline||'Buy, sell and trade with us';
@@ -342,7 +342,7 @@ function loadContent(content){
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?s.homepage.tiles:defaultHomepageTiles();
- currentTemplate=templateHeadlines[s.template]?s.template:'modern';
+ currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),

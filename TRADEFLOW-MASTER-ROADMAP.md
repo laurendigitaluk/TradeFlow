@@ -595,3 +595,36 @@ The subscriber Website Builder now supports a broader professional website layer
 ## Restore checkpoint — 18 September 2026
 
 This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.
+
+
+## Domain purchasing workstream — 19 September 2026
+
+### Database foundation completed
+
+TradeFlow's existing custom-domain connection architecture has been extended to support a future built-in domain purchasing service.
+
+Added:
+- `domain_tld_catalog`
+- `tenant_domain_orders`
+
+Extended `tenant_domains` with:
+- acquisition source;
+- registrar/provider identifiers;
+- registration and expiry timestamps;
+- auto-renewal;
+- provider metadata.
+
+Security uses tenant-scoped RLS and the existing website-management/editor permission boundary. Registrar credentials are not stored in the database.
+
+### Intended future flow
+
+**Search → authoritative availability/price check → customer confirmation → payment → registrar registration → reconciliation → domain activation → DNS/hosting → SSL → published website.**
+
+The current Website URL page remains a connect-an-existing-domain feature. Domain purchasing, payment checkout, registrar integration and automatic DNS/SSL activation remain separate implementation stages.
+
+### Provider decision
+
+No registrar has been hard-coded yet. Current research confirms that registrar APIs can expose real-time availability/pricing and registration, but support varies by TLD and provider. The production provider must be selected before provider-specific Edge Functions or checkout logic are implemented.
+
+**State:** Database foundation implemented; end-to-end purchasing flow planned.
+

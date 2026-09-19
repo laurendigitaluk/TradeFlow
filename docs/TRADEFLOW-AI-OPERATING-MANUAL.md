@@ -588,3 +588,17 @@ Never silently delete pricing rules when a research basis changes. A basis chang
 The independent TradeFlow master catalogue remains a separate snapshot from GearCashOut / Action Buyer UK. The catalogue.pre_filled entitlement has now been enabled for all three active customer-facing plans: **Basic, Enhanced and Catalogue**. Each plan receives the same unlimited category/product/subcategory entitlement configuration. This changes access entitlement only; it does not create a runtime dependency on GearCashOut and does not import GearCashOut research or pricing evidence into subscriber buying references.
 
 Verification: live plan_features confirms catalogue.pre_filled enabled for Basic, Enhanced and Catalogue. The actual tenant catalogue seed/copy path remains tenant-owned and must continue to use the TradeFlow master snapshot.
+
+
+## 19 September 2026 — Master catalogue duplicate-category cleanup
+
+After importing the standalone TradeFlow master catalogue, inspect the copied category tree for obvious duplicate category records before relying on it for subscriber selection. GearCashOut is the source snapshot only; it must not be queried by subscriber runtime code and must not be modified during cleanup.
+
+The live TradeFlow master catalogue was cleaned as follows:
+- Drone was merged into canonical Drones, including its product and branch.
+- Tripod/Support was merged into canonical Tripods; its products were moved and its duplicate Tripods branch was merged into the existing canonical branch.
+- The duplicate category records were then deleted.
+
+Do not automatically merge broader/similar category names merely because they contain overlapping words. Categories such as Cameras and Camera & Video require a deliberate taxonomy decision before consolidation.
+
+The migration was applied to TradeFlow only and verified by re-querying the category records. The next browser step is to refresh What We Buy and verify that the cleaned master category list is what the subscriber selector consumes.

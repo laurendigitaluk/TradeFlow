@@ -23,3 +23,19 @@ h1{font-size:34px;line-height:1.15;margin:7px 0 10px;letter-spacing:-.03em}h2{fo
 @media(max-width:1150px){.business-flow{grid-template-columns:repeat(4,minmax(120px,1fr))}}@media(max-width:1050px){.dashboard-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:900px){.layout{grid-template-columns:205px 1fr}.content{padding:32px 24px}.welcome-panel{display:block}.account-summary{margin-top:18px}}
 @media(max-width:700px){.business-flow{grid-template-columns:1fr 1fr}.topbar{padding:0 16px}.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto;border-right:0;border-bottom:1px solid var(--tf-border);padding:14px;overflow:auto}.sidebar nav{display:flex;flex-wrap:nowrap;min-width:max-content;gap:3px}.sidebar-heading,.nav-section,.sidebar-note{display:none}.sidebar a{padding:9px 10px}.content{padding:26px 17px 45px}.dashboard-grid,.quick-links,.cards,.template-grid,.form-grid{grid-template-columns:1fr}.page-heading{display:block}h1{font-size:29px}.account-identity{display:none}.account-summary{display:grid}.account-details div{grid-template-columns:1fr;gap:3px}}
+
+:root{--tf-blue-50:#eef6ff;--tf-blue-100:#e4f0ff;--tf-blue-200:#cfe3f8;--tf-blue-600:#2f6f9f}
+body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 52%,#f8fafc 100%)}
+.topbar{box-shadow:0 2px 16px rgba(37,86,125,.06);background:rgba(255,255,255,.95)}
+.sidebar{background:rgba(255,255,255,.94);border-right-color:#d6e4ef}
+.sidebar a{border:1px solid transparent}.sidebar a:hover,.sidebar a.active{background:#edf5fc;border-color:#d6e7f5}
+.content{max-width:1280px}
+.panel{border-color:#d5e4ef;border-radius:15px;box-shadow:0 8px 25px rgba(37,86,125,.06)}
+.welcome-panel{background:linear-gradient(135deg,#fff,#f4f9fe);border-color:#cfe1ee}
+.business-flow{gap:10px}.flow-step,.dashboard-card{border-color:#d5e4ef;border-radius:12px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background-color .18s ease}
+.flow-step:hover,.dashboard-card:hover{transform:translateY(-3px);border-color:#a9c7de;background:#fafdff;box-shadow:0 9px 20px rgba(37,86,125,.10)}
+.customer-panel{background:linear-gradient(135deg,#fff,#f7fbff);border-color:#c9dfef}
+.website-separate{background:#f8fbfe;border-color:#d5e4ef}
+.actions a,.actions button,.topbar button{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.actions a:hover,.actions button:hover,.topbar button:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(30,60,80,.12)}
+.status-pill{border-color:#cfe0ed;background:#f3f8fc;color:#4d6677}

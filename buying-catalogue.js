@@ -155,8 +155,7 @@ function renderMaster(){
    '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
-   '<td>'+refSummary(p)+'</td></tr>';
+   '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>changeMode(e.dataset.modeProduct,e.dataset.modeValue)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));

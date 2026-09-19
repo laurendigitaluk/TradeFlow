@@ -164,9 +164,11 @@ function renderTemplates(){
 }
 
 function navMarkup(){
- const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
- const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<button type="button" data-nav-page="'+esc(slug)+'">'+esc(findTitle(slug))+'</button>').join('');
- return '<header class="template-header"><nav class="template-nav"><div class="template-brand">'+logoEditor()+'<small>'+esc(headerTagline)+'</small></div><div class="template-nav-links">'+links+'<span class="managed-login">Customer Login</span></div></nav></header>';
+ const links=pages.filter(p=>p.enabled&&['about','contact'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.title)+'</button>').join('');
+ const cats=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ const categoryLinks=cats.map(cat=>'<button type="button" data-nav-page="buying"><b>'+esc(cat.name)+'</b><small>'+Number(cat.product_count||0)+' products</small></button>').join('');
+ const buyingMenu='<details class="builder-buy-dropdown"><summary>What We Buy</summary><div class="builder-buy-menu"><b>WHAT WE BUY</b><span>Categories are connected to your Buying Catalogue.</span>'+(categoryLinks||'<small>No buying categories selected yet.</small>')+'</div></details>';
+ return '<header class="template-header"><nav class="template-nav"><div class="template-brand">'+logoEditor()+'<small>'+esc(headerTagline)+'</small></div><div class="template-nav-links">'+links+buyingMenu+'<button type="button" data-nav-page="shop">What We Sell</button><span class="managed-login">Customer Login</span></div></nav></header>';
 }
 function footerMarkup(){
  const findTitle=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
@@ -194,7 +196,7 @@ function renderBuilderBuyingPage(){
  return '<div class="connected-buy-page">'+categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});return '<section><div class="section-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><p>'+esc(cat.description||'Products selected by this business.')+'</p></div>'+Object.entries(grouped).map(([maker,list])=>'<div class="connected-buy-manufacturer"><h3>'+esc(maker)+'</h3><div>'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+'</article>').join('')+'</div></div>').join('')+'</section>'}).join('')+'</div>';
 }
 function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
-function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName)+'</span></div>'}
+function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){
  const cats=buyingCatalogue.categories||[],products=buyingCatalogue.products||[];
  if(!cats.length)return '<div class="connected-empty">Select products in Buying Catalogue and your What We Buy section will appear here.</div>';

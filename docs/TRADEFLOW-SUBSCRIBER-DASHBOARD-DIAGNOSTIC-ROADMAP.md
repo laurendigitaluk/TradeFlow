@@ -575,3 +575,7 @@ User path: Subscriber → Buying → What We Buy → category/branch/manufacture
 
 ## Buying Price Basis / Override Path — 19 September 2026
 For each condition the user can choose UK New or UK Used as the automatic basis, enter a percentage, and optionally enter an exact manual override. Frontend state is persisted in `tenant_buying_condition_rules`; the valuation path is `buying-dashboard.js` → `calculate_buying_item_valuation`. RPC precedence: manual override → selected research basis + percentage → manual fallback if research/percentage is unavailable. Research remains read-only on What We Buy.
+
+
+## Catalogue Management Navigation — 19 September 2026
+Management flow: open What We Buy → Manage → select Category → view all Branches / Types for that category → select Branch → view manufacturers/products in that branch. This replaces the previous ambiguous side-by-side category/branch editing layout. Main catalogue filtering follows the same Category → Branch → Manufacturer → Model hierarchy.

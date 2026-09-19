@@ -819,3 +819,38 @@ The subscriber buying setup is now a single workflow rather than separate Catalo
 
 ### Post-change verification — 2026-09-19
 The authenticated RPC test returned 3,822 master products for the Enhanced test tenant. A transaction-scoped activation test for an Autel Alpha master product produced category "Drone", branch "Camera Drones", manufacturer "Autel Robotics", with both automatic_percentage and manual_offer_price null; the transaction was rolled back, so no test product was left behind.
+
+## 19 September 2026 — Buying Pricing / Master Catalogue consolidation
+
+The subscriber Buying Catalogue has been consolidated into a single **Buying Pricing & Master Catalogue** workflow. The master catalogue is now the source of the subscriber's Buying configuration rather than requiring the subscriber to create a category first and then return to a separate pricing screen.
+
+For an eligible subscriber, the page reads only the TradeFlow-owned master catalogue:
+- `catalogue_master_categories`
+- `catalogue_master_branches`
+- `catalogue_master_manufacturers`
+- `catalogue_master_products`
+
+The current live TradeFlow copy contains 32 master categories, 178 master branches, 73 manufacturers and 3,822 active/customer-visible products. This data is independent of GearCashOut and is not queried from GearCashOut at runtime.
+
+User action is now:
+**find product → choose Off / Manual / Automatic → save price/rule**.
+
+Choosing Manual or Automatic calls `configure_master_catalogue_buying_product()`. That protected RPC creates or links the tenant category, branch and manufacturer and creates/activates the tenant `tenant_buying_products` record. The subscriber therefore does not have to build the category/product hierarchy separately.
+
+Pricing states are visually distinguished:
+- light red/pink = Inactive;
+- light green = Active for Buying but no price configured;
+- light yellow = Manual offer;
+- light grey = Automatic pricing rule.
+
+Manual pricing is stored in the tenant buying product's `manual_offer_price`. Automatic pricing is stored in `tenant_buying_condition_rules` with the existing five condition percentages and research-basis defaults. Turning a product Off/reset clears its buying price configuration and deactivates the tenant buying product without deleting the master catalogue product.
+
+The valuation RPC `calculate_buying_item_valuation()` now checks a configured product-level manual buying price before condition-based automatic pricing, so a manual price selected from the master pricing page is actually honoured by the downstream Buying → Valuation workflow.
+
+Implementation:
+- `buying-catalogue.html` commit `cc0e228ebda87113d2a65dbb026f7ef634909dbb`
+- `buying-catalogue.js` commit `900705eb3112284cbd21e16141ffafd252a3089d`
+- Supabase migration `master_catalogue_pricing_control`
+- Supabase migration `manual_product_price_in_buying_valuation`
+
+Verification state: **Implemented / database boundary tested; authenticated browser verification remains OPEN.** The previous category/manufacturer/branch selector failure is no longer the intended workflow because the page no longer requires those tenant-owned selectors to be populated before pricing a master product.

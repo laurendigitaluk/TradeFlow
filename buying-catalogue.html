@@ -37,7 +37,7 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 </div>
 <div class="legend"><span class="inactive">Inactive — not in Buying</span><span class="active">Active for Buying — no price configured</span><span class="manual">Manual offer</span><span class="auto">Automatic pricing rule</span></div>
 <div class="catalogue-head" style="margin-top:18px"><div><h3 style="margin:0 0 4px">Products</h3><div id="master-count" class="count"></div></div></div>
-<div class="bulk-toolbar"><label class="select-all"><input type="checkbox" id="select-all-products"> Select all shown</label><span id="selected-count" class="selected-count"></span><button id="bulk-add" class="btn primary" type="button" disabled>Add selected to Buying Catalogue</button></div><div class="table-wrap"><table class="products"><thead><tr><th class="select-head"><input type="checkbox" id="select-all-products-header" aria-label="Select all shown"></th><th>Product</th><th>Category</th><th>Branch / Type</th><th>Manufacturer</th><th style="min-width:230px">Buying / Pricing</th><th>Research reference</th></tr></thead><tbody id="master-body"><tr><td colspan="6" class="empty">Loading catalogue…</td></tr></tbody></table></div>
+<div class="bulk-toolbar"><label class="select-all"><input type="checkbox" id="select-all-products"> Select all shown</label><span id="selected-count" class="selected-count"></span><button id="bulk-add" class="btn primary" type="button" disabled>Add selected to Buying Catalogue</button></div><div class="table-wrap"><table class="products"><thead><tr><th class="select-head">Select</th><th>Product</th><th>Category</th><th>Branch / Type</th><th>Manufacturer</th><th style="min-width:230px">Buying / Pricing</th><th>Research reference</th></tr></thead><tbody id="master-body"><tr><td colspan="6" class="empty">Loading catalogue…</td></tr></tbody></table></div>
 <div class="pagination"><button id="prev-page" class="btn" type="button">Previous</button><span id="page-info"></span><button id="next-page" class="btn" type="button">Next</button></div>
 </section>
 </main>
@@ -45,5 +45,5 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing page error: '+(e.message||'Unknown browser error')});
 window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});
 </script>
-<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=26"></script>
+<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=27"></script>
 </body></html>

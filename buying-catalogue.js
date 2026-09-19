@@ -49,6 +49,7 @@ async function loadFacets(){
 }
 async function loadPage(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
+ const hideAdded=catalogueView==="master" ? ($("master-hide-added")?.checked!==false) : false;
  if(catalogueView==="master"&&!man&&!q){
   master=[];totalProducts=0;
   $("catalogue-status").textContent="Choose a manufacturer or search";
@@ -56,15 +57,18 @@ async function loadPage(){
   $("catalogue-help").textContent="No master product records are downloaded until you choose a manufacturer or enter a product search.";
   renderMaster();return;
  }
- const rpc=catalogueView==="my"?"/rest/v1/rpc/get_tenant_buying_catalogue_page":"/rest/v1/rpc/get_master_buying_catalogue_page";
- const data=await api(rpc,{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize}),timeoutMs:45000});
+ const rpc=catalogueView==="my"?"/rest/v1/rpc/get_tenant_buying_catalogue_page":"/rest/v1/rpc/get_master_buying_catalogue_page_filtered";
+ const data=await api(rpc,{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize,...(catalogueView==="master"?{p_hide_added:hideAdded}:{} )}),timeoutMs:45000});
  master=Array.isArray(data?.products)?data.products:[];
  totalProducts=Number(data?.total||0);
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));if(masterPage>pages){masterPage=pages;return loadPage()}
- $("catalogue-status").textContent=totalProducts+(catalogueView==="my"?" products in your Buying Catalogue":" matching master products");
+ $("catalogue-status").textContent=totalProducts+(catalogueView==="my"?" products in your Buying Catalogue":(hideAdded?" available master products":" matching master products"));
  $("catalogue-status").classList.add("live");
- $("catalogue-help").textContent=catalogueView==="my"?"These are the products currently selected for this subscriber. Use Master Catalogue to add more.":"TradeFlow only loads the current master-catalogue result page. Select products to add them to your Buying Catalogue.";
+ $("catalogue-help").textContent=catalogueView==="my"?"These are the products currently selected for this subscriber. Use Master Catalogue to add more.":(hideAdded?"Already-added Buying products are hidden. Turn off 'Hide already added' if you need to review them.":"TradeFlow is showing all matching master products, including ones already in this subscriber's Buying Catalogue."); updateMasterVisibilityControl();
  renderMaster();
+}
+function updateMasterVisibilityControl(){
+ const e=$("master-hide-added"); if(e)e.disabled=catalogueView!=="master";
 }
 function fillSelect(id,items,placeholder,old){
  const e=$(id);e.innerHTML='<option value="">'+placeholder+"</option>"+(items||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+" ("+x.count+")</option>").join("");

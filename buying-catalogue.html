@@ -35,6 +35,7 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 <div class="field"><label>Branch</label><select id="master-branch"><option value="">All branches</option></select></div>
 <div class="field"><label>Manufacturer</label><select id="master-manufacturer"><option value="">All manufacturers</option></select></div>
 <div class="field"><label>Search model / product</label><input id="master-search" placeholder="Search model, package, product type or category"></div>
+<div class="field master-visibility-filter"><label>Master catalogue</label><label class="inline-check"><input id="master-hide-added" type="checkbox" checked> Hide products already in Buying Catalogue</label><small>Turn this off to show already-added products.</small></div>
 </div>
 <div class="legend"><span class="inactive">Inactive — not in Buying</span><span class="active">Active for Buying — no price configured</span><span class="manual">Manual offer</span><span class="auto">Automatic pricing rule</span></div>
 <div class="catalogue-head" style="margin-top:18px"><div><h3 style="margin:0 0 4px">Products</h3><div id="master-count" class="count"></div></div></div>
@@ -46,5 +47,5 @@ body{background:#f4f6f8}.page{max-width:1900px;margin:0 auto;padding:26px 28px 6
 window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing page error: '+(e.message||'Unknown browser error')});
 window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});
 </script>
-<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=43"></script>
+<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=44"></script>
 </body></html>

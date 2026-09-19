@@ -6,6 +6,7 @@ let masterPage=1,totalProducts=0;
 const pageSize=50;
 let searchTimer=null;
 let buyingSelectionAllMatching=false;
+let catalogueView="my";
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
 function money(v,c="GBP"){if(v===null||v===undefined||v==="")return"—";try{return new Intl.NumberFormat("en-GB",{style:"currency",currency:c||"GBP"}).format(Number(v))}catch{return(c||"")+" "+v}}
@@ -36,7 +37,7 @@ async function loadCatalogue(){
  msg("Loading catalogue filters…");
  await loadFacets();
  await loadPage();
- msg("Catalogue ready. Select a product to add it to this subscriber's Buying Catalogue.","success");
+ msg(catalogueView==="my"?"Your Buying Catalogue is ready.":"Master catalogue ready. Select products to add them to your Buying Catalogue.","success");
 }
 async function loadFacets(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null;
@@ -46,23 +47,21 @@ async function loadFacets(){
 }
 async function loadPage(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
- if(!man&&!q){
+ if(catalogueView==="master"&&!man&&!q){
   master=[];totalProducts=0;
   $("catalogue-status").textContent="Choose a manufacturer or search";
   $("catalogue-status").classList.remove("live");
-  $("catalogue-help").textContent="No product records are downloaded until you choose a manufacturer or enter a product search. Category and branch selections only narrow the available choices.";
-  renderMaster();
-  return;
+  $("catalogue-help").textContent="No master product records are downloaded until you choose a manufacturer or enter a product search.";
+  renderMaster();return;
  }
- const data=await api("/rest/v1/rpc/get_master_buying_catalogue_page",{method:"POST",body:JSON.stringify({
-  p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize
- }),timeoutMs:45000});
+ const rpc=catalogueView==="my"?"/rest/v1/rpc/get_tenant_buying_catalogue_page":"/rest/v1/rpc/get_master_buying_catalogue_page";
+ const data=await api(rpc,{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize}),timeoutMs:45000});
  master=Array.isArray(data?.products)?data.products:[];
  totalProducts=Number(data?.total||0);
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));if(masterPage>pages){masterPage=pages;return loadPage()}
- $("catalogue-status").textContent=totalProducts+" matching products";
+ $("catalogue-status").textContent=totalProducts+(catalogueView==="my"?" products in your Buying Catalogue":" matching master products");
  $("catalogue-status").classList.add("live");
- $("catalogue-help").textContent="TradeFlow only loads the current result page. Products are added to your Buying Catalogue when you choose them.";
+ $("catalogue-help").textContent=catalogueView==="my"?"These are the products currently selected for this subscriber. Use Master Catalogue to add more.":"TradeFlow only loads the current master-catalogue result page. Select products to add them to your Buying Catalogue.";
  renderMaster();
 }
 function fillSelect(id,items,placeholder,old){
@@ -96,8 +95,10 @@ function editorHtml(p,s){
  return "";
 }
 function renderMaster(){
+ const isMy=catalogueView==="my";
+ $("bulk-toolbar").hidden=isMy;
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));
- const inactiveIds=master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
+ const inactiveIds=isMy?[]:master.filter(p=>stateFor(p).key==="inactive").map(p=>p.product_id);
  const selectedIds=window.buyingSelected||new Set();
  const selectableCount=inactiveIds.length;
  const selectedCount=inactiveIds.filter(id=>selectedIds.has(id)).length;
@@ -112,7 +113,7 @@ function renderMaster(){
  const allMatching=$("select-all-matching");
  if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching";allMatching.disabled=totalProducts===0;}
 
- $("master-count").textContent=totalProducts+" matching products";
+ $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching products");
  const start=(masterPage-1)*pageSize;
  $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages;
  $("master-body").innerHTML=master.length?master.map(p=>{
@@ -124,7 +125,7 @@ function renderMaster(){
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+s.key+'">'+esc(s.label)+'</div>'+mode+editorHtml(p,s)+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td>'+
    '<td>'+refSummary(p)+'</td></tr>';
- }).join(""):'<tr><td colspan="6" class="empty">No master catalogue products match these filters.</td></tr>';
+ }).join(""):'<tr><td colspan="7" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll(".mode-select").forEach(e=>e.addEventListener("change",()=>changeMode(e.dataset.mode,e.value)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
@@ -234,6 +235,13 @@ function toggleAllMatching(){
  buyingSelectionAllMatching=!buyingSelectionAllMatching;
  window.buyingSelected=new Set();
  renderMaster();
+}
+function setCatalogueView(view){
+ catalogueView=view;masterPage=1;window.buyingSelected=new Set();buyingSelectionAllMatching=false;
+ document.querySelectorAll(".catalogue-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ $("catalogue-title").textContent=view==="my"?"My Buying Catalogue":"Master Catalogue";
+ $("catalogue-subtitle").textContent=view==="my"?"Products currently selected for this subscriber.":"Browse the independent TradeFlow master catalogue and add products you actually buy.";
+ loadPage().catch(e=>msg(e.message||String(e),"error"));
 }
 function toggleBulkMode(){
  const automatic=$("bulk-mode")?.value==="automatic";

@@ -106,6 +106,11 @@ function renderDesignControls(){
  const palettes={professional:{accent:'#c46a2b',text:'#17202a',page_bg:'#f5f6f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#eef1f4',footer_bg:'#17202a'},warm:{accent:'#a84f2d',text:'#2b211d',page_bg:'#fbf7f2',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#3a2b25'},dark:{accent:'#d79a55',text:'#f2f4f5',page_bg:'#151b20',header_bg:'#101419',buy_bg:'#182027',sell_bg:'#202a32',footer_bg:'#0b0f12'},clean:{accent:'#1769aa',text:'#17202a',page_bg:'#f7f9fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#edf3f8',footer_bg:'#172b3a'}};
  box.querySelectorAll('[data-palette]').forEach(b=>b.addEventListener('click',()=>{themeColors={...palettes[b.dataset.palette]};renderDesignControls();renderEditor();markDirty();}));
 }
+function renderBrandingControls(){
+ const box=$('branding-controls');if(!box)return;
+ box.innerHTML='<div class="control-title">Business branding</div><small>Add your business logo. Your business name remains editable directly in the website preview.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Replace logo</button><button type="button" data-image-action="remove" data-image-target="logo">Remove</button>':'<button type="button" data-image-action="add" data-image-target="logo">Add logo</button>')+'</div>';
+ box.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.imageAction==='remove'){removeImage('logo');return}const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();}));
+}
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
  const socials=[['facebook','Facebook'],['instagram','Instagram'],['linkedin','LinkedIn'],['youtube','YouTube'],['tiktok','TikTok'],['x','X']];
@@ -227,6 +232,10 @@ function bindEditor(){
      if(field==='page-title'){currentPage().title=el.innerText.trim()||pageDef(currentPage().slug).title;renderPageList();}
      if(field==='page-body')currentPage().body=el.innerText.replace(/\r/g,'').trim();
      if(el.dataset.tileField){const tile=homepageTiles.find(t=>t.id===el.dataset.tileId);if(tile)tile[el.dataset.tileField]=el.innerText.trim();}
+     if(field==='buyHeading')homeBuyHeading=el.innerText.trim();
+     if(field==='buyIntro')homeBuyIntro=el.innerText.trim();
+     if(field==='sellHeading')homeSellHeading=el.innerText.trim();
+     if(field==='sellIntro')homeSellIntro=el.innerText.trim();
      if(el.dataset.homeField){const fieldMap={buyHeading:'homeBuyHeading',buyIntro:'homeBuyIntro',sellHeading:'homeSellHeading',sellIntro:'homeSellIntro'};const key=fieldMap[el.dataset.homeField];if(key){if(key==='homeBuyHeading')homeBuyHeading=el.innerText.trim();if(key==='homeBuyIntro')homeBuyIntro=el.innerText.trim();if(key==='homeSellHeading')homeSellHeading=el.innerText.trim();if(key==='homeSellIntro')homeSellIntro=el.innerText.trim();}}
      markDirty();
    });
@@ -295,7 +304,7 @@ function loadContent(content){
    body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
- renderPageList();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBusinessExtras();renderEditor();
+ renderPageList();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
 }
 
 async function uploadImage(file,target){

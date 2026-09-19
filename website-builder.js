@@ -1,6 +1,6 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
-let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='business';
+let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
 let siteName='Your Business',headerTagline='',footerText='',headline='Buy, sell and trade with us',intro='A clear introduction to your business appears here.',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
 let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
@@ -305,12 +305,13 @@ function selectPage(slug){
 
 function applyTemplate(template){
  if(!templateHeadlines[template])return;
+ const previousDefaults=Object.values(templateDefaults).some(d=>d.kicker===templateCopy.kicker&&d.cta1===templateCopy.cta1&&d.cta2===templateCopy.cta2);
  currentTemplate=template;
- if(!headline||headline===templateHeadlines.business||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
+ if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
+ if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);
  renderTemplates();renderHomepageControls();renderEditor();markDirty();
- setStatus(template+' design selected. Your website content has been kept.','success');
+ setStatus(template+' template selected. Text, colours and images remain editable.','success');
 }
-
 function buildContent(){
  return {schema_version:2,template_reset_version:2,site:{
    name:siteName.trim()||'Your Business',

@@ -598,11 +598,18 @@ What We Buy condition cells now expose the effective pricing state: ACTIVE BUYIN
 
 
 ## Reset Pricing Path — 19 September 2026
-User action: select products → Reset selected prices → first click arms warning → second click within six seconds confirms → upsert selected `tenant_buying_condition_rules` rows with null percentages, reference types and manual prices → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.
+User action: select products → Reset selected prices → first click arms a warning → second click within five seconds confirms → delete the selected `tenant_buying_condition_rules` rows and clear legacy product-level automatic/manual base-price fields → reload matrix. Changing UK New/UK Used only changes the selected reference preview and does not silently delete stored pricing.
 
 
 ## Catalogue Loading Repair — 19 September 2026
 - Added a 15-second timeout to catalogue REST requests so a stalled Supabase request cannot leave the page apparently frozen indefinitely.
 - Category loading is now isolated from manufacturer loading: categories and branches can initialise even if the manufacturer endpoint fails.
 - Loading failures are surfaced in the page message area rather than silently leaving empty selectors.
-- The catalogue script cache-buster is now v13.
+- The catalogue script cache-buster is now v15.
+
+
+## Standalone Master Catalogue Path — 19 September 2026
+User flow for an eligible Catalogue-plan subscriber: sign in → What We Buy → startup invokes `public.seed_tenant_master_catalogue(tenant_id)` → TradeFlow copies the standalone master categories, branches, manufacturers and products into that tenant's own catalogue → existing Category → Manufacturer → Branch selectors load from the tenant copy. The RPC checks `buying.manage`, `module.buying` and `catalogue.pre_filled`; non-Catalogue plans are not seeded.
+Master data path: `catalogue_master_categories` → `catalogue_master_branches` → `catalogue_master_manufacturers` → `catalogue_master_products` → tenant `categories`, `category_branches`, `tenant_buying_manufacturers`, `tenant_buying_products`.
+No runtime request goes to GearCashOut. GearCashOut research/retailer pricing is not used by this path.
+Initial imported snapshot verified at 34 categories, 179 branches, 73 manufacturers, 3,845 products and 108 identifiers.

@@ -380,6 +380,7 @@ $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
 $("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});
 $("next-page").addEventListener("click",async()=>{if(masterPage<Math.ceil(totalProducts/pageSize)){masterPage++;await loadPage()}});

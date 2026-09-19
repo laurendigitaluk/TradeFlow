@@ -567,3 +567,7 @@ The selected automatic reference is product-level, not condition-level. For a se
 
 ## Manual Override Precedence — 19 September 2026
 A non-null manual override is authoritative for that condition. Automatic percentage output may still be displayed for comparison but must not be treated as the active buying price. Clearing the manual override returns the condition to the automatic percentage path.
+
+
+## Buying Price Reset Safety — 19 September 2026
+Never silently delete pricing rules when a research basis changes. A basis change may make automatic pricing unavailable, but stored rules remain until the subscriber explicitly uses the two-step Reset selected prices action. Resetting clears percentages, reference choices and manual overrides for the selected products.

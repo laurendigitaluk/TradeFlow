@@ -587,3 +587,7 @@ User action: What We Buy → select branch → choose Quick pricing rule → Upd
 
 ## Selectable Product Pricing Path — 19 September 2026
 User flow: Category → Branch → optional Manufacturer/Model filter → checkbox products → choose UK New or UK Used → choose percentage profile → Apply pricing to selected. The frontend upserts only condition rule reference and percentage fields for selected product IDs. The matrix then recalculates against the selected research basis. Manual overrides remain stored and take precedence during valuation.
+
+
+## Universal Reference Preview — 19 September 2026
+Bulk pricing flow now previews the selected UK New/UK Used reference across every condition of selected products before persistence. `Apply pricing to selected` upserts the same reference type into all five condition-rule reference fields plus the selected percentage profile. Missing research on the chosen basis is surfaced rather than silently substituted.

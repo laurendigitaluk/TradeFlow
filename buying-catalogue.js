@@ -144,8 +144,7 @@ async function changeMode(masterId,mode){
    p_opened_never_used_percentage:mode==="automatic"?(current.rule?.opened_never_used_percentage??null):null,
    p_excellent_percentage:mode==="automatic"?(current.rule?.excellent_percentage??null):null,
    p_good_percentage:mode==="automatic"?(current.rule?.good_percentage??null):null,
-   p_poor_percentage:mode==="automatic"?(current.rule?.poor_percentage??null):null,
-   p_manual_price:mode==="automatic"?(current.product?.manual_offer_price??null):null
+   p_poor_percentage:mode==="automatic"?(current.rule?.poor_percentage??null):null
   })});
   await loadAll();
   msg(mode==="off"?"Buying disabled and price configuration reset.":"Buying mode changed. The subscriber category, branch, manufacturer and buying product are now linked automatically.","success");

@@ -684,3 +684,10 @@ External market research reviewed for terminology only: UK camera dealers common
 - The automatic calculation remains visible as `Automatic would be £X` for comparison, but it is not the active buying price while a manual override exists.
 - To return a condition to automatic pricing, the subscriber clears the manual override field and leaves it blank, then saves the buying prices.
 - The UI explicitly tells the subscriber that clearing the manual field returns the condition to automatic pricing.
+
+
+## Reset Selected Buying Prices — 19 September 2026
+- What We Buy now has a protected **Reset selected prices** action.
+- First click arms the reset and displays a warning; a second click within six seconds confirms the destructive action.
+- Reset clears the selected products' five automatic percentages, five research-reference selections, and five manual overrides. The products then have no configured catalogue buying price and can fall back to manual quote/valuation handling.
+- Selecting UK New or UK Used previews the selected basis immediately. If the selected basis has no research, automatic prices show unavailable/manual quote required rather than retaining a stale calculation from the other basis.

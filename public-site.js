@@ -105,7 +105,7 @@ function renderBuyingSection(site,catalogue){
    const items=products.filter(p=>p.category_id===cat.id);
    return '<article class="buy-category-card"><div><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Selected products from our current buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">See '+esc(cat.name)+' →</a></article>';
  }).join('');
- return '<section class="public-section buying-section"><div class="section-intro"><span>01 / WHAT WE BUY</span><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('buying')+'">View all categories</a></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
+ return '<section class="public-section buying-section"><div class="section-intro"><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('buying')+'">View all categories</a></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
 }
 
 function renderSellingSection(site,listings){
@@ -114,7 +114,17 @@ function renderSellingSection(site,listings){
  const intro=home.sell_intro||'Browse the products currently published by this business.';
  const list=Array.isArray(listings)?listings:[];
  const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'View product')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
- return '<section class="public-section selling-section"><div class="section-intro"><span>02 / WHAT WE SELL</span><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('shop')+'">View all products</a></div><div class="sell-product-grid">'+(cards||'<div class="connected-empty">No retail products are published yet. Add products in Inventory → Selling and they will appear here automatically.</div>')+'</div></section>';
+ return '<section class="public-section selling-section"><div class="section-intro"><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p><a class="section-primary" href="'+pageUrl('shop')+'">View all products</a></div><div class="sell-product-grid">'+(cards||'<div class="connected-empty">No retail products are published yet. Add products in Inventory → Selling and they will appear here automatically.</div>')+'</div></section>';
+}
+
+function renderHomepageTiles(site){
+ const home=site.homepage||{};
+ const tiles=Array.isArray(home.tiles)?home.tiles:[];
+ const count=[6,8,10].includes(Number(home.tile_count))?Number(home.tile_count):8;
+ const visible=tiles.slice(0,count);
+ if(!visible.length)return '';
+ const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span>Image</span>')+'</div><div class="tile-copy"><span>'+esc(tile.side==='buy'?'WHAT WE BUY':'WHAT WE SELL')+'</span><h3>'+esc(tile.title||'')+'</h3><p>'+esc(tile.body||'')+'</p><b>'+esc(tile.cta||'')+'</b></div></article>').join('');
+ return '<section class="homepage-tiles"><div class="section-intro"><h2>More to explore</h2><p>Featured content from this business.</p></div><div class="homepage-tile-grid">'+cards+'</div></section>';
 }
 
 function renderTrust(){
@@ -142,11 +152,18 @@ function renderBusinessExtras(site){
 
 function renderHome(site,catalogue,listings){
  const sections=Object.assign({hero:true,dual:true,buy:true,sell:true,trust:true,shop:true},site.homepage?.sections||{});
+ const order=Array.isArray(site.homepage?.block_order)&&site.homepage.block_order.length?site.homepage.block_order:['hero','buy','sell','trust'];
+ const blocks={
+  hero:sections.hero!==false?renderHero(site):'',
+  buy:sections.buy!==false?renderBuyingSection(site,catalogue):'',
+  sell:sections.sell!==false?renderSellingSection(site,listings):'',
+  trust:sections.trust!==false?renderTrust():''
+ };
  let out=renderPublicNav(site,catalogue);
- if(sections.hero!==false)out+=renderHero(site);out+=renderSellPrompt();
- if(sections.buy!==false)out+=renderBuyingSection(site,catalogue);
- if(sections.sell!==false)out+=renderSellingSection(site,listings);
- if(sections.trust!==false)out+=renderTrust();
+ const ordered=order.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
+ if(sections.hero!==false)out+=ordered.replace(/(<section class="tpl-hero[\\s\\S]*?<\\/section>)/,'$1'+renderSellPrompt());
+ else out+=ordered;
+ out+=renderHomepageTiles(site);
  return out+renderFooter(site);
 }
 

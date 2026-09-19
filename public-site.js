@@ -97,13 +97,9 @@ function renderHero(site){
 
 function renderBuyingSection(site,catalogue){
  const home=site.homepage||{};
- const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const heading=home.buy_heading||'What we buy';
- const intro=home.buy_intro||'Show customers the categories and products you are currently looking for.';
- const cards=cats.slice(0,8).map(cat=>{
-   return '<article class="buy-category-card"><div class="buy-category-image"><span>Category image</span></div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><p>'+esc(cat.description||'Selected products from our buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Sell this type →</a></div></article>';
- }).join('');
- return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div><div class="buy-category-grid">'+(cards||'<div class="connected-empty">No buying categories are published yet. Add products in the Buying Catalogue and they will appear here automatically.</div>')+'</div></section>';
+ const intro=home.buy_intro||'Tell customers what you are looking to buy.';
+ return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div></section>';
 }
 
 function renderSellingSection(site,listings){
@@ -112,7 +108,7 @@ function renderSellingSection(site,listings){
  const intro=home.sell_intro||'Browse the products currently published by this business.';
  const list=Array.isArray(listings)?listings:[];
  const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'View product')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
- return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div><div class="sell-product-grid">'+(cards||'<div class="connected-empty">No retail products are published yet. Add products in Inventory → Selling and they will appear here automatically.</div>')+'</div></section>';
+ return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 
 function renderHomepageTiles(site){
@@ -159,7 +155,7 @@ function renderHome(site,catalogue,listings){
  };
  let out=renderPublicNav(site,catalogue);
  const ordered=order.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- if(sections.hero!==false)out+=ordered.replace(/(<section class="tpl-hero[\s\S]*?<\/section>)/,'$1'+renderSellPrompt());
+ if(sections.hero!==false)out+=ordered;
  else out+=ordered;
  out+=renderHomepageTiles(site);
  return out+renderFooter(site);

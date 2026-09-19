@@ -421,6 +421,7 @@ function initBuilder(){
  $('page-list')&&renderPageList();
  renderDesignControls();
  renderHeroImageControls();
+ renderBrandingControls();
  renderTypographyControls();
  renderSectionControls();
  renderBusinessExtras();

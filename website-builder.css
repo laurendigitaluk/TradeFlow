@@ -179,3 +179,8 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 
 /* Clean homepage content blocks: no fixed labels or instructional copy. */
 .selling-block .section-intro{grid-template-columns:1fr 1fr;align-items:center}.selling-block .section-intro-image{min-height:190px;background:#e7ecef;border-radius:10px;border:1px solid rgba(20,30,40,.12);display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em}.editable-home-tile .tile-copy h3:empty:before{content:'Add title';color:#a0aab1}.editable-home-tile .tile-copy p:empty:before{content:'Add description';color:#a0aab1}.editable-home-tile .tile-copy b:empty:before{content:'Add link text';color:#a0aab1}
+
+/* All ten templates: shared homepage section parity. */
+.template-section.buying-block,.template-section.selling-block{width:100%}
+.template-section .section-intro{grid-template-columns:1fr 1fr;align-items:center}
+@media(max-width:900px){.template-section .section-intro{grid-template-columns:1fr}}

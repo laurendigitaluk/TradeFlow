@@ -89,9 +89,9 @@ function refSummary(p){
 function editorHtml(p,s){
  if(s.key==="inactive")return '<button class="save-price add-product" data-add-product="'+p.product_id+'">Add to Buying Catalogue</button><div class="price-help">Selecting this product automatically creates/links its category, branch and manufacturer for this subscriber.</div>';
  if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Buying price / override (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(p.manual_offer_price??"")+'" placeholder="Enter price you are willing to pay"><button class="save-price" data-save-manual="'+p.product_id+'">Save price</button><div class="price-help">This fixed price overrides automatic pricing for this product.</div></div>';
- if(s.key==="auto")return '<div class="price-editor"><div class="price-grid">'+
-  [["Sealed","sealed_percentage"],["Opened","opened_never_used_percentage"],["Excellent","excellent_percentage"],["Good","good_percentage"],["Poor","poor_percentage"]].map(([l,f])=>'<label>'+l+' %<input class="auto-input" data-master="'+p.product_id+'" data-field="'+f+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[f]??"")+'" placeholder="%"></label>').join("")+
-  '</div><label class="price-help" style="display:block;margin-top:10px">Optional fixed buying price / override (£)<input class="manual-input auto-override-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(p.manual_offer_price??"")+'" placeholder="Leave blank to use automatic pricing"></label><button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Leave the override blank to calculate from research. Enter a price to override the calculated price for this product. Sealed and Opened use UK New; Excellent, Good and Poor use UK Used by default.</div></div>';
+ if(s.key==="auto")return '<div class="price-editor"><div class="condition-grid">'+
+ [["Sealed","sealed_percentage","sealed_manual_price"],["Opened","opened_never_used_percentage","opened_never_used_manual_price"],["Excellent","excellent_percentage","excellent_manual_price"],["Good","good_percentage","good_manual_price"],["Poor","poor_percentage","poor_manual_price"]].map(([l,pct,ov])=>'<div class="condition-row"><strong>'+l+'</strong><label>%<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><label>Override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label></div>').join("")+
+ '</div><button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Each condition has its own optional fixed override. Leave a condition override blank to use the automatic research calculation for that condition.</div></div>';
  return "";
 }
 function renderMaster(){
@@ -111,11 +111,11 @@ function renderMaster(){
  $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
  const allMatching=$("select-all-matching");
- if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching";allMatching.disabled=totalProducts===0;}
+ if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";allMatching.disabled=totalProducts===0;}
 
  $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching products");
  const start=(masterPage-1)*pageSize;
- $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages;
+ $("page-info").textContent="Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · page "+masterPage+" of "+pages; $("top-page-summary").textContent=totalProducts?("Showing "+(master.length?start+1:0)+"–"+(start+master.length)+" of "+totalProducts+" · Page "+masterPage+" of "+pages):"No products to show";
  $("master-body").innerHTML=master.length?master.map(p=>{
   const s=stateFor(p);
   const mode=s.key==="inactive"?"":'<select class="mode-select" data-mode="'+p.product_id+'"><option value="manual" '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'>Manual</option><option value="automatic" '+(s.key==="auto"?"selected":"")+'>Automatic</option></select>';
@@ -142,6 +142,7 @@ async function addSelectedProducts(){
  if(mode==="automatic"){
   const fields=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"];
   for(const field of fields){const raw=$("bulk-"+field)?.value||"";const value=Number(raw);if(raw===""||!Number.isFinite(value)||value<0||value>100){button.disabled=false;return msg("Enter all five automatic percentages between 0 and 100 before adding products automatically.","error")}payload["p_"+field]=value}
+  for(const field of ["sealed_manual_price","opened_never_used_manual_price","excellent_manual_price","good_manual_price","poor_manual_price"]){const raw=$("bulk-"+field)?.value||"";const value=raw===""?null:Number(raw);if(value!==null&&(!Number.isFinite(value)||value<0)){button.disabled=false;return msg("Automatic condition overrides must be valid non-negative prices.","error")}payload["p_"+field]=value}
  }
  try{
   let result;
@@ -188,15 +189,20 @@ async function saveManual(masterId,button){
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
 }
 async function saveAuto(masterId,button){
- const p=master.find(x=>x.product_id===masterId);if(!p)return;
  const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
+ const overrides={};document.querySelectorAll('.condition-override-input[data-master="'+masterId+'"]').forEach(i=>overrides[i.dataset.field]=i.value===""?null:Number(i.value));
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
- const override=document.querySelector('.auto-override-input[data-master="'+masterId+'"]');
- const manualPrice=(override?.value||"")===""?null:Number(override.value);
- if(manualPrice!==null&&(!Number.isFinite(manualPrice)||manualPrice<0))return msg("Enter a valid fixed buying price or leave the override blank.","error");
+ for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Condition overrides must be valid non-negative prices.","error");
  button.disabled=true;try{
-  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:manualPrice})});
-  await loadPage();msg("Automatic buying rule saved. Research remains separate and read-only.","success");
+  await api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify({
+   p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",
+   p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,
+   p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,
+   p_manual_price:null,
+   p_sealed_manual_price:overrides.sealed_manual_price,p_opened_never_used_manual_price:overrides.opened_never_used_manual_price,
+   p_excellent_manual_price:overrides.excellent_manual_price,p_good_manual_price:overrides.good_manual_price,p_poor_manual_price:overrides.poor_manual_price
+  })});
+  await loadPage();msg("Automatic buying rule saved. Each condition now has its own optional override.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
 }
 async function resetProduct(masterId){
@@ -215,6 +221,7 @@ async function refreshForCategory(){
  await loadPage();
 }
 $("select-all-products").addEventListener("change",toggleSelectAll);
+document.querySelectorAll(".catalogue-tab").forEach(b=>b.addEventListener("click",()=>setCatalogueView(b.dataset.view)));
 $("bulk-add").addEventListener("click",addSelectedProducts);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});

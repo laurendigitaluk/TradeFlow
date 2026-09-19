@@ -366,3 +366,51 @@ Do not treat third-party reviews or social profiles as TradeFlow-verified inform
 ## Restore checkpoint — 18 September 2026
 
 This document is part of the locked TradeFlow stopping point for 18 September 2026. GitHub restore branch: checkpoint-tradeflow-20260918-premium-builder-final. Current main checkpoint commit: 0acc8d7ecca0de368172bf4fec1d746f11279dbd. Live Supabase includes migration repair_subscriber_trial_entitlement_window. Continue tomorrow from this checkpoint; do not modify GearCashOut.
+
+
+## Domain purchasing foundation — 19 September 2026
+
+The existing `tenant_domains` model was inspected before change. It already handled tenant-scoped custom-domain connection and published-site routing. The database has now been extended for a future built-in domain purchasing flow.
+
+### Live database objects
+
+`domain_tld_catalog`
+- TLD catalogue and provider-neutral pricing configuration.
+- Stores registration, renewal and transfer price fields without hard-coding a registrar.
+- Availability is not treated as authoritative; final availability/pricing must be checked with the registrar immediately before purchase.
+
+`tenant_domain_orders`
+- Tenant-scoped domain registration/renewal/transfer order ledger.
+- Tracks hostname/TLD, term, status, retail amount, registrar cost, payment references, provider references, purchase/expiry dates, auto-renew and failure state.
+- RLS uses the existing tenant membership and website-management/editor permission boundaries.
+
+`tenant_domains` extensions
+- `acquisition_source`: connected / purchased / transferred.
+- Registrar/provider identifiers, registration/expiry timestamps, auto-renew and non-secret provider metadata.
+
+### Architectural decision
+
+TradeFlow should eventually expose a Shopify-style flow:
+
+**Subscriber Dashboard → Website/Domain → search domain → real-time availability/price check → customer confirmation → payment → registrar registration → domain record activation → DNS/hosting routing → SSL → published website.**
+
+The database now supports that lifecycle without choosing a registrar or storing provider secrets.
+
+The current `domain-settings.html` page remains a custom-domain connection screen and must not be described as a domain purchasing system. It currently creates/updates a pending `tenant_domains` record.
+
+### Provider boundary
+
+Registrar integration must be server-side. Do not place registrar API credentials in browser JavaScript, public GitHub code or tenant-visible database fields. Provider-specific identifiers may be stored; secrets must remain in server-side secrets/Edge Function configuration.
+
+As of 19 September 2026, current Cloudflare Registrar documentation describes a Search → authoritative Check → Registration workflow and warns that availability/pricing from search is not the source of truth. Its Registrar API also has extension and premium-domain limitations, so provider/TLD support must be verified before committing to a production registrar design. citeturn2search0turn2search1
+
+### Verification state
+
+**Database foundation: Implemented and schema-verified.**
+
+**Purchase UI/payment/registrar/DNS/SSL lifecycle: Proposed/Planned.**
+
+### Continuity rule
+
+Do not add provider-specific purchase code until the registrar, payment boundary, ownership/registrant model and multi-subscriber hosting/DNS architecture have been selected and audited against current GitHub/Supabase state.
+

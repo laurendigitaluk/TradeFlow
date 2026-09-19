@@ -365,7 +365,7 @@ async function loadDraft(){
  const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
  loadContent(drafts[0].content);
- await loadBuyingCatalogue();
+ try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
  renderEditor();
  if(validPageSlug(requestedPage))selectedPage=requestedPage;
  if(requestedTemplate)applyTemplate(requestedTemplate);

@@ -61,7 +61,7 @@ function renderHero(site){
  const intro=home.intro||'Make it simple for customers to see what you buy, what you sell and how to get started.';
  const copy=site.template_copy||{};
  const defaults={
-  editorial:{kicker:'YOUR BUSINESS',cta1:'What we buy',cta2:'What we sell'},
+  editorial:{kicker:'YOUR BUSINESS',cta1:'What do you have to sell?',cta2:'What we sell'},
   classic:{kicker:'ESTABLISHED SERVICE',cta1:'Sell to us',cta2:'Browse the shop'},
   grid:{kicker:'BUY / SELL / TRADE',cta1:'01 / WHAT WE BUY',cta2:'02 / WHAT WE SELL'},
   studio:{kicker:'YOUR BUSINESS',cta1:'Sell to us',cta2:'Explore the shop'},
@@ -76,7 +76,7 @@ function renderHero(site){
  const kicker=esc(copy.kicker||d.kicker);
  const cta1=esc(copy.cta1||d.cta1);
  const cta2=esc(copy.cta2||d.cta2);
- const a1='<a href="'+pageUrl('buying')+'">'+cta1+'</a>';
+ const a1='<a href="'+pageUrl('sell')+'">'+cta1+'</a>';
  const a2='<a href="'+pageUrl('shop')+'">'+cta2+'</a>';
  const i1=heroImage(home.image_url,name+' main image');
  const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image">Add second image</div>';
@@ -143,11 +143,54 @@ function renderBusinessExtras(site){
 function renderHome(site,catalogue,listings){
  const sections=Object.assign({hero:true,dual:true,buy:true,sell:true,trust:true,shop:true},site.homepage?.sections||{});
  let out=renderPublicNav(site,catalogue);
- if(sections.hero!==false)out+=renderHero(site);
+ if(sections.hero!==false)out+=renderHero(site);out+=renderSellPrompt();
  if(sections.buy!==false)out+=renderBuyingSection(site,catalogue);
  if(sections.sell!==false)out+=renderSellingSection(site,listings);
  if(sections.trust!==false)out+=renderTrust();
  return out+renderFooter(site);
+}
+
+function renderSellPrompt(){
+ return '<section class="sell-prompt"><div><span>READY TO SELL?</span><h2>What do you have to sell?</h2><p>Tell us what you have. We will guide you through category, type, make, model and condition so you can send a complete selling request.</p></div><a href="'+pageUrl('sell')+'">Start your selling request →</a></section>';
+}
+
+function renderSellPage(site,catalogue){
+ const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
+ const requestedCategory=new URLSearchParams(location.search).get('category');
+ const selectedCategory=cats.find(c=>String(c.id)===String(requestedCategory));
+ return renderPublicNav(site,catalogue)+'<main class="selling-journey"><div class="selling-journey-head"><span>SELL TO US</span><h1>What do you have to sell?</h1><p>Choose what you have and we will narrow it down step by step. You do not need to search through a long product list.</p><div class="journey-progress"><b data-progress="1">1</b><b data-progress="2">2</b><b data-progress="3">3</b><b data-progress="4">4</b><b data-progress="5">5</b><b data-progress="6">6</b><b data-progress="7">7</b></div></div><form id="selling-journey-form" class="selling-wizard" novalidate>
+<section class="sell-step" data-step="1"><span class="step-number">01</span><h2>What do you have to sell?</h2><p>Start with the type of equipment.</p><label>Category<select id="sell-category" required><option value="">Choose a category…</option>'+cats.map(x=>'<option value="'+esc(x.id)+'" '+(selectedCategory&&String(selectedCategory.id)===String(x.id)?'selected':'')+'>'+esc(x.name)+'</option>').join('')+'</select></label><div class="sell-actions"><button type="button" data-next>Continue</button></div></section>
+<section class="sell-step" data-step="2" hidden><span class="step-number">02</span><h2>What type?</h2><p>Choose the product type or branch.</p><label>Product type<select id="sell-type" required><option value="">Choose a type…</option></select></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Continue</button></div></section>
+<section class="sell-step" data-step="3" hidden><span class="step-number">03</span><h2>What make?</h2><p>Choose the manufacturer.</p><label>Manufacturer<select id="sell-manufacturer" required><option value="">Choose a manufacturer…</option></select></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Continue</button></div></section>
+<section class="sell-step" data-step="4" hidden><span class="step-number">04</span><h2>What model?</h2><p>Select the exact model where available.</p><label>Model<select id="sell-model" required><option value="">Choose a model…</option></select></label><label id="sell-package-wrap" hidden>Package / version<select id="sell-package"><option value="">Choose a package…</option></select></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Continue</button></div></section>
+<section class="sell-step" data-step="5" hidden><span class="step-number">05</span><h2>What condition is it in?</h2><p>This helps us understand the item before review.</p><fieldset class="condition-grid"><label><input type="radio" name="sell-condition" value="factory-sealed"> Factory sealed / unopened</label><label><input type="radio" name="sell-condition" value="opened-unused"> Opened but unused</label><label><input type="radio" name="sell-condition" value="excellent"> Excellent</label><label><input type="radio" name="sell-condition" value="good"> Good</label><label><input type="radio" name="sell-condition" value="fair"> Fair</label><label><input type="radio" name="sell-condition" value="damaged"> Damaged</label><label><input type="radio" name="sell-condition" value="not-working"> Not working / spares only</label></fieldset><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Continue</button></div></section>
+<section class="sell-step" data-step="6" hidden><span class="step-number">06</span><h2>A few final questions</h2><p>These details help our team review the request.</p><label>Is anything normally supplied with this package missing?<select id="sell-missing"><option value="">Choose…</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Do you have the legal right to sell this equipment?<select id="sell-ownership"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option><option value="not-sure">I'm not sure</option></select></label><label id="sell-serial-wrap" hidden>Serial number<input id="sell-serial" autocomplete="off"></label><label>Anything else we should know? <span class="optional">(optional)</span><textarea id="sell-notes" rows="4" placeholder="Accessories, faults, missing items, history or anything else that matters."></textarea></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Review request</button></div></section>
+<section class="sell-step" data-step="7" hidden><span class="step-number">07</span><h2>Check your selling request</h2><p>Review the details before continuing to your customer account.</p><div id="sell-summary" class="sell-summary"></div><div class="sell-handoff"><strong>Next step</strong><p>Continue to your customer account to submit the request. Your answers will be carried across so you do not have to enter them again.</p></div><div class="sell-actions"><button type="button" data-back>Back</button><button type="submit">Continue to customer account →</button></div></section>
+</form></main>'+renderFooter(site);
+}
+
+function bindSellWizard(site,catalogue){
+ const form=$('selling-journey-form');if(!form)return;
+ const products=Array.isArray(catalogue?.products)?catalogue.products:[];
+ const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
+ let step=1;
+ const unique=a=>Array.from(new Set(a.filter(Boolean)));
+ const val=id=>$(id)?.value||'';
+ const category=()=>cats.find(c=>String(c.id)===String(val('sell-category')));
+ const filtered=()=>products.filter(p=>String(p.category_id)===String(val('sell-category'))&&(!val('sell-type')||String(p.branch_name||p.product_type||'')===String(val('sell-type')))&&(!val('sell-manufacturer')||String(p.manufacturer||'')===String(val('sell-manufacturer'))));
+ function setOptions(id,items,placeholder){const el=$(id);if(!el)return;el.innerHTML='<option value="">'+esc(placeholder)+'</option>'+unique(items).sort((a,b)=>String(a).localeCompare(String(b))).map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('')}
+ function updateType(){const rows=products.filter(p=>String(p.category_id)===String(val('sell-category')));setOptions('sell-type',rows.map(p=>p.branch_name||p.product_type),'Choose a type…');$('sell-type').disabled=!rows.some(p=>p.branch_name||p.product_type);updateManufacturer()}
+ function updateManufacturer(){const rows=products.filter(p=>String(p.category_id)===String(val('sell-category'))&&(!val('sell-type')||String(p.branch_name||p.product_type||'')===String(val('sell-type'))));setOptions('sell-manufacturer',rows.map(p=>p.manufacturer),'Choose a manufacturer…');$('sell-manufacturer').disabled=!rows.some(p=>p.manufacturer);updateModel()}
+ function updateModel(){const rows=products.filter(p=>String(p.category_id)===String(val('sell-category'))&&(!val('sell-type')||String(p.branch_name||p.product_type||'')===String(val('sell-type')))&&(!val('sell-manufacturer')||String(p.manufacturer||'')===String(val('sell-manufacturer'))));setOptions('sell-model',rows.map(p=>p.model),'Choose a model…');$('sell-model').disabled=!rows.some(p=>p.model);updatePackage()}
+ function updatePackage(){const rows=filtered().filter(p=>p.model===val('sell-model'));const packages=unique(rows.map(p=>p.package_name));$('sell-package-wrap').hidden=!packages.length;$('sell-package').innerHTML='<option value="">Choose a package…</option>'+packages.map(x=>'<option value="'+esc(x)+'">'+esc(x)+'</option>').join('')}
+ function updateSerial(){$('sell-serial-wrap').hidden=!/dji/i.test(val('sell-manufacturer'))}
+ function validCurrent(){if(step===1&&!val('sell-category'))return 'Choose a category.';if(step===2&&!$('sell-type').disabled&&!val('sell-type'))return 'Choose a product type.';if(step===3&&!$('sell-manufacturer').disabled&&!val('sell-manufacturer'))return 'Choose a manufacturer.';if(step===4&&!$('sell-model').disabled&&!val('sell-model'))return 'Choose a model.';if(step===5&&!form.querySelector('input[name="sell-condition"]:checked'))return 'Choose the item condition.';if(step===6&&!val('sell-missing'))return 'Tell us whether anything is missing.';if(step===6&&!val('sell-ownership'))return 'Tell us whether you have the legal right to sell it.';if(step===6&&!$('sell-serial-wrap').hidden&&!val('sell-serial'))return 'Enter the serial number for this item.';return ''}
+ function renderStep(){form.querySelectorAll('.sell-step').forEach(x=>x.hidden=Number(x.dataset.step)!==step);document.querySelectorAll('[data-progress]').forEach(x=>x.classList.toggle('active',Number(x.dataset.progress)===step));if(step===7)renderSummary();window.scrollTo({top:0,behavior:'smooth'})}
+ function renderSummary(){const cat=category(),condition=form.querySelector('input[name="sell-condition"]:checked')?.value||'';const rows=[['Category',cat?.name||val('sell-category')],['Product type',val('sell-type')||'Not specified'],['Manufacturer',val('sell-manufacturer')||'Not specified'],['Model',val('sell-model')||'Not specified'],['Package / version',val('sell-package')||'Not specified'],['Condition',condition||'Not specified'],['Missing items',val('sell-missing')||'Not specified'],['Legal right to sell',val('sell-ownership')||'Not specified']];if(val('sell-serial'))rows.push(['Serial number',val('sell-serial')]);if(val('sell-notes'))rows.push(['Notes',val('sell-notes')]);$('sell-summary').innerHTML=rows.map(r=>'<div><span>'+esc(r[0])+'</span><strong>'+esc(r[1])+'</strong></div>').join('')}
+ $('sell-category').addEventListener('change',()=>{updateType();updateSerial()});$('sell-type').addEventListener('change',updateManufacturer);$('sell-manufacturer').addEventListener('change',()=>{updateModel();updateSerial()});$('sell-model').addEventListener('change',updatePackage);
+ form.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{const error=validCurrent();if(error){alert(error);return}step=Math.min(7,step+1);renderStep()}));form.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{step=Math.max(1,step-1);renderStep()}));
+ form.addEventListener('submit',e=>{e.preventDefault();const error=validCurrent();if(error){alert(error);return}const cat=category(),condition=form.querySelector('input[name="sell-condition"]:checked')?.value||null;const payload={tenant_id:activeTenantId,category_id:val('sell-category'),category_name:cat?.name||'',product_type:val('sell-type'),manufacturer:val('sell-manufacturer'),model:val('sell-model'),package_name:val('sell-package'),condition,missing_items:val('sell-missing'),legal_right:val('sell-ownership'),serial_number:val('sell-serial'),notes:val('sell-notes'),created_at:new Date().toISOString()};sessionStorage.setItem('tradeflow_selling_journey',JSON.stringify(payload));location.href=customerUrl('selling_journey=1')});
+ if(val('sell-category')){updateType();updateSerial()}renderStep();
 }
 
 function renderBuyingPage(site,catalogue){
@@ -197,6 +240,7 @@ function applyContent(content){
  const listings=window.__tradeflowListings||[];
  let html='';
  if(page==='home')html=renderHome(site,catalogue,listings);
+ else if(page==='sell')html=renderSellPage(site,catalogue);
  else if(page==='buying')html=renderBuyingPage(site,catalogue);
  else if(page==='shop')html=renderShopPage(site,listings);
  else {
@@ -205,6 +249,7 @@ function applyContent(content){
  }
  $('app').innerHTML=html;
  renderBusinessExtras(site);
+ if(page==='sell')bindSellWizard(site,catalogue);
 }
 
 async function loadBuyingCatalogue(tenant){

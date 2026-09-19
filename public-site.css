@@ -70,3 +70,6 @@ body[data-button-style="outline"] .actions .primary,body[data-button-style="outl
 
 body[data-header-style="compact"] .topbar{height:56px}.topbar .brand{transition:.2s}body[data-header-style="centred"] .topbar{justify-content:center;position:relative}body[data-header-style="centred"] .topbar nav{position:absolute;right:5%}body[data-header-style="large"] .topbar{height:88px}.topbar[data-header-style="large"]{}
 body[data-footer-style="business"] footer{padding-top:38px;padding-bottom:38px}body[data-footer-style="social"] footer{background:var(--footer-bg,#17202a);min-height:90px}body[data-footer-style="full"] footer{padding-top:48px;padding-bottom:48px}
+
+/* Uploaded photographs: show the complete image inside its frame; never crop to fill. */
+.public-image-wrap img,.public-premium-intro>img,.public-hero-images img,.page-image-wrap img,.public-home-tile-image img{object-fit:contain!important;object-position:center center!important;}

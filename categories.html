@@ -1,1 +1,64 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Categories</title><link rel="stylesheet" href="subscriber-dashboard.css?v=3"><style>#field-category,#option-field{display:block;width:min(420px,100%);min-height:40px;padding:8px 10px;margin-top:6px;border:1px solid #aeb8c1;border-radius:6px;background:#fff;color:#18212b;font:inherit;cursor:pointer;pointer-events:auto}#field-category:disabled,#option-field:disabled{cursor:not-allowed;background:#f4f6f8}#field-form>label,#option-form>label{display:block;max-width:520px;font-weight:600}#field-category option,#option-field option{color:#18212b;background:#fff}</style></head><body><header class="topbar"><div class="brand">TradeFlow</div><div class="account"><span id="business-name">Categories</span><button id="sign-out" type="button">Sign out</button></div></header><main class="layout"><aside class="sidebar"><nav><a href="subscriber-dashboard.html">Dashboard</a><a href="website-builder.html">Website</a><a href="buying-dashboard.html">Buying</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="finance-dashboard.html">Finance</a><a class="active" href="categories.html">Categories</a><a href="subscriber-dashboard.html#settings">Settings</a></nav></aside><section class="content"><div class="eyebrow">Subscriber setup</div><h1>Categories &amp; product properties</h1><p class="intro">Create independent Buying, Selling or combined categories and define the properties collected for each product.</p><div id="message" class="small">Starting category workspace…</div><section class="panel"><h2>Create category</h2><form id="category-form"><div class="form-grid"><label>Name<input id="category-name" required></label><label>Slug<input id="category-slug" placeholder="auto-generated"></label><label class="full">Description<textarea id="category-description" rows="3"></textarea></label><label><input id="buying-enabled" type="checkbox" checked> Buying enabled</label><label><input id="selling-enabled" type="checkbox" checked> Selling enabled</label></div><p><button type="submit">Create category</button></p></form></section><section class="panel"><h2>Categories</h2><div id="categories"><div class="empty">Waiting for category controller…</div></div></section><section class="panel"><h2>Product property</h2><p class="small">Properties are stored against products as dynamic values. Use them for model, make, colour, storage, condition details or any other category-specific information.</p><form id="field-form"><label>Category<select id="field-category" required aria-label="Product property category"><option value="">Loading categories…</option></select></label><div class="form-grid"><label>Property key<input id="field-key" placeholder="model_number" required></label><label>Label<input id="field-label" placeholder="Model number" required></label><label>Type<select id="field-type"><option value="text">Text</option><option value="number">Number</option><option value="boolean">Yes/No</option><option value="date">Date</option><option value="select">Select</option><option value="multiselect">Multi-select</option></select></label><label><input id="field-buying" type="checkbox"> Required for Buying</label><label><input id="field-selling" type="checkbox"> Required for Selling</label><label><input id="field-customer" type="checkbox" checked> Customer visible</label><label><input id="field-staff" type="checkbox" checked> Staff visible</label><label><input id="field-valuation" type="checkbox"> Valuation relevant</label></div><p><button type="submit">Add property</button></p></form><div id="fields"><div class="empty">Select a category to view its properties.</div></div></section><section class="panel"><h2>Property options</h2><form id="option-form"><label>Property<select id="option-field" required aria-label="Property option field"><option value="">Select property…</option></select></label><div class="form-grid"><label>Value<input id="option-value" required></label><label>Label<input id="option-label" required></label></div><p><button type="submit">Add option</button></p></form><div id="options"><div class="empty">Select a property to view its options.</div></div></section></section></main><script>window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Categories runtime error: '+(e.message||'Unknown browser error')});window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Categories promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});</script><script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="category-management.js?v=13"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Categories</title>
+<link rel="stylesheet" href="subscriber-dashboard.css?v=3">
+<style>
+.category-layout{display:grid;grid-template-columns:minmax(250px,.8fr) minmax(0,2fr);gap:18px}
+.tree-panel,.editor-panel{background:#fff;border:1px solid #dfe4e8;border-radius:10px;padding:18px}
+.tree-category{border:1px solid #e1e6ea;border-radius:8px;margin-bottom:10px;overflow:hidden}
+.tree-category-head{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px;background:#f6f8fa}
+.tree-category-head button,.tree-branch button{border:0;background:none;text-align:left;cursor:pointer}
+.tree-branches{padding:6px}
+.tree-branch{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px;border-radius:6px}
+.tree-branch.active{background:#edf4ff}
+.tree-branch-name{font-weight:600}
+.badges{display:flex;gap:4px;flex-wrap:wrap}.badge{font-size:11px;padding:3px 6px;border-radius:999px;background:#eef1f4;color:#46515c}.badge.on{background:#e5f5ea;color:#176b36}
+.editor-header{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.editor-header h2{margin:.2rem 0}.editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.control-card{border:1px solid #e1e6ea;border-radius:8px;padding:14px;margin-top:14px}.control-card h3{margin-top:0}.switches{display:flex;gap:16px;flex-wrap:wrap}.switches label{font-weight:600}
+.data-table{overflow:auto}.data-head,.data-row{display:grid;grid-template-columns:minmax(170px,1.5fr) 90px 100px 100px 90px;gap:10px;align-items:center;padding:9px 10px}.data-head{font-weight:700;background:#f4f6f8;border-bottom:1px solid #dfe4e8}.data-row{border-bottom:1px solid #edf0f2}
+.mini-btn{padding:6px 9px}.status-note{font-size:12px;color:#65717d}
+@media(max-width:850px){.category-layout{grid-template-columns:1fr}.editor-grid{grid-template-columns:1fr}.data-head,.data-row{grid-template-columns:minmax(150px,1fr) 80px 90px 90px 70px}}
+</style>
+</head>
+<body>
+<header class="topbar"><div class="brand">TradeFlow</div><div class="account"><span id="business-name">Categories</span><button id="sign-out" type="button">Sign out</button></div></header>
+<main class="layout">
+<aside class="sidebar"><nav>
+<a href="subscriber-dashboard.html">Dashboard</a><a href="website-builder.html">Website</a><a href="buying-dashboard.html">Buying</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="finance-dashboard.html">Finance</a><a class="active" href="categories.html">Categories &amp; Properties</a><a href="subscriber-dashboard.html#settings">Settings</a>
+</nav></aside>
+<section class="content">
+<div class="eyebrow">Subscriber setup</div>
+<h1>Buying &amp; Selling Categories</h1>
+<p class="intro">Build one shared product structure. A category contains branches, and each branch contains the properties used by Buying, Inventory and Selling. Turn each level on or off independently for each side.</p>
+<div id="message" class="small">Loading category structure…</div>
+
+<section class="panel">
+<h2>Create category</h2>
+<form id="category-form"><div class="editor-grid">
+<label>Name<input id="category-name" required></label>
+<label>Slug<input id="category-slug" placeholder="auto-generated"></label>
+<label class="full">Description<textarea id="category-description" rows="2"></textarea></label>
+</div><div class="switches" style="margin-top:10px">
+<label><input id="buying-enabled" type="checkbox" checked> Live for Buying</label>
+<label><input id="selling-enabled" type="checkbox" checked> Live for Selling</label>
+<label><input id="category-active" type="checkbox" checked> Active</label>
+</div><p><button type="submit">Create category</button></p></form>
+</section>
+
+<div class="category-layout">
+<section class="tree-panel">
+<h2>Category structure</h2>
+<p class="status-note">Select a branch to manage its properties. The same branch is available to both workflows when enabled.</p>
+<div id="tree"><div class="empty">Loading…</div></div>
+</section>
+
+<section class="editor-panel">
+<div id="editor"><div class="empty">Select a category branch.</div></div>
+</section>
+</div>
+</section></main>
+<script>window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Categories runtime error: '+(e.message||'Unknown browser error')});window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Categories promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});</script>
+<script src="subscriber-auth.js?v=6"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="category-management.js?v=14"></script>
+</body></html>

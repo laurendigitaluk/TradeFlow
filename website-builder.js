@@ -3,7 +3,7 @@ const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='business';
 let selectedPage='home',dirty=false;
 let siteName='Your Business',headerTagline='',footerText='',headline='Buy, sell and trade with us',intro='A clear introduction to your business appears here.',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
-let homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
+let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
@@ -14,53 +14,46 @@ let typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'s
 let homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};
 let headerLinks=[],footerLinks=[],homepageOrder=['hero','buy','sell','trust'];
 function defaultHomepageTiles(){return [
- {id:'buy-1',side:'buy',title:'Cameras & Photography',body:'Tell customers what cameras and photography equipment you are looking for.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-2',side:'buy',title:'Lenses & Accessories',body:'Show the types of lenses, lighting and accessories you purchase.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-3',side:'buy',title:'Professional Equipment',body:'Highlight specialist equipment your business is interested in buying.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'buy-4',side:'buy',title:'What else do we buy?',body:'Add another category or buying opportunity that matters to your business.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'sell-1',side:'sell',title:'Featured product',body:'Use this space for a product or collection you want customers to notice.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'sell-2',side:'sell',title:'Latest products',body:'Highlight another product, collection or category from your retail shop.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'sell-3',side:'sell',title:'Popular products',body:'Use this tile to showcase another part of your retail offering.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'sell-4',side:'sell',title:'Explore the shop',body:'Invite customers to browse your full range of published products.',image_url:'',image_alt:'',cta:'View shop'},
- {id:'buy-5',side:'buy',title:'Specialist items',body:'Add another buying category if your business needs it.',image_url:'',image_alt:'',cta:'Sell to us'},
- {id:'sell-5',side:'sell',title:'New in',body:'Highlight new products as your inventory grows.',image_url:'',image_alt:'',cta:'View shop'}
-]};
+ {id:'buy-1',side:'buy',title:'Your buying category',body:'Add a short description of what you are looking to buy.',image_url:'',image_alt:'',cta:'Sell to us'},
+ {id:'buy-2',side:'buy',title:'Another category',body:'Tell customers what equipment or products you are interested in.',image_url:'',image_alt:'',cta:'Sell to us'},
+ {id:'buy-3',side:'buy',title:'Specialist buying',body:'Highlight a specialist area of your buying list.',image_url:'',image_alt:'',cta:'Sell to us'},
+ {id:'buy-4',side:'buy',title:'More of what you buy',body:'Use this space for another important buying category.',image_url:'',image_alt:'',cta:'Sell to us'},
+ {id:'sell-1',side:'sell',title:'Featured product',body:'Highlight a product you want customers to notice.',image_url:'',image_alt:'',cta:'View product'},
+ {id:'sell-2',side:'sell',title:'New in',body:'Showcase a recent addition to your shop.',image_url:'',image_alt:'',cta:'View shop'},
+ {id:'sell-3',side:'sell',title:'Popular range',body:'Feature a collection or product range.',image_url:'',image_alt:'',cta:'View shop'},
+ {id:'sell-4',side:'sell',title:'Explore the shop',body:'Invite customers to browse your published products.',image_url:'',image_alt:'',cta:'View shop'},
+ {id:'buy-5',side:'buy',title:'More buying opportunities',body:'Add another buying category when needed.',image_url:'',image_alt:'',cta:'Sell to us'},
+ {id:'sell-5',side:'sell',title:'Latest additions',body:'Give another part of your retail range a place to stand out.',image_url:'',image_alt:'',cta:'View shop'}
+]}
 homepageTiles=defaultHomepageTiles();
 const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
 const $=id=>document.getElementById(id);
 
 const templates=[
- {id:'modern',name:'Modern Editorial',desc:'Clean, spacious and image-led'},
- {id:'heritage',name:'Heritage',desc:'Established, traditional and trusted'},
- {id:'tech',name:'Tech Grid',desc:'Sharp, dark and information-led'},
- {id:'creative',name:'Creative Studio',desc:'Visual, expressive and asymmetric'},
- {id:'aerial',name:'Aerial',desc:'Dynamic, technical and image-led'},
- {id:'adventure',name:'Adventure',desc:'Immersive, outdoors and lifestyle'},
- {id:'professional',name:'Professional',desc:'Structured, confident and business-led'},
- {id:'premium',name:'Premium',desc:'Minimal, refined and high-end'},
- {id:'marketplace',name:'Marketplace',desc:'Search-led and product-focused'},
- {id:'statement',name:'Statement',desc:'Bold typography and strong blocks'}
+ {id:'editorial',name:'Editorial',desc:'Clean, spacious and image-led'},
+ {id:'classic',name:'Classic',desc:'Warm, refined and established'},
+ {id:'grid',name:'Grid',desc:'Dark, structured and information-led'},
+ {id:'studio',name:'Studio',desc:'Creative, visual and asymmetric'},
+ {id:'horizon',name:'Horizon',desc:'Light, modern and expansive'},
+ {id:'field',name:'Field',desc:'Immersive, bold and image-led'},
+ {id:'business',name:'Business',desc:'Clear, confident and professional'},
+ {id:'luxe',name:'Luxe',desc:'Minimal, premium and understated'},
+ {id:'commerce',name:'Commerce',desc:'Product-led and conversion-focused'},
+ {id:'impact',name:'Impact',desc:'Bold typography and strong colour'}
 ];
-
-const templateHeadlines={modern:'Buy, sell and trade with us',heritage:'Trusted buying and selling, with a personal service',tech:'Your gear. Our buying list.',creative:'Good gear deserves a second life.',aerial:'We buy the equipment that moves your business.',adventure:'Pass on the gear. Start the next adventure.',professional:'A straightforward way to buy and sell equipment.',premium:'Exceptional equipment. Properly handled.',marketplace:'Find out what we buy and browse what we sell.',statement:'TURN YOUR OLD GEAR INTO VALUE.'};
-
-const pageDefinitions=[
- {slug:'about',title:'About us',hint:'Recommended',enabled:true,prompt:'Explain who you are, what the business does, your experience, values or the story behind the business.'},
- {slug:'business-information',title:'Business Information',hint:'Recommended',enabled:true,prompt:'Add the important facts customers may need: business name, company or registration details where relevant, trading address, service area, opening hours and other useful business information.'},
- {slug:'contact',title:'Contact',hint:'Recommended',enabled:true,prompt:'Add your phone, email, address, opening hours and preferred contact methods.'},
- {slug:'terms',title:'Terms & Conditions',hint:'Recommended',enabled:true,prompt:'Set out the terms governing purchases, selling requests, services, payments, cancellations and use of the website. Obtain appropriate legal advice for your business.'},
- {slug:'privacy',title:'Privacy Policy',hint:'Recommended',enabled:true,prompt:'Explain what customer information you collect, why you use it, how you protect and retain it, and how customers can contact you about their data.'},
- {slug:'cookies',title:'Cookie Policy',hint:'Recommended',enabled:true,prompt:'Explain which cookies or similar technologies the website uses, what they do and how visitors can manage them.'},
- {slug:'delivery-returns',title:'Delivery & Returns',hint:'Recommended',enabled:true,prompt:'Explain delivery areas, times, costs, collection options, cancellations and your returns process.'},
- {slug:'buying',title:'Sell to us',hint:'Core page',enabled:true,prompt:'Explain what you buy, what customers should provide, how valuations work and what happens after an item is submitted.'},
- {slug:'how-it-works',title:'How it works',hint:'Optional',enabled:false,prompt:'Give customers a simple step-by-step explanation of buying from you, selling to you, ordering and receiving their item.'},
- {slug:'faq',title:'Frequently Asked Questions',hint:'Optional',enabled:false,prompt:'Answer common questions about buying, selling, delivery, payments, returns, warranties and support.'},
- {slug:'payments',title:'Payments',hint:'Optional',enabled:false,prompt:'Explain accepted payment methods, when payment is taken, refunds and any payment restrictions relevant to your business.'},
- {slug:'warranty',title:'Warranty & Guarantees',hint:'Optional',enabled:false,prompt:'Explain any warranties, guarantees or condition assurances you provide, including exclusions and how customers make a claim.'},
- {slug:'complaints',title:'Complaints',hint:'Optional',enabled:false,prompt:'Explain how customers can raise a complaint, what information they should provide and how you will handle it.'},
- {slug:'shop',title:'Retail Shop',hint:'Core page',enabled:true,prompt:'Build your retail selling page here. Introduce your shop, explain what customers can buy and add your own branded image. Products remain connected to Inventory and Selling.'},
- {slug:'customer-account',title:'Customer account',hint:'TradeFlow managed',enabled:true,prompt:'Customers use this area to sign in, view orders, submit selling requests and manage returns.'}
-];
+const templateHeadlines={editorial:'A clear way to buy and sell',classic:'A trusted way to buy and sell',grid:'Your products. Your buying list.',studio:'Good products deserve a good presentation.',horizon:'A simpler way to buy and sell',field:'Equipment for the next chapter.',business:'A straightforward way to buy and sell',luxe:'Quality products. Clear service.',commerce:'Browse, buy and sell with confidence.',impact:'BUY. SELL. MOVE FORWARD.'};
+const templateDefaults={
+ editorial:{kicker:'YOUR BUSINESS',cta1:'What we buy',cta2:'What we sell'},
+ classic:{kicker:'ESTABLISHED SERVICE',cta1:'Sell to us',cta2:'Browse the shop'},
+ grid:{kicker:'BUY / SELL / TRADE',cta1:'01 / WHAT WE BUY',cta2:'02 / WHAT WE SELL'},
+ studio:{kicker:'YOUR BUSINESS',cta1:'Sell to us',cta2:'Explore the shop'},
+ horizon:{kicker:'BUYING / SELLING',cta1:'What we buy',cta2:'What we sell'},
+ field:{kicker:'BUYING / SELLING',cta1:'Sell your items',cta2:'Browse products'},
+ business:{kicker:'BUSINESS INFORMATION',cta1:'What we buy',cta2:'Retail shop'},
+ luxe:{kicker:'PRIVATE SERVICE',cta1:'Sell to us',cta2:'Shop products'},
+ commerce:{kicker:'BUY / SELL',cta1:'Start selling',cta2:'Shop products'},
+ impact:{kicker:'BUY · SELL · TRADE',cta1:'What we buy',cta2:'What we sell'}
+};
 
 function defaultPages(){
  return pageDefinitions.map(p=>({

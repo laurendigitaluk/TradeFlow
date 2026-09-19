@@ -204,6 +204,8 @@ async function refreshForCategory(){
  await loadFacets();
  await loadPage();
 }
+$("select-all-products").addEventListener("change",toggleSelectAll);
+$("bulk-add").addEventListener("click",addSelectedProducts);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});

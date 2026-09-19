@@ -77,10 +77,13 @@ function populateFilters(){
  fillSelect("master-manufacturer",facets.manufacturers,"All manufacturers",man);
 }
 function stateFor(p){
- if(!p?.buying_enabled||!p?.selection_active||!p?.buying_product_active)return {key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
- if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)return {key:"manual",label:"Manual price / override",product:p,rule:p.rule_id?true:null};
- if(p.rule_id)return {key:"auto",label:"Automatic pricing",product:p,rule:p};
- return {key:"valuation",label:"Manual valuation",product:p,rule:null};
+ let s;
+ if(!p?.buying_enabled||!p?.selection_active||!p?.buying_product_active)s={key:"inactive",label:"Inactive",product:p,rule:p?.rule_id?true:null};
+ else if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)s={key:"manual",label:"Manual price / override",product:p,rule:p.rule_id?true:null};
+ else if(p.rule_id)s={key:"auto",label:"Automatic pricing",product:p,rule:p};
+ else s={key:"valuation",label:"Manual valuation",product:p,rule:null};
+ if(p?.website_visible===false)return {...s,websiteHidden:true,label:"Hidden from website"};
+ return s;
 }
 function researchText(p,type){
  const isNew=type==="uk_new";
@@ -163,7 +166,7 @@ function renderMaster(){
    '<td class="select-cell">'+((isMy||s.key==="inactive")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
    '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="inactive"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+(editingAuto?"auto-pending":displayState.key)+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(s.key!=="inactive"?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
+   '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>{
  const id=e.dataset.modeProduct;
@@ -184,6 +187,10 @@ function renderMaster(){
  }));
  document.querySelectorAll(".auto-input,.reference-select").forEach(e=>e.addEventListener("change",()=>{const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};const field=e.dataset.field;const ref=field.endsWith("_reference_type")?e.value:(p[refFields[field]]||"uk_new");const pct=field.endsWith("_reference_type")?(p[field.replace("_reference_type","_percentage")]||""):e.value;const out=e.closest(".condition-row")?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,ref,pct);if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research")}));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
+ document.querySelectorAll("[data-visibility-product]").forEach(e=>e.addEventListener("click",async()=>{
+  const hidden=e.dataset.visibility!=="true";
+  try{await api("/rest/v1/rpc/set_buying_catalogue_website_visibility",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_master_product_id:e.dataset.visibilityProduct,p_visible:!hidden})});await loadPage();msg(hidden?"Product hidden from website. Its buying/pricing configuration was retained.":"Product shown on website again. Its existing buying/pricing configuration was retained.","success");}catch(err){msg(err.message||String(err),"error");}
+ }));
  document.querySelectorAll(".product-select").forEach(e=>e.addEventListener("change",()=>{window.buyingSelected=window.buyingSelected||new Set();buyingSelectionAllMatching=false;if(e.checked)window.buyingSelected.add(e.dataset.productId);else window.buyingSelected.delete(e.dataset.productId);renderMaster();}));
 }
 function updateBulkControls(isMy){

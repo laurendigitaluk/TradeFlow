@@ -374,7 +374,7 @@ function initBuilder(){
  $('publish').addEventListener('click',()=>publish().catch(e=>setStatus(e.message||String(e),'error')));
  $('preview-customer').addEventListener('click',()=>location.href='customer-dashboard-preview.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):''));
  $('preview-site').addEventListener('click',e=>{
-   e.currentTarget.href='public-site.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):'');
+   e.currentTarget.href='public-site.html?preview=draft'+(tenantId?'&tenant_id='+encodeURIComponent(tenantId):'');
  });
  (async()=>{try{await restoreSession();await loadDraft()}catch(error){setStatus(error.message||String(error),'error');const s=$('save-state');if(s)s.textContent='Website could not be loaded'}})();
 }

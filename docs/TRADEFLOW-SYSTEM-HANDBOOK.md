@@ -802,3 +802,16 @@ State: **Implemented at database and GitHub boundary; browser verification remai
 ### 19 September 2026 — Buying Prices no longer seeds the entire tenant catalogue
 
 The separate Buying Prices workspace no longer calls `seed_tenant_master_catalogue()` when it opens. Catalogue activation is now an explicit subscriber action on Catalogue & Categories. Buying Prices works on products already selected for Buying and remains responsible for condition percentages, research basis and manual overrides. The legacy seed RPC remains available for controlled migration/maintenance but is no longer the normal subscriber page startup path.
+
+
+## 2026-09-19 — Unified subscriber buying catalogue
+
+The subscriber buying setup is now a single workflow rather than separate Catalogue & Categories and Buying Prices pages. 
+
+- `catalogue_master_*` is TradeFlow's standalone master catalogue. It is not queried from GearCashOut / Action Buyer UK at runtime.
+- The copied master data was verified against the source dataset: 3,845 products, 102 catalogue-category labels, 34 main categories, 155 product types and 73 manufacturers; 3,822 products are active/customer-visible in both datasets.
+- The unified `buying-catalogue.html` page lets an Enhanced/Catalogue subscriber filter the master catalogue, select products and activate them for Buying (or Buying + Selling).
+- Activation automatically creates the subscriber category, branch and manufacturer records and the tenant buying product. A product with no configured buying price remains eligible for manual valuation/quote rather than receiving an invented price.
+- `categories.html` is now a legacy redirect to the unified buying catalogue.
+- The master selection RPC now uses the copied product's `catalogue_category` label for subscriber-facing category creation.
+- The test subscriber tenant `subscriber test 1` is on the Enhanced trial so the pre-filled catalogue entitlement can be exercised.

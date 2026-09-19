@@ -84,3 +84,27 @@ repair_subscriber_trial_entitlement_window
 The code and database checkpoint are saved. Browser verification of the newest branding/social/review controls remains the next testing task when development resumes.
 
 Do not modify GearCashOut while working on this TradeFlow checkpoint.
+
+
+## Website domains and future domain purchasing — 19 September 2026
+
+TradeFlow can already store a custom website address against your business. The current **Website URL** area is for connecting a domain you already own.
+
+A future TradeFlow domain service is now supported by the database design. The intended customer journey is:
+
+1. Open **Website / Domain** in the business dashboard.
+2. Search for a domain name.
+3. See current availability and price.
+4. Choose the domain and registration period.
+5. Pay through TradeFlow.
+6. TradeFlow registers the domain through its domain provider.
+7. TradeFlow connects the domain to the customer's website and enables the required SSL/hosting routing.
+8. The domain appears in the business account with its registration and renewal information.
+
+The database now records the information needed for purchased domains, including registration status, provider reference, purchase amount, expiry date and auto-renewal state.
+
+**Important:** the domain-purchase button/search/checkout and automatic DNS/hosting connection are not yet live. The current Website URL page only records a domain as pending for later connection.
+
+Domain availability and prices will be checked with the selected registrar at the time of purchase; the prices stored in TradeFlow's TLD catalogue are configuration/pricing data, not a promise of current availability.
+
+

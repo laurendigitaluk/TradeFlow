@@ -6,6 +6,7 @@ let siteName='Your Business',headline='Buy, sell and trade with us',intro='A cle
 let homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
+let retailListings=[];
 let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
 let socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};
 let reviewLinks=[];
@@ -28,27 +29,19 @@ const params=new URLSearchParams(location.search),requestedTemplate=params.get('
 const $=id=>document.getElementById(id);
 
 const templates=[
- {id:'business',name:'Business',desc:'Balanced and professional'},
- {id:'premium',name:'Premium Marketplace',desc:'High-end two-sided buying & selling'},
- {id:'marketplace',name:'Buy & Sell',desc:'Product-led marketplace'},
- {id:'services',name:'Services',desc:'Service and enquiry focused'},
- {id:'editorial',name:'Editorial',desc:'Large, story-led presentation'},
- {id:'minimal',name:'Minimal',desc:'Clean and product-first'},
- {id:'retail',name:'Retail Sidebar',desc:'Shop-focused layout with left navigation'},
- {id:'professional',name:'Professional Sidebar',desc:'Corporate layout with right utility navigation'},
- {id:'bold',name:'Bold Rail',desc:'High-impact layout with dark navigation rail'},
- {id:'classic',name:'Classic Masthead',desc:'Traditional centred masthead and menu band'},
- {id:'local',name:'Local Business',desc:'Compact local layout with grouped navigation'}
+ {id:'modern',name:'Modern Editorial',desc:'Clean, spacious and image-led'},
+ {id:'heritage',name:'Heritage',desc:'Established, traditional and trusted'},
+ {id:'tech',name:'Tech Grid',desc:'Sharp, dark and information-led'},
+ {id:'creative',name:'Creative Studio',desc:'Visual, expressive and asymmetric'},
+ {id:'aerial',name:'Aerial',desc:'Dynamic, technical and image-led'},
+ {id:'adventure',name:'Adventure',desc:'Immersive, outdoors and lifestyle'},
+ {id:'professional',name:'Professional',desc:'Structured, confident and business-led'},
+ {id:'premium',name:'Premium',desc:'Minimal, refined and high-end'},
+ {id:'marketplace',name:'Marketplace',desc:'Search-led and product-focused'},
+ {id:'statement',name:'Statement',desc:'Bold typography and strong blocks'}
 ];
 
-const templateHeadlines={
- business:'A better way to buy and sell',premium:'Buy, sell and trade with confidence',marketplace:'Buy, sell and trade with confidence',
- services:'Professional service, made simple',editorial:'Good products. Properly presented.',
- minimal:'Quality products, simply presented.',retail:'Shop, sell and trade in one place',
- professional:'Trusted service. Clear information. Straightforward business.',
- bold:'Make your business stand out.',classic:'Established service with a personal approach.',
- local:'Local service. Clear advice. People you can talk to.'
-};
+const templateHeadlines={modern:'Buy, sell and trade with us',heritage:'Trusted buying and selling, with a personal service',tech:'Your gear. Our buying list.',creative:'Good gear deserves a second life.',aerial:'We buy the equipment that moves your business.',adventure:'Pass on the gear. Start the next adventure.',professional:'A straightforward way to buy and sell equipment.',premium:'Exceptional equipment. Properly handled.',marketplace:'Find out what we buy and browse what we sell.',statement:'TURN YOUR OLD GEAR INTO VALUE.'};
 
 const pageDefinitions=[
  {slug:'about',title:'About us',hint:'Recommended',enabled:true,prompt:'Explain who you are, what the business does, your experience, values or the story behind the business.'},
@@ -168,35 +161,51 @@ function renderBuilderBuyingPage(){
  if(!categories.length)return '<div class="managed-area"><span>TRADEFLOW CONNECTED</span><h3>No buying products selected yet</h3><p>Select products in Buying Catalogue and they will appear here automatically.</p></div>';
  return '<div class="connected-buy-page">'+categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});return '<section><div class="section-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><p>'+esc(cat.description||'Products selected by this business.')+'</p></div>'+Object.entries(grouped).map(([maker,list])=>'<div class="connected-buy-manufacturer"><h3>'+esc(maker)+'</h3><div>'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+'</article>').join('')+'</div></div>').join('')+'</section>'}).join('')+'</div>';
 }
+function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
+function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName)+'</span></div>'}
+function buyingPreview(){
+ const cats=buyingCatalogue.categories||[],products=buyingCatalogue.products||[];
+ if(!cats.length)return '<div class="connected-empty">Select products in Buying Catalogue and your What We Buy section will appear here.</div>';
+ return '<div class="buy-category-grid">'+cats.slice(0,8).map(cat=>{const items=products.filter(p=>p.category_id===cat.id);return '<article class="buy-category-card"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><p>'+(cat.description?esc(cat.description):'Selected products from your buying list.')+'</p><div class="buy-product-list">'+items.slice(0,5).map(p=>'<b>'+esc(((p.manufacturer||'')+' '+(p.model||'')).trim()||'Product')+'</b>').join('')+'</div><small>'+items.length+' selected products</small></article>'}).join('')+'</div>';
+}
+function sellingPreview(){
+ const list=Array.isArray(retailListings)?retailListings:[];
+ if(!list.length)return '<div class="connected-empty">Products published through Inventory → Selling will appear here automatically.</div>';
+ return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article><div class="sell-photo"></div><span>'+esc(p.category_name||'Product')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'View product')+'</strong></article>').join('')+'</div>';
+}
+function navMarkup(){
+ const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
+ return '<nav class="template-nav"><div class="template-brand">'+logoEditor()+'</div><div class="template-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
+}
+function templateHero(){
+ const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName)+'">':'<div class="demo-image">Add your main image</div>';
+ const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName)+'">':'<div class="demo-image">Add a second image</div>';
+ const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
+ switch(currentTemplate){
+ case 'modern': return '<section class="tpl-hero modern-hero"><div><span class="tpl-eyebrow">'+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>What We Sell</b></div></div><div class="hero-collage">'+img1+img2+'</div></section>';
+ case 'heritage': return '<section class="tpl-hero heritage-hero"><div class="heritage-copy"><span class="tpl-eyebrow">Established service</span>'+h+i+'<div class="tpl-actions"><b>Sell to us</b><b>Browse our shop</b></div></div><div class="heritage-image">'+img1+'</div></section>';
+ case 'tech': return '<section class="tpl-hero tech-hero"><div><span class="tpl-code">TRADEFLOW / '+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tech-actions"><b>01 / WHAT WE BUY</b><b>02 / WHAT WE SELL</b></div></div>'+img1+'</section>';
+ case 'creative': return '<section class="tpl-hero creative-hero"><div class="creative-image">'+img1+'</div><div class="creative-copy"><span class="tpl-eyebrow">Your business</span>'+h+i+'<b class="creative-cta">Explore the business →</b></div></section>';
+ case 'aerial': return '<section class="tpl-hero aerial-hero"><div class="aerial-copy"><span class="tpl-code">BUYING / SELLING / TRADEFLOW</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Retail Shop</b></div></div><div class="aerial-image">'+img1+'</div></section>';
+ case 'adventure': return '<section class="tpl-hero adventure-hero">'+img1+'<div class="adventure-copy"><span class="tpl-eyebrow">'+editText('site-name',siteName,'span')+'</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Explore the shop</b></div></div></section>';
+ case 'professional': return '<section class="tpl-hero professional-hero"><div><span class="tpl-eyebrow">Business information</span>'+h+i+'<div class="tpl-actions"><b>What We Buy</b><b>Retail Shop</b></div></div><div class="professional-facts"><strong>BUYING</strong><span>Selected categories</span><strong>SELLING</strong><span>Published products</span></div></section>';
+ case 'premium': return '<section class="tpl-hero premium-hero-new"><div>'+h+i+'<div class="tpl-actions"><b>Sell to us</b><b>Shop products</b></div></div>'+img1+'</section>';
+ case 'marketplace': return '<section class="tpl-hero marketplace-hero"><div><span class="tpl-code">BUY / SELL / TRADE</span>'+h+i+'<div class="market-search">Search products or categories</div></div>'+img1+'</section>';
+ default: return '<section class="tpl-hero statement-hero"><div class="statement-word">WE BUY.</div><div class="statement-copy">'+h+i+'<div class="tpl-actions"><b>See What We Buy</b><b>See What We Sell</b></div></div>'+img1+'</section>';
+ }
+}
 function renderHome(){
- const buyCount=Math.ceil(homepageTileCount/2),sellCount=Math.floor(homepageTileCount/2);
- const buyTiles=homepageTiles.filter(t=>t.side==='buy').slice(0,buyCount),sellTiles=homepageTiles.filter(t=>t.side==='sell').slice(0,sellCount);
- const tileMarkup=t=>'<article class="home-tile '+t.side+'"><div class="home-tile-image">'+(t.image_url?'<img src="'+esc(t.image_url)+'" alt="'+esc(t.image_alt||t.title)+'"><div class="tile-image-tools"><button type="button" data-image-action="replace" data-image-target="tile:'+esc(t.id)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="tile:'+esc(t.id)+'">Remove</button></div>':'<button type="button" class="tile-add-image" data-image-action="add" data-image-target="tile:'+esc(t.id)+'">Add image</button>')+'</div><h3 class="editable-tile-title" contenteditable="true" data-tile-field="title" data-tile-id="'+esc(t.id)+'" data-placeholder="Add a title">'+esc(t.title)+'</h3><p class="editable-tile-body" contenteditable="true" data-tile-field="body" data-tile-id="'+esc(t.id)+'" data-placeholder="Add a short description">'+esc(t.body)+'</p><span class="tile-cta">'+esc(t.cta)+'</span></article>';
-  const hero=homepageSections.hero ? '<section class="premium-hero"><div class="premium-hero-copy"><div class="edit-label">PREMIUM MARKETPLACE HOMEPAGE</div><p class="editable-kicker">YOUR BUSINESS</p><h1 class="editable-title" contenteditable="true" data-edit="headline" data-placeholder="Write your main headline">'+esc(headline)+'</h1><div class="editable-body hero-copy" contenteditable="true" data-edit="intro" data-placeholder="Explain in one or two sentences what you buy, what you sell and why customers should use your business.">'+esc(intro)+'</div><div class="hero-actions"><span>Browse what we sell</span><span>See what we buy</span></div></div>'+(homepageSections.hero_image ? '<div class="premium-hero-visual"><div class="image-pair">'+imageBlock(homeImageUrl,'home','Main hero image — independent from all tile images.',siteName)+imageBlock(homeImageUrl2,'home2','Second hero image — independent from all tile images.',siteName+' second image')+'</div></div>' : '')+'</section>' : '';
- const dual=homepageSections.dual?'<section class="dual-intro"><div><p class="section-kicker">BUYING</p><h2 class="editable-section-title" contenteditable="true" data-home-field="buyHeading">'+esc(homeBuyHeading)+'</h2><p class="editable-section-body" contenteditable="true" data-home-field="buyIntro">'+esc(homeBuyIntro)+'</p></div><div><p class="section-kicker sell-kicker">SELLING</p><h2 class="editable-section-title" contenteditable="true" data-home-field="sellHeading">'+esc(homeSellHeading)+'</h2><p class="editable-section-body" contenteditable="true" data-home-field="sellIntro">'+esc(homeSellIntro)+'</p></div></section>':'';
- const buy=homepageSections.buy?renderBuilderBuyingSection():'';
- const sell=homepageSections.sell?'<section class="home-tile-section sell-section"><div class="section-head"><div><span>What we sell</span><h2>Showcase your retail business</h2></div><p>Use images and short descriptions to make your products and collections stand out.</p></div><div class="home-tile-grid count-'+homepageTileCount+'">'+sellTiles.map(tileMarkup).join('')+'</div></section>':'';
- const trust=homepageSections.trust?'<section class="premium-trust"><div><b>Buy from us</b><span>Clear buying categories and a straightforward selling request.</span></div><div><b>Sell with confidence</b><span>Your published products are connected to TradeFlow Inventory and Selling.</span></div><div><b>Customer account</b><span>Orders, selling requests and returns stay connected to TradeFlow.</span></div></section>':'';
- return navMarkup()+hero+dual+buy+sell+trust;
+ const buy='<section class="template-section buying-block"><div class="section-intro"><span>01 / WHAT WE BUY</span>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+buyingPreview()+'</section>';
+ const sell='<section class="template-section selling-block"><div class="section-intro"><span>02 / WHAT WE SELL</span>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+sellingPreview()+'<a class="retail-link" data-nav-page="shop">Open Retail Shop →</a></section>';
+ const trust='<section class="trust-row"><div><b>Buying made clear</b><span>Your selected buying list is shown automatically.</span></div><div><b>Retail made simple</b><span>Your published inventory appears in your shop.</span></div><div><b>Your business</b><span>Change the wording, images and branding whenever you need.</span></div></section>';
+ return navMarkup()+templateHero()+buy+sell+trust;
 }
-
 function renderPage(p){
- const managed=p.slug==='customer-account';
- const isShop=p.slug==='shop';
- const isBuying=p.slug==='buying';
- let extra='';
- if(isShop)extra='<div class="managed-area"><span>TRADEFLOW CONNECTED</span><h3>Your products appear here automatically</h3><p>Products published through Inventory → Selling are shown in this retail shop. You do not type product listings here.</p><div class="product-placeholder"><i></i><i></i><i></i></div></div>';
- if(isBuying)extra=renderBuilderBuyingPage();
- return navMarkup()+
- '<section class="editor-page"><div class="page-hero-row"><div><div class="edit-label">'+esc(isShop?'RETAIL SELLING PAGE':isBuying?'BUYING PAGE':'WEBSITE PAGE')+'</div>'+
- (managed?'<h1>'+esc(p.title)+'</h1>':'<h1 class="editable-title page-title" contenteditable="true" data-edit="page-title" data-placeholder="Page title">'+esc(p.title)+'</h1>')+
- '<p class="page-instruction">'+esc(pageDef(p.slug).prompt)+'</p></div></div>'+
- imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+
- (managed?'<div class="managed-area"><span>TRADEFLOW MANAGED</span><h3>Customer account</h3><p>The customer account area is connected to TradeFlow and is not edited as a normal content page.</p></div>':
- '<div class="editable-body page-body" contenteditable="true" data-edit="page-body" data-placeholder="'+esc(pageDef(p.slug).prompt)+'">'+esc(p.body||'')+'</div>')+
- extra+'</section>';
+ const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
+ if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block"><span>WHAT WE BUY</span>'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'Tell customers what you are looking for and how selling to you works.','p')+'</div>'+buyingPreview()+'</section>';
+ if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block"><span>WHAT WE SELL</span>'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'Browse our current retail range.','p')+'</div>'+sellingPreview()+'<div class="retail-note">Retail products are connected to Inventory → Selling.</div></section>';
+ return navMarkup()+'<section class="full-page content-page"><div class="page-title-block"><span>YOUR BUSINESS</span>'+ (managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+ (managed?'<p>TradeFlow manages the customer account area.</p>':editText('page-body',p.body||pageDef(p.slug).prompt,'p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>';
 }
-
 function renderEditor(){
  const p=currentPage();
  $('editing-page-name').textContent=p.slug==='home'?'Home page':p.title;
@@ -351,12 +360,18 @@ async function restoreSession(){
  return tenantId;
 }
 
-async function loadBuyingCatalogue(){
- const rows=await api('/rest/v1/rpc/get_public_buying_catalogue?p_tenant_id='+encodeURIComponent(tenantId));
+async function loadBuyingCatalogue(tenant){
+ if(!tenant)return {categories:[],products:[]};
+ const rows=await api('/rest/v1/rpc/get_public_buying_catalogue?p_tenant_id='+encodeURIComponent(tenant));
  const products=Array.isArray(rows)?rows:[];
  const map=new Map();
  for(const p of products){if(!map.has(p.category_id))map.set(p.category_id,{id:p.category_id,name:p.category_name,slug:p.category_slug,description:p.category_description||'',product_count:0});map.get(p.category_id).product_count++;}
- buyingCatalogue={categories:Array.from(map.values()),products};
+ return {categories:Array.from(map.values()),products};
+}
+async function loadRetailListings(tenant){
+ if(!tenant)return [];
+ try{const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenant));return Array.isArray(rows)?rows:[]}
+ catch(e){console.warn('TradeFlow retail preview listings unavailable:',e);return []}
 }
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));
@@ -366,6 +381,7 @@ async function loadDraft(){
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
  loadContent(drafts[0].content);
  try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
+ retailListings=await loadRetailListings(tenantId);
  renderEditor();
  if(validPageSlug(requestedPage))selectedPage=requestedPage;
  if(requestedTemplate)applyTemplate(requestedTemplate);

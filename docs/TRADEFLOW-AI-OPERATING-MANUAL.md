@@ -547,3 +547,7 @@ The subscriber buying catalogue now has five conditions: Sealed, Opened Never Us
 
 ## Buying Price Calculation Update — 19 September 2026
 Gemma/research automation must continue to write evidence into `tenant_buying_research`. Subscriber pricing is not locked to one research type: each condition has its own selected reference (`uk_new` or `uk_used`), percentage, and optional exact manual override. Manual override takes priority over research-based calculation. Do not fabricate a reference price when research is absent.
+
+
+## Buying Catalogue Structure — 19 September 2026
+Use the canonical hierarchy Category → Branch / Type → Manufacturer → Model. Do not treat manufacturer as the first subdivision of a category. Research, pricing rules and products should retain their tenant/category/branch/product relationships. Example: Cameras → Digital → Canon → EOS 750D.

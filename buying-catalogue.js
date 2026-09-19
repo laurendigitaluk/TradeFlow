@@ -77,7 +77,7 @@ async function loadPage(){
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));if(masterPage>pages){masterPage=pages;return loadPage()}
  $("catalogue-status").textContent=totalProducts+(catalogueView==="my"?" products in your Buying Catalogue":(hideAdded?" available master products":" matching master products"));
  $("catalogue-status").classList.add("live");
- $("catalogue-help").textContent=catalogueView==="my"?"These are the products currently selected for this subscriber. Use Master Catalogue to add more.":(hideAdded?"Already-added Buying products are hidden. Turn off 'Hide already added' if you need to review them.":"TradeFlow is showing all matching master products, including ones already in this subscriber's Buying Catalogue."); updateMasterVisibilityControl();
+ $("catalogue-help").textContent=catalogueView==="my"?"These are the products currently in your Buying Catalogue. Use the Master Catalogue to add more.":(hideAdded?"Already-added Buying products are hidden. Turn off 'Hide already added' if you need to review them.":"TradeFlow is showing all matching master products, including ones already in this subscriber's Buying Catalogue."); updateMasterVisibilityControl();
  renderMaster();
 }
 function updateMasterVisibilityControl(){

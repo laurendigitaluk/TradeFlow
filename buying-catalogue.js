@@ -238,7 +238,7 @@ async function refreshForCategory(){
  await loadFacets();
  await loadPage();
 }
-$("select-all-products").addEventListener("change",toggleSelectAll);
+$("select-all-products").addEventListener("change",toggleSelectAll);\n$("select-all-matching").addEventListener("click",toggleAllMatching);
 document.querySelectorAll(".catalogue-tab").forEach(b=>b.addEventListener("click",()=>setCatalogueView(b.dataset.view)));
 $("bulk-add").addEventListener("click",addSelectedProducts);
 $("master-category").addEventListener("change",refreshForCategory);

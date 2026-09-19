@@ -95,6 +95,7 @@ function renderMatrix(){
  body.innerHTML=visible.map(p=>{const n=latest(p,"uk_new"),u=latest(p,"uk_used");return"<tr><td class=\"select-col\"><input class=\"product-select\" type=\"checkbox\" data-product-select=\""+p.id+"\" "+(selectedProductIds.has(p.id)?"checked":"")+"></td><td class=\"product-cell\"><strong>"+esc(p.manufacturer)+" "+esc(p.model)+"</strong><span>"+esc(p.package_name||"")+"</span></td><td class=\"ref-cell\">"+refHtml(n)+"</td><td class=\"ref-cell\">"+refHtml(u)+"</td>"+conditions.map(c=>conditionCell(p,c)).join("")+"</tr>"}).join("");
  bindPercentInputs();
  bindProductSelection();
+ bindHeaderSelection();
  updateSelectionUI();
 }
 function bindProductSelection(){
@@ -103,6 +104,7 @@ function bindProductSelection(){
    updateSelectionUI();
  }));
 }
+function bindHeaderSelection(){const h=$("select-all-header");if(h)h.addEventListener("change",e=>{visibleProducts().forEach(p=>e.target.checked?selectedProductIds.add(p.id):selectedProductIds.delete(p.id));renderMatrix()})}
 function updateSelectionUI(){
  const visible=visibleProducts();
  const selectedVisible=visible.filter(p=>selectedProductIds.has(p.id));
@@ -241,16 +243,18 @@ async function applySelectedReference(){
  const ids=[...selectedProductIds];
  if(!ids.length)return msg("Select at least one product first.","error");
  const ref=document.querySelector('input[name="bulk-reference"]:checked')?.value||"uk_new";
+ const profile=pricingProfiles[$("bulk-pricing-profile")?.value||"70"];
  const rows=ids.map(id=>({tenant_id:tenantId,buying_product_id:id,
-   sealed_reference_type:ref,opened_never_used_reference_type:ref,excellent_reference_type:ref,good_reference_type:ref,poor_reference_type:ref
+   sealed_reference_type:ref,opened_never_used_reference_type:ref,excellent_reference_type:ref,good_reference_type:ref,poor_reference_type:ref,
+   sealed_percentage:profile.sealed,opened_never_used_percentage:profile.opened_never_used,excellent_percentage:profile.excellent,good_percentage:profile.good,poor_percentage:profile.poor
  }));
  const btn=$("apply-selected-reference");btn.disabled=true;btn.textContent="Applying…";
  try{
    await api("/rest/v1/tenant_buying_condition_rules?on_conflict=tenant_id,buying_product_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(rows)});
-   msg("Reference basis updated for "+ids.length+" selected product"+(ids.length===1?"":"s")+". Automatic prices will now use "+(ref==="uk_new"?"UK New":"UK Used")+" research where available.","success");
+   msg("Pricing applied to "+ids.length+" selected product"+(ids.length===1?"":"s")+": "+(ref==="uk_new"?"UK New":"UK Used")+" research with the selected percentage profile. Manual overrides and research were preserved.","success");
    await loadMatrix();
  }catch(e){msg(e.message||String(e),"error")}
- finally{btn.disabled=false;btn.textContent="Apply to selected"}
+ finally{btn.disabled=false;btn.textContent="Apply pricing to selected"}
 }
 async function saveAll(){
  const payload=[];
@@ -277,7 +281,6 @@ async function addProduct(e){
 
 $("select-all-visible").addEventListener("click",()=>{visibleProducts().forEach(p=>selectedProductIds.add(p.id));renderMatrix()});
 $("clear-selection").addEventListener("click",()=>{selectedProductIds.clear();renderMatrix()});
-$("select-all-header").addEventListener("change",e=>{visibleProducts().forEach(p=>e.target.checked?selectedProductIds.add(p.id):selectedProductIds.delete(p.id));renderMatrix()});
 $("apply-selected-reference").addEventListener("click",applySelectedReference);
 $("pricing-profile").addEventListener("change",renderPricingProfile);$("apply-pricing-profile").addEventListener("click",applyPricingProfile);renderPricingProfile();
 $("manage-categories").addEventListener("click",toggleManagement);

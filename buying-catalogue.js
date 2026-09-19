@@ -3,11 +3,11 @@ const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null,categories=[],branches=[],manufacturers=[],products=[],research=[],rules=[],selectedCategory=null,selectedBranch=null;
 
 const conditions=[
- {key:"sealed",label:"Sealed",base:"new"},
- {key:"opened_never_used",label:"Opened, Never Used",base:"new"},
- {key:"excellent",label:"Excellent",base:"used"},
- {key:"good",label:"Good",base:"used"},
- {key:"poor",label:"Poor",base:"used"}
+ {key:"sealed",label:"Sealed",base:"new",defaultRef:"uk_new"},
+ {key:"opened_never_used",label:"Opened, Never Used",base:"new",defaultRef:"uk_new"},
+ {key:"excellent",label:"Excellent",base:"used",defaultRef:"uk_used"},
+ {key:"good",label:"Good",base:"used",defaultRef:"uk_used"},
+ {key:"poor",label:"Poor",base:"used",defaultRef:"uk_used"}
 ];
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
@@ -52,7 +52,7 @@ async function loadMatrix(){
  products=await api("/rest/v1/tenant_buying_products?select=id,category_id,branch_id,manufacturer,model,package_name,active&tenant_id=eq."+encodeURIComponent(tenantId)+"&branch_id=eq."+encodeURIComponent(selectedBranch)+"&active=eq.true&order=manufacturer,model")||[];
  const ids=products.map(p=>p.id);
  research=ids.length?await api("/rest/v1/tenant_buying_research?select=id,buying_product_id,evidence_type,source_name,source_url,observed_price,price_currency,item_condition,checked_at&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")&order=checked_at.desc")||[]:[];
- rules=ids.length?await api("/rest/v1/tenant_buying_condition_rules?select=id,buying_product_id,sealed_percentage,opened_never_used_percentage,excellent_percentage,good_percentage,poor_percentage&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")")||[]:[];
+ rules=ids.length?await api("/rest/v1/tenant_buying_condition_rules?select=id,buying_product_id,sealed_percentage,opened_never_used_percentage,excellent_percentage,good_percentage,poor_percentage,sealed_reference_type,opened_never_used_reference_type,excellent_reference_type,good_reference_type,poor_reference_type,sealed_manual_price,opened_never_used_manual_price,excellent_manual_price,good_manual_price,poor_manual_price&tenant_id=eq."+encodeURIComponent(tenantId)+"&buying_product_id=in.("+ids.join(",")+")")||[]:[];
  populateManufacturers();renderMatrix();msg("Research prices loaded. Enter your percentages and save when ready.","success");
 }
 function latest(p,type){return research.find(r=>r.buying_product_id===p.id&&r.evidence_type===type&&r.observed_price!==null&&String(r.price_currency||"GBP").toUpperCase()==="GBP")||null}
@@ -60,9 +60,26 @@ function ruleFor(p){return rules.find(r=>r.buying_product_id===p.id)||{buying_pr
 function refPrice(p,base){const r=latest(p,base==="new"?"uk_new":"uk_used");return r?.observed_price??null}
 function refHtml(r){if(!r)return'<div class="ref-price">—</div><div class="ref-source">No research yet</div>';return'<div class="ref-price">'+money(r.observed_price,r.price_currency)+'</div><div class="ref-source">'+(r.source_url?'<a href="'+esc(r.source_url)+'" target="_blank" rel="noopener">'+esc(r.source_name||"Source")+"</a>":esc(r.source_name||"Research"))+"<br>"+new Date(r.checked_at).toLocaleDateString("en-GB")+"</div>"}
 function conditionCell(p,c){
- const rule=ruleFor(p),field=c.key+"_percentage",value=rule[field]??"",base=refPrice(p,c.base);
+ const rule=ruleFor(p);
+ const pctField=c.key+"_percentage", refField=c.key+"_reference_type", manualField=c.key+"_manual_price";
+ const value=rule[pctField]??"", ref=rule[refField]||c.defaultRef, manual=rule[manualField]??"";
+ const base=refPrice(p,ref==="uk_new"?"new":"used");
  const amount=value!==""&&base!==null?(Number(base)*Number(value)/100):null;
- return'<td class="condition-cell"><div class="condition-name">'+c.label+'</div><div class="condition-base">'+(c.base==="new"?"UK New":"UK Used")+" reference</div><input class=\"pct\" data-product=\""+p.id+"\" data-field=\""+field+"\" type=\"number\" min=\"0\" max=\"100\" step=\"0.01\" value=\""+esc(value)+"\" placeholder=\"%\"><div class=\"calc\" data-calc=\""+p.id+"-"+c.key+"\">"+(amount!==null?money(amount):'<span class="not-set">Not set</span>')+"</div></td>";
+ return '<td class="condition-cell">'+
+   '<div class="condition-name">'+c.label+'</div>'+
+   '<div class="pricing-label">Automatic price basis</div>'+
+   '<select class="reference-select" data-product="'+p.id+'" data-field="'+refField+'">'+
+     '<option value="uk_new" '+(ref==="uk_new"?"selected":"")+'>UK New research</option>'+
+     '<option value="uk_used" '+(ref==="uk_used"?"selected":"")+'>UK Used research</option>'+
+   '</select>'+
+   '<div class="pricing-label">Automatic percentage</div>'+
+   '<input class="pct" data-product="'+p.id+'" data-field="'+pctField+'" type="number" min="0" max="100" step="0.01" value="'+esc(value)+'" placeholder="%">'+
+   '<div class="automatic-result" data-calc="'+p.id+"-"+c.key+'">'+(amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>')+'</div>'+
+   '<div class="pricing-help">'+(base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference": "No "+(ref==="uk_new"?"UK New":"UK Used")+" research found")+'</div>'+
+   '<div class="pricing-label">Manual override</div>'+
+   '<input class="manual-price" data-product="'+p.id+'" data-field="'+manualField+'" type="number" min="0" step="0.01" value="'+esc(manual)+'" placeholder="Exact buying price £">'+
+   '<div class="manual-result" data-manual="'+p.id+"-"+c.key+'">'+(manual!==""&&manual!==null?money(manual)+" manual override":'<span class="not-set">No manual override</span>')+'</div>'+
+   '</td>';
 }
 function renderMatrix(){
  const manufacturer=$("manufacturer-select").value||"",filter=($("model-filter").value||"").trim().toLowerCase();
@@ -76,11 +93,25 @@ function renderMatrix(){
  bindPercentInputs();
 }
 function bindPercentInputs(){
- document.querySelectorAll(".pct").forEach(input=>input.addEventListener("input",()=>{
-  const p=products.find(x=>x.id===input.dataset.product),c=conditions.find(x=>x.key+"_percentage"===input.dataset.field);if(!p||!c)return;
-  const base=refPrice(p,c.base),amount=input.value!==""&&base!==null?Number(base)*Number(input.value)/100:null,box=document.querySelector('[data-calc="'+p.id+"-"+c.key+'"]');
-  if(box)box.innerHTML=amount!==null?money(amount):'<span class="not-set">Not set</span>';
+ document.querySelectorAll(".pct,.reference-select").forEach(input=>input.addEventListener("input",updatePricingCell));
+ document.querySelectorAll(".pct,.reference-select").forEach(input=>input.addEventListener("change",updatePricingCell));
+ document.querySelectorAll(".manual-price").forEach(input=>input.addEventListener("input",()=>{
+   const box=document.querySelector('[data-manual="'+input.dataset.product+"-"+input.dataset.field.replace("_manual_price","")+'"]');
+   if(box)box.innerHTML=input.value!==""?money(input.value)+" manual override":'<span class="not-set">No manual override</span>';
  }));
+}
+function updatePricingCell(e){
+ const productId=e.target.dataset.product;
+ const c=conditions.find(x=>x.key===e.target.dataset.field.replace("_percentage","").replace("_reference_type",""));
+ if(!c)return;
+ const ref=document.querySelector('[data-product="'+productId+'"][data-field="'+c.key+'_reference_type"]')?.value||c.defaultRef;
+ const pct=document.querySelector('[data-product="'+productId+'"][data-field="'+c.key+'_percentage"]')?.value||"";
+ const p=products.find(x=>x.id===productId),base=p?refPrice(p,ref==="uk_new"?"new":"used"):null;
+ const amount=pct!==""&&base!==null?Number(base)*Number(pct)/100:null;
+ const box=document.querySelector('[data-calc="'+productId+"-"+c.key+'"]');
+ if(box)box.innerHTML=amount!==null?money(amount):'<span class="not-set">Automatic price unavailable</span>';
+ const help=box?.nextElementSibling;
+ if(help)help.textContent=base!==null?money(base)+" current "+(ref==="uk_new"?"UK New":"UK Used")+" reference":"No "+(ref==="uk_new"?"UK New":"UK Used")+" research found";
 }
 function populateManufacturers(){
  const current=$("manufacturer-select").value;
@@ -137,7 +168,14 @@ async function addManufacturer(e){
  try{await api("/rest/v1/tenant_buying_manufacturers",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({tenant_id:tenantId,name,active:true})});$("new-manufacturer-name").value="";msg("Manufacturer added.","success");manufacturers=await api("/rest/v1/tenant_buying_manufacturers?select=id,name,active&tenant_id="+encodeURIComponent(tenantId)+"&active=eq.true&order=name")||[];populateManufacturers()}catch(e){msg(e.message||String(e),"error")}
 }
 async function saveAll(){
- const payload=[];document.querySelectorAll(".pct").forEach(i=>{let row=payload.find(x=>x.buying_product_id===i.dataset.product);if(!row){row={tenant_id:tenantId,buying_product_id:i.dataset.product};payload.push(row)}row[i.dataset.field]=i.value===""?null:Number(i.value)});
+ const payload=[];
+document.querySelectorAll(".pct,.reference-select,.manual-price").forEach(i=>{
+ let row=payload.find(x=>x.buying_product_id===i.dataset.product);
+ if(!row){row={tenant_id:tenantId,buying_product_id:i.dataset.product};payload.push(row)}
+ if(i.classList.contains("pct"))row[i.dataset.field]=i.value===""?null:Number(i.value);
+ else if(i.classList.contains("manual-price"))row[i.dataset.field]=i.value===""?null:Number(i.value);
+ else row[i.dataset.field]=i.value;
+});
  if(!payload.length)return msg("There are no products to save.","error");
  try{await api("/rest/v1/tenant_buying_condition_rules?on_conflict=tenant_id,buying_product_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify(payload)});msg("Buying prices saved. Automatic offer calculations can now use the configured condition rules.","success");await loadMatrix()}catch(e){msg(e.message||String(e),"error")}
 }

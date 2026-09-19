@@ -91,6 +91,14 @@ function renderPageList(){
  box.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>selectPage(b.dataset.page)));
 }
 
+function renderHeroImageControls(){
+ const box=$('hero-image-controls');if(!box)return;
+ const imageState=(url)=>url?'Image uploaded':'No image selected';
+ box.innerHTML='<div class="control-title">Homepage hero photos</div><small>The premium homepage has two independent hero images. Use these controls or the buttons directly on the page.</small><div class="hero-image-control"><div><b>Main hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Second hero image</b><span>'+imageState(homeImageUrl2)+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
+ box.querySelectorAll('[data-hero-image]').forEach(button=>button.addEventListener('click',()=>{
+   const input=$('image-file-input');input.dataset.target=button.dataset.heroImage;input.value='';input.click();
+ }));
+}
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
  box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[6,8,10].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><small>Choose how many visual tiles appear on your premium homepage. You can edit every tile directly on the page.</small>';
@@ -264,7 +272,7 @@ function loadContent(content){
    body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
- renderPageList();renderTemplates();renderHomepageControls();renderDesignControls();renderBusinessExtras();renderEditor();
+ renderPageList();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBusinessExtras();renderEditor();
 }
 
 async function uploadImage(file,target){
@@ -296,7 +304,7 @@ async function uploadImage(file,target){
      asset_kind:target==='logo'?'site_logo':'site_image',retention_policy:'permanent'
    })});
  }catch(e){console.warn('Site image metadata insert failed',e)}
- dirty=true;renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
+ dirty=true;renderHeroImageControls();renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
 }
 
 function removeImage(target){
@@ -305,7 +313,7 @@ function removeImage(target){
  else if(target==='logo')logoUrl='';
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
- markDirty();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
+ markDirty();renderHeroImageControls();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
 }
 
 async function api(path,options){
@@ -364,6 +372,7 @@ function initBuilder(){
  $('templates')&&renderTemplates();
  $('page-list')&&renderPageList();
  renderDesignControls();
+ renderHeroImageControls();
  renderTypographyControls();
  renderSectionControls();
  renderBusinessExtras();

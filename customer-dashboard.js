@@ -1,5 +1,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const KEY_STORAGE='tradeflow_customer_publishable_key';
+localStorage.setItem(KEY_STORAGE,KEY);
 const SESSION_STORAGE='tradeflow_customer_session';
 let key=localStorage.getItem(KEY_STORAGE),session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const $=id=>document.getElementById(id);

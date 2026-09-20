@@ -41,6 +41,18 @@ const templates=[
  {id:'commerce',name:'Commerce',desc:'Product-led and conversion-focused'},
  {id:'impact',name:'Impact',desc:'Bold typography and strong colour'}
 ];
+const templatePalettes={
+ editorial:{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'},
+ classic:{accent:'#8b5e3c',page_bg:'#f7f1e8',text:'#30271f',header_bg:'#fffaf2',buy_bg:'#fffdf8',sell_bg:'#eee2d2',footer_bg:'#352b24'},
+ grid:{accent:'#5ea8d6',page_bg:'#101820',text:'#eef3f6',header_bg:'#0d141b',buy_bg:'#151f28',sell_bg:'#1c2933',footer_bg:'#080d12'},
+ studio:{accent:'#b35b3e',page_bg:'#f3ece5',text:'#2b2521',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#e9ddd2',footer_bg:'#29221e'},
+ horizon:{accent:'#287d9b',page_bg:'#edf5f8',text:'#19303a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e1eef2',footer_bg:'#18343e'},
+ field:{accent:'#b6a05a',page_bg:'#17231d',text:'#f1f2ed',header_bg:'#111a15',buy_bg:'#1a2820',sell_bg:'#26352b',footer_bg:'#0b110d'},
+ business:{accent:'#2563a8',page_bg:'#f1f4f7',text:'#1d2a35',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e5ebf1',footer_bg:'#172431'},
+ luxe:{accent:'#c49a58',page_bg:'#f3f0eb',text:'#202328',header_bg:'#fbfaf7',buy_bg:'#fbfaf7',sell_bg:'#e8e2d8',footer_bg:'#15191d'},
+ commerce:{accent:'#d05a38',page_bg:'#f6f7f8',text:'#20252a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#eceff1',footer_bg:'#20252a'},
+ impact:{accent:'#d64b3d',page_bg:'#f2f2ef',text:'#171b1f',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e7e8e4',footer_bg:'#171b1f'}
+};
 const templateHeadlines={editorial:'A clear way to buy and sell',classic:'A trusted way to buy and sell',grid:'Your products. Your buying list.',studio:'Good products deserve a good presentation.',horizon:'A simpler way to buy and sell',field:'Equipment for the next chapter.',business:'A straightforward way to buy and sell',luxe:'Quality products. Clear service.',commerce:'Browse, buy and sell with confidence.',impact:'BUY. SELL. MOVE FORWARD.'};
 const templateDefaults={
  editorial:{kicker:'',cta1:'',cta2:''},
@@ -198,12 +210,21 @@ function renderBuilderBuyingPage(){
 function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
 function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){
- return '';
+ const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
+ const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ if(!categories.length)return '';
+ const cards=categories.map(cat=>{
+   const items=products.filter(p=>p.category_id===cat.id);
+   const image=items.find(p=>p.image_url)?.image_url||'';
+   const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'">':'<span>Category image</span>';
+   return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="#" data-nav-page="buying">Sell this type →</a></div></article>';
+ }).join('');
+ return '<div class="buy-category-grid">'+cards+'</div>';
 }
 function sellingPreview(){
  const list=Array.isArray(retailListings)?retailListings:[];
  if(!list.length)return '';
- return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article><div class="sell-photo"></div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'View product')+'</strong></article>').join('')+'</div>';
+ return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'')+'</strong><a href="#" data-nav-page="shop">View &amp; buy</a></article>').join('')+'</div>';
 }
 function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
@@ -316,6 +337,7 @@ function applyTemplate(template){
  if(!templateHeadlines[template])return;
  const previousDefaults=Object.values(templateDefaults).some(d=>d.kicker===templateCopy.kicker&&d.cta1===templateCopy.cta1&&d.cta2===templateCopy.cta2);
  currentTemplate=template;
+ themeColors=Object.assign({},templatePalettes[template]||templatePalettes.editorial);
  if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
  if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);
  renderTemplates();renderHomepageControls();renderEditor();markDirty();

@@ -148,10 +148,15 @@ function currentPage(){return selectedPage==='home'?{slug:'home',title:'Home pag
 function renderPageList(){
  const box=$('page-list');if(!box)return;
  const items=[{slug:'home',title:'Home page',hint:'Main landing page',enabled:true},...pages.map(p=>({slug:p.slug,title:p.title,hint:p.slug==='shop'?'Retail selling page':p.slug==='buying'?'Buying page':pageDef(p.slug).hint,enabled:p.enabled}))];
- box.innerHTML=items.map(p=>'<div class="page-row '+(p.slug===selectedPage?'selected':'')+'"><button type="button" class="page-link" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>'+(p.slug==='home'||p.slug==='customer-account'?'':'<button type="button" class="page-delete" data-delete-page="'+esc(p.slug)+'" title="Delete page">Delete</button>')+'</div>').join('');
+ box.innerHTML=items.map(p=>'<div class="page-row '+(p.slug===selectedPage?'selected':'')+'"><button type="button" class="page-link" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>'+(p.slug==='home'||p.slug==='customer-account'?'':p.slug==='buying'||p.slug==='shop'?'<button type="button" class="page-visibility" data-toggle-page="'+esc(p.slug)+'">'+(p.enabled===false?'Show':'Hide')+'</button>':'<button type="button" class="page-delete" data-delete-page="'+esc(p.slug)+'" title="Delete page">Delete</button>')+'</div>').join('');
  box.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>selectPage(b.dataset.page)));
+ box.querySelectorAll('[data-toggle-page]').forEach(b=>b.addEventListener('click',()=>{
+   const slug=b.dataset.togglePage,page=pages.find(p=>p.slug===slug);if(!page)return;
+   page.enabled=page.enabled===false;markDirty();renderPageList();renderHeaderFooterControls();renderEditor();setStatus(page.enabled?'What We Buy / What We Sell page shown.':'What We Buy / What We Sell page hidden from the customer website.','success');
+ }));
  box.querySelectorAll('[data-delete-page]').forEach(b=>b.addEventListener('click',()=>{
    const slug=b.dataset.deletePage,page=pages.find(p=>p.slug===slug);if(!page)return;
+   if(slug==='buying'||slug==='shop'){setStatus('What We Buy and What We Sell are permanent TradeFlow pages. They can be hidden, but not deleted.','error');return;}
    if(!window.confirm('Delete the page "'+page.title+'"? This will remove it from this website draft.'))return;
    if(!window.confirm('Are you sure you want to permanently remove "'+page.title+'" from this website draft?'))return;
    pages=pages.filter(p=>p.slug!==slug);headerLinks=headerLinks.filter(x=>x!==slug);footerLinks=footerLinks.filter(x=>x!==slug);

@@ -118,3 +118,5 @@ body[data-background-mode="preset"] .tpl-hero>*,body[data-background-mode="prese
 body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode="custom"] .public-section::before,body[data-background-mode="custom"] .public-page::before,body[data-background-mode="custom"] .full-page::before{display:none}
 .tpl-hero{background:var(--page-bg)!important}
 
+
+.valuation-start{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 20px;margin-bottom:28px;border:1px solid #dce3e7;border-radius:10px;background:color-mix(in srgb,var(--header-bg) 94%,var(--page-bg))}.valuation-start-copy{display:flex;flex-direction:column;gap:4px}.valuation-start-copy strong{font-size:12px}.valuation-start-copy span{font-size:10px;color:#68757f}.valuation-start label{display:flex;align-items:center;gap:10px;min-width:360px}.valuation-start label span{font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.valuation-start select{flex:1;padding:11px;border:1px solid #cfd8de;border-radius:7px;background:#fff}@media(max-width:650px){.valuation-start{display:block}.valuation-start label{min-width:0;margin-top:12px}}

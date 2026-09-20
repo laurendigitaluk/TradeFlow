@@ -102,7 +102,7 @@ const templateDefaults={
 
 const pageDefinitions=[
  {slug:'buying',title:'What We Buy',enabled:true,hint:'Buying page',prompt:'Show customers what you are looking to buy and how they can start a selling request.'},
- {slug:'shop',title:'Retail Shop',enabled:true,hint:'Selling page',prompt:'Show customers the products you currently have available to buy.'},
+ {slug:'shop',title:'What We Sell',enabled:true,hint:'Selling page',prompt:'Show customers the products you currently have available to buy.'},
  {slug:'about',title:'About',enabled:true,hint:'About your business',prompt:'Tell customers about your business, service and experience.'},
  {slug:'contact',title:'Contact',enabled:true,hint:'Contact details',prompt:'Add the contact information customers need to reach your business.'},
  {slug:'customer-account',title:'Customer Account',enabled:true,hint:'Customer account area',prompt:'Customer account area managed by TradeFlow.'}
@@ -460,7 +460,7 @@ function loadContent(content){
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
-   title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
+   title:p.slug==='shop'&&(!p.title||p.title==='Shop'||p.title==='Retail Shop')?'What We Sell':(p.title||p.slug),
    body:cleanPageBody(p.slug,p.body),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;

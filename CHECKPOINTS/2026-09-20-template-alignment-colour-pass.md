@@ -124,3 +124,11 @@ template-alignment-colour-pass
 - Full `public-site.js` syntax check after merge: PASS.
 - No Supabase schema or data changes.
 - This repair explains why the public page reported the background error instead of rendering the selected background/template correctly.
+
+## Hero/Page background colour repair — 20 September 2026
+- The main "way to buy and sell" hero was not responding visibly to the Brand Colours > Page background control because each fresh template had a hard-coded hero background.
+- Repaired both builder and public CSS so `.tpl-hero` uses `var(--page-bg)` as its base colour.
+- The selected specialist preset remains as the independent overlay, so the pattern is retained while the Page background colour remains editable.
+- Builder CSS bumped from v55 to v56; public CSS bumped from v54 to v55.
+- PR #24 merged to main as `eafe2aaf89883a7805500fc2e2d052c847e65727`.
+- No Supabase schema or data changes.

@@ -220,7 +220,7 @@ function buyingPreview(){
  const cards=categories.map(cat=>{
    const items=products.filter(p=>p.category_id===cat.id);
    const image=items.find(p=>p.image_url)?.image_url||'';
-   const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'">':'<span>Category image</span>';
+   const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'">':'<span aria-hidden="true"></span>';
    return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="#" data-nav-page="buying">Sell this type →</a></div></article>';
  }).join('');
  return '<div class="buy-category-grid">'+cards+'</div>';
@@ -228,7 +228,7 @@ function buyingPreview(){
 function sellingPreview(){
  const list=Array.isArray(retailListings)?retailListings:[];
  if(!list.length)return '';
- return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'')+'</strong><a href="#" data-nav-page="shop">View &amp; buy</a></article>').join('')+'</div>';
+ return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'')+'</strong><a href="#" data-nav-page="shop">View &amp; buy</a></article>').join('')+'</div>';
 }
 function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
@@ -236,8 +236,8 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image">Add main image</div>';
- const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image">Add second image</div>';
+ const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
+ const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';

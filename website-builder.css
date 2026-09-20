@@ -205,3 +205,11 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor .sell-product-card>span,.site-editor .sell-product-card h3,.site-editor .sell-product-card strong,.site-editor .sell-product-card a{margin-left:17px;margin-right:17px}
 @media(max-width:900px){.site-editor .buy-category-grid,.site-editor .sell-product-grid{grid-template-columns:1fr 1fr}.site-editor .buy-category-card{grid-template-columns:1fr}.site-editor .buy-category-image{min-height:150px}}
 @media(max-width:600px){.site-editor .buy-category-grid,.site-editor .sell-product-grid{grid-template-columns:1fr}}
+
+/* Homepage section images are real editable image slots. */
+.buying-block .section-intro .image-slot,.selling-block .section-intro .image-slot{min-height:190px}
+.buying-block .section-intro .image-slot .visual-image,.selling-block .section-intro .image-slot .visual-image{height:190px}
+.buying-block .section-intro .image-slot .image-drop,.selling-block .section-intro .image-slot .image-drop{min-height:190px}
+.buying-block .section-intro .image-slot img,.selling-block .section-intro .image-slot img{width:100%;height:100%;object-fit:cover;display:block}
+.buying-block .section-intro .image-slot .image-tools,.selling-block .section-intro .image-slot .image-tools{position:absolute;left:10px;right:10px;bottom:10px}
+@media(max-width:900px){.buying-block .section-intro .image-slot,.selling-block .section-intro .image-slot{min-height:170px}.buying-block .section-intro .image-slot .visual-image,.selling-block .section-intro .image-slot .visual-image,.buying-block .section-intro .image-slot .image-drop,.selling-block .section-intro .image-slot .image-drop{min-height:170px;height:170px}}

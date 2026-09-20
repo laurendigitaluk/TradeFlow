@@ -2,7 +2,7 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='';
 let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
@@ -256,8 +256,8 @@ function renderHome(){
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
   hero:homepageSections.hero!==false?templateHero():'',
-  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+buyingPreview()+'</section>':'',
-  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+sellingPreview()+'</section>':'',
+  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+imageBlock(homeBuyImageUrl,'home-buy','Add a What We Buy image.',homeBuyHeading||'What We Buy')+'</div>'+buyingPreview()+'</section>':'',
+  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+imageBlock(homeSellImageUrl,'home-sell','Add a What We Sell image.',homeSellHeading||'What We Sell')+'</div>'+sellingPreview()+'</section>':'',
   trust:''
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
@@ -352,7 +352,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' second image',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -386,7 +386,7 @@ function loadContent(content){
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
- homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';
+ homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
@@ -415,6 +415,8 @@ async function uploadImage(file,target){
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target==='home')homeImageUrl=url;
  else if(target==='home2')homeImageUrl2=url;
+ else if(target==='home-buy')homeBuyImageUrl=url;
+ else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -433,6 +435,8 @@ async function uploadImage(file,target){
 function removeImage(target){
  if(target==='home')homeImageUrl='';
  else if(target==='home2')homeImageUrl2='';
+ else if(target==='home-buy')homeBuyImageUrl='';
+ else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
@@ -482,7 +486,7 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';logoUrl='';
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';logoUrl='';
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';

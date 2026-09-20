@@ -155,7 +155,7 @@ function renderPageList(){
    if(!window.confirm('Delete the page "'+page.title+'"? This will remove it from this website draft.'))return;
    if(!window.confirm('Are you sure you want to permanently remove "'+page.title+'" from this website draft?'))return;
    pages=pages.filter(p=>p.slug!==slug);headerLinks=headerLinks.filter(x=>x!==slug);footerLinks=footerLinks.filter(x=>x!==slug);
-   selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
+   selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderBuilderPageHelp();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
  }));
 }
 

@@ -22,6 +22,19 @@ const websiteBackgrounds=[
  {id:'soft-hex',label:'Hex Pattern',color:'#f2f5f7',image:'linear-gradient(30deg,rgba(45,60,75,.30) 12%,transparent 12.5%,transparent 87%,rgba(45,60,75,.30) 87.5%),linear-gradient(150deg,color-mix(in srgb,var(--accent) 25%,transparent) 12%,transparent 12.5%,transparent 87%,color-mix(in srgb,var(--accent) 25%,transparent) 87.5%),linear-gradient(60deg,rgba(45,60,75,.22) 25%,transparent 25.5%,transparent 75%,rgba(45,60,75,.22) 75%)',size:'56px 96px',repeat:'repeat'},
  {id:'dark-geometry',label:'Dark Geometry',color:'#111820',image:'linear-gradient(135deg,#111820 25%,#263747 25% 50%,#111820 50% 75%,#34495a 75%)',size:'80px 80px',repeat:'repeat'}
 ];
+function normalizeBackgroundId(id){
+ const valid=new Set(websiteBackgrounds.map(x=>x.id));
+ if(valid.has(id))return id;
+ const legacyMap={
+  music:'clean-wave',camera:'clean-wave',mobile:'clean-wave',instruments:'warm-sand',drone:'soft-blue',tools:'fine-diagonal',
+  vehicles:'clean-wave',home:'warm-sand',kitchen:'clean-wave',fashion:'soft-lavender',office:'fine-grid',toys:'sunset',
+  gaming:'dark-geometry','clean-wave':'clean-wave','pastel-gradient':'clean-wave','blue-wave':'soft-blue','green-wave':'soft-green',
+  warm-wave:'warm-sand','purple-wave':'soft-lavender','dark-wave':'dark-geometry','hexagon-pattern':'soft-hex',
+  dot-pattern:'soft-dots','diagonal-stripes':'wide-diagonal','soft-bokeh':'clean-wave',marble:'warm-sand',watercolour:'sunset',
+  abstract-shapes:'sunset','soft-texture':'clean-wave','colour-blend':'sunset'
+ };
+ return legacyMap[id]||'clean-wave';
+}
 function applyWebsiteBackground(){const e=$('site-editor');if(!e)return;const mode=themeColors.background_mode==='custom'?'custom':'preset';themeColors.background_id=normalizeBackgroundId(themeColors.background_id);const p=websiteBackgrounds.find(x=>x.id===themeColors.background_id)||websiteBackgrounds[0];e.dataset.backgroundMode=mode;e.style.setProperty('--site-background-color',mode==='custom'?themeColors.page_bg:p.color);e.style.setProperty('--site-background-image',mode==='custom'?'none':p.image);e.style.setProperty('--site-background-size',mode==='custom'?'cover':p.size);e.style.setProperty('--site-background-repeat',mode==='custom'?'no-repeat':p.repeat);}
 function selectWebsiteBackground(id){const p=websiteBackgrounds.find(x=>x.id===id);if(!p)return;themeColors.background_id=p.id;themeColors.background_mode='preset';applyWebsiteBackground();renderEditor();markDirty();setStatus(p.label+' selected. Brand colours remain editable. Save the draft to keep the change.','success');}
 function selectPresetBackgroundMode(){themeColors.background_mode='preset';applyWebsiteBackground();renderDesignControls();renderEditor();markDirty();setStatus('Preset background mode enabled. Choose a pattern or gradient below.','success');}

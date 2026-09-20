@@ -92,7 +92,8 @@ function renderHero(site){
  const cta2=esc(safeCopy.cta2||d.cta2);
  const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
  const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
- const i1=heroImage(home.image_url,name+' main image');
+ const heroUrl=home.image_url||window.__tradeflowPublicProfile?.banner_url||'';
+ const i1=heroImage(heroUrl,name+' main image');
  const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  const h=esc(headline),p=esc(intro);
  switch(t){
@@ -265,7 +266,7 @@ function renderContentPage(site,p){
 
 function applyContent(content){
  window.__tradeflowSiteContent=content;
- const site=content?.site||{};
+ const site=Object.assign({},content?.site||{});if(window.__tradeflowPublicProfile?.business_name)site.name=window.__tradeflowPublicProfile.business_name;
  const theme=site.theme||{};
  const backgroundMode=theme.background_mode==='custom'?'custom':'preset';
  const typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid'},theme.typography||{});
@@ -321,7 +322,7 @@ async function loadListings(tenant){
 async function loadPublicProfile(tenant){
  if(!tenant)return;
  try{
-   const rows=await api('/rest/v1/tenant_public_profiles?select=business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenant));
+   const rows=await api('/rest/v1/tenant_public_profiles?select=business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,banner_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenant));
    window.__tradeflowPublicProfile=Array.isArray(rows)&&rows.length?rows[0]:null;
  }catch(e){console.warn('TradeFlow public business profile unavailable:',e);window.__tradeflowPublicProfile=null;}
 }

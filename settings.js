@@ -6,6 +6,30 @@ function msg(t,type=''){const e=$('message');e.textContent=t;e.className='small 
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Authorization','Bearer '+token);if(o.body)h.set('Content-Type','application/json');const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||'Request failed');return b}
 function setValue(id,v){const e=$(id);if(e)e.value=v??''}
 function setChecked(id,v){const e=$(id);if(e)e.checked=v!==false}
+function renderBanner(url){
+ const box=$('banner-preview'),remove=$('banner-remove');if(!box)return;
+ box.innerHTML=url?'<img src="'+esc(url)+'" alt="Website banner">':'<span>No banner uploaded.</span>';
+ if(remove)remove.disabled=!url;
+}
+async function uploadBanner(file){
+ if(!file)return;
+ if(file.size>5242880)throw Error('Image is larger than 5 MB.');
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Use PNG, JPEG or WebP images only.');
+ msg('Uploading website banner…');
+ const safe=(file.name||'banner').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
+ const path=tenantId+'/banner/'+Date.now()+'-'+safe;
+ const r=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':file.type,'x-upsert':'false'},body:file});
+ const t=await r.text();if(!r.ok)throw Error(t||'Banner upload failed.');
+ const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
+ await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({banner_url:url})});
+ try{await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,mime_type:file.type,byte_size:file.size,status:'active',created_by:null,asset_kind:'site_banner',retention_policy:'permanent'})})}catch(e){console.warn('Banner metadata insert failed',e)}
+ renderBanner(url);msg('Website banner saved.','success');
+}
+async function removeBanner(){
+ if(!confirm('Remove the website banner from the customer-facing website?'))return;
+ await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({banner_url:null})});
+ renderBanner(null);msg('Website banner removed.','success');
+}
 function renderLogo(url){
  const box=$('logo-preview'),remove=$('logo-remove');if(!box)return;
  box.innerHTML=url?'<img src="'+esc(url)+'" alt="Business logo">':'<span>No logo uploaded.</span>';
@@ -35,11 +59,11 @@ async function load(){
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
   $('business-name').textContent=a.tenants?.[tenantId]||'Business Settings';
   $('account-summary').textContent=(a.user?.email||'')+' · '+(a.role||'');
-  const profiles=await api('/rest/v1/tenant_public_profiles?select=tenant_id,business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenantId));
+  const profiles=await api('/rest/v1/tenant_public_profiles?select=tenant_id,business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,banner_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenantId));
   const p=profiles?.[0]||{};
   const tenants=await api('/rest/v1/tenants?select=id,name&id=eq.'+encodeURIComponent(tenantId));
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
-  renderLogo(p.logo_url||null);
+  renderLogo(p.logo_url||null);renderBanner(p.banner_url||null);
   setValue('public-email',p.public_email);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
@@ -76,3 +100,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 $('logo-upload').onclick=()=>{const i=$('logo-file-input');i.value='';i.click()};
 $('logo-file-input').onchange=e=>uploadLogo(e.target.files?.[0]).catch(err=>msg(err.message||String(err),'error'));
 $('logo-remove').onclick=()=>removeLogo().catch(err=>msg(err.message||String(err),'error'));
+
+$('banner-upload').onclick=()=>{const i=$('banner-file-input');i.value='';i.click()};
+$('banner-file-input').onchange=e=>uploadBanner(e.target.files?.[0]).catch(err=>msg(err.message||String(err),'error'));
+$('banner-remove').onclick=()=>removeBanner().catch(err=>msg(err.message||String(err),'error'));

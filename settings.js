@@ -11,9 +11,9 @@ async function load(){
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
   $('business-name').textContent=a.tenants?.[tenantId]||'Business Settings';
   $('account-summary').textContent=(a.user?.email||'')+' · '+(a.role||'');
-  const profiles=await api('/rest/v1/tenant_public_profiles?select=tenant_id,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenantId));
+  const profiles=await api('/rest/v1/tenant_public_profiles?select=tenant_id,business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenantId));
   const p=profiles?.[0]||{};
-  const tenants=await api('/rest/v1/tenants?select=id,name& id=eq.'+encodeURIComponent(tenantId));
+  const tenants=await api('/rest/v1/tenants?select=id,name&id=eq.'+encodeURIComponent(tenantId));
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
   setValue('public-email',p.public_email);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
@@ -29,7 +29,7 @@ $('profile-form').onsubmit=async e=>{
   if(!name)throw Error('Business name is required.');
   await api('/rest/v1/tenants?id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({name})});
   await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({
-   public_email:$('public-email').value.trim()||null,public_phone:$('public-phone').value.trim()||null,
+   business_name:name,public_email:$('public-email').value.trim()||null,public_phone:$('public-phone').value.trim()||null,
    address_line1:$('address-line1').value.trim()||null,address_line2:$('address-line2').value.trim()||null,
    city:$('city').value.trim()||null,county:$('county').value.trim()||null,postcode:$('postcode').value.trim()||null,
    country_code:$('country-code').value.trim().toUpperCase()||'GB',description:$('description').value.trim()||null,

@@ -76,14 +76,14 @@ function renderHero(site){
  const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
  const cta=['What do you have to sell?','What we buy','What we sell','Sell to us','Browse the shop','Explore the shop','Sell your items','Browse products','Retail shop','Shop products','Start selling','01 / WHAT WE BUY','02 / WHAT WE SELL'];
  const safeCopy=Object.assign({},copy||{});
- if(known.includes(String(safeCopy.kicker||'')))safeCopy.kicker='';
- if(cta.includes(String(safeCopy.cta1||'')))safeCopy.cta1='';
- if(cta.includes(String(safeCopy.cta2||'')))safeCopy.cta2='';
+ if(known.includes(String(safeCopy.kicker||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.kicker||'')))safeCopy.kicker='';
+ if(cta.includes(String(safeCopy.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta1||'')))safeCopy.cta1='';
+ if(cta.includes(String(safeCopy.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta2||'')))safeCopy.cta2='';
  const kicker=esc(safeCopy.kicker||d.kicker);
  const cta1=esc(safeCopy.cta1||d.cta1);
  const cta2=esc(safeCopy.cta2||d.cta2);
- const a1='<a href="'+pageUrl('sell')+'">'+cta1+'</a>';
- const a2='<a href="'+pageUrl('shop')+'">'+cta2+'</a>';
+ const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
+ const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
  const i1=heroImage(home.image_url,name+' main image');
  const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image">Add second image</div>';
  const h=esc(headline),p=esc(intro);
@@ -113,7 +113,7 @@ function renderSellingSection(site,listings){
  const heading=home.sell_heading||'What we sell';
  const intro=home.sell_intro||'Browse the products currently published by this business.';
  const list=Array.isArray(listings)?listings:[];
- const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'View product')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 

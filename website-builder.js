@@ -2,7 +2,7 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='Buy, sell and trade with us',intro='A clear introduction to your business appears here.',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
 let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
@@ -43,16 +43,16 @@ const templates=[
 ];
 const templateHeadlines={editorial:'A clear way to buy and sell',classic:'A trusted way to buy and sell',grid:'Your products. Your buying list.',studio:'Good products deserve a good presentation.',horizon:'A simpler way to buy and sell',field:'Equipment for the next chapter.',business:'A straightforward way to buy and sell',luxe:'Quality products. Clear service.',commerce:'Browse, buy and sell with confidence.',impact:'BUY. SELL. MOVE FORWARD.'};
 const templateDefaults={
- editorial:{kicker:'YOUR BUSINESS',cta1:'What we buy',cta2:'What we sell'},
- classic:{kicker:'ESTABLISHED SERVICE',cta1:'Sell to us',cta2:'Browse the shop'},
- grid:{kicker:'BUY / SELL / TRADE',cta1:'01 / WHAT WE BUY',cta2:'02 / WHAT WE SELL'},
- studio:{kicker:'YOUR BUSINESS',cta1:'Sell to us',cta2:'Explore the shop'},
- horizon:{kicker:'BUYING / SELLING',cta1:'What we buy',cta2:'What we sell'},
- field:{kicker:'BUYING / SELLING',cta1:'Sell your items',cta2:'Browse products'},
- business:{kicker:'BUSINESS INFORMATION',cta1:'What we buy',cta2:'Retail shop'},
- luxe:{kicker:'PRIVATE SERVICE',cta1:'Sell to us',cta2:'Shop products'},
- commerce:{kicker:'BUY / SELL',cta1:'Start selling',cta2:'Shop products'},
- impact:{kicker:'BUY · SELL · TRADE',cta1:'What we buy',cta2:'What we sell'}
+ editorial:{kicker:'',cta1:'',cta2:''},
+ classic:{kicker:'',cta1:'',cta2:''},
+ grid:{kicker:'',cta1:'',cta2:''},
+ studio:{kicker:'',cta1:'',cta2:''},
+ horizon:{kicker:'',cta1:'',cta2:''},
+ field:{kicker:'',cta1:'',cta2:''},
+ business:{kicker:'',cta1:'',cta2:''},
+ luxe:{kicker:'',cta1:'',cta2:''},
+ commerce:{kicker:'',cta1:'',cta2:''},
+ impact:{kicker:'',cta1:'',cta2:''}
 };
 
 const pageDefinitions=[
@@ -203,7 +203,7 @@ function buyingPreview(){
 function sellingPreview(){
  const list=Array.isArray(retailListings)?retailListings:[];
  if(!list.length)return '';
- return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article><div class="sell-photo"></div><span>'+esc(p.category_name||'Product')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'View product')+'</strong></article>').join('')+'</div>';
+ return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article><div class="sell-photo"></div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'View product')+'</strong></article>').join('')+'</div>';
 }
 function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
@@ -224,9 +224,9 @@ function templateHero(){
  case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
  case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
  case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"><strong>BUYING</strong><span>Selected categories</span><strong>SELLING</strong><span>Published products</span></div></section>';
+ case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"></div></section>';
  case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
- case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"><div>BUYING CATEGORIES</div><strong>Connected to your catalogue</strong><span>Products and categories update automatically.</span></div></section>';
+ case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"></div></section>';
  default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
@@ -338,13 +338,22 @@ function buildContent(){
  }};
 }
 
+function cleanTemplateCopy(copy){
+ const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
+ const cta=['What do you have to sell?','What we buy','What we sell','Sell to us','Browse the shop','Explore the shop','Sell your items','Browse products','Retail shop','Shop products','Start selling','01 / WHAT WE BUY','02 / WHAT WE SELL'];
+ const out=Object.assign({},copy||{});
+ if(known.includes(String(out.kicker||'')))out.kicker='';
+ if(cta.includes(String(out.cta1||'')))out.cta1='';
+ if(cta.includes(String(out.cta2||'')))out.cta2='';
+ return out;
+}
 function cleanHomepageTiles(tiles){
  const defaults=new Map(defaultHomepageTiles().map(t=>[t.id,t]));
  return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
 }
 
 function loadContent(content){
- const s=content?.site||{}; templateCopy=Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{});
+ const s=content?.site||{}; templateCopy=cleanTemplateCopy(Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{}));
  window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
  siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
  headline=s.homepage?.headline||'';

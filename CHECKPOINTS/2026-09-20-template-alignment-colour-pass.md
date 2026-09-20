@@ -168,3 +168,12 @@ template-alignment-colour-pass
 - PR #28 merged as `1d090578d2f764887be702ddb2739e4e6f5a5b13`; PR #29 merged as `577c95a93396cde6146fa1ad3e81da04327ea64a`.
 - Full `website-builder.js` syntax checks passed after the changes.
 - No Supabase schema changes.
+
+## What We Buy navigation and design reset — 20 September 2026
+- Top navigation What We Buy is now a direct link to the What We Buy page; the category dropdown has been removed from the top bar in both builder preview and public renderer.
+- The What We Buy page now has a prominent **Start here / Start your valuation** category dropdown that routes directly into the existing guided selling journey for the selected category.
+- Removed the repeated **WHAT WE BUY** prompt/kicker above the main What We Buy heading and category headings.
+- Added **Reset design colours** in Website Builder. It restores the selected template's default colours, Clean Gradient background and default typography while preserving pages, text and images.
+- Builder JavaScript syntax: PASS. Public JavaScript syntax: PASS.
+- PR #32 merged to main as `45e3021b0d4f029d656e64a502ce60d52589979e`.
+- No Supabase schema or data changes.

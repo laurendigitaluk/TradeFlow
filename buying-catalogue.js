@@ -217,6 +217,7 @@ function renderMaster(){
    const pct=field.endsWith("_reference_type")?(p[field.replace("_reference_type","_percentage")]||""):e.value;
    const row=e.closest(".condition-row");
    if(field.endsWith("_trade_in_percentage")){const out=row?.querySelector(".trade-in-calculated-price");const amount=conditionTradeInAmount(p,ref,pct);if(out)out.textContent="Trade: "+(amount!==null?money(amount):"Not set");}
+   else if(field.endsWith("_reference_type")){const buyField=field.replace("_reference_type","_percentage");const tradeField=field.replace("_reference_type","_trade_in_percentage");const buyOut=row?.querySelector(".calculated-price");const tradeOut=row?.querySelector(".trade-in-calculated-price");const buyAmount=conditionAutoAmount(p,ref,p[buyField]);const tradeAmount=conditionTradeInAmount(p,ref,p[tradeField]);if(buyOut)buyOut.textContent="Buy: "+(buyAmount!==null?money(buyAmount):"No research");if(tradeOut)tradeOut.textContent="Trade: "+(tradeAmount!==null?money(tradeAmount):"Not set");}
    else {const out=row?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,ref,pct);if(out)out.textContent="Buy: "+(amount!==null?money(amount):"No research");}
  }));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));

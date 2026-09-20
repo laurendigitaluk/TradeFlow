@@ -38,3 +38,8 @@
 .public-section.buying-section,.public-section.selling-section{width:100%}
 .public-section .section-intro{grid-template-columns:1fr 1fr;align-items:center}
 @media(max-width:900px){.public-section .section-intro{grid-template-columns:1fr}}
+
+
+/* Editable What We Buy / What We Sell section images. */
+.buying-section .section-intro-image img,.selling-section .section-intro-image img{width:100%;height:190px;object-fit:cover;display:block;border-radius:10px}
+@media(max-width:900px){.buying-section .section-intro-image img,.selling-section .section-intro-image img{height:170px}}

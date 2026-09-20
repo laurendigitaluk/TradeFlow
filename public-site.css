@@ -115,6 +115,9 @@ body{background-color:var(--site-background-color,var(--page-bg));background-ima
 .tpl-hero>* ,.public-section>* ,.public-page>* ,.full-page>*{position:relative;z-index:1}
 
 
+
+/* Background system v2: the main hero uses the subscriber's Page background colour as its base. The selected preset remains an overlay, so Page background stays editable. */
+.tpl-hero{background:var(--page-bg)!important}
 /* Website background system v2: specialist presets sit above section colours without being overwritten by them. */
 body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode="custom"] .public-section::before,body[data-background-mode="custom"] .public-page::before,body[data-background-mode="custom"] .full-page::before{display:none}
 body[data-background-mode="preset"] .tpl-hero::before,body[data-background-mode="preset"] .public-section::before,body[data-background-mode="preset"] .public-page::before,body[data-background-mode="preset"] .full-page::before{background-color:var(--site-background-color);background-image:var(--site-background-image);background-size:var(--site-background-size);background-repeat:var(--site-background-repeat);background-position:center;opacity:.48;pointer-events:none;z-index:0}

@@ -23,7 +23,9 @@ function defaultHomepageTiles(){return [
  {id:'sell-3',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
  {id:'sell-4',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
  {id:'buy-5',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
+ {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-6',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-6',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
 ]}
 homepageTiles=defaultHomepageTiles();
 const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
@@ -191,7 +193,7 @@ function footerMarkup(){
 }
 
 function imageBlock(url,kind,label,alt){
- const heading=kind==='home'?'MAIN HERO IMAGE':kind==='home2'?'SECOND HERO IMAGE':'IMAGE';
+ const heading=kind==='home'?'MAIN HERO IMAGE':kind==='home2'?'SECONDARY HERO IMAGE':kind==='home-buy'?'WHAT WE BUY IMAGE':kind==='home-sell'?'WHAT WE SELL IMAGE':'IMAGE';
  if(url)return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="visual-image"><img src="'+esc(url)+'" alt="'+esc(alt||'')+'"><div class="image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(kind)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(kind)+'">Remove</button></div></div></div>';
  return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="image-drop"><button type="button" data-image-action="add" data-image-target="'+esc(kind)+'">Add image</button><span>'+esc(label)+'</span><small>PNG, JPEG or WebP · maximum 5 MB</small></div></div>';
 }
@@ -371,6 +373,11 @@ function cleanTemplateCopy(copy){
  if(cta.includes(String(out.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta2||'')))out.cta2='';
  return out;
 }
+function ensureHomepageTileCapacity(tiles){
+ const existing=Array.isArray(tiles)?tiles:[];
+ const byId=new Map(existing.map(t=>[t.id,t]));
+ return defaultHomepageTiles().map(d=>byId.has(d.id)?Object.assign({},d,byId.get(d.id)):Object.assign({},d));
+}
 function cleanHomepageTiles(tiles){
  const defaults=new Map(defaultHomepageTiles().map(t=>[t.id,t]));
  return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
@@ -389,7 +396,7 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
+ homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,

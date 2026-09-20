@@ -123,7 +123,7 @@ function renderSellingSection(site,listings){
  const heading=home.sell_heading||'What we sell';
  const intro=home.sell_intro||'Browse the products currently published by this business.';
  const sectionImage=home.sell_image_url||'';
- const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span>Category image</span>';
+ const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
  const list=Array.isArray(listings)?listings:[];
  const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
@@ -239,7 +239,7 @@ function renderBuyingPage(site,catalogue){
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const cards=list.map(p=>'<article class="shop-product"><div class="shop-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h2>'+esc(p.title||'Product')+'</h2><p>'+esc(p.description||'Available from this business.')+'</p><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.map(p=>'<article class="shop-product"><div class="shop-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h2>'+esc(p.title||'Product')+'</h2><p>'+esc(p.description||'Available from this business.')+'</p><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><span>WHAT WE SELL</span><h1>'+(esc(site.pages?.find(p=>p.slug==='shop')?.title||'What We Sell'))+'</h1><p>'+esc(site.pages?.find(p=>p.slug==='shop')?.body||'Browse our current retail range.')+'</p></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 

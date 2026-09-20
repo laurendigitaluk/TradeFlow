@@ -188,3 +188,17 @@ template-alignment-colour-pass
 - Renderer assets bumped: Website Builder JS v59 and public-site JS v53.
 - Full syntax checks for both JavaScript files: PASS.
 - A restore branch `restore-before-background-simplification-2026-09-20` was created from main before the background simplification work and remains available as a code restore point.
+
+## Background system simplification + Field hero repair — 20 September 2026
+- Created restore branch `restore-before-background-simplification-2026-09-20` before changing the background system, preserving the previous working state as a rollback point.
+- Reduced website backgrounds from the specialist illustrated set to 12 reusable CSS-only choices: six gradients and six patterns/geometric treatments.
+- Removed the unnecessary specialist subject imagery/background complexity; the choices are now generic enough to suit any subscriber business.
+- Custom Colours remains a true clean mode with no pattern/gradient overlay.
+- Preset backgrounds remain selectable independently of the subscriber's brand colours.
+- Increased pattern contrast so patterns remain visible when page/brand colours change.
+- Existing `Reset design colours` control resets the selected template's default colours, background and typography while keeping pages, text and images; this is now the intended test-reset mechanism.
+- The Field template had intentionally positioned its hero photo as a full-background layer. Reworked builder and public CSS so the Field hero image is a normal contained image in its own column, making it behave consistently with the other image-led templates.
+- Builder assets: CSS/JS v60. Public assets: CSS v59, JS v54.
+- `website-builder.js` and `public-site.js` syntax checks: PASS.
+- PR #36 merged to main as `a642556687fb2615fea91546ca748d89747b3e46`.
+- No Supabase schema/data changes.

@@ -184,3 +184,24 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .template-section.buying-block,.template-section.selling-block{width:100%}
 .template-section .section-intro{grid-template-columns:1fr 1fr;align-items:center}
 @media(max-width:900px){.template-section .section-intro{grid-template-columns:1fr}}
+
+
+/* Template alignment pass: shared homepage buying/selling card treatment. */
+.site-editor .buy-category-grid,.site-editor .sell-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:1180px;margin:28px auto 0}
+.site-editor .buy-category-card,.site-editor .sell-product-card{border:1px solid rgba(20,30,40,.12);border-radius:10px;background:var(--header-bg,#fff);overflow:hidden;min-width:0}
+.site-editor .buy-category-card{display:grid;grid-template-columns:150px 1fr;min-height:180px}
+.site-editor .buy-category-image{min-height:180px;background:#e7ecef;display:grid;place-items:center;color:#87939c;font-size:9px;text-transform:uppercase;letter-spacing:.1em;overflow:hidden}
+.site-editor .buy-category-image img{width:100%;height:100%;object-fit:cover;display:block}
+.site-editor .buy-category-copy{padding:17px;display:flex;flex-direction:column;justify-content:center}
+.site-editor .buy-category-copy span,.site-editor .sell-product-card>span{font-size:9px;letter-spacing:.14em;color:var(--accent);font-weight:900}
+.site-editor .buy-category-copy h3,.site-editor .sell-product-card h3{margin:8px 0 6px}
+.site-editor .buy-category-copy strong,.site-editor .sell-product-card strong{font-size:11px}
+.site-editor .buy-category-copy p{font-size:11px;line-height:1.5;color:#68747e;margin:7px 0}
+.site-editor .buy-category-copy a,.site-editor .sell-product-card a{margin-top:8px;color:var(--accent);font-size:10px;font-weight:900;text-decoration:none}
+.site-editor .sell-product-card{padding:0 0 17px}
+.site-editor .sell-product-card .sell-photo{height:150px;background:#edf1f4;border-radius:0;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:15px}
+.site-editor .sell-product-card .sell-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.site-editor .sell-product-card .sell-photo span{font-size:9px;color:#87939c;text-transform:uppercase}
+.site-editor .sell-product-card>span,.site-editor .sell-product-card h3,.site-editor .sell-product-card strong,.site-editor .sell-product-card a{margin-left:17px;margin-right:17px}
+@media(max-width:900px){.site-editor .buy-category-grid,.site-editor .sell-product-grid{grid-template-columns:1fr 1fr}.site-editor .buy-category-card{grid-template-columns:1fr}.site-editor .buy-category-image{min-height:150px}}
+@media(max-width:600px){.site-editor .buy-category-grid,.site-editor .sell-product-grid{grid-template-columns:1fr}}

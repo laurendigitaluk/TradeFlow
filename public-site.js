@@ -42,8 +42,7 @@ function renderPublicNav(site,catalogue){
  const headerLinks=Array.isArray(site.header?.links)?site.header.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
- const categoryLinks=cats.map(cat=>'<a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'"><strong>'+esc(cat.name)+'</strong><span>'+(Number(cat.product_count)||0)+' products</span></a>').join('');
- const buying='<details class="public-nav-dropdown"><summary>What We Buy</summary><div class="public-buy-menu"><div><b>WHAT WE BUY</b><p>Select a category to see the products currently being sought.</p><a class="menu-all" href="'+pageUrl('buying')+'">View all buying categories →</a></div><div class="public-buy-menu-cats">'+(categoryLinks||'<span class="menu-empty">Buying categories will appear here when selected.</span>')+'</div></div></details>';
+ const buying='<a class="public-buy-link" href="'+pageUrl('buying')+'">What We Buy</a>';
  const normal=links.filter(slug=>slug!=='buying'&&slug!=='shop').map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">What We Sell</a><a class="public-account-link" href="'+customerUrl()+'">Customer Login</a></div></div></header>';
 }
@@ -227,14 +226,14 @@ function renderBuyingPage(site,catalogue){
  const products=Array.isArray(catalogue?.products)?catalogue.products:[];
  const selectedId=new URLSearchParams(location.search).get('category');
  const shown=selectedId?cats.filter(c=>String(c.id)===String(selectedId)):cats;
- const selector='<div class="public-filter"><label><span>Choose a category</span><select onchange="if(this.value)location.href=this.value"><option value="">All categories</option>'+cats.map(c=>'<option value="'+esc(pageUrl('buying','category='+encodeURIComponent(c.id)))+'" '+(String(c.id)===String(selectedId)?'selected':'')+'>'+esc(c.name)+'</option>').join('')+'</select></label></div>';
+ const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>Start here</strong><span>Choose what you have to sell to start your valuation.</span></div><label><span>Start your valuation</span><select aria-label="Start your valuation" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
  const cards=shown.map(cat=>{
    const items=products.filter(p=>p.category_id===cat.id);
    const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});
    const groups=Object.entries(grouped).map(([maker,list])=>'<div class="manufacturer-group"><h3>'+esc(maker)+'</h3><div class="product-list">'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+(p.branch_name?'<small>'+esc(p.branch_name)+'</small>':'')+'</article>').join('')+'</div></div>').join('');
-   return '<section class="buying-category-page"><div class="category-page-head"><div><span>WHAT WE BUY</span><h2>'+esc(cat.name)+'</h2></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div><p>'+esc(cat.description||'')+'</p>'+groups+'<a class="start-selling" href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Start selling this category →</a></section>';
+   return '<section class="buying-category-page"><div class="category-page-head"><div><h2>'+esc(cat.name)+'</h2></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div><p>'+esc(cat.description||'')+'</p>'+groups+'<a class="start-selling" href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Start selling this category →</a></section>';
  }).join('');
- return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><span>WHAT WE BUY</span><h1>Sell your items to us</h1><p>Choose a category, see what we are currently looking for, then start your selling request.</p></div>'+selector+(cards||'<div class="connected-empty">This business has not published a buying list yet.</div>')+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><h1>What We Buy</h1><p>Choose a category, see what we are currently looking for, then start your selling request.</p></div>'+selector+(cards||'<div class="connected-empty">This business has not published a buying list yet.</div>')+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){

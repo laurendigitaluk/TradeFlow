@@ -67,3 +67,19 @@ template-alignment-colour-pass
 - Manual colour controls remain available for individual fine-tuning after selecting a preset.
 - No Supabase migrations or data changes.
 - website-builder.js syntax check: PASS.
+
+
+## Template-specific styling pass — 20 September 2026
+- Added a second alignment layer across all ten templates so the shared homepage structure remains consistent while the buying, selling, shop and tile sections retain template-specific visual identities.
+- Editorial uses restrained editorial dividers and flat cards.
+- Classic uses heritage borders, serif section headings and squared cards.
+- Grid uses darker structural treatment and tighter card geometry.
+- Studio uses larger section typography and image-led card depth.
+- Horizon uses softer rounded cards and cool spacing.
+- Field uses rugged low-radius treatment and darker structural contrast.
+- Business uses compact professional cards with restrained elevation.
+- Luxe uses fine gold-toned borders and understated surfaces.
+- Commerce uses tighter product-card geometry and stronger price emphasis.
+- Impact uses bold accent-edge cards and heavier section typography.
+- Matching template-specific rules were added to both builder preview and public customer site via the active template identity.
+- No Supabase migrations or data changes.

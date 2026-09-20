@@ -50,7 +50,7 @@ function renderPublicNav(site,catalogue){
 
 function heroImage(url,alt,cls){
  if(url)return '<img class="'+(cls||'')+'" src="'+esc(url)+'" alt="'+esc(alt||'')+'" loading="lazy">';
- return '<div class="public-demo-image '+(cls||'')" aria-hidden="true"></div>';
+ return '<div class="public-demo-image '+(cls||'')+'" aria-hidden="true"></div>';
 }
 
 function renderHero(site){

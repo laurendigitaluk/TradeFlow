@@ -559,7 +559,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0]){logoUrl=profile[0].logo_url||'';bannerUrl=profile[0].banner_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name){siteName=profile[0].business_name;window.__tradeflowBusinessNameLoaded=true;}if(profile?.[0]){logoUrl=profile[0].logo_url||'';bannerUrl=profile[0].banner_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
  return tenantId;
 }
 

@@ -341,7 +341,7 @@ function applyTemplate(template){
  themeColors=Object.assign({},templatePalettes[template]||templatePalettes.editorial);
  if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
  if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);
- renderTemplates();renderHomepageControls();renderEditor();markDirty();
+ renderTemplates();renderHomepageControls();renderHeroImageControls();renderEditor();markDirty();
  setStatus(template+' template selected. Text, colours and images remain editable.','success');
 }
 function buildContent(){

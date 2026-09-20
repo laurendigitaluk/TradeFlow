@@ -202,3 +202,15 @@ template-alignment-colour-pass
 - `website-builder.js` and `public-site.js` syntax checks: PASS.
 - PR #36 merged to main as `a642556687fb2615fea91546ca748d89747b3e46`.
 - No Supabase schema/data changes.
+
+## Subscriber What We Buy / What We Sell page controls — 20 September 2026
+- Built into the shared public subscriber renderer so the functionality applies to all subscriber websites.
+- **What We Buy** now includes a connected category dropdown. Selecting a category starts the existing selling journey for that category.
+- The buying-page CTA heading and supporting text are editable per subscriber website; defaults are **Sell your items** and **Choose a category to start your selling journey.**
+- **What We Sell** now includes a connected product search field that filters the subscriber's published retail inventory by product title, category or description.
+- Search heading and placeholder are editable per subscriber website.
+- Existing page tiles remain supported.
+- Fixed a live public-renderer fault at the same time: `renderPageTiles is not defined`. A shared `renderPageTiles` implementation is now present.
+- PR #37 merged to main as `2f69d2f0a94a9db6fd71751667f7f01c8ddc53ff`.
+- `website-builder.js` and `public-site.js` syntax checks: PASS.
+- No Supabase schema changes.

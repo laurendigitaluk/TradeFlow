@@ -29,9 +29,9 @@ function normalizeBackgroundId(id){
   music:'clean-wave',camera:'clean-wave',mobile:'clean-wave',instruments:'warm-sand',drone:'soft-blue',tools:'fine-diagonal',
   vehicles:'clean-wave',home:'warm-sand',kitchen:'clean-wave',fashion:'soft-lavender',office:'fine-grid',toys:'sunset',
   gaming:'dark-geometry','clean-wave':'clean-wave','pastel-gradient':'clean-wave','blue-wave':'soft-blue','green-wave':'soft-green',
-  warm-wave:'warm-sand','purple-wave':'soft-lavender','dark-wave':'dark-geometry','hexagon-pattern':'soft-hex',
-  dot-pattern:'soft-dots','diagonal-stripes':'wide-diagonal','soft-bokeh':'clean-wave',marble:'warm-sand',watercolour:'sunset',
-  abstract-shapes:'sunset','soft-texture':'clean-wave','colour-blend':'sunset'
+  'warm-wave':'warm-sand','purple-wave':'soft-lavender','dark-wave':'dark-geometry','hexagon-pattern':'soft-hex',
+  'dot-pattern':'soft-dots','diagonal-stripes':'wide-diagonal','soft-bokeh':'clean-wave',marble:'warm-sand',watercolour:'sunset',
+  'abstract-shapes':'sunset','soft-texture':'clean-wave','colour-blend':'sunset'
  };
  return legacyMap[id]||'clean-wave';
 }

@@ -155,3 +155,16 @@ template-alignment-colour-pass
 - JavaScript syntax check: PASS.
 - PR #26 merged to main as `33d2efd79a04383cb5385c5a7893b6f60ad9f6de`.
 - No Supabase schema or data changes.
+
+## Background system simplified — 20 September 2026
+- Created restore branch `restore-before-background-simplification-2026-09-20` from main before simplifying the background system. This is the restore point if the new system needs to be rolled back.
+- Replaced the previous 30 industry-specific CSS illustrations with 12 reusable visual choices: six gradients and six patterns/geometry treatments.
+- Custom Colours is now a clean mode with no background pattern/gradient overlay.
+- Preset Background uses the selected gradient/pattern as a separate visual layer.
+- Removed the previous stacked background-rendering CSS patch layers from builder/public CSS and replaced them with one consistent preset/custom layer.
+- Pattern contrast is fixed and intentionally independent of the customer's accent colour so patterns remain visible when brand/page colours change.
+- Added legacy background-ID normalization so saved sites using the former background IDs map safely onto the new choices.
+- Builder/public asset versions were bumped as part of the changes; `website-builder.js` now v58.
+- PR #28 merged as `1d090578d2f764887be702ddb2739e4e6f5a5b13`; PR #29 merged as `577c95a93396cde6146fa1ad3e81da04327ea64a`.
+- Full `website-builder.js` syntax checks passed after the changes.
+- No Supabase schema changes.

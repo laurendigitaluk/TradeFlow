@@ -164,3 +164,10 @@ Completed after the initial portal foundation:
 ### Next
 - Synchronise logo/business identity cleanly between Business Settings and Website Builder.
 - Run a fresh-account browser end-to-end test across subscriber website, customer registration, customer portal and core buying/selling flows.
+
+
+## Follow-up pass — Business identity logo synchronisation
+
+Completed after PR #41. Business Settings is now the authoritative source for the subscriber business logo. Settings can upload or remove a PNG/JPEG/WebP logo using the existing `tradeflow-site-media` storage bucket and records the asset in `media_assets`. The Website Builder reads the authoritative `tenant_public_profiles.logo_url`, no longer exposes competing logo editing controls, and preserves the business logo through website resets. The public website prefers the authoritative tenant profile logo so the customer-facing identity stays consistent even before a website draft is republished. PR #42 merged to main with merge commit `3753cb6b05a46e66f132acbbe10f26142f32b72c`.
+
+Supabase verification confirmed the existing public `tradeflow-site-media` bucket and the `tenant_public_profiles.logo_url` column, plus authenticated tenant-scoped update policy coverage. No new database migration was required.

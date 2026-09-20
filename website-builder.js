@@ -155,7 +155,7 @@ function renderPageList(){
    if(!window.confirm('Delete the page "'+page.title+'"? This will remove it from this website draft.'))return;
    if(!window.confirm('Are you sure you want to permanently remove "'+page.title+'" from this website draft?'))return;
    pages=pages.filter(p=>p.slug!==slug);headerLinks=headerLinks.filter(x=>x!==slug);footerLinks=footerLinks.filter(x=>x!==slug);
-   selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
+   selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderBuilderPageHelp();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
  }));
 }
 
@@ -350,6 +350,12 @@ function renderPage(p){
  if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
  if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
  return navMarkup()+'<section class="full-page content-page"><div class="page-title-block">'+(managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+(managed?'':editText('page-body',p.body||'','p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
+}
+function renderBuilderPageHelp(){
+ const box=$('builder-page-help');if(!box)return;
+ if(selectedPage==='buying'){box.hidden=false;box.innerHTML='<strong>How What We Buy works:</strong> this page is connected automatically to your <b>Buying Catalogue</b>. Products you add or remove in the catalogue control what customers see here. You do not need to add the products again in the Website Builder. <a href="buying-catalogue.html">Open Buying Catalogue</a> · <a href="subscriber-website-manual.html">Read the Website Manual</a>';return}
+ if(selectedPage==='shop'){box.hidden=false;box.innerHTML='<strong>How What We Sell works:</strong> this page is connected automatically to your <b>Selling</b> listings. Products you set up for sale and publish through Selling appear here. You do not need to add the products again in the Website Builder. <a href="selling-dashboard.html">Open Selling</a> · <a href="subscriber-website-manual.html">Read the Website Manual</a>';return}
+ box.hidden=true;box.innerHTML='';
 }
 function renderEditor(){
  const p=currentPage();

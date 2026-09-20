@@ -39,3 +39,5 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 52%,#f8fafc 100%)}
 .actions a,.actions button,.topbar button{transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
 .actions a:hover,.actions button:hover,.topbar button:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(30,60,80,.12)}
 .status-pill{border-color:#cfe0ed;background:#f3f8fc;color:#4d6677}
+
+.manual-link{border:1px solid #c9dbea;background:#f7fbff;border-radius:7px;padding:8px 12px;text-decoration:none;color:#29404f;font-weight:700}.manual-link:hover{background:#edf6ff}

@@ -50,7 +50,7 @@ function renderPublicNav(site,catalogue){
 
 function heroImage(url,alt,cls){
  if(url)return '<img class="'+(cls||'')+'" src="'+esc(url)+'" alt="'+esc(alt||'')+'" loading="lazy">';
- return '<div class="public-demo-image '+(cls||'')+'">Add main image</div>';
+ return '<div class="public-demo-image '+(cls||'')" aria-hidden="true"></div>';
 }
 
 function renderHero(site){
@@ -85,7 +85,7 @@ function renderHero(site){
  const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
  const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
  const i1=heroImage(home.image_url,name+' main image');
- const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image">Add second image</div>';
+ const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  const h=esc(headline),p=esc(intro);
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
@@ -108,7 +108,7 @@ function renderBuyingSection(site,catalogue){
  const products=Array.isArray(catalogue?.products)?catalogue.products:[];
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const sectionImage=home.buy_image_url||'';
- const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.buy_image_alt||heading)+'" loading="lazy">':'<span>Category image</span>';
+ const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.buy_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
  const cards=cats.map(cat=>{
    const items=products.filter(p=>p.category_id===cat.id);
    const image=items.find(p=>p.image_url)?.image_url||'';
@@ -125,7 +125,7 @@ function renderSellingSection(site,listings){
  const sectionImage=home.sell_image_url||'';
  const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span>Category image</span>';
  const list=Array.isArray(listings)?listings:[];
- const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 

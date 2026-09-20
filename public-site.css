@@ -97,3 +97,12 @@ body[data-template="impact"] .public-section{border-top:0}body[data-template="im
   .sell-product-card .sell-photo img,
   .shop-product .shop-photo img{transition:none}
 }
+
+
+/* Final polish: restrained focus states and control transitions. */
+:where(body) :where(a,button,summary,select,input,textarea):focus-visible{outline:2px solid var(--accent,#c46a2b);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){
+  .public-nav-links>a,.public-nav-dropdown>summary,.tpl-actions a,.section-primary,.start-selling,.editable-home-tile .tile-copy b,.buy-category-card a,.sell-product-card a,.shop-product a{transition:transform .18s ease,opacity .18s ease,box-shadow .18s ease}
+  .public-nav-links>a:hover,.public-nav-dropdown>summary:hover,.tpl-actions a:hover,.section-primary:hover,.start-selling:hover,.editable-home-tile .tile-copy b:hover,.buy-category-card a:hover,.sell-product-card a:hover,.shop-product a:hover{transform:translateY(-1px)}
+  .editable-home-tile:hover .tile-copy b,.buy-category-card:hover a,.sell-product-card:hover a,.shop-product:hover a{letter-spacing:.01em}
+}

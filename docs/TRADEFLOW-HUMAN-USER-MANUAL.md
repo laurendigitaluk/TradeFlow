@@ -224,3 +224,21 @@ A tenant-scoped tenant_public_profiles table is protected with RLS. Anonymous vi
 
 ### Remaining portal work
 Customer address management, richer subscriber customer detail/history, logo/profile media synchronisation and a complete fresh-account browser test remain follow-up items. Existing unrelated Security Advisor findings remain separate hardening work.
+
+
+## Subscriber Website User Manual — 20 September 2026
+
+A dedicated subscriber website manual is now available at `subscriber-website-manual.html` and is linked from the Subscriber Dashboard and Website Builder top bars.
+
+The manual explains:
+- Business Settings and authoritative business identity/logo.
+- How to choose templates, edit page text, add images, change colours/backgrounds/typography and manage pages.
+- Save Draft, Preview and Publish.
+- **What We Buy:** products/categories are supplied automatically from the subscriber's active Buying Catalogue. Subscribers do not recreate catalogue products in Website Builder.
+- **What We Sell:** customer-facing retail products are supplied automatically from the subscriber's published Selling listings. Subscribers do not recreate selling products in Website Builder.
+- How to add products from the TradeFlow Master Catalogue by Category, Branch, Manufacturer or search.
+- How Inventory and Selling connect products to the retail website.
+- Which customer-critical platform routes and tenant/security connections should not be rebuilt in the visual editor.
+- Basic troubleshooting for missing buying products, missing selling products, logo changes and unpublished website changes.
+
+The Website Builder also shows a short page-specific guidance note when the subscriber selects **What We Buy** or **What We Sell**, explaining the automatic connection and linking directly to the relevant management area and the full manual.

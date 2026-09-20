@@ -2,7 +2,7 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='';
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
@@ -228,7 +228,7 @@ function renderPageManager(){
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
- box.innerHTML='<div class="control-title">Business branding</div><small>Your business logo is managed in Business Settings so the same identity is used across the customer-facing website. Use the builder for templates, colours, backgrounds, layout, text and imagery.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Managed in Business Settings</span>':'<span class="small">No business logo has been uploaded yet.</span>')+'</div><div class="actions"><a href="settings.html">Manage business logo</a></div>';
+ box.innerHTML='<div class="control-title">Business branding</div><small>Your business name, logo and banner are managed in Business Settings. The builder distributes them into the appropriate website areas while you control the design around them.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo · managed in Business Settings</span>':'<span class="small">No business logo has been uploaded yet.</span>')+'</div><div class="branding-control branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner"><span class="small">Banner · used in the website hero</span>':'<span class="small">No website banner has been uploaded yet.</span>')+'</div><div class="actions"><a href="settings.html">Manage business name, logo &amp; banner</a></div>';
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -442,7 +442,7 @@ function buildContent(){
    social:socialLinks,
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
-   branding:{logo_url:logoUrl||''},
+   branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
    homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
@@ -559,7 +559,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0]){logoUrl=profile[0].logo_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0]){logoUrl=profile[0].logo_url||'';bannerUrl=profile[0].banner_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
  return tenantId;
 }
 

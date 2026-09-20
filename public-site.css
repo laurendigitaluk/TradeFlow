@@ -56,3 +56,44 @@ body[data-template="business"] .public-section{border-top:1px solid rgba(37,99,1
 body[data-template="luxe"] .public-section{border-top:1px solid rgba(196,154,88,.16)}body[data-template="luxe"] .section-intro h2{font-weight:500;letter-spacing:-.03em}body[data-template="luxe"] .buy-category-card,body[data-template="luxe"] .sell-product-card,body[data-template="luxe"] .shop-product{border-color:rgba(196,154,88,.28);border-radius:3px}body[data-template="luxe"] .editable-home-tile{border-color:rgba(196,154,88,.28);border-radius:3px;box-shadow:none}
 body[data-template="commerce"] .public-section{border-top:1px solid rgba(20,30,40,.08)}body[data-template="commerce"] .buy-category-card,body[data-template="commerce"] .sell-product-card,body[data-template="commerce"] .shop-product{border-radius:4px}body[data-template="commerce"] .sell-product-card strong,body[data-template="commerce"] .shop-product strong{font-size:15px}body[data-template="commerce"] .editable-home-tile{border-radius:4px;box-shadow:0 8px 22px rgba(20,30,40,.07)}
 body[data-template="impact"] .public-section{border-top:0}body[data-template="impact"] .section-intro h2{font-weight:900;letter-spacing:-.05em}body[data-template="impact"] .buy-category-card,body[data-template="impact"] .sell-product-card,body[data-template="impact"] .shop-product{border:0;border-left:5px solid var(--accent);border-radius:0}body[data-template="impact"] .editable-home-tile{border:0;border-left:5px solid var(--accent);border-radius:0;box-shadow:none}
+
+
+/* Refined interactive cards: subtle lift and image movement on hover. */
+@media (hover:hover) and (pointer:fine){
+  .editable-home-tile,
+  .buy-category-card,
+  .sell-product-card,
+  .shop-product{
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+    will-change:transform;
+  }
+  .editable-home-tile:hover,
+  .buy-category-card:hover,
+  .sell-product-card:hover,
+  .shop-product:hover{
+    transform:translateY(-5px);
+    box-shadow:0 14px 30px rgba(20,30,40,.12);
+  }
+  .editable-home-tile .tile-image img,
+  .buy-category-card .buy-category-image img,
+  .sell-product-card .sell-photo img,
+  .shop-product .shop-photo img{
+    transition:transform .28s ease;
+  }
+  .editable-home-tile:hover .tile-image img,
+  .buy-category-card:hover .buy-category-image img,
+  .sell-product-card:hover .sell-photo img,
+  .shop-product:hover .shop-photo img{
+    transform:scale(1.035);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .editable-home-tile,
+  .buy-category-card,
+  .sell-product-card,
+  .shop-product,
+  .editable-home-tile .tile-image img,
+  .buy-category-card .buy-category-image img,
+  .sell-product-card .sell-photo img,
+  .shop-product .shop-photo img{transition:none}
+}

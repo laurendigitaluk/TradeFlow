@@ -3,7 +3,7 @@ const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
 let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='';
-let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
+let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
@@ -117,8 +117,9 @@ function renderHeroImageControls(){
 }
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
- box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[6,8,10].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><small>Choose how many visual tiles appear on your premium homepage. You can edit every tile directly on the page.</small>';
+ box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[3,4,6,8,9,10,12].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><div class="tile-count-title">Tiles per row</div><div class="tile-counts">'+[2,3,4].map(n=>'<button type="button" class="tile-count '+(homepageTileColumns===n?'selected':'')+'" data-tile-columns="'+n+'">'+n+' per row</button>').join('')+'</div><small>Choose how many visual tiles appear and how many sit on each row. TradeFlow keeps the selected layout on the customer website.</small>';
  box.querySelectorAll('[data-tile-count]').forEach(b=>b.addEventListener('click',()=>{homepageTileCount=Number(b.dataset.tileCount);renderHomepageControls();renderEditor();markDirty();}));
+ box.querySelectorAll('[data-tile-columns]').forEach(b=>b.addEventListener('click',()=>{homepageTileColumns=Number(b.dataset.tileColumns);renderHomepageControls();renderEditor();markDirty();}));
 }
 function renderDesignControls(){
  const box=$('design-controls');if(!box)return;
@@ -261,7 +262,7 @@ function renderHome(){
   sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+imageBlock(homeSellImageUrl,'home-sell','Add a What We Sell image.',homeSellHeading||'What We Sell')+'</div>'+sellingPreview()+'</section>':'',
   trust:''
  };
- const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
+ const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid" style="--tile-columns:'+homepageTileColumns+'">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
  return navMarkup()+ordered+tiles+footerMarkup();
 }
@@ -303,11 +304,11 @@ function bindEditor(){
    el.addEventListener('blur',()=>el.classList.remove('editing'));
  });
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
- root.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{
+ root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
- }));
+ });});
  let draggedBlock=null;
  root.querySelectorAll('[data-home-block]').forEach(el=>{
    el.addEventListener('dragstart',()=>{draggedBlock=el.dataset.homeBlock;el.classList.add('dragging')});
@@ -353,7 +354,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -388,7 +389,7 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
+ homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
@@ -489,7 +490,7 @@ async function clearFreshStartMedia(){
 function resetToFreshWebsite(){
  siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';logoUrl='';
  templateCopy=Object.assign({},templateDefaults.editorial);
- homepageTileCount=8;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
+ homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
  homepageTiles=defaultHomepageTiles();themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};

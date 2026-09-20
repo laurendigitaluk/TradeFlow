@@ -109,7 +109,8 @@ function renderPageList(){
 function renderHeroImageControls(){
  const box=$('hero-image-controls');if(!box)return;
  const imageState=(url)=>url?'Image uploaded':'No image selected';
- box.innerHTML='<div class="control-title">Homepage hero photos</div><small>The premium homepage has two independent hero images. Use these controls or the buttons directly on the page.</small><div class="hero-image-control"><div><b>Main hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Second hero image</b><span>'+imageState(homeImageUrl2)+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
+ const secondaryUsed=currentTemplate==='editorial';
+ box.innerHTML='<div class="control-title">Homepage hero photos</div><small>The current template may use one hero image. The Editorial template uses two. The secondary image is kept so it is ready when you switch to a two-image template.</small><div class="hero-image-control"><div><b>Main hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Secondary hero image</b><span>'+imageState(homeImageUrl2)+(secondaryUsed?' · used by this template':' · not used by this template')+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
  box.querySelectorAll('[data-hero-image]').forEach(button=>button.addEventListener('click',()=>{
    const input=$('image-file-input');input.dataset.target=button.dataset.heroImage;input.value='';input.click();
  }));

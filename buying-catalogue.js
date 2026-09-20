@@ -125,10 +125,14 @@ function conditionAutoAmount(p,ref,pct){
  const base=ref==="uk_new"?p.uk_new_research_price:p.uk_used_research_price;
  return pct!==null&&pct!==undefined&&pct!==""&&base!==null&&base!==undefined?Number(base)*Number(pct)/100:null;
 }
+function conditionTradeInAmount(p,ref,pct){
+ const base=ref==="uk_new"?p.uk_new_research_price:p.uk_used_research_price;
+ return pct!==null&&pct!==undefined&&pct!==""&&base!==null&&base!==undefined?Number(base)*Number(pct)/100:null;
+}
 function refSummary(p){
  if(!p||stateFor(p).key==="inactive")return researchInlineHtml(p||{})+'<div class="ref-summary">Not active for Buying. Select the product to add it.</div>';
  if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Manual price / override:</strong> '+money(p.manual_offer_price)+(p.rule_id?'<br><span class="muted">Automatic rule retained as fallback.</span>':'')+'</div>';
- if(p.rule_id)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Automatic rule:</strong> '+(p.sealed_percentage??"—")+"% new · "+(p.opened_never_used_percentage??"—")+"% new · "+(p.excellent_percentage??"—")+"% used · "+(p.good_percentage??"—")+"% used · "+(p.poor_percentage??"—")+"% used</div>";
+ if(p.rule_id)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Automatic rule:</strong> Buy '+(p.sealed_percentage??"—")+"% / Trade "+(p.sealed_trade_in_percentage??"—")+"% sealed · Buy "+(p.opened_never_used_percentage??"—")+"% / Trade "+(p.opened_never_used_trade_in_percentage??"—")+"% opened-never-used · Buy "+(p.excellent_percentage??"—")+"% / Trade "+(p.excellent_trade_in_percentage??"—")+"% excellent · Buy "+(p.good_percentage??"—")+"% / Trade "+(p.good_trade_in_percentage??"—")+"% good · Buy "+(p.poor_percentage??"—")+"% / Trade "+(p.poor_trade_in_percentage??"—")+"% poor</div>";
  return researchInlineHtml(p)+'<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
 }
 function editorHtml(p,s){
@@ -136,20 +140,20 @@ function editorHtml(p,s){
  if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Buying price / override (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(p.manual_offer_price??"")+'" placeholder="Enter price you are willing to pay"><button class="save-price" data-save-manual="'+p.product_id+'">Save price</button><div class="price-help">This fixed price overrides automatic pricing for this product.</div></div>';
  if(s.key==="auto"){
   const conditions=[
-   ["Sealed","sealed_percentage","sealed_manual_price","sealed_reference_type","uk_new"],
-   ["Opened","opened_never_used_percentage","opened_never_used_manual_price","opened_never_used_reference_type","uk_new"],
-   ["Excellent","excellent_percentage","excellent_manual_price","excellent_reference_type","uk_used"],
-   ["Good","good_percentage","good_manual_price","good_reference_type","uk_used"],
-   ["Poor","poor_percentage","poor_manual_price","poor_reference_type","uk_used"]
+   ["Sealed","sealed_percentage","sealed_manual_price","sealed_trade_in_percentage","sealed_trade_in_manual_price","sealed_reference_type","uk_new"],
+   ["Opened","opened_never_used_percentage","opened_never_used_manual_price","opened_never_used_trade_in_percentage","opened_never_used_trade_in_manual_price","opened_never_used_reference_type","uk_new"],
+   ["Excellent","excellent_percentage","excellent_manual_price","excellent_trade_in_percentage","excellent_trade_in_manual_price","excellent_reference_type","uk_used"],
+   ["Good","good_percentage","good_manual_price","good_trade_in_percentage","good_trade_in_manual_price","good_reference_type","uk_used"],
+   ["Poor","poor_percentage","poor_manual_price","poor_trade_in_percentage","poor_trade_in_manual_price","poor_reference_type","uk_used"]
   ];
   return '<div class="price-editor">'+
-   '<div class="automatic-note"><strong>How automatic pricing works:</strong> choose whether each condition is calculated from the product’s UK New or UK Used research price, then set the percentage you are willing to purchase at. For example, 70% of a £599 UK New research price produces an automatic buying price of £419.30. If research is not available yet, the rule can still be saved and will calculate when research is added.</div>'+
+   '<div class="automatic-note"><strong>How automatic pricing works:</strong> each condition can have its own buying percentage and trade-in percentage against the selected UK New or UK Used research basis. Optional fixed overrides can be entered for either price. Trade-in percentages are optional, so existing buying rules continue to work until trade-in pricing is configured.</div>'+
    '<div class="research-basis"><strong>Available research:</strong> <span>'+researchText(p,"uk_new")+'</span> <span>'+researchText(p,"uk_used")+'</span></div>'+
-   '<div class="condition-grid">'+conditions.map(([l,pct,ov,refField,defaultRef])=>{
-    const ref=p[refField]||defaultRef,amount=conditionAutoAmount(p,ref,p[pct]);
-    return '<div class="condition-row"><strong>'+l+'</strong><span class="basis-price">Basis</span><select class="reference-select" data-master="'+p.product_id+'" data-field="'+refField+'"><option value="uk_new" '+(ref==="uk_new"?"selected":"")+'>UK New</option><option value="uk_used" '+(ref==="uk_used"?"selected":"")+'>UK Used</option></select><label>%<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><span class="calculated-price">Auto: '+(amount!==null?money(amount):"No research")+'</span><label>Override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label></div>';
+   '<div class="condition-grid">'+conditions.map(([l,pct,ov,tradePct,tradeOv,refField,defaultRef])=>{
+    const ref=p[refField]||defaultRef,amount=conditionAutoAmount(p,ref,p[pct]),tradeAmount=conditionTradeInAmount(p,ref,p[tradePct]);
+    return '<div class="condition-row"><strong>'+l+'</strong><span class="basis-price">Basis</span><select class="reference-select" data-master="'+p.product_id+'" data-field="'+refField+'"><option value="uk_new" '+(ref==="uk_new"?"selected":"")+'>UK New</option><option value="uk_used" '+(ref==="uk_used"?"selected":"")+'>UK Used</option></select><label>Buy %<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><span class="calculated-price">Buy: '+(amount!==null?money(amount):"No research")+'</span><label>Buy override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label><label>Trade %<input class="trade-in-input" data-master="'+p.product_id+'" data-field="'+tradePct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[tradePct]??"")+'" placeholder="%"></label><span class="trade-in-calculated-price">Trade: '+(tradeAmount!==null?money(tradeAmount):"Not set")+'</span><label>Trade override £<input class="trade-in-override-input" data-master="'+p.product_id+'" data-field="'+tradeOv+'" type="number" min="0" step="0.01" value="'+esc(p[tradeOv]??"")+'" placeholder="Auto"></label></div>';
    }).join("")+'</div>'+
-   '<button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Each condition has its own research basis. Select UK New or UK Used independently. Research links above are clickable so you can verify the evidence. If there is no research, TradeFlow shows “No research” rather than leaving the field blank.</div></div>';
+   '<button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Buy and trade-in pricing use the same selected research basis for each condition. A trade-in percentage/override can be left blank when no trade-in value is offered for that condition.</div></div>';
  }
  return "";
 }
@@ -197,15 +201,25 @@ function renderMaster(){
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
- document.querySelectorAll(".auto-input,.reference-select").forEach(e=>e.addEventListener("input",()=>{
+ document.querySelectorAll(".auto-input,.trade-in-input,.reference-select").forEach(e=>e.addEventListener("input",()=>{
    const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;
    const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};
    const ref=p[refFields[e.dataset.field]]||((e.dataset.field==="sealed_percentage"||e.dataset.field==="opened_never_used_percentage")?"uk_new":"uk_used");
-   const amount=conditionAutoAmount(p,ref,e.value);
-   const row=e.closest(".condition-row"),out=row?.querySelector(".calculated-price");
-   if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research");
+   const row=e.closest(".condition-row");
+   if(e.classList.contains("trade-in-input")){const amount=conditionTradeInAmount(p,ref,e.value);const out=row?.querySelector(".trade-in-calculated-price");if(out)out.textContent="Trade: "+(amount!==null?money(amount):"Not set");}
+   else {const amount=conditionAutoAmount(p,ref,e.value);const out=row?.querySelector(".calculated-price");if(out)out.textContent="Buy: "+(amount!==null?money(amount):"No research");}
  }));
- document.querySelectorAll(".auto-input,.reference-select").forEach(e=>e.addEventListener("change",()=>{const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};const field=e.dataset.field;const ref=field.endsWith("_reference_type")?e.value:(p[refFields[field]]||"uk_new");const pct=field.endsWith("_reference_type")?(p[field.replace("_reference_type","_percentage")]||""):e.value;const out=e.closest(".condition-row")?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,ref,pct);if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research")}));
+ document.querySelectorAll(".auto-input,.trade-in-input,.reference-select").forEach(e=>e.addEventListener("change",()=>{
+   const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;
+   const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};
+   const field=e.dataset.field;
+   const ref=field.endsWith("_reference_type")?e.value:(p[refFields[field]]||"uk_new");
+   const pct=field.endsWith("_reference_type")?(p[field.replace("_reference_type","_percentage")]||""):e.value;
+   const row=e.closest(".condition-row");
+   if(field.endsWith("_trade_in_percentage")){const out=row?.querySelector(".trade-in-calculated-price");const amount=conditionTradeInAmount(p,ref,pct);if(out)out.textContent="Trade: "+(amount!==null?money(amount):"Not set");}
+   else if(field.endsWith("_reference_type")){const buyField=field.replace("_reference_type","_percentage");const tradeField=field.replace("_reference_type","_trade_in_percentage");const buyOut=row?.querySelector(".calculated-price");const tradeOut=row?.querySelector(".trade-in-calculated-price");const buyAmount=conditionAutoAmount(p,ref,p[buyField]);const tradeAmount=conditionTradeInAmount(p,ref,p[tradeField]);if(buyOut)buyOut.textContent="Buy: "+(buyAmount!==null?money(buyAmount):"No research");if(tradeOut)tradeOut.textContent="Trade: "+(tradeAmount!==null?money(tradeAmount):"Not set");}
+   else {const out=row?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,ref,pct);if(out)out.textContent="Buy: "+(amount!==null?money(amount):"No research");}
+ }));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
  document.querySelectorAll("[data-visibility-product]").forEach(e=>e.addEventListener("click",async()=>{
   const hidden=e.dataset.visibility!=="true";
@@ -355,6 +369,8 @@ async function saveAuto(masterId,button){
  if(missing.length)return msg("Automatic pricing cannot be saved until all five condition percentages are entered.","error");
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Automatic percentages must be between 0 and 100.","error");
  for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Condition overrides must be valid non-negative prices.","error");
+ for(const v of Object.values(tradeInValues))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Trade-in percentages must be between 0 and 100.","error");
+ for(const v of Object.values(tradeInOverrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Trade-in overrides must be valid non-negative prices.","error");
  button.disabled=true;try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product_pricing",{method:"POST",body:JSON.stringify({
    p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",
@@ -363,13 +379,17 @@ async function saveAuto(masterId,button){
    p_manual_price:null,
    p_sealed_manual_price:overrides.sealed_manual_price,p_opened_never_used_manual_price:overrides.opened_never_used_manual_price,
    p_excellent_manual_price:overrides.excellent_manual_price,p_good_manual_price:overrides.good_manual_price,p_poor_manual_price:overrides.poor_manual_price,
+   p_sealed_trade_in_percentage:tradeInValues.sealed_trade_in_percentage,p_opened_never_used_trade_in_percentage:tradeInValues.opened_never_used_trade_in_percentage,
+   p_excellent_trade_in_percentage:tradeInValues.excellent_trade_in_percentage,p_good_trade_in_percentage:tradeInValues.good_trade_in_percentage,p_poor_trade_in_percentage:tradeInValues.poor_trade_in_percentage,
+   p_sealed_trade_in_manual_price:tradeInOverrides.sealed_trade_in_manual_price,p_opened_never_used_trade_in_manual_price:tradeInOverrides.opened_never_used_trade_in_manual_price,
+   p_excellent_trade_in_manual_price:tradeInOverrides.excellent_trade_in_manual_price,p_good_trade_in_manual_price:tradeInOverrides.good_trade_in_manual_price,p_poor_trade_in_manual_price:tradeInOverrides.poor_trade_in_manual_price,
    p_sealed_reference_type:refs.sealed_reference_type||"uk_new",
    p_opened_never_used_reference_type:refs.opened_never_used_reference_type||"uk_new",
    p_excellent_reference_type:refs.excellent_reference_type||"uk_used",
    p_good_reference_type:refs.good_reference_type||"uk_used",
    p_poor_reference_type:refs.poor_reference_type||"uk_used"
   })});
-  await loadPage();await loadStatusCounts();msg("Automatic buying rule saved. Each condition now has its own optional override.","success");
+  await loadPage();await loadStatusCounts();msg("Automatic buying and trade-in rule saved. Each condition can now have its own buying and trade-in value.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}
 }
 async function resetProduct(masterId){

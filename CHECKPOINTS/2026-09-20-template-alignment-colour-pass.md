@@ -115,3 +115,12 @@ template-alignment-colour-pass
 - `public-site.js` syntax check: PASS.
 - PR #22 merged to main as `39e5a230284e8f2ce1c7d9302eb8a53c5d3c5a10`.
 - Browser verification remains pending after GitHub Pages deployment.
+
+## Public background rendering repair — 20 September 2026
+- After deployment testing, the public customer page showed **"backgroundMode is not defined"** and stopped rendering.
+- Root cause: `applyContent()` in `public-site.js` used `backgroundMode` when setting `document.body.dataset.backgroundMode` without declaring it first.
+- Repaired by deriving the mode from the saved site theme: `custom` remains custom; every other value falls back safely to `preset`.
+- PR #23 merged to main as `5ba3ebc1a2b7c0cc8c6ca36f684b12d1b9f697de`.
+- Full `public-site.js` syntax check after merge: PASS.
+- No Supabase schema or data changes.
+- This repair explains why the public page reported the background error instead of rendering the selected background/template correctly.

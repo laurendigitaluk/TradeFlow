@@ -43,9 +43,7 @@ async function ensureCustomerRegistration(){
   if(!tenantId)throw Error('No subscriber business was supplied.');
   await api('/rest/v1/rpc/customer_register_for_tenant',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:phone||null})});
 }
-async function loadCustomerBusiness(){
- try{const rows=await api('/rest/v1/tenants?select=id,name& id=eq.'+encodeURIComponent(tenantId));window.tradeflowCustomerBusinessName=rows?.[0]?.name||'TradeFlow';$('brand').textContent=window.tradeflowCustomerBusinessName;$('tenant-context').textContent='Customer account for '+window.tradeflowCustomerBusinessName}catch{}
-}
+async function loadCustomerBusiness(){try{const rows=await api('/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId));window.tradeflowCustomerBusinessName=rows?.[0]?.business_name||'TradeFlow';$('brand').textContent=window.tradeflowCustomerBusinessName;$('tenant-context').textContent='Customer account for '+window.tradeflowCustomerBusinessName}catch{}}
 async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs to be opened from the subscriber website.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await loadCustomerBusiness();await ensureCustomerRegistration();await loadPortalData();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
 function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','success')}
 async function handleAuthSuccess(data){try{saveSession(data);await ensureCustomerRegistration();await initialisePortal()}catch(err){saveSession(null);setMessage(err.message||String(err),'error')}}
@@ -57,4 +55,4 @@ $('submit-request')?.addEventListener('click',submitBuyingRequest);
 $('customer-profile-form')?.addEventListener('submit',async e=>{e.preventDefault();try{await api('/rest/v1/rpc/customer_update_profile',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:$('profile-first-name').value.trim(),p_last_name:$('profile-last-name').value.trim()||null,p_phone:$('profile-phone').value.trim()||null})});setMessage('Your details have been saved.','success');await loadPortalData()}catch(err){setMessage(err.message||String(err),'error')}});
 $('request-return')?.addEventListener('click',requestReturn);
 $('sign-out')?.addEventListener('click',signOut);
-(async()=>{if(!key)return setMessage('This test-lab customer portal needs the TradeFlow publishable key.','error');const pending=window.tradeflowPendingAuthSession;if(pending){delete window.tradeflowPendingAuthSession;await handleAuthSuccess(pending);return}await restoreSession();await initialisePortal()})();
+(async()=>{if(!key)return setMessage('This customer portal is not connected to TradeFlow.','error');const pending=window.tradeflowPendingAuthSession;if(pending){delete window.tradeflowPendingAuthSession;await handleAuthSuccess(pending);return}await restoreSession();await initialisePortal()})();

@@ -132,3 +132,15 @@ template-alignment-colour-pass
 - Builder CSS bumped from v55 to v56; public CSS bumped from v54 to v55.
 - PR #24 merged to main as `eafe2aaf89883a7805500fc2e2d052c847e65727`.
 - No Supabase schema or data changes.
+
+## Background simplification — 20 September 2026
+- Created restore branch **restore-before-background-simplification-2026-09-20** from main immediately before this simplification. This preserves the complete pre-simplification background system, including the previous 30 specialist backgrounds and recent background repairs.
+- Replaced the 30 specialist illustrated backgrounds with **12 simple CSS backgrounds**: 6 gradients and 6 subtle patterns.
+- Removed the accumulated legacy background-rendering CSS patches from both builder and public CSS rather than adding another patch layer.
+- **Custom colours** now means no background pattern/gradient overlay.
+- **Preset background** means choose one of the simple patterns/gradients; normal brand colour controls remain available.
+- Legacy saved background IDs are normalized safely to **Clean Wave** so existing subscribers are not left with a missing selection.
+- Builder assets bumped to website-builder.css?v=57 and website-builder.js?v=56; public CSS bumped to public-site.css?v=56.
+- website-builder.js and public-site.js full syntax checks: PASS.
+- PR #25 merged to main as 9804680b02dbbf2e82ed416d0616379b436846e3.
+- No Supabase schema or data changes.

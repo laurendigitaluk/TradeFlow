@@ -14,7 +14,7 @@
 /* Homepage tile parity with the subscriber builder */
 .homepage-tiles{padding:64px 7%;background:#fff;border-top:1px solid rgba(20,30,40,.08)}
 .homepage-tiles .section-intro{max-width:760px;margin:0 auto 28px}
-.homepage-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;max-width:1180px;margin:auto}
+.homepage-tile-grid{display:grid;grid-template-columns:repeat(var(--tile-columns,4),minmax(0,1fr));gap:18px;max-width:1180px;margin:auto}
 .editable-home-tile{border:1px solid #dfe5e9;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,40,.07)}
 .editable-home-tile .tile-image{height:180px;background:#edf1f4;display:flex;align-items:center;justify-content:center;overflow:hidden}.editable-home-tile .tile-image img{width:100%;height:100%;object-fit:cover;display:block}.editable-home-tile .tile-image span{font-size:9px;color:#87939c;text-transform:uppercase;letter-spacing:.1em}
 .editable-home-tile .tile-copy{padding:18px}.editable-home-tile .tile-copy span{font-size:9px;letter-spacing:.14em;color:var(--accent,#c46a2b);font-weight:700}.editable-home-tile .tile-copy h3{margin:8px 0 7px}.editable-home-tile .tile-copy p{min-height:48px;font-size:11px;line-height:1.5;color:#68747e}.editable-home-tile .tile-copy b{display:block;margin-top:12px;color:var(--accent,#c46a2b);font-size:10px;font-weight:900}

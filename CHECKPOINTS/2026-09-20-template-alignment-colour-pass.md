@@ -83,3 +83,18 @@ template-alignment-colour-pass
 - Impact uses bold accent-edge cards and heavier section typography.
 - Matching template-specific rules were added to both builder preview and public customer site via the active template identity.
 - No Supabase migrations or data changes.
+
+
+## Interaction polish — 20 September 2026
+- Added restrained hover lift to homepage tiles and connected buying/selling/product cards in both builder and public site.
+- Card images receive a subtle 3.5% scale on hover where hover input is available.
+- Added keyboard-visible focus states using the active template accent colour.
+- Added small hover movement to key navigation/actions without introducing excessive animation.
+- Added reduced-motion handling for card transitions.
+- Mobile layouts do not rely on hover movement.
+- No Supabase migrations or data changes.
+
+## Batch status
+- Visual system changes are accumulated on the template-alignment-colour-pass branch.
+- Ready to apply the accumulated visual batch to main after final branch comparison.
+- Browser verification remains a post-deployment check because browser/computer tooling is not available in this workspace.

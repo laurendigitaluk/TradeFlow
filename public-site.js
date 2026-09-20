@@ -266,7 +266,7 @@ function renderContentPage(site,p){
 
 function applyContent(content){
  window.__tradeflowSiteContent=content;
- const site=content?.site||{};
+ const site=Object.assign({},content?.site||{});if(window.__tradeflowPublicProfile?.business_name)site.name=window.__tradeflowPublicProfile.business_name;
  const theme=site.theme||{};
  const backgroundMode=theme.background_mode==='custom'?'custom':'preset';
  const typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid'},theme.typography||{});

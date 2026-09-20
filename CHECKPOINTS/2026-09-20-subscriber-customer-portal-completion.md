@@ -181,3 +181,26 @@ Completed after the Website Builder guidance work. The customer portal's existin
 ## Follow-up pass — Production customer authentication cleanup
 
 The remaining legacy customer test-lab authentication path has been removed from the customer portal. The portal now resolves the subscriber tenant from the `tenant_id` supplied by the public subscriber website, uses `customer_register_for_tenant` for production customer registration, uses production customer session/key storage names, and no longer contains the test-business selector or duplicate sign-in interception script. The public website was verified in code to pass the active tenant ID into the customer dashboard. No legacy test-lab references remain in `customer-dashboard.js`, `customer-dashboard.html`, or `customer-dashboard-nav.js`. PR #49 merged to main with commit `ee3eff330efb88a46c50d0aa8e7f1fe3af90d56d`.
+
+
+## Follow-up pass — Centralised business identity + website banner
+
+Completed after the draft preview fix. Business Settings is now the authoritative place for subscriber business identity: the business name remains the controlled identity value, and the existing authoritative logo is joined by a new website banner asset.
+
+- Added `tenant_public_profiles.banner_url`.
+- Business Settings can upload/remove the banner using the existing `tradeflow-site-media` bucket and records banner metadata in `media_assets` with `asset_kind='site_banner'`.
+- The Website Builder reads the authoritative business name, logo and banner rather than creating competing identity values.
+- The builder shows the managed logo and banner in its branding section; template, colour, background, typography, page text and layout remain subscriber-editable.
+- The public website uses the authoritative Business Settings name and logo, and uses the banner as the homepage hero image when the subscriber has not selected a custom hero image.
+- Website resets do not overwrite the authoritative logo/banner identity.
+- Live Supabase verification confirmed `tenant_public_profiles.banner_url` exists and the existing public `tradeflow-site-media` bucket is available.
+- GitHub PR #57 merged to main with commit `4bf05042ebb082b158cd260f0adfdfad960b4f26`.
+
+The corresponding migration file is:
+
+`supabase/migrations/20260920221500_business_identity_banner.sql`
+
+### Next
+- Test Business Settings → logo/banner upload → Website Builder → draft preview in a fresh subscriber session.
+- Confirm banner presentation across the ten templates and confirm custom hero images intentionally take precedence over the default business banner.
+- Run the broader fresh-account browser end-to-end test across subscriber website, customer registration, customer portal and core buying/selling flows.

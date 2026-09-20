@@ -259,7 +259,7 @@ function applyContent(content){
  document.documentElement.style.setProperty('--header-bg',theme.header_bg||'#fff');
  document.documentElement.style.setProperty('--buy-bg',theme.buy_bg||'#fff');
  document.documentElement.style.setProperty('--sell-bg',theme.sell_bg||'#f4f6f7');
- document.documentElement.style.setProperty('--footer-bg',theme.footer_bg||'#17202a');
+ document.documentElement.style.setProperty('--footer-bg',theme.footer_bg||'#17202a');document.documentElement.style.setProperty('--site-background-color',theme.background_color||'#f5faff');document.documentElement.style.setProperty('--site-background-image',theme.background_image||'none');document.documentElement.style.setProperty('--site-background-size',theme.background_size||'cover');document.documentElement.style.setProperty('--site-background-repeat',theme.background_repeat||'no-repeat');
  document.documentElement.style.setProperty('--font-family',typography.font||'Inter');
  document.body.dataset.template=site.template||'editorial';
  document.body.dataset.font=typography.font||'Inter';

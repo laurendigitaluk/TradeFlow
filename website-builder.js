@@ -492,6 +492,7 @@ async function uploadImage(file,target){
  else if(target==='logo')logoUrl=url;
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
+ else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.includes(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2='';p.image_alt2='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url=url;p.image_alt=p.title;}}
  try{
@@ -511,6 +512,7 @@ function removeImage(target){
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
+ else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
  markDirty();renderHeroImageControls();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
 }

@@ -19,6 +19,12 @@ async function api(path){
 }
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));}
 function customerUrl(extra){
+ const subscriberSession=localStorage.getItem('tradeflow_subscriber_session');
+ const subscriberTenantId=localStorage.getItem('tradeflow_subscriber_tenant_id');
+ if(subscriberSession){
+   const base=subscriberTenantId?'subscriber-dashboard.html?tenant_id='+encodeURIComponent(subscriberTenantId):'subscriber-dashboard.html';
+   return extra?base+'&'+extra:base;
+ }
  const base=activeTenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId):'customer-dashboard.html';
  return extra?base+'&'+extra:base;
 }

@@ -470,7 +470,7 @@ function loadContent(content){
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
- logoUrl=logoUrl||s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ logoUrl=window.__tradeflowBusinessLogoLoaded?logoUrl:(s.branding?.logo_url||s.logo_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
@@ -548,7 +548,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0])logoUrl=profile[0].logo_url||'';}catch{}
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0]){logoUrl=profile[0].logo_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
  return tenantId;
 }
 

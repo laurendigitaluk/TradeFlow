@@ -146,3 +146,21 @@ supabase/migrations/20260920203230_subscriber_customer_portal_profile.sql
 ## Important
 
 No existing background/template simplification was reverted. The Website Builder's current ten-template and simplified background system remains the active design architecture.
+
+
+## Follow-up pass — Customer addresses + subscriber customer history
+
+Completed after the initial portal foundation:
+
+- Customer portal now supports address create/edit/delete.
+- Customer can mark an address as default.
+- Address mutations are performed through authenticated, tenant/customer-scoped RPCs.
+- Anonymous execution of those mutation RPCs is disabled.
+- Subscriber Customer Management now includes a customer History view.
+- History shows tenant-scoped orders, buying requests, acquisitions and returns.
+- Live Supabase migration: customer_address_management.
+- GitHub PR #41 was merged to main.
+
+### Next
+- Synchronise logo/business identity cleanly between Business Settings and Website Builder.
+- Run a fresh-account browser end-to-end test across subscriber website, customer registration, customer portal and core buying/selling flows.

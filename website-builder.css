@@ -261,3 +261,15 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
   .site-editor .buy-category-image img,
   .site-editor .sell-product-card .sell-photo img{transition:none}
 }
+
+
+/* Final polish: restrained focus states and control transitions. */
+:where(.site-editor) :where(button,a,[contenteditable="true"]):focus-visible{outline:2px solid var(--accent,#c46a2b);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){
+  .site-editor .hero-actions span,.site-editor .tile-cta,.site-editor .editor-nav-links button,.site-editor .managed-login{transition:transform .18s ease,opacity .18s ease,box-shadow .18s ease}
+  .site-editor .hero-actions span:hover,.site-editor .tile-cta:hover,.site-editor .editor-nav-links button:hover,.site-editor .managed-login:hover{transform:translateY(-1px)}
+  .site-editor .home-tile:hover .tile-cta,.site-editor .buy-category-card:hover a,.site-editor .sell-product-card:hover a{letter-spacing:.01em}
+}
+@media(max-width:620px){
+  .site-editor .home-tile,.site-editor .buy-category-card,.site-editor .sell-product-card{transform:none!important}
+}

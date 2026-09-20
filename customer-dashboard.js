@@ -49,12 +49,38 @@ function restoreSellingJourney(){
  location.hash='#selling';sessionStorage.removeItem('tradeflow_selling_journey');
  setMessage('Your selling request details have been carried across. Check them, then submit.','success');
 }
-async function loadPortalData(){const [buying,values,offers,acq,shipping,orders,items,fulfilments,returns,shop,addresses]=await Promise.all([rpc('customer_get_buying_requests'),rpc('customer_get_trading_values'),rpc('customer_get_offers'),rpc('customer_get_acquisitions'),rpc('customer_get_acquisition_shipping'),rpc('customer_get_orders'),rpc('customer_get_order_items'),rpc('customer_get_fulfilments'),rpc('customer_get_returns'),rpc('customer_get_store_listings'),rpc('customer_get_addresses')]);profile=(await rpc('customer_get_profile'))?.[0]||null;$('customer-name').textContent=profile?`${profile.first_name||''} ${profile.last_name||''}`.trim()||'Customer':'Customer';$('brand').textContent='TradeFlow';$('buying-count').textContent=buying?.length||0;$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(buying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No selling requests yet.');renderSellingValuations(await rpc('customer_get_selling_valuations'));$('offer-list').innerHTML=rows(offers,[{key:'offer_reference',label:'Offer'},{key:'offer_type',label:'Type'},{key:'status',label:'Response',render:offerAction},{key:'amount',label:'Amount',render:r=>money(r.amount,r.currency)}],'No offers published.');$('acquisition-list').innerHTML=rows(acq,[{key:'acquisition_reference',label:'Reference'},{key:'status',label:'Status'},{key:'agreed_total',label:'Agreed',render:r=>money(r.agreed_total,r.currency)}],'No accepted sales yet.');renderSellingShipping(shipping);$('order-list').innerHTML=rows(orders,[{key:'order_reference',label:'Order'},{key:'status',label:'Status'},{key:'total',label:'Total',render:r=>money(r.total,r.currency)},{key:'payment_status',label:'Payment',render:r=>r.status==='pending_payment'?`Awaiting payment`:esc(r.payment_status)},{key:'placed_at',label:'Placed',render:r=>r.placed_at?new Date(r.placed_at).toLocaleDateString('en-GB'):'—'},{key:'order_id',label:'Action',render:r=>r.status==='pending_payment'?`<button type="button" data-pay-order-id="${esc(r.order_id)}">Pay now</button>`:'—'}],'No orders yet.');$('shop-list').innerHTML=rows(shop,[{key:'listing_reference',label:'Listing'},{key:'title',label:'Item'},{key:'asking_price',label:'Price',render:r=>money(r.asking_price,r.currency)},{key:'listing_id',label:'Action',render:r=>`<button type="button" class="buy-listing" data-listing-id="${esc(r.listing_id)}">Buy</button>`}],'No published items currently available.');$('valuation-summary').textContent=values?.length?`${values.length} valuation record(s) available.`:'No approved valuation is currently available.';$('profile-list').innerHTML=rows(profile?[profile]:[],[{key:'customer_reference',label:'Customer reference'},{key:'email',label:'Email'},{key:'phone',label:'Phone'},{key:'status',label:'Status'}],'Profile not available.');$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.offer-accept').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'accept'));document.querySelectorAll('.offer-refuse').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'refuse'));document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
+async function loadPortalData(){const [buying,values,offers,acq,shipping,orders,items,fulfilments,returns,shop,addresses]=await Promise.all([rpc('customer_get_buying_requests'),rpc('customer_get_trading_values'),rpc('customer_get_offers'),rpc('customer_get_acquisitions'),rpc('customer_get_acquisition_shipping'),rpc('customer_get_orders'),rpc('customer_get_order_items'),rpc('customer_get_fulfilments'),rpc('customer_get_returns'),rpc('customer_get_store_listings'),rpc('customer_get_addresses')]);profile=(await rpc('customer_get_profile'))?.[0]||null;$('customer-name').textContent=profile?`${profile.first_name||''} ${profile.last_name||''}`.trim()||'Customer':'Customer';$('brand').textContent='TradeFlow';$('buying-count').textContent=buying?.length||0;$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(buying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No selling requests yet.');renderSellingValuations(await rpc('customer_get_selling_valuations'));$('offer-list').innerHTML=rows(offers,[{key:'offer_reference',label:'Offer'},{key:'offer_type',label:'Type'},{key:'status',label:'Response',render:offerAction},{key:'amount',label:'Amount',render:r=>money(r.amount,r.currency)}],'No offers published.');$('acquisition-list').innerHTML=rows(acq,[{key:'acquisition_reference',label:'Reference'},{key:'status',label:'Status'},{key:'agreed_total',label:'Agreed',render:r=>money(r.agreed_total,r.currency)}],'No accepted sales yet.');renderSellingShipping(shipping);$('order-list').innerHTML=rows(orders,[{key:'order_reference',label:'Order'},{key:'status',label:'Status'},{key:'total',label:'Total',render:r=>money(r.total,r.currency)},{key:'payment_status',label:'Payment',render:r=>r.status==='pending_payment'?`Awaiting payment`:esc(r.payment_status)},{key:'placed_at',label:'Placed',render:r=>r.placed_at?new Date(r.placed_at).toLocaleDateString('en-GB'):'—'},{key:'order_id',label:'Action',render:r=>r.status==='pending_payment'?`<button type="button" data-pay-order-id="${esc(r.order_id)}">Pay now</button>`:'—'}],'No orders yet.');$('shop-list').innerHTML=rows(shop,[{key:'listing_reference',label:'Listing'},{key:'title',label:'Item'},{key:'asking_price',label:'Price',render:r=>money(r.asking_price,r.currency)},{key:'listing_id',label:'Action',render:r=>`<button type="button" class="buy-listing" data-listing-id="${esc(r.listing_id)}">Buy</button>`}],'No published items currently available.');$('valuation-summary').textContent=values?.length?`${values.length} valuation record(s) available.`:'No approved valuation is currently available.';if(profile){
+  $('profile-first-name').value=profile.first_name||'';
+  $('profile-last-name').value=profile.last_name||'';
+  $('profile-email').value=profile.email||'';
+  $('profile-phone').value=profile.phone||'';
+  $('profile-list').textContent='';
+}else{
+  $('profile-list').textContent='Profile not available.';
+}
+$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.offer-accept').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'accept'));document.querySelectorAll('.offer-refuse').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'refuse'));document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
 async function submitBuyingRequest(){const notes=$('request-notes').value.trim(),title=$('request-title').value.trim(),cat=$('request-category').value;if(!cat)return setMessage('Select a buying category.','error');if(!title)return setMessage('Enter what you want to sell.','error');try{await api('/rest/v1/rpc/customer_submit_buying_request',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_notes:notes||null,p_items:[{category_id:cat,title,quantity:1}]})});$('request-title').value='';$('request-notes').value='';await loadPortalData();setMessage('Buying request submitted.','success')}catch(e){setMessage(e.message||String(e),'error')}}
+function splitFullName(value){
+  const parts=String(value||'').trim().split(/\\s+/).filter(Boolean);
+  if(!parts.length)return {first:'',last:''};
+  return {first:parts.shift(),last:parts.join(' ')};
+}
 async function ensureCustomerRegistration(){
   const existing=await rpc('customer_get_profile');
-  if(Array.isArray(existing)&&existing.length)return;
-  const first=$('auth-first-name')?.value.trim()||'',last=$('auth-last-name')?.value.trim()||'';if(!first)throw Error('Enter your first name to complete your customer account.');
+  if(Array.isArray(existing)&&existing.length){
+    const p=existing[0];
+    if($('profile-first-name'))$('profile-first-name').value=p.first_name||'';
+    if($('profile-last-name'))$('profile-last-name').value=p.last_name||'';
+    if($('profile-email'))$('profile-email').value=p.email||'';
+    if($('profile-phone'))$('profile-phone').value=p.phone||'';
+    return;
+  }
+  const user=await api('/auth/v1/user');
+  const meta=user?.user_metadata||{};
+  const name=splitFullName(meta.full_name||meta.name||'');
+  const first=$('auth-first-name')?.value.trim()||meta.first_name?.trim()||name.first;
+  const last=$('auth-last-name')?.value.trim()||meta.last_name?.trim()||name.last;
+  if(!first)throw Error('Enter your first name to complete your customer account.');
   await api('/rest/v1/rpc/customer_register_for_tenant',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
 }
 async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid subscriber tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();await loadPortalData();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
@@ -66,5 +92,18 @@ $('auth-sign-in')?.addEventListener('click',signIn);
 $('auth-sign-up')?.addEventListener('click',signUp);
 $('submit-request')?.addEventListener('click',submitBuyingRequest);
 $('request-return')?.addEventListener('click',requestReturn);
+$('save-profile')?.addEventListener('click',async()=>{
+  const first=$('profile-first-name')?.value.trim()||'';
+  const last=$('profile-last-name')?.value.trim()||'';
+  const phone=$('profile-phone')?.value.trim()||'';
+  if(!first)return setMessage('First name is required.','error');
+  const b=$('save-profile');setBusy(b,true,'Saving…');
+  try{
+    await api('/rest/v1/rpc/customer_update_profile',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:phone||null})});
+    setMessage('Your details have been saved.','success');
+    await loadPortalData();
+  }catch(e){setMessage(e.message||String(e),'error')}
+  finally{setBusy(b,false)}
+});
 $('sign-out')?.addEventListener('click',signOut);
 (async()=>{if(!key)return setMessage('TradeFlow customer portal is not configured.','error');const pending=window.tradeflowPendingAuthSession;if(pending){delete window.tradeflowPendingAuthSession;await handleAuthSuccess(pending);return}await restoreSession();await initialisePortal()})();

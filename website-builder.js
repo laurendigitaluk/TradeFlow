@@ -574,7 +574,7 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';logoUrl='';
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';

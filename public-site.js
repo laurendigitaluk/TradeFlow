@@ -208,6 +208,7 @@ function renderSellPage(site,catalogue){
 
 function bindSellWizard(site,catalogue){
  const form=$('selling-journey-form');if(!form)return;
+ const previewNotice=document.querySelector('[data-subscriber-preview]');if(previewNotice&&isSubscriberSession())previewNotice.hidden=false;
  const products=Array.isArray(catalogue?.products)?catalogue.products:[];
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  let step=1;

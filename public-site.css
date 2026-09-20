@@ -111,5 +111,5 @@ body{background-color:var(--site-background-color,var(--page-bg));background-ima
 
 /* Website background rendering: preserve each template's colour treatment while making the selected background visible in the live site. */
 .tpl-hero,.public-section,.public-page,.full-page{position:relative;isolation:isolate}
-.tpl-hero::before,.public-section::before,.public-page::before,.full-page::before{content:"";position:absolute;inset:0;background-color:transparent;background-image:var(--site-background-image,none);background-size:var(--site-background-size,cover);background-repeat:var(--site-background-repeat,no-repeat);background-position:center;opacity:.22;pointer-events:none;z-index:0}
+.tpl-hero::before,.public-section::before,.public-page::before,.full-page::before{content:"";position:absolute;inset:0;background-color:transparent;background-image:var(--site-background-image,none);background-size:var(--site-background-size,cover);background-repeat:var(--site-background-repeat,no-repeat);background-position:center;opacity:.32;pointer-events:none;z-index:0}
 .tpl-hero>* ,.public-section>* ,.public-page>* ,.full-page>*{position:relative;z-index:1}

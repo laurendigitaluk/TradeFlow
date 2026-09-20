@@ -262,6 +262,7 @@ function applyContent(content){
  document.documentElement.style.setProperty('--footer-bg',theme.footer_bg||'#17202a');document.documentElement.style.setProperty('--site-background-color',theme.background_color||'#f5faff');document.documentElement.style.setProperty('--site-background-image',theme.background_image||'none');document.documentElement.style.setProperty('--site-background-size',theme.background_size||'cover');document.documentElement.style.setProperty('--site-background-repeat',theme.background_repeat||'no-repeat');
  document.documentElement.style.setProperty('--font-family',typography.font||'Inter');
  document.body.dataset.template=site.template||'editorial';
+ document.body.dataset.backgroundMode=backgroundMode;
  document.body.dataset.font=typography.font||'Inter';
  document.body.dataset.heroSize=typography.hero||'large';
  document.title=site.name||'Your business';

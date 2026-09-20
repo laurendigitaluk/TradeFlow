@@ -252,6 +252,7 @@ function applyContent(content){
  window.__tradeflowSiteContent=content;
  const site=content?.site||{};
  const theme=site.theme||{};
+ const backgroundMode=theme.background_mode==='custom'?'custom':'preset';
  const typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid'},theme.typography||{});
  document.documentElement.style.setProperty('--accent',theme.accent||'#c46a2b');
  document.documentElement.style.setProperty('--page-bg',theme.page_bg||'#f5f6f8');

@@ -214,3 +214,14 @@ template-alignment-colour-pass
 - PR #37 merged to main as `2f69d2f0a94a9db6fd71751667f7f01c8ddc53ff`.
 - `website-builder.js` and `public-site.js` syntax checks: PASS.
 - No Supabase schema changes.
+
+## Background simplification and factory design reset — 20 September 2026
+- Replaced the previous 30 industry-specific illustrated backgrounds with 12 reusable gradients/patterns.
+- Custom Colours now means a clean colour background with no preset pattern/gradient overlay.
+- Presets are simple, reusable visual treatments: six gradients and six patterns, with stronger contrast so they remain visible when brand colours change.
+- Legacy background IDs are mapped safely to the new set so existing saved drafts do not break.
+- Removed the accumulated legacy background overlay CSS and kept one background rendering layer in the builder and public site.
+- Added a **Reset design** control. It restores the factory Editorial design, default colours, typography, section layout and default background while preserving the subscriber's pages, wording and uploaded images.
+- A separate restore branch was created before the simplification: `restore-before-background-simplification-2026-09-20`.
+- JavaScript syntax validation: PASS after the simplification and reset changes.
+- No Supabase schema changes.

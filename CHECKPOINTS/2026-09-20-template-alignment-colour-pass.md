@@ -56,3 +56,14 @@ template-alignment-colour-pass
 - Hero, What We Buy, What We Sell, category, product and tile image placeholders no longer display instructional placeholder text in the template/public renderers.
 - Public and builder image areas remain neutral visual spaces until an image is supplied.
 - JavaScript syntax checks pass after the follow-up changes.
+
+
+## Quick palette expansion — 20 September 2026
+- Expanded Website Builder Quick palettes from 4 presets to 18 coordinated presets.
+- Presets now cover professional, warm, dark, clean, ocean, emerald, royal, sunset, citrus, berry, coral, sky, forest, plum, teal, electric, rose and monochrome directions.
+- Each preset defines the full seven-colour brand system: accent/brand, text, page background, header/navigation, buying section, selling section and footer.
+- Palette metadata includes a short description and is kept separate from the saved theme colour values.
+- Quick palette buttons now show a colour swatch and wrap cleanly in the sidebar.
+- Manual colour controls remain available for individual fine-tuning after selecting a preset.
+- No Supabase migrations or data changes.
+- website-builder.js syntax check: PASS.

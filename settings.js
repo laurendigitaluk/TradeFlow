@@ -6,6 +6,30 @@ function msg(t,type=''){const e=$('message');e.textContent=t;e.className='small 
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Authorization','Bearer '+token);if(o.body)h.set('Content-Type','application/json');const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||'Request failed');return b}
 function setValue(id,v){const e=$(id);if(e)e.value=v??''}
 function setChecked(id,v){const e=$(id);if(e)e.checked=v!==false}
+function renderLogo(url){
+ const box=$('logo-preview'),remove=$('logo-remove');if(!box)return;
+ box.innerHTML=url?'<img src="'+esc(url)+'" alt="Business logo">':'<span>No logo uploaded.</span>';
+ if(remove)remove.disabled=!url;
+}
+async function uploadLogo(file){
+ if(!file)return;
+ if(file.size>5242880)throw Error('Image is larger than 5 MB.');
+ if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw Error('Use PNG, JPEG or WebP images only.');
+ msg('Uploading logo…');
+ const safe=(file.name||'logo').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
+ const path=tenantId+'/logo/'+Date.now()+'-'+safe;
+ const r=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':file.type,'x-upsert':'false'},body:file});
+ const t=await r.text();if(!r.ok)throw Error(t||'Logo upload failed.');
+ const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
+ await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({logo_url:url})});
+ try{await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,mime_type:file.type,byte_size:file.size,status:'active',created_by:a?.user?.id||null,asset_kind:'site_logo',retention_policy:'permanent'})})}catch(e){console.warn('Logo metadata insert failed',e)}
+ renderLogo(url);msg('Business logo saved.','success');
+}
+async function removeLogo(){
+ if(!confirm('Remove the business logo from the customer-facing website?'))return;
+ await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({logo_url:null})});
+ renderLogo(null);msg('Business logo removed.','success');
+}
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
@@ -15,6 +39,7 @@ async function load(){
   const p=profiles?.[0]||{};
   const tenants=await api('/rest/v1/tenants?select=id,name&id=eq.'+encodeURIComponent(tenantId));
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
+  renderLogo(p.logo_url||null);
   setValue('public-email',p.public_email);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
@@ -48,3 +73,6 @@ $('method-form').onsubmit=async e=>{
 };
 $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut();
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();
+$('logo-upload').onclick=()=>{const i=$('logo-file-input');i.value='';i.click()};
+$('logo-file-input').onchange=e=>uploadLogo(e.target.files?.[0]).catch(err=>msg(err.message||String(err),'error'));
+$('logo-remove').onclick=()=>removeLogo().catch(err=>msg(err.message||String(err),'error'));

@@ -223,8 +223,7 @@ function renderPageManager(){
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
- box.innerHTML='<div class="control-title">Business branding</div><small>Add your business logo. Your business name is controlled by Business Settings. Use the builder for the logo, layout, colours, text and imagery.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Replace logo</button><button type="button" data-image-action="remove" data-image-target="logo">Remove</button>':'<button type="button" data-image-action="add" data-image-target="logo">Add logo</button>')+'</div>';
- box.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.imageAction==='remove'){removeImage('logo');return}const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();}));
+ box.innerHTML='<div class="control-title">Business branding</div><small>Your business logo is managed in Business Settings so the same identity is used across the customer-facing website. Use the builder for templates, colours, backgrounds, layout, text and imagery.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Managed in Business Settings</span>':'<span class="small">No business logo has been uploaded yet.</span>')+'</div><div class="actions"><a href="settings.html">Manage business logo</a></div>';
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -471,7 +470,7 @@ function loadContent(content){
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
- logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ logoUrl=window.__tradeflowBusinessLogoLoaded?logoUrl:(s.branding?.logo_url||s.logo_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
@@ -549,7 +548,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;}catch{}
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;if(profile?.[0]){logoUrl=profile[0].logo_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
  return tenantId;
 }
 
@@ -575,7 +574,7 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';logoUrl='';
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';

@@ -2,8 +2,8 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',logoUrl='';
-let templateCopy={},homepageTileCount=8,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='';
+let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
@@ -23,7 +23,9 @@ function defaultHomepageTiles(){return [
  {id:'sell-3',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
  {id:'sell-4',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
  {id:'buy-5',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
+ {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'buy-6',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
+ {id:'sell-6',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
 ]}
 homepageTiles=defaultHomepageTiles();
 const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
@@ -41,6 +43,18 @@ const templates=[
  {id:'commerce',name:'Commerce',desc:'Product-led and conversion-focused'},
  {id:'impact',name:'Impact',desc:'Bold typography and strong colour'}
 ];
+const templatePalettes={
+ editorial:{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'},
+ classic:{accent:'#8b5e3c',page_bg:'#f7f1e8',text:'#30271f',header_bg:'#fffaf2',buy_bg:'#fffdf8',sell_bg:'#eee2d2',footer_bg:'#352b24'},
+ grid:{accent:'#5ea8d6',page_bg:'#101820',text:'#eef3f6',header_bg:'#0d141b',buy_bg:'#151f28',sell_bg:'#1c2933',footer_bg:'#080d12'},
+ studio:{accent:'#b35b3e',page_bg:'#f3ece5',text:'#2b2521',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#e9ddd2',footer_bg:'#29221e'},
+ horizon:{accent:'#287d9b',page_bg:'#edf5f8',text:'#19303a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e1eef2',footer_bg:'#18343e'},
+ field:{accent:'#b6a05a',page_bg:'#17231d',text:'#f1f2ed',header_bg:'#111a15',buy_bg:'#1a2820',sell_bg:'#26352b',footer_bg:'#0b110d'},
+ business:{accent:'#2563a8',page_bg:'#f1f4f7',text:'#1d2a35',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e5ebf1',footer_bg:'#172431'},
+ luxe:{accent:'#c49a58',page_bg:'#f3f0eb',text:'#202328',header_bg:'#fbfaf7',buy_bg:'#fbfaf7',sell_bg:'#e8e2d8',footer_bg:'#15191d'},
+ commerce:{accent:'#d05a38',page_bg:'#f6f7f8',text:'#20252a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#eceff1',footer_bg:'#20252a'},
+ impact:{accent:'#d64b3d',page_bg:'#f2f2ef',text:'#171b1f',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e7e8e4',footer_bg:'#171b1f'}
+};
 const templateHeadlines={editorial:'A clear way to buy and sell',classic:'A trusted way to buy and sell',grid:'Your products. Your buying list.',studio:'Good products deserve a good presentation.',horizon:'A simpler way to buy and sell',field:'Equipment for the next chapter.',business:'A straightforward way to buy and sell',luxe:'Quality products. Clear service.',commerce:'Browse, buy and sell with confidence.',impact:'BUY. SELL. MOVE FORWARD.'};
 const templateDefaults={
  editorial:{kicker:'',cta1:'',cta2:''},
@@ -97,23 +111,25 @@ function renderPageList(){
 function renderHeroImageControls(){
  const box=$('hero-image-controls');if(!box)return;
  const imageState=(url)=>url?'Image uploaded':'No image selected';
- box.innerHTML='<div class="control-title">Homepage hero photos</div><small>The premium homepage has two independent hero images. Use these controls or the buttons directly on the page.</small><div class="hero-image-control"><div><b>Main hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Second hero image</b><span>'+imageState(homeImageUrl2)+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
+ const secondaryUsed=currentTemplate==='editorial';
+ box.innerHTML='<div class="control-title">Homepage hero photos</div><small>The current template may use one hero image. The Editorial template uses two. The secondary image is kept so it is ready when you switch to a two-image template.</small><div class="hero-image-control"><div><b>Main hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Secondary hero image</b><span>'+imageState(homeImageUrl2)+(secondaryUsed?' · used by this template':' · not used by this template')+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
  box.querySelectorAll('[data-hero-image]').forEach(button=>button.addEventListener('click',()=>{
    const input=$('image-file-input');input.dataset.target=button.dataset.heroImage;input.value='';input.click();
  }));
 }
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
- box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[6,8,10].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><small>Choose how many visual tiles appear on your premium homepage. You can edit every tile directly on the page.</small>';
+ box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[3,4,6,8,9,10,12].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><div class="tile-count-title">Tiles per row</div><div class="tile-counts">'+[2,3,4].map(n=>'<button type="button" class="tile-count '+(homepageTileColumns===n?'selected':'')+'" data-tile-columns="'+n+'">'+n+' per row</button>').join('')+'</div><small>Choose how many visual tiles appear and how many sit on each row. TradeFlow keeps the selected layout on the customer website.</small>';
  box.querySelectorAll('[data-tile-count]').forEach(b=>b.addEventListener('click',()=>{homepageTileCount=Number(b.dataset.tileCount);renderHomepageControls();renderEditor();markDirty();}));
+ box.querySelectorAll('[data-tile-columns]').forEach(b=>b.addEventListener('click',()=>{homepageTileColumns=Number(b.dataset.tileColumns);renderHomepageControls();renderEditor();markDirty();}));
 }
 function renderDesignControls(){
  const box=$('design-controls');if(!box)return;
  const colors=[['accent','Brand / accent'],['text','Text'],['page_bg','Page background'],['header_bg','Header / navigation'],['buy_bg','Buying section'],['sell_bg','Selling section'],['footer_bg','Footer']];
- box.innerHTML='<div class="control-title">Brand colours</div><small>Change the main colours of your customer-facing website. The selected design still controls layout and typography.</small><div class="color-grid">'+colors.map(([key,label])=>'<label class="color-control"><span>'+label+'</span><input type="color" data-color="'+key+'" value="'+esc(themeColors[key])+'"><code>'+esc(themeColors[key])+'</code></label>').join('')+'</div><div class="preset-row"><span>Quick palettes</span><button type="button" data-palette="professional">Professional</button><button type="button" data-palette="warm">Warm</button><button type="button" data-palette="dark">Dark</button><button type="button" data-palette="clean">Clean</button></div>';
+ box.innerHTML='<div class="control-title">Brand colours</div><small>Change the main colours of your customer-facing website. The selected design still controls layout and typography.</small><div class="color-grid">'+colors.map(([key,label])=>'<label class="color-control"><span>'+label+'</span><input type="color" data-color="'+key+'" value="'+esc(themeColors[key])+'"><code>'+esc(themeColors[key])+'</code></label>').join('')+'</div><div class="preset-row"><span>Quick palettes</span><small>Choose a coordinated starting palette, then fine-tune any colour above.</small>'+Object.entries(palettes).map(([id,p])=>'<button type="button" data-palette="'+id+'" title="'+esc(p.label+' — '+p.description)+'"><i style="background:'+p.accent+'"></i>'+esc(p.label)+'</button>').join('')+'</div>';
  box.querySelectorAll('[data-color]').forEach(input=>input.addEventListener('input',()=>{themeColors[input.dataset.color]=input.value;renderEditor();renderDesignControls();markDirty();}));
- const palettes={professional:{accent:'#c46a2b',text:'#17202a',page_bg:'#f5f6f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#eef1f4',footer_bg:'#17202a'},warm:{accent:'#a84f2d',text:'#2b211d',page_bg:'#fbf7f2',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#3a2b25'},dark:{accent:'#d79a55',text:'#f2f4f5',page_bg:'#151b20',header_bg:'#101419',buy_bg:'#182027',sell_bg:'#202a32',footer_bg:'#0b0f12'},clean:{accent:'#1769aa',text:'#17202a',page_bg:'#f7f9fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#edf3f8',footer_bg:'#172b3a'}};
- box.querySelectorAll('[data-palette]').forEach(b=>b.addEventListener('click',()=>{themeColors={...palettes[b.dataset.palette]};renderDesignControls();renderEditor();markDirty();}));
+ const palettes={professional:{label:'Professional',description:'Navy, blue-grey and restrained gold',accent:'#2563a8',text:'#172a3a',page_bg:'#f3f6f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e8eef4',footer_bg:'#142635'},warm:{label:'Warm',description:'Terracotta, cream and soft brown',accent:'#a84f2d',text:'#2b211d',page_bg:'#fbf7f2',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#3a2b25'},dark:{label:'Dark',description:'Charcoal, slate and warm gold',accent:'#d79a55',text:'#f2f4f5',page_bg:'#151b20',header_bg:'#101419',buy_bg:'#182027',sell_bg:'#202a32',footer_bg:'#0b0f12'},clean:{label:'Clean',description:'Fresh blue with white space',accent:'#1769aa',text:'#17202a',page_bg:'#f7f9fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#edf3f8',footer_bg:'#172b3a'},ocean:{label:'Ocean',description:'Deep teal, aqua and cool mist',accent:'#087f8c',text:'#12343a',page_bg:'#edf7f7',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dcefee',footer_bg:'#10383d'},emerald:{label:'Emerald',description:'Rich green, sage and ivory',accent:'#16825b',text:'#17352a',page_bg:'#f0f7f3',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#deeee6',footer_bg:'#17382d'},royal:{label:'Royal',description:'Indigo, violet and soft lavender',accent:'#5b4bb7',text:'#242044',page_bg:'#f5f3fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e9e5f6',footer_bg:'#28204d'},sunset:{label:'Sunset',description:'Coral, amber and warm sand',accent:'#e45f3a',text:'#3a241e',page_bg:'#fff6f0',header_bg:'#fffdf9',buy_bg:'#ffffff',sell_bg:'#f8e4d8',footer_bg:'#40251e'},citrus:{label:'Citrus',description:'Lively orange, lemon and fresh cream',accent:'#e38b1f',text:'#302615',page_bg:'#fff9ec',header_bg:'#fffef8',buy_bg:'#ffffff',sell_bg:'#f7edc9',footer_bg:'#3a2d16'},berry:{label:'Berry',description:'Raspberry, plum and pale blush',accent:'#b43d69',text:'#351e2a',page_bg:'#fbf2f6',header_bg:'#fffafd',buy_bg:'#ffffff',sell_bg:'#f2dce5',footer_bg:'#3d2030'},coral:{label:'Coral',description:'Bright coral with coastal blue-grey',accent:'#e85d5d',text:'#302225',page_bg:'#fff5f3',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f5e1e1',footer_bg:'#3b252b'},sky:{label:'Sky',description:'Clear blue, powder blue and navy',accent:'#1684d8',text:'#183047',page_bg:'#f1f8fe',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dcecf9',footer_bg:'#15314a'},forest:{label:'Forest',description:'Deep green, moss and natural cream',accent:'#2f6b45',text:'#203026',page_bg:'#f2f6f1',header_bg:'#fffefa',buy_bg:'#ffffff',sell_bg:'#e2ebdf',footer_bg:'#1d3525'},plum:{label:'Plum',description:'Plum, mauve and warm stone',accent:'#7a3f70',text:'#302333',page_bg:'#f7f2f6',header_bg:'#fffdfd',buy_bg:'#ffffff',sell_bg:'#e9dce7',footer_bg:'#302034'},teal:{label:'Teal',description:'Vivid teal balanced with graphite',accent:'#009688',text:'#163332',page_bg:'#eff9f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#d9efec',footer_bg:'#163b39'},electric:{label:'Electric',description:'Bright blue, cobalt and cool grey',accent:'#1769ff',text:'#18233b',page_bg:'#f2f6ff',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dfe8ff',footer_bg:'#172650'},rose:{label:'Rose',description:'Modern rose, blush and charcoal',accent:'#d34f78',text:'#30222a',page_bg:'#fff4f7',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f5dfe6',footer_bg:'#3b2530'},monochrome:{label:'Monochrome',description:'Black, white and neutral grey',accent:'#3f4650',text:'#1e2328',page_bg:'#f4f5f6',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e7e9eb',footer_bg:'#20252a'}};
+ box.querySelectorAll('[data-palette]').forEach(b=>b.addEventListener('click',()=>{const p=palettes[b.dataset.palette];themeColors={accent:p.accent,text:p.text,page_bg:p.page_bg,header_bg:p.header_bg,buy_bg:p.buy_bg,sell_bg:p.sell_bg,footer_bg:p.footer_bg};renderDesignControls();renderEditor();markDirty();}));
 }
 function renderHeaderFooterControls(){
  const box=$('header-footer-controls');if(!box)return;
@@ -177,7 +193,7 @@ function footerMarkup(){
 }
 
 function imageBlock(url,kind,label,alt){
- const heading=kind==='home'?'MAIN HERO IMAGE':kind==='home2'?'SECOND HERO IMAGE':'IMAGE';
+ const heading=kind==='home'?'MAIN HERO IMAGE':kind==='home2'?'SECONDARY HERO IMAGE':kind==='home-buy'?'WHAT WE BUY IMAGE':kind==='home-sell'?'WHAT WE SELL IMAGE':'IMAGE';
  if(url)return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="visual-image"><img src="'+esc(url)+'" alt="'+esc(alt||'')+'"><div class="image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(kind)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(kind)+'">Remove</button></div></div></div>';
  return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="image-drop"><button type="button" data-image-action="add" data-image-target="'+esc(kind)+'">Add image</button><span>'+esc(label)+'</span><small>PNG, JPEG or WebP · maximum 5 MB</small></div></div>';
 }
@@ -198,12 +214,21 @@ function renderBuilderBuyingPage(){
 function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
 function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){
- return '';
+ const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
+ const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
+ if(!categories.length)return '';
+ const cards=categories.map(cat=>{
+   const items=products.filter(p=>p.category_id===cat.id);
+   const image=items.find(p=>p.image_url)?.image_url||'';
+   const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'">':'<span aria-hidden="true"></span>';
+   return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="#" data-nav-page="buying">Sell this type →</a></div></article>';
+ }).join('');
+ return '<div class="buy-category-grid">'+cards+'</div>';
 }
 function sellingPreview(){
  const list=Array.isArray(retailListings)?retailListings:[];
  if(!list.length)return '';
- return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article><div class="sell-photo"></div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'View product')+'</strong></article>').join('')+'</div>';
+ return '<div class="sell-product-grid">'+list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.asking_price)):'')+'</strong><a href="#" data-nav-page="shop">View &amp; buy</a></article>').join('')+'</div>';
 }
 function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
@@ -211,8 +236,8 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image">Add main image</div>';
- const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image">Add second image</div>';
+ const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
+ const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
@@ -235,11 +260,11 @@ function renderHome(){
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
   hero:homepageSections.hero!==false?templateHero():'',
-  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+buyingPreview()+'</section>':'',
-  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div><div class="section-intro-image"><span>Category image</span></div></div>'+sellingPreview()+'</section>':'',
+  buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+imageBlock(homeBuyImageUrl,'home-buy','Add a What We Buy image.',homeBuyHeading||'What We Buy')+'</div>'+buyingPreview()+'</section>':'',
+  sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+imageBlock(homeSellImageUrl,'home-sell','Add a What We Sell image.',homeSellHeading||'What We Sell')+'</div>'+sellingPreview()+'</section>':'',
   trust:''
  };
- const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid">'+tileMarkup+'</div></section>':'';
+ const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid" style="--tile-columns:'+homepageTileColumns+'">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
  return navMarkup()+ordered+tiles+footerMarkup();
 }
@@ -281,11 +306,11 @@ function bindEditor(){
    el.addEventListener('blur',()=>el.classList.remove('editing'));
  });
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
- root.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{
+ root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
- }));
+ });});
  let draggedBlock=null;
  root.querySelectorAll('[data-home-block]').forEach(el=>{
    el.addEventListener('dragstart',()=>{draggedBlock=el.dataset.homeBlock;el.classList.add('dragging')});
@@ -316,9 +341,10 @@ function applyTemplate(template){
  if(!templateHeadlines[template])return;
  const previousDefaults=Object.values(templateDefaults).some(d=>d.kicker===templateCopy.kicker&&d.cta1===templateCopy.cta1&&d.cta2===templateCopy.cta2);
  currentTemplate=template;
+ themeColors=Object.assign({},templatePalettes[template]||templatePalettes.editorial);
  if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
  if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);
- renderTemplates();renderHomepageControls();renderEditor();markDirty();
+ renderTemplates();renderHomepageControls();renderHeroImageControls();renderEditor();markDirty();
  setStatus(template+' template selected. Text, colours and images remain editable.','success');
 }
 function buildContent(){
@@ -330,7 +356,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' second image',sections:homepageSections,tile_count:homepageTileCount,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -346,6 +372,11 @@ function cleanTemplateCopy(copy){
  if(cta.includes(String(out.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta1||'')))out.cta1='';
  if(cta.includes(String(out.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta2||'')))out.cta2='';
  return out;
+}
+function ensureHomepageTileCapacity(tiles){
+ const existing=Array.isArray(tiles)?tiles:[];
+ const byId=new Map(existing.map(t=>[t.id,t]));
+ return defaultHomepageTiles().map(d=>byId.has(d.id)?Object.assign({},d,byId.get(d.id)):Object.assign({},d));
 }
 function cleanHomepageTiles(tiles){
  const defaults=new Map(defaultHomepageTiles().map(t=>[t.id,t]));
@@ -364,8 +395,8 @@ function loadContent(content){
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  logoUrl=s.branding?.logo_url||s.logo_url||'';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
- homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[6,8,10].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTiles=Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles();
+ homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
+ homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
@@ -393,6 +424,8 @@ async function uploadImage(file,target){
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target==='home')homeImageUrl=url;
  else if(target==='home2')homeImageUrl2=url;
+ else if(target==='home-buy')homeBuyImageUrl=url;
+ else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -411,6 +444,8 @@ async function uploadImage(file,target){
 function removeImage(target){
  if(target==='home')homeImageUrl='';
  else if(target==='home2')homeImageUrl2='';
+ else if(target==='home-buy')homeBuyImageUrl='';
+ else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
@@ -460,9 +495,9 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';logoUrl='';
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';logoUrl='';
  templateCopy=Object.assign({},templateDefaults.editorial);
- homepageTileCount=8;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
+ homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
  homepageTiles=defaultHomepageTiles();themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};

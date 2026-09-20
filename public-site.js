@@ -50,7 +50,7 @@ function renderPublicNav(site,catalogue){
 
 function heroImage(url,alt,cls){
  if(url)return '<img class="'+(cls||'')+'" src="'+esc(url)+'" alt="'+esc(alt||'')+'" loading="lazy">';
- return '<div class="public-demo-image '+(cls||'')+'">Add main image</div>';
+ return '<div class="public-demo-image '+(cls||'')+'" aria-hidden="true"></div>';
 }
 
 function renderHero(site){
@@ -85,7 +85,7 @@ function renderHero(site){
  const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
  const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
  const i1=heroImage(home.image_url,name+' main image');
- const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image">Add second image</div>';
+ const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  const h=esc(headline),p=esc(intro);
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span><h1>'+h+'</h1><p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
@@ -105,26 +105,39 @@ function renderBuyingSection(site,catalogue){
  const home=site.homepage||{};
  const heading=home.buy_heading||'What we buy';
  const intro=home.buy_intro||'Tell customers what you are looking to buy.';
- return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div></section>';
+ const products=Array.isArray(catalogue?.products)?catalogue.products:[];
+ const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
+ const sectionImage=home.buy_image_url||'';
+ const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.buy_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
+ const cards=cats.map(cat=>{
+   const items=products.filter(p=>p.category_id===cat.id);
+   const image=items.find(p=>p.image_url)?.image_url||'';
+   const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'" loading="lazy">':'<span aria-hidden="true"></span>';
+   return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Sell this type →</a></div></article>';
+ }).join('');
+ return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="buy-category-grid">'+cards+'</div>':'')+'</section>';
 }
 
 function renderSellingSection(site,listings){
  const home=site.homepage||{};
  const heading=home.sell_heading||'What we sell';
  const intro=home.sell_intro||'Browse the products currently published by this business.';
+ const sectionImage=home.sell_image_url||'';
+ const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
  const list=Array.isArray(listings)?listings:[];
- const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
- return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image"><span>Category image</span></div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
+ const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 
 function renderHomepageTiles(site){
  const home=site.homepage||{};
  const tiles=Array.isArray(home.tiles)?home.tiles:[];
- const count=[6,8,10].includes(Number(home.tile_count))?Number(home.tile_count):8;
+ const count=[3,4,6,8,9,10,12].includes(Number(home.tile_count))?Number(home.tile_count):8;
+ const columns=[2,3,4].includes(Number(home.tile_columns))?Number(home.tile_columns):4;
  const visible=tiles.slice(0,count);
  if(!visible.length)return '';
- const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span>Image</span>')+'</div><div class="tile-copy">'+(tile.title?'<h3>'+esc(tile.title)+'</h3>':'')+(tile.body?'<p>'+esc(tile.body)+'</p>':'')+(tile.cta?'<b>'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
- return '<section class="homepage-tiles"><div class="homepage-tile-grid">'+cards+'</div></section>';
+ const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><div class="tile-copy">'+(tile.title?'<h3>'+esc(tile.title)+'</h3>':'')+(tile.body?'<p>'+esc(tile.body)+'</p>':'')+(tile.cta?'<b>'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
+ return '<section class="homepage-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+columns+'">'+cards+'</div></section>';
 }
 
 function renderTrust(){
@@ -226,7 +239,7 @@ function renderBuyingPage(site,catalogue){
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const cards=list.map(p=>'<article class="shop-product"><div class="shop-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span>Product image</span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h2>'+esc(p.title||'Product')+'</h2><p>'+esc(p.description||'Available from this business.')+'</p><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.map(p=>'<article class="shop-product"><div class="shop-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h2>'+esc(p.title||'Product')+'</h2><p>'+esc(p.description||'Available from this business.')+'</p><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
  return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><span>WHAT WE SELL</span><h1>'+(esc(site.pages?.find(p=>p.slug==='shop')?.title||'What We Sell'))+'</h1><p>'+esc(site.pages?.find(p=>p.slug==='shop')?.body||'Browse our current retail range.')+'</p></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 

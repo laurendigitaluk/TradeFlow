@@ -14,7 +14,7 @@
 /* Homepage tile parity with the subscriber builder */
 .homepage-tiles{padding:64px 7%;background:#fff;border-top:1px solid rgba(20,30,40,.08)}
 .homepage-tiles .section-intro{max-width:760px;margin:0 auto 28px}
-.homepage-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;max-width:1180px;margin:auto}
+.homepage-tile-grid{display:grid;grid-template-columns:repeat(var(--tile-columns,4),minmax(0,1fr));gap:18px;max-width:1180px;margin:auto}
 .editable-home-tile{border:1px solid #dfe5e9;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,40,.07)}
 .editable-home-tile .tile-image{height:180px;background:#edf1f4;display:flex;align-items:center;justify-content:center;overflow:hidden}.editable-home-tile .tile-image img{width:100%;height:100%;object-fit:cover;display:block}.editable-home-tile .tile-image span{font-size:9px;color:#87939c;text-transform:uppercase;letter-spacing:.1em}
 .editable-home-tile .tile-copy{padding:18px}.editable-home-tile .tile-copy span{font-size:9px;letter-spacing:.14em;color:var(--accent,#c46a2b);font-weight:700}.editable-home-tile .tile-copy h3{margin:8px 0 7px}.editable-home-tile .tile-copy p{min-height:48px;font-size:11px;line-height:1.5;color:#68747e}.editable-home-tile .tile-copy b{display:block;margin-top:12px;color:var(--accent,#c46a2b);font-size:10px;font-weight:900}
@@ -38,3 +38,71 @@
 .public-section.buying-section,.public-section.selling-section{width:100%}
 .public-section .section-intro{grid-template-columns:1fr 1fr;align-items:center}
 @media(max-width:900px){.public-section .section-intro{grid-template-columns:1fr}}
+
+
+/* Editable What We Buy / What We Sell section images. */
+.buying-section .section-intro-image img,.selling-section .section-intro-image img{width:100%;height:190px;object-fit:cover;display:block;border-radius:10px}
+@media(max-width:900px){.buying-section .section-intro-image img,.selling-section .section-intro-image img{height:170px}}
+
+
+/* Template alignment pass: the same customer content gets a distinct visual treatment per template. */
+body[data-template="editorial"] .public-section{border-top:1px solid rgba(32,37,42,.08)}body[data-template="editorial"] .buy-category-card,body[data-template="editorial"] .sell-product-card,body[data-template="editorial"] .shop-product{border:0;border-radius:0;border-bottom:1px solid rgba(32,37,42,.12);background:transparent}body[data-template="editorial"] .editable-home-tile{border-radius:0;box-shadow:none}
+body[data-template="classic"] .public-section{border-top:1px solid rgba(91,65,40,.12)}body[data-template="classic"] .section-intro h2{font-family:Georgia,serif;font-weight:500}body[data-template="classic"] .buy-category-card,body[data-template="classic"] .sell-product-card,body[data-template="classic"] .shop-product{border-color:#d8cbb8;border-radius:2px}body[data-template="classic"] .editable-home-tile{border-radius:2px;border-color:#d8cbb8}
+body[data-template="grid"] .public-section{border-top:1px solid rgba(255,255,255,.08)}body[data-template="grid"] .buy-category-card,body[data-template="grid"] .sell-product-card,body[data-template="grid"] .shop-product{border-color:rgba(255,255,255,.12);border-radius:2px}body[data-template="grid"] .editable-home-tile{border-color:rgba(255,255,255,.12);border-radius:2px;box-shadow:none}
+body[data-template="studio"] .public-section{border-top:0}body[data-template="studio"] .section-intro h2{font-size:clamp(2.4rem,5vw,4.4rem);font-weight:500}body[data-template="studio"] .buy-category-card,body[data-template="studio"] .sell-product-card,body[data-template="studio"] .shop-product{border:0;border-radius:0;box-shadow:0 12px 30px rgba(20,30,40,.08)}body[data-template="studio"] .editable-home-tile{border:0;border-radius:0;box-shadow:0 10px 28px rgba(20,30,40,.08)}
+body[data-template="horizon"] .public-section{border-top:1px solid rgba(40,125,155,.12)}body[data-template="horizon"] .buy-category-card,body[data-template="horizon"] .sell-product-card,body[data-template="horizon"] .shop-product{border-color:#cbdde4;border-radius:14px}body[data-template="horizon"] .editable-home-tile{border-color:#cbdde4;border-radius:14px}
+body[data-template="field"] .public-section{border-top:1px solid rgba(255,255,255,.08)}body[data-template="field"] .buy-category-card,body[data-template="field"] .sell-product-card,body[data-template="field"] .shop-product{border-color:rgba(255,255,255,.1);border-radius:3px}body[data-template="field"] .editable-home-tile{border-color:rgba(255,255,255,.1);border-radius:3px}
+body[data-template="business"] .public-section{border-top:1px solid rgba(37,99,168,.12)}body[data-template="business"] .buy-category-card,body[data-template="business"] .sell-product-card,body[data-template="business"] .shop-product{border-radius:5px;box-shadow:0 5px 16px rgba(20,30,40,.05)}body[data-template="business"] .editable-home-tile{border-radius:5px;box-shadow:0 5px 16px rgba(20,30,40,.05)}
+body[data-template="luxe"] .public-section{border-top:1px solid rgba(196,154,88,.16)}body[data-template="luxe"] .section-intro h2{font-weight:500;letter-spacing:-.03em}body[data-template="luxe"] .buy-category-card,body[data-template="luxe"] .sell-product-card,body[data-template="luxe"] .shop-product{border-color:rgba(196,154,88,.28);border-radius:3px}body[data-template="luxe"] .editable-home-tile{border-color:rgba(196,154,88,.28);border-radius:3px;box-shadow:none}
+body[data-template="commerce"] .public-section{border-top:1px solid rgba(20,30,40,.08)}body[data-template="commerce"] .buy-category-card,body[data-template="commerce"] .sell-product-card,body[data-template="commerce"] .shop-product{border-radius:4px}body[data-template="commerce"] .sell-product-card strong,body[data-template="commerce"] .shop-product strong{font-size:15px}body[data-template="commerce"] .editable-home-tile{border-radius:4px;box-shadow:0 8px 22px rgba(20,30,40,.07)}
+body[data-template="impact"] .public-section{border-top:0}body[data-template="impact"] .section-intro h2{font-weight:900;letter-spacing:-.05em}body[data-template="impact"] .buy-category-card,body[data-template="impact"] .sell-product-card,body[data-template="impact"] .shop-product{border:0;border-left:5px solid var(--accent);border-radius:0}body[data-template="impact"] .editable-home-tile{border:0;border-left:5px solid var(--accent);border-radius:0;box-shadow:none}
+
+
+/* Refined interactive cards: subtle lift and image movement on hover. */
+@media (hover:hover) and (pointer:fine){
+  .editable-home-tile,
+  .buy-category-card,
+  .sell-product-card,
+  .shop-product{
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+    will-change:transform;
+  }
+  .editable-home-tile:hover,
+  .buy-category-card:hover,
+  .sell-product-card:hover,
+  .shop-product:hover{
+    transform:translateY(-5px);
+    box-shadow:0 14px 30px rgba(20,30,40,.12);
+  }
+  .editable-home-tile .tile-image img,
+  .buy-category-card .buy-category-image img,
+  .sell-product-card .sell-photo img,
+  .shop-product .shop-photo img{
+    transition:transform .28s ease;
+  }
+  .editable-home-tile:hover .tile-image img,
+  .buy-category-card:hover .buy-category-image img,
+  .sell-product-card:hover .sell-photo img,
+  .shop-product:hover .shop-photo img{
+    transform:scale(1.035);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .editable-home-tile,
+  .buy-category-card,
+  .sell-product-card,
+  .shop-product,
+  .editable-home-tile .tile-image img,
+  .buy-category-card .buy-category-image img,
+  .sell-product-card .sell-photo img,
+  .shop-product .shop-photo img{transition:none}
+}
+
+
+/* Final polish: restrained focus states and control transitions. */
+:where(body) :where(a,button,summary,select,input,textarea):focus-visible{outline:2px solid var(--accent,#c46a2b);outline-offset:3px}
+@media (hover:hover) and (pointer:fine){
+  .public-nav-links>a,.public-nav-dropdown>summary,.tpl-actions a,.section-primary,.start-selling,.editable-home-tile .tile-copy b,.buy-category-card a,.sell-product-card a,.shop-product a{transition:transform .18s ease,opacity .18s ease,box-shadow .18s ease}
+  .public-nav-links>a:hover,.public-nav-dropdown>summary:hover,.tpl-actions a:hover,.section-primary:hover,.start-selling:hover,.editable-home-tile .tile-copy b:hover,.buy-category-card a:hover,.sell-product-card a:hover,.shop-product a:hover{transform:translateY(-1px)}
+  .editable-home-tile:hover .tile-copy b,.buy-category-card:hover a,.sell-product-card:hover a,.shop-product:hover a{letter-spacing:.01em}
+}

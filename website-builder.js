@@ -223,7 +223,7 @@ function renderPageManager(){
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
- box.innerHTML='<div class="control-title">Business branding</div><small>Add your business logo. Your business name remains editable directly in the website preview.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Replace logo</button><button type="button" data-image-action="remove" data-image-target="logo">Remove</button>':'<button type="button" data-image-action="add" data-image-target="logo">Add logo</button>')+'</div>';
+ box.innerHTML='<div class="control-title">Business branding</div><small>Add your business logo. Your business name is controlled by Business Settings. Use the builder for the logo, layout, colours, text and imagery.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Replace logo</button><button type="button" data-image-action="remove" data-image-target="logo">Remove</button>':'<button type="button" data-image-action="add" data-image-target="logo">Add logo</button>')+'</div>';
  box.querySelectorAll('[data-image-action]').forEach(el=>el.addEventListener('click',()=>{if(el.dataset.imageAction==='remove'){removeImage('logo');return}const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();}));
 }
 function renderBusinessExtras(){
@@ -549,6 +549,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name)siteName=profile[0].business_name;}catch{}
  return tenantId;
 }
 

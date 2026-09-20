@@ -6,8 +6,8 @@
 (()=>{
   const sectionIds=['overview','shop','orders','selling','returns','profile'];
   const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-  const KEY_STORAGE='tradeflow_testlab_publishable_key';
-  const SESSION_STORAGE='tradeflow_testlab_session';
+  const KEY_STORAGE='tradeflow_customer_publishable_key';
+  const SESSION_STORAGE='tradeflow_customer_session';
   const tenantId=new URLSearchParams(location.search).get('tenant_id');
   const show=(id,updateHash=true)=>{
     const target=sectionIds.includes(id)?id:'overview';

@@ -1,10 +1,51 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Settings</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8"></head><body>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Settings</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8"></head>
+<body>
 <header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a><div class="account"><strong id="business-name">Business Settings</strong><button id="sign-out" type="button">Sign out</button></div></header>
-<main class="layout"><aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav><a href="subscriber-dashboard.html">Dashboard</a><div class="nav-section">Business flow</div><a href="buying-dashboard.html">Buying</a><a href="acquisition-dashboard.html">Acquisitions</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a><div class="nav-section">Business</div><a href="finance-dashboard.html">Finance &amp; Payments</a><a href="categories.html">Categories &amp; Products</a><div class="nav-section">Website</div><a href="subscriber-website.html">Website</a><a href="domain-settings.html">Website URL</a><div class="nav-section">Settings</div><a class="active" href="settings.html">Settings</a></nav></aside>
-<section class="content"><div class="page-heading"><div><div class="eyebrow">Business configuration</div><h1>Settings</h1><p class="intro">Manage the business details that support your buying, selling and customer website.</p></div></div><div id="message" class="small"></div>
+<main class="layout"><aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav>
+<a href="subscriber-dashboard.html">Dashboard</a><div class="nav-section">Business flow</div>
+<a href="buying-dashboard.html">Buying</a><a href="acquisition-dashboard.html">Acquisitions</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a>
+<div class="nav-section">Business</div><a href="customers.html">Customers</a><a href="finance-dashboard.html">Finance &amp; Payments</a><a href="categories.html">Categories &amp; Products</a>
+<div class="nav-section">Website</div><a href="subscriber-website.html">Website</a><a href="domain-settings.html">Website URL</a>
+<div class="nav-section">Settings</div><a class="active" href="settings.html">Settings</a>
+</nav></aside>
+<section class="content">
+<div class="page-heading"><div><div class="eyebrow">Business configuration</div><h1>Business settings</h1><p class="intro">Manage the business information customers see and the settings that support your TradeFlow account.</p></div></div>
+<div id="message" class="small"></div>
+
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Customer-facing identity</div><h2>Business details</h2></div><span class="status-pill">Subscriber editable</span></div>
+<p>These details are used by the customer-facing website. TradeFlow keeps the website structure and customer account controls in place; you control the information shown in the business profile.</p>
+<form id="profile-form"><div class="form-grid">
+<label>Business name<input id="business-name-input" required></label>
+<label>Customer-facing email<input id="public-email" type="email" placeholder="customers@example.co.uk"></label>
+<label>Telephone<input id="public-phone" type="tel"></label>
+<label>Country<input id="country-code" value="GB" maxlength="2"></label>
+<label>Address line 1<input id="address-line1"></label>
+<label>Address line 2<input id="address-line2"></label>
+<label>Town / city<input id="city"></label>
+<label>County<input id="county"></label>
+<label>Postcode<input id="postcode"></label>
+<label class="full">Customer-facing business description<textarea id="description" rows="4" placeholder="Tell customers what your business does and how you can help."></textarea></label>
+</div>
+<div class="form-grid">
+<label><span>Show email to customers</span><input id="show-email" type="checkbox" checked></label>
+<label><span>Show telephone to customers</span><input id="show-phone" type="checkbox" checked></label>
+<label><span>Show address to customers</span><input id="show-address" type="checkbox" checked></label>
+</div>
+<p><button type="submit">Save business details</button></p></form>
+</section>
+
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website identity</div><h2>Logo &amp; design</h2></div></div>
+<p>Your logo and visual design remain in the Website Builder. The business name above is the authoritative customer-facing business name and is not replaced by website template text.</p>
+<div class="actions"><a href="subscriber-website.html">Open Website Area</a><a href="website-builder.html">Open Website Builder</a></div>
+</section>
+
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website</div><h2>Website URL</h2></div></div><p>Manage the customer-facing domain separately from the website design.</p><div class="actions"><a href="domain-settings.html">Manage website URL</a></div></section>
+
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
 <form id="method-form" style="margin-top:18px"><div class="form-grid"><label>Payment method<select id="method-code"><option value="card">Card</option><option value="bank_transfer">Bank transfer</option><option value="cash">Cash</option><option value="paypal">PayPal</option><option value="other">Other</option></select></label><label>Display name<input id="method-name" placeholder="Card payment" required></label><label class="full">Customer instructions<textarea id="method-instructions" rows="2" placeholder="Optional instructions shown to customers."></textarea></label></div><p><button type="submit">Add or update payment method</button></p></form></section>
+
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=1"></script></body></html>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=2"></script>
+</body></html>

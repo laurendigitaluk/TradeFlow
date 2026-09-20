@@ -150,7 +150,7 @@ function renderFooter(site){
  const links=Array.isArray(footer.links)?footer.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
  const out=links.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
- return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'</nav><small>Powered by TradeFlow</small></footer>';
+ return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'<a href="'+pageUrl('buying')+'">What We Buy</a><a href="'+pageUrl('shop')+'">What We Sell</a><a href="'+customerUrl()+'">Customer Login</a></nav><small>Powered by TradeFlow</small></footer>';
 }
 
 function renderBusinessExtras(site){
@@ -176,7 +176,7 @@ function renderHome(site,catalogue,listings){
  if(sections.hero!==false)out+=ordered;
  else out+=ordered;
  out+=renderHomepageTiles(site);
- return out+renderFooter(site);
+ return out+renderCustomerContact()+renderFooter(site);
 }
 
 
@@ -308,6 +308,26 @@ async function loadListings(tenant){
  }catch(e){console.warn('TradeFlow retail listings unavailable:',e);window.__tradeflowListings=[];}
 }
 
+async function loadPublicProfile(tenant){
+ if(!tenant)return;
+ try{
+   const rows=await api('/rest/v1/tenant_public_profiles?select=business_name,public_email,public_phone,address_line1,address_line2,city,county,postcode,country_code,description,logo_url,show_email,show_phone,show_address&tenant_id=eq.'+encodeURIComponent(tenant));
+   window.__tradeflowPublicProfile=Array.isArray(rows)&&rows.length?rows[0]:null;
+ }catch(e){console.warn('TradeFlow public business profile unavailable:',e);window.__tradeflowPublicProfile=null;}
+}
+function renderCustomerContact(){
+ const p=window.__tradeflowPublicProfile||{};
+ const lines=[];
+ if(p.show_address!==false && (p.address_line1||p.address_line2||p.city||p.county||p.postcode)){
+   lines.push('<p>'+[p.address_line1,p.address_line2,p.city,p.county,p.postcode,p.country_code].filter(Boolean).map(esc).join('<br>')+'</p>');
+ }
+ if(p.show_phone!==false&&p.public_phone)lines.push('<p><strong>Telephone:</strong> <a href="tel:'+esc(p.public_phone)+'">'+esc(p.public_phone)+'</a></p>');
+ if(p.show_email!==false&&p.public_email)lines.push('<p><strong>Email:</strong> <a href="mailto:'+esc(p.public_email)+'">'+esc(p.public_email)+'</a></p>');
+ if(p.description)lines.unshift('<p>'+esc(p.description).replace(/\n/g,'<br>')+'</p>');
+ if(!lines.length)return '';
+ return '<section class="public-section contact-section"><div class="section-intro"><div><h2>Contact us</h2>'+lines.join('')+'</div></div></section>';
+}
+
 async function loadDraftPreview(){
  if(!tenantId)throw new Error('No subscriber tenant was supplied for preview.');
  let subscriberSession=null;
@@ -327,6 +347,7 @@ async function loadDraftPreview(){
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
  window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(tenantId);
  await loadListings(tenantId);
+ await loadPublicProfile(tenantId);
  applyContent(drafts[0].content);
 }
 
@@ -338,7 +359,7 @@ async function loadByTenant(){
  if(!selected)throw new Error('No published website was found for this subscriber.');
  try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(tenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
  await loadListings(tenantId);
- applyContent(selected.content);
+ await loadPublicProfile(tenantId);applyContent(selected.content);
 }
 
 async function loadByHostname(){
@@ -350,6 +371,7 @@ async function loadByHostname(){
  activeTenantId=siteTenantId;
  try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(siteTenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
  await loadListings(siteTenantId);
+ await loadPublicProfile(siteTenantId);
  applyContent(rows[0].content);
 }
 

@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Customers</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8"></head><body>
+<header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a><div class="account"><strong id="business-name">Customers</strong><button id="sign-out" type="button">Sign out</button></div></header>
+<main class="layout"><aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav>
+<a href="subscriber-dashboard.html">Dashboard</a><div class="nav-section">Business flow</div>
+<a href="buying-dashboard.html">Buying</a><a href="acquisition-dashboard.html">Acquisitions</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a>
+<div class="nav-section">Business</div><a class="active" href="customers.html">Customers</a><a href="finance-dashboard.html">Finance &amp; Payments</a><a href="categories.html">Categories &amp; Products</a>
+<div class="nav-section">Website</div><a href="subscriber-website.html">Website</a><a href="domain-settings.html">Website URL</a>
+<div class="nav-section">Settings</div><a href="settings.html">Settings</a>
+</nav></aside>
+<section class="content"><div class="page-heading"><div><div class="eyebrow">Customer records</div><h1>Customers</h1><p class="intro">Manage the customers belonging to this subscriber business. Customer records are isolated from every other TradeFlow business.</p></div></div>
+<div id="message" class="small"></div>
+<section class="panel"><div class="form-grid"><label class="full">Search customers<input id="customer-search" type="search" placeholder="Name, email, reference or phone"></label></div></section>
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Customer database</div><h2 id="customer-count">Customers</h2></div><span class="status-pill">Tenant scoped</span></div><div id="customer-list" class="empty">Loading customers…</div></section>
+<section class="panel" id="customer-editor" hidden><div class="panel-heading"><div><div class="eyebrow">Customer details</div><h2>Edit customer</h2></div></div><form id="customer-form"><div class="form-grid">
+<label>Customer reference<input id="edit-reference" disabled></label><label>Status<select id="edit-status"><option value="active">Active</option><option value="inactive">Inactive</option></select></label>
+<label>First name<input id="edit-first-name" required></label><label>Last name<input id="edit-last-name"></label>
+<label>Email<input id="edit-email" type="email"></label><label>Phone<input id="edit-phone" type="tel"></label>
+</div><div class="actions"><button type="submit">Save customer</button><button id="close-editor" type="button">Close</button></div></form></section>
+</section></main>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="customers.js?v=1"></script>
+</body></html>

@@ -585,6 +585,30 @@ async function loadDraft(){
  setStatus('Website loaded. Click the page and edit directly on the preview.','success');
 }
 
+function resetDesignToDefaults(){
+ if(!window.confirm('Reset the website design to its factory defaults? Your page text, pages and uploaded images will be kept.'))return;
+ const palette=templatePalettes.editorial||{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'};
+ currentTemplate='editorial';
+ themeColors=Object.assign({},palette,{background_id:'clean-wave',background_mode:'preset'});
+ typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
+ templateCopy=Object.assign({},templateDefaults.editorial);
+ homepageTileCount=8;
+ homepageTileColumns=4;
+ homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};
+ homepageOrder=['hero','buy','sell','trust'];
+ applyWebsiteBackground();
+ renderTemplates();
+ renderHomepageControls();
+ renderHeroImageControls();
+ renderDesignControls();
+ renderBrandingControls();
+ renderTypographyControls();
+ renderSectionControls();
+ renderHeaderFooterControls();
+ renderEditor();
+ markDirty();
+ setStatus('Design reset to factory defaults. Your content, pages and images were kept. Save the draft to keep the reset.','success');
+}
 async function saveDraft(){
  if(!draftRevisionId)await loadDraft();
  setStatus('Saving website draft…');
@@ -620,6 +644,7 @@ function initBuilder(){
    if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
  });
  $('save-draft').addEventListener('click',()=>saveDraft().catch(e=>setStatus(e.message||String(e),'error')));
+ $('reset-design').addEventListener('click',resetDesignToDefaults);
  $('publish').addEventListener('click',()=>publish().catch(e=>setStatus(e.message||String(e),'error')));
  $('preview-customer').addEventListener('click',()=>location.href='customer-dashboard-preview.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):''));
  $('preview-site').addEventListener('click',e=>{

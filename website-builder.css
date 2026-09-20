@@ -282,6 +282,9 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor .tpl-hero>* ,.site-editor .template-section>* ,.site-editor .editor-page>* ,.site-editor .premium-hero>* ,.site-editor .dual-intro>* ,.site-editor .home-tile-section>*{position:relative;z-index:1}
 
 
+
+/* Background system v2: the main hero uses the subscriber's Page background colour as its base. The selected preset remains an overlay, so Page background stays editable. */
+.site-editor .tpl-hero{background:var(--page-bg)!important}
 /* Website background system v2: specialist presets are an independent visual layer. */
 .background-mode-row{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0 10px}.background-mode{border:1px solid #d7dee3;background:#fff;color:#26313a;border-radius:7px;padding:7px 8px;font-size:10px;font-weight:800;cursor:pointer}.background-mode:hover{border-color:var(--accent,#c46a2b)}.background-mode.selected{border-color:var(--accent,#c46a2b);background:color-mix(in srgb,var(--accent,#c46a2b) 10%,#fff);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent,#c46a2b) 22%,transparent)}
 .site-editor{position:relative}.site-editor[data-background-mode="custom"] .tpl-hero::before,.site-editor[data-background-mode="custom"] .template-section::before,.site-editor[data-background-mode="custom"] .homepage-tiles::before,.site-editor[data-background-mode="custom"] .full-page::before{display:none}

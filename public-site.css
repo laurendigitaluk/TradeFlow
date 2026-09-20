@@ -106,4 +106,5 @@ body[data-template="impact"] .public-section{border-top:0}body[data-template="im
   .public-nav-links>a:hover,.public-nav-dropdown>summary:hover,.tpl-actions a:hover,.section-primary:hover,.start-selling:hover,.editable-home-tile .tile-copy b:hover,.buy-category-card a:hover,.sell-product-card a:hover,.shop-product a:hover{transform:translateY(-1px)}
   .editable-home-tile:hover .tile-copy b,.buy-category-card:hover a,.sell-product-card:hover a,.shop-product:hover a{letter-spacing:.01em}
 }
-\nbody{background-color:var(--site-background-color,var(--page-bg));background-image:var(--site-background-image,none);background-size:var(--site-background-size,cover);background-repeat:var(--site-background-repeat,no-repeat);background-attachment:fixed}.public-page,.public-section{background-color:color-mix(in srgb,var(--page-bg) 94%,transparent)}
+
+body{background-color:var(--site-background-color,var(--page-bg));background-image:var(--site-background-image,none);background-size:var(--site-background-size,cover);background-repeat:var(--site-background-repeat,no-repeat);background-attachment:fixed}.public-page,.public-section{background-color:color-mix(in srgb,var(--page-bg) 94%,transparent)}

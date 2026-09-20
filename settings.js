@@ -22,7 +22,7 @@ async function uploadLogo(file){
  const t=await r.text();if(!r.ok)throw Error(t||'Logo upload failed.');
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({logo_url:url})});
- try{await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,mime_type:file.type,byte_size:file.size,status:'active',created_by:a?.user?.id||null,asset_kind:'site_logo',retention_policy:'permanent'})})}catch(e){console.warn('Logo metadata insert failed',e)}
+ try{await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,mime_type:file.type,byte_size:file.size,status:'active',created_by:null,asset_kind:'site_logo',retention_policy:'permanent'})})}catch(e){console.warn('Logo metadata insert failed',e)}
  renderLogo(url);msg('Business logo saved.','success');
 }
 async function removeLogo(){

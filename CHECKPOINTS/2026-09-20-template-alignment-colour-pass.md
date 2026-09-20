@@ -144,3 +144,14 @@ template-alignment-colour-pass
 - website-builder.js and public-site.js full syntax checks: PASS.
 - PR #25 merged to main as 9804680b02dbbf2e82ed416d0616379b436846e3.
 - No Supabase schema or data changes.
+
+## Background simplification — 20 September 2026
+- Created restore branch `restore-before-background-simplification-2026-09-20` from main before changing the background system.
+- Replaced the 30 specialist/illustrated backgrounds with 12 simple choices: six gradients, five clear patterns, and one dark geometric pattern.
+- Removed the legacy background rendering CSS/patch layers and consolidated the builder/public background overlay into one predictable system.
+- Custom Colours mode now means no background pattern or gradient overlay.
+- Preset patterns use the subscriber's accent colour where appropriate, so pattern choices remain visually relevant when branding changes.
+- Increased preset overlay visibility from 22% to 42% so patterns remain visible against the page colour.
+- JavaScript syntax check: PASS.
+- PR #26 merged to main as `33d2efd79a04383cb5385c5a7893b6f60ad9f6de`.
+- No Supabase schema or data changes.

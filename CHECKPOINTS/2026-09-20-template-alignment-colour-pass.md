@@ -46,3 +46,13 @@ The common customer content structure remains aligned below the hero: What We Bu
 
 ## Branch
 template-alignment-colour-pass
+
+## Follow-up pass
+
+- Homepage tile counts expanded to 3, 4, 6, 8, 9, 10 and 12.
+- Homepage tile columns expanded to 2, 3 and 4 per row.
+- Added 12 real default tile slots so the 12-tile option is functional rather than cosmetic.
+- What We Buy and What We Sell image controls are protected from homepage drag handling.
+- Hero, What We Buy, What We Sell, category, product and tile image placeholders no longer display instructional placeholder text in the template/public renderers.
+- Public and builder image areas remain neutral visual spaces until an image is supplied.
+- JavaScript syntax checks pass after the follow-up changes.

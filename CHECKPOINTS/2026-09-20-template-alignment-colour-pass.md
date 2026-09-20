@@ -98,3 +98,20 @@ template-alignment-colour-pass
 - Visual system changes are accumulated on the template-alignment-colour-pass branch.
 - Ready to apply the accumulated visual batch to main after final branch comparison.
 - Browser verification remains a post-deployment check because browser/computer tooling is not available in this workspace.
+
+
+## Website background system v2 — 20 September 2026
+- Reworked the website background model so specialist preset backgrounds and brand-colour surfaces are separate systems.
+- Added explicit **Preset background** and **Custom colours** modes in the Website Builder.
+- Selecting a specialist preset automatically activates preset mode.
+- Selecting Custom colours disables the specialist background layer while retaining the selected preset for later reuse.
+- Switching between modes no longer destroys the selected preset.
+- Changing individual brand colours or a quick palette no longer changes the active background mode or removes the selected specialist background.
+- Builder and public-site rendering now receive the same saved `background_mode` setting.
+- Preset backgrounds are rendered as an independent visual layer above section colour surfaces, while section colours remain independently editable.
+- Asset versions bumped for the builder and public site to reduce stale-cache issues.
+- No Supabase migrations or schema/data changes.
+- `website-builder.js` syntax check: PASS.
+- `public-site.js` syntax check: PASS.
+- PR #22 merged to main as `39e5a230284e8f2ce1c7d9302eb8a53c5d3c5a10`.
+- Browser verification remains pending after GitHub Pages deployment.

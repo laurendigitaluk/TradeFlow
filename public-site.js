@@ -223,28 +223,21 @@ function bindSellWizard(site,catalogue){
 
 function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
- const products=Array.isArray(catalogue?.products)?catalogue.products:[];
- const selectedId=new URLSearchParams(location.search).get('category');
- const shown=selectedId?cats.filter(c=>String(c.id)===String(selectedId)):cats;
- const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>Start here</strong><span>Choose what you have to sell to start your valuation.</span></div><label><span>Start your valuation</span><select aria-label="Start your valuation" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- const cards=shown.map(cat=>{
-   const items=products.filter(p=>p.category_id===cat.id);
-   const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});
-   const groups=Object.entries(grouped).map(([maker,list])=>'<div class="manufacturer-group"><h3>'+esc(maker)+'</h3><div class="product-list">'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+(p.branch_name?'<small>'+esc(p.branch_name)+'</small>':'')+'</article>').join('')+'</div></div>').join('');
-   return '<section class="buying-category-page"><div class="category-page-head"><div><h2>'+esc(cat.name)+'</h2></div><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong></div><p>'+esc(cat.description||'')+'</p>'+groups+'<a class="start-selling" href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Start selling this category →</a></section>';
- }).join('');
- return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><h1>What We Buy</h1><p>Choose a category, see what we are currently looking for, then start your selling request.</p></div>'+selector+(cards||'<div class="connected-empty">This business has not published a buying list yet.</div>')+'</main>'+renderFooter(site);
+ const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
+ const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>Start here</strong><span>Choose what you have to sell to start your valuation.</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
+ return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const cards=list.map(p=>'<article class="shop-product"><div class="shop-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'Product')+'</span><h2>'+esc(p.title||'Product')+'</h2><p>'+esc(p.description||'Available from this business.')+'</p><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><span>WHAT WE SELL</span><h1>'+(esc(site.pages?.find(p=>p.slug==='shop')?.title||'What We Sell'))+'</h1><p>'+esc(site.pages?.find(p=>p.slug==='shop')?.body||'Browse our current retail range.')+'</p></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{};
+ const cards=list.map(item=>'<article class="shop-product"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Sell')+'</h1><p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function renderContentPage(site,p){
  const image=p.image_url?'<img class="content-page-image" src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||p.title||'Page image')+'">':'';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><span>YOUR BUSINESS</span><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function applyContent(content){

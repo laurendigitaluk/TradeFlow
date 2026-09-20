@@ -177,3 +177,14 @@ template-alignment-colour-pass
 - Builder JavaScript syntax: PASS. Public JavaScript syntax: PASS.
 - PR #32 merged to main as `45e3021b0d4f029d656e64a502ce60d52589979e`.
 - No Supabase schema or data changes.
+
+## Customer-facing page cleanup and editable page tiles — 20 September 2026
+- Removed fixed template labels such as `WHAT WE SELL`, `WHAT WE BUY` and `YOUR BUSINESS` from customer-facing page renderers where they were acting as non-editable placeholder text.
+- What We Buy customer page now presents a simple **Start here** category dropdown and no longer exposes the buying catalogue's manufacturer/model/branch listing to customers.
+- What We Sell customer page keeps the published retail inventory but also supports independent editable visual tiles.
+- What We Buy and What We Sell pages now each support their own tile count (3/4/6/8/9/10/12) and columns (2/3/4), with editable image, title, description and link text. These page tiles are separate from homepage tiles.
+- Legacy default page body placeholders are cleared when loading the builder (for example the old shop welcome text and contact instruction).
+- Existing background simplification remains intact; no new database schema is required because page tile configuration is stored with the existing website page content JSON.
+- Renderer assets bumped: Website Builder JS v59 and public-site JS v53.
+- Full syntax checks for both JavaScript files: PASS.
+- A restore branch `restore-before-background-simplification-2026-09-20` was created from main before the background simplification work and remains available as a code restore point.

@@ -283,3 +283,5 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor[data-background-mode="custom"] .tpl-hero::before,.site-editor[data-background-mode="custom"] .template-section::before,.site-editor[data-background-mode="custom"] .editor-page::before,.site-editor[data-background-mode="custom"] .premium-hero::before,.site-editor[data-background-mode="custom"] .dual-intro::before,.site-editor[data-background-mode="custom"] .home-tile-section::before,.site-editor[data-background-mode="custom"] .homepage-tiles::before,.site-editor[data-background-mode="custom"] .full-page::before{display:none}
 .site-editor .tpl-hero{background:var(--page-bg)!important}
 
+
+.design-reset-button{display:block;width:100%;margin:10px 0 12px;padding:8px 10px;border:1px solid #d2d9de;border-radius:7px;background:#fff;color:#27313a;font-size:10px;font-weight:800;cursor:pointer}.design-reset-button:hover{border-color:var(--accent);background:#f8fafb}

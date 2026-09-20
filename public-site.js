@@ -132,11 +132,12 @@ function renderSellingSection(site,listings){
 function renderHomepageTiles(site){
  const home=site.homepage||{};
  const tiles=Array.isArray(home.tiles)?home.tiles:[];
- const count=[6,8,10].includes(Number(home.tile_count))?Number(home.tile_count):8;
+ const count=[3,4,6,8,9,10,12].includes(Number(home.tile_count))?Number(home.tile_count):8;
+ const columns=[2,3,4].includes(Number(home.tile_columns))?Number(home.tile_columns):4;
  const visible=tiles.slice(0,count);
  if(!visible.length)return '';
  const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span>Image</span>')+'</div><div class="tile-copy">'+(tile.title?'<h3>'+esc(tile.title)+'</h3>':'')+(tile.body?'<p>'+esc(tile.body)+'</p>':'')+(tile.cta?'<b>'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
- return '<section class="homepage-tiles"><div class="homepage-tile-grid">'+cards+'</div></section>';
+ return '<section class="homepage-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+columns+'">'+cards+'</div></section>';
 }
 
 function renderTrust(){

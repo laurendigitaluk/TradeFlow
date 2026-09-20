@@ -104,11 +104,26 @@ function defaultPages(){
    slug:p.slug,title:p.title,enabled:p.enabled,
    body:p.slug==='shop'?'Welcome to our shop. Browse our current products below.':
         p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',
-   image_url:'',image_alt:'',image_url2:'',image_alt2:'',seo_title:'',seo_description:''
+   image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
  }));
 }
 let pages=defaultPages();
 
+function defaultPageTiles(prefix){
+ return Array.from({length:12},(_,i)=>({id:prefix+'-'+(i+1),title:'',body:'',image_url:'',image_alt:'',cta:''}));
+}
+function ensurePageTileCapacity(tiles,prefix){
+ const existing=Array.isArray(tiles)?tiles:[];const byId=new Map(existing.map(t=>[t.id,t]));
+ return defaultPageTiles(prefix).map(d=>byId.has(d.id)?Object.assign({},d,byId.get(d.id)):Object.assign({},d));
+}
+function cleanPageTiles(tiles,prefix){
+ const defaults=new Map(defaultPageTiles(prefix).map(t=>[t.id,t]));
+ return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
+}
+function pageTileConfig(p){
+ const prefix=p.slug==='shop'?'shop-tile':'buying-tile';
+ return {tiles:ensurePageTileCapacity(cleanPageTiles(p.tiles,prefix),prefix),count:[3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6,columns:[2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3};
+}
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 function setStatus(text,type){const el=$('status');if(el){el.textContent=text||'';el.dataset.type=type||''}}
 function markDirty(){dirty=true;const el=$('save-state');if(el)el.textContent='Unsaved changes';}
@@ -141,10 +156,26 @@ function renderHeroImageControls(){
 }
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
+ const p=currentPage();
+ const isCustomPage=p.slug==='buying'||p.slug==='shop';
+ if(isCustomPage){
+   const cfg=pageTileConfig(p);
+   p.tiles=cfg.tiles;p.tile_count=cfg.count;p.tile_columns=cfg.columns;
+   box.innerHTML='<div class="tile-count-title">'+(p.slug==='shop'?'What We Sell':'What We Buy')+' page tiles</div><div class="tile-counts">'+[3,4,6,8,9,10,12].map(n=>'<button type="button" class="tile-count '+(cfg.count===n?'selected':'')+'" data-page-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><div class="tile-count-title">Tiles per row</div><div class="tile-counts">'+[2,3,4].map(n=>'<button type="button" class="tile-count '+(cfg.columns===n?'selected':'')+'" data-page-tile-columns="'+n+'">'+n+' per row</button>').join('')+'</div><small>Add images, headings, descriptions and links directly in the page preview. These tiles are separate from the homepage.</small>';
+   box.querySelectorAll('[data-page-tile-count]').forEach(b=>b.addEventListener('click',()=>{p.tile_count=Number(b.dataset.pageTileCount);renderHomepageControls();renderEditor();markDirty();}));
+   box.querySelectorAll('[data-page-tile-columns]').forEach(b=>b.addEventListener('click',()=>{p.tile_columns=Number(b.dataset.pageTileColumns);renderHomepageControls();renderEditor();markDirty();}));
+   return;
+ }
  box.innerHTML='<div class="tile-count-title">Homepage tile layout</div><div class="tile-counts">'+[3,4,6,8,9,10,12].map(n=>'<button type="button" class="tile-count '+(homepageTileCount===n?'selected':'')+'" data-tile-count="'+n+'">'+n+' tiles</button>').join('')+'</div><div class="tile-count-title">Tiles per row</div><div class="tile-counts">'+[2,3,4].map(n=>'<button type="button" class="tile-count '+(homepageTileColumns===n?'selected':'')+'" data-tile-columns="'+n+'">'+n+' per row</button>').join('')+'</div><small>Choose how many visual tiles appear and how many sit on each row. TradeFlow keeps the selected layout on the customer website.</small>';
  box.querySelectorAll('[data-tile-count]').forEach(b=>b.addEventListener('click',()=>{homepageTileCount=Number(b.dataset.tileCount);renderHomepageControls();renderEditor();markDirty();}));
  box.querySelectorAll('[data-tile-columns]').forEach(b=>b.addEventListener('click',()=>{homepageTileColumns=Number(b.dataset.tileColumns);renderHomepageControls();renderEditor();markDirty();}));
 }
+function renderPageTilesEditor(p){
+ const cfg=pageTileConfig(p);p.tiles=cfg.tiles;p.tile_count=cfg.count;p.tile_columns=cfg.columns;
+ const visible=cfg.tiles.slice(0,cfg.count);
+ return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>'<article class="editable-home-tile page-tile" draggable="true" data-page-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'"><button type="button" data-image-action="remove" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Remove</button>':'<button type="button" data-image-action="add" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('')+'</div></section>';
+}
+
 function resetDesignColours(){
  const p=templatePalettes[currentTemplate]||templatePalettes.editorial;
  themeColors={...themeColors,accent:p.accent,text:p.text,page_bg:p.page_bg,header_bg:p.header_bg,buy_bg:p.buy_bg,sell_bg:p.sell_bg,footer_bg:p.footer_bg,background_id:'clean-wave',background_mode:'preset'};
@@ -174,7 +205,7 @@ function renderHeaderFooterControls(){
 function renderPageManager(){
  const box=$('page-manager');if(!box)return;
  box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>';
- const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',image_url:'',image_alt:'',image_url2:'',image_alt2:'',seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
+ const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:0,tile_columns:3,tiles:[],seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
@@ -253,7 +284,7 @@ function buyingPreview(){
    const items=products.filter(p=>p.category_id===cat.id);
    const image=items.find(p=>p.image_url)?.image_url||'';
    const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'">':'<span aria-hidden="true"></span>';
-   return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><span>WHAT WE BUY</span><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="#" data-nav-page="buying">Sell this type →</a></div></article>';
+   return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="#" data-nav-page="buying">Sell this type →</a></div></article>';
  }).join('');
  return '<div class="buy-category-grid">'+cards+'</div>';
 }
@@ -303,9 +334,9 @@ function renderHome(){
 
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
- if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block"><span>WHAT WE BUY</span>'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'Tell customers what you are looking for and how selling to you works.','p')+'</div>'+buyingPreview()+'</section>'+footerMarkup();
- if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block"><span>WHAT WE SELL</span>'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'Browse our current retail range.','p')+'</div>'+sellingPreview()+'<div class="retail-note">Retail products are connected to Inventory → Selling.</div></section>'+footerMarkup();
- return navMarkup()+'<section class="full-page content-page"><div class="page-title-block"><span>YOUR BUSINESS</span>'+ (managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+ (managed?'<p>TradeFlow manages the customer account area.</p>':editText('page-body',p.body||pageDef(p.slug).prompt,'p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
+ if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ return navMarkup()+'<section class="full-page content-page"><div class="page-title-block">'+(managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+(managed?'':editText('page-body',p.body||'','p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
 }
 function renderEditor(){
  const p=currentPage();
@@ -327,7 +358,7 @@ function bindEditor(){
      if(field==='intro')intro=el.innerText.trim();
      if(field==='page-title'){currentPage().title=el.innerText.trim()||pageDef(currentPage().slug).title;renderPageList();}
      if(field==='page-body')currentPage().body=el.innerText.replace(/\r/g,'').trim();
-     if(el.dataset.tileField){const tile=homepageTiles.find(t=>t.id===el.dataset.tileId);if(tile)tile[el.dataset.tileField]=el.innerText.trim();}
+     if(el.dataset.tileField){const tileId=el.dataset.tileId||el.dataset.pageTileId;const pageTile=el.dataset.pageTileId&&currentPage().tiles?.find(t=>t.id===el.dataset.pageTileId);const tile=homepageTiles.find(t=>t.id===tileId);if(pageTile)pageTile[el.dataset.tileField]=el.innerText.trim();else if(tile)tile[el.dataset.tileField]=el.innerText.trim();}
      if(field==='buyHeading')homeBuyHeading=el.innerText.trim();
      if(field==='buyIntro')homeBuyIntro=el.innerText.trim();
      if(field==='sellHeading')homeSellHeading=el.innerText.trim();
@@ -366,7 +397,7 @@ function selectPage(slug){
  const next=new URL(location.href);
  next.searchParams.set('page',slug);
  history.replaceState(null,'',next.toString());
- renderPageList();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
+ renderPageList();renderHomepageControls();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function applyTemplate(template){
@@ -433,7 +464,7 @@ function loadContent(content){
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
-   body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',seo_title:p.seo_title||'',seo_description:p.seo_description||''
+   body:p.body||'',image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
  renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();

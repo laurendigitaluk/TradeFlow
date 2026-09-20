@@ -226,3 +226,38 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor.template-luxe .template-section{border-top:1px solid rgba(196,154,88,.16)}.site-editor.template-luxe .section-intro h2{font-weight:500;letter-spacing:-.03em}.site-editor.template-luxe .buy-category-card,.site-editor.template-luxe .sell-product-grid article{border-color:rgba(196,154,88,.28);border-radius:3px}.site-editor.template-luxe .home-tile{border-color:rgba(196,154,88,.28);border-radius:3px;box-shadow:none}
 .site-editor.template-commerce .template-section{border-top:1px solid rgba(20,30,40,.08)}.site-editor.template-commerce .buy-category-card,.site-editor.template-commerce .sell-product-grid article{border-radius:4px}.site-editor.template-commerce .sell-product-grid article strong{font-size:15px}.site-editor.template-commerce .home-tile{border-radius:4px;box-shadow:0 8px 22px rgba(20,30,40,.07)}
 .site-editor.template-impact .template-section{border-top:0}.site-editor.template-impact .section-intro h2{font-weight:900;letter-spacing:-.05em}.site-editor.template-impact .buy-category-card,.site-editor.template-impact .sell-product-grid article{border:0;border-left:5px solid var(--accent);border-radius:0;background:var(--header-bg)}.site-editor.template-impact .home-tile{border:0;border-left:5px solid var(--accent);border-radius:0;box-shadow:none}
+
+
+/* Refined interactive cards: subtle lift and image movement on hover. */
+@media (hover:hover) and (pointer:fine){
+  .site-editor .home-tile,
+  .site-editor .buy-category-card,
+  .site-editor .sell-product-card{
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+    will-change:transform;
+  }
+  .site-editor .home-tile:hover,
+  .site-editor .buy-category-card:hover,
+  .site-editor .sell-product-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 14px 30px rgba(20,30,40,.12);
+  }
+  .site-editor .home-tile .tile-image img,
+  .site-editor .buy-category-image img,
+  .site-editor .sell-product-card .sell-photo img{
+    transition:transform .28s ease;
+  }
+  .site-editor .home-tile:hover .tile-image img,
+  .site-editor .buy-category-card:hover .buy-category-image img,
+  .site-editor .sell-product-card:hover .sell-photo img{
+    transform:scale(1.035);
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .site-editor .home-tile,
+  .site-editor .buy-category-card,
+  .site-editor .sell-product-card,
+  .site-editor .home-tile .tile-image img,
+  .site-editor .buy-category-image img,
+  .site-editor .sell-product-card .sell-photo img{transition:none}
+}

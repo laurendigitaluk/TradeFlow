@@ -332,3 +332,6 @@ The automated Voila option is currently represented in the UI but deliberately d
 TradeFlow does not handle customer shipping payments or shipping expenses. For items a customer is selling to a subscriber, the **customer is responsible for arranging and paying for shipping**. TradeFlow does not add shipping to the accepted offer, collect a shipping payment, reimburse the customer, or record customer shipping as a TradeFlow business expense.
 
 The shipping handoff is an information and workflow facility only. It may contain a subscriber-provided label, URL, QR code, courier/service details, tracking information and instructions. The subscriber can use its own shipping arrangement or the future Voila route. The financial responsibility for shipping remains outside TradeFlow's transaction and accounting model.
+
+## Connected Parcel2Go shipping
+After an offer is accepted, a subscriber can use a connected Parcel2Go account instead of manually supplying a label. The customer enters parcel size and weight, reviews Parcel2Go services and prices, and continues to Parcel2Go to pay the shipping cost directly. The £ offer remains separate from shipping. Manual label and QR handoff remains available as an override.

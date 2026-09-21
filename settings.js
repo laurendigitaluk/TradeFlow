@@ -69,6 +69,18 @@ function renderShippingConnections(rows){
  box.innerHTML=providers.map(([code,name])=>{const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';return '<div style="border-top:1px solid #dfe4e8;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small">'+(x?.display_name?esc(x.display_name)+' · ':'')+'Uses the subscriber-owned provider account. Shipping charges remain outside TradeFlow.</div></div><span class="status-pill">'+esc(label)+'</span></div>'}).join('');
 }
 
+
+async function connectParcel2Go(){
+ const status=$('shipping-connect-status'),button=$('shipping-connect');
+ try{
+  const clientId=$('shipping-client-id').value.trim(),secret=$('shipping-client-secret').value,environment=$('shipping-environment').value;
+  if(!clientId||!secret)throw Error('Enter the Parcel2Go API client ID and secret.');
+  button.disabled=true;status.textContent='Saving the encrypted provider credential…';
+  await api('/rest/v1/rpc/subscriber_connect_shipping_provider',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:'parcel2go',p_environment:environment,p_api_client_id:clientId,p_api_client_secret:secret})});
+  $('shipping-client-secret').value='';status.textContent='Parcel2Go credentials saved securely. Connection test is the next step.';await load();
+ }catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
+}
+
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
@@ -131,3 +143,5 @@ $('logo-remove').onclick=()=>removeLogo().catch(err=>msg(err.message||String(err
 $('banner-upload').onclick=()=>{const i=$('banner-file-input');i.value='';i.click()};
 $('banner-file-input').onchange=e=>uploadBanner(e.target.files?.[0]).catch(err=>msg(err.message||String(err),'error'));
 $('banner-remove').onclick=()=>removeBanner().catch(err=>msg(err.message||String(err),'error'));
+
+$('shipping-connect').onclick=()=>connectParcel2Go();

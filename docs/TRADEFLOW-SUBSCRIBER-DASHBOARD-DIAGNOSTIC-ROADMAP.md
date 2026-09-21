@@ -962,3 +962,32 @@ The Buying controller cache-buster was advanced from v9 to v10 to avoid a stale 
 
 ### Known historical fault
 Older Buying controller versions attempted to use category_fields.name. The real column is category_fields.label. Current source and the existing customer-detail RPC use label. If that error appears after deployment, check browser cache/controller version before changing the database schema.
+
+## 21 September 2026 — Accepted Offer Shipping Handoff
+
+### User action
+Customer accepts the published offer.
+
+### Expected flow
+Published offer → customer accepts → acquisition status `accepted` → subscriber sees **Offer accepted — send customer shipping label** → subscriber publishes label/instructions → acquisition `awaiting_item` → customer sees shipping handoff → customer posts item.
+
+### Live test finding
+For `BR-744BA41BDC` / `BI-1D805A5FD3`, the live offer is `accepted` and the acquisition is `accepted`, while `buying_requests.status` and `buying_items.status` still show `offer_ready`. The workflow must therefore derive the customer-facing lifecycle from the offer/acquisition records rather than assuming the older request/item status is authoritative for the handoff.
+
+### Existing database support
+The live `acquisitions` table already contains the shipping handoff fields. No migration was required. The customer RPC `customer_get_acquisition_shipping()` already exposes them to the authenticated customer portal.
+
+### Repair
+- Buying workflow recognises accepted offer/acquisition state.
+- Accepted state is amber/action-required for the subscriber.
+- Subscriber can publish shipping label URL, carrier, service, tracking number and instructions from the Buying request.
+- Existing workflow transition changes accepted acquisition to `awaiting_item` after the label is published.
+- Customer Portal accepted-stage wording now points to the shipping-label handoff.
+
+### Failure points
+- Stale Buying controller cache.
+- Accepted offer hidden by an incorrect query/RLS path.
+- Subscriber lacks `acquisitions.manage` permission.
+- Shipping label URL omitted.
+- Direct status mutation bypassing `transition_workflow_entity()`.
+- Customer portal not refreshing `customer_get_acquisition_shipping()` after publication.

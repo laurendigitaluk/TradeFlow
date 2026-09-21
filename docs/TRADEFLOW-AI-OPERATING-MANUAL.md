@@ -779,3 +779,20 @@ The authoritative field metadata column is category_fields.label. Never query or
 
 ### Security boundary
 No tenant/RLS architecture was changed. The repair is UI/controller-only. Existing tenant-scoped REST/RPC access remains the source of truth.
+
+## Accepted Offer → Shipping Label Handoff — 21 September 2026
+
+### Correct lifecycle
+Customer accepts published offer → acquisition exists with status `accepted` → subscriber must send/provide shipping label → acquisition moves to `awaiting_item` → customer receives label/instructions → customer posts item → receiving workflow continues.
+
+### Important state rule
+Do not use only `buying_requests.status` or `buying_items.status` to decide whether the customer has accepted. The live test exposed a valid accepted offer/acquisition while the request and item statuses still showed `offer_ready`. Subscriber workflow rendering now checks the accepted offer and linked acquisition first.
+
+### Existing shipping infrastructure
+`acquisitions` already contains `shipping_label_url`, `shipping_carrier`, `shipping_service`, `shipping_tracking_number`, `shipping_instructions` and `posted_at`. `customer_get_acquisition_shipping()` exposes these fields to the authenticated customer. Do not create duplicate shipping tables for this workflow.
+
+### Subscriber action
+The current subscriber Buying detail provides a shipping handoff form. Publishing the label updates the existing acquisition and uses `transition_workflow_entity()` for `accepted` → `awaiting_item`. No direct acquisition status update is used.
+
+### Customer side
+The Customer Portal's accepted-sale message now describes the next step as awaiting the subscriber's shipping label. Its existing shipping handover section remains the source for the label, instructions, tracking and customer post confirmation.

@@ -8,9 +8,10 @@ function setValue(id,v){const e=$(id);if(e)e.value=v??''}
 function setChecked(id,v){const e=$(id);if(e)e.checked=v!==false}
 function renderEmailStatus(s){
  const pill=$('email-status-pill'),box=$('email-status');if(!pill||!box)return;
- if(!s.sender_email){pill.textContent='Not set';box.textContent='Enter your business email once. TradeFlow will handle the rest.';return;}
- if(s.email_enabled&&s.sender_verification_status==='verified'){pill.textContent='Ready';box.textContent='Email is ready. Customer emails will use this address for replies, and important TradeFlow notifications will be sent here.';return;}
- pill.textContent='Setting up';box.textContent='Your email address is saved. TradeFlow is completing the technical email setup. You do not need to configure anything else here.';
+ if(!s.business_email){pill.textContent='Not set';box.textContent='Enter your business email once. TradeFlow will handle the rest.';return;}
+ if(s.ready){pill.textContent='Ready';box.textContent='Email is ready. Customer emails will use this address for replies, and important TradeFlow notifications will be sent here.';return;}
+ if(s.platform_email_status==='not_configured'){pill.textContent='Waiting';box.textContent='Your business email is saved. TradeFlow is still waiting for the platform sending email to be configured by the TradeFlow owner. You do not need to do anything else.';return;}
+ pill.textContent='Setting up';box.textContent='Your business email is saved. TradeFlow is completing the platform email setup. You do not need to configure anything else here.';
 }
 function renderBanner(url){
  const box=$('banner-preview'),remove=$('banner-remove');if(!box)return;
@@ -70,7 +71,7 @@ async function load(){
   const tenants=await api('/rest/v1/tenants?select=id,name&id=eq.'+encodeURIComponent(tenantId));
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
   renderLogo(p.logo_url||null);renderBanner(p.banner_url||null);
-  setValue('public-email',p.public_email);const emailSettings=await api('/rest/v1/tenant_email_settings?select=sender_email,sender_name,email_enabled,sender_verification_status,reply_to_email&tenant_id=eq.'+encodeURIComponent(tenantId));const es=emailSettings?.[0]||{};setValue('business-email',es.sender_email||p.public_email||'');renderEmailStatus(es);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
+  setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
   const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,instructions,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=sort_order,display_name');
@@ -84,7 +85,7 @@ $('email-form').onsubmit=async e=>{
   if(!email)throw Error('Please enter your business email address.');
   const result=await api('/rest/v1/rpc/subscriber_save_business_email',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({p_tenant_id:tenantId,p_email:email})});
   await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({public_email:email,show_email:true})});
-  renderEmailStatus({sender_email:email,email_enabled:true,sender_verification_status:result?.status||'pending'});
+  renderEmailStatus({business_email:email,business_email_enabled:true,platform_email_status:'pending',ready:false});
   msg('Business email saved. TradeFlow will use this address for your business email.','success');
  }catch(e){msg(e.message||String(e),'error')}
 };

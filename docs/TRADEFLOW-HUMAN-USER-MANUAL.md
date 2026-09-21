@@ -271,3 +271,8 @@ The existing Customer Portal already reads these acquisition shipping fields. Af
 A follow-up live test found that the accepted-offer logic had been added to the Buying controller, but the controller was not actually including the existing `acquisitions` REST query in the two data-loading Promise calls. As a result, the acquisition map was empty in the browser and the request fell back to the stale approved-valuation state. The repair restores the existing acquisition query; no new data model or workflow was introduced.
 
 The accepted £100 test sale remains the live test record. After the browser loads the repaired controller, the accepted offer/acquisition should drive the subscriber stage to **Offer accepted — send customer shipping label** and expose the existing shipping handoff fields.
+
+
+## Acquisition API Access Repair — 21 September 2026
+
+The live Buying dashboard test exposed a database API privilege gap after the acquisition query was correctly restored in the controller. The `authenticated` role could access the existing acquisitions table for write operations but lacked `SELECT`, so the browser received `permission denied for table acquisitions`. The existing tenant-scoped RLS policy already requires `acquisitions.view` and the buying module. `SELECT` and `UPDATE` privileges were restored for `authenticated` so the subscriber can read and publish the existing shipping handoff without changing the RLS boundary or creating new tables.

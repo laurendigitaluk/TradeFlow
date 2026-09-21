@@ -835,3 +835,31 @@ Uploaded labels are stored in the existing private `tradeflow-media` bucket unde
 The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
 
 The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.
+
+
+## Shipping Service Override — 21 September 2026
+
+Shipping is deliberately modelled as a route on the existing acquisitions record, not as a second acquisition/shipping entity.
+
+New acquisition fields:
+- shipping_method: subscriber_override or automated;
+- shipping_qr_url;
+- shipping_qr_storage_path.
+
+Current production behaviour defaults existing/new acquisitions to subscriber_override until the Voila automated integration is connected. The UI exposes the future automated route but disables it rather than pretending it is operational.
+
+Subscriber override sources are:
+1. label URL;
+2. uploaded label;
+3. QR code URL;
+4. uploaded QR image.
+
+A valid manual handoff may contain a label, QR code, or both. Publishing continues to use the existing acquisition workflow transition accepted → awaiting_item.
+
+Uploaded QR images use the existing private tradeflow-media bucket and the same tenant/acquisition path structure as shipping labels. The existing customer storage SELECT policy matches the acquisition path and customer identity, so no broad public storage policy is introduced.
+
+The customer RPC customer_get_acquisition_shipping() now returns the shipping method and QR sources in addition to the existing label/tracking fields.
+
+### Future Voila integration boundary
+
+Do not put Voila credentials in subscriber JavaScript. The intended automated route is a server-side/Edge Function integration that calls Voila, stores the returned label/tracking data on the existing acquisition, and exposes the resulting handoff through the same customer portal. Voila documentation describes API accounts, courier credentials, label creation, tracking and webhooks. Consult the current Voila API documentation when implementing that layer.

@@ -304,3 +304,24 @@ Uploaded labels are stored in the existing private `tradeflow-media` bucket unde
 The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
 
 The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.
+
+
+## Shipping Service Override — 21 September 2026
+
+The accepted-offer shipping handoff now has an explicit **Shipping method** choice. The subscriber can use the future automated courier route or select **Use my own shipping service** for an individual acquisition.
+
+The subscriber override supports:
+- shipping label URL;
+- uploaded shipping label (PDF, PNG or JPEG);
+- QR code URL;
+- uploaded QR code image (PNG or JPEG);
+- courier/carrier;
+- service;
+- tracking number;
+- customer shipping instructions.
+
+The manual/override route does not create a separate shipping system. It writes to the existing acquisition shipping handoff and keeps the same accepted → awaiting_item workflow. A handoff can contain a label, a QR code, or both.
+
+The Customer Portal now shows the selected shipping method, courier/service information, label actions and any QR code supplied by the subscriber. QR images remain in the private TradeFlow media bucket and are exposed to the authenticated customer through on-demand signed URLs.
+
+The automated Voila option is currently represented in the UI but deliberately disabled until the secure Voila account/API connection is implemented. This prevents a subscriber from selecting an automated route that cannot yet create a real label.

@@ -1035,3 +1035,61 @@ Uploaded labels are stored in the existing private `tradeflow-media` bucket unde
 The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
 
 The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.
+
+
+## 21 September 2026 — Subscriber Shipping Service Override
+
+### User action
+After a customer accepts an offer, the subscriber wants to use their own courier/shipping service instead of the future TradeFlow/Voila automated route.
+
+### Entry points
+- buying-dashboard.html
+- buying-dashboard.js
+- acquisition-dashboard.html
+- acquisition-dashboard.js
+- Customer Portal customer-dashboard.js
+
+### Data model
+Existing public.acquisitions remains the authoritative shipping handoff record.
+
+Added:
+- shipping_method — subscriber_override or automated;
+- shipping_qr_url;
+- shipping_qr_storage_path.
+
+The existing shipping label URL/file fields remain authoritative for labels.
+
+### Subscriber override path
+
+Accepted acquisition
+→ Shipping method = Use my own shipping service
+→ subscriber enters a label URL and/or QR URL
+OR
+→ uploads a label and/or QR image
+→ optional carrier/service/tracking/instructions
+→ save/send handoff
+→ existing accepted → awaiting_item transition
+→ customer portal reads the same acquisition.
+
+A label is no longer the only valid handoff artifact: a QR code alone is allowed.
+
+### Storage/security
+
+QR uploads use the existing private tradeflow-media bucket under the tenant/acquisition path. The existing customer storage policy restricts access to the exact acquisition belonging to the authenticated customer. No public storage object is created.
+
+### Automated route boundary
+
+The UI contains an **Automated courier — Voila (coming next)** option but it is disabled until the Voila connection is implemented. This is intentional: the platform must not allow an apparently automated route that has no live carrier credentials or label-generation path.
+
+### Future Voila implementation
+
+Planned automated path:
+
+TradeFlow server
+→ Voila API
+→ selected courier
+→ label + tracking response
+→ existing acquisition shipping fields
+→ Customer Portal.
+
+Voila documentation currently supports API accounts, courier registration, label creation and webhook-based tracking. The eventual integration should keep API credentials server-side and should not introduce a second shipping state machine.

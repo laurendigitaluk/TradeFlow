@@ -255,3 +255,13 @@ The Buying page cache-buster was advanced so the corrected subscriber Buying con
 Structured customer fields use category_fields.label; category_fields.name is not a valid column. No database schema change was required for this repair.
 
 The live test record was not deleted or reset. Its current database state remains authoritative.
+
+## Accepted Offer → Shipping Label Handoff — 21 September 2026
+
+After a customer accepts an offer, the subscriber Buying workflow no longer treats the request as waiting for the customer. The next internal action is now **Send customer shipping label**.
+
+The Buying request derives its accepted state from the accepted offer and the existing acquisition record, so the UI is not dependent on the older buying request/item status remaining at `offer_ready`.
+
+The accepted stage shows the agreed offer amount, identifies the customer handoff, and provides the shipping-label URL, carrier, service, tracking number and customer instructions fields. Publishing the handoff writes to the existing acquisition shipping fields and moves an `accepted` acquisition to `awaiting_item` through the existing workflow transition function.
+
+The existing Customer Portal already reads these acquisition shipping fields. After publication, the customer can see the label/instructions and can mark the item as posted. No new customer portal was created.

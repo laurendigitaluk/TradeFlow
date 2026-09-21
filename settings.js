@@ -6,6 +6,12 @@ function msg(t,type=''){const e=$('message');e.textContent=t;e.className='small 
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Authorization','Bearer '+token);if(o.body)h.set('Content-Type','application/json');const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||'Request failed');return b}
 function setValue(id,v){const e=$(id);if(e)e.value=v??''}
 function setChecked(id,v){const e=$(id);if(e)e.checked=v!==false}
+function renderEmailStatus(s){
+ const pill=$('email-status-pill'),box=$('email-status');if(!pill||!box)return;
+ if(!s.sender_email){pill.textContent='Not set';box.textContent='Enter your business email once. TradeFlow will handle the rest.';return;}
+ if(s.email_enabled&&s.sender_verification_status==='verified'){pill.textContent='Ready';box.textContent='Email is ready. Customer emails will use this address for replies, and important TradeFlow notifications will be sent here.';return;}
+ pill.textContent='Setting up';box.textContent='Your email address is saved. TradeFlow is completing the technical email setup. You do not need to configure anything else here.';
+}
 function renderBanner(url){
  const box=$('banner-preview'),remove=$('banner-remove');if(!box)return;
  box.innerHTML=url?'<img src="'+esc(url)+'" alt="Website banner">':'<span>No banner uploaded.</span>';
@@ -64,13 +70,24 @@ async function load(){
   const tenants=await api('/rest/v1/tenants?select=id,name&id=eq.'+encodeURIComponent(tenantId));
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
   renderLogo(p.logo_url||null);renderBanner(p.banner_url||null);
-  setValue('public-email',p.public_email);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
+  setValue('public-email',p.public_email);const emailSettings=await api('/rest/v1/tenant_email_settings?select=sender_email,sender_name,email_enabled,sender_verification_status,reply_to_email&tenant_id=eq.'+encodeURIComponent(tenantId));const es=emailSettings?.[0]||{};setValue('business-email',es.sender_email||p.public_email||'');renderEmailStatus(es);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
   const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,instructions,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=sort_order,display_name');
   $('methods').innerHTML=rows?.length?rows.map(x=>'<div style="border-top:1px solid #dfe4e8;padding:12px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+esc(x.instructions||'No customer instructions.')+'</div></div><span class="status-pill">'+(x.enabled?'Enabled':'Disabled')+'</span></div>').join(''):'<div class="empty">No payment methods configured yet.</div>';
  }catch(e){msg(e.message||String(e),'error')}
 }
+$('email-form').onsubmit=async e=>{
+ e.preventDefault();
+ try{
+  const email=$('business-email').value.trim().toLowerCase();
+  if(!email)throw Error('Please enter your business email address.');
+  const result=await api('/rest/v1/rpc/subscriber_save_business_email',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({p_tenant_id:tenantId,p_email:email})});
+  await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({public_email:email,show_email:true})});
+  renderEmailStatus({sender_email:email,email_enabled:true,sender_verification_status:result?.status||'pending'});
+  msg('Business email saved. TradeFlow will use this address for your business email.','success');
+ }catch(e){msg(e.message||String(e),'error')}
+};
 $('profile-form').onsubmit=async e=>{
  e.preventDefault();
  try{

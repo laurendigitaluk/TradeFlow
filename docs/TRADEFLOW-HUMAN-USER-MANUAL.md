@@ -276,3 +276,8 @@ The accepted £100 test sale remains the live test record. After the browser loa
 ## Acquisition API Access Repair — 21 September 2026
 
 The live Buying dashboard test exposed a database API privilege gap after the acquisition query was correctly restored in the controller. The `authenticated` role could access the existing acquisitions table for write operations but lacked `SELECT`, so the browser received `permission denied for table acquisitions`. The existing tenant-scoped RLS policy already requires `acquisitions.view` and the buying module. `SELECT` and `UPDATE` privileges were restored for `authenticated` so the subscriber can read and publish the existing shipping handoff without changing the RLS boundary or creating new tables.
+
+
+## Accepted Offer Detail-State Repair — 21 September 2026
+
+The Buying detail workspace contained a second, older offer renderer inside `loadItemFinancials()`. It could display `Approved valuation ... No offer has been sent yet` independently of the request-level lifecycle state. The repair passes the authoritative request workflow state into that renderer so an accepted request cannot display the pre-offer message. The Buying page now also starts its existing 10-second status refresh on initial load. Script cache-busting was advanced from v11 to v12.

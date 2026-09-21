@@ -10,18 +10,16 @@ function render(t:string,p:Record<string,unknown>){return t.replace(/{{\s*([a-zA
 async function expectedCronSecret(){const {data,error}=await supabase.rpc("notification_processor_auth_secret");if(error)throw error;return data as string}
 Deno.serve(async(req:Request)=>{
  if(req.method!=="POST")return json({error:"Method not allowed"},405);
- const supplied=req.headers.get("x-tradeflow-cron-secret")||"",expected=await expectedCronSecret();
- if(!supplied||!expected||supplied!==expected)return json({error:"Unauthorized"},401);
- const resendApiKey=Deno.env.get("RESEND_API_KEY");if(!resendApiKey)return json({ok:false,status:"not_configured",message:"RESEND_API_KEY is not configured."},503);
- const {data:queue,error:claimError}=await supabase.rpc("claim_notification_queue_batch",{p_limit:20});
- if(claimError)return json({ok:false,error:claimError.message},500);
+ const supplied=req.headers.get("x-tradeflow-cron-secret")||"",expected=await expectedCronSecret();if(!supplied||!expected||supplied!==expected)return json({error:"Unauthorized"},401);
+ const resendApiKey=Deno.env.get("RESEND_API_KEY");if(!resendApiKey)return json({ok:false,status:"not_configured",message:"TradeFlow email delivery is not configured yet. Add the Resend API key at platform level."},503);
+ const {data:queue,error:claimError}=await supabase.rpc("claim_notification_queue_batch",{p_limit:20});if(claimError)return json({ok:false,error:claimError.message},500);
  const results:Record<string,unknown>[]=[];
  for(const item of (queue||[]) as Record<string,unknown>[]){const id=String(item.id);try{
-  const settings=(item.email_settings||{}) as Record<string,unknown>,fromEmail=String(settings.sender_email||"");
-  if(!fromEmail||settings.email_enabled!==true)throw new Error("Business email sending is not enabled.");
-  if(String(settings.sender_verification_status||"")!=="verified")throw new Error("Business sending address is not verified.");
+  const settings=(item.email_settings||{}) as Record<string,unknown>,fromEmail=String(settings.sender_email||""),replyTo=String(settings.reply_to_email||"");
+  if(!fromEmail||settings.email_enabled!==true)throw new Error("TradeFlow sending email is not configured.");
+  if(String(settings.sender_verification_status||"")!=="verified")throw new Error("TradeFlow sending email is not verified.");
   const payload=(item.payload||{}) as Record<string,unknown>,subject=render(String(item.subject||""),payload),html=render(String(item.body_template||""),payload),senderName=String(settings.sender_name||""),from=senderName?senderName+" <"+fromEmail+">":fromEmail;
-  const body:Record<string,unknown>={from,to:[String(item.recipient_email)],subject,html};if(settings.reply_to_email)body.reply_to=String(settings.reply_to_email);
+  const body:Record<string,unknown>={from,to:[String(item.recipient_email)],subject,html};if(replyTo)body.reply_to=replyTo;
   const response=await fetch(RESEND_API_URL,{method:"POST",headers:{Authorization:"Bearer "+resendApiKey,"Content-Type":"application/json","Idempotency-Key":String(item.idempotency_key)},body:JSON.stringify(body)});
   const txt=await response.text();let provider:Record<string,unknown>;try{provider=JSON.parse(txt)}catch{provider={raw:txt}}
   if(!response.ok)throw new Error(String(provider.message||provider.error||txt||"Resend request failed"));

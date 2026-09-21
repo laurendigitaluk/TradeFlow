@@ -49,7 +49,7 @@ function renderSellingStatus(data,offers){
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
  const active=data.find(x=>x.stage==='offer_ready')||data.find(x=>!['valued'].includes(x.stage))||data[0];
  const cls=active.stage==='manual_valuation'?'manual':active.stage==='offer_ready'?'ready':'progress';
- const title=active.stage==='manual_valuation'?'Manual valuation required':active.stage==='offer_ready'?'Offer ready — action required':active.stage==='valued'?'Valuation completed':'Valuation in progress';
+ const title=active.stage==='manual_valuation'?'Manual valuation required':active.stage==='offer_ready'?'Offer sent — awaiting your response':active.stage==='valued'?'Valuation completed':'Valuation in progress';
  const liveOffer=Array.isArray(offers)?offers.find(o=>o.status==='published'&&o.buying_item_id===active.buying_item_id):null;
  box.hidden=false;
  box.className='selling-status '+cls;
@@ -93,7 +93,7 @@ async function loadPortalData(){const [buying,values,offers,acq,shipping,orders,
 }else{
   $('profile-list').textContent='Profile not available.';
 }
-$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.offer-accept').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'accept'));document.querySelectorAll('.offer-refuse').forEach(b=>b.onclick=()=>respond(b.dataset.offerId,'refuse'));document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
+$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
 async function submitBuyingRequest(){if(localStorage.getItem('tradeflow_subscriber_session'))return setMessage('Subscriber accounts cannot submit customer buying requests. Sign out of the subscriber account and use a separate customer account to test this journey.','error');const notes=$('request-notes').value.trim(),title=$('request-title').value.trim(),cat=$('request-category').value;if(!cat)return setMessage('Select a buying category.','error');if(!title)return setMessage('Enter what you want to sell.','error');try{await api('/rest/v1/rpc/customer_submit_buying_request',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_notes:notes||null,p_items:[{category_id:cat,title,quantity:1}]})});$('request-title').value='';$('request-notes').value='';await loadPortalData();location.hash='#selling';setMessage('Your item has been submitted for valuation. We are now reviewing it. If an automatic valuation is not available, it will move to manual valuation.','success')}catch(e){setMessage(e.message||String(e),'error')}}
 function splitFullName(value){
   const parts=String(value||'').trim().split(/\\s+/).filter(Boolean);
@@ -122,6 +122,15 @@ async function initialisePortal(){if(!tenantId)return setMessage('This customer 
 function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','success')}
 async function handleAuthSuccess(data){try{saveSession(data);await ensureCustomerRegistration();await initialisePortal()}catch(err){saveSession(null);setMessage(err.message||String(err),'error')}}
 document.addEventListener('click',e=>{const b=e.target.closest?.('.buy-listing');if(!b)return;e.preventDefault();e.stopPropagation();checkout(b.dataset.listingId)});window.tradeflowHandleCustomerAuthSuccess=handleAuthSuccess;
+document.addEventListener('click',e=>{
+ const accept=e.target.closest?.('.offer-accept');
+ const refuse=e.target.closest?.('.offer-refuse');
+ if(!accept&&!refuse)return;
+ e.preventDefault();
+ const id=(accept||refuse)?.dataset?.offerId;
+ if(!id)return setMessage('This offer could not be identified. Refresh the page and try again.','error');
+ respond(id,accept?'accept':'refuse');
+});
 window.addEventListener('tradeflow-auth-success',e=>handleAuthSuccess(e.detail));
 $('auth-sign-in')?.addEventListener('click',signIn);
 $('auth-sign-up')?.addEventListener('click',signUp);

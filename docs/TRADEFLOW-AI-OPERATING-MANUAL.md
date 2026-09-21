@@ -870,3 +870,6 @@ Do not put Voila credentials in subscriber JavaScript. The intended automated ro
 Shipping for customer selling/acquisition requests is customer-paid and customer-arranged. Do not introduce TradeFlow shipping charges, customer shipping invoices, shipping reimbursements, shipping expenses, or shipping-margin calculations into the acquisition/offer model. Shipping label and tracking data are operational handoff data only.
 
 The existing `acquisitions.shipping_*` fields remain the authoritative handoff record. Automated Voila integration must preserve this boundary: it may obtain/generate the operational label and tracking information through the configured courier connection, but it must not create a TradeFlow shipping payment or expense ledger.
+
+## Connected shipping implementation
+Parcel2Go is the first automated shipping provider implementation. The subscriber-owned provider connection is stored securely, the customer can request a server-side quote, choose a service and receive Parcel2Go's payment/deeplink. Shipping money never passes through TradeFlow. Future work must add signed Parcel2Go webhooks, post-payment label retrieval and tracking synchronisation before describing the route as fully automated.

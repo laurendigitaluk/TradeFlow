@@ -1093,3 +1093,21 @@ TradeFlow server
 → Customer Portal.
 
 Voila documentation currently supports API accounts, courier registration, label creation and webhook-based tracking. The eventual integration should keep API credentials server-side and should not introduce a second shipping state machine.
+
+
+## 21 September 2026 — Customer-Paid Shipping Boundary
+
+### User requirement
+The customer selling an item to a subscriber is responsible for arranging and paying for shipping. TradeFlow and the subscriber do not collect, pay or reimburse the customer's shipping cost as part of the TradeFlow acquisition.
+
+### Implementation rule
+- Accepted offer amount remains the complete TradeFlow offer amount.
+- No shipping amount is added to the offer or acquisition financial totals.
+- No customer shipping payment is created in TradeFlow.
+- No TradeFlow shipping expense or reimbursement is recorded.
+- Shipping labels, QR codes, courier/service names, tracking and instructions remain operational handoff data only.
+- Subscriber override remains available per acquisition.
+- Future Voila automation must preserve the same financial boundary.
+
+### Customer Portal wording
+The customer is explicitly told that they are responsible for arranging and paying for shipping. The portal can display the subscriber's label/QR/instructions without becoming a shipping payment processor.

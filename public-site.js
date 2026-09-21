@@ -21,6 +21,9 @@ function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&l
 function isSubscriberSession(){
  return !!localStorage.getItem('tradeflow_subscriber_session');
 }
+function isCustomerSession(){
+ return !!localStorage.getItem('tradeflow_customer_session');
+}
 function customerUrl(extra){
  const subscriberSession=isSubscriberSession();
  const subscriberTenantId=localStorage.getItem('tradeflow_subscriber_tenant_id');
@@ -51,9 +54,10 @@ function renderPublicNav(site,catalogue){
  const headerLinks=Array.isArray(site.header?.links)?site.header.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
- const buying='<a class="public-buy-link" href="'+pageUrl('buying')+'">What We Buy</a>';
+ const buying='<a class="public-buy-link" href="'+pageUrl('sell')+'">Sell to Us</a>';
  const normal=links.filter(slug=>slug!=='buying'&&slug!=='shop').map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
- return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">What We Sell</a><a class="public-account-link" href="'+customerUrl()+'">Customer Login</a></div></div></header>';
+ const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
+ return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">What We Sell</a><a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
 }
 
 function heroImage(url,alt,cls){
@@ -159,8 +163,9 @@ function renderFooter(site){
  const pages=Array.isArray(site.pages)?site.pages:[];
  const links=Array.isArray(footer.links)?footer.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
- const out=links.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
- return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'<a href="'+pageUrl('buying')+'">What We Buy</a><a href="'+pageUrl('shop')+'">What We Sell</a><a href="'+customerUrl()+'">Customer Login</a></nav><small>Powered by TradeFlow</small></footer>';
+ const out=links.filter(slug=>slug!=='buying'&&(slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false))).map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
+ const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
+ return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'<a href="'+pageUrl('sell')+'">Sell to Us</a><a href="'+pageUrl('shop')+'">What We Sell</a><a href="'+customerUrl()+'">'+accountLabel+'</a></nav><small>Powered by TradeFlow</small></footer>';
 }
 
 function renderBusinessExtras(site){

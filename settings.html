@@ -55,6 +55,14 @@
 <section class="panel" id="shipping-connections-panel"><div class="panel-heading"><div><div class="eyebrow">Shipping integrations</div><h2>Shipping provider connections</h2></div><span class="status-pill">Subscriber account</span></div>
 <p>Connect your own multi-carrier shipping account. Courier charges and billing stay with your provider account; TradeFlow only uses the connection for shipping options, labels and tracking.</p>
 <div id="shipping-connections">Loading shipping providers…</div>
+<div class="form-grid" style="margin-top:18px">
+<label>Provider<select id="shipping-provider"><option value="parcel2go">Parcel2Go</option></select></label>
+<label>Environment<select id="shipping-environment"><option value="sandbox">Sandbox / test</option><option value="live">Live</option></select></label>
+<label>API client ID<input id="shipping-client-id" autocomplete="off" placeholder="Parcel2Go client ID"></label>
+<label>API client secret<input id="shipping-client-secret" type="password" autocomplete="new-password" placeholder="Parcel2Go client secret"></label>
+</div>
+<div class="actions"><button id="shipping-connect" type="button">Connect Parcel2Go account</button></div>
+<div id="shipping-connect-status" class="small" aria-live="polite"></div>
 <p class="small">Provider credentials are never stored in this page or browser code. Secure account connection is completed server-side when the provider adapter is enabled. Your existing manual label, QR code and tracking override remains available.</p></section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
@@ -62,5 +70,5 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=4"></script>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=5"></script>
 </body></html>

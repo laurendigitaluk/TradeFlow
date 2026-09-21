@@ -812,3 +812,13 @@ The follow-up browser test returned `permission denied for table acquisitions`. 
 ## Duplicate Lifecycle Renderer Repair — 21 September 2026
 
 Deep code audit found two lifecycle presentation paths: the request-level state correctly derived `offer_accepted` from the accepted offer/acquisition, while `loadItemFinancials()` separately rendered a legacy approved-valuation/no-offer message when its local offer query was empty. This was the second renderer capable of contradicting the authoritative request state. The repair passes `requestStatus` into `loadItemFinancials()` and explicitly prevents the pending-offer message when the request is `offer_accepted`. The existing status refresh is now started after the initial load so an already-open workspace can update when the customer accepts an offer.
+
+## Accepted Offer Visibility and Customer Field RPC Repairs — 21 September 2026
+
+When an accepted offer appears as an approved valuation/no-offer state in the subscriber Buying page, do not assume the frontend renderer is the remaining fault. Test the REST reads under the actual authenticated role.
+
+The live root cause was policy composition: offers_subscription_select and acquisitions_subscription_select were RESTRICTIVE SELECT policies with no permissive SELECT policy on those tables. PostgreSQL therefore returned zero rows rather than an error. The existing permission checks were correct. Migration repair_offer_and_acquisition_select_policies added permissive tenant-member SELECT policies and left the restrictive subscription permission/feature checks intact.
+
+A separate customer-detail error, CASE types jsonb and text cannot be matched, came from subscriber_get_buying_item_customer_details(). Its CASE expression returned text for text-like fields and jsonb for other branches. Migration repair_subscriber_customer_field_json_types converts text-like values with to_jsonb().
+
+Diagnostic rule: for an apparently missing accepted offer, verify table grants, then SELECT-policy composition (at least one permissive policy plus all restrictive policies), then the frontend mapping. A zero-row RLS result is different from a permission error and can silently force fallback lifecycle states.

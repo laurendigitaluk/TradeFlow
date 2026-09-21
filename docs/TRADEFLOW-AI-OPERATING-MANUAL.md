@@ -863,3 +863,10 @@ The customer RPC customer_get_acquisition_shipping() now returns the shipping me
 ### Future Voila integration boundary
 
 Do not put Voila credentials in subscriber JavaScript. The intended automated route is a server-side/Edge Function integration that calls Voila, stores the returned label/tracking data on the existing acquisition, and exposes the resulting handoff through the same customer portal. Voila documentation describes API accounts, courier credentials, label creation, tracking and webhooks. Consult the current Voila API documentation when implementing that layer.
+
+
+## Shipping Cost Boundary — 21 September 2026
+
+Shipping for customer selling/acquisition requests is customer-paid and customer-arranged. Do not introduce TradeFlow shipping charges, customer shipping invoices, shipping reimbursements, shipping expenses, or shipping-margin calculations into the acquisition/offer model. Shipping label and tracking data are operational handoff data only.
+
+The existing `acquisitions.shipping_*` fields remain the authoritative handoff record. Automated Voila integration must preserve this boundary: it may obtain/generate the operational label and tracking information through the configured courier connection, but it must not create a TradeFlow shipping payment or expense ledger.

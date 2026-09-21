@@ -32,3 +32,12 @@ The accepted offer and acquisition are authoritative for the post-acceptance han
 6. Confirm the shipping handoff form is visible.
 7. Do not enter a fake label URL. Use a real test label URL when testing publication.
 8. After publication, confirm acquisition changes to `awaiting_item` and Customer Portal shows the label/instructions.
+
+
+## Follow-up browser-test finding — 21 September 2026
+
+The first post-merge browser test still showed **Valuation approved — offer not yet sent**. The accepted-state code itself was present, but both Buying dashboard data-loading Promise calls omitted the actual `acquisitions` query while still destructuring and using `acquisitions`. Therefore the linked acquisition could not be mapped to the accepted offer in the browser.
+
+Repair: restore the existing tenant-scoped `acquisitions` query to both `load()` and `refreshBuyingStatus()`. No database change was made. The live test data remains untouched.
+
+Expected result after the repaired controller loads: the request is derived as `offer_accepted`, the old valuation/send-offer notice disappears, and the shipping handoff form is shown.

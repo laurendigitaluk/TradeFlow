@@ -265,3 +265,9 @@ The Buying request derives its accepted state from the accepted offer and the ex
 The accepted stage shows the agreed offer amount, identifies the customer handoff, and provides the shipping-label URL, carrier, service, tracking number and customer instructions fields. Publishing the handoff writes to the existing acquisition shipping fields and moves an `accepted` acquisition to `awaiting_item` through the existing workflow transition function.
 
 The existing Customer Portal already reads these acquisition shipping fields. After publication, the customer can see the label/instructions and can mark the item as posted. No new customer portal was created.
+
+## Buying Dashboard Acquisition Loading Repair — 21 September 2026
+
+A follow-up live test found that the accepted-offer logic had been added to the Buying controller, but the controller was not actually including the existing `acquisitions` REST query in the two data-loading Promise calls. As a result, the acquisition map was empty in the browser and the request fell back to the stale approved-valuation state. The repair restores the existing acquisition query; no new data model or workflow was introduced.
+
+The accepted £100 test sale remains the live test record. After the browser loads the repaired controller, the accepted offer/acquisition should drive the subscriber stage to **Offer accepted — send customer shipping label** and expose the existing shipping handoff fields.

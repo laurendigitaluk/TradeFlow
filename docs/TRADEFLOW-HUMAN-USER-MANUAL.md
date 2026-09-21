@@ -242,3 +242,16 @@ The manual explains:
 - Basic troubleshooting for missing buying products, missing selling products, logo changes and unpublished website changes.
 
 The Website Builder also shows a short page-specific guidance note when the subscriber selects **What We Buy** or **What We Sell**, explaining the automatic connection and linking directly to the relevant management area and the full manual.
+
+
+## Live Buying Workflow Dashboard Repair — 21 September 2026
+
+The subscriber Business Dashboard live-workflow panel was repaired without changing the underlying buying architecture or tenant security model.
+
+The workflow summary now uses the existing Active acquisitions counter element correctly and counts active acquisition statuses (accepted, awaiting_item, received, processing). A mismatched DOM ID had previously thrown a JavaScript error after the data queries succeeded, which caused the dashboard to replace the workflow list with the generic Workflow status could not be loaded message.
+
+The Buying page cache-buster was advanced so the corrected subscriber Buying controller is loaded rather than an older cached controller. The current Buying controller renders customer details, customer-supplied information, valuation amount/method/status, offer amount/status and next-action messaging from the existing tenant-scoped data.
+
+Structured customer fields use category_fields.label; category_fields.name is not a valid column. No database schema change was required for this repair.
+
+The live test record was not deleted or reset. Its current database state remains authoritative.

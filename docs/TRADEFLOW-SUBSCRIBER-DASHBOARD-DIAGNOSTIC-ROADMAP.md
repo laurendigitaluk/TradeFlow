@@ -1111,3 +1111,6 @@ The customer selling an item to a subscriber is responsible for arranging and pa
 
 ### Customer Portal wording
 The customer is explicitly told that they are responsible for arranging and paying for shipping. The portal can display the subscriber's label/QR/instructions without becoming a shipping payment processor.
+
+## 2026-09-21 — Parcel2Go connected customer shipping
+The accepted-offer shipping workflow now supports a subscriber-connected Parcel2Go route. The subscriber connects their own Parcel2Go account in Settings; credentials remain server-side. Buying can enable connected Parcel2Go shipping on an accepted acquisition. The Customer Portal can then request a Parcel2Go quote using the customer's saved address and entered parcel dimensions, select a service, and create an unpaid Parcel2Go order. The customer is sent to Parcel2Go for payment. TradeFlow does not collect, pay or reimburse shipping costs. Remaining diagnostic stages are Parcel2Go webhook verification, post-payment label retrieval, and tracking synchronisation.

@@ -995,3 +995,30 @@ The live `acquisitions` table already contains the shipping handoff fields. No m
 ## 21 September 2026 — Duplicate Lifecycle Renderer Finding
 
 When the dashboard list and request header show the accepted stage but the item Offer box still says no offer was sent, inspect for independent item-level financial renderers. `buying-dashboard.js` had `renderRequests()/showRequest()` deriving lifecycle from offer/acquisition, while `loadItemFinancials()` independently rendered an approved-valuation/no-offer fallback. These paths could disagree. The repair binds the item financial renderer to the request lifecycle state and starts the existing status refresh timer on initial page load. Cache-buster: v12.
+
+## 21 September 2026 — Accepted Offer RLS and Customer Field RPC Repair
+
+### User action
+Subscriber opens buying-dashboard.html after the customer has already accepted the £100 offer.
+
+### Observed state
+The page still displayed **Valuation approved — offer not yet sent**, and the item Offer panel displayed **No offer has been sent yet**. The page also displayed a customer-field error: **CASE types jsonb and text cannot be matched**.
+
+### Database diagnosis
+The live database contained exactly one accepted £100 offer and one linked accepted acquisition. The subscriber's tenant permissions were correct. However, offers_subscription_select and acquisitions_subscription_select were RESTRICTIVE SELECT policies with no permissive SELECT policy. Under PostgreSQL RLS composition, that produced zero rows for the authenticated subscriber. The frontend therefore fell back to the approved-valuation state instead of seeing the accepted offer.
+
+### Repair
+Migration repair_offer_and_acquisition_select_policies adds:
+- offers_select_members — permissive SELECT for authenticated tenant members;
+- acquisitions_select_members — permissive SELECT for authenticated tenant members.
+
+The existing restrictive subscription permission/feature policies remain in force and continue to require the appropriate tenant permission and buying/offers feature.
+
+### Customer field repair
+Migration repair_subscriber_customer_field_json_types changes the text-like CASE branches in subscriber_get_buying_item_customer_details() to return jsonb via to_jsonb(). Authenticated-role verification returned the live customer/request payload successfully.
+
+### Verified result
+Authenticated-role SQL now sees offer OFF-9E44199AB6F3 as accepted (£100) and the linked acquisition as accepted. The customer-detail RPC returns without the CASE-type error. The frontend's existing v12 controller should now derive offer_accepted and present the shipping-label handoff rather than the pre-offer message.
+
+### Browser verification still required
+Hard-refresh the current Buying page and reopen BR-744BA41BDC. Confirm the old pre-offer messages are absent, the accepted £100 offer is shown, the shipping handoff form is visible, and the customer details load without the CASE error. No shipping label should be published until an actual test label URL is available.

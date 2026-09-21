@@ -81,6 +81,18 @@ async function connectParcel2Go(){
  }catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
 }
 
+
+async function testParcel2Go(){
+ const status=$('shipping-connect-status'),button=$('shipping-test');
+ try{
+  const rows=await api('/rest/v1/shipping_provider_connections?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&provider=eq.parcel2go');
+  const connectionId=rows?.[0]?.id;if(!connectionId)throw Error('Connect a Parcel2Go account first.');
+  button.disabled=true;status.textContent='Testing the Parcel2Go connection…';
+  const result=await api('/functions/v1/shipping-provider-test',{method:'POST',body:JSON.stringify({tenant_id:tenantId,connection_id:connectionId})});
+  status.textContent=result?.ok?'Parcel2Go connection verified.':'Connection test failed.';await load();
+ }catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
+}
+
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;

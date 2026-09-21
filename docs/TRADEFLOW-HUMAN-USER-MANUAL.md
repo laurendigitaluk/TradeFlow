@@ -281,3 +281,13 @@ The live Buying dashboard test exposed a database API privilege gap after the ac
 ## Accepted Offer Detail-State Repair — 21 September 2026
 
 The Buying detail workspace contained a second, older offer renderer inside `loadItemFinancials()`. It could display `Approved valuation ... No offer has been sent yet` independently of the request-level lifecycle state. The repair passes the authoritative request workflow state into that renderer so an accepted request cannot display the pre-offer message. The Buying page now also starts its existing 10-second status refresh on initial load. Script cache-busting was advanced from v11 to v12.
+
+## Accepted Offer Visibility and Customer Field Repairs — 21 September 2026
+
+A final live browser test exposed two database-layer issues behind the contradictory Buying screen.
+
+First, the existing offers_subscription_select and acquisitions_subscription_select policies were restrictive policies without a corresponding permissive SELECT policy. The subscriber therefore received zero rows from those REST reads even though the tenant permissions were correct. Live migration repair_offer_and_acquisition_select_policies added permissive tenant-member SELECT policies while retaining the existing restrictive subscription permission and feature checks.
+
+Second, the customer-details RPC had a PostgreSQL CASE expression mixing text and jsonb return types. Live migration repair_subscriber_customer_field_json_types converts text-like field values to jsonb before building the response.
+
+The authenticated-role database tests now return the accepted £100 offer and linked acquisition, and the customer-details RPC returns successfully for the live test item. The expected Buying stage is therefore **Offer accepted — send customer shipping label**, with the existing shipping handoff fields available. The legacy buying_requests.status and buying_items.status values remain offer_ready and must not override the accepted offer/acquisition state.

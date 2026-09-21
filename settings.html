@@ -52,10 +52,15 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website</div><h2>Website URL</h2></div></div><p>Manage the customer-facing domain separately from the website design.</p><div class="actions"><a href="domain-settings.html">Manage website URL</a></div></section>
 
+<section class="panel" id="shipping-connections-panel"><div class="panel-heading"><div><div class="eyebrow">Shipping integrations</div><h2>Shipping provider connections</h2></div><span class="status-pill">Subscriber account</span></div>
+<p>Connect your own multi-carrier shipping account. Courier charges and billing stay with your provider account; TradeFlow only uses the connection for shipping options, labels and tracking.</p>
+<div id="shipping-connections">Loading shipping providers…</div>
+<p class="small">Provider credentials are never stored in this page or browser code. Secure account connection is completed server-side when the provider adapter is enabled. Your existing manual label, QR code and tracking override remains available.</p></section>
+
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
 <form id="method-form" style="margin-top:18px"><div class="form-grid"><label>Payment method<select id="method-code"><option value="card">Card</option><option value="bank_transfer">Bank transfer</option><option value="cash">Cash</option><option value="paypal">PayPal</option><option value="other">Other</option></select></label><label>Display name<input id="method-name" placeholder="Card payment" required></label><label class="full">Customer instructions<textarea id="method-instructions" rows="2" placeholder="Optional instructions shown to customers."></textarea></label></div><p><button type="submit">Add or update payment method</button></p></form></section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=3"></script>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=4"></script>
 </body></html>

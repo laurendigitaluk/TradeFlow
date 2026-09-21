@@ -796,3 +796,9 @@ The current subscriber Buying detail provides a shipping handoff form. Publishin
 
 ### Customer side
 The Customer Portal's accepted-sale message now describes the next step as awaiting the subscriber's shipping label. Its existing shipping handover section remains the source for the label, instructions, tracking and customer post confirmation.
+
+## Buying Dashboard Acquisition Query Regression — 21 September 2026
+
+A live browser test showed the accepted-offer UI repair was not taking effect. Inspection of `buying-dashboard.js` found that both `load()` and `refreshBuyingStatus()` destructured an `acquisitions` result and used it to derive the accepted state, but their `Promise.all()` arrays did not include the acquisitions REST query. This left `acquisitions` undefined/empty and caused the accepted-state test to fall through to the approved valuation state.
+
+Repair rule: when accepted-state logic depends on an existing linked table, verify the table query is present in every data-loading path that supplies the derived state. The repair adds the existing tenant-scoped acquisitions query to both loading paths. No schema, RLS, or workflow architecture change is required.

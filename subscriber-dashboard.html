@@ -1,7 +1,9 @@
 
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=6"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=6"><style>
+.process-panel{margin-top:18px}.process-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.process-card{border:2px solid #dfe4e8;border-radius:10px;padding:16px;background:#fff}.process-card.green{border-color:#2d7a4d;background:#f1f8f3}.process-card.yellow{border-color:#d39b22;background:#fff8e7}.process-card.blue{border-color:#6b8fb3;background:#f3f7fb}.process-card strong{display:block;font-size:28px;margin-top:5px}.process-card span{font-size:12px;color:#5f6d76}.process-list{margin-top:14px;display:grid;gap:8px}.process-row{display:grid;grid-template-columns:160px 1fr 140px 120px;gap:12px;align-items:center;border:1px solid #dfe4e8;border-radius:8px;padding:11px 13px;background:#fff}.process-row.green{border-left:5px solid #2d7a4d}.process-row.yellow{border-left:5px solid #d39b22}.process-row.blue{border-left:5px solid #6b8fb3}.process-status{font-weight:700}.process-amount{font-weight:800}.process-muted{color:#68757f;font-size:13px}@media(max-width:900px){.process-grid{grid-template-columns:repeat(2,1fr)}.process-row{grid-template-columns:1fr 1fr}}@media(max-width:600px){.process-grid{grid-template-columns:1fr}}
+</style></head>
 <body>
 <header class="topbar">
   <a class="brand brand-link" href="subscriber-dashboard.html"><span id="business-brand">TradeFlow</span></a>
@@ -36,7 +38,17 @@
 <div class="page-heading"><div><div class="eyebrow">Business workspace</div><h1>Business dashboard</h1><p class="intro">Manage your buying, stock, sales, orders and customers from one clear business workspace. Your website is managed separately.</p></div></div>
 <section class="welcome-panel panel"><div><div class="eyebrow">Your business</div><h2 id="welcome-business">Your business</h2><p id="welcome-copy">Welcome back. Your business workspace is ready.</p></div><div class="account-summary"><div><span>Email</span><strong id="summary-email">Loading…</strong></div><div><span>Role</span><strong id="summary-role">Loading…</strong></div></div></section>
 
-<section class="panel flow-panel">
+<section class="panel process-panel" id="workflow-status">
+<div class="panel-heading"><div><div class="eyebrow">Live workflow</div><h2>Transactions in progress</h2></div><span id="workflow-updated" class="status-pill">Loading…</span></div>
+<p class="section-intro">Green means TradeFlow has received something from the customer or the business has completed the customer step. Yellow means we are waiting for a customer action. Blue means the transaction is being processed internally.</p>
+<div class="process-grid">
+<div class="process-card green"><span>New customer requests</span><strong id="count-new">0</strong><span>Received and ready for review</span></div>
+<div class="process-card blue"><span>In internal process</span><strong id="count-process">0</strong><span>Being valued, acquired or prepared</span></div>
+<div class="process-card yellow"><span>Awaiting customer</span><strong id="count-awaiting">0</strong><span>Offer or confirmation sent</span></div>
+<div class="process-card green"><span>Active acquisitions</span><strong id="count-acquisitions">0</strong><span>Customer accepted and purchase is progressing</span></div>
+</div>
+<div id="workflow-list" class="process-list"><div class="empty">Loading transaction status…</div></div>
+</section><section class="panel flow-panel">
 <div class="panel-heading"><div><div class="eyebrow">Core operation</div><h2>Your business workflow</h2></div><span class="status-pill">Existing workflows</span></div>
 <p class="section-intro">Follow each item through your business, from buying and acquisition through stock, sales, orders, fulfilment and returns.</p>
 <div class="business-flow">
@@ -69,4 +81,25 @@
 <script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script>
 <script>
 window.addEventListener('DOMContentLoaded',async()=>{const s=document.getElementById('sign-out');if(s&&window.tradeflowSubscriberSignOut)s.addEventListener('click',window.tradeflowSubscriberSignOut);const m=document.getElementById('account-modal'),close=()=>m.hidden=true;document.getElementById('account-modal-close').onclick=close;document.getElementById('account-details').onclick=()=>m.hidden=false;document.getElementById('settings-account').onclick=()=>m.hidden=false;m.onclick=e=>{if(e.target===m)close()};try{const a=await window.tradeflowSubscriberAuthReady,email=a?.user?.email||'Unknown',role=a?.role||'Unknown',business=a?.tenants?.[a?.tenantId]||'TradeFlow business';document.getElementById('account-email').textContent=email;document.getElementById('account-role').textContent=role;document.getElementById('summary-email').textContent=email;document.getElementById('summary-role').textContent=role;document.getElementById('welcome-business').textContent=business;document.getElementById('business-brand').textContent=business;document.getElementById('welcome-copy').textContent='Welcome back. You are signed in and ready to manage your business.';document.getElementById('modal-business').textContent=business;document.getElementById('modal-email').textContent=email;document.getElementById('modal-role').textContent=role;document.getElementById('modal-tenant').textContent=a?.tenantId||'Unknown'}catch{}});
+</script><script>
+window.addEventListener('DOMContentLoaded',async()=>{
+ try{
+  const a=await window.tradeflowSubscriberAuthReady; const key=a?.key,session=a?.session,tenantId=a?.tenantId;
+  if(!key||!session?.access_token||!tenantId)return;
+  const api=async path=>{const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co'+path,{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const t=await r.text();if(!r.ok)throw Error(t);return t?JSON.parse(t):[]};
+  const [requests,items,values,offers,acq]=await Promise.all([
+   api('/rest/v1/buying_requests?select=id,request_reference,status,source,submitted_at,created_at,customer_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc'),
+   api('/rest/v1/buying_items?select=id,buying_request_id,title,item_reference,status&tenant_id=eq.'+encodeURIComponent(tenantId)),
+   api('/rest/v1/trading_values?select=buying_item_id,amount,cash_price,currency,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.approved'),
+   api('/rest/v1/offers?select=buying_item_id,amount,currency,status,published_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc'),
+   api('/rest/v1/acquisitions?select=id,acquisition_reference,status,agreed_total,currency,accepted_at,received_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc')
+  ]);
+  const itemByReq=Object.fromEntries(items.map(x=>[x.buying_request_id,x]));const valByItem=Object.fromEntries(values.map(x=>[x.buying_item_id,x]));const offerByItem=Object.fromEntries(offers.map(x=>[x.buying_item_id,x]));
+  const rows=requests.map(r=>{const i=itemByReq[r.id],v=i&&valByItem[i.id],o=i&&offerByItem[i.id];let stage=r.status,cls='blue',label='Internal processing';if(o?.status==='published'){stage='awaiting_customer';cls='yellow';label='Manual offer sent — awaiting customer'}else if(o?.status==='accepted'){stage='acquired';cls='green';label='Offer accepted — acquisition progressing'}else if(r.status==='submitted'){stage='new';cls='green';label='Customer request received'}else if(r.status==='offer_ready'){stage='awaiting_customer';cls='yellow';label='Manual offer sent — awaiting customer'}else if(v?.status==='approved'||r.status==='valued'){stage='internal';cls='blue';label='Valuation approved — processing offer'}return{...r,item:i,value:v,offer:o,stage,cls,label}});
+  const counts={new:rows.filter(x=>x.stage==='new').length,process:rows.filter(x=>['internal','under_review'].includes(x.stage)).length,awaiting:rows.filter(x=>x.stage==='awaiting_customer').length,acq:acq.filter(x=>!['completed','cancelled'].includes(x.status)).length};
+  document.getElementById('count-new').textContent=counts.new;document.getElementById('count-process').textContent=counts.process;document.getElementById('count-awaiting').textContent=counts.awaiting;document.getElementById('count-acquisitions').textContent=counts.acq;
+  document.getElementById('workflow-updated').textContent=(rows.length+acq.length)+' active record'+((rows.length+acq.length)===1?'':'s');
+  document.getElementById('workflow-list').innerHTML=rows.length?rows.map(x=>'<div class="process-row '+x.cls+'"><div><strong>'+String(x.request_reference||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><div class="process-muted">'+String(x.item?.title||'Customer request')+'</div></div><div class="process-status">'+x.label+'</div><div class="process-amount">'+(x.offer?.amount??x.value?.cash_price??x.value?.amount?'£'+Number(x.offer?.amount??x.value?.cash_price??x.value?.amount).toFixed(2):'—')+'</div><a href="buying-dashboard.html">Open Buying</a></div>').join(''):'<div class="empty">No active buying transactions.</div>';
+ }catch(e){const el=document.getElementById('workflow-list');if(el)el.innerHTML='<div class="empty">Workflow status could not be loaded. Open Buying for the full record.</div>';console.warn(e)}
+});
 </script></body></html>

@@ -822,3 +822,16 @@ The live root cause was policy composition: offers_subscription_select and acqui
 A separate customer-detail error, CASE types jsonb and text cannot be matched, came from subscriber_get_buying_item_customer_details(). Its CASE expression returned text for text-like fields and jsonb for other branches. Migration repair_subscriber_customer_field_json_types converts text-like values with to_jsonb().
 
 Diagnostic rule: for an apparently missing accepted offer, verify table grants, then SELECT-policy composition (at least one permissive policy plus all restrictive policies), then the frontend mapping. A zero-row RLS result is different from a permission error and can silently force fallback lifecycle states.
+
+## Shipping Label Upload and Resend — 21 September 2026
+
+The accepted-offer shipping handoff now supports two label sources:
+
+- **Shipping label URL** — paste the label URL supplied by the carrier.
+- **Uploaded shipping label** — upload a PDF, PNG or JPEG directly to TradeFlow.
+
+Uploaded labels are stored in the existing private `tradeflow-media` bucket under the tenant/acquisition path. The customer can access only the label belonging to their own acquisition. The subscriber can open/print the label from the Buying or Acquisition workspace.
+
+The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
+
+The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.

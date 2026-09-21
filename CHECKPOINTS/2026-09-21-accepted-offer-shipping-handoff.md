@@ -89,3 +89,16 @@ Repair applied live as migration repair_subscriber_customer_field_json_types: te
 - Acquisition: accepted and linked to the accepted offer
 - Shipping label: not yet published
 - Authenticated subscriber SELECT now sees both the accepted offer and acquisition.
+
+## Shipping Label File Upload and Resend — 21 September 2026
+
+The accepted-offer shipping handoff now supports two label sources:
+
+- **Shipping label URL** — paste the label URL supplied by the carrier.
+- **Uploaded shipping label** — upload a PDF, PNG or JPEG directly to TradeFlow.
+
+Uploaded labels are stored in the existing private `tradeflow-media` bucket under the tenant/acquisition path. The customer can access only the label belonging to their own acquisition. The subscriber can open/print the label from the Buying or Acquisition workspace.
+
+The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
+
+The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.

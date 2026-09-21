@@ -291,3 +291,16 @@ First, the existing offers_subscription_select and acquisitions_subscription_sel
 Second, the customer-details RPC had a PostgreSQL CASE expression mixing text and jsonb return types. Live migration repair_subscriber_customer_field_json_types converts text-like field values to jsonb before building the response.
 
 The authenticated-role database tests now return the accepted £100 offer and linked acquisition, and the customer-details RPC returns successfully for the live test item. The expected Buying stage is therefore **Offer accepted — send customer shipping label**, with the existing shipping handoff fields available. The legacy buying_requests.status and buying_items.status values remain offer_ready and must not override the accepted offer/acquisition state.
+
+## Shipping Label Upload and Resend — 21 September 2026
+
+The accepted-offer shipping handoff now supports two label sources:
+
+- **Shipping label URL** — paste the label URL supplied by the carrier.
+- **Uploaded shipping label** — upload a PDF, PNG or JPEG directly to TradeFlow.
+
+Uploaded labels are stored in the existing private `tradeflow-media` bucket under the tenant/acquisition path. The customer can access only the label belonging to their own acquisition. The subscriber can open/print the label from the Buying or Acquisition workspace.
+
+The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
+
+The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.

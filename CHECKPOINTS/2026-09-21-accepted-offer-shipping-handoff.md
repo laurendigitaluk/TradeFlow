@@ -21,7 +21,7 @@ The accepted offer and acquisition are authoritative for the post-acceptance han
 - Customer Portal accepted-stage wording now says it is awaiting the subscriber's shipping label.
 - Existing customer shipping section already displays the label/instructions and lets the customer mark the item posted.
 - Cache-busters advanced: Buying v11, Customer Dashboard v29, Acquisition Dashboard v2.
-- No database schema/RLS change was made.
+- Database access and RLS policy repairs were applied after browser verification exposed two independent data-visibility issues.
 
 ## Next browser test
 1. Hard refresh Subscriber Buying.
@@ -61,3 +61,31 @@ Repair on branch `fix/accepted-offer-detail-override`:
 - advance `buying-dashboard.js` cache-buster from v11 to v12.
 
 No live offer, acquisition, request or item data was changed.
+
+
+## Follow-up RLS policy finding — 21 September 2026
+
+The browser still showed the request as **Valuation approved — offer not yet sent** even though the live offer was accepted. The database was then tested under the subscriber's authenticated role. The offers_subscription_select and acquisitions_subscription_select policies were both marked **RESTRICTIVE**, but neither table had a corresponding permissive SELECT policy. PostgreSQL therefore returned zero rows to the subscriber despite the owner having the required offers.view / acquisitions.view permissions. This is why the frontend's accepted-offer query looked empty rather than throwing an error.
+
+Repair applied live as migration repair_offer_and_acquisition_select_policies:
+- added permissive offers_select_members for authenticated tenant members;
+- added permissive acquisitions_select_members for authenticated tenant members;
+- retained the existing restrictive subscription permission/feature policies as the controlling boundary.
+
+Authenticated-role SQL verification now returns the live accepted £100 offer and the linked accepted acquisition for BR-744BA41BDC.
+
+## Follow-up customer-field RPC finding — 21 September 2026
+
+The same browser view also showed **Customer supplied fields could not be loaded: CASE types jsonb and text cannot be matched**. The existing subscriber_get_buying_item_customer_details() function returned text directly for text-like fields while the other CASE branches returned jsonb, which PostgreSQL rejects as a mixed CASE type.
+
+Repair applied live as migration repair_subscriber_customer_field_json_types: text-like values are now converted with to_jsonb(vfv.value_text) before being returned. The authenticated-role RPC was retested successfully for the live Canon EOS R7 item and returned the customer/request data without the CASE-type error.
+
+## Current verified database state
+
+- Request BR-744BA41BDC: offer_ready (legacy request status)
+- Item BI-1D805A5FD3: offer_ready (legacy item status)
+- Trading value: approved, £100.00, manual
+- Offer OFF-9E44199AB6F3: accepted, £100.00
+- Acquisition: accepted and linked to the accepted offer
+- Shipping label: not yet published
+- Authenticated subscriber SELECT now sees both the accepted offer and acquisition.

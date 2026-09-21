@@ -926,3 +926,39 @@ A tenant-scoped tenant_public_profiles table is protected with RLS. Anonymous vi
 
 ### Remaining portal work
 Customer address management, richer subscriber customer detail/history, logo/profile media synchronisation and a complete fresh-account browser test remain follow-up items. Existing unrelated Security Advisor findings remain separate hardening work.
+
+
+## 21 September 2026 — Live Buying Workflow Dashboard Failure Repair
+
+### User action
+Subscriber opens the Business Dashboard and expects the Transactions in progress workflow summary to load.
+
+### Entry point
+- subscriber-dashboard.html
+- Inline live-workflow controller in subscriber-dashboard.html
+
+### First failure found
+The Supabase reads were not the first failure. The controller successfully assembled requests, items, valuations, offers and acquisitions, then attempted to write the acquisition count to count-received. The page actually contains id=count-acquisitions. The null element access threw and the catch block replaced the workflow list with the generic load-failure message.
+
+### Repair
+- Keep the existing workflow/data model.
+- Write the acquisition count to count-acquisitions.
+- Count active acquisition statuses using the existing acquisition records.
+- Preserve green/yellow/blue workflow semantics.
+- Do not alter tenant boundaries or customer/request data.
+
+### Buying detail path
+buying-dashboard.html → buying-dashboard.js → tenant-scoped buying requests/items → subscriber_get_buying_item_customer_details → category_fields.label + buying_item_field_values → trading values → offers.
+
+The Buying controller cache-buster was advanced from v9 to v10 to avoid a stale browser controller masking the source fix.
+
+### Verified live test state at diagnosis
+- Tenant: Camerashack
+- Request: BR-744BA41BDC
+- Item: BI-1D805A5FD3
+- Customer: TEST CS CUST
+- Approved valuation: £100.00, method manual, status approved
+- Current live offer after subsequent customer action: £100.00, status accepted
+
+### Known historical fault
+Older Buying controller versions attempted to use category_fields.name. The real column is category_fields.label. Current source and the existing customer-detail RPC use label. If that error appears after deployment, check browser cache/controller version before changing the database schema.

@@ -762,3 +762,20 @@ The TradeFlow `category_fields` system remains the intended extension point for 
 
 ### Current scope limitation
 Photos are not falsely represented as uploaded by this public wizard. The current journey captures the structured information and hands it into the authenticated customer portal. Photo upload should be added as an authenticated evidence step when the existing media/storage workflow is connected to customer buying requests.
+
+
+## Live Buying Workflow Dashboard Repair — 21 September 2026
+
+When diagnosing the subscriber Buying/workflow screens, start with the live GitHub main branch and live Supabase state. Do not recreate the buying architecture.
+
+### Confirmed failure
+The subscriber dashboard queried the live buying data successfully but then attempted to write the acquisition count to count-received, while the HTML element is count-acquisitions. That null DOM reference threw inside the workflow renderer and caused the catch block to display Workflow status could not be loaded. Open Buying for the full record.
+
+### Repair
+The dashboard now writes to count-acquisitions and counts active acquisitions from the existing workflow statuses. buying-dashboard.html also cache-busts buying-dashboard.js to v10.
+
+### Structured customer fields
+The authoritative field metadata column is category_fields.label. Never query or render category_fields.name. The existing subscriber_get_buying_item_customer_details path returns the customer, request notes, item data and structured field values using label.
+
+### Security boundary
+No tenant/RLS architecture was changed. The repair is UI/controller-only. Existing tenant-scoped REST/RPC access remains the source of truth.

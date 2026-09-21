@@ -802,3 +802,8 @@ The Customer Portal's accepted-sale message now describes the next step as await
 A live browser test showed the accepted-offer UI repair was not taking effect. Inspection of `buying-dashboard.js` found that both `load()` and `refreshBuyingStatus()` destructured an `acquisitions` result and used it to derive the accepted state, but their `Promise.all()` arrays did not include the acquisitions REST query. This left `acquisitions` undefined/empty and caused the accepted-state test to fall through to the approved valuation state.
 
 Repair rule: when accepted-state logic depends on an existing linked table, verify the table query is present in every data-loading path that supplies the derived state. The repair adds the existing tenant-scoped acquisitions query to both loading paths. No schema, RLS, or workflow architecture change is required.
+
+
+## Acquisition SELECT Grant Regression — 21 September 2026
+
+The follow-up browser test returned `permission denied for table acquisitions`. Database inspection showed the existing `acquisitions_subscription_select` RLS policy was present and the owner role had `acquisitions.view`, but the PostgREST `authenticated` role lacked table-level `SELECT` on `public.acquisitions`. It also lacked `UPDATE`, which would have blocked the later shipping handoff PATCH. The repair migration grants `SELECT, UPDATE` to `authenticated`; existing RLS policies continue to enforce tenant permission and the buying subscription feature.

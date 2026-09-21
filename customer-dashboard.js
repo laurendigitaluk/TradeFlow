@@ -1,7 +1,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY_STORAGE='tradeflow_customer_publishable_key';
+const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
-let key=localStorage.getItem(KEY_STORAGE),session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
+let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const $=id=>document.getElementById(id);
 function setMessage(t,type=''){const e=$('customer-message');if(e){e.textContent=t||'';e.className=type}}
 function setBusy(b,v,l){if(!b)return;b.disabled=v;if(v&&l){b.dataset.label=b.textContent;b.textContent=l}if(!v&&b.dataset.label)b.textContent=b.dataset.label}

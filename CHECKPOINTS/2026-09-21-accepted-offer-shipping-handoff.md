@@ -41,3 +41,10 @@ The first post-merge browser test still showed **Valuation approved — offer no
 Repair: restore the existing tenant-scoped `acquisitions` query to both `load()` and `refreshBuyingStatus()`. No database change was made. The live test data remains untouched.
 
 Expected result after the repaired controller loads: the request is derived as `offer_accepted`, the old valuation/send-offer notice disappears, and the shipping handoff form is shown.
+
+
+## Follow-up database access finding — 21 September 2026
+
+The browser then reported **permission denied for table acquisitions**. Live database inspection confirmed the issue was table-level Data API privilege, not the tenant RLS policy: `authenticated` had no `SELECT` or `UPDATE` grant on `public.acquisitions`, while the existing restrictive `acquisitions_subscription_select/update` policies were already correctly present. The owner membership has both `acquisitions.view` and `acquisitions.manage`.
+
+Repair applied live as migration `repair_acquisition_subscriber_data_api_grants`: `GRANT SELECT, UPDATE ON public.acquisitions TO authenticated;`. No row data, statuses, RLS policies, or workflow transitions were changed.

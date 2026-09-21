@@ -807,3 +807,8 @@ Repair rule: when accepted-state logic depends on an existing linked table, veri
 ## Acquisition SELECT Grant Regression — 21 September 2026
 
 The follow-up browser test returned `permission denied for table acquisitions`. Database inspection showed the existing `acquisitions_subscription_select` RLS policy was present and the owner role had `acquisitions.view`, but the PostgREST `authenticated` role lacked table-level `SELECT` on `public.acquisitions`. It also lacked `UPDATE`, which would have blocked the later shipping handoff PATCH. The repair migration grants `SELECT, UPDATE` to `authenticated`; existing RLS policies continue to enforce tenant permission and the buying subscription feature.
+
+
+## Duplicate Lifecycle Renderer Repair — 21 September 2026
+
+Deep code audit found two lifecycle presentation paths: the request-level state correctly derived `offer_accepted` from the accepted offer/acquisition, while `loadItemFinancials()` separately rendered a legacy approved-valuation/no-offer message when its local offer query was empty. This was the second renderer capable of contradicting the authoritative request state. The repair passes `requestStatus` into `loadItemFinancials()` and explicitly prevents the pending-offer message when the request is `offer_accepted`. The existing status refresh is now started after the initial load so an already-open workspace can update when the customer accepts an offer.

@@ -991,3 +991,7 @@ The live `acquisitions` table already contains the shipping handoff fields. No m
 - Shipping label URL omitted.
 - Direct status mutation bypassing `transition_workflow_entity()`.
 - Customer portal not refreshing `customer_get_acquisition_shipping()` after publication.
+
+## 21 September 2026 — Duplicate Lifecycle Renderer Finding
+
+When the dashboard list and request header show the accepted stage but the item Offer box still says no offer was sent, inspect for independent item-level financial renderers. `buying-dashboard.js` had `renderRequests()/showRequest()` deriving lifecycle from offer/acquisition, while `loadItemFinancials()` independently rendered an approved-valuation/no-offer fallback. These paths could disagree. The repair binds the item financial renderer to the request lifecycle state and starts the existing status refresh timer on initial page load. Cache-buster: v12.

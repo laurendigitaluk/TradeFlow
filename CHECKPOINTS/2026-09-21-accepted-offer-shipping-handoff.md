@@ -48,3 +48,16 @@ Expected result after the repaired controller loads: the request is derived as `
 The browser then reported **permission denied for table acquisitions**. Live database inspection confirmed the issue was table-level Data API privilege, not the tenant RLS policy: `authenticated` had no `SELECT` or `UPDATE` grant on `public.acquisitions`, while the existing restrictive `acquisitions_subscription_select/update` policies were already correctly present. The owner membership has both `acquisitions.view` and `acquisitions.manage`.
 
 Repair applied live as migration `repair_acquisition_subscriber_data_api_grants`: `GRANT SELECT, UPDATE ON public.acquisitions TO authenticated;`. No row data, statuses, RLS policies, or workflow transitions were changed.
+
+
+## Follow-up deep audit — duplicate lifecycle renderer — 21 September 2026
+
+The live offer is confirmed as `accepted` (£100) and the acquisition is confirmed as `accepted`. A deep code audit found the remaining contradictory message in the same Buying page: `loadItemFinancials()` contained an older fallback that independently said **No offer has been sent yet** whenever its local offer result was empty. This was a second presentation path separate from the newer request-level accepted-offer logic.
+
+Repair on branch `fix/accepted-offer-detail-override`:
+- pass the authoritative request status into `loadItemFinancials()`;
+- if the request is `offer_accepted`, never render the old pending-offer message;
+- start the existing 10-second Buying status refresh after initial page load;
+- advance `buying-dashboard.js` cache-buster from v11 to v12.
+
+No live offer, acquisition, request or item data was changed.

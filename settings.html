@@ -35,6 +35,12 @@
 <p><button type="submit">Save business details</button></p></form>
 </section>
 
+<section class="panel" id="email-settings-panel"><div class="panel-heading"><div><div class="eyebrow">Email</div><h2>Your business email</h2></div><span id="email-status-pill" class="status-pill">Not set</span></div>
+<p><strong>Just enter the email address your business uses.</strong> TradeFlow will use it for important business notifications and as the reply address for customer emails.</p>
+<p class="small">You do not need to configure SMTP, mail servers or individual notification switches. TradeFlow handles the technical email setup for you.</p>
+<form id="email-form"><div class="form-grid"><label class="full">Business email address<input id="business-email" type="email" autocomplete="email" placeholder="you@yourbusiness.co.uk" required></label></div><p><button type="submit">Save business email</button></p></form>
+<div id="email-status" class="small" aria-live="polite"></div></section>
+
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website identity</div><h2>Business branding</h2></div><span class="status-pill">Authoritative</span></div>
 <p>Your business name, logo and banner are managed here as the business identity. TradeFlow distributes these assets to the appropriate customer-facing website areas; website templates, colours, backgrounds and page content remain editable in the Website Builder.</p>
 <div class="branding-asset-block"><strong>Business logo</strong><div id="logo-panel" class="logo-panel"><div id="logo-preview" class="logo-preview"></div><div class="actions"><button id="logo-upload" type="button">Upload logo</button><button id="logo-remove" class="secondary" type="button">Remove logo</button></div><p class="small">PNG, JPEG or WebP · maximum 5 MB.</p></div></div>

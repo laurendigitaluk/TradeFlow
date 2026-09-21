@@ -61,6 +61,14 @@ async function removeLogo(){
  await api('/rest/v1/tenant_public_profiles?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({logo_url:null})});
  renderLogo(null);msg('Business logo removed.','success');
 }
+
+function renderShippingConnections(rows){
+ const box=$('shipping-connections');if(!box)return;
+ const byProvider=Object.fromEntries((rows||[]).map(x=>[x.provider,x]));
+ const providers=[['parcel2go','Parcel2Go'],['sendcloud','Sendcloud'],['shippo','Shippo']];
+ box.innerHTML=providers.map(([code,name])=>{const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';return '<div style="border-top:1px solid #dfe4e8;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small">'+(x?.display_name?esc(x.display_name)+' · ':'')+'Uses the subscriber-owned provider account. Shipping charges remain outside TradeFlow.</div></div><span class="status-pill">'+esc(label)+'</span></div>'}).join('');
+}
+
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
@@ -74,6 +82,7 @@ async function load(){
   setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
+  const shippingRows=await api('/rest/v1/shipping_provider_connections?select=id,provider,status,display_name,provider_account_id,connected_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=provider');renderShippingConnections(shippingRows);
   const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,instructions,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=sort_order,display_name');
   $('methods').innerHTML=rows?.length?rows.map(x=>'<div style="border-top:1px solid #dfe4e8;padding:12px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+esc(x.instructions||'No customer instructions.')+'</div></div><span class="status-pill">'+(x.enabled?'Enabled':'Disabled')+'</span></div>').join(''):'<div class="empty">No payment methods configured yet.</div>';
  }catch(e){msg(e.message||String(e),'error')}

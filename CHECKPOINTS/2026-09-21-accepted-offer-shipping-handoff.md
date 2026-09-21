@@ -145,3 +145,20 @@ The UI reserves the automated Voila route but it is currently disabled. The Voil
 The migration add_shipping_service_override added the acquisition fields. The migration extend_customer_shipping_override_data extended customer_get_acquisition_shipping() so the authenticated customer portal receives the method and QR sources.
 
 The existing private storage policy continues to restrict customer access by exact tenant/acquisition/customer relationship.
+
+
+## Customer-Paid Shipping Boundary — 21 September 2026
+
+The shipping handoff has been clarified so that TradeFlow does not handle customer shipping costs. The customer selling the item is responsible for arranging and paying for shipment.
+
+### Rules
+- The accepted offer remains the agreed purchase amount; shipping is not added to it.
+- TradeFlow does not collect shipping money from the customer.
+- TradeFlow does not pay or reimburse the customer's shipping.
+- TradeFlow does not create a shipping expense or shipping margin.
+- Labels, URLs, QR codes, courier/service details, tracking and instructions remain operational handoff data.
+- The existing subscriber override remains available.
+- The future Voila integration must sit behind the same boundary and must not create a TradeFlow shipping-payment flow.
+
+### UI change
+Subscriber Buying/Acquisition handoff text now states that the customer is responsible for arranging and paying for shipping. Customer Portal shipping cards display the same responsibility before the label/QR handoff.

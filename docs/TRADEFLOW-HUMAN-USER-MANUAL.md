@@ -325,3 +325,10 @@ The manual/override route does not create a separate shipping system. It writes 
 The Customer Portal now shows the selected shipping method, courier/service information, label actions and any QR code supplied by the subscriber. QR images remain in the private TradeFlow media bucket and are exposed to the authenticated customer through on-demand signed URLs.
 
 The automated Voila option is currently represented in the UI but deliberately disabled until the secure Voila account/API connection is implemented. This prevents a subscriber from selecting an automated route that cannot yet create a real label.
+
+
+## Shipping Cost Responsibility — 21 September 2026
+
+TradeFlow does not handle customer shipping payments or shipping expenses. For items a customer is selling to a subscriber, the **customer is responsible for arranging and paying for shipping**. TradeFlow does not add shipping to the accepted offer, collect a shipping payment, reimburse the customer, or record customer shipping as a TradeFlow business expense.
+
+The shipping handoff is an information and workflow facility only. It may contain a subscriber-provided label, URL, QR code, courier/service details, tracking information and instructions. The subscriber can use its own shipping arrangement or the future Voila route. The financial responsibility for shipping remains outside TradeFlow's transaction and accounting model.

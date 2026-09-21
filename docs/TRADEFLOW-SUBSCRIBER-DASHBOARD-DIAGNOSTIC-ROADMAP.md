@@ -1022,3 +1022,16 @@ Authenticated-role SQL now sees offer OFF-9E44199AB6F3 as accepted (£100) and t
 
 ### Browser verification still required
 Hard-refresh the current Buying page and reopen BR-744BA41BDC. Confirm the old pre-offer messages are absent, the accepted £100 offer is shown, the shipping handoff form is visible, and the customer details load without the CASE error. No shipping label should be published until an actual test label URL is available.
+
+## 21 September 2026 — Shipping Label Upload and Resend
+
+The accepted-offer shipping handoff now supports two label sources:
+
+- **Shipping label URL** — paste the label URL supplied by the carrier.
+- **Uploaded shipping label** — upload a PDF, PNG or JPEG directly to TradeFlow.
+
+Uploaded labels are stored in the existing private `tradeflow-media` bucket under the tenant/acquisition path. The customer can access only the label belonging to their own acquisition. The subscriber can open/print the label from the Buying or Acquisition workspace.
+
+The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
+
+The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.

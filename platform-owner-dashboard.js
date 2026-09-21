@@ -58,11 +58,29 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();
+    save();await establish();hideAuth();await loadTenants();await loadPlatformEmail();await loadPlatformEmail();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
 
+async function loadPlatformEmail(){
+ const status=$('platform-email-status'),input=$('platform-email-input');if(!status||!input)return;
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_get_email',{method:'POST',body:'{}'});
+  input.value=data?.sender_email||'';
+  const s=data?.sender_verification_status||'not_configured';
+  status.textContent=s==='verified'?'Status: Ready — TradeFlow can send platform emails.':s==='pending'?'Status: Waiting for domain/email verification.':'Status: Not configured.';
+ }catch(e){status.textContent=e.message||String(e)}
+}
+async function savePlatformEmail(e){
+ e.preventDefault();const input=$('platform-email-input'),status=$('platform-email-status'),email=input.value.trim().toLowerCase();
+ if(!email){status.textContent='Enter the TradeFlow email address.';return}
+ try{
+  status.textContent='Saving…';
+  const data=await request('/rest/v1/rpc/platform_owner_save_email',{method:'POST',body:JSON.stringify({p_email:email})});
+  status.textContent='Status: '+(data?.sender_verification_status==='verified'?'Ready — TradeFlow can send platform emails.':'Saved — waiting for domain/email verification.');
+ }catch(e){status.textContent=e.message||String(e)}
+}
 function planRank(code){return code==='basic'?10:code==='enhanced'?20:code==='catalogue'?30:0}
 function nextPlan(code){return code==='basic'?'enhanced':code==='enhanced'?'catalogue':null}
 function setActionMessage(text,isError=false){const el=$('action-message');if(el){el.textContent=text;el.className=isError?'action-message error':'action-message'}}
@@ -72,6 +90,7 @@ function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&am
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
 $('refresh').onclick=loadTenants;
+$('platform-email-form').onsubmit=savePlatformEmail;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{

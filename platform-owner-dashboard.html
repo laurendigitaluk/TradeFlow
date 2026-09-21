@@ -56,13 +56,22 @@
       <p class="note">Recurring Stripe billing is still a separate production boundary. Owner plan changes currently update the platform subscription record only.</p>
     </section>
 
-    <section id="settings" class="panel">
+    <section id="email-settings" class="panel">
+<div class="eyebrow">Platform email</div><h2>TradeFlow sending email</h2>
+<p>Enter the email address TradeFlow should use as its platform sending address. You can use an existing address now and replace it later when the TradeFlow domain and permanent email address are ready.</p>
+<p><strong>This is a platform-owner setting.</strong> Subscribers do not need to configure email servers or Resend.</p>
+<form id="platform-email-form" style="max-width:620px"><label>TradeFlow email address<input id="platform-email-input" type="email" autocomplete="email" placeholder="hello@tradeflow.co.uk" required></label><p><button type="submit">Save TradeFlow email</button></p></form>
+<div id="platform-email-status" class="muted" aria-live="polite">Loading email status…</div>
+<div id="platform-email-help" class="note">The address will remain pending until its sending domain is verified. You can change this address at any time.</div>
+</section>
+
+<section id="settings" class="panel">
       <div class="eyebrow">Platform administration</div>
       <h2>Platform settings</h2>
       <p>Platform-level administration will be added here as the SaaS control layer is built. Tenant settings remain inside the subscriber workspace.</p>
     </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=2" defer></script>
+<script src="platform-owner-dashboard.js?v=3" defer></script>
 </body>
 </html>

@@ -111,7 +111,7 @@ async function renderSellingShipping(data,addresses=[]){
   const shippingResponsibility='<p class="shipping-responsibility"><strong>Shipping cost:</strong> You are responsible for arranging and paying for the shipping of this item. TradeFlow and the subscriber do not collect or reimburse your shipping cost.</p>';
   const tracking=r.shipping_tracking_number?'<p><strong>Tracking:</strong> '+esc(r.shipping_tracking_number)+(r.shipping_carrier?' · '+esc(r.shipping_carrier):'')+'</p>':'';
   const service=r.shipping_carrier||r.shipping_service?'<p><strong>Shipping service:</strong> '+esc([r.shipping_carrier,r.shipping_service].filter(Boolean).join(' · '))+'</p>':'';
-  const posted=r.posted_at?'<p><strong>Posted:</strong> '+new Date(r.posted_at).toLocaleDateString('en-GB'):'';
+  const posted=r.posted_at?'<p><strong>Posted:</strong> '+new Date(r.posted_at).toLocaleDateString('en-GB'):' ';
   const instructions=r.shipping_instructions?'<p><strong>Instructions</strong><br>'+esc(r.shipping_instructions).replace(/\\n/g,'<br>')+'</p>':'';
   const label=labelUrl?'<a href="'+esc(labelUrl)+'" target="_blank" rel="noopener">Open / print shipping label</a><a href="'+esc(labelUrl)+'" target="_blank" rel="noopener" download style="margin-left:8px">Download shipping label</a>':'<span class="small">Shipping label not available yet.</span>';
   const qr=qrUrl?'<div style="margin-top:10px"><strong>QR code:</strong><br><a href="'+esc(qrUrl)+'" target="_blank" rel="noopener"><img src="'+esc(qrUrl)+'" alt="Shipping QR code" style="max-width:180px;max-height:180px;margin-top:6px;border:1px solid #ddd;padding:6px;background:#fff"></a><div class="small"><a href="'+esc(qrUrl)+'" target="_blank" rel="noopener" download>Open / download QR code</a></div></div>':'';

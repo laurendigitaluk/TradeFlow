@@ -102,3 +102,46 @@ Uploaded labels are stored in the existing private `tradeflow-media` bucket unde
 The shipping handoff action is now **Send shipping label to customer** initially, then **Save & resend shipping label** when a label already exists. This republishes the current label/instructions to the customer portal without creating a duplicate acquisition or offer.
 
 The Customer Portal shows **Open / print shipping label** and **Download shipping label** when an uploaded label exists. Signed links are generated on demand rather than permanently exposing the private storage object.
+
+
+## Shipping Service Override — 21 September 2026
+
+### User requirement
+The subscriber must be able to override the future automated Voila courier route and use their own shipping service for an individual acquisition.
+
+### Implemented
+Live acquisition records now have:
+- shipping_method (subscriber_override / automated);
+- shipping_qr_url;
+- shipping_qr_storage_path.
+
+The Buying and Acquisition workspaces now allow the subscriber to:
+- choose **Use my own shipping service**;
+- paste a shipping label URL;
+- upload a PDF/PNG/JPEG label;
+- paste a QR code URL;
+- upload a PNG/JPEG QR code;
+- enter courier/service/tracking information;
+- add customer instructions;
+- open/print the label or QR code;
+- publish/update the same acquisition handoff.
+
+The Customer Portal displays the shipping method, courier/service, label and QR code where supplied.
+
+### Workflow rule
+This remains the existing acquisition workflow. No duplicate acquisition, offer, fulfilment or shipping state is created.
+
+A subscriber override can provide:
+- label only;
+- QR code only;
+- both label and QR code.
+
+Publishing an accepted acquisition continues through transition_workflow_entity() to awaiting_item.
+
+### Automated route status
+The UI reserves the automated Voila route but it is currently disabled. The Voila integration itself has not yet been connected. The next implementation phase can add the secure server-side Voila API connection without changing the subscriber override path.
+
+### Live database verification
+The migration add_shipping_service_override added the acquisition fields. The migration extend_customer_shipping_override_data extended customer_get_acquisition_shipping() so the authenticated customer portal receives the method and QR sources.
+
+The existing private storage policy continues to restrict customer access by exact tenant/acquisition/customer relationship.

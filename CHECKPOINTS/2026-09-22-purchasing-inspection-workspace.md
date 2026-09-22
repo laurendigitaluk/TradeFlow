@@ -230,3 +230,13 @@ The post-inspection purchase backend already contains the intended next-stage wo
 The missing connection found in this audit was the customer notification when a final post-inspection offer is published. The final-offer RPC now records an offer_sent notification event and queues the existing customer notification infrastructure when the customer has an email address. Migration 20260923000001_final_offer_customer_notification.sql was applied to live Supabase and committed to the repository.
 
 For the current Canon test, the item is at final_offer_required with no bank details and no final offer yet. No purchase/payment/inventory record has been created. Staff must choose the final offer amount and publish it; the customer can then accept it and enter bank details; staff can verify the bank details, make the bank transfer, enter the bank payment reference and use CONFIRM PAYMENT SENT & COMPLETE PURCHASE. Only then is the item purchased and the inventory asset created ready_for_sale.
+
+
+## 2026-09-23 — Customer portal login repair
+**Symptom:** customer portal remained on the Customer account login screen after sign-in.
+
+**Root cause:** `customer-auth.js` and `customer-dashboard.js` were both binding the same Sign in/Create customer account controls. The dedicated auth controller had been introduced to own the sign-in handoff, but the dashboard still contained its older direct authentication handlers. A sign-in could therefore trigger two authentication/initialisation paths concurrently.
+
+**Repair:** removed the duplicate `signIn`, `signUp`, and password-keydown bindings from `customer-dashboard.js`. `customer-auth.js` remains the single auth controller and hands the authenticated session to the dashboard. Bumped the dashboard cache version to `v=16`.
+
+**Expected flow:** enter customer credentials → `customer-auth.js` authenticates → session is saved → portal is revealed → dashboard `handleAuthSuccess` registers/loads the customer and loads portal data.

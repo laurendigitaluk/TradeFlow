@@ -162,3 +162,19 @@ The shipping handoff has been clarified so that TradeFlow does not handle custom
 
 ### UI change
 Subscriber Buying/Acquisition handoff text now states that the customer is responsible for arranging and paying for shipping. Customer Portal shipping cards display the same responsibility before the label/QR handoff.
+
+## Customer Portal sign-in handoff repair — 22 September 2026
+
+The customer account authentication itself was verified live: the test customer successfully created a Supabase Auth sign-in at 17:57 UTC on 22 September 2026. The remaining browser problem was presentation/session handoff: the page could retain the Customer account form even though the authenticated session existed, which also prevented the portal navigation handler from activating because the portal container remained hidden.
+
+Repair merged in PR #94:
+- customer-auth.js now validates an existing saved customer session on page load;
+- successful sign-in/sign-up immediately hides the auth panel and exposes the existing portal;
+- the authenticated session is handed directly to the existing customer dashboard controller instead of forcing a page reload;
+- customer-dashboard.html cache-buster advanced from customer-auth.js v1 to v2;
+- no Supabase schema, customer records, offers, acquisitions or workflow state were changed.
+
+Expected browser result:
+- after sign-in, the Customer account form disappears;
+- the Welcome back customer portal is visible;
+- Overview, Shop, My Orders, Sell to us, Returns and My Details navigation can switch sections normally.

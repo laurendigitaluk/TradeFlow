@@ -880,3 +880,19 @@ Parcel2Go is the first automated shipping provider implementation. The subscribe
 Do not infer that the customer has sent an item from `posted_at`, `shipping_status=ready_for_customer`, or publication of a shipping handoff. `acquisitions.customer_sent_at` is the authoritative customer confirmation timestamp. Before it is set, the subscriber state is Awaiting item from customer. `customer_mark_acquisition_posted` sets `customer_sent_at` and `shipping_status=in_transit`. The authoritative acquisition workflow status remains `awaiting_item` until the subscriber confirms receipt; the Buying Dashboard derives the visible **Item on its way — awaiting receipt** stage from the customer-sent shipping state.
 
 `shipping_service_url` is a provider/service link and must never be rendered as the physical shipping label or QR asset. Physical label and QR download/print actions use the private storage paths. Shipping provider connections are tenant-wide and are shared by Buying/acquisitions and Retail Shop sales/fulfilment.
+
+
+## 22 September 2026 — Shipping handoff recovery and receipt authority
+
+The shipping handoff has three distinct data concepts and they must not be conflated:
+1. provider/service website link (shipping_service_url);
+2. physical shipping label (shipping_label_url or shipping_label_storage_path);
+3. physical QR code (shipping_qr_url or shipping_qr_storage_path).
+
+The physical label/QR controls operate on the actual private storage asset. Provider links are informational navigation only.
+
+Customer confirmation is recorded by customer_mark_acquisition_posted, which sets customer_sent_at and shipping_status=in_transit. The acquisition workflow status remains awaiting_item until receipt. Subscriber UI derives the visible **Item on its way — awaiting receipt** state from the customer-sent shipping state.
+
+Receipt authority is subscriber_mark_acquisition_received, which checks tenant acquisition-management permission, requires awaiting_item plus shipping_status=in_transit, performs the authoritative awaiting_item → received workflow transition, then records shipping_status=received.
+
+A material diagnostic lesson from the September 2026 test: uploaded label files can exist in storage.objects even when the acquisition's label path has been lost/null. Therefore, when a subscriber reports a missing label, inspect the acquisition record and the exact tenant/acquisition storage path before assuming the physical file was deleted. Restore the acquisition reference where the correct private object is still present.

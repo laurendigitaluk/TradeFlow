@@ -97,7 +97,12 @@ async function saveGenericShippingProvider(p){
   const credentials={};for(const f of (p.required_fields||[])){const e=$('shipping-field-'+f.key);if(f.required&&!e?.value.trim())throw Error('Enter '+f.label+'.');if(e?.value)credentials[f.key]=e.value.trim()}
   const environment=$('shipping-environment')?.value||'live';
   status.textContent='Saving the connection details securely…';
-  const result=await api('/rest/v1/rpc/subscriber_save_shipping_provider_connection',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:p.provider_code,p_environment:environment,p_credentials:credentials,p_config:{display_name:p.provider_name}})});
+  let result;
+  if(p.provider_code==='parcel2go'){
+    result=await api('/rest/v1/rpc/subscriber_connect_shipping_provider',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:'parcel2go',p_environment:environment,p_api_client_id:credentials.api_client_id||'',p_api_client_secret:credentials.api_client_secret||''})});
+  }else{
+    result=await api('/rest/v1/rpc/subscriber_save_shipping_provider_connection',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:p.provider_code,p_environment:environment,p_credentials:credentials,p_config:{display_name:p.provider_name}})});
+  }
   status.textContent=result?.adapter_status==='active'?'Connection saved. Test it before using it.':'Connection details saved securely. TradeFlow will enable this service when its adapter is active.';
   await load();
  }catch(e){status.textContent=e.message||String(e)}

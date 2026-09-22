@@ -1305,3 +1305,7 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - This allowed duplicate authentication/portal initialisation requests after sign-in and could leave the visible portal on the login screen while concurrent initialisation was still running.
 - `customer-auth.js` is now the single owner of customer authentication and session handoff. `customer-dashboard.js` retains portal initialisation and `tradeflowHandleCustomerAuthSuccess` but no longer binds its own sign-in/sign-up handlers.
 - `customer-dashboard.html` cache-bust was raised from `customer-dashboard.js?v=15` to `v=16`.
+
+
+### 2026-09-23 follow-up: customer login handoff hardening
+The previous duplicate-handler repair alone did not resolve the live login screen. A second issue was identified in the authentication handoff: the customer-auth controller could dispatch a successful session before the dashboard handler was guaranteed to be registered. The portal is now revealed immediately on successful authentication, and the HTML loads `customer-dashboard.js` first with `defer`, then navigation, then `customer-auth.js` with `defer`. Cache versions are now dashboard v17 and auth v5. This makes the dashboard authentication handler available before the auth controller binds/restores a session.

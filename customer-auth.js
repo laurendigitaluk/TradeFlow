@@ -35,7 +35,7 @@ async function signIn(){
   if(!data?.access_token)throw Error('Supabase did not return a customer session.');
   saveSession(data);
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');busy(button,false)}
+ }catch(error){message(error.message||String(error),'error')}finally{busy(button,false)}
 }
 async function signUp(){
  if(!tenantId)return message('Open the customer portal from the subscriber website.','error');

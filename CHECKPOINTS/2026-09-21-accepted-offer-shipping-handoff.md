@@ -241,3 +241,26 @@ The method selector now switches the two sections dynamically.
 A live storage-policy audit found the reason subscriber QR/label uploads were failing: tradeflow-media had the customer SELECT policy but no authenticated subscriber INSERT policy for acquisition shipping files. PR #97 added the tenant-member INSERT policy and recorded it in supabase/migrations/20260922190000_shipping_label_subscriber_upload_policy.sql.
 
 No acquisition, offer, customer or shipping workflow records were changed.
+
+
+## 22 September 2026 — connection-first shipping setup and provider selection
+
+The shipping handoff was revised so the subscriber's shipping account is a business setup step, not something configured ad hoc on each accepted sale.
+
+Current intended flow:
+1. Before the subscriber's website goes live, they open **Settings → Shipping provider connections** and connect/test their own shipping provider account.
+2. After a provider is connected, it is stored as the tenant's provider connection and is available to the Buying and Acquisition workspaces.
+3. When an offer is accepted, the shipping handoff shows **Shipping setup** and a **Shipping method** selector.
+4. **Use connected shipping service** shows only the subscriber's actually connected providers. It no longer presents hard-coded Parcel2Go/Sendcloud/Shippo choices as if they were connected.
+5. If no provider is connected, the connected-shipping section explicitly says **Shipping service not connected** and links directly to Settings to connect one.
+6. **Use your own shipping service** is a separate manual route. Its shipping-label and QR-code controls remain hidden while connected shipping is selected.
+7. Connected-provider selection is carried into the acquisition shipping fields so the provider account can be used by the provider adapter for quote/order/label/tracking workflows.
+8. The customer remains responsible for paying the shipping provider directly. TradeFlow does not collect, pay or reimburse shipping costs.
+
+Parcel2Go remains the first operational connected provider adapter. The provider list is now data-driven from `shipping_provider_connections`, so additional provider adapters can appear automatically once their secure connection and shipping adapter are implemented.
+
+Frontend cache-busters advanced:
+- Buying dashboard JS: v20
+- Acquisition dashboard JS: v9
+
+No customer, offer, acquisition, valuation or shipping workflow records were changed by this UI/flow repair.

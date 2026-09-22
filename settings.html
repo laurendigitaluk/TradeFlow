@@ -53,7 +53,7 @@
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website</div><h2>Website URL</h2></div></div><p>Manage the customer-facing domain separately from the website design.</p><div class="actions"><a href="domain-settings.html">Manage website URL</a></div></section>
 
 <section class="panel" id="shipping-connections-panel"><div class="panel-heading"><div><div class="eyebrow">Shipping integrations</div><h2>Shipping provider connections</h2></div><span class="status-pill">Subscriber account</span></div>
-<p>Connect your own multi-carrier shipping account. Courier charges and billing stay with your provider account; TradeFlow only uses the connection for shipping options, labels and tracking.</p>
+<p><strong>Connect your shipping service here before the website goes live.</strong> This is the subscriber business setup, not a customer setting. Once connected, the Buying and Acquisition workspaces will show the connected service for each accepted sale, and the same provider connection can be used for quotes, labels and tracking as the integration supports them.</p><p class="small">You can connect more than one provider as additional adapters are enabled. Customers never enter provider API credentials. Customers pay the shipping provider directly; TradeFlow does not collect, pay or reimburse shipping costs.</p>
 <div id="shipping-connections">Loading shipping providers…</div>
 <div class="form-grid" style="margin-top:18px">
 <label>Provider<select id="shipping-provider"><option value="parcel2go">Parcel2Go</option></select></label>
@@ -61,9 +61,9 @@
 <label>API client ID<input id="shipping-client-id" autocomplete="off" placeholder="Parcel2Go client ID"></label>
 <label>API client secret<input id="shipping-client-secret" type="password" autocomplete="new-password" placeholder="Parcel2Go client secret"></label>
 </div>
-<div class="actions"><button id="shipping-connect" type="button">Connect Parcel2Go account</button></div>
+<div class="actions"><button id="shipping-connect" type="button">Connect Parcel2Go account</button><a href="buying-dashboard.html">Return to Buying</a></div>
 <div id="shipping-connect-status" class="small" aria-live="polite"></div>
-<p class="small">Provider credentials are never stored in this page or browser code. Secure account connection is completed server-side when the provider adapter is enabled. Your existing manual label, QR code and tracking override remains available.</p></section>
+<p class="small">Provider credentials are never stored in this page or browser code. Secure account connection is completed server-side. After a provider is connected and tested, it appears automatically in the accepted-sale shipping method list.</p></section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
 <form id="method-form" style="margin-top:18px"><div class="form-grid"><label>Payment method<select id="method-code"><option value="card">Card</option><option value="bank_transfer">Bank transfer</option><option value="cash">Cash</option><option value="paypal">PayPal</option><option value="other">Other</option></select></label><label>Display name<input id="method-name" placeholder="Card payment" required></label><label class="full">Customer instructions<textarea id="method-instructions" rows="2" placeholder="Optional instructions shown to customers."></textarea></label></div><p><button type="submit">Add or update payment method</button></p></form></section>

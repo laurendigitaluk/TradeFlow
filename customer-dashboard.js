@@ -184,8 +184,6 @@ function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','su
 async function handleAuthSuccess(data){try{saveSession(data);await ensureCustomerRegistration();await initialisePortal()}catch(err){saveSession(null);setMessage(err.message||String(err),'error')}}
 document.addEventListener('click',e=>{const offerButton=e.target.closest?.('.offer-accept,.offer-refuse');if(offerButton){e.preventDefault();e.stopPropagation();respond(offerButton.dataset.offerId,offerButton.classList.contains('offer-accept')?'accept':'refuse');return}const b=e.target.closest?.('.buy-listing');if(!b)return;e.preventDefault();e.stopPropagation();checkout(b.dataset.listingId)});window.tradeflowHandleCustomerAuthSuccess=handleAuthSuccess;
 window.addEventListener('tradeflow-auth-success',e=>handleAuthSuccess(e.detail));
-$('auth-sign-in')?.addEventListener('click',signIn);
-$('auth-sign-up')?.addEventListener('click',signUp);
 $('submit-request')?.addEventListener('click',submitBuyingRequest);$('request-category')?.addEventListener('change',loadRequestFields);
 $('request-return')?.addEventListener('click',requestReturn);
 $('save-profile')?.addEventListener('click',async()=>{

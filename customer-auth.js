@@ -18,7 +18,6 @@ function revealPortal(){
  if(portal)portal.hidden=false;
 }
 function dispatchAuthSuccess(data){
- revealPortal();
  if(typeof window.tradeflowHandleCustomerAuthSuccess==='function'){
   window.tradeflowHandleCustomerAuthSuccess(data);
  }else{

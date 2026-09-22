@@ -346,3 +346,18 @@ For an accepted acquisition, the subscriber chooses either a manual label or an 
 Publishing the shipping handoff does not mean the customer has sent the item. The acquisition remains **Awaiting item from customer** until the customer clicks **Item sent** after handing the parcel to the courier or dropping it off. Only then does the subscriber see **Item on its way — awaiting receipt** and the integrated tracking state can progress.
 
 The customer does not pay the shipping cost in this workflow. The subscriber arranges and pays the shipping service and supplies the label/QR/instructions needed by the customer.
+
+
+## 22 September 2026 — Shipping handoff controls and receipt workflow
+
+The shipping handoff is one continuous customer-facing block. It must distinguish:
+- **Shipping service / provider website** — an external service link only.
+- **Physical shipping label** — the actual uploaded label stored in private TradeFlow media.
+- **Physical QR code** — the actual uploaded QR asset stored in private TradeFlow media.
+- **Tracking** — tracking number and, where available, a provider tracking URL.
+
+The subscriber Buying/Acquisition workspace provides separate controls to print/download the physical label and QR code, plus a resend/replace action. A provider website link must never be treated as the physical label or QR asset.
+
+Publishing the handoff moves an accepted acquisition into **Awaiting item from customer**. Customer clicking **Item sent** records customer_sent_at and shipping_status=in_transit; the database acquisition workflow remains awaiting_item until the subscriber confirms receipt. The subscriber then sees **Item on its way — awaiting receipt** and a **Confirm item received** action. That action performs the authoritative awaiting_item → received transition, after which the existing received → inspection workflow continues.
+
+If a label is missing from the acquisition record, staff must be able to replace/upload the physical label and resend the handoff. Storage objects are private and should be referenced from the acquisition record rather than exposed publicly.

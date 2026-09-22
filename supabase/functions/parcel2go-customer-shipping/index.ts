@@ -92,7 +92,7 @@ Deno.serve(async(req:Request)=>{
         DeliveryAddress:addressForQuote(ctx.address),
         Parcels:[{Value:Number(ctx.acq.agreed_total||0),Weight:weight,Length:length,Width:width,Height:height}]
       };
-      const response=await fetch(host+"/api/quotes",{method:"POST",headers:{"Content-Type":"application/json","Authorization:"Bearer "+token,"Accept":"application/json"},body:JSON.stringify(quotePayload)});
+      const response=await fetch(host+"/api/quotes",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,"Accept":"application/json"},body:JSON.stringify(quotePayload)});
       const text=await response.text();let payload:any={};try{payload=JSON.parse(text)}catch{}
       if(!response.ok) return json({error:String(payload.message||payload.error||text||"Parcel2Go quote failed")},400);
       const {data:session,error}=await admin.from("shipping_quote_sessions").insert({

@@ -63,7 +63,7 @@ async function renderSellingStatus(data,offers,acquisitions,shipping){
  let handoff='';
  if(active.stage==='awaiting_item'||active.stage==='item_on_way'){
   let labelUrl=''; if(ship?.shipping_label_storage_path){try{labelUrl=await storageSignedUrl(ship.shipping_label_storage_path)}catch(e){}}
-  let qrUrl=ship?.shipping_qr_url||''; if(!qrUrl&&ship?.shipping_qr_storage_path){try{qrUrl=await storageSignedUrl(ship.shipping_qr_storage_path)}catch(e){}}
+  let qrUrl=''; if(ship?.shipping_qr_storage_path){try{qrUrl=await storageSignedUrl(ship.shipping_qr_storage_path)}catch(e){}}
   const service=[ship?.shipping_carrier,ship?.shipping_service].filter(Boolean).join(' · ');
   const provider=ship?.shipping_provider?providerLabel(ship.shipping_provider):'';
   const trackLink=ship?.shipping_tracking_url?'<a href="'+esc(ship.shipping_tracking_url)+'" target="_blank" rel="noopener">Track with '+esc(provider||'shipping provider')+'</a>':'';

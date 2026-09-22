@@ -446,3 +446,11 @@ The embedded inspection workspace is rendered asynchronously by `buying-inspecti
 ## 2026-09-22 — Dashboard attention count and direct inspection action
 
 The Business Dashboard now includes a dedicated **Needs attention** count for pre-acquisition work such as inspection, testing, repair, final offer and payment. The inspection row has an **OPEN INSPECTION** action that opens the specific Buying request and automatically opens/scrolls to its embedded inspection workspace.
+
+## 2026-09-23 — Purchasing workflow audit corrections
+
+The business dashboard's **Needs attention** count represents active pre-purchase work such as inspection, testing, repair, final offer and payment. Completed purchases are counted separately under Completed purchases.
+
+The Buying request's **OPEN INSPECTION** action opens the embedded Purchasing Inspection workspace after it has rendered. Inspection remains within Buying and does not create an acquisition.
+
+Acquisitions and Inventory are now purchase-completion records. They are created only after the customer has accepted the final offer and the bank payment has been recorded.

@@ -52,6 +52,25 @@ async function storageUpload(path,file){const h=new Headers({'apikey':key,'Autho
 async function storageSignedUrl(path){const r=await fetch(`${SUPABASE_URL}/storage/v1/object/sign/tradeflow-media/${path}`,{method:'POST',headers:{'apikey':key,'Authorization':`Bearer ${session?.access_token||''}`,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:86400})});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.error||text||`Could not create shipping label link (${r.status})`);return b?.signedURL?.startsWith('http')?b.signedURL:`${SUPABASE_URL}/storage/v1${b.signedURL}`;}
 function tenantName(){ return window.tradeflowSubscriberAuth?.tenants?.[tenantId]||tenantId; }
 async function transition(entityType,entityId,from,to,notes=''){ return api('/rest/v1/rpc/transition_workflow_entity',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_entity_type:entityType,p_entity_id:entityId,p_expected_from:from,p_to_status:to,p_notes:notes||null,p_metadata:{source:'subscriber_buying_dashboard'}})}); }
+function openInspectionWorkspace(ev){
+ ev?.preventDefault();
+ const targetId='tradeflow-inspection-workspace';
+ const reveal=()=>{
+   const el=document.getElementById(targetId);
+   if(!el)return false;
+   history.replaceState(null,'','#'+targetId);
+   el.scrollIntoView({behavior:'smooth',block:'start'});
+   el.style.outline='2px solid #1f2937';
+   setTimeout(()=>{el.style.outline='';},1400);
+   return true;
+ };
+ if(reveal())return false;
+ let tries=0;
+ const timer=setInterval(()=>{tries++;if(reveal()||tries>=100)clearInterval(timer)},50);
+ return false;
+}
+window.tradeflowOpenInspection=openInspectionWorkspace;
+
 function shippingHandoffHtml(r){
  const a=r?.preShipping||null;
  const id=a?.buying_item_id||r?.buying_item_id;
@@ -66,7 +85,7 @@ function shippingHandoffHtml(r){
    return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Shipping handoff</h3><p><strong>The customer has accepted the initial offer. Provide the shipping instructions before the item is sent.</strong></p><div class="form-grid" style="margin-top:10px"><label><strong>Shipping label URL</strong><input id="ship-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a label"></label><label><strong>QR code URL</strong><input id="ship-qr-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a QR code"></label><label><strong>Carrier</strong><input id="ship-carrier-'+esc(id)+'" type="text"></label><label><strong>Service</strong><input id="ship-service-'+esc(id)+'" type="text"></label><label><strong>Tracking number</strong><input id="ship-tracking-'+esc(id)+'" type="text"></label><label><strong>Carrier website</strong><input id="ship-service-url-'+esc(id)+'" type="text"></label><label class="full"><strong>Customer instructions</strong><textarea id="ship-instructions-'+esc(id)+'" rows="3"></textarea></label></div><div class="actions" style="margin-top:12px"><button type="button" data-action="shipping" data-id="'+esc(id)+'">SEND SHIPPING INSTRUCTIONS</button></div><p class="small">You can also upload a label or QR code using the existing upload controls when available.</p></section>';
  }
  if(r.status==='received'||r.status==='inspection'){
-   if(r.status==='inspection')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Inspection in progress</h3><p><strong>The item has been received and is now being inspected.</strong></p><p class="small">The item is still outside Acquisitions and Inventory until the final offer is accepted and payment is recorded.</p><div class="actions" style="margin-top:10px"><a class="button" href="#tradeflow-inspection-workspace">OPEN INSPECTION</a></div></section>';
+   if(r.status==='inspection')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Inspection in progress</h3><p><strong>The item has been received and is now being inspected.</strong></p><p class="small">The item is still outside Acquisitions and Inventory until the final offer is accepted and payment is recorded.</p><div class="actions" style="margin-top:10px"><a class="button" href="#tradeflow-inspection-workspace" onclick="return window.tradeflowOpenInspection(event)">OPEN INSPECTION</a></div></section>';
    return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Item received — inspection next</h3><p><strong>You have received the customer item.</strong></p><p class="small">The item is not an acquisition yet. Complete the purchasing inspection first.</p><div class="actions" style="margin-top:10px"><button type="button" data-action="start-inspection" data-id="'+esc(id)+'">START INSPECTION</button></div></section>';
  } if(r.status==='shipping')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Item on its way — awaiting receipt</h3><p><strong>The customer has confirmed that the item has been sent.</strong></p><div class="form-grid" style="margin-top:10px"><div><strong>Shipping service</strong><br>'+esc(service)+(serviceUrl?'<br>'+serviceUrl:'')+'</div><div><strong>Tracking number</strong><br>'+esc(a?.shipping_tracking_number||'Not provided')+(a?.shipping_tracking_url?'<br><a href="'+esc(a.shipping_tracking_url)+'" target="_blank" rel="noopener">Track shipment</a>':'')+'</div></div><div style="margin-top:12px"><strong>Shipping label</strong>'+labelControls+'</div><div style="margin-top:12px"><strong>QR code</strong>'+qrControls+'</div><div class="actions" style="margin-top:12px"><button type="button" data-action="acq-received" data-id="'+esc(id)+'">Confirm item received</button></div></section>';
  if(r.status==='awaiting_item')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Shipping handoff sent — awaiting item</h3><p><strong>The customer has the shipping instructions and can now send the item.</strong></p><div class="form-grid" style="margin-top:10px"><div><strong>Shipping service</strong><br>'+esc(service)+(serviceUrl?'<br>'+serviceUrl:'')+'</div><div><strong>Tracking number</strong><br>'+esc(a?.shipping_tracking_number||'Not provided')+'</div></div><div style="margin-top:12px"><strong>Shipping label</strong>'+labelControls+'</div><div style="margin-top:12px"><strong>QR code</strong>'+qrControls+'</div>'+(a?.shipping_instructions?'<div style="margin-top:12px"><strong>Customer instructions</strong><br>'+esc(a.shipping_instructions).replace(/\n/g,'<br>')+'</div>':'')+resend+'</section>';

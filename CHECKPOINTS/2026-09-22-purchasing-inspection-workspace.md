@@ -160,3 +160,6 @@ The Business Dashboard workflow board was also corrected to read buying_items.pu
 ## 2026-09-22 — Direct inspection anchor corrected
 
 The OPEN INSPECTION shortcut had been pointing at the parent item-detail container, causing the page to scroll to the quotation area. It now anchors directly to `#tradeflow-inspection-workspace`, the actual embedded inspection section.
+## 2026-09-22 — Open Inspection async rendering repair
+
+The URL hash was changing to `#tradeflow-inspection-workspace`, but the embedded inspection element was not yet present when the browser performed the native anchor jump. The shortcut now waits for the element to render and then scrolls directly to it.

@@ -1114,3 +1114,12 @@ The customer is explicitly told that they are responsible for arranging and payi
 
 ## 2026-09-21 — Parcel2Go connected customer shipping
 The accepted-offer shipping workflow now supports a subscriber-connected Parcel2Go route. The subscriber connects their own Parcel2Go account in Settings; credentials remain server-side. Buying can enable connected Parcel2Go shipping on an accepted acquisition. The Customer Portal can then request a Parcel2Go quote using the customer's saved address and entered parcel dimensions, select a service, and create an unpaid Parcel2Go order. The customer is sent to Parcel2Go for payment. TradeFlow does not collect, pay or reimburse shipping costs. Remaining diagnostic stages are Parcel2Go webhook verification, post-payment label retrieval, and tracking synchronisation.
+
+
+### 22 September 2026 — shipping handoff state correction
+
+- Separate subscriber handoff publication from customer confirmation using `customer_sent_at`.
+- Customer Portal must consolidate shipping assets in the selling-request status card; do not maintain a second duplicate Send your item section.
+- Provider/service links are separate from physical label/QR assets. Download/Print controls must operate on private uploaded storage assets.
+- Subscriber Buying and Acquisition dashboards must remain Awaiting item until `customer_sent_at` is populated. Only then show Item on its way / awaiting receipt.
+- Shared Shipping Settings are tenant-wide and apply to both Buying/acquisition operations and Retail Shop sales/fulfilment.

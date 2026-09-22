@@ -431,3 +431,9 @@ The authoritative sequence is now:
 The Acquisitions workspace now represents completed purchases rather than the customer's initial acceptance of an offer. Provisional receipt/inspection data is stored against the buying item in the pre-acquisition purchasing workflow.
 
 The current test Canon EOS R7 transaction was repaired accordingly: its provisional acquisition and inventory asset were removed, its shipping data was retained in the pre-acquisition workflow, and the buying item is currently at **Inspection**.
+
+## 2026-09-22 — Inspection shortcut and business workflow board
+
+The Buying detail now retains a direct **OPEN INSPECTION** link while an item is in the inspection stage. It opens the inspection workspace for the currently open buying item; it does not create or imply an acquisition.
+
+The Business Dashboard live workflow board now reads the pre-acquisition purchase stage. Received, inspection, testing, repair, return and final-offer/payment stages are therefore visible as active purchasing work rather than being omitted because no acquisition exists yet.

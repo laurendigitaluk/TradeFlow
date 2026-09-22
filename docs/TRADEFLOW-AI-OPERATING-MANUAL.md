@@ -921,3 +921,8 @@ Do not interpret inspection complete as immediate Sales readiness. The accepted 
 The Buying dashboard owns the received CTA and inspection UI. The post-inspection workspace creates a separate approved trading_values record and a final offer; it does not overwrite the original accepted offer.
 
 Customer-facing copy must not expose the internal role term subscriber. Use customer/business-facing wording such as the business or the website.
+
+
+## 2026-09-22 — Inspection CTA ownership and customer wording follow-up
+
+The inspection CTA is now handled by the main Buying dashboard as the authoritative workflow controller. The supplemental inspection workspace delegates its `START INSPECTION` click to that controller when available, preventing the CTA from appearing clickable while being owned by a separate polling script. Customer selling-status wording has also been removed from the internal `subscriber` terminology, including receipt and inspection messages. Browser cache versions were incremented for the Buying and customer dashboard scripts.

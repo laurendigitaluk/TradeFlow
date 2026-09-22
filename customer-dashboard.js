@@ -80,38 +80,6 @@ async function markAcquisitionPosted(id){
  try{await api('/rest/v1/rpc/customer_mark_acquisition_posted',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_acquisition_id:id})});setMessage('Your item has been marked as posted.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}
 }
 
-const parcelQuoteState={};
-function quoteValue(q,keys){for(const k of keys){if(q?.[k]!=null)return q[k]}return null}
-function renderParcelQuoteOptions(id){
- const state=parcelQuoteState[id];if(!state)return '';
- const qs=Array.isArray(state.quotes)?state.quotes:[];
- if(!qs.length)return '<div class="small error">Parcel2Go returned no available shipping services for these parcel details.</div>';
- return '<div class="parcel2go-quotes" style="margin-top:12px"><strong>Available Parcel2Go services</strong>'+qs.map((q,i)=>{const name=quoteValue(q,['ServiceName','serviceName','Name','name','Service','service'])||'Shipping service';const courier=quoteValue(q,['Courier','courier','CourierName','courierName','Provider','provider'])||'Parcel2Go';const price=quoteValue(q,['Price','price','TotalPrice','totalPrice','Amount','amount','Cost','cost']);const eta=quoteValue(q,['DeliveryTime','deliveryTime','EstimatedDelivery','estimatedDelivery','DeliveryDays','deliveryDays']);return '<label style="display:block;border:1px solid #dfe4e8;border-radius:8px;padding:10px;margin-top:8px"><input type="radio" name="p2g-quote-'+esc(id)+'" value="'+i+'" '+(i===0?'checked':'')+'> <strong>'+esc(String(name))+'</strong> · '+esc(String(courier))+(price!=null?' · <strong>'+money(price,'GBP')+'</strong>':'')+(eta!=null?' · '+esc(String(eta)):'')+'</label>'}).join('')+'<div class="actions" style="margin-top:10px"><button type="button" data-p2g-order="'+esc(id)+'">Continue to Parcel2Go payment</button></div></div>';
-}
-async function requestParcel2GoQuote(id,b){
- const state=parcelQuoteState[id]||{};
- const addressId=$('p2g-address-'+id)?.value||'';
- const weight=$('p2g-weight-'+id)?.value,length=$('p2g-length-'+id)?.value,width=$('p2g-width-'+id)?.value,height=$('p2g-height-'+id)?.value;
- busy(b,true);
- try{
-  const result=await api('/functions/v1/parcel2go-customer-shipping',{method:'POST',body:JSON.stringify({action:'quote',tenant_id:tenantId,acquisition_id:id,address_id:addressId||null,weight,length,width,height})});
-  parcelQuoteState[id]={quote_session_id:result.quote_session_id,quotes:result.quotes||[]};
-  await loadPortalData();
-  const card=document.querySelector('[data-p2g-card="'+CSS.escape(id)+'"]');
-  if(card)card.querySelector('.p2g-results').innerHTML=renderParcelQuoteOptions(id);
- }catch(e){setMessage(e.message||String(e),'error')}finally{busy(b,false)}
-}
-async function createParcel2GoOrder(id,b){
- const state=parcelQuoteState[id],selected=document.querySelector('input[name="p2g-quote-'+CSS.escape(id)+'"]:checked'),date=$('p2g-date-'+id)?.value||'';
- if(!state?.quote_session_id||!selected)return setMessage('Request a shipping quote and select a service first.','error');
- busy(b,true);
- try{
-  const result=await api('/functions/v1/parcel2go-customer-shipping',{method:'POST',body:JSON.stringify({action:'create_order',tenant_id:tenantId,acquisition_id:id,quote_session_id:state.quote_session_id,quote_index:Number(selected.value),collection_date:date?date+'T09:00:00+00:00':null})});
-  if(result?.payment_url)window.open(result.payment_url,'_blank','noopener');
-  setMessage('Your Parcel2Go order has been created. Complete payment directly with Parcel2Go; TradeFlow does not collect the shipping cost.','success');
-  await loadPortalData();
- }catch(e){setMessage(e.message||String(e),'error')}finally{busy(b,false)}
-}
 async function renderSellingShipping(data,addresses=[]){
  const box=$('selling-shipping');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.innerHTML='<div class="empty">No accepted sales yet. When you accept an offer, delivery instructions will appear here.</div>';return}
@@ -137,8 +105,7 @@ async function renderSellingShipping(data,addresses=[]){
  }));
  box.innerHTML=cards.join('');
  document.querySelectorAll('.mark-posted').forEach(b=>b.onclick=()=>markAcquisitionPosted(b.dataset.acquisitionId));
- document.querySelectorAll('[data-p2g-quote]').forEach(b=>b.onclick=()=>requestParcel2GoQuote(b.dataset.p2gQuote,b));
- document.querySelectorAll('[data-p2g-order]').forEach(b=>b.onclick=()=>createParcel2GoOrder(b.dataset.p2gOrder,b));
+
 }
 function renderCustomerFulfilments(data){$('fulfilment-list').innerHTML=rows(data,[{key:'fulfilment_reference',label:'Reference'},{key:'status',label:'Status'},{key:'carrier',label:'Carrier'},{key:'tracking_number',label:'Tracking',render:r=>r.tracking_url?`<a href="${esc(r.tracking_url)}" target="_blank" rel="noopener">${esc(r.tracking_number||'Track')}</a>`:esc(r.tracking_number||'—')},{key:'delivered_at',label:'Delivered',render:r=>r.delivered_at?new Date(r.delivered_at).toLocaleDateString('en-GB'):'—'}],'No fulfilments yet.')}
 function renderCustomerReturns(data,items,orders){$('return-list').innerHTML=rows(data,[{key:'return_reference',label:'Reference'},{key:'status',label:'Status'},{key:'reason',label:'Reason'},{key:'refund_amount',label:'Refund',render:r=>r.refund_amount==null?'—':money(r.refund_amount,r.currency)},{key:'requested_at',label:'Requested',render:r=>r.requested_at?new Date(r.requested_at).toLocaleDateString('en-GB'):'—'}],'No returns yet.');const eligible=(Array.isArray(items)?items:[]).filter(i=>['paid','fulfilment','completed'].includes(orders.find(o=>o.id===i.order_id)?.status));const s=$('return-order-item');s.innerHTML='<option value="">Select an eligible order item…</option>'+eligible.map(i=>`<option value="${esc(i.order_item_id)}">${esc(orders.find(o=>o.id===i.order_id)?.order_reference||i.order_id)} — ${esc(i.title)} × ${esc(i.quantity)}</option>`).join('')}

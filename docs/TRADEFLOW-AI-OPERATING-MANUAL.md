@@ -975,3 +975,6 @@ When linking to the inspection from Buying, target `#tradeflow-inspection-worksp
 ## 2026-09-22 — Async inspection navigation
 
 Do not rely on a plain hash jump to the inspection workspace because `buying-inspection.js` creates `#tradeflow-inspection-workspace` asynchronously. The Buying dashboard navigation must wait for that element and then call `scrollIntoView`.
+## 2026-09-22 — Workflow dashboard CTA
+
+The live dashboard must count `purchase_stage` values independently of acquisition records. `inspection`, `testing`, `repair`, `return_pending`, `final_offer_required` and `final_offer_accepted` belong in **Needs attention**. Inspection rows must link to `buying-dashboard.html?request=<request_id>#tradeflow-inspection-workspace`; the Buying page reads the request parameter, opens that request and scrolls to the rendered inspection workspace.

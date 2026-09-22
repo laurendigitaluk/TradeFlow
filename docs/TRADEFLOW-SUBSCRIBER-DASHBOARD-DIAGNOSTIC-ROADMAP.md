@@ -1165,3 +1165,14 @@ If the customer has clicked **Item sent**:
 - then the existing **received → inspection** control becomes available.
 
 Do not create a separate shipping state machine for this workflow.
+
+
+## 2026-09-22 — Diagnostic finding: receipt is backend-authoritative, presentation was stale
+
+**Path:** Customer confirms item sent → subscriber Buying dashboard → `subscriber_mark_acquisition_received` → `transition_workflow_entity(acquisition, awaiting_item → received)` → acquisition `received_at` → customer/subscriber status renderers → inspection.
+
+**Verified live:** `ACQ-B11FB7341903` is `received`; `received_at` is populated; `shipping_status` is `received`. The authoritative workflow log records `awaiting_item → received`. The acquisition item was still `accepted`, exposing a secondary synchronisation defect; the receipt RPC has been hardened to move item state through `accepted → awaiting_item → received` using the authoritative transition mechanism.
+
+**Frontend repair:** `buying-dashboard.js` now preserves `received` and `inspection` rather than mapping them back to `shipping`; `customer-dashboard.js` now explicitly displays received/inspection stages; cache versions were bumped (`buying-dashboard.js` v31, `customer-dashboard.js` v43). Both files passed syntax parsing.
+
+**Next diagnostic target:** acquisition `received → inspection`, then inspection findings and valuation/revaluation. Keep offer acceptance, approved valuation, acquisition agreed value, inspection/revaluation and final valuation as distinct concepts.

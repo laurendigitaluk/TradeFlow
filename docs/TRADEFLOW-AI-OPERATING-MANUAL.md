@@ -912,3 +912,12 @@ Database authority:
 - `subscriber_complete_acquisition_inspection(uuid, uuid, text, boolean, text, text, jsonb)` records the inspection in `inventory_inspections`, updates the linked inventory asset, and only sends an item to Sales when the inspection outcome is `ready_for_sale` and the required confirmation checks pass.
 
 The inspection metadata preserves the customer-description snapshot, condition confirmation, checklist results and discrepancies. Repair/testing outcomes remain in Purchasing/Repairs. Sales receives the completed inspection as read-only through the ready-for-sale inventory path.
+
+
+## 2026-09-22 — Corrected post-receipt architecture
+
+Do not interpret inspection complete as immediate Sales readiness. The accepted acquisition offer and the post-inspection final offer are separate records. A passed inspection creates an authoritative completed inspection and moves acquisition/acquisition-item to finalised, but leaves the linked inventory asset in inspection until the final offer is accepted and the subsequent payment process completes.
+
+The Buying dashboard owns the received CTA and inspection UI. The post-inspection workspace creates a separate approved trading_values record and a final offer; it does not overwrite the original accepted offer.
+
+Customer-facing copy must not expose the internal role term subscriber. Use customer/business-facing wording such as the business or the website.

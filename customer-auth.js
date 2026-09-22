@@ -1,3 +1,4 @@
+(()=>{
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
@@ -72,3 +73,5 @@ function bind(){
  restoreExistingSession();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+
+})();

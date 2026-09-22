@@ -1241,3 +1241,14 @@ Alternative pre-purchase routes are inspection → testing, inspection → repai
 ### Verification target
 
 After a hard refresh, the current Canon EOS R7 test item must show **Inspection in progress** in Buying, must not appear in Acquisitions, and must not appear in Inventory. Completing the inspection as accepted must show **Final offer required**, not create an inventory asset. Only after the customer accepts the final offer and staff records payment should the acquisition and inventory record appear.
+
+## 2026-09-23 — Full purchasing workflow audit
+
+Audit findings:
+1. The live Canon test item is correctly pre-acquisition: purchase_stage=inspection, with no acquisition and no inventory asset.
+2. The direct OPEN INSPECTION problem was a render-order race. buying-inspection.js was attempting to render before Buying had created #item-detail. The inspection workspace now waits for #item-detail and Buying explicitly requests a refresh after rendering the request.
+3. The Business Dashboard was failing because the page script expected count-attention while the HTML still contained only the old four summary cards. The dashboard now has a Needs attention card and uses the authoritative subscriber_get_business_workflow RPC.
+4. Acquisitions and inventory now have database creation guards requiring an accepted final offer and recorded outbound payment. The obsolete subscriber acquisition inspection/receipt RPCs were removed.
+5. The Acquisitions UI no longer exposes the obsolete pre-purchase Received -> Inspection -> Finalise path or manual inventory creation. Pre-purchase work belongs in Buying.
+6. Two stale TEST1 submissions were retired as closed records; their audit history was retained.
+7. Remote Supabase migration history contains several 2026-09-22 purchase-workflow migrations that were applied live before corresponding repository migration files existed. A new audit-boundary migration has now been committed to the repository, but the repository still needs a complete remote migration pull/reconciliation before it should be treated as fully reproducible.

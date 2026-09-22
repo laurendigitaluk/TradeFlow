@@ -166,3 +166,20 @@ The URL hash was changing to `#tradeflow-inspection-workspace`, but the embedded
 ## 2026-09-22 — Dashboard action repair
 
 The Business Dashboard previously showed the inspection row but all summary cards remained at zero and the row only offered a generic Open Buying link. It now has a Needs attention count and an inspection-specific OPEN INSPECTION action. The action carries the request ID to Buying, which opens the request and waits for the embedded inspection workspace before scrolling to it.
+
+## 2026-09-23 — Full audit and boundary hardening
+
+A full audit of Quote -> Offer -> Shipping -> Receipt -> Inspection -> Final Offer -> Payment -> Acquisition -> Inventory identified two immediate UI defects and one architectural risk.
+
+UI defects:
+- OPEN INSPECTION was racing the asynchronous creation of #item-detail. It now waits for the inspection host and Buying triggers a refresh after rendering the request.
+- The Business Dashboard expected a Needs attention element that had not actually been added to the HTML. The dashboard now contains the element and reads the live workflow through subscriber_get_business_workflow.
+
+Architecture hardening:
+- Acquisition creation now requires a paid acquisition status, an accepted final offer and a matching paid outbound payment record.
+- Inventory creation now requires a paid/completed acquisition and a matching paid outbound payment.
+- Obsolete acquisition-level inspection/receipt RPCs were removed.
+- The Acquisitions UI no longer exposes pre-purchase lifecycle controls.
+- Stale TEST1 requests were closed rather than deleted so their audit history remains available.
+
+The Canon test remains at purchase_stage=inspection with zero acquisition and zero inventory records.

@@ -294,3 +294,24 @@ Frontend cache-busters:
 - Shipping Settings JS v7
 
 No acquisition, offer, customer, valuation or shipping workflow records were changed.
+
+
+## 22 September 2026 — customer shipping handoff and retail-shop scope correction
+
+- Customer and subscriber shipping states now distinguish the subscriber publishing the shipping handoff from the customer actually confirming that the item has been sent.
+- `acquisitions.customer_sent_at` is authoritative for the customer-confirmed sent event. Publishing a label/handoff must not make the subscriber dashboard say the item is in transit.
+- Customer Portal shipping handoff is consolidated into the selling-request status card. It separates:
+  - shipping service/provider link;
+  - physical uploaded shipping label with Download your label / Print your label;
+  - physical uploaded QR code with Download your QR code / Print your QR code;
+  - tracking number and tracking link;
+  - customer instructions;
+  - full-width Item sent action.
+- Provider/service links are not treated as physical labels or QR codes. Physical download/print controls use private uploaded storage assets only.
+- The customer is explicitly told that the subscriber has arranged and paid for the shipping service. The customer is not asked to pay shipping.
+- After the customer clicks Item sent, `customer_mark_acquisition_posted` sets `customer_sent_at`, moves the acquisition to `shipping`, and sets `shipping_status=in_transit`. Subscriber Buying and Acquisition workspaces then show Item on its way / awaiting receipt and tracking information.
+- Added `acquisitions.shipping_service_url` for the provider/service website or operational link, separate from label and QR assets.
+- Test acquisition `ACQ-B11FB7341903` was corrected: its previous Yodel website value was removed from the label/QR fields and moved to `shipping_service_url`; `customer_sent_at` remains null and status remains `awaiting_item`.
+- Shipping Settings is business-wide and is explicitly shared by the Buying/acquisition workflow and Retail Shop sales/fulfilment workflow. Provider connections are configured once at tenant level rather than separately per workflow.
+- Current supported-provider catalogue remains broad (multi-carrier platforms plus direct carriers); Parcel2Go is active, other adapters remain planned until their secure self-service adapter is implemented.
+- Customer dashboard cache buster: v42. Buying dashboard cache buster: v30. Acquisition dashboard cache buster: v13. Settings cache buster: v9.

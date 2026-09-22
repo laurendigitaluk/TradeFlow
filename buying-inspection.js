@@ -55,19 +55,8 @@
   }
 
   function replaceNotice(row){
-    const notice=document.querySelector('.subscriber-action-notice');
-    if(!notice||!row)return;
-    const a=row.acquisition;
-    if(a.status==='received'){
-      notice.className='subscriber-action-notice action';
-      notice.innerHTML='<strong>Next step required — you\'ve received the item, inspect it</strong><span>Compare the item with the customer\'s submitted information, record the inspection and then send it to the next stage.</span><div class="actions" style="margin-top:10px"><button type="button" data-tf-inspect="'+esc(a.id)+'">START INSPECTION</button></div>';
-    }else if(a.status==='inspection'){
-      notice.className='subscriber-action-notice action';
-      notice.innerHTML='<strong>Next step required — inspect the item</strong><span>The item is now in Purchasing inspection. Complete the inspection below before the final offer is sent to the customer.</span>';
-    }else if(a.status==='finalised'){
-      notice.className='subscriber-action-notice sent';
-      notice.innerHTML='<strong>Inspection complete — final offer required</strong><span>The inspection is complete. The next step is to send the customer the final offer.</span>';
-    }
+    // The main Buying dashboard owns the workflow notice and START INSPECTION CTA.
+    // This workspace must not rewrite that DOM every polling cycle.
   }
 
   async function startInspection(id){
@@ -192,17 +181,8 @@
     }catch(e){console.warn('TradeFlow inspection workspace:',e)}
   }
 
-  document.addEventListener('click',e=>{
-    const b=e.target.closest('[data-tf-inspect]');
-    if(!b)return;
-    e.preventDefault();
-    if(typeof window.tradeflowStartAcquisitionInspection==='function'){
-      window.tradeflowStartAcquisitionInspection(b.dataset.tfInspect,b);
-    }else{
-      auth().then(()=>startInspection(b.dataset.tfInspect)).catch(err=>msg(err.message||String(err),'error'));
-    }
-  });
-  const observer=new MutationObserver(()=>{clearTimeout(observer._t);observer._t=setTimeout(sync,150)});
+  // Inspection CTA clicks are handled by buying-dashboard.js.
+  const observer=new MutationObserver(()=>{});
   const start=()=>{const d=$('detail');if(d)observer.observe(d,{childList:true,subtree:true,characterData:true});sync();setInterval(sync,3000)};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

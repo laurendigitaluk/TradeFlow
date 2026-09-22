@@ -183,3 +183,17 @@ Architecture hardening:
 - Stale TEST1 requests were closed rather than deleted so their audit history remains available.
 
 The Canon test remains at purchase_stage=inspection with zero acquisition and zero inventory records.
+
+## 2026-09-23 — Second inspection-navigation repair
+
+The first async fix did not resolve the live symptom. Code inspection found that the OPEN INSPECTION handler only waited for the inspection workspace; it did not call the renderer if the element had never been created. The renderer could also abort before appending the workspace because the optional buying_item_media query was not protected.
+
+The repair now:
+- actively calls the inspection renderer from OPEN INSPECTION when needed;
+- prevents the native hash jump from competing with the renderer;
+- treats inspection media as optional and non-blocking;
+- returns a success flag from the inspection refresh;
+- shows a visible error when the core workspace cannot be rendered;
+- bumps Buying/inspection cache versions.
+
+Current live DB state remains unchanged: Canon EOS R7 is purchase_stage=inspection, with no acquisition and no inventory asset. Browser confirmation is the remaining verification step.

@@ -201,4 +201,3 @@ $('save-profile')?.addEventListener('click',async()=>{
   finally{setBusy(b,false)}
 });
 $('sign-out')?.addEventListener('click',signOut);
-(async()=>{await loadTenantBranding();if(localStorage.getItem('tradeflow_subscriber_session')){const tid=localStorage.getItem('tradeflow_subscriber_tenant_id');location.replace(tid?'subscriber-dashboard.html?tenant_id='+encodeURIComponent(tid):'subscriber-dashboard.html');return}if(!key)return setMessage('TradeFlow customer portal is not configured.','error');const pending=window.tradeflowPendingAuthSession;if(pending){delete window.tradeflowPendingAuthSession;await handleAuthSuccess(pending);return}await restoreSession();await initialisePortal()})();

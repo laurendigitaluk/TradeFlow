@@ -978,3 +978,13 @@ Do not rely on a plain hash jump to the inspection workspace because `buying-ins
 ## 2026-09-22 — Workflow dashboard CTA
 
 The live dashboard must count `purchase_stage` values independently of acquisition records. `inspection`, `testing`, `repair`, `return_pending`, `final_offer_required` and `final_offer_accepted` belong in **Needs attention**. Inspection rows must link to `buying-dashboard.html?request=<request_id>#tradeflow-inspection-workspace`; the Buying page reads the request parameter, opens that request and scrolls to the rendered inspection workspace.
+
+## 2026-09-23 — Purchase boundary audit
+
+Treat buying_items.purchase_stage as the authoritative pre-acquisition workflow. Never create acquisitions or inventory from initial offer acceptance, receipt, inspection, testing or repair.
+
+The only purchase-completion path is final_offer_accepted -> record outbound bank payment -> create acquisition/acquisition item/inventory asset. Database triggers now enforce this boundary.
+
+The business dashboard uses subscriber_get_business_workflow as its authoritative workflow read model. Do not rebuild the dashboard by assuming acquisitions exist for pre-purchase stages.
+
+The repository currently has migration-history drift from live Supabase changes made on 2026-09-22. Before future database refactoring, reconcile the remote migration history into supabase/migrations so the repository and live schema are reproducible.

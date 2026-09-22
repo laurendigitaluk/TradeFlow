@@ -926,3 +926,8 @@ Customer-facing copy must not expose the internal role term subscriber. Use cust
 ## 2026-09-22 — Inspection CTA ownership and customer wording follow-up
 
 The inspection CTA is now handled by the main Buying dashboard as the authoritative workflow controller. The supplemental inspection workspace delegates its `START INSPECTION` click to that controller when available, preventing the CTA from appearing clickable while being owned by a separate polling script. Customer selling-status wording has also been removed from the internal `subscriber` terminology, including receipt and inspection messages. Browser cache versions were incremented for the Buying and customer dashboard scripts.
+
+
+## 2026-09-22 — Inspection notice and direct Testing navigation
+
+AI operating note — when diagnosing Purchasing receipt/inspection UI, treat acquisitions.status as authoritative for the open-request workflow notice rather than relying solely on the buying request status. The inspection workspace provides a direct Testing link using inventory-dashboard.html?status=testing&asset=<inventory_asset_id>; do not invent a separate testing state machine.

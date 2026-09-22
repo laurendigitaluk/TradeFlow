@@ -335,3 +335,14 @@ The shipping handoff is an information and workflow facility only. It may contai
 
 ## Connected Parcel2Go shipping
 After an offer is accepted, a subscriber can use a connected Parcel2Go account instead of manually supplying a label. The subscriber's connected shipping service is used to arrange the shipment; the customer does not arrange or pay the shipping through TradeFlow. The £ offer remains separate from shipping. Manual label and QR handoff remains available as an override.
+
+
+### Shipping handoff and customer confirmation
+
+Shipping settings are business-wide and are shared by Buying/acquisitions and the Retail Shop sales/fulfilment workflow. Configure shipping providers once under Settings → Shipping services.
+
+For an accepted acquisition, the subscriber chooses either a manual label or an integrated shipping service. The customer-facing handoff keeps the provider/service link separate from the actual physical shipping label and QR code. Uploaded label/QR files have separate Download and Print controls. The customer also sees the carrier/service, tracking number and tracking link, instructions, and a clear **Item sent** button.
+
+Publishing the shipping handoff does not mean the customer has sent the item. The acquisition remains **Awaiting item from customer** until the customer clicks **Item sent** after handing the parcel to the courier or dropping it off. Only then does the subscriber see **Item on its way — awaiting receipt** and the integrated tracking state can progress.
+
+The customer does not pay the shipping cost in this workflow. The subscriber arranges and pays the shipping service and supplies the label/QR/instructions needed by the customer.

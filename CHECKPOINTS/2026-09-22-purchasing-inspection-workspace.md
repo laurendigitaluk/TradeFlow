@@ -151,3 +151,9 @@ This supersedes earlier checkpoint wording that described the received/inspectio
 ### Additional verification — acquisition visibility
 
 The customer acquisition list and subscriber Acquisitions workspace now show only paid/completed acquisitions. Initial and revised offer acceptance remains in the pre-acquisition purchasing workflow.
+
+## 2026-09-22 — Restored inspection navigation and job-board visibility
+
+The Buying detail inspection state now includes the direct **OPEN INSPECTION** shortcut again. The shortcut navigates to the existing inspection workspace and does not create an acquisition.
+
+The Business Dashboard workflow board was also corrected to read buying_items.purchase_stage, so customer-owned items in Received/Inspection/Testing/Repair/Final Offer/Payment stages are visible as active work even though no acquisition exists yet.

@@ -240,3 +240,13 @@ For the current Canon test, the item is at final_offer_required with no bank det
 **Repair:** removed the duplicate `signIn`, `signUp`, and password-keydown bindings from `customer-dashboard.js`. `customer-auth.js` remains the single auth controller and hands the authenticated session to the dashboard. Bumped the dashboard cache version to `v=16`.
 
 **Expected flow:** enter customer credentials → `customer-auth.js` authenticates → session is saved → portal is revealed → dashboard `handleAuthSuccess` registers/loads the customer and loads portal data.
+
+
+## 2026-09-23 — Follow-up customer login repair
+**Observed:** the first duplicate-handler repair did not resolve the customer's live login screen.
+
+**Second root cause identified:** the authentication handoff was dependent on the dashboard handler already being registered. The authentication controller did not itself reveal the portal when dispatching the successful session. Script ordering was also not deterministic because the authentication and dashboard scripts were not both deferred in a controlled order.
+
+**Repair:** `customer-auth.js` now reveals the portal immediately after successful authentication and before handing the session to the dashboard. `customer-dashboard.html` now loads `customer-dashboard.js` first with `defer`, navigation second with `defer`, and `customer-auth.js` last with `defer`. Cache versions were raised to dashboard v17 and auth v5.
+
+**Expected flow:** page loads → dashboard controller registers handoff → auth controller binds → customer signs in → login panel is hidden immediately → portal is revealed → authenticated session is handed to dashboard → customer registration/data loads.

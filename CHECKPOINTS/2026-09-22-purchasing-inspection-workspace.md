@@ -124,3 +124,26 @@ The live START INSPECTION RPC was failing before the workflow transition. Postgr
 ## 2026-09-22 — Receipt notice and direct Testing navigation
 
 The Buying detail notice was corrected to use the linked acquisition workflow state first. This removes the obsolete “Item on its way — awaiting receipt / The customer has confirmed the item has been sent” message once the acquisition is received or in inspection. The inspection outcome label is now “Send to Testing”. Selecting that outcome exposes an OPEN TESTING link which opens the Inventory workspace directly filtered to status=testing and focuses the current inventory asset. No separate testing state machine was introduced. Dashboard script cache versions were incremented.
+
+## 2026-09-22 — Corrected purchase boundary: inspection is before acquisition
+
+The previous inspection implementation exposed a structural workflow error: accepting the customer's initial offer created an acquisition, and starting inspection created an inventory asset. That is too early.
+
+The corrected architecture is:
+
+**Initial offer accepted → Awaiting item → Shipping → Received → Inspection → Accept/Refuse → Final offer → Customer accepts final offer → Bank payment → Acquisition + Inventory.**
+
+Pre-purchase records now live on buying_items using purchase_stage, with supporting tables buying_item_shipping, buying_item_inspections, and buying_item_media.
+
+The current test Canon EOS R7 workflow was migrated back out of Acquisition/Inventory. The provisional acquisition f7486bb6-ff0f-49fb-b5f5-40298ff800d2 and provisional inventory asset 6f2e44cb-3bdd-48ef-8c81-eb43fb3cbfaf were removed because no final offer payment had occurred. The buying item remains in inspection, with the shipping handoff retained.
+
+### Required future behaviour
+
+- Inspection **Accept** does not create an acquisition; it moves to final_offer_required.
+- **Send final offer** creates a separate final valuation/offer and moves to final_offer_sent.
+- Customer final-offer acceptance moves to final_offer_accepted; still no acquisition/inventory.
+- **Pay customer & create acquisition** records the bank payment and atomically creates the acquisition, acquisition item and inventory asset.
+- Inspection **Refuse** routes to return and never creates an acquisition.
+- Testing/repair remain pre-acquisition routes.
+
+This supersedes earlier checkpoint wording that described the received/inspection record as an acquisition or inventory asset.

@@ -411,3 +411,23 @@ The inspection CTA is now handled by the main Buying dashboard as the authoritat
 ## 2026-09-22 — Inspection notice and direct Testing navigation
 
 Human manual — direct Testing workspace link from Purchasing inspection. The inspection outcome now uses “Send to Testing”. Selecting it reveals an OPEN TESTING link that opens Inventory directly filtered to Testing and focuses the current asset. The Buying dashboard notice is driven by the acquisition workflow state so an inspected/received item cannot display the obsolete “Item on its way — awaiting receipt” message.
+
+## 2026-09-22 — Purchasing is pre-acquisition until payment
+
+The purchasing journey has been corrected so an item received from a customer is **not yet an acquisition and is not inventory**.
+
+The authoritative sequence is now:
+
+1. Initial offer accepted by customer → purchasing workflow moves to **Awaiting item**.
+2. Customer receives shipping instructions and sends the item → **Shipping / Item on its way**.
+3. Business confirms physical receipt → **Received**.
+4. Business starts the inspection → **Inspection in progress**.
+5. Inspection outcome is recorded as **Accept — continue to final offer**, **Send to Testing**, **Requires Repair**, or **Refuse — return to customer**.
+6. An accepted inspection moves to **Final offer required**. A separate final offer is sent to the customer.
+7. Customer accepts the final offer → **Final offer accepted — payment required**.
+8. Staff records the bank payment → only then does TradeFlow create the **Acquisition**, **Acquisition Item**, **Payment Record**, and **Inventory Asset**.
+9. The new inventory asset is created ready for sale after the purchase is completed.
+
+The Acquisitions workspace now represents completed purchases rather than the customer's initial acceptance of an offer. Provisional receipt/inspection data is stored against the buying item in the pre-acquisition purchasing workflow.
+
+The current test Canon EOS R7 transaction was repaired accordingly: its provisional acquisition and inventory asset were removed, its shipping data was retained in the pre-acquisition workflow, and the buying item is currently at **Inspection**.

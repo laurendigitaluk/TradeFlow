@@ -32,3 +32,6 @@ Provider tracking/label automation remains provider-adapter work. The current cu
 - buying-dashboard.js syntax OK
 - acquisition-dashboard.js syntax OK
 - Live database function updated successfully.
+
+## Additional state correction
+The existing `posted_at` field is the timestamp used when the subscriber publishes the shipping handoff, so it cannot also be used to mean that the customer has actually dispatched the item. Added `acquisitions.customer_sent_at`. The customer confirmation now checks/sets this field and moves the acquisition to `shipping`. This prevents a published shipping handoff from being mistaken for customer dispatch and makes the Item sent action authoritative.

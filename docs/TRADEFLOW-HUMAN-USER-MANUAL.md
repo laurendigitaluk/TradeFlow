@@ -454,3 +454,11 @@ The business dashboard's **Needs attention** count represents active pre-purchas
 The Buying request's **OPEN INSPECTION** action opens the embedded Purchasing Inspection workspace after it has rendered. Inspection remains within Buying and does not create an acquisition.
 
 Acquisitions and Inventory are now purchase-completion records. They are created only after the customer has accepted the final offer and the bank payment has been recorded.
+
+## 2026-09-23 — OPEN INSPECTION repair
+
+The OPEN INSPECTION action now explicitly asks the embedded Purchasing Inspection workspace to render before scrolling to it. It no longer relies only on a browser hash jump or on the inspection element already existing.
+
+The inspection workspace itself is also resilient to missing/failed inspection-media lookups. Existing inspection photographs are optional; they must never prevent the inspection checks and outcome controls from appearing.
+
+The current Canon EOS R7 request remains at Inspection in progress. The OPEN INSPECTION action is navigation only and does not change the purchase stage.

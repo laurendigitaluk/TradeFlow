@@ -315,3 +315,14 @@ No acquisition, offer, customer, valuation or shipping workflow records were cha
 - Shipping Settings is business-wide and is explicitly shared by the Buying/acquisition workflow and Retail Shop sales/fulfilment workflow. Provider connections are configured once at tenant level rather than separately per workflow.
 - Current supported-provider catalogue remains broad (multi-carrier platforms plus direct carriers); Parcel2Go is active, other adapters remain planned until their secure self-service adapter is implemented.
 - Customer dashboard cache buster: v42. Buying dashboard cache buster: v30. Acquisition dashboard cache buster: v13. Settings cache buster: v9.
+
+
+## 22 September 2026 — customer shipping handoff repair
+
+- Corrected the customer item-sent workflow so clicking **Item sent** no longer attempts an invalid acquisition status of `shipping`. The acquisition remains `awaiting_item` until the subscriber actually receives the item; `shipping_status=in_transit` and `posted_at` now represent that the customer has handed the parcel to the carrier/dropped it off.
+- Customer shipping RPC now exposes `source_offer_id`, `shipping_service_url`, `shipping_status`, tracking URL, label/QR storage paths and `posted_at` so the portal can render the same handoff state consistently.
+- Subscriber Buying Dashboard now recognises `shipping_status=in_transit` as **Item on its way — awaiting receipt** instead of reverting to offer accepted/awaiting item.
+- Customer Portal shipping section now distinguishes the carrier/service website from the physical shipping label and physical QR asset. Physical assets have separate **Download your label / Print your label** and **Download your QR code / Print your QR code** actions.
+- Added subscriber storage SELECT access for shipping assets so uploaded private label/QR files can be signed and opened by the subscriber as well as the customer.
+- Shipping uploads now verify that the private storage object can be signed before saving its storage path to the acquisition, preventing stale database paths for missing files.
+- The test acquisition had a stale shipping-label storage path with no corresponding storage object; that invalid path was cleared. A real physical label must be uploaded again. The test carrier website is stored separately from the physical label.

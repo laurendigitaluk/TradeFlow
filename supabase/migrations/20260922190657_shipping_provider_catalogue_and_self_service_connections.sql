@@ -77,3 +77,7 @@ revoke execute on function public.subscriber_save_shipping_provider_connection(u
 grant execute on function public.subscriber_save_shipping_provider_connection(uuid,text,text,jsonb,jsonb) to authenticated;
 revoke execute on function public.shipping_provider_credentials_for_service(uuid) from public,anon,authenticated;
 grant execute on function public.shipping_provider_credentials_for_service(uuid) to service_role;
+
+
+revoke execute on function public.subscriber_save_shipping_provider_connection(uuid,text,text,jsonb,jsonb) from public,anon;
+grant execute on function public.subscriber_save_shipping_provider_connection(uuid,text,text,jsonb,jsonb) to authenticated;

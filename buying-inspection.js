@@ -66,7 +66,7 @@
       notice.innerHTML='<strong>Next step required — inspect the item</strong><span>The item is now in Purchasing inspection. Complete the inspection below before the final offer is sent to the customer.</span>';
     }else if(a.status==='finalised'){
       notice.className='subscriber-action-notice sent';
-      notice.innerHTML='<strong>Inspection complete — ready for Sales</strong><span>The item has passed inspection and has been moved into the Sales-ready inventory workflow.</span>';
+      notice.innerHTML='<strong>Inspection complete — final offer required</strong><span>The inspection is complete. The next step is to send the customer the final offer.</span>';
     }
   }
 
@@ -134,7 +134,7 @@
         '<label class="full"><strong>Inspection notes</strong><textarea id="tf-notes" rows="4" placeholder="Record tests performed and relevant technical findings."></textarea></label></div>'+
         '<div class="customer-info" style="margin-top:14px"><h3>Inspection photographs</h3><input id="tf-photos" type="file" accept="image/jpeg,image/png,image/webp" multiple><p class="small">'+existingPhotos+' existing inspection photograph(s). Add photographs of the item, serial number, condition and any defects.</p></div>'+
         '<div class="actions" style="margin-top:16px"><button type="button" id="tf-complete">COMPLETE INSPECTION &amp; CONTINUE</button></div>'+
-        '<p class="small" style="margin-top:10px">The original accepted offer is not changed by inspection. A passed inspection moves the inventory asset to <strong>Ready for Resale</strong> and the completed inspection is read-only for Sales. Repair/testing routes remain in Purchasing/Repairs.</p>';
+        '<p class="small" style="margin-top:10px">The original accepted offer is not changed by inspection. A passed inspection moves the acquisition to the final-offer stage. The item does not enter Sales until the customer accepts the final offer and the payment process is completed. Repair/testing routes remain in Purchasing/Repairs.</p>';
       section.querySelector('#tf-complete').onclick=async()=>{
         if(busy)return;
         const v=id=>section.querySelector('#'+id)?.value||'';
@@ -194,7 +194,13 @@
 
   document.addEventListener('click',e=>{
     const b=e.target.closest('[data-tf-inspect]');
-    if(b){e.preventDefault();auth().then(()=>startInspection(b.dataset.tfInspect));}
+    if(!b)return;
+    e.preventDefault();
+    if(typeof window.tradeflowStartAcquisitionInspection==='function'){
+      window.tradeflowStartAcquisitionInspection(b.dataset.tfInspect,b);
+    }else{
+      auth().then(()=>startInspection(b.dataset.tfInspect)).catch(err=>msg(err.message||String(err),'error'));
+    }
   });
   const observer=new MutationObserver(()=>{clearTimeout(observer._t);observer._t=setTimeout(sync,150)});
   const start=()=>{const d=$('detail');if(d)observer.observe(d,{childList:true,subtree:true,characterData:true});sync();setInterval(sync,3000)};

@@ -63,7 +63,12 @@
 
   async function renderInspection(row){
     const host=$('item-detail');if(!host)return;
-    const media=(await api('/rest/v1/buying_item_media?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(row.item.id)))||[];
+    let media=[];
+    try{
+      media=(await api('/rest/v1/buying_item_media?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(row.item.id)))||[];
+    }catch(e){
+      console.warn('TradeFlow inspection media lookup failed; continuing without media:',e);
+    }
     let structured=[];try{const details=await api('/rest/v1/rpc/subscriber_get_buying_item_customer_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id})});structured=Array.isArray(details?.fields)?details.fields:[]}catch{}
     const section=document.createElement('section');section.id='tradeflow-inspection-workspace';section.style.cssText='margin-top:18px;border:1px solid #d8dee5;border-radius:10px;background:#fff;padding:18px;';
     const stage=row.item.purchase_stage;
@@ -96,7 +101,19 @@
     const existing=$('tradeflow-inspection-workspace');if(existing)existing.remove();host.appendChild(section);
   }
 
-  async function sync(){try{await auth();const rows=await currentWorkflow();if(!rows?.length)return;await renderInspection(rows[0]);}catch(e){console.warn('TradeFlow purchasing inspection workspace:',e)}}
+  async function sync(){
+    try{
+      await auth();
+      const rows=await currentWorkflow();
+      if(!rows?.length)return false;
+      await renderInspection(rows[0]);
+      return !!$('tradeflow-inspection-workspace');
+    }catch(e){
+      console.warn('TradeFlow purchasing inspection workspace:',e);
+      msg('Inspection workspace could not be loaded: '+(e?.message||String(e)),'error');
+      return false;
+    }
+  }
   window.tradeflowRefreshInspectionWorkspace=sync;
   const start=()=>{
     if(!$('detail'))return;

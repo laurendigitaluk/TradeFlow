@@ -1200,3 +1200,8 @@ Root cause: The new supplemental inspection controller was not sufficient as the
 Correction: The primary buying-dashboard.js now renders the received-stage START INSPECTION action and directly calls subscriber_start_acquisition_inspection. Script cache versions were bumped in buying-dashboard.html.
 
 Final-offer architecture correction: The inspection completion RPC no longer moves the inventory asset to ready_for_sale. After a passing inspection it leaves the asset in inspection, finalises the acquisition/acquisition-item, and marks the next stage as final_offer. The Buying inspection workspace then creates a separate approved post-inspection valuation and final offer. Sales must not receive the item until the customer accepts that final offer and the payment workflow completes.
+
+
+## 2026-09-22 — Inspection CTA ownership and customer wording follow-up
+
+The inspection CTA is now handled by the main Buying dashboard as the authoritative workflow controller. The supplemental inspection workspace delegates its `START INSPECTION` click to that controller when available, preventing the CTA from appearing clickable while being owned by a separate polling script. Customer selling-status wording has also been removed from the internal `subscriber` terminology, including receipt and inspection messages. Browser cache versions were incremented for the Buying and customer dashboard scripts.

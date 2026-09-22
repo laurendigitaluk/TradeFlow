@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Settings</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8"></head>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Settings</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8">
+<style>
+.shipping-search-row{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:12px 0}.shipping-provider-card{border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:10px}.shipping-provider-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.shipping-provider-form{border:1px solid #dfe4e8;border-radius:8px;padding:16px;background:#fafbfc}.panel-subheading{display:flex;justify-content:space-between;gap:12px}.notice{margin-top:14px;padding:12px;border:1px solid #dfe4e8;border-radius:8px}.required{font-weight:600}@media(max-width:700px){.shipping-search-row{grid-template-columns:1fr}}
+</style>
+</head>
 <body>
 <header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a><div class="account"><strong id="business-name">Business Settings</strong><button id="sign-out" type="button">Sign out</button></div></header>
 <main class="layout"><aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav>
@@ -53,22 +57,19 @@
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Website</div><h2>Website URL</h2></div></div><p>Manage the customer-facing domain separately from the website design.</p><div class="actions"><a href="domain-settings.html">Manage website URL</a></div></section>
 
 <section class="panel" id="shipping-connections-panel"><div class="panel-heading"><div><div class="eyebrow">Shipping integrations</div><h2>Shipping services</h2></div><span class="status-pill">Subscriber account</span></div>
-<p><strong>Set up your shipping services here before the website goes live. This is the subscriber's business shipping setup.</strong> This is the subscriber business setup, not a customer setting. Once connected, the Buying and Acquisition workspaces will show the connected service for each accepted sale, and the same provider connection can be used for quotes, labels and tracking as the integration supports them.</p><p class="small">You can connect the shipping providers your business uses. Each provider below has setup instructions. Once a provider is connected and tested, it appears in the Send shipping label → Use integrated shipping list. Customers never enter provider API credentials. Customers pay the shipping provider directly; TradeFlow does not collect, pay or reimburse shipping costs.</p>
-<div id="shipping-connections">Loading shipping providers…</div>
-<div class="form-grid" style="margin-top:18px">
-<label>Provider<select id="shipping-provider"><option value="parcel2go">Parcel2Go</option></select></label>
-<label>Environment<select id="shipping-environment"><option value="sandbox">Sandbox / test</option><option value="live">Live</option></select></label>
-<label>API client ID<input id="shipping-client-id" autocomplete="off" placeholder="Parcel2Go client ID"></label>
-<label>API client secret<input id="shipping-client-secret" type="password" autocomplete="new-password" placeholder="Parcel2Go client secret"></label>
-</div>
-<div class="actions"><button id="shipping-connect" type="button">Connect Parcel2Go account</button><a href="buying-dashboard.html">Return to Buying</a></div>
+<p><strong>Set up your shipping services here before the website goes live.</strong> Choose a multi-carrier platform or a direct courier. TradeFlow explains what each provider requires and gives you the fields needed to connect it where a self-service connection is available.</p>
+<p class="small">You keep control of your own shipping accounts and rates. Provider credentials are stored securely server-side. Customers never enter API credentials and customers pay their shipping provider directly; TradeFlow does not collect, pay or reimburse shipping costs.</p>
+<div id="shipping-connections">Loading shipping services…</div>
+<div id="shipping-provider-form" class="shipping-provider-form" style="margin-top:18px"></div>
+<div class="form-grid" style="margin-top:12px"><label>Connection environment<select id="shipping-environment"><option value="sandbox">Sandbox / test</option><option value="live">Live / production</option></select></label></div>
+<div class="actions"><a href="buying-dashboard.html">Return to Buying</a></div>
 <div id="shipping-connect-status" class="small" aria-live="polite"></div>
-<p class="small">Provider credentials are never stored in this page or browser code. Secure account connection is completed server-side. After a provider is connected and tested, it appears automatically in the accepted-sale shipping method list.</p></section>
+<p class="small">A provider only appears in <strong>Send shipping label → Use integrated shipping</strong> after TradeFlow has an active adapter and the connection has been successfully tested.</p></section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
 <form id="method-form" style="margin-top:18px"><div class="form-grid"><label>Payment method<select id="method-code"><option value="card">Card</option><option value="bank_transfer">Bank transfer</option><option value="cash">Cash</option><option value="paypal">PayPal</option><option value="other">Other</option></select></label><label>Display name<input id="method-name" placeholder="Card payment" required></label><label class="full">Customer instructions<textarea id="method-instructions" rows="2" placeholder="Optional instructions shown to customers."></textarea></label></div><p><button type="submit">Add or update payment method</button></p></form></section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=7"></script>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=8"></script>
 </body></html>

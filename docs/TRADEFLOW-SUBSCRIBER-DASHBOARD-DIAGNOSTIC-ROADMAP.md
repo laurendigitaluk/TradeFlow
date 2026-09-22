@@ -1205,3 +1205,8 @@ Final-offer architecture correction: The inspection completion RPC no longer mov
 ## 2026-09-22 — Inspection CTA ownership and customer wording follow-up
 
 The inspection CTA is now handled by the main Buying dashboard as the authoritative workflow controller. The supplemental inspection workspace delegates its `START INSPECTION` click to that controller when available, preventing the CTA from appearing clickable while being owned by a separate polling script. Customer selling-status wording has also been removed from the internal `subscriber` terminology, including receipt and inspection messages. Browser cache versions were incremented for the Buying and customer dashboard scripts.
+
+
+## 2026-09-22 — Inspection start RPC root cause
+
+The START INSPECTION click was reaching the live RPC, but the RPC failed with PostgreSQL error `trigger functions can only be called as triggers`. Root cause: subscriber_start_acquisition_inspection called public.generate_asset_reference() as a normal scalar function. The live generate_asset_reference function is a trigger-returning function used by the inventory_assets INSERT trigger, so it cannot be called directly. The RPC was repaired to generate the AST reference inline while retaining the existing inventory trigger. The Buying dashboard live-status notice was also corrected so received/inspection states cannot be overwritten by the old shipping message.

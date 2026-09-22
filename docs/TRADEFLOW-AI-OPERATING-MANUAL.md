@@ -901,3 +901,14 @@ A material diagnostic lesson from the September 2026 test: uploaded label files 
 ## 2026-09-22 — Receipt workflow root cause and repair
 
 Investigated the live receipt path before changing code. The existing `subscriber_mark_acquisition_received` RPC correctly authenticates the subscriber and uses `transition_workflow_entity`, and the live test acquisition `ACQ-B11FB7341903` is now `received` with `received_at` recorded. The main defect was downstream state presentation: the customer renderer did not have an explicit received/inspection stage, while the subscriber Buying renderer mapped received acquisitions back to the generic shipping state. A targeted frontend repair now exposes `received` and `inspection` states. The receipt RPC was also hardened so acquisition-item records are synchronised through authoritative transitions. Frontend cache versions were advanced and both modified JavaScript files passed parse-only syntax checks. The next investigation is inspection/valuation status separation; do not collapse accepted offer, acquisition value, approved valuation, inspection/revaluation and final valuation.
+
+
+## 2026-09-22 — Purchasing inspection implementation
+
+The next workflow after receipt is now implemented in the Subscriber Buying/Purchasing workspace rather than the legacy Acquisition test workspace. New `buying-inspection.js` is loaded by `buying-dashboard.html` and provides the received-stage CTA, inspection form, evidence-photo upload and completion routing.
+
+Database authority:
+- `subscriber_start_acquisition_inspection(uuid, uuid)` creates/reuses the inventory asset and uses `transition_workflow_entity` for acquisition, acquisition-item and inventory-asset status changes.
+- `subscriber_complete_acquisition_inspection(uuid, uuid, text, boolean, text, text, jsonb)` records the inspection in `inventory_inspections`, updates the linked inventory asset, and only sends an item to Sales when the inspection outcome is `ready_for_sale` and the required confirmation checks pass.
+
+The inspection metadata preserves the customer-description snapshot, condition confirmation, checklist results and discrepancies. Repair/testing outcomes remain in Purchasing/Repairs. Sales receives the completed inspection as read-only through the ready-for-sale inventory path.

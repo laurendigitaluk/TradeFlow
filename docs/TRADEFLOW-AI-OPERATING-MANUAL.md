@@ -969,3 +969,6 @@ Customer-facing and subscriber-facing acquisition lists now restrict acquisition
 The business dashboard must not derive active purchasing work solely from acquisitions. Pre-acquisition stages live on buying_items.purchase_stage and must be included in the live workflow/job board. In particular, received, inspection, testing, repair, return_pending, final_offer_required and final_offer_accepted are actionable pre-purchase stages.
 
 The Buying inspection state also exposes an **OPEN INSPECTION** shortcut. This is navigation only and must not mutate workflow state.
+## 2026-09-22 — Inspection navigation target
+
+When linking to the inspection from Buying, target `#tradeflow-inspection-workspace`, not `#item-detail`. The inspection workspace is an embedded section on the Buying request page; there is no separate inspection HTML page.

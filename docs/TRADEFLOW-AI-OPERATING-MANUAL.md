@@ -963,3 +963,9 @@ The customer selling-status RPC now reads buying_items.purchase_stage first. The
 ### Additional boundary repair — acquisition visibility
 
 Customer-facing and subscriber-facing acquisition lists now restrict acquisition visibility to paid/completed purchases. Pre-acquisition stages are represented by buying_items.purchase_stage instead. Initial and revised customer offers both enter the pre-acquisition receipt workflow when accepted; only final offers can lead to final_offer_accepted and payment-gated purchase creation.
+
+## 2026-09-22 — Dashboard attention visibility
+
+The business dashboard must not derive active purchasing work solely from acquisitions. Pre-acquisition stages live on buying_items.purchase_stage and must be included in the live workflow/job board. In particular, received, inspection, testing, repair, return_pending, final_offer_required and final_offer_accepted are actionable pre-purchase stages.
+
+The Buying inspection state also exposes an **OPEN INSPECTION** shortcut. This is navigation only and must not mutate workflow state.

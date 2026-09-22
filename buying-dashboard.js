@@ -25,7 +25,7 @@ async function resendShippingHandoff(id,b){
  }catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
 }
 async function markBuyingItemReceived(id,b){
- setBusy(b,true);try{await api('/rest/v1/rpc/subscriber_mark_buying_item_received',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id})});msg('Item received. The acquisition is now ready for inspection.','success');await load();if(openRequestId)await showRequest(openRequestId,currentRequests)}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
+ setBusy(b,true);try{await api('/rest/v1/rpc/subscriber_mark_buying_item_received',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id})});msg('Item received. The item is now ready for purchasing inspection.','success');await load();if(openRequestId)await showRequest(openRequestId,currentRequests)}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
 }
 
 window.tradeflowStartBuyingItemInspection=startBuyingItemInspection;

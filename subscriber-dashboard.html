@@ -81,7 +81,75 @@
 <div class="modal" id="account-modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><button class="modal-close" id="account-modal-close" type="button" aria-label="Close account details">×</button><div class="eyebrow">Signed-in account</div><h2 id="account-modal-title">Account details</h2><dl class="account-details"><div><dt>Business</dt><dd id="modal-business">Loading…</dd></div><div><dt>Email</dt><dd id="modal-email">Loading…</dd></div><div><dt>Role</dt><dd id="modal-role">Loading…</dd></div><div><dt>Tenant</dt><dd id="modal-tenant">Loading…</dd></div></dl><p class="modal-note">This is the account and business currently being used in this workspace.</p></div></div>
 <script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script>
 <script>
-window.addEventListener('DOMContentLoaded',async()=>{const s=document.getElementById('sign-out');if(s&&window.tradeflowSubscriberSignOut)s.addEventListener('click',window.tradeflowSubscriberSignOut);const m=document.getElementById('account-modal'),close=()=>m.hidden=true;document.getElementById('account-modal-close').onclick=close;document.getElementById('account-details').onclick=()=>m.hidden=false;document.getElementById('settings-account').onclick=()=>m.hidden=false;m.onclick=e=>{if(e.target===m)close()};try{const a=await window.tradeflowSubscriberAuthReady,email=a?.user?.email||'Unknown',role=a?.role||'Unknown',business=a?.tenants?.[a?.tenantId]||'TradeFlow business';document.getElementById('account-email').textContent=email;document.getElementById('account-role').textContent=role;document.getElementById('summary-email').textContent=email;document.getElementById('summary-role').textContent=role;document.getElementById('welcome-business').textContent=business;document.getElementById('business-brand').textContent=business;document.getElementById('welcome-copy').textContent='Welcome back. You are signed in and ready to manage your business.';document.getElementById('modal-business').textContent=business;document.getElementById('modal-email').textContent=email;document.getElementById('modal-role').textContent=role;document.getElementById('modal-tenant').textContent=a?.tenantId||'Unknown'}catch{}});
+window.addEventListener('DOMContentLoaded',async()=>{
+ try{
+  const a=await window.tradeflowSubscriberAuthReady;
+  const key=a?.key,session=a?.session,tenantId=a?.tenantId;
+  if(!key||!session?.access_token||!tenantId)throw Error('Subscriber authentication is not ready.');
+  const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_business_workflow',{
+    method:'POST',
+    headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
+    body:JSON.stringify({p_tenant_id:tenantId})
+  });
+  const t=await r.text();let rows=[];try{rows=t?JSON.parse(t):[]}catch{throw Error(t||'Workflow response could not be read.')}
+  if(!r.ok)throw Error(rows?.message||rows?.hint||rows?.details||rows?.code||t||('HTTP '+r.status));
+  rows=Array.isArray(rows)?rows:[];
+  const stageInfo={
+   none:['new','New customer request'],
+   submitted:['new','New customer request'],
+   under_review:['process','Valuation/review in progress'],
+   valued:['process','Valuation ready for offer'],
+   offer_ready:['awaiting','Offer sent — awaiting customer'],
+   awaiting_item:['awaiting','Awaiting customer — item not received'],
+   shipping:['awaiting','Awaiting receipt — item on its way'],
+   received:['attention','Item received — inspection required'],
+   inspection:['attention','Inspection required'],
+   testing:['attention','Testing required'],
+   repair:['attention','Repair required'],
+   return_pending:['attention','Return item to customer'],
+   final_offer_required:['attention','Final offer required'],
+   final_offer_sent:['awaiting','Final offer sent — awaiting customer'],
+   final_offer_accepted:['attention','Final offer accepted — payment required'],
+   final_offer_refused:['attention','Final offer refused — return item'],
+   payment_pending:['attention','Payment required'],
+   purchased:['complete','Purchase complete — now in Inventory']
+  };
+  const activeRows=rows.filter(x=>x.purchase_stage!=='purchased');
+  const uniqueAcquisitions=new Set(rows.filter(x=>x.acquisition_id&&['paid','completed'].includes(x.acquisition_status)).map(x=>x.acquisition_id));
+  const classified=activeRows.map(x=>{
+    const fallback=x.purchase_stage||x.request_status||'submitted';
+    const info=stageInfo[fallback]||['process','Internal processing'];
+    return {...x,stage:fallback,cls:info[0],label:info[1]};
+  });
+  const counts={
+   new:classified.filter(x=>x.cls==='new').length,
+   process:classified.filter(x=>x.cls==='process').length,
+   attention:classified.filter(x=>x.cls==='attention').length,
+   awaiting:classified.filter(x=>x.cls==='awaiting').length,
+   acquisitions:uniqueAcquisitions.size
+  };
+  document.getElementById('count-new').textContent=counts.new;
+  document.getElementById('count-process').textContent=counts.process;
+  document.getElementById('count-attention').textContent=counts.attention;
+  document.getElementById('count-awaiting').textContent=counts.awaiting;
+  document.getElementById('count-acquisitions').textContent=counts.acquisitions;
+  document.getElementById('workflow-updated').textContent=(classified.length+uniqueAcquisitions.size)+' active record'+((classified.length+uniqueAcquisitions.size)===1?'':'s');
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  document.getElementById('workflow-list').innerHTML=classified.length
+   ?classified.map(x=>{
+      const cta=x.stage==='inspection'
+       ?'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.request_id)+'#tradeflow-inspection-workspace">OPEN INSPECTION</a>'
+       :'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.request_id)+'">OPEN BUYING</a>';
+      const amount=x.amount!=null?'£'+Number(x.amount).toFixed(2):'—';
+      return '<div class="process-row '+(x.cls==='attention'?'green':x.cls==='awaiting'?'yellow':'blue')+'"><div><strong>'+esc(x.request_reference)+'</strong><div class="process-muted">'+esc(x.title||'Customer request')+'</div></div><div class="process-status">'+esc(x.label)+'</div><div class="process-amount">'+amount+'</div>'+cta+'</div>';
+    }).join('')
+   :'<div class="empty">No active buying transactions.</div>';
+ }catch(e){
+  const el=document.getElementById('workflow-list');
+  if(el)el.innerHTML='<div class="empty">Workflow status could not be loaded: '+String(e.message||e).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</div>';
+  console.warn('TradeFlow business workflow dashboard:',e);
+ }
+});
 </script><script>
 window.addEventListener('DOMContentLoaded',async()=>{
  try{

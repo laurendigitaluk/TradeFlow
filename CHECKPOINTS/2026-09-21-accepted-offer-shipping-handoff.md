@@ -204,3 +204,19 @@ Expected live result:
 - uploaded sources show as stored/available;
 - the same shipping handoff can be saved and sent/resend to the customer;
 - accepted acquisition workflow remains authoritative and no duplicate acquisition/offer is created.
+
+
+## 22 September 2026 — deep customer authentication and shipping settings repair
+
+Live Supabase verification confirmed the customer authentication request itself is succeeding: \`valley-discounts@outlook.com\` has \`last_sign_in_at = 2026-09-22 18:10:28 UTC\`, remains linked to customer \`9032f5d2-bad9-4e51-9e89-3f3c654488d0\` and tenant \`21fca2c5-5da2-4ff6-9f8e-318f9b6277f9\`. The apparent infinite “Signing in…” state was caused by the customer dashboard JavaScript failing to parse, so the authentication success handler was never registered.
+
+Root cause: the previous portal-data repair introduced a literal \`\\n\` token between function declarations in \`customer-dashboard.js\`, producing a JavaScript syntax error. The portal HTML therefore loaded, but the dashboard controller did not execute. PR #96 restored the last known valid customer data controller, repaired the syntax, ensured the sign-in button is released in all cases, and opens the portal immediately after a valid authentication response.
+
+Tenant branding is also now loaded after authentication. Live \`tenant_public_profiles.business_name\` is \`Camerashack\`, so the customer-facing header should display **Camerashack**, not the generic Customer Portal fallback.
+
+Subscriber shipping Settings audit:
+- \`subscriber_connect_shipping_provider(...)\` is executable by the authenticated role.
+- \`shipping-provider-test\` Edge Function is deployed ACTIVE with JWT verification.
+- The Settings UI previously had a test function but no visible Test connection control. PR #96 adds the control to the Parcel2Go connection card.
+- No shipping provider connection currently exists for Camerashack; therefore there is no connected Parcel2Go account to test yet.
+- Existing manual label/QR shipping data for acquisition \`ACQ-B11FB7341903\` remains unchanged and is still \`subscriber_override\` with no label/QR published.

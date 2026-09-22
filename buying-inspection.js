@@ -61,7 +61,7 @@
     const a=row.acquisition;
     if(a.status==='received'){
       notice.className='subscriber-action-notice action';
-      notice.innerHTML='<strong>Next step required — you\\'ve received the item, inspect it</strong><span>Compare the item with the customer\\'s submitted information, record the inspection and then send it to the next stage.</span><div class="actions" style="margin-top:10px"><button type="button" data-tf-inspect="'+esc(a.id)+'">START INSPECTION</button></div>';
+      notice.innerHTML='<strong>Next step required — you\'ve received the item, inspect it</strong><span>Compare the item with the customer\'s submitted information, record the inspection and then send it to the next stage.</span><div class="actions" style="margin-top:10px"><button type="button" data-tf-inspect="'+esc(a.id)+'">START INSPECTION</button></div>';
     }else if(a.status==='inspection'){
       notice.className='subscriber-action-notice action';
       notice.innerHTML='<strong>Next step required — inspect the item</strong><span>The item is now in Purchasing inspection. Complete the inspection below before it can move to Sales.</span>';

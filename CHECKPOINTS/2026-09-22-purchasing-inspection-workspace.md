@@ -147,3 +147,7 @@ The current test Canon EOS R7 workflow was migrated back out of Acquisition/Inve
 - Testing/repair remain pre-acquisition routes.
 
 This supersedes earlier checkpoint wording that described the received/inspection record as an acquisition or inventory asset.
+
+### Additional verification — acquisition visibility
+
+The customer acquisition list and subscriber Acquisitions workspace now show only paid/completed acquisitions. Initial and revised offer acceptance remains in the pre-acquisition purchasing workflow.

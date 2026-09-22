@@ -1210,3 +1210,34 @@ The inspection CTA is now handled by the main Buying dashboard as the authoritat
 ## 2026-09-22 — Inspection start RPC root cause
 
 The START INSPECTION click was reaching the live RPC, but the RPC failed with PostgreSQL error `trigger functions can only be called as triggers`. Root cause: subscriber_start_acquisition_inspection called public.generate_asset_reference() as a normal scalar function. The live generate_asset_reference function is a trigger-returning function used by the inventory_assets INSERT trigger, so it cannot be called directly. The RPC was repaired to generate the AST reference inline while retaining the existing inventory trigger. The Buying dashboard live-status notice was also corrected so received/inspection states cannot be overwritten by the old shipping message.
+
+## 2026-09-22 — Pre-acquisition purchase workflow correction
+
+### Root architectural fault
+
+The received-item inspection flow had been attached to the acquisitions and inventory_assets entities. That caused a customer-owned item to appear as purchased before inspection, final-offer acceptance and payment.
+
+### Correct diagnostic boundary
+
+For any customer selling request, first inspect buying_items.purchase_stage. Do not use the presence of an acquisition as evidence that the customer has been paid. An acquisition is now a post-payment record.
+
+### Correct state path
+
+none → awaiting_item → shipping → received → inspection → final_offer_required → final_offer_sent → final_offer_accepted → purchased
+
+Alternative pre-purchase routes are inspection → testing, inspection → repair, inspection → return_pending, and final_offer_sent → final_offer_refused.
+
+### Repair implemented
+
+- Added pre-acquisition shipping, inspection and inspection-media storage.
+- Reworked customer initial/final offer acceptance so neither creates an acquisition.
+- Added dedicated receipt/inspection/final-offer/purchase RPCs.
+- Added a payment-gated purchase RPC which creates acquisition/inventory only after final-offer acceptance and bank payment.
+- Changed customer selling status and portal shipping to use the pre-acquisition workflow.
+- Changed the Buying dashboard to use purchase_stage and removed generic buying-item transition buttons while an item is in the purchase workflow.
+- Changed the Acquisitions workspace to show only paid/completed acquisitions.
+- Repaired the current test item by removing its provisional acquisition/inventory records and retaining its shipping data against the buying item.
+
+### Verification target
+
+After a hard refresh, the current Canon EOS R7 test item must show **Inspection in progress** in Buying, must not appear in Acquisitions, and must not appear in Inventory. Completing the inspection as accepted must show **Final offer required**, not create an inventory asset. Only after the customer accepts the final offer and staff records payment should the acquisition and inventory record appear.

@@ -366,3 +366,24 @@ If a label is missing from the acquisition record, staff must be able to replace
 ## 2026-09-22 — Item receipt and inspection handoff repair
 
 The acquisition receipt stage is authoritative. When the subscriber confirms receipt after the customer has sent the item, the acquisition moves to `received`, `received_at` is recorded, shipping status becomes `received`, and the next acquisition action is inspection. The customer portal now explicitly renders `Item received by subscriber — inspection next`; the subscriber Buying dashboard renders `Item received — inspection next` and the existing acquisition inspection workflow remains the next operational step. Receipt handling also synchronises acquisition-item workflow state through the authoritative workflow transition function. Shipping remains subscriber-arranged and subscriber-paid; the £100 accepted offer is not altered by receipt.
+
+
+## 2026-09-22 — Purchasing inspection workspace after item receipt
+
+When an acquisition reaches **received**, the Subscriber Buying workspace now presents a clear **Next step required — you've received the item, inspect it** action with **START INSPECTION**. Inspection remains in Purchasing/Buying rather than the legacy Acquisition test workspace.
+
+Starting inspection uses the authoritative `subscriber_start_acquisition_inspection` RPC. It creates the linked inventory asset when necessary, synchronises the acquisition and acquisition-item workflow to `inspection`, and opens the full Purchasing inspection workspace.
+
+The inspection compares the physical item against the customer's submitted information and records:
+- customer description match;
+- condition match against the customer's declaration;
+- package/accessories verification;
+- serial/model verification;
+- physical condition/damage;
+- function/technical test;
+- inspector condition grade;
+- discrepancies/missing items/faults;
+- inspection notes;
+- inspection photographs.
+
+Completion routes are explicit: **Pass inspection — send to Sales**, **Requires Testing**, **Requires Repair**, or **Not as described — hold for review**. A passed inspection moves the inventory asset to `ready_for_sale`, finalises the acquisition and acquisition item, and leaves the inspection as the authoritative read-only record for Sales. The original accepted offer remains unchanged.

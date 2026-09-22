@@ -81,6 +81,7 @@ Deno.serve(async(req:Request)=>{
   const tenantId=String(body.tenant_id||""),acquisitionId=String(body.acquisition_id||""),action=String(body.action||"quote");
   if(!tenantId||!acquisitionId) return json({error:"tenant_id and acquisition_id are required"},400);
   try{
+    if(action==="quote"||action==="create_order") return json({error:"Shipping is arranged by the subscriber. Customer-paid Parcel2Go checkout is not part of the TradeFlow selling workflow."},409);
     const ctx=await loadContext(user.id,tenantId,acquisitionId,body.address_id?String(body.address_id):undefined);
     const {host,token}=await tokenFor(ctx.connection);
     if(action==="quote"){

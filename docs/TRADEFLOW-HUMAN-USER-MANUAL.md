@@ -406,3 +406,8 @@ The inspection completion RPC was corrected accordingly: acquisition and acquisi
 ## 2026-09-22 — Inspection CTA ownership and customer wording follow-up
 
 The inspection CTA is now handled by the main Buying dashboard as the authoritative workflow controller. The supplemental inspection workspace delegates its `START INSPECTION` click to that controller when available, preventing the CTA from appearing clickable while being owned by a separate polling script. Customer selling-status wording has also been removed from the internal `subscriber` terminology, including receipt and inspection messages. Browser cache versions were incremented for the Buying and customer dashboard scripts.
+
+
+## 2026-09-22 — Inspection notice and direct Testing navigation
+
+Human manual — direct Testing workspace link from Purchasing inspection. The inspection outcome now uses “Send to Testing”. Selecting it reveals an OPEN TESTING link that opens Inventory directly filtered to Testing and focuses the current asset. The Buying dashboard notice is driven by the acquisition workflow state so an inspected/received item cannot display the obsolete “Item on its way — awaiting receipt” message.

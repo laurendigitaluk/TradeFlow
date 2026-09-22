@@ -462,3 +462,20 @@ The OPEN INSPECTION action now explicitly asks the embedded Purchasing Inspectio
 The inspection workspace itself is also resilient to missing/failed inspection-media lookups. Existing inspection photographs are optional; they must never prevent the inspection checks and outcome controls from appearing.
 
 The current Canon EOS R7 request remains at Inspection in progress. The OPEN INSPECTION action is navigation only and does not change the purchase stage.
+
+## 2026-09-23 — Final offer, customer bank details and payment completion
+
+The post-inspection path is now connected end-to-end around the existing pre-acquisition workflow.
+
+Sequence:
+1. Inspection accepted -> purchase_stage=final_offer_required.
+2. Staff sends a separate final offer -> purchase_stage=final_offer_sent.
+3. Customer accepts the final offer -> purchase_stage=final_offer_accepted.
+4. Customer portal immediately asks for the UK bank account details to receive payment. The customer can save or update account holder name, sort code, account number and optional bank name.
+5. The subscriber Buying workspace checks whether bank details are on file. Full bank details are exposed only through the finance.view-protected subscriber RPC; the payment operation requires buying.manage and finance.manage.
+6. Staff sends the bank payment and records the bank payment reference using CONFIRM PAYMENT SENT & COMPLETE PURCHASE.
+7. The authoritative purchase RPC verifies the accepted final offer, customer bank details and payment reference, then creates the paid Payment Record, Acquisition, Acquisition Item and Inventory Asset atomically and moves the buying item to purchased. The inventory asset starts at ready_for_sale.
+
+Customer bank details are stored in a dedicated tenant/customer table with RLS enabled and no direct authenticated/anonymous table grants. Customer and subscriber access is through controlled security-definer RPCs.
+
+The current Canon test remains at final_offer_required until the final offer is sent. No acquisition or inventory record is created merely by passing inspection.

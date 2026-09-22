@@ -51,7 +51,7 @@ Migration: `correct_customer_shipping_handoff_state`
 ## Cache versions
 - buying-dashboard.js v28
 - acquisition-dashboard.js v12
-- customer-dashboard.js v41
+- customer-dashboard.js v43
 
 All three JavaScript files pass syntax validation after the changes.
 
@@ -60,3 +60,6 @@ The current Parcel2Go Edge Function remains an implementation component, but its
 
 ## Test record
 The existing live Camerashack accepted-sale test record remains the authoritative test record. No acquisition, offer or customer records were deleted or recreated by this repair.
+
+## Final boundary enforcement
+The Customer Portal no longer contains the old customer-paid Parcel2Go quote/order UI. The `parcel2go-customer-shipping` Edge Function was also updated and redeployed so customer quote/order actions are rejected server-side. Future integrated provider shipment creation must be performed from the subscriber's connected shipping account and return the resulting label/tracking data to the acquisition handoff.

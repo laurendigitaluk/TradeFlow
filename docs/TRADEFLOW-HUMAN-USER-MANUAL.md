@@ -499,3 +499,7 @@ For the current Canon test, the item is at final_offer_required with no bank det
 
 ## Customer portal sign-in
 The customer portal uses `customer-auth.js` as the single authentication controller. The dashboard page receives the authenticated session through `tradeflow-auth-success` / `tradeflowHandleCustomerAuthSuccess` and then loads the portal data. Do not add a second Sign in/Sign up handler to `customer-dashboard.js`; duplicate handlers can start competing portal initialisation requests. The dashboard script remains responsible for loading authenticated portal data after the handoff.
+
+
+### Customer portal login implementation
+Customer portal scripts must load deterministically: `customer-dashboard.js` first with `defer`, `customer-dashboard-nav.js` second with `defer`, and `customer-auth.js` last with `defer`. On successful authentication, `customer-auth.js` immediately hides the login panel and reveals the portal, then hands the session to `tradeflowHandleCustomerAuthSuccess`. Do not rely on script execution races or duplicate authentication controllers.

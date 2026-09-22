@@ -66,8 +66,10 @@ function renderShippingConnections(rows){
  const box=$('shipping-connections');if(!box)return;
  const byProvider=Object.fromEntries((rows||[]).map(x=>[x.provider,x]));
  const providers=[['parcel2go','Parcel2Go'],['sendcloud','Sendcloud'],['shippo','Shippo']];
- box.innerHTML=providers.map(([code,name])=>{const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';return '<div style="border-top:1px solid #dfe4e8;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small">'+(x?.display_name?esc(x.display_name)+' · ':'')+'Uses the subscriber-owned provider account. Shipping charges remain outside TradeFlow.</div></div><span class="status-pill">'+esc(label)+'</span></div>'}).join('');
+ box.innerHTML=providers.map(([code,name])=>{const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';return '<div style="border-top:1px solid #dfe4e8;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small">'+(x?.display_name?esc(x.display_name)+' · ':'')+'Uses the subscriber-owned provider account. Shipping charges remain outside TradeFlow.</div></div><div class="actions" style="align-items:center">'+(x&&code==='parcel2go'?'<button type="button" data-shipping-test="parcel2go">Test connection</button>':'')+'<span class="status-pill">'+esc(label)+'</span></div></div>'}).join('');
 }
+
+ document.querySelectorAll('[data-shipping-test]').forEach(b=>b.onclick=()=>testParcel2Go());
 
 
 async function connectParcel2Go(){

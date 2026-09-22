@@ -1252,3 +1252,16 @@ Audit findings:
 5. The Acquisitions UI no longer exposes the obsolete pre-purchase Received -> Inspection -> Finalise path or manual inventory creation. Pre-purchase work belongs in Buying.
 6. Two stale TEST1 submissions were retired as closed records; their audit history was retained.
 7. Remote Supabase migration history contains several 2026-09-22 purchase-workflow migrations that were applied live before corresponding repository migration files existed. A new audit-boundary migration has now been committed to the repository, but the repository still needs a complete remote migration pull/reconciliation before it should be treated as fully reproducible.
+
+## 2026-09-23 — Second OPEN INSPECTION failure isolated
+
+The previous asynchronous-navigation repair was incomplete. The code waited for the inspection element to appear, but the inspection renderer could fail before appending that element. In particular, the optional buying_item_media lookup was outside the rendering try/catch, so any media lookup failure prevented the entire inspection workspace from being created. The navigation handler also only polled for the element; it did not actively request the inspection renderer when the element was absent.
+
+Repair:
+- OPEN INSPECTION now actively invokes the inspection workspace refresh, then scrolls once the workspace exists.
+- The handler still prevents the native hash jump so there is no competing browser navigation.
+- Inspection media lookup is now optional: a media lookup failure cannot prevent the inspection form itself from rendering.
+- The inspection refresh returns an explicit success state and surfaces a visible error if the core workspace cannot be loaded.
+- Buying and inspection script cache versions were incremented to force the browser to load the repaired code.
+
+This is a code-level isolation of the remaining defect; browser confirmation is still required after GitHub Pages publishes the new commits.

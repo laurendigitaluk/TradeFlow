@@ -873,3 +873,10 @@ The existing `acquisitions.shipping_*` fields remain the authoritative handoff r
 
 ## Connected shipping implementation
 Parcel2Go is the first automated shipping provider implementation. The subscriber-owned provider connection is stored securely, the customer can request a server-side quote, choose a service and receive Parcel2Go's payment/deeplink. Shipping money never passes through TradeFlow. Future work must add signed Parcel2Go webhooks, post-payment label retrieval and tracking synchronisation before describing the route as fully automated.
+
+
+### Shipping state authority — 22 September 2026
+
+Do not infer that the customer has sent an item from `posted_at`, `shipping_status=ready_for_customer`, or publication of a shipping handoff. `acquisitions.customer_sent_at` is the authoritative customer confirmation timestamp. Before it is set, the subscriber state is Awaiting item from customer. `customer_mark_acquisition_posted` sets `customer_sent_at`, moves the acquisition to `shipping`, and sets `shipping_status=in_transit`.
+
+`shipping_service_url` is a provider/service link and must never be rendered as the physical shipping label or QR asset. Physical label and QR download/print actions use the private storage paths. Shipping provider connections are tenant-wide and are shared by Buying/acquisitions and Retail Shop sales/fulfilment.

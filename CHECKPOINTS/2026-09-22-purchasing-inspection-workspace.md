@@ -157,3 +157,6 @@ The customer acquisition list and subscriber Acquisitions workspace now show onl
 The Buying detail inspection state now includes the direct **OPEN INSPECTION** shortcut again. The shortcut navigates to the existing inspection workspace and does not create an acquisition.
 
 The Business Dashboard workflow board was also corrected to read buying_items.purchase_stage, so customer-owned items in Received/Inspection/Testing/Repair/Final Offer/Payment stages are visible as active work even though no acquisition exists yet.
+## 2026-09-22 — Direct inspection anchor corrected
+
+The OPEN INSPECTION shortcut had been pointing at the parent item-detail container, causing the page to scroll to the quotation area. It now anchors directly to `#tradeflow-inspection-workspace`, the actual embedded inspection section.

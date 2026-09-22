@@ -119,3 +119,8 @@ The received-item CTA was being rewritten by the supplemental buying-inspection.
 ## 2026-09-22 — Live inspection RPC repair verified
 
 The live START INSPECTION RPC was failing before the workflow transition. PostgreSQL reported `trigger functions can only be called as triggers`. Root cause was confirmed in the live function definition: subscriber_start_acquisition_inspection called generate_asset_reference() directly, but that function returns trigger and is only valid when fired by the inventory_assets INSERT trigger. The RPC was repaired and recorded as migration fix_inspection_rpc_trigger_reference; asset references are now generated inline and the existing inventory trigger remains authoritative. The Buying dashboard status notice was also corrected for received and inspection states, and its cache version was bumped to v35.
+
+
+## 2026-09-22 — Receipt notice and direct Testing navigation
+
+The Buying detail notice was corrected to use the linked acquisition workflow state first. This removes the obsolete “Item on its way — awaiting receipt / The customer has confirmed the item has been sent” message once the acquisition is received or in inspection. The inspection outcome label is now “Send to Testing”. Selecting that outcome exposes an OPEN TESTING link which opens the Inventory workspace directly filtered to status=testing and focuses the current inventory asset. No separate testing state machine was introduced. Dashboard script cache versions were incremented.

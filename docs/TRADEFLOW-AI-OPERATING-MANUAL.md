@@ -877,6 +877,6 @@ Parcel2Go is the first automated shipping provider implementation. The subscribe
 
 ### Shipping state authority — 22 September 2026
 
-Do not infer that the customer has sent an item from `posted_at`, `shipping_status=ready_for_customer`, or publication of a shipping handoff. `acquisitions.customer_sent_at` is the authoritative customer confirmation timestamp. Before it is set, the subscriber state is Awaiting item from customer. `customer_mark_acquisition_posted` sets `customer_sent_at`, moves the acquisition to `shipping`, and sets `shipping_status=in_transit`.
+Do not infer that the customer has sent an item from `posted_at`, `shipping_status=ready_for_customer`, or publication of a shipping handoff. `acquisitions.customer_sent_at` is the authoritative customer confirmation timestamp. Before it is set, the subscriber state is Awaiting item from customer. `customer_mark_acquisition_posted` sets `customer_sent_at` and `shipping_status=in_transit`. The authoritative acquisition workflow status remains `awaiting_item` until the subscriber confirms receipt; the Buying Dashboard derives the visible **Item on its way — awaiting receipt** stage from the customer-sent shipping state.
 
 `shipping_service_url` is a provider/service link and must never be rendered as the physical shipping label or QR asset. Physical label and QR download/print actions use the private storage paths. Shipping provider connections are tenant-wide and are shared by Buying/acquisitions and Retail Shop sales/fulfilment.

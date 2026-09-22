@@ -97,5 +97,20 @@
   }
 
   async function sync(){try{await auth();const rows=await currentWorkflow();if(!rows?.length)return;await renderInspection(rows[0]);}catch(e){console.warn('TradeFlow purchasing inspection workspace:',e)}}
-  const start=()=>{if($('detail'))sync();}; if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+  window.tradeflowRefreshInspectionWorkspace=sync;
+  const start=()=>{
+    if(!$('detail'))return;
+    if($('item-detail'))sync();
+    else{
+      const detail=$('detail');
+      const observer=new MutationObserver(()=>{
+        if($('item-detail')){
+          observer.disconnect();
+          sync();
+        }
+      });
+      observer.observe(detail,{childList:true,subtree:true});
+    }
+  };
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
 })();

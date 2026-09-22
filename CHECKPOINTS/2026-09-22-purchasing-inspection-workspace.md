@@ -90,3 +90,17 @@ Open the live Buying dashboard, hard refresh if necessary, open BR-744BA41BDC, a
 7. Sales sees the completed inspection read-only.
 
 Do not introduce a second inspection state machine or use the legacy Acquisition test workspace as the primary inspection UI.
+
+
+## 2026-09-22 — Correction: receipt → inspection → final offer
+
+The customer-facing portal no longer exposes the internal term "subscriber". Customer wording now uses business/website terminology instead.
+
+The received Purchasing stage now has a direct START INSPECTION action in the main Buying dashboard itself. This was moved into the authoritative dashboard controller so it does not depend on the supplemental inspection script to create the CTA.
+
+The correct acquisition flow after receipt is:
+Received → Inspection → Inspection complete / Final offer required → Customer accepts or refuses final offer → payment process → Sales.
+
+The original accepted offer remains distinct from the post-inspection final valuation and final offer. A passed inspection therefore does not immediately put the inventory item into Sales. The inventory asset remains in inspection while the final offer is sent and awaits the customer's response.
+
+The inspection completion RPC was corrected accordingly: acquisition and acquisition-item move to finalised with next_stage=final_offer; the inventory asset remains inspection and is marked as requiring a final offer. Testing and repair outcomes still leave the item in their respective Purchasing/Repairs routes.

@@ -50,9 +50,9 @@ async function renderSellingStatus(data,offers,acquisitions,shipping){
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
  const base=data.find(x=>x.stage==='offer_ready')||data.find(x=>!['valued'].includes(x.stage))||data[0];
  const acceptedOffer=Array.isArray(offers)?offers.find(o=>(o.status==='accepted'||o.status==='published')&&o.buying_item_id===base.buying_item_id):null;
- const acq=Array.isArray(acquisitions)?acquisitions.find(a=>a.source_offer_id===acceptedOffer?.offer_id||a.source_offer_id===acceptedOffer?.id):null;
- const ship=acq&&Array.isArray(shipping)?shipping.find(s=>s.acquisition_id===acq.id):null;
- const active=acq?.status==='awaiting_item'?{...base,stage:'awaiting_item',message:'Your shipping label and instructions have been sent. Follow the instructions below, then confirm when the item has been sent.'}:acq?.status==='shipping'?{...base,stage:'item_on_way',message:'You have confirmed that the item has been sent. The subscriber can now track or await its arrival.'}:base;
+ const ship=Array.isArray(shipping)?shipping.find(s=>s.source_offer_id===acceptedOffer?.offer_id||s.source_offer_id===acceptedOffer?.id):null;
+ const acq=ship?{id:ship.acquisition_id,status:ship.status}:null;
+ const active=ship?.status==='awaiting_item'?{...base,stage:'awaiting_item',message:'Your shipping label and instructions have been sent. Follow the instructions below, then confirm when the item has been sent.'}:ship?.status==='shipping'?{...base,stage:'item_on_way',message:'You have confirmed that the item has been sent. The subscriber can now track or await its arrival.'}:base;
  const cls=active.stage==='manual_valuation'?'manual':active.stage==='offer_ready'?'ready':active.stage==='offer_accepted'?'accepted':active.stage==='awaiting_item'?'progress':active.stage==='item_on_way'?'progress':'progress';
  const title=active.stage==='manual_valuation'?'Manual valuation required':active.stage==='offer_ready'?'Manual offer sent — awaiting your response':active.stage==='offer_accepted'?'Offer accepted — awaiting shipping label':active.stage==='awaiting_item'?'Shipping instructions sent — ready to send':active.stage==='item_on_way'?'Item sent — on its way to the subscriber':active.stage==='valued'?'Valuation completed':'Valuation in progress';
  const liveOffer=Array.isArray(offers)?offers.find(o=>o.status==='published'&&o.buying_item_id===active.buying_item_id):null;

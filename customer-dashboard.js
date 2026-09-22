@@ -187,7 +187,4 @@ $('save-profile')?.addEventListener('click',async()=>{
   finally{setBusy(b,false)}
 });
 $('sign-out')?.addEventListener('click',signOut);
-$('auth-sign-in')?.addEventListener('click',signIn);
-$('auth-sign-up')?.addEventListener('click',signUp);
-$('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
 (async()=>{await loadTenantBranding();if(!key)return setMessage('TradeFlow customer portal is not configured.','error');await restoreSession();await initialisePortal()})();

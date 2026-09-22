@@ -1123,3 +1123,45 @@ The accepted-offer shipping workflow now supports a subscriber-connected Parcel2
 - Provider/service links are separate from physical label/QR assets. Download/Print controls must operate on private uploaded storage assets.
 - Subscriber Buying and Acquisition dashboards must remain Awaiting item until `customer_sent_at` is populated. Only then show Item on its way / awaiting receipt.
 - Shared Shipping Settings are tenant-wide and apply to both Buying/acquisition operations and Retail Shop sales/fulfilment.
+
+
+## 22 September 2026 — Shipping handoff → customer sent → receipt roadmap
+
+### Expected route
+Subscriber accepts offer
+→ Send shipping label
+→ physical label/QR stored on acquisition
+→ publish handoff
+→ acquisition awaiting_item
+→ customer sees label/QR/instructions
+→ customer clicks **Item sent**
+→ customer_sent_at populated + shipping_status=in_transit
+→ subscriber sees **Item on its way — awaiting receipt**
+→ subscriber clicks **Confirm item received**
+→ authoritative acquisition awaiting_item → received
+→ existing acquisition received → inspection.
+
+### Physical asset diagnostic
+If the customer cannot see a label:
+1. inspect acquisitions.shipping_label_url;
+2. inspect acquisitions.shipping_label_storage_path;
+3. inspect acquisitions.shipping_qr_url;
+4. inspect acquisitions.shipping_qr_storage_path;
+5. inspect private tradeflow-media under <tenant_id>/acquisitions/<acquisition_id>/;
+6. if an orphaned private label exists, restore the acquisition reference;
+7. use the subscriber resend/replace control;
+8. verify the customer portal receives a signed URL.
+
+Never substitute shipping_service_url for the physical label.
+
+### Receipt diagnostic
+If the customer has clicked **Item sent**:
+- verify customer_sent_at;
+- verify shipping_status=in_transit;
+- acquisition status should remain awaiting_item;
+- subscriber Buying should display **Item on its way — awaiting receipt**;
+- **Confirm item received** must call subscriber_mark_acquisition_received;
+- successful receipt must create the authoritative awaiting_item → received transition;
+- then the existing **received → inspection** control becomes available.
+
+Do not create a separate shipping state machine for this workflow.

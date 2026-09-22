@@ -44,7 +44,7 @@ async function startBuyingItemInspection(id,b){
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 let key=''; let session=null; let tenantId=null; let currentRequests=[]; let openRequestId=null; let statusRefreshTimer=null; let shippingConnections=[];
 function providerLabel(p){return ({parcel2go:'Parcel2Go',sendcloud:'Sendcloud',shippo:'Shippo'})[p]||p||'Shipping provider';}
-const params=new URLSearchParams(location.search);
+const params=new URLSearchParams(location.search); openRequestId=params.get('request')||null;
 const $=id=>document.getElementById(id); const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function msg(t,type=''){ $('message').className=`small ${type}`.trim(); $('message').textContent=t||''; }
 async function api(path,options={}){ if(!key) throw Error('TradeFlow subscriber authentication is not connected.'); const h=new Headers(options.headers||{}); h.set('apikey',key); h.set('Content-Type','application/json'); if(session?.access_token) h.set('Authorization',`Bearer ${session.access_token}`); const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h}); const text=await r.text(); let b=null; try{b=text?JSON.parse(text):null}catch{b=text} if(!r.ok) throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`); return b; }
@@ -118,7 +118,7 @@ async function load(){try{
  const enriched=(requests||[]).map(r=>{const i=itemByRequest[r.id],v=i&&valueByItem[i.id],o=i&&offerByItem[i.id],c=customerByRequest[r.id],a=o&&acquisitionByOffer[o.id],s=i&&preShippingByItem[i.id];const workflowStatus=i?.purchase_stage&&i.purchase_stage!=='none'?i.purchase_stage:(o?.status==='refused'?'offer_refused':o?.status==='published'?'offer_ready':v?'valued':r.status);return {...r,status:workflowStatus,customer_name:[c?.first_name,c?.last_name].filter(Boolean).join(' ')||'—',offer_amount:o?.amount??v?.cash_price??v?.amount??v?.trade_in_price??null,offer_currency:o?.currency??v?.currency??'GBP',acquisition:a,preShipping:s,buying_item_id:i?.id||null}}); 
  currentRequests=enriched;$('request-list').innerHTML=renderRequests(enriched);if($('request-count'))$('request-count').textContent=enriched.length+' request'+(enriched.length===1?'':'s');
  document.querySelectorAll('#request-list button[data-id]').forEach(btn=>btn.addEventListener('click',()=>showRequest(btn.dataset.id,currentRequests)));
- if(openRequestId){const latest=currentRequests.find(x=>x.id===openRequestId);if(latest)updateOpenRequestStatus(latest);}
+ if(openRequestId){const latest=currentRequests.find(x=>x.id===openRequestId);if(latest){await showRequest(openRequestId,currentRequests);setTimeout(()=>document.getElementById('tradeflow-inspection-workspace')?.scrollIntoView({behavior:'smooth',block:'start'}),150);}}
  msg(enriched.length+' request(s) loaded.','success');
 }catch(e){msg(e.message||String(e),'error')}}
 async function showRequest(id,requests){ openRequestId=id; const r=requests.find(x=>x.id===id); if(!r)return; $('detail-panel').hidden=false; $('detail-title').textContent=r.request_reference; const publishedHandoff=r.status==='awaiting_item'&&Boolean(r.preShipping?.shipping_status||r.preShipping?.shipping_label_storage_path||r.preShipping?.shipping_qr_storage_path||r.preShipping?.shipping_instructions);

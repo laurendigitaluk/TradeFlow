@@ -1176,3 +1176,16 @@ Do not create a separate shipping state machine for this workflow.
 **Frontend repair:** `buying-dashboard.js` now preserves `received` and `inspection` rather than mapping them back to `shipping`; `customer-dashboard.js` now explicitly displays received/inspection stages; cache versions were bumped (`buying-dashboard.js` v31, `customer-dashboard.js` v43). Both files passed syntax parsing.
 
 **Next diagnostic target:** acquisition `received → inspection`, then inspection findings and valuation/revaluation. Keep offer acceptance, approved valuation, acquisition agreed value, inspection/revaluation and final valuation as distinct concepts.
+
+
+## 2026-09-22 — Received → Purchasing Inspection diagnostic and repair
+
+**User action:** Subscriber has received an acquisition and needs an obvious next action.
+
+**Expected route:** Received → **START INSPECTION** → Purchasing inspection workspace → compare customer submission → record condition/accessories/serial/technical checks → record discrepancies and evidence → choose outcome → Ready for Resale/Sales or Testing/Repair/Hold.
+
+**Root problem found:** The live acquisition was correctly at `received`, but the Buying dashboard had no operational CTA or inspection workspace. The older Acquisition dashboard contained only generic workflow transitions and was not the intended Purchasing experience.
+
+**Repair:** Added `buying-inspection.js` to the live Buying dashboard. It provides a persistent received-stage action, starts inspection through the authoritative RPC, creates the linked inventory asset, and presents the full inspection form in Purchasing.
+
+**Sales boundary:** A passed inspection transitions the inventory asset `inspection → ready_for_sale` and finalises the acquisition/item. Sales must treat the completed inspection as read-only. Failed technical/condition checks route to Testing, Repair, or Hold and do not enter Sales.

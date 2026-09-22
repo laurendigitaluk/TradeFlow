@@ -220,3 +220,24 @@ Subscriber shipping Settings audit:
 - The Settings UI previously had a test function but no visible Test connection control. PR #96 adds the control to the Parcel2Go connection card.
 - No shipping provider connection currently exists for Camerashack; therefore there is no connected Parcel2Go account to test yet.
 - Existing manual label/QR shipping data for acquisition \`ACQ-B11FB7341903\` remains unchanged and is still \`subscriber_override\` with no label/QR published.
+
+
+## 22 September 2026 — shipping handoff UI separation and upload policy
+
+PR #97 separates the subscriber shipping handoff into two explicit methods:
+1. **Use your own shipping service**
+   - separate Shipping label section
+   - separate Shipping QR code section
+   - each supports its own URL/file and open action
+   - carrier, service and tracking fields remain available
+2. **Use connected shipping service**
+   - separate provider section
+   - link to Settings → Shipping provider connections
+   - Parcel2Go is the first live automated adapter
+   - Sendcloud and Shippo are shown as future adapters rather than being falsely enabled
+
+The method selector now switches the two sections dynamically.
+
+A live storage-policy audit found the reason subscriber QR/label uploads were failing: tradeflow-media had the customer SELECT policy but no authenticated subscriber INSERT policy for acquisition shipping files. PR #97 added the tenant-member INSERT policy and recorded it in supabase/migrations/20260922190000_shipping_label_subscriber_upload_policy.sql.
+
+No acquisition, offer, customer or shipping workflow records were changed.

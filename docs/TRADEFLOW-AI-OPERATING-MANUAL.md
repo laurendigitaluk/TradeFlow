@@ -1018,3 +1018,19 @@ Sequence:
 Customer bank details are stored in a dedicated tenant/customer table with RLS enabled and no direct authenticated/anonymous table grants. Customer and subscriber access is through controlled security-definer RPCs.
 
 The current Canon test remains at final_offer_required until the final offer is sent. No acquisition or inventory record is created merely by passing inspection.
+
+
+## 2026-09-23 — Final offer, bank details and payment handoff verified
+
+The post-inspection purchase backend already contains the intended next-stage workflow:
+
+- Passed inspection moves the buying item to final_offer_required.
+- subscriber_publish_final_offer creates the separate final offer and moves the item to final_offer_sent.
+- The customer portal already presents the final offer for acceptance and, after final-offer acceptance, presents the secure bank-details form.
+- customer_bank_details stores account holder name, UK sort code, account number and optional bank name; customer access is through customer_get_bank_details/customer_save_bank_details rather than direct browser table access.
+- The subscriber Buying inspection workspace already checks subscriber_get_customer_bank_details after final-offer acceptance and masks the account number for display.
+- subscriber_complete_purchase refuses to complete the purchase unless the final offer is accepted, bank details exist and a bank payment reference has been entered. It then creates the outbound paid payment record, acquisition, acquisition item and inventory asset with status ready_for_sale, and moves purchase_stage to purchased in the same transaction.
+
+The missing connection found in this audit was the customer notification when a final post-inspection offer is published. The final-offer RPC now records an offer_sent notification event and queues the existing customer notification infrastructure when the customer has an email address. Migration 20260923000001_final_offer_customer_notification.sql was applied to live Supabase and committed to the repository.
+
+For the current Canon test, the item is at final_offer_required with no bank details and no final offer yet. No purchase/payment/inventory record has been created. Staff must choose the final offer amount and publish it; the customer can then accept it and enter bank details; staff can verify the bank details, make the bank transfer, enter the bank payment reference and use CONFIRM PAYMENT SENT & COMPLETE PURCHASE. Only then is the item purchased and the inventory asset created ready_for_sale.

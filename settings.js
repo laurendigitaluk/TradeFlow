@@ -65,11 +65,19 @@ async function removeLogo(){
 function renderShippingConnections(rows){
  const box=$('shipping-connections');if(!box)return;
  const byProvider=Object.fromEntries((rows||[]).map(x=>[x.provider,x]));
- const providers=[['parcel2go','Parcel2Go'],['sendcloud','Sendcloud'],['shippo','Shippo']];
- box.innerHTML=providers.map(([code,name])=>{const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';return '<div style="border-top:1px solid #dfe4e8;padding:14px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small">'+(x?.display_name?esc(x.display_name)+' · ':'')+'Uses the subscriber-owned provider account. Shipping charges remain outside TradeFlow.</div></div><div class="actions" style="align-items:center">'+(x&&code==='parcel2go'?'<button type="button" data-shipping-test="parcel2go">Test connection</button>':'')+'<span class="status-pill">'+esc(label)+'</span></div></div>'}).join('');
+ const providers=[
+  ['parcel2go','Parcel2Go','Connection available','Create a Parcel2Go account, open My Account → API, create API credentials, choose Sandbox for testing or Live for production, then enter the client ID and secret below. After saving, use Test connection.','https://www.parcel2go.com/api/docs/'],
+  ['sendcloud','Sendcloud','Provider connection planned','Create and configure your Sendcloud business account and keep the account credentials ready. TradeFlow will expose the secure connection controls here when the Sendcloud adapter is enabled.','https://sendcloud.dev/'],
+  ['shippo','Shippo','Provider connection planned','Create and configure your Shippo business account and keep the account credentials ready. TradeFlow will expose the secure connection controls here when the Shippo adapter is enabled.','https://docs.goshippo.com/']
+ ];
+ box.innerHTML='<div class="small" style="margin-bottom:12px">Choose the provider your business uses. Each provider has its own setup requirements. Once a connection is securely connected and tested, it becomes available in the <strong>Send shipping label → Use integrated shipping</strong> step.</div>'+providers.map(([code,name,availability,instructions,docs])=>{
+  const x=byProvider[code];const status=x?.status||'not_connected';const label=status==='connected'?'Connected':status==='pending'?'Connection pending':status==='error'?'Connection error':'Not connected';
+  const action=code==='parcel2go' ? '<div class="actions" style="margin-top:10px">'+(x?'<button type="button" data-shipping-test="parcel2go">Test connection</button>':'<span class="small">Use the secure connection form below to connect.</span>')+'</div>' : '<div class="small" style="margin-top:10px"><strong>Connection setup:</strong> not yet enabled in TradeFlow.</div>';
+  return '<article style="border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:10px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small" style="margin-top:4px">'+esc(availability)+'</div></div><span class="status-pill">'+esc(label)+'</span></div><p class="small" style="margin:10px 0 6px"><strong>How to set it up:</strong> '+esc(instructions)+'</p><a class="small" href="'+esc(docs)+'" target="_blank" rel="noopener">Open provider documentation</a>'+action+'</article>';
+ }).join('');
+ box.querySelectorAll('[data-shipping-test]').forEach(b=>b.onclick=()=>testParcel2Go(b));
 }
 
- document.querySelectorAll('[data-shipping-test]').forEach(b=>b.onclick=()=>testParcel2Go());
 
 
 async function connectParcel2Go(){
@@ -84,8 +92,8 @@ async function connectParcel2Go(){
 }
 
 
-async function testParcel2Go(){
- const status=$('shipping-connect-status'),button=$('shipping-test');
+async function testParcel2Go(button){
+ const status=$('shipping-connect-status');
  try{
   const rows=await api('/rest/v1/shipping_provider_connections?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&provider=eq.parcel2go');
   const connectionId=rows?.[0]?.id;if(!connectionId)throw Error('Connect a Parcel2Go account first.');

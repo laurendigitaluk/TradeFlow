@@ -264,3 +264,33 @@ Frontend cache-busters advanced:
 - Acquisition dashboard JS: v9
 
 No customer, offer, acquisition, valuation or shipping workflow records were changed by this UI/flow repair.
+
+
+## 22 September 2026 — corrected shipping-label method flow
+
+The previous shipping UI was corrected after review. The accepted-offer step is specifically a **Send shipping label** step with exactly two choices:
+1. **Send a manual label**
+2. **Use integrated shipping**
+
+Manual mode displays the manual shipping controls:
+- shipping label URL/file upload;
+- separate shipping QR code URL/file upload;
+- carrier;
+- service;
+- tracking number;
+- customer shipping instructions.
+
+Integrated mode hides the manual label/QR/tracking controls and instead displays **only the subscriber's connected shipping services** from `shipping_provider_connections`, plus an **Add a shipping service** link to `Settings → Shipping services`.
+
+Shipping Settings is now an actual provider setup area rather than a simple provider list. It shows provider-specific setup instructions and connection status. Parcel2Go has the live secure connection/test path. Sendcloud and Shippo are listed with their setup guidance but are clearly marked as connection adapters not yet enabled in TradeFlow; they are not falsely presented as connected options.
+
+The connected-service selector is therefore data-driven: a provider appears in the accepted-sale integrated-shipping dropdown only after the subscriber has actually connected and tested that provider.
+
+The subscriber remains responsible for their own provider account. Customers pay shipping providers directly; TradeFlow does not collect, pay or reimburse shipping costs.
+
+Frontend cache-busters:
+- Buying dashboard JS v21
+- Acquisition dashboard JS v10
+- Shipping Settings JS v7
+
+No acquisition, offer, customer, valuation or shipping workflow records were changed.

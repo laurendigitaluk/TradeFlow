@@ -65,8 +65,16 @@ function openInspectionWorkspace(ev){
    return true;
  };
  if(reveal())return false;
- let tries=0;
- const timer=setInterval(()=>{tries++;if(reveal()||tries>=100)clearInterval(timer)},50);
+ (async()=>{
+   try{
+     if(typeof window.tradeflowRefreshInspectionWorkspace==='function')await window.tradeflowRefreshInspectionWorkspace();
+   }catch(e){
+     msg(e?.message||String(e),'error');
+   }
+   if(reveal())return;
+   let tries=0;
+   const timer=setInterval(()=>{tries++;if(reveal()||tries>=100)clearInterval(timer)},50);
+ })();
  return false;
 }
 window.tradeflowOpenInspection=openInspectionWorkspace;

@@ -45,7 +45,7 @@ async function checkout(id){const b=document.querySelector(`.buy-listing[data-li
 async function payOrder(id){const b=document.querySelector(`[data-pay-order-id="${CSS.escape(id)}"]`);try{setBusy(b,true,'Opening secure payment…');const result=await api('/functions/v1/create-stripe-checkout-session',{method:'POST',body:JSON.stringify({tenant_id:tenantId,order_id:id})});if(!result?.checkout_url)throw Error(result?.error||'Payment checkout URL was not returned.');location.href=result.checkout_url}catch(e){setMessage(e.message||String(e),'error');setBusy(b,false)}}
 async function createPayment(id){return payOrder(id)}
 async function requestReturn(){const item=$('return-order-item').value;if(!item)return setMessage('Select an eligible order item.','error');try{await api('/rest/v1/rpc/customer_request_return',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_order_item_id:item,p_reason_code:$('return-reason-code').value,p_reason:$('return-reason').value.trim()||null,p_customer_notes:$('return-reason').value.trim()||null})});$('return-order-item').value='';$('return-reason').value='';setMessage('Return request submitted.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}}
-async async function renderSellingStatus(data,offers,acquisitions,shipping){
+async function renderSellingStatus(data,offers,acquisitions,shipping){
  const box=$('selling-status-panel');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
  const base=data.find(x=>x.stage==='offer_ready')||data.find(x=>!['valued'].includes(x.stage))||data[0];

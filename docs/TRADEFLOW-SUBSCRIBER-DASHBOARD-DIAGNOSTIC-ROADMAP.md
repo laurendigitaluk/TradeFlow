@@ -1189,3 +1189,14 @@ Do not create a separate shipping state machine for this workflow.
 **Repair:** Added `buying-inspection.js` to the live Buying dashboard. It provides a persistent received-stage action, starts inspection through the authoritative RPC, creates the linked inventory asset, and presents the full inspection form in Purchasing.
 
 **Sales boundary:** A passed inspection transitions the inventory asset `inspection → ready_for_sale` and finalises the acquisition/item. Sales must treat the completed inspection as read-only. Failed technical/condition checks route to Testing, Repair, or Hold and do not enter Sales.
+
+
+## 2026-09-22 — Root cause and correction: START INSPECTION + final-offer stage
+
+Observed: The live page still displayed the old "The subscriber has received the item" notice and clicking the expected inspection action did not advance the acquisition.
+
+Root cause: The new supplemental inspection controller was not sufficient as the authoritative received-stage CTA. Its polling controller also cached the request reference, so later refreshes could skip the workflow read. The primary Buying dashboard still contained the old received notice.
+
+Correction: The primary buying-dashboard.js now renders the received-stage START INSPECTION action and directly calls subscriber_start_acquisition_inspection. Script cache versions were bumped in buying-dashboard.html.
+
+Final-offer architecture correction: The inspection completion RPC no longer moves the inventory asset to ready_for_sale. After a passing inspection it leaves the asset in inspection, finalises the acquisition/acquisition-item, and marks the next stage as final_offer. The Buying inspection workspace then creates a separate approved post-inspection valuation and final offer. Sales must not receive the item until the customer accepts that final offer and the payment workflow completes.

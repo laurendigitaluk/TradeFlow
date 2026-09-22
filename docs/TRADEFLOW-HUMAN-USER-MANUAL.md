@@ -495,3 +495,7 @@ The post-inspection purchase backend already contains the intended next-stage wo
 The missing connection found in this audit was the customer notification when a final post-inspection offer is published. The final-offer RPC now records an offer_sent notification event and queues the existing customer notification infrastructure when the customer has an email address. Migration 20260923000001_final_offer_customer_notification.sql was applied to live Supabase and committed to the repository.
 
 For the current Canon test, the item is at final_offer_required with no bank details and no final offer yet. No purchase/payment/inventory record has been created. Staff must choose the final offer amount and publish it; the customer can then accept it and enter bank details; staff can verify the bank details, make the bank transfer, enter the bank payment reference and use CONFIRM PAYMENT SENT & COMPLETE PURCHASE. Only then is the item purchased and the inventory asset created ready_for_sale.
+
+
+## Customer portal sign-in
+The customer portal uses `customer-auth.js` as the single authentication controller. The dashboard page receives the authenticated session through `tradeflow-auth-success` / `tradeflowHandleCustomerAuthSuccess` and then loads the portal data. Do not add a second Sign in/Sign up handler to `customer-dashboard.js`; duplicate handlers can start competing portal initialisation requests. The dashboard script remains responsible for loading authenticated portal data after the handoff.

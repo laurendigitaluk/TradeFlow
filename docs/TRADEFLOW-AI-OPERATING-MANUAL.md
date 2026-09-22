@@ -1041,3 +1041,10 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Portal ownership: `customer-dashboard.js` after `tradeflowHandleCustomerAuthSuccess`.
 - If the login screen remains visible after successful credentials, inspect for duplicate authentication listeners before changing Supabase Auth or customer RPCs.
 - Current cache versions: `customer-auth.js?v=4`, `customer-dashboard.js?v=16`.
+
+
+### Customer authentication handoff rule
+- `customer-dashboard.js` loads before `customer-auth.js`, both with `defer`.
+- Successful authentication calls `revealPortal()` before the dashboard session handoff.
+- Current cache versions: `customer-dashboard.js?v=17`, `customer-auth.js?v=5`.
+- If the login screen remains after valid credentials, inspect the deployed script versions and browser console/network requests before changing Supabase Auth or customer RPCs.

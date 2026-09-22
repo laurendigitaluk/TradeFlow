@@ -988,3 +988,16 @@ The only purchase-completion path is final_offer_accepted -> record outbound ban
 The business dashboard uses subscriber_get_business_workflow as its authoritative workflow read model. Do not rebuild the dashboard by assuming acquisitions exist for pre-purchase stages.
 
 The repository currently has migration-history drift from live Supabase changes made on 2026-09-22. Before future database refactoring, reconcile the remote migration history into supabase/migrations so the repository and live schema are reproducible.
+
+## 2026-09-23 — Inspection navigation/rendering repair
+
+The previous async-navigation repair was incomplete because the navigation code waited for the inspection workspace but did not actively force the renderer when the element was absent. In addition, buying-inspection.js performed the optional buying_item_media lookup before appending the workspace, so a media lookup failure could abort rendering entirely.
+
+Current contract:
+- OPEN INSPECTION prevents the native hash action.
+- It invokes window.tradeflowRefreshInspectionWorkspace() when the workspace is absent.
+- The renderer appends the inspection workspace even when inspection-media lookup fails.
+- The renderer returns a success flag and reports core rendering errors visibly.
+- Do not restore a navigation design that depends solely on the inspection workspace existing before the click.
+
+Browser verification remains a separate step after the new GitHub Pages deployment.

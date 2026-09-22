@@ -959,3 +959,7 @@ Relevant RPCs:
 - customer_mark_buying_item_posted
 
 The customer selling-status RPC now reads buying_items.purchase_stage first. The customer portal and Buying dashboard therefore remain aligned without deriving pre-purchase stages from acquisitions.
+
+### Additional boundary repair — acquisition visibility
+
+Customer-facing and subscriber-facing acquisition lists now restrict acquisition visibility to paid/completed purchases. Pre-acquisition stages are represented by buying_items.purchase_stage instead. Initial and revised customer offers both enter the pre-acquisition receipt workflow when accepted; only final offers can lead to final_offer_accepted and payment-gated purchase creation.

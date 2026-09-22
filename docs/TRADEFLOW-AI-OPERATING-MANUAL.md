@@ -931,3 +931,31 @@ The inspection CTA is now handled by the main Buying dashboard as the authoritat
 ## 2026-09-22 — Inspection notice and direct Testing navigation
 
 AI operating note — when diagnosing Purchasing receipt/inspection UI, treat acquisitions.status as authoritative for the open-request workflow notice rather than relying solely on the buying request status. The inspection workspace provides a direct Testing link using inventory-dashboard.html?status=testing&asset=<inventory_asset_id>; do not invent a separate testing state machine.
+
+## 2026-09-22 — Pre-acquisition purchasing boundary is authoritative
+
+The previous implementation incorrectly used acquisitions and inventory_assets as soon as the customer's initial offer was accepted/received. This is now superseded.
+
+Authoritative boundary:
+
+- buying_items.purchase_stage is the state machine for the period before purchase.
+- buying_item_shipping stores shipping/receipt handoff data before acquisition.
+- buying_item_inspections stores inspection outcomes before acquisition.
+- buying_item_media stores inspection photographs before acquisition.
+- acquisitions, acquisition_items, payment_records, and inventory_assets are created only by subscriber_complete_purchase, after a **final offer has been accepted by the customer** and the **bank payment has been recorded**.
+
+Purchase-stage values currently used are: none, awaiting_item, shipping, received, inspection, testing, repair, return_pending, final_offer_required, final_offer_sent, final_offer_accepted, final_offer_refused, payment_pending, and purchased.
+
+Do not reintroduce an acquisition/inventory record at receipt, inspection start, inspection completion, or final-offer creation. The initial accepted offer is not the purchase. The final accepted offer is not the purchase until payment is recorded.
+
+Relevant RPCs:
+- subscriber_publish_buying_item_shipping_handoff
+- subscriber_mark_buying_item_received
+- subscriber_start_buying_item_inspection
+- subscriber_complete_buying_item_inspection
+- subscriber_publish_final_offer
+- subscriber_complete_purchase
+- customer_get_pre_acquisition_shipping
+- customer_mark_buying_item_posted
+
+The customer selling-status RPC now reads buying_items.purchase_stage first. The customer portal and Buying dashboard therefore remain aligned without deriving pre-purchase stages from acquisitions.

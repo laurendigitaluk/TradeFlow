@@ -443,3 +443,6 @@ The **OPEN INSPECTION** link on an in-progress Buying request now targets the ac
 ## 2026-09-22 — Open Inspection asynchronous render fix
 
 The embedded inspection workspace is rendered asynchronously by `buying-inspection.js`. The OPEN INSPECTION control now waits for `#tradeflow-inspection-workspace` to exist before scrolling to it, so the link remains reliable even when the inspection section has not finished loading at click time.
+## 2026-09-22 — Dashboard attention count and direct inspection action
+
+The Business Dashboard now includes a dedicated **Needs attention** count for pre-acquisition work such as inspection, testing, repair, final offer and payment. The inspection row has an **OPEN INSPECTION** action that opens the specific Buying request and automatically opens/scrolls to its embedded inspection workspace.

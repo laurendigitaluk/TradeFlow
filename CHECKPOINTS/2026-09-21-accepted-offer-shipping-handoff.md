@@ -178,3 +178,29 @@ Expected browser result:
 - after sign-in, the Customer account form disappears;
 - the Welcome back customer portal is visible;
 - Overview, Shop, My Orders, Sell to us, Returns and My Details navigation can switch sections normally.
+
+
+## Live browser regression repair — 22 September 2026
+
+The customer login itself was successful, but the first post-login portal screenshot showed an empty Overview with zero counts. Live database verification confirmed the customer's existing data was still present: 1 buying request, 1 offer and 1 acquisition. The issue was therefore presentation/loading, not lost data.
+
+The customer portal controller used one all-or-nothing Promise.all for all customer data sources. A failure in any one source prevented all subsequent rendering, leaving the authenticated portal shell visible with its default zero values. This was changed to independent Promise.allSettled loading so available customer data continues to render and any failed source is reported rather than discarding the valid session.
+
+A second independent audit of the subscriber Buying dashboard found duplicate legacy declarations of:
+- publishShippingHandoff()
+- uploadShippingLabel()
+- openShippingLabel()
+
+The later legacy declarations overrode the newer shipping-service/QR-aware implementations. This could cause a QR-only handoff to be rejected and could prevent the intended final publish/save-and-resend flow from using the newer shipping method fields.
+
+PR #95 removed the duplicate legacy shipping functions and retained the current shipping-service/QR-aware implementation. Buying cache-buster advanced to v17; Customer auth to v3 and customer dashboard to v35.
+
+No customer, offer, acquisition, valuation or shipping database records were changed by this repair.
+
+Expected live result:
+- customer login opens the populated existing portal;
+- selling request, offer and accepted acquisition remain visible;
+- subscriber can upload a shipping label and/or QR code;
+- uploaded sources show as stored/available;
+- the same shipping handoff can be saved and sent/resend to the customer;
+- accepted acquisition workflow remains authoritative and no duplicate acquisition/offer is created.

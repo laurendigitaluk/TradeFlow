@@ -37,7 +37,6 @@
     await auth();
     const title=($('detail-title')?.textContent||'').trim();
     if(!title)return null;
-    if(title===lastReference)return null;
     const requests=await api('/rest/v1/buying_requests?select=id,request_reference,status,notes,customer_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&request_reference=eq.'+encodeURIComponent(title)+'&limit=1');
     const request=requests?.[0];
     if(!request)return null;
@@ -64,7 +63,7 @@
       notice.innerHTML='<strong>Next step required — you\'ve received the item, inspect it</strong><span>Compare the item with the customer\'s submitted information, record the inspection and then send it to the next stage.</span><div class="actions" style="margin-top:10px"><button type="button" data-tf-inspect="'+esc(a.id)+'">START INSPECTION</button></div>';
     }else if(a.status==='inspection'){
       notice.className='subscriber-action-notice action';
-      notice.innerHTML='<strong>Next step required — inspect the item</strong><span>The item is now in Purchasing inspection. Complete the inspection below before it can move to Sales.</span>';
+      notice.innerHTML='<strong>Next step required — inspect the item</strong><span>The item is now in Purchasing inspection. Complete the inspection below before the final offer is sent to the customer.</span>';
     }else if(a.status==='finalised'){
       notice.className='subscriber-action-notice sent';
       notice.innerHTML='<strong>Inspection complete — ready for Sales</strong><span>The item has passed inspection and has been moved into the Sales-ready inventory workflow.</span>';
@@ -153,8 +152,30 @@
           location.reload();
         }catch(e){msg(e.message||String(e),'error');busy=false;section.querySelector('#tf-complete').disabled=false}
       };
-    }else if(row.acquisition.status==='finalised'){
-      section.innerHTML='<div class="cell-label">SALES HANDOFF</div><h2 style="margin:4px 0 8px">Inspection complete — ready for Sales</h2><p>The item has passed inspection. The completed inspection is now read-only for Sales.</p>';
+    }else if(row.acquisition.status==='finalised'&&asset&&asset.status==='inspection'){
+      const finalOffers=(await api('/rest/v1/offers?select=id,offer_reference,offer_type,status,amount,currency,published_at,responded_at,response_notes&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(row.item.id)+'&offer_type=eq.final&order=created_at.desc'))||[];
+      const liveFinal=finalOffers.find(o=>o.status==='published')||finalOffers[0];
+      section.innerHTML='<div class="cell-label">FINAL OFFER</div><h2 style="margin:4px 0 8px">Inspection complete — final offer required</h2><p>The physical inspection is complete. The original accepted offer remains unchanged. Review the final valuation below and send the final offer to the customer before the item can move to Sales.</p>'+
+        '<div class="customer-supplied" style="margin-top:14px"><h3>Inspection result</h3><p><strong>Inspection passed.</strong> The completed inspection is recorded against the inventory item.</p><p class="small">The item remains out of Sales until the customer responds to the final offer.</p></div>'+
+        (liveFinal?'<div class="workflow-box" style="margin-top:14px"><h3>Final offer</h3><p><strong>'+esc(liveFinal.offer_reference||'Final offer')+'</strong> · '+esc(liveFinal.status)+'</p><div class="offer-amount"><strong>'+new Intl.NumberFormat('en-GB',{style:'currency',currency:liveFinal.currency||'GBP'}).format(Number(liveFinal.amount||0))+'</strong></div><p class="small">'+(liveFinal.status==='published'?'Final offer sent to customer — awaiting acceptance or refusal.':liveFinal.status==='accepted'?'Final offer accepted by customer.':liveFinal.status==='refused'?'Final offer refused by customer.':'Final offer '+esc(liveFinal.status)+'.')+'</p></div>':
+        '<div class="workflow-box" style="margin-top:14px"><h3>Send final offer to customer</h3><p class="small">Enter the final agreed buying value after inspection. This creates a separate final valuation and final offer; it does not overwrite the original accepted offer.</p><label><strong>Final offer amount (£)</strong><input id="tf-final-offer-amount" type="number" min="0" step="0.01" value="'+esc(row.offer?.amount??'')+'"></label><label style="display:block;margin-top:10px"><strong>Final offer notes</strong><textarea id="tf-final-offer-notes" rows="4" placeholder="Explain any inspection-based change to the final value, if applicable."></textarea></label><div class="actions" style="margin-top:12px"><button type="button" id="tf-send-final-offer">SEND FINAL OFFER TO CUSTOMER</button></div></div>');
+      const send=section.querySelector('#tf-send-final-offer');
+      if(send)send.onclick=async()=>{
+        const amount=Number(section.querySelector('#tf-final-offer-amount')?.value);
+        const notes=(section.querySelector('#tf-final-offer-notes')?.value||'').trim();
+        if(!Number.isFinite(amount)||amount<0)return msg('Enter a valid final offer amount.','error');
+        if(busy)return;busy=true;send.disabled=true;send.textContent='Sending…';
+        try{
+          const vals=await api('/rest/v1/trading_values',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:row.item.id,method:'manual',status:'draft',amount,currency:'GBP',cash_price:amount,trade_in_price:null,confidence:null,calculated_at:new Date().toISOString(),notes:notes||'Final post-inspection valuation',metadata:{source:'post_inspection_final_valuation',inspection_required:true,acquisition_id:row.acquisition.id}})});
+          const valuation=Array.isArray(vals)?vals[0]:vals;if(!valuation?.id)throw Error('Final valuation could not be created.');
+          await api('/rest/v1/rpc/transition_workflow_entity',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_entity_type:'trading_value',p_entity_id:valuation.id,p_expected_from:'draft',p_to_status:'approved',p_notes:notes||'Final post-inspection valuation approved',p_metadata:{source:'post_inspection_final_valuation',acquisition_id:row.acquisition.id}})});
+          const offers=await api('/rest/v1/offers',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:row.item.id,trading_value_id:valuation.id,offer_reference:'OF-'+crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase(),offer_type:'final',status:'draft',amount,currency:'GBP',created_by:session.user.id})});
+          const offer=Array.isArray(offers)?offers[0]:offers;if(!offer?.id)throw Error('Final offer could not be created.');
+          await api('/rest/v1/rpc/transition_workflow_entity',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_entity_type:'offer',p_entity_id:offer.id,p_expected_from:'draft',p_to_status:'published',p_notes:'Final post-inspection offer published to customer.',p_metadata:{source:'post_inspection_final_offer',acquisition_id:row.acquisition.id,inspection_id:latest?.id||null}})});
+          msg('Final offer sent to the customer. The item remains out of Sales until the customer responds.','success');
+          location.reload();
+        }catch(e){msg(e.message||String(e),'error');busy=false;send.disabled=false;send.textContent='SEND FINAL OFFER TO CUSTOMER'}
+      };
     }else return;
     const existing=$('tradeflow-inspection-workspace');if(existing)existing.remove();
     host.appendChild(section);

@@ -361,3 +361,8 @@ The subscriber Buying/Acquisition workspace provides separate controls to print/
 Publishing the handoff moves an accepted acquisition into **Awaiting item from customer**. Customer clicking **Item sent** records customer_sent_at and shipping_status=in_transit; the database acquisition workflow remains awaiting_item until the subscriber confirms receipt. The subscriber then sees **Item on its way — awaiting receipt** and a **Confirm item received** action. That action performs the authoritative awaiting_item → received transition, after which the existing received → inspection workflow continues.
 
 If a label is missing from the acquisition record, staff must be able to replace/upload the physical label and resend the handoff. Storage objects are private and should be referenced from the acquisition record rather than exposed publicly.
+
+
+## 2026-09-22 — Item receipt and inspection handoff repair
+
+The acquisition receipt stage is authoritative. When the subscriber confirms receipt after the customer has sent the item, the acquisition moves to `received`, `received_at` is recorded, shipping status becomes `received`, and the next acquisition action is inspection. The customer portal now explicitly renders `Item received by subscriber — inspection next`; the subscriber Buying dashboard renders `Item received — inspection next` and the existing acquisition inspection workflow remains the next operational step. Receipt handling also synchronises acquisition-item workflow state through the authoritative workflow transition function. Shipping remains subscriber-arranged and subscriber-paid; the £100 accepted offer is not altered by receipt.

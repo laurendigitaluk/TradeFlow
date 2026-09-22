@@ -75,9 +75,9 @@ function renderShippingConnections(rows){
   const action=code==='parcel2go' ? '<div class="actions" style="margin-top:10px">'+(x?'<button type="button" data-shipping-test="parcel2go">Test connection</button>':'<span class="small">Use the secure connection form below to connect.</span>')+'</div>' : '<div class="small" style="margin-top:10px"><strong>Connection setup:</strong> not yet enabled in TradeFlow.</div>';
   return '<article style="border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:10px"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><strong>'+esc(name)+'</strong><div class="small" style="margin-top:4px">'+esc(availability)+'</div></div><span class="status-pill">'+esc(label)+'</span></div><p class="small" style="margin:10px 0 6px"><strong>How to set it up:</strong> '+esc(instructions)+'</p><a class="small" href="'+esc(docs)+'" target="_blank" rel="noopener">Open provider documentation</a>'+action+'</article>';
  }).join('');
+ box.querySelectorAll('[data-shipping-test]').forEach(b=>b.onclick=()=>testParcel2Go(b));
 }
 
- document.querySelectorAll('[data-shipping-test]').forEach(b=>b.onclick=()=>testParcel2Go());
 
 
 async function connectParcel2Go(){
@@ -92,8 +92,8 @@ async function connectParcel2Go(){
 }
 
 
-async function testParcel2Go(){
- const status=$('shipping-connect-status'),button=$('shipping-test');
+async function testParcel2Go(button){
+ const status=$('shipping-connect-status');
  try{
   const rows=await api('/rest/v1/shipping_provider_connections?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&provider=eq.parcel2go');
   const connectionId=rows?.[0]?.id;if(!connectionId)throw Error('Connect a Parcel2Go account first.');

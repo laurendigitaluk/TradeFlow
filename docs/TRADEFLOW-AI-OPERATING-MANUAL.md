@@ -972,3 +972,6 @@ The Buying inspection state also exposes an **OPEN INSPECTION** shortcut. This i
 ## 2026-09-22 — Inspection navigation target
 
 When linking to the inspection from Buying, target `#tradeflow-inspection-workspace`, not `#item-detail`. The inspection workspace is an embedded section on the Buying request page; there is no separate inspection HTML page.
+## 2026-09-22 — Async inspection navigation
+
+Do not rely on a plain hash jump to the inspection workspace because `buying-inspection.js` creates `#tradeflow-inspection-workspace` asynchronously. The Buying dashboard navigation must wait for that element and then call `scrollIntoView`.

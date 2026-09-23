@@ -43,17 +43,20 @@ function pageUrl(slug,extra){
 function publicProductUrl(listingId){
  return pageUrl('product','listing='+encodeURIComponent(listingId||''));
 }
-async function signPublicMedia(media){
- if(!media?.storage_bucket||!media?.storage_path)return null;
+async function loadPublicListingMedia(listingId){
+ if(!listingId)return[];
  try{
-   const response=await fetch(SUPABASE_URL+'/storage/v1/object/sign/'+encodeURIComponent(media.storage_bucket)+'/'+media.storage_path,{
-     method:'POST',
-     headers:{apikey:KEY,'Content-Type':'application/json'},
-     body:JSON.stringify({expiresIn:3600})
+   const response=await fetch(SUPABASE_URL+'/functions/v1/public-listing-media?listing_id='+encodeURIComponent(listingId),{
+     headers:{apikey:KEY}
    });
    const body=await response.json();
-   return body?.signedURL?SUPABASE_URL+'/storage/v1'+body.signedURL:null;
- }catch{return null}
+   return response.ok&&Array.isArray(body?.media)?body.media.map(m=>({
+     listing_id:listingId,
+     sort_order:m.sort_order||0,
+     original_filename:m.original_filename||'',
+     signedUrl:m.signed_url||''
+   })):[];
+ }catch{return[]}
 }
 function money(value,currency){
  try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:currency||'GBP'}).format(Number(value));}
@@ -350,13 +353,8 @@ async function loadListings(tenant){
  try{
    const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenant));
    const listings=Array.isArray(rows)?rows:[];
-   const mediaRows=await api('/rest/v1/rpc/get_published_store_listing_media?p_tenant_id='+encodeURIComponent(tenant));
-   const media=Array.isArray(mediaRows)?mediaRows:[];
-   const enriched=[];
-   for(const m of media){
-     m.signedUrl=await signPublicMedia(m);
-     enriched.push(m);
-   }
+   const mediaSets=await Promise.all(listings.map(item=>loadPublicListingMedia(item.listing_id)));
+   const enriched=mediaSets.flat();
    window.__tradeflowListingMedia=enriched;
    const firstImage=new Map();
    enriched.filter(m=>m.signedUrl).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).forEach(m=>{if(!firstImage.has(String(m.listing_id)))firstImage.set(String(m.listing_id),m.signedUrl);});

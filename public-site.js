@@ -85,7 +85,8 @@ function heroImage(url,alt,cls){
 }
 
 function renderBrandBanner(site){
- const url=site.branding?.banner_url||window.__tradeflowPublicProfile?.banner_url||'';
+ const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
+ const url=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
  return url?'<div class="public-brand-banner"><img src="'+esc(url)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':'';
 }
 
@@ -233,7 +234,7 @@ function renderSellPage(site,catalogue){
 <section class="sell-step" data-step="6" hidden><h2>A few final questions</h2><p>These details help our team review the request.</p><label>Is anything normally supplied with this package missing?<select id="sell-missing"><option value="">Choose…</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Do you have the legal right to sell this equipment?<select id="sell-ownership"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option><option value="not-sure">I am not sure</option></select></label><label id="sell-serial-wrap" hidden>Serial number<input id="sell-serial" autocomplete="off"></label><label>Anything else we should know? <span class="optional">(optional)</span><textarea id="sell-notes" rows="4" placeholder="Accessories, faults, missing items, history or anything else that matters."></textarea></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Review request</button></div></section>
 <section class="sell-step" data-step="7" hidden><h2>Check your selling request</h2><p>Review the details before continuing to your customer account.</p><div id="sell-summary" class="sell-summary"></div><div class="sell-handoff"><strong>Next step</strong><p>Continue to your customer account to submit the request. Your answers will be carried across so you do not have to enter them again.</p></div><div class="sell-actions"><button type="button" data-back>Back</button><button type="submit">Continue to customer account →</button></div></section>
 </form></main>`;
- return renderPublicNav(site,catalogue)+body.replace('__OPTIONS__',options)+renderFooter(site);
+ return renderPublicNav(site,catalogue)+renderBrandBanner(site)+body.replace('__OPTIONS__',options)+renderFooter(site);
 }
 
 function bindSellWizard(site,catalogue){
@@ -297,7 +298,7 @@ function renderProductPage(site,listings){
  else if(shippingMethod==='included')postageText='Included in price';
  else if(shippingMethod==='free')postageText='Free';
  else if(shippingMethod==='customer_pays')postageText='Not set';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderBrandBanner(site)+
    '<main class="public-page product-page"><div class="product-detail">'+
    '<header class="product-heading"><h1>'+esc(item.title||'Product')+'</h1></header>'+
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+

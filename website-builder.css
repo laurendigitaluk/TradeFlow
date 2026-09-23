@@ -289,3 +289,10 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .builder-page-help{margin:0 18px 12px;padding:12px 14px;border:1px solid #d6e7f7;border-left:4px solid #5f94bd;border-radius:10px;background:#f7fbff;color:#425765;font-size:12px;line-height:1.5}.builder-page-help strong{color:#1d2a35}.builder-page-help a{color:#245f91;font-weight:700}.builder-page-help[hidden]{display:none}
 
 .page-visibility{border:1px solid #cbd8e2;background:#f7fafc;color:#3e5665;border-radius:6px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}.page-visibility:hover{background:#edf4f9}
+
+/* Dedicated website banner setting */
+.branding-banner-control{display:grid;gap:8px;margin-top:10px}
+.branding-banner-control>img,.generated-brand-banner-preview{width:100%;max-width:320px;height:120px;object-fit:cover;border:1px solid #d8e0e5;border-radius:8px;background:#f5f7f9}
+.generated-brand-banner-preview{display:grid;place-items:center;font-family:Georgia,'Times New Roman',serif;font-size:28px;font-weight:500;color:#27313a;padding:15px;box-sizing:border-box}
+.branding-banner-actions{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.branding-banner-actions .actions{display:flex;gap:6px;flex-wrap:wrap}

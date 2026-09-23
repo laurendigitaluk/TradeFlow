@@ -776,3 +776,20 @@ For Amazon, the eventual integration will require an SP-API developer/applicatio
 GitHub implementation was syntax-checked for sales-channels.js. Live Supabase verification confirms the four tenant channel records and existing tenant-scoped RLS policies. Browser end-to-end verification of the new editable/add/remove modals is still required.
 
 Status: **Implemented in GitHub + live DB, browser verification pending.**
+
+
+## Restore checkpoint — Test One complete — 23 September 2026
+
+Test One is now locked as the known-good end-to-end baseline.
+
+- Restore branch: `checkpoint-test-one-20260923`
+- Functional baseline commit: `80c6e20b4fa89b37ed6fab2480fb1eb46293a0d1`
+- Restore checkpoint documentation commit: `ea00d6ae238f6e47c4798b73ec6340ade2c2d5fd`
+- Supabase project: `twfbmjwwqzxdvclxbun`
+
+Test One successfully carried a new subscriber and new subscriber customer through customer selling/request, valuation/offer, inspection, purchase completion, Inventory, Selling, Sales Channels and published retail website listing.
+
+The remaining identified subscriber-facing website feature is payment processing for the subscriber's own website Subscribe/receive-payment journey.
+
+Test Two must be treated as a new validation run against the known-good Test One baseline. Do not overwrite working Test One behaviour merely to accommodate a Test Two failure; diagnose the first failure boundary against the checkpoint.
+

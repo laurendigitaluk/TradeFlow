@@ -58,9 +58,16 @@ async function restoreExistingSession(){
  const raw=localStorage.getItem(SESSION_STORAGE);
  if(!raw)return;
  try{
-  const data=JSON.parse(raw);
+  let data=JSON.parse(raw);
   if(!data?.access_token)throw Error('Invalid customer session.');
-  const response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
+  let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
+  if(!response.ok&&data?.refresh_token){
+   const refreshed=await authRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:data.refresh_token});
+   if(!refreshed?.access_token)throw Error('Customer session could not be refreshed.');
+   data=refreshed;
+   saveSession(data);
+   response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
+  }
   if(!response.ok)throw Error('Customer session is no longer valid.');
   dispatchAuthSuccess(data);
  }catch{

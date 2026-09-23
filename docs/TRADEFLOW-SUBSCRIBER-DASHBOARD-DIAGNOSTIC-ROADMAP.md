@@ -1424,3 +1424,22 @@ The previous duplicate-handler repair alone did not resolve the live login scree
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
 - Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
+
+
+## 2026-09-23 — Diagnostic Roadmap: Inventory → Sales → Website
+
+**User action:** Inventory → open purchased Canon → SEND TO SALES.
+
+**Front-end:** inventory-dashboard-fixed.js opens selling-dashboard.html?asset=<inventory_asset_id>; selling-dashboard-fixed.js loads the focused inventory asset.
+
+**Existing data path:** inventory_assets.buying_item_id → buying_items → buying_requests / customers; subscriber_get_buying_item_customer_details supplies customer identity and structured submitted fields; buying_item_inspections supplies the latest inspection; buying_item_media and inventory_asset_media both point to media_assets; Storage bucket is tradeflow-media.
+
+**Sales persistence:** listings is the actual sales listing record; listing_media links photographs to the listing; sales_channels identifies the selected channel. The current tenant has the active TradeFlow Website channel.
+
+**Workflow authority:** transition_workflow_entity authorises listing draft → ready → published and inventory_asset ready_for_sale → listed under the subscriber's selling.manage / inventory.manage permissions and module guards.
+
+**Public website boundary:** get_published_store_listings(tenant_id) reads listings where status='published', with an active selling category/channel and a published site revision. Therefore inventory_assets.status='listed' alone is not sufficient to make a product appear on the website.
+
+**Known failure fixed 2026-09-23:** Selling only read buying_item_media, so an Inventory photograph stored through inventory_asset_media appeared missing. Selling now reads both media relationships and de-duplicates the same media asset.
+
+**Verification points:** confirm the Canon asset is ready_for_sale; confirm its Inventory media exists; open Selling and confirm source information/photos load; enter a real retail asking price; create/publish the listing; confirm listings.status='published'; confirm listing_media rows exist; confirm inventory_assets.status='listed'; finally verify the customer-facing Camerashack website displays the product.

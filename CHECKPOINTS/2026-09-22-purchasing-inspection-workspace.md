@@ -463,3 +463,8 @@ Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
 ## 2026-09-23 Selling Listing Editing Checkpoint
 
 The Selling dashboard was extended so existing sales products can be edited in place. Existing listings now have an EDIT action. The edit workspace allows staff to adjust title, description, asking price, retail condition, postage option, postage price and dispatch time, then SAVE CHANGES. The existing listing row is updated rather than a new listing being created, and its current status is preserved. Inventory assets in `listed` state are loaded for this purpose. The existing Canon EOS R7 listing can therefore be opened and given an explicit retail condition instead of relying on the legacy inspection grade. No A/B/C/D condition is silently converted.
+
+
+## 2026-09-23 Customer Portal Login Checkpoint
+
+Customer account authentication was investigated after the portal returned to the login panel. The test customer Auth account exists, is email-confirmed, and has a matching active tenant customer record. The fault was found in client-side session restoration: both customer-dashboard.js and customer-auth.js were independently restoring the same localStorage session. When an access token expired, the dashboard could refresh it while customer-auth simultaneously rejected the old token and removed the session. Session restoration is now centralised in customer-auth.js with refresh-token recovery. Dashboard v22 no longer performs a second restoration; auth is v6.

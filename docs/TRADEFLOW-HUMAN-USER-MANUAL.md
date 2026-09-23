@@ -710,3 +710,8 @@ Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
 ## 2026-09-23 Selling Listing Editing
 
 Existing sales listings are now editable from the Selling dashboard. Use **EDIT** on an existing listing to load its current title, description, asking price, retail condition, postage option, postage price and dispatch time. **SAVE CHANGES** updates the existing listing in place; it does not create a duplicate and does not change its publication status. **CANCEL EDIT** exits edit mode. Published website product pages read the updated listing data through the published-store RPC, so price, description, condition and P&P changes are reflected on the public product page after refresh.
+
+
+## 2026-09-23 Customer Portal Session Repair
+
+The customer portal login loop was traced to two separate scripts attempting to restore the same customer session on page load. The dashboard could refresh an expired access token while the authentication script simultaneously validated the old token and removed the session, leaving the login panel visible. Session restoration is now owned by `customer-auth.js`; expired access tokens are refreshed using the stored refresh token before the session is accepted. The dashboard no longer performs a second independent restoration. Cache versions were advanced to customer dashboard v22 and customer auth v6.

@@ -656,3 +656,12 @@ The Selling page now presents existing listings in the same compact, structured 
 The focused Product workspace hides the general listings panel so the product preparation workflow remains focused on purchase information, photographs and the retail listing template. The selling dashboard script cache version was also incremented so the updated layout is loaded by the browser.
 
 A live database check on 23 September 2026 also identified why the published Canon listing was not appearing in the public Retail Shop: the listing itself is published on the active TradeFlow Website channel, but its inherited Camera category and Camera branch currently have selling_enabled = false. The storefront publication query excludes listings whose category/branch are not enabled for selling. This is a live category/branch configuration issue rather than a missing listing record.
+
+
+## 2026-09-23 — Duplicate listing prevention and storefront repair
+
+The Canon test exposed a duplicate-listing path: repeated submission created seven additional draft listings for the same Inventory asset while the original listing was already published. Those seven accidental draft records were removed. An active-per-asset unique index now prevents more than one non-sold/non-delisted listing for the same tenant and Inventory asset. The Selling workspace also checks for an existing active listing before creating one and locks a focused product once its Inventory status is `listed`.
+
+The live `buying_item_media` table was missing the `SELECT` table grant for authenticated users even though a SELECT policy existed. The grant was restored so the Product workspace can load purchase media instead of showing a permission error.
+
+The Canon Camera category and Camera branch were both active but had selling disabled. Both are now enabled for selling. Live verification now returns the published Canon listing from `get_published_store_listings`, and the Inventory asset is marked `listed`.

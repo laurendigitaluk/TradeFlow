@@ -751,3 +751,62 @@ The Sales Channels / Marketplace Management page now supports channel administra
 
 The live tenant now contains four channel records: TradeFlow Website, eBay, Amazon and Other. Only TradeFlow Website is currently connected; eBay/Amazon/Other remain not connected until a real integration is implemented and authorised.
 
+
+
+## 2026-09-23 — Test One complete end-to-end restore checkpoint
+
+Test One is now treated as the completed known-good baseline for TradeFlow.
+
+The test followed a new subscriber business and a new subscriber customer through the operational chain from customer selling request, valuation and offer handling, through inspection and purchase completion, into Inventory, Selling, Sales Channels and the published retail website listing.
+
+### Restore point
+
+- GitHub repository: `laurendigitaluk/TradeFlow`
+- Restore branch: `checkpoint-test-one-20260923`
+- Functional baseline commit: `80c6e20b4fa89b37ed6fab2480fb1eb46293a0d1`
+- Checkpoint documentation commit on the restore branch: `ea00d6ae238f6e47c4798b73ec6340ade2c2d5fd`
+- Supabase project: `twfbmjwwqzxdvclxbun`
+
+The restore branch is the known-good code baseline for Test One. Test Two should start from the normal/default project state without deliberately altering the Test One baseline. If Test Two introduces a regression, compare the failure against this checkpoint before changing working behaviour.
+
+### Test One completion boundary
+
+The following are part of the Test One baseline:
+
+- New subscriber/business setup.
+- New subscriber customer account and customer relationship.
+- Public customer selling journey.
+- Buying and valuation workflow.
+- Initial/final offer workflow.
+- Customer acceptance and shipping/receipt handoff.
+- Inspection and inspection outcome.
+- Bank-detail/payment handoff.
+- Payment-gated purchase completion.
+- Acquisition and Inventory creation at purchase completion.
+- Inventory to focused Selling workspace.
+- Purchase/source information and photographs carried into Selling.
+- Retail listing preparation and retail condition.
+- Website listing publication.
+- Public retail product page and product photography.
+- Sales Channels / Marketplace Management foundation.
+- One physical Inventory asset as the stock master record.
+- Multiple channel-listing architecture without duplicate stock.
+- Editable/add/remove Sales Channels.
+- eBay/Amazon connection guidance without pretending marketplace accounts are connected.
+
+### Remaining boundary
+
+The subscriber-facing **Subscribe / receive payments on the subscriber's website** payment integration is the remaining identified step before the subscriber website payment journey is considered complete.
+
+Real eBay OAuth/API connection, real Amazon SP-API connection, channel-specific marketplace publishing/delisting, and authoritative cross-channel sale propagation with automatic **DELIST REQUIRED** remain later stages and are not part of the Test One baseline.
+
+### Documentation state labels
+
+When continuing work, distinguish:
+- **Implemented in GitHub** — code exists in the repository.
+- **Live DB verified** — the corresponding Supabase state has been checked.
+- **Browser verified** — the user-facing behaviour has been exercised in a browser.
+- **Checkpointed** — the state is recorded as a named restore baseline.
+
+Do not describe an item as browser verified when only GitHub or database verification has occurred.
+

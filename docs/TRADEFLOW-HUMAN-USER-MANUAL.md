@@ -843,3 +843,19 @@ The Sales Channels foundation is part of the Test One baseline. The physical Inv
 ### Verification language
 
 Use these states precisely: **Implemented in GitHub**, **Live DB verified**, **Browser verified**, and **Checkpointed**. Do not call something browser verified unless it has actually been exercised in the browser.
+
+
+## Website Builder branding consolidation — 23 September 2026
+
+The Website Builder now has one dedicated **Branding** section for the subscriber's customer-facing website identity:
+
+- business logo — upload, replace or remove;
+- website banner — upload, replace or remove;
+- recommended banner size: **1600 × 600 px (8:3)**;
+- supported banner/logo formats: PNG, JPEG and WebP, maximum 5 MB;
+- the logo is used in the website header;
+- the banner is used as the primary homepage hero image, with the previous homepage hero image retained as a fallback.
+
+The Branding section is positioned with the main design controls so subscribers do not have to manage logo and banner assets in separate areas. Business name and customer-facing business details remain in Business Settings. The duplicate branding upload controls were removed from Business Settings.
+
+The current Camerashack test tenant's previously uploaded logo and banner were restored into the active subscriber branding state. The Website Builder draft now contains both assets. Publishing remains a deliberate subscriber action.

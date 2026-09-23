@@ -65,7 +65,8 @@ function money(value,currency){
 
 function renderPublicNav(site,catalogue){
  const name=site.name||'Your business';
- const logoUrl=window.__tradeflowPublicProfile?.logo_url||site.branding?.logo_url||site.logo_url||'';
+ const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
+ const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||'');
  const logo=logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(name)+'">':'<span>'+esc(name)+'</span>';
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const pages=Array.isArray(site.pages)?site.pages:[];

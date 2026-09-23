@@ -4,7 +4,21 @@ let key=null,session=null,tenantId=null,$=id=>document.getElementById(id),esc=v=
 function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||''}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
 async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 let rows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null;
-async function waitForSubscriber(){if(!window.tradeflowSubscriberAuthReady)throw Error('Subscriber authentication layer did not load.');const auth=await window.tradeflowSubscriberAuthReady;if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');key=auth.key;session=auth.session;tenantId=auth.tenantId;}
+async function waitForSubscriber(){
+ const ready=window.tradeflowSubscriberAuthReady;
+ const immediate=window.tradeflowSubscriberAuth;
+ if(immediate?.session?.access_token){
+   key=immediate.key;session=immediate.session;tenantId=immediate.tenantId||new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_subscriber_tenant_id');
+   if(tenantId)return;
+ }
+ if(!ready)throw Error('Subscriber authentication layer did not load.');
+ const auth=await Promise.race([
+   ready,
+   new Promise((_,reject)=>setTimeout(()=>reject(Error('Subscriber authentication did not finish loading. Please refresh the page or sign in again.')),8000))
+ ]);
+ if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');
+ key=auth.key;session=auth.session;tenantId=auth.tenantId;
+}
 async function load(){try{await waitForSubscriber();if(!tenantId)throw Error('This selling workspace requires a valid subscriber tenant.');msg('Loading…');const focusedAsset=new URLSearchParams(location.search).get('asset');if(focusedAsset){rows=[];$('listings-panel').hidden=true;$('listings-panel').style.display='none';$('listings').innerHTML='';}else{const filter=$('status-filter').value;let q=`/rest/v1/listings?select=id,asset_id,channel_id,category_id,branch_id,listing_reference,status,title,description,asking_price,currency,quantity,listing_data,published_at,reserved_at,sold_at,delisted_at,created_at,updated_at&tenant_id=eq.${encodeURIComponent(tenantId)}&order=updated_at.desc`;if(filter)q+=`&status=eq.${encodeURIComponent(filter)}`;rows=await api(q)||[];render();}await loadLookups();applyFocusedProductMode();msg(focusedAsset?'Product workspace loaded.':`${rows.length} listing(s) loaded.`,'success')}catch(e){msg(e.message||String(e),'error')}}
 async function loadLookups(){
  const focusAsset=new URLSearchParams(location.search).get('asset');

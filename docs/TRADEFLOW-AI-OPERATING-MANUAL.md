@@ -1129,3 +1129,14 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - The Canon test asset was returned from the accidental `listed` status to `ready_for_sale`. It has not been published as a sales listing because no genuine selling price/details have been supplied yet.
 - The selling channel model remains extensible for marketplace channels. A marketplace must have its own configured sales channel/integration before TradeFlow can publish to it; the website channel is the current working storefront channel.
 - Cache versions: `inventory-dashboard-fixed.js?v=11`, `selling-dashboard-fixed.js?v=9`.
+
+
+## 2026-09-23 — Single Inventory → Sales workflow and autofill
+
+- Acquisitions is no longer a separate business-operating category. Completed purchases are created as inventory directly; the acquisition records remain internal accounting/audit records.
+- The main subscriber dashboard no longer presents Acquisitions as a workflow step. The legacy acquisitions page redirects to Inventory.
+- Inventory `ready_for_sale` is the sales-team hand-off point. Selecting an asset or using `Send to sales` opens Selling with the asset focused.
+- Selling now loads the complete inventory context for the selected asset: title, description, currency, current value as the initial asking-price suggestion, condition, serial number, quantity, location, category and selling branch. Category/branch are loaded from the actual tenant data rather than the old test-only lookup.
+- Sales staff can then adjust the selling information and add postage/dispatch details before creating the listing for the selected sales channel. Inventory photographs are carried into the listing when it is created.
+- The workflow is therefore Buying → purchased → Inventory / Ready for sale → Selling → selected sales channel → published listing. Acquisitions remains a back-office record rather than a user-facing stage.
+- Selling dashboard cache is now `selling-dashboard-fixed.js?v=10`.

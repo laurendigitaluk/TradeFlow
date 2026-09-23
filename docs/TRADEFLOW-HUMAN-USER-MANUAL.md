@@ -617,7 +617,7 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Inventory status rows are colour-coded and use explicit action buttons. A ready_for_sale asset is green and exposes **REVIEW & COMPLETE**. The inline Sales hand-off has been removed; **SEND TO SALES** only appears inside the asset detail after the Inventory completion check passes. completed lifecycle states use blue; waiting/no-action states use yellow.
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
-- Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=13; Selling selling-dashboard-fixed.js?v=15; Public site public-site.css?v=57 and public-site.js?v=55.
+- Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=13; Selling selling-dashboard-fixed.js?v=15; Public site public-site.css?v=57 and public-site.js?v=56.
 
 
 ## 2026-09-23 — Purchased Inventory → Sales Preparation → Website

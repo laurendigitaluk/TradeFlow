@@ -157,3 +157,9 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 
 /* Typographic fallback when a subscriber has not uploaded a website banner */
 .generated-brand-banner{min-height:380px;width:100%;display:grid;place-items:center;padding:40px;box-sizing:border-box;background:var(--header-bg,#fff);border:1px solid rgba(20,30,40,.12);border-radius:12px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.5rem,7vw,6rem);font-weight:500;line-height:1.05;letter-spacing:-.035em;text-align:center;color:var(--text-color,#183047)}
+
+
+/* Customer-facing website banner */
+.public-brand-banner{width:100%;background:var(--page-bg,#f5f6f8);overflow:hidden;border-bottom:1px solid rgba(20,30,40,.08)}
+.public-brand-banner img{display:block;width:100%;height:auto;max-height:360px;object-fit:cover;object-position:center}
+@media(max-width:700px){.public-brand-banner img{max-height:220px}}

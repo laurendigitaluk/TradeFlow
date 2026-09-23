@@ -475,3 +475,10 @@ Customer account authentication was investigated after the portal returned to th
 The previous edit implementation had the update logic but the Existing listings renderer did not emit the EDIT button. This is corrected. Active listing rows now expose EDIT directly in the Action column, including the published Canon test listing. EDIT opens that exact listing in the retail form; the form submit control becomes **UPDATE LISTING** and updates the existing row in place. No inventory search is required and no duplicate listing is created. Sold and delisted records remain historical and are not editable.
 
 Selling dashboard cache is now selling-dashboard-fixed.js?v=22.
+
+
+## 2026-09-23 — Retail listing photograph editing checkpoint
+
+The published Canon listing now has explicit retail-photo editing support in the Selling workspace. EDIT loads the listing's `listing_media` records separately from purchase/inventory source photographs. Staff can add new retail photographs and remove photographs from the listing without deleting the underlying media asset. The existing Canon listing currently has one listing-media link, using the existing inventory photograph; new retail uploads will be stored under the listing-specific Storage path and linked through `listing_media`.
+
+Selling dashboard cache: `selling-dashboard-fixed.js?v=23`.

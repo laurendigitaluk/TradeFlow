@@ -859,3 +859,8 @@ The Website Builder now has one dedicated **Branding** section for the subscribe
 The Branding section is positioned with the main design controls so subscribers do not have to manage logo and banner assets in separate areas. Business name and customer-facing business details remain in Business Settings. The duplicate branding upload controls were removed from Business Settings.
 
 The current Camerashack test tenant's previously uploaded logo and banner were restored into the active subscriber branding state. The Website Builder draft now contains both assets. Publishing remains a deliberate subscriber action.
+
+
+## Website banner display correction — 24 September 2026
+
+The dedicated website banner is now rendered as a full-width branding banner on the customer-facing website rather than being treated as a narrow hero photograph. It appears below the site navigation across the customer-facing pages, including **What We Sell**, while the homepage retains its normal hero content below the banner. The Website Builder preview uses the same full-width branding treatment. This avoids cropping the 1600 × 600 banner into a narrow template image frame.

@@ -109,7 +109,7 @@
            '<label><strong>Payment method</strong><input id="tf-payment-method" type="text" value="Bank transfer"></label>'+
            '<label style="display:block;margin-top:10px"><strong>Bank payment reference</strong><input id="tf-payment-reference" type="text" '+(hasBank?'':'disabled')+' placeholder="Enter bank transfer reference"></label>'+
            '<label style="display:block;margin-top:10px"><strong>Payment notes</strong><textarea id="tf-payment-notes" rows="3" '+(hasBank?'':'disabled')+' placeholder="Optional"></textarea></label>'+
-           '<div class="actions" style="margin-top:12px"><button type="button" id="tf-complete-purchase" disabled>CONFIRM PAYMENT SENT &amp; COMPLETE PURCHASE</button></div>'+
+           '<div class="actions" style="margin-top:12px"><button type="button" id="tf-complete-purchase" '+(hasBank?'':'disabled')+' >CONFIRM PAYMENT SENT &amp; COMPLETE PURCHASE</button></div>'+
            '<p id="tf-payment-help" class="small" style="margin-top:8px">'+(hasBank?'Enter the bank payment reference to enable the button.':'Bank details are required before payment can be confirmed.')+'</p>'+
            '</div>';
          section.querySelectorAll('[data-bank-reveal]').forEach(btn=>{
@@ -127,17 +127,18 @@
          const paymentReference=section.querySelector('#tf-payment-reference');
          const completeButton=section.querySelector('#tf-complete-purchase');
          const updatePaymentButton=()=>{
-           const enabled=hasBank&&Boolean(paymentReference?.value.trim());
+           const enabled=hasBank;
            if(completeButton)completeButton.disabled=!enabled;
            const help=section.querySelector('#tf-payment-help');
-           if(help)help.textContent=hasBank?(enabled?'Payment reference entered. You can now confirm payment.':'Enter the bank payment reference to enable the button.'):'Bank details are required before payment can be confirmed.';
+           if(help)help.textContent=hasBank?(paymentReference?.value.trim()?'Payment reference entered. Click the button to complete the purchase.':'Enter the bank payment reference, then click the button to complete the purchase.'):'Bank details are required before payment can be confirmed.';
          };
          paymentReference?.addEventListener('input',updatePaymentButton);
          updatePaymentButton();
          completeButton.onclick=async()=>{
            if(busy)return;
            const method=(section.querySelector('#tf-payment-method')?.value||'').trim(),reference=(paymentReference?.value||'').trim(),notes=(section.querySelector('#tf-payment-notes')?.value||'').trim();
-           if(!method||!reference)return msg('Enter the payment method and bank payment reference before confirming payment.','error');
+           if(!method)return msg('Enter the payment method before confirming payment.','error');
+           if(!reference){paymentReference?.focus();return msg('Enter the bank payment reference before confirming payment.','error');}
            busy=true;completeButton.disabled=true;completeButton.textContent='Confirming payment…';
            try{
              const result=await api('/rest/v1/rpc/subscriber_complete_purchase',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id,p_payment_method:method,p_payment_reference:reference,p_payment_notes:notes||null})});

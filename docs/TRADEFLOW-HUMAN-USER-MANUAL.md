@@ -735,3 +735,19 @@ A dedicated **Sales Channels** workspace has been added to the subscriber busine
 The Selling product workspace now also includes **This product across channels**. It reads all non-sold/non-delisted listings for the same physical Inventory asset and shows each channel's listing status, price and an EDIT LISTING action. The physical Inventory asset remains the stock master record; channel listings are separate records linked to that asset.
 
 The automatic **DELIST REQUIRED** process has not yet been activated. It remains the next lifecycle step after channel management and the order/sale transition are verified.
+
+## 2026-09-23 — Editable Sales Channels and connection guidance
+
+The Sales Channels / Marketplace Management page now supports channel administration rather than displaying fixed marketplace placeholders.
+
+- eBay, Amazon and Other are stored as tenant sales-channel records and can be edited.
+- Staff can change the channel name, type, slug, description, enable/disable state and the channel's connection/setup instructions.
+- **+ ADD SALES CHANNEL** creates an additional tenant-scoped sales channel without creating inventory or duplicate stock.
+- **EDIT** opens the channel configuration form.
+- **SET UP** opens the saved connection/process instructions. The page does not pretend an external marketplace is connected; actual OAuth/API integration remains a separate implementation stage.
+- **REMOVE** deletes a channel only when it has no active listings. If active listings exist, TradeFlow disables the channel instead so listing history and stock relationships are preserved.
+- The TradeFlow Website channel remains the core storefront and is not offered for removal from this management page.
+- eBay guidance covers Developer Program registration, OAuth/RuName setup, required scopes, seller Business Policies and inventory-location preparation before API listing publication. Amazon guidance covers SP-API developer/application registration, required roles and the appropriate OAuth/Login with Amazon or private-app authorisation path.
+
+The live tenant now contains four channel records: TradeFlow Website, eBay, Amazon and Other. Only TradeFlow Website is currently connected; eBay/Amazon/Other remain not connected until a real integration is implemented and authorised.
+

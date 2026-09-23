@@ -328,9 +328,6 @@ function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
  return '<nav class="template-nav"><div class="template-brand">'+logoEditor()+'</div><div class="template-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
 }
-function renderBrandBannerPreview(){
- return bannerUrl?'<div class="builder-brand-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
-}
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
  const heroUrl=homeImageUrl;

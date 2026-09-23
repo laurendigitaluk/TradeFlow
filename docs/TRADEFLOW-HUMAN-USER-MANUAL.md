@@ -595,3 +595,14 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Sales staff can then adjust the selling information and add postage/dispatch details before creating the listing for the selected sales channel. Inventory photographs are carried into the listing when it is created.
 - The workflow is therefore Buying → purchased → Inventory / Ready for sale → Selling → selected sales channel → published listing. Acquisitions remains a back-office record rather than a user-facing stage.
 - Selling dashboard cache is now `selling-dashboard-fixed.js?v=10`.
+
+
+## 2026-09-23 — Sales listing source information and photographs
+
+- The Selling workspace now treats the original Buying record and completed Inspection as source material for preparing a sales listing.
+- When an Inventory asset is selected, Selling loads the linked buying item/request and displays the customer's item description, condition, request notes/explanation and structured customer-supplied fields. It also displays the latest completed inspection outcome, condition grade, inspection notes, inspection checks and discrepancies.
+- Customer/inspection photographs linked through `buying_item_media` and `media_assets` are displayed in the Selling workspace using time-limited signed URLs. The underlying media bucket remains private; private Storage assets are intended to be accessed through authorised downloads or signed URLs. citeturn0search0turn0search1
+- Sales staff can add further sales photographs directly from the Selling workspace. These are stored against the Inventory asset and are then available to be carried into listings.
+- Manual Selling category and branch dropdowns have been removed. The listing inherits the category and branch already attached to the purchased Inventory asset, which are retained from the original Buying category/branch. The shared Category → Branch → Properties structure remains independently enabled for Buying/Selling, but the individual purchased item should not be re-categorised manually during listing preparation.
+- The Selling workspace therefore uses the original buying classification as the source of truth for the shop listing, while the sales team concentrates on title, description, price, photographs, postage/dispatch and sales-channel publication.
+- Selling dashboard cache is now `selling-dashboard-fixed.js?v=11`.

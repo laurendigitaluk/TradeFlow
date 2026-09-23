@@ -640,3 +640,10 @@ The purchased item is represented once as an Inventory asset. It is no longer an
 The old inline SEND TO SALES action has been removed from the Inventory list. Staff must select **REVIEW & COMPLETE**, check the Inventory record and complete the required stock information first. The detail view shows a completion checklist. SEND TO SALES is only displayed when the required Inventory information is complete. This prevents an unfinished asset from being handed to Sales and reinforces the workflow: Buying → Inventory → Sales, with one Inventory asset rather than a duplicate purchase item.
 
 The current completion gate checks: product title, description, condition, quantity, purchase price, category, branch, location and serial number. Current value is retained as a separate field and is not treated as the retail asking price.
+
+
+## 2026-09-23 — Compact Inventory → Product Listing workspace
+
+Inventory is now intentionally compact: each active item is a single green action-required line showing only the product title, status and **REVIEW & COMPLETE**. The row opens the focused product workspace. The previous verbose inventory card and inline hand-off were removed so large inventories do not become long scrolling pages.
+
+The focused product workspace places purchase/customer/inspection information and retained photographs first, followed by a simple retail listing template. The listing template pre-fills the product title and uses inspection notes as the listing description when available, otherwise the original customer/item description. Retail condition uses the business taxonomy: **Poor, Good, Very good, Excellent, Opened, Never used, Sealed**. Existing A/B/C/D values were found in the live `condition_grade` data; they were not part of the newly requested retail taxonomy, so legacy grades are not silently converted and the user is prompted to select the new wording. Additional listing photographs can be added before **SEND TO WEBSITE** publishes the listing.

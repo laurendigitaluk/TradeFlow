@@ -328,9 +328,12 @@ function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
  return '<nav class="template-nav"><div class="template-brand">'+logoEditor()+'</div><div class="template-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
 }
+function renderBrandBannerPreview(){
+ return bannerUrl?'<div class="builder-brand-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
+}
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const heroUrl=bannerUrl||homeImageUrl;
+ const heroUrl=homeImageUrl;
  const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website banner')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
  const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
@@ -361,7 +364,7 @@ function renderHome(){
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid" style="--tile-columns:'+homepageTileColumns+'">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- return navMarkup()+ordered+tiles+footerMarkup();
+ return navMarkup()+renderBrandBannerPreview()+ordered+tiles+footerMarkup();
 }
 
 function renderPage(p){

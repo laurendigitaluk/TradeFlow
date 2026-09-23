@@ -554,3 +554,11 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Customer-facing purchased-stage wording was simplified. The portal now shows `Payment sent` with the message: `The business has sent your payment. Please check your bank account for the payment.`
 - Customer messaging no longer tells the seller that the item has become part of the business inventory. Inventory/acquisition progression remains an internal business-side workflow.
 - Customer dashboard cache is now `customer-dashboard.js?v=20`.
+
+
+## 2026-09-23 — Acquisitions dashboard loading and inventory hand-off
+
+- The Acquisitions page was stuck on `Loading acquisitions…` because its legacy tenant helper only recognised the two old test-business tenant IDs. The live Camerashack tenant ID was valid in the URL but was rejected by that helper before the acquisition query ran.
+- The tenant helper now accepts the tenant ID supplied by the authenticated subscriber URL, so the live acquisition query can run for the current tenant. Dashboard cache is now `acquisition-dashboard.js?v=16`.
+- The current Canon purchase has already created acquisition `ACQ-BA60C739F2A2`, acquisition item `433b206c-0044-44fc-bdbf-9873c9bb6197`, and inventory asset `AST-20260923-F0856A6E` with status `ready_for_sale`.
+- The Acquisitions item view now exposes an `Open in Inventory` link for an existing inventory asset. `ready_for_sale` is the pre-sales inventory stage: the item is owned and in inventory but has not yet been listed/sold. The Inventory workflow can then move it to `listed` when ready.

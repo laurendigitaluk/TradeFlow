@@ -36,7 +36,7 @@ async function loadLookups(){
  categories=results[2].status==='fulfilled'?(results[2].value||[]):[];
  branches=results[3].status==='fulfilled'?(results[3].value||[]):[];
  $('asset').innerHTML='<option value="">Select inventory asset…</option>'+assets.map(x=>`<option value="${x.id}">${esc(x.asset_reference)} — ${esc(x.title||'Untitled')}</option>`).join('');
- $('channel').innerHTML='<option value="">Select sales channel…</option>'+channels.map(x=>`<option value="${x.id}">${esc(x.name)} (${esc(x.channel_type)})</option>`).join('');
+ $('channel').innerHTML='<option value="">Select sales channel…</option>'+channels.map(x=>{const label=String(x.channel_type||'').toLowerCase()==='storefront'?'Website':(x.name||x.channel_type||'Sales channel');return `<option value="${x.id}">${esc(label)}</option>`}).join('');
  if(focusAsset&&assets.some(x=>x.id===focusAsset))$('asset').value=focusAsset;
  $('asset').onchange=()=>syncAssetContext();
  syncAssetContext();

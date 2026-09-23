@@ -62,7 +62,7 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
   final_offer_sent:['Final offer received — awaiting your response','A final offer has been sent. Review it and choose Accept offer or Refuse offer.'],
   final_offer_accepted:['Final offer accepted — payment pending','You accepted the final offer. The business must now make the payment.'],
   final_offer_refused:['Final offer refused — return item','The final offer was refused. The item remains outside the purchase and inventory process.'],
-  purchased:['Purchase complete','The final offer was accepted, payment was made and the item is now part of the business inventory.']
+  purchased:['Payment sent — purchase complete','The business has sent your payment. Your item has been purchased and is now part of the business inventory.']
  };
  const fallback=stage==='offer_ready'?['Manual offer received — awaiting your response','Your offer is ready to review.']:stage==='manual_valuation'?['Manual valuation required','Your item requires a manual valuation.']:['Selling request in progress','Your selling request is being processed.'];
  const active={...base,stage,message:(stageCopy[stage]||fallback)[1]};

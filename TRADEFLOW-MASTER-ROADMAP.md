@@ -718,3 +718,29 @@ The TradeFlow `category_fields` system remains the intended extension point for 
 
 ### Current scope limitation
 Photos are not falsely represented as uploaded by this public wizard. The current journey captures the structured information and hands it into the authenticated customer portal. Photo upload should be added as an authenticated evidence step when the existing media/storage workflow is connected to customer buying requests.
+
+
+
+## Stage 1P — Sales Channels / Marketplace Management foundation — 23 September 2026
+
+Implemented the first dedicated multi-channel management layer.
+
+### Implemented
+- Added sales-channels.html and sales-channels.js.
+- Added Sales Channels navigation to the subscriber dashboard and Selling workspace.
+- Sales Channels reads tenant-scoped sales_channels and listings and reports active listing counts.
+- Current storefront is displayed to staff as **Website** rather than the internal TradeFlow Website (storefront) label.
+- eBay, Amazon and Other are displayed as unconnected marketplace destinations only. No marketplace credentials, fake connection state or external listing was created.
+- Selling focused-product mode now loads all active listings for the physical Inventory asset rather than limiting the asset to one active listing.
+- Added a per-product channel matrix showing each configured channel's listing status, price and direct EDIT LISTING action.
+
+### Live database verification
+The current Camerashack tenant has exactly one active sales channel: TradeFlow Website (storefront), with one active published Canon listing. No database channel records were added for eBay/Amazon/Other.
+
+### Architecture decision preserved
+The physical inventory_assets row remains the stock master record. Each marketplace/storefront listing remains a separate listings row linked by asset_id and channel_id. The existing per-asset/per-channel active-listing protection remains the basis for preventing duplicate active listings on the same channel.
+
+### Not yet implemented
+Automatic sale propagation is deliberately still open. The next lifecycle boundary is: sale on one channel → authoritative sold transition for the physical asset → other active channel listings become DELIST REQUIRED → staff/system closes those listings. This must be implemented against the authoritative order/sale workflow rather than as a browser-only status change.
+
+**Status:** Implemented in GitHub; database-tested; browser verification required. The multi-channel automatic delisting boundary remains AMBER.

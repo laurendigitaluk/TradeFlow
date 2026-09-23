@@ -1103,3 +1103,17 @@ The Sales Channels foundation is part of the Test One baseline. The physical Inv
 ### Verification language
 
 Use these states precisely: **Implemented in GitHub**, **Live DB verified**, **Browser verified**, and **Checkpointed**. Do not call something browser verified unless it has actually been exercised in the browser.
+
+
+## Website Builder branding consolidation — 23 September 2026
+
+The subscriber Website Builder now treats customer-facing branding as one grouped control area. The **Branding** section owns the website logo and homepage banner, while Business Settings retains business identity/contact data. Do not reintroduce duplicate logo/banner upload controls into Business Settings.
+
+Implementation notes:
+- website-builder.js loads the draft `site.branding.logo_url` and `site.branding.banner_url` when those keys are present, so an explicit draft removal is not silently replaced by profile fallback data;
+- the Builder preview uses the branding banner as the primary hero image, matching the public-site renderer, with the homepage hero image as fallback;
+- the public renderer now respects an explicitly published empty `site.branding.logo_url`, allowing a subscriber to remove a logo without the older profile value reappearing;
+- the current Camerashack tenant profile and draft were reconciled with the existing tenant-scoped logo/banner assets;
+- Business Settings branding upload controls were removed; its website identity panel now links to Website Builder → Branding.
+
+Do not mark this change as browser-verified unless the Builder Branding section, draft preview and public homepage have actually been exercised in the browser.

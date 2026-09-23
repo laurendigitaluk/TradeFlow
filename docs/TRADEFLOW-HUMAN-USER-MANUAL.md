@@ -503,3 +503,12 @@ The customer portal uses `customer-auth.js` as the single authentication control
 
 ### Customer portal login implementation
 Customer portal scripts must load deterministically: `customer-dashboard.js` first with `defer`, `customer-dashboard-nav.js` second with `defer`, and `customer-auth.js` last with `defer`. On successful authentication, `customer-auth.js` immediately hides the login panel and reveals the portal, then hands the session to `tradeflowHandleCustomerAuthSuccess`. Do not rely on script execution races or duplicate authentication controllers.
+
+
+## 2026-09-23 — Customer portal empty-account repair
+
+- The customer portal was revealing its static `Welcome back` shell but showing zero requests/orders/returns because `customer-dashboard.js` contained a JavaScript parse error in the bank-details rendering block. The error was caused by single-quoted HTML containing the conditional text `hasBank?'Update bank details':'Save bank details'`, which terminated the JavaScript string before the portal controller could load.
+- The broken block was converted to a template literal and the resulting file was syntax-checked successfully. `customer-dashboard.html` now references `customer-dashboard.js?v=18` to force the repaired controller to load.
+- Live Supabase verification for customer `valley-discounts@outlook.com`, tenant `21fca2c5-5da2-4ff6-9f8e-318f9b6277f9`, confirms the customer profile, request `BR-744BA41BDC`, approved £100 valuation, published final offer `OF-A03E4C24CB`, and customer-facing RPCs all return the expected records when run under the customer's auth identity.
+- The test buying item had a published final offer but was still marked `final_offer_required`. This was repaired to `final_offer_sent`, guarded by the existence of the published final offer. No acquisition or inventory record was created.
+- Next customer step remains: review the £100 final offer and accept/refuse it. If accepted, the portal should collect bank details; the business then completes the external bank transfer and records the payment reference before acquisition/inventory creation.

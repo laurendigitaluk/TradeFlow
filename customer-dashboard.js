@@ -9,7 +9,7 @@ function setBusy(b,v,l){if(!b)return;b.disabled=v;if(v&&l){b.dataset.label=b.tex
 async function api(path,o={}){if(!key)throw Error('TradeFlow Supabase is not connected.');const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...o,headers:h}),t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.msg||b?.message||b?.error_description||b?.error||t||`HTTP ${r.status}`);return b}
 async function storageSignedUrl(path){const r=await fetch(`${SUPABASE_URL}/storage/v1/object/sign/tradeflow-media/${path}`,{method:'POST',headers:{'apikey':key,'Authorization':`Bearer ${session?.access_token||''}`,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:86400})});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.error||t||`Could not open the shipping label (${r.status})`);return b?.signedURL?.startsWith('http')?b.signedURL:`${SUPABASE_URL}/storage/v1${b.signedURL}`;}
 function saveSession(v){session=v||null;if(session?.access_token)localStorage.setItem(SESSION_STORAGE,JSON.stringify(session));else localStorage.removeItem(SESSION_STORAGE)}
-async function restoreSession(){const raw=localStorage.getItem(SESSION_STORAGE);if(!raw||!key)return false;try{session=JSON.parse(raw);session.user=await api('/auth/v1/user');return true}catch(firstError){try{if(!session?.refresh_token)throw firstError;const refreshed=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:JSON.stringify({refresh_token:session.refresh_token})});if(!refreshed?.access_token)throw firstError;saveSession(refreshed);session.user=await api('/auth/v1/user');return true}catch{saveSession(null);return false}}}
+async function restoreSession(){return Boolean(session?.access_token)}
 function showAuth(v){$('auth-panel').hidden=!v;$('portal').hidden=v}
 function applyTenantBranding(p){
  const name=(p?.business_name||'Customer Portal').trim()||'Customer Portal';
@@ -202,4 +202,4 @@ $('save-profile')?.addEventListener('click',async()=>{
   finally{setBusy(b,false)}
 });
 $('sign-out')?.addEventListener('click',signOut);
-(async()=>{await loadTenantBranding();if(!key)return setMessage('TradeFlow customer portal is not configured.','error');await restoreSession();await initialisePortal()})();
+(async()=>{await loadTenantBranding();if(!key)return setMessage('TradeFlow customer portal is not configured.','error');await initialisePortal()})();

@@ -1251,3 +1251,8 @@ Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
 ## 2026-09-23 Selling Listing Editing Repair
 
 Selling now supports in-place editing of existing listings. The dashboard loads inventory assets in both `ready_for_sale` and `listed` states so published products can be edited. EDIT populates the existing listing rather than creating a new listing. SAVE CHANGES PATCHes the existing row's title, description, asking price, currency and `listing_data` (retail condition and shipping). The listing status is deliberately preserved. New listings still use the duplicate-active-listing guard and normal publication workflow. The existing listings UPDATE RLS policy requires `selling.manage` and `module.selling`, so the browser must use the authenticated subscriber session.
+
+
+## 2026-09-23 Customer Portal Session Repair
+
+Repair: removed duplicate customer-session restoration from `customer-dashboard.js`. `customer-auth.js` is now the session restoration authority and attempts refresh-token recovery when the stored access token has expired before clearing the session. This avoids a race where one script could refresh a session while the other deleted the old session. Customer portal cache versions: dashboard v22, auth v6.

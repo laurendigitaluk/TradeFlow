@@ -1270,3 +1270,13 @@ Selling dashboard cache is now selling-dashboard-fixed.js?v=22.
 Selling edit mode now manages `listing_media` separately from `inventory_asset_media`. `loadListingPhotos()` reads the exact listing's media links and signs their private Storage URLs. `uploadListingPhotos()` stores new files under the listing path, creates `media_assets` records with `asset_kind='listing_photo'`, and inserts `listing_media` links. `removeListingPhoto()` deletes only the listing-media link; the underlying media asset/storage file is retained. This preserves purchase/source photographs while allowing the retail listing's own photo set to be changed.
 
 Selling dashboard cache is now `selling-dashboard-fixed.js?v=23`.
+
+
+
+## 2026-09-23 — Sales Channels / Marketplace Management foundation
+
+Implemented the first multi-channel management layer without changing the existing inventory/listing security model. Added sales-channels.html and sales-channels.js, linked from the subscriber dashboard and Selling workspace. The page reads tenant-scoped sales_channels and listings, reports active listing counts, and displays Website as the current connected storefront. eBay, Amazon and Other are represented as unconnected marketplace destinations only; no credentials or fake integration state is created.
+
+Selling focused-product mode now queries all active listings for the physical asset rather than assuming one channel, and renders a channel matrix showing channel, listing status, price and direct edit action. The existing per-asset/per-channel listing architecture remains intact. The live tenant currently has one active channel, TradeFlow Website, with one active published Canon listing.
+
+Do not implement automatic cross-channel delisting yet. The intended next boundary is an authoritative sale transition that marks the sold channel and creates DELIST REQUIRED actions for other active listings of the same asset, followed by verified order/sale integration.

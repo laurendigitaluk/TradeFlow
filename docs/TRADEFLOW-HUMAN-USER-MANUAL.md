@@ -547,3 +547,10 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Root cause: `subscriber_complete_purchase` created the paid acquisition and acquisition item, but inserted the inventory asset before linking the outbound `payment_records` row to the acquisition. The inventory guard correctly rejected that ordering.
 - The completion transaction has been repaired so `payment_records.acquisition_id` is populated immediately after the paid acquisition is created and before the inventory asset is inserted. The inventory boundary can therefore verify the recorded acquisition payment as designed.
 - The failed attempt rolled back cleanly. Current Canon state remains `final_offer_accepted` with zero payment records, zero acquisitions and zero inventory assets. No purchase was completed by the failed attempt.
+
+
+## 2026-09-23 — Customer payment-complete wording
+
+- Customer-facing purchased-stage wording was simplified. The portal now shows `Payment sent` with the message: `The business has sent your payment. Please check your bank account for the payment.`
+- Customer messaging no longer tells the seller that the item has become part of the business inventory. Inventory/acquisition progression remains an internal business-side workflow.
+- Customer dashboard cache is now `customer-dashboard.js?v=20`.

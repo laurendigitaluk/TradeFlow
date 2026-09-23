@@ -102,7 +102,8 @@ function show(id){const r=rows.find(x=>x.id===id);if(!r)return;const channel=cha
  $('shipping-price').value=shipping.price!=null?shipping.price:0;
  $('dispatch-time').value=shipping.dispatch_time||'';
  if($('condition-source-note'))$('condition-source-note').textContent='Editing the existing retail listing. Changes will update the live website listing.';
- await loadSourceInformation(asset);\n await loadListingPhotos(r.id);
+ await loadSourceInformation(asset);
+ await loadListingPhotos(r.id);
  if(submit){submit.textContent='UPDATE LISTING';submit.disabled=false;}
  if($('cancel-edit'))$('cancel-edit').hidden=false;
  msg('Editing listing '+r.listing_reference+'.','success');

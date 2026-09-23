@@ -63,7 +63,7 @@ function defaultHomepageTiles(){return [
  {id:'sell-6',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
 ]}
 homepageTiles=defaultHomepageTiles();
-const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page');
+const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page'),requestedFocus=params.get('focus');
 const $=id=>document.getElementById(id);
 
 const templates=[
@@ -616,7 +616,7 @@ async function loadDraft(){
  renderEditor();
  if(validPageSlug(requestedPage))selectedPage=requestedPage;
  if(requestedTemplate)applyTemplate(requestedTemplate);
- setStatus('Website loaded. Click the page and edit directly on the preview.','success');
+ setStatus('Website loaded. Click the page and edit directly on the preview.','success'); if(requestedFocus==='branding'){const box=$('branding-controls');if(box){box.scrollIntoView({behavior:'smooth',block:'center'});}}
 }
 
 function resetDesignToDefaults(){

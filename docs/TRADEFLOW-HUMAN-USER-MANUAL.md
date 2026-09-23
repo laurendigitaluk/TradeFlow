@@ -694,3 +694,14 @@ Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
 - The function source is stored in supabase/functions/public-listing-media/index.ts and is deployed to the live Supabase project.
 - public-site.js now calls that function for published listing media instead of attempting browser-side private-bucket signing. Public site cache is now public-site.js?v=57 with CSS v57.
 - The underlying tradeflow-media bucket remains private; this repair does not make the mixed business/customer media bucket public.
+
+
+## 2026-09-23 — Selling load error, retail condition and public sales details
+
+- The Selling dashboard had a live JavaScript error because the listing renderer called an undefined `statusLabel()` function. This stopped the normal listing render before the remaining Selling lookups completed, leaving the focused product page showing **Loading listings/assets/channels**. `statusLabel()` is now defined with explicit labels for draft, ready, published, reserved, sold and delisted.
+- Selling cache version is now **selling-dashboard-fixed.js?v=19**.
+- The retail listing form now requires a retail condition before a new listing can be published. The selected retail condition is stored in `listings.listing_data.condition`.
+- The public product page now displays **Condition** and **P&P**, while deliberately omitting **Quantity** and **Currency** from the customer-facing product facts.
+- The published-store RPC now exposes `listing_data` so the public site can read the listing's retail condition and shipping information without exposing the underlying listings table directly.
+- Public site cache version is now **public-site.js?v=59 / public-site.css?v=59**.
+- The existing Canon test listing was created before the new retail-condition requirement and currently has no `listing_data.condition`; therefore its public product page will show **Condition: Not specified** until a retail condition is recorded. No A/B/C/D inspection grade is silently converted into a retail condition.

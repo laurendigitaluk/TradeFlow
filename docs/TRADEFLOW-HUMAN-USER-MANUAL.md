@@ -678,3 +678,9 @@ The Canon test currently has one published listing, LST-20260923-B5AAABFB, with 
 ## 2026-09-23 — Inventory listed-state display
 
 Inventory no longer labels every row as **Action required**. ready_for_sale and other active preparation states remain action-required, while listed, sold, returned, written_off and archived display their actual lifecycle status and use the completed blue treatment. Listed items use **VIEW PRODUCT** rather than **REVIEW & COMPLETE**.
+
+## 2026-09-23 — Selling focused workspace lookup repair
+
+The focused Product workspace was still showing the general Existing listings panel and lookup fields remained on Loading because the focused-mode initialization was running before the asset lookup completed. The Selling lookup loader now fetches the requested asset directly when an asset query parameter is present, handles the four lookup requests independently so one optional lookup cannot leave the whole form stuck in Loading, and applies focused-product mode only after lookups finish. The general Existing listings panel is hidden after focused initialization. The listed-item submit lock selector was also corrected so a listed product cannot expose an active publish button.
+
+Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.

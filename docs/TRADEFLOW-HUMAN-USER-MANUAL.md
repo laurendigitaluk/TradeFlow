@@ -617,7 +617,7 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Inventory status rows are colour-coded and use explicit action buttons. A ready_for_sale asset is green and exposes **REVIEW & COMPLETE**. The inline Sales hand-off has been removed; **SEND TO SALES** only appears inside the asset detail after the Inventory completion check passes. completed lifecycle states use blue; waiting/no-action states use yellow.
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
-- Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
+- Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=13; Selling selling-dashboard-fixed.js?v=15; Public site public-site.css?v=57 and public-site.js?v=55.
 
 
 ## 2026-09-23 — Purchased Inventory → Sales Preparation → Website
@@ -630,7 +630,7 @@ Photographs are sourced from both the original Buying-item media links and the I
 
 The primary sales action is **SEND TO SALES / PUBLISH TO WEBSITE**. Completing the listing creates the actual listings record, carries Inventory photographs into listing_media, transitions the listing through draft → ready → published, and then transitions the Inventory asset from ready_for_sale → listed. Publication is therefore based on the actual storefront listing record rather than merely changing an Inventory status.
 
-The current Camerashack test tenant has an active **TradeFlow Website** sales channel and a published site revision. The Canon remains unpublished until a genuine retail asking price and other required sales information are entered.
+The current Camerashack test tenant has an active **TradeFlow Website** sales channel and a published site revision. The Canon test currently has one published listing at £125 and is marked listed in Inventory.
 
 
 ## 2026-09-23 — Inventory completion gate before Sales
@@ -665,3 +665,16 @@ The Canon test exposed a duplicate-listing path: repeated submission created sev
 The live `buying_item_media` table was missing the `SELECT` table grant for authenticated users even though a SELECT policy existed. The grant was restored so the Product workspace can load purchase media instead of showing a permission error.
 
 The Canon Camera category and Camera branch were both active but had selling disabled. Both are now enabled for selling. Live verification now returns the published Canon listing from `get_published_store_listings`, and the Inventory asset is marked `listed`.
+## 2026-09-23 — Public Retail Shop product images and product-page access
+
+The public Retail Shop now treats a published listing as a public product record rather than sending the visitor directly to the Customer Account. **View product** opens a public TradeFlow product page using the listing reference, and that product page is accessible whether or not the visitor is signed in. The product page contains the product title, category, price, description, quantity/currency information and the available retail photographs. The separate **Buy this item** action can then take the visitor into the customer purchasing journey.
+
+The public search field no longer displays the development placeholder text PLACEHOLDER.
+
+Published listing photographs are read through a dedicated public storefront media function. The underlying tradeflow-media bucket remains private; a storage policy exposes only media attached to genuinely published, selling-enabled storefront listings. This prevents unrelated Inventory, customer or shipping media in the same bucket from becoming public.
+
+The Canon test currently has one published listing, LST-20260923-B5AAABFB, with one linked Inventory photograph. The public storefront database functions return both the published listing and its published media path.
+
+## 2026-09-23 — Inventory listed-state display
+
+Inventory no longer labels every row as **Action required**. ready_for_sale and other active preparation states remain action-required, while listed, sold, returned, written_off and archived display their actual lifecycle status and use the completed blue treatment. Listed items use **VIEW PRODUCT** rather than **REVIEW & COMPLETE**.

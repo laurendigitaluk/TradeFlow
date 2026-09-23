@@ -1117,3 +1117,8 @@ Implementation notes:
 - Business Settings branding upload controls were removed; its website identity panel now links to Website Builder → Branding.
 
 Do not mark this change as browser-verified unless the Builder Branding section, draft preview and public homepage have actually been exercised in the browser.
+
+
+## Website banner display correction — 24 September 2026
+
+The dedicated `site.branding.banner_url` is now rendered through a shared full-width customer-facing banner component. It is displayed below navigation across customer-facing pages, including shop/product/content pages, while homepage hero imagery remains separate. The Builder preview mirrors this layout. This is the authoritative presentation of the dedicated banner and avoids treating a wide 1600 × 600 branding asset as a narrow template hero photograph.

@@ -1225,3 +1225,13 @@ Inventory list status is now lifecycle-aware. Only preparation states such as re
 The focused Product workspace was still showing the general Existing listings panel and lookup fields remained on Loading because the focused-mode initialization was running before the asset lookup completed. The Selling lookup loader now fetches the requested asset directly when an asset query parameter is present, handles the four lookup requests independently so one optional lookup cannot leave the whole form stuck in Loading, and applies focused-product mode only after lookups finish. The general Existing listings panel is hidden after focused initialization. The listed-item submit lock selector was also corrected so a listed product cannot expose an active publish button.
 
 Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
+
+## 2026-09-23 — Final Selling loading and public product image repair
+
+- The Selling Product workspace had a second loading problem caused by waiting indefinitely on the subscriber-auth readiness promise. The Selling loader now uses the already-established subscriber auth object immediately when available and has an eight-second failure timeout instead of remaining on Loading forever.
+- Focused Product lookup and initialization therefore completes even when the authentication readiness promise has already been established elsewhere on the page.
+- Selling dashboard cache version is now selling-dashboard-fixed.js?v=18.
+- Retail product images were still broken because the public browser was attempting to create private Storage signed URLs directly. A public validation-only Edge Function named public-listing-media now validates that the requested listing is published, its category/channel are active and selling-enabled, and its tenant has a published site revision, then creates time-limited signed URLs using the server-side service role.
+- The function source is stored in supabase/functions/public-listing-media/index.ts and is deployed to the live Supabase project.
+- public-site.js now calls that function for published listing media instead of attempting browser-side private-bucket signing. Public site cache is now public-site.js?v=57 with CSS v57.
+- The underlying tradeflow-media bucket remains private; this repair does not make the mixed business/customer media bucket public.

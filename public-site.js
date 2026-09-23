@@ -274,7 +274,12 @@ function renderProductPage(site,listings){
    return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
  }
  const media=(window.__tradeflowListingMedia||[]).filter(x=>String(x.listing_id)===String(item.listing_id));
- const gallery=media.length?media.map((m,i)=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="'+(i?'lazy':'eager')+'"></figure>').join(''):'<div class="product-image-empty">No product photograph is currently available.</div>';
+ const mainMedia=media[0];
+ const thumbnailMedia=media.slice(1);
+ const gallery=mainMedia
+   ? '<div class="product-gallery-main"><figure><img src="'+esc(mainMedia.signedUrl||'')+'" alt="'+esc(mainMedia.original_filename||item.title||'Product')+'" loading="eager"></figure></div>'+
+     (thumbnailMedia.length?'<div class="product-gallery-thumbs">'+thumbnailMedia.map(m=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="lazy"></figure>').join('')+'</div>':'')
+   : '<div class="product-image-empty">No product photograph is currently available.</div>';
  const buyUrl=customerUrl('listing_id='+encodeURIComponent(item.listing_id));
  const retailCondition=String(item.listing_data?.condition||'').trim();
  const conditionLabel=retailCondition?retailCondition.replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase()):'Not specified';
@@ -286,7 +291,15 @@ function renderProductPage(site,listings){
  else if(shippingMethod==='included')postageText='Included in price';
  else if(shippingMethod==='free')postageText='Free';
  else if(shippingMethod==='customer_pays')postageText='Not set';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-detail"><header class="product-heading"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1></header><div class="product-main"><div class="product-gallery">'+gallery+'</div><aside class="product-purchase"><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><dl class="product-facts"><div><dt>Condition</dt><dd>'+esc(conditionLabel)+'</dd></div><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl><a class="start-selling product-buy-button" href="'+buyUrl+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div><section class="product-description-box"><h2>About this item</h2><p class="product-description">'+esc(item.description||'Available from this business.')+'</p></section></div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+
+   '<main class="public-page product-page"><div class="product-detail">'+
+   '<header class="product-heading"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1></header>'+
+   '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
+   '<aside class="product-purchase"><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong>'+
+   '<dl class="product-facts"><div><dt>Condition</dt><dd>'+esc(conditionLabel)+'</dd></div><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl>'+
+   '<a class="start-selling product-buy-button" href="'+buyUrl+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div>'+
+   '<section class="product-description-box"><h2>About this item</h2><p class="product-description">'+esc(item.description||'Available from this business.')+'</p></section>'+
+   '</div></main>'+renderFooter(site);
 }
 
 function renderBuyingPage(site,catalogue){

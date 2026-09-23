@@ -1,6 +1,6 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key',SESSION_STORAGE='tradeflow_subscriber_session';
-let key=null,session=null,tenantId=null,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+let key=null,session=null,tenantId=null,editingListingId=null,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||''}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
 async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 let rows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null;
@@ -19,12 +19,12 @@ async function waitForSubscriber(){
  if(!auth?.session?.access_token)throw Error('Subscriber authentication did not provide an access token.');
  key=auth.key;session=auth.session;tenantId=auth.tenantId;
 }
-async function load(){try{await waitForSubscriber();if(!tenantId)throw Error('This selling workspace requires a valid subscriber tenant.');msg('Loading…');const focusedAsset=new URLSearchParams(location.search).get('asset');if(focusedAsset){rows=[];$('listings-panel').hidden=true;$('listings-panel').style.display='none';$('listings').innerHTML='';}else{const filter=$('status-filter').value;let q=`/rest/v1/listings?select=id,asset_id,channel_id,category_id,branch_id,listing_reference,status,title,description,asking_price,currency,quantity,listing_data,published_at,reserved_at,sold_at,delisted_at,created_at,updated_at&tenant_id=eq.${encodeURIComponent(tenantId)}&order=updated_at.desc`;if(filter)q+=`&status=eq.${encodeURIComponent(filter)}`;rows=await api(q)||[];render();}await loadLookups();applyFocusedProductMode();msg(focusedAsset?'Product workspace loaded.':`${rows.length} listing(s) loaded.`,'success')}catch(e){msg(e.message||String(e),'error')}}
+async function load(){try{await waitForSubscriber();if(!tenantId)throw Error('This selling workspace requires a valid subscriber tenant.');msg('Loading…');const focusedAsset=new URLSearchParams(location.search).get('asset');if(focusedAsset){const q=`/rest/v1/listings?select=id,asset_id,channel_id,category_id,branch_id,listing_reference,status,title,description,asking_price,currency,quantity,listing_data,published_at,reserved_at,sold_at,delisted_at,created_at,updated_at&tenant_id=eq.${encodeURIComponent(tenantId)}&asset_id=eq.${encodeURIComponent(focusedAsset)}&status=not.in.(sold,delisted)&order=updated_at.desc&limit=1`;rows=await api(q)||[];$('listings-panel').hidden=true;$('listings-panel').style.display='none';$('listings').innerHTML='';}else{const filter=$('status-filter').value;let q=`/rest/v1/listings?select=id,asset_id,channel_id,category_id,branch_id,listing_reference,status,title,description,asking_price,currency,quantity,listing_data,published_at,reserved_at,sold_at,delisted_at,created_at,updated_at&tenant_id=eq.${encodeURIComponent(tenantId)}&order=updated_at.desc`;if(filter)q+=`&status=eq.${encodeURIComponent(filter)}`;rows=await api(q)||[];render();}await loadLookups();applyFocusedProductMode();if(focusedAsset&&rows[0])await beginEdit(rows[0].id,true);msg(focusedAsset?(rows[0]?'Existing product listing loaded for editing.':'Product workspace loaded.'):`${rows.length} listing(s) loaded.`,'success')}catch(e){msg(e.message||String(e),'error')}}
 async function loadLookups(){
  const focusAsset=new URLSearchParams(location.search).get('asset');
  const assetQuery=focusAsset
    ? `/rest/v1/inventory_assets?select=id,asset_reference,title,status,description,condition_grade,serial_number,quantity,purchase_price,current_value,currency,location,category_id,branch_id,buying_item_id&tenant_id=eq.${encodeURIComponent(tenantId)}&id=eq.${encodeURIComponent(focusAsset)}&limit=1`
-   : `/rest/v1/inventory_assets?select=id,asset_reference,title,status,description,condition_grade,serial_number,quantity,purchase_price,current_value,currency,location,category_id,branch_id,buying_item_id&tenant_id=eq.${encodeURIComponent(tenantId)}&status=eq.ready_for_sale&order=asset_reference`;
+   : `/rest/v1/inventory_assets?select=id,asset_reference,title,status,description,condition_grade,serial_number,quantity,purchase_price,current_value,currency,location,category_id,branch_id,buying_item_id&tenant_id=eq.${encodeURIComponent(tenantId)}&status=in.(ready_for_sale,listed)&order=asset_reference`;
  const results=await Promise.allSettled([
    api(assetQuery),
    api(`/rest/v1/sales_channels?select=id,name,channel_type,slug,active&tenant_id=eq.${encodeURIComponent(tenantId)}&active=eq.true&order=name`),
@@ -58,12 +58,95 @@ async function uploadSalesPhotos(){const asset=assets.find(x=>x.id===$('asset').
 
 const next={draft:[['ready','Mark ready']],ready:[['published','Publish']],published:[['reserved','Reserve'],['sold','Mark sold'],['delisted','Delist']],reserved:[['published','Return to published'],['sold','Mark sold'],['delisted','Delist']],sold:[],delisted:[]};
 function statusLabel(status){const labels={draft:'Draft',ready:'Ready',published:'Published',reserved:'Reserved',sold:'Sold',delisted:'Delisted'};return labels[String(status||'').toLowerCase()]||String(status||'Unknown').replaceAll('_',' ')}
-function listingStatusClass(status){return ['published'].includes(status)?'published':['draft','ready'].includes(status)?status:['reserved'].includes(status)?'reserved':['sold','delisted'].includes(status)?status:'ready'}function listingActionClass(label){const l=label.toLowerCase();return l.includes('sold')?'danger':l.includes('delist')?'danger':l.includes('reserve')?'secondary':'primary'}function render(){if(!rows.length){$('listings').innerHTML='<div class="empty">No listings match this filter.</div>';return}$('listings').innerHTML=`<div class="listing-table"><div class="listing-row listing-header" style="border:0;background:transparent;border-left:0;padding:2px 12px;color:#68757f;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em"><span>Reference</span><span>Title</span><span>Status</span><span>Price</span><span>Channel</span><span>Action</span></div>${rows.map(r=>{const statusClass=listingStatusClass(r.status);const actions=(next[r.status]||[]).map(([to,label])=>`<button class="listing-action ${listingActionClass(label)}" type="button" data-transition="${r.id}" data-from="${r.status}" data-to="${to}">${esc(label)}</button>`).join('');return`<div class="listing-row ${statusClass}"><div class="listing-reference-cell"><span class="listing-cell-label">Reference</span><button class="listing-reference" type="button" data-view="${r.id}">${esc(r.listing_reference)}</button></div><div class="listing-title-cell"><span class="listing-cell-label">Title</span><strong>${esc(r.title||'Untitled listing')}</strong></div><div><span class="listing-cell-label">Status</span><span class="listing-status">${esc(statusLabel(r.status))}</span></div><div><span class="listing-cell-label">Price</span><strong>${money(r.asking_price,r.currency)}</strong></div><div><span class="listing-cell-label">Channel</span><span>${esc(channels.find(c=>c.id===r.channel_id)?.name||r.channel_id)}</span></div><div><span class="listing-cell-label">Action</span><div class="listing-actions"><button class="listing-action view" type="button" data-view="${r.id}">VIEW</button>${actions}</div></div></div>`}).join('')}</div>`;document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));document.querySelectorAll('[data-transition]').forEach(b=>b.onclick=()=>changeStatus(b.dataset.transition,b.dataset.from,b.dataset.to))}
+function listingStatusClass(status){return ['published'].includes(status)?'published':['draft','ready'].includes(status)?status:['reserved'].includes(status)?'reserved':['sold','delisted'].includes(status)?status:'ready'}function listingActionClass(label){const l=label.toLowerCase();return l.includes('sold')?'danger':l.includes('delist')?'danger':l.includes('reserve')?'secondary':'primary'}function render(){if(!rows.length){$('listings').innerHTML='<div class="empty">No listings match this filter.</div>';return}$('listings').innerHTML=`<div class="listing-table"><div class="listing-row listing-header" style="border:0;background:transparent;border-left:0;padding:2px 12px;color:#68757f;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em"><span>Reference</span><span>Title</span><span>Status</span><span>Price</span><span>Channel</span><span>Action</span></div>${rows.map(r=>{const statusClass=listingStatusClass(r.status);const actions=(next[r.status]||[]).map(([to,label])=>`<button class="listing-action ${listingActionClass(label)}" type="button" data-transition="${r.id}" data-from="${r.status}" data-to="${to}">${esc(label)}</button>`).join('');return`<div class="listing-row ${statusClass}"><div class="listing-reference-cell"><span class="listing-cell-label">Reference</span><button class="listing-reference" type="button" data-view="${r.id}">${esc(r.listing_reference)}</button></div><div class="listing-title-cell"><span class="listing-cell-label">Title</span><strong>${esc(r.title||'Untitled listing')}</strong></div><div><span class="listing-cell-label">Status</span><span class="listing-status">${esc(statusLabel(r.status))}</span></div><div><span class="listing-cell-label">Price</span><strong>${money(r.asking_price,r.currency)}</strong></div><div><span class="listing-cell-label">Channel</span><span>${esc(channels.find(c=>c.id===r.channel_id)?.name||r.channel_id)}</span></div><div><span class="listing-cell-label">Action</span><div class="listing-actions"><button class="listing-action view" type="button" data-view="${r.id}">VIEW</button>${actions}</div></div></div>`}).join('')}</div>`;document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>show(b.dataset.view));document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>beginEdit(b.dataset.edit));document.querySelectorAll('[data-transition]').forEach(b=>b.onclick=()=>changeStatus(b.dataset.transition,b.dataset.from,b.dataset.to))}
 async function transition(id,from,to){return api('/rest/v1/rpc/transition_workflow_entity',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_entity_type:'listing',p_entity_id:id,p_expected_from:from,p_to_status:to,p_notes:null,p_metadata:{source:'selling-dashboard'}})})}
 async function changeStatus(id,from,to){try{msg(`Changing listing to ${to.replaceAll('_',' ')}…`);await transition(id,from,to);await load();show(id);msg('Listing status updated.','success')}catch(e){msg(e.message||String(e),'error')}}
 async function carryInventoryMedia(assetId,listingId){const links=await api(`/rest/v1/inventory_asset_media?select=media_asset_id,sort_order&tenant_id=eq.${encodeURIComponent(tenantId)}&inventory_asset_id=eq.${encodeURIComponent(assetId)}&order=sort_order`)||[];for(const m of links)await api('/rest/v1/listing_media',{method:'POST',body:JSON.stringify({tenant_id:tenantId,listing_id:listingId,media_asset_id:m.media_asset_id,sort_order:m.sort_order||0})})}
 function show(id){const r=rows.find(x=>x.id===id);if(!r)return;const channel=channels.find(c=>c.id===r.channel_id);const cat=categories.find(c=>c.id===r.category_id);const branch=branches.find(b=>b.id===r.branch_id);$('details').innerHTML=`<div class="small"><strong>${esc(r.listing_reference)}</strong> · ${esc(r.status)}</div><p><strong>${esc(r.title)}</strong><br>${esc(r.description||'No description')}</p><p>${money(r.asking_price,r.currency)} · Qty ${esc(r.quantity)} · Channel: ${esc(channel?.name||r.channel_id)} · Category: ${esc(cat?.name||r.category_id)}</p><p class="small">Inventory asset: ${esc(r.asset_id)} · Published: ${esc(r.published_at||'—')} · Sold: ${esc(r.sold_at||'—')}</p>`}
-$('listing-form').onsubmit=async e=>{e.preventDefault();if(!tenantId)return;try{msg('Creating listing…');const asset=$('asset').value,channel=$('channel').value,title=$('title').value.trim(),price=Number($('price').value),currency=$('currency').value.trim().toUpperCase();const assetRow=assets.find(a=>a.id===asset);if(!assetRow)throw Error('Select a valid inventory asset.');if(assetRow.status==='listed')throw Error('This item is already listed on the website. It cannot be sent to Sales again.');const existing=(await api(`/rest/v1/listings?select=id,listing_reference,status,title,asking_price,currency&tenant_id=eq.${encodeURIComponent(tenantId)}&asset_id=eq.${encodeURIComponent(asset)}&status=not.in.(sold,delisted)&limit=1`))||[];if(existing[0]){msg(`This item is already listed as ${existing[0].listing_reference}. No duplicate listing was created.`,'success');await load();return}const shippingMethod=$('shipping-method').value;const shippingPrice=Number($('shipping-price').value||0);const dispatchTime=$('dispatch-time').value.trim()||null;const condition=$('asset-condition').value;if(!condition)throw Error('Select the retail condition before sending this item to the website.');if(!Number.isFinite(shippingPrice)||shippingPrice<0)throw Error('Enter a valid postage price.');const category=assetRow?.category_id;const branch=assetRow?.branch_id;if(!asset||!channel||!category||!branch||!title||!Number.isFinite(price)||price<0)throw Error('Select a valid inventory asset and complete the required listing fields.');const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:{source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}},created_by:session?.user?.id||null})});const created=(data||[])[0];if(created?.id){await carryInventoryMedia(asset,created.id);await transition(created.id,'draft','ready');await transition(created.id,'ready','published');await transition(assetRow.id,'ready_for_sale','listed')}e.target.reset();$('currency').value='GBP';await load();if(created?.id)show(created.id);msg('Listing published to the selected sales channel and inventory marked listed.','success')}catch(e){msg(e.message||String(e),'error')}};
-function applyFocusedProductMode(){const focusAsset=new URLSearchParams(location.search).get('asset');if(!focusAsset)return;document.body.classList.add('focused-product');const panel=$('listings-panel');if(panel){panel.hidden=true;panel.style.display='none';}const selector=$('asset');if(selector)selector.disabled=true;const a=assets.find(x=>x.id===focusAsset);if(a&&$('product-heading'))$('product-heading').textContent=a.title||'Product';if(a?.status==='listed'){const submit=document.querySelector('#listing-form button[type="submit"]');if(submit){submit.disabled=true;submit.textContent='ALREADY ON WEBSITE';}msg('This item is already listed on the website.','success');}}
+async function beginEdit(id,focused=false){
+ const r=rows.find(x=>x.id===id);
+ if(!r)return msg('The selected listing could not be loaded.','error');
+ const asset=assets.find(x=>x.id===r.asset_id);
+ if(!asset)return msg('The inventory asset for this listing could not be loaded.','error');
+ editingListingId=r.id;
+ const form=$('listing-form');
+ if(form){
+   form.scrollIntoView({behavior:focused?'auto':'smooth',block:'start'});
+ }
+ $('asset').value=asset.id;
+ $('channel').value=r.channel_id||'';
+ $('asset').disabled=true;
+ $('channel').disabled=true;
+ $('title').value=r.title||asset.title||'';
+ $('description').value=r.description||'';
+ $('price').value=r.asking_price??'';
+ $('currency').value=(r.currency||asset.currency||'GBP').toUpperCase();
+ $('asset-serial').value=asset.serial_number||'';
+ $('asset-quantity').value=Number(asset.quantity)||1;
+ $('asset-location').value=asset.location||'';
+ $('category-display').textContent=categories.find(x=>x.id===asset.category_id)?.name||'Inherited from original buying category';
+ $('branch-display').textContent=branches.find(x=>x.id===asset.branch_id)?.name||'Inherited from original buying branch';
+ await loadSourceInformation(asset);
+ const data=r.listing_data||{};
+ const condition=String(data.condition||'').trim().toLowerCase().replaceAll(' ','_');
+ $('asset-condition').value=['poor','good','very_good','excellent','opened','never_used','sealed'].includes(condition)?condition:'';
+ const shipping=data.shipping||{};
+ $('shipping-method').value=shipping.method||'customer_pays';
+ $('shipping-price').value=shipping.price!=null?shipping.price:0;
+ $('dispatch-time').value=shipping.dispatch_time||'';
+ const submit=form?.querySelector('button[type="submit"]');
+ if(submit){submit.textContent='SAVE CHANGES';submit.disabled=false;}
+ if($('condition-source-note'))$('condition-source-note').textContent='Editing the published retail listing. Changes will update the website listing.';
+ msg('Editing listing '+r.listing_reference+'.','success');
+}
+function cancelEdit(){
+ editingListingId=null;
+ $('asset').disabled=false;
+ $('channel').disabled=false;
+ const submit=$('listing-form')?.querySelector('button[type="submit"]');
+ if(submit){submit.textContent='SEND TO WEBSITE';submit.disabled=false;}
+ $('listing-form')?.reset();
+ $('currency').value='GBP';
+ const asset=$('asset').value;
+ if(asset)syncAssetContext();
+ msg('Listing edit cancelled.','success');
+}
+$('listing-form').onsubmit=async e=>{
+ e.preventDefault();
+ if(!tenantId)return;
+ try{
+   const asset=$('asset').value,channel=$('channel').value,title=$('title').value.trim(),price=Number($('price').value),currency=$('currency').value.trim().toUpperCase();
+   const condition=$('asset-condition').value;
+   const shippingMethod=$('shipping-method').value;
+   const shippingPrice=Number($('shipping-price').value||0);
+   const dispatchTime=$('dispatch-time').value.trim()||null;
+   if(!condition)throw Error('Select the retail condition before saving this listing.');
+   if(!Number.isFinite(shippingPrice)||shippingPrice<0)throw Error('Enter a valid postage price.');
+   if(!title||!Number.isFinite(price)||price<0)throw Error('Complete the title and asking price.');
+   const listingData={source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}};
+   if(editingListingId){
+     msg('Saving listing changes…');
+     const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
+     const saved=(updated||[])[0];
+     await load();
+     if(saved)show(saved.id);
+     msg('Listing changes saved and published website details updated.','success');
+     return;
+   }
+   msg('Creating listing…');
+   const assetRow=assets.find(a=>a.id===asset);
+   if(!assetRow)throw Error('Select a valid inventory asset.');
+   if(assetRow.status==='listed')throw Error('This item is already listed on the website. Use EDIT on the existing listing instead.');
+   const existing=(await api('/rest/v1/listings?select=id,listing_reference,status,title,asking_price,currency&tenant_id=eq.'+encodeURIComponent(tenantId)+'&asset_id=eq.'+encodeURIComponent(asset)+'&status=not.in.(sold,delisted)&limit=1'))||[];
+   if(existing[0]){msg(`This item is already listed as ${existing[0].listing_reference}. Use EDIT to change it.`,'success');await load();return}
+   const category=assetRow.category_id,branch=assetRow.branch_id;
+   if(!asset||!channel||!category||!branch)throw Error('Select a valid inventory asset and sales channel.');
+   const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:listingData,created_by:session?.user?.id||null})});
+   const created=(data||[])[0];
+   if(created?.id){await carryInventoryMedia(asset,created.id);await transition(created.id,'draft','ready');await transition(created.id,'ready','published');await transition(assetRow.id,'ready_for_sale','listed')}
+   e.target.reset();$('currency').value='GBP';await load();if(created?.id)show(created.id);msg('Listing published to the selected sales channel and inventory marked listed.','success');
+ }catch(e){msg(e.message||String(e),'error')}
+};
+function applyFocusedProductMode(){const focusAsset=new URLSearchParams(location.search).get('asset');if(!focusAsset)return;document.body.classList.add('focused-product');const panel=$('listings-panel');if(panel){panel.hidden=true;panel.style.display='none';}const selector=$('asset');if(selector)selector.disabled=true;const a=assets.find(x=>x.id===focusAsset);if(a&&$('product-heading'))$('product-heading').textContent=a.title||'Product';}
 $('upload-sales-photos').onclick=uploadSalesPhotos;$('status-filter').onchange=load;$('refresh').onclick=load;$('sign-out').onclick=()=>{localStorage.removeItem(SESSION_STORAGE);location.href='customer-dashboard.html';};load();
 function syncAssetContext(){const a=assets.find(x=>x.id===$('asset').value);if(a){$('title').value=a.title||'';$('description').value=a.description||'';$('currency').value=(a.currency||'GBP').toUpperCase();$('price').value=a.current_value??'';$('asset-condition').value='';$('asset-serial').value=a.serial_number||'';$('asset-quantity').value=Number(a.quantity)||1;$('asset-location').value=a.location||'';$('category-display').textContent=categories.find(x=>x.id===a.category_id)?.name||'Inherited from original buying category';$('branch-display').textContent=branches.find(x=>x.id===a.branch_id)?.name||'Inherited from original buying branch';loadSourceInformation(a)}else{$('title').value='';$('description').value='';$('currency').value='GBP';$('price').value='';$('asset-condition').value='';$('asset-serial').value='';$('asset-quantity').value='';$('asset-location').value='';$('category-display').textContent='Inherited from original buying category';$('branch-display').textContent='Inherited from original buying branch';$('source-information').innerHTML='<div class="empty">Select an inventory asset to load the source information.</div>';$('sales-photos').innerHTML='<div class="empty">Select an inventory asset to load photographs.</div>';}}

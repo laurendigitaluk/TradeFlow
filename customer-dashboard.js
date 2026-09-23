@@ -1,5 +1,6 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+let sellingStatusRefreshTimer=null;
 const SESSION_STORAGE='tradeflow_customer_session';
 let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const $=id=>document.getElementById(id);
@@ -115,6 +116,22 @@ async function renderSellingShipping(data,addresses=[]){
 }
 function renderCustomerFulfilments(data){$('fulfilment-list').innerHTML=rows(data,[{key:'fulfilment_reference',label:'Reference'},{key:'status',label:'Status'},{key:'carrier',label:'Carrier'},{key:'tracking_number',label:'Tracking',render:r=>r.tracking_url?`<a href="${esc(r.tracking_url)}" target="_blank" rel="noopener">${esc(r.tracking_number||'Track')}</a>`:esc(r.tracking_number||'—')},{key:'delivered_at',label:'Delivered',render:r=>r.delivered_at?new Date(r.delivered_at).toLocaleDateString('en-GB'):'—'}],'No fulfilments yet.')}
 function renderCustomerReturns(data,items,orders){$('return-list').innerHTML=rows(data,[{key:'return_reference',label:'Reference'},{key:'status',label:'Status'},{key:'reason',label:'Reason'},{key:'refund_amount',label:'Refund',render:r=>r.refund_amount==null?'—':money(r.refund_amount,r.currency)},{key:'requested_at',label:'Requested',render:r=>r.requested_at?new Date(r.requested_at).toLocaleDateString('en-GB'):'—'}],'No returns yet.');const eligible=(Array.isArray(items)?items:[]).filter(i=>['paid','fulfilment','completed'].includes(orders.find(o=>o.id===i.order_id)?.status));const s=$('return-order-item');s.innerHTML='<option value="">Select an eligible order item…</option>'+eligible.map(i=>`<option value="${esc(i.order_item_id)}">${esc(orders.find(o=>o.id===i.order_id)?.order_reference||i.order_id)} — ${esc(i.title)} × ${esc(i.quantity)}</option>`).join('')}
+async function refreshCustomerSellingStatus(){
+ try{
+   const [sellingStatus,offers,acq,shipping,bankDetails]=await Promise.all([
+     rpc('customer_get_selling_status'),
+     rpc('customer_get_offers'),
+     rpc('customer_get_acquisitions'),
+     rpc('customer_get_pre_acquisition_shipping'),
+     rpc('customer_get_bank_details')
+   ]);
+   await renderSellingStatus(sellingStatus,offers,acq,shipping,bankDetails);
+ }catch(e){console.warn('TradeFlow customer selling status refresh failed:',e)}
+}
+function startCustomerSellingStatusRefresh(){
+ if(sellingStatusRefreshTimer)clearInterval(sellingStatusRefreshTimer);
+ sellingStatusRefreshTimer=setInterval(()=>{if(!document.hidden)refreshCustomerSellingStatus()},10000);
+}
 function restoreSellingJourney(){
  const raw=sessionStorage.getItem('tradeflow_selling_journey');if(!raw)return;
  let p=null;try{p=JSON.parse(raw)}catch{return}
@@ -161,7 +178,7 @@ async function ensureCustomerRegistration(){
   if(!first)throw Error('Enter your first name to complete your customer account.');
   await api('/rest/v1/rpc/customer_register_for_tenant',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
 }
-async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();await loadPortalData();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
+async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();await loadPortalData();startCustomerSellingStatusRefresh();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
 function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','success')}
 async function handleAuthSuccess(data){saveSession(data);showAuth(false);try{await loadTenantBranding();await ensureCustomerRegistration();await loadPortalData()}catch(err){setMessage(err.message||String(err),'error')}}
 async function shippingAssetBlob(url){const r=await fetch(url);if(!r.ok)throw Error('The shipping file could not be downloaded.');return await r.blob();}

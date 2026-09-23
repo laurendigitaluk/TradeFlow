@@ -58,18 +58,18 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
   repair:['Repair required','The business has routed your item for repair. It has not been purchased yet.'],
   return_pending:['Return to customer','The item was refused during inspection and will be returned to you.'],
   final_offer_required:['Inspection accepted — final offer required','The inspection was accepted. The business will now prepare a final offer for you.'],
-  final_offer_sent:['Final offer sent — awaiting your response','A final offer has been sent. Review it and choose Accept offer or Refuse offer.'],
+  final_offer_sent:['Final offer received — awaiting your response','A final offer has been sent. Review it and choose Accept offer or Refuse offer.'],
   final_offer_accepted:['Final offer accepted — payment pending','You accepted the final offer. The business must now make the payment.'],
   final_offer_refused:['Final offer refused — return item','The final offer was refused. The item remains outside the purchase and inventory process.'],
   purchased:['Purchase complete','The final offer was accepted, payment was made and the item is now part of the business inventory.']
  };
- const fallback=stage==='offer_ready'?['Manual offer sent — awaiting your response','Your offer is ready to review.']:stage==='manual_valuation'?['Manual valuation required','Your item requires a manual valuation.']:['Selling request in progress','Your selling request is being processed.'];
+ const fallback=stage==='offer_ready'?['Manual offer received — awaiting your response','Your offer is ready to review.']:stage==='manual_valuation'?['Manual valuation required','Your item requires a manual valuation.']:['Selling request in progress','Your selling request is being processed.'];
  const active={...base,stage,message:(stageCopy[stage]||fallback)[1]};
  const title=(stageCopy[stage]||fallback)[0];
  const cls=['received','inspection','final_offer_required','final_offer_sent','final_offer_accepted','purchased'].includes(stage)?'accepted':stage==='final_offer_refused'||stage==='return_pending'?'manual':stage==='offer_ready'?'ready':'progress';
  let action='';
  const liveOffer=Array.isArray(offers)?offers.find(o=>o.status==='published'&&o.buying_item_id===base.buying_item_id):null;
- if(liveOffer){action='<div class="customer-offer-action"><div class="offer-action-kicker">ACTION REQUIRED</div><strong>Manual offer sent: '+money(liveOffer.amount,liveOffer.currency)+'</strong><p>This offer is waiting for your response. Choose Accept offer or Refuse offer.</p><textarea class="offer-response-notes" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'" rows="2" placeholder="Optional response notes"></textarea><div class="actions"><button type="button" class="offer-accept status-offer-accept" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'">Accept offer</button><button type="button" class="offer-refuse" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'">Refuse offer</button></div></div>'}
+ if(liveOffer){action='<div class="customer-offer-action"><div class="offer-action-kicker">ACTION REQUIRED</div><strong>Manual offer received: '+money(liveOffer.amount,liveOffer.currency)+'</strong><p>This offer is waiting for your response. Choose Accept offer or Refuse offer.</p><textarea class="offer-response-notes" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'" rows="2" placeholder="Optional response notes"></textarea><div class="actions"><button type="button" class="offer-accept status-offer-accept" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'">Accept offer</button><button type="button" class="offer-refuse" data-offer-id="'+esc(liveOffer.offer_id||liveOffer.id)+'">Refuse offer</button></div></div>'}
  let handoff='';
  if(stage==='final_offer_accepted'){
   const hasBank=Boolean(bankDetails?.has_details);

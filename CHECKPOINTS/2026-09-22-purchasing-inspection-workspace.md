@@ -412,3 +412,22 @@ The Canon test identified and repaired a duplicate sales-listing path. Eight lis
 `buying_item_media` lacked the authenticated table-level SELECT grant despite having a SELECT policy, causing the Product workspace to show `permission denied for table buying_item_media`. The grant was restored.
 
 Camera category and Camera branch were enabled for selling. The live published-store function now returns the Canon listing, so the listing is eligible for the Retail Shop.
+## 2026-09-23 — Public Retail Shop image and product-page repair
+
+- The live Canon listing remains LST-20260923-B5AAABFB, published, with one linked Inventory photograph.
+- The existing get_published_store_listings function was verified to return the Canon listing, but it does not itself return media paths. The public storefront therefore now uses a separate get_published_store_listing_media security-definer function.
+- The tradeflow-media bucket remains private. A storage SELECT policy now permits anonymous/public reads only when the object is linked to a published listing whose category and sales channel are active and selling-enabled and whose tenant has a published site revision.
+- public-site.js now loads the published listing media, signs the private object URLs and attaches the first image to each listing card.
+- Retail Shop cards now use **View product** and route to a public product page instead of customer-dashboard.html.
+- A new public page=product&listing=... route renders the product details and gallery without requiring a customer login. The separate Buy action can still enter the customer account journey.
+- The literal development search placeholder PLACEHOLDER was removed and replaced by the configured/default search placeholder.
+- public-site.html cache versions were incremented to public-site.css?v=57 and public-site.js?v=55.
+
+## 2026-09-23 — Inventory listed-state and focused Selling workspace repair
+
+- Inventory rendering was corrected so listed no longer appears as **Action required**. Listed/completed lifecycle states show their actual status and use **VIEW PRODUCT**.
+- Inventory script cache was incremented to inventory-dashboard-fixed.js?v=13.
+- Focused Selling pages now hide the Existing listings panel before listing queries are rendered. This prevents the focused Product workspace from remaining on a misleading Loading listings… state.
+- Selling script cache was incremented to selling-dashboard-fixed.js?v=15.
+- JavaScript syntax was verified for public-site.js, inventory-dashboard-fixed.js and selling-dashboard-fixed.js.
+- Live database verification confirms: Canon inventory asset status listed; exactly one active listing for the asset; one published listing returned by the public storefront function; one published listing media row returned by the new public media function.

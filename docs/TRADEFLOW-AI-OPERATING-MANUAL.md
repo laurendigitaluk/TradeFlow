@@ -1163,3 +1163,14 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
 - Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
+
+
+## 2026-09-23 — Inventory-to-Selling information boundary
+
+The sales workspace is a consumer of existing Buying, Inspection, Inventory and Media records; it must not duplicate those records simply to make a listing form work. The diagnostic path is: Inventory asset → linked buying item → buying request/customer → customer-details RPC and customer fields → latest inspection → buying-item media + inventory-asset media → sales listing → listing media → published storefront listing.
+
+A previous implementation only queried buying_item_media. The live Canon test has no rows in that table but does have an Inventory photograph linked through inventory_asset_media. The correct repair is to read both media sources and de-duplicate media IDs, not to copy or recreate the photograph in Buying.
+
+The sales publication path must create the real listings row, attach existing media through listing_media, transition the listing to published, and only then move the Inventory asset to listed. The public storefront read model requires a published listing and a published site revision.
+
+Do not assume a non-null current inventory value is the retail asking price. Purchase price and retail asking price remain separate fields. Do not publish the Canon test item until a genuine retail price has been supplied.

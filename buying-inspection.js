@@ -110,7 +110,7 @@
            '<label style="display:block;margin-top:10px"><strong>Bank payment reference</strong><input id="tf-payment-reference" type="text" '+(hasBank?'':'disabled')+' placeholder="Enter bank transfer reference"></label>'+
            '<label style="display:block;margin-top:10px"><strong>Payment notes</strong><textarea id="tf-payment-notes" rows="3" '+(hasBank?'':'disabled')+' placeholder="Optional"></textarea></label>'+
            '<div class="actions" style="margin-top:12px"><button type="button" id="tf-complete-purchase" '+(hasBank?'':'disabled')+' >CONFIRM PAYMENT SENT &amp; COMPLETE PURCHASE</button></div>'+
-           '<p id="tf-payment-help" class="small" style="margin-top:8px">'+(hasBank?'Enter the bank payment reference to enable the button.':'Bank details are required before payment can be confirmed.')+'</p>'+
+           '<p id="tf-payment-help" class="small" style="margin-top:8px">'+(hasBank?'Enter the bank payment reference, then click the button to complete the purchase.':'Bank details are required before payment can be confirmed.')+'</p>'+
            '</div>';
          section.querySelectorAll('[data-bank-reveal]').forEach(btn=>{
            btn.addEventListener('click',()=>{

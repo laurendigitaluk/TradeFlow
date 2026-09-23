@@ -1368,3 +1368,13 @@ The previous duplicate-handler repair alone did not resolve the live login scree
 - The tenant helper now accepts the tenant ID supplied by the authenticated subscriber URL, so the live acquisition query can run for the current tenant. Dashboard cache is now `acquisition-dashboard.js?v=16`.
 - The current Canon purchase has already created acquisition `ACQ-BA60C739F2A2`, acquisition item `433b206c-0044-44fc-bdbf-9873c9bb6197`, and inventory asset `AST-20260923-F0856A6E` with status `ready_for_sale`.
 - The Acquisitions item view now exposes an `Open in Inventory` link for an existing inventory asset. `ready_for_sale` is the pre-sales inventory stage: the item is owned and in inventory but has not yet been listed/sold. The Inventory workflow can then move it to `listed` when ready.
+
+
+## 2026-09-23 — Acquisitions retired; Inventory becomes the hand-off point
+
+- The separate Acquisitions UI is being retired from the subscriber navigation. The legacy `acquisition-dashboard.html` now redirects to Inventory so old bookmarks do not strand users on the obsolete workflow.
+- A completed purchase already creates the acquisition record internally for audit/payment boundaries, but staff no longer need an Acquisitions screen to move the product onward. The customer payment completion transaction creates the inventory asset directly with `ready_for_sale` status.
+- Inventory is now the operational hand-off: staff can edit the asset details, add photographs, and use `Send this item to a sales channel` / `Send to sales` to open the Selling workspace for that inventory asset.
+- Selling accepts a preselected inventory asset and lets staff choose an active sales channel. The listing flow carries the inventory photographs into the listing. The inventory asset retains its lifecycle independently from the listing.
+- The Selling asset lookup now includes `branch_id`, fixing the listing form's branch requirement for inventory-created assets.
+- Inventory and Selling navigation no longer expose Acquisitions. The Inventory script cache is `inventory-dashboard-fixed.js?v=11`; Selling is `selling-dashboard-fixed.js?v=8`.

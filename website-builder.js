@@ -3,6 +3,7 @@ const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
 let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='';
+let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let buyingCatalogue={categories:[],products:[]};
@@ -228,11 +229,15 @@ function renderPageManager(){
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
- box.innerHTML='<div class="control-title">Website branding</div><small>Your business name and logo identify the site. Add a dedicated website banner here for the large banner area used across the website. Recommended size: <b>1600 × 600 px</b> (8:3). PNG, JPEG or WebP, maximum 5 MB.</small>'+
- '<div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo</span>':'<span class="small">No business logo uploaded.</span>')+'</div>'+
+ box.innerHTML='<div class="control-title">Branding</div><small>Keep your customer-facing logo and website banner together here. Your business name remains managed in Business Settings. The logo is used in the website header; the banner is used in the homepage hero. Recommended banner size: <b>1600 × 600 px</b> (8:3). PNG, JPEG or WebP, maximum 5 MB.</small>'+
+ '<div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo uploaded</span>':'<span class="small">No business logo uploaded.</span>')+'<div class="actions"><button type="button" data-logo-upload>'+(logoUrl?'Replace logo':'Upload logo')+'</button>'+(logoUrl?'<button type="button" class="secondary" data-logo-remove>Remove logo</button>':'')+'</div></div>'+
  '<div class="branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner">':'<div class="generated-brand-banner-preview">'+esc(siteName||'Your Business')+'</div>')+
  '<div class="branding-banner-actions"><span class="small">'+(bannerUrl?'Website banner uploaded':'No banner uploaded — the business name will be used automatically')+'</span><div class="actions"><button type="button" data-banner-upload>Upload banner</button>'+(bannerUrl?'<button type="button" class="secondary" data-banner-remove>Remove banner</button>':'')+'</div></div></div>'+
  '<div class="actions"><a href="settings.html">Business Settings</a></div>';
+ const logoUpload=box.querySelector('[data-logo-upload]');
+ if(logoUpload)logoUpload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();});
+ const logoRemove=box.querySelector('[data-logo-remove]');
+ if(logoRemove)logoRemove.addEventListener('click',()=>removeImage('logo'));
  const upload=box.querySelector('[data-banner-upload]');
  if(upload)upload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='banner';input.value='';input.click();});
  const remove=box.querySelector('[data-banner-remove]');
@@ -325,7 +330,8 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const img1=homeImageUrl?'<img src="'+esc(homeImageUrl)+'" alt="'+esc(siteName||'Main image')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
+ const heroUrl=bannerUrl||homeImageUrl;
+ const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website banner')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
  const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
@@ -489,7 +495,9 @@ function loadContent(content){
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
- logoUrl=window.__tradeflowBusinessLogoLoaded?logoUrl:(s.branding?.logo_url||s.logo_url||'');bannerUrl=window.__tradeflowBusinessLogoLoaded?bannerUrl:(s.branding?.banner_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
+ logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
+ bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
@@ -569,7 +577,7 @@ async function restoreSession(){
  if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
  supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
  if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));if(profile?.[0]?.business_name){siteName=profile[0].business_name;window.__tradeflowBusinessNameLoaded=true;}if(profile?.[0]){logoUrl=profile[0].logo_url||'';bannerUrl=profile[0].banner_url||'';window.__tradeflowBusinessLogoLoaded=true;}}catch{}
+ try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=profile?.[0]||{};authoritativeBranding={logo_url:p.logo_url||'',banner_url:p.banner_url||''};if(p.business_name){siteName=p.business_name;window.__tradeflowBusinessNameLoaded=true;}}catch{authoritativeBranding={logo_url:'',banner_url:''};}
  return tenantId;
 }
 

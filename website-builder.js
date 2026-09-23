@@ -364,13 +364,13 @@ function renderHome(){
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid" style="--tile-columns:'+homepageTileColumns+'">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- return navMarkup()+renderBrandBannerPreview()+ordered+tiles+footerMarkup();
+ return navMarkup()+ordered+tiles+footerMarkup();
 }
 
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
  if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block shop-page-title">'+(bannerUrl?'<div class="builder-shop-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(siteName||'Business')+'">':'')+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
  return navMarkup()+'<section class="full-page content-page"><div class="page-title-block">'+(managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+(managed?'':editText('page-body',p.body||'','p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
 }
 function renderBuilderPageHelp(){

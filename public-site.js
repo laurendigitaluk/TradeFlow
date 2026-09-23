@@ -65,7 +65,7 @@ function money(value,currency){
 
 function renderPublicNav(site,catalogue){
  const name=site.name||'Your business';
- const logoUrl=window.__tradeflowPublicProfile?(window.__tradeflowPublicProfile.logo_url||''):(site.branding?.logo_url||site.logo_url||'');
+ const logoUrl=window.__tradeflowPublicProfile?.logo_url||site.branding?.logo_url||site.logo_url||'';
  const logo=logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(name)+'">':'<span>'+esc(name)+'</span>';
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const pages=Array.isArray(site.pages)?site.pages:[];
@@ -293,7 +293,7 @@ function renderProductPage(site,listings){
  else if(shippingMethod==='customer_pays')postageText='Not set';
  return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+
    '<main class="public-page product-page"><div class="product-detail">'+
-   '<header class="product-heading"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1></header>'+
+   '<header class="product-heading"><h1>'+esc(item.title||'Product')+'</h1></header>'+
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
    '<aside class="product-purchase"><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong>'+
    '<dl class="product-facts"><div><dt>Condition</dt><dd>'+esc(conditionLabel)+'</dd></div><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl>'+
@@ -311,9 +311,9 @@ function renderBuyingPage(site,catalogue){
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{};
+ const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const logoUrl=window.__tradeflowPublicProfile?.logo_url||site.branding?.logo_url||site.logo_url||'';
  const searchHeading=p.shop_search_heading||'Find a product';const configuredSearchPlaceholder=String(p.shop_search_placeholder||'').trim();const searchPlaceholder=configuredSearchPlaceholder&&configuredSearchPlaceholder.toUpperCase()!=='PLACEHOLDER'?configuredSearchPlaceholder:'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Sell')+'</h1><p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block shop-page-title">'+(logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(site.name||'Business')+'">':'<h1>'+esc(site.name||'What We Sell')+'</h1>')+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function bindProductSearch(){const input=$('tradeflow-product-search');if(!input)return;const cards=Array.from(document.querySelectorAll('[data-product-search]'));input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();cards.forEach(card=>{card.hidden=!!q&&!card.dataset.productSearch.includes(q)});const visible=cards.some(card=>!card.hidden);const grid=input.closest('main')?.querySelector('.shop-grid');if(grid){let empty=grid.querySelector('.search-empty');if(!visible){if(!empty){empty=document.createElement('div');empty.className='connected-empty search-empty';empty.textContent='No products match your search.';grid.appendChild(empty)}}else if(empty)empty.remove();}})}

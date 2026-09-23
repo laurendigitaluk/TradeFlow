@@ -87,30 +87,66 @@
     }else if(['final_offer_sent','final_offer_accepted','final_offer_refused'].includes(stage)){
       const f=row.finalOffer;const amount=f?.amount!=null?new Intl.NumberFormat('en-GB',{style:'currency',currency:f.currency||'GBP'}).format(Number(f.amount)):'—';
       if(stage==='final_offer_accepted'){
-        let bank=null;
-        try{
-          bank=await api('/rest/v1/rpc/subscriber_get_customer_bank_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id})});
-        }catch(e){
-          bank={has_details:false,access_error:e?.message||String(e)};
-        }
-        const hasBank=Boolean(bank?.has_details);
-        const maskedAccount=hasBank&&bank.account_number?('••••'+String(bank.account_number).slice(-4)):'';
-        const maskedSort=hasBank&&bank.sort_code?String(bank.sort_code):'';
-        section.innerHTML='<div class="cell-label">PAYMENT REQUIRED</div><h2 style="margin:4px 0 8px">Customer accepted the final offer</h2><p>The customer accepted <strong>'+esc(amount)+'</strong>. The item is still outside Acquisitions and Inventory until payment is confirmed.</p>'+
-          '<div class="workflow-box" style="margin-top:14px">'+
-          '<h3 style="margin-top:0">Customer bank details</h3>'+
-          (hasBank?'<p><strong>Bank details received</strong></p><p class="small">Account holder: '+esc(bank.account_holder_name||'—')+' · Sort code: '+esc(maskedSort)+' · Account: '+esc(maskedAccount)+(bank.bank_name?' · Bank: '+esc(bank.bank_name):'')+'</p>':'<p><strong>Bank details required</strong></p><p class="small">The customer has accepted the final offer but has not yet supplied bank details. The customer portal must be completed before payment can be confirmed.</p>')+
-          '</div>'+
-          '<div class="workflow-box" style="margin-top:14px">'+
-          '<h3 style="margin-top:0">Confirm payment sent</h3>'+
-          '<p class="small">After the bank transfer has actually been sent to the customer, record the payment reference here. This will mark the payment as paid and create the Acquisition and Inventory Asset in one transaction.</p>'+
-          '<label><strong>Payment method</strong><input id="tf-payment-method" type="text" value="Bank transfer"></label>'+
-          '<label style="display:block;margin-top:10px"><strong>Bank payment reference</strong><input id="tf-payment-reference" type="text" '+(hasBank?'':'disabled')+'></label>'+
-          '<label style="display:block;margin-top:10px"><strong>Payment notes</strong><textarea id="tf-payment-notes" rows="3" '+(hasBank?'':'disabled')+'></textarea></label>'+
-          '<div class="actions" style="margin-top:12px"><button type="button" id="tf-complete-purchase" '+(hasBank?'':'disabled')+'>CONFIRM PAYMENT SENT &amp; COMPLETE PURCHASE</button></div>'+
-          '</div>';
-        section.querySelector('#tf-complete-purchase').onclick=async()=>{if(busy)return;const method=(section.querySelector('#tf-payment-method')?.value||'').trim(),reference=(section.querySelector('#tf-payment-reference')?.value||'').trim(),notes=(section.querySelector('#tf-payment-notes')?.value||'').trim();if(!method||!reference)return msg('Enter the payment method and bank payment reference before confirming payment.','error');busy=true;const btn=section.querySelector('#tf-complete-purchase');btn.disabled=true;btn.textContent='Confirming payment…';try{await api('/rest/v1/rpc/subscriber_complete_purchase',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id,p_payment_method:method,p_payment_reference:reference,p_payment_notes:notes||null})});location.reload();}catch(e){msg(e.message||String(e),'error');busy=false;btn.disabled=false;btn.textContent='CONFIRM PAYMENT SENT & COMPLETE PURCHASE'}};
-      }else if(stage==='final_offer_refused'){section.innerHTML='<div class="cell-label">RETURN TO CUSTOMER</div><h2 style="margin:4px 0 8px">Final offer refused</h2><p>The customer has refused the final offer. The item has not become an acquisition and no inventory asset has been created.</p><div class="workflow-box"><strong>Next step: return the item to the customer.</strong></div>';
+         let bank=null;
+         try{
+           bank=await api('/rest/v1/rpc/subscriber_get_buying_item_payment_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id})});
+         }catch(e){
+           bank={ready_for_payment:false,bank_details_received:false,access_error:e?.message||String(e)};
+         }
+         const hasBank=Boolean(bank?.bank_details_received);
+         const sortCode=hasBank?String(bank.sort_code||''):'';
+         const accountNumber=hasBank?String(bank.account_number||''):'';
+         const maskedAccount=hasBank&&accountNumber?('••••'+accountNumber.slice(-4)):'';
+         const maskedSort=hasBank&&sortCode?('••-••-'+sortCode.slice(-2)):'';
+         section.innerHTML='<div class="cell-label">PAYMENT REQUIRED</div><h2 style="margin:4px 0 8px">Customer accepted the final offer</h2><p>The customer accepted <strong>'+esc(amount)+'</strong>. The item is still outside Acquisitions and Inventory until payment is confirmed.</p>'+
+           '<div class="workflow-box" style="margin-top:14px">'+
+           '<h3 style="margin-top:0">Customer bank details</h3>'+
+           (hasBank?'<p><strong>Bank details received</strong></p><div class="bank-detail-grid"><div><span class="cell-label">Account holder</span><strong>'+esc(bank.account_holder_name||'—')+'</strong></div><div><span class="cell-label">Bank</span><strong>'+esc(bank.bank_name||'—')+'</strong></div><div><span class="cell-label">Sort code</span><span class="bank-sensitive"><strong data-bank-value="'+esc(sortCode)+'">'+esc(maskedSort)+'</strong><button type="button" class="bank-reveal" data-bank-reveal>Reveal</button></span></div><div><span class="cell-label">Account number</span><span class="bank-sensitive"><strong data-bank-value="'+esc(accountNumber)+'">'+esc(maskedAccount)+'</strong><button type="button" class="bank-reveal" data-bank-reveal>Reveal</button></span></div></div>':'<p><strong>Bank details required</strong></p><p class="small">The customer has accepted the final offer but has not yet supplied bank details. The customer portal must be completed before payment can be confirmed.</p>')+
+           '</div>'+
+           '<div class="workflow-box" style="margin-top:14px">'+
+           '<h3 style="margin-top:0">Confirm payment sent</h3>'+
+           '<p class="small">After the bank transfer has actually been sent to the customer, enter the payment reference here. This will mark the payment as paid and create the Acquisition and Inventory Asset in one transaction.</p>'+
+           '<label><strong>Payment method</strong><input id="tf-payment-method" type="text" value="Bank transfer"></label>'+
+           '<label style="display:block;margin-top:10px"><strong>Bank payment reference</strong><input id="tf-payment-reference" type="text" '+(hasBank?'':'disabled')+' placeholder="Enter bank transfer reference"></label>'+
+           '<label style="display:block;margin-top:10px"><strong>Payment notes</strong><textarea id="tf-payment-notes" rows="3" '+(hasBank?'':'disabled')+' placeholder="Optional"></textarea></label>'+
+           '<div class="actions" style="margin-top:12px"><button type="button" id="tf-complete-purchase" disabled>CONFIRM PAYMENT SENT &amp; COMPLETE PURCHASE</button></div>'+
+           '<p id="tf-payment-help" class="small" style="margin-top:8px">'+(hasBank?'Enter the bank payment reference to enable the button.':'Bank details are required before payment can be confirmed.')+'</p>'+
+           '</div>';
+         section.querySelectorAll('[data-bank-reveal]').forEach(btn=>{
+           btn.addEventListener('click',()=>{
+             const value=btn.parentElement?.querySelector('[data-bank-value]');
+             if(!value)return;
+             const revealed=btn.dataset.revealed==='1';
+             value.textContent=revealed?(value.dataset.masked||value.textContent):value.dataset.bankValue;
+             btn.textContent=revealed?'Reveal':'Hide';
+             btn.dataset.revealed=revealed?'0':'1';
+           });
+           const value=btn.parentElement?.querySelector('[data-bank-value]');
+           if(value)value.dataset.masked=value.textContent;
+         });
+         const paymentReference=section.querySelector('#tf-payment-reference');
+         const completeButton=section.querySelector('#tf-complete-purchase');
+         const updatePaymentButton=()=>{
+           const enabled=hasBank&&Boolean(paymentReference?.value.trim());
+           if(completeButton)completeButton.disabled=!enabled;
+           const help=section.querySelector('#tf-payment-help');
+           if(help)help.textContent=hasBank?(enabled?'Payment reference entered. You can now confirm payment.':'Enter the bank payment reference to enable the button.'):'Bank details are required before payment can be confirmed.';
+         };
+         paymentReference?.addEventListener('input',updatePaymentButton);
+         updatePaymentButton();
+         completeButton.onclick=async()=>{
+           if(busy)return;
+           const method=(section.querySelector('#tf-payment-method')?.value||'').trim(),reference=(paymentReference?.value||'').trim(),notes=(section.querySelector('#tf-payment-notes')?.value||'').trim();
+           if(!method||!reference)return msg('Enter the payment method and bank payment reference before confirming payment.','error');
+           busy=true;completeButton.disabled=true;completeButton.textContent='Confirming payment…';
+           try{
+             const result=await api('/rest/v1/rpc/subscriber_complete_purchase',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:row.item.id,p_payment_method:method,p_payment_reference:reference,p_payment_notes:notes||null})});
+             if(!result?.status||result.status!=='purchased')throw Error('Purchase completion did not return a purchased status.');
+             msg('Payment recorded. Purchase completed and the item moved to Inventory as Ready for sale. Customer notification queued.','success');
+             await sync();
+           }catch(e){msg(e.message||String(e),'error');busy=false;updatePaymentButton();completeButton.textContent='CONFIRM PAYMENT SENT & COMPLETE PURCHASE'}
+         };
+       }else if(stage==='final_offer_refused'){section.innerHTML='<div class="cell-label">RETURN TO CUSTOMER</div><h2 style="margin:4px 0 8px">Final offer refused</h2><p>The customer has refused the final offer. The item has not become an acquisition and no inventory asset has been created.</p><div class="workflow-box"><strong>Next step: return the item to the customer.</strong></div>';
       }else section.innerHTML='<div class="cell-label">FINAL OFFER SENT</div><h2 style="margin:4px 0 8px">Awaiting customer response</h2><p>Final offer <strong>'+esc(f?.offer_reference||'—')+'</strong> has been sent for <strong>'+esc(amount)+'</strong>. The item remains outside Acquisitions and Inventory.</p><div class="workflow-box"><strong>Waiting for the customer to accept or refuse the final offer.</strong></div>';
     }else if(stage==='testing'||stage==='repair'){
       section.innerHTML='<div class="cell-label">'+(stage==='testing'?'TESTING':'REPAIR')+'</div><h2 style="margin:4px 0 8px">'+(stage==='testing'?'Testing required':'Repair required')+'</h2><p>This item remains in the pre-acquisition purchasing workflow. It has not been purchased and must not appear in Inventory.</p>';

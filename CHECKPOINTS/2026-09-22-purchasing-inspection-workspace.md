@@ -421,7 +421,7 @@ Camera category and Camera branch were enabled for selling. The live published-s
 - Retail Shop cards now use **View product** and route to a public product page instead of customer-dashboard.html.
 - A new public page=product&listing=... route renders the product details and gallery without requiring a customer login. The separate Buy action can still enter the customer account journey.
 - The literal development search placeholder PLACEHOLDER was removed and replaced by the configured/default search placeholder.
-- public-site.html cache versions were incremented to public-site.css?v=57 and public-site.js?v=55.
+- public-site.html cache versions were incremented to public-site.css?v=57 and public-site.js?v=56.
 
 ## 2026-09-23 — Inventory listed-state and focused Selling workspace repair
 

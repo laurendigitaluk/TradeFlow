@@ -114,8 +114,8 @@ function renderHero(site){
  const cta2=esc(safeCopy.cta2||d.cta2);
  const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
  const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
- const heroUrl=home.image_url||window.__tradeflowPublicProfile?.banner_url||'';
- const i1=heroImage(heroUrl,name+' main image');
+ const heroUrl=site.branding?.banner_url||window.__tradeflowPublicProfile?.banner_url||home.image_url||'';
+ const i1=heroUrl?heroImage(heroUrl,name+' website banner'):'<div class="generated-brand-banner" role="img" aria-label="'+esc(name)+'">'+esc(name)+'</div>';
  const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  const h=esc(headline),p=esc(intro);
  switch(t){

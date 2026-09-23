@@ -3,6 +3,21 @@
 <html lang="en">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=6"><style>
 .process-panel{margin-top:18px}.process-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.process-card{border:2px solid #dfe4e8;border-radius:10px;padding:16px;background:#fff}.process-card.green{border-color:#2d7a4d;background:#f1f8f3}.process-card.yellow{border-color:#d39b22;background:#fff8e7}.process-card.blue{border-color:#6b8fb3;background:#f3f7fb}.process-card strong{display:block;font-size:28px;margin-top:5px}.process-card span{font-size:12px;color:#5f6d76}.process-list{margin-top:14px;display:grid;gap:8px}.process-row{display:grid;grid-template-columns:160px 1fr 140px 120px;gap:12px;align-items:center;border:1px solid #dfe4e8;border-radius:8px;padding:11px 13px;background:#fff}.process-row.green{border-left:5px solid #2d7a4d}.process-row.yellow{border-left:5px solid #d39b22}.process-row.blue{border-left:5px solid #6b8fb3}.process-status{font-weight:700}.process-amount{font-weight:800}.process-muted{color:#68757f;font-size:13px}@media(max-width:900px){.process-grid{grid-template-columns:repeat(2,1fr)}.process-row{grid-template-columns:1fr 1fr}}@media(max-width:600px){.process-grid{grid-template-columns:1fr}}
+</style><style>
+.business-flow{grid-template-columns:repeat(6,minmax(0,1fr))}
+.flow-step{position:relative;display:flex;flex-direction:column;gap:8px;min-height:118px;padding:14px;text-decoration:none}
+.flow-step .flow-count{display:block;font-size:28px;line-height:1;font-weight:800}
+.flow-step .flow-state{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.flow-step .flow-cta{display:inline-block;margin-top:auto;padding:7px 9px;border-radius:6px;font-size:11px;font-weight:800;text-align:center}
+.flow-step.flow-green{border:2px solid #2d7a4d;background:#f1f8f3}
+.flow-step.flow-green .flow-cta{background:#2d7a4d;color:#fff}
+.flow-step.flow-yellow{border:2px solid #d39b22;background:#fff8e7}
+.flow-step.flow-yellow .flow-cta{background:#d39b22;color:#fff}
+.flow-step.flow-blue{border:2px solid #6b8fb3;background:#f3f7fb}
+.flow-step.flow-blue .flow-cta{background:#6b8fb3;color:#fff}
+.flow-step.flow-green:hover,.flow-step.flow-yellow:hover,.flow-step.flow-blue:hover{transform:translateY(-2px)}
+@media(max-width:1100px){.business-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:700px){.business-flow{grid-template-columns:1fr 1fr}}
 </style></head>
 <body>
 <header class="topbar">
@@ -53,12 +68,12 @@
 <div class="panel-heading"><div><div class="eyebrow">Core operation</div><h2>Your business workflow</h2></div><span class="status-pill">Existing workflows</span></div>
 <p class="section-intro">Follow each item through your business, from buying and acquisition through stock, sales, orders, fulfilment and returns.</p>
 <div class="business-flow">
-<a class="flow-step" href="buying-dashboard.html"><strong>Buying</strong><small>Customer requests, valuations &amp; offers</small></a>
-<a class="flow-step" href="inventory-dashboard.html"><strong>Inventory</strong><small>Purchased stock, photos &amp; pre-sales preparation</small></a>
-<a class="flow-step" href="selling-dashboard.html"><strong>Selling</strong><small>Listings &amp; sales channels</small></a>
-<a class="flow-step" href="orders-dashboard.html"><strong>Orders</strong><small>Customer orders &amp; payment</small></a>
-<a class="flow-step" href="fulfilment-dashboard.html"><strong>Fulfilment</strong><small>Dispatch &amp; tracking</small></a>
-<a class="flow-step" href="returns-dashboard.html"><strong>Returns</strong><small>Returns &amp; resolutions</small></a>
+<a id="flow-buying" class="flow-step flow-green" href="buying-dashboard.html"><strong>Buying</strong><span id="flow-count-buying" class="flow-count">—</span><span id="flow-state-buying" class="flow-state">Loading</span><small>Customer requests, valuations &amp; offers</small><span class="flow-cta">OPEN BUYING</span></a>
+<a id="flow-inventory" class="flow-step flow-green" href="inventory-dashboard.html"><strong>Inventory</strong><span id="flow-count-inventory" class="flow-count">—</span><span id="flow-state-inventory" class="flow-state">Loading</span><small>Purchased stock, photos &amp; pre-sales preparation</small><span class="flow-cta">OPEN INVENTORY</span></a>
+<a id="flow-selling" class="flow-step flow-yellow" href="selling-dashboard.html"><strong>Selling</strong><span id="flow-count-selling" class="flow-count">—</span><span id="flow-state-selling" class="flow-state">Loading</span><small>Listings &amp; sales channels</small><span class="flow-cta">OPEN SELLING</span></a>
+<a id="flow-orders" class="flow-step flow-yellow" href="orders-dashboard.html"><strong>Orders</strong><span id="flow-count-orders" class="flow-count">—</span><span id="flow-state-orders" class="flow-state">Loading</span><small>Customer orders &amp; payment</small><span class="flow-cta">OPEN ORDERS</span></a>
+<a id="flow-fulfilment" class="flow-step flow-yellow" href="fulfilment-dashboard.html"><strong>Fulfilment</strong><span id="flow-count-fulfilment" class="flow-count">—</span><span id="flow-state-fulfilment" class="flow-state">Loading</span><small>Dispatch &amp; tracking</small><span class="flow-cta">OPEN FULFILMENT</span></a>
+<a id="flow-returns" class="flow-step flow-yellow" href="returns-dashboard.html"><strong>Returns</strong><span id="flow-count-returns" class="flow-count">—</span><span id="flow-state-returns" class="flow-state">Loading</span><small>Returns &amp; resolutions</small><span class="flow-cta">OPEN RETURNS</span></a>
 </div>
 </section>
 
@@ -186,5 +201,33 @@ window.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('workflow-updated').textContent=(rows.length+acq.length)+' active record'+((rows.length+acq.length)===1?'':'s');
   document.getElementById('workflow-list').innerHTML=rows.length?rows.map(x=>'<div class="process-row '+(x.cls==='attention'?'green':x.cls==='awaiting'?'yellow':'blue')+'"><div><strong>'+String(x.request_reference||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><div class="process-muted">'+String(x.item?.title||'Customer request')+'</div></div><div class="process-status">'+x.label+'</div><div class="process-amount">'+(x.offer?.amount??x.value?.cash_price??x.value?.amount?'£'+Number(x.offer?.amount??x.value?.cash_price??x.value?.amount).toFixed(2):'—')+'</div>'+((x.stage==='inspection')?'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.id)+'#tradeflow-inspection-workspace">OPEN INSPECTION</a>':'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.id)+'">OPEN BUYING</a>')+'</div>').join(''):'<div class="empty">No active buying transactions.</div>';
  }catch(e){const el=document.getElementById('workflow-list');if(el)el.innerHTML='<div class="empty">Workflow status could not be loaded. Open Buying for the full record.</div>';console.warn(e)}
+});
+</script><script>
+window.addEventListener('DOMContentLoaded',async()=>{
+ try{
+  const a=await window.tradeflowSubscriberAuthReady;const key=a?.key,session=a?.session,tenantId=a?.tenantId;if(!key||!session?.access_token||!tenantId)return;
+  const api=async table=>{const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/'+table+'&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});if(!r.ok)return[];const t=await r.text();return t?JSON.parse(t):[]};
+  const [buying,inventory,listings,orders,fulfilment,returns]=await Promise.all([
+   api('buying_items?select=id,purchase_stage,status'),
+   api('inventory_assets?select=id,status'),
+   api('listings?select=id,status'),
+   api('orders?select=id,status'),
+   api('fulfilment_orders?select=id,status'),
+   api('returns?select=id,status')
+  ]);
+  const set=(id,count,cls,state)=>{document.getElementById('flow-count-'+id).textContent=count;document.getElementById('flow-state-'+id).textContent=state;const el=document.getElementById('flow-'+id);el.classList.remove('flow-green','flow-yellow','flow-blue');el.classList.add('flow-'+cls)};
+  const activeBuying=buying.filter(x=>x.purchase_stage!=='purchased').length;
+  const ready=inventory.filter(x=>x.status==='ready_for_sale').length;
+  const activeListings=listings.filter(x=>!['sold','delisted'].includes(x.status)).length;
+  const activeOrders=orders.filter(x=>!['completed','cancelled'].includes(x.status)).length;
+  const activeFulfilment=fulfilment.filter(x=>!['completed','cancelled'].includes(x.status)).length;
+  const activeReturns=returns.filter(x=>!['completed','closed'].includes(x.status)).length;
+  set('buying',activeBuying,activeBuying?'green':'blue',activeBuying?'ACTION REQUIRED':'COMPLETE');
+  set('inventory',ready,ready?'green':'yellow',ready?'SEND TO SALES':'NO ACTION');
+  set('selling',activeListings,ready?'green':activeListings?'blue':'yellow',ready?'LISTING ACTION REQUIRED':activeListings?'ACTIVE LISTINGS':'NO ACTION');
+  set('orders',activeOrders,activeOrders?'green':'yellow',activeOrders?'ACTION REQUIRED':'NO ACTION');
+  set('fulfilment',activeFulfilment,activeFulfilment?'green':'yellow',activeFulfilment?'ACTION REQUIRED':'NO ACTION');
+  set('returns',activeReturns,activeReturns?'green':'yellow',activeReturns?'ACTION REQUIRED':'NO ACTION');
+ }catch(e){console.warn('Workflow counts:',e)}
 });
 </script></body></html>

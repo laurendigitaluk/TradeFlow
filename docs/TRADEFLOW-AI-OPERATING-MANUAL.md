@@ -1256,3 +1256,10 @@ Selling now supports in-place editing of existing listings. The dashboard loads 
 ## 2026-09-23 Customer Portal Session Repair
 
 Repair: removed duplicate customer-session restoration from `customer-dashboard.js`. `customer-auth.js` is now the session restoration authority and attempts refresh-token recovery when the stored access token has expired before clearing the session. This avoids a race where one script could refresh a session while the other deleted the old session. Customer portal cache versions: dashboard v22, auth v6.
+
+
+## 2026-09-23 — Selling listing edit action correction
+
+Diagnostic correction: the previous in-place editing implementation contained the edit state and PATCH path but the Existing listings renderer did not actually emit a data-edit button. The browser therefore had no visible EDIT control. The renderer now emits **EDIT** for active listings (draft, ready, published and reserved) and binds it to beginEdit(). The focused edit form changes its submit control to **UPDATE LISTING** and explicitly unhides CANCEL EDIT. The update path PATCHes the existing listings row and preserves its current status. Sold/delisted records are excluded from editing.
+
+Selling dashboard cache is now selling-dashboard-fixed.js?v=22.

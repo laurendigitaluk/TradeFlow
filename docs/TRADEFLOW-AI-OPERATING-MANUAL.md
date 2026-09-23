@@ -1197,3 +1197,12 @@ The focused product workspace places purchase/customer/inspection information an
 Selling list rendering was changed from an unstructured data-table row to a compact responsive listing record with distinct Reference, Title, Status, Price, Channel and Action cells. Status colours and explicit buttons make workflow actions visible. Focused Product mode hides the general listings panel.
 
 Diagnostic finding: live listing LST-20260923-B5AAABFB is published on the active TradeFlow Website storefront channel, but inherited category Camera and branch Camera are both configured with selling_enabled = false. The public storefront query therefore excludes the listing. Do not treat a published row in listings as proof of public visibility; verify channel, category/branch selling configuration and the published site revision as separate conditions.
+
+
+## 2026-09-23 — Duplicate listing prevention and storefront repair
+
+Diagnostic result: repeated Product submission had created eight listings for one Inventory asset: one published listing and seven draft duplicates. The draft duplicates were removed. A partial unique index now permits only one active listing per tenant/asset while allowing sold or delisted history. Client-side preflight also detects an existing active listing and refuses duplicate creation.
+
+A separate Data API permission problem affected `buying_item_media`: authenticated users had INSERT/UPDATE/DELETE grants and a SELECT RLS policy, but no table-level SELECT grant. The authenticated SELECT grant was restored.
+
+Storefront visibility was blocked because the inherited Camera category and Camera branch had `selling_enabled=false`. Both were changed to true. The public listing function now returns the Canon listing, confirming the storefront eligibility condition at database level.

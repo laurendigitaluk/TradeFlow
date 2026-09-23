@@ -403,3 +403,12 @@ The focused product workspace places purchase/customer/inspection information an
 The Selling listings panel was redesigned to match the compact Inventory presentation: separated fields, status colour coding, consistent spacing and explicit action buttons. Focused Product mode now hides the general listing panel.
 
 Live verification found listing LST-20260923-B5AAABFB is published and assigned to active storefront channel TradeFlow Website. The reason it does not appear in the Retail Shop is the inherited Camera category and Camera branch both have selling_enabled = false; the storefront publication function filters these out. No listing row is missing from the database.
+
+
+## 2026-09-23 — Duplicate listing prevention and storefront repair
+
+The Canon test identified and repaired a duplicate sales-listing path. Eight listings had been created against the same Inventory asset; one was published and seven were duplicate drafts. The seven drafts were removed. The Inventory asset is now `listed`, and a database partial unique index plus client preflight prevents another active listing being created for the same asset.
+
+`buying_item_media` lacked the authenticated table-level SELECT grant despite having a SELECT policy, causing the Product workspace to show `permission denied for table buying_item_media`. The grant was restored.
+
+Camera category and Camera branch were enabled for selling. The live published-store function now returns the Canon listing, so the listing is eligible for the Retail Shop.

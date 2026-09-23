@@ -228,7 +228,15 @@ function renderPageManager(){
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
- box.innerHTML='<div class="control-title">Business branding</div><small>Your business name, logo and banner are managed in Business Settings. The builder distributes them into the appropriate website areas while you control the design around them.</small><div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo · managed in Business Settings</span>':'<span class="small">No business logo has been uploaded yet.</span>')+'</div><div class="branding-control branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner"><span class="small">Banner · used in the website hero</span>':'<span class="small">No website banner has been uploaded yet.</span>')+'</div><div class="actions"><a href="settings.html">Manage business name, logo &amp; banner</a></div>';
+ box.innerHTML='<div class="control-title">Website branding</div><small>Your business name and logo identify the site. Add a dedicated website banner here for the large banner area used across the website. Recommended size: <b>1600 × 600 px</b> (8:3). PNG, JPEG or WebP, maximum 5 MB.</small>'+
+ '<div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo</span>':'<span class="small">No business logo uploaded.</span>')+'</div>'+
+ '<div class="branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner">':'<div class="generated-brand-banner-preview">'+esc(siteName||'Your Business')+'</div>')+
+ '<div class="branding-banner-actions"><span class="small">'+(bannerUrl?'Website banner uploaded':'No banner uploaded — the business name will be used automatically')+'</span><div class="actions"><button type="button" data-banner-upload>Upload banner</button>'+(bannerUrl?'<button type="button" class="secondary" data-banner-remove>Remove banner</button>':'')+'</div></div></div>'+
+ '<div class="actions"><a href="settings.html">Business Settings</a></div>';
+ const upload=box.querySelector('[data-banner-upload]');
+ if(upload)upload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='banner';input.value='';input.click();});
+ const remove=box.querySelector('[data-banner-remove]');
+ if(remove)remove.addEventListener('click',()=>removeImage('banner'));
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -481,7 +489,7 @@ function loadContent(content){
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
- logoUrl=window.__tradeflowBusinessLogoLoaded?logoUrl:(s.branding?.logo_url||s.logo_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ logoUrl=window.__tradeflowBusinessLogoLoaded?logoUrl:(s.branding?.logo_url||s.logo_url||'');bannerUrl=window.__tradeflowBusinessLogoLoaded?bannerUrl:(s.branding?.banner_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
@@ -500,7 +508,7 @@ async function uploadImage(file,target){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
  setStatus('Uploading image…');
- const slug=target==='home'?'home':target==='logo'?'logo':target;
+ const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
  const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{
@@ -514,6 +522,7 @@ async function uploadImage(file,target){
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
+ else if(target==='banner')bannerUrl=url;
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -523,7 +532,7 @@ async function uploadImage(file,target){
    await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({
      tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,
      mime_type:file.type,byte_size:file.size,status:'active',created_by:session.user?.id||null,
-     asset_kind:target==='logo'?'site_logo':'site_image',retention_policy:'permanent'
+     asset_kind:target==='logo'?'site_logo':target==='banner'?'site_banner':'site_image',retention_policy:'permanent'
    })});
  }catch(e){console.warn('Site image metadata insert failed',e)}
  dirty=true;renderHeroImageControls();renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
@@ -535,6 +544,7 @@ function removeImage(target){
  else if(target==='home-buy')homeBuyImageUrl='';
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
+ else if(target==='banner')bannerUrl='';
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}

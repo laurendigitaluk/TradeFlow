@@ -40,6 +40,21 @@ function pageUrl(slug,extra){
  if(extra)u+='&'+extra;
  return u;
 }
+function publicProductUrl(listingId){
+ return pageUrl('product','listing='+encodeURIComponent(listingId||''));
+}
+async function signPublicMedia(media){
+ if(!media?.storage_bucket||!media?.storage_path)return null;
+ try{
+   const response=await fetch(SUPABASE_URL+'/storage/v1/object/sign/'+encodeURIComponent(media.storage_bucket)+'/'+media.storage_path,{
+     method:'POST',
+     headers:{apikey:KEY,'Content-Type':'application/json'},
+     body:JSON.stringify({expiresIn:3600})
+   });
+   const body=await response.json();
+   return body?.signedURL?SUPABASE_URL+'/storage/v1'+body.signedURL:null;
+ }catch{return null}
+}
 function money(value,currency){
  try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:currency||'GBP'}).format(Number(value));}
  catch{return (currency||'GBP')+' '+value;}
@@ -138,7 +153,7 @@ function renderSellingSection(site,listings){
  const sectionImage=home.sell_image_url||'';
  const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
  const list=Array.isArray(listings)?listings:[];
- const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
+ const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+publicProductUrl(p.listing_id)+'">View product</a></article>').join('');
  return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 
@@ -248,6 +263,19 @@ function pageTileConfigPublic(p){
  return {tiles,count:[3,4,6,8,9,10,12].includes(Number(p?.tile_count))?Number(p.tile_count):6,columns:[2,3,4].includes(Number(p?.tile_columns))?Number(p.tile_columns):3};
 }
 
+function renderProductPage(site,listings){
+ const list=Array.isArray(listings)?listings:[];
+ const listingId=params.get('listing')||params.get('listing_id')||'';
+ const item=list.find(x=>String(x.listing_id||'')===String(listingId));
+ if(!item){
+   return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
+ }
+ const media=(window.__tradeflowListingMedia||[]).filter(x=>String(x.listing_id)===String(item.listing_id));
+ const gallery=media.length?media.map((m,i)=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="'+(i?'lazy':'eager')+'"></figure>').join(''):'<div class="product-image-empty">No product photograph is currently available.</div>';
+ const buyUrl=customerUrl('listing_id='+encodeURIComponent(item.listing_id));
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-detail"><div class="product-gallery">'+gallery+'</div><div class="product-info"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><p class="product-description">'+esc(item.description||'Available from this business.')+'</p><dl class="product-facts"><div><dt>Quantity</dt><dd>'+esc(item.quantity??'1')+'</dd></div><div><dt>Currency</dt><dd>'+esc(item.currency||'GBP')+'</dd></div></dl><a class="start-selling product-buy-button" href="'+buyUrl+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></div></main>'+renderFooter(site);
+}
+
 function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
@@ -258,8 +286,8 @@ function renderBuyingPage(site,catalogue){
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{};
- const searchHeading=p.shop_search_heading||'Find a product';const searchPlaceholder=p.shop_search_placeholder||'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+customerUrl()+'">View &amp; buy</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Sell')+'</h1><p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="PLACEHOLDER" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ const searchHeading=p.shop_search_heading||'Find a product';const searchPlaceholder=p.shop_search_placeholder||'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Sell')+'</h1><p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function bindProductSearch(){const input=$('tradeflow-product-search');if(!input)return;const cards=Array.from(document.querySelectorAll('[data-product-search]'));input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();cards.forEach(card=>{card.hidden=!!q&&!card.dataset.productSearch.includes(q)});const visible=cards.some(card=>!card.hidden);const grid=input.closest('main')?.querySelector('.shop-grid');if(grid){let empty=grid.querySelector('.search-empty');if(!visible){if(!empty){empty=document.createElement('div');empty.className='connected-empty search-empty';empty.textContent='No products match your search.';grid.appendChild(empty)}}else if(empty)empty.remove();}})}
@@ -295,6 +323,7 @@ function applyContent(content){
  else if(page==='sell')html=renderSellPage(site,catalogue);
  else if(page==='buying')html=renderBuyingPage(site,catalogue);
  else if(page==='shop')html=renderShopPage(site,listings);
+ else if(page==='product')html=renderProductPage(site,listings);
  else {
    const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug===page&&x.enabled!==false);
    html=p?renderContentPage(site,p):renderHome(site,catalogue,listings);
@@ -320,8 +349,23 @@ async function loadListings(tenant){
  if(!tenant)return;
  try{
    const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenant));
-   window.__tradeflowListings=Array.isArray(rows)?rows:[];
- }catch(e){console.warn('TradeFlow retail listings unavailable:',e);window.__tradeflowListings=[];}
+   const listings=Array.isArray(rows)?rows:[];
+   const mediaRows=await api('/rest/v1/rpc/get_published_store_listing_media?p_tenant_id='+encodeURIComponent(tenant));
+   const media=Array.isArray(mediaRows)?mediaRows:[];
+   const enriched=[];
+   for(const m of media){
+     m.signedUrl=await signPublicMedia(m);
+     enriched.push(m);
+   }
+   window.__tradeflowListingMedia=enriched;
+   const firstImage=new Map();
+   enriched.filter(m=>m.signedUrl).sort((a,b)=>(a.sort_order||0)-(b.sort_order||0)).forEach(m=>{if(!firstImage.has(String(m.listing_id)))firstImage.set(String(m.listing_id),m.signedUrl);});
+   window.__tradeflowListings=listings.map(item=>Object.assign({},item,{image_url:firstImage.get(String(item.listing_id))||''}));
+ }catch(e){
+   console.warn('TradeFlow retail listings unavailable:',e);
+   window.__tradeflowListings=[];
+   window.__tradeflowListingMedia=[];
+ }
 }
 
 async function loadPublicProfile(tenant){

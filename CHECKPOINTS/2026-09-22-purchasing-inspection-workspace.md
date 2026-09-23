@@ -365,3 +365,18 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
 - Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
+
+
+## 2026-09-23 — Inventory → Sales repair checkpoint
+
+- Live Canon asset: AST-20260923-F0856A6E, status ready_for_sale, linked Buying item 5b9165a4-6795-45dd-81ee-28355a69a066.
+- Live Canon request: BR-744BA41BDC.
+- Live Inventory photograph exists in inventory_asset_media / media_assets, while the Buying-item media relationship currently has no rows. This explains why the previous Selling photograph panel could report no photographs even though Inventory contained a photograph.
+- Selling code was repaired to read both buying_item_media and inventory_asset_media, with media de-duplication and signed URLs.
+- Selling now also surfaces customer identity/reference from subscriber_get_buying_item_customer_details and falls back to Not provided for unavailable values.
+- The sales submit action now creates the actual listing, carries Inventory media into listing_media, transitions draft → ready → published, then transitions Inventory ready_for_sale → listed.
+- The Selling primary button is labelled SEND TO SALES / PUBLISH TO WEBSITE.
+- No Supabase schema or migration was changed in this repair.
+- GitHub commits: aa72edde2cd097a646f01dd66614c69f6d89b4b5 (Selling media/publication logic), 72b9a1538ad8d330e926189b73a94797b6fafeb8 (Selling primary action wording).
+- Verification completed: live database inspection confirmed the Canon inventory asset, linked buying item/request, inspection, Inventory photograph, active TradeFlow Website channel, and published site revision. The code path was inspected against the live schema and workflow RPC.
+- Remaining end-to-end test: the Canon has no genuine retail asking price yet, so a real website publication has not been performed. Do not claim the product is live on the public website until that test is completed.

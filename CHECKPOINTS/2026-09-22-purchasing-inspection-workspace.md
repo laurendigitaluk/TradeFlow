@@ -277,3 +277,12 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - The payment CTA is intentionally disabled until bank details are present and a bank payment reference has been entered. Typing a reference now immediately enables `CONFIRM PAYMENT SENT & COMPLETE PURCHASE`.
 - The CTA calls `subscriber_complete_purchase`; successful completion records the payment, creates the acquisition/acquisition item and ready-for-sale inventory asset, changes the buying item to `purchased`, queues the existing `payment_sent` customer notification, and refreshes the workflow in place.
 - Buying dashboard cache versions are now `buying-dashboard.js?v=44` and `buying-inspection.js?v=11`.
+
+
+## 2026-09-23 — Payment CTA and customer payment-status refresh follow-up
+
+- The payment completion CTA was adjusted so it is enabled whenever the customer bank details are present. It no longer becomes silently unclickable simply because the payment-reference field is blank. Clicking it without a reference now focuses the reference field and displays the required-reference message.
+- The CTA still requires a bank payment reference before `subscriber_complete_purchase` can execute. This preserves the rule that staff must make the external bank transfer before recording it as paid.
+- The customer portal now refreshes the selling workflow every 10 seconds while visible. After the purchase-completion transaction changes the buying item to `purchased`, the customer dashboard updates without requiring a manual page refresh.
+- The customer-facing purchased status now explicitly reads `Payment sent — purchase complete` and explains that the business has sent the payment and the item is now part of business inventory.
+- Current cache versions: customer dashboard `v21`; buying inspection `v12`.

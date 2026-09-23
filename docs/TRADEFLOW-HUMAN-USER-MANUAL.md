@@ -715,3 +715,8 @@ Existing sales listings are now editable from the Selling dashboard. Use **EDIT*
 ## 2026-09-23 Customer Portal Session Repair
 
 The customer portal login loop was traced to two separate scripts attempting to restore the same customer session on page load. The dashboard could refresh an expired access token while the authentication script simultaneously validated the old token and removed the session, leaving the login panel visible. Session restoration is now owned by `customer-auth.js`; expired access tokens are refreshed using the stored refresh token before the session is accepted. The dashboard no longer performs a second independent restoration. Cache versions were advanced to customer dashboard v22 and customer auth v6.
+
+
+## 2026-09-23 — Selling listing edit action correction
+
+The Existing listings block now includes a visible **EDIT** button for active listings, including published products. Selecting EDIT opens that exact listing in the Retail listing form; it does not require searching Inventory first and does not create a new listing. The form button changes to **UPDATE LISTING**. Updating changes the existing listing's title, description, asking price, retail condition, postage option, postage price and dispatch time while preserving its current publication status. Sold and delisted history is not offered for editing.

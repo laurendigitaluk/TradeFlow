@@ -1263,3 +1263,10 @@ Repair: removed duplicate customer-session restoration from `customer-dashboard.
 Diagnostic correction: the previous in-place editing implementation contained the edit state and PATCH path but the Existing listings renderer did not actually emit a data-edit button. The browser therefore had no visible EDIT control. The renderer now emits **EDIT** for active listings (draft, ready, published and reserved) and binds it to beginEdit(). The focused edit form changes its submit control to **UPDATE LISTING** and explicitly unhides CANCEL EDIT. The update path PATCHes the existing listings row and preserves its current status. Sold/delisted records are excluded from editing.
 
 Selling dashboard cache is now selling-dashboard-fixed.js?v=22.
+
+
+## 2026-09-23 — Retail listing photograph editing
+
+Selling edit mode now manages `listing_media` separately from `inventory_asset_media`. `loadListingPhotos()` reads the exact listing's media links and signs their private Storage URLs. `uploadListingPhotos()` stores new files under the listing path, creates `media_assets` records with `asset_kind='listing_photo'`, and inserts `listing_media` links. `removeListingPhoto()` deletes only the listing-media link; the underlying media asset/storage file is retained. This preserves purchase/source photographs while allowing the retail listing's own photo set to be changed.
+
+Selling dashboard cache is now `selling-dashboard-fixed.js?v=23`.

@@ -268,3 +268,12 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - `CONFIRM PAYMENT SENT & COMPLETE PURCHASE` remains disabled until the payment prerequisites are present and a bank payment reference has been entered. TradeFlow does not perform the external bank transfer; staff make the bank transfer first, then record the reference in TradeFlow.
 - `subscriber_complete_purchase` is now wired to the Buying dashboard. A successful confirmation atomically records the outbound seller payment, creates the acquisition and acquisition item, creates the inventory asset with `ready_for_sale`, moves the buying item to `purchased`, and queues the existing `payment_sent` customer notification.
 - The current Canon test item remains uncompleted. It is at `final_offer_accepted`, with customer bank details present, and has no acquisition or inventory record yet. No payment was recorded during this repair.
+
+
+## 2026-09-23 — Payment UI consolidation and CTA repair
+
+- The first payment UI repair created a duplicate payment panel because both the Buying item workspace and the existing inspection workspace rendered payment controls. The duplicate Buying-dashboard payment panel has been removed. The inspection workspace is now the single payment UI for the `final_offer_accepted` stage.
+- Bank details now use explicit Reveal/Hide controls rather than relying on a browser `title` tooltip. Sort code and account number are masked by default and can be revealed by an authorised subscriber user when making the bank transfer.
+- The payment CTA is intentionally disabled until bank details are present and a bank payment reference has been entered. Typing a reference now immediately enables `CONFIRM PAYMENT SENT & COMPLETE PURCHASE`.
+- The CTA calls `subscriber_complete_purchase`; successful completion records the payment, creates the acquisition/acquisition item and ready-for-sale inventory asset, changes the buying item to `purchased`, queues the existing `payment_sent` customer notification, and refreshes the workflow in place.
+- Buying dashboard cache versions are now `buying-dashboard.js?v=44` and `buying-inspection.js?v=11`.

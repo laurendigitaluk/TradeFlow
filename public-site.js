@@ -276,7 +276,15 @@ function renderProductPage(site,listings){
  const media=(window.__tradeflowListingMedia||[]).filter(x=>String(x.listing_id)===String(item.listing_id));
  const gallery=media.length?media.map((m,i)=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="'+(i?'lazy':'eager')+'"></figure>').join(''):'<div class="product-image-empty">No product photograph is currently available.</div>';
  const buyUrl=customerUrl('listing_id='+encodeURIComponent(item.listing_id));
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-detail"><div class="product-gallery">'+gallery+'</div><div class="product-info"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><p class="product-description">'+esc(item.description||'Available from this business.')+'</p><dl class="product-facts"><div><dt>Quantity</dt><dd>'+esc(item.quantity??'1')+'</dd></div><div><dt>Currency</dt><dd>'+esc(item.currency||'GBP')+'</dd></div></dl><a class="start-selling product-buy-button" href="'+buyUrl+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></div></main>'+renderFooter(site);
+ const shipping=item.listing_data?.shipping||{};
+ const shippingMethod=String(shipping.method||'customer_pays');
+ const shippingPrice=Number(shipping.price);
+ let postageText='Not set';
+ if(Number.isFinite(shippingPrice)&&shippingPrice>0)postageText=money(shippingPrice,item.currency||'GBP');
+ else if(shippingMethod==='included')postageText='Included in price';
+ else if(shippingMethod==='free')postageText='Free';
+ else if(shippingMethod==='customer_pays')postageText='Not set';
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-detail"><div class="product-gallery">'+gallery+'</div><div class="product-info"><span class="product-category">'+esc(item.category_name||'Product')+'</span><h1>'+esc(item.title||'Product')+'</h1><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><p class="product-description">'+esc(item.description||'Available from this business.')+'</p><dl class="product-facts"><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl><a class="start-selling product-buy-button" href="'+buyUrl+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></div></main>'+renderFooter(site);
 }
 
 function renderBuyingPage(site,catalogue){

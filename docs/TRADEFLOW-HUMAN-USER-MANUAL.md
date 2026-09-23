@@ -606,3 +606,15 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Manual Selling category and branch dropdowns have been removed. The listing inherits the category and branch already attached to the purchased Inventory asset, which are retained from the original Buying category/branch. The shared Category → Branch → Properties structure remains independently enabled for Buying/Selling, but the individual purchased item should not be re-categorised manually during listing preparation.
 - The Selling workspace therefore uses the original buying classification as the source of truth for the shop listing, while the sales team concentrates on title, description, price, photographs, postage/dispatch and sales-channel publication.
 - Selling dashboard cache is now `selling-dashboard-fixed.js?v=11`.
+
+
+## 2026-09-23 — Dashboard workflow colour coding and Inventory action layout
+
+- The Business Dashboard workflow now shows a live numeric count on each core stage: Buying, Inventory, Selling, Orders, Fulfilment and Returns.
+- Workflow colour semantics are fixed: **green = action required**, **yellow = no action/waiting**, **blue = completed/active historical state**. Each stage has a clear CTA button rather than relying on plain text.
+- Inventory is explicitly shown as the purchased-stock hand-off. A ready-for-sale inventory count appears in the Business Workflow and the Inventory card is green with **SEND TO SALES** when stock needs sales preparation.
+- The Inventory page now keeps **Add product** collapsed by default as a dropdown/expandable block. The status/filter/refresh area is a separate block immediately below it.
+- Inventory status rows are colour-coded and use explicit action buttons. A ready_for_sale asset is green and exposes **SEND TO SALES**; completed lifecycle states use blue; waiting/no-action states use yellow.
+- Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
+- Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
+- Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.

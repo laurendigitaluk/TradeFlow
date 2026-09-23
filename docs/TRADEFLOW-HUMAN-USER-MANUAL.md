@@ -725,3 +725,13 @@ The Existing listings block now includes a visible **EDIT** button for active li
 ## 2026-09-23 — Retail listing photograph editing
 
 When an existing listing is opened with **EDIT**, the Selling workspace now loads the photographs attached specifically to that retail listing. Staff can select additional image files and use **ADD / UPDATE LISTING PHOTOGRAPHS** to attach them to the listing. Existing retail listing photographs can be removed from the listing with **REMOVE FROM LISTING**. Removing a photograph unlinks it from the listing but does not delete the underlying media file from TradeFlow. Purchase/customer/inspection photographs remain separate source material.
+
+
+
+## 2026-09-23 — Sales Channels / Marketplace Management foundation
+
+A dedicated **Sales Channels** workspace has been added to the subscriber business navigation. It shows the tenant's configured channels and active listing counts. The current Camerashack test tenant has one live channel, displayed to staff as **Website**, with one active Canon listing. eBay, Amazon and Other are shown as marketplace destinations that are not connected; the page does not create fake connections or store marketplace credentials.
+
+The Selling product workspace now also includes **This product across channels**. It reads all non-sold/non-delisted listings for the same physical Inventory asset and shows each channel's listing status, price and an EDIT LISTING action. The physical Inventory asset remains the stock master record; channel listings are separate records linked to that asset.
+
+The automatic **DELIST REQUIRED** process has not yet been activated. It remains the next lifecycle step after channel management and the order/sale transition are verified.

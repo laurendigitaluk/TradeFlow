@@ -319,3 +319,15 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Selling accepts a preselected inventory asset and lets staff choose an active sales channel. The listing flow carries the inventory photographs into the listing. The inventory asset retains its lifecycle independently from the listing.
 - The Selling asset lookup now includes `branch_id`, fixing the listing form's branch requirement for inventory-created assets.
 - Inventory and Selling navigation no longer expose Acquisitions. The Inventory script cache is `inventory-dashboard-fixed.js?v=11`; Selling is `selling-dashboard-fixed.js?v=8`.
+
+
+## 2026-09-23 — Replace Acquisitions with inventory-to-sales workflow
+
+- The separate Acquisitions UI is retired from the operational workflow. A completed purchase now creates the paid acquisition record internally and the inventory asset directly at `ready_for_sale`.
+- The old Acquisitions page no longer loads a separate workspace; it redirects to Inventory. This removes the obsolete `Loading acquisitions…` screen from the normal business flow.
+- Inventory `ready_for_sale` is now the hand-off point to Selling. The inventory dashboard no longer offers a direct `Mark listed` action. It provides `Send to sales`, opening the Selling workspace focused on that inventory asset.
+- Selling is the place where staff add/confirm the sales listing information: title, description, asking price, sales channel and postage/dispatch details. Inventory photographs are carried into the listing automatically.
+- A live `TradeFlow Website` storefront sales channel has been created for the Camerashack tenant. The existing public website only displays listings after a listing is actually created and moved to `published`; changing an inventory asset to `listed` was never sufficient to create a website listing.
+- The Canon test asset was returned from the accidental `listed` status to `ready_for_sale`. It has not been published as a sales listing because no genuine selling price/details have been supplied yet.
+- The selling channel model remains extensible for marketplace channels. A marketplace must have its own configured sales channel/integration before TradeFlow can publish to it; the website channel is the current working storefront channel.
+- Cache versions: `inventory-dashboard-fixed.js?v=11`, `selling-dashboard-fixed.js?v=9`.

@@ -84,12 +84,6 @@ function heroImage(url,alt,cls){
  return '<div class="public-demo-image '+(cls||'')+'" aria-hidden="true"></div>';
 }
 
-function renderBrandBanner(site){
- const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
- const url=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
- return url?'<div class="public-brand-banner"><img src="'+esc(url)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':'';
-}
-
 function renderHero(site){
  const home=site.homepage||{};
  const t=site.template||'editorial';
@@ -234,7 +228,7 @@ function renderSellPage(site,catalogue){
 <section class="sell-step" data-step="6" hidden><h2>A few final questions</h2><p>These details help our team review the request.</p><label>Is anything normally supplied with this package missing?<select id="sell-missing"><option value="">Choose…</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Do you have the legal right to sell this equipment?<select id="sell-ownership"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option><option value="not-sure">I am not sure</option></select></label><label id="sell-serial-wrap" hidden>Serial number<input id="sell-serial" autocomplete="off"></label><label>Anything else we should know? <span class="optional">(optional)</span><textarea id="sell-notes" rows="4" placeholder="Accessories, faults, missing items, history or anything else that matters."></textarea></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Review request</button></div></section>
 <section class="sell-step" data-step="7" hidden><h2>Check your selling request</h2><p>Review the details before continuing to your customer account.</p><div id="sell-summary" class="sell-summary"></div><div class="sell-handoff"><strong>Next step</strong><p>Continue to your customer account to submit the request. Your answers will be carried across so you do not have to enter them again.</p></div><div class="sell-actions"><button type="button" data-back>Back</button><button type="submit">Continue to customer account →</button></div></section>
 </form></main>`;
- return renderPublicNav(site,catalogue)+renderBrandBanner(site)+body.replace('__OPTIONS__',options)+renderFooter(site);
+ return renderPublicNav(site,catalogue)+body.replace('__OPTIONS__',options)+renderFooter(site);
 }
 
 function bindSellWizard(site,catalogue){
@@ -278,7 +272,7 @@ function renderProductPage(site,listings){
  const listingId=params.get('listing')||params.get('listing_id')||'';
  const item=list.find(x=>String(x.listing_id||'')===String(listingId));
  if(!item){
-   return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderBrandBanner(site)+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
+   return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
  }
  const media=(window.__tradeflowListingMedia||[]).filter(x=>String(x.listing_id)===String(item.listing_id));
  const mainMedia=media[0];
@@ -298,7 +292,7 @@ function renderProductPage(site,listings){
  else if(shippingMethod==='included')postageText='Included in price';
  else if(shippingMethod==='free')postageText='Free';
  else if(shippingMethod==='customer_pays')postageText='Not set';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderBrandBanner(site)+
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+
    '<main class="public-page product-page"><div class="product-detail">'+
    '<header class="product-heading"><h1>'+esc(item.title||'Product')+'</h1></header>'+
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
@@ -313,21 +307,21 @@ function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
  const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>'+esc(p.buying_action_heading||'Sell your items')+'</strong><span>'+esc(p.buying_action_text||'Choose a category to start your selling journey.')+'</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- return renderPublicNav(site,catalogue)+renderBrandBanner(site)+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const logoUrl=window.__tradeflowPublicProfile?.logo_url||site.branding?.logo_url||site.logo_url||'';
+ const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const branding=site.branding&&typeof site.branding==='object'?site.branding:{}; const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||''); const bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
  const searchHeading=p.shop_search_heading||'Find a product';const configuredSearchPlaceholder=String(p.shop_search_placeholder||'').trim();const searchPlaceholder=configuredSearchPlaceholder&&configuredSearchPlaceholder.toUpperCase()!=='PLACEHOLDER'?configuredSearchPlaceholder:'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderBrandBanner(site)+'<main class="public-page"><div class="page-title-block shop-page-title">'+(logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(site.name||'Business')+'">':'<h1>'+esc(site.name||'What We Sell')+'</h1>')+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block shop-page-title">'+(bannerUrl?'<div class="shop-page-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':(logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(site.name||'Business')+'">':'<h1>'+esc(site.name||'What We Sell')+'</h1>'))+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function bindProductSearch(){const input=$('tradeflow-product-search');if(!input)return;const cards=Array.from(document.querySelectorAll('[data-product-search]'));input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();cards.forEach(card=>{card.hidden=!!q&&!card.dataset.productSearch.includes(q)});const visible=cards.some(card=>!card.hidden);const grid=input.closest('main')?.querySelector('.shop-grid');if(grid){let empty=grid.querySelector('.search-empty');if(!visible){if(!empty){empty=document.createElement('div');empty.className='connected-empty search-empty';empty.textContent='No products match your search.';grid.appendChild(empty)}}else if(empty)empty.remove();}})}
 
 function renderContentPage(site,p){
  const image=p.image_url?'<img class="content-page-image" src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||p.title||'Page image')+'">':'';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderBrandBanner(site)+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function applyContent(content){

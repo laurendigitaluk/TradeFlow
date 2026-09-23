@@ -705,3 +705,8 @@ Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.
 - The published-store RPC now exposes `listing_data` so the public site can read the listing's retail condition and shipping information without exposing the underlying listings table directly.
 - Public site cache version is now **public-site.js?v=59 / public-site.css?v=59**.
 - The existing Canon test listing was created before the new retail-condition requirement and currently has no `listing_data.condition`; therefore its public product page will show **Condition: Not specified** until a retail condition is recorded. No A/B/C/D inspection grade is silently converted into a retail condition.
+
+
+## 2026-09-23 Selling Listing Editing
+
+Existing sales listings are now editable from the Selling dashboard. Use **EDIT** on an existing listing to load its current title, description, asking price, retail condition, postage option, postage price and dispatch time. **SAVE CHANGES** updates the existing listing in place; it does not create a duplicate and does not change its publication status. **CANCEL EDIT** exits edit mode. Published website product pages read the updated listing data through the published-store RPC, so price, description, condition and P&P changes are reflected on the public product page after refresh.

@@ -810,3 +810,36 @@ When continuing work, distinguish:
 
 Do not describe an item as browser verified when only GitHub or database verification has occurred.
 
+
+
+## Documentation catch-up — Test One restore baseline — 23 September 2026
+
+This document is synchronised with the locked Test One baseline.
+
+### Known-good end-to-end path
+
+New subscriber/business → new subscriber customer → customer request/selling journey → buying/valuation → offer → inspection → payment/bank-detail handoff → purchase completion → Inventory → Selling → Sales Channels → published retail website listing.
+
+### Locked restore point
+
+- GitHub repository: `laurendigitaluk/TradeFlow`
+- Restore branch: `checkpoint-test-one-20260923`
+- Functional baseline commit: `80c6e20b4fa89b37ed6fab2480fb1eb46293a0d1`
+- Checkpoint documentation commit on the restore branch: `ea00d6ae238f6e47c4798b73ec6340ade2c2d5fd`
+- Supabase project: `twfbmjwwqzxdxvclxbun`
+
+### Test Two rule
+
+Test Two is a new validation run against this known-good baseline. Do not overwrite or redesign working Test One behaviour merely because a Test Two step fails. Identify the first failing boundary, compare it with this checkpoint, and repair only the required layer.
+
+### Remaining identified subscriber website work
+
+The remaining subscriber-facing website feature is payment processing for the subscriber's own **Subscribe / receive payments** journey. This is separate from the already completed customer purchase/payment workflow used during Test One.
+
+### Channel state
+
+The Sales Channels foundation is part of the Test One baseline. The physical Inventory asset remains the single stock master record. TradeFlow Website is the active storefront channel; eBay, Amazon and Other are configurable tenant channels but are not actually connected to external marketplace APIs yet.
+
+### Verification language
+
+Use these states precisely: **Implemented in GitHub**, **Live DB verified**, **Browser verified**, and **Checkpointed**. Do not call something browser verified unless it has actually been exercised in the browser.

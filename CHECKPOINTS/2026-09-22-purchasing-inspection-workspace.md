@@ -361,7 +361,7 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Workflow colour semantics are fixed: **green = action required**, **yellow = no action/waiting**, **blue = completed/active historical state**. Each stage has a clear CTA button rather than relying on plain text.
 - Inventory is explicitly shown as the purchased-stock hand-off. A ready-for-sale inventory count appears in the Business Workflow and the Inventory card is green with **SEND TO SALES** when stock needs sales preparation.
 - The Inventory page now keeps **Add product** collapsed by default as a dropdown/expandable block. The status/filter/refresh area is a separate block immediately below it.
-- Inventory status rows are colour-coded and use explicit action buttons. A ready_for_sale asset is green and exposes **SEND TO SALES**; completed lifecycle states use blue; waiting/no-action states use yellow.
+- Inventory status rows are colour-coded and use explicit action buttons. A ready_for_sale asset is green and exposes **REVIEW & COMPLETE**. The inline Sales hand-off has been removed; **SEND TO SALES** only appears inside the asset detail after the Inventory completion check passes. completed lifecycle states use blue; waiting/no-action states use yellow.
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
 - Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
@@ -380,3 +380,12 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - GitHub commits: aa72edde2cd097a646f01dd66614c69f6d89b4b5 (Selling media/publication logic), 72b9a1538ad8d330e926189b73a94797b6fafeb8 (Selling primary action wording).
 - Verification completed: live database inspection confirmed the Canon inventory asset, linked buying item/request, inspection, Inventory photograph, active TradeFlow Website channel, and published site revision. The code path was inspected against the live schema and workflow RPC.
 - Remaining end-to-end test: the Canon has no genuine retail asking price yet, so a real website publication has not been performed. Do not claim the product is live on the public website until that test is completed.
+
+
+## 2026-09-23 — Inventory completion gate before Sales
+
+The purchased item is represented once as an Inventory asset. It is no longer an active Buying item after purchase completion. The Inventory list now presents each purchased asset as a clear card showing the asset reference, product title, status, condition, quantity, purchase price, current value, location and serial number.
+
+The old inline SEND TO SALES action has been removed from the Inventory list. Staff must select **REVIEW & COMPLETE**, check the Inventory record and complete the required stock information first. The detail view shows a completion checklist. SEND TO SALES is only displayed when the required Inventory information is complete. This prevents an unfinished asset from being handed to Sales and reinforces the workflow: Buying → Inventory → Sales, with one Inventory asset rather than a duplicate purchase item.
+
+The current completion gate checks: product title, description, condition, quantity, purchase price, category, branch, location and serial number. Current value is retained as a separate field and is not treated as the retail asking price.

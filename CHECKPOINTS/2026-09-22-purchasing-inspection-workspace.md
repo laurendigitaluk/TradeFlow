@@ -468,3 +468,10 @@ The Selling dashboard was extended so existing sales products can be edited in p
 ## 2026-09-23 Customer Portal Login Checkpoint
 
 Customer account authentication was investigated after the portal returned to the login panel. The test customer Auth account exists, is email-confirmed, and has a matching active tenant customer record. The fault was found in client-side session restoration: both customer-dashboard.js and customer-auth.js were independently restoring the same localStorage session. When an access token expired, the dashboard could refresh it while customer-auth simultaneously rejected the old token and removed the session. Session restoration is now centralised in customer-auth.js with refresh-token recovery. Dashboard v22 no longer performs a second restoration; auth is v6.
+
+
+## 2026-09-23 — Selling listing edit action correction
+
+The previous edit implementation had the update logic but the Existing listings renderer did not emit the EDIT button. This is corrected. Active listing rows now expose EDIT directly in the Action column, including the published Canon test listing. EDIT opens that exact listing in the retail form; the form submit control becomes **UPDATE LISTING** and updates the existing row in place. No inventory search is required and no duplicate listing is created. Sold and delisted records remain historical and are not editable.
+
+Selling dashboard cache is now selling-dashboard-fixed.js?v=22.

@@ -744,3 +744,35 @@ The physical inventory_assets row remains the stock master record. Each marketpl
 Automatic sale propagation is deliberately still open. The next lifecycle boundary is: sale on one channel → authoritative sold transition for the physical asset → other active channel listings become DELIST REQUIRED → staff/system closes those listings. This must be implemented against the authoritative order/sale workflow rather than as a browser-only status change.
 
 **Status:** Implemented in GitHub; database-tested; browser verification required. The multi-channel automatic delisting boundary remains AMBER.
+
+## Stage 1P.1 — Editable Sales Channels and connection setup — 23 September 2026
+
+Implemented the next layer of Sales Channels / Marketplace Management on top of the existing physical-inventory master architecture.
+
+### Implemented
+- eBay, Amazon and Other now exist as real tenant-scoped sales_channels records rather than virtual UI-only rows.
+- Added editable channel configuration: name, type, slug, description, enabled state and connection/setup instructions.
+- Added **+ ADD SALES CHANNEL** for custom channels.
+- Added **EDIT** and guarded **REMOVE** actions.
+- Channels with active listings are disabled rather than deleted; channels with no active listings may be deleted. The core TradeFlow Website channel is protected from removal in this page.
+- Added setup guidance for eBay and Amazon based on their current developer documentation. No marketplace credentials or false connection state are stored.
+- Existing per-product channel matrix remains the place to see the same physical Inventory asset across channels.
+
+### Live database state
+The Camerashack tenant now has four channel records: TradeFlow Website, eBay, Amazon and Other. TradeFlow Website is the only connected/active storefront. The three marketplace channels are currently not connected.
+
+### External connection prerequisites
+For eBay, the eventual integration will require an eBay Developers Program application, OAuth/RuName configuration and the scopes required by the intended Sell APIs. eBay's Inventory API also requires seller business policies and an inventory location before offers can be published.
+
+For Amazon, the eventual integration will require an SP-API developer/application setup, approved roles and the applicable seller authorization flow. Listing synchronization will use the SP-API listing/catalog/product-type capabilities.
+
+### Still not implemented
+- Real eBay OAuth connection callback/token exchange and secure credential storage.
+- Real Amazon SP-API authorization/token exchange and secure credential storage.
+- Channel-specific listing publish/update/delist APIs.
+- Authoritative sale propagation and automatic DELIST REQUIRED handling across other active listings.
+
+### Verification
+GitHub implementation was syntax-checked for sales-channels.js. Live Supabase verification confirms the four tenant channel records and existing tenant-scoped RLS policies. Browser end-to-end verification of the new editable/add/remove modals is still required.
+
+Status: **Implemented in GitHub + live DB, browser verification pending.**

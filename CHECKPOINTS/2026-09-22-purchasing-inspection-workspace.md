@@ -396,3 +396,10 @@ The current completion gate checks: product title, description, condition, quant
 Inventory is now intentionally compact: each active item is a single green action-required line showing only the product title, status and **REVIEW & COMPLETE**. The row opens the focused product workspace. The previous verbose inventory card and inline hand-off were removed so large inventories do not become long scrolling pages.
 
 The focused product workspace places purchase/customer/inspection information and retained photographs first, followed by a simple retail listing template. The listing template pre-fills the product title and uses inspection notes as the listing description when available, otherwise the original customer/item description. Retail condition uses the business taxonomy: **Poor, Good, Very good, Excellent, Opened, Never used, Sealed**. Existing A/B/C/D values were found in the live `condition_grade` data; they were not part of the newly requested retail taxonomy, so legacy grades are not silently converted and the user is prompted to select the new wording. Additional listing photographs can be added before **SEND TO WEBSITE** publishes the listing.
+
+
+## 2026-09-23 — Selling list cleanup and Retail Shop diagnosis
+
+The Selling listings panel was redesigned to match the compact Inventory presentation: separated fields, status colour coding, consistent spacing and explicit action buttons. Focused Product mode now hides the general listing panel.
+
+Live verification found listing LST-20260923-B5AAABFB is published and assigned to active storefront channel TradeFlow Website. The reason it does not appear in the Retail Shop is the inherited Camera category and Camera branch both have selling_enabled = false; the storefront publication function filters these out. No listing row is missing from the database.

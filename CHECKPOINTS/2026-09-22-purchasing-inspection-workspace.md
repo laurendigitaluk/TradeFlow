@@ -259,3 +259,12 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - Live Supabase verification for customer `valley-discounts@outlook.com`, tenant `21fca2c5-5da2-4ff6-9f8e-318f9b6277f9`, confirms the customer profile, request `BR-744BA41BDC`, approved £100 valuation, published final offer `OF-A03E4C24CB`, and customer-facing RPCs all return the expected records when run under the customer's auth identity.
 - The test buying item had a published final offer but was still marked `final_offer_required`. This was repaired to `final_offer_sent`, guarded by the existence of the published final offer. No acquisition or inventory record was created.
 - Next customer step remains: review the £100 final offer and accept/refuse it. If accepted, the portal should collect bank details; the business then completes the external bank transfer and records the payment reference before acquisition/inventory creation.
+
+
+## 2026-09-23 — Final payment, bank-detail reveal and purchase completion
+
+- After final-offer acceptance, the Buying workflow now has a payment-completion path in the current repository. It checks the accepted final offer and customer bank details through a finance-gated RPC before enabling payment confirmation.
+- Customer bank details are masked by default in the subscriber Buying workspace. Sort code and account number can be hovered to reveal the full values. Full values are only returned by `subscriber_get_buying_item_payment_details`, which requires both `buying.view` and `finance.manage` permissions.
+- `CONFIRM PAYMENT SENT & COMPLETE PURCHASE` remains disabled until the payment prerequisites are present and a bank payment reference has been entered. TradeFlow does not perform the external bank transfer; staff make the bank transfer first, then record the reference in TradeFlow.
+- `subscriber_complete_purchase` is now wired to the Buying dashboard. A successful confirmation atomically records the outbound seller payment, creates the acquisition and acquisition item, creates the inventory asset with `ready_for_sale`, moves the buying item to `purchased`, and queues the existing `payment_sent` customer notification.
+- The current Canon test item remains uncompleted. It is at `final_offer_accepted`, with customer bank details present, and has no acquisition or inventory record yet. No payment was recorded during this repair.

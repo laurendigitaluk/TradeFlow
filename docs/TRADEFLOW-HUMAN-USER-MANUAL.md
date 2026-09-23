@@ -618,3 +618,16 @@ Customer portal scripts must load deterministically: `customer-dashboard.js` fir
 - Selling retains the inherited original buying category/branch rather than asking sales staff to choose unrelated category and branch values. The selling listing should therefore use the original buying classification automatically; the sales team should not have to reclassify the purchased item merely to create a listing.
 - Selling also has source-information and photograph areas for the customer's original submission and inspection record, plus customer/inspection photographs and additional sales photographs. These are now part of the intended listing-preparation workflow and should be visible below the listing form when the current deployed page is refreshed.
 - Cache/version checkpoints: Inventory inventory-dashboard-fixed.js?v=12; Selling selling-dashboard-fixed.js?v=11.
+
+
+## 2026-09-23 — Purchased Inventory → Sales Preparation → Website
+
+A completed purchase hands the item to Inventory with status **Prepared for sale / ready_for_sale**. Inventory is the operational stock hand-off; Acquisitions remains an internal accounting/audit record.
+
+From Inventory, staff open the purchased asset and use **SEND TO SALES**. Selling preloads the inventory title, condition, price suggestion where available, category and branch, and now also retrieves the original customer submission and inspection context from the linked Buying item. Customer name/reference and structured customer fields are shown where available; missing information is displayed as not provided rather than being invented.
+
+Photographs are sourced from both the original Buying-item media links and the Inventory asset media links. This is important because photographs added to the purchased Inventory asset do not necessarily exist in buying_item_media. The Selling workspace also permits additional sales photographs to be uploaded to the Inventory asset.
+
+The primary sales action is **SEND TO SALES / PUBLISH TO WEBSITE**. Completing the listing creates the actual listings record, carries Inventory photographs into listing_media, transitions the listing through draft → ready → published, and then transitions the Inventory asset from ready_for_sale → listed. Publication is therefore based on the actual storefront listing record rather than merely changing an Inventory status.
+
+The current Camerashack test tenant has an active **TradeFlow Website** sales channel and a published site revision. The Canon remains unpublished until a genuine retail asking price and other required sales information are entered.

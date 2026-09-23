@@ -286,3 +286,11 @@ For the current Canon test, the item is at final_offer_required with no bank det
 - The customer portal now refreshes the selling workflow every 10 seconds while visible. After the purchase-completion transaction changes the buying item to `purchased`, the customer dashboard updates without requiring a manual page refresh.
 - The customer-facing purchased status now explicitly reads `Payment sent — purchase complete` and explains that the business has sent the payment and the item is now part of business inventory.
 - Current cache versions: customer dashboard `v21`; buying inspection `v12`.
+
+
+## 2026-09-23 — Inventory payment-order guard repair
+
+- The first live attempt to confirm the Canon payment reached the inventory boundary and returned: `Inventory assets require a recorded acquisition payment`.
+- Root cause: `subscriber_complete_purchase` created the paid acquisition and acquisition item, but inserted the inventory asset before linking the outbound `payment_records` row to the acquisition. The inventory guard correctly rejected that ordering.
+- The completion transaction has been repaired so `payment_records.acquisition_id` is populated immediately after the paid acquisition is created and before the inventory asset is inserted. The inventory boundary can therefore verify the recorded acquisition payment as designed.
+- The failed attempt rolled back cleanly. Current Canon state remains `final_offer_accepted` with zero payment records, zero acquisitions and zero inventory assets. No purchase was completed by the failed attempt.

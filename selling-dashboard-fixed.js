@@ -129,7 +129,7 @@ $('listing-form').onsubmit=async e=>{
      const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
      const saved=(updated||[])[0];
      await load();
-     if(saved)show(saved.id);
+     if(saved){await beginEdit(saved.id);show(saved.id);}
      msg('Listing changes saved and published website details updated.','success');
      return;
    }
@@ -148,5 +148,5 @@ $('listing-form').onsubmit=async e=>{
  }catch(e){msg(e.message||String(e),'error')}
 };
 function applyFocusedProductMode(){const focusAsset=new URLSearchParams(location.search).get('asset');if(!focusAsset)return;document.body.classList.add('focused-product');const panel=$('listings-panel');if(panel){panel.hidden=true;panel.style.display='none';}const selector=$('asset');if(selector)selector.disabled=true;const a=assets.find(x=>x.id===focusAsset);if(a&&$('product-heading'))$('product-heading').textContent=a.title||'Product';}
-$('upload-sales-photos').onclick=uploadSalesPhotos;$('status-filter').onchange=load;$('refresh').onclick=load;$('sign-out').onclick=()=>{localStorage.removeItem(SESSION_STORAGE);location.href='customer-dashboard.html';};load();
+$('upload-sales-photos').onclick=uploadSalesPhotos;$('cancel-edit').onclick=cancelEdit;$('status-filter').onchange=load;$('refresh').onclick=load;$('sign-out').onclick=()=>{localStorage.removeItem(SESSION_STORAGE);location.href='customer-dashboard.html';};load();
 function syncAssetContext(){const a=assets.find(x=>x.id===$('asset').value);if(a){$('title').value=a.title||'';$('description').value=a.description||'';$('currency').value=(a.currency||'GBP').toUpperCase();$('price').value=a.current_value??'';$('asset-condition').value='';$('asset-serial').value=a.serial_number||'';$('asset-quantity').value=Number(a.quantity)||1;$('asset-location').value=a.location||'';$('category-display').textContent=categories.find(x=>x.id===a.category_id)?.name||'Inherited from original buying category';$('branch-display').textContent=branches.find(x=>x.id===a.branch_id)?.name||'Inherited from original buying branch';loadSourceInformation(a)}else{$('title').value='';$('description').value='';$('currency').value='GBP';$('price').value='';$('asset-condition').value='';$('asset-serial').value='';$('asset-quantity').value='';$('asset-location').value='';$('category-display').textContent='Inherited from original buying category';$('branch-display').textContent='Inherited from original buying branch';$('source-information').innerHTML='<div class="empty">Select an inventory asset to load the source information.</div>';$('sales-photos').innerHTML='<div class="empty">Select an inventory asset to load photographs.</div>';}}

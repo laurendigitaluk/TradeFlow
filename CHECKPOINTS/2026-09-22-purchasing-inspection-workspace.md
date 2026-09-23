@@ -482,3 +482,13 @@ Selling dashboard cache is now selling-dashboard-fixed.js?v=22.
 The published Canon listing now has explicit retail-photo editing support in the Selling workspace. EDIT loads the listing's `listing_media` records separately from purchase/inventory source photographs. Staff can add new retail photographs and remove photographs from the listing without deleting the underlying media asset. The existing Canon listing currently has one listing-media link, using the existing inventory photograph; new retail uploads will be stored under the listing-specific Storage path and linked through `listing_media`.
 
 Selling dashboard cache: `selling-dashboard-fixed.js?v=23`.
+
+
+
+## 2026-09-23 — Sales Channels / Marketplace Management foundation
+
+TradeFlow now has a dedicated Sales Channels management workspace and a per-product channel status panel. The current Camerashack tenant remains unchanged at the database level: one active sales channel (TradeFlow Website) and one published Canon listing. The UI presents the storefront to staff as **Website**.
+
+The product workspace no longer assumes a single active channel when loading an asset's existing listings; it can display all non-sold/non-delisted channel listings for the same physical inventory asset. This establishes the intended one-asset/multiple-listing model without duplicating stock.
+
+Automatic cross-channel DELIST REQUIRED handling is deliberately not enabled yet. Next action: audit and implement the authoritative sold transition so that a sale on one channel cannot leave the same physical asset live on another channel.

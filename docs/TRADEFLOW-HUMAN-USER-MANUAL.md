@@ -720,3 +720,8 @@ The customer portal login loop was traced to two separate scripts attempting to 
 ## 2026-09-23 — Selling listing edit action correction
 
 The Existing listings block now includes a visible **EDIT** button for active listings, including published products. Selecting EDIT opens that exact listing in the Retail listing form; it does not require searching Inventory first and does not create a new listing. The form button changes to **UPDATE LISTING**. Updating changes the existing listing's title, description, asking price, retail condition, postage option, postage price and dispatch time while preserving its current publication status. Sold and delisted history is not offered for editing.
+
+
+## 2026-09-23 — Retail listing photograph editing
+
+When an existing listing is opened with **EDIT**, the Selling workspace now loads the photographs attached specifically to that retail listing. Staff can select additional image files and use **ADD / UPDATE LISTING PHOTOGRAPHS** to attach them to the listing. Existing retail listing photographs can be removed from the listing with **REMOVE FROM LISTING**. Removing a photograph unlinks it from the listing but does not delete the underlying media file from TradeFlow. Purchase/customer/inspection photographs remain separate source material.

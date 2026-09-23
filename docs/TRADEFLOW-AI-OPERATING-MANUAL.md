@@ -1206,3 +1206,16 @@ Diagnostic result: repeated Product submission had created eight listings for on
 A separate Data API permission problem affected `buying_item_media`: authenticated users had INSERT/UPDATE/DELETE grants and a SELECT RLS policy, but no table-level SELECT grant. The authenticated SELECT grant was restored.
 
 Storefront visibility was blocked because the inherited Camera category and Camera branch had `selling_enabled=false`. Both were changed to true. The public listing function now returns the Canon listing, confirming the storefront eligibility condition at database level.
+## 2026-09-23 — Public Retail Shop and product-page boundary
+
+The public storefront must not route a product visitor straight into the customer account. The Retail Shop card action is **View product**, which opens public-site.html?page=product&listing=.... This page is public and must render for anonymous visitors as well as signed-in visitors. The product page may then provide a separate Buy action that enters the customer purchasing journey.
+
+The public listing read model remains get_published_store_listings. A separate get_published_store_listing_media function supplies only media attached to published listings. Public-site JavaScript signs those private storage objects for display. The tradeflow-media bucket must remain private because it also contains non-public business/customer/shipping media; public access is restricted by a storage policy to objects belonging to published, selling-enabled listings with a published site revision.
+
+Do not re-use customerUrl() for the Retail Shop **View product** action. customerUrl() is for the customer portal/account boundary, not the public product boundary.
+
+## 2026-09-23 — Focused Selling workspace and Inventory lifecycle display
+
+When Selling is opened with an asset query parameter from Inventory, the general Existing listings panel is hidden and is not loaded. The focused workspace is the single product being prepared for retail publication. This avoids a secondary listing-loading state obscuring the product workflow.
+
+Inventory list status is now lifecycle-aware. Only preparation states such as ready_for_sale show **Action required**. A listed asset shows **Listed** and **VIEW PRODUCT**; completed historical states show their own status. Do not hard-code Action required for every Inventory asset.

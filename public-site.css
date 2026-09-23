@@ -154,3 +154,6 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .shop-product h2{line-height:1.2}
 .shop-product p{min-height:34px}
 @media(max-width:620px){.shop-page-title .shop-page-logo{max-width:190px;max-height:90px}}
+
+/* Typographic fallback when a subscriber has not uploaded a website banner */
+.generated-brand-banner{min-height:380px;width:100%;display:grid;place-items:center;padding:40px;box-sizing:border-box;background:var(--header-bg,#fff);border:1px solid rgba(20,30,40,.12);border-radius:12px;font-family:Georgia,'Times New Roman',serif;font-size:clamp(2.5rem,7vw,6rem);font-weight:500;line-height:1.05;letter-spacing:-.035em;text-align:center;color:var(--text-color,#183047)}

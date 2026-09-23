@@ -647,3 +647,12 @@ The current completion gate checks: product title, description, condition, quant
 Inventory is now intentionally compact: each active item is a single green action-required line showing only the product title, status and **REVIEW & COMPLETE**. The row opens the focused product workspace. The previous verbose inventory card and inline hand-off were removed so large inventories do not become long scrolling pages.
 
 The focused product workspace places purchase/customer/inspection information and retained photographs first, followed by a simple retail listing template. The listing template pre-fills the product title and uses inspection notes as the listing description when available, otherwise the original customer/item description. Retail condition uses the business taxonomy: **Poor, Good, Very good, Excellent, Opened, Never used, Sealed**. Existing A/B/C/D values were found in the live `condition_grade` data; they were not part of the newly requested retail taxonomy, so legacy grades are not silently converted and the user is prompted to select the new wording. Additional listing photographs can be added before **SEND TO WEBSITE** publishes the listing.
+
+
+## 2026-09-23 — Selling listings presentation and storefront visibility
+
+The Selling page now presents existing listings in the same compact, structured style as Inventory. Each listing has separated Reference, Title, Status, Price, Channel and Action areas, with a coloured status treatment and spaced action buttons. A **VIEW** action is always available, while workflow actions retain their status-specific labels such as **Reserve**, **Mark sold** and **Delist**.
+
+The focused Product workspace hides the general listings panel so the product preparation workflow remains focused on purchase information, photographs and the retail listing template. The selling dashboard script cache version was also incremented so the updated layout is loaded by the browser.
+
+A live database check on 23 September 2026 also identified why the published Canon listing was not appearing in the public Retail Shop: the listing itself is published on the active TradeFlow Website channel, but its inherited Camera category and Camera branch currently have selling_enabled = false. The storefront publication query excludes listings whose category/branch are not enabled for selling. This is a live category/branch configuration issue rather than a missing listing record.

@@ -431,3 +431,9 @@ Camera category and Camera branch were enabled for selling. The live published-s
 - Selling script cache was incremented to selling-dashboard-fixed.js?v=15.
 - JavaScript syntax was verified for public-site.js, inventory-dashboard-fixed.js and selling-dashboard-fixed.js.
 - Live database verification confirms: Canon inventory asset status listed; exactly one active listing for the asset; one published listing returned by the public storefront function; one published listing media row returned by the new public media function.
+
+## 2026-09-23 — Selling focused workspace lookup repair
+
+The focused Product workspace was still showing the general Existing listings panel and lookup fields remained on Loading because the focused-mode initialization was running before the asset lookup completed. The Selling lookup loader now fetches the requested asset directly when an asset query parameter is present, handles the four lookup requests independently so one optional lookup cannot leave the whole form stuck in Loading, and applies focused-product mode only after lookups finish. The general Existing listings panel is hidden after focused initialization. The listed-item submit lock selector was also corrected so a listed product cannot expose an active publish button.
+
+Selling dashboard cache version: **selling-dashboard-fixed.js?v=17**.

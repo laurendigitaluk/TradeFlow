@@ -1154,3 +1154,19 @@ Implementation rule:
 - Do not alter the retail basket/order flow, customer bank details or customer address functions as part of this change.
 
 Verification status: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+## 24 September 2026 — Customer portal account-only presentation
+
+The customer portal must remain a viewing/account surface, not a duplicate storefront or valuation submission form.
+
+Authoritative entry points:
+- Public website → shopping/basket/purchase journey.
+- Public website → Sell to Us / valuation submission journey.
+- Customer portal → view My Orders, relevant Valuations, Returns and My Details.
+
+Do not reintroduce Shop or Sell to us navigation/buttons into the customer portal. The valuation view can contain the customer's existing request status, valuation records, offers, shipping/payment progress and completed sale history where applicable, but new valuation requests are submitted on the public website.
+
+The customer portal navigation is now `Overview`, `My Orders`, `Valuations`, `Returns`, and `My Details`.
+
+Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

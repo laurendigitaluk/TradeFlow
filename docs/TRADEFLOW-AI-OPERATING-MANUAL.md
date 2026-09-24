@@ -1140,3 +1140,23 @@ Retail order cancellation:
 - Customer cancellation is implemented through customer_cancel_retail_order(p_tenant_id,p_order_id,p_reason).
 - The RPC authenticates the customer, verifies tenant ownership of the order, permits cancellation only from initiated or pending_payment, records cancelled_at, and writes a workflow_transitions audit record.
 - Do not expose customer cancellation for paid, fulfilment, completed, refunded, or already-cancelled orders.
+
+
+## 24 September 2026 — Parcel2Go shipping integration standard
+
+Use Parcel2Go as TradeFlow's single integrated multi-carrier provider. Do not reintroduce separate Royal Mail, Evri, Yodel, DPD, DHL, UPS or FedEx credential setup unless the architecture is explicitly changed and checkpointed.
+
+For each tenant, the normal setup is:
+1. Subscriber enters Parcel2Go Client ID and Client Secret in Shipping Settings.
+2. TradeFlow stores the secret in Supabase Vault through the tenant-authorized connection RPC.
+3. TradeFlow tests OAuth server-side through the shipping-provider-test Edge Function.
+4. Successful authentication changes the tenant connection to connected.
+5. Buying uses the connected Parcel2Go account as the integrated shipping connection.
+
+Never place the Client Secret in browser code, ordinary public table columns, logs, or customer-visible responses. Credential testing must not create a shipment.
+
+Parcel2Go's official API documents OAuth2 client credentials, live/sandbox separation, quoting, orders, payments, labels and tracking. Sandbox and live credentials are separate, so do not test a sandbox credential against the live host. citeturn2view0turn3view0
+
+Verification state: browser verified on 24 September 2026 for the Camerashack test subscriber against Parcel2Go Live. The connection displayed Connected and reported that authentication passed with no shipment created.
+
+Implementation note: the Buying dashboard's integrated shipping selector now presents Parcel2Go as the fixed integrated provider rather than asking the subscriber to choose among multiple direct providers.

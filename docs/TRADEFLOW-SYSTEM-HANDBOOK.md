@@ -1038,9 +1038,9 @@ Current verification: the Camerashack test subscriber successfully authenticated
 
 TradeFlow now treats the initial customer offer as one workflow with two possible manual values: **Manual offer — Cash** and **Manual offer — Trade-in**. A manual initial offer may publish one or both values, and the customer can choose which published option to accept. Each option is stored as an offer with an explicit `offer_mode` of `cash` or `trade_in`.
 
-Automatic catalogue pricing has priority over manual initial offers. When an automatic price is calculated, TradeFlow creates the automatic valuation and corresponding cash/trade-in initial offer options, superseding previously published initial/revised offers and approved valuations for the item. Manual initial offer controls are disabled while an automatic valuation is active.
+Automatic catalogue pricing has priority over manual initial offers. When an automatic price is calculated, TradeFlow creates the automatic valuation and one initial offer record linked to it; that valuation carries the cash/trade-in option values. Previously published initial/revised offers and approved valuations for the item are superseded. Manual initial offer controls are disabled while an automatic valuation is active.
 
-When the customer accepts one initial option, the other published initial/revised option is superseded and the buying item moves to `awaiting_item`. After receipt and a passed inspection, the authoritative inspection workflow moves the item to `final_offer_required`; the subscriber then creates and publishes the **final offer** through the existing post-inspection workflow. The final offer is separate from the initial cash/trade-in choice.
+When the customer accepts one initial option, the selected cash/trade-in mode and amount are recorded on the single offer record and the buying item moves to `awaiting_item`. After receipt and a passed inspection, the authoritative inspection workflow moves the item to `final_offer_required`; the subscriber then creates and publishes the **final offer** through the existing post-inspection workflow. The final offer is separate from the initial cash/trade-in choice.
 
 
 ## Initial offer workflow clarification — 24 September 2026

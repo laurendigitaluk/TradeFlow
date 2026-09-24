@@ -1174,3 +1174,8 @@ Customer acceptance selects one initial option. The other published initial/revi
 ## Initial offer workflow clarification — 24 September 2026
 
 The customer must see the cash and trade-in choices together as one offer. Do not create two simultaneous published initial offer records for the two choices. Use the single offer record linked to the valuation; the customer acceptance choice is `cash` or `trade_in`, and the accepted amount is recorded on that offer.
+
+
+## 24 September 2026 — Integrated Parcel2Go shipping implementation
+
+The subscriber Buying dashboard now owns the Parcel2Go shipping handoff UI directly. The flow is: accepted initial offer → enter parcel dimensions → request Parcel2Go quotes → select a courier service → explicitly create the shipment → complete payment in Parcel2Go. The new parcel2go-subscriber-shipping Edge Function keeps provider credentials server-side, validates buying.manage permission, reads the subscriber's connected Parcel2Go connection, uses the customer's delivery address and subscriber collection address, and stores the resulting shipping order/payment/tracking/label references against buying_item_shipping. Manual shipping remains the fallback. Do not claim the integrated quote/order flow is browser-verified until it has been exercised with a real customer delivery address and Parcel2Go test/live account.

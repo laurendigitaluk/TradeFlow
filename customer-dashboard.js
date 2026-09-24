@@ -3,9 +3,9 @@ const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 let sellingStatusRefreshTimer=null;
 const SESSION_STORAGE='tradeflow_customer_session';
 let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
+const BASKET_KEY='tradeflow_customer_basket_'+(tenantId||'');
 const $=id=>document.getElementById(id);
 function setMessage(t,type=''){const e=$('customer-message');if(e){e.textContent=t||'';e.className=type}}
-const BASKET_KEY='tradeflow_customer_basket_'+(tenantId||'');
 function getBasket(){try{const v=JSON.parse(localStorage.getItem(BASKET_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
 function saveBasket(items){localStorage.setItem(BASKET_KEY,JSON.stringify(items));renderBasket()}
 function renderBasket(){

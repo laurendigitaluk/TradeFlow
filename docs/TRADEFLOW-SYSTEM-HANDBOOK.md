@@ -1063,3 +1063,26 @@ The live `public.customer_addresses.address_type` contract permits `primary`, `b
 ## 24 September 2026 — Test Two valuation display and shipping message clarification
 
 The Test Two customer has an approved manual trading value with cash price £50 and trade-in price £55. The customer accepted the £55 trade-in offer. The customer dashboard previously labelled the £50 cash price simply as “Valuation”, which was misleading after the trade-in offer had been accepted. The dashboard now shows the accepted offer amount when an accepted offer exists, while retaining the underlying cash/trade-in values. The buying dashboard's Parcel2Go explanatory text was also changed so it no longer implies that the address is currently missing; it explains that Parcel2Go uses the saved Delivery address from My Details.
+## 25 September 2026 — Buying dashboard regression-control repair
+
+A Test Two browser failure showed the Buying dashboard permanently displaying its static loading placeholders. The first diagnosis incorrectly concentrated on asynchronous data loading. A full current-code audit identified the actual first failing boundary: buying-dashboard.js contained an unescaped ASCII apostrophe inside a single-quoted JavaScript string in the Parcel2Go shipping handoff text (customer's). The browser therefore could not parse the controller at all, so none of its Supabase loading code could run.
+
+This is a critical regression lesson: a JavaScript parse error can make a page appear to have a database/loading problem while preventing every downstream request from starting. The repaired controller was compiled with new Function() after the correction and the dependent subscriber scripts were also syntax-checked.
+
+New control rule for all TradeFlow browser-controller repairs:
+1. Inspect the first failing boundary before changing data, RLS or workflow state.
+2. Syntax-check every changed JavaScript controller before committing.
+3. After a controller repair, syntax-check its directly loaded companion controllers as well.
+4. Cache-bust the page when a browser may retain an earlier controller.
+5. Do not delete/reseed Test Two data to compensate for a front-end runtime failure.
+6. Do not alter the frozen Test One restore branch or its Canon transaction/data.
+7. A loading placeholder is not evidence of a Supabase data failure until the controller has been proven to execute and its network calls have been observed.
+
+The Buying dashboard now has a startup marker and an inline HTML watchdog so a future controller parse/load failure is displayed as an explicit script error instead of silently leaving the page on its static loading placeholders.
+
+Relevant commits:
+- 020af4b4654483aef6d55676d0c9943f1eb8bded — corrected the JavaScript parse error.
+- 54b8022ffab4ca369ec0bc339ed4b8d7a847825b — added the controller startup marker.
+- 3e488347ede1290a6dc8699d4995b23d3b676dfb — added startup diagnostics and cache-bumped the Buying dashboard controller to v57.
+
+Current state: Implemented in GitHub and syntax-verified; browser verification remains required.

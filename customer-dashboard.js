@@ -237,8 +237,10 @@ const activeBuying=(Array.isArray(buying)?buying:[]).filter(r=>!completedBuying.
 const completedAcquisitionIds=new Set(completedAcquisitions.map(a=>a.acquisition_id).filter(Boolean));
 const activeAcquisitions=(Array.isArray(acq)?acq:[]).filter(a=>!completedAcquisitionIds.has(a.acquisition_id));
 const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds.has(o.buying_item_id));
-$('buying-count').textContent=activeBuying.length;$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);const valuations=await rpc('customer_get_selling_valuations');
-renderSellingValuations((Array.isArray(valuations)?valuations:[]).filter(v=>!completedRequestRefs.has(v.request_reference)));
+$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);const valuations=await rpc('customer_get_selling_valuations');
+const visibleValuations=(Array.isArray(valuations)?valuations:[]).filter(v=>!completedRequestRefs.has(v.request_reference));
+$('buying-count').textContent=visibleValuations.length;
+renderSellingValuations(visibleValuations);
 const hasSellingActivity=(Array.isArray(buying)&&buying.length>0)||(Array.isArray(valuations)&&valuations.length>0)||(activeOffers.length>0)||(activeAcquisitions.length>0)||(completedAcquisitions.length>0);
 const valuationsPanel=$('valuations');if(valuationsPanel)valuationsPanel.hidden=!hasSellingActivity;
 const valuationsNav=$('valuations-nav-link');if(valuationsNav)valuationsNav.hidden=!hasSellingActivity;

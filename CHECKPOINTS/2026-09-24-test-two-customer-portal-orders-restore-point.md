@@ -56,3 +56,14 @@ The intended result is:
 - The earlier Test One restore point remains untouched.
 - The Test Two preflight buying-flow checkpoint remains available.
 - Do not overwrite completed purchase history merely to remove it from an active customer list.
+
+
+## Follow-up correction — completed offer/history separation
+
+The first customer-portal separation still allowed historical offers for a paid acquisition to render because the existing customer_get_offers RPC returns all customer offers. A dedicated customer_get_completed_sales RPC was therefore added. The portal now uses the completed sale's buying_item_id and request_reference to exclude that purchase from:
+
+- Active selling requests
+- Active offers
+- The live selling-status panel
+
+The completed sale remains in **Completed sales to Camera Shack**, with its request reference, item, paid amount and completion date.

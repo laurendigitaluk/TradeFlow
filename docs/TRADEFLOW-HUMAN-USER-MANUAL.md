@@ -891,3 +891,21 @@ Before a customer has submitted a selling request, the customer portal hides the
 The existing basket, My Orders, bank details and payment/delivery address functionality is unchanged.
 
 Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+## Customer portal simplified to account viewing — 24 September 2026
+
+The customer portal is now an account/viewing area rather than a shopping or selling-entry page.
+
+The sidebar contains:
+- Overview
+- My Orders
+- Valuations (shown when the customer has valuation/selling activity)
+- Returns
+- My Details
+
+The portal no longer contains a **Shop** section or a **Sell to us** entry. Customers use the public business website for shopping and for submitting new valuation/selling requests. The portal is used to view resulting orders, valuation progress/history, returns and customer details/payment/delivery information.
+
+The existing post-submission valuation, offer, shipping, payment and completed-sale information remains available inside the **Valuations** section when relevant.
+
+Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

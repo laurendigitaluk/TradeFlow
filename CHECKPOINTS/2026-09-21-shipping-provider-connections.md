@@ -96,7 +96,7 @@ The single box now contains:
 
 Research evidence remains directly below this workflow so the subscriber can compare evidence before entering the manual values.
 
-Automatic catalogue pricing remains authoritative. When an approved automatic valuation exists, the manual buyer/trade-in inputs are disabled and manual initial offers are blocked. When manual pricing is used, sending the manual offer creates and approves the corresponding manual valuation and publishes the buyer/trade-in initial offers together.
+Automatic catalogue pricing remains authoritative. When an approved automatic valuation exists, the manual buyer/trade-in inputs are disabled and manual initial offers are blocked. When manual pricing is used, sending the manual offer creates and approves one manual valuation and publishes one initial offer record linked to that valuation; the record carries the cash/trade-in choices together.
 
 GitHub implementation commit: f8665ea638780850c9d69ddb796c54b8a9500418 (with the preceding workflow simplification commit 7e52ea833bdfde1a190596dafc161f1eeec45958).
 

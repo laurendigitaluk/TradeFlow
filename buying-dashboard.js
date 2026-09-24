@@ -1,5 +1,62 @@
 function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
-async function publishShippingHandoff(id,b){const method=$('ship-method-'+id)?.value||'subscriber_override';if(method==='automated'){setBusy(b,true);try{const selectedProvider=$('ship-provider-'+id)?.value||'';if(!selectedProvider)throw Error('Choose an integrated shipping service in Shipping Settings first.');const connections=await api('/rest/v1/shipping_provider_connections?select=id,status,provider&tenant_id=eq.'+encodeURIComponent(tenantId)+'&provider=eq.'+encodeURIComponent(selectedProvider));const connection=connections?.find(x=>x.status==='connected');if(!connection)throw Error('Connect and test the selected shipping service in Settings before enabling connected shipping.');await api('/rest/v1/rpc/subscriber_publish_buying_item_shipping_handoff',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id,p_shipping_method:'automated',p_shipping_provider:connection.provider,p_shipping_provider_connection_id:connection.id,p_shipping_instructions:$('ship-instructions-'+id)?.value.trim()||null})});msg('Connected shipping is ready for the customer.','success');await load();if(openRequestId)await showRequest(openRequestId,currentRequests)}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}return;}const url=$('ship-url-'+id)?.value.trim();const storagePath=$('ship-path-'+id)?.value.trim();const qrUrl=$('ship-qr-url-'+id)?.value.trim();const qrPath=$('ship-qr-path-'+id)?.value.trim();if(!url&&!storagePath&&!qrUrl&&!qrPath)return msg('Add a shipping label URL, upload a label, add a QR code URL, or upload a QR code before sending the shipping instructions.','error');setBusy(b,true);try{await api('/rest/v1/rpc/subscriber_publish_buying_item_shipping_handoff',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id,p_shipping_method:'subscriber_override',p_shipping_label_url:url||null,p_shipping_label_storage_path:storagePath||null,p_shipping_qr_url:qrUrl||null,p_shipping_qr_storage_path:qrPath||null,p_shipping_carrier:$('ship-carrier-'+id)?.value.trim()||null,p_shipping_service:$('ship-service-'+id)?.value.trim()||null,p_shipping_tracking_number:$('ship-tracking-'+id)?.value.trim()||null,p_shipping_instructions:$('ship-instructions-'+id)?.value.trim()||null,p_shipping_service_url:$('ship-service-url-'+id)?.value.trim()||null})});msg('Your shipping method and handoff have been published to the customer.','success');await load();if(openRequestId)await showRequest(openRequestId,currentRequests);}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}}
+async function parcel2goShippingCall(body){
+ const r=await fetch(SUPABASE_URL+'/functions/v1/parcel2go-subscriber-shipping',{
+  method:'POST',
+  headers:{'apikey':key,'Authorization':'Bearer '+(session?.access_token||''),'Content-Type':'application/json'},
+  body:JSON.stringify(body)
+ });
+ const text=await r.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}
+ if(!r.ok)throw Error(data?.error||data?.message||text||'Parcel2Go shipping request failed');
+ return data;
+}
+function p2gField(id,name){return Number($(name+'-'+id)?.value)}
+function p2gMoney(v,c='GBP'){if(v==null||v==='')return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return String(v)}}
+function renderParcel2GoQuotes(id,quotes){
+ const box=$('p2g-quotes-'+id);if(!box)return;
+ if(!Array.isArray(quotes)||!quotes.length){box.innerHTML='<div class="small">Parcel2Go returned no eligible services for these parcel details.</div>';return}
+ box.innerHTML='<div style="display:grid;gap:8px">'+quotes.map(q=>{
+   const code=esc(q.service_code||'');
+   return '<div style="border:1px solid #d8dee5;border-radius:8px;padding:10px;background:#fff"><div style="display:flex;justify-content:space-between;gap:12px;align-items:center"><div><strong>'+esc(q.service_name||'Shipping service')+'</strong><div class="small">'+esc(q.carrier||'Parcel2Go')+(q.delivery?' · '+esc(q.delivery):'')+'</div></div><div><strong>'+p2gMoney(q.price,q.currency||'GBP')+'</strong></div></div><div class="actions" style="margin-top:8px"><button type="button" data-action="parcel2go-order" data-id="'+esc(id)+'" data-service-code="'+code+'">SELECT &amp; CREATE SHIPMENT</button></div></div>';
+ }).join('')+'</div>';
+ document.querySelectorAll('[data-action="parcel2go-order"][data-id="'+CSS.escape(id)+'"]').forEach(b=>b.onclick=()=>createParcel2GoOrder(id,b.dataset.serviceCode,b));
+}
+async function getParcel2GoQuotes(id,b){
+ const weight=p2gField(id,'p2g-weight'),length=p2gField(id,'p2g-length'),width=p2gField(id,'p2g-width'),height=p2gField(id,'p2g-height');
+ if(!weight||!length||!width||!height)return msg('Enter the parcel weight and all three dimensions before requesting a Parcel2Go quote.','error');
+ setBusy(b,true);
+ try{
+  const result=await parcel2goShippingCall({action:'quote',tenant_id:tenantId,buying_item_id:id,weight,length,width,height});
+  renderParcel2GoQuotes(id,result.quotes||[]);
+  msg('Parcel2Go quotes loaded. Choose the service you want to use.','success');
+ }catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
+}
+async function createParcel2GoOrder(id,serviceCode,b){
+ const weight=p2gField(id,'p2g-weight'),length=p2gField(id,'p2g-length'),width=p2gField(id,'p2g-width'),height=p2gField(id,'p2g-height');
+ if(!weight||!length||!width||!height)return msg('Enter the parcel dimensions before creating the shipment.','error');
+ if(!serviceCode)return msg('Select a Parcel2Go service first.','error');
+ if(!confirm('Create this Parcel2Go shipment? The shipment will be created against the subscriber’s connected Parcel2Go account.'))return;
+ setBusy(b,true);
+ try{
+  const result=await parcel2goShippingCall({action:'create_order',tenant_id:tenantId,buying_item_id:id,service_code:serviceCode,weight,length,width,height});
+  if(result.payment_url){
+   msg('Parcel2Go shipment created. Complete the Parcel2Go payment before the customer sends the item.','success');
+   window.open(result.payment_url,'_blank','noopener');
+  }else{
+   msg('Parcel2Go shipment created.','success');
+  }
+  await load();if(openRequestId)await showRequest(openRequestId,currentRequests);
+ }catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
+}
+async function publishShippingHandoff(id,b){
+ const url=$('ship-url-'+id)?.value.trim(),storagePath=$('ship-path-'+id)?.value.trim(),qrUrl=$('ship-qr-url-'+id)?.value.trim(),qrPath=$('ship-qr-path-'+id)?.value.trim();
+ if(!url&&!storagePath&&!qrUrl&&!qrPath)return msg('Add a shipping label URL, upload a label, add a QR code URL, or upload a QR code before sending the manual shipping instructions.','error');
+ setBusy(b,true);
+ try{
+  await api('/rest/v1/rpc/subscriber_publish_buying_item_shipping_handoff',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id,p_shipping_method:'subscriber_override',p_shipping_label_url:url||null,p_shipping_label_storage_path:storagePath||null,p_shipping_qr_url:qrUrl||null,p_shipping_qr_storage_path:qrPath||null,p_shipping_carrier:$('ship-carrier-'+id)?.value.trim()||null,p_shipping_service:$('ship-service-'+id)?.value.trim()||null,p_shipping_tracking_number:$('ship-tracking-'+id)?.value.trim()||null,p_shipping_instructions:$('ship-instructions-'+id)?.value.trim()||null,p_shipping_service_url:$('ship-service-url-'+id)?.value.trim()||null})});
+  msg('Your manual shipping method and handoff have been published to the customer.','success');await load();if(openRequestId)await showRequest(openRequestId,currentRequests);
+ }catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
+}
+
 async function uploadShippingLabel(id,b){const file=$('ship-file-'+id)?.files?.[0];if(!file)return msg('Choose a PDF, PNG or JPEG shipping label first.','error');if(!['application/pdf','image/png','image/jpeg'].includes(file.type))return msg('Shipping labels must be PDF, PNG or JPEG files.','error');if(file.size>10*1024*1024)return msg('Shipping labels must be 10 MB or smaller.','error');setBusy(b,true);try{const ext=(file.name.split('.').pop()||'pdf').toLowerCase().replace(/[^a-z0-9]/g,'')||'pdf';const path=tenantId+'/buying-items/'+id+'/shipping-label-'+Date.now()+'.'+ext;await storageUpload(path,file);await storageSignedUrl(path);await api('/rest/v1/buying_item_shipping?buying_item_id=eq.'+encodeURIComponent(id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({shipping_method:'subscriber_override',shipping_label_storage_path:path,shipping_label_url:null})});msg('Shipping label uploaded. You can open/print it now or save & resend it to the customer.','success');await load();}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}}
 async function uploadShippingQr(id,b){const file=$('ship-qr-file-'+id)?.files?.[0];if(!file)return msg('Choose a PNG or JPEG QR code image first.','error');if(!['image/png','image/jpeg'].includes(file.type))return msg('QR codes must be PNG or JPEG images.','error');if(file.size>5*1024*1024)return msg('QR code images must be 5 MB or smaller.','error');setBusy(b,true);try{const ext=(file.name.split('.').pop()||'png').toLowerCase().replace(/[^a-z0-9]/g,'')||'png';const path=tenantId+'/buying-items/'+id+'/shipping-qr-'+Date.now()+'.'+ext;await storageUpload(path,file);await storageSignedUrl(path);await api('/rest/v1/buying_item_shipping?buying_item_id=eq.'+encodeURIComponent(id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({shipping_method:'subscriber_override',shipping_qr_storage_path:path,shipping_qr_url:null})});msg('QR code uploaded. You can open it now or save & resend the shipping instructions.','success');await load();}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}}
 async function shippingAssetUrl(id,kind){
@@ -91,15 +148,46 @@ function shippingHandoffHtml(r){
  const qrControls=qr?'<div class="actions" style="margin-top:8px"><button type="button" data-action="qr-print" data-id="'+esc(id)+'">Print QR code</button><button type="button" data-action="qr-download" data-id="'+esc(id)+'">Download QR code</button></div>':'<p class="small">No physical QR code is currently stored.</p>';
  const resend='<div class="actions" style="margin-top:12px"><button type="button" data-action="shipping-resend" data-id="'+esc(id)+'">'+(label||qr?'Resend shipping label / QR and instructions':'Send shipping label / QR and instructions')+'</button></div>';
  if(r.status==='offer_accepted'||(r.status==='awaiting_item'&&!a?.shipping_status)){
-   return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Shipping handoff</h3><p><strong>The customer has accepted the initial offer. Provide the shipping instructions before the item is sent.</strong></p><div class="form-grid" style="margin-top:10px"><label><strong>Shipping label URL</strong><input id="ship-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a label"></label><label><strong>QR code URL</strong><input id="ship-qr-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a QR code"></label><label><strong>Carrier</strong><input id="ship-carrier-'+esc(id)+'" type="text"></label><label><strong>Service</strong><input id="ship-service-'+esc(id)+'" type="text"></label><label><strong>Tracking number</strong><input id="ship-tracking-'+esc(id)+'" type="text"></label><label><strong>Carrier website</strong><input id="ship-service-url-'+esc(id)+'" type="text"></label><label class="full"><strong>Customer instructions</strong><textarea id="ship-instructions-'+esc(id)+'" rows="3"></textarea></label></div><div class="actions" style="margin-top:12px"><button type="button" data-action="shipping" data-id="'+esc(id)+'">SEND SHIPPING INSTRUCTIONS</button></div><p class="small">You can also upload a label or QR code using the existing upload controls when available.</p></section>';
+   return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5">'+
+    '<h3>Shipping handoff</h3>'+
+    '<p><strong>The customer has accepted the initial offer. Arrange the shipping before the item is sent.</strong></p>'+
+    '<div class="notice" style="margin:12px 0;padding:14px;border:1px solid #c8dfce;border-radius:8px;background:#fff">'+
+      '<h4 style="margin:0 0 6px">Integrated shipping — Parcel2Go</h4>'+
+      '<p class="small" style="margin:0 0 12px">Use the subscriber’s connected Parcel2Go account to compare available courier services for this parcel. Parcel2Go handles the courier choice and shipping charge.</p>'+
+      '<div class="form-grid">'+
+        '<label><strong>Weight (kg)</strong><input id="p2g-weight-'+esc(id)+'" type="number" min="0.01" step="0.01" placeholder="e.g. 2.5"></label>'+
+        '<label><strong>Length (cm)</strong><input id="p2g-length-'+esc(id)+'" type="number" min="1" step="0.1" placeholder="e.g. 35"></label>'+
+        '<label><strong>Width (cm)</strong><input id="p2g-width-'+esc(id)+'" type="number" min="1" step="0.1" placeholder="e.g. 25"></label>'+
+        '<label><strong>Height (cm)</strong><input id="p2g-height-'+esc(id)+'" type="number" min="1" step="0.1" placeholder="e.g. 15"></label>'+
+      '</div>'+
+      '<div class="actions" style="margin-top:12px"><button type="button" data-action="parcel2go-quote" data-id="'+esc(id)+'">GET PARCEL2GO QUOTES</button></div>'+
+      '<div id="p2g-quotes-'+esc(id)+'" style="margin-top:12px"></div>'+
+      '<p class="small" style="margin:10px 0 0">A customer delivery address is required. Creating a shipment is a separate action and opens the Parcel2Go payment step; TradeFlow does not take the shipping payment.</p>'+
+    '</div>'+
+    '<details style="margin-top:12px"><summary><strong>Manual shipping fallback</strong></summary>'+
+      '<p class="small">Use this only when you are not using the connected Parcel2Go account.</p>'+
+      '<div class="form-grid" style="margin-top:10px">'+
+        '<label><strong>Shipping label URL</strong><input id="ship-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a label"></label>'+
+        '<label><strong>QR code URL</strong><input id="ship-qr-url-'+esc(id)+'" type="text" placeholder="Optional if uploading a QR code"></label>'+
+        '<label><strong>Carrier</strong><input id="ship-carrier-'+esc(id)+'" type="text"></label>'+
+        '<label><strong>Service</strong><input id="ship-service-'+esc(id)+'" type="text"></label>'+
+        '<label><strong>Tracking number</strong><input id="ship-tracking-'+esc(id)+'" type="text"></label>'+
+        '<label><strong>Carrier website</strong><input id="ship-service-url-'+esc(id)+'" type="text"></label>'+
+        '<label class="full"><strong>Customer instructions</strong><textarea id="ship-instructions-'+esc(id)+'" rows="3"></textarea></label>'+
+      '</div>'+
+      '<div class="actions" style="margin-top:12px"><button type="button" data-action="shipping" data-id="'+esc(id)+'">SEND MANUAL SHIPPING INSTRUCTIONS</button></div>'+
+    '</details>'+
+   '</section>';
  }
  if(r.status==='received'||r.status==='inspection'){
    if(r.status==='inspection')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Inspection in progress</h3><p><strong>The item has been received and is now being inspected.</strong></p><p class="small">The item is still outside Acquisitions and Inventory until the final offer is accepted and payment is recorded.</p><div class="actions" style="margin-top:10px"><a class="button" href="#tradeflow-inspection-workspace" onclick="return window.tradeflowOpenInspection(event)">OPEN INSPECTION</a></div></section>';
    return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Item received — inspection next</h3><p><strong>You have received the customer item.</strong></p><p class="small">The item is not an acquisition yet. Complete the purchasing inspection first.</p><div class="actions" style="margin-top:10px"><button type="button" data-action="start-inspection" data-id="'+esc(id)+'">START INSPECTION</button></div></section>';
- } if(r.status==='shipping')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Item on its way — awaiting receipt</h3><p><strong>The customer has confirmed that the item has been sent.</strong></p><div class="form-grid" style="margin-top:10px"><div><strong>Shipping service</strong><br>'+esc(service)+(serviceUrl?'<br>'+serviceUrl:'')+'</div><div><strong>Tracking number</strong><br>'+esc(a?.shipping_tracking_number||'Not provided')+(a?.shipping_tracking_url?'<br><a href="'+esc(a.shipping_tracking_url)+'" target="_blank" rel="noopener">Track shipment</a>':'')+'</div></div><div style="margin-top:12px"><strong>Shipping label</strong>'+labelControls+'</div><div style="margin-top:12px"><strong>QR code</strong>'+qrControls+'</div><div class="actions" style="margin-top:12px"><button type="button" data-action="acq-received" data-id="'+esc(id)+'">Confirm item received</button></div></section>';
+ }
+ if(r.status==='shipping')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Item on its way — awaiting receipt</h3><p><strong>The customer has confirmed that the item has been sent.</strong></p><div class="form-grid" style="margin-top:10px"><div><strong>Shipping service</strong><br>'+esc(service)+(serviceUrl?'<br>'+serviceUrl:'')+'</div><div><strong>Tracking number</strong><br>'+esc(a?.shipping_tracking_number||'Not provided')+(a?.shipping_tracking_url?'<br><a href="'+esc(a.shipping_tracking_url)+'" target="_blank" rel="noopener">Track shipment</a>':'')+'</div></div><div style="margin-top:12px"><strong>Shipping label</strong>'+labelControls+'</div><div style="margin-top:12px"><strong>QR code</strong>'+qrControls+'</div><div class="actions" style="margin-top:12px"><button type="button" data-action="acq-received" data-id="'+esc(id)+'">Confirm item received</button></div></section>';
  if(r.status==='awaiting_item')return '<section class="shipping-method-card" style="margin-top:12px;border:1px solid #b9d8c0;border-radius:8px;padding:14px;background:#f4faf5"><h3>Shipping handoff sent — awaiting item</h3><p><strong>The customer has the shipping instructions and can now send the item.</strong></p><div class="form-grid" style="margin-top:10px"><div><strong>Shipping service</strong><br>'+esc(service)+(serviceUrl?'<br>'+serviceUrl:'')+'</div><div><strong>Tracking number</strong><br>'+esc(a?.shipping_tracking_number||'Not provided')+'</div></div><div style="margin-top:12px"><strong>Shipping label</strong>'+labelControls+'</div><div style="margin-top:12px"><strong>QR code</strong>'+qrControls+'</div>'+(a?.shipping_instructions?'<div style="margin-top:12px"><strong>Customer instructions</strong><br>'+esc(a.shipping_instructions).replace(/\n/g,'<br>')+'</div>':'')+resend+'</section>';
  return '';
 }
+
 function requestStatusLabel(status){const map={offer_ready:'Manual offer sent — awaiting customer',awaiting_item:'Awaiting item from customer',shipping:'Item on its way — awaiting receipt',received:'Item received — inspection next',inspection:'Inspection in progress',testing:'Testing required',repair:'Repair required',return_pending:'Return to customer',final_offer_required:'Inspection accepted — final offer required',final_offer_sent:'Final offer sent — awaiting customer',final_offer_accepted:'Final offer accepted — payment required',final_offer_refused:'Final offer refused — return item',purchased:'Purchased — now in Inventory',offer_refused:'Offer refused',valued:'Valuation approved — offer not yet sent'};return map[status]||String(status||'').replace(/_/g,' ').replace(/^./,m=>m.toUpperCase())}
 function requestStatusClass(status){return status==='offer_accepted'?'status-offer':status==='awaiting_item'?'status-approved':status==='shipping'?'status-approved':status==='received'?'status-approved':status==='inspection'?'status-review':status==='finalised'?'status-approved':status==='valued'?'status-approved':status==='offer_ready'?'status-offer':status==='offer_refused'?'status-refused':status==='under_review'?'status-review':'status-pending'}
 function renderRequests(rows){ if(!Array.isArray(rows)||!rows.length) return '<div class="empty">No customer buying requests have been submitted to this tenant.</div>'; return '<div class="request-list">'+rows.map(r=>'<div class="request-card"><div><div class="ref">'+esc(r.request_reference)+'</div><div class="meta"><strong>'+esc(r.customer_name||'Customer')+'</strong> · Customer submission · '+(r.submitted_at?new Date(r.submitted_at).toLocaleString('en-GB'):'—')+'</div></div><div><span class="cell-label">Status</span><span class="status-pill '+requestStatusClass(r.status)+'">'+esc(requestStatusLabel(r.status))+'</span>'+(r.offer_amount!=null?'<div class="request-amount">'+money(r.offer_amount,r.offer_currency||'GBP')+'</div>':'')+'</div><div><span class="cell-label">Customer</span><span>'+esc(r.customer_name||'—')+'</span></div><div><span class="cell-label">Source</span><span>'+esc(r.source==='customer_portal'?'Customer portal':r.source||'—')+'</span></div><button type="button" data-action="open-request" data-id="'+esc(r.id)+'">Open request</button></div>').join('')+'</div>'; } 

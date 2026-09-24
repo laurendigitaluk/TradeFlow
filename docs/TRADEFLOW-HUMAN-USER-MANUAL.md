@@ -863,4 +863,4 @@ The current Camerashack test tenant's previously uploaded logo and banner were r
 
 ## Website banner display correction — 24 September 2026
 
-The dedicated website banner is now rendered as a full-width branding banner on the customer-facing website rather than being treated as a narrow hero photograph. It appears below the site navigation across the customer-facing pages, including **What We Sell**, while the homepage retains its normal hero content below the banner. The Website Builder preview uses the same full-width branding treatment. This avoids cropping the 1600 × 600 banner into a narrow template image frame.
+The dedicated website banner is used as a compact horizontal branding area in the **What We Sell** title area, replacing the normal logo/title image slot. It is not a full-width strip beneath the site navigation. The Website Builder preview uses the same compact placement. The banner remains a subscriber-controlled branding asset and is separate from the homepage hero image.

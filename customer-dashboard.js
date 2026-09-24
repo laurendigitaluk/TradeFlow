@@ -219,17 +219,7 @@ function startCustomerSellingStatusRefresh(){
  if(sellingStatusRefreshTimer)clearInterval(sellingStatusRefreshTimer);
  sellingStatusRefreshTimer=setInterval(()=>{if(!document.hidden)refreshCustomerSellingStatus()},10000);
 }
-function restoreSellingJourney(){
- const raw=sessionStorage.getItem('tradeflow_selling_journey');if(!raw)return;
- let p=null;try{p=JSON.parse(raw)}catch{return}
- if(!p||p.tenant_id!==tenantId)return;
- const category=$('request-category'),title=$('request-title'),notes=$('request-notes');if(category&&p.category_id){category.value=p.category_id}
- if(title){title.value=[p.manufacturer,p.model,p.package_name].filter(Boolean).join(' ')||p.category_name||'Selling request'}
- if(notes){const lines=[];if(p.product_type)lines.push('Product type: '+p.product_type);if(p.condition)lines.push('Condition: '+p.condition);if(p.missing_items)lines.push('Missing items: '+p.missing_items);if(p.legal_right)lines.push('Legal right to sell: '+p.legal_right);if(p.serial_number)lines.push('Serial number: '+p.serial_number);if(p.notes)lines.push('Customer notes: '+p.notes);notes.value=lines.join('\n')}
- location.hash='#valuations';sessionStorage.removeItem('tradeflow_selling_journey');
- setMessage('Your selling request details have been carried across. Check them, then submit.','success');
-}
-async function loadPortalData(){const [buying,values,offers,acq,shipping,orders,items,fulfilments,returns,shop,addresses,sellingStatus,bankDetails,completedSales]=await Promise.all([rpc('customer_get_buying_requests'),rpc('customer_get_trading_values'),rpc('customer_get_offers'),rpc('customer_get_acquisitions'),rpc('customer_get_pre_acquisition_shipping'),rpc('customer_get_orders'),rpc('customer_get_order_items'),rpc('customer_get_fulfilments'),rpc('customer_get_returns'),rpc('customer_get_addresses'),rpc('customer_get_selling_status'),rpc('customer_get_bank_details'),rpc('customer_get_completed_sales')]);profile=(await rpc('customer_get_profile'))?.[0]||null;$('customer-name').textContent=profile?`${profile.first_name||''} ${profile.last_name||''}`.trim()||'Customer':'Customer';const completedAcquisitions=Array.isArray(completedSales)?completedSales:[];
+async function loadPortalData(){const [buying,values,offers,acq,shipping,orders,items,fulfilments,returns,addresses,sellingStatus,bankDetails,completedSales]=await Promise.all([rpc('customer_get_buying_requests'),rpc('customer_get_trading_values'),rpc('customer_get_offers'),rpc('customer_get_acquisitions'),rpc('customer_get_pre_acquisition_shipping'),rpc('customer_get_orders'),rpc('customer_get_order_items'),rpc('customer_get_fulfilments'),rpc('customer_get_returns'),rpc('customer_get_addresses'),rpc('customer_get_selling_status'),rpc('customer_get_bank_details'),rpc('customer_get_completed_sales')]);profile=(await rpc('customer_get_profile'))?.[0]||null;$('customer-name').textContent=profile?`${profile.first_name||''} ${profile.last_name||''}`.trim()||'Customer':'Customer';const completedAcquisitions=Array.isArray(completedSales)?completedSales:[];
 const completedRequestRefs=new Set(completedAcquisitions.map(a=>a.request_reference).filter(Boolean));
 const completedItemIds=new Set(completedAcquisitions.map(a=>a.buying_item_id).filter(Boolean));
 const completedBuying=(Array.isArray(buying)?buying:[]).filter(r=>String(r.status||'').toLowerCase()==='closed'||String(r.purchase_stage||'').toLowerCase()==='purchased'||String(r.acquisition_status||'').toLowerCase()==='paid'||completedRequestRefs.has(r.request_reference)||completedItemIds.has(r.buying_item_id));

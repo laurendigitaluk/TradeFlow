@@ -72,3 +72,8 @@ The completed sale remains in **Completed sales to Camera Shack**, with its requ
 ## Follow-up — editable customer bank details
 
 The customer portal My Details section now contains editable payment bank details. Customers can view and update account holder name, bank name, UK sort code and UK account number at any time. The portal uses the existing authenticated customer_get_bank_details and customer_save_bank_details RPCs, so the same bank details remain available to the subscriber payment workflow.
+
+
+## Follow-up — customer basket and paid-only My Orders
+
+Retail products now remain in a customer basket before payment. Adding an item to the basket does not create a `retail_orders` record. Removing an item removes it from the basket without creating or retaining an order. Proceeding to payment creates the retail order and opens payment. `customer_get_orders` now returns only paid/paid-stage/completed/refunded order history, so unpaid or cancelled pre-payment orders do not appear in My Orders.

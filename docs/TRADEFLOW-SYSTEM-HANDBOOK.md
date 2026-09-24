@@ -1041,3 +1041,8 @@ TradeFlow now treats the initial customer offer as one workflow with two possibl
 Automatic catalogue pricing has priority over manual initial offers. When an automatic price is calculated, TradeFlow creates the automatic valuation and corresponding cash/trade-in initial offer options, superseding previously published initial/revised offers and approved valuations for the item. Manual initial offer controls are disabled while an automatic valuation is active.
 
 When the customer accepts one initial option, the other published initial/revised option is superseded and the buying item moves to `awaiting_item`. After receipt and a passed inspection, the authoritative inspection workflow moves the item to `final_offer_required`; the subscriber then creates and publishes the **final offer** through the existing post-inspection workflow. The final offer is separate from the initial cash/trade-in choice.
+
+
+## Initial offer workflow clarification — 24 September 2026
+
+Each manual initial offer is represented by one published `offers` record linked to one approved `trading_values` record. The linked valuation holds both `cash_price` and `trade_in_price`; the customer chooses one option from the same offer. The selected `offer_mode` and accepted `amount` are recorded on that offer. There is no second published initial offer record for the other choice.

@@ -914,3 +914,8 @@ Enter one or both amounts and select **Send manual offer to customer**. The cust
 If an **automatic price** is available, automatic pricing takes priority and the manual initial offer controls are disabled. The automatic cash/trade-in pricing becomes the active initial offer.
 
 The **final offer is not created when the customer accepts the initial offer**. After the item has been received and the inspection has passed, TradeFlow moves the item to **Final offer required**. The subscriber then prepares and sends the final post-inspection offer. This final offer is the amount the customer accepts or refuses after inspection.
+
+
+## Shipping state after initial acceptance — 24 September 2026
+
+After the customer accepts the initial cash or trade-in option, the item moves into the receipt workflow. If the subscriber has not yet created a shipping label or QR code, the customer portal must show **Shipping label required — not ready to send**. Only after the label/QR or equivalent shipping handoff is actually available should the portal show **Shipping instructions sent — ready to send**.

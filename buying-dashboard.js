@@ -191,7 +191,35 @@ async function loadItemFinancials(itemId,requestStatus=''){
   }
  }catch(e){$('valuation-'+itemId).textContent=e.message||String(e);}
 }
-async function calculateConfiguredValuation(itemId,b){const condition=$('condition-'+itemId)?.value||'';if(!condition)return msg('Select the item condition before calculating the automatic price.','error');setBusy(b,true);try{await api('/rest/v1/buying_items?id=eq.'+encodeURIComponent(itemId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({item_condition:condition})});const result=await api('/rest/v1/rpc/calculate_buying_item_valuation',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:itemId})});const box=$('configured-price-'+itemId);if(result?.mode==='automatic'){if($('cash-'+itemId))$('cash-'+itemId).value=result.amount??'';if(box)box.innerHTML='<strong>Automatic valuation available:</strong> '+money(result.amount)+' — '+esc(result.percentage)+'% of '+money(result.base_price)+' '+(result.reference_type==='uk_used'?'UK Used':'UK New')+' research. <span class="small">'+esc(result.source_name||'')+'</span>';await createAutomaticOffer(itemId,result);}else if(result?.mode==='manual'){try{await api('/rest/v1/rpc/queue_customer_manual_valuation_notification',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:itemId})});}catch(e){console.warn('Manual valuation customer notification could not be queued:',e)}}else if(result?.mode==='manual_override'){if($('cash-'+itemId))$('cash-'+itemId).value=result.amount??'';if(box)box.innerHTML='<strong>Manual override:</strong> '+money(result.amount)+' — this exact buying price overrides the automatic calculation for this condition.';}else{if(result?.amount!==null&&result?.amount!==undefined&&$('cash-'+itemId))$('cash-'+itemId).value=result.amount; if(box)box.innerHTML='<strong>Manual price required.</strong> '+esc(result.reason||'No automatic rule available.')+(result.amount!==null&&result.amount!==undefined?' Suggested/manual amount: '+money(result.amount):'');}}catch(e){const box=$('configured-price-'+itemId);if(box)box.textContent=e.message||String(e)}finally{setBusy(b,false)}}
+async function calculateConfiguredValuation(itemId,b){
+ const condition=$('condition-'+itemId)?.value||'';
+ if(!condition)return msg('Select the item condition before calculating the automatic price.','error');
+ setBusy(b,true);
+ try{
+  await api('/rest/v1/buying_items?id=eq.'+encodeURIComponent(itemId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({item_condition:condition})});
+  const result=await api('/rest/v1/rpc/calculate_buying_item_valuation',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:itemId})});
+  const box=$('configured-price-'+itemId);
+  if(result?.mode==='automatic'){
+    if($('cash-'+itemId))$('cash-'+itemId).value=result.amount??'';
+    if($('trade-'+itemId))$('trade-'+itemId).value=result.trade_in_amount??'';
+    if(box)box.innerHTML='<strong>Automatic valuation available:</strong> '+money(result.amount)+' cash'+(result.trade_in_amount!=null?' / '+money(result.trade_in_amount)+' trade-in':'')+' — '+esc(result.percentage)+'%'+(result.trade_in_percentage!=null?' / '+esc(result.trade_in_percentage)+'% trade-in':'')+' of '+money(result.base_price)+' '+(result.reference_type==='uk_used'?'UK Used':'UK New')+' research. <span class="small">'+esc(result.source_name||'')+'</span>';
+    await createAutomaticOffers(itemId,result);
+  }else if(result?.mode==='manual'){
+    try{await api('/rest/v1/rpc/queue_customer_manual_valuation_notification',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:itemId})});}catch(e){console.warn('Manual valuation customer notification could not be queued:',e)}
+  }else if(result?.mode==='manual_override'){
+    if($('cash-'+itemId))$('cash-'+itemId).value=result.amount??'';
+    if($('trade-'+itemId))$('trade-'+itemId).value=result.trade_in_amount??'';
+    if(box)box.innerHTML='<strong>Manual override:</strong> '+money(result.amount)+(result.trade_in_amount!=null?' / '+money(result.trade_in_amount)+' trade-in':'')+' — this configured buying price overrides the percentage calculation for this condition.';
+  }else{
+    if(result?.amount!==null&&result?.amount!==undefined&&$('cash-'+itemId))$('cash-'+itemId).value=result.amount;
+    if(result?.trade_in_amount!==null&&result?.trade_in_amount!==undefined&&$('trade-'+itemId))$('trade-'+itemId).value=result.trade_in_amount;
+    if(box)box.innerHTML='<strong>Manual price required.</strong> '+esc(result.reason||'No automatic rule available.')+(result.amount!==null&&result.amount!==undefined?' Suggested/manual amount: '+money(result.amount):'');
+  }
+  await load();
+ }catch(e){
+  const box=$('configured-price-'+itemId);if(box)box.textContent=e.message||String(e);
+ }finally{setBusy(b,false)}
+}
 async function loadItemMedia(itemId){
  try{
   const el=$('photos-'+itemId); if(!el)return;

@@ -269,7 +269,7 @@ async function refreshBuyingStatus(){if(!tenantId||!key||!session?.access_token)
 async function itemRequestItems(requestId){return api('/rest/v1/buying_items?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_request_id=eq.'+encodeURIComponent(requestId)+'&order=sort_order&limit=1')}
 function renderCustomerSuppliedDescription(description){
  const text=String(description||'').replace(/\\n/g,'\n');
- const lines=text.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+ const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);
  const pairs=[]; const rest=[];
  lines.forEach(line=>{const m=line.match(/^([^:]+):\\s*(.*)$/);if(m)pairs.push([m[1].trim(),m[2].trim()]);else rest.push(line)});
  if(!pairs.length)return '<div class="supplied-text">'+esc(description||'No additional item description was supplied.')+'</div>';

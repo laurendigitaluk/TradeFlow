@@ -868,3 +868,15 @@ The dedicated website banner is used as a compact horizontal branding area in th
 
 ### Buying dashboard active/completed separation — 24 September 2026
 The Buying dashboard separates live customer requests from completed purchases. A buying item that has reached the purchased stage and has a paid acquisition is removed from the active request workspace, so valuation and offer controls are no longer presented as if action is still required. Completed purchases remain visible in a dedicated Completed purchases section for audit/reference. Closed requests are excluded from the active list.
+
+### Customer portal completed sales and order cancellation — 24 September 2026
+
+The customer portal now separates the customer-facing selling history into three states:
+
+- **Active selling requests** — requests that still require valuation, offer or purchase workflow work.
+- **Accepted sales & payment** — accepted customer sales that are still being processed.
+- **Completed sales to Camera Shack** — acquisitions that are paid or completed. These remain available as customer history and are no longer presented as active selling requests.
+
+Closed test-only selling requests are also excluded from the active selling-request list.
+
+In **My Orders**, customers can cancel their own retail order while it is still `initiated` or `pending_payment`. Paid, fulfilment, completed, refunded or otherwise progressed orders cannot be cancelled through this customer action.

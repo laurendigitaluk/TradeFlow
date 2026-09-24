@@ -1053,6 +1053,8 @@ Each manual initial offer is represented by one published `offers` record linked
 The Buying dashboard now exposes the connected Parcel2Go workflow directly in the shipping handoff. When an initial offer is accepted, the subscriber can enter parcel weight and dimensions, request live Parcel2Go courier quotes, compare returned services, and explicitly create a selected shipment. Shipment creation is performed server-side by the parcel2go-subscriber-shipping Edge Function; the subscriber's connected Parcel2Go account remains responsible for shipping payment. Manual label/QR shipping remains available as a fallback. The obsolete shipping-label-selector.js helper has been removed. This is Implemented in GitHub; live browser verification of the quote/order flow remains pending.
 
 
-## 24 September 2026 — Customer delivery-address type fix
+## 24 September 2026 — Customer delivery-address type correction
 
-The customer portal address form had a type-mapping defect: the visible **Delivery** option submitted `address_type=shipping`, while the live Parcel2Go subscriber-shipping function correctly requires `customer_addresses.address_type=delivery`. This prevented the new delivery address from being saved/recognised for shipping. `customer-dashboard.js` has been minimally corrected so the Delivery option and Add delivery address action both use `delivery`. No Supabase schema or Test One data was changed. Browser re-test is still required after the GitHub deployment/cache refresh.
+The live `public.customer_addresses.address_type` contract permits `primary`, `billing`, `shipping` and `other`; it does not permit `delivery`. The customer-facing label remains **Delivery address**, but the stored internal value is `address_type=shipping`.
+
+`customer-dashboard.js` was corrected so the Delivery option and Add delivery address action use `shipping`. The integrated Parcel2Go function was also corrected so its customer-address lookup uses `address_type=shipping`. The Parcel2Go Edge Function was redeployed as version 3 on 24 September 2026. No Supabase schema or Test One data was changed. Browser verification of the quote request remains the final test.

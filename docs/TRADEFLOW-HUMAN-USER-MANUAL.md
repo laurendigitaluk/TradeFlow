@@ -880,3 +880,14 @@ The customer portal now separates the customer-facing selling history into three
 Closed test-only selling requests are also excluded from the active selling-request list.
 
 In **My Orders**, customers can cancel their own retail order while it is still `initiated` or `pending_payment`. Paid, fulfilment, completed, refunded or otherwise progressed orders cannot be cancelled through this customer action.
+
+
+## Customer portal selling-entry visibility — 24 September 2026
+
+The customer portal no longer provides a duplicate **Sell to us** submission form. Customers start the selling/valuation journey from the public business website.
+
+Before a customer has submitted a selling request, the customer portal hides the **Sell to us** navigation entry and the selling section completely. After a selling request has been submitted through the website, the portal reveals the selling area so the customer can follow the request, valuation, offer, shipping, payment and completion stages.
+
+The existing basket, My Orders, bank details and payment/delivery address functionality is unchanged.
+
+Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

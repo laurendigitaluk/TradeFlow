@@ -95,3 +95,17 @@ The authenticated handoff from the public selling journey remains intact: `submi
 No Supabase schema or data change was required.
 
 Status at this checkpoint update: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+## New restore baseline — customer selling-entry visibility — 24 September 2026
+
+- Restore branch: `checkpoint-test-two-customer-portal-selling-visibility-20260924`
+- Parent change branch: `fix-customer-portal-selling-visibility-20260924`
+- Supabase project: `twfbmjwwqzxdxvclxbun`
+- Supabase schema/data: unchanged by this UI change.
+
+This checkpoint preserves the customer basket/order, completed-sales, bank-detail and payment/delivery-address work while establishing the corrected customer selling-entry behaviour.
+
+Before a selling request exists, the customer portal does not show the **Sell to us** navigation or selling section. After the public website submits a selling request, the portal exposes the existing selling tracking area. The portal does not provide a second selling-request submission form.
+
+Browser verification remains required before this checkpoint is described as browser verified.

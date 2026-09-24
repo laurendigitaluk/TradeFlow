@@ -1140,3 +1140,17 @@ Retail order cancellation:
 - Customer cancellation is implemented through customer_cancel_retail_order(p_tenant_id,p_order_id,p_reason).
 - The RPC authenticates the customer, verifies tenant ownership of the order, permits cancellation only from initiated or pending_payment, records cancelled_at, and writes a workflow_transitions audit record.
 - Do not expose customer cancellation for paid, fulfilment, completed, refunded, or already-cancelled orders.
+
+
+## 24 September 2026 — Customer portal selling-entry visibility
+
+The customer portal must not act as a second entry point for a customer selling request. The authoritative customer selling entry is the public subscriber website's **Sell to Us** journey.
+
+Implementation rule:
+- Hide the customer portal **Sell to us** navigation and selling section when the customer has no selling request/valuation activity.
+- Once a customer has submitted a selling request, reveal the selling section so the customer can track valuation, offer, shipping, payment and completion.
+- Do not reintroduce the selling-request submission form into the customer portal.
+- Keep `submitStoredSellingJourney()` because the public website hands the completed selling journey into the authenticated portal and the portal must complete that handoff after account authentication.
+- Do not alter the retail basket/order flow, customer bank details or customer address functions as part of this change.
+
+Verification status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

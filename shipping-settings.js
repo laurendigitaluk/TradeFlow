@@ -11,17 +11,16 @@ async function api(path,opts={}){
 }
 function render(){
  const box=$('shipping-connections');const by=Object.fromEntries(connections.map(x=>[x.provider,x]));
- box.innerHTML='<div class="shipping-search-row"><input id="shipping-provider-search" placeholder="Search shipping services or couriers…"><select id="shipping-provider-type"><option value="">All types</option><option value="multi_carrier">Multi-carrier platforms</option><option value="direct_carrier">Direct couriers</option></select></div><div id="shipping-provider-list"></div>';
+ box.innerHTML='<div id="shipping-provider-list"></div>';
  const paint=()=>{
-  const q=($('shipping-provider-search').value||'').toLowerCase(),type=$('shipping-provider-type').value;
-  const rows=catalog.filter(p=>(!type||p.provider_type===type)&&(!q||[p.provider_name,p.provider_code,p.description].join(' ').toLowerCase().includes(q)));
+  const rows=catalog.filter(p=>p.provider_code==='parcel2go');
   $('shipping-provider-list').innerHTML=rows.map(p=>{
    const c=by[p.provider_code],s=c?.status||'not_connected';
    return '<article class="shipping-provider-card"><div class="shipping-provider-head"><div><strong>'+esc(p.provider_name)+'</strong><div class="small">'+esc(p.provider_type==='multi_carrier'?'Multi-carrier platform':'Direct courier / carrier')+'</div></div><span class="status-pill">'+esc(s==='connected'?'Connected':s==='pending'?'Setup saved — awaiting test':s==='error'?'Connection error':'Not connected')+'</span></div><p class="small">'+esc(p.description||'')+'</p><p class="small"><strong>Adapter:</strong> '+esc(p.adapter_status==='active'?'Active':'Not active yet')+'</p><div class="actions"><button type="button" data-provider="'+esc(p.provider_code)+'">Set up / connect</button>'+(p.setup_url||p.documentation_url||p.website_url?'<a href="'+esc(p.setup_url||p.documentation_url||p.website_url)+'" target="_blank" rel="noopener">Provider instructions</a>':'')+'</div></article>';
   }).join('');
   document.querySelectorAll('[data-provider]').forEach(b=>b.onclick=()=>openProvider(b.dataset.provider));
  };
- $('shipping-provider-search').oninput=paint;$('shipping-provider-type').onchange=paint;paint();
+ paint();
 }
 function openProvider(code){
  const p=catalog.find(x=>x.provider_code===code);if(!p)return;

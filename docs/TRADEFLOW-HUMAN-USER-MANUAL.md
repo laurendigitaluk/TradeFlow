@@ -919,3 +919,8 @@ The **final offer is not created when the customer accepts the initial offer**. 
 ## Shipping state after initial acceptance — 24 September 2026
 
 After the customer accepts the initial cash or trade-in option, the item moves into the receipt workflow. If the subscriber has not yet created a shipping label or QR code, the customer portal must show **Shipping label required — not ready to send**. Only after the label/QR or equivalent shipping handoff is actually available should the portal show **Shipping instructions sent — ready to send**.
+
+
+## ## Parcel2Go integrated shipping — 24 September 2026
+
+When a customer accepts the initial offer, the Buying request now presents an **Integrated shipping — Parcel2Go** section. Enter the parcel weight and dimensions, choose **GET PARCEL2GO QUOTES**, compare the available courier services, then select the service you want and create the shipment. The shipment is created against the subscriber's connected Parcel2Go account; TradeFlow does not take the shipping payment. The subscriber must complete the Parcel2Go payment step before the customer is told that the item is ready to send. A customer delivery address is required for the integrated quote. A **Manual shipping fallback** remains available for a manually supplied label or QR code. The integrated quote/order workflow is currently implemented but still requires browser verification before being treated as fully verified.

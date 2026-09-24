@@ -99,3 +99,21 @@ Relevant commit:
 - `6207f0ca4b028351ebee149598898a563ccf1f58`
 
 State: Implemented in GitHub and syntax-tested. Browser verification remains required.
+
+
+## 25 September 2026 — Buying dashboard rendering defects corrected
+
+The browser screenshots showed that the earlier cache repair did not resolve the remaining two visual defects. A fresh source + DB audit found:
+
+- buying-dashboard.js converted the stored literal \\n separators in the customer description to real newlines, then incorrectly split on the old literal separator. This is why the Nikon submission appeared as one continuous line despite the earlier attempted formatting repair.
+- requestStatusClass() already mapped submitted to status-approved, but buying-dashboard.css contained no definition for status-approved, so the Submitted pill could not appear green.
+
+Current live Test Two data at the time of this repair: request BR-4C34C6F633, item BI-9D1C8F01FB, customer CUS-E82930637A58, request/item status submitted, two media records. No DB state or media was changed.
+
+Repairs:
+- 8e6dbea8964296afeccb2d0f378f8ee57aea8f25 — correct newline splitting.
+- c76d730df2f8eb823cea44d586781b07385bc2df — define explicit status pill colours.
+- 6a7af0a400996db0c1ff7ac7f9c2ff583621013b — Buying page CSS/controller cache-busted to v6/v60.
+- ccbbbf136c59a50cea1700a2b4d328e24b5147ad — Business Dashboard Buying links synchronized to v60.
+
+State: Implemented in GitHub, live DB verified, browser verification pending. Test One remains frozen.

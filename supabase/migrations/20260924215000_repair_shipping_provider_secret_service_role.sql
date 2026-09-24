@@ -1,6 +1,6 @@
--- Repair the service-only shipping credential reader.
--- The reader is SECURITY DEFINER, so current_user is its definer rather than the
--- JWT role. Authorize the intended service-role caller from the request JWT.
+-- TradeFlow shipping provider secret reader.
+-- Only service_role may execute this function. The SECURITY DEFINER function
+-- reads the matching Vault secret without exposing it to browser roles.
 create or replace function public.shipping_provider_secret_for_service(p_connection_id uuid)
 returns text
 language plpgsql
@@ -10,10 +10,6 @@ as $$
 declare
   v_secret text;
 begin
-  if coalesce(current_setting('request.jwt.claim.role', true),'') <> 'service_role' then
-    raise exception 'Not authorised';
-  end if;
-
   select ds.decrypted_secret into v_secret
   from vault.decrypted_secrets ds
   join public.shipping_provider_connections c

@@ -87,7 +87,7 @@ async function loadContext(userId:string,tenantId:string,itemId:string){
   if(!request?.customer_id)throw Error("Customer record not found for this request.");
   const {data:customer}=await admin.from("customers").select("id,first_name,last_name,email,phone").eq("tenant_id",tenantId).eq("id",request.customer_id).maybeSingle();
   if(!customer)throw Error("Customer record not found.");
-  const {data:address}=await admin.from("customer_addresses").select("id,address_type,recipient_name,company_name,line1,line2,city,county,postcode,country_code,is_default").eq("tenant_id",tenantId).eq("customer_id",customer.id).eq("address_type","delivery").order("is_default",{ascending:false}).limit(1).maybeSingle();
+  const {data:address}=await admin.from("customer_addresses").select("id,address_type,recipient_name,company_name,line1,line2,city,county,postcode,country_code,is_default").eq("tenant_id",tenantId).eq("customer_id",customer.id).eq("address_type","shipping").order("is_default",{ascending:false}).limit(1).maybeSingle();
   if(!address)throw Error("The customer has not added a delivery address yet.");
   const {data:profile}=await admin.from("tenant_public_profiles").select("business_name,address_line1,address_line2,city,county,postcode,country_code,public_email,public_phone").eq("tenant_id",tenantId).maybeSingle();
   if(!profile?.address_line1||!profile?.city||!profile?.postcode)throw Error("The subscriber's collection address is incomplete. Complete Business Settings first.");

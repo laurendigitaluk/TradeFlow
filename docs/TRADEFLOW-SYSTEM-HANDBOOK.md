@@ -1109,3 +1109,20 @@ Relevant commits:
 - ccbbbf136c59a50cea1700a2b4d328e24b5147ad — synchronize Business Dashboard Buying navigation to v60
 
 Verification state: Implemented in GitHub; live DB verified; source-level logic verified. Browser verification is still required. Test One remains frozen.
+
+
+## 25 September 2026 — Second Buying rendering correction
+
+The next browser screenshot exposed two remaining source defects. First, the customer-detail key/value parser used `:\\s*` in a JavaScript regular-expression literal. That matches a literal backslash followed by `s`, not whitespace, so none of the `Product type: ...`, `Manufacturer: ...` etc. lines were parsed into separate fields. The parser has now been corrected to `:\s*`.
+
+Second, the Submitted state was previously shown only as a green status pill. The requirement is that the entire Review customer submission stage is visually greyed when the item is still in the submitted state, rather than using green to imply an approved/completed review. The stage now receives `submitted-stage` styling and the Submitted pill is neutral grey within that stage.
+
+The latest cache keys are buying-dashboard.css v7, buying-dashboard.js v61 and Business Dashboard Buying links v61. No Test Two data, RLS, schema or workflow state was changed. Test One remains frozen.
+
+Relevant commits:
+- 3ab98cbe927b0e2fc988728844601a7684bf8db7 — correct customer-field whitespace parsing and mark submitted review stage
+- 1a09216ac77c656ab2636f81a94a6bace76fe6ef — grey submitted review stage
+- 65cb2522f5b0fdd1a3a3ab9a28f165b88a45b34a — cache-bust Buying assets to v7/v61
+- 13da412223385bdd73517ef9eebb07aab94b60bf — synchronize Buying navigation to v61
+
+Verification state: Implemented in GitHub; source logic verified; browser verification pending.

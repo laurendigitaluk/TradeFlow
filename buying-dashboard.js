@@ -268,12 +268,25 @@ async function refreshBuyingStatus(){if(!tenantId||!key||!session?.access_token)
 }catch(e){console.warn('Buying status refresh failed:',e)}}
 async function itemRequestItems(requestId){return api('/rest/v1/buying_items?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_request_id=eq.'+encodeURIComponent(requestId)+'&order=sort_order&limit=1')}
 function renderCustomerSuppliedDescription(description){
- const text=String(description||'').replace(/\\n/g,'\n');
- const lines=text.split(/\n+/).map(x=>x.trim()).filter(Boolean);
- const pairs=[]; const rest=[];
- lines.forEach(line=>{const m=line.match(/^([^:]+):\s*(.*)$/);if(m)pairs.push([m[1].trim(),m[2].trim()]);else rest.push(line)});
+ const normalized=String(description||'').replace(/\\r?\\n/g,'\\n').replace(/\\n/g,'\\n');
+ const fieldPattern=/(Product type|Manufacturer|Model|Package|Condition|Missing items|Legal right to sell)\\s*:/gi;
+ const matches=[...normalized.matchAll(fieldPattern)];
+ const pairs=[];
+ if(matches.length){
+  matches.forEach((m,index)=>{
+   const valueStart=m.index+m[0].length;
+   const valueEnd=index+1<matches.length?matches[index+1].index:normalized.length;
+   pairs.push([m[1].trim(),normalized.slice(valueStart,valueEnd).replace(/^\\s+|\\s+$/g,'')]);
+  });
+ }else{
+  const lines=normalized.split(/\\n+/).map(x=>x.trim()).filter(Boolean);
+  lines.forEach(line=>{
+   const m=line.match(/^([^:]+):\\s*(.*)$/);
+   if(m)pairs.push([m[1].trim(),m[2].trim()]);
+  });
+ }
  if(!pairs.length)return '<div class="supplied-text">'+esc(description||'No additional item description was supplied.')+'</div>';
- return '<div class="field-grid customer-general-details">'+pairs.map(p=>'<div><span class="cell-label">'+esc(p[0])+'</span><strong>'+esc(p[1]||'—')+'</strong></div>').join('')+'</div>'+(rest.length?'<div class="supplied-text" style="margin-top:10px">'+esc(rest.join('\\n'))+'</div>':'');
+ return '<div class="field-grid customer-general-details">'+pairs.map(p=>'<div><span class="cell-label">'+esc(p[0])+'</span><strong>'+esc(p[1]||'—')+'</strong></div>').join('')+'</div>';
 }
 function renderItem(i,request,customer){
  const customerName=[customer?.first_name,customer?.last_name].filter(Boolean).join(' ')||'Customer';

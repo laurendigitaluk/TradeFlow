@@ -276,8 +276,12 @@ async function advanceItemToOfferReady(itemId){
   else if(rs==='submitted')await transition('buying_request',requestId,'submitted','under_review').then(()=>transition('buying_request',requestId,'under_review','valued')).then(()=>transition('buying_request',requestId,'valued','offer_ready'));
  }
 }
-async function createInitialOffers(itemId,offersToCreate,source='manual',valuationOverride=null){
- if(!Array.isArray(offersToCreate)||!offersToCreate.length)throw Error('Enter a cash offer, a trade-in offer, or both.');
+async function createInitialOffer(itemId,offerChoice,source='manual',valuationOverride=null){
+ const cash=Number.isFinite(Number(offerChoice?.cash))?Number(offerChoice.cash):null;
+ const trade=Number.isFinite(Number(offerChoice?.trade_in))?Number(offerChoice.trade_in):null;
+ const mode=offerChoice?.mode==='trade_in'?'trade_in':(cash!==null?'cash':'trade_in');
+ const amount=mode==='trade_in'?trade:cash;
+ if(amount===null)throw Error('Enter a cash offer, a trade-in offer, or both.');
  await supersedePublishedInitialOffers(itemId);
  let valuation=valuationOverride;
  if(!valuation){
@@ -285,11 +289,11 @@ async function createInitialOffers(itemId,offersToCreate,source='manual',valuati
   valuation=values?.[0];
  }
  if(!valuation)throw Error('Approve the valuation before sending the initial offer.');
- const rows=await api('/rest/v1/offers',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(offersToCreate.map(x=>({tenant_id:tenantId,buying_item_id:itemId,trading_value_id:valuation.id,offer_reference:'OF-'+crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase(),offer_type:'initial',offer_mode:x.mode,status:'draft',amount:x.amount,currency:'GBP',created_by:session.user.id})))});
- const created=Array.isArray(rows)?rows:[rows];
- for(const offer of created)await transition('offer',offer.id,'draft','published',source==='automatic'?'Automatic initial offer published.':'Manual initial offer published.');
+ const rows=await api('/rest/v1/offers',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,trading_value_id:valuation.id,offer_reference:'OF-'+crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase(),offer_type:'initial',offer_mode:mode,status:'draft',amount,currency:'GBP',created_by:session.user.id})});
+ const offer=Array.isArray(rows)?rows[0]:rows;
+ await transition('offer',offer.id,'draft','published',source==='automatic'?'Automatic initial offer published.':'Manual initial offer published.');
  await advanceItemToOfferReady(itemId);
- return created;
+ return offer;
 }
 async function createAutomaticOffers(itemId,result){
  try{
@@ -298,9 +302,7 @@ async function createAutomaticOffers(itemId,result){
   const rows=await api('/rest/v1/trading_values',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,method:'automatic',status:'draft',amount:Number(result.amount),currency:'GBP',cash_price:Number(result.amount),trade_in_price:Number.isFinite(Number(result.trade_in_amount))?Number(result.trade_in_amount):null,calculated_at:new Date().toISOString(),notes:'Automatic catalogue pricing',metadata:{source:'subscriber_buying_dashboard',valuation_source:'automatic'}})});
   const valuation=Array.isArray(rows)?rows[0]:rows;
   await transition('trading_value',valuation.id,'draft','approved','Automatic catalogue valuation approved.');
-  const offers=[{mode:'cash',amount:Number(result.amount)}];
-  if(Number.isFinite(Number(result.trade_in_amount)))offers.push({mode:'trade_in',amount:Number(result.trade_in_amount)});
-  await createInitialOffers(itemId,offers,'automatic',valuation);
+  await createInitialOffer(itemId,{cash:Number(result.amount),trade_in:Number(result.trade_in_amount),mode:Number.isFinite(Number(result.amount))?'cash':'trade_in'},'automatic',valuation);
   msg('Automatic valuation completed and the automatic cash/trade-in offer is now active. Manual initial offers are overridden.','success');
   await load();
  }catch(e){
@@ -321,10 +323,7 @@ async function createOffer(itemId,b){
   const rows=await api('/rest/v1/trading_values',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,method:'manual',status:'draft',amount,currency:'GBP',cash_price:Number.isFinite(cash)?cash:null,trade_in_price:Number.isFinite(trade)?trade:null,calculated_at:new Date().toISOString(),notes:'Manual buyer/trade-in offer',metadata:{source:'subscriber_buying_dashboard',valuation_source:'manual'}})});
   const valuation=Array.isArray(rows)?rows[0]:rows;
   await transition('trading_value',valuation.id,'draft','approved','Manual buyer/trade-in valuation approved.');
-  const offers=[];
-  if(Number.isFinite(cash))offers.push({mode:'cash',amount:cash});
-  if(Number.isFinite(trade))offers.push({mode:'trade_in',amount:trade});
-  await createInitialOffers(itemId,offers,'manual',valuation);
+  await createInitialOffer(itemId,{cash,trade_in:trade,mode:Number.isFinite(cash)?'cash':'trade_in'},'manual',valuation);
   await load();
   msg('Manual buyer/trade-in offer sent to the customer. The customer can choose which offer to accept.','success');
  }catch(e){msg(e.message||String(e),'error');}finally{setBusy(b,false);}

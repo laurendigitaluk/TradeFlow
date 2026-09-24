@@ -1,3 +1,4 @@
+window.tradeflowBuyingDashboardScriptLoaded=true;
 function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
 async function parcel2goShippingCall(body){
  const r=await fetch(SUPABASE_URL+'/functions/v1/parcel2go-subscriber-shipping',{

@@ -1191,3 +1191,19 @@ For the Test Two issue, `customer-dashboard.js` was corrected so the Delivery op
 ## 24 September 2026 — Test Two valuation display and shipping message clarification
 
 When a customer has accepted a trade-in offer, the customer portal should display the accepted offer amount rather than presenting the underlying cash valuation as the single “Valuation” figure. Test Two has an approved manual trading value of cash £50 and trade-in £55, with the £55 trade-in offer accepted. The customer dashboard now resolves accepted offers by buying item and displays the accepted amount, while also showing the underlying cash/trade-in values. The Buying dashboard Parcel2Go text now describes the saved Delivery address as the source used by Parcel2Go instead of implying that the address is necessarily missing.
+## 25 September 2026 — Mandatory regression gate after Test Two loading failure
+
+The Test Two Buying dashboard remained on its static loading placeholders because buying-dashboard.js had a JavaScript parse error. The specific fault was an unescaped ASCII apostrophe inside a single-quoted JavaScript string in the Parcel2Go shipping handoff text (customer's). This prevented the entire controller from executing. The earlier asynchronous loading repair was therefore not the first failing boundary.
+
+From this point forward, every material front-end repair must pass this gate before it is treated as implemented:
+- inspect the current controller and all scripts loaded by the page;
+- identify the first executable boundary before changing database state;
+- run a JavaScript syntax check over every changed controller and directly loaded companion controller;
+- verify the page script cache-buster matches the repaired controller;
+- preserve Test One and existing Test Two restore checkpoints;
+- never delete/reseed test data merely to work around an unproven browser failure;
+- only then perform the one requested browser test.
+
+The Buying dashboard now has an inline startup diagnostic and controller startup marker. If the controller fails to load in future, the page should identify a script-loading/runtime boundary instead of leaving the user with an unexplained loading screen.
+
+The repaired files are syntax-verified. This does not yet count as Browser Verified; the next test is the deployed GitHub Pages Buying dashboard after the v57 cache-bust has published.

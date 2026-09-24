@@ -108,3 +108,30 @@ The manual initial offer is now one published offer record linked to one valuati
 After initial acceptance, the customer remains in the receipt workflow. If no shipping label/QR has been created yet, the customer presentation is **Shipping label required — not ready to send**. The existing database purchase stage remains `awaiting_item` so established transitions are not changed. Once a valid label/QR handoff exists, the presentation becomes **Shipping instructions sent — ready to send**.
 
 The Buying dashboard also now includes the shared `money()` formatter required by the financial/offer rendering path, preventing the previous `money is not defined` browser error.
+
+
+## 24 September 2026 — Integrated Parcel2Go shipping handoff
+
+The earlier Buying dashboard displayed Parcel2Go as connected but did not provide the actual integrated quote/service workflow. The obsolete `shipping-label-selector.js` helper has been removed and the Buying dashboard now owns the integrated UI directly.
+
+New subscriber workflow:
+1. Customer accepts the initial offer.
+2. Subscriber enters parcel weight, length, width and height.
+3. TradeFlow calls the server-side `parcel2go-subscriber-shipping` Edge Function.
+4. The function validates `buying.manage`, reads the subscriber's connected Parcel2Go credentials from Vault, reads the subscriber collection address and customer's delivery address, and requests live Parcel2Go quotes.
+5. Subscriber compares the returned courier services and explicitly selects one.
+6. TradeFlow creates the Parcel2Go shipment against the subscriber's own connected account and returns the Parcel2Go payment URL where available.
+7. Shipping references are stored against `buying_item_shipping`.
+8. Manual label/QR shipping remains available as a fallback.
+
+Parcel2Go's public API documentation confirms quote comparison, order creation, payment and label/tracking capabilities. citeturn0search0turn8search1
+
+## Current verification state
+
+**Implemented in GitHub:** yes.  
+**Edge Function deployed:** yes — `parcel2go-subscriber-shipping`, version 2, JWT verification enabled.  
+**Buying dashboard UI:** implemented.  
+**Obsolete selector helper:** removed.  
+**Browser quote/order verification:** pending.
+
+The current test customer must have a delivery address before the integrated quote can run. No live shipment should be created merely by loading the page or requesting the quote; shipment creation remains an explicit subscriber action.

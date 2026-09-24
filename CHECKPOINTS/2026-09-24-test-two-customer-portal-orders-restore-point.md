@@ -109,3 +109,17 @@ This checkpoint preserves the customer basket/order, completed-sales, bank-detai
 Before a selling request exists, the customer portal does not show the **Sell to us** navigation or selling section. After the public website submits a selling request, the portal exposes the existing selling tracking area. The portal does not provide a second selling-request submission form.
 
 Browser verification remains required before this checkpoint is described as browser verified.
+
+
+## New restore baseline — customer portal dashboard scope — 24 September 2026
+
+- Restore branch: `checkpoint-test-two-customer-portal-dashboard-cleanup-20260924`
+- Parent implementation branch: `fix-customer-portal-dashboard-cleanup-20260924`
+- Supabase project: `twfbmjwwqzxdxvclxbun`
+- Supabase schema/data: unchanged.
+
+The customer portal is now limited to customer account/history functions. Shop browsing and retail basket activity remain on the public website and are no longer loaded/rendered in the customer portal. The portal no longer has Shop or Sell to us navigation/entry links. Selling/valuation requests continue to originate on the public website; an existing selling journey can still appear in the portal for viewing valuations, offers, shipping, payment and completed-sale history.
+
+The dashboard summary now presents Orders, Valuations and Returns. My Orders, Returns and My Details remain available as account sections.
+
+Browser verification is required before this checkpoint is described as browser verified.

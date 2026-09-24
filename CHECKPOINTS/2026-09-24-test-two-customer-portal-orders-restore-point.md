@@ -109,3 +109,27 @@ This checkpoint preserves the customer basket/order, completed-sales, bank-detai
 Before a selling request exists, the customer portal does not show the **Sell to us** navigation or selling section. After the public website submits a selling request, the portal exposes the existing selling tracking area. The portal does not provide a second selling-request submission form.
 
 Browser verification remains required before this checkpoint is described as browser verified.
+
+
+## Follow-up — customer portal simplified to account viewing — 24 September 2026
+
+The customer portal presentation has been simplified after browser review showed duplicate Shop and Sell to us entry points.
+
+The portal now contains clear account sections for:
+- Overview
+- My Orders
+- Valuations, when the customer has valuation/selling activity
+- Returns
+- My Details
+
+Removed from the portal:
+- Shop navigation and shop page
+- Sell to us navigation
+- Sell something / selling-request submission controls
+- Overview Shop and Sell something buttons
+
+Shopping and new valuation requests remain on the public business website. Existing valuation, offer, shipping, payment and completed-sale information remains available in the Valuations section when relevant.
+
+No Supabase schema/data change was required.
+
+Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

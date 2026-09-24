@@ -42,7 +42,7 @@ async function respond(id,a,mode){const n=document.querySelector(`.offer-respons
 async function payOrder(id){const b=document.querySelector(`[data-pay-order-id="${CSS.escape(id)}"]`);try{setBusy(b,true,'Opening secure payment…');const result=await api('/functions/v1/create-stripe-checkout-session',{method:'POST',body:JSON.stringify({tenant_id:tenantId,order_id:id})});if(!result?.checkout_url)throw Error(result?.error||'Payment checkout URL was not returned.');location.href=result.checkout_url}catch(e){setMessage(e.message||String(e),'error');setBusy(b,false)}}
 async function createPayment(id){return payOrder(id)}
 async function requestReturn(){const item=$('return-order-item').value;if(!item)return setMessage('Select an eligible order item.','error');try{await api('/rest/v1/rpc/customer_request_return',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_order_item_id:item,p_reason_code:$('return-reason-code').value,p_reason:$('return-reason').value.trim()||null,p_customer_notes:$('return-reason').value.trim()||null})});$('return-order-item').value='';$('return-reason').value='';setMessage('Return request submitted.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}}
-async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails,completedSales=[],valuations=[]){
+async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails,completedSales=[]){
  const box=$('selling-status-panel');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
  const completedIds=new Set((Array.isArray(completedSales)?completedSales:[]).map(a=>a.buying_item_id).filter(Boolean));
@@ -72,8 +72,8 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
  const title=(stageCopy[stage]||fallback)[0];
  const cls=['received','inspection','final_offer_required','final_offer_sent','final_offer_accepted','purchased'].includes(stage)?'accepted':stage==='final_offer_refused'||stage==='return_pending'?'manual':stage==='offer_ready'?'ready':'progress';
  let action='';
- const liveOffer=(Array.isArray(offers)?offers:[]).find(o=>o.status==='published'&&o.buying_item_id===base.buying_item_id); const liveValuation=(Array.isArray(valuations)?valuations:[]).find(v=>v.buying_item_id===base.buying_item_id&&v.status==='approved');
- if(liveOffer){ action=offerAction(liveOffer,liveValuation); }
+ const liveOffer=(Array.isArray(offers)?offers:[]).find(o=>o.status==='published'&&o.buying_item_id===base.buying_item_id);
+ if(liveOffer){ action=offerAction(liveOffer); }
  let handoff='';
  if(stage==='final_offer_accepted'){
   const hasBank=Boolean(bankDetails?.has_details);
@@ -182,8 +182,7 @@ async function refreshCustomerSellingStatus(){
    ]);
    const completedItemIds=new Set((Array.isArray(completedSales)?completedSales:[]).map(a=>a.buying_item_id).filter(Boolean));
    const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds.has(o.buying_item_id));
-const customerValuations=await rpc('customer_get_trading_values');
-   await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales,await rpc('customer_get_trading_values'));
+await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);
  }catch(e){console.warn('TradeFlow customer selling status refresh failed:',e)}
 }
 function startCustomerSellingStatusRefresh(){
@@ -198,7 +197,7 @@ const activeBuying=(Array.isArray(buying)?buying:[]).filter(r=>!completedBuying.
 const completedAcquisitionIds=new Set(completedAcquisitions.map(a=>a.acquisition_id).filter(Boolean));
 const activeAcquisitions=(Array.isArray(acq)?acq:[]).filter(a=>!completedAcquisitionIds.has(a.acquisition_id));
 const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds.has(o.buying_item_id));
-$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales,await rpc('customer_get_trading_values'));const valuations=await rpc('customer_get_selling_valuations');
+$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);const valuations=await rpc('customer_get_selling_valuations');
 const visibleValuations=(Array.isArray(valuations)?valuations:[]).filter(v=>!completedRequestRefs.has(v.request_reference));
 $('buying-count').textContent=visibleValuations.length;
 renderSellingValuations(visibleValuations);

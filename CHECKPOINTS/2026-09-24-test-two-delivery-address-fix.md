@@ -38,3 +38,19 @@ The remaining browser test is to refresh the subscriber buying page and request 
 Live data confirms the approved manual trading value is cash £50 and trade-in £55, and the initial trade-in offer for £55 is accepted. The customer dashboard was corrected to display the accepted £55 trade-in amount and retain the underlying £50 cash / £55 trade-in values. The Buying dashboard Parcel2Go explanatory text was clarified so it no longer reads as a current missing-address error.
 
 The customer address itself remains correct: `address_type=shipping`, default=true. Parcel2Go Edge Function version 3 uses the same `shipping` address type. Final quote-flow browser verification remains pending.
+
+## Follow-up — Buying dashboard loading fix
+
+The Test Two Buying dashboard was still showing the initial “Loading buying requests…” and “Loading completed purchases…” placeholders after the optional-data resilience fix. Inspection of the live frontend code found that customer-name enrichment was performed before the dashboard rendered any request data, so a stalled or failed customer enrichment request could leave the whole page looking permanently stuck.
+
+The dashboard has now been changed so that:
+- Core buying request/item/valuation/offer data renders first.
+- Customer names are enrichment only and are loaded in a single customer query after the dashboard is rendered.
+- Failure of customer-name enrichment no longer blocks the buying request list or completed-purchases list.
+- The dashboard script cache version was bumped from v55 to v56.
+
+Relevant commits:
+- 70dba66432ed6d9395df487028947a7e93e3166e — render buying dashboard before customer enrichment
+- a8c68e2c4f1832a48a22442b48dd6a2cfc3547e8 — refresh buying dashboard script after loading fix
+
+The next browser check is a hard refresh of the Buying dashboard. The Test Two request should render instead of remaining on the loading placeholders. If it still does not render, the next step is to capture the browser console/network response rather than making another speculative database change.

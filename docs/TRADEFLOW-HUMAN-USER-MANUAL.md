@@ -900,3 +900,17 @@ You do not need to enter Royal Mail, Evri, Yodel, DPD or other courier credentia
 The connection test only verifies authentication. It does not create or purchase a shipment. Parcel2Go's API supports quoting, booking, labels and tracking as separate steps. citeturn2view0turn3view0
 
 The Client Secret should never be shared with TradeFlow support or entered into chat; enter it directly into Shipping Settings.
+
+
+## Initial offers: cash and trade-in
+
+The Buying dashboard now has one **Offer** stage for manual initial offers. It contains:
+
+- **Manual offer — Cash** — the cash purchase amount offered to the customer.
+- **Manual offer — Trade-in** — the trade-in credit offered against a retail purchase.
+
+Enter one or both amounts and select **Send manual offer to customer**. The customer can then choose the cash offer or the trade-in offer. Once the customer accepts one, the other initial option is no longer active and the item moves into the shipping and receipt process.
+
+If an **automatic price** is available, automatic pricing takes priority and the manual initial offer controls are disabled. The automatic cash/trade-in pricing becomes the active initial offer.
+
+The **final offer is not created when the customer accepts the initial offer**. After the item has been received and the inspection has passed, TradeFlow moves the item to **Final offer required**. The subscriber then prepares and sends the final post-inspection offer. This final offer is the amount the customer accepts or refuses after inspection.

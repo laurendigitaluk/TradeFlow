@@ -1160,3 +1160,12 @@ Parcel2Go's official API documents OAuth2 client credentials, live/sandbox separ
 Verification state: browser verified on 24 September 2026 for the Camerashack test subscriber against Parcel2Go Live. The connection displayed Connected and reported that authentication passed with no shipment created.
 
 Implementation note: the Buying dashboard's integrated shipping selector now presents Parcel2Go as the fixed integrated provider rather than asking the subscriber to choose among multiple direct providers.
+
+
+## Initial offer workflow — 24 September 2026
+
+For buying-dashboard work, treat the initial offer as a single manual offer stage containing two optional values: **Cash** and **Trade-in**. Do not restore the old separate `Create & publish offer` box or an initial offer-type selector. The subscriber sends the manual cash and/or trade-in values to the customer from this single stage.
+
+Automatic catalogue pricing always takes precedence. If an automatic valuation is active, do not allow a manual initial valuation or initial offer to replace it. Automatic pricing creates the authoritative valuation and initial offer option(s), while previously published initial/revised offers are superseded.
+
+Customer acceptance selects one initial option. The other published initial/revised option must be superseded. Acceptance moves the item into the shipping/receipt workflow. Do not create a final offer at this point. Only after the item is received and inspection is passed should the item move to `final_offer_required`, where the existing final-offer workflow creates and publishes the post-inspection offer.

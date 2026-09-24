@@ -106,6 +106,11 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
   };
  }
 }
+function renderCustomerBankDetails(bankDetails){
+ const box=$('customer-bank-details');if(!box)return;
+ const has=Boolean(bankDetails?.has_details);
+ box.innerHTML='<h3>Bank details for payments</h3><p class="small">These are the UK bank details Camera Shack will use when paying you for items you sell. You can update them at any time.</p><div class="form-grid" style="margin-top:12px"><label>Account holder name<input id="account-bank-holder" autocomplete="name" value="'+esc(bankDetails?.account_holder_name||'')+'"></label><label>Bank name (optional)<input id="account-bank-name" autocomplete="organization" value="'+esc(bankDetails?.bank_name||'')+'"></label><label>Sort code<input id="account-bank-sort-code" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="12-34-56" value="'+esc(bankDetails?.sort_code||'')+'"></label><label>Account number<input id="account-bank-number" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="12345678" value="'+esc(bankDetails?.account_number||'')+'"></label></div><div class="actions" style="margin-top:12px"><button type="button" id="save-account-bank-details">'+(has?'Update bank details':'Save bank details')+'</button></div><p id="account-bank-message" class="small" style="margin-top:8px">'+(has?'Bank details are on record. You can change them here whenever needed.':'Bank details have not yet been provided.')+'</p>';
+}
 function renderSellingValuations(data){
  const box=$('valuation-list');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.innerHTML='<div class="empty">No valuations have been issued yet. Your valuation will appear here when the business has completed it.</div>';return}
@@ -187,7 +192,7 @@ const acceptedPanel=$('accepted-sales-panel');if(acceptedPanel)acceptedPanel.hid
 }else{
   $('profile-list').textContent='Profile not available.';
 }
-$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
+$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerBankDetails(bankDetails);renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
 async function loadRequestFields(){const cat=$('request-category')?.value,box=$('request-fields');if(!box)return;if(!cat){box.innerHTML='';return}box.innerHTML='<div class="small">Loading customer information fields…</div>';try{const fields=await api('/rest/v1/rpc/customer_get_buying_category_fields?p_tenant_id='+encodeURIComponent(tenantId)+'&p_category_id='+encodeURIComponent(cat),{method:'GET'});if(!Array.isArray(fields)||!fields.length){box.innerHTML='<div class="small">No additional customer information fields are configured for this category.</div>';return}box.innerHTML=fields.map(f=>{const opts=Array.isArray(f.options)?f.options:[];let control='';if(['select','multiselect'].includes(f.field_type)){control='<select '+(f.field_type==='multiselect'?'multiple':'')+' data-field-id="'+esc(f.field_id)+'" data-field-type="'+esc(f.field_type)+'">'+(f.field_type==='select'?'<option value="">Select…</option>':'')+opts.map(o=>'<option value="'+esc(o.value)+'">'+esc(o.label||o.value)+'</option>').join('')+'</select>'}else if(f.field_type==='textarea'){control='<textarea rows="3" data-field-id="'+esc(f.field_id)+'" data-field-type="textarea"></textarea>'}else if(f.field_type==='boolean'){control='<input type="checkbox" data-field-id="'+esc(f.field_id)+'" data-field-type="boolean">'}else{const type=['number','currency','date','email','phone','url'].includes(f.field_type)?(f.field_type==='currency'?'number':f.field_type):'text';control='<input type="'+type+'" data-field-id="'+esc(f.field_id)+'" data-field-type="'+esc(f.field_type)+'">'}return '<label>'+esc(f.label)+(f.required_for_buying?' *':'')+control+'</label>'}).join('')}catch(e){box.innerHTML='<div class="small error">'+esc(e.message||String(e))+'</div>'}}
 function collectRequestFields(){return Array.from(document.querySelectorAll('#request-fields [data-field-id]')).map(el=>{let value;if(el.type==='checkbox')value=el.checked;else if(el.multiple)value=Array.from(el.selectedOptions).map(o=>o.value);else value=el.value.trim();return {field_id:el.dataset.fieldId,value}}).filter(x=>x.value!==''&&!(Array.isArray(x.value)&&!x.value.length))}
 async function submitBuyingRequest(){if(localStorage.getItem('tradeflow_subscriber_session'))return setMessage('Subscriber accounts cannot submit customer buying requests. Sign out of the business account and use a separate customer account to test this journey.','error');const notes=$('request-notes').value.trim(),title=$('request-title').value.trim(),cat=$('request-category').value;if(!cat)return setMessage('Select a buying category.','error');if(!title)return setMessage('Enter what you want to sell.','error');try{await api('/rest/v1/rpc/customer_submit_buying_request',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_notes:notes||null,p_items:[{category_id:cat,title,description:notes||null,quantity:1,fields:collectRequestFields()}]})});$('request-title').value='';$('request-notes').value='';await loadPortalData();location.hash='#selling';setMessage('Your item has been submitted for valuation. We are now reviewing it. If an automatic valuation is not available, it will move to manual valuation.','success')}catch(e){setMessage(e.message||String(e),'error')}}
@@ -244,6 +249,19 @@ document.addEventListener('click',e=>{const cancelButton=e.target.closest?.('[da
 window.addEventListener('tradeflow-auth-success',e=>handleAuthSuccess(e.detail));
 $('submit-request')?.addEventListener('click',submitBuyingRequest);$('request-category')?.addEventListener('change',loadRequestFields);
 $('request-return')?.addEventListener('click',requestReturn);
+$('save-account-bank-details')?.addEventListener('click',async()=>{
+ const b=$('save-account-bank-details');setBusy(b,true,'Saving…');
+ try{
+  const holder=$('account-bank-holder')?.value.trim()||'';
+  const sort=$('account-bank-sort-code')?.value.trim()||'';
+  const account=$('account-bank-number')?.value.trim()||'';
+  const bank=$('account-bank-name')?.value.trim()||null;
+  const result=await api('/rest/v1/rpc/customer_save_bank_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_account_holder_name:holder,p_sort_code:sort,p_account_number:account,p_bank_name:bank})});
+  if(!result?.saved)throw Error('Bank details were not saved.');
+  setMessage('Bank details updated.','success');
+  await loadPortalData();
+ }catch(e){setMessage(e.message||String(e),'error');setBusy(b,false)}
+});
 $('save-profile')?.addEventListener('click',async()=>{
   const first=$('profile-first-name')?.value.trim()||'';
   const last=$('profile-last-name')?.value.trim()||'';

@@ -4,7 +4,7 @@
  * otherwise the navigation script itself can make the page appear completely inert.
  */
 (()=>{
-  const sectionIds=['overview','shop','orders','selling','returns','profile'];
+  const sectionIds=['overview','orders','valuations','returns','profile'];
   const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
   const KEY_STORAGE='tradeflow_customer_publishable_key';
   const SESSION_STORAGE='tradeflow_customer_session';
@@ -25,36 +25,6 @@
     if(content)content.scrollIntoView({block:'start'});
     return true;
   };
-  const loadBuyingCategories=async()=>{
-    const select=document.getElementById('request-category');
-    if(!select)return;
-    const raw=localStorage.getItem(SESSION_STORAGE);
-    const key=localStorage.getItem(KEY_STORAGE);
-    if(!raw||!key||!tenantId)return;
-    try{
-      const session=JSON.parse(raw);
-      if(!session?.access_token)return;
-      const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/customer_get_buying_categories`,{
-        method:'POST',
-        headers:{apikey:key,Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json'},
-        body:JSON.stringify({p_tenant_id:tenantId})
-      });
-      const text=await response.text();
-      let data=[];try{data=text?JSON.parse(text):[];}catch{}
-      if(!response.ok)throw Error(data?.message||data?.msg||data?.error||text||`HTTP ${response.status}`);
-      select.innerHTML='<option value="">Select a category…</option>';
-      for(const category of Array.isArray(data)?data:[]){
-        const option=document.createElement('option');
-        option.value=category.category_id;
-        option.textContent=category.name;
-        select.appendChild(option);
-      }
-      if(!Array.isArray(data)||!data.length)select.innerHTML='<option value="">No buying categories available</option>';
-    }catch(error){
-      console.error('TradeFlow customer buying categories failed:',error);
-      select.innerHTML='<option value="">Unable to load categories</option>';
-    }
-  };
   const bind=()=>{
     document.querySelectorAll('a[href^="#"]').forEach(link=>{
       link.addEventListener('click',e=>{
@@ -67,13 +37,10 @@
       });
     });
     window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
-    window.addEventListener('tradeflow-auth-success',()=>loadBuyingCategories());
     const portal=document.getElementById('portal');
-    if(portal)new MutationObserver(()=>{if(!portal.hidden)loadBuyingCategories()}).observe(portal,{attributes:true,attributeFilter:['hidden']});
     if(!show(location.hash.slice(1)||'overview',false)){
       document.querySelectorAll('a[href^="#"]').forEach(link=>link.classList.remove('active'));
     }
-    if(!portal?.hidden)loadBuyingCategories();
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});
   else bind();

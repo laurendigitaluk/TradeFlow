@@ -1207,3 +1207,15 @@ From this point forward, every material front-end repair must pass this gate bef
 The Buying dashboard now has an inline startup diagnostic and controller startup marker. If the controller fails to load in future, the page should identify a script-loading/runtime boundary instead of leaving the user with an unexplained loading screen.
 
 The repaired files are syntax-verified. A subsequent audit found a second cache-version mismatch: the Business Dashboard Buying links still used `?v=58` while the Buying page controller had advanced to `v59`. Those navigation links have now been synchronized to `?v=59` in commit `6207f0ca4b028351ebee149598898a563ccf1f58`. This does not yet count as Browser Verified; the next test is the deployed GitHub Pages Buying dashboard after the latest cache-bust has published.
+
+
+## 25 September 2026 — Buying dashboard rendering regression found after cache repair
+
+When the latest Test Two browser screenshots were compared with the current source, two defects remained despite the earlier cache-version repair.
+
+- The customer description parser converted literal \\n sequences to real newline characters and then used the wrong split expression, so the entire customer submission remained one line. This is corrected by splitting on actual newline characters after conversion.
+- The controller already returned status-approved for submitted, but the Buying stylesheet did not define that class (nor the related review/offer/refused status classes). The status therefore remained visually neutral. Explicit status-pill state styling has been added.
+
+Before changing code, the live Test Two record was checked: request BR-4C34C6F633, item BI-9D1C8F01FB, item status submitted, customer CUS-E82930637A58, and two media records. No test data was reset or modified.
+
+The Buying page/controller cache keys are now v6/v60 and the three Business Dashboard Buying links are synchronized to v60. Browser verification remains the only outstanding verification state.

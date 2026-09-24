@@ -167,44 +167,6 @@ window.addEventListener('DOMContentLoaded',async()=>{
 </script><script>
 window.addEventListener('DOMContentLoaded',async()=>{
  try{
-  const a=await window.tradeflowSubscriberAuthReady; const key=a?.key,session=a?.session,tenantId=a?.tenantId;
-  if(!key||!session?.access_token||!tenantId)return;
-  const api=async path=>{const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co'+path,{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const t=await r.text();if(!r.ok)throw Error(t);return t?JSON.parse(t):[]};
-  const [requests,items,values,offers,acq]=await Promise.all([
-   api('/rest/v1/buying_requests?select=id,request_reference,status,source,submitted_at,created_at,customer_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc'),
-   api('/rest/v1/buying_items?select=id,buying_request_id,title,item_reference,status,purchase_stage&tenant_id=eq.'+encodeURIComponent(tenantId)),
-   api('/rest/v1/trading_values?select=buying_item_id,amount,cash_price,currency,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.approved'),
-   api('/rest/v1/offers?select=buying_item_id,amount,currency,status,published_at,offer_type&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc'),
-   api('/rest/v1/acquisitions?select=id,acquisition_reference,status,agreed_total,currency,accepted_at,received_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=in.(paid,completed)&order=created_at.desc')
-  ]);
-  const itemByReq=Object.fromEntries(items.map(x=>[x.buying_request_id,x]));const valByItem=Object.fromEntries(values.map(x=>[x.buying_item_id,x]));const offerByItem=Object.fromEntries(offers.map(x=>[x.buying_item_id,x]));
-  const stageInfo={
-   none:['new','New customer request'],
-   submitted:['new','New customer request'],
-   under_review:['process','Valuation/review in progress'],
-   awaiting_item:['awaiting','Awaiting customer — item not received'],
-   shipping:['awaiting','Awaiting receipt — item on its way'],
-   received:['attention','Item received — inspection required'],
-   inspection:['attention','Inspection required'],
-   testing:['attention','Testing required'],
-   repair:['attention','Repair required'],
-   return_pending:['attention','Return item to customer'],
-   final_offer_required:['attention','Final offer required'],
-   final_offer_sent:['awaiting','Final offer sent — awaiting customer'],
-   final_offer_accepted:['attention','Final offer accepted — payment required'],
-   final_offer_refused:['attention','Final offer refused — return item'],
-   purchased:['complete','Purchase complete — now in Inventory']
-  };
-  const rows=requests.map(r=>{const i=itemByReq[r.id],v=i&&valByItem[i.id],o=i&&offerByItem[i.id];const stage=i?.purchase_stage&&i.purchase_stage!=='none'?i.purchase_stage:(o?.status==='published'?'awaiting':o?.status==='accepted'?'attention':v?.status==='approved'?'process':r.status||'submitted');const info=stageInfo[stage]||['process','Internal processing'];return{...r,item:i,value:v,offer:o,stage,cls:info[0],label:info[1]}});
-  const counts={new:rows.filter(x=>x.cls==='new').length,process:rows.filter(x=>x.cls==='process').length,awaiting:rows.filter(x=>x.cls==='awaiting').length,attention:rows.filter(x=>x.cls==='attention').length,acquisitions:acq.length};
-  document.getElementById('count-new').textContent=counts.new;document.getElementById('count-process').textContent=counts.process;document.getElementById('count-attention').textContent=counts.attention;document.getElementById('count-awaiting').textContent=counts.awaiting;document.getElementById('count-acquisitions').textContent=counts.acquisitions;
-  document.getElementById('workflow-updated').textContent=(rows.length+acq.length)+' active record'+((rows.length+acq.length)===1?'':'s');
-  document.getElementById('workflow-list').innerHTML=rows.length?rows.map(x=>'<div class="process-row '+(x.cls==='attention'?'green':x.cls==='awaiting'?'yellow':'blue')+'"><div><strong>'+String(x.request_reference||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><div class="process-muted">'+String(x.item?.title||'Customer request')+'</div></div><div class="process-status">'+x.label+'</div><div class="process-amount">'+(x.offer?.amount??x.value?.cash_price??x.value?.amount?'£'+Number(x.offer?.amount??x.value?.cash_price??x.value?.amount).toFixed(2):'—')+'</div>'+((x.stage==='inspection')?'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.id)+'#tradeflow-inspection-workspace">OPEN INSPECTION</a>':'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.id)+'">OPEN BUYING</a>')+'</div>').join(''):'<div class="empty">No active buying transactions.</div>';
- }catch(e){const el=document.getElementById('workflow-list');if(el)el.innerHTML='<div class="empty">Workflow status could not be loaded. Open Buying for the full record.</div>';console.warn(e)}
-});
-</script><script>
-window.addEventListener('DOMContentLoaded',async()=>{
- try{
   const a=await window.tradeflowSubscriberAuthReady;const key=a?.key,session=a?.session,tenantId=a?.tenantId;if(!key||!session?.access_token||!tenantId)return;
   const api=async table=>{const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/'+table+'&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});if(!r.ok)return[];const t=await r.text();return t?JSON.parse(t):[]};
   const [buying,inventory,listings,orders,fulfilment,returns]=await Promise.all([
@@ -216,7 +178,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
    api('returns?select=id,status')
   ]);
   const set=(id,count,cls,state)=>{document.getElementById('flow-count-'+id).textContent=count;document.getElementById('flow-state-'+id).textContent=state;const el=document.getElementById('flow-'+id);el.classList.remove('flow-green','flow-yellow','flow-blue');el.classList.add('flow-'+cls)};
-  const activeBuying=buying.filter(x=>x.purchase_stage!=='purchased').length;
+  const activeBuying=buying.filter(x=>x.purchase_stage!=='purchased'&&x.status!=='closed').length;
   const ready=inventory.filter(x=>x.status==='ready_for_sale').length;
   const activeListings=listings.filter(x=>!['sold','delisted'].includes(x.status)).length;
   const activeOrders=orders.filter(x=>!['completed','cancelled'].includes(x.status)).length;

@@ -81,3 +81,5 @@ Relevant commits:
 - 0f402cceff48c000348ad494069839adc1eeaa2e0
 
 Current state: Implemented in GitHub and syntax-verified. Browser verification remains the next step after GitHub Pages has published the v57 assets.
+
+The parse regression was introduced by commit `5a7189449244399649f384901bcf93bf7c12c4d9` (`Clarify Parcel2Go customer address message`), which changed a safe string to `the customer's saved` inside a single-quoted JavaScript string. The fault was not a database/RLS regression. It has now been corrected and syntax-checked.

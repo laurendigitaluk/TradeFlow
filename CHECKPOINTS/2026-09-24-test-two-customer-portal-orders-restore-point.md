@@ -82,3 +82,16 @@ Retail products now remain in a customer basket before payment. Adding an item t
 ## Follow-up — customer payment and delivery addresses / shop CTA
 
 Customers can now add, edit, remove and set default payment (billing) and delivery (shipping) addresses from My Details. Basket checkout uses the customer's default saved delivery and payment addresses when available. The public shop navigation CTA is labelled `Visit Shop` rather than `What We Sell`.
+
+
+## Follow-up — customer selling entry moved to public website
+
+The customer portal no longer exposes the selling-request submission form as a normal account function. The public subscriber website remains the entry point for **Sell to Us**.
+
+Before a customer has submitted a selling request, the portal hides both the **Sell to us** navigation entry and the selling section. After a selling request/valuation journey has been submitted, the portal reveals the selling section for status tracking and the existing valuation, offer, shipping, payment and completed-sale history.
+
+The authenticated handoff from the public selling journey remains intact: `submitStoredSellingJourney()` still creates the request after customer authentication when the public journey has supplied the stored session payload.
+
+No Supabase schema or data change was required.
+
+Status at this checkpoint update: **Implemented in GitHub; Live DB unchanged; browser verification required.**

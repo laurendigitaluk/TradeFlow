@@ -83,3 +83,19 @@ Verification state:
 - Actual shipment/label purchase: not yet tested or created.
 
 Next phase: implement the server-side Parcel2Go quote/service-selection flow in Buying. Obtain a live quote from the connected subscriber account using the shipment's collection/delivery details and parcel dimensions/weight, present the returned services, and only create/pay for a shipment after an explicit subscriber action. Do not put provider secrets in browser JavaScript.
+
+
+## 24 September 2026 — Buying valuation/manual-offer UI simplified
+
+The Buying dashboard manual valuation/offer area has been consolidated into one **Valuation & manual offer** box. The separate confidence field and separate Offer box have been removed from the subscriber UI.
+
+The single box now contains:
+- Manual buyer offer (cash)
+- Manual trade-in offer
+- Send manual offer to customer
+
+Research evidence remains directly below this workflow so the subscriber can compare evidence before entering the manual values.
+
+Automatic catalogue pricing remains authoritative. When an approved automatic valuation exists, the manual buyer/trade-in inputs are disabled and manual initial offers are blocked. When manual pricing is used, sending the manual offer creates and approves the corresponding manual valuation and publishes the buyer/trade-in initial offers together.
+
+GitHub implementation commit: f8665ea638780850c9d69ddb796c54b8a9500418 (with the preceding workflow simplification commit 7e52ea833bdfde1a190596dafc161f1eeec45958).

@@ -31,3 +31,10 @@ The remaining browser test is to refresh the subscriber buying page and request 
 ## Restore points
 - checkpoint-test-two-customer-portal-orders-20260924
 - checkpoint-test-two-preflight-buying-flow-20260924
+
+
+## Follow-up — Test Two valuation display
+
+Live data confirms the approved manual trading value is cash £50 and trade-in £55, and the initial trade-in offer for £55 is accepted. The customer dashboard was corrected to display the accepted £55 trade-in amount and retain the underlying £50 cash / £55 trade-in values. The Buying dashboard Parcel2Go explanatory text was clarified so it no longer reads as a current missing-address error.
+
+The customer address itself remains correct: `address_type=shipping`, default=true. Parcel2Go Edge Function version 3 uses the same `shipping` address type. Final quote-flow browser verification remains pending.

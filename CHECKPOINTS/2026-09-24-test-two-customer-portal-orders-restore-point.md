@@ -133,3 +133,13 @@ Shopping and new valuation requests remain on the public business website. Exist
 No Supabase schema/data change was required.
 
 Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+### Account-view restore branch
+
+- Restore branch: `checkpoint-customer-portal-account-view-20260924`
+- Supabase project: `twfbmjwwqzxdxvclxbun`
+- Supabase schema/data: unchanged.
+- Browser verification: pending.
+
+This is the restore point for the simplified customer portal presentation before the next browser test.

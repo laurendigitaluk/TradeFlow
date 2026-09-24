@@ -93,16 +93,16 @@ const templatePalettes={
 };
 const templateHeadlines={editorial:'A clear way to buy and sell',classic:'A trusted way to buy and sell',grid:'Your products. Your buying list.',studio:'Good products deserve a good presentation.',horizon:'A simpler way to buy and sell',field:'Equipment for the next chapter.',business:'A straightforward way to buy and sell',luxe:'Quality products. Clear service.',commerce:'Browse, buy and sell with confidence.',impact:'BUY. SELL. MOVE FORWARD.'};
 const templateDefaults={
- editorial:{kicker:'',cta1:'',cta2:''},
- classic:{kicker:'',cta1:'',cta2:''},
- grid:{kicker:'',cta1:'',cta2:''},
- studio:{kicker:'',cta1:'',cta2:''},
- horizon:{kicker:'',cta1:'',cta2:''},
- field:{kicker:'',cta1:'',cta2:''},
- business:{kicker:'',cta1:'',cta2:''},
- luxe:{kicker:'',cta1:'',cta2:''},
- commerce:{kicker:'',cta1:'',cta2:''},
- impact:{kicker:'',cta1:'',cta2:''}
+ editorial:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ classic:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ grid:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ studio:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ horizon:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ field:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ business:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ luxe:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ commerce:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+ impact:{kicker:'',cta1:'',cta2:'Visit our retail shop'}
 };
 
 const pageDefinitions=[
@@ -458,7 +458,7 @@ function cleanTemplateCopy(copy){
  const out=Object.assign({},copy||{});
  if(known.includes(String(out.kicker||'')) || /^\s*\d+\s*\/\s*/.test(String(out.kicker||'')))out.kicker='';
  if(cta.includes(String(out.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta1||'')))out.cta1='';
- if(cta.includes(String(out.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta2||'')))out.cta2='';
+ if(String(out.cta2||'').trim().toLowerCase()==='what we sell')out.cta2='Visit our retail shop'; else if(cta.includes(String(out.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta2||'')))out.cta2='';
  return out;
 }
 function ensureHomepageTileCapacity(tiles){

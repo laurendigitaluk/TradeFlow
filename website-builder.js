@@ -292,19 +292,6 @@ function imageBlock(url,kind,label,alt){
  return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="image-drop"><button type="button" data-image-action="add" data-image-target="'+esc(kind)+'">Add image</button><span>'+esc(label)+'</span><small>PNG, JPEG or WebP · maximum 5 MB</small></div></div>';
 }
 
-function renderBuilderBuyingSection(){
- const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
- const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
- if(!categories.length)return '<section class="home-tile-section buy-section"><div class="section-head"><div><h2>No buying categories selected yet</h2></div><p>Select products in the Buying Catalogue and they will appear here automatically.</p></div></section>';
- const cards=categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);return '<article class="connected-buy-category"><div><h3>'+esc(cat.name)+'</h3></div><strong>'+items.length+' products</strong><p>'+(cat.description?esc(cat.description):'Products selected for this business buying list.')+'</p><ul>'+items.slice(0,6).map(p=>'<li>'+esc(((p.manufacturer||'')+' '+(p.model||'')).trim()||'Product')+(p.package_name?' — '+esc(p.package_name):'')+'</li>').join('')+'</ul>'+(items.length>6?'<small>+'+(items.length-6)+' more products on the full buying page</small>':'')+'</article>'}).join('');
- return '<section class="home-tile-section buy-section connected-buying-section"><div class="section-head"><div><h2>These categories come from your Buying Catalogue</h2></div><p>Nothing is retyped here. When you select or hide products in Buying Catalogue, the customer website follows those choices.</p></div><div class="connected-buy-grid">'+cards+'</div></section>';
-}
-function renderBuilderBuyingPage(){
- const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
- const categories=Array.isArray(buyingCatalogue.categories)?buyingCatalogue.categories:[];
- if(!categories.length)return '<div class="managed-area"><span>TRADEFLOW CONNECTED</span><h3>No buying products selected yet</h3><p>Select products in Buying Catalogue and they will appear here automatically.</p></div>';
- return '<div class="connected-buy-page">'+categories.map(cat=>{const items=products.filter(p=>p.category_id===cat.id);const grouped=items.reduce((m,p)=>{const k=p.manufacturer||'Other';(m[k]??=[]).push(p);return m},{});return '<section><div class="section-head"><div><h2>'+esc(cat.name)+'</h2></div><p>'+esc(cat.description||'Products selected by this business.')+'</p></div>'+Object.entries(grouped).map(([maker,list])=>'<div class="connected-buy-manufacturer"><h3>'+esc(maker)+'</h3><div>'+list.map(p=>'<article><strong>'+esc(p.model||'Product')+'</strong>'+(p.package_name?'<span>'+esc(p.package_name)+'</span>':'')+'</article>').join('')+'</div></div>').join('')+'</section>'}).join('')+'</div>';
-}
 function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
 function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){

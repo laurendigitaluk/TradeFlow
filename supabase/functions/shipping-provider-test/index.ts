@@ -11,7 +11,8 @@ Deno.serve(async(req:Request)=>{
  const {data:{user},error:userError}=await admin.auth.getUser(auth.slice(7));if(userError||!user)return json({error:"Unauthorized"},401);
  let body:Record<string,unknown>;try{body=await req.json()}catch{return json({error:"Invalid JSON"},400)}
  const tenantId=String(body.tenant_id||""),connectionId=String(body.connection_id||"");if(!tenantId||!connectionId)return json({error:"tenant_id and connection_id are required"},400);
- const {data:allowed,error:allowError}=await admin.rpc("has_tenant_permission",{p_tenant_id:tenantId,p_user_id:user.id,p_permission:"tenant.manage"});if(allowError||allowed!==true)return json({error:"Not authorised"},403);
+ const {data:membership,error:membershipError}=await admin.from("tenant_memberships").select("role_code,status").eq("tenant_id",tenantId).eq("user_id",user.id).eq("status","active").maybeSingle();
+ if(membershipError||!membership||!["owner","admin"].includes(membership.role_code))return json({error:"Not authorised"},403);
  const {data:connection,error:connectionError}=await admin.from("shipping_provider_connections").select("id,provider,environment,api_client_id,status").eq("id",connectionId).eq("tenant_id",tenantId).maybeSingle();
  if(connectionError||!connection)return json({error:"Shipping connection not found"},404);
  if(connection.provider!=="parcel2go")return json({error:"Provider not supported by this tester"},400);

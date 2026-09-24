@@ -1126,3 +1126,17 @@ The dedicated `site.branding.banner_url` is rendered as a compact horizontal bra
 
 ## 24 September 2026 — Buying dashboard active/completed separation
 The subscriber Buying dashboard must distinguish active buying work from completed purchases. If a buying item has `purchase_stage='purchased'` or is linked to an acquisition with `status='paid'`, treat it as completed and do not render it in the active request workspace or expose create/approve valuation or create/publish offer controls as outstanding work. Completed purchases belong in the dedicated Completed purchases section. Closed requests are excluded from active work.
+
+## 24 September 2026 — Customer portal completed sales and order cancellation
+
+Customer portal separation rules:
+- Do not present buying_requests with status='closed' as active customer selling requests.
+- Treat buying_items.purchase_stage='purchased' and paid/completed acquisitions as completed purchase history.
+- Display paid/completed acquisitions in **Completed sales to Camera Shack** rather than active accepted-sales work.
+- Keep accepted but not yet paid acquisitions in **Accepted sales & payment**.
+- Customer selling-request counters must exclude completed/closed selling work.
+
+Retail order cancellation:
+- Customer cancellation is implemented through customer_cancel_retail_order(p_tenant_id,p_order_id,p_reason).
+- The RPC authenticates the customer, verifies tenant ownership of the order, permits cancellation only from initiated or pending_payment, records cancelled_at, and writes a workflow_transitions audit record.
+- Do not expose customer cancellation for paid, fulfilment, completed, refunded, or already-cancelled orders.

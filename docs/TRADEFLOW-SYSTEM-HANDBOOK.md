@@ -1013,3 +1013,22 @@ When continuing work, distinguish:
 
 Do not describe an item as browser verified when only GitHub or database verification has occurred.
 
+
+
+## 24 September 2026 — Parcel2Go subscriber shipping connection
+
+TradeFlow uses Parcel2Go as the single integrated multi-carrier shipping provider. Subscribers do not configure individual courier credentials in TradeFlow.
+
+Subscriber setup:
+- Open Shipping Settings.
+- Enter the subscriber's Parcel2Go API Client ID and API Client Secret.
+- Select the appropriate Parcel2Go environment (Live for the subscriber's production account; Sandbox only when using separate sandbox credentials).
+- Select Save and test connection.
+- TradeFlow stores the secret in Supabase Vault and performs the Parcel2Go OAuth client-credentials test server-side.
+- A successful test marks the tenant's Parcel2Go connection connected.
+
+The browser never receives the stored Client Secret. The Buying workflow treats a connected Parcel2Go account as the integrated shipping connection; the subscriber does not select or maintain separate direct-carrier integrations in TradeFlow.
+
+The connection test does not create, purchase or pay for a shipment. Parcel2Go's API supports live quoting, order creation, payment, labels and tracking; these remain separate operational stages and must not be conflated with credential testing. citeturn2view0turn3view0
+
+Current verification: the Camerashack test subscriber successfully authenticated against Parcel2Go Live in the browser on 24 September 2026. No shipment was created.

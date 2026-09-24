@@ -54,3 +54,30 @@ Relevant commits:
 - a8c68e2c4f1832a48a22442b48dd6a2cfc3547e8 — refresh buying dashboard script after loading fix
 
 The next browser check is a hard refresh of the Buying dashboard. The Test Two request should render instead of remaining on the loading placeholders. If it still does not render, the next step is to capture the browser console/network response rather than making another speculative database change.
+
+## 25 September 2026 — Root-cause regression repair
+
+The Buying dashboard remained on its static loading screen because the controller itself was not executable. Current-code syntax validation identified an unescaped ASCII apostrophe inside a single-quoted JavaScript string in buying-dashboard.js, in the Parcel2Go shipping handoff text (customer's). This caused a JavaScript SyntaxError before any Supabase loading request could run.
+
+This supersedes the earlier assumption that asynchronous customer enrichment was the primary cause. The enrichment resilience repair remains in place, but the first failing boundary was the controller parse error.
+
+Repairs:
+- buying-dashboard.js corrected and syntax-verified.
+- buying-dashboard.js now sets a startup marker.
+- buying-dashboard.html now has an inline startup diagnostic and cache-busts buying-dashboard.js to v57.
+- subscriber-auth.js, subscriber-tenant-context.js and buying-inspection.js were also syntax-verified.
+- System Handbook and AI Operating Manual now contain a mandatory front-end regression gate.
+
+Restore/testing rule:
+- Test One branch checkpoint-test-one-20260923 remains frozen and must not be altered.
+- Test Two data must not be deleted/reseeded to work around front-end failures.
+- Before any further browser repair, identify the first executable boundary and syntax-check all changed/loaded controllers.
+
+Relevant commits:
+- 020af4b4654483aef6d55676d0c9943f1eb8bded
+- 54b8022ffab4ca369ec0bc339ed4b8d7a847825b
+- 3e488347ede1290a6dc8699d4995b23d3b676dfb
+- c601b7b454410c02fb1bdf502eaf23db426f6367
+- 0f402cceff48c000348ad494069839adc1eeaa2e0
+
+Current state: Implemented in GitHub and syntax-verified. Browser verification remains the next step after GitHub Pages has published the v57 assets.

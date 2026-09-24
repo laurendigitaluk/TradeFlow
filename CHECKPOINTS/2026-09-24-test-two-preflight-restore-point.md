@@ -6,7 +6,9 @@ This checkpoint freezes the TradeFlow state immediately before the next end-to-e
 
 GitHub repository: `laurendigitaluk/TradeFlow`
 Restore branch: `checkpoint-test-two-preflight-20260924`
-Checkpoint base commit: `dbbb0abbe6f3ed1df827196eeb84b231afce701e`
+Checkpoint audit base: `dbbb0abbe6f3ed1df827196eeb84b231afce701e`
+
+Retail CTA follow-up commits are included on this restore branch.
 Supabase project: `twfbmjwwqzxdxvclxbun`
 
 ## Known-good Test One boundary
@@ -53,6 +55,8 @@ The live Supabase project is `twfbmjwwqzxdxvclxbun`.
 The Camerashack test tenant remains the active test tenant. The test Canon asset remains the single physical stock record used for the completed Test One purchase-to-retail path.
 
 The latest site revision state contains both the subscriber logo and the dedicated banner in draft and published revisions.
+
+The homepage retail CTA has also been standardised to **Visit our retail shop**. Existing `What We Sell` CTA text is migrated to that wording at render time so it does not remain as a generic label. The CTA continues to link to the TradeFlow retail shop.
 
 No database schema/data mutation was performed as part of this preflight audit.
 

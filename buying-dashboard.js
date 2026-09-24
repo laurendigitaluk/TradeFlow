@@ -162,7 +162,7 @@ function shippingHandoffHtml(r){
       '</div>'+
       '<div class="actions" style="margin-top:12px"><button type="button" data-action="parcel2go-quote" data-id="'+esc(id)+'">GET PARCEL2GO QUOTES</button></div>'+
       '<div id="p2g-quotes-'+esc(id)+'" style="margin-top:12px"></div>'+
-      '<p class="small" style="margin:10px 0 0">A customer delivery address is required. Creating a shipment is a separate action and opens the Parcel2Go payment step; TradeFlow does not take the shipping payment.</p>'+
+      '<p class="small" style="margin:10px 0 0"><strong>Customer delivery address required:</strong> the customer must have a delivery address saved in <strong>My Details</strong> before you can request a Parcel2Go quote. Creating a shipment is a separate action and opens the Parcel2Go payment step; TradeFlow does not take the shipping payment.</p>'+
     '</div>'+
     '<details style="margin-top:12px"><summary><strong>Manual shipping fallback</strong></summary>'+
       '<p class="small">Use this only when you are not using the connected Parcel2Go account.</p>'+

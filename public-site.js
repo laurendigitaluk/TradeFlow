@@ -230,8 +230,12 @@ function renderSellPage(site,catalogue){
 function getStoredCustomerSession(){
  try{return JSON.parse(localStorage.getItem('tradeflow_customer_session')||'null')}catch{return null}
 }
-async function submitCustomerSellingRequest(payload,session){
- const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/customer_submit_buying_request',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:activeTenantId,p_notes:payload.notes||null,p_items:[{category_id:payload.category_id,title:[payload.manufacturer,payload.model,payload.package_name].filter(Boolean).join(' ')||'Selling request',description:payload.notes||null,quantity:1,fields:[]}]})});
+async function submitCustomerSellingRequest(payload,session,files=[]){
+ const formData=new FormData();
+ formData.append('tenant_id',activeTenantId);
+ formData.append('payload',JSON.stringify(payload));
+ files.forEach(file=>formData.append('files',file,file.name));
+ const response=await fetch(SUPABASE_URL+'/functions/v1/customer-selling-submit',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},body:formData});
  const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
  if(!response.ok)throw new Error(body?.message||body?.msg||body?.error||text||('HTTP '+response.status));
  return body;

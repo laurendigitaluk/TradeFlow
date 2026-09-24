@@ -880,3 +880,23 @@ The customer portal now separates the customer-facing selling history into three
 Closed test-only selling requests are also excluded from the active selling-request list.
 
 In **My Orders**, customers can cancel their own retail order while it is still `initiated` or `pending_payment`. Paid, fulfilment, completed, refunded or otherwise progressed orders cannot be cancelled through this customer action.
+
+
+### Parcel2Go shipping connection — 24 September 2026
+
+Subscribers only need one integrated shipping connection in TradeFlow: Parcel2Go.
+
+To connect it:
+1. Go to Shipping Settings.
+2. Enter your Parcel2Go API Client ID.
+3. Enter your Parcel2Go API Client Secret.
+4. Choose Live / production for your real Parcel2Go account, or Sandbox when deliberately testing with separate sandbox credentials.
+5. Select Save and test connection.
+
+TradeFlow securely stores the Client Secret and tests the connection for you. When the test succeeds, Shipping Settings shows Connected and the Buying workflow can use Parcel2Go for integrated shipping.
+
+You do not need to enter Royal Mail, Evri, Yodel, DPD or other courier credentials separately. Parcel2Go provides the available courier/service choices through its own shipping network.
+
+The connection test only verifies authentication. It does not create or purchase a shipment. Parcel2Go's API supports quoting, booking, labels and tracking as separate steps. citeturn2view0turn3view0
+
+The Client Secret should never be shared with TradeFlow support or entered into chat; enter it directly into Shipping Settings.

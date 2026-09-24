@@ -99,3 +99,12 @@ Research evidence remains directly below this workflow so the subscriber can com
 Automatic catalogue pricing remains authoritative. When an approved automatic valuation exists, the manual buyer/trade-in inputs are disabled and manual initial offers are blocked. When manual pricing is used, sending the manual offer creates and approves the corresponding manual valuation and publishes the buyer/trade-in initial offers together.
 
 GitHub implementation commit: f8665ea638780850c9d69ddb796c54b8a9500418 (with the preceding workflow simplification commit 7e52ea833bdfde1a190596dafc161f1eeec45958).
+
+
+## 24 September 2026 — Unified initial offer record and shipping-label state
+
+The manual initial offer is now one published offer record linked to one valuation. The valuation carries both cash and trade-in values, and the customer chooses either option from the same customer-facing offer. The selected option is recorded when the customer accepts it; a second simultaneous published initial offer is not created.
+
+After initial acceptance, the customer remains in the receipt workflow. If no shipping label/QR has been created yet, the customer presentation is **Shipping label required — not ready to send**. The existing database purchase stage remains `awaiting_item` so established transitions are not changed. Once a valid label/QR handoff exists, the presentation becomes **Shipping instructions sent — ready to send**.
+
+The Buying dashboard also now includes the shared `money()` formatter required by the financial/offer rendering path, preventing the previous `money is not defined` browser error.

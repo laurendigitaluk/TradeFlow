@@ -67,3 +67,8 @@ The first customer-portal separation still allowed historical offers for a paid 
 - The live selling-status panel
 
 The completed sale remains in **Completed sales to Camera Shack**, with its request reference, item, paid amount and completion date.
+
+
+## Follow-up — editable customer bank details
+
+The customer portal My Details section now contains editable payment bank details. Customers can view and update account holder name, bank name, UK sort code and UK account number at any time. The portal uses the existing authenticated customer_get_bank_details and customer_save_bank_details RPCs, so the same bank details remain available to the subscriber payment workflow.

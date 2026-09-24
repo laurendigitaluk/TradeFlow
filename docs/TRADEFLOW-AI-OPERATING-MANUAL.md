@@ -1219,3 +1219,10 @@ When the latest Test Two browser screenshots were compared with the current sour
 Before changing code, the live Test Two record was checked: request BR-4C34C6F633, item BI-9D1C8F01FB, item status submitted, customer CUS-E82930637A58, and two media records. No test data was reset or modified.
 
 The Buying page/controller cache keys are now v6/v60 and the three Business Dashboard Buying links are synchronized to v60. Browser verification remains the only outstanding verification state.
+
+
+## 25 September 2026 — Buying customer-detail parser correction
+
+A further browser screenshot showed that the earlier newline fix was not sufficient. The key/value regular expression still contained `\\s` rather than `\s`, so labels followed by colons were not separated into individual fields. This is now corrected. The Submitted review stage has also been changed from a green approval-style presentation to a greyed stage, with a neutral Submitted pill, matching the intended meaning of a customer submission awaiting review.
+
+Latest cache keys: Buying CSS v7, Buying controller v61, Business Dashboard Buying navigation v61. Browser verification remains pending.

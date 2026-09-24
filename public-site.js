@@ -92,16 +92,16 @@ function renderHero(site){
  const intro=home.intro||'Make it simple for customers to see what you buy, what you sell and how to get started.';
  const copy=site.template_copy||{};
  const defaults={
-  editorial:{kicker:'',cta1:'',cta2:''},
-  classic:{kicker:'',cta1:'',cta2:''},
-  grid:{kicker:'',cta1:'',cta2:''},
-  studio:{kicker:'',cta1:'',cta2:''},
-  horizon:{kicker:'',cta1:'',cta2:''},
-  field:{kicker:'',cta1:'',cta2:''},
-  business:{kicker:'',cta1:'',cta2:''},
-  luxe:{kicker:'',cta1:'',cta2:''},
-  commerce:{kicker:'',cta1:'',cta2:''},
-  impact:{kicker:'',cta1:'',cta2:''}
+  editorial:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  classic:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  grid:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  studio:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  horizon:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  field:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  business:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  luxe:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  commerce:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
+  impact:{kicker:'',cta1:'',cta2:'Visit our retail shop'}
  };
  const d=defaults[t]||defaults.editorial;
  const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
@@ -109,7 +109,7 @@ function renderHero(site){
  const safeCopy=Object.assign({},copy||{});
  if(known.includes(String(safeCopy.kicker||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.kicker||'')))safeCopy.kicker='';
  if(cta.includes(String(safeCopy.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta1||'')))safeCopy.cta1='';
- if(cta.includes(String(safeCopy.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta2||'')))safeCopy.cta2='';
+ if(String(safeCopy.cta2||'').trim().toLowerCase()==='what we sell')safeCopy.cta2='Visit our retail shop'; else if(cta.includes(String(safeCopy.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta2||'')))safeCopy.cta2='';
  const kicker=esc(safeCopy.kicker||d.kicker);
  const cta1=esc(safeCopy.cta1||d.cta1);
  const cta2=esc(safeCopy.cta2||d.cta2);

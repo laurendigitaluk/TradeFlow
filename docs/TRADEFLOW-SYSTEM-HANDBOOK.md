@@ -1083,6 +1083,6 @@ The Buying dashboard now has a startup marker and an inline HTML watchdog so a f
 Relevant commits:
 - 020af4b4654483aef6d55676d0c9943f1eb8bded — corrected the JavaScript parse error.
 - 54b8022ffab4ca369ec0bc339ed4b8d7a847825b — added the controller startup marker.
-- 3e488347ede1290a6dc8699d4995b23d3b676dfb — added startup diagnostics and cache-bumped the Buying dashboard controller to v57.
+- 3e488347ede1290a6dc8699d4995b23d3b676dfb — added startup diagnostics and cache-bumped the Buying dashboard controller to v57. A subsequent audit found that the Business Dashboard navigation still pointed to the Buying page with the previous HTML cache key `?v=58` after the Buying page itself had advanced to controller `v59`. This could cause navigation to restore a cached HTML document and make the user see the previous controller until a manual refresh. The navigation has now been synchronized to `?v=59`.
 
-Current state: Implemented in GitHub and syntax-verified; browser verification remains required.
+Current state: Implemented in GitHub and syntax-verified; browser verification remains required. The latest cache-key synchronization commit is `6207f0ca4b028351ebee149598898a563ccf1f58`.

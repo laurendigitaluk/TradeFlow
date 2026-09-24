@@ -1,0 +1,1 @@
+window.addEventListener('DOMContentLoaded',()=>{document.getElementById('message').textContent='Shipping Settings loaded.';});

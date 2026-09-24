@@ -199,7 +199,7 @@ async function load(){try{
  const auth=await window.tradeflowSubscriberAuthReady;key=auth?.key||'';session=auth?.session||null;tenantId=auth?.tenantId||null;
  if(!tenantId||!key||!session?.access_token)throw Error('Subscriber authentication did not provide a valid business session.');
  $('business-name').textContent=tenantName();msg('Loading…');
- const [requests,items,values,offers,connections,preShipping,acquisitions]=await Promise.all([
+ const results=await Promise.allSettled([
   api('/rest/v1/buying_requests?select=id,request_reference,status,source,notes,submitted_at,closed_at,created_at,customer_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc'),
   api('/rest/v1/buying_items?select=id,buying_request_id,title,item_reference,purchase_stage&tenant_id=eq.'+encodeURIComponent(tenantId)),
   api('/rest/v1/trading_values?select=buying_item_id,amount,cash_price,trade_in_price,currency,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.approved'),
@@ -208,6 +208,11 @@ async function load(){try{
   api('/rest/v1/buying_item_shipping?select=buying_item_id,shipping_method,shipping_provider,shipping_provider_connection_id,shipping_status,shipping_label_url,shipping_label_storage_path,shipping_qr_url,shipping_qr_storage_path,shipping_service_url,shipping_carrier,shipping_service,shipping_tracking_number,shipping_tracking_url,shipping_instructions,posted_at,customer_sent_at&tenant_id=eq.'+encodeURIComponent(tenantId)),
   api('/rest/v1/acquisitions?select=id,acquisition_reference,status,source_offer_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=created_at.desc')
  ]);
+ const valueOf=i=>results[i].status==='fulfilled'?results[i].value:[];
+ const failed=results.map((x,i)=>x.status==='rejected'?{i,error:x.reason?.message||String(x.reason)}:null).filter(Boolean);
+ if(failed.some(x=>x.i<4))throw Error('Buying data could not be loaded: '+failed.filter(x=>x.i<4).map(x=>x.error).join(' | '));
+ if(failed.length)console.warn('Optional buying data could not be loaded:',failed);
+ const requests=valueOf(0),items=valueOf(1),values=valueOf(2),offers=valueOf(3),connections=valueOf(4),preShipping=valueOf(5),acquisitions=valueOf(6);
  shippingConnections=connections||[];
  const itemByRequest=Object.fromEntries((items||[]).map(i=>[i.buying_request_id,i]));
  const valueByItem=Object.fromEntries((values||[]).map(v=>[v.buying_item_id,v]));

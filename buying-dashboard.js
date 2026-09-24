@@ -251,10 +251,93 @@ async function createValuation(itemId,b){
   msg('Valuation approved. The Offer stage now contains the manual cash and trade-in amounts to send to the customer.','success');
  }catch(e){msg(e.message||String(e),'error');}finally{setBusy(b,false);}
 }
-async function createOfferRecord(itemId,amount,type,source='manual'){const values=await api(`/rest/v1/trading_values?select=id,status&tenant_id=eq.${encodeURIComponent(tenantId)}&buying_item_id=eq.${encodeURIComponent(itemId)}&status=eq.approved&order=approved_at.desc&limit=1`);let valuation=values?.[0];if(!valuation){const rows=await api('/rest/v1/trading_values',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,method:source==='automatic'?'automatic':'manual',status:'draft',amount,currency:'GBP',cash_price:amount,trade_in_price:null,calculated_at:new Date().toISOString(),notes:source==='automatic'?'Automatic buying rule valuation':'Manual offer valuation',metadata:{source:'subscriber_buying_dashboard',valuation_source:source}})});valuation=Array.isArray(rows)?rows[0]:rows;await transition('trading_value',valuation.id,'draft','approved',source==='automatic'?'Automatic valuation approved':'Manual offer valuation approved');}const rows=await api('/rest/v1/offers',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,trading_value_id:valuation.id,offer_reference:'OF-'+crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase(),offer_type:type,status:'draft',amount,currency:'GBP',created_by:session.user.id})});const offer=Array.isArray(rows)?rows[0]:rows;await transition('offer',offer.id,'draft','published');const itemRows=await api(`/rest/v1/buying_items?select=status&id=eq.${encodeURIComponent(itemId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`);const itemStatus=itemRows?.[0]?.status;if(itemStatus==='valued')await transition('buying_item',itemId,'valued','offer_ready');else if(itemStatus==='under_review')await transition('buying_item',itemId,'under_review','valued').then(()=>transition('buying_item',itemId,'valued','offer_ready'));else if(itemStatus==='submitted')await transition('buying_item',itemId,'submitted','under_review').then(()=>transition('buying_item',itemId,'under_review','valued')).then(()=>transition('buying_item',itemId,'valued','offer_ready'));const requestId=await itemRequestId(itemId);if(requestId){const rr=await api(`/rest/v1/buying_requests?select=status&id=eq.${encodeURIComponent(requestId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`);const rs=rr?.[0]?.status;if(rs==='under_review')await transition('buying_request',requestId,'under_review','valued').then(()=>transition('buying_request',requestId,'valued','offer_ready'));else if(rs==='submitted')await transition('buying_request',requestId,'submitted','under_review').then(()=>transition('buying_request',requestId,'under_review','valued')).then(()=>transition('buying_request',requestId,'valued','offer_ready'));}return offer}
-async function createAutomaticOffer(itemId,result){try{const offer=await createOfferRecord(itemId,Number(result.amount),'initial','automatic');msg('Automatic valuation completed and offer published.','success');await load();return offer}catch(e){console.warn('Automatic offer could not be published:',e);const box=$('offer-status-'+itemId);if(box)box.textContent='Automatic valuation calculated, but the offer could not be published yet: '+(e.message||String(e));}}
-async function sendApprovedOffer(itemId,b){setBusy(b,true);try{const values=await api(`/rest/v1/trading_values?select=id,amount,cash_price,trade_in_price,status&tenant_id=eq.${encodeURIComponent(tenantId)}&buying_item_id=eq.${encodeURIComponent(itemId)}&status=eq.approved&order=approved_at.desc&limit=1`);const v=values?.[0];if(!v)throw Error('No approved valuation is available for this item.');await createOfferRecord(itemId,Number(v.cash_price??v.amount??v.trade_in_price), 'initial','manual');await load();msg('Approved valuation sent to customer. They can now accept or refuse the offer.','success');}catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}}
-async function createOffer(itemId,b){const amount=parseFloat($('offer-amount-'+itemId).value);const type=$('offer-type-'+itemId).value;if(!Number.isFinite(amount)||amount<0)return msg('Enter a valid manual offer amount.','error');setBusy(b,true);try{await createOfferRecord(itemId,amount,type,'manual');await load();msg('Manual offer created and published.','success');}catch(e){msg(e.message||String(e),'error');}finally{setBusy(b,false);}}
+async function supersedePublishedInitialOffers(itemId){
+ const active=await api('/rest/v1/offers?select=id,offer_type,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&status=eq.published');
+ for(const o of (active||[]))if(['initial','revised'].includes(o.offer_type))await transition('offer',o.id,'published','superseded','Replaced by a new initial offer.');
+}
+async function supersedeApprovedValuations(itemId){
+ const active=await api('/rest/v1/trading_values?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&status=eq.approved');
+ for(const v of (active||[]))await transition('trading_value',v.id,'approved','superseded','Replaced by a new valuation.');
+}
+async function advanceItemToOfferReady(itemId){
+ const itemRows=await api('/rest/v1/buying_items?select=status&id=eq.'+encodeURIComponent(itemId)+'&tenant_id=eq.'+encodeURIComponent(tenantId));
+ const itemStatus=itemRows?.[0]?.status;
+ if(itemStatus==='valued')await transition('buying_item',itemId,'valued','offer_ready');
+ else if(itemStatus==='under_review')await transition('buying_item',itemId,'under_review','valued').then(()=>transition('buying_item',itemId,'valued','offer_ready'));
+ else if(itemStatus==='submitted')await transition('buying_item',itemId,'submitted','under_review').then(()=>transition('buying_item',itemId,'under_review','valued')).then(()=>transition('buying_item',itemId,'valued','offer_ready'));
+ const requestId=await itemRequestId(itemId);
+ if(requestId){
+  const rr=await api('/rest/v1/buying_requests?select=status&id=eq.'+encodeURIComponent(requestId)+'&tenant_id=eq.'+encodeURIComponent(tenantId));
+  const rs=rr?.[0]?.status;
+  if(rs==='under_review')await transition('buying_request',requestId,'under_review','valued').then(()=>transition('buying_request',requestId,'valued','offer_ready'));
+  else if(rs==='submitted')await transition('buying_request',requestId,'submitted','under_review').then(()=>transition('buying_request',requestId,'under_review','valued')).then(()=>transition('buying_request',requestId,'valued','offer_ready'));
+ }
+}
+async function createInitialOffers(itemId,offersToCreate,source='manual',valuationOverride=null){
+ if(!Array.isArray(offersToCreate)||!offersToCreate.length)throw Error('Enter a cash offer, a trade-in offer, or both.');
+ await supersedePublishedInitialOffers(itemId);
+ let valuation=valuationOverride;
+ if(!valuation){
+  const values=await api('/rest/v1/trading_values?select=id,status,method,amount,cash_price,trade_in_price&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&status=eq.approved&order=approved_at.desc&limit=1');
+  valuation=values?.[0];
+ }
+ if(!valuation)throw Error('Approve the valuation before sending the initial offer.');
+ const rows=await api('/rest/v1/offers',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(offersToCreate.map(x=>({tenant_id:tenantId,buying_item_id:itemId,trading_value_id:valuation.id,offer_reference:'OF-'+crypto.randomUUID().replaceAll('-','').slice(0,10).toUpperCase(),offer_type:'initial',offer_mode:x.mode,status:'draft',amount:x.amount,currency:'GBP',created_by:session.user.id})))});
+ const created=Array.isArray(rows)?rows:[rows];
+ for(const offer of created)await transition('offer',offer.id,'draft','published',source==='automatic'?'Automatic initial offer published.':'Manual initial offer published.');
+ await advanceItemToOfferReady(itemId);
+ return created;
+}
+async function createAutomaticOffers(itemId,result){
+ try{
+  await supersedePublishedInitialOffers(itemId);
+  await supersedeApprovedValuations(itemId);
+  const rows=await api('/rest/v1/trading_values',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,buying_item_id:itemId,method:'automatic',status:'draft',amount:Number(result.amount),currency:'GBP',cash_price:Number(result.amount),trade_in_price:Number.isFinite(Number(result.trade_in_amount))?Number(result.trade_in_amount):null,calculated_at:new Date().toISOString(),notes:'Automatic catalogue pricing',metadata:{source:'subscriber_buying_dashboard',valuation_source:'automatic'}})});
+  const valuation=Array.isArray(rows)?rows[0]:rows;
+  await transition('trading_value',valuation.id,'draft','approved','Automatic catalogue valuation approved.');
+  const offers=[{mode:'cash',amount:Number(result.amount)}];
+  if(Number.isFinite(Number(result.trade_in_amount)))offers.push({mode:'trade_in',amount:Number(result.trade_in_amount)});
+  await createInitialOffers(itemId,offers,'automatic',valuation);
+  msg('Automatic valuation completed and the automatic cash/trade-in offer is now active. Manual initial offers are overridden.','success');
+  await load();
+ }catch(e){
+  console.warn('Automatic offer could not be published:',e);
+  const box=$('offer-status-'+itemId);if(box)box.textContent='Automatic valuation calculated, but the offer could not be published yet: '+(e.message||String(e));
+ }
+}
+async function sendApprovedOffer(itemId,b){
+ setBusy(b,true);
+ try{
+  const values=await api('/rest/v1/trading_values?select=id,status,method,amount,cash_price,trade_in_price&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&status=eq.approved&order=approved_at.desc&limit=1');
+  const v=values?.[0];
+  if(!v)throw Error('No approved valuation is available for this item.');
+  if(v.method==='automatic')throw Error('Automatic pricing is active. The automatic offer already overrides the manual offer.');
+  const offerValues=[];
+  if(Number.isFinite(Number(v.cash_price)))offerValues.push({mode:'cash',amount:Number(v.cash_price)});
+  if(Number.isFinite(Number(v.trade_in_price)))offerValues.push({mode:'trade_in',amount:Number(v.trade_in_price)});
+  if(!offerValues.length)throw Error('The approved valuation does not contain a cash or trade-in offer.');
+  await createInitialOffers(itemId,offerValues,'manual',v);
+  await load();
+  msg('Manual cash/trade-in offer sent to the customer. They can choose which offer to accept.','success');
+ }catch(e){msg(e.message||String(e),'error')}finally{setBusy(b,false)}
+}
+async function createOffer(itemId,b){
+ const cash=parseFloat($('offer-cash-'+itemId)?.value);
+ const trade=parseFloat($('offer-trade-'+itemId)?.value);
+ if(!Number.isFinite(cash)&&!Number.isFinite(trade))return msg('Enter a cash offer, a trade-in offer, or both.','error');
+ setBusy(b,true);
+ try{
+  const auto=await api('/rest/v1/trading_values?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&method=eq.automatic&status=eq.approved&limit=1');
+  if(auto?.length)throw Error('Automatic pricing is active and overrides manual initial offers.');
+  const offers=[];
+  if(Number.isFinite(cash))offers.push({mode:'cash',amount:cash});
+  if(Number.isFinite(trade))offers.push({mode:'trade_in',amount:trade});
+  await createInitialOffers(itemId,offers,'manual');
+  await load();
+  msg('Manual cash/trade-in offer sent to the customer. They can choose which offer to accept.','success');
+ }catch(e){msg(e.message||String(e),'error');}finally{setBusy(b,false);}
+}
+
 async function itemRequestId(itemId){const rows=await api(`/rest/v1/buying_items?select=buying_request_id&id=eq.${encodeURIComponent(itemId)}&tenant_id=eq.${encodeURIComponent(tenantId)}`);return rows?.[0]?.buying_request_id;}
 $('sign-out').addEventListener('click',()=>{ if(window.tradeflowSubscriberSignOut) window.tradeflowSubscriberSignOut(); else location.href='subscriber-login.html'; }); load(); startBuyingStatusRefresh();
 function startBuyingStatusRefresh(){if(statusRefreshTimer)clearInterval(statusRefreshTimer);statusRefreshTimer=setInterval(refreshBuyingStatus,10000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshBuyingStatus()});}

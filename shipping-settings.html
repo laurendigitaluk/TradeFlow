@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TradeFlow Shipping Settings</title>
+<link rel="stylesheet" href="subscriber-dashboard.css?v=8">
+<style>
+.shipping-search-row{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:12px 0}
+.shipping-provider-card{border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:10px;background:#fff}
+.shipping-provider-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.shipping-provider-form{border:1px solid #dfe4e8;border-radius:8px;padding:16px;background:#fafbfc;margin-top:18px}
+.panel-subheading{display:flex;justify-content:space-between;gap:12px}
+.notice{margin-top:14px;padding:12px;border:1px solid #dfe4e8;border-radius:8px}
+.required{font-weight:600}
+.connection-ready{border-left:5px solid #2d7a4d}
+.connection-pending{border-left:5px solid #d39b22}
+.connection-error{border-left:5px solid #b34a4a}
+@media(max-width:700px){.shipping-search-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a>
+<div class="account"><strong id="business-name">Shipping Settings</strong><button id="sign-out" type="button">Sign out</button></div></header>
+<main class="layout">
+<aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav>
+<a href="subscriber-dashboard.html">Dashboard</a>
+<div class="nav-section">Business flow</div>
+<a href="buying-dashboard.html">Buying</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="sales-channels.html">Sales Channels</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a>
+<div class="nav-section">Business</div><a href="customers.html">Customers</a><a href="finance-dashboard.html">Finance</a>
+<div class="nav-section">Website</div><a href="subscriber-website.html">Website</a><a href="buying-catalogue.html">What We Buy</a>
+<div class="nav-section">Settings</div><a class="active" href="shipping-settings.html">Shipping Settings</a><a href="settings.html">Business Settings</a><a href="domain-settings.html">Website URL</a>
+</nav></aside>
+<section class="content">
+<div class="page-heading"><div><div class="eyebrow">Business setup</div><h1>Shipping Settings</h1><p class="intro">Connect the shipping services your business uses. Connected services become available when you create a shipping label for an accepted buying item.</p></div></div>
+<div id="message" class="small" aria-live="polite"></div>
+<section class="panel">
+<div class="panel-heading"><div><div class="eyebrow">Shipping integrations</div><h2>Connect your shipping services</h2></div><span class="status-pill">Business-wide</span></div>
+<p><strong>Choose and connect your own shipping accounts here.</strong> You can connect more than one service. Customers never enter courier credentials and TradeFlow does not collect, pay or reimburse shipping costs.</p>
+<p class="small">After a service is connected and has an active TradeFlow adapter, it appears automatically under <strong>Send shipping label → Use integrated shipping</strong> in Buying. Manual label and QR-code handoff remains available separately.</p>
+<div id="shipping-connections">Loading shipping services…</div>
+<div id="shipping-provider-form" class="shipping-provider-form" hidden></div>
+<div class="form-grid" style="margin-top:12px"><label>Connection environment<select id="shipping-environment"><option value="sandbox">Sandbox / test</option><option value="live">Live / production</option></select></label></div>
+<div id="shipping-connect-status" class="small" aria-live="polite"></div>
+</section>
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">How it works</div><h2>From connection to customer label</h2></div></div>
+<div class="notice"><strong>1. Connect here</strong><div class="small">Select a courier, follow its setup instructions and save the business connection securely.</div></div>
+<div class="notice"><strong>2. Create the label in Buying</strong><div class="small">Open an accepted buying request and choose <strong>Use integrated shipping</strong>. Only connected, tested services are offered there.</div></div>
+<div class="notice"><strong>3. Customer receives the handoff</strong><div class="small">TradeFlow sends the label, QR code or shipping instructions to the customer. The customer does not configure the courier account.</div></div>
+</section>
+</section></main>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="shipping-settings.js?v=1"></script>
+</body></html>

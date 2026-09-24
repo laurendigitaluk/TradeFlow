@@ -160,6 +160,26 @@ function splitFullName(value){
   if(!parts.length)return {first:'',last:''};
   return {first:parts.shift(),last:parts.join(' ')};
 }
+async function submitStoredSellingJourney(){
+ const raw=sessionStorage.getItem('tradeflow_selling_journey');
+ if(!raw)return false;
+ let payload=null;try{payload=JSON.parse(raw)}catch{sessionStorage.removeItem('tradeflow_selling_journey');return false}
+ if(!payload?.category_id||payload.tenant_id!==tenantId)return false;
+ const details=[
+  payload.product_type&&('Product type: '+payload.product_type),
+  payload.manufacturer&&('Manufacturer: '+payload.manufacturer),
+  payload.model&&('Model: '+payload.model),
+  payload.package_name&&('Package / version: '+payload.package_name),
+  payload.condition&&('Condition: '+payload.condition),
+  payload.missing_items&&('Missing items: '+payload.missing_items),
+  payload.legal_right&&('Legal right to sell: '+payload.legal_right),
+  payload.serial_number&&('Serial number: '+payload.serial_number),
+  payload.notes&&('Customer notes: '+payload.notes)
+ ].filter(Boolean).join(' | ');
+ await api('/rest/v1/rpc/customer_submit_buying_request',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_notes:payload.notes||null,p_items:[{category_id:payload.category_id,title:[payload.manufacturer,payload.model,payload.package_name].filter(Boolean).join(' ')||'Selling request',description:details||payload.notes||null,quantity:1,fields:[]}]})});
+ sessionStorage.removeItem('tradeflow_selling_journey');
+ return true;
+}
 async function ensureCustomerRegistration(){
   const existing=await rpc('customer_get_profile');
   if(Array.isArray(existing)&&existing.length){
@@ -178,9 +198,9 @@ async function ensureCustomerRegistration(){
   if(!first)throw Error('Enter your first name to complete your customer account.');
   await api('/rest/v1/rpc/customer_register_for_tenant',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
 }
-async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();await loadPortalData();startCustomerSellingStatusRefresh();const p=new URLSearchParams(location.search);if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
+async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();const submitted=await submitStoredSellingJourney();await loadPortalData();startCustomerSellingStatusRefresh();const p=new URLSearchParams(location.search);if(p.get('submitted')==='1'||submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}else if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
 function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','success')}
-async function handleAuthSuccess(data){saveSession(data);showAuth(false);try{await loadTenantBranding();await ensureCustomerRegistration();await loadPortalData()}catch(err){setMessage(err.message||String(err),'error')}}
+async function handleAuthSuccess(data){saveSession(data);showAuth(false);try{await loadTenantBranding();await ensureCustomerRegistration();const submitted=await submitStoredSellingJourney();await loadPortalData();if(submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}}catch(err){setMessage(err.message||String(err),'error')}}
 async function shippingAssetBlob(url){const r=await fetch(url);if(!r.ok)throw Error('The shipping file could not be downloaded.');return await r.blob();}
 async function downloadShippingAsset(url,name,button){try{setBusy(button,true,'Downloading…');const blob=await shippingAssetBlob(url);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+(blob.type==='application/pdf'?'.pdf':blob.type==='image/png'?'.png':'.jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}catch(e){setMessage(e.message||String(e),'error')}finally{setBusy(button,false)}}
 async function printShippingAsset(url,title,button){try{setBusy(button,true,'Opening…');const blob=await shippingAssetBlob(url);const objectUrl=URL.createObjectURL(blob);const w=window.open('','_blank','noopener');if(!w)throw Error('Allow pop-ups to print the shipping file.');const type=blob.type;const body=type==='application/pdf'?'<iframe src="'+objectUrl+'" style="width:100%;height:100vh;border:0"></iframe>':'<img src="'+objectUrl+'" style="max-width:100%;max-height:95vh;display:block;margin:auto">';w.document.write('<!doctype html><title>'+esc(title)+'</title><body style="margin:0;padding:20px;font-family:Arial">'+body+'</body>');w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch(e){}},1200)}catch(e){setMessage(e.message||String(e),'error')}finally{setBusy(button,false)}}

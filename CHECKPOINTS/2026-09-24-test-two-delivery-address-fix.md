@@ -117,3 +117,18 @@ Repairs:
 - ccbbbf136c59a50cea1700a2b4d328e24b5147ad — Business Dashboard Buying links synchronized to v60.
 
 State: Implemented in GitHub, live DB verified, browser verification pending. Test One remains frozen.
+
+
+## 25 September 2026 — Second Buying rendering correction
+
+The latest screenshot identified the actual remaining parser defect: `buying-dashboard.js` used `:\\s*` in the key/value regex. Because this is a regex literal, it matched a literal backslash plus `s` instead of whitespace, preventing Product type, Manufacturer, Model and the other colon-separated fields from being split. The regex is now `:\s*`.
+
+The Submitted customer-review stage is also now greyed as a whole, with a neutral Submitted pill, instead of presenting only the word Submitted in green.
+
+Repairs:
+- 3ab98cbe927b0e2fc988728844601a7684bf8db7
+- 1a09216ac77c656ab2636f81a94a6bace76fe6ef
+- 65cb2522f5b0fdd1a3a3ab9a28f165b88a45b34a
+- 13da412223385bdd73517ef9eebb07aab94b60bf
+
+State: Implemented in GitHub, browser verification pending. No test data reset or database workflow change.

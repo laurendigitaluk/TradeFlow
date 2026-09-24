@@ -317,6 +317,9 @@ async function createOffer(itemId,b){
  if(!Number.isFinite(cash)&&!Number.isFinite(trade))return msg('Enter a manual buyer offer, a trade-in offer, or both.','error');
  setBusy(b,true);
  try{
+  const stageRows=await api('/rest/v1/buying_items?select=purchase_stage&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(itemId));
+  const purchaseStage=stageRows?.[0]?.purchase_stage||'none';
+  if(['awaiting_item','shipping','received','inspection','testing','repair','final_offer_required','final_offer_sent','final_offer_accepted','purchased'].includes(purchaseStage))throw Error('The customer has already accepted the initial offer. The item is now in the receipt and inspection workflow.');
   const auto=await api('/rest/v1/trading_values?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&buying_item_id=eq.'+encodeURIComponent(itemId)+'&method=eq.automatic&status=eq.approved&limit=1');
   if(auto?.length)throw Error('Automatic pricing is active and overrides manual initial offers.');
   await supersedeApprovedValuations(itemId);

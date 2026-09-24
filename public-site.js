@@ -172,10 +172,6 @@ function renderHomepageTiles(site){
  return '<section class="homepage-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+columns+'">'+cards+'</div></section>';
 }
 
-function renderTrust(){
- return '<section class="trust-row"><div><b>What We Buy</b><span>Customers can move from a category directly into the buying journey.</span></div><div><b>What We Sell</b><span>Published inventory appears automatically as your range grows.</span></div><div><b>TradeFlow connection</b><span>Buying categories, pricing and retail products stay connected to the business system.</span></div></section>';
-}
-
 function renderFooter(site){
  const name=site.name||'Your business';
  const footer=site.footer||{};

@@ -1199,11 +1199,11 @@ From this point forward, every material front-end repair must pass this gate bef
 - inspect the current controller and all scripts loaded by the page;
 - identify the first executable boundary before changing database state;
 - run a JavaScript syntax check over every changed controller and directly loaded companion controller;
-- verify the page script cache-buster matches the repaired controller;
+- verify the page script cache-buster matches the repaired controller; verify navigation links into the page use the current page cache key as well, not merely the controller's cache key;
 - preserve Test One and existing Test Two restore checkpoints;
 - never delete/reseed test data merely to work around an unproven browser failure;
 - only then perform the one requested browser test.
 
 The Buying dashboard now has an inline startup diagnostic and controller startup marker. If the controller fails to load in future, the page should identify a script-loading/runtime boundary instead of leaving the user with an unexplained loading screen.
 
-The repaired files are syntax-verified. This does not yet count as Browser Verified; the next test is the deployed GitHub Pages Buying dashboard after the v57 cache-bust has published.
+The repaired files are syntax-verified. A subsequent audit found a second cache-version mismatch: the Business Dashboard Buying links still used `?v=58` while the Buying page controller had advanced to `v59`. Those navigation links have now been synchronized to `?v=59` in commit `6207f0ca4b028351ebee149598898a563ccf1f58`. This does not yet count as Browser Verified; the next test is the deployed GitHub Pages Buying dashboard after the latest cache-bust has published.

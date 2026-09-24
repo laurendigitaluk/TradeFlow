@@ -251,7 +251,7 @@ Website templates now include six distinct starting layouts: Business, Buy & Sel
 
 ## Subscriber dashboard workflow separation — 18 September 2026
 
-The subscriber Business Dashboard is now deliberately separate from Website management. The daily business flow is Buying → Acquisitions → Inventory → Selling → Orders → Fulfilment → Returns. Customers and Finance sit alongside the flow as supporting business functions. Website Builder is not embedded in this operational dashboard.
+The subscriber Business Dashboard is now deliberately separate from Website management. The daily operational flow is Buying → purchased → Inventory / Ready for sale → Selling → Orders → Fulfilment → Returns. Acquisitions remains an internal accounting/audit record and is not a separate user-facing workflow stage. Customers and Finance sit alongside the flow as supporting business functions. Website Builder is not embedded in this operational dashboard.
 
 `subscriber-website.html` is the separate website-management entry point. It provides the Website Builder, public preview and return path to the Business Dashboard. This matches the intended subscriber behaviour: build/publish the website once, then return to it only for later changes.
 
@@ -1121,4 +1121,4 @@ Do not mark this change as browser-verified unless the Builder Branding section,
 
 ## Website banner display correction — 24 September 2026
 
-The dedicated `site.branding.banner_url` is now rendered through a shared full-width customer-facing banner component. It is displayed below navigation across customer-facing pages, including shop/product/content pages, while homepage hero imagery remains separate. The Builder preview mirrors this layout. This is the authoritative presentation of the dedicated banner and avoids treating a wide 1600 × 600 branding asset as a narrow template hero photograph.
+The dedicated `site.branding.banner_url` is rendered as a compact horizontal branding slot in the **What We Sell** title area, replacing the normal shop logo/title image slot. It is not rendered as a page-wide banner beneath navigation. Homepage hero imagery remains separate. The Builder preview mirrors this same placement. This is the authoritative presentation of the dedicated banner.

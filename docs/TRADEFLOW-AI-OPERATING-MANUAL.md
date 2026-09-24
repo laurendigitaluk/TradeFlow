@@ -1169,3 +1169,8 @@ For buying-dashboard work, treat the initial offer as a single manual offer stag
 Automatic catalogue pricing always takes precedence. If an automatic valuation is active, do not allow a manual initial valuation or initial offer to replace it. Automatic pricing creates the authoritative valuation and initial offer option(s), while previously published initial/revised offers are superseded.
 
 Customer acceptance selects one initial option. The other published initial/revised option must be superseded. Acceptance moves the item into the shipping/receipt workflow. Do not create a final offer at this point. Only after the item is received and inspection is passed should the item move to `final_offer_required`, where the existing final-offer workflow creates and publishes the post-inspection offer.
+
+
+## Initial offer workflow clarification — 24 September 2026
+
+The customer must see the cash and trade-in choices together as one offer. Do not create two simultaneous published initial offer records for the two choices. Use the single offer record linked to the valuation; the customer acceptance choice is `cash` or `trade_in`, and the accepted amount is recorded on that offer.

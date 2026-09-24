@@ -59,3 +59,27 @@ The existing shipping-provider-test Edge Function is active and already uses the
 
 ## Next implementation phase
 Once the Parcel2Go connection test succeeds, add server-side shipment/rate/label creation and tracking updates without replacing the existing acquisition workflow. Do not put provider secrets in browser JavaScript or public database columns.
+
+## 24 September 2026 — Parcel2Go connection is browser verified
+
+The intended subscriber setup is now confirmed as:
+
+Parcel2Go Client ID + Client Secret → Save and test connection → Connected.
+
+TradeFlow uses Parcel2Go as the single integrated multi-carrier provider. Direct carrier credential setup is not exposed. Manual label/QR shipping remains the fallback path.
+
+Browser verification completed on 24 September 2026 using the Camerashack test subscriber's Parcel2Go Live credentials. Shipping Settings displayed Connected and: Connected successfully to Parcel2Go Live. Authentication passed; no shipment was created.
+
+The Vault reader repair was applied live after the initial test exposed a service-only credential-read failure. The shipping-provider-test Edge Function is active and includes CORS handling plus tenant authorization. The connection test performs OAuth authentication only; it does not create or pay for a shipment.
+
+The Buying dashboard's integrated shipping helper has also been simplified so Parcel2Go is the fixed integrated provider rather than a selectable list of direct providers.
+
+Parcel2Go's official API documents OAuth2 client credentials, separate sandbox/live credentials, live quoting, order creation, payment, labels and tracking. citeturn2view0turn3view0
+
+Verification state:
+- GitHub implementation: verified.
+- Live Supabase connection/test path: verified.
+- Browser connection test: verified.
+- Actual shipment/label purchase: not yet tested or created.
+
+Next phase: implement the server-side Parcel2Go quote/service-selection flow in Buying. Obtain a live quote from the connected subscriber account using the shipment's collection/delivery details and parcel dimensions/weight, present the returned services, and only create/pay for a shipment after an explicit subscriber action. Do not put provider secrets in browser JavaScript.

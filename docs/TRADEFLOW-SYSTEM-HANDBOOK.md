@@ -1058,3 +1058,8 @@ The Buying dashboard now exposes the connected Parcel2Go workflow directly in th
 The live `public.customer_addresses.address_type` contract permits `primary`, `billing`, `shipping` and `other`; it does not permit `delivery`. The customer-facing label remains **Delivery address**, but the stored internal value is `address_type=shipping`.
 
 `customer-dashboard.js` was corrected so the Delivery option and Add delivery address action use `shipping`. The integrated Parcel2Go function was also corrected so its customer-address lookup uses `address_type=shipping`. The Parcel2Go Edge Function was redeployed as version 3 on 24 September 2026. No Supabase schema or Test One data was changed. Browser verification of the quote request remains the final test.
+
+
+## 24 September 2026 — Test Two valuation display and shipping message clarification
+
+The Test Two customer has an approved manual trading value with cash price £50 and trade-in price £55. The customer accepted the £55 trade-in offer. The customer dashboard previously labelled the £50 cash price simply as “Valuation”, which was misleading after the trade-in offer had been accepted. The dashboard now shows the accepted offer amount when an accepted offer exists, while retaining the underlying cash/trade-in values. The buying dashboard's Parcel2Go explanatory text was also changed so it no longer implies that the address is currently missing; it explains that Parcel2Go uses the saved Delivery address from My Details.

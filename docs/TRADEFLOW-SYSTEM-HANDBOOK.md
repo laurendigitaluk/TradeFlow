@@ -1046,3 +1046,8 @@ When the customer accepts one initial option, the selected cash/trade-in mode an
 ## Initial offer workflow clarification — 24 September 2026
 
 Each manual initial offer is represented by one published `offers` record linked to one approved `trading_values` record. The linked valuation holds both `cash_price` and `trade_in_price`; the customer chooses one option from the same offer. The selected `offer_mode` and accepted `amount` are recorded on that offer. There is no second published initial offer record for the other choice.
+
+
+## 24 September 2026 — Parcel2Go integrated pre-acquisition shipping UI
+
+The Buying dashboard now exposes the connected Parcel2Go workflow directly in the shipping handoff. When an initial offer is accepted, the subscriber can enter parcel weight and dimensions, request live Parcel2Go courier quotes, compare returned services, and explicitly create a selected shipment. Shipment creation is performed server-side by the parcel2go-subscriber-shipping Edge Function; the subscriber's connected Parcel2Go account remains responsible for shipping payment. Manual label/QR shipping remains available as a fallback. The obsolete shipping-label-selector.js helper has been removed. This is Implemented in GitHub; live browser verification of the quote/order flow remains pending.

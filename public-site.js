@@ -76,7 +76,7 @@ function renderPublicNav(site,catalogue){
  const buying='<a class="public-buy-link" href="'+pageUrl('sell')+'">Sell to Us</a>';
  const normal=links.filter(slug=>slug!=='buying'&&slug!=='shop').map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
- return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">What We Sell</a><a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
+ return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">Visit Shop</a><a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
 }
 
 function heroImage(url,alt,cls){

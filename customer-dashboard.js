@@ -141,10 +141,17 @@ function renderCustomerBankDetails(bankDetails){
  const has=Boolean(bankDetails?.has_details);
  box.innerHTML='<h3>Bank details for payments</h3><p class="small">These are the UK bank details Camera Shack will use when paying you for items you sell. You can update them at any time.</p><div class="form-grid" style="margin-top:12px"><label>Account holder name<input id="account-bank-holder" autocomplete="name" value="'+esc(bankDetails?.account_holder_name||'')+'"></label><label>Bank name (optional)<input id="account-bank-name" autocomplete="organization" value="'+esc(bankDetails?.bank_name||'')+'"></label><label>Sort code<input id="account-bank-sort-code" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="12-34-56" value="'+esc(bankDetails?.sort_code||'')+'"></label><label>Account number<input id="account-bank-number" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="12345678" value="'+esc(bankDetails?.account_number||'')+'"></label></div><div class="actions" style="margin-top:12px"><button type="button" id="save-account-bank-details">'+(has?'Update bank details':'Save bank details')+'</button></div><p id="account-bank-message" class="small" style="margin-top:8px">'+(has?'Bank details are on record. You can change them here whenever needed.':'Bank details have not yet been provided.')+'</p>';
 }
-function renderSellingValuations(data){
+function renderSellingValuations(data,offers=[]){
  const box=$('valuation-list');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.innerHTML='<div class="empty">No valuations have been issued yet. Your valuation will appear here when the business has completed it.</div>';return}
- box.innerHTML=data.map(v=>'<article class="selling-handover valuation-card '+(String(v.status).toLowerCase()==='approved'?'approved':'')+'"><div><strong>'+esc(v.request_reference||'Selling request')+'</strong> <span class="status-pill '+(String(v.status).toLowerCase()==='approved'?'status-approved':'status-neutral')+'">'+esc(v.status||'valuation')+'</span></div><p><strong>Valuation:</strong> '+money(v.cash_price??v.amount??v.trade_in_price,v.currency)+'</p><p class="small">'+esc(v.method||'Valuation')+' · Calculated '+(v.calculated_at?new Date(v.calculated_at).toLocaleDateString('en-GB'):'—')+(v.approved_at?' · Approved '+new Date(v.approved_at).toLocaleDateString('en-GB'):'')+'</p></article>').join('');
+ const acceptedByItem=Object.fromEntries((Array.isArray(offers)?offers:[]).filter(o=>o.status==='accepted'&&o.buying_item_id).map(o=>[o.buying_item_id,o]));
+ box.innerHTML=data.map(v=>{
+  const accepted=acceptedByItem[v.buying_item_id];
+  const displayValue=accepted?.amount!=null?money(accepted.amount,accepted.currency||v.currency):money(v.trade_in_price??v.cash_price??v.amount,v.currency);
+  const displayLabel=accepted?.offer_mode==='trade_in'?'Agreed trade-in offer':accepted?.offer_mode==='cash'?'Agreed cash offer':'Approved trading value';
+  const valuationDetail=(v.cash_price!=null&&v.trade_in_price!=null)?'Cash value '+money(v.cash_price,v.currency)+' · Trade-in value '+money(v.trade_in_price,v.currency):'';
+  return '<article class="selling-handover valuation-card '+(String(v.status).toLowerCase()==='approved'?'approved':'')+'"><div><strong>'+esc(v.request_reference||'Selling request')+'</strong> <span class="status-pill '+(String(v.status).toLowerCase()==='approved'?'status-approved':'status-neutral')+'">'+esc(v.status||'valuation')+'</span></div><p><strong>'+displayLabel+':</strong> '+displayValue+'</p>'+(valuationDetail?'<p class="small">'+valuationDetail+'</p>':'')+'<p class="small">'+esc(v.method||'Valuation')+' · Calculated '+(v.calculated_at?new Date(v.calculated_at).toLocaleDateString('en-GB'):'—')+(v.approved_at?' · Approved '+new Date(v.approved_at).toLocaleDateString('en-GB'):'')+'</p></article>';
+ }).join('');
 }
 async function markBuyingItemPosted(id){
  try{await api('/rest/v1/rpc/customer_mark_buying_item_posted',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_buying_item_id:id})});setMessage('Your item has been marked as posted.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}
@@ -200,7 +207,7 @@ const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds
 $('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);const valuations=await rpc('customer_get_selling_valuations');
 const visibleValuations=(Array.isArray(valuations)?valuations:[]).filter(v=>!completedRequestRefs.has(v.request_reference));
 $('buying-count').textContent=visibleValuations.length;
-renderSellingValuations(visibleValuations);
+renderSellingValuations(visibleValuations,activeOffers);
 const hasSellingActivity=(Array.isArray(buying)&&buying.length>0)||(Array.isArray(valuations)&&valuations.length>0)||(activeOffers.length>0)||(activeAcquisitions.length>0)||(completedAcquisitions.length>0);
 const valuationsPanel=$('valuations');if(valuationsPanel)valuationsPanel.hidden=!hasSellingActivity;
 const valuationsNav=$('valuations-nav-link');if(valuationsNav)valuationsNav.hidden=!hasSellingActivity;

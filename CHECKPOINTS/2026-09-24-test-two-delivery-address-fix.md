@@ -83,3 +83,19 @@ Relevant commits:
 Current state: Implemented in GitHub and syntax-verified. Browser verification remains the next step after GitHub Pages has published the v57 assets.
 
 The parse regression was introduced by commit `5a7189449244399649f384901bcf93bf7c12c4d9` (`Clarify Parcel2Go customer address message`), which changed a safe string to `the customer's saved` inside a single-quoted JavaScript string. The fault was not a database/RLS regression. It has now been corrected and syntax-checked.
+
+
+## 25 September 2026 — Second Buying navigation cache regression found
+
+A further current-code audit found that the Buying controller had been cache-bumped to `v59`, but the Business Dashboard's three Buying navigation links still used the previous page cache key `?v=58`. This created a real path where clicking Buying could restore an older cached HTML document/controller combination, while a manual refresh fetched the newer page. This matches the observed behaviour: Buying loaded after refresh but not reliably when entered from the dashboard.
+
+Repair:
+- `subscriber-dashboard.html` Buying links synchronized from `?v=58` to `?v=59`.
+- Current `buying-dashboard.html` loads `buying-dashboard.js?v=59`.
+- `buying-dashboard.js`, `subscriber-auth.js`, `subscriber-tenant-context.js` and `buying-inspection.js` all pass JavaScript syntax validation.
+- Both inline scripts in `buying-dashboard.html` also pass syntax validation.
+
+Relevant commit:
+- `6207f0ca4b028351ebee149598898a563ccf1f58`
+
+State: Implemented in GitHub and syntax-tested. Browser verification remains required.

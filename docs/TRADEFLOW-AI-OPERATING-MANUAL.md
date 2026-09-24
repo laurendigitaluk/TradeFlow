@@ -1154,3 +1154,24 @@ Implementation rule:
 - Do not alter the retail basket/order flow, customer bank details or customer address functions as part of this change.
 
 Verification status: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+## 24 September 2026 — Customer portal scope cleanup
+
+The customer portal must not duplicate the public website's shopping or selling-entry journeys.
+
+Authoritative entry points:
+- Shopping and retail purchase: public website.
+- Sell/valuation submission: public website.
+
+Customer portal responsibilities:
+- View **My Orders** and fulfilment/payment history.
+- View valuation, offer, accepted-sale and completed-sale information after a selling journey exists.
+- Manage eligible returns.
+- Manage **My Details**, including customer contact information, bank details and payment/delivery addresses.
+
+Do not reintroduce Shop, Sell to us, or a selling-request submission form into the customer portal. The portal's selling area is for viewing/following an existing selling journey only.
+
+The Shop section was removed from the portal UI and the portal no longer loads the shop listings/basket data. No Supabase schema/data change was required.
+
+Verification status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

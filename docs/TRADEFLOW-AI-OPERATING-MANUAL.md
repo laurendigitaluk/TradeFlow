@@ -1122,3 +1122,7 @@ Do not mark this change as browser-verified unless the Builder Branding section,
 ## Website banner display correction — 24 September 2026
 
 The dedicated `site.branding.banner_url` is rendered as a compact horizontal branding slot in the **What We Sell** title area, replacing the normal shop logo/title image slot. It is not rendered as a page-wide banner beneath navigation. Homepage hero imagery remains separate. The Builder preview mirrors this same placement. This is the authoritative presentation of the dedicated banner.
+
+
+## 24 September 2026 — Buying dashboard active/completed separation
+The subscriber Buying dashboard must distinguish active buying work from completed purchases. If a buying item has `purchase_stage='purchased'` or is linked to an acquisition with `status='paid'`, treat it as completed and do not render it in the active request workspace or expose create/approve valuation or create/publish offer controls as outstanding work. Completed purchases belong in the dedicated Completed purchases section. Closed requests are excluded from active work.

@@ -37,12 +37,12 @@ function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberForma
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 function rows(data,cols,empty){if(!Array.isArray(data)||!data.length)return`<div class="empty">${esc(empty)}</div>`;return`<div class="data-table"><div class="data-head">${cols.map(c=>`<span>${esc(c.label)}</span>`).join('')}</div>${data.map(r=>`<div class="data-row">${cols.map(c=>`<span>${c.render?c.render(r):esc(r[c.key])}</span>`).join('')}</div>`).join('')}</div>`}
 async function rpc(name){return api(`/rest/v1/rpc/${name}?p_tenant_id=${encodeURIComponent(tenantId)}`,{method:'GET'})}
-function offerAction(r){if(r.status!=='published')return '<span class="status-pill '+(r.status==='accepted'?'status-approved':'status-neutral')+'">'+esc(r.status==='accepted'?'Accepted by you':r.status==='refused'?'Refused':r.status)+'</span>';return`<div class="offer-action-card"><div class="offer-action-title">Action required: review this offer</div><p class="small">You can accept or refuse this offer below.</p><textarea class="offer-response-notes" data-offer-id="${esc(r.offer_id)}" rows="2" placeholder="Optional response notes"></textarea><div class="actions"><button type="button" class="offer-accept" data-offer-id="${esc(r.offer_id)}" data-offer-mode="${esc(r.offer_mode||"cash")}">Accept offer</button><button type="button" class="offer-refuse" data-offer-id="${esc(r.offer_id)}">Refuse offer</button></div></div>`}
+function offerAction(r,valuation){if(r.status!=='published')return '<span class="status-pill '+(r.status==='accepted'?'status-approved':'status-neutral')+'">'+esc(r.status==='accepted'?'Accepted by you':r.status==='refused'?'Refused':r.status)+'</span>';const cash=valuation?.cash_price!=null?Number(valuation.cash_price):null;const trade=valuation?.trade_in_price!=null?Number(valuation.trade_in_price):null;const offerId=esc(r.offer_id||r.id);return'<div class="offer-action-card"><div class="offer-action-title">Action required: choose your offer</div><p class="small">The cash purchase and trade-in values are part of the same offer. Choose one.</p><div class="offer-choice-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">'+(cash!==null?'<div class="offer-choice" style="padding:12px;border:1px solid #d8dee5;border-radius:8px"><strong>Cash offer: '+money(cash,r.currency)+'</strong><div class="actions" style="margin-top:10px"><button type="button" class="offer-accept" data-offer-id="'+offerId+'" data-offer-mode="cash">Accept cash offer</button></div></div>':'')+(trade!==null?'<div class="offer-choice" style="padding:12px;border:1px solid #d8dee5;border-radius:8px"><strong>Trade-in offer: '+money(trade,r.currency)+'</strong><div class="actions" style="margin-top:10px"><button type="button" class="offer-accept" data-offer-id="'+offerId+'" data-offer-mode="trade_in">Accept trade-in offer</button></div></div>':'')+'</div><textarea class="offer-response-notes" data-offer-id="'+offerId+'" rows="2" placeholder="Optional response notes" style="margin-top:12px"></textarea><div class="actions"><button type="button" class="offer-refuse" data-offer-id="'+offerId+'">Refuse offer</button></div></div>'}
 async function respond(id,a,mode){const n=document.querySelector(`.offer-response-notes[data-offer-id="${CSS.escape(id)}"]`)?.value.trim()||null;try{const fn=a==='accept'?'customer_accept_offer_choice':'customer_refuse_offer';const body={p_tenant_id:tenantId,p_offer_id:id,p_response_notes:n};if(a==='accept')body.p_offer_mode=mode||'cash';await api(`/rest/v1/rpc/${fn}`,{method:'POST',body:JSON.stringify(body)});setMessage(a==='accept'?'Offer accepted. Shipping and receipt workflow can now begin.':'Offer refused.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}}
 async function payOrder(id){const b=document.querySelector(`[data-pay-order-id="${CSS.escape(id)}"]`);try{setBusy(b,true,'Opening secure payment…');const result=await api('/functions/v1/create-stripe-checkout-session',{method:'POST',body:JSON.stringify({tenant_id:tenantId,order_id:id})});if(!result?.checkout_url)throw Error(result?.error||'Payment checkout URL was not returned.');location.href=result.checkout_url}catch(e){setMessage(e.message||String(e),'error');setBusy(b,false)}}
 async function createPayment(id){return payOrder(id)}
 async function requestReturn(){const item=$('return-order-item').value;if(!item)return setMessage('Select an eligible order item.','error');try{await api('/rest/v1/rpc/customer_request_return',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_order_item_id:item,p_reason_code:$('return-reason-code').value,p_reason:$('return-reason').value.trim()||null,p_customer_notes:$('return-reason').value.trim()||null})});$('return-order-item').value='';$('return-reason').value='';setMessage('Return request submitted.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}}
-async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails,completedSales=[]){
+async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails,completedSales=[],valuations=[]){
  const box=$('selling-status-panel');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
  const completedIds=new Set((Array.isArray(completedSales)?completedSales:[]).map(a=>a.buying_item_id).filter(Boolean));
@@ -53,7 +53,8 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
  const ship=Array.isArray(shipping)?shipping.find(x=>x.buying_item_id===base.buying_item_id):null;
  const stage=base.stage||'submitted';
  const stageCopy={
-  awaiting_item:['Shipping instructions sent — ready to send','Your item is still in the pre-purchase selling process. Follow the shipping instructions and confirm when you have handed the item to the courier.'],
+  awaiting_shipping_label:['Shipping label required — not ready to send','Your offer has been accepted. The business must create your shipping label and instructions before you send the item.'],
+  awaiting_item:['Shipping instructions sent — ready to send','Your shipping label and instructions are ready. Send the item and confirm when you have handed the item to the courier.'],
   shipping:['Item sent — on its way to the business','You have confirmed that the item has been sent. The business is now awaiting receipt.'],
   received:['Item received — inspection next','The business has received your item. It is now waiting for inspection.'],
   inspection:['Item under inspection','Your item has been received and is now being inspected.'],
@@ -71,16 +72,8 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
  const title=(stageCopy[stage]||fallback)[0];
  const cls=['received','inspection','final_offer_required','final_offer_sent','final_offer_accepted','purchased'].includes(stage)?'accepted':stage==='final_offer_refused'||stage==='return_pending'?'manual':stage==='offer_ready'?'ready':'progress';
  let action='';
- const liveOffer=(Array.isArray(offers)?offers:[]).find(o=>o.status==='published'&&o.buying_item_id===base.buying_item_id);
- if(liveOffer){
-  const cash=liveOffer.cash_amount!=null?Number(liveOffer.cash_amount):null;
-  const trade=liveOffer.trade_in_amount!=null?Number(liveOffer.trade_in_amount):null;
-  const offerId=esc(liveOffer.offer_id||liveOffer.id);
-  action='<div class="customer-offer-action"><div class="offer-action-kicker">ACTION REQUIRED</div><strong>Offer received</strong><p>Choose one option. The cash purchase and trade-in offer are part of the same offer.</p><div class="offer-choice-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">'+
-   (cash!==null?'<div class="offer-choice" style="padding:12px;border:1px solid #d8dee5;border-radius:8px"><strong>Cash offer: '+money(cash,liveOffer.currency)+'</strong><div class="actions" style="margin-top:10px"><button type="button" class="offer-accept status-offer-accept" data-offer-id="'+offerId+'" data-offer-mode="cash">Accept cash offer</button></div></div>':'')+
-   (trade!==null?'<div class="offer-choice" style="padding:12px;border:1px solid #d8dee5;border-radius:8px"><strong>Trade-in offer: '+money(trade,liveOffer.currency)+'</strong><div class="actions" style="margin-top:10px"><button type="button" class="offer-accept status-offer-accept" data-offer-id="'+offerId+'" data-offer-mode="trade_in">Accept trade-in offer</button></div></div>':'')+
-   '</div><textarea class="offer-response-notes" data-offer-id="'+offerId+'" rows="2" placeholder="Optional response notes" style="margin-top:12px"></textarea><div class="actions"><button type="button" class="offer-refuse" data-offer-id="'+offerId+'">Refuse offer</button></div></div>';
- }
+ const liveOffer=(Array.isArray(offers)?offers:[]).find(o=>o.status==='published'&&o.buying_item_id===base.buying_item_id); const liveValuation=(Array.isArray(valuations)?valuations:[]).find(v=>v.buying_item_id===base.buying_item_id&&v.status==='approved');
+ if(liveOffer){ action=offerAction(liveOffer,liveValuation); }
  let handoff='';
  if(stage==='final_offer_accepted'){
   const hasBank=Boolean(bankDetails?.has_details);
@@ -189,7 +182,8 @@ async function refreshCustomerSellingStatus(){
    ]);
    const completedItemIds=new Set((Array.isArray(completedSales)?completedSales:[]).map(a=>a.buying_item_id).filter(Boolean));
    const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds.has(o.buying_item_id));
-   await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);
+const customerValuations=await rpc('customer_get_trading_values');
+   await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales,await rpc('customer_get_trading_values'));
  }catch(e){console.warn('TradeFlow customer selling status refresh failed:',e)}
 }
 function startCustomerSellingStatusRefresh(){
@@ -204,7 +198,7 @@ const activeBuying=(Array.isArray(buying)?buying:[]).filter(r=>!completedBuying.
 const completedAcquisitionIds=new Set(completedAcquisitions.map(a=>a.acquisition_id).filter(Boolean));
 const activeAcquisitions=(Array.isArray(acq)?acq:[]).filter(a=>!completedAcquisitionIds.has(a.acquisition_id));
 const activeOffers=(Array.isArray(offers)?offers:[]).filter(o=>!completedItemIds.has(o.buying_item_id));
-$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales);const valuations=await rpc('customer_get_selling_valuations');
+$('order-count').textContent=orders?.length||0;$('return-count').textContent=returns?.length||0;$('buying-list').innerHTML=rows(activeBuying,[{key:'request_reference',label:'Reference'},{key:'status',label:'Status'},{key:'source',label:'Source'}],'No active selling requests.');await renderSellingStatus(sellingStatus,activeOffers,acq,shipping,bankDetails,completedSales,await rpc('customer_get_trading_values'));const valuations=await rpc('customer_get_selling_valuations');
 const visibleValuations=(Array.isArray(valuations)?valuations:[]).filter(v=>!completedRequestRefs.has(v.request_reference));
 $('buying-count').textContent=visibleValuations.length;
 renderSellingValuations(visibleValuations);

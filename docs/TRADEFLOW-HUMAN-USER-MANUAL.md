@@ -891,3 +891,15 @@ Before a customer has submitted a selling request, the customer portal hides the
 The existing basket, My Orders, bank details and payment/delivery address functionality is unchanged.
 
 Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**
+
+
+## Customer portal scope cleanup — 24 September 2026
+
+The customer portal is now an account/history area rather than a storefront or selling-entry page.
+
+- The **Shop** section and Shop navigation have been removed from the customer portal. Customers browse and purchase through the public website.
+- The duplicate **Sell to us** navigation and selling-entry link have been removed. Customers start valuation/selling requests through the public website.
+- The portal retains **My Orders**, **Returns**, **My Details**, and the existing valuation/offer/sales information when a customer has an existing selling journey.
+- The dashboard summary now shows **Orders**, **Valuations**, and **Returns**.
+
+Status: **Implemented in GitHub; Live DB unchanged; browser verification required.**

@@ -47,7 +47,11 @@ async function requestReturn(){const item=$('return-order-item').value;if(!item)
 async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails){
  const box=$('selling-status-panel');if(!box)return;
  if(!Array.isArray(data)||!data.length){box.hidden=true;return}
- const base=data[0];
+ const completedIds=new Set((Array.isArray(acquisitions)?acquisitions:[]).filter(a=>['paid','completed'].includes(String(a.status||'').toLowerCase())).map(a=>a.buying_item_id).filter(Boolean));
+ const completedRefs=new Set((Array.isArray(acquisitions)?acquisitions:[]).filter(a=>['paid','completed'].includes(String(a.status||'').toLowerCase())).map(a=>a.request_reference).filter(Boolean));
+ const activeData=data.filter(r=>String(r.request_status||r.status||'').toLowerCase()!=='closed'&&String(r.purchase_stage||r.stage||'').toLowerCase()!=='purchased'&&!completedIds.has(r.buying_item_id)&&!completedRefs.has(r.request_reference));
+ if(!activeData.length){box.hidden=true;return}
+ const base=activeData[0];
  const ship=Array.isArray(shipping)?shipping.find(x=>x.buying_item_id===base.buying_item_id):null;
  const stage=base.stage||'submitted';
  const stageCopy={

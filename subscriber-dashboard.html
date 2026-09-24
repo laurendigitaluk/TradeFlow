@@ -101,6 +101,22 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const a=await window.tradeflowSubscriberAuthReady;
   const key=a?.key,session=a?.session,tenantId=a?.tenantId;
   if(!key||!session?.access_token||!tenantId)throw Error('Subscriber authentication is not ready.');
+  const membership=(Array.isArray(a?.memberships)?a.memberships:[]).find(x=>x.tenant_id===tenantId)||{};
+  const businessName=membership.tenant_name||membership.business_name||a?.tenants?.[tenantId]||'TradeFlow';
+  const email=session?.user?.email||a?.user?.email||'—';
+  const role=membership.role_code||a?.role||'—';
+  const setText=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+  setText('welcome-business',businessName);
+  setText('business-brand',businessName);
+  setText('business-name',businessName);
+  setText('account-email',email);
+  setText('account-role',role);
+  setText('summary-email',email);
+  setText('summary-role',role);
+  setText('modal-business',businessName);
+  setText('modal-email',email);
+  setText('modal-role',role);
+  setText('modal-tenant',tenantId);
   const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_business_workflow',{
     method:'POST',
     headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},

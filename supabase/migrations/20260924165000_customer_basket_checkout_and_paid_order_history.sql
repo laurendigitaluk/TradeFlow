@@ -1,0 +1,2 @@
+-- Basket checkout and paid-only customer order history.
+-- Pre-payment items are held in the customer basket UI and do not create retail_orders.

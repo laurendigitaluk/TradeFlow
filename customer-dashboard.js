@@ -8,6 +8,7 @@ const $=id=>document.getElementById(id);
 function setMessage(t,type=''){const e=$('customer-message');if(e){e.textContent=t||'';e.className=type}}
 function getBasket(){try{const v=JSON.parse(localStorage.getItem(BASKET_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
 function saveBasket(items){localStorage.setItem(BASKET_KEY,JSON.stringify(items));renderBasket()}
+function addressToJson(a){if(!a)return {};return {recipient_name:a.recipient_name||null,company_name:a.company_name||null,line1:a.line1||null,line2:a.line2||null,city:a.city||null,county:a.county||null,postcode:a.postcode||null,country_code:a.country_code||'GB'} }
 function renderBasket(){
  const box=$('basket-list');if(!box)return;
  const basket=getBasket();
@@ -26,7 +27,7 @@ async function checkoutBasket(){
  const basket=getBasket();if(!basket.length)return setMessage('Your basket is empty.','error');
  const b=$('basket-checkout');setBusy(b,true,'Preparing payment…');
  try{
-  const result=await api('/rest/v1/rpc/customer_create_retail_order_from_basket',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_listing_ids:basket.map(x=>x.listing_id)})});
+  const result=await api('/rest/v1/rpc/customer_create_retail_order_from_basket',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_listing_ids:basket.map(x=>x.listing_id),p_shipping_address:addressToJson((window.tradeflowCustomerAddresses||[]).find(a=>a.address_type==='shipping'&&a.is_default)),p_billing_address:addressToJson((window.tradeflowCustomerAddresses||[]).find(a=>a.address_type==='billing'&&a.is_default))})});
   const orderId=Array.isArray(result)?result[0]?.order_id||result[0]?.id:result?.order_id||result?.id;
   if(!orderId)throw Error('The order was not returned by TradeFlow.');
   localStorage.removeItem(BASKET_KEY);renderBasket();
@@ -134,6 +135,37 @@ async function renderSellingStatus(data,offers,acquisitions,shipping,bankDetails
   };
  }
 }
+function renderCustomerAddresses(addresses){
+ const box=$('customer-addresses');if(!box)return;
+ const list=Array.isArray(addresses)?addresses:[];
+ const card=a=>'<div class="account-address-card" style="border:1px solid #d8dee5;border-radius:8px;padding:14px;margin:10px 0"><div style="display:flex;justify-content:space-between;gap:12px"><strong>'+esc(a.address_type==='billing'?'Payment address':'Delivery address')+'</strong><span class="small">'+(a.is_default?'Default':'')+'</span></div><div class="small" style="margin-top:8px">'+esc([a.recipient_name,a.company_name,a.line1,a.line2,a.city,a.county,a.postcode,a.country_code].filter(Boolean).join(', '))+'</div><div class="actions" style="margin-top:10px"><button type="button" class="edit-customer-address" data-address-id="'+esc(a.id)+'">Edit</button><button type="button" class="delete-customer-address" data-address-id="'+esc(a.id)+'">Remove</button>'+(a.is_default?'':'<button type="button" class="default-customer-address" data-address-id="'+esc(a.id)+'">Make default</button>')+'</div></div>';
+ box.innerHTML='<h3>Addresses</h3><p class="small">Save separate payment and delivery addresses for purchases. You can edit or change your default address at any time.</p>'+list.map(card).join('')+'<div class="actions" style="margin-top:12px"><button type="button" id="add-payment-address">Add payment address</button><button type="button" id="add-delivery-address">Add delivery address</button></div>';
+}
+function addressForm(address){
+ const a=address||{};
+ return '<div id="customer-address-form" style="margin-top:16px;padding:16px;border:1px solid #d8dee5;border-radius:8px"><h4>'+(a.id?'Edit':'Add')+' '+(a.address_type==='billing'?'payment':'delivery')+' address</h4><div class="form-grid"><label>Address type<select id="address-type"><option value="shipping" '+(a.address_type==='shipping'?'selected':'')+'>Delivery</option><option value="billing" '+(a.address_type==='billing'?'selected':'')+'>Payment</option></select></label><label>Recipient name<input id="address-recipient" value="'+esc(a.recipient_name||'')+'"></label><label>Company name<input id="address-company" value="'+esc(a.company_name||'')+'"></label><label>Address line 1<input id="address-line1" value="'+esc(a.line1||'')+'"></label><label>Address line 2<input id="address-line2" value="'+esc(a.line2||'')+'"></label><label>Town / City<input id="address-city" value="'+esc(a.city||'')+'"></label><label>County<input id="address-county" value="'+esc(a.county||'')+'"></label><label>Postcode<input id="address-postcode" value="'+esc(a.postcode||'')+'"></label><label>Country code<input id="address-country" maxlength="2" value="'+esc(a.country_code||'GB')+'"></label><label><input type="checkbox" id="address-default" '+(a.is_default?'checked':'')+'> Make this the default '+(a.address_type==='billing'?'payment':'delivery')+' address</label></div><div class="actions"><button type="button" id="save-customer-address" data-address-id="'+esc(a.id||'')+'">Save address</button><button type="button" id="cancel-customer-address">Cancel</button></div></div>';
+}
+function openAddressForm(type,id){
+ const list=window.tradeflowCustomerAddresses||[];
+ const a=id?list.find(x=>x.id===id):{address_type:type,country_code:'GB'};
+ const box=$('customer-address-form-wrap');if(box)box.innerHTML=addressForm(a);
+}
+async function saveCustomerAddress(){
+ const b=$('save-customer-address');if(!b)return;setBusy(b,true,'Saving…');
+ try{
+  const type=$('address-type').value, line1=$('address-line1').value.trim(), city=$('address-city').value.trim(), postcode=$('address-postcode').value.trim();
+  if(!line1||!city||!postcode)throw Error('Address line 1, town/city and postcode are required.');
+  await api('/rest/v1/rpc/customer_upsert_address',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_address_id:b.dataset.addressId||null,p_address_type:type,p_recipient_name:$('address-recipient').value.trim()||null,p_company_name:$('address-company').value.trim()||null,p_line1:line1,p_line2:$('address-line2').value.trim()||null,p_city:city,p_county:$('address-county').value.trim()||null,p_postcode:postcode,p_country_code:($('address-country').value.trim()||'GB').toUpperCase(),p_is_default:$('address-default').checked})});
+  setMessage('Address saved.','success');await loadPortalData();
+ }catch(e){setMessage(e.message||String(e),'error');setBusy(b,false)}
+}
+async function deleteCustomerAddress(id){
+ if(!confirm('Remove this saved address?'))return;
+ try{await api('/rest/v1/rpc/customer_delete_address',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_address_id:id})});setMessage('Address removed.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}
+}
+async function defaultCustomerAddress(id){
+ try{await api('/rest/v1/rpc/customer_set_default_address',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_address_id:id})});setMessage('Default address updated.','success');await loadPortalData()}catch(e){setMessage(e.message||String(e),'error')}
+}
 function renderCustomerBankDetails(bankDetails){
  const box=$('customer-bank-details');if(!box)return;
  const has=Boolean(bankDetails?.has_details);
@@ -220,7 +252,7 @@ const acceptedPanel=$('accepted-sales-panel');if(acceptedPanel)acceptedPanel.hid
 }else{
   $('profile-list').textContent='Profile not available.';
 }
-$('address-list').innerHTML=rows(addresses,[{key:'address_type',label:'Type'},{key:'line1',label:'Address'},{key:'city',label:'City'},{key:'postcode',label:'Postcode'}],'No saved addresses.');renderCustomerBankDetails(bankDetails);renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
+window.tradeflowCustomerAddresses=Array.isArray(addresses)?addresses:[];renderCustomerAddresses(window.tradeflowCustomerAddresses);renderCustomerBankDetails(bankDetails);renderCustomerFulfilments(fulfilments);renderCustomerReturns(returns,items,orders);document.querySelectorAll('.buy-listing').forEach(b=>b.onclick=null);document.querySelectorAll('[data-pay-order-id]').forEach(b=>b.onclick=()=>payOrder(b.dataset.payOrderId));await loadCategories();restoreSellingJourney()}
 async function loadRequestFields(){const cat=$('request-category')?.value,box=$('request-fields');if(!box)return;if(!cat){box.innerHTML='';return}box.innerHTML='<div class="small">Loading customer information fields…</div>';try{const fields=await api('/rest/v1/rpc/customer_get_buying_category_fields?p_tenant_id='+encodeURIComponent(tenantId)+'&p_category_id='+encodeURIComponent(cat),{method:'GET'});if(!Array.isArray(fields)||!fields.length){box.innerHTML='<div class="small">No additional customer information fields are configured for this category.</div>';return}box.innerHTML=fields.map(f=>{const opts=Array.isArray(f.options)?f.options:[];let control='';if(['select','multiselect'].includes(f.field_type)){control='<select '+(f.field_type==='multiselect'?'multiple':'')+' data-field-id="'+esc(f.field_id)+'" data-field-type="'+esc(f.field_type)+'">'+(f.field_type==='select'?'<option value="">Select…</option>':'')+opts.map(o=>'<option value="'+esc(o.value)+'">'+esc(o.label||o.value)+'</option>').join('')+'</select>'}else if(f.field_type==='textarea'){control='<textarea rows="3" data-field-id="'+esc(f.field_id)+'" data-field-type="textarea"></textarea>'}else if(f.field_type==='boolean'){control='<input type="checkbox" data-field-id="'+esc(f.field_id)+'" data-field-type="boolean">'}else{const type=['number','currency','date','email','phone','url'].includes(f.field_type)?(f.field_type==='currency'?'number':f.field_type):'text';control='<input type="'+type+'" data-field-id="'+esc(f.field_id)+'" data-field-type="'+esc(f.field_type)+'">'}return '<label>'+esc(f.label)+(f.required_for_buying?' *':'')+control+'</label>'}).join('')}catch(e){box.innerHTML='<div class="small error">'+esc(e.message||String(e))+'</div>'}}
 function collectRequestFields(){return Array.from(document.querySelectorAll('#request-fields [data-field-id]')).map(el=>{let value;if(el.type==='checkbox')value=el.checked;else if(el.multiple)value=Array.from(el.selectedOptions).map(o=>o.value);else value=el.value.trim();return {field_id:el.dataset.fieldId,value}}).filter(x=>x.value!==''&&!(Array.isArray(x.value)&&!x.value.length))}
 async function submitBuyingRequest(){if(localStorage.getItem('tradeflow_subscriber_session'))return setMessage('Subscriber accounts cannot submit customer buying requests. Sign out of the business account and use a separate customer account to test this journey.','error');const notes=$('request-notes').value.trim(),title=$('request-title').value.trim(),cat=$('request-category').value;if(!cat)return setMessage('Select a buying category.','error');if(!title)return setMessage('Enter what you want to sell.','error');try{await api('/rest/v1/rpc/customer_submit_buying_request',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_notes:notes||null,p_items:[{category_id:cat,title,description:notes||null,quantity:1,fields:collectRequestFields()}]})});$('request-title').value='';$('request-notes').value='';await loadPortalData();location.hash='#selling';setMessage('Your item has been submitted for valuation. We are now reviewing it. If an automatic valuation is not available, it will move to manual valuation.','success')}catch(e){setMessage(e.message||String(e),'error')}}
@@ -277,6 +309,15 @@ document.addEventListener('click',e=>{const remove=e.target.closest?.('.basket-r
 window.addEventListener('tradeflow-auth-success',e=>handleAuthSuccess(e.detail));
 $('submit-request')?.addEventListener('click',submitBuyingRequest);$('request-category')?.addEventListener('change',loadRequestFields);
 $('request-return')?.addEventListener('click',requestReturn);
+document.addEventListener('click',e=>{
+ const addPay=e.target.closest?.('#add-payment-address');if(addPay){e.preventDefault();openAddressForm('billing');return}
+ const addDel=e.target.closest?.('#add-delivery-address');if(addDel){e.preventDefault();openAddressForm('shipping');return}
+ const edit=e.target.closest?.('.edit-customer-address');if(edit){e.preventDefault();openAddressForm(null,edit.dataset.addressId);return}
+ const del=e.target.closest?.('.delete-customer-address');if(del){e.preventDefault();deleteCustomerAddress(del.dataset.addressId);return}
+ const def=e.target.closest?.('.default-customer-address');if(def){e.preventDefault();defaultCustomerAddress(def.dataset.addressId);return}
+ if(e.target.closest?.('#cancel-customer-address')){e.preventDefault();$('customer-address-form-wrap').innerHTML='';return}
+ if(e.target.closest?.('#save-customer-address')){e.preventDefault();saveCustomerAddress();return}
+});
 $('save-account-bank-details')?.addEventListener('click',async()=>{
  const b=$('save-account-bank-details');setBusy(b,true,'Saving…');
  try{

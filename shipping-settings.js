@@ -9,6 +9,16 @@ async function api(path,opts={}){
  try{b=text?JSON.parse(text):null}catch{b=text}
  if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||'Request failed');return b;
 }
+async function testConnection(connectionId){
+ const r=await fetch(SUPABASE_URL+'/functions/v1/shipping-provider-test',{
+  method:'POST',
+  headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':key},
+  body:JSON.stringify({tenant_id:tenantId,connection_id:connectionId})
+ });
+ const text=await r.text();let b;try{b=text?JSON.parse(text):null}catch{b=text}
+ if(!r.ok||b?.ok!==true)throw Error(b?.message||b?.error||text||'Parcel2Go connection test failed');
+ return b;
+}
 function render(){
  const box=$('shipping-connections');const by=Object.fromEntries(connections.map(x=>[x.provider,x]));
  box.innerHTML='<div id="shipping-provider-list"></div>';
@@ -26,20 +36,39 @@ function openProvider(code){
  const p=catalog.find(x=>x.provider_code===code);if(!p)return;
  const box=$('shipping-provider-form'),fields=Array.isArray(p.required_fields)?p.required_fields:[];
  box.hidden=false;
- box.innerHTML='<div class="panel-subheading"><strong>'+esc(p.provider_name)+'</strong><span class="small">'+esc(p.setup_instructions||'Follow the provider setup instructions.')+'</span></div><div class="actions"><a href="'+esc(p.setup_url||p.documentation_url||p.website_url||'#')+'" target="_blank" rel="noopener">Open provider setup / documentation</a></div><div class="form-grid">'+fields.map(f=>'<label>'+esc(f.label)+(f.required?' *':'')+'<input id="shipping-field-'+esc(f.key)+'" type="'+(f.type==='password'?'password':'text')+'" '+(f.required?'required':'')+'></label>').join('')+'</div><div class="actions"><button id="shipping-save" type="button">Save securely</button></div><div id="shipping-provider-form-status" class="small"></div>';
+ box.innerHTML='<div class="panel-subheading"><strong>'+esc(p.provider_name)+'</strong><span class="small">'+esc(p.setup_instructions||'Follow the provider setup instructions.')+'</span></div><div class="actions"><a href="'+esc(p.setup_url||p.documentation_url||p.website_url||'#')+'" target="_blank" rel="noopener">Open provider setup / documentation</a></div><div class="form-grid">'+fields.map(f=>'<label>'+esc(f.label)+(f.required?' *':'')+'<input id="shipping-field-'+esc(f.key)+'" type="'+(f.type==='password'?'password':'text')+'" '+(f.required?'required':'')+'></label>').join('')+'</div><div class="actions"><button id="shipping-save" type="button">Save and test connection</button></div><div id="shipping-provider-form-status" class="small"></div>';
  $('shipping-save').onclick=()=>saveProvider(p);
  box.scrollIntoView({behavior:'smooth',block:'start'});
 }
 async function saveProvider(p){
- const status=$('shipping-provider-form-status');
+ const status=$('shipping-provider-form-status'),button=$('shipping-save');
  try{
   const credentials={};
   for(const f of(p.required_fields||[])){const e=$('shipping-field-'+f.key);if(f.required&&!e?.value.trim())throw Error('Enter '+f.label+'.');if(e?.value)credentials[f.key]=e.value.trim();}
-  status.textContent='Saving the connection details securely…';
-  const result=await api('/rest/v1/rpc/subscriber_save_shipping_provider_connection',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:p.provider_code,p_environment:$('shipping-environment').value,p_credentials:credentials,p_config:{display_name:p.provider_name}})});
-  status.textContent=result?.adapter_status==='active'?'Connection saved. Test it before using it.':'Connection saved securely. It will appear in label selection when its adapter is active and the connection has been tested.';
-  await load();
+  const clientId=credentials.api_client_id||'';
+  const clientSecret=credentials.api_client_secret||'';
+  if(p.provider_code==='parcel2go'){
+   if(!clientId||!clientSecret)throw Error('Enter the Parcel2Go API Client ID and API Client Secret.');
+   button.disabled=true;
+   status.textContent='Saving the Parcel2Go credentials securely…';
+   const result=await api('/rest/v1/rpc/subscriber_connect_shipping_provider',{method:'POST',body:JSON.stringify({
+    p_tenant_id:tenantId,
+    p_provider:'parcel2go',
+    p_environment:$('shipping-environment').value,
+    p_api_client_id:clientId,
+    p_api_client_secret:clientSecret
+   })});
+   status.textContent='Credentials saved securely. Testing Parcel2Go authentication…';
+   const test=await testConnection(result.connection_id);
+   status.textContent='Connected successfully to Parcel2Go '+(test.environment==='live'?'Live':'Sandbox')+'. Authentication passed; no shipment was created.';
+   await load();
+  }else{
+   const result=await api('/rest/v1/rpc/subscriber_save_shipping_provider_connection',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_provider:p.provider_code,p_environment:$('shipping-environment').value,p_credentials:credentials,p_config:{display_name:p.provider_name}})});
+   status.textContent=result?.adapter_status==='active'?'Connection saved. Test it before using it.':'Connection saved securely. It will appear in label selection when its adapter is active and the connection has been tested.';
+   await load();
+  }
  }catch(e){status.textContent=e.message||String(e)}
+ finally{button.disabled=false}
 }
 async function load(){
  try{

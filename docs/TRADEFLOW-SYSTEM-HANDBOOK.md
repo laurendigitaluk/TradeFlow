@@ -1086,3 +1086,26 @@ Relevant commits:
 - 3e488347ede1290a6dc8699d4995b23d3b676dfb — added startup diagnostics and cache-bumped the Buying dashboard controller to v57. A subsequent audit found that the Business Dashboard navigation still pointed to the Buying page with the previous HTML cache key `?v=58` after the Buying page itself had advanced to controller `v59`. This could cause navigation to restore a cached HTML document and make the user see the previous controller until a manual refresh. The navigation has now been synchronized to `?v=59`.
 
 Current state: Implemented in GitHub and syntax-verified; browser verification remains required. The latest cache-key synchronization commit is `6207f0ca4b028351ebee149598898a563ccf1f58`.
+
+
+## 25 September 2026 — Buying dashboard status/description rendering regression
+
+The next browser test showed that the previous Buying-dashboard repairs were not sufficient. A fresh audit of the current GitHub source and live Test Two data identified two separate frontend defects still present in main:
+
+1. Customer-supplied description parsing was still wrong. The Test Two buying_items.description stores literal \\n separators. The controller correctly converted those separators to real newline characters, but then incorrectly attempted to split the converted text using the literal \\n pattern again. The result was one long line, so the key/value parser treated the entire submission as a single field. The repair changes the second split to /\\n+/, after conversion, so Product type, Manufacturer, Model, Package, Condition, Missing items and Legal right to sell render as separate fields.
+2. The green Submitted status class had no CSS definition. requestStatusClass('submitted') already returned status-approved, but no loaded stylesheet defined .status-pill.status-approved. The browser therefore used the neutral base status-pill styling. Explicit status-pill colour classes have now been added for approved, review, offer and refused states.
+
+The live Test Two database was checked before the repair. The current Nikon request is BR-4C34C6F633, item BI-9D1C8F01FB, customer CUS-E82930637A58; both request and item are submitted, the item has quantity 1, the description contains the expected literal newline separators, and two media records are present. No database data, RLS policy, workflow transition or media record was changed.
+
+The page/controller cache keys were also advanced so the browser cannot reuse the previous repaired asset combination:
+- buying-dashboard.css v5 → v6
+- buying-dashboard.js v59 → v60
+- all three Business Dashboard Buying links v59 → v60
+
+Relevant commits:
+- 8e6dbea8964296afeccb2d0f378f8ee57aea8f25 — fix customer detail line parsing
+- c76d730df2f8eb823cea44d586781b07385bc2df — add Buying status-pill colour classes
+- 6a7af0a400996db0c1ff7ac7f9c2ff583621013b — cache-bust Buying page/controller assets to v6/v60
+- ccbbbf136c59a50cea1700a2b4d328e24b5147ad — synchronize Business Dashboard Buying navigation to v60
+
+Verification state: Implemented in GitHub; live DB verified; source-level logic verified. Browser verification is still required. Test One remains frozen.

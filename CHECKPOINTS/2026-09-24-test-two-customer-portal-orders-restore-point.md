@@ -77,3 +77,8 @@ The customer portal My Details section now contains editable payment bank detail
 ## Follow-up — customer basket and paid-only My Orders
 
 Retail products now remain in a customer basket before payment. Adding an item to the basket does not create a `retail_orders` record. Removing an item removes it from the basket without creating or retaining an order. Proceeding to payment creates the retail order and opens payment. `customer_get_orders` now returns only paid/paid-stage/completed/refunded order history, so unpaid or cancelled pre-payment orders do not appear in My Orders.
+
+
+## Follow-up — customer payment and delivery addresses / shop CTA
+
+Customers can now add, edit, remove and set default payment (billing) and delivery (shipping) addresses from My Details. Basket checkout uses the customer's default saved delivery and payment addresses when available. The public shop navigation CTA is labelled `Visit Shop` rather than `What We Sell`.

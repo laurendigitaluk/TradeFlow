@@ -1183,4 +1183,6 @@ The subscriber Buying dashboard now owns the Parcel2Go shipping handoff UI direc
 
 ## 24 September 2026 — Customer delivery-address diagnostic fix
 
-When a customer could enter a Delivery address but it would not save, trace the first failure boundary through the customer portal address form and the live `customer_upsert_address` RPC. The portal previously sent `address_type=shipping` for the visible Delivery option, while the integrated Parcel2Go shipping function queries `customer_addresses` using `address_type=delivery`. The minimal fix is in `customer-dashboard.js`: use `delivery` for the Delivery option and Add delivery address action. Do not change the shipping Edge Function to accept `shipping`; `delivery` is the established live contract. Browser verification remains pending.
+The live `public.customer_addresses.address_type` contract allows `primary`, `billing`, `shipping` and `other`; `delivery` is not a valid stored value. The customer-facing **Delivery address** label therefore maps internally to `address_type=shipping`.
+
+For the Test Two issue, `customer-dashboard.js` was corrected so the Delivery option and Add delivery address action use `shipping`. The integrated Parcel2Go Edge Function had the opposite stale lookup and was corrected from `delivery` to `shipping`, then redeployed as version 3. No schema change was made. Final browser verification is to request a Parcel2Go quote and confirm the existing customer shipping address is accepted.

@@ -864,3 +864,7 @@ The current Camerashack test tenant's previously uploaded logo and banner were r
 ## Website banner display correction — 24 September 2026
 
 The dedicated website banner is used as a compact horizontal branding area in the **What We Sell** title area, replacing the normal logo/title image slot. It is not a full-width strip beneath the site navigation. The Website Builder preview uses the same compact placement. The banner remains a subscriber-controlled branding asset and is separate from the homepage hero image.
+
+
+### Buying dashboard active/completed separation — 24 September 2026
+The Buying dashboard separates live customer requests from completed purchases. A buying item that has reached the purchased stage and has a paid acquisition is removed from the active request workspace, so valuation and offer controls are no longer presented as if action is still required. Completed purchases remain visible in a dedicated Completed purchases section for audit/reference. Closed requests are excluded from the active list.

@@ -4,13 +4,13 @@
  * otherwise the navigation script itself can make the page appear completely inert.
  */
 (()=>{
-  const sectionIds=['overview','orders','valuations','returns','profile'];
+  const sectionIds=['selling','orders','details'];
   const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
   const KEY_STORAGE='tradeflow_customer_publishable_key';
   const SESSION_STORAGE='tradeflow_customer_session';
   const tenantId=new URLSearchParams(location.search).get('tenant_id');
   const show=(id,updateHash=true)=>{
-    const target=sectionIds.includes(id)?id:'overview';
+    const target=sectionIds.includes(id)?id:'selling';
     const portal=document.getElementById('portal');
     if(!portal||portal.hidden)return false;
     sectionIds.forEach(sectionId=>{
@@ -38,7 +38,7 @@
     });
     window.addEventListener('hashchange',()=>show(location.hash.slice(1),false));
     const portal=document.getElementById('portal');
-    if(!show(location.hash.slice(1)||'overview',false)){
+    if(!show(location.hash.slice(1)||'selling',false)){
       document.querySelectorAll('a[href^="#"]').forEach(link=>link.classList.remove('active'));
     }
   };

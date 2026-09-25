@@ -92,3 +92,7 @@ Buying dashboard cache version is now 123.
 A regression was found while correcting the received-state display: the subscriber dashboard's `renderActions()` function had been removed from `buying-dashboard.js`, leaving the Actions panel permanently at **Loading current stage actions…** even though the database state was correct. The function has now been restored. The received state is green, shows retained shipping details and points to Inspection; the Inspection state is green and provides the inspection controls.
 
 The Customer Portal also contained stale accepted-offer copy stating that the business would now create the shipping label and instructions. That sentence belonged to the retired shipping flow and has been removed. The live customer stage/message remains authoritative for the current next step.
+
+
+## Runtime regression repair — 25 September 2026
+The Buying dashboard became frozen after the inspection CTA work because the newly restored `renderActions()` implementation contained a JavaScript syntax error. The live page consequently remained on Loading states. The script was rebuilt from the last known-good parent revision, with a clean renderActions implementation restored for Received → Inspection → Final Offer → Payment, while retaining the green live-item cards and Start inspection CTA. Syntax was verified before commit. Buying dashboard script cache is now v128.

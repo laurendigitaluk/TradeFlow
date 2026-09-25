@@ -26,6 +26,10 @@ function dispatchAuthSuccess(data){
   window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
  }
 }
+async function registerCustomer(accessToken,first,last){
+ const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/customer_register_for_tenant',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
+ const text=await response.text();if(!response.ok){let detail=text;try{const parsed=JSON.parse(text);detail=parsed.message||parsed.msg||parsed.error||text}catch{}throw Error(detail||'Customer registration could not be completed.')}return true;
+}
 async function signIn(){
  const email=$('auth-email')?.value.trim(),password=$('auth-password')?.value||'',button=$('auth-sign-in');
  if(!email||!password)return message('Enter your email and password.','error');
@@ -35,8 +39,13 @@ async function signIn(){
   const data=await authRequest('/auth/v1/token?grant_type=password',{email,password});
   if(!data?.access_token)throw Error('Supabase did not return a customer session.');
   saveSession(data);
+  let pending=null;try{pending=JSON.parse(localStorage.getItem('tradeflow_pending_customer_registration')||'null')}catch{}
+  if(pending?.tenant_id===tenantId&&pending?.email?.toLowerCase()===email.toLowerCase()){
+    await registerCustomer(data.access_token,pending.first_name,pending.last_name);
+    localStorage.removeItem('tradeflow_pending_customer_registration');
+  }
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error')}finally{busy(button,false)}
+ }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function signUp(){
  if(!tenantId)return message('Open the customer portal from the subscriber website.','error');
@@ -45,11 +54,15 @@ async function signUp(){
  busy(button,true,'Creating account…');
  try{
   localStorage.removeItem(SESSION_STORAGE);
+  localStorage.setItem('tradeflow_pending_customer_registration',JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
   const data=await authRequest('/auth/v1/signup',{email,password});
-  if(!data?.access_token)throw Error('Account created. Confirm your email if required, then sign in.');
+  if(!data?.access_token){
+    message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');
+    return;
+  }
   saveSession(data);
-  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/customer_register_for_tenant',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
-  const text=await response.text();if(!response.ok){let detail=text;try{const parsed=JSON.parse(text);detail=parsed.message||parsed.msg||parsed.error||text}catch{}throw Error(detail||'Customer registration could not be completed.')}
+  await registerCustomer(data.access_token,first,last);
+  localStorage.removeItem('tradeflow_pending_customer_registration');
   dispatchAuthSuccess(data);
  }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE);busy(button,false)}
 }

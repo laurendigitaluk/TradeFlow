@@ -1,0 +1,64 @@
+# Checkpoint — 2026-09-25 — Shipping Architecture Retirement and Current Test Two Flow
+
+## Current architecture
+
+TradeFlow no longer uses the Parcel2Go API/connected-provider shipping route for the current Buying workflow.
+
+The authoritative current shipping flow is:
+
+1. Subscriber opens **Settings → Shipping Settings**.
+2. Subscriber selects the shipping services they use from the TradeFlow shipping service catalogue.
+3. Selected services are saved in `tenant_shipping_services` and are available to the Buying shipping handoff.
+4. Subscriber uses the selected provider's own website/service and pays the provider directly.
+5. Subscriber returns to TradeFlow and uploads the shipping label and, where applicable, QR code.
+6. Subscriber records carrier/service, tracking number and customer instructions.
+7. TradeFlow publishes the shipping handoff against the existing acquisition/buying item.
+8. Customer receives the label/QR and confirms when the item has been sent.
+9. Subscriber sees **Item on its way** and confirms **item received**.
+10. Next stage is **Inspection**.
+
+TradeFlow does not create Parcel2Go quotes/orders, process shipping payments, or require Parcel2Go API credentials in this current flow.
+
+## Audit findings
+
+### GitHub current code
+- `shipping-settings.js` is already on the new service-catalogue model and contains no Parcel2Go integration logic.
+- `buying-dashboard.js` reads `tenant_shipping_services` and publishes the subscriber shipping handoff through the existing workflow.
+- Customer shipping-file access uses the existing private storage paths and signed URLs.
+- Legacy Parcel2Go Edge Function source still exists in the repository:
+  - `supabase/functions/parcel2go-subscriber-shipping/index.ts`
+  - `supabase/functions/parcel2go-customer-shipping/index.ts`
+  - `supabase/functions/shipping-provider-test/index.ts`
+- Historical Parcel2Go migrations remain in the repository. They are migration history and should not be deleted simply to rewrite history.
+- No current Shipping Settings frontend code was found that calls the legacy Parcel2Go functions.
+
+### Live Supabase state
+At the time of this checkpoint:
+- `shipping_provider_connections`: 1 row, the Camerashack tenant's legacy Parcel2Go Live connection.
+- `tenant_shipping_services`: 4 rows.
+- `shipping_service_catalog`: 20 rows.
+- `buying_item_shipping` automated rows: 0.
+- `buying_item_shipping` subscriber_override rows: 1.
+
+The single Parcel2Go connection is legacy state and is not used by the current manual shipping flow. Do not create new provider connections or automated shipping rows under the current architecture.
+
+## Documentation updated
+The current shipping architecture was added as the authoritative section to:
+- `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+- `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+
+Older dated Parcel2Go sections remain only as historical audit records and are explicitly superseded by the current architecture section.
+
+## Test Two workflow state
+The current Test Two item is using the subscriber-managed shipping handoff. Customer has confirmed dispatch. Subscriber UI should show:
+- green **Item on its way** state;
+- **Confirm item received** CTA;
+- **Next step: Inspection**;
+- Accepted Offer card next action: **Confirm item received — inspection next**.
+
+## Cleanup rule
+As Test Two continues, inspect each shipping-related screen/controller/RPC before changing it. Remove stale Parcel2Go-specific UI, hard-coded labels, branches and calls when encountered. Do not remove historical migrations or shared database structures without verifying that no current workflow depends on them.
+
+## Important continuity rule
+Current GitHub, current Supabase state, and this checkpoint are authoritative over older Parcel2Go instructions in prior checkpoints.

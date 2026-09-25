@@ -33,19 +33,3 @@ $('save-shipping-services').onclick=async()=>{
  }catch(e){status.textContent=e.message||String(e)}
  finally{button.disabled=false}
 };
-$('add-custom-service').onclick=async()=>{
- const status=$('custom-service-status'),name=$('custom-service-name').value.trim(),url=$('custom-service-url').value.trim();
- try{
-  if(!name)throw Error('Enter a service name.');
-  if(!/^https:\/\//i.test(url))throw Error('Enter a valid HTTPS shipping link.');
-  const code='custom_'+crypto.randomUUID();
-  const items=[...selected.map((x,i)=>({service_code:x.service_code,service_url:x.service_url,enabled:true,sort_order:i+1})),{service_code:code,service_name:name,service_url:url,enabled:true,sort_order:selected.length+1}];
-  await api('/rest/v1/shipping_service_catalog',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({service_code:code,service_name:name,service_url:url,service_type:'specialist',description:'Custom shipping provider',sort_order:9000+selected.length,active:true})});
-  await api('/rest/v1/rpc/subscriber_save_shipping_services',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_services:items})});
-  status.textContent='Custom shipping service added and selected.';
-  $('custom-service-name').value='';$('custom-service-url').value='';
-  await load();
- }catch(e){status.textContent=e.message||String(e)}
-};
-$('sign-out').onclick=()=>window.tradeflowSubscriberSignOut();
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();

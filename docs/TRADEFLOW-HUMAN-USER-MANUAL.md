@@ -960,3 +960,21 @@ Every customer has a customer credit account for the subscriber business. It sta
 
 ### Post-inspection decision flow correction — 25 September 2026
 Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.
+
+
+## Inventory — Add Product
+
+Inventory supports two distinct ways stock can enter the workspace:
+
+1. Purchased stock — created automatically from a completed Buying/Acquisition workflow.
+2. Manual Inventory stock — used when a business is adding existing physical stock that did not come through TradeFlow Buying.
+
+For manual stock, open Inventory → Add product and select:
+
+Manufacturer → Category → Product
+
+The selected product determines the product type/branch automatically. The title is pre-filled from the catalogue and can be edited. Complete the remaining inventory information, photographs and category-specific properties, then add the product.
+
+The Inventory product catalogue is independent of the Buying workflow. It uses the subscriber's selected master catalogue; it does not copy a Buying request or create a Buying transaction.
+
+Purchased items continue to enter Inventory through the completed purchase workflow and are not manually recreated.

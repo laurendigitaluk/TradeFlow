@@ -38,7 +38,7 @@ function customerUrl(extra){
 function customerCheckoutUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
 
- return 'customer-checkout.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&listing_id='+encodeURIComponent(listingId||'')+'&checkout_v=8';
+ return 'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&listing_id='+encodeURIComponent(listingId||'')+'&purchase=1';
 }
 function pageUrl(slug,extra){
  let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);

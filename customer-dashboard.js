@@ -26,5 +26,5 @@ async function loadPortal(){try{const ok=await profileCheck();if(!ok){saveSessio
 $('save-profile').onclick=async()=>{try{await rpc('customer_update_profile',{p_first_name:$('profile-first-name').value.trim(),p_last_name:$('profile-last-name').value.trim(),p_phone:$('profile-phone').value.trim()||null});message('Details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}};
 $('sign-out').onclick=()=>{saveSession(null);localStorage.removeItem('tradeflow_pending_customer_registration');showAuth(true);message('Signed out.','success');location.hash='';window.scrollTo(0,0);};
 window.tradeflowCustomerDashboardRefresh=loadPortal;
-window.addEventListener('tradeflow-auth-success',async()=>{await loadPortal()});
+window.addEventListener('tradeflow-auth-success',async(event)=>{if(event?.detail?.access_token)session=event.detail;else restore();await loadPortal()});
 restore();loadBrand();if(session?.access_token)loadPortal();else showAuth(true);

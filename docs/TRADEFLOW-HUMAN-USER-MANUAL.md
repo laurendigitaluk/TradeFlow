@@ -952,3 +952,7 @@ The current unified buying workflow is: customer confirms dispatch → subscribe
 
 ## 25 September 2026 — After inspection: trade-in decisions
 Once inspection is complete, there are three possible outcomes for a trade-in. If the agreed trade-in value is unchanged, use **Add to customer credits**; this credits the customer's Trade-in account and completes the acquisition into Inventory. If the inspection changes the value, enter the revised amount and use **Send revised final offer**; the customer must accept that revised offer before the transaction can be completed. If the item is not acceptable, use **Refuse trade-in**, which closes the trade-in. Do not use a bank transfer for an unchanged trade-in credit.
+
+
+## 25 September 2026 — Customer credit account
+Every customer has a customer credit account for the subscriber business. It starts at £0.00 and accepted unchanged trade-in values are added to it. The customer portal shows the current available credit. For an unchanged accepted trade-in, the customer's journey is Inspection → Payment/credit processing → Complete; there is no second final-offer acceptance step.

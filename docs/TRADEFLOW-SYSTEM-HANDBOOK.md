@@ -1154,3 +1154,7 @@ The current unified buying workflow is: customer confirms dispatch → subscribe
 
 ## 25 September 2026 — Post-inspection trade-in decision model
 After a passed inspection, TradeFlow must not automatically create or send a final offer when the accepted trade-in value remains unchanged. The subscriber decision is: **Add the accepted trade-in value to customer credits** when the value is unchanged; **Send revised final offer** only when inspection changes the value; or **Refuse trade-in** when the item is not acceptable. Adding credit records the customer credit, acquisition and Inventory asset and moves the buying item to `purchased`. A revised final offer moves the item to `final_offer_sent` and waits for the customer's response. A refusal closes the buying item as `offer_refused`. Bank-transfer payment remains the cash-purchase route; a trade-in at the accepted value is customer account credit, not a bank transfer.
+
+
+## 25 September 2026 — Customer credit account
+Trade-in customers now have a dedicated `customer_credit_accounts` account per subscriber business. Each existing customer was provisioned with a zero GBP balance and new customer registration provisions the account automatically. Accepted unchanged trade-in values increase the account balance through the server-side credit workflow. The customer portal displays the available credit and the selling journey presents an unchanged accepted trade-in as Payment rather than Final Offer.

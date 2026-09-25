@@ -135,3 +135,16 @@ Browser test the live Inventory page after GitHub Pages has deployed:
 **Live DB verified:** Yes
 
 **Browser verified:** Pending this final live test.
+
+
+## Post-deployment defect found and corrected
+
+The first browser deployment of the rebuilt Inventory UI exposed a separate JavaScript initialisation defect: `load()` called `waitForSubscriber()` but the function had not been defined in the rebuilt script. The screenshot showed the exact runtime error `waitForSubscriber is not defined`, leaving the Manufacturer selector at `Loading catalogue…`. This was not a catalogue or Supabase failure.
+
+The missing function has now been implemented. It waits for the existing subscriber authentication and tenant-context promises, obtains the authenticated subscriber session/key/tenant, and only then calls the dedicated Inventory catalogue RPC. Inventory script cache was bumped from v25 to v26.
+
+Correction commit: `131f09d261cbbe43aaa346ba0037a67f7b061ddb`
+
+Cache publication commit: `9611d096e0f2b03ef183104fee9d0087490d9bdf`
+
+The architecture remains unchanged: Inventory uses the master catalogue, not Buying catalogue data.

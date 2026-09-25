@@ -42,7 +42,16 @@ async function openShip(id,kind){
  }
  try{
   popup.document.open();
-  popup.document.write('<!doctype html><html><head><title>Shipping '+(kind==='label'?'Label':'QR Code')+'</title><style>body{margin:0;font-family:Arial,sans-serif;background:#f3f4f6;color:#17202a}.toolbar{position:sticky;top:0;z-index:2;display:flex;gap:8px;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid #d8dee5}.toolbar strong{margin-right:auto}.toolbar button{padding:8px 14px;border:1px solid #17202a;background:#17202a;color:#fff;border-radius:4px;cursor:pointer}.status{padding:30px;text-align:center}.preview{padding:24px;text-align:center}.preview img,.preview iframe{max-width:100%;width:100%;height:calc(100vh - 90px);border:0;background:#fff;object-fit:contain}</style></head><body><div class="toolbar"><strong>Shipping '+(kind==='label'?'Label':'QR Code')+'</strong><button onclick="window.print()">Print</button><button onclick="window.close()">Close</button></div><div id="status" class="status">Opening secure shipping file…</div></body></html>');
+  popup.document.write('<!doctype html><html><head><title>Shipping '+(kind==='label'?'Label':'QR Code')+'</title><style>'+
+   'html,body{margin:0;padding:0;background:#e5e7eb;color:#17202a;font-family:Arial,sans-serif}'+
+   '.toolbar{position:sticky;top:0;z-index:2;display:flex;gap:8px;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid #d8dee5}'+
+   '.toolbar strong{margin-right:auto}.toolbar button{padding:8px 14px;border:1px solid #17202a;background:#17202a;color:#fff;border-radius:4px;cursor:pointer}.toolbar button.secondary{background:#fff;color:#17202a}'+
+   '.status{padding:30px;text-align:center}.page{width:6in;height:4in;margin:24px auto;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.16)}'+
+   '.page img,.page iframe{display:block;width:6in;height:4in;max-width:6in;max-height:4in;border:0;object-fit:contain;background:#fff}'+
+   'body.a4 .page{width:6in;height:4in;margin:24px 0 0 24px;box-shadow:0 2px 12px rgba(0,0,0,.16)}'+
+   '@page{size:6in 4in;margin:0}@media print{html,body{background:#fff!important}.toolbar{display:none!important}.page{width:6in!important;height:4in!important;margin:0!important;box-shadow:none!important}.page img,.page iframe{width:6in!important;height:4in!important;max-width:6in!important;max-height:4in!important}body.a4 .page{width:6in!important;height:4in!important;margin:0!important}}'+
+   'body.a4{background:#fff}body.a4 .page{}'+
+   '</style></head><body><div class="toolbar"><strong>Shipping '+(kind==='label'?'Label':'QR Code')+'</strong><button onclick="printLabel(false)">Print 6×4</button><button class="secondary" onclick="printLabel(true)">Print on A4</button><button class="secondary" onclick="window.close()">Close</button></div><div id="status" class="status">Opening secure shipping file…</div><script>function printLabel(a4){document.body.classList.toggle("a4",!!a4);var s=document.createElement("style");s.id="print-size";s.textContent="@page{size:"+(a4?"A4":"6in 4in")+";margin:"+(a4?"0":"0")+"}";var old=document.getElementById("print-size");if(old)old.remove();document.head.appendChild(s);window.print();}</script></body></html>');
   popup.document.close();
 
   const rows=await rpc('customer_get_pre_acquisition_shipping');
@@ -67,11 +76,10 @@ async function openShip(id,kind){
   }
 
   const cleanUrl=String(fileUrl).split('?')[0].toLowerCase();
-  const isImage=/\\.(png|jpe?g|gif|webp)$/i.test(cleanUrl);
-  const isPdf=/\\.pdf$/i.test(cleanUrl);
+  const isImage=/\.(png|jpe?g|gif|webp)$/i.test(cleanUrl);
   const content=isImage
-   ?'<div class="preview"><img src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" alt="Shipping '+(kind==='label'?'label':'QR code')+'"></div>'
-   :'<div class="preview"><iframe src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" title="Shipping '+(kind==='label'?'label':'QR code')+'"></iframe></div>';
+   ?'<div class="page"><img src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" alt="Shipping '+(kind==='label'?'label':'QR code')+'"></div>'
+   :'<div class="page"><iframe src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" title="Shipping '+(kind==='label'?'label':'QR code')+'"></iframe></div>';
   popup.document.getElementById('status').outerHTML=content;
   popup.focus();
  }catch(e){

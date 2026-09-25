@@ -64,7 +64,7 @@ async function signUp(){
   await registerCustomer(data.access_token,first,last);
   localStorage.removeItem('tradeflow_pending_customer_registration');
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE);busy(button,false)}
+ }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function restoreExistingSession(){
  const raw=localStorage.getItem(SESSION_STORAGE);

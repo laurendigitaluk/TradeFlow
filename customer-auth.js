@@ -15,7 +15,7 @@ async function authRequest(path,body){
  if(!response.ok)throw Error(data?.msg||data?.message||data?.error_description||data?.error||text||'Authentication request failed.');
  return data;
 }
-function saveSession(data){localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));localStorage.setItem(CHECKOUT_SESSION_STORAGE,JSON.stringify(data));}
+function saveSession(data){if(data?.access_token)localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));else localStorage.removeItem(SESSION_STORAGE);}
 function revealPortal(){
  const auth=$('auth-panel'),portal=$('portal');
  if(auth)auth.hidden=true;
@@ -70,7 +70,7 @@ async function signUp(){
  }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function restoreExistingSession(){
- const raw=localStorage.getItem(document.body?.dataset?.authPassive==='true'?CHECKOUT_SESSION_STORAGE:SESSION_STORAGE);
+ const raw=localStorage.getItem(SESSION_STORAGE);
  if(!raw)return;
  try{
   let data=JSON.parse(raw);

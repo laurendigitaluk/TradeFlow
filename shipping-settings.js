@@ -14,8 +14,9 @@ async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
   $('business-name').textContent=a.tenants?.[tenantId]||'Shipping Settings';
-  catalog=await api('/rest/v1/shipping_service_catalog?select=service_code,service_name,service_url,service_type,description,sort_order&active=eq.true&order=sort_order,service_name');
-  selected=await api('/rest/v1/tenant_shipping_services?select=service_code,service_name,service_url,enabled,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&enabled=eq.true&order=sort_order,service_name');
+  const settings=await api('/rest/v1/rpc/subscriber_get_shipping_service_settings',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});
+  catalog=Array.isArray(settings?.catalog)?settings.catalog:[];
+  selected=Array.isArray(settings?.selected)?settings.selected:[];
   render();
  }catch(e){$('message').textContent=e.message||String(e);$('message').className='small error'}
 }

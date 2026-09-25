@@ -86,3 +86,9 @@ Live Supabase verification confirmed the receive action **did succeed**: the Tes
 The apparent failure was a subscriber UI bug. The `received` render branch was incorrectly displaying the old **Confirm item received** button and did not render the shipping details. It has been changed to a green **Item received** state with the existing shipping details retained and **Next step: Inspection**, with no repeat receive button. Customer Portal already derives its stage/message from `customer_get_selling_status`, whose live result for `received` is **The business has received your item. It is waiting for inspection.**
 
 Buying dashboard cache version is now 123.
+
+
+## Follow-up UI audit — 25 September 2026
+A regression was found while correcting the received-state display: the subscriber dashboard's `renderActions()` function had been removed from `buying-dashboard.js`, leaving the Actions panel permanently at **Loading current stage actions…** even though the database state was correct. The function has now been restored. The received state is green, shows retained shipping details and points to Inspection; the Inspection state is green and provides the inspection controls.
+
+The Customer Portal also contained stale accepted-offer copy stating that the business would now create the shipping label and instructions. That sentence belonged to the retired shipping flow and has been removed. The live customer stage/message remains authoritative for the current next step.

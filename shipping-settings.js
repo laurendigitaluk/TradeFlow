@@ -34,3 +34,6 @@ $('save-shipping-services').onclick=async()=>{
  }catch(e){status.textContent=e.message||String(e)}
  finally{button.disabled=false}
 };
+
+$('sign-out').onclick=()=>window.tradeflowSubscriberSignOut();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',load,{once:true});else load();

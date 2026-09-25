@@ -77,3 +77,16 @@ Expected result:
 - No order is created until the customer actually continues with payment.
 
 Do not alter Test One.
+
+
+## Additional root cause found after retest
+
+The public website HTML was still loading `public-site.js?v=71`. The contents of `public-site.js` had been changed to send Buy buttons to `customer-checkout.html`, but the script URL/version had not been changed. A browser could therefore continue using the previously cached v71 JavaScript, whose Buy button still followed the older customer-dashboard route.
+
+Final routing/cache fix:
+
+- Commit `065cfc1d603e5d8b8bec8692a7b9ce713577c4fc`
+- `public-site.html` now loads `public-site.js?v=72`.
+- The freshly loaded v72 script generates the checkout URL with tenant ID, listing ID and `checkout_v=5`.
+
+This is the primary explanation for the observed behaviour where clicking **Buy this item** continued to open the customer login page even after the checkout code itself had been corrected.

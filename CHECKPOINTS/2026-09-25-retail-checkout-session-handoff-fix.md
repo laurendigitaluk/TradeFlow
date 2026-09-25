@@ -169,3 +169,28 @@ Commits:
 - `9a148edbf651d88ff3b8473dee77cd9e1d9d6ca2` — customer portal auth cache publication
 
 This is intended as the architectural correction rather than another checkout-specific handoff patch. Test One remains frozen and no retail order should be created merely by opening Checkout.
+
+
+## Standalone checkout route retired — 2026-09-26
+
+Repeated live testing showed that the standalone `customer-checkout.html` route continued to display the sign-in screen even when the Customer Portal was authenticated in the same browser. A new product reproduced the issue, ruling out the previous trade-in/buy-back hypothesis.
+
+The standalone checkout route has therefore been retired rather than patched again. The purchase screen is now part of the authenticated Customer Portal itself:
+
+**Public product → Customer Portal with listing_id → authenticated portal → Complete your purchase → Stripe/internet payment or customer credit.**
+
+Changes:
+- Buy this item now opens `customer-dashboard.html?tenant_id=...&listing_id=...&purchase=1`.
+- Customer Portal owns the authenticated session and the purchase screen uses the same in-memory authenticated session and RPC layer.
+- New `customer-purchase.js` handles listing, addresses, customer credit, order creation and payment selection inside the portal.
+- Removed the old `customer-checkout.html` and `customer-checkout.js` route completely.
+- Removed remaining `tradeflow_checkout_session` storage logic.
+- Test One remains outside this route and is not changed.
+
+Commits for this architectural change:
+- `97f656987fbd8ff67adab6fda6c4c92eed72bb2d` — integrated purchase module
+- `4d228a4667eec1cb25b0d2d1784e15dd2dac5c78` — purchase UI
+- `9dc1624be0a93a7414cd68ecc603d5eac98e3cf7` — authenticated portal purchase routing
+- `fc7bc36a23b894312749c4e17012b1ace76237bd` — public Buy routing
+- `7f7d9b3dc73635194b7eade13f4ef70d72dc72b8` — public-site cache publication
+- `75ea89ef4ef065a250d55a28b15a7fd538a153db` / `bc7551d9aa0220f98549846a0ea97ac7516250c` — obsolete checkout route deletion

@@ -1484,3 +1484,7 @@ The subscriber Buying workspace now treats `final_offer_required` as a **decisio
 
 ### 25 September 2026 — Customer credit account and payment-stage correction
 The customer-facing journey now maps an accepted unchanged trade-in to the Payment stage while the subscriber retains the internal `final_offer_required` decision point. A dedicated customer credit account is provisioned per customer/business. Verify both the subscriber credit action and the customer portal balance before marking Test Two complete.
+
+
+### Post-inspection decision flow correction — 25 September 2026
+Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.

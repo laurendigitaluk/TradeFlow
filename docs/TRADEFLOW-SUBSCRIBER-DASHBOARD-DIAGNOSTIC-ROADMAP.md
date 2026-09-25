@@ -1476,3 +1476,7 @@ The Sales Channels foundation is part of the Test One baseline. The physical Inv
 ### Verification language
 
 Use these states precisely: **Implemented in GitHub**, **Live DB verified**, **Browser verified**, and **Checkpointed**. Do not call something browser verified unless it has actually been exercised in the browser.
+
+
+### 25 September 2026 — Post-inspection decision correction
+The subscriber Buying workspace now treats `final_offer_required` as a **decision point**, not an automatic instruction to send a final offer. The UI provides: **Add accepted value to customer credits**, **Send revised final offer** (only when the value changes), and **Refuse trade-in**. The credit path is server-side and creates the trade-in transaction, customer ledger credit, acquisition/acquisition item and Inventory asset before moving the buying item to `purchased`. The revised-offer path continues to `final_offer_sent`; the refusal path closes as `offer_refused`. Browser code must not duplicate these financial records.

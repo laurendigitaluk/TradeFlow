@@ -147,3 +147,25 @@ The intended Test Two path is now:
 Customer Portal signed in → Visit Shop → Nikon COOLPIX P1100 → Buy this item → Checkout opens the authenticated purchase screen.
 
 Test One remains frozen. No retail order is created by opening Checkout.
+
+
+## Definitive session architecture correction — 2026-09-25
+
+A new product was created and published and the customer still reached Checkout with **Sign in to continue** while the Customer Portal in the same browser showed the authenticated customer. This ruled out the earlier hypothesis that the problem was caused by the customer buying back the same item they had previously sold.
+
+The earlier dedicated `tradeflow_checkout_session` handoff introduced an unnecessary second customer-session state. That was replaced with a single canonical authenticated customer session:
+
+- `tradeflow_customer_session` is now the sole session source for both Customer Portal and Checkout.
+- `customer-auth.js` no longer writes or restores a separate checkout session.
+- `customer-checkout.js` restores only the canonical customer session.
+- Customer Portal and Checkout now use the same current customer-auth script version.
+- Checkout cache: `customer-auth.js?v=14`, `customer-checkout.js?v=9`.
+- Customer Portal auth cache: `customer-auth.js?v=14`.
+
+Commits:
+- `589ee8a0986faa5fa620c9a6ee552b3f98fede97` — canonical customer session in customer-auth.js
+- `f5b813f36e148607388d039ecc7eee96b42d9a70` — canonical customer session in checkout
+- `fc0801378b48e7f1fac091cefa7b42d356c87502` — checkout cache publication
+- `9a148edbf651d88ff3b8473dee77cd9e1d9d6ca2` — customer portal auth cache publication
+
+This is intended as the architectural correction rather than another checkout-specific handoff patch. Test One remains frozen and no retail order should be created merely by opening Checkout.

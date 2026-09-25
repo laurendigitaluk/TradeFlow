@@ -47,7 +47,7 @@ async function openShip(id,kind){
    '.toolbar{position:sticky;top:0;z-index:2;display:flex;gap:8px;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid #d8dee5}'+
    '.toolbar strong{margin-right:auto}.toolbar button{padding:8px 14px;border:1px solid #17202a;background:#17202a;color:#fff;border-radius:4px;cursor:pointer}.toolbar button.secondary{background:#fff;color:#17202a}'+
    '.status{padding:30px;text-align:center}.page{width:4in;height:6in;margin:24px auto;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.16)}'+
-   '.page img,.page iframe{display:block;width:4in;height:6in;max-width:4in;max-height:6in;border:0;object-fit:contain;background:#fff}'+
+   '.page img,.page iframe{display:block;width:6in;height:4in;max-width:none;max-height:none;border:0;background:#fff;object-fit:fill;transform:rotate(90deg);transform-origin:center center}'+
    'body.a4 .page{width:4in;height:6in;margin:0;box-shadow:0 2px 12px rgba(0,0,0,.16)}'+
    '@page{size:4in 6in;margin:0}@media print{html,body{background:#fff!important}.toolbar{display:none!important}.page{width:4in!important;height:6in!important;margin:0!important;box-shadow:none!important}.page img,.page iframe{width:4in!important;height:6in!important;max-width:6in!important;max-height:4in!important}body.a4 .page{width:4in!important;height:6in!important;margin:0!important}}'+
    'body.a4{background:#fff}body.a4 .page{}'+

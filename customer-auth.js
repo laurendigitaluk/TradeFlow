@@ -2,6 +2,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
+const CHECKOUT_SESSION_STORAGE='tradeflow_checkout_session';
 const tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id');
 let authReadyResolve;
 window.tradeflowCustomerAuthReady=new Promise(resolve=>{authReadyResolve=resolve});
@@ -14,7 +15,7 @@ async function authRequest(path,body){
  if(!response.ok)throw Error(data?.msg||data?.message||data?.error_description||data?.error||text||'Authentication request failed.');
  return data;
 }
-function saveSession(data){localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));}
+function saveSession(data){localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));localStorage.setItem(CHECKOUT_SESSION_STORAGE,JSON.stringify(data));}
 function revealPortal(){
  const auth=$('auth-panel'),portal=$('portal');
  if(auth)auth.hidden=true;
@@ -37,7 +38,7 @@ async function signIn(){
  if(!email||!password)return message('Enter your email and password.','error');
  busy(button,true,'Signing in…');
  try{
-  localStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(SESSION_STORAGE);localStorage.removeItem(CHECKOUT_SESSION_STORAGE);
   const data=await authRequest('/auth/v1/token?grant_type=password',{email,password});
   if(!data?.access_token)throw Error('Supabase did not return a customer session.');
   saveSession(data);
@@ -47,7 +48,7 @@ async function signIn(){
     localStorage.removeItem('tradeflow_pending_customer_registration');
   }
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
+ }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE);localStorage.removeItem(CHECKOUT_SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function signUp(){
  if(!tenantId)return message('Open the customer portal from the subscriber website.','error');
@@ -69,7 +70,7 @@ async function signUp(){
  }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function restoreExistingSession(){
- const raw=localStorage.getItem(SESSION_STORAGE);
+ const raw=localStorage.getItem(document.body?.dataset?.authPassive==='true'?CHECKOUT_SESSION_STORAGE:SESSION_STORAGE);
  if(!raw)return;
  try{
   let data=JSON.parse(raw);

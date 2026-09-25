@@ -1158,3 +1158,7 @@ After a passed inspection, TradeFlow must not automatically create or send a fin
 
 ## 25 September 2026 — Customer credit account
 Trade-in customers now have a dedicated `customer_credit_accounts` account per subscriber business. Each existing customer was provisioned with a zero GBP balance and new customer registration provisions the account automatically. Accepted unchanged trade-in values increase the account balance through the server-side credit workflow. The customer portal displays the available credit and the selling journey presents an unchanged accepted trade-in as Payment rather than Final Offer.
+
+
+### Post-inspection decision flow correction — 25 September 2026
+Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.

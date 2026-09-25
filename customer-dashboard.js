@@ -2,7 +2,7 @@ const tradeflowParams=new URLSearchParams(location.search);
 const tradeflowReferrer=document.referrer?new URL(document.referrer):null;
 const tradeflowFromProduct=!!tradeflowReferrer&&tradeflowReferrer.pathname.endsWith('/public-site.html')&&['product'].includes(tradeflowReferrer.searchParams.get('page'));
 const tradeflowListingId=tradeflowParams.get('listing_id')||(tradeflowFromProduct?(tradeflowReferrer.searchParams.get('listing')||tradeflowReferrer.searchParams.get('listing_id')):'');
-if(tradeflowListingId){const tradeflowTenantId=tradeflowParams.get('tenant_id')||(tradeflowFromProduct?tradeflowReferrer.searchParams.get('tenant_id'):'')||localStorage.getItem('tradeflow_customer_tenant_id')||'';if(tradeflowTenantId)localStorage.setItem('tradeflow_customer_tenant_id',tradeflowTenantId);window.location.href='customer-checkout.html?tenant_id='+encodeURIComponent(tradeflowTenantId)+'&listing_id='+encodeURIComponent(tradeflowListingId)+'&checkout_v=5';}
+if(tradeflowListingId){const tradeflowTenantId=tradeflowParams.get('tenant_id')||(tradeflowFromProduct?tradeflowReferrer.searchParams.get('tenant_id'):'')||localStorage.getItem('tradeflow_customer_tenant_id')||'';if(tradeflowTenantId)localStorage.setItem('tradeflow_customer_tenant_id',tradeflowTenantId);window.location.href='customer-checkout.html?tenant_id='+encodeURIComponent(tradeflowTenantId)+'&listing_id='+encodeURIComponent(tradeflowListingId)+'&checkout_v=6';}
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';

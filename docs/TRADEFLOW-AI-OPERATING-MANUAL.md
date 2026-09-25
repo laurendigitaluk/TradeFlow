@@ -1258,3 +1258,7 @@ Do not use the old generic `final_offer_required` UI as an instruction to send a
 
 ## 25 September 2026 — Customer credit account
 Use `customer_credit_accounts` as the customer-facing stored balance for trade-in credit. The balance is updated server-side by `subscriber_credit_trade_in`; browser code must not alter balances directly. `customer_get_credit_account` exposes the authenticated customer's balance. Do not treat an unchanged accepted trade-in as a revised final offer; the customer journey moves from Inspection to Payment/credit processing.
+
+
+### Post-inspection decision flow correction — 25 September 2026
+Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.

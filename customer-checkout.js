@@ -26,6 +26,6 @@ async function pay(){const button=$('pay-button');button.disabled=true;button.te
 async function start(){if(started)return;started=true;try{if(!(await restoreAndValidateSession())){$('auth-panel').hidden=false;$('portal').hidden=true;return}$('auth-panel').hidden=true;$('portal').hidden=false;await loadListing();renderProduct();await loadCustomer();msg('Review your order and choose a payment method.')}catch(e){started=false;msg(e.message||String(e),'error')}}
 window.tradeflowHandleCustomerAuthSuccess=async data=>{session=data;localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));try{sessionStorage.setItem(SESSION_STORAGE,JSON.stringify(data))}catch{}$('auth-panel').hidden=true;$('portal').hidden=false;started=false;await start()};
 $('pay-button').onclick=pay;
-async function boot(){try{if(window.tradeflowCustomerAuthReady)await window.tradeflowCustomerAuthReady}catch{}await start()}
+async function boot(){restore();if(session?.access_token){$('auth-panel').hidden=true;$('portal').hidden=false}await start()}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot()
 })();

@@ -33,7 +33,11 @@ function customerUrl(extra){
  }
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
  const base='customer-dashboard.html';
- return extra?base+'&'+extra:base;
+ return extra?base+'?'+extra:base;
+}
+function customerCheckoutUrl(listingId){
+ if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
+ return 'customer-checkout.html?listing_id='+encodeURIComponent(listingId||'');
 }
 function pageUrl(slug,extra){
  let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);
@@ -298,7 +302,7 @@ function renderProductPage(site,listings){
    ? '<div class="product-gallery-main"><figure><img src="'+esc(mainMedia.signedUrl||'')+'" alt="'+esc(mainMedia.original_filename||item.title||'Product')+'" loading="eager"></figure></div>'+
      (thumbnailMedia.length?'<div class="product-gallery-thumbs">'+thumbnailMedia.map(m=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="lazy"></figure>').join('')+'</div>':'')
    : '<div class="product-image-empty">No product photograph is currently available.</div>';
- const buyUrl=customerUrl('listing_id='+encodeURIComponent(item.listing_id));
+ const buyUrl=customerCheckoutUrl(item.listing_id);
  const retailCondition=String(item.listing_data?.condition||'').trim();
  const conditionLabel=retailCondition?retailCondition.replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase()):'Not specified';
  const shipping=item.listing_data?.shipping||{};

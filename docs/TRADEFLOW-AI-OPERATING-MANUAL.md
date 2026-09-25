@@ -1262,3 +1262,14 @@ Use `customer_credit_accounts` as the customer-facing stored balance for trade-i
 
 ### Post-inspection decision flow correction — 25 September 2026
 Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.
+
+
+## Inventory catalogue architecture correction — 25 September 2026
+
+The Inventory product-entry path has been corrected at the architecture level. Inventory is a physical-stock workspace and must not populate its Add Product controls from the buying-only tenant_buying_products path. The authoritative product source for direct Inventory creation is the tenant's selected master catalogue, exposed through get_inventory_product_catalogue(p_tenant_id). The operator flow is Manufacturer → Category → Product; the product determines the tenant category/branch mapping automatically.
+
+The database now records inventory_assets.catalogue_product_id for directly catalogued stock. Manual Inventory creation uses metadata.source = manual_inventory. The existing acquisition boundary remains intact for purchased stock: acquisition-linked Inventory assets still require a completed acquisition, payment/trade-in completion and the existing workflow authority. The Inventory creation guard now supports the two explicit creation paths rather than rejecting every non-acquisition asset.
+
+This resolves the previous architectural mistake where Inventory was made dependent on the Buying catalogue implementation and tenant buying categories. It is not a cache or browser patch.
+
+Verification: live Supabase contains 261 active selected catalogue products for Camerashack across 3 manufacturers; the new Inventory catalogue RPC returns those 261 products for an authorised tenant user. A rollback-only authenticated INSERT test confirmed the new manual path is accepted when explicitly marked manual_inventory, while an unmarked direct INSERT remains blocked.

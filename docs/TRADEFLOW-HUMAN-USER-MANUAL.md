@@ -956,3 +956,7 @@ Once inspection is complete, there are three possible outcomes for a trade-in. I
 
 ## 25 September 2026 — Customer credit account
 Every customer has a customer credit account for the subscriber business. It starts at £0.00 and accepted unchanged trade-in values are added to it. The customer portal shows the current available credit. For an unchanged accepted trade-in, the customer's journey is Inspection → Payment/credit processing → Complete; there is no second final-offer acceptance step.
+
+
+### Post-inspection decision flow correction — 25 September 2026
+Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.

@@ -2,7 +2,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
-const tenantId=new URLSearchParams(location.search).get('tenant_id');
+const tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id');
 const $=id=>document.getElementById(id);
 const message=(text,type='')=>{const e=$('customer-message');if(e){e.textContent=text;e.className=type}};
 const busy=(button,value,label)=>{if(!button)return;button.disabled=value;if(value){button.dataset.authLabel=button.textContent;if(label)button.textContent=label}else if(button.dataset.authLabel)button.textContent=button.dataset.authLabel};

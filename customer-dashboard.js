@@ -1,3 +1,5 @@
+const tradeflowListingId=new URLSearchParams(location.search).get('listing_id');
+if(tradeflowListingId){const tradeflowTenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id')||'';if(tradeflowTenantId)localStorage.setItem('tradeflow_customer_tenant_id',tradeflowTenantId);window.location.href='customer-checkout.html?tenant_id='+encodeURIComponent(tradeflowTenantId)+'&listing_id='+encodeURIComponent(tradeflowListingId)+'&checkout_v=5';}
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';

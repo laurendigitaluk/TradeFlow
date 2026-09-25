@@ -1488,3 +1488,12 @@ The customer-facing journey now maps an accepted unchanged trade-in to the Payme
 
 ### Post-inspection decision flow correction — 25 September 2026
 Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.
+
+
+## Inventory catalogue architecture repair — 25 September 2026
+
+Problem: Inventory Add Product had been wired directly to the Buying catalogue implementation (tenant_buying_products and Buying-oriented category loading). This created a false dependency between direct Inventory stock entry and the Buying workflow. The Inventory database trigger also correctly protected acquisition-created stock, but the UI presented a generic Add Product action without a corresponding authorised manual-creation path.
+
+Resolution: Inventory now loads its product hierarchy through the dedicated get_inventory_product_catalogue() RPC backed by tenant_catalogue_selections and the master catalogue. The UI sequence is Manufacturer → Category → Product, with branch/product type derived automatically. Manual assets are explicitly marked manual_inventory and require an authenticated subscriber user with Inventory management permission. Acquisition-linked assets retain the existing completed-purchase guard.
+
+Verification: Camerashack catalogue: 261 active selected products, 3 manufacturers. The new RPC returns 261 products under an authenticated tenant context. Authenticated rollback testing confirmed the manual creation boundary and confirmed unmarked direct creation remains rejected.

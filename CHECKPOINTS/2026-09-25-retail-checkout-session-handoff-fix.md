@@ -118,3 +118,32 @@ Camerashack → Visit Shop → Nikon COOLPIX P1100 → Buy this item → Checkou
 For an already authenticated customer, Checkout must open the purchase screen directly. The sign-in form should only appear when no customer session exists.
 
 Test One remains frozen. No retail order should be created by merely opening Checkout.
+
+
+## Final session-handoff repair before Test Two purchase continuation — 2026-09-25
+
+The fresh-browser test proved customer authentication itself works, but the signed-in Customer Portal still led to Checkout showing `Sign in to continue`. The final repair separates the authenticated customer session from the checkout handoff while retaining the normal customer session.
+
+Changes:
+- `customer-auth.js` commit `727b8510b7c23859e7f1053af0290004fde8a09a`
+  - Maintains `tradeflow_checkout_session` alongside `tradeflow_customer_session` after successful customer authentication.
+  - On passive checkout pages, restores the dedicated checkout handoff session.
+  - Clears both session records on authentication failure/sign-out paths.
+- `customer-dashboard.js` commit `41bb996ed949746e37ca64502bdaf893a58bbceb`
+  - Customer Portal save/sign-out now synchronizes the dedicated checkout handoff session.
+- `public-site.js` commit `938a9d519eb24bcf14393933065d5b207e37d088`
+  - Buy this item explicitly copies the authenticated customer session into `tradeflow_checkout_session` before navigating to Checkout.
+  - Checkout URL version advanced to `checkout_v=7`.
+- `customer-checkout.js` commit `b0636fdf5bbcb4963c526b38491b4753ff993593`
+  - Reads the dedicated checkout handoff first, then retains the existing session fallbacks.
+- `customer-checkout.html` commit `c4c6e1f4002779137230324bd3a4592e71bc1fcb`
+  - Bumped customer-auth to v13 and checkout script to v8.
+- `public-site.html` commit `b5e7f2302884ac43c2d008775ecb99aea7987e96`
+  - Bumped public-site JavaScript cache.
+- `customer-dashboard.html` commit `c71f77872a9eb33998dbbf58dd59df9e5f8659af`
+  - Bumped customer dashboard/auth assets.
+
+The intended Test Two path is now:
+Customer Portal signed in → Visit Shop → Nikon COOLPIX P1100 → Buy this item → Checkout opens the authenticated purchase screen.
+
+Test One remains frozen. No retail order is created by opening Checkout.

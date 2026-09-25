@@ -96,3 +96,7 @@ The Customer Portal also contained stale accepted-offer copy stating that the bu
 
 ## Runtime regression repair — 25 September 2026
 The Buying dashboard became frozen after the inspection CTA work because the newly restored `renderActions()` implementation contained a JavaScript syntax error. The live page consequently remained on Loading states. The script was rebuilt from the last known-good parent revision, with a clean renderActions implementation restored for Received → Inspection → Final Offer → Payment, while retaining the green live-item cards and Start inspection CTA. Syntax was verified before commit. Buying dashboard script cache is now v128.
+
+
+## 25 September 2026 — Received → Inspection repair
+Live Test Two exposed a workflow sequencing defect: the inspection form was rendered while the database item remained at `received`, but `subscriber_complete_buying_item_inspection` correctly requires the item to already be at `inspection`. The existing `subscriber_start_buying_item_inspection(p_tenant_id,p_buying_item_id)` RPC is now wired to the Start inspection CTA. It transitions the physical item master record from `received` to `inspection`, reloads the dashboard, and then presents the inspection controls. The inspection completion RPC remains responsible for moving accepted inspections to `final_offer_required`. Dashboard cache is v129.

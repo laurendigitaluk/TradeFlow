@@ -6,6 +6,17 @@ function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message
 async function api(path,options={}){if(!key)throw Error('TradeFlow subscriber Supabase key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 async function storage(path,options={}){const h=new Headers(options.headers||{});h.set('apikey',key);if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}/storage/v1${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.error||text||`Storage HTTP ${r.status}`);return b}
 let rows=[],categories=[],branches=[],catalogueProducts=[],categoryFields=[],media=[];
+async function waitForSubscriber(){
+  if(window.tradeflowSubscriberAuthReady)await window.tradeflowSubscriberAuthReady;
+  if(window.tradeflowSubscriberTenantReady)await window.tradeflowSubscriberTenantReady;
+  const auth=window.tradeflowSubscriberAuth;
+  if(!auth?.session?.access_token)throw Error('Sign in to the subscriber dashboard first.');
+  session=auth.session;
+  key=auth.key||KEY;
+  tenantId=auth.tenantId||tenantId||new URLSearchParams(location.search).get('tenant_id');
+  if(!tenantId)throw Error('Subscriber tenant could not be determined.');
+  localStorage.setItem('tradeflow_subscriber_tenant_id',tenantId);
+}
 async function loadInventoryCatalogue(){
   const list=await api('/rest/v1/rpc/get_inventory_product_catalogue',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});
   catalogueProducts=Array.isArray(list)?list:[];

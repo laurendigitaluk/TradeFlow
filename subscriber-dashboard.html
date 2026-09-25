@@ -125,14 +125,25 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const t=await r.text();let rows=[];try{rows=t?JSON.parse(t):[]}catch{throw Error(t||'Workflow response could not be read.')}
   if(!r.ok)throw Error(rows?.message||rows?.hint||rows?.details||rows?.code||t||('HTTP '+r.status));
   rows=Array.isArray(rows)?rows:[];
+  let acceptedOffers=[];
+  try{
+   const ar=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/offers?select=buying_item_id,offer_mode,status,responded_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.accepted&order=responded_at.desc',{
+    headers:{apikey:key,Authorization:'Bearer '+session.access_token}
+   });
+   const at=await ar.text();acceptedOffers=at?JSON.parse(at):[];
+   if(!Array.isArray(acceptedOffers))acceptedOffers=[];
+  }catch{acceptedOffers=[]}
+  const acceptedModeByItem={};
+  for(const o of acceptedOffers){if(!acceptedModeByItem[o.buying_item_id])acceptedModeByItem[o.buying_item_id]=o.offer_mode}
+  rows=rows.map(x=>({...x,accepted_offer_mode:acceptedModeByItem[x.buying_item_id]||null}));
   const stageInfo={
    none:['new','New customer request'],
    submitted:['new','New customer request'],
    under_review:['process','Valuation/review in progress'],
    valued:['process','Valuation ready for offer'],
    offer_ready:['awaiting','Offer sent — awaiting customer'],
-   awaiting_item:['awaiting','Awaiting customer — item not received'],
-   shipping:['awaiting','Awaiting receipt — item on its way'],
+   awaiting_item:['attention','Customer accepted '+((x)=>x)(null)+' offer — create shipping label'],
+   shipping:['awaiting','Awaiting customer — item on its way'],
    received:['attention','Item received — inspection required'],
    inspection:['attention','Inspection required'],
    testing:['attention','Testing required'],
@@ -150,7 +161,9 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const classified=activeRows.map(x=>{
     const fallback=x.purchase_stage||x.request_status||'submitted';
     const info=stageInfo[fallback]||['process','Internal processing'];
-    return {...x,stage:fallback,cls:info[0],label:info[1]};
+    let label=info[1];
+    if(fallback==='awaiting_item') label='Customer accepted '+(x.accepted_offer_mode==='trade_in'?'trade-in':'cash')+' offer — create shipping label';
+    return {...x,stage:fallback,cls:info[0],label};
   });
   const counts={
    new:classified.filter(x=>x.cls==='new').length,

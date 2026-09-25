@@ -7,9 +7,27 @@ let listing=null,order=null,credit=0,ready=false;
 function message(t,type=''){const e=$('purchase-message');if(e){e.textContent=t||'';e.className='intro '+(type==='error'?'error':'')}}
 async function loadListing(id){
  if(!id)throw Error('The product checkout link is incomplete.');
- const rows=await api('/rest/v1/listings?select=id,title,description,asking_price,currency,status,quantity,listing_data,asset_id&id=eq.'+encodeURIComponent(id)+'&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.published&limit=1');
- listing=Array.isArray(rows)?rows[0]:null;
- if(!listing)throw Error('This product is no longer available.');
+ // Use the same published-store RPC as the public shop. This keeps the product page
+ // and authenticated purchase screen on the same availability source.
+ const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenantId));
+ const item=(Array.isArray(rows)?rows:[]).find(x=>String(x.listing_id||'')===String(id));
+ if(!item)throw Error('This product is no longer available.');
+ listing={
+  id:item.listing_id,
+  title:item.title,
+  description:item.description,
+  asking_price:item.asking_price,
+  currency:item.currency,
+  status:item.status||'published',
+  quantity:item.quantity,
+  listing_data:item.listing_data||{},
+  asset_id:item.asset_id
+ };
+ try{
+  const media=await api('/functions/v1/public-listing-media?listing_id='+encodeURIComponent(id));
+  const first=Array.isArray(media?.media)?media.media.slice().sort((a,b)=>(a.sort_order||0)-(b.sort_order||0))[0]:null;
+  if(first?.signed_url)listing.listing_data=Object.assign({},listing.listing_data,{primary_image_url:first.signed_url});
+ }catch{}
 }
 async function loadCustomer(){
  const p=await rpc('customer_get_profile');const profile=Array.isArray(p)?p[0]:p||{};

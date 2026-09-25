@@ -793,3 +793,18 @@ The remaining identified subscriber-facing website feature is payment processing
 
 Test Two must be treated as a new validation run against the known-good Test One baseline. Do not overwrite working Test One behaviour merely to accommodate a Test Two failure; diagnose the first failure boundary against the checkpoint.
 
+
+
+## Stage 1Q — Inventory catalogue and manual stock-entry architecture — 25 September 2026
+
+The Inventory Add Product implementation was corrected after tracing the full path through current code, Supabase schema, project manuals and previous catalogue work. The previous implementation had been built against tenant_buying_products and Buying-oriented category loading. This contradicted the documented direct product path, which is intended to work independently of a Buying transaction.
+
+The corrected architecture uses the tenant's selected master catalogue through get_inventory_product_catalogue(). The operator selects Manufacturer → Category → Product; product type/branch and the tenant category/branch mapping are derived from the selected catalogue record. inventory_assets now records catalogue_product_id for directly catalogued stock.
+
+Inventory creation now has two explicit authoritative paths:
+- completed acquisition → Inventory, retaining the existing payment/trade-in guard;
+- authorised manual_inventory creation → Inventory, requiring an authenticated subscriber user with inventory.manage and a catalogue product.
+
+The change preserves RLS and does not weaken the completed-purchase boundary. Live verification for Camerashack found 261 active selected catalogue products across 3 manufacturers. Authenticated rollback tests confirmed manual creation is accepted only through the explicit manual path and unmarked direct creation remains blocked.
+
+Status: Implemented in GitHub + live DB verified; browser verification of the rebuilt Add Product UI remains the next test.

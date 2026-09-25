@@ -37,8 +37,8 @@ function customerUrl(extra){
 }
 function customerCheckoutUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
- try{const raw=localStorage.getItem('tradeflow_customer_session');if(raw){const s=JSON.parse(raw);if(s?.access_token)localStorage.setItem('tradeflow_checkout_session',raw)}}catch{}
- return 'customer-checkout.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&listing_id='+encodeURIComponent(listingId||'')+'&checkout_v=7';
+
+ return 'customer-checkout.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&listing_id='+encodeURIComponent(listingId||'')+'&checkout_v=8';
 }
 function pageUrl(slug,extra){
  let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);

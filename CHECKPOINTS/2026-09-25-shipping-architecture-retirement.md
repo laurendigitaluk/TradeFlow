@@ -78,3 +78,11 @@ Commits:
 The **Confirm item received** action was still remaining on **Working…**. Inspection of the live function showed the previous `subscriber_mark_buying_item_received` implementation used a joined `SELECT ... FOR UPDATE` before performing the state transition. The function has been replaced with a simpler validated transition: authorise the subscriber, verify the buying item is in `shipping/received`, verify `buying_item_shipping.shipping_status` is `in_transit/received`, then update the buying item and shipping rows. The live Supabase function was updated and the equivalent migration was committed as `20260925210000_fix_subscriber_mark_buying_item_received.sql`.
 
 The current Test Two database state immediately before the repair was still `purchase_stage=shipping`, `shipping_status=in_transit`, with the customer dispatch timestamp present, confirming the item is eligible for receipt.
+
+
+## Received-state UI repair — 25 September 2026
+Live Supabase verification confirmed the receive action **did succeed**: the Test Two item is now `purchase_stage=received`, `item_received_at` is populated, `shipping_status=received`, and the original Evri service, carrier, tracking number and dispatch timestamp remain stored.
+
+The apparent failure was a subscriber UI bug. The `received` render branch was incorrectly displaying the old **Confirm item received** button and did not render the shipping details. It has been changed to a green **Item received** state with the existing shipping details retained and **Next step: Inspection**, with no repeat receive button. Customer Portal already derives its stage/message from `customer_get_selling_status`, whose live result for `received` is **The business has received your item. It is waiting for inspection.**
+
+Buying dashboard cache version is now 123.

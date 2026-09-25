@@ -6,6 +6,7 @@ if(tradeflowListingId){const tradeflowTenantId=tradeflowParams.get('tenant_id')|
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
+const CHECKOUT_SESSION_STORAGE='tradeflow_checkout_session';
 let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id'),profile=null;
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c))}
@@ -14,7 +15,7 @@ function message(t,type=''){const e=$('customer-message');if(e){e.textContent=t|
 function showAuth(v){$('auth-panel').hidden=!v;$('portal').hidden=v}
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||t||('HTTP '+r.status));return b}
 async function rpc(name,body){return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(Object.assign({p_tenant_id:tenantId},body||{}))})}
-function saveSession(v){session=v||null;if(session?.access_token)localStorage.setItem(SESSION_STORAGE,JSON.stringify(session));else localStorage.removeItem(SESSION_STORAGE)}
+function saveSession(v){session=v||null;if(session?.access_token){const raw=JSON.stringify(session);localStorage.setItem(SESSION_STORAGE,raw);localStorage.setItem(CHECKOUT_SESSION_STORAGE,raw)}else{localStorage.removeItem(SESSION_STORAGE);localStorage.removeItem(CHECKOUT_SESSION_STORAGE)}}
 function restore(){try{const s=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');if(s?.access_token)session=s}catch{}}
 async function profileCheck(){try{const p=await rpc('customer_get_profile');if(!p)return false;profile=Array.isArray(p)?p[0]:p;return Boolean(profile)}catch{return false}}
 async function loadBrand(){try{const r=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=Array.isArray(r)?r[0]:r;const n=p?.business_name||'Customer Portal';$('brand-name').textContent=n;document.title=n+' Customer Portal';if(p?.logo_url)$('brand-logo').innerHTML='<img src="'+esc(p.logo_url)+'" alt="">';$('brand').href='public-site.html?tenant_id='+encodeURIComponent(tenantId)}catch{}}

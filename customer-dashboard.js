@@ -253,25 +253,57 @@ async function submitStoredSellingJourney(){
 }
 async function ensureCustomerRegistration(){
   const existing=await rpc('customer_get_profile');
-  if(Array.isArray(existing)&&existing.length){
-    const p=existing[0];
-    if($('profile-first-name'))$('profile-first-name').value=p.first_name||'';
-    if($('profile-last-name'))$('profile-last-name').value=p.last_name||'';
-    if($('profile-email'))$('profile-email').value=p.email||'';
-    if($('profile-phone'))$('profile-phone').value=p.phone||'';
-    return;
-  }
-  const user=await api('/auth/v1/user');
-  const meta=user?.user_metadata||{};
-  const name=splitFullName(meta.full_name||meta.name||'');
-  const first=$('auth-first-name')?.value.trim()||meta.first_name?.trim()||name.first;
-  const last=$('auth-last-name')?.value.trim()||meta.last_name?.trim()||name.last;
-  if(!first)throw Error('Enter your first name to complete your customer account.');
-  await api('/rest/v1/rpc/customer_register_for_tenant',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
+  if(!Array.isArray(existing)||!existing.length)return false;
+  const p=existing[0];
+  if($('profile-first-name'))$('profile-first-name').value=p.first_name||'';
+  if($('profile-last-name'))$('profile-last-name').value=p.last_name||'';
+  if($('profile-email'))$('profile-email').value=p.email||'';
+  if($('profile-phone'))$('profile-phone').value=p.phone||'';
+  return true;
 }
-async function initialisePortal(){if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);if(!session?.access_token)return showAuth(true);showAuth(false);try{await ensureCustomerRegistration();const submitted=await submitStoredSellingJourney();await loadPortalData();startCustomerSellingStatusRefresh();const p=new URLSearchParams(location.search);if(p.get('submitted')==='1'||submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}else if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error')}catch(e){setMessage(e.message||String(e),'error')}}
+async function initialisePortal(){
+  if(!tenantId)return setMessage('This customer portal needs a valid business tenant.','error'),showAuth(true);
+  if(!session?.access_token)return showAuth(true);
+  try{
+    const registered=await ensureCustomerRegistration();
+    if(!registered){
+      saveSession(null);
+      showAuth(true);
+      setMessage('This login is not registered as a customer for this business. Create a new customer account to continue.','error');
+      return;
+    }
+    showAuth(false);
+    const submitted=await submitStoredSellingJourney();
+    await loadPortalData();
+    startCustomerSellingStatusRefresh();
+    const p=new URLSearchParams(location.search);
+    if(p.get('submitted')==='1'||submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}
+    else if(p.get('payment')==='success')setMessage('Payment completed. Your order will move into fulfilment once the provider confirmation is received.','success');
+    else if(p.get('payment')==='cancelled')setMessage('Payment was cancelled. Your order remains awaiting payment.','error');
+  }catch(e){setMessage(e.message||String(e),'error')}
+}
 function signOut(){saveSession(null);showAuth(true);setMessage('Signed out.','success')}
-async function handleAuthSuccess(data){saveSession(data);showAuth(false);try{await loadTenantBranding();await ensureCustomerRegistration();const submitted=await submitStoredSellingJourney();await loadPortalData();if(submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}}catch(err){setMessage(err.message||String(err),'error')}}
+async function handleAuthSuccess(data){
+  saveSession(data);
+  try{
+    await loadTenantBranding();
+    const registered=await ensureCustomerRegistration();
+    if(!registered){
+      saveSession(null);
+      showAuth(true);
+      setMessage('This login is not registered as a customer for this business. Use Create customer account to create a new account.','error');
+      return;
+    }
+    showAuth(false);
+    const submitted=await submitStoredSellingJourney();
+    await loadPortalData();
+    if(submitted){location.hash='#selling';setMessage('Your valuation request has been submitted. You can now view it here and follow its progress.','success')}
+  }catch(err){
+    saveSession(null);
+    showAuth(true);
+    setMessage(err.message||String(err),'error');
+  }
+}
 async function shippingAssetBlob(url){const r=await fetch(url);if(!r.ok)throw Error('The shipping file could not be downloaded.');return await r.blob();}
 async function downloadShippingAsset(url,name,button){try{setBusy(button,true,'Downloading…');const blob=await shippingAssetBlob(url);const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name+(blob.type==='application/pdf'?'.pdf':blob.type==='image/png'?'.png':'.jpg');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}catch(e){setMessage(e.message||String(e),'error')}finally{setBusy(button,false)}}
 async function printShippingAsset(url,title,button){try{setBusy(button,true,'Opening…');const blob=await shippingAssetBlob(url);const objectUrl=URL.createObjectURL(blob);const w=window.open('','_blank','noopener');if(!w)throw Error('Allow pop-ups to print the shipping file.');const type=blob.type;const body=type==='application/pdf'?'<iframe src="'+objectUrl+'" style="width:100%;height:100vh;border:0"></iframe>':'<img src="'+objectUrl+'" style="max-width:100%;max-height:95vh;display:block;margin:auto">';w.document.write('<!doctype html><title>'+esc(title)+'</title><body style="margin:0;padding:20px;font-family:Arial">'+body+'</body>');w.document.close();setTimeout(()=>{try{w.focus();w.print()}catch(e){}},1200)}catch(e){setMessage(e.message||String(e),'error')}finally{setBusy(button,false)}}

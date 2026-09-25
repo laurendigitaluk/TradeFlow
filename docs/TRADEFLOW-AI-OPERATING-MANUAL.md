@@ -1254,3 +1254,7 @@ The current unified buying workflow is: customer confirms dispatch → subscribe
 
 ## 25 September 2026 — Post-inspection trade-in decision model
 Do not use the old generic `final_offer_required` UI as an instruction to send a final offer automatically. After inspection, compare the accepted trade-in amount with the revised inspected value. If unchanged, add the accepted amount directly to the customer's trade-in credit account. If changed, send a revised final offer and wait for customer acceptance/refusal. If refused, close the trade-in. Use the dedicated subscriber RPCs for credit/refusal; do not recreate credit or acquisition records in browser JavaScript. Trade-in credit is not a bank transfer. The physical item becomes an Inventory asset when the credit is posted.
+
+
+## 25 September 2026 — Customer credit account
+Use `customer_credit_accounts` as the customer-facing stored balance for trade-in credit. The balance is updated server-side by `subscriber_credit_trade_in`; browser code must not alter balances directly. `customer_get_credit_account` exposes the authenticated customer's balance. Do not treat an unchanged accepted trade-in as a revised final offer; the customer journey moves from Inspection to Payment/credit processing.

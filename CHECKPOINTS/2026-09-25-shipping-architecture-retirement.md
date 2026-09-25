@@ -72,3 +72,9 @@ The Buying dashboard now loads the current `buying_item_shipping` row for each a
 Commits:
 - `0d2cec30fd3df822c27e0cb229ce4e0eba5ea853` — shipping details/status block
 - `71407d183ce6055b149668fd58f03402a5349ff5` — Buying dashboard cache refresh
+
+
+## Confirm item received — live RPC repair
+The **Confirm item received** action was still remaining on **Working…**. Inspection of the live function showed the previous `subscriber_mark_buying_item_received` implementation used a joined `SELECT ... FOR UPDATE` before performing the state transition. The function has been replaced with a simpler validated transition: authorise the subscriber, verify the buying item is in `shipping/received`, verify `buying_item_shipping.shipping_status` is `in_transit/received`, then update the buying item and shipping rows. The live Supabase function was updated and the equivalent migration was committed as `20260925210000_fix_subscriber_mark_buying_item_received.sql`.
+
+The current Test Two database state immediately before the repair was still `purchase_stage=shipping`, `shipping_status=in_transit`, with the customer dispatch timestamp present, confirming the item is eligible for receipt.

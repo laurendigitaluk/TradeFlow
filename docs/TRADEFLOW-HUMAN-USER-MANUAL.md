@@ -948,3 +948,7 @@ Do not restore the retired Parcel2Go API flow or the old post-acceptance message
 
 ## 25 September 2026 — Test Two inspection workflow correction
 The current unified buying workflow is: customer confirms dispatch → subscriber confirms item received → subscriber explicitly starts inspection → inspection is completed → accepted inspection proceeds to final offer → customer accepts final offer → payment → Inventory. The Start inspection control must call the `subscriber_start_buying_item_inspection` RPC and change `buying_items.purchase_stage` from `received` to `inspection`; the inspection completion control then calls `subscriber_complete_buying_item_inspection`. Do not treat the inspection form as available while the database stage remains `received`. Parcel2Go API shipping remains retired; shipping labels/services are subscriber-managed and paid directly to the selected carrier/service.
+
+
+## 25 September 2026 — After inspection: trade-in decisions
+Once inspection is complete, there are three possible outcomes for a trade-in. If the agreed trade-in value is unchanged, use **Add to customer credits**; this credits the customer's Trade-in account and completes the acquisition into Inventory. If the inspection changes the value, enter the revised amount and use **Send revised final offer**; the customer must accept that revised offer before the transaction can be completed. If the item is not acceptable, use **Refuse trade-in**, which closes the trade-in. Do not use a bank transfer for an unchanged trade-in credit.

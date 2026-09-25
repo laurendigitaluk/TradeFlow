@@ -62,3 +62,13 @@ As Test Two continues, inspect each shipping-related screen/controller/RPC befor
 
 ## Important continuity rule
 Current GitHub, current Supabase state, and this checkpoint are authoritative over older Parcel2Go instructions in prior checkpoints.
+
+
+## Test Two shipping status display repair — 25 September 2026
+The Buying detail panel's shipping-stage block was corrected to use the current subscriber-managed shipping data. It now renders as a green **Awaiting item** section and displays the shipping information already supplied to the customer: **Date shipped**, **Shipping service**, **Tracking number**, and **Carrier**. The date uses the customer's dispatch timestamp when available, with the recorded shipping handoff timestamp as fallback. The existing **Confirm item received** action remains available, followed by Inspection.
+
+The Buying dashboard now loads the current `buying_item_shipping` row for each active buying item rather than relying only on the workflow RPC, which does not expose the shipping detail fields. Cache version was bumped from 118 to 119.
+
+Commits:
+- `0d2cec30fd3df822c27e0cb229ce4e0eba5ea853` — shipping details/status block
+- `71407d183ce6055b149668fd58f03402a5349ff5` — Buying dashboard cache refresh

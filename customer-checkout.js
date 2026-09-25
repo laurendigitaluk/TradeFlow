@@ -15,23 +15,8 @@ async function rpc(name,body){return api('/rest/v1/rpc/'+name,{method:'POST',bod
 function restore(){try{const s=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');if(s?.access_token)session=s}catch{}}
 async function restoreAndValidateSession(){
  restore();
- if(!session?.access_token)return false;
- try{
-  let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token}});
-  if(!response.ok&&session?.refresh_token){
-   const refreshed=await api('/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{},body:JSON.stringify({refresh_token:session.refresh_token})});
-   if(!refreshed?.access_token)throw Error('Customer session could not be refreshed.');
-   session=refreshed;
-   localStorage.setItem(SESSION_STORAGE,JSON.stringify(session));
-   response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token}});
-  }
-  if(!response.ok)throw Error('Customer session is no longer valid.');
-  return true;
- }catch{
-  session=null;
-  localStorage.removeItem(SESSION_STORAGE);
-  return false;
- }
+ if(session?.access_token)return true;
+ return false;
 }
 async function loadListing(){if(!tenantId||!listingId)throw Error('The product checkout link is incomplete.');const rows=await api('/rest/v1/listings?select=id,title,description,asking_price,currency,status,quantity,listing_data,asset_id&id=eq.'+encodeURIComponent(listingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.published&limit=1');listing=Array.isArray(rows)?rows[0]:null;if(!listing)throw Error('This product is no longer available.');$('brand').href='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page=shop');}
 async function loadCustomer(){const p=await rpc('customer_get_profile');const profile=Array.isArray(p)?p[0]:p||{};$('customer-name').textContent=((profile.first_name||'')+' '+(profile.last_name||'')).trim()||'Customer';const a=await rpc('customer_get_addresses');const rows=Array.isArray(a)?a:[];const shipping=rows.find(x=>x.address_type==='shipping')||{};const billing=rows.find(x=>x.address_type==='billing')||{};$('delivery').innerHTML='<strong>Delivery address</strong><p class="muted">'+esc([shipping.recipient_name,shipping.line1,shipping.city,shipping.postcode].filter(Boolean).join(', ')||'No delivery address saved.')+'</p><strong>Payment address</strong><p class="muted">'+esc([billing.recipient_name,billing.line1,billing.city,billing.postcode].filter(Boolean).join(', ')||'No payment address saved.')+'</p>';const c=await rpc('customer_get_credit_account');const ca=Array.isArray(c)?c[0]:c||{};credit=Number(ca.balance||0);renderPaymentOptions();}

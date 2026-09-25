@@ -90,3 +90,31 @@ Final routing/cache fix:
 - The freshly loaded v72 script generates the checkout URL with tenant ID, listing ID and `checkout_v=5`.
 
 This is the primary explanation for the observed behaviour where clicking **Buy this item** continued to open the customer login page even after the checkout code itself had been corrected.
+
+
+## Retest result and second repair — 2026-09-25
+
+The same-browser retest still displayed **Sign in to continue** on Checkout while the Customer Portal in the same Incognito session showed the customer signed in. The screenshots confirm that the portal authentication itself is working; the remaining fault is specifically the checkout session bootstrap/cache path.
+
+Additional repair applied:
+
+- customer-checkout.js commit `cdca7412a3444a464956daa5fa610854db5bd360`
+  - Checkout boot now restores `tradeflow_customer_session` directly before starting.
+  - It no longer waits for the separate `tradeflowCustomerAuthReady` promise. This removes the remaining auth-module startup race.
+  - If a valid access token is already present, the checkout UI is switched to the authenticated checkout state immediately.
+- customer-checkout.html commit `7289292e5ecc8514d511c325c6ae63f11b2394a8`
+  - Checkout script cache bumped from `customer-checkout.js?v=6` to `v=7`.
+- public-site.js commit `2760340d96525c689ef540957b630733ab4a6776`
+  - Product Buy links now use `checkout_v=6` instead of `checkout_v=5`.
+- public-site.html commit `9c9ff3f55217081f6e4d67df77d73c12da4496e7`
+  - Public-site script cache bumped so the new checkout URL is served.
+- customer-dashboard.js commit `ad285036d4695020fc18c84af6b822393f1ff470`
+  - Legacy public-product fallback now also uses `checkout_v=6`.
+
+The intended flow remains:
+
+Camerashack → Visit Shop → Nikon COOLPIX P1100 → Buy this item → Checkout
+
+For an already authenticated customer, Checkout must open the purchase screen directly. The sign-in form should only appear when no customer session exists.
+
+Test One remains frozen. No retail order should be created by merely opening Checkout.

@@ -69,14 +69,48 @@ function firstLink(links:any,needles:string[]){
   }
   return null;
 }
+function scalar(v:any){
+  return typeof v==="string"||typeof v==="number" ? v : null;
+}
+function nestedScalar(v:any,keys:string[]){
+  if(v==null)return null;
+  const direct=scalar(v);
+  if(direct!==null)return direct;
+  if(typeof v!=="object")return null;
+  for(const key of keys){
+    const value=scalar(v?.[key]);
+    if(value!==null)return value;
+  }
+  return null;
+}
 function normaliseQuote(q:any,index:number){
-  const serviceCode=q?.Service??q?.service??q?.ServiceCode??q?.serviceCode??q?.Code??q?.code??null;
-  const serviceName=q?.ServiceName??q?.serviceName??q?.Name??q?.name??serviceCode??"Shipping service";
-  const carrier=q?.Courier??q?.courier??q?.Carrier??q?.carrier??"Parcel2Go";
-  const price=q?.TotalPrice??q?.totalPrice??q?.Price??q?.price??q?.Total??q?.total??q?.Amount??q?.amount??null;
-  const currency=q?.Currency??q?.currency??"GBP";
-  const delivery=q?.DeliveryDate??q?.deliveryDate??q?.EstimatedDeliveryDate??q?.estimatedDeliveryDate??q?.TransitTime??q?.transitTime??null;
-  return {index,service_code:serviceCode,service_name:serviceName,carrier,price,currency,delivery,raw:q};
+  const serviceObj=q?.Service??q?.service??null;
+  const courierObj=q?.Courier??q?.courier??q?.Carrier??q?.carrier??null;
+  const priceObj=q?.TotalPrice??q?.totalPrice??q?.Price??q?.price??q?.Total??q?.total??q?.Amount??q?.amount??null;
+  const serviceCode=nestedScalar(serviceObj,["Code","ServiceCode","Id","ID","id"]) ??
+    nestedScalar(q,["ServiceCode","serviceCode","Code","code","ServiceId","serviceId"]) ?? null;
+  const serviceName=nestedScalar(serviceObj,["Name","ServiceName","Description","ServiceDescription","Title"]) ??
+    nestedScalar(q,["ServiceName","serviceName","Name","name","Description","description"]) ??
+    (serviceCode ? String(serviceCode) : "Shipping service");
+  const carrier=nestedScalar(courierObj,["Name","CourierName","CarrierName","Description","Code"]) ??
+    nestedScalar(q,["CourierName","courierName","CarrierName","carrierName"]) ??
+    "Parcel2Go";
+  const price=nestedScalar(priceObj,["Amount","Value","Total","Price","Net","Gross"]) ??
+    nestedScalar(q,["TotalPrice","totalPrice","Price","price","Total","total","Amount","amount"]) ?? null;
+  const currency=nestedScalar(priceObj,["Currency","currency","CurrencyCode","currencyCode"]) ??
+    nestedScalar(q,["Currency","currency","CurrencyCode","currencyCode"]) ?? "GBP";
+  const delivery=nestedScalar(serviceObj,["DeliveryDate","EstimatedDeliveryDate","TransitTime","DeliveryTime","DeliveryDescription"]) ??
+    nestedScalar(q,["DeliveryDate","deliveryDate","EstimatedDeliveryDate","estimatedDeliveryDate","TransitTime","transitTime","DeliveryTime","deliveryTime"]) ?? null;
+  return {
+    index,
+    service_code:serviceCode===null?null:String(serviceCode),
+    service_name:String(serviceName),
+    carrier:String(carrier),
+    price,
+    currency:String(currency),
+    delivery:delivery===null?null:String(delivery),
+    raw:q
+  };
 }
 async function loadContext(userId:string,tenantId:string,itemId:string){
   if(!(await canManageBuying(userId,tenantId)))throw Error("Permission required: buying.manage");

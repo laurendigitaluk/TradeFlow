@@ -66,7 +66,7 @@ function firstLink(links:any,needles:string[]){
     if(v==null)return null;
     const keyLower=String(key).toLowerCase();
     if(typeof v==="string"){
-      if(wanted.some(n=>keyLower.includes(n))&&/^https?:\\/\\//i.test(v))return v;
+      if(wanted.some(n=>keyLower.includes(n))&&(v.startsWith("http://")||v.startsWith("https://")))return v;
       return null;
     }
     if(Array.isArray(v)){
@@ -76,7 +76,7 @@ function firstLink(links:any,needles:string[]){
     if(typeof v!=="object")return null;
     for(const candidate of ["href","Href","url","Url","uri","Uri"]){
       const value=v[candidate];
-      if(typeof value==="string"&&wanted.some(n=>keyLower.includes(n)||String(candidate).toLowerCase().includes(n))&&/^https?:\\/\\//i.test(value))return value;
+      if(typeof value==="string"&&wanted.some(n=>keyLower.includes(n)||String(candidate).toLowerCase().includes(n))&&(value.startsWith("http://")||value.startsWith("https://")))return value;
     }
     for(const [k,value] of Object.entries(v)){
       const hit=walk(value,k);

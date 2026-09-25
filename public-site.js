@@ -31,7 +31,8 @@ function customerUrl(extra){
    const base=subscriberTenantId?'subscriber-dashboard.html?tenant_id='+encodeURIComponent(subscriberTenantId):'subscriber-dashboard.html';
    return extra?base+'&'+extra:base;
  }
- const base=activeTenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId):'customer-dashboard.html';
+ if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
+ const base='customer-dashboard.html';
  return extra?base+'&'+extra:base;
 }
 function pageUrl(slug,extra){

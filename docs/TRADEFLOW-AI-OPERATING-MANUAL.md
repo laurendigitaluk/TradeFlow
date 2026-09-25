@@ -1237,3 +1237,12 @@ The Buying page/controller cache keys are now v6/v60 and the three Business Dash
 A further browser screenshot showed that the earlier newline fix was not sufficient. The key/value regular expression still contained `\\s` rather than `\s`, so labels followed by colons were not separated into individual fields. This is now corrected. The Submitted review stage has also been changed from a green approval-style presentation to a greyed stage, with a neutral Submitted pill, matching the intended meaning of a customer submission awaiting review.
 
 Latest cache keys: Buying CSS v7, Buying controller v61, Business Dashboard Buying navigation v61. Browser verification remains pending.
+
+
+## Test Two — Current Shipping Workflow State (25 September 2026)
+
+The buying shipping workflow no longer uses Parcel2Go API integration. TradeFlow's current model is subscriber-managed shipping: the subscriber selects supported shipping services in Shipping Settings, obtains the label/service directly from the provider, then uploads the label/QR code, carrier, service, tracking number and dispatch information to TradeFlow. The customer receives those shipping files and instructions through the Customer Portal. TradeFlow does not purchase shipping or collect the customer's shipping cost.
+
+After the customer confirms dispatch, the subscriber Buying workflow is **Awaiting item**. The subscriber view retains the dispatch date, shipping service, carrier and tracking number. After **Confirm item received**, the buying item moves to **received** and the next required step is **Inspection**. The received state must be green and must not show the receive button again. The Inspection state must be green and provide the inspection controls.
+
+Do not restore the retired Parcel2Go API flow or the old post-acceptance message claiming that the business will create the shipping label after acceptance. The Customer Portal's accepted-offer block is informational only; the live stage/status message determines what the customer needs to do next.

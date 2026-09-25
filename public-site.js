@@ -38,7 +38,7 @@ function customerUrl(extra){
 function customerCheckoutUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
 
- return './customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&listing_id='+encodeURIComponent(listingId||'')+'&purchase=1&purchase_v=2';
+ const target=new URL('./customer-dashboard.html',location.href);target.searchParams.set('tenant_id',activeTenantId||'');target.searchParams.set('listing_id',listingId||'');target.searchParams.set('purchase','1');target.searchParams.set('purchase_v','3');return target.href;
 }
 function pageUrl(slug,extra){
  let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);
@@ -320,7 +320,7 @@ function renderProductPage(site,listings){
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
    '<aside class="product-purchase"><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong>'+
    '<dl class="product-facts"><div><dt>Condition</dt><dd>'+esc(conditionLabel)+'</dd></div><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl>'+
-   '<a class="start-selling product-buy-button" href="'+buyUrl+'" data-purchase-listing="'+esc(item.listing_id)+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div>'+
+   '<a class="start-selling product-buy-button" href="'+esc(buyUrl)+'" data-purchase-listing="'+esc(item.listing_id)+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div>'+
    '<section class="product-description-box"><h2>About this item</h2><p class="product-description">'+esc(item.description||'Available from this business.')+'</p></section>'+
    '</div></main>'+renderFooter(site);
 }

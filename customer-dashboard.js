@@ -24,7 +24,7 @@ async function saveAddress(type,id,b){try{b.disabled=true;const p={p_tenant_id:t
 async function saveBank(){try{await api('/rest/v1/rpc/customer_save_bank_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_account_holder_name:$('bank-holder').value.trim(),p_sort_code:$('bank-sort').value.trim(),p_account_number:$('bank-number').value.trim(),p_bank_name:$('bank-name').value.trim()||null})});message('Bank details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}}
 async function loadPortal(){try{const ok=await profileCheck();if(!ok){saveSession(null);showAuth(true);message('This login is not registered for this business. Use Create customer account to create a new account.','error');return}showAuth(false);await loadBrand();await Promise.all([loadSelling(),loadOrders(),loadDetails()])}catch(e){showAuth(false);message(e.message||String(e),'error')}}
 $('save-profile').onclick=async()=>{try{await rpc('customer_update_profile',{p_first_name:$('profile-first-name').value.trim(),p_last_name:$('profile-last-name').value.trim(),p_phone:$('profile-phone').value.trim()||null});message('Details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}};
-$('sign-out').onclick=()=>{saveSession(null);showAuth(true)};
+$('sign-out').onclick=()=>{saveSession(null);localStorage.removeItem('tradeflow_pending_customer_registration');showAuth(true);message('Signed out.','success');location.hash='';window.scrollTo(0,0);};
 window.tradeflowCustomerDashboardRefresh=loadPortal;
 window.addEventListener('tradeflow-auth-success',async()=>{await loadPortal()});
 restore();loadBrand();if(session?.access_token)loadPortal();else showAuth(true);

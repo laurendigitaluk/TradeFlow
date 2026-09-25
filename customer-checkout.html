@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Checkout</title>
+<link rel="stylesheet" href="customer-dashboard.css?v=8">
+<style>
+.checkout{max-width:900px;margin:0 auto;padding:36px 20px 70px}.checkout-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px}.checkout-card{border:1px solid #d8dee5;border-radius:10px;background:#fff;padding:20px}.checkout-card.current{background:#f1f8f3;border:2px solid #2d7a4d}.checkout-product{display:grid;grid-template-columns:120px 1fr;gap:18px;align-items:center}.checkout-product img{width:120px;height:120px;object-fit:contain;border:1px solid #e2e6ea;border-radius:8px}.checkout-price{font-size:30px;font-weight:800}.payment-option{display:block;border:1px solid #d8dee5;border-radius:8px;padding:16px;margin:10px 0;cursor:pointer}.payment-option.selected{border:2px solid #2d7a4d;background:#f7fbf8}.payment-option input{margin-right:8px}.muted{color:#68757f;font-size:13px}.checkout-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.checkout-actions button{padding:11px 16px;border:0;border-radius:5px;background:#17202a;color:#fff;cursor:pointer}.checkout-actions button:disabled{opacity:.5;cursor:not-allowed}.success{padding:16px;border:2px solid #2d7a4d;background:#f1f8f3;border-radius:10px}.error{color:#9b2c2c}@media(max-width:760px){.checkout-grid{grid-template-columns:1fr}.checkout-product{grid-template-columns:90px 1fr}.checkout-product img{width:90px;height:90px}}
+</style></head>
+<body>
+<header class="topbar"><a class="brand brand-link" id="brand" href="#"><span id="brand-logo" class="brand-logo"></span><span id="brand-name">Checkout</span></a><div class="account"><span id="customer-name">Customer</span><a href="customer-dashboard.html">Customer Portal</a></div></header>
+<main class="checkout">
+<section id="auth-panel" class="panel auth-panel"><div class="eyebrow">Customer checkout</div><h1>Sign in to continue</h1><p class="intro">Sign in or create your customer account to continue to payment.</p><div id="customer-message" class="message"></div><div class="form-grid"><label>First name<input id="auth-first-name"></label><label>Last name<input id="auth-last-name"></label><label>Email<input id="auth-email" type="email"></label><label>Password<input id="auth-password" type="password"></label></div><div class="actions"><button id="auth-sign-in" type="button">Sign in</button><button id="auth-sign-up" type="button">Create customer account</button></div></section>
+<section id="portal" hidden>
+<div class="eyebrow">Checkout</div><h1>Complete your purchase</h1><p id="checkout-message" class="intro"></p>
+<div class="checkout-grid">
+<div>
+<section class="checkout-card"><h2>Your item</h2><div id="product"></div></section>
+<section class="checkout-card"><h2>Payment method</h2><p class="muted">Choose how you want to pay for this purchase.</p><div id="payment-options"></div><div class="checkout-actions"><button id="pay-button" type="button">Continue</button></div></section>
+</div>
+<div>
+<section class="checkout-card"><h2>Order summary</h2><div id="summary"></div></section>
+<section class="checkout-card"><h2>Delivery</h2><div id="delivery"></div></section>
+</div>
+</div></section>
+</main>
+<script src="customer-auth.js?v=9" defer></script>
+<script src="customer-checkout.js?v=1" defer></script>
+</body></html>

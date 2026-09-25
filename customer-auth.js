@@ -74,6 +74,10 @@ async function restoreExistingSession(){
  try{
   let data=JSON.parse(raw);
   if(!data?.access_token)throw Error('Invalid customer session.');
+  if(document.body?.dataset?.authPassive==='true'){
+   dispatchAuthSuccess(data);
+   return;
+  }
   let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
   if(!response.ok&&data?.refresh_token){
    const refreshed=await authRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:data.refresh_token});

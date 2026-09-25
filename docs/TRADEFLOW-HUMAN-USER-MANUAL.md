@@ -935,3 +935,12 @@ After the customer accepts the initial cash or trade-in option, the item moves i
 ## ## Parcel2Go integrated shipping — 24 September 2026
 
 When a customer accepts the initial offer, the Buying request now presents an **Integrated shipping — Parcel2Go** section. Enter the parcel weight and dimensions, choose **GET PARCEL2GO QUOTES**, compare the available courier services, then select the service you want and create the shipment. The shipment is created against the subscriber's connected Parcel2Go account; TradeFlow does not take the shipping payment. The subscriber must complete the Parcel2Go payment step before the customer is told that the item is ready to send. A customer delivery address is required for the integrated quote. A **Manual shipping fallback** remains available for a manually supplied label or QR code. The integrated quote/order workflow is currently implemented but still requires browser verification before being treated as fully verified.
+
+
+## Test Two — Current Shipping Workflow State (25 September 2026)
+
+The buying shipping workflow no longer uses Parcel2Go API integration. TradeFlow's current model is subscriber-managed shipping: the subscriber selects supported shipping services in Shipping Settings, obtains the label/service directly from the provider, then uploads the label/QR code, carrier, service, tracking number and dispatch information to TradeFlow. The customer receives those shipping files and instructions through the Customer Portal. TradeFlow does not purchase shipping or collect the customer's shipping cost.
+
+After the customer confirms dispatch, the subscriber Buying workflow is **Awaiting item**. The subscriber view retains the dispatch date, shipping service, carrier and tracking number. After **Confirm item received**, the buying item moves to **received** and the next required step is **Inspection**. The received state must be green and must not show the receive button again. The Inspection state must be green and provide the inspection controls.
+
+Do not restore the retired Parcel2Go API flow or the old post-acceptance message claiming that the business will create the shipping label after acceptance. The Customer Portal's accepted-offer block is informational only; the live stage/status message determines what the customer needs to do next.

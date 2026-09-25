@@ -61,13 +61,33 @@ async function tokenFor(connection:any){
   return {host,token:b.access_token};
 }
 function firstLink(links:any,needles:string[]){
-  if(!links||typeof links!=="object")return null;
-  for(const [k,v] of Object.entries(links)){
-    if(typeof v!=="string")continue;
-    const key=String(k).toLowerCase();
-    if(needles.some(n=>key.includes(n)))return v;
+  const wanted=needles.map(n=>String(n).toLowerCase());
+  function walk(v:any,key=""):string|null{
+    if(v==null)return null;
+    const keyLower=String(key).toLowerCase();
+    if(typeof v==="string"){
+      if(wanted.some(n=>keyLower.includes(n))&&/^https?:\\/\\//i.test(v))return v;
+      return null;
+    }
+    if(Array.isArray(v)){
+      for(const item of v){const hit=walk(item,key);if(hit)return hit}
+      return null;
+    }
+    if(typeof v!=="object")return null;
+    for(const candidate of ["href","Href","url","Url","uri","Uri"]){
+      const value=v[candidate];
+      if(typeof value==="string"&&wanted.some(n=>keyLower.includes(n)||String(candidate).toLowerCase().includes(n))&&/^https?:\\/\\//i.test(value))return value;
+    }
+    for(const [k,value] of Object.entries(v)){
+      const hit=walk(value,k);
+      if(hit)return hit;
+    }
+    return null;
   }
-  return null;
+  return walk(links);
+}
+function orderIdFrom(payload:any){
+  return payload?.OrderId??payload?.OrderID??payload?.orderId??payload?.orderID??payload?.Id??payload?.id??payload?.Order?.Id??payload?.order?.id??null;
 }
 function scalar(v:any){
   return typeof v==="string"||typeof v==="number" ? v : null;
@@ -189,12 +209,28 @@ Deno.serve(async(req:Request)=>{
       const response=await fetch(tokenInfo.host+"/api/orders",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tokenInfo.token,"Accept":"application/json"},body:JSON.stringify(orderPayload)});
       const text=await response.text();let payload:any={};try{payload=JSON.parse(text)}catch{}
       if(!response.ok)return json({error:String(payload.message||payload.error||text||"Parcel2Go order creation failed")},400);
-      const links=payload?.Links||payload?.links||{};
-      const paymentUrl=firstLink(links,["payment","checkout"]);
-      const trackingUrl=firstLink(links,["tracking"]);
+      const links=payload?.Links||payload?.links||payload?._links||payload?.LinksObject||{};
+      const paymentUrl=firstLink(links,["payment","checkout","pay"]);
+      const trackingUrl=firstLink(links,["tracking","track"]);
       const labelUrl=firstLink(links,["label","pdf","document"]);
       const qrUrl=firstLink(links,["qr","barcode"]);
-      const orderId=payload?.OrderId||payload?.orderId||payload?.Id||payload?.id||null;
+      const orderId=orderIdFrom(payload);
+      console.log("Parcel2Go create_order response",{
+        status:response.status,
+        keys:Object.keys(payload||{}),
+        link_keys:links&&typeof links==="object"&&!Array.isArray(links)?Object.keys(links):[],
+        order_id:orderId,
+        has_payment_url:Boolean(paymentUrl),
+        has_label_url:Boolean(labelUrl),
+        has_qr_url:Boolean(qrUrl)
+      });
+      if(!orderId){
+        return json({
+          error:"Parcel2Go accepted the request but did not return an order ID.",
+          provider_status:response.status,
+          response_keys:Object.keys(payload||{})
+        },502);
+      }
       const {error:saveError}=await admin.from("buying_item_shipping").upsert({
         tenant_id:tenantId,buying_item_id:itemId,shipping_method:"automated",shipping_provider:"parcel2go",
         shipping_provider_connection_id:ctx.connection.id,shipping_provider_order_id:orderId,

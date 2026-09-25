@@ -2,6 +2,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
+const CHECKOUT_SESSION_STORAGE='tradeflow_checkout_session';
 const params=new URLSearchParams(location.search);
 const tenantId=params.get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id');
 const listingId=params.get('listing_id')||'';
@@ -12,7 +13,7 @@ const money=(v,c='GBP')=>{try{return new Intl.NumberFormat('en-GB',{style:'curre
 function msg(t,type=''){const e=$('checkout-message');if(e){e.textContent=t||'';e.className='intro '+(type==='error'?'error':'')}}
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',KEY);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||('HTTP '+r.status));return b}
 async function rpc(name,body){return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(Object.assign({p_tenant_id:tenantId},body||{}))})}
-function restore(){try{const raw=localStorage.getItem(SESSION_STORAGE)||sessionStorage.getItem(SESSION_STORAGE)||'';const s=raw?JSON.parse(raw):null;if(s?.access_token)session=s}catch{}}
+function restore(){try{const raw=localStorage.getItem(CHECKOUT_SESSION_STORAGE)||localStorage.getItem(SESSION_STORAGE)||sessionStorage.getItem(SESSION_STORAGE)||'';const s=raw?JSON.parse(raw):null;if(s?.access_token)session=s}catch{}}
 async function restoreAndValidateSession(){
  restore();
  return !!session?.access_token;

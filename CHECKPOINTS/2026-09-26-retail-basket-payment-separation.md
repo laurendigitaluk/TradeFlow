@@ -138,3 +138,28 @@ Repair: migration `20260926160000_fix_retail_credit_payment_type` changed the fu
 No payment was consumed while repairing this fault. The existing £55 credit remains available for the next browser test.
 
 **Next browser test:** return to the Basket, select **Use customer credit**, click **Proceed to payment**, and verify that the order completes to My Orders and the credit reduces by the purchase amount. If this succeeds, continue with the Stripe cancellation/retry test separately.
+
+
+## Browser finding — unpaid checkout was reserving stock
+
+The browser test confirmed the product reached Basket/payment, but the live database showed the EOS R1 listing had been changed to reserved as soon as the pending retail order was created. This was not acceptable: a customer could leave the purchase incomplete while preventing another customer from buying the product.
+
+Repair applied:
+
+- customer_create_retail_order() no longer reserves the listing.
+- customer_create_retail_order_from_basket() no longer reserves listings.
+- A pending retail order does not remove the product from the live shop.
+- Customer-credit payment locks and validates the published listing immediately before deducting credit.
+- External payment completion checks listing availability before accepting the sale. A conflicting paid Stripe checkout is refunded and its unpaid retail order is cancelled.
+
+The current unpaid EOS R1 test order was cancelled. Live verification after reset:
+
+- listing: published
+- reserved_at: null
+- pending retail orders for the test customer: 0
+- customer credit: £55
+- no payment consumed.
+
+The Nikon COOLPIX P1100 card visible under My Sale is a separate trade-in/selling workflow record (purchase_stage=purchased). It was not deleted or altered as part of the retail-stock reset. The retail purchase lifecycle is now being tested separately.
+
+Next test: return to the EOS R1 product on the live shop, add it to Basket, proceed to payment, and confirm that the product remains visible/purchasable while the payment is still incomplete. Then complete customer credit payment and verify the listing changes to sold only after payment.

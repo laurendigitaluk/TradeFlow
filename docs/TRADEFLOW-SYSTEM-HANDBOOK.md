@@ -1175,3 +1175,15 @@ Parcel weight and dimensions are packed-parcel data, not merely product-specific
 A completed retail shipping handoff moves fulfilment from awaiting to label. The customer portal then receives the label/QR, carrier/service, tracking and instructions. The handoff queues a customer email containing the same operational details and a link to the Customer Portal. Dispatch moves label to dispatched and queues the dispatch notification.
 
 Do not reintroduce direct browser writes to fulfilments or direct browser reads of retail_orders. Retail fulfilment writes/reads must use the subscriber/customer RPC boundaries.
+
+
+
+## 26 September 2026 — Retail fulfilment handoff UX clarification
+
+The current retail Fulfilment UI separates **provider booking** from **TradeFlow handoff recording**. Shipping Settings defines the services the subscriber may use. The Fulfilment workspace lets the subscriber select one, open the provider, complete the booking there, then return to record the carrier/service/tracking and upload the label or QR code.
+
+TradeFlow does not need to duplicate the provider's parcel-booking form. Weight and L/W/H remain valid packed-shipment data and may be stored in fulfilment_parcels, but the current handoff UI does not ask the subscriber to enter those values again. They must still be supplied accurately to the chosen courier/shipping provider when creating the shipment; current provider guidance requires packed shipment weight/dimensions for quoting or label generation.
+
+The handoff completion boundary is subscriber_save_retail_fulfilment_shipping(). The latest reliability repair performs the authorised awaiting → label transition directly inside that RPC and preserves existing parcel measurements when the simplified handoff UI does not provide new measurements. This avoids coupling the save action to the generic workflow transition function.
+
+The Selling workspace also uses cache-busted startup references and a guarded initialisation path so a stale/racing subscriber auth load cannot leave Available or Sold stuck on Loading until a manual refresh.

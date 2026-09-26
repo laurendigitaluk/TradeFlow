@@ -229,4 +229,15 @@ window.addEventListener('DOMContentLoaded',async()=>{
   set('returns',returns,returns?'green':'yellow',returns?'ACTION REQUIRED':'NO ACTION');
  }catch(e){console.warn('Workflow counts:',e)}
 });
-</script></script></body></html>
+</script><script>
+window.addEventListener('DOMContentLoaded',async()=>{
+ const modal=document.getElementById('account-modal');
+ const open=()=>{if(modal)modal.hidden=false};
+ const close=()=>{if(modal)modal.hidden=true};
+ document.getElementById('account-details')?.addEventListener('click',open);
+ document.getElementById('settings-account')?.addEventListener('click',open);
+ document.getElementById('account-modal-close')?.addEventListener('click',close);
+ modal?.addEventListener('click',e=>{if(e.target===modal)close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal?.hidden)close()});
+});
+</script></body></html>

@@ -237,8 +237,27 @@ function renderSellPage(site,catalogue){
  return renderPublicNav(site,catalogue)+body.replace('__OPTIONS__',options)+renderFooter(site);
 }
 
-function getStoredCustomerSession(){
- try{return JSON.parse(localStorage.getItem('tradeflow_customer_session')||'null')}catch{return null}
+async function getStoredCustomerSession(){
+ try{
+  let session=JSON.parse(localStorage.getItem('tradeflow_customer_session')||'null');
+  if(!session?.access_token)return null;
+  let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token}});
+  if(response.ok)return session;
+  if(session.refresh_token){
+   const refresh=await fetch(SUPABASE_URL+'/auth/v1/token?grant_type=refresh_token',{
+    method:'POST',
+    headers:{apikey:KEY,'Content-Type':'application/json'},
+    body:JSON.stringify({refresh_token:session.refresh_token})
+   });
+   const text=await refresh.text();let data=null;try{data=text?JSON.parse(text):null}catch{}
+   if(refresh.ok&&data?.access_token){
+    localStorage.setItem('tradeflow_customer_session',JSON.stringify(data));
+    return data;
+   }
+  }
+ }catch{}
+ localStorage.removeItem('tradeflow_customer_session');
+ return null;
 }
 async function submitCustomerSellingRequest(payload,session,files=[]){
  const formData=new FormData();
@@ -278,7 +297,7 @@ function bindSellWizard(site,catalogue){
  function renderSummary(){const cat=category(),condition=form.querySelector('input[name="sell-condition"]:checked')?.value||'';const rows=[['Category',cat?.name||val('sell-category')],['Product type',val('sell-type')||'Not specified'],['Manufacturer',val('sell-manufacturer')||'Not specified'],['Model',val('sell-model')||'Not specified'],['Package / version',val('sell-package')||'Not specified'],['Condition',condition||'Not specified'],['Missing items',val('sell-missing')||'Not specified'],['Legal right to sell',val('sell-ownership')||'Not specified']];if(val('sell-serial'))rows.push(['Serial number',val('sell-serial')]);if(val('sell-notes'))rows.push(['Notes',val('sell-notes')]);$('sell-summary').innerHTML=rows.map(r=>'<div><span>'+esc(r[0])+'</span><strong>'+esc(r[1])+'</strong></div>').join('')}
  $('sell-category').addEventListener('change',()=>{updateType();updateSerial()});$('sell-type').addEventListener('change',updateManufacturer);$('sell-manufacturer').addEventListener('change',()=>{updateModel();updateSerial()});$('sell-model').addEventListener('change',updatePackage);
  form.querySelectorAll('[data-next]').forEach(b=>b.addEventListener('click',()=>{const error=validCurrent();if(error){alert(error);return}step=Math.min(7,step+1);renderStep()}));form.querySelectorAll('[data-back]').forEach(b=>b.addEventListener('click',()=>{step=Math.max(1,step-1);renderStep()}));
- form.addEventListener('submit',async e=>{e.preventDefault();if(submitInFlight)return;const error=validCurrent();if(error){alert(error);return}if(isSubscriberSession()){alert('Customer valuation requests cannot be submitted while you are signed in as the subscriber. Sign out of the subscriber account and use a separate customer account to test the customer journey.');return}const cat=category(),condition=form.querySelector('input[name="sell-condition"]:checked')?.value||null;const payload={tenant_id:activeTenantId,category_id:val('sell-category'),category_name:cat?.name||'',product_type:val('sell-type'),manufacturer:val('sell-manufacturer'),model:val('sell-model'),package_name:val('sell-package'),condition,missing_items:val('sell-missing'),legal_right:val('sell-ownership'),serial_number:val('sell-serial'),notes:val('sell-notes'),created_at:new Date().toISOString()};const button=form.querySelector('button[type="submit"]');if(button){button.disabled=true;button.dataset.label=button.textContent;button.textContent='Submitting…'}submitInFlight=true;try{const session=getStoredCustomerSession();if(session?.access_token){const photos=[...($('sell-photos')?.files||[])];await submitCustomerSellingRequest(payload,session,photos);sessionStorage.removeItem('tradeflow_selling_journey');location.href=customerUrl('selling_journey=1&submitted=1')}else{sessionStorage.setItem('tradeflow_selling_journey',JSON.stringify(payload));location.href=customerUrl('selling_journey=1&submit_selling_request=1')}}catch(err){submitInFlight=false;if(button){button.disabled=false;button.textContent=button.dataset.label||'Submit valuation request →'}alert(err.message||String(err))}});
+ form.addEventListener('submit',async e=>{e.preventDefault();if(submitInFlight)return;const error=validCurrent();if(error){alert(error);return}if(isSubscriberSession()){alert('Customer valuation requests cannot be submitted while you are signed in as the subscriber. Sign out of the subscriber account and use a separate customer account to test the customer journey.');return}const cat=category(),condition=form.querySelector('input[name="sell-condition"]:checked')?.value||null;const payload={tenant_id:activeTenantId,category_id:val('sell-category'),category_name:cat?.name||'',product_type:val('sell-type'),manufacturer:val('sell-manufacturer'),model:val('sell-model'),package_name:val('sell-package'),condition,missing_items:val('sell-missing'),legal_right:val('sell-ownership'),serial_number:val('sell-serial'),notes:val('sell-notes'),created_at:new Date().toISOString()};const button=form.querySelector('button[type="submit"]');if(button){button.disabled=true;button.dataset.label=button.textContent;button.textContent='Submitting…'}submitInFlight=true;try{const session=await getStoredCustomerSession();if(session?.access_token){const photos=[...($('sell-photos')?.files||[])];await submitCustomerSellingRequest(payload,session,photos);sessionStorage.removeItem('tradeflow_selling_journey');location.href=customerUrl('selling_journey=1&submitted=1')}else{sessionStorage.setItem('tradeflow_selling_journey',JSON.stringify(payload));location.href=customerUrl('selling_journey=1&submit_selling_request=1')}}catch(err){submitInFlight=false;if(button){button.disabled=false;button.textContent=button.dataset.label||'Submit valuation request →'}alert(err.message||String(err))}});
  if(val('sell-category')){updateType();updateSerial()}renderStep();
 }
 

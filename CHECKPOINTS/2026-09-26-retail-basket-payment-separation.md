@@ -193,3 +193,25 @@ The test was rolled back. Live state remains:
 No live credit was consumed by the verification.
 
 **Next browser action:** on the existing Basket payment screen, select **Use customer credit** and click **Proceed to payment**. The previous Tenant membership error and SQL status ambiguity have both been repaired and rollback-tested. Browser verification is still required before declaring the genuine payment complete.
+
+
+## Follow-up — paid order detail and subscriber dispatch workflow
+
+The successful customer-credit payment was confirmed for the Test Two EOS R1 purchase. The order is paid for £49.91 and customer credit is now £5.09. The paid order remains separate from the customer's trade-in/My Sale workflow.
+
+A new retail fulfilment lifecycle is now in place. Paid retail orders create a `fulfilments` record in `awaiting` state. The current Test Two order `ORD-20260926-71DCBDEC` has fulfilment `FUL-17C5EB082D09` in `awaiting` state.
+
+Customer My Orders has been expanded to show:
+- order reference and paid status;
+- every purchased item and line value;
+- order total;
+- fulfilment state;
+- carrier/tracking details when dispatched.
+
+Subscriber Selling now has a separate **Sold** section. Paid listings appear there rather than being treated as available stock. The Sold section provides a **CREATE SHIPPING LABEL** link into the Fulfilment workspace and a **MARK AS SENT** action once the fulfilment has reached `label` status.
+
+The Fulfilment workspace now accepts a shipping label URL and can move `awaiting → label`. Marking the parcel as sent moves `label → dispatched`; the customer portal then displays **Shipped** and the tracking number/link.
+
+Migration `20260926200000_retail_order_fulfilment_and_multi_item_payment` also hardened payment for multi-item orders: all retail order items must still be published/available before customer credit is deducted or an external payment is accepted. No partial basket payment is permitted.
+
+GitHub browser code updates were committed for the customer order view, Selling Sold section, and Fulfilment workflow. Frontend cache versions were bumped. Browser verification of the new Sold/Shipping UI is still required; database state has been verified for the current paid order and fulfilment.

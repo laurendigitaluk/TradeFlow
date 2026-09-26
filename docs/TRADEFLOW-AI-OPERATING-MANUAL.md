@@ -1531,3 +1531,10 @@ The concurrent browser screenshot exposed escapeAttr is not defined in platform-
 GitHub commit: c9bceb23e97d2d2f879a29d77f8c0e68c1fd9447.
 
 Never overwrite a working previous-step repair while diagnosing concurrency. Make the smallest isolated change, verify it, then update this checkpoint and the manuals.
+
+
+## 26 September 2026 — Platform Owner email setting repair
+
+The Platform Owner sending-email save path must remain platform-owner-only. A valid address such as info@scenesource.co.uk must pass validation. The live repair corrected an over-escaped domain-dot regex in platform_owner_save_email(). Do not weaken private.is_platform_owner(auth.uid()) or bypass the RPC with direct client writes.
+
+Production migration: 20260926212000_fix_platform_owner_email_validation.

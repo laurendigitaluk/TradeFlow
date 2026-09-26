@@ -35,10 +35,14 @@ function customerUrl(extra){
  const base='customer-dashboard.html';
  return extra?base+'?'+extra:base;
 }
-function customerCheckoutUrl(listingId){
+function customerBasketUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
-
- const target=new URL('./customer-dashboard.html',location.href);target.searchParams.set('tenant_id',activeTenantId||'');target.searchParams.set('listing_id',listingId||'');target.searchParams.set('purchase','1');target.searchParams.set('purchase_v','3');return target.href;
+ const target=new URL('./customer-basket.html',location.href);
+ target.searchParams.set('tenant_id',activeTenantId||'');
+ target.searchParams.set('listing_id',listingId||'');
+ target.searchParams.set('basket','1');
+ target.searchParams.set('basket_v','1');
+ return target.href;
 }
 function pageUrl(slug,extra){
  let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);
@@ -303,7 +307,7 @@ function renderProductPage(site,listings){
    ? '<div class="product-gallery-main"><figure><img src="'+esc(mainMedia.signedUrl||'')+'" alt="'+esc(mainMedia.original_filename||item.title||'Product')+'" loading="eager"></figure></div>'+
      (thumbnailMedia.length?'<div class="product-gallery-thumbs">'+thumbnailMedia.map(m=>'<figure><img src="'+esc(m.signedUrl||'')+'" alt="'+esc(m.original_filename||item.title||'Product')+'" loading="lazy"></figure>').join('')+'</div>':'')
    : '<div class="product-image-empty">No product photograph is currently available.</div>';
- const buyUrl=customerCheckoutUrl(item.listing_id);
+ const buyUrl=customerBasketUrl(item.listing_id);
  const retailCondition=String(item.listing_data?.condition||'').trim();
  const conditionLabel=retailCondition?retailCondition.replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase()):'Not specified';
  const shipping=item.listing_data?.shipping||{};
@@ -320,7 +324,7 @@ function renderProductPage(site,listings){
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
    '<aside class="product-purchase"><strong class="product-price">'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong>'+
    '<dl class="product-facts"><div><dt>Condition</dt><dd>'+esc(conditionLabel)+'</dd></div><div><dt>P&amp;P</dt><dd>'+esc(postageText)+'</dd></div></dl>'+
-   '<a class="start-selling product-buy-button" href="'+esc(buyUrl)+'" data-purchase-listing="'+esc(item.listing_id)+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div>'+
+   '<a class="start-selling product-buy-button" href="'+esc(buyUrl)+'">Buy this item</a><a class="product-back-link" href="'+pageUrl('shop')+'">Back to What We Sell</a></aside></div>'+
    '<section class="product-description-box"><h2>About this item</h2><p class="product-description">'+esc(item.description||'Available from this business.')+'</p></section>'+
    '</div></main>'+renderFooter(site);
 }
@@ -379,7 +383,7 @@ function applyContent(content){
  }
  $('app').innerHTML=html;
  renderBusinessExtras(site);
- if(page==='sell')bindSellWizard(site,catalogue);if(page==='shop')bindProductSearch();if(page==='product'){const b=document.querySelector('.product-buy-button');if(b)b.addEventListener('click',()=>{try{localStorage.setItem('tradeflow_purchase_listing_id',String(b.dataset.purchaseListing||''));localStorage.setItem('tradeflow_purchase_tenant_id',String(activeTenantId||''));}catch{}})}
+ if(page==='sell')bindSellWizard(site,catalogue);if(page==='shop')bindProductSearch();
 }
 
 async function loadBuyingCatalogue(tenant){

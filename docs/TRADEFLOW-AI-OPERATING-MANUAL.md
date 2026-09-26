@@ -1444,3 +1444,14 @@ Customer Portal startup must wait for customer-auth.js session restoration befor
 - The external payment event handler now returns a conflict result when a locally cancelled Stripe payment later reports paid, allowing the Stripe webhook conflict path to refund rather than silently accepting the payment.
 - The customer basket cache was bumped to customer-basket.js?v=4.
 - Do not treat an active Stripe attempt as reusable after the customer has changed the payment mix; the order must be restarted so the card amount is recalculated from the remaining balance.
+
+
+
+## 2026-09-26 — Stripe payment-method configuration boundary
+- Subscriber payment-method controls live in `public.tenant_payment_methods` and the subscriber Settings UI.
+- For retail Stripe Checkout, the Edge Function must read the tenant's enabled `card`, `link`, `klarna`, and `amazon_pay` rows and construct the `allowed_payment_method_types[]` filter. Never trust a browser-supplied payment-method list.
+- Card is mandatory for this retail checkout implementation. Do not permit a subscriber toggle to remove the base card method.
+- Apple Pay must not be added as `payment_method_types[]` or `allowed_payment_method_types[]`: Stripe documents it as a wallet without an API enum. Treat Apple Pay availability as Stripe-managed wallet/card eligibility.
+- Stripe eligibility remains authoritative even when a tenant method is enabled.
+- When diagnosing a checkout screenshot, distinguish **TradeFlow tenant configuration** from **Stripe account-level eligibility** and from **customer/device eligibility**.
+- Production migration: `20260926233000_subscriber_stripe_payment_method_controls`; Edge Function `create-stripe-checkout-session` deployed as version 12.

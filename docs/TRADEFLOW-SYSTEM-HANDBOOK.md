@@ -1216,3 +1216,13 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - Customer Portal **My Orders** now renders each paid retail order as a native collapsible order card. The collapsed header retains order reference, status and total; opening the order reveals items, shipping service/carrier, tracking, fulfilment information and any eligible return action.
 - Storefront product-card image boxes now use `object-fit: contain` so the complete product photograph is visible within the box rather than being cropped. Product-detail gallery behaviour remains unchanged.
 - Cache versions were bumped: Customer Portal CSS/JS to `v9`/`v125`; public storefront CSS to `v66`.
+
+
+## 2026-09-26 — Mixed customer credit + card checkout
+
+- Retail checkout now supports applying available customer credit first and charging the remaining balance by card. Example: a £75 purchase with £5.09 available credit presents £5.09 customer credit and a £69.91 card payment.
+- Customer-facing payment wording is provider-neutral: **Credit or debit card**. The customer does not need to see the Stripe provider name.
+- Customer credit is held against the retail order while the card payment is open. The hold is released if the card payment fails/expires or the customer cancels; it is actually deducted and posted to the ledger when the card payment succeeds. This prevents losing credit when a card checkout is abandoned.
+- If available customer credit covers the entire purchase, the order is completed using customer credit alone without opening card checkout.
+- The customer credit account display now reports available credit after active checkout holds.
+- Current customer checkout supports customer credit plus card payment. Other payment methods can be added later behind the same provider-neutral customer-facing approach, but they are not currently wired into this retail checkout.

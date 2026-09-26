@@ -1311,3 +1311,16 @@ Diagnostic rule: when multiple sessions are open, identify the browser identity 
 The Platform Owner Dashboard's TradeFlow sending-email setting is protected by the platform-owner authorization boundary. The save RPC must validate the address without weakening that boundary.
 
 A live test exposed an over-escaped email regular expression that rejected valid addresses containing a normal dotted domain. Migration `20260926212000_fix_platform_owner_email_validation` corrected only the validation expression. The sender remains marked pending until the separate sending-domain/email verification process is completed.
+
+
+## Platform Owner — Commercial Plan Control
+
+The Platform Owner Dashboard is the authoritative control surface for TradeFlow's commercial plan presentation. The commercial plan editor operates on the active Basic, Enhanced and Catalogue plan records.
+
+The `public.plans.active` field represents whether a plan remains operational in the platform. It must not be used as the website visibility switch. `plans.website_visible` controls whether a plan is offered to new website visitors and subscriber sign-ups. This separation allows an existing plan to remain operational for current tenants while being hidden from new sales.
+
+Plan commercial configuration includes monthly/annual display prices, currency, Stripe Product ID, Stripe monthly Price ID and Stripe annual Price ID. Stripe secret credentials must never be stored in the public `plans` table or browser code.
+
+Owner mutations use `platform_owner_update_plan()` and are protected by `private.is_platform_owner(auth.uid())`. Public website reads use `public_get_available_plans()`, which returns only active plans marked website-visible and does not expose Stripe identifiers.
+
+Current initial state after migration `20260926220000_platform_commercial_plan_controls`: Basic and Enhanced are website-visible; Catalogue is active but hidden. Prices and Stripe IDs are intentionally unset until the platform owner configures them.

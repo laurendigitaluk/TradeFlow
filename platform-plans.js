@@ -8,7 +8,7 @@ async function tradeflowAvailablePlans(){
 function tradeflowPlanPrice(p){
  if(p.monthly_price===null||p.monthly_price===undefined)return '<strong>Price to be set</strong><span>per month</span>';
  const money=new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.monthly_price));
- return '<strong>'+money+'</strong><span>per month</span>';
+ const annual=p.annual_price===null||p.annual_price===undefined?'':'<small>'+new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.annual_price))+' per year</small>';return '<strong>'+money+'</strong><span>per month</span>'+annual;
 }
 function tradeflowPlanHighlights(code){
  if(code==='basic')return ['Buying','Selling','Inventory management','Orders and fulfilment','Customer portal','Offers and trade-ins','Valuation tools — manual and rules','Your own customer-facing website','Website Builder','Custom categories and subcategories','Website preview and publishing'];

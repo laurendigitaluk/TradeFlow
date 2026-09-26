@@ -1,6 +1,7 @@
 # TradeFlow Checkpoint — 2026-09-26 Retail Basket → Payment → My Orders Lifecycle Repair
 
 ## Scope
+
 Test Two / Camerashack retail purchasing only. Test One remains frozen.
 
 Tenant: `21fca2c5-5da2-4ff6-9f8e-318f9b6277f9`  
@@ -163,3 +164,32 @@ The current unpaid EOS R1 test order was cancelled. Live verification after rese
 The Nikon COOLPIX P1100 card visible under My Sale is a separate trade-in/selling workflow record (purchase_stage=purchased). It was not deleted or altered as part of the retail-stock reset. The retail purchase lifecycle is now being tested separately.
 
 Next test: return to the EOS R1 product on the live shop, add it to Basket, proceed to payment, and confirm that the product remains visible/purchasable while the payment is still incomplete. Then complete customer credit payment and verify the listing changes to sold only after payment.
+
+
+## Browser finding — customer credit path required subscriber membership
+
+The next browser test exposed a separate defect after the payment-type repair: selecting **Use customer credit** returned **Tenant membership required**.
+
+Root cause: `customer_pay_retail_order_with_credit()` called `transition_workflow_entity()`. That helper is intentionally subscriber/operator-only and requires tenant membership. A customer is correctly authenticated to their tenant through the `customers.auth_user_id` relationship but is not a subscriber tenant member.
+
+Repair: migration `20260926180000_customer_credit_checkout_transition` records the `pending_payment → paid` retail-order workflow transition directly inside the customer SECURITY DEFINER RPC instead of calling the subscriber-only helper. No tenant membership was granted to the customer and no security boundary was weakened.
+
+The first post-repair rollback-only authenticated SQL test then exposed a second PL/pgSQL issue: the RPC return column is also named `status`, so unqualified `status` references in the listing/inventory UPDATE predicates were ambiguous.
+
+Repair: migration `20260926181000_fix_customer_credit_checkout_update_ambiguity` qualifies those UPDATE targets and predicates.
+
+Rollback-only authenticated verification now returns the expected result for the current EOS R1 pending order:
+- status: `paid`
+- amount: £49.91
+- remaining credit: £5.09
+
+The test was rolled back. Live state remains:
+- retail order: `pending_payment`
+- payment status: `unpaid`
+- amount due: £49.91
+- EOS R1 listing: `published`
+- customer credit: £55.00
+
+No live credit was consumed by the verification.
+
+**Next browser action:** on the existing Basket payment screen, select **Use customer credit** and click **Proceed to payment**. The previous Tenant membership error and SQL status ambiguity have both been repaired and rollback-tested. Browser verification is still required before declaring the genuine payment complete.

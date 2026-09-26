@@ -2,6 +2,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
+const LEGACY_SESSION_STORAGE='tradeflow_customer_session';
 const tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id');
 let authReadyResolve;
 window.tradeflowCustomerAuthReady=new Promise(resolve=>{authReadyResolve=resolve});
@@ -14,7 +15,16 @@ async function authRequest(path,body){
  if(!response.ok)throw Error(data?.msg||data?.message||data?.error_description||data?.error||text||'Authentication request failed.');
  return data;
 }
-function saveSession(data){if(data?.access_token)localStorage.setItem(SESSION_STORAGE,JSON.stringify(data));else localStorage.removeItem(SESSION_STORAGE);}
+function saveSession(data){
+ if(data?.access_token){
+  sessionStorage.setItem(SESSION_STORAGE,JSON.stringify(data));
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+ }else{
+  sessionStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+ }
+}
+
 function revealPortal(){
  const auth=$('auth-panel'),portal=$('portal');
  if(auth)auth.hidden=true;
@@ -37,14 +47,15 @@ async function signIn(){
  if(!email||!password)return message('Enter your email and password.','error');
  busy(button,true,'Signing in…');
  try{
-  localStorage.removeItem(SESSION_STORAGE);
+  sessionStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
   const data=await authRequest('/auth/v1/token?grant_type=password',{email,password});
   if(!data?.access_token)throw Error('Supabase did not return a customer session.');
   saveSession(data);
-  let pending=null;try{pending=JSON.parse(localStorage.getItem('tradeflow_pending_customer_registration')||'null')}catch{}
+  let pending=null;try{pending=JSON.parse(sessionStorage.getItem('tradeflow_pending_customer_registration')||'null')}catch{}
   if(pending?.tenant_id===tenantId&&pending?.email?.toLowerCase()===email.toLowerCase()){
     await registerCustomer(data.access_token,pending.first_name,pending.last_name);
-    localStorage.removeItem('tradeflow_pending_customer_registration');
+    sessionStorage.removeItem('tradeflow_pending_customer_registration');
   }
   dispatchAuthSuccess(data);
  }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE);}finally{busy(button,false)}
@@ -55,8 +66,9 @@ async function signUp(){
  if(!email||!password||!first)return message('Email, password and first name are required.','error');
  busy(button,true,'Creating account…');
  try{
-  localStorage.removeItem(SESSION_STORAGE);
-  localStorage.setItem('tradeflow_pending_customer_registration',JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
+  sessionStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+  sessionStorage.setItem('tradeflow_pending_customer_registration',JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
   const data=await authRequest('/auth/v1/signup',{email,password});
   if(!data?.access_token){
     message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');
@@ -69,7 +81,7 @@ async function signUp(){
  }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function restoreExistingSession(){
- const raw=localStorage.getItem(SESSION_STORAGE);
+ const raw=sessionStorage.getItem(SESSION_STORAGE);
  if(!raw)return;
  try{
   let data=JSON.parse(raw);
@@ -89,7 +101,8 @@ async function restoreExistingSession(){
   if(!response.ok)throw Error('Customer session is no longer valid.');
   dispatchAuthSuccess(data);
  }catch{
-  localStorage.removeItem(SESSION_STORAGE);
+  sessionStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
  }
 }
 function bind(){

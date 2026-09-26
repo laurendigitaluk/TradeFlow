@@ -36,10 +36,8 @@ async function loadSelling(){const data=await rpc('customer_get_selling_status')
 async function respondOffer(id,a,mode){try{await rpc(a==='accept'?'customer_accept_offer_choice':'customer_refuse_offer',a==='accept'?{p_offer_id:id,p_offer_mode:mode||'cash',p_response_notes:null}:{p_offer_id:id,p_response_notes:null});message(a==='accept'?'Offer accepted.':'Offer refused.','success');await loadSelling()}catch(e){message(e.message||String(e),'error')}}
 async function openShip(id,kind){
  const popup=window.open('','tradeflowShippingPrint','width=1000,height=850,resizable=yes,scrollbars=yes');
- if(!popup){
-  message('Please allow pop-ups for the Customer Portal to open the shipping file.','error');
-  return;
- }
+ if(!popup){message('Please allow pop-ups for the Customer Portal to open the shipping file.','error');return}
+ let objectUrl=null;
  try{
   popup.document.open();
   popup.document.write('<!doctype html><html><head><title>Shipping '+(kind==='label'?'Label':'QR Code')+'</title><style>'+
@@ -50,8 +48,8 @@ async function openShip(id,kind){
    '.page img,.page iframe{display:block;width:6in;height:4in;max-width:none;max-height:none;border:0;background:#fff;object-fit:fill;transform:rotate(90deg);transform-origin:center center}'+
    'body.a4 .page{width:4in;height:6in;margin:0;box-shadow:0 2px 12px rgba(0,0,0,.16)}'+
    '@page{size:4in 6in;margin:0}@media print{html,body{background:#fff!important}.toolbar{display:none!important}.page{width:4in!important;height:6in!important;margin:0!important;box-shadow:none!important}.page img,.page iframe{width:4in!important;height:6in!important;max-width:6in!important;max-height:4in!important}body.a4 .page{width:4in!important;height:6in!important;margin:0!important}}'+
-   'body.a4{background:#fff}body.a4 .page{}'+
-   '</style></head><body><div class="toolbar"><strong>Shipping '+(kind==='label'?'Label':'QR Code')+'</strong><button onclick="printLabel(false)">Print 6×4</button><button class="secondary" onclick="printLabel(true)">Print on A4</button><button class="secondary" onclick="window.close()">Close</button></div><div id="status" class="status">Opening secure shipping file…</div><script>function printLabel(a4){document.body.classList.toggle("a4",!!a4);var s=document.createElement("style");s.id="print-size";s.textContent="@page{size:"+(a4?"A4":"4in 6in")+";margin:"+(a4?"0":"0")+"}";var old=document.getElementById("print-size");if(old)old.remove();document.head.appendChild(s);window.print();}</script></body></html>');
+   'body.a4{background:#fff}'+
+   '</style></head><body><div class="toolbar"><strong>Shipping '+(kind==='label'?'Label':'QR Code')+'</strong><button onclick="printLabel(false)">Print 6×4</button><button class="secondary" onclick="printLabel(true)">Print on A4</button><button class="secondary" onclick="window.close()">Close</button></div><div id="status" class="status">Opening secure shipping file…</div><script>function printLabel(a4){document.body.classList.toggle("a4",!!a4);var old=document.getElementById("print-size");if(old)old.remove();var s=document.createElement("style");s.id="print-size";s.textContent="@page{size:"+(a4?"A4":"4in 6in")+";margin:0}";document.head.appendChild(s);window.print()}</script></body></html>');
   popup.document.close();
 
   const rows=await rpc('customer_get_pre_acquisition_shipping');
@@ -61,32 +59,33 @@ async function openShip(id,kind){
   if(!path&&!direct)throw Error('Shipping file is not available yet.');
 
   let fileUrl=direct;
-  if(!fileUrl){
-   const r=await fetch(SUPABASE_URL+'/storage/v1/object/sign/tradeflow-media/'+path,{
-    method:'POST',
-    headers:{apikey:key,Authorization:'Bearer '+(session?.access_token||''),'Content-Type':'application/json'},
-    body:JSON.stringify({expiresIn:86400})
+  if(path){
+   const r=await fetch(SUPABASE_URL+'/storage/v1/object/authenticated/'+path,{
+    method:'GET',
+    headers:{apikey:key,Authorization:'Bearer '+(session?.access_token||'')}
    });
-   const t=await r.text();
-   let b=null;try{b=t?JSON.parse(t):null}catch{b=t}
-   if(!r.ok)throw Error(b?.message||b?.error||t||'Could not open shipping file');
-   const signedUrl=b?.signedURL;
-   if(!signedUrl)throw Error('Could not create a secure shipping file link.');
-   fileUrl=signedUrl.startsWith('http')?signedUrl:(signedUrl.startsWith('/storage/v1/')?SUPABASE_URL+signedUrl:(signedUrl.startsWith('/')?SUPABASE_URL+'/storage/v1'+signedUrl:SUPABASE_URL+'/storage/v1/'+signedUrl));
+   if(!r.ok){
+    const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}
+    throw Error(b?.message||b?.error||t||('Could not open shipping file (HTTP '+r.status+').'));
+   }
+   const blob=await r.blob();
+   objectUrl=URL.createObjectURL(blob);
+   fileUrl=objectUrl;
   }
 
-  const cleanUrl=String(fileUrl).split('?')[0].toLowerCase();
-  const isImage=/\.(png|jpe?g|gif|webp)$/i.test(cleanUrl);
+  const type=kind==='label'?'label':'QR code';
+  const contentType=(fileUrl||'').toLowerCase();
+  const isImage=/\\.(png|jpe?g|gif|webp)(\\?|$)/i.test(contentType)||(!direct&&false);
   const content=isImage
-   ?'<div class="page"><img src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" alt="Shipping '+(kind==='label'?'label':'QR code')+'"></div>'
-   :'<div class="page"><iframe src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" title="Shipping '+(kind==='label'?'label':'QR code')+'"></iframe></div>';
+   ?'<div class="page"><img src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" alt="Shipping '+type+'"></div>'
+   :'<div class="page"><iframe src="'+String(fileUrl).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" title="Shipping '+type+'"></iframe></div>';
   popup.document.getElementById('status').outerHTML=content;
   popup.focus();
  }catch(e){
-  try{
-   popup.document.getElementById('status').textContent=e.message||String(e);
-  }catch{}
+  try{popup.document.getElementById('status').textContent=e.message||String(e)}catch{}
   message(e.message||String(e),'error');
+ }finally{
+  if(objectUrl)setTimeout(()=>URL.revokeObjectURL(objectUrl),15*60*1000);
  }
 }
 async function postItem(id,b){b.disabled=true;try{await rpc('customer_mark_buying_item_posted',{p_buying_item_id:id});message('Item sent status recorded.','success');await loadSelling()}catch(e){message(e.message||String(e),'error')}finally{b.disabled=false}}

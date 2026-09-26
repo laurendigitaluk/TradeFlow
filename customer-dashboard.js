@@ -1,6 +1,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_customer_session';
+const LEGACY_SESSION_STORAGE='tradeflow_customer_session';
 let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id'),profile=null;
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c))}
@@ -9,8 +10,23 @@ function message(t,type=''){const e=$('customer-message');if(e){e.textContent=t|
 function showAuth(v){$('auth-panel').hidden=!v;$('portal').hidden=v;if($('purchase'))$('purchase').hidden=true}
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||t||('HTTP '+r.status));return b}
 async function rpc(name,body){return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(Object.assign({p_tenant_id:tenantId},body||{}))})}
-function saveSession(v){session=v||null;if(session?.access_token){const raw=JSON.stringify(session);localStorage.setItem(SESSION_STORAGE,raw);}else{localStorage.removeItem(SESSION_STORAGE);}}
-function restore(){try{const s=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');if(s?.access_token)session=s}catch{}}
+function saveSession(v){
+ session=v||null;
+ if(session?.access_token){
+  sessionStorage.setItem(SESSION_STORAGE,JSON.stringify(session));
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+ }else{
+  sessionStorage.removeItem(SESSION_STORAGE);
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+ }
+}
+function restore(){
+ try{
+  const s=JSON.parse(sessionStorage.getItem(SESSION_STORAGE)||'null');
+  if(s?.access_token)session=s;
+  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+ }catch{}
+}
 async function profileCheck(){try{const p=await rpc('customer_get_profile');if(!p)return false;profile=Array.isArray(p)?p[0]:p;return Boolean(profile)}catch{return false}}
 async function loadBrand(){try{const r=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=Array.isArray(r)?r[0]:r;const n=p?.business_name||'Customer Portal';$('brand-name').textContent=n;document.title=n+' Customer Portal';if(p?.logo_url)$('brand-logo').innerHTML='<img src="'+esc(p.logo_url)+'" alt="">';$('brand').href='public-site.html?tenant_id='+encodeURIComponent(tenantId)}catch{}}
 function updatePortalNav(saleRows,orderRows){
@@ -204,7 +220,7 @@ async function saveAddress(type,id,b){try{b.disabled=true;const p={p_tenant_id:t
 async function saveBank(){try{await api('/rest/v1/rpc/customer_save_bank_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_account_holder_name:$('bank-holder').value.trim(),p_sort_code:$('bank-sort').value.trim(),p_account_number:$('bank-number').value.trim(),p_bank_name:$('bank-name').value.trim()||null})});message('Bank details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}}
 async function loadPortal(){try{const ok=await profileCheck();if(!ok){saveSession(null);showAuth(true);message('This login is not registered for this business. Use Create customer account to create a new account.','error');return}showAuth(false);await loadBrand();await Promise.all([loadSelling(),loadOrders(),loadDetails(),loadCreditAccount()]);}catch(e){showAuth(false);message(e.message||String(e),'error')}}
 $('save-profile').onclick=async()=>{try{await rpc('customer_update_profile',{p_first_name:$('profile-first-name').value.trim(),p_last_name:$('profile-last-name').value.trim(),p_phone:$('profile-phone').value.trim()||null});message('Details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}};
-$('sign-out').onclick=()=>{saveSession(null);localStorage.removeItem('tradeflow_pending_customer_registration');showAuth(true);message('Signed out.','success');location.hash='';window.scrollTo(0,0);};
+$('sign-out').onclick=()=>{saveSession(null);sessionStorage.removeItem('tradeflow_pending_customer_registration');showAuth(true);message('Signed out.','success');location.hash='';window.scrollTo(0,0);};
 window.tradeflowCustomerDashboardRefresh=loadPortal;
 let portalLoadInProgress=false;
 async function loadPortalOnce(){

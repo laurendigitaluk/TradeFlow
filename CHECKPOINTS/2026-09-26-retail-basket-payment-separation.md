@@ -249,3 +249,35 @@ The next browser screenshot still showed the legacy `permission denied for table
 The repair has been hardened further: the Fulfilment page now uses subscriber-only SECURITY DEFINER RPCs for both orders and fulfilments, so the browser no longer needs direct access to either `retail_orders` or `fulfilments`. New RPC: `subscriber_get_fulfilments(p_tenant_id)`. Existing `subscriber_get_fulfilment_orders(p_tenant_id)` remains the order source. Fulfilment JavaScript cache version is now `v5`.
 
 The Fulfilment HTML also contains the Shipping Service provider section sourced from the saved Shipping Settings services. Browser verification must confirm that the current deployed HTML shows those provider cards; the screenshot supplied after the previous repair was still the legacy page and therefore did not test the new code.
+
+## Follow-up — Retail sale shipping handoff repaired — 26 September 2026
+
+The Fulfilment screenshot exposed two separate defects in the first retail dispatch implementation: the page was still attempting direct browser access to fulfilments, producing permission denied for table fulfilments; and the form did not expose the information required to actually purchase a parcel service: the sold item, recipient/delivery address, weight, parcel dimensions, printable label, printable QR code, carrier/service, tracking and customer instructions.
+
+The repair now mirrors the existing subscriber-managed Buying shipping handoff rather than introducing a second shipping model.
+
+Live database changes:
+- fulfilments now stores the retail shipping method/provider/service URL, instructions, label storage path, QR URL/storage path and customer-sent timestamp.
+- Existing fulfilment_parcels is used for the packed parcel's weight and L/W/H measurements.
+- subscriber_save_retail_fulfilment_shipping() is the server-side write boundary. It requires subscriber fulfilment permission, validates the paid retail order, persists the label/QR and parcel details, and moves awaiting → label.
+- subscriber_transition_retail_fulfilment() is the server-side status transition boundary for dispatch/delivery/return.
+- subscriber_get_retail_fulfilment_shipping() returns the complete subscriber fulfilment view, including order items, inventory references/condition, recipient, address, shipping data and parcel measurements.
+- customer_get_retail_fulfilment_shipping() returns the customer-visible retail shipping handoff.
+- Customer access to fulfilment label/QR files is restricted to the exact customer's paid retail order in the tradeflow-media bucket.
+- A new order_shipping_ready notification template is queued when the shipping handoff is first completed. It includes the order, item(s), service, carrier, tracking, parcel information, instructions and Customer Portal link. Dispatch continues to queue the expanded order_dispatched notification.
+
+Shipping research confirms why the parcel fields are required: Parcel2Go requires accurate weight and dimensions, including packaging, and warns that under-declared measurements can lead to surcharges. Royal Mail Click & Drop likewise requires shipment weight and packaging information before a label is generated. QR/print-in-store services are supported by Parcel2Go and selected courier services.
+
+Current Test Two live state remains unchanged:
+- order ORD-20260926-71DCBDEC
+- fulfilment FUL-17C5EB082D09
+- fulfilment status awaiting
+- no label/QR has been uploaded
+- no parcel measurements have been recorded.
+
+GitHub frontend changes:
+- Fulfilment now has the saved shipping-service cards, full sold-item details, recipient/address, parcel measurement fields, label/QR upload and view/print controls, tracking and instructions, plus status controls.
+- Customer My Orders now consumes the retail fulfilment shipping RPC and can display the shipping handoff, parcel details, tracking, label and QR controls.
+- Fulfilment JS syntax and Customer Dashboard JS syntax were checked after the changes.
+
+Verification state: Implemented in GitHub; Live DB verified; browser verification still required; checkpoint updated.

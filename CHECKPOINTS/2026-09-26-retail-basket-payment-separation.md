@@ -332,3 +332,17 @@ GitHub changes:
 - migration source added as supabase/migrations/20260926223000_retail_fulfilment_handoff_reliability.sql.
 
 Verification state: Live migration applied successfully; frontend syntax checked; browser verification still required for the deployed GitHub Pages version.
+
+
+
+## Follow-up — Customer retail shipping visibility and return flow — 26 September 2026
+
+Browser review clarified the customer-side retail fulfilment experience. Customers are recipients of a purchase, not the sender. They do not need the business's printable shipping label or courier QR code in My Orders.
+
+Customer My Orders now shows the retail shipment status, shipping service/carrier and tracking number. The existing subscriber dispatch transition already queues the order_dispatched customer notification containing the item, carrier/service, tracking and Customer Portal link. Customer label/QR view-and-print controls have therefore been removed from the retail customer order card.
+
+The customer can request a retail return only after the subscriber marks the fulfilment as delivered. The Customer Portal provides a Create a return action for delivered order items, with a reason and optional notes. The server-side customer_request_return() boundary was corrected to use return_type='customer_retail' and now enforces delivered fulfilment status and prevents duplicate active return requests.
+
+A separate startup race was found in Customer Portal authentication. customer-dashboard.js was calling customer_get_profile before customer-auth.js had finished restoring/validating the stored session. This could briefly show “This login is not registered for this business” and then disappear after refresh. The Customer Portal now loads customer-auth before customer-dashboard and waits for the authentication-ready promise before the initial profile check. The dashboard also guards against duplicate portal loads.
+
+Verification state: live return RPC applied; frontend syntax checked; browser verification required.

@@ -165,7 +165,7 @@ async function loadOrders(){
    const s=shippingByOrder[o.order_id]||{};
    const f=s.fulfilment_status||o.fulfilment_status;
    const shippingLabel=f==='delivered'?'Delivered':f==='dispatched'?'Shipped':f==='label'?'Preparing shipment':f==='awaiting'?'Preparing shipment':'Not yet shipped';
-   const tracking=s.tracking_number?(s.tracking_url?'<a href="'+esc(s.tracking_url)+'" target="_blank" rel="noopener">'+esc(s.tracking_number)+'</a>':esc(s.tracking_number)):'';
+   const tracking=s.tracking_number?(s.tracking_url?'<a href="'+esc(s.tracking_url)+'" target="_blank" rel="noopener">'+esc(s.tracking_number)+'</a> · <a href="'+esc(s.tracking_url)+'" target="_blank" rel="noopener">Track item →</a>':esc(s.tracking_number)):'';
    const orderClass=f==='awaiting'?' order-preparing':f==='label'?' order-label-ready':f==='dispatched'?' order-shipped':f==='delivered'?' order-delivered':'';
    const shipDetails=f==='dispatched'||f==='delivered'?'<div class="detail-grid" style="margin-top:10px"><div><span class="label">Shipping service</span><strong>'+esc(s.service||'—')+'</strong></div><div><span class="label">Carrier</span><strong>'+esc(s.carrier||'—')+'</strong></div></div>':'';
    const instructions=f==='label'?'<p class="small"><strong>Shipping:</strong> Your parcel is ready for dispatch. You will receive a tracking update when it has been sent.</p>':f==='dispatched'?'<p class="small"><strong>Item sent:</strong> Your order has been handed to the shipping service. Use the tracking number above for delivery updates.</p>':f==='delivered'?'<p class="small"><strong>Item received:</strong> If you need to return this item, use the return option below.</p>':'';

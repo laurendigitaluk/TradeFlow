@@ -1,0 +1,9 @@
+-- Harden retail fulfilment shipping RPC execution.
+revoke execute on function public.subscriber_save_retail_fulfilment_shipping(uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,numeric,numeric,numeric,numeric,text) from public,anon;
+revoke execute on function public.subscriber_transition_retail_fulfilment(uuid,uuid,text,text,text) from public,anon;
+revoke execute on function public.subscriber_get_retail_fulfilment_shipping(uuid) from public,anon;
+revoke execute on function public.customer_get_retail_fulfilment_shipping(uuid) from public,anon;
+grant execute on function public.subscriber_save_retail_fulfilment_shipping(uuid,uuid,text,text,text,text,text,text,text,text,text,text,text,text,numeric,numeric,numeric,numeric,text) to authenticated;
+grant execute on function public.subscriber_transition_retail_fulfilment(uuid,uuid,text,text,text) to authenticated;
+grant execute on function public.subscriber_get_retail_fulfilment_shipping(uuid) to authenticated;
+grant execute on function public.customer_get_retail_fulfilment_shipping(uuid) to authenticated;

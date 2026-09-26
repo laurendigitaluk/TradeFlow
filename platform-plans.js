@@ -11,13 +11,13 @@ function tradeflowPlanPrice(p){
  const annual=p.annual_price===null||p.annual_price===undefined?'':'<small>'+new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.annual_price))+' per year</small>';return '<strong>'+money+'</strong><span>per month</span>'+annual;
 }
 function tradeflowPlanHighlights(code){
- return ['Complete buying and valuation workflow','Trade-ins, offers and customer portal','Inventory, selling, orders and fulfilment','Customer-facing website and Website Builder','Staff management and staff messaging','Audit tools and analytics','Integrations and market intelligence','TradeFlow starting catalogue'];
+ return ['Complete buying and valuation workflow','Trade-ins, offers and customer portal','Inventory, selling, orders and fulfilment','Customer-facing website and Website Builder','TradeFlow starting catalogue'];
 }
 function renderTradeflowPlanCards(host,plans){
  host.innerHTML=plans.map((p,i)=>{
   const featured=' featured-plan';
   const lis=tradeflowPlanHighlights(p.code).map(x=>'<li>'+x+'</li>').join('');
-  const buttonClass=featured?'button button-primary full':'button button-outline full';
+  const buttonClass='button button-primary full';
   return '<article class="plan-new'+featured+'"><div class="plan-top"><h3>'+p.name+'</h3><p>'+ (p.description||'') +'</p><div class="plan-price">'+tradeflowPlanPrice(p)+'</div></div><ul>'+lis+'</ul><a class="'+buttonClass+'" href="subscriber-signup.html?plan='+encodeURIComponent(p.code)+'">Start with '+p.name+'</a><a class="plan-detail-mini" href="plans.html#'+encodeURIComponent(p.code)+'">View '+p.name+' features →</a></article>';
  }).join('');
 }

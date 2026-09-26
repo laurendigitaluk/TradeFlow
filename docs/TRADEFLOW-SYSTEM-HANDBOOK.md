@@ -1324,3 +1324,20 @@ Plan commercial configuration includes monthly/annual display prices, currency, 
 Owner mutations use `platform_owner_update_plan()` and are protected by `private.is_platform_owner(auth.uid())`. Public website reads use `public_get_available_plans()`, which returns only active plans marked website-visible and does not expose Stripe identifiers.
 
 Current initial state after migration `20260926220000_platform_commercial_plan_controls`: Basic and Enhanced are website-visible; Catalogue is active but hidden. Prices and Stripe IDs are intentionally unset until the platform owner configures them.
+
+
+## 26 September 2026 — Single commercial plan
+
+TradeFlow now uses one public commercial plan. The existing enhanced plan row is the canonical internal plan so the active Camerashack tenant keeps its existing plan reference and feature gates without a subscription migration.
+
+The display name is TradeFlow and it represents the complete current workspace: buying, valuation, trade-ins, offers, inventory, selling, orders, fulfilment, customer portal, Website Builder, staff, messaging, audit, analytics, integrations, market intelligence and the TradeFlow starting catalogue.
+
+Legacy plan rows remain inactive for historical records but are not offered to new subscribers. New business creation accepts only the canonical TradeFlow plan.
+
+The Platform Owner controls the single plan's name, description, website visibility, monthly/annual pricing, currency and Stripe Product/Price IDs.
+
+## Platform email verification
+
+The Platform Owner's sending-email setting is not an email-confirmation mechanism. Saving an address records the intended sender and marks it pending until the email provider/domain verification is completed. TradeFlow's notification processor refuses to send while the sender remains unverified.
+
+Do not bypass provider/domain verification by marking the sender verified directly from client code.

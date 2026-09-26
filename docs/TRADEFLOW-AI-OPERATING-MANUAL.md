@@ -1366,3 +1366,29 @@ The retail checkout lifecycle now separates payment completion from dispatch. Su
 The customer My Orders UI no longer presents only an order reference and total. It groups order items under each paid order and shows fulfilment/tracking details. The subscriber Selling UI now keeps paid listings in a separate Sold section rather than mixing them with available listings.
 
 Multi-item payment was hardened in migration `20260926200000_retail_order_fulfilment_and_multi_item_payment`: customer-credit payment and external payment processing validate and claim every item in the retail order before completing payment. The same migration adds `customer_get_order_details()` and creates the fulfilment record at payment time. Existing paid Test Two order `ORD-20260926-71DCBDEC` was backfilled with fulfilment `FUL-17C5EB082D09` in `awaiting` state.
+
+
+### 26 September 2026 — Retail fulfilment shipping handoff rule
+
+When repairing or extending retail dispatch, use the established Buying shipping handoff as the reference implementation. Do not create a separate shipping settings model for Sales.
+
+The Fulfilment UI must provide:
+- saved Shipping Settings services and provider links;
+- the paid order and exact item(s) being shipped;
+- recipient name/email and delivery address;
+- packed parcel weight and length/width/height;
+- carrier, service, tracking number and tracking URL;
+- printable shipping label upload/view/print;
+- printable QR code upload/view/print;
+- shipping instructions;
+- a single completion action that persists the handoff, moves awaiting to label, and queues the customer notification.
+
+Customer notification must include the order reference, item(s), shipping service/carrier, tracking information, parcel measurements, instructions and Customer Portal link. Do not claim email delivery has occurred merely because the queue row was created; the notification processor must still deliver it.
+
+Security boundary:
+- subscriber writes use subscriber_save_retail_fulfilment_shipping() and subscriber_transition_retail_fulfilment();
+- subscriber reads use subscriber_get_retail_fulfilment_shipping();
+- customer reads use customer_get_retail_fulfilment_shipping();
+- customer access to uploaded fulfilment files is limited by storage policy to the customer's own paid order.
+
+Shipping research rule: parcel weight/dimensions must represent the packed shipment, including packaging. Use measured values where possible rather than guessing from product specifications.

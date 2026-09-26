@@ -1243,3 +1243,12 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - The checkout Edge Function reads these settings and sends Stripe's dynamic-method filter using `allowed_payment_method_types[]`. Stripe remains the authority for method eligibility at checkout.
 - Apple Pay is deliberately documented as Stripe-managed rather than represented as a false TradeFlow toggle. Stripe's API documentation lists Apple Pay as a wallet without an API enum, while Link and Amazon Pay have API enums. With card payments enabled, TradeFlow cannot independently suppress Apple Pay through the Checkout Session API.
 - Do not reintroduce a second payment-method configuration system. Use `tenant_payment_methods` for subscriber-controlled Stripe method preferences and keep provider connectivity separate.
+
+
+### 2026-09-26 — Business workflow retail sales count repair
+- The subscriber Business Dashboard workflow counts were reading legacy `orders` and `fulfilment_orders` REST resources that are not the live retail sales tables. Because failed REST requests were converted to empty arrays, the dashboard incorrectly displayed **Orders 0** and **Fulfilment 0** even though live retail orders existed.
+- Added `subscriber_get_business_workflow_counts(uuid)` as the tenant-scoped dashboard read boundary. It counts live `retail_orders`, `fulfilments`, listings, inventory, buying and returns.
+- A paid retail order with no fulfilment yet, or a fulfilment in `awaiting` / `label`, is counted as **Fulfilment — SALE TO PROCESS**. Orders counts paid/fulfilment retail orders that are not cancelled/completed.
+- The Selling card continues to represent active unsold listings, so it can correctly remain 0 when all listings are sold. Retail shipping work belongs in Fulfilment.
+- Production migration: `20260926234000_business_workflow_retail_counts`.
+- Dashboard fix commit: `a81d1829e0f9bb4651d26ac4a834e4b66643e447`.

@@ -75,12 +75,15 @@ function fileButton(kind,label,path,url){
 function updateFileCards(r){
   const hasLabel=Boolean(r?.label_storage_path||r?.label_url||$('label-file').files?.length);
   const hasQr=Boolean(r?.qr_storage_path||r?.qr_url||$('qr-file').files?.length);
+  const carrier=String($('carrier')?.value||'').trim();
+  const tracking=String($('tracking')?.value||'').trim();
+  const ready=Boolean(carrier&&tracking);
   $('label-card').classList.toggle('has-file',hasLabel);
   $('qr-card').classList.toggle('has-file',hasQr);
   $('label-file-status').innerHTML=r?.label_storage_path||r?.label_url?'<strong>Label already saved.</strong> '+fileButton('label','Add label',r.label_storage_path,r.label_url):$('label-file').files?.length?'<strong>New label selected.</strong>':'No label uploaded yet.';
   $('qr-file-status').innerHTML=r?.qr_storage_path||r?.qr_url?'<strong>QR code already saved.</strong> '+fileButton('qr','Add QR code',r.qr_storage_path,r.qr_url):$('qr-file').files?.length?'<strong>New QR code selected.</strong>':'No QR code uploaded yet.';
-  $('handoff-validation').textContent=hasLabel||hasQr?'A label or QR code is ready. You can complete the customer handoff.':'Upload the label or QR code supplied by the shipping provider to continue.';
-  $('save-shipping').disabled=!(hasLabel||hasQr);
+  $('handoff-validation').textContent=ready?'Carrier and tracking number are ready. You can complete the shipment.':'Enter a carrier and tracking number to complete the shipment. A label or QR code is optional.';
+  $('save-shipping').disabled=!ready;
 }
 function renderOrder(){
   const id=$('order').value,r=rows.find(x=>x.retail_order_id===id),panel=$('order-details');
@@ -197,7 +200,7 @@ $('save-shipping').addEventListener('click',saveShipping);
 $('refresh').addEventListener('click',load);
 $('label-file').addEventListener('change',()=>updateFileCards(rows.find(x=>x.retail_order_id===$('order').value)||{}));
 $('qr-file').addEventListener('change',()=>updateFileCards(rows.find(x=>x.retail_order_id===$('order').value)||{}));
-['carrier','service','tracking','tracking-url','instructions'].forEach(id=>$(id).addEventListener('input',()=>updatePreview(rows.find(x=>x.retail_order_id===$('order').value)||{})));
+['carrier','service','tracking','tracking-url','instructions'].forEach(id=>$(id).addEventListener('input',()=>{const r=rows.find(x=>x.retail_order_id===$('order').value)||{};updatePreview(r);updateFileCards(r)}));
 $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
 let booted=false;
 function boot(){if(booted)return;booted=true;load()}

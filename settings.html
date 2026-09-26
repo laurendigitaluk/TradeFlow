@@ -55,10 +55,14 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Shipping</div><h2>Shipping services</h2></div><span class="status-pill">Managed separately</span></div><p>Shipping provider connections are managed from the dedicated Shipping Settings workspace. Connect your couriers there once; connected services then become available when creating shipping labels in Buying.</p><div class="actions"><a href="shipping-settings.html">Open Shipping Settings</a></div></section>
 
-<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Accepted payment methods</h2></div></div><p>Choose the payment methods your business accepts and add customer-facing instructions. Online provider connections such as Stripe remain a separate integration and are not claimed as connected by this setting.</p><div id="methods">Loading payment methods…</div>
-<form id="method-form" style="margin-top:18px"><div class="form-grid"><label>Payment method<select id="method-code"><option value="card">Card</option><option value="bank_transfer">Bank transfer</option><option value="cash">Cash</option><option value="paypal">PayPal</option><option value="other">Other</option></select></label><label>Display name<input id="method-name" placeholder="Card payment" required></label><label class="full">Customer instructions<textarea id="method-instructions" rows="2" placeholder="Optional instructions shown to customers."></textarea></label></div><p><button type="submit">Add or update payment method</button></p></form></section>
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Stripe checkout payment methods</h2></div><span class="status-pill">Subscriber controlled</span></div>
+<p>Choose which Stripe payment methods TradeFlow asks Stripe Checkout to offer to customers. Stripe still decides whether an enabled method is eligible for the customer, country, currency, device and transaction.</p>
+<div id="stripe-methods">Loading payment methods…</div>
+<div class="notice"><strong>Apple Pay</strong><p class="small">Apple Pay is a Stripe wallet rather than a separate Checkout API payment-method type. TradeFlow cannot independently switch Apple Pay on or off from this setting while card payments remain enabled. Its availability is controlled by Stripe and the customer's device/browser eligibility.</p></div>
+<p class="small">Card payments remain available and cannot be disabled here because TradeFlow uses card checkout as the base online payment method. Link, Klarna and Amazon Pay can be independently enabled or disabled below.</p>
+</section>
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=11"></script>
+<script src="subscriber-auth.js?v=8"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=12"></script>
 </body></html>

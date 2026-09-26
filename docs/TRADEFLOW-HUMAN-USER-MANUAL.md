@@ -1180,3 +1180,10 @@ After changing a setting, new Stripe Checkout sessions use the current configura
 - Subscriber Fulfilment no longer presents these actions as **View / print**. Printing/viewing is a customer-facing action after the shipping details have been sent to the customer.
 - Fulfilment dashboard cache bumped to `fulfilment-dashboard.js?v=9`.
 - GitHub commits: JS `a8413720cde6e0032b96463f145fa6386d94726c`, HTML `5b8696d4af4d46f09717cae5b0a3515b647b610b`.
+
+
+### 2026-09-26 — Paid retail order fulfilment gap repaired
+- Investigation of the £75 retail order found the payment had completed correctly, but no `public.fulfilments` row had been created. The previously working £49.91 path had created its fulfilment record during the older full-credit payment flow; the newer mixed/card settlement path did not.
+- Live fix: `20260926240000_retail_order_fulfilment_auto_create` adds an `AFTER UPDATE OF status` trigger on `retail_orders` so every transition to `paid` creates an `awaiting` fulfilment record when one does not already exist. Existing fulfilments are preserved.
+- The migration also backfilled paid retail orders that were missing a fulfilment. Camerashack `ORD-20260926-DCCBB973` now has fulfilment `FUL-E9EE0FA60C79` in `awaiting` status; the £49.91 order remains `dispatched`.
+- GitHub migration commit: `4c8c2136d76afbdf05e50a0f88b00226609d02fd`.

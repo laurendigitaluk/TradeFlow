@@ -59,6 +59,7 @@ async function openShip(id,kind){
   if(!path&&!direct)throw Error('Shipping file is not available yet.');
 
   let fileUrl=direct;
+  let fileMime='';
   if(path){
    const r=await fetch(SUPABASE_URL+'/storage/v1/object/authenticated/'+path,{
     method:'GET',
@@ -69,6 +70,7 @@ async function openShip(id,kind){
     throw Error(b?.message||b?.error||t||('Could not open shipping file (HTTP '+r.status+').'));
    }
    const blob=await r.blob();
+   fileMime=blob.type||'';
    objectUrl=URL.createObjectURL(blob);
    fileUrl=objectUrl;
   }

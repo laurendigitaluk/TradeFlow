@@ -1030,3 +1030,17 @@ Do not route a retail **Buy this item** action through the **My Sale** / valuati
 
 The obsolete standalone checkout route and the later integrated purchase controller have been removed. Do not recreate them or reintroduce a second checkout session state without a deliberate architectural change and checkpoint.
 
+
+## 26 September 2026 — Retail Basket, Payment and My Orders separation
+
+The customer retail buying journey is separate from **My Sale**. The intended journey is:
+
+**What We Sell → Product → Buy this item → Basket → Proceed to payment → Stripe / customer credit → successful payment → My Orders**
+
+Adding an item to the Basket does not create an order. A retail order is created only when the customer proceeds to payment. An unpaid/pending retail order is not shown in My Orders and must not be shown in My Sale.
+
+If payment is cancelled or the customer removes a pending purchase, TradeFlow cancels the pending retail order, releases the listing reservation and leaves customer credit untouched. The customer can then retry from the Basket or return the product to the shop.
+
+A successful payment is confirmed server-side. Only then does the retail order become paid and the listing/inventory asset move to sold. My Orders is the customer-facing history for purchases from the business; My Sale remains the customer-facing selling-to-the-business journey.
+
+**Test Two verification state:** Implemented and live-DB verified. Browser verification remains required before this checkpoint is considered browser verified. Test One remains frozen.

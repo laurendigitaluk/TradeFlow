@@ -1187,3 +1187,9 @@ After changing a setting, new Stripe Checkout sessions use the current configura
 - Live fix: `20260926240000_retail_order_fulfilment_auto_create` adds an `AFTER UPDATE OF status` trigger on `retail_orders` so every transition to `paid` creates an `awaiting` fulfilment record when one does not already exist. Existing fulfilments are preserved.
 - The migration also backfilled paid retail orders that were missing a fulfilment. Camerashack `ORD-20260926-DCCBB973` now has fulfilment `FUL-E9EE0FA60C79` in `awaiting` status; the £49.91 order remains `dispatched`.
 - GitHub migration commit: `4c8c2136d76afbdf05e50a0f88b00226609d02fd`.
+
+
+### 2026-09-26 — Retail fulfilment handoff and Test Three JWT recovery
+- The £75 paid retail order now has an `awaiting` fulfilment record. The subscriber must still return from the external shipping provider and **Add label** or **Add QR code**, enter carrier/service/tracking as applicable, then use **Save & send shipping details**. Only that handoff moves fulfilment from `awaiting` to `label`, at which point **Mark as sent** becomes available. Creating a label externally cannot be detected by TradeFlow until the provider-supplied file/details are recorded in TradeFlow.
+- Customer Test Three exposed a stale customer access token: the selling wizard reached the submit stage but the `customer-selling-submit` Edge Function returned `Invalid JWT`. The public selling journey now validates the stored customer session, refreshes it when possible, and retries a JWT failure once with the refreshed token. Public-site cache is now `public-site.js?v=81`.
+- GitHub commits: public selling journey auth recovery `c9102faaa5d8030623418f7abc9d071687511142`; cache `7ab324bfcfbfa9d97d939c2854ce45196bd76b1a`.

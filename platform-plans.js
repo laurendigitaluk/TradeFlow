@@ -29,4 +29,25 @@ async function initTradeflowPublicPlans(){
  try{const plans=await tradeflowAvailablePlans();renderTradeflowPlanCards(host,plans)}
  catch(e){host.innerHTML='<p>'+e.message+'</p>'}
 }
-document.addEventListener('DOMContentLoaded',initTradeflowPublicPlans);
+async function initTradeflowPlanDetails(){
+ const comparison=document.getElementById('plan-comparison-wrap');
+ const basic=document.getElementById('basic'),enhanced=document.getElementById('enhanced');
+ if(!comparison&&!basic&&!enhanced)return;
+ try{
+  const plans=await tradeflowAvailablePlans(),codes=new Set(plans.map(p=>p.code));
+  if(basic)basic.hidden=!codes.has('basic');
+  if(enhanced)enhanced.hidden=!codes.has('enhanced');
+  document.querySelectorAll('.details-actions a[href*="subscriber-signup.html?plan="]').forEach(a=>{
+   const m=a.href.match(/[?&]plan=([^&#]+)/);if(m)a.hidden=!codes.has(decodeURIComponent(m[1]));
+  });
+  if(comparison)comparison.hidden=!(codes.has('basic')&&codes.has('enhanced'));
+  const catalogue=document.getElementById('catalogue-dynamic');
+  if(codes.has('catalogue')&&!catalogue){
+   const p=plans.find(x=>x.code==='catalogue'),section=document.createElement('section');
+   section.className='package-detail catalogue-detail';section.id='catalogue-dynamic';
+   section.innerHTML='<div class="package-detail-heading"><div><div class="eyebrow">TRADEFLOW CATALOGUE</div><h2>'+p.name+'</h2></div><p>'+ (p.description||'') +'</p></div><div class="detail-grid"><article class="detail-card"><h3>Everything in Enhanced</h3><p>The Catalogue plan includes the Enhanced workspace plus a TradeFlow-provided starting catalogue.</p></article><article class="detail-card"><h3>Starting catalogue</h3><p>Use the TradeFlow-provided categories, subcategories and products as a starting point for your business.</p></article></div>';
+   const principle=document.querySelector('.plan-principles');if(principle)principle.parentNode.insertBefore(section,principle);
+  }
+ }catch(e){console.warn(e)}
+}
+document.addEventListener('DOMContentLoaded',()=>{initTradeflowPublicPlans();initTradeflowPlanDetails()});

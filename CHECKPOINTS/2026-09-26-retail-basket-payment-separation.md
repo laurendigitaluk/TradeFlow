@@ -122,3 +122,19 @@ Use Camerashack → What We Sell → EOS R1 Body Only.
 17. Confirm the product leaves the shop after successful payment.
 
 Do not claim browser verification until these steps have actually been exercised.
+
+
+## Follow-up browser finding — customer credit payment
+
+The first browser verification reached the Basket payment screen successfully, confirming the earlier checkout-boundary repair. Selecting **Use customer credit** then produced:
+`new row for relation "payment_records" violates check constraint "payment_records_payment_type_check"`.
+
+Root cause: `customer_pay_retail_order_with_credit()` used `payment_type='customer_credit'`, but the live `payment_records_payment_type_check` allows `customer_payment` and the payment method is represented separately.
+
+Repair: migration `20260926160000_fix_retail_credit_payment_type` changed the function to use:
+- `payment_type = 'customer_payment'`
+- `payment_method = 'customer_credit'`
+
+No payment was consumed while repairing this fault. The existing £55 credit remains available for the next browser test.
+
+**Next browser test:** return to the Basket, select **Use customer credit**, click **Proceed to payment**, and verify that the order completes to My Orders and the credit reduces by the purchase amount. If this succeeds, continue with the Stripe cancellation/retry test separately.

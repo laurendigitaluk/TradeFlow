@@ -1347,3 +1347,15 @@ Verification state: live Supabase functions and database lifecycle changes verif
 Browser Test Two exposed: `new row for relation "payment_records" violates check constraint "payment_records_payment_type_check"`. Live inspection showed the constraint permits `customer_payment`, `seller_payment`, `refund`, `payout`, `expense`, and `other`; it does not permit `customer_credit`. The `customer_pay_retail_order_with_credit()` RPC was therefore failing before payment completion because it inserted `payment_type='customer_credit'`. The minimal repair was to retain `payment_method='customer_credit'` while setting `payment_type='customer_payment'`. No constraint broadening was introduced. This keeps transaction type and payment method semantically separate and preserves the existing database contract.
 
 The live function was replaced through migration `20260926160000_fix_retail_credit_payment_type`. A real credit payment was not executed during backend verification because that would spend the customer's live £55 credit; browser verification should now exercise the intended credit payment path once the user is ready to make the purchase.
+
+
+### 26 September 2026 — Retail checkout must not reserve stock before payment
+Browser Test Two exposed a deeper lifecycle issue: customer_create_retail_order() and customer_create_retail_order_from_basket() were changing a live listing from published to reserved when the customer merely proceeded to payment. This made an unpaid/abandoned checkout capable of taking a product off the public shop.
+
+The live functions were corrected in migration 20260926170000_retail_checkout_no_reservation_before_payment. They still validate that the listing is currently published when the checkout order is created, but they no longer modify listing status. The pending retail order therefore does not block other customers from seeing or buying the item.
+
+customer_pay_retail_order_with_credit() now locks the linked listing at the point of actual customer-credit payment and requires it still to be published before deducting credit and creating the paid payment record. It then changes the listing to sold and the linked inventory asset to sold.
+
+External payment processing was also hardened in migration 20260926173000_retail_payment_claim_after_payment. A successful external payment is accepted only if the linked listing is still published. If another customer has already bought it, the database leaves the payment/order unpaid and the Stripe webhook refunds the conflicting payment and cancels that retail order. This preserves live-shop availability while preventing double sale.
+
+The Test Two EOS R1 pending order was cancelled and the listing verified as published with no reservation. Customer credit remains £55. No payment was made during this reset.

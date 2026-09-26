@@ -132,7 +132,8 @@ async function saveShipping(){
   const service=selectedService();
   const lf=$('label-file').files?.[0],qf=$('qr-file').files?.[0];
   if(!service&&!r.shipping_provider)return msg('Select one of the configured shipping services first.','error');
-  if(!lf&&!qf&&!r.label_storage_path&&!r.label_url&&!r.qr_storage_path&&!r.qr_url)return msg('Upload the shipping label or QR code before completing the handoff.','error');
+  if(!$('carrier').value.trim() && !service?.service_name && !r.shipping_provider)return msg('Enter the shipping carrier or select a configured shipping service before completing the handoff.','error');
+  if(!$('tracking').value.trim() && !r.tracking_number)return msg('Enter the tracking number before completing the handoff.','error');
   b.disabled=true;b.textContent='Saving and sending…';msg('Uploading the shipping handoff…');
   try{
     let labelPath=r.label_storage_path||null,qrPath=r.qr_storage_path||null;

@@ -1044,3 +1044,7 @@ If payment is cancelled or the customer removes a pending purchase, TradeFlow ca
 A successful payment is confirmed server-side. Only then does the retail order become paid and the listing/inventory asset move to sold. My Orders is the customer-facing history for purchases from the business; My Sale remains the customer-facing selling-to-the-business journey.
 
 **Test Two verification state:** Implemented and live-DB verified. Browser verification remains required before this checkpoint is considered browser verified. Test One remains frozen.
+
+
+### 26 September 2026 — Customer credit payment repair
+The Basket payment screen exposed a live database constraint mismatch when **Use customer credit** was selected. The customer-credit payment function was writing `payment_type='customer_credit'`, while `payment_records_payment_type_check` permits `customer_payment` and uses `payment_method` to distinguish the method. The live function has been corrected to write `payment_type='customer_payment'` and `payment_method='customer_credit'`. This preserves the £55 customer credit balance until an actual successful credit payment is made.

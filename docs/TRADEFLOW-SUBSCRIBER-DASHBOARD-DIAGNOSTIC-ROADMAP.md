@@ -1561,3 +1561,27 @@ After deployment, verify in one clean browser session:
 6. click Save & send shipping details and confirm a visible success state;
 7. confirm fulfilment is label, customer notification is queued, and Customer Portal shows the handoff;
 8. confirm Mark as sent changes the fulfilment to dispatched and the customer sees Shipped.
+
+
+
+## 26 September 2026 — Retail customer delivery / return verification
+
+### Customer-side contract
+Retail customers do not receive or print the subscriber's outbound shipping label or QR code. Verify that My Orders shows:
+- Preparing shipment before dispatch;
+- Shipping label ready while the subscriber has created the label;
+- Shipped after subscriber Mark as sent;
+- tracking number and carrier/service after dispatch;
+- Delivered after subscriber marks delivery;
+- Create a return only after Delivered.
+
+### Subscriber-side contract
+Selling → Sold and Fulfilment must retain Mark as sent. Clicking it must move label → dispatched and queue order_dispatched. The customer then sees the tracking number and receives the dispatch notification.
+
+### Return contract
+customer_request_return() is the server-side authority. It must reject a return before delivery, accept a delivered customer's own order item, use customer_retail as the return type and reject duplicate active requests.
+
+### Customer auth startup
+Open Customer Portal in a clean session and confirm the stored customer session is validated before customer_get_profile runs. The portal must not briefly show “This login is not registered for this business” simply because auth restoration is still in progress.
+
+Verification state: Code repaired and live return RPC applied; browser verification required.

@@ -1549,3 +1549,18 @@ When changing commercial plans, preserve the distinction between operational ava
 Use the platform-owner RPCs for mutations. Never expose Stripe secret credentials to browser code or store them in public plan records. Public plan reads must use `public_get_available_plans()`, which intentionally excludes Stripe identifiers.
 
 Current live migration: `20260926220000_platform_commercial_plan_controls`.
+
+
+## 26 September 2026 — Commercial plan consolidation
+
+Treat enhanced as the canonical internal plan code and TradeFlow as its public commercial name. Do not recreate or migrate the active Camerashack subscription merely to rename the plan.
+
+Only the canonical TradeFlow plan should be active/website-visible for new subscriptions. Legacy plan rows may remain inactive for historical subscriptions and test records.
+
+Owner Dashboard plan controls are platform-owner-only and must remain behind the existing platform-owner RPC boundary. The owner may change display name, description, website visibility, prices, currency and Stripe Product/Price IDs.
+
+Do not reintroduce Basic/Enhanced/Catalogue upgrade logic unless the commercial model is deliberately changed again.
+
+## Platform email verification rule
+
+Saving the Platform Owner sender address only records the sender and sets its verification state to pending. It does not create a confirmation email. The notification processor requires a verified sender/domain before sending. Never mark the sender verified from browser code or bypass the provider verification boundary.

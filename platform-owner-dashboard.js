@@ -69,7 +69,7 @@ async function loadPlatformEmail(){
   const data=await request('/rest/v1/rpc/platform_owner_get_email',{method:'POST',body:'{}'});
   input.value=data?.sender_email||'';
   const s=data?.sender_verification_status||'not_configured';
-  status.textContent=s==='verified'?'Status: Ready — TradeFlow can send platform emails.':s==='pending'?'Status: Waiting for domain/email verification.':'Status: Not configured.';
+  status.textContent=s==='verified'?'Status: Ready — TradeFlow can send platform emails.':s==='pending'?'Status: Saved — sender/domain verification is still required.':'Status: Not configured.';
  }catch(e){status.textContent=e.message||String(e)}
 }
 async function savePlatformEmail(e){
@@ -78,7 +78,7 @@ async function savePlatformEmail(e){
  try{
   status.textContent='Saving…';
   const data=await request('/rest/v1/rpc/platform_owner_save_email',{method:'POST',body:JSON.stringify({p_email:email})});
-  status.textContent='Status: '+(data?.sender_verification_status==='verified'?'Ready — TradeFlow can send platform emails.':'Saved — waiting for domain/email verification.');
+  status.textContent='Status: '+(data?.sender_verification_status==='verified'?'Ready — TradeFlow can send platform emails.':'Saved — sender/domain verification is still required.');
  }catch(e){status.textContent=e.message||String(e)}
 }
 function nextPlan(code){return null}

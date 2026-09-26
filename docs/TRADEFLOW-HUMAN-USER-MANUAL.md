@@ -1214,3 +1214,10 @@ For a reliable multi-account browser test:
 5. If a screen appears to show the wrong account, stop before making a transaction and identify the signed-in account and tenant rather than changing any database records.
 
 The 26 September test confirmed that the two Camerashack customer records remain separate while both can have buying activity in the same tenant. The Platform Owner account is separately authorised through the platform-owner boundary.
+
+
+## Platform Owner sending email — 26 September 2026
+
+In the Platform Owner Dashboard, the **TradeFlow sending email** is the platform-level sender address used by TradeFlow. Enter a valid email address and select **Save TradeFlow email**.
+
+After saving, the address may show as waiting for domain/email verification. That is expected; saving the address and verifying the sending domain are separate steps.

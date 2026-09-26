@@ -1,8 +1,8 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
 const LEGACY_SESSION_STORAGE='tradeflow_customer_session';
-let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c))}
 function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return c+' '+v}}

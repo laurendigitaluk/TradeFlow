@@ -1,14 +1,16 @@
 (()=>{
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
-const SESSION_STORAGE='tradeflow_customer_session';
-const LEGACY_SESSION_STORAGE='tradeflow_customer_session';
-const tenantId=new URLSearchParams(location.search).get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id');
+const tenantId=new URLSearchParams(location.search).get('tenant_id');
+const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
+const PENDING_STORAGE=tenantId?'tradeflow_pending_customer_registration:'+tenantId:'tradeflow_pending_customer_registration:unknown';
+const LEGACY_KEYS=['tradeflow_customer_session','tradeflow_customer_tenant_id','tradeflow_testlab_session','tradeflow_pending_customer_registration'];
 let authReadyResolve;
 window.tradeflowCustomerAuthReady=new Promise(resolve=>{authReadyResolve=resolve});
 const $=id=>document.getElementById(id);
 const message=(text,type='')=>{const e=$('customer-message');if(e){e.textContent=text;e.className=type}};
 const busy=(button,value,label)=>{if(!button)return;button.disabled=value;if(value){button.dataset.authLabel=button.textContent;if(label)button.textContent=label}else if(button.dataset.authLabel)button.textContent=button.dataset.authLabel};
+function clearLegacySharedState(){LEGACY_KEYS.forEach(k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch{}})}
 async function authRequest(path,body){
  const response=await fetch(SUPABASE_URL+path,{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
  const text=await response.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}
@@ -16,101 +18,75 @@ async function authRequest(path,body){
  return data;
 }
 function saveSession(data){
- if(data?.access_token){
-  sessionStorage.setItem(SESSION_STORAGE,JSON.stringify(data));
-  localStorage.removeItem(LEGACY_SESSION_STORAGE);
- }else{
-  sessionStorage.removeItem(SESSION_STORAGE);
-  localStorage.removeItem(LEGACY_SESSION_STORAGE);
- }
-}
-
-function revealPortal(){
- const auth=$('auth-panel'),portal=$('portal');
- if(auth)auth.hidden=true;
- if(portal)portal.hidden=false;
+ if(data?.access_token)sessionStorage.setItem(SESSION_STORAGE,JSON.stringify(data));
+ else sessionStorage.removeItem(SESSION_STORAGE);
+ clearLegacySharedState();
 }
 function dispatchAuthSuccess(data){
- if(typeof window.tradeflowHandleCustomerAuthSuccess==='function'){
-  window.tradeflowHandleCustomerAuthSuccess(data);
- }else{
-  window.tradeflowPendingAuthSession=data;
-  window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
- }
+ window.tradeflowPendingAuthSession=data;
+ window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
 }
 async function registerCustomer(accessToken,first,last){
+ if(!tenantId)throw Error('This Customer Portal link is missing its business identifier.');
  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/customer_register_for_tenant',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
  const text=await response.text();if(!response.ok){let detail=text;try{const parsed=JSON.parse(text);detail=parsed.message||parsed.msg||parsed.error||text}catch{}throw Error(detail||'Customer registration could not be completed.')}return true;
 }
 async function signIn(){
  const email=$('auth-email')?.value.trim(),password=$('auth-password')?.value||'',button=$('auth-sign-in');
+ if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
  if(!email||!password)return message('Enter your email and password.','error');
  busy(button,true,'Signing in…');
  try{
-  sessionStorage.removeItem(SESSION_STORAGE);
-  localStorage.removeItem(LEGACY_SESSION_STORAGE);
+  sessionStorage.removeItem(SESSION_STORAGE);clearLegacySharedState();
   const data=await authRequest('/auth/v1/token?grant_type=password',{email,password});
   if(!data?.access_token)throw Error('Supabase did not return a customer session.');
+  const userResponse=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
+  if(!userResponse.ok)throw Error('Sign-in succeeded but the customer session could not be verified. Please try again.');
   saveSession(data);
-  let pending=null;try{pending=JSON.parse(sessionStorage.getItem('tradeflow_pending_customer_registration')||'null')}catch{}
+  let pending=null;try{pending=JSON.parse(sessionStorage.getItem(PENDING_STORAGE)||'null')}catch{}
   if(pending?.tenant_id===tenantId&&pending?.email?.toLowerCase()===email.toLowerCase()){
     await registerCustomer(data.access_token,pending.first_name,pending.last_name);
-    sessionStorage.removeItem('tradeflow_pending_customer_registration');
+    sessionStorage.removeItem(PENDING_STORAGE);
   }
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE);}finally{busy(button,false)}
+ }catch(error){sessionStorage.removeItem(SESSION_STORAGE);message(error.message||String(error),'error')}finally{busy(button,false)}
 }
 async function signUp(){
- if(!tenantId)return message('Open the customer portal from the subscriber website.','error');
+ if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
  const email=$('auth-email')?.value.trim(),password=$('auth-password')?.value||'',first=$('auth-first-name')?.value.trim(),last=$('auth-last-name')?.value.trim(),button=$('auth-sign-up');
  if(!email||!password||!first)return message('Email, password and first name are required.','error');
  busy(button,true,'Creating account…');
  try{
-  sessionStorage.removeItem(SESSION_STORAGE);
-  localStorage.removeItem(LEGACY_SESSION_STORAGE);
-  sessionStorage.setItem('tradeflow_pending_customer_registration',JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
+  sessionStorage.removeItem(SESSION_STORAGE);clearLegacySharedState();
+  sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
   const data=await authRequest('/auth/v1/signup',{email,password});
-  if(!data?.access_token){
-    message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');
-    return;
-  }
+  if(!data?.access_token){message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');return}
   saveSession(data);
   await registerCustomer(data.access_token,first,last);
-  localStorage.removeItem('tradeflow_pending_customer_registration');
+  sessionStorage.removeItem(PENDING_STORAGE);
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');localStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
+ }catch(error){message(error.message||String(error),'error');sessionStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
 }
 async function restoreExistingSession(){
- const raw=sessionStorage.getItem(SESSION_STORAGE);
- if(!raw)return;
+ const raw=sessionStorage.getItem(SESSION_STORAGE);if(!raw)return;
  try{
-  let data=JSON.parse(raw);
-  if(!data?.access_token)throw Error('Invalid customer session.');
-  if(document.body?.dataset?.authPassive==='true'){
-   dispatchAuthSuccess(data);
-   return;
-  }
+  let data=JSON.parse(raw);if(!data?.access_token)throw Error('Invalid customer session.');
   let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
   if(!response.ok&&data?.refresh_token){
    const refreshed=await authRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:data.refresh_token});
    if(!refreshed?.access_token)throw Error('Customer session could not be refreshed.');
-   data=refreshed;
-   saveSession(data);
-   response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
+   data=refreshed;saveSession(data);response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+data.access_token}});
   }
   if(!response.ok)throw Error('Customer session is no longer valid.');
   dispatchAuthSuccess(data);
- }catch{
-  sessionStorage.removeItem(SESSION_STORAGE);
-  localStorage.removeItem(LEGACY_SESSION_STORAGE);
- }
+ }catch{sessionStorage.removeItem(SESSION_STORAGE)}
 }
 function bind(){
+ clearLegacySharedState();
  $('auth-sign-in')?.addEventListener('click',signIn);
  $('auth-sign-up')?.addEventListener('click',signUp);
  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
  restoreExistingSession().finally(()=>authReadyResolve());
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
-
 })();

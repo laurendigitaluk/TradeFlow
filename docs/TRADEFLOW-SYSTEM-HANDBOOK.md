@@ -1304,3 +1304,10 @@ During the 26 September concurrency test, the live Camerashack tenant contained 
 A browser error in the Platform Owner dashboard (escapeAttr is not defined) was repaired without changing the authentication or tenant-security boundaries. The repair only restored rendering of tenant action attributes.
 
 Diagnostic rule: when multiple sessions are open, identify the browser identity and tenant/customer ID first. Never solve a session-specific display problem by changing shared tenant data or weakening RLS/RPC boundaries.
+
+
+## 26 September 2026 — Platform Owner sending email validation
+
+The Platform Owner Dashboard's TradeFlow sending-email setting is protected by the platform-owner authorization boundary. The save RPC must validate the address without weakening that boundary.
+
+A live test exposed an over-escaped email regular expression that rejected valid addresses containing a normal dotted domain. Migration `20260926212000_fix_platform_owner_email_validation` corrected only the validation expression. The sender remains marked pending until the separate sending-domain/email verification process is completed.

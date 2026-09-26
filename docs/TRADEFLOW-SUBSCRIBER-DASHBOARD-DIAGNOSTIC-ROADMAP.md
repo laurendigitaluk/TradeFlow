@@ -1585,3 +1585,13 @@ customer_request_return() is the server-side authority. It must reject a return 
 Open Customer Portal in a clean session and confirm the stored customer session is validated before customer_get_profile runs. The portal must not briefly show “This login is not registered for this business” simply because auth restoration is still in progress.
 
 Verification state: Code repaired and live return RPC applied; browser verification required.
+
+
+## 2026-09-26 — Retail Mark as Sent / customer dispatch handoff repair
+
+- Selling → Sold → **MARK AS SENT** is now one atomic server-side action.
+- The action advances the paid retail order from `paid` to `fulfilment` and the fulfilment from `label` to `dispatched` in the same transaction. The browser no longer performs a second retail-order transition after the fulfilment RPC, preventing the previous post-success failure that could leave the button apparently non-responsive.
+- On dispatch, TradeFlow retains the carrier/service and tracking number, derives an official carrier tracking-page URL when none was supplied for supported carriers, and queues the `order_dispatched` customer notification with the tracking information.
+- Customer My Orders remains recipient-focused: no outbound label/QR controls. Once dispatched it shows the shipping service/carrier, tracking number, and an explicit **Track item →** link when a tracking URL is available.
+- After **MARK AS SENT**, Selling → Sold should show the shipment as **Shipped** with no further outbound action. Return handling remains a separate customer-return workflow and should only become actionable when a return has actually been requested.
+- Production migration: `20260926225000_retail_fulfilment_mark_sent_atomic`.

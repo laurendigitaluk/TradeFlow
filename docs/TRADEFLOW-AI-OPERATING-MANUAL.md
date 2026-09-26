@@ -1359,3 +1359,10 @@ customer_pay_retail_order_with_credit() now locks the linked listing at the poin
 External payment processing was also hardened in migration 20260926173000_retail_payment_claim_after_payment. A successful external payment is accepted only if the linked listing is still published. If another customer has already bought it, the database leaves the payment/order unpaid and the Stripe webhook refunds the conflicting payment and cancels that retail order. This preserves live-shop availability while preventing double sale.
 
 The Test Two EOS R1 pending order was cancelled and the listing verified as published with no reservation. Customer credit remains £55. No payment was made during this reset.
+### 26 September 2026 — Retail order detail and fulfilment lifecycle
+
+The retail checkout lifecycle now separates payment completion from dispatch. Successful payment marks every `retail_order_item` listing and linked inventory asset sold and creates one `fulfilments` record in `awaiting` status. The subscriber may record the label and transition `awaiting → label`, then transition `label → dispatched`. The customer portal reads fulfilment status/tracking through `customer_get_order_details()` and displays `Shipped` when fulfilment status is `dispatched`.
+
+The customer My Orders UI no longer presents only an order reference and total. It groups order items under each paid order and shows fulfilment/tracking details. The subscriber Selling UI now keeps paid listings in a separate Sold section rather than mixing them with available listings.
+
+Multi-item payment was hardened in migration `20260926200000_retail_order_fulfilment_and_multi_item_payment`: customer-credit payment and external payment processing validate and claim every item in the retail order before completing payment. The same migration adds `customer_get_order_details()` and creates the fulfilment record at payment time. Existing paid Test Two order `ORD-20260926-71DCBDEC` was backfilled with fulfilment `FUL-17C5EB082D09` in `awaiting` state.

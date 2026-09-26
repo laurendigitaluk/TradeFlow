@@ -1162,3 +1162,16 @@ Trade-in customers now have a dedicated `customer_credit_accounts` account per s
 
 ### Post-inspection decision flow correction — 25 September 2026
 Inspection is a decision point, not automatically a Final Offer stage. After an inspection, the subscriber must choose one of four paths: **pay the accepted cash offer to the customer's bank**, **credit the accepted trade-in value to the customer's Trade-in Credit Account**, **refuse/close the transaction**, or **send a revised final offer only when the value has changed**. The customer portal should remain on Payment for an unchanged accepted offer. It should move to Offer only when a revised final offer is actually published. Do not describe every post-inspection transaction as a final-offer step.
+
+
+## 26 September 2026 — Retail sale shipping must mirror Buying shipping
+
+Retail sales use the same subscriber-managed shipping handoff model as customer Buying. The subscriber selects saved shipping services in Shipping Settings, opens the provider, creates/pays for the shipment directly with that provider, then returns to TradeFlow and records the carrier, service, tracking, shipping instructions and the generated printable label and/or QR code.
+
+The Fulfilment workspace must show the actual paid order before shipping is completed. It must show the purchased item(s), inventory reference/condition where available, customer name/email, delivery address, parcel weight and L/W/H measurements, and the shipping handoff files. The subscriber must not have to guess which item is being shipped.
+
+Parcel weight and dimensions are packed-parcel data, not merely product-specification data. Current Parcel2Go guidance requires the declared weight/dimensions to include packaging and warns that under-declaration can produce surcharges. Royal Mail Click & Drop likewise requires order weight and packaging size when applying postage. TradeFlow therefore records the packed parcel measurements in fulfilment_parcels.
+
+A completed retail shipping handoff moves fulfilment from awaiting to label. The customer portal then receives the label/QR, carrier/service, tracking and instructions. The handoff queues a customer email containing the same operational details and a link to the Customer Portal. Dispatch moves label to dispatched and queues the dispatch notification.
+
+Do not reintroduce direct browser writes to fulfilments or direct browser reads of retail_orders. Retail fulfilment writes/reads must use the subscriber/customer RPC boundaries.

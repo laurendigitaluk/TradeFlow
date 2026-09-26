@@ -69,13 +69,16 @@ function updatePreview(r){
   $('preview-tracking').textContent=$('tracking').value?'Tracking: '+$('tracking').value:'Tracking number will be included if you enter one.';
   $('preview-instructions').textContent=$('instructions').value||'Shipping instructions will be shown in the customer portal.';
 }
+function fileButton(kind,label,path,url){
+  return path||url?'<button type="button" data-file-kind="'+kind+'" data-file-path="'+esc(path||'')+'" data-file-url="'+esc(url||'')+'">'+label+'</button>':'';
+}
 function updateFileCards(r){
   const hasLabel=Boolean(r?.label_storage_path||r?.label_url||$('label-file').files?.length);
   const hasQr=Boolean(r?.qr_storage_path||r?.qr_url||$('qr-file').files?.length);
   $('label-card').classList.toggle('has-file',hasLabel);
   $('qr-card').classList.toggle('has-file',hasQr);
-  $('label-file-status').innerHTML=r?.label_storage_path||r?.label_url?'<strong>Label already saved.</strong> You can view or replace it after selecting a new file.':'No label uploaded yet.';
-  $('qr-file-status').innerHTML=r?.qr_storage_path||r?.qr_url?'<strong>QR code already saved.</strong> You can view or replace it after selecting a new file.':'No QR code uploaded yet.';
+  $('label-file-status').innerHTML=r?.label_storage_path||r?.label_url?'<strong>Label already saved.</strong> '+fileButton('label','View / print label',r.label_storage_path,r.label_url):$('label-file').files?.length?'<strong>New label selected.</strong>':'No label uploaded yet.';
+  $('qr-file-status').innerHTML=r?.qr_storage_path||r?.qr_url?'<strong>QR code already saved.</strong> '+fileButton('qr','View / print QR code',r.qr_storage_path,r.qr_url):$('qr-file').files?.length?'<strong>New QR code selected.</strong>':'No QR code uploaded yet.';
   $('handoff-validation').textContent=hasLabel||hasQr?'A label or QR code is ready. You can complete the customer handoff.':'Upload the label or QR code supplied by the shipping provider to continue.';
   $('save-shipping').disabled=!(hasLabel||hasQr);
 }

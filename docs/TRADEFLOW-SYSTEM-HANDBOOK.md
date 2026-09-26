@@ -1286,3 +1286,21 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - Live migration `20260926250000_customer_buying_photo_subscriber_access` adds an explicit tenant-scoped Storage SELECT policy for authenticated subscriber members on the `customer-buying` folder. Customer photographs remain private and are not made public.
 - Buying dashboard cache is now `buying-dashboard.js?v=41`. The photo loader also surfaces the secure-link error instead of silently swallowing it, making any future access failure diagnosable.
 - GitHub commits: migration `e995d4ad74a6e4b2b2750c366f59d5abe3277409`; JS `df951448616a658c0b2fc2d6346c574ffb9b40df`; HTML `0df7280548b94c4bb77596a19d651395a7a2c851`.
+
+
+## 26 September 2026 — Concurrent-session test and isolation rule
+
+TradeFlow is currently being browser-tested with Platform Owner, Subscriber and multiple Customer sessions open concurrently. These are separate authentication boundaries and must remain independent.
+
+Current session storage boundaries:
+- Platform Owner: tradeflow_platform_owner_session
+- Subscriber: tradeflow_subscriber_session with tenant context
+- Customer: tradeflow_customer_session with customer tenant context
+
+The customer portal must identify the customer through the authenticated customer relationship and tenant-scoped RPCs; it must not use the subscriber membership model. Multiple customer sessions for the same subscriber are expected to coexist when they are in separate browser sessions.
+
+During the 26 September concurrency test, the live Camerashack tenant contained separate active buying requests for two customers and separate retail/fulfilment records. No active credit holds or active processing/initiated payment attempts were found.
+
+A browser error in the Platform Owner dashboard (escapeAttr is not defined) was repaired without changing the authentication or tenant-security boundaries. The repair only restored rendering of tenant action attributes.
+
+Diagnostic rule: when multiple sessions are open, identify the browser identity and tenant/customer ID first. Never solve a session-specific display problem by changing shared tenant data or weakening RLS/RPC boundaries.

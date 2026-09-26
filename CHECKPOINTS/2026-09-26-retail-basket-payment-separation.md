@@ -381,3 +381,15 @@ Verification state: live return RPC applied; frontend syntax checked; browser ve
 - The external payment event handler now returns a conflict result when a locally cancelled Stripe payment later reports paid, allowing the Stripe webhook conflict path to refund rather than silently accepting the payment.
 - The customer basket cache was bumped to customer-basket.js?v=4.
 - Do not treat an active Stripe attempt as reusable after the customer has changed the payment mix; the order must be restarted so the card amount is recalculated from the remaining balance.
+
+
+
+### 2026-09-26 subscriber-controlled Stripe payment methods
+- Subscriber Business Settings now contains a **Stripe checkout payment methods** section.
+- TradeFlow seeds four tenant-scoped Stripe checkout controls: **Credit or debit card**, **Link**, **Klarna**, and **Amazon Pay**. Card is the required base method; the other three can be enabled or disabled by the subscriber.
+- The Stripe Checkout Edge Function now reads the tenant's enabled methods and sends Stripe's `allowed_payment_method_types[]` filter. Stripe still determines whether an enabled method is eligible for the particular customer, country, currency, device and transaction.
+- **Apple Pay is not an independent toggle in this TradeFlow integration.** Stripe documents Apple Pay as a wallet with no API enum, while Link and Amazon Pay have API enums. Apple Pay therefore remains controlled by Stripe's wallet/card eligibility and cannot be independently hidden by the TradeFlow subscriber while card payments remain enabled.
+- Production migration: `20260926233000_subscriber_stripe_payment_method_controls`.
+- Edge Function deployment: `create-stripe-checkout-session` version 12.
+- GitHub commits: settings UI `d78d47c382a3addcf1f7d67023b6aca9f9b1aab5`, settings logic `b7ab025c715a4ad95480b81333975a17ff1b6267`, Stripe checkout function `c173c05908d5699e82c0a0acb4002426efef248a`, migration source `9394bc3e29b7278ea59e7c53756fea46e0990557`.
+- Camerashack currently has all four controllable methods enabled.

@@ -46,7 +46,7 @@ async function createOrder(){
   try{
    const r=await rpc('customer_get_retail_order_for_checkout',{p_order_id:p.order_id});
    const x=Array.isArray(r)?r[0]:r;
-   if(x?.order_id){order=x;return order}
+   if(x?.order_id&&String(x.listing_id)===String(listing.id)){order=x;return order}
   }catch{}
   setPending(null);
  }

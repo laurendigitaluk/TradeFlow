@@ -34,3 +34,5 @@
   .content{padding:26px 18px}
   #customer-bank-details .two{grid-template-columns:1fr}
 }
+
+.order-items{border-top:1px solid #e3e7eb;margin-top:12px;padding-top:10px}.order-item{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #eef1f3}.order-item:last-child{border-bottom:0}.order-card .stage{display:inline-block}

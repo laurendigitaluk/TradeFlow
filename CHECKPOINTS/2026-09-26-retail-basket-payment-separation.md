@@ -226,3 +226,10 @@ Root cause: the first Sold implementation queried retail_order_items, retail_ord
 Repair: migration 20260926203000_subscriber_sold_retail_items_rpc adds subscriber_get_sold_retail_items(p_tenant_id), a SECURITY DEFINER subscriber-only RPC that checks tenant membership and returns the sold listing/order/fulfilment data needed by the Selling page. The Selling page now uses that RPC. The general Available listings query also explicitly excludes sold and delisted, and the status filter no longer offers sold; sold products belong only in the separate Sold section.
 
 Frontend cache version was bumped to selling-dashboard-fixed.js?v=32. JavaScript syntax was verified after the repair. Browser verification of the repaired Sold section is still required.
+
+
+## Follow-up — Sold section field-shape repair
+
+Browser verification then exposed a second frontend issue: the subscriber Sold RPC returns flat columns (`fulfilment_id`, `fulfilment_status`, `order_id`, `order_reference`, etc.), while the renderer was treating each row as nested `order` and `fulfilment` objects. This caused `Cannot read properties of undefined (reading 'id')`.
+
+The renderer and dispatch handler have been corrected to use the actual flat RPC response shape. Selling cache version is now `selling-dashboard-fixed.js?v=34`. JavaScript syntax verified OK.

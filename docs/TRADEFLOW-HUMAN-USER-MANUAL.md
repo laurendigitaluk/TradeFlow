@@ -1240,3 +1240,20 @@ For Basic, Enhanced and Catalogue you can:
 Turning **Live on website** off hides the plan from the public TradeFlow homepage and new subscriber sign-up choices. It does not cancel or disable existing subscriber businesses using that plan.
 
 Stripe Product/Price IDs are references to objects already created in Stripe. Do not enter a Stripe secret key into the plan editor. Actual recurring billing/checkout remains a separate billing integration and must be tested independently.
+
+
+## Commercial plan — 26 September 2026
+
+TradeFlow currently has one commercial plan: TradeFlow.
+
+The plan contains the complete current TradeFlow workspace. There are no separate Basic, Enhanced or Catalogue choices for new subscribers.
+
+The Platform Owner can edit the plan from Owner Dashboard → Plans, including name, description, whether it is live on the website, monthly price, annual price, currency, Stripe Product ID, Stripe monthly Price ID and Stripe annual Price ID.
+
+Existing historical plan records are retained internally but are not presented as public choices.
+
+## Platform sending email
+
+The Owner Dashboard's TradeFlow sending email field records the address TradeFlow is intended to send from. Saving it does not send a confirmation message to that address.
+
+The address remains pending until the email provider/domain verification process is completed. Once verified, TradeFlow's notification system can use it for platform sending.

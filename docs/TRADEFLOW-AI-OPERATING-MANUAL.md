@@ -1455,3 +1455,12 @@ Customer Portal startup must wait for customer-auth.js session restoration befor
 - Stripe eligibility remains authoritative even when a tenant method is enabled.
 - When diagnosing a checkout screenshot, distinguish **TradeFlow tenant configuration** from **Stripe account-level eligibility** and from **customer/device eligibility**.
 - Production migration: `20260926233000_subscriber_stripe_payment_method_controls`; Edge Function `create-stripe-checkout-session` deployed as version 12.
+
+
+### 2026-09-26 — Business workflow retail sales count repair
+- The subscriber Business Dashboard workflow counts were reading legacy `orders` and `fulfilment_orders` REST resources that are not the live retail sales tables. Because failed REST requests were converted to empty arrays, the dashboard incorrectly displayed **Orders 0** and **Fulfilment 0** even though live retail orders existed.
+- Added `subscriber_get_business_workflow_counts(uuid)` as the tenant-scoped dashboard read boundary. It counts live `retail_orders`, `fulfilments`, listings, inventory, buying and returns.
+- A paid retail order with no fulfilment yet, or a fulfilment in `awaiting` / `label`, is counted as **Fulfilment — SALE TO PROCESS**. Orders counts paid/fulfilment retail orders that are not cancelled/completed.
+- The Selling card continues to represent active unsold listings, so it can correctly remain 0 when all listings are sold. Retail shipping work belongs in Fulfilment.
+- Production migration: `20260926234000_business_workflow_retail_counts`.
+- Dashboard fix commit: `a81d1829e0f9bb4651d26ac4a834e4b66643e447`.

@@ -1147,3 +1147,13 @@ The subscriber remains responsible for the outbound shipping label and QR code i
 - The external payment event handler now returns a conflict result when a locally cancelled Stripe payment later reports paid, allowing the Stripe webhook conflict path to refund rather than silently accepting the payment.
 - The customer basket cache was bumped to customer-basket.js?v=4.
 - Do not treat an active Stripe attempt as reusable after the customer has changed the payment mix; the order must be restarted so the card amount is recalculated from the remaining balance.
+
+
+
+## Stripe checkout payment methods
+Open **Settings → Stripe checkout payment methods** to control the online payment methods offered by TradeFlow.
+- **Credit or debit card** is the required base payment method.
+- **Link**, **Klarna**, and **Amazon Pay** can be switched on or off by the subscriber.
+- An enabled method is not guaranteed to appear for every customer. Stripe decides availability based on the customer's circumstances and the transaction.
+- **Apple Pay** is shown separately as a Stripe-managed wallet. It cannot currently be switched off independently from TradeFlow while card payments remain enabled.
+After changing a setting, new Stripe Checkout sessions use the current configuration. An already-open Stripe Checkout page keeps the settings from the session that was created.

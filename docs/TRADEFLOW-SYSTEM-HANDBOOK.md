@@ -1209,3 +1209,10 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - Customer My Orders remains recipient-focused: no outbound label/QR controls. Once dispatched it shows the shipping service/carrier, tracking number, and an explicit **Track item →** link when a tracking URL is available.
 - After **MARK AS SENT**, Selling → Sold should show the shipment as **Shipped** with no further outbound action. Return handling remains a separate customer-return workflow and should only become actionable when a return has actually been requested.
 - Production migration: `20260926225000_retail_fulfilment_mark_sent_atomic`.
+
+
+## 2026-09-26 — Customer order collapse and storefront image fit
+
+- Customer Portal **My Orders** now renders each paid retail order as a native collapsible order card. The collapsed header retains order reference, status and total; opening the order reveals items, shipping service/carrier, tracking, fulfilment information and any eligible return action.
+- Storefront product-card image boxes now use `object-fit: contain` so the complete product photograph is visible within the box rather than being cropped. Product-detail gallery behaviour remains unchanged.
+- Cache versions were bumped: Customer Portal CSS/JS to `v9`/`v125`; public storefront CSS to `v66`.

@@ -115,11 +115,49 @@ async function openRetailShip(orderId,kind){
   popup.focus();
  }catch(e){try{popup.close()}catch{}message(e.message||String(e),'error')}
 }
+async function requestRetailReturn(orderItemId,button){
+ const existing=button?.dataset?.returnStatus||'';
+ if(existing)return;
+ const card=button.closest('.return-action');
+ const form=card?.querySelector('[data-return-form]');
+ if(form)form.hidden=false;
+ if(!form)return;
+ const reason=form.querySelector('[data-return-reason]')?.value||'other';
+ const notes=form.querySelector('[data-return-notes]')?.value.trim()||'';
+ const submit=form.querySelector('[data-return-submit]');
+ if(submit)submit.disabled=true;
+ try{
+  const reasonText={
+   damaged:'Item arrived damaged',
+   faulty:'Item is faulty or not working',
+   not_as_described:'Item is not as described',
+   wrong_item:'Wrong item received',
+   changed_mind:'Changed my mind',
+   other:'Other'
+  }[reason]||'Other';
+  await rpc('customer_request_return',{
+   p_order_item_id:orderItemId,
+   p_reason_code:reason,
+   p_reason:reasonText,
+   p_customer_notes:notes
+  });
+  message('Return request submitted. The business will review it and update your return status.','success');
+  await loadOrders();
+ }catch(e){
+  message(e.message||String(e),'error');
+  if(submit)submit.disabled=false;
+ }
+}
 async function loadOrders(){
  try{
-  const [base,shipping]=await Promise.all([rpc('customer_get_order_details'),rpc('customer_get_retail_fulfilment_shipping')]);
-  const data=Array.isArray(base)?base:[],shipRows=Array.isArray(shipping)?shipping:[];
+  const [base,shipping,returns]=await Promise.all([
+   rpc('customer_get_order_details'),
+   rpc('customer_get_retail_fulfilment_shipping'),
+   rpc('customer_get_returns')
+  ]);
+  const data=Array.isArray(base)?base:[],shipRows=Array.isArray(shipping)?shipping:[],returnRows=Array.isArray(returns)?returns:[];
   const shippingByOrder=Object.fromEntries(shipRows.map(x=>[x.retail_order_id,x]));
+  const returnsByItem=Object.fromEntries(returnRows.map(x=>[x.order_item_id,x]));
   const groups=[],byId=new Map();
   data.forEach(x=>{if(!byId.has(x.order_id)){const g={...x,items:[]};byId.set(x.order_id,g);groups.push(g)}byId.get(x.order_id).items.push(x)});
   updatePortalNav(null,groups);
@@ -129,15 +167,40 @@ async function loadOrders(){
    const shippingLabel=f==='delivered'?'Delivered':f==='dispatched'?'Shipped':f==='label'?'Shipping label ready':f==='awaiting'?'Preparing shipment':'Not yet shipped';
    const tracking=s.tracking_number?(s.tracking_url?'<a href="'+esc(s.tracking_url)+'" target="_blank" rel="noopener">'+esc(s.tracking_number)+'</a>':esc(s.tracking_number)):'';
    const orderClass=f==='awaiting'?' order-preparing':f==='label'?' order-label-ready':f==='dispatched'?' order-shipped':f==='delivered'?' order-delivered':'';
-   const files=(s.label_storage_path||s.label_url||s.qr_storage_path||s.qr_url)?'<div class="actions">'+(s.label_storage_path||s.label_url?'<button data-retail-file="label" data-order="'+esc(o.order_id)+'">View / print shipping label</button>':'')+(s.qr_storage_path||s.qr_url?'<button data-retail-file="qr" data-order="'+esc(o.order_id)+'">View / print QR code</button>':'')+'</div>':'';
-   const shipDetails=f==='label'||f==='dispatched'||f==='delivered'?'<div class="detail-grid" style="margin-top:10px"><div><span class="label">Shipping service</span><strong>'+esc(s.service||'—')+'</strong></div><div><span class="label">Carrier</span><strong>'+esc(s.carrier||'—')+'</strong></div><div><span class="label">Parcel</span><strong>'+esc(s.parcel?.weight!=null?s.parcel.weight+' kg':'Weight not recorded')+(s.parcel?.length!=null?' · '+esc(s.parcel.length)+' × '+esc(s.parcel.width||'?')+' × '+esc(s.parcel.height||'?')+' cm':'')+'</strong></div></div>':'';
-   const instructions=s.shipping_instructions?'<p class="small"><strong>Shipping instructions:</strong> '+esc(s.shipping_instructions)+'</p>':'';
-   return '<div class="sale-card order-card'+orderClass+'"><div class="sale-grid"><div><span class="label">Order</span><strong>'+esc(o.order_reference||'Order')+'</strong><div class="small">'+esc(o.paid_at?'Paid '+new Date(o.paid_at).toLocaleDateString('en-GB'):'')+'</div></div><div><span class="label">Status</span><span class="stage active">'+esc(shippingLabel)+'</span></div><div><span class="label">Total</span><strong>'+money(o.total,o.currency)+'</strong></div></div><div class="order-items">'+o.items.map(i=>'<div class="order-item"><strong>'+esc(i.item_title||'Item')+'</strong><span>'+esc(i.item_quantity||1)+' × '+money(i.item_unit_price,o.currency)+'</span></div>').join('')+'</div>'+shipDetails+(tracking?'<p class="small"><strong>Tracking:</strong> '+tracking+'</p>':'')+instructions+files+'<p class="small">Fulfilment '+esc(o.fulfilment_reference||s.fulfilment_reference||'pending')+' · '+esc(shippingLabel)+'</p></div>'
+   const shipDetails=f==='label'||f==='dispatched'||f==='delivered'?'<div class="detail-grid" style="margin-top:10px"><div><span class="label">Shipping service</span><strong>'+esc(s.service||'—')+'</strong></div><div><span class="label">Carrier</span><strong>'+esc(s.carrier||'—')+'</strong></div></div>':'';
+   const instructions=f==='label'?'<p class="small"><strong>Shipping:</strong> Your parcel is ready for dispatch. You will receive a tracking update when it has been sent.</p>':f==='dispatched'?'<p class="small"><strong>Item sent:</strong> Your order has been handed to the shipping service. Use the tracking number above for delivery updates.</p>':f==='delivered'?'<p class="small"><strong>Item received:</strong> If you need to return this item, use the return option below.</p>':'';
+   const itemRows=o.items.map(i=>{
+    const ret=returnsByItem[i.item_id];
+    const returnTerminal=ret&&['rejected','refunded','replaced','closed'].includes(ret.status);
+    let returnHtml='';
+    if(f==='delivered'){
+      if(ret&&!returnTerminal){
+       returnHtml='<div class="return-action" style="margin-top:10px;padding:10px;border:1px solid #d8dee5;border-radius:8px;background:#fff"><span class="label">Return</span><strong>'+esc((ret.status||'requested').replaceAll('_',' '))+'</strong><div class="small">Return reference '+esc(ret.return_reference||'')+'</div></div>';
+      }else if(!ret){
+       returnHtml='<div class="return-action" style="margin-top:10px"><button type="button" data-start-return="'+esc(i.item_id)+'">Create a return</button><div data-return-form hidden style="margin-top:10px;padding:10px;border:1px solid #d8dee5;border-radius:8px;background:#fff"><label>Reason<select data-return-reason><option value="damaged">Item arrived damaged</option><option value="faulty">Item is faulty or not working</option><option value="not_as_described">Item is not as described</option><option value="wrong_item">Wrong item received</option><option value="changed_mind">Changed my mind</option><option value="other">Other</option></select></label><label>Additional details<textarea data-return-notes rows="3" placeholder="Optional details"></textarea></label><div class="actions"><button type="button" data-return-submit>Submit return request</button><button type="button" data-return-cancel>Cancel</button></div></div></div>';
+      }
+    }
+    return '<div class="order-item"><div><strong>'+esc(i.item_title||'Item')+'</strong><div class="small">'+esc(i.item_quantity||1)+' × '+money(i.item_unit_price,o.currency)+'</div>'+returnHtml+'</div></div>';
+   }).join('');
+   return '<div class="sale-card order-card'+orderClass+'"><div class="sale-grid"><div><span class="label">Order</span><strong>'+esc(o.order_reference||'Order')+'</strong><div class="small">'+esc(o.paid_at?'Paid '+new Date(o.paid_at).toLocaleDateString('en-GB'):'')+'</div></div><div><span class="label">Status</span><span class="stage active">'+esc(shippingLabel)+'</span></div><div><span class="label">Total</span><strong>'+money(o.total,o.currency)+'</strong></div></div><div class="order-items">'+itemRows+'</div>'+shipDetails+(tracking?'<p class="small"><strong>Tracking:</strong> '+tracking+'</p>':'')+instructions+'<p class="small">Fulfilment '+esc(o.fulfilment_reference||s.fulfilment_reference||'pending')+' · '+esc(shippingLabel)+'</p></div>'
   }).join(''):'<div class="empty">No orders yet.</div>';
-  document.querySelectorAll('[data-retail-file]').forEach(b=>b.onclick=()=>openRetailShip(b.dataset.order,b.dataset.retailFile));
+
+  document.querySelectorAll('[data-start-return]').forEach(b=>b.onclick=()=>{
+   const form=b.parentElement?.querySelector('[data-return-form]');
+   if(form){form.hidden=false;b.hidden=true}
+  });
+  document.querySelectorAll('[data-return-cancel]').forEach(b=>b.onclick=()=>{
+   const form=b.closest('[data-return-form]');if(form){form.hidden=true;const start=form.parentElement?.querySelector('[data-start-return]');if(start)start.hidden=false}
+  });
+  document.querySelectorAll('[data-return-submit]').forEach(b=>b.onclick=()=>{
+   const form=b.closest('[data-return-form]');const item=form?.closest('.return-action')?.parentElement?.querySelector('strong')?.closest('div');
+   const orderItemId=form?.closest('.return-action')?.querySelector('[data-return-submit]')?.dataset?.item;
+   const parent=form?.closest('.return-action');
+   const itemId=parent?.dataset?.itemId;
+   if(itemId)requestRetailReturn(itemId,b);
+  });
  }catch(e){$('order-list').textContent=e.message||String(e)}
-}
-async function loadDetails(){const p=await rpc('customer_get_profile');profile=Array.isArray(p)?p[0]:p||{};$('customer-name').textContent=(profile.first_name||'')+' '+(profile.last_name||'');$('profile-first-name').value=profile.first_name||'';$('profile-last-name').value=profile.last_name||'';$('profile-email').value=profile.email||'';$('profile-phone').value=profile.phone||'';const a=await rpc('customer_get_addresses');const addresses=Array.isArray(a)?a:[];const billing=addresses.find(x=>x.address_type==='billing')||{};const shipping=addresses.find(x=>x.address_type==='shipping')||{};$('customer-addresses').innerHTML='<h3>Addresses</h3><div class="two"><div class="sale-card"><strong>Payment address</strong><label>Recipient<input id="bill-recipient" value="'+esc(billing.recipient_name||'')+'"></label><label>Address<input id="bill-line1" value="'+esc(billing.line1||'')+'"></label><label>City<input id="bill-city" value="'+esc(billing.city||'')+'"></label><label>Postcode<input id="bill-postcode" value="'+esc(billing.postcode||'')+'"></label><div class="actions"><button data-address="billing" data-id="'+esc(billing.address_id||'')+'">Save payment address</button></div></div><div class="sale-card"><strong>Delivery address</strong><label>Recipient<input id="ship-recipient" value="'+esc(shipping.recipient_name||'')+'"></label><label>Address<input id="ship-line1" value="'+esc(shipping.line1||'')+'"></label><label>City<input id="ship-city" value="'+esc(shipping.city||'')+'"></label><label>Postcode<input id="ship-postcode" value="'+esc(shipping.postcode||'')+'"></label><div class="actions"><button data-address="shipping" data-id="'+esc(shipping.address_id||'')+'">Save delivery address</button></div></div></div><p class="small">Delivery address is stored internally as the shipping address type.</p>';document.querySelectorAll('[data-address]').forEach(b=>b.onclick=()=>saveAddress(b.dataset.address,b.dataset.id,b));const bank=await rpc('customer_get_bank_details');$('customer-bank-details').innerHTML='<h3>Bank details</h3><div class="two"><label>Account holder<input id="bank-holder" value="'+esc(bank?.account_holder_name||'')+'"></label><label>Bank name<input id="bank-name" value="'+esc(bank?.bank_name||'')+'"></label><label>Sort code<input id="bank-sort" value="'+esc(bank?.sort_code||'')+'"></label><label>Account number<input id="bank-number" value="'+esc(bank?.account_number||'')+'"></label></div><div class="actions"><button id="save-bank" type="button">Save bank details</button></div>';$('save-bank').onclick=saveBank}
+}async function loadDetails(){const p=await rpc('customer_get_profile');profile=Array.isArray(p)?p[0]:p||{};$('customer-name').textContent=(profile.first_name||'')+' '+(profile.last_name||'');$('profile-first-name').value=profile.first_name||'';$('profile-last-name').value=profile.last_name||'';$('profile-email').value=profile.email||'';$('profile-phone').value=profile.phone||'';const a=await rpc('customer_get_addresses');const addresses=Array.isArray(a)?a:[];const billing=addresses.find(x=>x.address_type==='billing')||{};const shipping=addresses.find(x=>x.address_type==='shipping')||{};$('customer-addresses').innerHTML='<h3>Addresses</h3><div class="two"><div class="sale-card"><strong>Payment address</strong><label>Recipient<input id="bill-recipient" value="'+esc(billing.recipient_name||'')+'"></label><label>Address<input id="bill-line1" value="'+esc(billing.line1||'')+'"></label><label>City<input id="bill-city" value="'+esc(billing.city||'')+'"></label><label>Postcode<input id="bill-postcode" value="'+esc(billing.postcode||'')+'"></label><div class="actions"><button data-address="billing" data-id="'+esc(billing.address_id||'')+'">Save payment address</button></div></div><div class="sale-card"><strong>Delivery address</strong><label>Recipient<input id="ship-recipient" value="'+esc(shipping.recipient_name||'')+'"></label><label>Address<input id="ship-line1" value="'+esc(shipping.line1||'')+'"></label><label>City<input id="ship-city" value="'+esc(shipping.city||'')+'"></label><label>Postcode<input id="ship-postcode" value="'+esc(shipping.postcode||'')+'"></label><div class="actions"><button data-address="shipping" data-id="'+esc(shipping.address_id||'')+'">Save delivery address</button></div></div></div><p class="small">Delivery address is stored internally as the shipping address type.</p>';document.querySelectorAll('[data-address]').forEach(b=>b.onclick=()=>saveAddress(b.dataset.address,b.dataset.id,b));const bank=await rpc('customer_get_bank_details');$('customer-bank-details').innerHTML='<h3>Bank details</h3><div class="two"><label>Account holder<input id="bank-holder" value="'+esc(bank?.account_holder_name||'')+'"></label><label>Bank name<input id="bank-name" value="'+esc(bank?.bank_name||'')+'"></label><label>Sort code<input id="bank-sort" value="'+esc(bank?.sort_code||'')+'"></label><label>Account number<input id="bank-number" value="'+esc(bank?.account_number||'')+'"></label></div><div class="actions"><button id="save-bank" type="button">Save bank details</button></div>';$('save-bank').onclick=saveBank}
 async function saveAddress(type,id,b){try{b.disabled=true;const p={p_tenant_id:tenantId,p_address_id:id||null,p_address_type:type,p_recipient_name:$(type==='billing'?'bill-recipient':'ship-recipient').value.trim(),p_company_name:null,p_line1:$(type==='billing'?'bill-line1':'ship-line1').value.trim(),p_line2:null,p_city:$(type==='billing'?'bill-city':'ship-city').value.trim(),p_county:null,p_postcode:$(type==='billing'?'bill-postcode':'ship-postcode').value.trim(),p_country_code:'GB',p_is_default:true};await api('/rest/v1/rpc/customer_upsert_address',{method:'POST',body:JSON.stringify(p)});message(type==='billing'?'Payment address saved.':'Delivery address saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}finally{b.disabled=false}}
 async function saveBank(){try{await api('/rest/v1/rpc/customer_save_bank_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_account_holder_name:$('bank-holder').value.trim(),p_sort_code:$('bank-sort').value.trim(),p_account_number:$('bank-number').value.trim(),p_bank_name:$('bank-name').value.trim()||null})});message('Bank details saved.','success');await loadDetails()}catch(e){message(e.message||String(e),'error')}}
 async function loadPortal(){try{const ok=await profileCheck();if(!ok){saveSession(null);showAuth(true);message('This login is not registered for this business. Use Create customer account to create a new account.','error');return}showAuth(false);await loadBrand();await Promise.all([loadSelling(),loadOrders(),loadDetails(),loadCreditAccount()]);}catch(e){showAuth(false);message(e.message||String(e),'error')}}

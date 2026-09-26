@@ -303,3 +303,32 @@ GitHub cache was bumped:
 The Sold renderer remains based on subscriber_get_sold_retail_items() and therefore will show the paid EOS R1 sale once the deployed page loads the corrected JavaScript.
 
 Verification state: GitHub source fixed and syntax verified; live RPC/data verified; browser deployment verification still required.
+
+
+
+## Follow-up — Retail fulfilment handoff UX and save reliability — 26 September 2026
+
+The live retail Fulfilment workspace was reviewed again after browser testing. Two frontend issues were addressed:
+- the Selling menu could open into a stale/loading state until refresh; Selling now uses a cache-busted page/JS reference, subscriber auth v8, and a guarded single startup path;
+- the retail Fulfilment save flow was too dense and the completion result was not prominent enough.
+
+The Fulfilment workspace is now organised around the actual workflow:
+1. choose one of the saved Shipping Settings services;
+2. open the provider and create/pay for the shipment there;
+3. select the paid order and verify the exact item/customer/address;
+4. enter carrier/service/tracking and upload the printable label or QR code;
+5. save and send the customer handoff;
+6. only after the parcel is actually handed over, mark it sent/dispatched.
+
+Parcel weight and dimensions have been removed from the TradeFlow handoff form. They remain valid packed-shipment data and are retained in the database when previously recorded, but they belong to the provider booking step rather than being duplicated in the final handoff screen. Parcel2Go and Royal Mail both require accurate packed shipment weight/size when generating postage, so those measurements must still be supplied to the chosen provider when booking.
+
+The live subscriber_save_retail_fulfilment_shipping() function was hardened in migration retail_fulfilment_handoff_reliability. It now performs the awaiting → label update directly within the authorised subscriber RPC instead of calling the generic workflow transition function, preserves existing parcel measurements when the simplified UI sends no new measurements, and queues the customer shipping notification as before.
+
+GitHub changes:
+- fulfilment-dashboard.html redesigned with clearer provider/order/handoff sections;
+- fulfilment-dashboard.js rebuilt with visible validation/error handling and a single reliable save path;
+- selling-dashboard.html cache/auth references refreshed;
+- selling-dashboard-fixed.js startup guarded against duplicate/race initialisation;
+- migration source added as supabase/migrations/20260926223000_retail_fulfilment_handoff_reliability.sql.
+
+Verification state: Live migration applied successfully; frontend syntax checked; browser verification still required for the deployed GitHub Pages version.

@@ -1404,3 +1404,15 @@ Do not re-add mandatory weight/length/width/height fields to the current handoff
 The save boundary is subscriber_save_retail_fulfilment_shipping(). The latest reliability migration performs awaiting → label directly after authorisation and records the workflow transition, rather than delegating the status change to the generic workflow function. Frontend save errors must remain visible in the handoff panel; do not silently swallow upload or RPC failures.
 
 For Selling startup issues, use cache-busted script references and a single guarded boot path before investigating database reads. A page stuck on Loading after navigation but working after refresh is first treated as a deployment/cache/startup problem, not as evidence that the sold-items RPC is empty.
+
+
+
+### 26 September 2026 — Retail customer shipping visibility and returns
+
+Do not expose retail outbound shipping labels or QR codes in the customer My Orders UI. The subscriber is the sender and needs those files; the customer is the recipient and needs shipment status, carrier/service, tracking and dispatch notification.
+
+Use the existing subscriber_transition_retail_fulfilment() path for Mark as sent. Its dispatched branch records the dispatch timestamp and queues order_dispatched with item, carrier/service, tracking and portal details.
+
+Retail returns are customer-initiated only after fulfilment is delivered. The UI calls customer_request_return() per delivered order item. The live RPC now writes return_type='customer_retail', checks the authenticated customer's ownership, requires delivered fulfilment and blocks duplicate active return requests.
+
+Customer Portal startup must wait for customer-auth.js session restoration before calling customer_get_profile or other authenticated customer RPCs. A transient “login is not registered” message on first navigation indicates an auth/profile startup race, not a missing customer record, when a refresh immediately resolves it.

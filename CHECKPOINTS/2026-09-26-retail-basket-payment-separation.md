@@ -373,3 +373,11 @@ Verification state: live return RPC applied; frontend syntax checked; browser ve
 - If available customer credit covers the entire purchase, the order is completed using customer credit alone without opening card checkout.
 - The customer credit account display now reports available credit after active checkout holds.
 - Current customer checkout supports customer credit plus card payment. Other payment methods can be added later behind the same provider-neutral customer-facing approach, but they are not currently wired into this retail checkout.
+
+
+### 2026-09-26 mixed-payment stale card-attempt recovery
+- Root cause found in live logs: the mixed-payment credit RPC correctly refused to apply credit when the pending retail order already had an active card payment attempt. This was the previous single-payment checkout attempt, not a credit-balance problem.
+- Customer checkout now detects that specific stale active-card condition, cancels the old pending purchase through the normal customer cancellation RPC, creates a fresh pending checkout order, and reapplies customer credit before starting the new card payment.
+- The external payment event handler now returns a conflict result when a locally cancelled Stripe payment later reports paid, allowing the Stripe webhook conflict path to refund rather than silently accepting the payment.
+- The customer basket cache was bumped to customer-basket.js?v=4.
+- Do not treat an active Stripe attempt as reusable after the customer has changed the payment mix; the order must be restarted so the card amount is recalculated from the remaining balance.

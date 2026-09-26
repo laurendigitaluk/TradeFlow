@@ -1173,3 +1173,10 @@ After changing a setting, new Stripe Checkout sessions use the current configura
 - Items are collapsed by default to keep the portal compact when a customer has multiple sale records. The existing green/current styling and actions are preserved.
 - Customer dashboard cache bumped to `customer-dashboard.js?v=126`.
 - GitHub commits: JS `d5678bf53e5639e158e2484fb783c246203cced8`, HTML `f19473237527180294bd35023b9adaba6866468b`.
+
+
+### 2026-09-26 — Subscriber fulfilment label actions clarified
+- In the **subscriber Fulfilment dashboard**, existing shipping-file actions now read **Add label** and **Add QR code**. They open the corresponding file chooser so the subscriber can add or replace the provider-supplied file.
+- Subscriber Fulfilment no longer presents these actions as **View / print**. Printing/viewing is a customer-facing action after the shipping details have been sent to the customer.
+- Fulfilment dashboard cache bumped to `fulfilment-dashboard.js?v=9`.
+- GitHub commits: JS `a8413720cde6e0032b96463f145fa6386d94726c`, HTML `5b8696d4af4d46f09717cae5b0a3515b647b610b`.

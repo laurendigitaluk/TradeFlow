@@ -31,8 +31,34 @@ async function load(){
   setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
-  const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,instructions,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=sort_order,display_name');
-  $('methods').innerHTML=rows?.length?rows.map(x=>'<div style="border-top:1px solid #dfe4e8;padding:12px 0;display:flex;justify-content:space-between;gap:15px;align-items:flex-start"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+esc(x.instructions||'No customer instructions.')+'</div></div><span class="status-pill">'+(x.enabled?'Enabled':'Disabled')+'</span></div>').join(''):'<div class="empty">No payment methods configured yet.</div>';
+  const defaults=[
+   {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
+   {method_code:'link',display_name:'Link',enabled:true,sort_order:20},
+   {method_code:'klarna',display_name:'Klarna',enabled:true,sort_order:30},
+   {method_code:'amazon_pay',display_name:'Amazon Pay',enabled:true,sort_order:40}
+  ];
+  await api('/rest/v1/tenant_payment_methods?on_conflict=tenant_id,method_code',{
+   method:'POST',
+   headers:{Prefer:'resolution=merge-duplicates,return=minimal'},
+   body:JSON.stringify(defaults.map(x=>({...x,tenant_id:tenantId})))
+  });
+  const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&method_code=in.(card,link,klarna,amazon_pay)&order=sort_order');
+  $('stripe-methods').innerHTML=rows?.length?rows.map(x=>{
+    const required=x.method_code==='card';
+    return '<div class="shipping-provider-card" style="display:flex;justify-content:space-between;align-items:center;gap:18px"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+(required?'Required base payment method for TradeFlow checkout.':'Customers will only see this method when it is enabled here and Stripe considers it eligible.')+'</div></div><label style="display:flex;align-items:center;gap:8px;white-space:nowrap"><input type="checkbox" class="stripe-method-toggle" data-method-id="'+esc(x.id)+'" data-method-code="'+esc(x.method_code)+'" '+(x.enabled?'checked':'')+(required?' disabled':'')+'> '+(x.enabled?'Enabled':'Disabled')+'</label></div>';
+  }).join(''):'<div class="empty">No Stripe payment methods configured.</div>';
+  document.querySelectorAll('.stripe-method-toggle').forEach(el=>el.addEventListener('change',async()=>{
+    const id=el.dataset.methodId;
+    const enabled=el.checked;
+    el.disabled=true;
+    try{
+      await api('/rest/v1/tenant_payment_methods?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({enabled})});
+      msg('Payment method setting saved.','success');
+    }catch(e){
+      el.checked=!enabled;
+      msg(e.message||String(e),'error');
+    }finally{el.disabled=false}
+  }));
  }catch(e){msg(e.message||String(e),'error')}
 }
 $('email-form').onsubmit=async e=>{
@@ -60,14 +86,6 @@ $('profile-form').onsubmit=async e=>{
    show_email:$('show-email').checked,show_phone:$('show-phone').checked,show_address:$('show-address').checked
   })});
   msg('Business details saved.','success');$('business-name').textContent=name;
- }catch(e){msg(e.message||String(e),'error')}
-};
-$('method-form').onsubmit=async e=>{
- e.preventDefault();
- try{
-  const code=$('method-code').value,name=$('method-name').value.trim();if(!name)throw Error('Display name is required.');
-  await api('/rest/v1/tenant_payment_methods?on_conflict=tenant_id,method_code',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({tenant_id:tenantId,method_code:code,display_name:name,enabled:true,instructions:$('method-instructions').value.trim()||null})});
-  msg('Payment method saved.','success');await load();
  }catch(e){msg(e.message||String(e),'error')}
 };
 $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut();

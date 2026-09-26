@@ -38,3 +38,7 @@
 .order-items{border-top:1px solid #e3e7eb;margin-top:12px;padding-top:10px}.order-item{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px solid #eef1f3}.order-item:last-child{border-bottom:0}.order-card .stage{display:inline-block}
 
 .order-card{border:1px solid #d8dee5}.order-card.order-preparing{border:2px solid #2d7a4d;background:#f1f8f3}.order-card.order-label-ready{border:2px solid #b48a25;background:#fffaf0}.order-card.order-shipped{border:2px solid #2f6f9f;background:#f3f8fc}.order-card.order-delivered{border:2px solid #2d7a4d;background:#f1f8f3}
+
+
+/* Customer order history: keep each paid order compact until opened. */
+.order-card{overflow:hidden}.order-card>summary{list-style:none;cursor:pointer;position:relative;padding:0}.order-card>summary::-webkit-details-marker{display:none}.order-card>summary::marker{display:none}.order-card .order-summary{display:block}.order-card .order-toggle{position:absolute;right:12px;bottom:12px;font-size:10px;font-weight:800;color:#68757f}.order-card[open] .order-toggle::after{content:' ↑'}.order-card:not([open]) .order-toggle::after{content:' ↓'}.order-card:not([open]) .order-toggle{color:#2f6f9f}.order-card .order-details{padding-top:2px}.order-card[open]>summary{padding-bottom:2px}

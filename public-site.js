@@ -260,14 +260,30 @@ async function getStoredCustomerSession(){
  return null;
 }
 async function submitCustomerSellingRequest(payload,session,files=[]){
- const formData=new FormData();
- formData.append('tenant_id',activeTenantId);
- formData.append('payload',JSON.stringify(payload));
- files.forEach(file=>formData.append('files',file,file.name));
- const response=await fetch(SUPABASE_URL+'/functions/v1/customer-selling-submit',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token},body:formData});
- const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
- if(!response.ok)throw new Error(body?.message||body?.msg||body?.error||text||('HTTP '+response.status));
- return body;
+ const buildForm=()=>{
+  const formData=new FormData();
+  formData.append('tenant_id',activeTenantId);
+  formData.append('payload',JSON.stringify(payload));
+  files.forEach(file=>formData.append('files',file,file.name));
+  return formData;
+ };
+ let current=session;
+ for(let attempt=0;attempt<2;attempt++){
+  const response=await fetch(SUPABASE_URL+'/functions/v1/customer-selling-submit',{
+   method:'POST',
+   headers:{apikey:KEY,Authorization:'Bearer '+current.access_token},
+   body:buildForm()
+  });
+  const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
+  if(response.ok)return body;
+  const jwtFailure=response.status===401&&/invalid jwt|jwt|token/i.test(String(body?.message||body?.msg||body?.error||text||''));
+  if(jwtFailure&&attempt===0){
+   const refreshed=await getStoredCustomerSession();
+   if(refreshed?.access_token){current=refreshed;continue}
+  }
+  throw new Error(body?.message||body?.msg||body?.error||text||('HTTP '+response.status));
+ }
+ throw new Error('Customer session could not be refreshed.');
 }
 function bindSellWizard(site,catalogue){
  const form=$('selling-journey-form');if(!form)return;

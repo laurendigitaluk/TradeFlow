@@ -523,3 +523,27 @@ Verification completed:
 - JavaScript syntax checked for owner dashboard, public plan loader and subscriber signup.
 
 No retail checkout, customer portal, buying, fulfilment, shipping, payment or workflow logic was changed by this feature.
+
+
+## 26 September 2026 — Commercial model consolidated to one TradeFlow plan
+
+The platform commercial model has now been consolidated to one public plan.
+
+### Live commercial state
+- Canonical internal plan row remains enhanced so the active Camerashack subscription keeps the same plan_id and existing feature gates.
+- Display name is now TradeFlow.
+- The plan contains the complete current platform capability, including the core Buy & Sell workflow, customer portal, Website Builder, staff tools, audit, analytics, integrations, market intelligence and the TradeFlow starting catalogue.
+- Only this plan is active and visible for new website sign-ups.
+- Legacy Basic, Catalogue and earlier plan rows remain as historical/inactive records and are hidden from the public commercial model.
+- New subscriber business creation now accepts only the canonical TradeFlow plan.
+- Owner Dashboard no longer presents an upgrade path between commercial tiers.
+
+### Owner plan controls
+The Platform Owner can edit the single TradeFlow plan: plan name and description; website visibility; monthly price; annual price; currency; Stripe Product ID; Stripe monthly Price ID; Stripe annual Price ID.
+
+No subscriber/customer operational workflow was changed by this consolidation.
+
+### Platform email clarification
+The Platform Owner sending-email setting records the sender address and verification state; it does not itself send a confirmation email. The current notification processor only sends platform email after the sender/domain is verified with the email provider. This is now stated explicitly in the Owner Dashboard so a pending address is not mistaken for an email-confirmation workflow.
+
+The current live sender is saved as pending. Email provider/domain verification remains a separate infrastructure step.

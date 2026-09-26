@@ -1234,3 +1234,12 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - The external payment event handler now returns a conflict result when a locally cancelled Stripe payment later reports paid, allowing the Stripe webhook conflict path to refund rather than silently accepting the payment.
 - The customer basket cache was bumped to customer-basket.js?v=4.
 - Do not treat an active Stripe attempt as reusable after the customer has changed the payment mix; the order must be restarted so the card amount is recalculated from the remaining balance.
+
+
+
+## 2026-09-26 — Subscriber-controlled Stripe checkout payment methods
+- Business Settings now exposes tenant-scoped Stripe checkout controls for **Credit or debit card**, **Link**, **Klarna**, and **Amazon Pay**.
+- Card remains the required base online payment method. Subscribers can independently enable or disable Link, Klarna and Amazon Pay.
+- The checkout Edge Function reads these settings and sends Stripe's dynamic-method filter using `allowed_payment_method_types[]`. Stripe remains the authority for method eligibility at checkout.
+- Apple Pay is deliberately documented as Stripe-managed rather than represented as a false TradeFlow toggle. Stripe's API documentation lists Apple Pay as a wallet without an API enum, while Link and Amazon Pay have API enums. With card payments enabled, TradeFlow cannot independently suppress Apple Pay through the Checkout Session API.
+- Do not reintroduce a second payment-method configuration system. Use `tenant_payment_methods` for subscriber-controlled Stripe method preferences and keep provider connectivity separate.

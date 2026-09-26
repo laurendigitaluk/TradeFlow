@@ -1080,3 +1080,19 @@ The Fulfilment screen should be completed using the same shipping process as Buy
 Completing the handoff moves the fulfilment to Label ready and sends the shipping details to the customer portal. The customer can view/print the label or QR code and see the carrier, service, tracking and instructions. When the parcel is actually handed to the courier, use Mark dispatched.
 
 Do not guess parcel weight from the product name. Product specifications can help as a cross-check, but the courier declaration must reflect the actual packed parcel.
+
+
+
+## 26 September 2026 — Retail shipping handoff: current procedure
+
+When a paid product appears in **Selling → Sold**, use **Create Shipping Label** to open Fulfilment.
+
+1. Select the shipping service you configured in **Settings → Shipping Settings**.
+2. Open that provider and complete the shipment booking there. The provider is where you enter the packed parcel's weight and dimensions and pay for the shipping service.
+3. Return to TradeFlow and select the paid customer order. Check the exact product, customer and delivery address shown on screen.
+4. Enter the carrier, service and tracking number/URL supplied by the provider.
+5. Upload the printable shipping label **or** the QR code supplied by the provider. A QR code is appropriate for printer-free services where the courier/provider supports it.
+6. Review the customer shipping instructions and select **Save & send shipping details**.
+7. The fulfilment moves to **Label ready** and the customer receives the shipping handoff. Only mark **Sent/Dispatched** after the parcel has actually been handed to the courier or collection service.
+
+The current Fulfilment screen intentionally does not repeat the provider's weight/length/width/height fields. Those values still matter for the courier booking, but entering them twice in TradeFlow creates unnecessary duplication and a second source of truth.

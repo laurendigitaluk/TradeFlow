@@ -1426,3 +1426,13 @@ Customer Portal startup must wait for customer-auth.js session restoration befor
 - Customer My Orders remains recipient-focused: no outbound label/QR controls. Once dispatched it shows the shipping service/carrier, tracking number, and an explicit **Track item →** link when a tracking URL is available.
 - After **MARK AS SENT**, Selling → Sold should show the shipment as **Shipped** with no further outbound action. Return handling remains a separate customer-return workflow and should only become actionable when a return has actually been requested.
 - Production migration: `20260926225000_retail_fulfilment_mark_sent_atomic`.
+
+
+## 2026-09-26 — Mixed customer credit + card checkout
+
+- Retail checkout now supports applying available customer credit first and charging the remaining balance by card. Example: a £75 purchase with £5.09 available credit presents £5.09 customer credit and a £69.91 card payment.
+- Customer-facing payment wording is provider-neutral: **Credit or debit card**. The customer does not need to see the Stripe provider name.
+- Customer credit is held against the retail order while the card payment is open. The hold is released if the card payment fails/expires or the customer cancels; it is actually deducted and posted to the ledger when the card payment succeeds. This prevents losing credit when a card checkout is abandoned.
+- If available customer credit covers the entire purchase, the order is completed using customer credit alone without opening card checkout.
+- The customer credit account display now reports available credit after active checkout holds.
+- Current customer checkout supports customer credit plus card payment. Other payment methods can be added later behind the same provider-neutral customer-facing approach, but they are not currently wired into this retail checkout.

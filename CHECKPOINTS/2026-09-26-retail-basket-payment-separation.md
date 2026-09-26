@@ -92,6 +92,7 @@ My Orders remains exclusively paid retail purchase history.
 
 ## Verification state
 
+- Database lifecycle test: passed for pending-order lookup, payment-attempt creation, cancellation, listing release and payment cancellation; customer credit remained unchanged.
 - GitHub: implemented.
 - Supabase database: live verified.
 - Edge Functions: live versions verified.

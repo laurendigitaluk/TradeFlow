@@ -1341,3 +1341,9 @@ The Customer Portal selling RPC was audited separately. The Nikon COOLPIX P1100 
 The existing Stripe Edge Functions remain in use: `create-stripe-checkout-session` version 11 and `stripe-payment-webhook` version 5. No new payment provider or checkout architecture was introduced.
 
 Verification state: live Supabase functions and database lifecycle changes verified; browser verification still required. Test One remains frozen.
+
+
+### 26 September 2026 — Customer-credit checkout constraint repair
+Browser Test Two exposed: `new row for relation "payment_records" violates check constraint "payment_records_payment_type_check"`. Live inspection showed the constraint permits `customer_payment`, `seller_payment`, `refund`, `payout`, `expense`, and `other`; it does not permit `customer_credit`. The `customer_pay_retail_order_with_credit()` RPC was therefore failing before payment completion because it inserted `payment_type='customer_credit'`. The minimal repair was to retain `payment_method='customer_credit'` while setting `payment_type='customer_payment'`. No constraint broadening was introduced. This keeps transaction type and payment method semantically separate and preserves the existing database contract.
+
+The live function was replaced through migration `20260926160000_fix_retail_credit_payment_type`. A real credit payment was not executed during backend verification because that would spend the customer's live £55 credit; browser verification should now exercise the intended credit payment path once the user is ready to make the purchase.

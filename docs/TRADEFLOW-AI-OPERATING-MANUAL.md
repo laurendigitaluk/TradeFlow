@@ -1498,3 +1498,36 @@ Customer Portal startup must wait for customer-auth.js session restoration befor
 - Live migration `20260926250000_customer_buying_photo_subscriber_access` adds an explicit tenant-scoped Storage SELECT policy for authenticated subscriber members on the `customer-buying` folder. Customer photographs remain private and are not made public.
 - Buying dashboard cache is now `buying-dashboard.js?v=41`. The photo loader also surfaces the secure-link error instead of silently swallowing it, making any future access failure diagnosable.
 - GitHub commits: migration `e995d4ad74a6e4b2b2750c366f59d5abe3277409`; JS `df951448616a658c0b2fc2d6346c574ffb9b40df`; HTML `0df7280548b94c4bb77596a19d651395a7a2c851`.
+
+
+## 26 September 2026 — Multi-session concurrency diagnostic checkpoint
+
+A live Test Two concurrency test is now exercising four independent browser sessions: Platform Owner, Camerashack subscriber, and two Camerashack customers.
+
+### Required diagnostic order
+When concurrent-session behaviour is reported:
+1. Identify the browser/session identity.
+2. Identify the authenticated Auth user.
+3. Identify the tenant ID.
+4. Identify the customer ID where the session is customer-facing.
+5. Identify the request/order/fulfilment/payment record involved.
+6. Check the live RPC and RLS/security boundary before changing code.
+7. Compare against the last known-good checkpoint before making a repair.
+
+Do not treat separate Auth sessions as a conflict merely because they belong to the same subscriber tenant. Two customers can legitimately have separate customer sessions and separate buying requests in one tenant.
+
+### 26 September live audit
+- Platform Owner membership for leannelaurenlowe@hotmail.com is active.
+- Camerashack has one active subscriber owner membership.
+- Two separate Camerashack customer records are active.
+- Two separate submitted buying requests are present: one for Test Three and one for Leanne Lowe.
+- Retail state is consistent with the current test history: one paid £75 order awaiting fulfilment and one paid £49.91 order already dispatched.
+- No active customer-credit holds or processing/initiated payment attempts remain.
+- A historical pending Stripe payment record remains against the already-paid £49.91 test order; the external-payment conflict/refund guard must remain intact.
+
+### Owner Dashboard repair
+The concurrent browser screenshot exposed escapeAttr is not defined in platform-owner-dashboard.js. The minimal repair was to define escapeAttr() as a wrapper around the existing escapeHtml() function. No database migration was required and no subscriber/customer code was changed.
+
+GitHub commit: c9bceb23e97d2d2f879a29d77f8c0e68c1fd9447.
+
+Never overwrite a working previous-step repair while diagnosing concurrency. Make the smallest isolated change, verify it, then update this checkpoint and the manuals.

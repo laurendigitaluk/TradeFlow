@@ -1273,3 +1273,55 @@ The database now records inventory_assets.catalogue_product_id for directly cata
 This resolves the previous architectural mistake where Inventory was made dependent on the Buying catalogue implementation and tenant buying categories. It is not a cache or browser patch.
 
 Verification: live Supabase contains 261 active selected catalogue products for Camerashack across 3 manufacturers; the new Inventory catalogue RPC returns those 261 products for an authorised tenant user. A rollback-only authenticated INSERT test confirmed the new manual path is accepted when explicitly marked manual_inventory, while an unmarked direct INSERT remains blocked.
+
+
+## CURRENT RETAIL CHECKOUT ARCHITECTURE — 26 September 2026
+
+The retail purchase journey has been rebuilt to match the documented basket model:
+
+**Shop → Product → Buy this item → Basket → Sign in if required → Proceed to payment → Retail Order → Stripe / Customer Credit → My Orders**
+
+### Basket rules
+
+The basket is a customer-side pre-order state.
+
+- Adding a product to the basket does **not** create a retail order.
+- Removing a product removes it from the basket.
+- A retail order is created only when the customer proceeds to payment.
+- Listing reservation therefore happens at payment initiation, not when the product is merely viewed or added to the basket.
+- Unpaid/pre-payment orders remain outside My Orders.
+
+### Authentication
+
+The canonical customer session remains:
+
+`tradeflow_customer_session`
+
+No separate checkout session is used.
+
+The retail basket is tenant-scoped and is stored only as pre-order browser state. Customer account data, addresses, credit and orders remain database-backed and authenticated.
+
+### Payment
+
+Internet payment uses the existing:
+
+`create-stripe-checkout-session`
+
+Edge Function and the existing Stripe webhook/payment-record chain.
+
+Customer credit uses:
+
+`customer_pay_retail_order_with_credit`
+
+The customer credit account remains server-authoritative. The Test Two Camerashack customer has £55.00 GBP credit.
+
+### Separation of workflows
+
+Retail purchasing must remain separate from the customer selling/trade-in workflow.
+
+Do not route a retail **Buy this item** action through the **My Sale** / valuation / offer / acquisition portal.
+
+### Retired checkout code
+
+The obsolete standalone checkout route and the later integrated purchase controller have been removed. Do not recreate them or reintroduce a second checkout session state without a deliberate architectural change and checkpoint.
+

@@ -197,29 +197,36 @@ window.addEventListener('DOMContentLoaded',async()=>{
 </script><script>
 window.addEventListener('DOMContentLoaded',async()=>{
  try{
-  const a=await window.tradeflowSubscriberAuthReady;const key=a?.key,session=a?.session,tenantId=a?.tenantId;if(!key||!session?.access_token||!tenantId)return;
-  const api=async table=>{const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/'+table+'&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});if(!r.ok)return[];const t=await r.text();return t?JSON.parse(t):[]};
-  const [buying,inventory,listings,orders,fulfilment,returns]=await Promise.all([
-   api('buying_items?select=id,purchase_stage,status'),
-   api('inventory_assets?select=id,status'),
-   api('listings?select=id,status'),
-   api('orders?select=id,status'),
-   api('fulfilment_orders?select=id,status'),
-   api('returns?select=id,status')
-  ]);
-  const set=(id,count,cls,state)=>{document.getElementById('flow-count-'+id).textContent=count;document.getElementById('flow-state-'+id).textContent=state;const el=document.getElementById('flow-'+id);el.classList.remove('flow-green','flow-yellow','flow-blue');el.classList.add('flow-'+cls)};
-  const activeBuying=buying.filter(x=>x.purchase_stage!=='purchased'&&x.status!=='closed').length;
-  const ready=inventory.filter(x=>x.status==='ready_for_sale').length;
-  const activeListings=listings.filter(x=>!['sold','delisted'].includes(x.status)).length;
-  const activeOrders=orders.filter(x=>!['completed','cancelled'].includes(x.status)).length;
-  const activeFulfilment=fulfilment.filter(x=>!['completed','cancelled'].includes(x.status)).length;
-  const activeReturns=returns.filter(x=>!['completed','closed'].includes(x.status)).length;
-  set('buying',activeBuying,activeBuying?'green':'blue',activeBuying?'ACTION REQUIRED':'COMPLETE');
-  set('inventory',ready,ready?'green':'yellow',ready?'SEND TO SALES':'NO ACTION');
-  set('selling',activeListings,ready?'green':activeListings?'blue':'yellow',ready?'LISTING ACTION REQUIRED':activeListings?'ACTIVE LISTINGS':'NO ACTION');
-  set('orders',activeOrders,activeOrders?'green':'yellow',activeOrders?'ACTION REQUIRED':'NO ACTION');
-  set('fulfilment',activeFulfilment,activeFulfilment?'green':'yellow',activeFulfilment?'ACTION REQUIRED':'NO ACTION');
-  set('returns',activeReturns,activeReturns?'green':'yellow',activeReturns?'ACTION REQUIRED':'NO ACTION');
+  const a=await window.tradeflowSubscriberAuthReady;
+  const key=a?.key,session=a?.session,tenantId=a?.tenantId;
+  if(!key||!session?.access_token||!tenantId)return;
+  const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_business_workflow_counts',{
+    method:'POST',
+    headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
+    body:JSON.stringify({p_tenant_id:tenantId})
+  });
+  const t=await r.text();let x;
+  try{x=t?JSON.parse(t):null}catch{throw Error(t||'Workflow counts could not be read.')}
+  if(!r.ok)throw Error(x?.message||x?.hint||x?.details||t||('HTTP '+r.status));
+  const row=Array.isArray(x)?x[0]:x;
+  const set=(id,count,cls,state)=>{
+    const countEl=document.getElementById('flow-count-'+id),stateEl=document.getElementById('flow-state-'+id),el=document.getElementById('flow-'+id);
+    if(countEl)countEl.textContent=Number(count||0);
+    if(stateEl)stateEl.textContent=state;
+    if(el){el.classList.remove('flow-green','flow-yellow','flow-blue');el.classList.add('flow-'+cls);}
+  };
+  const buying=Number(row?.active_buying||0);
+  const inventory=Number(row?.inventory_ready||0);
+  const listings=Number(row?.active_listings||0);
+  const orders=Number(row?.active_retail_orders||0);
+  const fulfilment=Number(row?.fulfilment_action_required||0);
+  const returns=Number(row?.active_returns||0);
+  set('buying',buying,buying?'green':'blue',buying?'ACTION REQUIRED':'COMPLETE');
+  set('inventory',inventory,inventory?'green':'yellow',inventory?'SEND TO SALES':'NO ACTION');
+  set('selling',listings,inventory?'green':listings?'blue':'yellow',inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'NO ACTION');
+  set('orders',orders,orders?'green':'yellow',orders?'ACTION REQUIRED':'NO ACTION');
+  set('fulfilment',fulfilment,fulfilment?'green':'yellow',fulfilment?'SALE TO PROCESS':'NO ACTION');
+  set('returns',returns,returns?'green':'yellow',returns?'ACTION REQUIRED':'NO ACTION');
  }catch(e){console.warn('Workflow counts:',e)}
 });
-</script></body></html>
+</script></script></body></html>

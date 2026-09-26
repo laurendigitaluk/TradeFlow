@@ -58,6 +58,9 @@ else if(s==='final_offer_accepted'){h='<div class="green-block"><strong>Payment 
 else if(s==='purchased'){h='<div class="green-block"><strong>Purchased</strong><p class="small">Payment has been recorded and the physical item has been created in Inventory. Continue from Inventory → Selling.</p></div>'}
 else if(s==='awaiting_item'){h=shippingHtml(r)}
 else if(s==='shipping'){h=shippingSentHtml(r)}
+else if(s==='submitted'||s==='under_review'){
+ h='<div class="green-block"><strong>Valuation required</strong><p class="small">Review the customer-supplied item and submit a valuation to create the customer offer.</p><div id="valuation-result-'+id+'"></div><div id="manual-valuation-'+id+'" style="display:none;margin-top:12px"><div class="two"><label>Cash valuation<input id="manual-cash-'+id+'" type="number" min="0" step="0.01" placeholder="0.00"></label><label>Trade-in valuation<input id="manual-trade-'+id+'" type="number" min="0" step="0.01" placeholder="0.00"></label></div><div class="actions"><button data-act="manual-offer" data-id="'+id+'">Approve valuation &amp; send offer</button></div></div><div class="actions"><button data-act="value" data-id="'+id+'">Submit valuation</button></div></div>'
+}
 else if(s==='offer_ready'||s==='valued'){h='<div class="green-block"><strong>Customer offer</strong><p class="small">Enter the offer values and send them to the customer.</p><div class="actions"><button data-act="offer" data-id="'+id+'">Send cash &amp; trade-in offer</button></div></div>'}
 else {h='<div class="notice"><strong>'+esc(stageLabel(s))+'</strong><p class="small">Review this item and continue the current workflow stage.</p></div>'}
 e.innerHTML=h;document.querySelectorAll('[data-act]').forEach(b=>{if(b.dataset.bound)return;b.dataset.bound='1';b.onclick=()=>action(b.dataset.act,b.dataset.id,b)})}

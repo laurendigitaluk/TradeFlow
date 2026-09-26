@@ -1497,3 +1497,37 @@ Problem: Inventory Add Product had been wired directly to the Buying catalogue i
 Resolution: Inventory now loads its product hierarchy through the dedicated get_inventory_product_catalogue() RPC backed by tenant_catalogue_selections and the master catalogue. The UI sequence is Manufacturer → Category → Product, with branch/product type derived automatically. Manual assets are explicitly marked manual_inventory and require an authenticated subscriber user with Inventory management permission. Acquisition-linked assets retain the existing completed-purchase guard.
 
 Verification: Camerashack catalogue: 261 active selected products, 3 manufacturers. The new RPC returns 261 products under an authenticated tenant context. Authenticated rollback testing confirmed the manual creation boundary and confirmed unmarked direct creation remains rejected.
+
+
+## 26 September 2026 — Retail fulfilment shipping handoff repair
+
+### Failure observed
+The retail Fulfilment page showed permission denied for table fulfilments and did not provide enough information to purchase or record a shipment. The subscriber could not see the exact sold item, parcel measurements, printable label, printable QR code or a complete customer handoff.
+
+### Required behaviour
+The retail sale fulfilment screen must use the same subscriber-managed shipping model as Buying:
+- saved Shipping Settings services;
+- provider link;
+- exact paid order and item details;
+- recipient and delivery address;
+- packed parcel weight and L/W/H;
+- carrier/service/tracking;
+- printable label and QR upload/view/print;
+- shipping instructions;
+- one completion action that moves awaiting to label and notifies the customer.
+
+### Server boundary
+Do not query retail_orders or fulfilments directly from the subscriber browser. Use:
+- subscriber_get_retail_fulfilment_shipping()
+- subscriber_save_retail_fulfilment_shipping()
+- subscriber_transition_retail_fulfilment()
+
+Customer retail shipping reads use customer_get_retail_fulfilment_shipping(). Fulfilment files in tradeflow-media are customer-readable only when the file belongs to that customer's paid retail order.
+
+### Parcel measurement rule
+The parcel values must describe the packed shipment, including packaging. Current Parcel2Go guidance warns that under-declared weight/dimensions can result in additional charges; Royal Mail Click & Drop likewise requires shipment weight and packaging information when generating postage.
+
+### Notification rule
+Completing the shipping handoff queues order_shipping_ready with the order, item(s), carrier/service, tracking, parcel measurements, instructions and Customer Portal link. Dispatch queues the expanded order_dispatched notification.
+
+Verification state: Implemented in GitHub; Live DB verified; browser verification required.

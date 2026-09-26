@@ -491,3 +491,35 @@ Live migration: `20260926212000_fix_platform_owner_email_validation`.
 GitHub source commit: `ccfbbd11209e3299337898d4cdf2bde7a3dd70bb`.
 
 Next browser check: click Save TradeFlow email again. The address should save and report that it is waiting for domain/email verification rather than rejecting the address as invalid.
+
+
+## 26 September 2026 — Owner commercial plan controls
+
+The concurrent multi-session test exposed a product-control gap in the Platform Owner Dashboard: the Plans panel was informational only. The owner now has a dedicated commercial-plan editor for the three active commercial plans: Basic, Enhanced and Catalogue.
+
+The new control layer separates **operational plan activation** from **public commercial visibility**. A plan can remain active for existing subscriber operations while being hidden from new website sign-ups.
+
+Owner can configure:
+- plan name and description;
+- Live on website / hidden state;
+- monthly price;
+- annual price;
+- currency;
+- Stripe Product ID;
+- Stripe monthly Price ID;
+- Stripe annual Price ID.
+
+Public website behaviour now reads the owner-controlled plan list. The homepage and subscriber signup page only expose plans marked Live on website. The public Plans page hides unavailable plan details and can add Catalogue details when Catalogue is made public.
+
+Stripe credentials are not stored in the public plan table. Product/Price IDs are configuration references; recurring Stripe checkout/billing remains a separate production boundary until the billing integration is explicitly built and tested.
+
+Live migration: `20260926220000_platform_commercial_plan_controls`.
+GitHub migration source: `supabase/migrations/20260926220000_platform_commercial_plan_controls.sql`.
+
+Verification completed:
+- live plans: Basic, Enhanced and Catalogue remain active;
+- initial website visibility: Basic and Enhanced live, Catalogue hidden;
+- public plan RPC returns only Basic and Enhanced initially;
+- JavaScript syntax checked for owner dashboard, public plan loader and subscriber signup.
+
+No retail checkout, customer portal, buying, fulfilment, shipping, payment or workflow logic was changed by this feature.

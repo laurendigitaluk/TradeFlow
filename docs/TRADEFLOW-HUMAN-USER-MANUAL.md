@@ -1096,3 +1096,19 @@ When a paid product appears in **Selling → Sold**, use **Create Shipping Label
 7. The fulfilment moves to **Label ready** and the customer receives the shipping handoff. Only mark **Sent/Dispatched** after the parcel has actually been handed to the courier or collection service.
 
 The current Fulfilment screen intentionally does not repeat the provider's weight/length/width/height fields. Those values still matter for the courier booking, but entering them twice in TradeFlow creates unnecessary duplication and a second source of truth.
+
+
+
+## 26 September 2026 — Retail customer delivery and returns
+
+A customer buying from the Retail Shop is the recipient of the parcel. They do not need the business's printable outbound shipping label or courier QR code.
+
+After the subscriber completes the shipment:
+- the customer sees the shipping service/carrier;
+- the customer receives the tracking number;
+- when the subscriber marks the parcel Sent, the customer receives the dispatch notification;
+- the customer can use the tracking number to follow delivery.
+
+Once the subscriber marks the order Delivered, the customer's My Orders entry provides Create a return for each delivered item. The customer selects a return reason and may add additional details. The return request is then sent to the business for review.
+
+The subscriber remains responsible for the outbound shipping label and QR code in the Fulfilment workspace. Those controls are not part of the customer retail order experience.

@@ -436,3 +436,40 @@ Verification state: live return RPC applied; frontend syntax checked; browser ve
 - Live migration `20260926250000_customer_buying_photo_subscriber_access` adds an explicit tenant-scoped Storage SELECT policy for authenticated subscriber members on the `customer-buying` folder. Customer photographs remain private and are not made public.
 - Buying dashboard cache is now `buying-dashboard.js?v=41`. The photo loader also surfaces the secure-link error instead of silently swallowing it, making any future access failure diagnosable.
 - GitHub commits: migration `e995d4ad74a6e4b2b2750c366f59d5abe3277409`; JS `df951448616a658c0b2fc2d6346c574ffb9b40df`; HTML `0df7280548b94c4bb77596a19d651395a7a2c851`.
+
+
+## 26 September 2026 — Multi-session concurrency/background audit
+
+The current Test Two browser setup is intentionally exercising four independent sessions at the same time:
+- Platform Owner account: leannelaurenlowe@hotmail.com
+- Camerashack subscriber account
+- Camerashack customer account: test 3 customer
+- Camerashack customer account: Leanne Lowe
+
+### Isolation verified
+- Platform Owner uses tradeflow_platform_owner_session.
+- Subscriber business access uses tradeflow_subscriber_session plus a tenant selector.
+- Customer access uses tradeflow_customer_session plus the customer tenant context.
+- The two customer identities are separate Auth users and separate public.customers records inside the same Camerashack tenant.
+- The Platform Owner account has an active platform_memberships row and is not a subscriber tenant member.
+- The two customer accounts are not subscriber tenant members.
+- Supabase currently shows separate active Auth sessions for the concurrently tested users; this is expected and does not by itself indicate session collision.
+
+### Live background state checked at 21:01 UTC
+- Camerashack buying currently has two submitted active requests: one for the Test Three customer and one for Leanne Lowe.
+- The existing Nikon COOLPIX P1100 trade-in record remains separate from retail purchasing.
+- Retail currently has one paid £75 order awaiting fulfilment and one previously paid £49.91 order already dispatched.
+- No active customer-credit holds remain.
+- There are no initiated/processing payment records. One historical pending Stripe payment record remains against the already-paid £49.91 order from an earlier test; the payment conflict/refund guard remains in place. Treat this as a test artefact, not as a current concurrent-session failure.
+- Two fulfilment rows exist: one awaiting for the £75 order and one dispatched for the £49.91 order.
+
+### Owner Dashboard browser finding and repair
+The Owner Dashboard screenshot exposed a real front-end error: escapeAttr is not defined. The tenant list itself was therefore not rendering even though the platform-owner authentication boundary was working.
+
+Minimal repair:
+- platform-owner-dashboard.js now defines escapeAttr() using the existing HTML escaping function.
+- No authentication, tenant-security or subscriber workflow code was changed.
+- GitHub commit: c9bceb23e97d2d2f879a29d77f8c0e68c1fd9447.
+
+### Test rule
+Do not alter Test One or roll back the working retail/buying repairs while exercising concurrent sessions. If a problem appears, first identify which browser identity, tenant, RPC and record changed before editing code.

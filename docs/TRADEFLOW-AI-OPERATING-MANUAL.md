@@ -1538,3 +1538,14 @@ Never overwrite a working previous-step repair while diagnosing concurrency. Mak
 The Platform Owner sending-email save path must remain platform-owner-only. A valid address such as info@scenesource.co.uk must pass validation. The live repair corrected an over-escaped domain-dot regex in platform_owner_save_email(). Do not weaken private.is_platform_owner(auth.uid()) or bypass the RPC with direct client writes.
 
 Production migration: 20260926212000_fix_platform_owner_email_validation.
+
+
+## 26 September 2026 — Commercial plan control boundary
+
+When changing commercial plans, preserve the distinction between operational availability and public sales visibility:
+- `plans.active` controls whether the plan remains an operational plan;
+- `plans.website_visible` controls whether it appears on the public website/new signup.
+
+Use the platform-owner RPCs for mutations. Never expose Stripe secret credentials to browser code or store them in public plan records. Public plan reads must use `public_get_available_plans()`, which intentionally excludes Stripe identifiers.
+
+Current live migration: `20260926220000_platform_commercial_plan_controls`.

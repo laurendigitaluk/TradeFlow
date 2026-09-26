@@ -150,3 +150,19 @@ Verification states:
 Never call the retail purchase flow browser-verified until the real Camerashack browser sequence has been completed.
 
 Test One is frozen.
+
+## 26 September 2026 — Stock reservation rule changed
+
+The checkout boundary is now explicitly:
+
+**Shop → Basket → pending checkout/payment attempt → successful payment → sold**
+
+Creating a pending retail order must not change listing status. The listing remains published while payment is pending. This prevents abandoned carts/checkouts from blocking another customer.
+
+At payment time:
+- customer credit locks and validates the listing before deducting credit;
+- external payment processing validates the listing before marking the order paid;
+- if another customer has already bought the item, the conflicting external payment is refunded and its retail order is cancelled.
+
+A pending retail order may still exist as an internal checkout record, but it is not customer purchase history and must not appear in My Orders. My Orders is populated only after successful payment.
+

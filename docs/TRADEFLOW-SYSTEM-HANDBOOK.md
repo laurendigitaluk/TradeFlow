@@ -1187,3 +1187,15 @@ TradeFlow does not need to duplicate the provider's parcel-booking form. Weight 
 The handoff completion boundary is subscriber_save_retail_fulfilment_shipping(). The latest reliability repair performs the authorised awaiting → label transition directly inside that RPC and preserves existing parcel measurements when the simplified handoff UI does not provide new measurements. This avoids coupling the save action to the generic workflow transition function.
 
 The Selling workspace also uses cache-busted startup references and a guarded initialisation path so a stale/racing subscriber auth load cannot leave Available or Sold stuck on Loading until a manual refresh.
+
+
+
+## 26 September 2026 — Retail customer shipping and returns boundary
+
+For retail purchases, the customer is the recipient. The customer portal must not expose the business's printable outbound shipping label or courier QR code as part of the normal order view. My Orders shows the shipment status, carrier/service and tracking information.
+
+The subscriber Fulfilment workspace retains label/QR access because the subscriber creates and manages the shipment. The subscriber uses Mark as sent only after the parcel has physically been handed to the courier. The existing subscriber transition queues the customer dispatch notification.
+
+A retail return becomes available to the customer after fulfilment is marked delivered. The customer may select a delivered order item, choose a reason and add optional notes. customer_request_return() is the authoritative write boundary. It uses return_type='customer_retail', requires the customer's own order item, requires delivered fulfilment, and rejects duplicate active return requests.
+
+Customer Portal authentication must complete before tenant/customer profile RPCs run. Do not perform an initial customer_get_profile call against a stored session until customer-auth.js has completed session restoration/validation.

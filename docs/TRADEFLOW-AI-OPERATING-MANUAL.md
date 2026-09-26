@@ -1325,3 +1325,19 @@ Do not route a retail **Buy this item** action through the **My Sale** / valuati
 
 The obsolete standalone checkout route and the later integrated purchase controller have been removed. Do not recreate them or reintroduce a second checkout session state without a deliberate architectural change and checkpoint.
 
+
+## 26 September 2026 — Retail checkout lifecycle separation repair
+
+The retail checkout audit identified three independent lifecycle faults in the rebuilt Basket path.
+
+1. The Stripe checkout Edge Function was validating a newly-created `pending_payment` retail order through `customer_get_orders()`. That RPC intentionally returns only paid/fulfilled/completed purchase history, so a legitimate pending order could not be found by the Stripe session function. The Edge Function now validates the pending order through the dedicated authenticated `customer_get_retail_order_for_checkout(p_tenant_id,p_order_id)` RPC.
+2. `customer_cancel_retail_order` cancelled the order but did not release the reserved `listings` row. It now releases listing reservations and any linked reserved inventory asset, and cancels active payment attempts. Customer credit is not touched.
+3. `process_external_payment_event` marked a Stripe retail order paid but did not complete the corresponding listing/inventory lifecycle. Successful external payment now moves the linked listing and inventory asset to `sold`. Stripe `checkout.session.expired` is also treated as a cancellation for an unpaid retail order, releasing the reservation.
+
+The current Basket controller persists the pending retail order ID in `tradeflow_customer_pending_retail_order`, validates that it belongs to the current Basket listing, supports cancelling/removing a pending purchase, and returns Stripe cancellation to the Basket rather than My Sale. The Basket controller cache key is now `customer-basket.js?v=2`.
+
+The Customer Portal selling RPC was audited separately. The Nikon COOLPIX P1100 shown in My Sale is backed by the existing Test Two `buying_items`/selling workflow and is not the retail order created by the current retail test. The current retail pending order is a separate `retail_orders` record for the EOS R1 Body Only. Therefore the repair does not hide or rewrite selling records merely to make the screenshot appear correct. My Sale remains driven by `customer_get_selling_status`; My Orders remains driven by `customer_get_orders`, which only exposes paid/completed retail history.
+
+The existing Stripe Edge Functions remain in use: `create-stripe-checkout-session` version 11 and `stripe-payment-webhook` version 5. No new payment provider or checkout architecture was introduced.
+
+Verification state: live Supabase functions and database lifecycle changes verified; browser verification still required. Test One remains frozen.

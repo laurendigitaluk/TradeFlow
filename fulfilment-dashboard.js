@@ -142,7 +142,7 @@ async function saveShipping(){
     let labelPath=r.label_storage_path||null,qrPath=r.qr_storage_path||null;
     if(lf){if(lf.size>10*1024*1024)throw Error('Shipping label must be 10 MB or smaller.');const ext=(lf.name.split('.').pop()||'pdf').toLowerCase();labelPath=await upload(tenantId+'/fulfilments/'+r.fulfilment_id+'/shipping-label-'+Date.now()+'.'+ext,lf);}
     if(qf){if(qf.size>10*1024*1024)throw Error('QR code must be 10 MB or smaller.');const ext=(qf.name.split('.').pop()||'png').toLowerCase();qrPath=await upload(tenantId+'/fulfilments/'+r.fulfilment_id+'/shipping-qr-'+Date.now()+'.'+ext,qf);}
-    const result=await rpc('subscriber_save_retail_fulfilment_shipping',{
+    const result=await rpc('subscriber_complete_retail_fulfilment_shipping',{
       p_fulfilment_id:r.fulfilment_id,
       p_shipping_method:'subscriber_override',
       p_shipping_provider:service?.service_name||r.shipping_provider||$('carrier').value.trim()||null,

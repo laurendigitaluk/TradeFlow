@@ -1200,3 +1200,17 @@ After changing a setting, new Stripe Checkout sessions use the current configura
 - Live migration `20260926250000_customer_buying_photo_subscriber_access` adds an explicit tenant-scoped Storage SELECT policy for authenticated subscriber members on the `customer-buying` folder. Customer photographs remain private and are not made public.
 - Buying dashboard cache is now `buying-dashboard.js?v=41`. The photo loader also surfaces the secure-link error instead of silently swallowing it, making any future access failure diagnosable.
 - GitHub commits: migration `e995d4ad74a6e4b2b2750c366f59d5abe3277409`; JS `df951448616a658c0b2fc2d6346c574ffb9b40df`; HTML `0df7280548b94c4bb77596a19d651395a7a2c851`.
+
+
+## Concurrent testing — 26 September 2026
+
+TradeFlow can be tested with the Platform Owner dashboard, a subscriber business dashboard and multiple customer portals open at the same time.
+
+For a reliable multi-account browser test:
+1. Keep the Platform Owner session separate from the subscriber session.
+2. Keep each customer account in its own browser session/profile.
+3. Do not assume that a customer account is a subscriber business account. Customer access and subscriber access use different authentication boundaries.
+4. When testing two customers for the same business, check the customer name/email and the item/request shown before taking an action.
+5. If a screen appears to show the wrong account, stop before making a transaction and identify the signed-in account and tenant rather than changing any database records.
+
+The 26 September test confirmed that the two Camerashack customer records remain separate while both can have buying activity in the same tenant. The Platform Owner account is separately authorised through the platform-owner boundary.

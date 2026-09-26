@@ -233,3 +233,11 @@ Frontend cache version was bumped to selling-dashboard-fixed.js?v=32. JavaScript
 Browser verification then exposed a second frontend issue: the subscriber Sold RPC returns flat columns (`fulfilment_id`, `fulfilment_status`, `order_id`, `order_reference`, etc.), while the renderer was treating each row as nested `order` and `fulfilment` objects. This caused `Cannot read properties of undefined (reading 'id')`.
 
 The renderer and dispatch handler have been corrected to use the actual flat RPC response shape. Selling cache version is now `selling-dashboard-fixed.js?v=34`. JavaScript syntax verified OK.
+
+## Follow-up — shipping provider handoff and fulfilment RLS
+
+Browser verification showed two further issues: the green action-required styling did not match the customer dashboard's standard green shade, and the Selling shipping link opened the generic Fulfilment page without the saved shipping providers. The Fulfilment page also queried `retail_orders` directly and returned `permission denied for table retail_orders`.
+
+Repair: the customer preparing-shipment card now uses the same `#f1f8f3` green background used by the subscriber action-required shipping UI. Fulfilment now loads saved services from `subscriber_get_shipping_service_settings()` and presents the selected provider links before the fulfilment form, so the subscriber can open the configured provider, create/buy the label there, then return to TradeFlow to record the label/tracking details. A new subscriber-only SECURITY DEFINER RPC, `subscriber_get_fulfilment_orders(p_tenant_id)`, replaces the direct browser query against `retail_orders` and enforces tenant membership.
+
+Fulfilment frontend cache version is now `v4`. Browser verification of the provider cards and the complete external-label handoff remains the next test. The SQL tool cannot execute the subscriber RPC without an authenticated user context, so live RPC execution was not falsely reported as tested; the function was applied successfully and granted to authenticated users.

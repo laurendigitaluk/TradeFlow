@@ -1054,3 +1054,8 @@ The Basket payment screen exposed a live database constraint mismatch when **Use
 A customer placing an item in the Basket or entering payment does **not** reserve or delist the product. The product remains live on the shop while payment is pending. If the customer abandons checkout, no stock release operation is required because the listing was never removed from publication.
 
 Only a confirmed successful payment changes the listing to sold and moves the linked inventory asset to sold. If another customer completes payment first, a later conflicting external payment is not allowed to create a second sale; the payment is refunded and the unpaid retail order is cancelled.
+### 26 September 2026 — Paid retail orders and fulfilment
+
+The customer-facing **My Orders** area now shows the purchased product(s), order total, payment state, fulfilment state and tracking information. A paid retail order creates a fulfilment record in `awaiting` status. The subscriber Selling workspace has a separate **Sold** section for paid listings. From there the subscriber can open the fulfilment workspace to record the shipping label, move the fulfilment to `label`, and then mark it dispatched. Dispatch changes the customer-facing order display to **Shipped** and exposes the carrier/tracking details. The retail listing remains sold throughout this process.
+
+A customer order may contain multiple retail order items. Payment is atomic across the basket: all linked listings are checked before customer credit is deducted or an external payment is accepted. No partial basket sale is permitted.

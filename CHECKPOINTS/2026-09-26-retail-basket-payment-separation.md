@@ -241,3 +241,11 @@ Browser verification showed two further issues: the green action-required stylin
 Repair: the customer preparing-shipment card now uses the same `#f1f8f3` green background used by the subscriber action-required shipping UI. Fulfilment now loads saved services from `subscriber_get_shipping_service_settings()` and presents the selected provider links before the fulfilment form, so the subscriber can open the configured provider, create/buy the label there, then return to TradeFlow to record the label/tracking details. A new subscriber-only SECURITY DEFINER RPC, `subscriber_get_fulfilment_orders(p_tenant_id)`, replaces the direct browser query against `retail_orders` and enforces tenant membership.
 
 Fulfilment frontend cache version is now `v4`. Browser verification of the provider cards and the complete external-label handoff remains the next test. The SQL tool cannot execute the subscriber RPC without an authenticated user context, so live RPC execution was not falsely reported as tested; the function was applied successfully and granted to authenticated users.
+
+## Follow-up — Fulfilment page still showing legacy retail_orders RLS error
+
+The next browser screenshot still showed the legacy `permission denied for table retail_orders` message and did not show the new Shipping Service provider section. This indicates the browser was loading the previous Fulfilment UI/script rather than the repaired version.
+
+The repair has been hardened further: the Fulfilment page now uses subscriber-only SECURITY DEFINER RPCs for both orders and fulfilments, so the browser no longer needs direct access to either `retail_orders` or `fulfilments`. New RPC: `subscriber_get_fulfilments(p_tenant_id)`. Existing `subscriber_get_fulfilment_orders(p_tenant_id)` remains the order source. Fulfilment JavaScript cache version is now `v5`.
+
+The Fulfilment HTML also contains the Shipping Service provider section sourced from the saved Shipping Settings services. Browser verification must confirm that the current deployed HTML shows those provider cards; the screenshot supplied after the previous repair was still the legacy page and therefore did not test the new code.

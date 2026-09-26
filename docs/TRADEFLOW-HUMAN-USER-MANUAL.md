@@ -1048,3 +1048,9 @@ A successful payment is confirmed server-side. Only then does the retail order b
 
 ### 26 September 2026 — Customer credit payment repair
 The Basket payment screen exposed a live database constraint mismatch when **Use customer credit** was selected. The customer-credit payment function was writing `payment_type='customer_credit'`, while `payment_records_payment_type_check` permits `customer_payment` and uses `payment_method` to distinguish the method. The live function has been corrected to write `payment_type='customer_payment'` and `payment_method='customer_credit'`. This preserves the £55 customer credit balance until an actual successful credit payment is made.
+
+
+### 26 September 2026 — Retail stock availability rule
+A customer placing an item in the Basket or entering payment does **not** reserve or delist the product. The product remains live on the shop while payment is pending. If the customer abandons checkout, no stock release operation is required because the listing was never removed from publication.
+
+Only a confirmed successful payment changes the listing to sold and moves the linked inventory asset to sold. If another customer completes payment first, a later conflicting external payment is not allowed to create a second sale; the payment is refunded and the unpaid retail order is cancelled.

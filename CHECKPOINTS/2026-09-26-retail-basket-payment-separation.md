@@ -402,3 +402,10 @@ Verification state: live return RPC applied; frontend syntax checked; browser ve
 - The Selling card continues to represent active unsold listings, so it can correctly remain 0 when all listings are sold. Retail shipping work belongs in Fulfilment.
 - Production migration: `20260926234000_business_workflow_retail_counts`.
 - Dashboard fix commit: `a81d1829e0f9bb4651d26ac4a834e4b66643e447`.
+
+
+### 2026-09-26 — Customer My Sale collapsible items
+- Customer Portal **My Sale** now renders each sale/valuation as a native collapsible `details` item. The compact summary keeps the item, stage and status visible; the workflow timeline, offer information and shipping actions expand below it.
+- Items are collapsed by default to keep the portal compact when a customer has multiple sale records. The existing green/current styling and actions are preserved.
+- Customer dashboard cache bumped to `customer-dashboard.js?v=126`.
+- GitHub commits: JS `d5678bf53e5639e158e2484fb783c246203cced8`, HTML `f19473237527180294bd35023b9adaba6866468b`.

@@ -1531,3 +1531,33 @@ The parcel values must describe the packed shipment, including packaging. Curren
 Completing the shipping handoff queues order_shipping_ready with the order, item(s), carrier/service, tracking, parcel measurements, instructions and Customer Portal link. Dispatch queues the expanded order_dispatched notification.
 
 Verification state: Implemented in GitHub; Live DB verified; browser verification required.
+
+
+
+## 26 September 2026 — Retail fulfilment handoff simplification and save reliability
+
+### Current UX contract
+The retail Fulfilment page is intentionally split into provider booking and TradeFlow handoff:
+- Shipping Settings supplies the subscriber's saved provider choices.
+- Fulfilment shows the paid order, exact item(s), recipient and delivery address.
+- The subscriber opens the selected provider and completes the shipment there.
+- TradeFlow records carrier/service/tracking and stores the provider-issued label or QR code.
+- One **Save & send shipping details** action completes awaiting → label and queues the customer notification.
+- **Mark as sent** is only used after physical handover to the courier.
+
+### Parcel-data rule
+Do not treat removal of the UI parcel fields as removal of the shipping requirement. Weight and dimensions are still required where the chosen provider needs them to quote or generate the shipment. They are entered at the provider booking step. Existing fulfilment_parcels data is preserved by the current save RPC when no new measurements are supplied.
+
+### Reliability repair
+Migration 20260926223000_retail_fulfilment_handoff_reliability makes the save boundary self-contained: after authorisation and validation it records the fulfilment handoff, preserves existing parcel data, performs awaiting → label, writes the workflow transition and queues the customer notification. This avoids a generic workflow dependency during the final handoff.
+
+### Browser verification still required
+After deployment, verify in one clean browser session:
+1. navigate to Selling from the sidebar without manually refreshing;
+2. confirm Available and Sold load on first navigation;
+3. open EOS R1 Sold → Create Shipping Label;
+4. select a saved provider and open it;
+5. return, upload a test label or QR, enter carrier/service/tracking;
+6. click Save & send shipping details and confirm a visible success state;
+7. confirm fulfilment is label, customer notification is queued, and Customer Portal shows the handoff;
+8. confirm Mark as sent changes the fulfilment to dispatched and the customer sees Shipped.

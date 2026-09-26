@@ -1221,3 +1221,22 @@ The 26 September test confirmed that the two Camerashack customer records remain
 In the Platform Owner Dashboard, the **TradeFlow sending email** is the platform-level sender address used by TradeFlow. Enter a valid email address and select **Save TradeFlow email**.
 
 After saving, the address may show as waiting for domain/email verification. That is expected; saving the address and verifying the sending domain are separate steps.
+
+
+## Platform Owner — Plans
+
+Open **Owner Dashboard → Plans** to manage TradeFlow's commercial plans.
+
+For Basic, Enhanced and Catalogue you can:
+- change the plan name and description;
+- switch **Live on website** on or off;
+- set the monthly price;
+- set an optional annual price;
+- set the currency;
+- enter the Stripe Product ID;
+- enter the Stripe monthly Price ID;
+- enter the Stripe annual Price ID.
+
+Turning **Live on website** off hides the plan from the public TradeFlow homepage and new subscriber sign-up choices. It does not cancel or disable existing subscriber businesses using that plan.
+
+Stripe Product/Price IDs are references to objects already created in Stripe. Do not enter a Stripe secret key into the plan editor. Actual recurring billing/checkout remains a separate billing integration and must be tested independently.

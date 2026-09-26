@@ -1279,3 +1279,10 @@ Customer Portal authentication must complete before tenant/customer profile RPCs
 - The £75 paid retail order now has an `awaiting` fulfilment record. The subscriber must still return from the external shipping provider and **Add label** or **Add QR code**, enter carrier/service/tracking as applicable, then use **Save & send shipping details**. Only that handoff moves fulfilment from `awaiting` to `label`, at which point **Mark as sent** becomes available. Creating a label externally cannot be detected by TradeFlow until the provider-supplied file/details are recorded in TradeFlow.
 - Customer Test Three exposed a stale customer access token: the selling wizard reached the submit stage but the `customer-selling-submit` Edge Function returned `Invalid JWT`. The public selling journey now validates the stored customer session, refreshes it when possible, and retries a JWT failure once with the refreshed token. Public-site cache is now `public-site.js?v=81`.
 - GitHub commits: public selling journey auth recovery `c9102faaa5d8030623418f7abc9d071687511142`; cache `7ab324bfcfbfa9d97d939c2854ce45196bd76b1a`.
+
+
+### 2026-09-26 — Customer valuation photograph access
+- Subscriber Buying showed **“Photographs were supplied but could not be opened”** for multiple customer valuations. The stored media records and Storage objects exist under `tradeflow-media/{tenant}/customer-buying/{buying_item}/...`; the failure was in subscriber-side private storage access rather than missing photographs.
+- Live migration `20260926250000_customer_buying_photo_subscriber_access` adds an explicit tenant-scoped Storage SELECT policy for authenticated subscriber members on the `customer-buying` folder. Customer photographs remain private and are not made public.
+- Buying dashboard cache is now `buying-dashboard.js?v=41`. The photo loader also surfaces the secure-link error instead of silently swallowing it, making any future access failure diagnosable.
+- GitHub commits: migration `e995d4ad74a6e4b2b2750c366f59d5abe3277409`; JS `df951448616a658c0b2fc2d6346c574ffb9b40df`; HTML `0df7280548b94c4bb77596a19d651395a7a2c851`.

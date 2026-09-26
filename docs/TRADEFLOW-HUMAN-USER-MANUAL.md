@@ -1059,3 +1059,24 @@ Only a confirmed successful payment changes the listing to sold and moves the li
 The customer-facing **My Orders** area now shows the purchased product(s), order total, payment state, fulfilment state and tracking information. A paid retail order creates a fulfilment record in `awaiting` status. The subscriber Selling workspace has a separate **Sold** section for paid listings. From there the subscriber can open the fulfilment workspace to record the shipping label, move the fulfilment to `label`, and then mark it dispatched. Dispatch changes the customer-facing order display to **Shipped** and exposes the carrier/tracking details. The retail listing remains sold throughout this process.
 
 A customer order may contain multiple retail order items. Payment is atomic across the basket: all linked listings are checked before customer credit is deducted or an external payment is accepted. No partial basket sale is permitted.
+
+
+## 26 September 2026 — Selling a paid retail order
+
+After a retail customer has successfully paid, the item appears in Selling → Sold and the fulfilment is opened from Create Shipping Label.
+
+The Fulfilment screen should be completed using the same shipping process as Buying:
+
+1. Select one of the saved shipping services from Shipping Settings.
+2. Open the provider and create/pay for the shipment directly with the provider.
+3. Confirm the exact customer order and item(s) shown in TradeFlow.
+4. Confirm the customer's delivery address.
+5. Measure the packed parcel, including packaging, and enter weight, width, length and height.
+6. Record carrier, service and tracking details.
+7. Upload the printable shipping label and/or printable QR code.
+8. Enter any customer shipping instructions.
+9. Select Save & send shipping details to customer.
+
+Completing the handoff moves the fulfilment to Label ready and sends the shipping details to the customer portal. The customer can view/print the label or QR code and see the carrier, service, tracking and instructions. When the parcel is actually handed to the courier, use Mark dispatched.
+
+Do not guess parcel weight from the product name. Product specifications can help as a cross-check, but the courier declaration must reflect the actual packed parcel.

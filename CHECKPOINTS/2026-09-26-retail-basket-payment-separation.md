@@ -473,3 +473,21 @@ Minimal repair:
 
 ### Test rule
 Do not alter Test One or roll back the working retail/buying repairs while exercising concurrent sessions. If a problem appears, first identify which browser identity, tenant, RPC and record changed before editing code.
+
+
+## 26 September 2026 — Platform Owner sending email validation repair
+
+During the concurrent-session test, the Platform Owner Dashboard loaded correctly after the earlier Owner Dashboard rendering repair, but the Platform Email field rejected the valid address `info@scenesource.co.uk` with “Please enter a valid TradeFlow email address.”
+
+Live inspection found the problem in `platform_owner_save_email()`: its email regular expression was over-escaped, so valid dotted domains were rejected.
+
+Minimal repair applied:
+- corrected only the email validation expression;
+- preserved the platform-owner authorization check;
+- preserved the existing `platform_email_settings` update and verification-status behaviour;
+- no customer, subscriber, retail, payment, shipping or workflow code changed.
+
+Live migration: `20260926212000_fix_platform_owner_email_validation`.
+GitHub source commit: `ccfbbd11209e3299337898d4cdf2bde7a3dd70bb`.
+
+Next browser check: click Save TradeFlow email again. The address should save and report that it is waiting for domain/email verification rather than rejecting the address as invalid.

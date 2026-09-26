@@ -281,3 +281,25 @@ GitHub frontend changes:
 - Fulfilment JS syntax and Customer Dashboard JS syntax were checked after the changes.
 
 Verification state: Implemented in GitHub; Live DB verified; browser verification still required; checkpoint updated.
+
+
+## Follow-up — Selling Sold section blank — 26 September 2026
+
+Browser verification showed the Sold section remaining on “Loading sold items…”. Investigation found this was a frontend JavaScript syntax error introduced in the cache-busting change to the Create Shipping Label link. Because the script failed to parse, the entire Selling dashboard stopped executing, so neither Available listings nor Sold listings could populate.
+
+The live subscriber_get_sold_retail_items() RPC was checked separately and the EOS R1 test sale is present:
+- listing LST-20260925-FEBC02DC
+- product EOS R1 Body Only
+- order ORD-20260926-71DCBDEC
+- payment status paid
+- fulfilment FUL-17C5EB082D09
+- fulfilment status awaiting
+
+The broken Sold link expression was corrected and selling-dashboard-fixed.js was syntax-checked successfully with new Function(...).
+
+GitHub cache was bumped:
+- selling-dashboard-fixed.js?v=38
+
+The Sold renderer remains based on subscriber_get_sold_retail_items() and therefore will show the paid EOS R1 sale once the deployed page loads the corrected JavaScript.
+
+Verification state: GitHub source fixed and syntax verified; live RPC/data verified; browser deployment verification still required.

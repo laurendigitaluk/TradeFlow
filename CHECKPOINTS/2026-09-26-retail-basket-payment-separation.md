@@ -393,3 +393,12 @@ Verification state: live return RPC applied; frontend syntax checked; browser ve
 - Edge Function deployment: `create-stripe-checkout-session` version 12.
 - GitHub commits: settings UI `d78d47c382a3addcf1f7d67023b6aca9f9b1aab5`, settings logic `b7ab025c715a4ad95480b81333975a17ff1b6267`, Stripe checkout function `c173c05908d5699e82c0a0acb4002426efef248a`, migration source `9394bc3e29b7278ea59e7c53756fea46e0990557`.
 - Camerashack currently has all four controllable methods enabled.
+
+
+### 2026-09-26 — Business workflow retail sales count repair
+- The subscriber Business Dashboard workflow counts were reading legacy `orders` and `fulfilment_orders` REST resources that are not the live retail sales tables. Because failed REST requests were converted to empty arrays, the dashboard incorrectly displayed **Orders 0** and **Fulfilment 0** even though live retail orders existed.
+- Added `subscriber_get_business_workflow_counts(uuid)` as the tenant-scoped dashboard read boundary. It counts live `retail_orders`, `fulfilments`, listings, inventory, buying and returns.
+- A paid retail order with no fulfilment yet, or a fulfilment in `awaiting` / `label`, is counted as **Fulfilment — SALE TO PROCESS**. Orders counts paid/fulfilment retail orders that are not cancelled/completed.
+- The Selling card continues to represent active unsold listings, so it can correctly remain 0 when all listings are sold. Retail shipping work belongs in Fulfilment.
+- Production migration: `20260926234000_business_workflow_retail_counts`.
+- Dashboard fix commit: `a81d1829e0f9bb4651d26ac4a834e4b66643e447`.

@@ -215,3 +215,14 @@ The Fulfilment workspace now accepts a shipping label URL and can move `awaiting
 Migration `20260926200000_retail_order_fulfilment_and_multi_item_payment` also hardened payment for multi-item orders: all retail order items must still be published/available before customer credit is deducted or an external payment is accepted. No partial basket payment is permitted.
 
 GitHub browser code updates were committed for the customer order view, Selling Sold section, and Fulfilment workflow. Frontend cache versions were bumped. Browser verification of the new Sold/Shipping UI is still required; database state has been verified for the current paid order and fulfilment.
+
+
+## Follow-up browser finding — Selling Sold section RLS
+
+Browser verification showed the customer My Orders detail is loading correctly, with the Test Two order displayed as **Preparing shipment**. The new Selling Sold section initially failed with permission denied for table retail_order_items, and the sold EOS R1 also remained visible in the general listings table.
+
+Root cause: the first Sold implementation queried retail_order_items, retail_orders and fulfilments directly through the subscriber REST session. Those tables are not intended to be exposed through the direct browser query used by this workspace.
+
+Repair: migration 20260926203000_subscriber_sold_retail_items_rpc adds subscriber_get_sold_retail_items(p_tenant_id), a SECURITY DEFINER subscriber-only RPC that checks tenant membership and returns the sold listing/order/fulfilment data needed by the Selling page. The Selling page now uses that RPC. The general Available listings query also explicitly excludes sold and delisted, and the status filter no longer offers sold; sold products belong only in the separate Sold section.
+
+Frontend cache version was bumped to selling-dashboard-fixed.js?v=32. JavaScript syntax was verified after the repair. Browser verification of the repaired Sold section is still required.

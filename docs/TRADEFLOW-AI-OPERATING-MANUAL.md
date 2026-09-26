@@ -1392,3 +1392,15 @@ Security boundary:
 - customer access to uploaded fulfilment files is limited by storage policy to the customer's own paid order.
 
 Shipping research rule: parcel weight/dimensions must represent the packed shipment, including packaging. Use measured values where possible rather than guessing from product specifications.
+
+
+
+### 26 September 2026 — Retail fulfilment handoff reliability and UI boundary
+
+Current implementation rule: keep the retail Fulfilment UI as a **shipping handoff recorder**, not a second courier-booking form. The subscriber selects a service from Shipping Settings, opens the provider, books/pays there, then returns to TradeFlow with the provider-issued label/QR, carrier, service and tracking.
+
+Do not re-add mandatory weight/length/width/height fields to the current handoff screen unless the architecture deliberately moves parcel booking into TradeFlow. Those measurements remain important at provider-booking time and can remain persisted in fulfilment_parcels, but the simplified handoff RPC preserves existing values when the UI sends nulls.
+
+The save boundary is subscriber_save_retail_fulfilment_shipping(). The latest reliability migration performs awaiting → label directly after authorisation and records the workflow transition, rather than delegating the status change to the generic workflow function. Frontend save errors must remain visible in the handoff panel; do not silently swallow upload or RPC failures.
+
+For Selling startup issues, use cache-busted script references and a single guarded boot path before investigating database reads. A page stuck on Loading after navigation but working after refresh is first treated as a deployment/cache/startup problem, not as evidence that the sold-items RPC is empty.

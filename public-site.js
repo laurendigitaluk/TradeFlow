@@ -22,7 +22,8 @@ function isSubscriberSession(){
  return !!localStorage.getItem('tradeflow_subscriber_session');
 }
 function isCustomerSession(){
- return !!localStorage.getItem('tradeflow_customer_session');
+ const key=activeTenantId?'tradeflow_customer_session:'+activeTenantId:'tradeflow_customer_session:unknown';
+ return !!sessionStorage.getItem(key);
 }
 function customerUrl(extra){
  const subscriberSession=isSubscriberSession();
@@ -31,9 +32,8 @@ function customerUrl(extra){
    const base=subscriberTenantId?'subscriber-dashboard.html?tenant_id='+encodeURIComponent(subscriberTenantId):'subscriber-dashboard.html';
    return extra?base+'&'+extra:base;
  }
- if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
- const base='customer-dashboard.html';
- return extra?base+'?'+extra:base;
+ const base=activeTenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId):'customer-dashboard.html';
+ return extra?base+'&'+extra:base;
 }
 function customerBasketUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);

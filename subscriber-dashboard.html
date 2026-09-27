@@ -236,7 +236,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   set('buying',buying,buying?'green':'blue',buying?'ACTION REQUIRED':'COMPLETE');
   set('inventory',inventory,inventory?'green':'yellow',inventory?'SEND TO SALES':'NO ACTION');
   set('selling',listings,inventory?'green':listings?'blue':'yellow',inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'NO ACTION');
-  set('orders',orders,orders?'green':'yellow',orderState);
+  set('orders',orders,orders?'blue':'yellow',orders?'ACTIVE ORDERS':'NO ACTIVE ORDERS');
   set('fulfilment',fulfilment,fulfilment?'green':'yellow',fulfilment?'SALE TO PROCESS':'NO ACTION');
   set('returns',returns,returns?'green':'yellow',returns?'ACTION REQUIRED':'NO ACTION');
  }catch(e){console.warn('Workflow counts:',e)}

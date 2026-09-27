@@ -77,7 +77,7 @@ async function openShip(id,kind){
   let fileUrl=direct;
   let fileMime='';
   if(path){
-   const r=await fetch(SUPABASE_URL+'/functions/v1/customer-buying-shipping-media?tenant_id=' + 'encodeURIComponent(tenantId)+''&buying_item_id=' + 'encodeURIComponent(id)+''&kind=' + 'encodeURIComponent(kind),{
+   const r=await fetch(SUPABASE_URL+'/functions/v1/customer-buying-shipping-media?tenant_id='+encodeURIComponent(tenantId)+'&buying_item_id='+encodeURIComponent(id)+'&kind='+encodeURIComponent(kind),{
     method:'GET',
     headers:{apikey:key,Authorization:'Bearer '+(session?.access_token||'')}
    });

@@ -1,7 +1,7 @@
 
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=6"><style>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=7"><style>
 .process-panel{margin-top:18px}.process-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.process-card{border:2px solid #dfe4e8;border-radius:10px;padding:16px;background:#fff}.process-card.green{border-color:#2d7a4d;background:#f1f8f3}.process-card.yellow{border-color:#d39b22;background:#fff8e7}.process-card.blue{border-color:#6b8fb3;background:#f3f7fb}.process-card strong{display:block;font-size:28px;margin-top:5px}.process-card span{font-size:12px;color:#5f6d76}.process-list{margin-top:14px;display:grid;gap:8px}.process-row{display:grid;grid-template-columns:160px 1fr 140px 120px;gap:12px;align-items:center;border:1px solid #dfe4e8;border-radius:8px;padding:11px 13px;background:#fff}.process-row.green{border-left:5px solid #2d7a4d}.process-row.yellow{border-left:5px solid #d39b22}.process-row.blue{border-left:5px solid #6b8fb3}.process-status{font-weight:700}.process-amount{font-weight:800}.process-muted{color:#68757f;font-size:13px}@media(max-width:900px){.process-grid{grid-template-columns:repeat(2,1fr)}.process-row{grid-template-columns:1fr 1fr}}@media(max-width:600px){.process-grid{grid-template-columns:1fr}}
 </style><style>
 .business-flow{grid-template-columns:repeat(6,minmax(0,1fr))}
@@ -221,10 +221,22 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const orders=Number(row?.active_retail_orders||0);
   const fulfilment=Number(row?.fulfilment_action_required||0);
   const returns=Number(row?.active_returns||0);
+  let orderState=orders?'ACTION REQUIRED':'NO ACTION';
+  if(orders){
+    try{
+      const or=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=not.in.(completed,cancelled,refunded)&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
+      const ot=await or.text();const activeOrders=ot?JSON.parse(ot):[];
+      if(Array.isArray(activeOrders)){
+        const paid=activeOrders.filter(x=>x.status==='paid').length;
+        const inFulfilment=activeOrders.filter(x=>x.status==='fulfilment').length;
+        orderState=(paid&&inFulfilment)?paid+' paid · '+inFulfilment+' in fulfilment':paid?paid+' paid · fulfilment required':inFulfilment?inFulfilment+' in fulfilment':'ACTION REQUIRED';
+      }
+    }catch{}
+  }
   set('buying',buying,buying?'green':'blue',buying?'ACTION REQUIRED':'COMPLETE');
   set('inventory',inventory,inventory?'green':'yellow',inventory?'SEND TO SALES':'NO ACTION');
   set('selling',listings,inventory?'green':listings?'blue':'yellow',inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'NO ACTION');
-  set('orders',orders,orders?'green':'yellow',orders?'ACTION REQUIRED':'NO ACTION');
+  set('orders',orders,orders?'green':'yellow',orderState);
   set('fulfilment',fulfilment,fulfilment?'green':'yellow',fulfilment?'SALE TO PROCESS':'NO ACTION');
   set('returns',returns,returns?'green':'yellow',returns?'ACTION REQUIRED':'NO ACTION');
  }catch(e){console.warn('Workflow counts:',e)}

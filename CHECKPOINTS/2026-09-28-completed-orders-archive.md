@@ -26,7 +26,7 @@ Before the Orders workspace performs an order cancellation, partial refund, or f
   - Added confirmation before cancellation, partial refund, and refund transitions.
 - `orders-dashboard.html`
   - Added Completed Orders archive section and count.
-  - Added cache-busting version `orders-dashboard.js?v=9`.
+  - Added cache-busting version `orders-dashboard.js?v=10`.
   - Styled completed status as an archive/completed state.
 
 ## Commits

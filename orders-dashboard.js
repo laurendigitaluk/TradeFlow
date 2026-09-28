@@ -1,4 +1,5 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';let key=null,session=null,tenantId=null,businessName='TradeFlow';const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));let orders=[],listings=[],channels=[],customers=[];
+const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';let key=null,session=null,tenantId=null,businessName='TradeFlow';const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));let orders=[],listings=[],channels=[],customers=[];function msg(t,type=''){const el=$('message');if(!el)return;el.textContent=t||'';el.className='small'+(type?' '+type:'')}
+
 function money(v,c='GBP'){try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v||0))}catch{return`${c} ${v}`}}
 async function api(path,o={}){
  if(!key)throw Error('TradeFlow subscriber connection is not ready.');

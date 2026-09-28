@@ -107,3 +107,42 @@ Inspection workflow repair:
 - Migration commit: `bec222b624d4bd5c6c086a1aa4590c220e27f0ca`.
 - Cache-bump commit: `180cfa5f2c5fe085188a1f90b57383a0cd1a1d9d`.
 - No existing test item was manually advanced or reset.
+
+
+## Follow-up: revised final offer blocked by incorrect currency source
+
+Browser testing of Canon EOS R8 (BI-29E78F3A13) exposed the exact failure beneath the revised-final-offer button:
+
+> column "currency" does not exist
+
+The screenshot showed the revised value entered as £79.00 and the error rendered directly below the Notes field. Live schema inspection confirmed the root cause:
+- public.buying_items has no currency column.
+- public.offers does have currency.
+- public.trading_values does have currency.
+- The live subscriber_publish_final_offer function incorrectly attempted to read purchase_stage,currency directly from buying_items.
+
+Minimal backend repair applied:
+- subscriber_publish_final_offer now reads purchase_stage from buying_items.
+- It derives the final-offer currency from the latest accepted offer for that buying item.
+- It falls back to GBP for legacy records where the accepted offer has no currency.
+- No purchase-stage rules, inspection rules, payment rules, shipping rules, or existing test records were reset.
+
+Live migration:
+- fix_final_offer_currency_source
+- GitHub migration: supabase/migrations/20260928161000_fix_final_offer_currency_source.sql
+- Commit: 2cf16e35a5fe8b5676cac192f8c917b0a93ba97c
+
+Current Canon EOS R8 live state before browser retest remains:
+- item reference BI-29E78F3A13
+- purchase stage final_offer_required
+- accepted initial offer £99
+- no final offer created by the failed attempt
+
+Next browser verification:
+1. Refresh the Buying dashboard.
+2. Keep the Canon EOS R8 at final_offer_required.
+3. Enter a revised value different from £99, e.g. £79.
+4. Send revised final offer.
+5. Confirm the subscriber stage changes to final_offer_sent.
+6. Confirm the customer portal receives the revised final offer.
+7. Do not manually alter the item if the test fails; capture the exact displayed error.

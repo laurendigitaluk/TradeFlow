@@ -26,6 +26,33 @@ function dispatchAuthSuccess(data){
  window.tradeflowPendingAuthSession=data;
  window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
 }
+async function resendConfirmation(){
+ const email=$('auth-email')?.value.trim(),button=$('auth-resend');
+ if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
+ if(!email)return message('Enter your email address first, then choose Resend confirmation email.','error');
+ busy(button,true,'Sending…');
+ try{
+  await authRequest('/auth/v1/resend',{type:'signup',email});
+  message('If that email has a TradeFlow customer account awaiting confirmation, a new confirmation email has been sent. Check your inbox and spam folder.','success');
+ }catch(error){
+  message(error.message||String(error),'error');
+ }finally{busy(button,false)}
+}
+async function requestPasswordReset(){
+ const email=$('auth-email')?.value.trim(),button=$('auth-reset');
+ if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
+ if(!email)return message('Enter your email address first, then choose Forgot password.','error');
+ busy(button,true,'Sending…');
+ try{
+  const resetUrl=new URL('customer-password-reset.html',location.href);
+  resetUrl.searchParams.set('tenant_id',tenantId);
+  const response=await authRequest('/auth/v1/recover?redirect_to='+encodeURIComponent(resetUrl.href),{email});
+  void response;
+  message('If an account exists for that email, a password reset email has been sent. Check your inbox and spam folder.','success');
+ }catch(error){
+  message(error.message||String(error),'error');
+ }finally{busy(button,false)}
+}
 async function registerCustomer(accessToken,first,last){
  if(!tenantId)throw Error('This Customer Portal link is missing its business identifier.');
  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/customer_register_for_tenant',{method:'POST',headers:{apikey:SUPABASE_KEY,Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId,p_first_name:first,p_last_name:last||null,p_phone:null})});
@@ -85,6 +112,8 @@ function bind(){
  clearLegacySharedState();
  $('auth-sign-in')?.addEventListener('click',signIn);
  $('auth-sign-up')?.addEventListener('click',signUp);
+ $('auth-resend')?.addEventListener('click',resendConfirmation);
+ $('auth-reset')?.addEventListener('click',requestPasswordReset);
  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
  restoreExistingSession().finally(()=>authReadyResolve());
 }

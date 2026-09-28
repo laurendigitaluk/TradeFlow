@@ -49,3 +49,15 @@ Refresh the Orders workspace and confirm:
 4. **View order details** works from the archive.
 5. Starting Cancel, Partial refund, or Refund asks for confirmation before changing anything.
 6. No order is removed from the archive after completion.
+
+## Follow-up repair — fulfilment permissions — 2026-09-28
+
+The next test showed **permission denied for table fulfilments** and the Orders page could not load. Root cause: the new archive logic queried `public.fulfilments` directly through REST, while the table is intentionally protected from direct subscriber table access.
+
+Repair: Orders now uses the existing SECURITY DEFINER `subscriber_get_fulfilments(p_tenant_id)` RPC, which performs tenant membership validation and returns the fulfilment data required by the Orders workspace. No RLS/table permissions were weakened.
+
+Follow-up commits:
+- Orders JS: `8f8196c12a5b31e5c60d5b2afbdcaa79d7808ce3`
+- Orders HTML/cache: `37471f13e349a9f70fa1c8ec9bbbff2ec265f55d`
+
+The Business Dashboard also contains the dedicated **Completed Orders** link added in commit `851aa11728dc9c9e07f4a2e557cb5b2d7986a5b2`.

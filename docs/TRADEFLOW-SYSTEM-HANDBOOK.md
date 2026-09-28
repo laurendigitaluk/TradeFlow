@@ -1341,3 +1341,15 @@ The Platform Owner controls the single plan's name, description, website visibil
 The Platform Owner's sending-email setting is not an email-confirmation mechanism. Saving an address records the intended sender and marks it pending until the email provider/domain verification is completed. TradeFlow's notification processor refuses to send while the sender remains unverified.
 
 Do not bypass provider/domain verification by marking the sender verified directly from client code.
+
+
+## 2026-09-28 — End-to-end customer valuation → sales audit
+The current end-to-end audit traced the live customer selling journey through submission, Buying, valuation, offer, shipping, receipt, inspection, payment/acquisition, Inventory and Selling. A fresh customer submission (`BR-9FBCBE5008` / `BI-63F5AAA6AB`) is live in Supabase with authoritative draft→submitted workflow events and one customer photograph.
+
+The first substantive workflow gap is catalogue binding: the customer selling submission records selected category/model/package as text but leaves `buying_items.buying_product_id` null. The live valuation engine therefore returns manual valuation with reason `product_not_selected`. The public condition vocabulary also does not fully match the valuation engine vocabulary. These are now the first audit targets before a fresh item is taken through the full workflow.
+
+The current subscriber authentication layer still uses localStorage for the subscriber session/tenant fallback, while the multi-session testing architecture requires tab-local isolation. Treat this as a latent session-isolation risk until consolidated.
+
+Notification delivery remains unresolved: current notification_queue records are still queued and platform sender verification is pending. Portal/database workflow must not be described as equivalent to successful email delivery.
+
+Verification remains: **Implemented in GitHub / Live DB verified / Browser verified**. The fresh customer submission is live-DB verified; later fresh-item browser stages remain open.

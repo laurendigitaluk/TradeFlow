@@ -37,7 +37,7 @@ async function resendConfirmation(){
  try{
   const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
   await authRequest('/auth/v1/resend',{type:'signup',email,options:{email_redirect_to:emailRedirectTo.href}});
-  message('We’ve sent a new email confirmation link for your '+businessName+' customer account. Please check your inbox and spam folder.','success');
+  message('If your email address still needs confirmation, we’ll send you a new confirmation link. Please check your inbox and spam folder.','success');
  }catch(error){
   message(error.message||String(error),'error');
  }finally{busy(button,false)}

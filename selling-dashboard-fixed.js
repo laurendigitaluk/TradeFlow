@@ -179,7 +179,7 @@ $('listing-form').onsubmit=async e=>{
    const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:listingData,created_by:session?.user?.id||null})});
    const created=(data||[])[0];
    if(created?.id){await carryInventoryMedia(asset,created.id);await transition(created.id,'draft','ready');await transition(created.id,'ready','published');await transitionInventory(assetRow.id,'ready_for_sale','listed')}
-   e.target.reset();$('currency').value='GBP';await load();if(created?.id)show(created.id);msg('Listing published to the selected sales channel and inventory marked listed.','success');
+   e.target.reset();$('currency').value='GBP';msg('Listing published successfully. Returning to Inventory…','success');if(created?.id){setTimeout(()=>{window.location.href='inventory-dashboard.html?tenant_id='+encodeURIComponent(tenantId)},500);}
  }catch(e){msg(e.message||String(e),'error')}
 };
 function applyFocusedProductMode(){const focusAsset=new URLSearchParams(location.search).get('asset');if(!focusAsset)return;document.body.classList.add('focused-product');const panel=$('listings-panel');if(panel){panel.hidden=false;panel.style.display='';}const sold=$('sold-panel');if(sold){sold.hidden=false;sold.style.display='';}const selector=$('asset');if(selector)selector.disabled=!!editingListingId;const a=assets.find(x=>x.id===focusAsset);if(a&&$('product-heading'))$('product-heading').textContent=a.title||'Product';if(!a&&$('product-heading'))$('product-heading').textContent='Product not available for sale';}

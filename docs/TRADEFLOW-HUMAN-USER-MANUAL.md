@@ -1271,3 +1271,7 @@ Do not mark the full customer-to-sales journey browser verified until one fresh 
 
 ## 2026-09-28 — Fresh test UI repairs
 During the fresh Nikon Nikkormat EL Standard test, the following presentation/workflow controls were repaired without changing the working server-side purchase stages: redundant manual valuation CTA removed after manual valuation is identified; customer awaiting-item wording changed to **Postage label received — post your item**; shipping label/QR print layout corrected to 4×6 portrait with A4 top-left printing; revised final-offer action now has direct handling and visible error feedback. Browser verification remains required before these are marked fully verified.
+
+
+## 2026-09-28 — Customer valuation condition vocabulary repair
+The customer selling form uses customer-facing condition values such as `factory-sealed`, `opened-unused`, `fair`, `damaged`, and `not-working`. The authoritative `buying_items.item_condition` constraint accepts `sealed`, `opened_never_used`, `excellent`, `good`, and `poor`. The `customer-selling-submit` Edge Function now normalises the customer-facing values at the submission boundary before calling `customer_submit_buying_request`: factory-sealed→sealed, opened-unused→opened_never_used, excellent→excellent, good→good, fair/damaged/not-working→poor. No customer-facing wording was removed.

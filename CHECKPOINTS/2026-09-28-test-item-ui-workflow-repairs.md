@@ -58,3 +58,18 @@ The dashboard remained on “Loading…” because the valuation-state HTML stri
 - Syntax repair commit: `e7857f6041c14464a876cf2549ea058aa9724d94`
 - Cache-bump commit: `8010aea66a1f6eb57a4b2730ff1d14b6556f9a57`
 - No database/workflow logic changed.
+
+
+## Follow-up: customer condition submission repair
+Fresh browser testing exposed the next small blocker at the customer valuation submission boundary. The customer-facing form submitted `opened-unused`, while the live `buying_items.item_condition` check constraint accepts `sealed`, `opened_never_used`, `excellent`, `good`, or `poor`. The Edge Function `customer-selling-submit` was therefore failing with a database check-constraint error before the request could complete.
+
+Repair applied at the submission boundary only:
+- factory-sealed → sealed
+- opened-unused → opened_never_used
+- excellent → excellent
+- good → good
+- fair → poor
+- damaged → poor
+- not-working → poor
+
+Edge Function `customer-selling-submit` deployed as version 4. No existing buying workflow stages or existing records were changed.

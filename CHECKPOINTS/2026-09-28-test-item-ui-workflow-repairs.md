@@ -166,3 +166,25 @@ GitHub migration: `supabase/migrations/20260928162000_fix_final_offer_approved_v
 Commit: `c6c1e5c48cd96c00bbdf646bafce027a357fafa7`
 
 Next browser test: keep Canon EOS R8 at `final_offer_required`, enter a value different from £99, and press **Send revised final offer**. Expected result: stage `final_offer_sent` and a new final offer visible to the customer. If another error appears, use that exact error for the next repair; do not manually advance the item.
+
+
+## Follow-up: revised offer is now published; dashboard state selection repaired
+
+The revised-offer backend path now succeeds for Canon EOS R8 (BI-29E78F3A13): live Supabase shows the final offer published at £79 GBP and the buying item at `final_offer_sent`. The earlier currency-column error was fixed.
+
+A second UI/data issue was then identified. The customer portal was building one offer per item with `Object.fromEntries()` over a descending list, which caused the older accepted £99 initial offer to overwrite the newer published £79 final offer. The customer card therefore displayed the old £99 accepted state instead of the revised offer and did not expose the final-offer response controls.
+
+Repairs:
+- Customer portal now keeps the newest offer per buying item from the descending offer result.
+- `final_offer_sent` with a published final offer displays **Revised offer sent** / **Revised offer received** and presents Accept and Refuse controls for that final offer.
+- Subscriber Buying now loads the latest offer separately and displays the published revised amount as the current offer while the customer response is pending.
+- Subscriber remains non-editable while a revised offer is awaiting customer response; this is intentional so a sent offer is not silently changed underneath the customer.
+- Buying dashboard cache: v59 → v60.
+- Customer dashboard cache: v137 → v138.
+- Customer dashboard commit: `235ededa0c01bcb7fb476ce2ecc7bad58c6d0c03`.
+- Buying dashboard commit: `a29748f95c6e90faa46a45b6dd09e1c83735370d`.
+- Buying dashboard cache commit: `35831ebb6d4b318a38e7628218f1304ae82fdd74`.
+
+Customer photographs were separately checked for BI-29E78F3A13. `buying_item_media` currently contains no media link for this item, so TradeFlow cannot display a photo that was not stored against the item. The existing customer submission function still uploads and links supplied image files to `buying_item_media`. No photo was fabricated or copied from another test item.
+
+Browser retest required after Ctrl+F5. Expected customer state: **Revised offer sent** with £79 and **Accept** / **Refuse final offer**. Expected subscriber state: **Revised final offer sent**, £79, waiting for customer response.

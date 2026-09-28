@@ -239,7 +239,8 @@ function renderSellPage(site,catalogue){
 
 async function getStoredCustomerSession(){
  try{
-  let session=JSON.parse(localStorage.getItem('tradeflow_customer_session')||'null');
+  const key=activeTenantId?'tradeflow_customer_session:'+activeTenantId:'tradeflow_customer_session:unknown';
+  let session=JSON.parse(sessionStorage.getItem(key)||'null');
   if(!session?.access_token)return null;
   let response=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:KEY,Authorization:'Bearer '+session.access_token}});
   if(response.ok)return session;
@@ -251,12 +252,13 @@ async function getStoredCustomerSession(){
    });
    const text=await refresh.text();let data=null;try{data=text?JSON.parse(text):null}catch{}
    if(refresh.ok&&data?.access_token){
-    localStorage.setItem('tradeflow_customer_session',JSON.stringify(data));
+    sessionStorage.setItem(key,JSON.stringify(data));
     return data;
    }
   }
  }catch{}
- localStorage.removeItem('tradeflow_customer_session');
+ const key=activeTenantId?'tradeflow_customer_session:'+activeTenantId:'tradeflow_customer_session:unknown';
+ sessionStorage.removeItem(key);
  return null;
 }
 async function submitCustomerSellingRequest(payload,session,files=[]){

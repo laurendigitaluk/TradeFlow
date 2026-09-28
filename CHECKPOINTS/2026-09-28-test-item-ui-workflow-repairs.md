@@ -40,3 +40,12 @@ Working stages were deliberately left intact. Repairs are limited to the four is
   - 4×6 QR orientation;
   - A4 top-left print.
 - Do not alter payment, inspection, acquisition, Inventory, Selling or Orders logic as part of this repair unless a fresh test demonstrates a separate failure.
+
+
+## Follow-up: syntax repair
+The first UI repair introduced a missing closing brace in `applyValuationResult()`, causing the Buying dashboard JavaScript to fail parsing and leaving Active items / Completed purchases stuck on “Loading…”. The syntax fault was identified by inspecting the deployed source structure and repaired without changing workflow logic.
+
+- `buying-dashboard.js` cache: v55 → v56
+- Repair commit: `c54667b797a6f31cdfec00b5df00a05e832b0df9`
+- Cache-bump commit: `0233624dc408665667e5c79c19d2c2323636c2aa`
+- Browser retest required after Ctrl+F5.

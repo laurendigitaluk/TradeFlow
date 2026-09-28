@@ -1,7 +1,7 @@
 
 <!doctype html>
 <html lang="en">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=7"><style>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Dashboard</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8"><style>
 .process-panel{margin-top:18px}.process-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.process-card{border:2px solid #dfe4e8;border-radius:10px;padding:16px;background:#fff}.process-card.green{border-color:#2d7a4d;background:#f1f8f3}.process-card.yellow{border-color:#d39b22;background:#fff8e7}.process-card.blue{border-color:#6b8fb3;background:#f3f7fb}.process-card.red{border-color:#b94a48;background:#fdf1f1}.process-card strong{display:block;font-size:28px;margin-top:5px}.process-card span{font-size:12px;color:#5f6d76}.process-list{margin-top:14px;display:grid;gap:8px}.process-row{display:grid;grid-template-columns:160px 1fr 140px 120px;gap:12px;align-items:center;border:1px solid #dfe4e8;border-radius:8px;padding:11px 13px;background:#fff}.process-row.green{border-left:5px solid #2d7a4d}.process-row.yellow{border-left:5px solid #d39b22}.process-row.blue{border-left:5px solid #6b8fb3}.process-row.red{border-left:5px solid #b94a48}.process-status{font-weight:700}.process-amount{font-weight:800}.process-muted{color:#68757f;font-size:13px}@media(max-width:900px){.process-grid{grid-template-columns:repeat(2,1fr)}.process-row{grid-template-columns:1fr 1fr}}@media(max-width:600px){.process-grid{grid-template-columns:1fr}}
 </style><style>
 .business-flow{grid-template-columns:repeat(6,minmax(0,1fr))}
@@ -55,7 +55,7 @@
 
 <section class="panel process-panel" id="workflow-status">
 <div class="panel-heading"><div><div class="eyebrow">Live workflow</div><h2>Transactions in progress</h2></div><span id="workflow-updated" class="status-pill">Loading…</span></div>
-<p class="section-intro">Green means TradeFlow has received something from the customer or the business has completed the customer step. Yellow means we are waiting for a customer action. Blue means the transaction is being processed internally.</p>
+<p class="section-intro">Green means action is required from the business. Blue means the transaction is being processed internally. Yellow means we are waiting for the customer. Red means the process is complete and there are no further steps.</p>
 <div class="process-grid">
 <div id="status-new" class="process-card red"><span>New customer requests</span><strong id="count-new">0</strong><span>New requests requiring review</span></div>
 <div id="status-process" class="process-card red"><span>In internal process</span><strong id="count-process">0</strong><span>Being valued or reviewed</span></div>

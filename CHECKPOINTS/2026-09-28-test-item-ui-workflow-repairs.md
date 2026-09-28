@@ -146,3 +146,23 @@ Next browser verification:
 5. Confirm the subscriber stage changes to final_offer_sent.
 6. Confirm the customer portal receives the revised final offer.
 7. Do not manually alter the item if the test fails; capture the exact displayed error.
+
+
+## Follow-up: revised offer hit approved-valuation uniqueness rule
+
+The previous currency-source repair succeeded; the next browser attempt reached the database and exposed the next real blocker: `duplicate key value violates unique constraint "trading_values_one_approved_per_item_idx"`.
+
+Live inspection confirmed the Canon EOS R8 has one existing approved trading value for the original £99 valuation. The unique index intentionally permits only one approved trading value per buying item. A post-inspection revised valuation therefore must supersede the old approved valuation before the new valuation is approved.
+
+Minimal repair applied to `subscriber_publish_final_offer`:
+- locate the current approved trading value for the item;
+- transition it from `approved` to `superseded` using the existing workflow authority;
+- create and approve the new post-inspection trading value;
+- publish the final offer as before.
+
+Because the function runs transactionally, a later failure rolls back the supersede and new valuation together. No existing test item was manually changed.
+
+GitHub migration: `supabase/migrations/20260928162000_fix_final_offer_approved_valuation_conflict.sql`
+Commit: `c6c1e5c48cd96c00bbdf646bafce027a357fafa7`
+
+Next browser test: keep Canon EOS R8 at `final_offer_required`, enter a value different from £99, and press **Send revised final offer**. Expected result: stage `final_offer_sent` and a new final offer visible to the customer. If another error appears, use that exact error for the next repair; do not manually advance the item.

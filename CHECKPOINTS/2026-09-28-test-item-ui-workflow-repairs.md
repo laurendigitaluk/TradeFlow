@@ -82,3 +82,12 @@ After an initial offer is successfully published, the Buying item workspace was 
 - Repair commit: `0a1b77921b6704fca65b653d8c06e2234e7a86ee`
 - Cache-bump commit: `40614b5a040378ff174dd29b16c810f7e5cfe1a6`
 - No workflow/database logic changed.
+
+
+## Follow-up: customer shipping stage wording
+When the business has supplied the shipping label/QR, the customer card still displayed the raw internal stage name `awaiting item`, even though the detail panel correctly said “Postage label received — post your item”. The customer card stage is now derived as “Shipping label received — post your item” whenever the awaiting-item stage has a shipping handoff/label/QR available. The underlying workflow stage remains `awaiting_item`.
+
+- `customer-dashboard.js` cache: v136 → v137
+- Repair commit: `109328cc57447bd1473eb1e44638b8570a072d20`
+- Cache-bump commit: `052cef4e8109287c79200e7e95f9cccb048f3624`
+- No database/workflow status change.

@@ -1373,3 +1373,12 @@ After the currency-source repair, the Canon EOS R8 revised-offer test reached th
 `subscriber_publish_final_offer` now supersedes the existing approved trading value through the existing workflow authority before creating and approving the post-inspection valuation. The operation is transactional, so a later failure rolls the supersede and new valuation back together.
 
 Migration: `20260928162000_fix_final_offer_approved_valuation_conflict`. GitHub commit: `c6c1e5c48cd96c00bbdf646bafce027a357fafa7`.
+
+
+## 2026-09-28 — Revised offer current-state rendering
+
+Canon EOS R8 (`BI-29E78F3A13`) now has a published final offer of £79 GBP and purchase stage `final_offer_sent`. The customer portal had been selecting the wrong offer because multiple offers for the same item were collapsed into one object without preserving the newest row. The portal now retains the newest offer from the descending result set, so the published final offer is the customer-facing offer while it awaits acceptance or refusal.
+
+The subscriber Buying workspace separately loads the latest offer and shows the revised amount as the current offer. A sent revised offer is intentionally read-only while awaiting the customer response.
+
+Customer photographs for this specific item were checked directly: there are currently no `buying_item_media` rows. The submission function does contain the upload/link path, so absence of rows means no stored customer photo exists for this test item; do not substitute another item's media.

@@ -1564,3 +1564,15 @@ Do not reintroduce Basic/Enhanced/Catalogue upgrade logic unless the commercial 
 ## Platform email verification rule
 
 Saving the Platform Owner sender address only records the sender and sets its verification state to pending. It does not create a confirmation email. The notification processor requires a verified sender/domain before sending. Never mark the sender verified from browser code or bypass the provider verification boundary.
+
+
+## 2026-09-28 — End-to-end customer-to-sales audit finding
+Follow current code and live Supabase rather than historical documentation when tracing the customer selling workflow. A fresh submission `BR-9FBCBE5008` / `BI-63F5AAA6AB` proves the customer submission boundary is functioning.
+
+First substantive valuation boundary: `buying_items.buying_product_id` is null because `customer-selling-submit` sends category/title/description/condition but does not bind the selected catalogue product. `calculate_buying_item_valuation` therefore returns manual/product_not_selected. Do not infer an automatic valuation from the customer's typed model text alone.
+
+Second boundary: reconcile the public selling condition values with the valuation engine's condition vocabulary before claiming automatic valuation works for all conditions.
+
+Subscriber session storage still has legacy localStorage fallbacks; multi-account/tab testing should treat this as a session-isolation risk. Notification queue delivery also remains unresolved and must be reported separately from portal/database workflow success.
+
+Verification language remains mandatory: Implemented in GitHub, Live DB verified, Browser verified. Do not promote the fresh end-to-end path to Browser verified until it has actually been exercised stage by stage.

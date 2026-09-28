@@ -49,3 +49,12 @@ The first UI repair introduced a missing closing brace in `applyValuationResult(
 - Repair commit: `c54667b797a6f31cdfec00b5df00a05e832b0df9`
 - Cache-bump commit: `0233624dc408665667e5c79c19d2c2323636c2aa`
 - Browser retest required after Ctrl+F5.
+
+
+## Follow-up: second syntax fault found and repaired
+The dashboard remained on “Loading…” because the valuation-state HTML string in `renderActions()` had a missing closing quote before its newline. This was separate from the earlier missing brace. The complete current `buying-dashboard.js` was syntax-checked after the repair and now parses successfully.
+
+- `buying-dashboard.js` cache: v56 → v57
+- Syntax repair commit: `e7857f6041c14464a876cf2549ea058aa9724d94`
+- Cache-bump commit: `8010aea66a1f6eb57a4b2730ff1d14b6556f9a57`
+- No database/workflow logic changed.

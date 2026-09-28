@@ -44,7 +44,7 @@ async function loadLookups(){
  categories=results[2].status==='fulfilled'?(results[2].value||[]):[];
  branches=results[3].status==='fulfilled'?(results[3].value||[]):[];
  $('asset').innerHTML='<option value="">Select inventory asset…</option>'+assets.map(x=>`<option value="${x.id}">${esc(x.asset_reference)} — ${esc(x.title||'Untitled')}</option>`).join('');
- $('channel').innerHTML=channels.length?`<option value="${channels[0].id}">TradeFlow Website</option>`:'<option value="">TradeFlow Website is not configured</option>'; if(channels[0])$('channel').value=channels[0].id;
+ $('channel').innerHTML=channels.length?'<option value="'+channels[0].id+'">Website</option>':'<option value="">Website is not configured</option>'; if(channels[0])$('channel').value=channels[0].id;
  if(focusAsset&&assets.some(x=>x.id===focusAsset))$('asset').value=focusAsset;
  $('asset').onchange=()=>syncAssetContext();
  syncAssetContext();
@@ -174,7 +174,7 @@ $('listing-form').onsubmit=async e=>{
    const existing=(await api('/rest/v1/listings?select=id,listing_reference,status,title,asking_price,currency&tenant_id=eq.'+encodeURIComponent(tenantId)+'&asset_id=eq.'+encodeURIComponent(asset)+'&status=not.in.(sold,delisted)&limit=1'))||[];
    if(existing[0]){msg(`This item is already listed as ${existing[0].listing_reference}. Use EDIT to change it.`,'success');await load();return}
    const category=assetRow.category_id,branch=assetRow.branch_id;
-   if(!asset||!channel||!category||!branch)throw Error('The TradeFlow Website sales channel is not configured for this business.');
+   if(!asset||!channel||!category||!branch)throw Error('The Website sales channel is not configured for this business.');
    await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(assetRow.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(inventoryUpdate)});
    const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:listingData,created_by:session?.user?.id||null})});
    const created=(data||[])[0];

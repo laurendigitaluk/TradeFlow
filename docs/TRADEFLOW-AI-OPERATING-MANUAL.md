@@ -1588,3 +1588,12 @@ The customer selling form uses customer-facing condition values such as `factory
 
 ## 2026-09-28 — Inspection decision and testing/repair continuation
 At the inspection stage, the subscriber can now choose: Accept original offer, Make a counter offer, Send for testing, Send for repair, or Refuse purchase. A counter offer requires a different value from the accepted offer and is sent as the revised final offer after the inspection is recorded. Testing and repair stages now provide a completion action that returns the item to inspection/offer decision, plus a refusal action. The customer shipping label remains a stored handoff asset; if its storage path/URL is absent, the label was not stored for that item and must not be reconstructed or treated as available.
+
+
+## 2026-09-28 — Revised final offer currency-source repair
+
+A fresh browser test exposed column "currency" does not exist in subscriber_publish_final_offer. Root cause was confirmed against the live schema: buying_items has no currency column. The function previously attempted to select purchase_stage,currency from buying_items.
+
+Repair migration 20260928161000_fix_final_offer_currency_source changes only the currency source: purchase stage is read from buying_items; currency is taken from the latest accepted offer and falls back to GBP. Do not add a currency column to buying_items to solve this incident.
+
+Current test state remains BI-29E78F3A13, final_offer_required, accepted initial offer £99. Browser verification must confirm that a different revised amount creates a published final offer and moves the item to final_offer_sent. Do not manually advance the item or create a final offer in SQL if the browser test fails.

@@ -92,7 +92,7 @@ async function signUp(){
   sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
   const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
   const data=await authRequest('/auth/v1/signup',{email,password,options:{email_redirect_to:emailRedirectTo.href}});
-  if(!data?.access_token){message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');return}
+  if(!data?.access_token){message('This email may already have a '+businessName+' customer account, or email confirmation is still required. Use Sign in to continue; if the account is new, check your email first.','error');return}
   saveSession(data);
   await registerCustomer(data.access_token,first,last);
   sessionStorage.removeItem(PENDING_STORAGE);

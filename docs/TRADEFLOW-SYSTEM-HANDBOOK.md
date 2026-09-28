@@ -1382,3 +1382,10 @@ Canon EOS R8 (`BI-29E78F3A13`) now has a published final offer of £79 GBP and p
 The subscriber Buying workspace separately loads the latest offer and shows the revised amount as the current offer. A sent revised offer is intentionally read-only while awaiting the customer response.
 
 Customer photographs for this specific item were checked directly: there are currently no `buying_item_media` rows. The submission function does contain the upload/link path, so absence of rows means no stored customer photo exists for this test item; do not substitute another item's media.
+
+
+## 2026-09-28 — Final payment button binding repair
+
+The Canon EOS R8 reached `final_offer_accepted` at £79, but **Confirm payment sent** was inert. The `loadPayment()` renderer created the button without a click handler, while the global click listener deliberately does not redispatch `data-act` buttons. The button is now directly bound to the existing `subscriber_complete_purchase` action, with visible error status. No payment or inventory records were manually altered. Buying Dashboard cache is v60.
+
+The exact Canon item currently has no `buying_item_media` links, so its missing photographs are a data-state issue for that test item rather than a verified renderer loss. The customer portal already has the revised-final-offer accept/refuse controls and revised-offer wording for the `final_offer_sent` state; the Canon test has already advanced to `final_offer_accepted` at £79.

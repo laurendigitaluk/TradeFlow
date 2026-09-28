@@ -1,14 +1,18 @@
 /* TradeFlow customer dashboard navigation.
- * Keeps customer portal navigation independent of the data controller.
+ * Keeps customer portal navigation independent from the data controller.
  * Native hash navigation must remain available while the portal is hidden;
  * otherwise the navigation script itself can make the page appear completely inert.
  */
 (()=>{
   const sectionIds=['selling','orders','details'];
-  const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-  const KEY_STORAGE='tradeflow_customer_publishable_key';
-  const SESSION_STORAGE='tradeflow_customer_session';
   const tenantId=new URLSearchParams(location.search).get('tenant_id');
+  const setTenantLink=(selector,path)=>{
+    const link=document.querySelector(selector);
+    if(!link)return;
+    const target=new URL(path,location.href);
+    if(tenantId)target.searchParams.set('tenant_id',tenantId);
+    link.href=target.href;
+  };
   const show=(id,updateHash=true)=>{
     const target=sectionIds.includes(id)?id:'selling';
     const portal=document.getElementById('portal');
@@ -26,6 +30,7 @@
     return true;
   };
   const bind=()=>{
+    setTenantLink('a[href="customer-basket.html"]','customer-basket.html');
     document.querySelectorAll('a[href^="#"]').forEach(link=>{
       link.addEventListener('click',e=>{
         const id=link.getAttribute('href').slice(1);

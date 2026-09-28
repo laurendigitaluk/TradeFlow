@@ -1312,3 +1312,14 @@ The customer portal must show **Revised offer sent** / **Revised offer received*
 For the current Canon EOS R8 test, the revised offer is £79 GBP and the item is `final_offer_sent`. Refresh both dashboards before retesting. Do not manually change the database stage.
 
 Customer photographs are only displayed when image files were actually uploaded and linked to the buying item. If the item has no `buying_item_media` links, the correct message is that no customer photographs are available; another item's photographs must not be substituted.
+
+
+## 2026-09-28 — Confirm payment sent repair
+
+If the Buying workspace shows **Payment required** after a customer accepts the final offer, the **Confirm payment sent** button should submit the payment reference and create the purchase/acquisition/inventory records. The current repair binds this button directly after the final-offer acceptance renderer loads. Refresh the Buying dashboard after the cache update, enter the actual bank transfer reference, and click the button.
+
+The current Canon EOS R8 test has accepted the revised £79 offer. Its payment step is ready for browser retest. Do not manually mark it purchased if the button reports an error.
+
+The Canon EOS R8 test currently has no stored customer-photo links. This is different from recent test items that do have media links; do not treat the absence of media for this item as proof that the photo renderer has deleted a photo.
+
+When a final offer is still `final_offer_sent`, the customer portal uses the wording **Revised offer received** and provides accept/refuse controls. Once the customer accepts it, the portal moves to the accepted state and those response controls are no longer shown.

@@ -6,7 +6,7 @@ const money=(v,c='GBP')=>{try{return new Intl.NumberFormat('en-GB',{style:'curre
 const msg=(t,type='')=>{const e=$('basket-message');if(e){e.textContent=t||'';e.className='message '+type}};
 const read=()=>{try{const x=JSON.parse(localStorage.getItem(BK)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.tenant_id===T&&v.listing_id):[]}catch{return[]}};
 const write=x=>localStorage.setItem(BK,JSON.stringify(x));
-const add=id=>{if(!T||!id)return;const x=read();if(!x.some(v=>String(v.listing_id)===String(id)))x.push({tenant_id:T,listing_id:id,added_at:new Date().toISOString()});write(x)};
+const add=id=>{if(!T||!id)return;write([{tenant_id:T,listing_id:id,added_at:new Date().toISOString()}]);};
 const pending=()=>{try{const x=JSON.parse(localStorage.getItem(PENDING_KEY)||'null');return x?.tenant_id===T&&x?.order_id?x:null}catch{return null}};
 const setPending=x=>{if(x)localStorage.setItem(PENDING_KEY,JSON.stringify(x));else localStorage.removeItem(PENDING_KEY)};
 const remove=async id=>{
@@ -26,7 +26,7 @@ async function loadListing(){
  const x=read();
  if(!x.length){listing=null;render();return}
  const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(T));
- const id=x[0].listing_id;
+ const id=L||x[0].listing_id;
  const item=(Array.isArray(rows)?rows:[]).find(v=>String(v.listing_id)===String(id));
  if(!item)throw Error('The product in your basket is no longer available.');
  listing={id:item.listing_id,title:item.title,description:item.description,asking_price:item.asking_price,currency:item.currency,listing_data:item.listing_data||{}};

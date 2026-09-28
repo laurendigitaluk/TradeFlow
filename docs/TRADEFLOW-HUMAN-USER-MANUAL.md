@@ -1267,3 +1267,7 @@ Fresh live test record: `BR-9FBCBE5008` / `BI-63F5AAA6AB` (Nikon Nikkormat EL St
 Before automatic valuation can be relied on for a new customer item, the subscriber workflow must have a linked tenant buying product. The current public selling journey records the selected model/package as customer-supplied text and does not yet bind it to `buying_product_id`. The current valuation engine consequently falls back to manual valuation for this fresh test item. Customer condition values also need to be reconciled with the valuation engine's accepted vocabulary.
 
 Do not mark the full customer-to-sales journey browser verified until one fresh item has been taken through valuation, offer, acceptance, shipping, receipt, inspection, payment, Inventory, Selling and public publication.
+
+
+## 2026-09-28 — Fresh test UI repairs
+During the fresh Nikon Nikkormat EL Standard test, the following presentation/workflow controls were repaired without changing the working server-side purchase stages: redundant manual valuation CTA removed after manual valuation is identified; customer awaiting-item wording changed to **Postage label received — post your item**; shipping label/QR print layout corrected to 4×6 portrait with A4 top-left printing; revised final-offer action now has direct handling and visible error feedback. Browser verification remains required before these are marked fully verified.

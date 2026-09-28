@@ -1580,3 +1580,7 @@ Verification language remains mandatory: Implemented in GitHub, Live DB verified
 
 ## 2026-09-28 — Fresh test UI repairs
 For the fresh Nikon Nikkormat EL Standard test, do not change server-side purchase-stage logic to solve the current presentation issues. The repairs are confined to the Buying/customer UI: manual valuation CTA cleanup, clearer awaiting-item wording, 4×6 portrait/A4 print rendering, and direct revised-final-offer button handling with visible errors. Verify each in the browser before making any further backend change.
+
+
+## 2026-09-28 — Customer valuation condition vocabulary repair
+The customer selling form uses customer-facing condition values such as `factory-sealed`, `opened-unused`, `fair`, `damaged`, and `not-working`. The authoritative `buying_items.item_condition` constraint accepts `sealed`, `opened_never_used`, `excellent`, `good`, and `poor`. The `customer-selling-submit` Edge Function now normalises the customer-facing values at the submission boundary before calling `customer_submit_buying_request`: factory-sealed→sealed, opened-unused→opened_never_used, excellent→excellent, good→good, fair/damaged/not-working→poor. No customer-facing wording was removed.

@@ -1301,3 +1301,14 @@ If it fails after this repair, record the exact error shown on the Buying page r
 If the revised-final-offer action reports a duplicate `trading_values_one_approved_per_item_idx` error, the original approved valuation is still active. TradeFlow now supersedes that original valuation before approving the revised post-inspection valuation. This preserves the original valuation as historical data while allowing one current approved valuation per item.
 
 For the Canon EOS R8 test, leave the item at `final_offer_required`, enter a revised value different from £99, and send the revised final offer. Do not manually alter the database state.
+
+
+## 2026-09-28 — Revised offer display and customer response
+
+After a revised final offer is sent, the subscriber workspace intentionally changes to a waiting state. The business should see the revised amount and **Awaiting customer response** rather than an editable offer field.
+
+The customer portal must show **Revised offer sent** / **Revised offer received**, the revised amount, and buttons to **Accept** or **Refuse final offer**. The customer response controls act on the published final offer, not the earlier accepted initial offer.
+
+For the current Canon EOS R8 test, the revised offer is £79 GBP and the item is `final_offer_sent`. Refresh both dashboards before retesting. Do not manually change the database stage.
+
+Customer photographs are only displayed when image files were actually uploaded and linked to the buying item. If the item has no `buying_item_media` links, the correct message is that no customer photographs are available; another item's photographs must not be substituted.

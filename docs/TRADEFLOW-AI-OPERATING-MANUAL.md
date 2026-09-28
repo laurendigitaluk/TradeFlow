@@ -1613,3 +1613,10 @@ The revised final-offer backend is now live and produces a published final offer
 For `final_offer_sent`, when the newest offer is a published final offer, customer-facing wording is **Revised offer sent** / **Revised offer received**, with Accept and Refuse actions. The subscriber Buying workspace displays the revised amount and waits for customer response; it must not keep an editable sent-offer control active.
 
 Do not create or copy media records to make a test photo appear. Verify `buying_item_media` and `media_assets` for the exact buying item before diagnosing photo display.
+
+
+## 2026-09-28 — Final payment button binding repair
+
+The final-offer acceptance path exposed an inert **Confirm payment sent** button. Root cause: the `final_offer_accepted` renderer (`loadPayment`) created a `data-act="pay"` button without binding it, while the global click listener intentionally does not redispatch these actions. The button is now directly bound to the existing payment action; cache is v60. No database records were manually advanced.
+
+The Canon EOS R8 test is currently `final_offer_accepted` at £79 and requires browser verification of payment. The exact item has zero `buying_item_media` links; do not invent media. The customer portal already implements **Revised offer received** plus accept/refuse controls for `final_offer_sent`; the current Canon test has already moved beyond that state after acceptance.

@@ -44,3 +44,5 @@
 .order-card{overflow:hidden}.order-card>summary{list-style:none;cursor:pointer;position:relative;padding:0}.order-card>summary::-webkit-details-marker{display:none}.order-card>summary::marker{display:none}.order-card .order-summary{display:block}.order-card .order-toggle{position:absolute;right:12px;bottom:12px;font-size:10px;font-weight:800;color:#68757f}.order-card[open] .order-toggle::after{content:' ↑'}.order-card:not([open]) .order-toggle::after{content:' ↓'}.order-card:not([open]) .order-toggle{color:#2f6f9f}.order-card .order-details{padding-top:2px}.order-card[open]>summary{padding-bottom:2px}
 
 .account[hidden]{display:none!important}
+
+.auth-signup-fields{grid-column:1/-1}

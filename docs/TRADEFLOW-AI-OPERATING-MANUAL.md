@@ -1597,3 +1597,10 @@ A fresh browser test exposed column "currency" does not exist in subscriber_publ
 Repair migration 20260928161000_fix_final_offer_currency_source changes only the currency source: purchase stage is read from buying_items; currency is taken from the latest accepted offer and falls back to GBP. Do not add a currency column to buying_items to solve this incident.
 
 Current test state remains BI-29E78F3A13, final_offer_required, accepted initial offer £99. Browser verification must confirm that a different revised amount creates a published final offer and moves the item to final_offer_sent. Do not manually advance the item or create a final offer in SQL if the browser test fails.
+
+
+## 2026-09-28 — Revised offer approved-valuation uniqueness repair
+
+The revised-offer workflow reached the database after the currency repair but failed because `trading_values_one_approved_per_item_idx` permits only one approved trading value per buying item. The existing £99 initial valuation was still approved.
+
+Do not drop or weaken the unique index. `subscriber_publish_final_offer` now supersedes the existing approved trading value through `transition_workflow_entity` before approving the new post-inspection valuation. The transaction remains atomic and no test record should be manually advanced.

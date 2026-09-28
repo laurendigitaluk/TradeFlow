@@ -1595,3 +1595,9 @@ Verification state: Code repaired and live return RPC applied; browser verificat
 - Customer My Orders remains recipient-focused: no outbound label/QR controls. Once dispatched it shows the shipping service/carrier, tracking number, and an explicit **Track item →** link when a tracking URL is available.
 - After **MARK AS SENT**, Selling → Sold should show the shipment as **Shipped** with no further outbound action. Return handling remains a separate customer-return workflow and should only become actionable when a return has actually been requested.
 - Production migration: `20260926225000_retail_fulfilment_mark_sent_atomic`.
+
+
+## 2026-09-28 — End-to-end customer valuation → sales audit
+A fresh customer valuation submission is live and correctly creates a submitted Buying Request/Item. The first substantive gap is catalogue binding: the public customer selling submission does not populate `buying_items.buying_product_id`, so `calculate_buying_item_valuation` correctly falls back to manual/product_not_selected. The public condition vocabulary also needs reconciliation with valuation rules. Later server-side workflow boundaries (offer acceptance, shipping, receipt, inspection, payment, acquisition and Inventory creation) have live evidence, but a fresh browser walk through every stage remains open. Subscriber localStorage session fallbacks remain a multi-tab isolation risk, and notification delivery remains queued/unverified.
+
+Audit checkpoint: `CHECKPOINTS/2026-09-28-end-to-end-customer-to-sales-audit.md`.

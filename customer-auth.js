@@ -113,14 +113,30 @@ async function restoreExistingSession(){
   dispatchAuthSuccess(data);
  }catch{sessionStorage.removeItem(SESSION_STORAGE)}
 }
+function setAuthMode(signup){
+ const signupFields=$('auth-signup-fields'),signIn=$('auth-sign-in'),signUp=$('auth-sign-up'),create=$('auth-create-account'),back=$('auth-back-sign-in'),title=$('auth-title'),intro=$('auth-intro'),password=$('auth-password');
+ const isSignup=Boolean(signup);
+ if(signupFields)signupFields.hidden=!isSignup;
+ if(signIn)signIn.hidden=isSignup;
+ if(signUp)signUp.hidden=!isSignup;
+ if(create)create.hidden=isSignup;
+ if(back)back.hidden=!isSignup;
+ if(password)password.autocomplete=isSignup?'new-password':'current-password';
+ if(title)title.textContent=isSignup?'Create your customer account':'Sign in to your customer account';
+ if(intro)intro.textContent=isSignup?'Create an account for this business using your name, email address and password.':'Use your email address and password to sign in to this business’s customer portal.';
+}
+window.tradeflowCustomerSetAuthMode=setAuthMode;
 function bind(){
  clearLegacySharedState();
  $('auth-sign-in')?.addEventListener('click',signIn);
  $('auth-sign-up')?.addEventListener('click',signUp);
+ $('auth-create-account')?.addEventListener('click',()=>setAuthMode(true));
+ $('auth-back-sign-in')?.addEventListener('click',()=>setAuthMode(false));
+ setAuthMode(false);
  $('auth-resend')?.addEventListener('click',resendConfirmation);
  $('auth-reset')?.addEventListener('click',requestPasswordReset);
  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
- loadBusinessName().finally(()=>restoreExistingSession().finally(()=>authReadyResolve()));
+ loadBusinessName().finally(()=>{setAuthMode(false);restoreExistingSession().finally(()=>authReadyResolve())});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();

@@ -171,7 +171,7 @@ async function loadOrders(){
     const returnTerminal=ret&&['rejected','refunded','replaced','closed'].includes(ret.status);
     let returnHtml='';
     if(f==='dispatched'||f==='delivered'){
-      if(ret&&!returnTerminal){
+      if(ret){
        const rm=ret.metadata||{};
        const returnStatus=ret.status==='authorised'?'Return accepted':ret.status==='rejected'?'Return denied':'Return requested';
        const postage=rm.postage_payer==='subscriber'?'Subscriber pays return postage':rm.postage_payer==='customer'?'Customer pays return postage':'Postage decision pending';

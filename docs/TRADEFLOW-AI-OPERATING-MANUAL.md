@@ -1576,3 +1576,7 @@ Second boundary: reconcile the public selling condition values with the valuatio
 Subscriber session storage still has legacy localStorage fallbacks; multi-account/tab testing should treat this as a session-isolation risk. Notification queue delivery also remains unresolved and must be reported separately from portal/database workflow success.
 
 Verification language remains mandatory: Implemented in GitHub, Live DB verified, Browser verified. Do not promote the fresh end-to-end path to Browser verified until it has actually been exercised stage by stage.
+
+
+## 2026-09-28 — Fresh test UI repairs
+For the fresh Nikon Nikkormat EL Standard test, do not change server-side purchase-stage logic to solve the current presentation issues. The repairs are confined to the Buying/customer UI: manual valuation CTA cleanup, clearer awaiting-item wording, 4×6 portrait/A4 print rendering, and direct revised-final-offer button handling with visible errors. Verify each in the browser before making any further backend change.

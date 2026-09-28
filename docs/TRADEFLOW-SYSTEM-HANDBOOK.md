@@ -1364,3 +1364,12 @@ The repair is intentionally narrow: the function now reads the purchase stage fr
 Migration: 20260928161000_fix_final_offer_currency_source. GitHub commit: 2cf16e35a5fe8b5676cac192f8c917b0a93ba97c.
 
 Browser verification remains required: the failed Canon test must be retried with a revised value different from the accepted £99 and confirmed at both subscriber and customer boundaries.
+
+
+## 2026-09-28 — Revised offer approved-valuation uniqueness repair
+
+After the currency-source repair, the Canon EOS R8 revised-offer test reached the next database boundary and exposed a duplicate-key error on `trading_values_one_approved_per_item_idx`. Live data showed the original £99 trading value remained approved, while the database intentionally permits only one approved trading value per buying item.
+
+`subscriber_publish_final_offer` now supersedes the existing approved trading value through the existing workflow authority before creating and approving the post-inspection valuation. The operation is transactional, so a later failure rolls the supersede and new valuation back together.
+
+Migration: `20260928162000_fix_final_offer_approved_valuation_conflict`. GitHub commit: `c6c1e5c48cd96c00bbdf646bafce027a357fafa7`.

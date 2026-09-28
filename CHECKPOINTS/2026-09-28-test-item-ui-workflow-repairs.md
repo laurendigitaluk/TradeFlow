@@ -188,3 +188,21 @@ Repairs:
 Customer photographs were separately checked for BI-29E78F3A13. `buying_item_media` currently contains no media link for this item, so TradeFlow cannot display a photo that was not stored against the item. The existing customer submission function still uploads and links supplied image files to `buying_item_media`. No photo was fabricated or copied from another test item.
 
 Browser retest required after Ctrl+F5. Expected customer state: **Revised offer sent** with £79 and **Accept** / **Refuse final offer**. Expected subscriber state: **Revised final offer sent**, £79, waiting for customer response.
+
+
+## Follow-up: Confirm payment sent button was not bound after final-offer acceptance
+
+The Canon EOS R8 test reached `final_offer_accepted` at £79 and correctly displayed the Payment required block, but the **Confirm payment sent** button did nothing. Live code audit found the cause: `loadPostInspectionPayment()` had a direct button handler, but the later `loadPayment()` renderer for `final_offer_accepted` created the same button without binding a click handler. The global click listener intentionally does not redispatch `data-act` buttons, so the final payment button was inert.
+
+Repair:
+- `buying-dashboard.js` now binds the `pay` action directly in `loadPayment()` and exposes the same payment-action status area for errors.
+- Cache bumped v59 → v60.
+- JS commit: `69dd6a979308432b610de7e539d95b36d1cd403c`
+- HTML cache commit: `3beac90566a7de584b58241f184f9384fdd0bfbf`
+- No payment, acquisition or inventory records were manually created or changed.
+
+Live Canon state remains `final_offer_accepted`, final offer £79, with no payment record/acquisition/inventory record for this item. Browser verification is required: refresh, enter a payment reference, click Confirm payment sent, and verify the item moves to purchased/Inventory.
+
+Customer photographs were also checked for this exact Canon item: `buying_item_media` currently contains zero media links. Other recent test items do have linked media. Therefore the absence of Canon photographs is current test data, not evidence that the photo renderer lost an existing photo. Do not fabricate or copy a photo into this item.
+
+The customer portal code already contains the revised-offer wording and accept/refuse controls for `final_offer_sent` with a published final offer. The current Canon item is now `final_offer_accepted`, so those controls correctly disappear after acceptance. A fresh `final_offer_sent` test is required to verify that presentation independently.

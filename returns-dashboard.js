@@ -34,7 +34,7 @@ async function load(){
 function render(){
  if(!rows.length){$('returns').innerHTML='<div class="empty">No returns have been requested.</div>';return}
  $('returns').innerHTML='<div class="data-table"><div class="data-head"><span>Reference</span><span>Type</span><span>Status</span><span>Reason</span><span>Refund</span><span>Action</span></div>'+
- rows.map(r=>'<div class="data-row"><span>'+esc(r.return_reference)+'</span><span>'+esc(r.return_type)+'</span><span>'+esc(r.status)+'</span><span>'+esc(r.reason||r.reason_code||'—')+'</span><span>'+(r.refund_amount==null?'—':esc(r.currency)+' '+esc(r.refund_amount))+'</span><span>'+((next[r.status]||[]).map(([to,label])=>'<button type="button" data-id="'+esc(r.id)+'" data-from="'+esc(r.status)+'" data-to="'+esc(to)+'">'+label+'</button>').join(' ')||'—')+'</span></div>').join('')+'</div>';
+ rows.map(r=>'<div class="data-row"><span>'+esc(r.return_reference)+'</span><span>'+esc(r.return_type==='customer_retail'?'Customer retail return':r.return_type==='acquisition'?'Acquisition return':r.return_type)+'</span><span>'+esc(r.status)+'</span><span>'+esc(r.reason||r.reason_code||'—')+'</span><span>'+(r.refund_amount==null?'—':esc(r.currency)+' '+esc(r.refund_amount))+'</span><span>'+((next[r.status]||[]).map(([to,label])=>'<button type="button" data-id="'+esc(r.id)+'" data-from="'+esc(r.status)+'" data-to="'+esc(to)+'">'+label+'</button>').join(' ')||'—')+'</span></div>').join('')+'</div>';
  document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>transition(b.dataset.id,b.dataset.from,b.dataset.to));
 }
 async function transition(id,from,to){

@@ -2,6 +2,8 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const tenantId=new URLSearchParams(location.search).get('tenant_id');
+const CUSTOMER_SITE_BASE='https://laurendigitaluk.github.io/TradeFlow/';
+let businessName='this business';
 const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
 const PENDING_STORAGE=tenantId?'tradeflow_pending_customer_registration:'+tenantId:'tradeflow_pending_customer_registration:unknown';
 const LEGACY_KEYS=['tradeflow_customer_session','tradeflow_customer_tenant_id','tradeflow_testlab_session','tradeflow_pending_customer_registration'];
@@ -26,14 +28,16 @@ function dispatchAuthSuccess(data){
  window.tradeflowPendingAuthSession=data;
  window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
 }
+async function loadBusinessName(){try{const r=await fetch(SUPABASE_URL+'/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:SUPABASE_KEY}});const rows=await r.json();businessName=rows?.[0]?.business_name||businessName}catch{}}
 async function resendConfirmation(){
  const email=$('auth-email')?.value.trim(),button=$('auth-resend');
  if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
  if(!email)return message('Enter your email address first, then choose Resend confirmation email.','error');
  busy(button,true,'Sending…');
  try{
-  await authRequest('/auth/v1/resend',{type:'signup',email});
-  message('If that email has a TradeFlow customer account awaiting confirmation, a new confirmation email has been sent. Check your inbox and spam folder.','success');
+  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
+  await authRequest('/auth/v1/resend',{type:'signup',email,options:{email_redirect_to:emailRedirectTo.href}});
+  message('If you have a '+businessName+' customer account awaiting email confirmation, a new confirmation email has been sent. Check your inbox and spam folder.','success');
  }catch(error){
   message(error.message||String(error),'error');
  }finally{busy(button,false)}
@@ -86,7 +90,8 @@ async function signUp(){
  try{
   sessionStorage.removeItem(SESSION_STORAGE);clearLegacySharedState();
   sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
-  const data=await authRequest('/auth/v1/signup',{email,password});
+  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
+  const data=await authRequest('/auth/v1/signup',{email,password,options:{email_redirect_to:emailRedirectTo.href}});
   if(!data?.access_token){message('This email already has a TradeFlow login, or email confirmation is required. Use Sign in to continue; if the login is new, check your email first.','error');return}
   saveSession(data);
   await registerCustomer(data.access_token,first,last);
@@ -115,7 +120,7 @@ function bind(){
  $('auth-resend')?.addEventListener('click',resendConfirmation);
  $('auth-reset')?.addEventListener('click',requestPasswordReset);
  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
- restoreExistingSession().finally(()=>authReadyResolve());
+ loadBusinessName().finally(()=>restoreExistingSession().finally(()=>authReadyResolve()));
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();

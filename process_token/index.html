@@ -19,23 +19,38 @@ h1{margin:0 0 10px;font-size:26px}.message{color:#596774;line-height:1.5}
 <script>
 (()=>{
  const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+ const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
  const params=new URLSearchParams(location.search);
- const token=params.get('token')||params.get('token_hash');
+ const token=params.get('token_hash')||params.get('token');
  const type=params.get('type')||'email';
  const tenantId=params.get('tenant_id')||'';
  const message=document.getElementById('message');
+ const next=new URL('../customer-email-confirmed.html',location.href);
+ if(tenantId)next.searchParams.set('tenant_id',tenantId);
  if(!token){
    message.textContent='This confirmation link is missing its verification token. Please request a new confirmation email.';
    message.className='message error';
    return;
  }
- const next=new URL('../customer-email-confirmed.html',location.href);
- if(tenantId)next.searchParams.set('tenant_id',tenantId);
- const verify=new URL(SUPABASE_URL+'/auth/v1/verify');
- verify.searchParams.set('token',token);
- verify.searchParams.set('type',type);
- verify.searchParams.set('redirect_to',next.href);
- location.replace(verify.href);
+ const script=document.createElement('script');
+ script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+ script.onload=async()=>{
+   try{
+     const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+     const result=await client.auth.verifyOtp({token_hash:token,type:type==='signup'?'email':type});
+     if(result.error)throw result.error;
+     next.searchParams.set('confirmed','1');
+     location.replace(next.href);
+   }catch(error){
+     message.textContent=error?.message||'We could not confirm your email. Please request a new confirmation email and try again.';
+     message.className='message error';
+   }
+ };
+ script.onerror=()=>{
+   message.textContent='The confirmation service could not be loaded. Please try again.';
+   message.className='message error';
+ };
+ document.head.appendChild(script);
 })();
 </script>
 </body>

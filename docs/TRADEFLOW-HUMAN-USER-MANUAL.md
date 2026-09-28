@@ -1294,3 +1294,10 @@ For the current Canon EOS R8 test:
 - the expected next stage is Final offer received / final_offer_sent
 
 If it fails after this repair, record the exact error shown on the Buying page rather than manually changing the database state.
+
+
+## 2026-09-28 — Revised offer uniqueness repair
+
+If the revised-final-offer action reports a duplicate `trading_values_one_approved_per_item_idx` error, the original approved valuation is still active. TradeFlow now supersedes that original valuation before approving the revised post-inspection valuation. This preserves the original valuation as historical data while allowing one current approved valuation per item.
+
+For the Canon EOS R8 test, leave the item at `final_offer_required`, enter a revised value different from £99, and send the revised final offer. Do not manually alter the database state.

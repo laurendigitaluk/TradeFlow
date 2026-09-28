@@ -1257,3 +1257,13 @@ Existing historical plan records are retained internally but are not presented a
 The Owner Dashboard's TradeFlow sending email field records the address TradeFlow is intended to send from. Saving it does not send a confirmation message to that address.
 
 The address remains pending until the email provider/domain verification process is completed. Once verified, TradeFlow's notification system can use it for platform sending.
+
+
+## 2026-09-28 — End-to-end customer selling workflow audit
+The latest audit confirms that the customer valuation journey now successfully creates a Buying Request/Buying Item in the subscriber tenant before returning the customer to the Customer Account. This return is the post-submission handoff, not a replacement for the submission.
+
+Fresh live test record: `BR-9FBCBE5008` / `BI-63F5AAA6AB` (Nikon Nikkormat EL Standard), submitted 28 September 2026. The request and item contain the expected customer-portal workflow events and one customer photograph.
+
+Before automatic valuation can be relied on for a new customer item, the subscriber workflow must have a linked tenant buying product. The current public selling journey records the selected model/package as customer-supplied text and does not yet bind it to `buying_product_id`. The current valuation engine consequently falls back to manual valuation for this fresh test item. Customer condition values also need to be reconciled with the valuation engine's accepted vocabulary.
+
+Do not mark the full customer-to-sales journey browser verified until one fresh item has been taken through valuation, offer, acceptance, shipping, receipt, inspection, payment, Inventory, Selling and public publication.

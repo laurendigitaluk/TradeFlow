@@ -1279,3 +1279,18 @@ The customer selling form uses customer-facing condition values such as `factory
 
 ## 2026-09-28 — Inspection decision and testing/repair continuation
 At the inspection stage, the subscriber can now choose: Accept original offer, Make a counter offer, Send for testing, Send for repair, or Refuse purchase. A counter offer requires a different value from the accepted offer and is sent as the revised final offer after the inspection is recorded. Testing and repair stages now provide a completion action that returns the item to inspection/offer decision, plus a refusal action. The customer shipping label remains a stored handoff asset; if its storage path/URL is absent, the label was not stored for that item and must not be reconstructed or treated as available.
+
+
+## 2026-09-28 — Revised final offer repair
+
+If Send revised final offer shows column "currency" does not exist, do not change the item or manually advance the stage. This was a backend schema-reference error: buying_items does not contain a currency field.
+
+TradeFlow has been repaired so revised final offers use the currency recorded on the accepted offer, with GBP as the fallback for legacy records. The revised-offer workflow itself is unchanged.
+
+For the current Canon EOS R8 test:
+- accepted value: £99
+- enter a different revised value, such as £79
+- send the revised final offer
+- the expected next stage is Final offer received / final_offer_sent
+
+If it fails after this repair, record the exact error shown on the Buying page rather than manually changing the database state.

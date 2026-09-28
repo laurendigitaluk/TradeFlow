@@ -73,3 +73,12 @@ Repair applied at the submission boundary only:
 - not-working → poor
 
 Edge Function `customer-selling-submit` deployed as version 4. No existing buying workflow stages or existing records were changed.
+
+
+## Follow-up: initial offer sent display
+After an initial offer is successfully published, the Buying item workspace was still rendering the editable “Customer offer / Send cash & trade-in offer” block because both `valued` and `offer_ready` used the same renderer. The stage/status at the top already correctly showed “Offer sent”. The renderer is now split: `valued` retains the offer-entry CTA; `offer_ready` displays “Offer sent” and a waiting message with no duplicate send CTA.
+
+- `buying-dashboard.js` cache: v57 → v58
+- Repair commit: `0a1b77921b6704fca65b653d8c06e2234e7a86ee`
+- Cache-bump commit: `40614b5a040378ff174dd29b16c810f7e5cfe1a6`
+- No workflow/database logic changed.

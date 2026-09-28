@@ -808,3 +808,9 @@ Inventory creation now has two explicit authoritative paths:
 The change preserves RLS and does not weaken the completed-purchase boundary. Live verification for Camerashack found 261 active selected catalogue products across 3 manufacturers. Authenticated rollback tests confirmed manual creation is accepted only through the explicit manual path and unmarked direct creation remains blocked.
 
 Status: Implemented in GitHub + live DB verified; browser verification of the rebuilt Add Product UI remains the next test.
+
+
+## 2026-09-28 — End-to-end customer valuation → sales audit
+A fresh customer valuation submission is live and correctly creates a submitted Buying Request/Item. The first substantive gap is catalogue binding: the public customer selling submission does not populate `buying_items.buying_product_id`, so `calculate_buying_item_valuation` correctly falls back to manual/product_not_selected. The public condition vocabulary also needs reconciliation with valuation rules. Later server-side workflow boundaries (offer acceptance, shipping, receipt, inspection, payment, acquisition and Inventory creation) have live evidence, but a fresh browser walk through every stage remains open. Subscriber localStorage session fallbacks remain a multi-tab isolation risk, and notification delivery remains queued/unverified.
+
+Audit checkpoint: `CHECKPOINTS/2026-09-28-end-to-end-customer-to-sales-audit.md`.

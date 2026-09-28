@@ -41,8 +41,8 @@ begin
   where f.tenant_id=p_tenant_id and f.retail_order_id=v_order_id
   order by f.created_at desc limit 1;
 
-  if v_fulfilment_status is distinct from 'delivered' then
-    raise exception 'A return can be requested after the item has been marked delivered';
+  if v_fulfilment_status not in ('dispatched','delivered') then
+    raise exception 'A return can be requested once the order has been shipped';
   end if;
 
   if exists(
@@ -69,7 +69,7 @@ begin
   )
   values(
     p_tenant_id,'return',v_return_id,null,'requested',auth.uid(),
-    'Customer retail return requested after delivery.',
+    'Customer retail return requested from customer portal.',
     jsonb_build_object('source','customer_portal','order_item_id',p_order_item_id)
   );
 

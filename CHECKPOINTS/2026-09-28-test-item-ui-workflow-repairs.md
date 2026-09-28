@@ -91,3 +91,19 @@ When the business has supplied the shipping label/QR, the customer card still di
 - Repair commit: `109328cc57447bd1473eb1e44638b8570a072d20`
 - Cache-bump commit: `052cef4e8109287c79200e7e95f9cccb048f3624`
 - No database/workflow status change.
+
+
+## Follow-up: shipping label verification and inspection decision workflow
+Live verification of Canon EOS R8 (BI-29E78F3A13) shows the customer shipping row contains a QR storage path but both `shipping_label_storage_path` and `shipping_label_url` are NULL. The label is therefore not merely hidden by the customer UI; there is no label reference stored for this test item. The existing subscriber upload control still accepts PDF/PNG/JPEG labels and remains available at the pre-dispatch handoff stage. No fake/reconstructed label was created.
+
+Inspection workflow repair:
+- Inspection now presents one decision point covering Accept original offer, Make a counter offer, Send for testing, Send for repair, and Refuse purchase.
+- Counter offer requires a new amount different from the accepted value, completes the inspection as accepted, then publishes the revised final offer.
+- Testing and repair stages now have continuation controls. Completing the work returns the item to inspection/offer decision; refusal closes the purchase as refused.
+- The live inspection RPC now records Refuse as `offer_refused` rather than `return_pending`.
+- New RPC: `subscriber_complete_buying_item_followup`.
+- Buying Dashboard cache: v58 → v59.
+- JS commit: `04a225b590acb94a47b427f190008693fc176092`.
+- Migration commit: `bec222b624d4bd5c6c086a1aa4590c220e27f0ca`.
+- Cache-bump commit: `180cfa5f2c5fe085188a1f90b57383a0cd1a1d9d`.
+- No existing test item was manually advanced or reset.

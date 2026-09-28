@@ -23,14 +23,14 @@ function renderCards(list,containerId){
   const displayStatus=o.display_status||o.status;
   const actions=(displayStatus==='completed'||displayStatus==='cancelled'||displayStatus==='refunded'?[]:(next[o.status]||[])).map(([to,label])=>'<button class="order-action" type="button" data-transition="'+o.id+'" data-from="'+o.status+'" data-to="'+to+'">'+label+'</button>').join('');
   return '<article class="order-card '+orderClass(o)+'">'+
-   '<div class="order-card-head"><div><div class="order-ref">'+esc(o.order_reference)+'</div><div class="order-customer">'+esc(o.customer_name||'Guest')+(o.customer_email?' · '+esc(o.customer_email):'')+'</div></div><div class="order-status '+orderClass(o)+'">'+statusLabel(displayStatus)+'</div></div>'+\
-   '<div class="order-card-grid">'+\
-    '<div><span>Order total</span><strong>'+money(o.total,o.currency)+'</strong></div>'+\
-    '<div><span>Payment</span><strong>'+statusLabel(o.payment_status||'unpaid')+'</strong></div>'+\
-    '<div><span>Sales channel</span><strong>'+esc(channel)+'</strong></div>'+\
-    '<div><span>Amount due</span><strong>'+money(o.amount_due,o.currency)+'</strong></div>'+\
-   '</div>'+\
-   '<div class="order-card-footer"><button class="order-view" data-view="'+o.id+'" type="button">View order details</button><div class="order-actions">'+actions+'</div></div>'+\
+   '<div class="order-card-head"><div><div class="order-ref">'+esc(o.order_reference)+'</div><div class="order-customer">'+esc(o.customer_name||'Guest')+(o.customer_email?' · '+esc(o.customer_email):'')+'</div></div><div class="order-status '+orderClass(o)+'">'+statusLabel(displayStatus)+'</div></div>'+
+   '<div class="order-card-grid">'+
+    '<div><span>Order total</span><strong>'+money(o.total,o.currency)+'</strong></div>'+
+    '<div><span>Payment</span><strong>'+statusLabel(o.payment_status||'unpaid')+'</strong></div>'+
+    '<div><span>Sales channel</span><strong>'+esc(channel)+'</strong></div>'+
+    '<div><span>Amount due</span><strong>'+money(o.amount_due,o.currency)+'</strong></div>'+
+   '</div>'+
+   '<div class="order-card-footer"><button class="order-view" data-view="'+o.id+'" type="button">View order details</button><div class="order-actions">'+actions+'</div></div>'+
   '</article>';
  }).join('');
 }

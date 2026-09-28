@@ -161,7 +161,7 @@ async function saveShipping(){
     });
     msg(result?.notification_queued?'Shipping handoff completed. The customer notification has been queued.':'Shipping handoff completed.','success');
     $('label-file').value='';$('qr-file').value='';
-    await load();
+    window.location.href='selling-dashboard.html';
   }catch(e){
     msg(e.message||String(e),'error');
     const err=$('handoff-status');if(err)err.innerHTML='<div class="error-panel"><strong>Shipping handoff was not completed.</strong><div class="small" style="margin-top:4px">'+esc(e.message||String(e))+'</div></div>';

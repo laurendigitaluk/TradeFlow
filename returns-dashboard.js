@@ -23,7 +23,7 @@ async function load(){
   tenantId=membership.tenant_id||a?.tenantId||null;
   if(!tenantId||tenantId==='null'||tenantId==='undefined')throw Error('No valid subscriber tenant is selected. Please sign in again.');
   $('business-name').textContent=membership.tenant_name||membership.business_name||a?.tenants?.[tenantId]||'TradeFlow';
-  rows=await api('/rest/v1/returns?select=id,return_reference,return_type,status,customer_id,order_id,order_item_id,inventory_asset_id,reason_code,reason,customer_notes,staff_notes,requested_at,authorised_at,received_at,inspected_at,resolved_at,closed_at,refund_amount,currency&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=requested_at.desc')||[];
+  rows=await api('/rest/v1/rpc/subscriber_get_returns',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})})||[];
   rows=Array.isArray(rows)?rows:[];
   render();msg(rows.length+' return(s) loaded.','success');
  }catch(e){

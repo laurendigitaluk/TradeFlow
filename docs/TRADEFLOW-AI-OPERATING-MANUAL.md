@@ -1604,3 +1604,12 @@ Current test state remains BI-29E78F3A13, final_offer_required, accepted initial
 The revised-offer workflow reached the database after the currency repair but failed because `trading_values_one_approved_per_item_idx` permits only one approved trading value per buying item. The existing £99 initial valuation was still approved.
 
 Do not drop or weaken the unique index. `subscriber_publish_final_offer` now supersedes the existing approved trading value through `transition_workflow_entity` before approving the new post-inspection valuation. The transaction remains atomic and no test record should be manually advanced.
+
+
+## 2026-09-28 — Revised offer current-state rendering
+
+The revised final-offer backend is now live and produces a published final offer. A UI data-selection defect was found in the customer portal: descending offers were converted to an object by buying item, allowing an older offer to overwrite the newest offer. The customer dashboard now retains the first/newest offer for each item.
+
+For `final_offer_sent`, when the newest offer is a published final offer, customer-facing wording is **Revised offer sent** / **Revised offer received**, with Accept and Refuse actions. The subscriber Buying workspace displays the revised amount and waits for customer response; it must not keep an editable sent-offer control active.
+
+Do not create or copy media records to make a test photo appear. Verify `buying_item_media` and `media_assets` for the exact buying item before diagnosing photo display.

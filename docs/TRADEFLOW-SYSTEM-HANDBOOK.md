@@ -1353,3 +1353,14 @@ The current subscriber authentication layer still uses localStorage for the subs
 Notification delivery remains unresolved: current notification_queue records are still queued and platform sender verification is pending. Portal/database workflow must not be described as equivalent to successful email delivery.
 
 Verification remains: **Implemented in GitHub / Live DB verified / Browser verified**. The fresh customer submission is live-DB verified; later fresh-item browser stages remain open.
+
+
+## 2026-09-28 — Revised final offer currency-source repair
+
+Fresh browser testing of Canon EOS R8 (BI-29E78F3A13) exposed column "currency" does not exist when sending a revised final offer. Live schema inspection confirmed that buying_items has no currency column, while offers.currency and trading_values.currency do exist. The live subscriber_publish_final_offer function was incorrectly selecting purchase_stage,currency from buying_items.
+
+The repair is intentionally narrow: the function now reads the purchase stage from buying_items and derives the currency from the latest accepted offer, falling back to GBP for legacy records with no currency value. No purchase-stage or inspection workflow was changed.
+
+Migration: 20260928161000_fix_final_offer_currency_source. GitHub commit: 2cf16e35a5fe8b5676cac192f8c917b0a93ba97c.
+
+Browser verification remains required: the failed Canon test must be retried with a revised value different from the accepted £99 and confirmed at both subscriber and customer boundaries.

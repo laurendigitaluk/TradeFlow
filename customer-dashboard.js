@@ -182,9 +182,14 @@ async function loadOrders(){
    return '<details class="sale-card order-card'+orderClass+'"><summary class="order-summary"><div class="sale-grid"><div><span class="label">Order</span><strong>'+esc(o.order_reference||'Order')+'</strong><div class="small">'+esc(o.paid_at?'Paid '+new Date(o.paid_at).toLocaleDateString('en-GB'):'')+'</div></div><div><span class="label">Status</span><span class="stage active">'+esc(shippingLabel)+'</span></div><div><span class="label">Total</span><strong>'+money(o.total,o.currency)+'</strong></div></div><span class="order-toggle" aria-hidden="true">View order</span></summary><div class="order-details"><div class="order-items">'+itemRows+'</div>'+shipDetails+(tracking?'<p class="small"><strong>Tracking:</strong> '+tracking+'</p>':'')+instructions+'<p class="small">Fulfilment '+esc(o.fulfilment_reference||s.fulfilment_reference||'pending')+' · '+esc(shippingLabel)+'</p></div></details>'
   }).join(''):'<div class="empty">No orders yet.</div>';
 
-  document.querySelectorAll('[data-start-return]').forEach(b=>b.onclick=()=>{
-   const form=b.parentElement?.querySelector('[data-return-form]');
-   if(form){form.hidden=false;b.hidden=true}
+  document.querySelectorAll('[data-start-return]').forEach(b=>{
+   b.disabled=false;
+   b.onclick=(event)=>{
+    event.preventDefault();
+    event.stopPropagation();
+    const form=b.parentElement?.querySelector('[data-return-form]');
+    if(form){form.hidden=false;b.hidden=true}
+   };
   });
   document.querySelectorAll('[data-return-cancel]').forEach(b=>b.onclick=()=>{
    const form=b.closest('[data-return-form]');if(form){form.hidden=true;const start=form.parentElement?.querySelector('[data-start-return]');if(start)start.hidden=false}

@@ -1275,3 +1275,7 @@ During the fresh Nikon Nikkormat EL Standard test, the following presentation/wo
 
 ## 2026-09-28 — Customer valuation condition vocabulary repair
 The customer selling form uses customer-facing condition values such as `factory-sealed`, `opened-unused`, `fair`, `damaged`, and `not-working`. The authoritative `buying_items.item_condition` constraint accepts `sealed`, `opened_never_used`, `excellent`, `good`, and `poor`. The `customer-selling-submit` Edge Function now normalises the customer-facing values at the submission boundary before calling `customer_submit_buying_request`: factory-sealed→sealed, opened-unused→opened_never_used, excellent→excellent, good→good, fair/damaged/not-working→poor. No customer-facing wording was removed.
+
+
+## 2026-09-28 — Inspection decision and testing/repair continuation
+At the inspection stage, the subscriber can now choose: Accept original offer, Make a counter offer, Send for testing, Send for repair, or Refuse purchase. A counter offer requires a different value from the accepted offer and is sent as the revised final offer after the inspection is recorded. Testing and repair stages now provide a completion action that returns the item to inspection/offer decision, plus a refusal action. The customer shipping label remains a stored handoff asset; if its storage path/URL is absent, the label was not stored for that item and must not be reconstructed or treated as available.

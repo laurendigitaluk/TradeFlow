@@ -92,12 +92,25 @@ async function signUp(){
   sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
   const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
   const data=await authRequest('/auth/v1/signup',{email,password,options:{email_redirect_to:emailRedirectTo.href}});
-  if(!data?.access_token){message('This email may already have a '+businessName+' customer account, or email confirmation is still required. Use Sign in to continue; if the account is new, check your email first.','error');return}
+  if(!data?.access_token){
+   setAuthMode(false);
+   message('This email already has a TradeFlow customer login, or email confirmation is still required. Use Sign in to connect this customer to '+businessName+'. If this is a new account, check your email first.','error');
+   return;
+  }
   saveSession(data);
   await registerCustomer(data.access_token,first,last);
   sessionStorage.removeItem(PENDING_STORAGE);
   dispatchAuthSuccess(data);
- }catch(error){message(error.message||String(error),'error');sessionStorage.removeItem(SESSION_STORAGE)}finally{busy(button,false)}
+ }catch(error){
+  const detail=error.message||String(error);
+  if(/already registered|already exists|user exists|email.*exists/i.test(detail)){
+   setAuthMode(false);
+   message('This email already has a TradeFlow customer login. Use Sign in to connect this customer to '+businessName+'.','error');
+  }else{
+   message(detail,'error');
+  }
+  sessionStorage.removeItem(SESSION_STORAGE);
+ }finally{busy(button,false)}
 }
 async function restoreExistingSession(){
  const raw=sessionStorage.getItem(SESSION_STORAGE);if(!raw)return;

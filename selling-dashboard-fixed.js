@@ -3,7 +3,7 @@ const KEY_STORAGE='tradeflow_subscriber_publishable_key',SESSION_STORAGE='tradef
 let key=null,session=null,tenantId=null,editingListingId=null,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||''}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
 async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
-let rows=[],soldRows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null,selectedSourceMediaIds=new Set(),sourceLoadToken=0;
+let rows=[],soldRows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null,selectedSourceMediaIds=new Set(),sourceLoadToken=0,serialDuplicateConfirmationKey=null;
 async function waitForSubscriber(){
  const ready=window.tradeflowSubscriberAuthReady;
  const immediate=window.tradeflowSubscriberAuth;
@@ -136,13 +136,16 @@ function cancelEdit(){
  $('channel').disabled=false;
  const submit=$('listing-form')?.querySelector('button[type="submit"]');
  if(submit){submit.textContent='SEND TO WEBSITE';submit.disabled=false;}if($('cancel-edit')){$('cancel-edit').textContent='CANCEL EDIT';$('cancel-edit').hidden=true;} if($('cancel-edit'))$('cancel-edit').hidden=true;
+ serialDuplicateConfirmationKey=null;
+ $('send-to-website')?.setAttribute('data-serial-confirmation','');
+ $('send-to-website')&&( $('send-to-website').textContent='SEND TO WEBSITE' );
  $('listing-form')?.reset();
  $('currency').value='GBP';
  const asset=$('asset').value;
  if(asset)syncAssetContext();
  msg('Listing edit cancelled.','success');
 }
-const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=()=>{if(!listingForm)return;msg('Creating listing…');if(typeof listingForm.requestSubmit==='function')listingForm.requestSubmit();else listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
+const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const serialInput=$('asset-serial');if(serialInput)serialInput.addEventListener('input',()=>{serialDuplicateConfirmationKey=null;if($('send-to-website'))$('send-to-website').textContent='SEND TO WEBSITE';});const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=()=>{if(!listingForm)return;msg('Creating listing…');if(typeof listingForm.requestSubmit==='function')listingForm.requestSubmit();else listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
 $('listing-form').onsubmit=async e=>{
  e.preventDefault();
  if(!tenantId)return;
@@ -165,8 +168,16 @@ $('listing-form').onsubmit=async e=>{
    const listingData={source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}};
    const serialNumber=$('asset-serial').value.trim()||null;
    if(serialNumber){
-     const serialConflict=(await api('/rest/v1/inventory_assets?select=id,asset_reference,title&tenant_id=eq.'+encodeURIComponent(tenantId)+'&serial_number=eq.'+encodeURIComponent(serialNumber)+'&id=neq.'+encodeURIComponent(assetRow.id)+'&limit=1'))||[];
-     if(serialConflict[0])throw Error('Serial number '+JSON.stringify(serialNumber)+' is already assigned to inventory asset '+(serialConflict[0].asset_reference||serialConflict[0].id)+'. Use the correct unique serial number or clear the serial field before publishing.');
+     const confirmationKey=assetRow.id+'|'+serialNumber;
+     const serialConflict=(await api('/rest/v1/inventory_assets?select=id,asset_reference,title,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&serial_number=eq.'+encodeURIComponent(serialNumber)+'&id=neq.'+encodeURIComponent(assetRow.id)+'&limit=1'))||[];
+     if(serialConflict[0]&&serialDuplicateConfirmationKey!==confirmationKey){
+       const conflict=serialConflict[0];
+       serialDuplicateConfirmationKey=confirmationKey;
+       const button=$('send-to-website');
+       if(button)button.textContent='CONTINUE WITH SERIAL NUMBER';
+       msg('Warning: serial number '+JSON.stringify(serialNumber)+' is already recorded on '+(conflict.asset_reference||conflict.id)+(conflict.title?' — '+conflict.title:'')+'. Check the physical item and existing inventory record. If this is genuinely the correct serial number for this item, click CONTINUE WITH SERIAL NUMBER to proceed.','warning');
+       return;
+     }
    }
    const inventoryUpdate={serial_number:serialNumber,location:$('asset-location').value.trim()||null,updated_at:new Date().toISOString()};
    if(editingListingId){

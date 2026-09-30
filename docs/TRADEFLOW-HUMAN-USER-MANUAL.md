@@ -1378,3 +1378,8 @@ If there is no UK New research for the selected product, an automatic valuation 
 The TEST database migration history has been cleaned for the dedicated baseline workstream. Migration-history records `20260930181936` and `20260930182507` were removed as a history repair only; no business data or schema rollback was performed. The current function definitions remain present in TEST.
 
 Next step: in the dedicated `TradeFlow-Clean-Baseline-20260930` workspace, verify that `supabase/migrations` is empty and run `supabase db pull` against TEST. Review the generated baseline before any further migration or release changes. LIVE and the `production` branch must remain untouched.
+
+
+## 2026-09-30 — TEST migration-history reset completed for clean baseline
+
+The TEST Supabase migration-history table was reset to zero rows. This changed only `supabase_migrations.schema_migrations`; it did not reset, drop, or alter application schema or business data. Immediate verification after the reset reports 0 migration-history rows, 93 public tables and 178 public functions. The purpose is to allow the empty local `supabase/migrations` workspace to perform the documented initial `db pull` against the actual TEST schema and generate one authoritative baseline migration. Do not run `db push`, `db reset --linked`, or any further migration-repair commands until that generated baseline has been inspected.

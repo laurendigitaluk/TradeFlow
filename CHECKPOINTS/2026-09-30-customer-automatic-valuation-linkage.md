@@ -73,3 +73,27 @@ A second compatibility issue was also identified: the public wizard submits open
 ## New commits
 - Public catalogue tenant-product linkage migration: 0676a39fae11955afee8d40541678f2cfeea830f
 - Condition normalization migration: 5b68fbda4180f10b295d0771e0fc8ea51495c998
+
+
+## Automatic pricing basis clarified — 30 September 2026
+The intended pricing rule is now explicit: every automatic condition percentage is calculated against the latest **UK New** research price for the same subscriber and exact buying product.
+
+- Sealed: percentage of UK New
+- Opened / Never Used: percentage of UK New
+- Excellent: percentage of UK New
+- Good: percentage of UK New
+- Poor: percentage of UK New
+- UK Used research is view-only evidence and is never an automatic calculation basis.
+- If UK New research is unavailable, automatic valuation falls back to manual valuation.
+- Automatic pricing configuration now forces all condition reference fields to `uk_new` and the Buying Catalogue editor no longer allows a UK Used automatic basis.
+- The subscriber-side `calculate_buying_item_valuation` function now uses UK New only, matching the customer-submission automatic path.
+
+For the current Camerashack C50, UK New research is £2,549. The configured 60% Excellent rule therefore has an expected automatic price of £1,529.40. A fresh Excellent customer submission should now use that amount automatically.
+
+## New commits
+- Automatic pricing UK New-only database migration: c37bd475cf4eb72b17ce63f9c7b950ea7646244d
+- UK New-only valuation calculator migration: 70bb6186a79e99a338bd1901b47756036753c772
+- Buying Catalogue UI: 83fa1491a8896c021bc29141e5a984cd0732dbe7
+- Buying Catalogue cache refresh: 80ae99a63e0355410ba0ad2bbe2313a14609eca4
+- Human manual update: 0d1f23e6346ee82c106f4eee9692b9e98d12f1b2
+- AI operating manual update: 3f38a9d823db3e9cbd7e095ce02193cb50de1316

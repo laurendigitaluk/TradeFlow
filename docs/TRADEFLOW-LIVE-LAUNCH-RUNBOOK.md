@@ -13,8 +13,10 @@ TradeFlow has completed the main development and end-to-end validation cycle and
 The current repository is:
 
 - GitHub: `laurendigitaluk/TradeFlow`
-- Current branch: `main`
-- Current latest commit: `b0a42de34958febf883ca7db8092ea9ef2a263cc`
+- TEST branch: `main`
+- LIVE branch: `production`
+- Current TEST release-candidate commit before documentation updates: `ec6536818522a0e89d08f9defa68f557259cf280`
+- `production` was previously at `ee549d16213b87e5fd1f2e097e123ea3ecf9317b` and is being promoted to the tested release after these documentation changes.
 - Current Supabase project: `twfbmjwwqzxdxvclxbun`, eu-west-2
 - Current Supabase project is the development/test environment and must **not** become the production database.
 
@@ -106,12 +108,12 @@ Use separate release branches:
 ### `main`
 TEST/STAGING development branch.
 
-All normal development goes here first.
+All normal development, repairs, migrations and browser testing go here first. This is the branch associated with the TradeFlow TEST environment.
 
 ### `production`
 LIVE release branch.
 
-This branch must only receive tested releases.
+This branch represents the exact release approved for the live site. It must only receive a tested commit promoted from `main`. No experimental development is performed directly on `production`.
 
 Production should not be edited directly.
 

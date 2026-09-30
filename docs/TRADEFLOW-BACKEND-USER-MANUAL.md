@@ -1,0 +1,551 @@
+# TradeFlow Backend User Manual
+
+**Purpose:** authoritative operational guide to the TradeFlow subscriber/business backend.  
+**Audience:** business owner, administrator, staff and anyone operating the TradeFlow backend.  
+**Not this manual:** this is not the customer-facing website manual. The public/subscriber website-building guide remains `subscriber-website-manual.html`.
+
+## 1. What TradeFlow is
+
+TradeFlow is a multi-tenant buying, valuation, purchasing, inventory, selling, retail-order, fulfilment and returns platform. Each subscriber business operates inside its own tenant boundary.
+
+The public website is the customer-facing entry point. The backend is where the subscriber operates the business after a customer submits a request or a stock item enters the business.
+
+The authoritative operational chain is:
+
+**Buying → Valuation → Offer → Customer response → Shipping/receipt → Inspection → Final offer → Payment → Inventory → Selling/Listing → Retail Order → Fulfilment → Returns.**
+
+A separate direct-stock route can enter at **Category → Product → Properties → Photographs → Inventory → Listing → Customer Shop** without going through Buying.
+
+## 2. TEST and LIVE
+
+TradeFlow has two permanent environments.
+
+| Layer | TEST | LIVE |
+|---|---|---|
+| GitHub | `main` | `production` |
+| Supabase | `twfbmjwwqzxdxvclxbun` | Separate production project |
+| Data | Test data | Real business data |
+| Purpose | Build, repair, test | Operate the live business |
+
+Never experiment in LIVE. Never copy TEST customer or transaction data into LIVE.
+
+The release path is:
+
+1. Make the change in a feature/checkpoint branch or `main`.
+2. Deploy/test against TEST.
+3. Verify browser behaviour and database state.
+4. Record a release checkpoint.
+5. Promote the approved commit to `production`.
+6. Apply the version-controlled migrations/functions/configuration to LIVE.
+7. Run a clean LIVE smoke test.
+
+## 3. Authentication and tenant boundary
+
+TradeFlow separates Platform Owner, subscriber business users and customers.
+
+### Subscriber roles
+
+The tenant roles are:
+
+- **Owner** — business owner and highest tenant-level operational role.
+- **Admin** — authorised business administrator.
+- **Staff** — operational worker with the permissions granted to the role.
+
+A subscriber session establishes the tenant context. Backend queries and workflow RPCs must remain tenant-scoped.
+
+### Customer accounts
+
+Customers use the customer portal. Customer authentication is separate from subscriber authentication. A customer account is linked to the relevant tenant and must not expose another tenant's customer, buying, order, address, bank or return data.
+
+### Platform Owner
+
+Platform Owner controls the TradeFlow SaaS layer, including commercial plan configuration and platform-level settings. Platform Owner is not a substitute for a subscriber tenant role.
+
+## 4. Main backend areas
+
+The subscriber backend is organised around these operating areas:
+
+- Dashboard
+- Buying
+- Inventory
+- Selling
+- Orders
+- Fulfilment
+- Returns
+- Customers
+- Business/Website settings
+- Shipping Settings
+- Sales Channels
+- account/settings controls
+
+The exact navigation shown to a user depends on the current entitlement, role and enabled modules.
+
+## 5. Dashboard
+
+The Business Dashboard is the operational overview.
+
+It shows live workflow counts for core areas including:
+
+- Buying
+- Inventory
+- Selling
+- Orders
+- Fulfilment
+- Returns
+
+It also provides attention/workflow information for work that needs action.
+
+The dashboard counts must come from the authoritative tenant-scoped workflow/read boundaries rather than legacy order resources. A zero count is not proof that no work exists if the underlying query failed; runtime errors must be investigated.
+
+## 6. Buying
+
+Buying is the customer-to-business acquisition journey.
+
+A customer submits a selling/buying request through the public site. The request is linked to the subscriber tenant and, where applicable, to the exact active catalogue product selected by the customer.
+
+The backend stores the customer submission, product/category context, condition, photographs and other structured information.
+
+### Buying stages
+
+The operational stages include, depending on the journey:
+
+1. New/request received.
+2. Valuation required or automatically valued.
+3. Initial offer ready/sent.
+4. Customer accepts or refuses.
+5. Shipping hand-off.
+6. Item sent.
+7. Item received.
+8. Inspection.
+9. Testing/repair where required.
+10. Final offer required/sent.
+11. Customer accepts/refuses final offer.
+12. Payment required.
+13. Payment completed.
+14. Purchased/closed.
+
+Closed/refused/returned work must not continue to appear as active work requiring staff action.
+
+## 7. Catalogue and automatic valuation
+
+The Buying catalogue is subscriber-specific but based on TradeFlow's master catalogue/product structure.
+
+When the public customer journey selects a catalogue product, the request should carry the exact subscriber buying-product identity rather than relying on a loose product name.
+
+Automatic valuation uses the current supported research basis documented in the system:
+
+- UK New research is the automatic calculation basis.
+- The research must match the subscriber's exact product context.
+- UK Used evidence may be displayed as market evidence but is not the automatic calculation basis.
+- If the required automatic research/rule is not available, the request remains a manual valuation workflow.
+
+Automatic valuation is idempotent. Re-running the check must not create duplicate valuations or offers.
+
+### Manual override
+
+A subscriber can manually override an automatic valuation where the workflow permits it. The manual approved valuation/offer becomes authoritative over the previous automatic value.
+
+Do not manually alter database stages to bypass the valuation workflow.
+
+## 8. Refusing a valuation or offer
+
+A subscriber can refuse a valuation where the UI provides the refusal action.
+
+The refusal is a workflow state, not merely a deleted record. The customer must receive the appropriate status/notification, and the item must leave the active workflow when the refusal rules say it is closed.
+
+Customer refusal of an initial offer similarly closes the relevant buying item according to the current workflow rules.
+
+Do not revive refused work by changing a stage directly in the database.
+
+## 9. Shipping hand-off
+
+TradeFlow's shipping model is **manual**.
+
+The subscriber does not use the retired Parcel2Go API/checkout flow.
+
+The subscriber configures preferred shipping services under:
+
+**Settings → Shipping Settings**
+
+The business can maintain shipping-service links and choose which services are presented for its workflow.
+
+When an accepted offer requires the customer to send an item, the subscriber prepares the shipping instructions/label.
+
+### Customer shipping responsibility
+
+The customer pays for their own shipping. TradeFlow does not collect or process the customer's shipping cost as part of the buying workflow.
+
+### Label
+
+The current manual label requirement is:
+
+- 6 × 4 inch portrait layout for a ZDesigner GK420 label printer.
+- Printable at the top-left of an A4 sheet.
+- The label artwork should fill the intended label area without unnecessary extra options.
+
+The customer portal can display the shipping information and provide the relevant label/file access.
+
+## 10. Shipping status and receipt
+
+The shipping stage records the available shipping information, including:
+
+- date shipped;
+- service;
+- tracking number;
+- label where supplied.
+
+When the subscriber receives the item, the authoritative **Confirm item received** action moves the acquisition/buying workflow into the received/inspection state.
+
+The customer sees a corresponding status such as:
+
+**Item received by subscriber — inspection next.**
+
+The subscriber backend shows the item as received and exposes the inspection action.
+
+## 11. Inspection
+
+Inspection is an internal subscriber workflow.
+
+The inspection workspace is opened from the Buying workflow.
+
+The purpose is to compare the received item against the customer's submission and the agreed buying conditions.
+
+Inspection can capture the condition and inspection outcome. Where the item does not match the agreed condition, the current refusal/return rules can require a condition mismatch before the item is refused.
+
+An inspection refusal can initiate the buying-item return-to-customer workflow.
+
+An item that passes inspection continues to the final-offer/payment stages.
+
+## 12. Final offer
+
+After inspection, the subscriber can issue the final offer where required.
+
+The customer receives the final offer and can accept or refuse it.
+
+The internal wording should use the current workflow terminology, including **Final offer received** where that is the customer-facing state.
+
+If the customer accepts the final offer, the workflow moves to payment.
+
+## 13. Customer bank details and payment
+
+For a purchase that requires bank payment, TradeFlow checks whether the customer has bank details recorded.
+
+The customer can provide/update bank details through the customer account where the workflow requires them.
+
+TradeFlow does not perform the external bank transfer itself.
+
+The correct operational sequence is:
+
+1. Customer accepts the final offer.
+2. Customer bank details are available.
+3. Staff make the actual bank transfer externally.
+4. Staff enter the payment/bank reference in TradeFlow.
+5. Staff use the payment completion action.
+6. The authoritative purchase-completion transaction creates the downstream purchase/acquisition/inventory records.
+
+The **Confirm Payment Sent / Complete Purchase** action must not be used as a substitute for actually making the external bank transfer.
+
+## 14. When an item becomes Inventory
+
+Inventory is created as part of the authoritative purchase-completion transaction.
+
+Before payment completion, the item remains a Buying/pre-acquisition workflow item.
+
+After successful purchase completion:
+
+- the purchase is recorded;
+- internal acquisition/audit records are created;
+- the inventory asset is created;
+- the inventory asset is prepared for sale according to the current workflow.
+
+The old Acquisitions screen is not the operational hand-off. Acquisitions remain internal accounting/audit records.
+
+## 15. Inventory
+
+Inventory is the master operational stock record after purchase.
+
+The inventory workspace contains the information needed to prepare the physical item for sale.
+
+Staff should:
+
+1. Open the purchased inventory asset.
+2. Review the supplied customer and inspection information.
+3. Check photographs and product details.
+4. Complete the required inventory information.
+5. Use **REVIEW & COMPLETE**.
+6. Only after the completion gate is satisfied, use **SEND TO SALES**.
+
+The same inventory asset must not be sent into Sales repeatedly to create duplicate listings.
+
+### Condition terminology
+
+The current business condition vocabulary is:
+
+- Poor
+- Good
+- Very Good
+- Excellent
+- Opened
+- Never Used
+- Sealed
+
+Use the current UI/database terminology rather than recreating the retired A/B/C/D condition system.
+
+## 16. Selling
+
+Selling is where an inventory asset is prepared as a retail listing.
+
+Selling receives the selected inventory asset and carries forward the relevant source information.
+
+The listing preparation can include:
+
+- title;
+- description;
+- asking price;
+- condition;
+- postage/dispatch information;
+- photographs;
+- sales channel.
+
+The original buying category/branch should be carried forward where the item originated from Buying. Sales staff should not have to invent a new unrelated classification.
+
+### Sales Channels
+
+The current channel model includes destinations such as:
+
+- Website
+- eBay
+- Amazon
+- Other
+
+A channel can be enabled/disabled and can contain setup instructions. A marketplace connection must not be invented merely because a channel exists.
+
+The physical inventory item remains the master record. Listings are channel-specific representations of that inventory.
+
+## 17. Public shop and listing lifecycle
+
+A listing can move through states such as:
+
+- draft;
+- ready;
+- published;
+- reserved;
+- sold;
+- delisted.
+
+When a listing is sold, the sale is recorded against the retail order/listing history.
+
+A product sold on one sales channel must not remain incorrectly available on another channel if the channel-specific delisting rule applies.
+
+Editing an existing listing updates that listing; it must not create a duplicate listing.
+
+Public product pages read the published listing information through the authorised published-store data boundary.
+
+## 18. Retail Orders
+
+Retail checkout is intentionally separated from Buying.
+
+A customer shopping for an inventory item uses the retail basket/checkout journey.
+
+A pre-payment basket is not the same as a completed order.
+
+The system should not create a completed customer order merely because a product was placed in a basket or a payment attempt was started.
+
+After successful payment, the authoritative retail-order lifecycle takes over.
+
+Cancelled pre-payment activity must not remain as a completed order.
+
+## 19. Fulfilment
+
+Fulfilment operates after a paid retail order.
+
+The subscriber prepares the item for dispatch and records the shipping hand-off.
+
+The current customer-shipping model is manual. The subscriber supplies the relevant label/QR/tracking information where required.
+
+The customer can see shipment/tracking information in My Orders when that information is available.
+
+TradeFlow does not assume that a shipping API is required to complete the fulfilment workflow.
+
+## 20. Returns
+
+There are separate return contexts, including customer retail returns and buying-item returns.
+
+### Retail customer return
+
+A customer can request a return after the applicable delivery stage.
+
+The subscriber can accept or refuse the return.
+
+The Selling/Sold history can show the return decision without changing the fact that the original listing was sold.
+
+Current sold-status presentation includes states such as:
+
+- **CLOSED — RETURN REFUSED**
+- **RETURN ACCEPTED — AWAITING RETURN**
+- **RETURN REQUEST — AWAITING DECISION**
+
+A denied return remains part of transaction history.
+
+### Buying-item return
+
+A customer may be returned an item from the Buying workflow after an applicable refusal/inspection decision.
+
+Return shipping label information is optional where the current workflow permits it.
+
+Adding return tracking information does not by itself create an unrelated workflow transition.
+
+A completed return must leave the active workflow while remaining available as historical evidence.
+
+## 21. Customer portal relationship
+
+The customer portal is the customer-side view of the same tenant-scoped business transaction.
+
+Customers can see relevant:
+
+- selling/buying requests;
+- offers;
+- shipping instructions/status;
+- order information;
+- tracking;
+- payment status;
+- returns;
+- addresses;
+- bank details where required.
+
+Internal subscriber terminology should not be exposed unnecessarily to customers.
+
+The customer portal must never be used to bypass subscriber workflow permissions.
+
+## 22. Website Builder versus backend
+
+The public subscriber website is controlled through the Website Builder, but its published content and the business backend are separate concerns.
+
+The Website Builder manages presentation/content such as:
+
+- templates;
+- branding;
+- business identity;
+- colours/backgrounds;
+- homepage sections;
+- buying/selling calls to action;
+- website media;
+- domain information;
+- public shop presentation.
+
+The backend manages the actual business records and workflow.
+
+For example, changing a public website button does not itself purchase an item, change an offer or mark inventory as sold. The button must lead into the authorised workflow.
+
+The separate `subscriber-website-manual.html` explains the website-building controls. This backend manual explains what happens after those public-site journeys enter TradeFlow.
+
+## 23. Security and permissions
+
+Security is enforced at several layers:
+
+1. Authentication establishes the user identity.
+2. Tenant context establishes which business the user belongs to.
+3. Role/permission checks determine what the user can do.
+4. RLS and tenant-scoped queries prevent cross-tenant data access.
+5. Authoritative workflow functions enforce valid state transitions.
+6. Sensitive operations are not exposed as unrestricted anonymous database functions.
+
+The current security release candidate also restricts anonymous/public execution of SECURITY DEFINER functions except for deliberate public-read/media helpers.
+
+Do not solve a permission error by granting broad database access. Find the correct permission, RLS policy or authoritative RPC boundary.
+
+## 24. Database and code rules
+
+The repository is the source of truth for reproducible application/database changes.
+
+Database changes must be timestamped migrations under:
+
+`supabase/migrations/`
+
+Edge Functions are under:
+
+`supabase/functions/`
+
+Frontend controllers and pages are versioned in the repository.
+
+After a material repair:
+
+1. verify the actual code path;
+2. verify the database function/table/policy;
+3. test the browser journey;
+4. record the result;
+5. update the AI/manual documentation;
+6. create/update the checkpoint.
+
+## 25. Troubleshooting method
+
+When a backend action fails:
+
+1. Identify the exact page/button/action.
+2. Identify the authenticated user and tenant.
+3. Check the browser console/network response.
+4. Identify the first failing RPC/API/storage request.
+5. Inspect the current GitHub implementation.
+6. Inspect the current Supabase function/table/policy.
+7. Compare against the latest checkpoint.
+8. Repair the smallest authoritative layer.
+9. Re-test from the beginning of the affected journey.
+10. Verify the database state after the action.
+11. Update documentation and checkpoint.
+
+Do not patch only the visible error message if the underlying workflow boundary is wrong.
+
+## 26. Production release control
+
+The `production` branch is not a development branch.
+
+A release must have:
+
+- approved Git commit SHA;
+- migration state;
+- Edge Function versions where applicable;
+- configuration/secrets confirmed without placing secrets in Git;
+- TEST browser verification;
+- production smoke-test result;
+- rollback/checkpoint reference.
+
+Production database changes should be delivered from version-controlled migrations rather than ad-hoc SQL.
+
+## 27. Shipping architecture rule
+
+The following are retired and must not be reintroduced into the current workflow:
+
+- Parcel2Go API quote creation;
+- Parcel2Go checkout;
+- Parcel2Go payment links;
+- automatic Parcel2Go order creation;
+- customer shipping payment through TradeFlow.
+
+Current model:
+
+**Subscriber configures shipping services → subscriber supplies/records label where required → customer ships item → customer/subscriber records tracking → subscriber confirms receipt → inspection continues.**
+
+## 28. Quick operating map
+
+**Customer sells an item to the business**
+
+Public site → customer account/request → Buying → valuation → offer → customer accepts → shipping → item received → inspection → final offer → bank details → external bank payment → payment reference → purchase complete → Inventory → Review & Complete → Sales → listing → customer shop.
+
+**Customer buys an item from the business**
+
+Customer shop → product → basket → checkout/payment → completed retail order → fulfilment → dispatch/tracking → delivery → possible return → return decision/completion.
+
+**Business develops a new feature**
+
+GitHub feature/checkpoint branch → `main` → TEST Supabase → browser/database verification → checkpoint → `production` → LIVE Supabase → production smoke test.
+
+## 29. Related manuals
+
+- **Backend User Manual:** this document.
+- **AI Operating Manual:** `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+- **System/Developer Handbook:** `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- **Live Launch Runbook:** `docs/TRADEFLOW-LIVE-LAUNCH-RUNBOOK.md`
+- **Subscriber Website Manual:** `subscriber-website-manual.html` — public/site-building controls, not backend operations.
+- **Human User Manual:** `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+
+Last updated: 30 September 2026.

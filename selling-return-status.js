@@ -33,15 +33,15 @@ const TF_RETURN_STATUS_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
         const box=document.createElement('div');box.className='tf-return-status';box.style.cssText='margin-top:7px;padding:7px 9px;border-radius:7px;font-size:10px;font-weight:800;line-height:1.35;';
         if(ret.status==='rejected'||ret.status==='denied'){
           box.style.cssText+='background:#f8eeee;color:#8d3434;border:1px solid #d9a0a0;';
-          box.textContent='CLOSED — RETURN REFUSED';
+          box.innerHTML='<strong>CLOSED — RETURN REFUSED</strong><br><span style="font-weight:600">'+(ret.return_reference||'Return request')+'</span>';
           shipping.appendChild(box);
         }else if(ret.status==='authorised'){
           box.style.cssText+='background:#fff8e7;color:#805d00;border:1px solid #d39b22;';
-          box.textContent='RETURN ACCEPTED — AWAITING RETURN';
+          box.innerHTML='<strong>RETURN ACCEPTED — AWAITING RETURN</strong><br><span style="font-weight:600">Sale remains open until the returned item is received and the return is completed.</span>';
           shipping.appendChild(box);
         }else if(ret.status==='requested'){
           box.style.cssText+='background:#fff8e7;color:#805d00;border:1px solid #d39b22;';
-          box.textContent='RETURN REQUEST — AWAITING DECISION';
+          box.innerHTML='<strong>RETURN REQUEST — AWAITING DECISION</strong><br><span style="font-weight:600">'+(ret.return_reference||'Return request')+'</span>';
           shipping.appendChild(box);
         }
       });

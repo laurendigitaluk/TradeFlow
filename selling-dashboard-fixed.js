@@ -142,7 +142,7 @@ function cancelEdit(){
  if(asset)syncAssetContext();
  msg('Listing edit cancelled.','success');
 }
-const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;
+const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=()=>{if(!listingForm)return;msg('Creating listing…');if(typeof listingForm.requestSubmit==='function')listingForm.requestSubmit();else listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
 $('listing-form').onsubmit=async e=>{
  e.preventDefault();
  if(!tenantId)return;

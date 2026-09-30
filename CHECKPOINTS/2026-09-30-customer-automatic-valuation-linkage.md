@@ -280,3 +280,21 @@ The Buying page still had a legacy fallback to the old `tradeflow_testlab_sessio
 
 ### Browser test
 Hard refresh the subscriber Dashboard and click **OPEN BUYING**. The Buying page should now wait for the subscriber tenant context and then load the three active Camerashack Buying items. Dashboard transaction-level **OPEN BUYING** links should additionally open the requested transaction directly.
+
+
+## 2026-09-30 — Buying dashboard v67 did not execute because of JavaScript syntax error
+
+### Root cause
+The Buying dashboard JavaScript contained an unterminated HTML string in the valuation-action block. The line generating the **Check valuation / Enter manual valuation / Refuse valuation** controls ended without the closing single quote for the JavaScript string. Because the browser could not parse `buying-dashboard.js`, none of the Buying page load logic ran, leaving Active items, Completed purchases and Refused transactions permanently showing **Loading…**.
+
+### Repair
+- Closed the unterminated valuation-action HTML string.
+- Verified the complete `buying-dashboard.js` source parses successfully with the JavaScript constructor parser before committing.
+- Buying dashboard cache bumped from v67 to v68.
+
+### TEST commits
+- JavaScript syntax repair: `ad95f4c70d75f90959bb593b34e114f31ea53043`
+- Buying dashboard cache v68: `4766c04e6b920175e46f6961b0f1e324395f1056`
+
+### Browser test
+Hard refresh the Buying page with Ctrl+F5. The page should now execute its load function and replace all three Loading… placeholders with the active/completed/refused transaction lists.

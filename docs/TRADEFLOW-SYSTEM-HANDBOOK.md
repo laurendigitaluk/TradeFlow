@@ -1389,3 +1389,12 @@ Customer photographs for this specific item were checked directly: there are cur
 The Canon EOS R8 reached `final_offer_accepted` at £79, but **Confirm payment sent** was inert. The `loadPayment()` renderer created the button without a click handler, while the global click listener deliberately does not redispatch `data-act` buttons. The button is now directly bound to the existing `subscriber_complete_purchase` action, with visible error status. No payment or inventory records were manually altered. Buying Dashboard cache is v60.
 
 The exact Canon item currently has no `buying_item_media` links, so its missing photographs are a data-state issue for that test item rather than a verified renderer loss. The customer portal already has the revised-final-offer accept/refuse controls and revised-offer wording for the `final_offer_sent` state; the Canon test has already advanced to `final_offer_accepted` at £79.
+
+
+## 2026-09-30 — Migration baseline reconciliation complete
+
+- TEST migration history is intentionally baselined at `20260930215656_remote_schema` after the clean `db pull --linked` on 2026-09-30.
+- `supabase/migrations/` now contains only the full-schema baseline migration.
+- The 139 pre-baseline migration files are preserved under `docs/migration-archive/2026-09-30/` and are not active migrations.
+- No TEST schema/data reset or LIVE/production change was performed during repository reconciliation.
+- Before future schema deployment, verify local/remote migration status and use a dry run; never use `db reset --linked` on LIVE.

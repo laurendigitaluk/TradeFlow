@@ -97,3 +97,16 @@ For the current Camerashack C50, UK New research is £2,549. The configured 60% 
 - Buying Catalogue cache refresh: 80ae99a63e0355410ba0ad2bbe2313a14609eca4
 - Human manual update: 0d1f23e6346ee82c106f4eee9692b9e98d12f1b2
 - AI operating manual update: 3f38a9d823db3e9cbd7e095ce02193cb50de1316
+
+
+## Buying valuation controls repaired — 30 September 2026
+The Buying dashboard now supports the complete pre-acceptance valuation decision:
+- Automatic valuation can be checked and published idempotently without creating duplicate initial offers.
+- Manual override is available even when an automatic valuation exists; it replaces/supersedes the previous approved valuation and any published initial offer, then publishes the manual offer.
+- Refuse valuation is available for both automatic and manual valuation paths before purchase/fulfilment. A published initial offer is marked refused and the buying item is moved to the refused section.
+- Existing items created before the automatic valuation fix can be rechecked; if an approved valuation exists but no offer exists, the dashboard can now create the offer and mark the item offer-ready.
+
+TEST commits:
+- Buying valuation controls: d5a3539aa641f0d8e819314218430d4f5fa5562f
+- Buying dashboard cache: 0bbd9cef5dd942ca25b86045c9df752833a861d3
+- Valuation/refusal RPCs applied in TEST migrations 20260930170000_buying_valuation_override_refusal_flow and 20260930171000_manual_buying_valuation_override

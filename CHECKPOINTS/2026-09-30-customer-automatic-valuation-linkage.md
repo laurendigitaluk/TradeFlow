@@ -195,3 +195,36 @@ TEST commits:
 5. Open the customer portal and confirm the refused item is no longer in the active valuation list.
 6. Confirm it appears below My Orders under **Cancelled / Refused**, with the same expandable card style and clear refusal explanation.
 7. Confirm an older refused transaction such as `BI-FC9C2C8F26` is also correctly classified as refused even though its legacy `purchase_stage` is `none`.
+
+
+## 2026-09-30 — Root cause found for inactive refusal/manual approval controls
+
+The remaining button problem was a database constraint, not the browser event binding.
+
+### Root cause
+`public.buying_items.purchase_stage` had a CHECK constraint that allowed `none`, `awaiting_item`, `shipping`, `received`, `inspection`, `testing`, `repair`, final-offer/payment stages, and `purchased`, but did **not** allow:
+- `offer_ready`
+- `offer_refused`
+
+Both the manual valuation RPC and refusal RPC update `purchase_stage` to those values. PostgreSQL therefore rejected the update. The refusal transaction rolled back and the customer remained on the old valuation state.
+
+### Repair
+- Added `offer_ready` and `offer_refused` to the authoritative purchase-stage CHECK constraint.
+- Reclassified the existing legacy refused C50 transaction `BI-FC9C2C8F26` to `purchase_stage='offer_refused'` because its initial offer was already refused.
+- Buying dashboard now exposes refusal even in the waiting-for-label shipping branch.
+- Initial valuation stage now also offers **Enter manual valuation** and **Refuse valuation**.
+- Buying dashboard cache bumped to v65.
+- Customer dashboard cache remains v146 and now displays a count beside **Cancelled / Refused**.
+
+### Verification
+Current TEST legacy refused item:
+- `BI-FC9C2C8F26`
+- purchase_stage `offer_refused`
+- initial offer status `refused`
+
+### TEST commits
+- Buying controls: `368309828990573045fa94bd6690b8a8f7d10826`
+- Buying cache v65: `1e46e9ea4ba6a29de6b8d4c964174d1f6aad2a40`
+- Customer HTML cache v146: `866b6dab1c1bd5d57e3cbf22f45d48c5fccdc9e3`
+- Customer cancelled count: `62434fd8eeb0135ccc37d23cdcf1ef04260cae79`
+- Database stage constraint: `1d9e410a1c8493f6bc7614a08e8b33ce2fd8e78d`

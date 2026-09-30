@@ -2,6 +2,8 @@
 
 ## Permanent backend environment and release model — 30 September 2026
 
+**Backend User Manual:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`.
+
 This manual is the **backend/business-operations manual**. It is separate from the customer/site-facing website manual. It explains how the TradeFlow business application works behind the public website and how staff operate the system.
 
 ### Environment separation

@@ -182,7 +182,8 @@ $('listing-form').onsubmit=async e=>{
    const inventoryUpdate={serial_number:serialNumber,location:$('asset-location').value.trim()||null,updated_at:new Date().toISOString()};
    if(editingListingId){
      msg('Saving listing changes…');
-     await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(asset.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(inventoryUpdate)});
+     const updatedAsset=await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(assetRow.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify(inventoryUpdate)});
+     if(!Array.isArray(updatedAsset)||!updatedAsset[0])throw Error('The inventory item could not be updated. Please refresh the Selling page and try again.');
      const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
      const saved=(updated||[])[0];
      await load();

@@ -54,11 +54,30 @@ async function load(){
     $('business-name').textContent=membership.tenant_name||membership.business_name||a?.tenants?.[tenantId]||'TradeFlow';
     rows=await api('/rest/v1/rpc/subscriber_get_returns',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})})||[];
     rows=Array.isArray(rows)?rows:[];
+    await loadReturnContext();
     render();
     msg(rows.length+' return(s) loaded.','success');
   }catch(e){
     msg(e.message||String(e),'error');
     if(target)target.innerHTML='<div class="empty">'+esc(e.message||String(e))+'</div>';
+  }
+}
+
+async function loadReturnContext(){
+  for(const r of rows){
+    r.order_title=null; r.customer_name=null; r.customer_email=null;
+    try{
+      if(r.order_item_id){
+        const items=await api('/rest/v1/retail_order_items?select=id,title,quantity,unit_price,line_total,currency&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(r.order_item_id)+'&limit=1');
+        const item=Array.isArray(items)?items[0]:null;
+        if(item)r.order_title=item.title||null;
+      }
+      if(r.customer_id){
+        const customers=await api('/rest/v1/customers?select=id,customer_reference,first_name,last_name,email&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(r.customer_id)+'&limit=1');
+        const customer=Array.isArray(customers)?customers[0]:null;
+        if(customer)r.customer_name=(customer.first_name||'')+' '+(customer.last_name||''); r.customer_email=customer?.email||null;
+      }
+    }catch(e){ /* summary remains usable if context lookup is unavailable */ }
   }
 }
 
@@ -77,12 +96,14 @@ function render(){
     return '<article class="return-tile">'+
       '<div class="return-tile-head"><div><div class="return-reference">'+esc(r.return_reference||'Return request')+'</div><div class="return-type">'+esc(type)+'</div></div><span class="return-status '+statusClass+'">'+esc(status)+'</span></div>'+
       '<div class="return-details">'+
+        '<div class="return-detail"><span>Item</span><strong>'+esc(r.order_title||'Item details unavailable')+'</strong></div>'+ 
+        '<div class="return-detail"><span>Customer</span><strong>'+esc((r.customer_name||'').trim()||'Customer')+'</strong></div>'+ 
         '<div class="return-detail"><span>Reason</span><strong>'+esc(r.reason||r.reason_code||'—')+'</strong></div>'+
         '<div class="return-detail"><span>Refund</span><strong>'+(r.refund_amount==null?'—':esc((r.currency||'GBP')+' '+r.refund_amount))+'</strong></div>'+
         '<div class="return-detail"><span>Requested</span><strong>'+esc(r.requested_at?new Date(r.requested_at).toLocaleString('en-GB'):'—')+'</strong></div>'+
         (pending?'':'<div class="return-detail"><span>Postage</span><strong>'+esc(postage)+'</strong></div>')+
       '</div>'+
-      (pending?'<div class="return-decision"><div class="return-decision-title">Return decision</div><div class="return-decision-buttons"><button type="button" class="return-action-button deny" data-deny="'+esc(r.id)+'">Deny return</button><button type="button" class="return-action-button approve" data-approve="'+esc(r.id)+'">Approve return</button></div><div class="return-approval-form" data-form="'+esc(r.id)+'" hidden><label>Who pays return postage?<select data-payer><option value="">Select</option><option value="subscriber">Subscriber pays postage</option><option value="customer">Customer pays postage</option></select></label><label>Supply return label<input type="file" data-label accept=".pdf,.png,.jpg,.jpeg,.webp"></label><button type="button" class="return-confirm" data-confirm="'+esc(r.id)+'">Approve and supply return label</button></div></div>':'<div class="return-decision-result"><strong>'+esc(decision)+'</strong>'+(meta.return_label_path?' <span>Return label supplied</span>':'')+'</div>')+
+      (!pending?'<div class="return-decision-result"><strong>'+esc(decision)+'</strong>'+(r.status==='rejected'||r.status==='denied'?'<span>No further return action is required.</span>':'')+'</div>':'<div class="return-decision"><div class="return-decision-title">Return decision</div><div class="return-decision-buttons"><button type="button" class="return-action-button deny" data-deny="'+esc(r.id)+'">Deny return</button><button type="button" class="return-action-button approve" data-approve="'+esc(r.id)+'">Approve return</button></div><div class="return-approval-form" data-form="'+esc(r.id)+'" hidden><label>Who pays return postage?<select data-payer><option value="">Select</option><option value="subscriber">Subscriber pays postage</option><option value="customer">Customer pays postage</option></select></label><label>Supply return label<input type="file" data-label accept=".pdf,.png,.jpg,.jpeg,.webp"></label><button type="button" class="return-confirm" data-confirm="'+esc(r.id)+'">Approve and supply return label</button></div></div>':'<div class="return-decision-result"><strong>'+esc(decision)+'</strong>'+(meta.return_label_path?' <span>Return label supplied</span>':'')+'</div>')+
       '</article>';
   }).join('');
 

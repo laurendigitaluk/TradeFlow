@@ -1398,3 +1398,12 @@ The exact Canon item currently has no `buying_item_media` links, so its missing 
 - The 139 pre-baseline migration files are preserved under `docs/migration-archive/2026-09-30/` and are not active migrations.
 - No TEST schema/data reset or LIVE/production change was performed during repository reconciliation.
 - Before future schema deployment, verify local/remote migration status and use a dry run; never use `db reset --linked` on LIVE.
+
+
+## 2026-09-30 — Duplicate inventory serial warning policy
+
+TradeFlow permits duplicate inventory serial numbers within a tenant because a repeated serial may be legitimate and must not be treated as an automatic database rejection. The Selling workspace checks the entered serial against other inventory assets in the same tenant. When a match exists, it shows a warning identifying the existing asset reference/title and requires an explicit **CONTINUE WITH SERIAL NUMBER** action before the save continues.
+
+The database lookup index on inventory serials is intentionally non-unique. This preserves fast duplicate detection without blocking legitimate records. Changing the serial number clears the pending confirmation. Duplicate serials remain a review/risk condition and must not be treated as proof that two inventory records represent the same physical asset.
+
+TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_warning. Selling cache: selling-dashboard-fixed.js?v=69. Browser verification must deliberately test a duplicate serial and confirm warning → explicit continuation → successful save.

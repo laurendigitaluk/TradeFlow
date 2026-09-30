@@ -42,3 +42,34 @@ The only current research row found in the database belongs to tenant `subscribe
 - Public-site cache refresh: `13c4babe5c512bccc96e063c8a6b6ac65fe7288b`
 - Buying dashboard no-research fallback: `d9b8e657c3773069991be1f37505cc75de798785`
 - Buying dashboard cache refresh: `05bcd7dd1438f8e81971ccb17b003e66b8d80f8f`
+
+
+## Follow-up failure found during end-to-end retest
+After the first repair, a fresh customer submission reached the final step but failed with: selected buying product is not active for this subscriber.
+
+The exact cause was an ID mismatch:
+- get_public_buying_catalogue was returning the master catalogue product ID.
+- customer_submit_buying_request expects the subscriber's tenant_buying_products.id.
+- Camerashack C50 master product ID: 26733e54-b06b-4c76-abeb-550ff3f4fcfd.
+- Camerashack C50 tenant buying product ID: a10a230b-02fa-4a14-a545-39a2641aa592.
+
+A second compatibility issue was also identified: the public wizard submits opened-unused, while the automatic pricing rules use the canonical key opened_never_used.
+
+## Follow-up repair
+- get_public_buying_catalogue now resolves the public selection to the active subscriber tenant_buying_products.id.
+- The public catalogue only exposes a selected product when a matching active tenant buying product exists.
+- customer_submit_buying_request now normalizes current customer-facing condition values to the canonical automatic-pricing rule keys, including opened-unused to opened_never_used and factory-sealed to sealed.
+- Current Camerashack C50 automatic rule is present:
+  - opened/never used: 65%
+  - reference: UK new
+  - excellent: 60%, UK used
+  - good: 50%, UK used
+  - poor: 40%, UK used
+  - sealed: 70%, UK new
+- Current Camerashack C50 research is present:
+  - UK new observed price: £2,549
+- Therefore an opened/never-used fresh C50 submission should calculate £1,656.85 (65% of £2,549), approve the automatic trading value, publish the initial offer, and return the customer to the customer dashboard.
+
+## New commits
+- Public catalogue tenant-product linkage migration: 0676a39fae11955afee8d40541678f2cfeea830f
+- Condition normalization migration: 5b68fbda4180f10b295d0771e0fc8ea51495c998

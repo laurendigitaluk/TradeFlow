@@ -1383,3 +1383,7 @@ Next step: in the dedicated `TradeFlow-Clean-Baseline-20260930` workspace, verif
 ## 2026-09-30 — TEST migration-history reset completed for clean baseline
 
 The TEST Supabase migration-history table was reset to zero rows. This changed only `supabase_migrations.schema_migrations`; it did not reset, drop, or alter application schema or business data. Immediate verification after the reset reports 0 migration-history rows, 93 public tables and 178 public functions. The purpose is to allow the empty local `supabase/migrations` workspace to perform the documented initial `db pull` against the actual TEST schema and generate one authoritative baseline migration. Do not run `db push`, `db reset --linked`, or any further migration-repair commands until that generated baseline has been inspected.
+
+
+## 2026-09-30 — TEST clean baseline pull completed
+The TEST Supabase database has been captured successfully as a clean local baseline using `supabase db pull --linked`. The generated baseline is `supabase/migrations/20260930215656_remote_schema.sql`. The remote TEST migration history now contains exactly one applied baseline entry. The database schema/data were not reset. Further migration cleanup must wait until the baseline is preserved and reconciled with the existing GitHub migration files.

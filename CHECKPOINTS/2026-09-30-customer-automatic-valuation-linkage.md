@@ -298,3 +298,34 @@ The Buying dashboard JavaScript contained an unterminated HTML string in the val
 
 ### Browser test
 Hard refresh the Buying page with Ctrl+F5. The page should now execute its load function and replace all three Loading… placeholders with the active/completed/refused transaction lists.
+
+
+## 2026-09-30 — Inspection refusal now routes to return-to-customer
+
+### Required workflow change
+The inspection screen previously required both normal confirmation ticks even when the subscriber was refusing the purchase because the item was not as described. A refusal also went directly to `offer_refused`, which removed the item from the active Buying workflow instead of creating a return task.
+
+### New workflow
+- Inspection has a new **Condition not as described** checkbox.
+- For normal inspection outcomes, the customer-description confirmation remains required.
+- For a refusal, the subscriber must confirm the inspected condition and explicitly tick **Condition not as described**.
+- Refusal now moves the item to **return_pending**, not `offer_refused`.
+- A tenant-scoped `buying_item_return_shipping` record is created with the refusal reason.
+- Buying dashboard shows a **Return item to customer** action.
+- Subscriber can upload the return label, enter carrier/service/tracking/tracking URL and send the return tracking update to the customer.
+- Return shipping is manual and does not reintroduce Parcel2Go/API shipping.
+- Customer Selling status now exposes the return reason, return shipping status, carrier/service, tracking, tracking URL, label path and instructions.
+- Customer portal displays the refusal reason and, once shipped, a clickable tracking link and return-label access.
+- The current TEST C50 item `BI-9B99D90D5F` has been moved to `return_pending` with reason: **Condition not as described: customer declared Excellent; inspection found Poor.** No return tracking has been entered yet.
+
+### TEST commits
+- Buying return workflow: `2c3aec9e4a517d36eaf099eef6cd515992f0a930`
+- Buying dashboard cache v69: `b093edc2823258c2d3065af26873432e832b99b4`
+- Customer return display/tracking: `9d73de4f1931913ad8ff03b43862b4e77113591f`
+- Customer dashboard cache v147: `96d0d46cdf8270d788fe309d5dd79b289f77a32e`
+- Return database migration: `564d74a3ec045f5b19d56ed908f2454a9045ffc5`
+- Customer return status migration: `c81c1b3900d663fa40634e9bc1e4665fdb79a737`
+- Inspection refusal migration: `c59ae8d165057356818c1c9eddc548a9b6eb858a`
+
+### TEST state
+`BI-9B99D90D5F` is now at `return_pending`, ready for the subscriber to enter return shipping details. The next test is to upload a return label, enter tracking, send the return update, then verify the same item in the Customer Portal shows the refusal reason and clickable tracking.

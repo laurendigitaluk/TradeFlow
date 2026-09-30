@@ -1387,3 +1387,12 @@ The TEST Supabase migration-history table was reset to zero rows. This changed o
 
 ## 2026-09-30 — TEST clean baseline pull completed
 The TEST Supabase database has been captured successfully as a clean local baseline using `supabase db pull --linked`. The generated baseline is `supabase/migrations/20260930215656_remote_schema.sql`. The remote TEST migration history now contains exactly one applied baseline entry. The database schema/data were not reset. Further migration cleanup must wait until the baseline is preserved and reconciled with the existing GitHub migration files.
+
+
+## 2026-09-30 — Migration baseline reconciliation complete
+
+- TEST migration history is intentionally baselined at `20260930215656_remote_schema` after the clean `db pull --linked` on 2026-09-30.
+- `supabase/migrations/` now contains only the full-schema baseline migration.
+- The 139 pre-baseline migration files are preserved under `docs/migration-archive/2026-09-30/` and are not active migrations.
+- No TEST schema/data reset or LIVE/production change was performed during repository reconciliation.
+- Before future schema deployment, verify local/remote migration status and use a dry run; never use `db reset --linked` on LIVE.

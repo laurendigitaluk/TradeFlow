@@ -53,7 +53,7 @@ begin
    or (p_opened_never_used_trade_in_percentage is not null and (p_opened_never_used_trade_in_percentage<0 or p_opened_never_used_trade_in_percentage>100))
    or (p_excellent_trade_in_percentage is not null and (p_excellent_trade_in_percentage<0 or p_excellent_trade_in_percentage>100))
    or (p_good_trade_in_percentage is not null and (p_good_trade_in_percentage<0 or p_good_trade_in_percentage>100))
-   or (p_poor_trade_in_percentage is not null and (p_poor_trade_in_percentage<0 or p_poor_trade_in_percentage>100) then
+   or (p_poor_trade_in_percentage is not null and (p_poor_trade_in_percentage<0 or p_poor_trade_in_percentage>100)) then
      raise exception 'Trade-in percentages must be between 0 and 100';
    end if;
  end if;

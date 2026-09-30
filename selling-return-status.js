@@ -1,5 +1,6 @@
 const TF_RETURN_STATUS_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
 (function(){
+  let attempts=0;
   async function run(){
     try{
       const a=await window.tradeflowSubscriberAuthReady;
@@ -17,11 +18,12 @@ const TF_RETURN_STATUS_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
         if(!old||(priority[x.status]||0)>(priority[old.status]||0))byOrder.set(x.order_id,x);
       }
       if(!byOrder.size)return;
+      const domRows=[...document.querySelectorAll('#sold-listings .listing-row.sold')];
+      if(!domRows.length){if(attempts++<8)setTimeout(run,1000);return;}
       const sold=await fetch(TF_RETURN_STATUS_URL+'/rest/v1/rpc/subscriber_get_sold_retail_items',{method:'POST',headers:h,body:JSON.stringify({p_tenant_id:tenantId})});
       if(!sold.ok)return;
       const soldRows=await sold.json();
       const rows=Array.isArray(soldRows)?soldRows:[];
-      const domRows=[...document.querySelectorAll('#sold-listings .listing-row.sold')];
       rows.forEach((x,i)=>{
         const ret=byOrder.get(x.order_id);
         const row=domRows[i];

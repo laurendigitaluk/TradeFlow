@@ -23,6 +23,8 @@ AI continuity companion for TradeFlow. It records architectural truth, decisions
 
 ## 1A. Permanent TEST → LIVE environment architecture — 30 September 2026
 
+Authoritative backend operations manual: `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`.
+
 TradeFlow now uses a deliberate two-environment release model.
 
 ### GitHub branches

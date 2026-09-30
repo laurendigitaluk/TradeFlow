@@ -1682,3 +1682,10 @@ Automatic buying valuation percentages are always applied to the latest subscrib
 UK Used research is evidence for viewing/comparison only. It must never be selected or substituted as the automatic calculation basis. If UK New research is absent, the automatic valuation path must return the manual-valuation fallback. Do not substitute UK Used research merely because it exists.
 
 When an automatic pricing rule is saved, all condition reference fields must be stored as `uk_new`, regardless of legacy or client-supplied reference values. Existing legacy condition reference fields are normalised to `uk_new` by the migration that introduced this rule.
+
+
+## 2026-09-30 — TEST migration-history clean-baseline repair
+
+The TradeFlow TEST Supabase project `twfbmjwwqzxdxvclxbun` remains the authoritative TEST database. The remote migration-history records `20260930181936` and `20260930182507` were removed from `supabase_migrations.schema_migrations` as a history repair only; no business-table data was changed and no schema rollback was performed. The corresponding current function definitions remain present in TEST and match the replacement version-controlled migrations `20260930200000_exclude_completed_return_from_workflow_list` and `20260930201500_customer_initial_offer_refusal_closes_buying_item`.
+
+This repair is part of the clean-baseline workstream. The next local step is to verify the dedicated `TradeFlow-Clean-Baseline-20260930` workspace has an empty `supabase/migrations` directory, then run `supabase db pull` against TEST and inspect the generated baseline before committing or replacing any migration history. Do not alter LIVE, the `production` branch, Test One, or the existing version-controlled migration set until that baseline has been verified.

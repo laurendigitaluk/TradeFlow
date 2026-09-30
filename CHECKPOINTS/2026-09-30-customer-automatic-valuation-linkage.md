@@ -110,3 +110,50 @@ TEST commits:
 - Buying valuation controls: d5a3539aa641f0d8e819314218430d4f5fa5562f
 - Buying dashboard cache: 0bbd9cef5dd942ca25b86045c9df752833a861d3
 - Valuation/refusal RPCs applied in TEST migrations 20260930170000_buying_valuation_override_refusal_flow and 20260930171000_manual_buying_valuation_override
+
+
+## 2026-09-30 — Valuation refusal and customer notification repair
+
+### Reported issue
+- Buying dashboard showed **Use manual override** and **Refuse valuation**, but the buttons inserted after the valuation result were inactive.
+- A business must be able to cancel/refuse an automatic valuation after it has been created, including while an offer is ready, a shipping label has been issued, or the item is in the shipping handoff stage.
+- The customer must be told clearly that the business is no longer proceeding with the item.
+
+### Root causes
+1. `buying-dashboard.js` bound `data-act` buttons only when the stage action HTML was first rendered. The valuation result then replaced/inserted its own buttons asynchronously, so those new buttons had no click handler.
+2. `subscriber_refuse_buying_item_valuation` did not send a customer notification and did not explicitly describe the refused state to the customer portal.
+3. The refusal function did not restrict the refusal action to the pre-receipt stages where this cancellation path is appropriate.
+
+### Repair
+- Added dynamic action binding for buttons inserted by the valuation result.
+- Added refusal controls to:
+  - automatic/manual valuation result
+  - offer-ready stage
+  - awaiting-customer shipping-label stage
+  - customer-dispatched shipping stage
+  - manual offer stage
+- Refusal is allowed only before physical receipt: `none`, `submitted`, `under_review`, `valued`, `offer_ready`, `awaiting_item`, `shipping`.
+- Once the item is physically received, the existing inspection/refusal/return workflow remains the correct path.
+- Refusal sets `buying_items.purchase_stage = offer_refused`, records workflow transitions, refuses a still-published initial offer, and creates a `valuation_refused` customer notification event.
+- Added a system notification template explaining that the business has decided not to proceed and giving return instructions if the customer has already sent the item.
+- Customer selling status now displays **Business not proceeding** with a clear explanation.
+- Customer dashboard cache bumped to v144.
+- Buying dashboard cache bumped to v64.
+
+### TEST commits
+- Buying controller: `c5ebf7b7e2e12e8602ef2b30d10954b1bf824c2d`
+- Buying dashboard cache: `56dfe5af6043432a59681da6c9547d48b6a51eda`
+- Customer dashboard message: `2dd5d82f01dd11da10640793dc6e05508b028101`
+- Customer dashboard cache: `2d059fddde91f2421690f941cc32b6f12c3ac6e3`
+- Database migration: `valuation_refusal_customer_notification_and_stage_message`
+
+### Required browser test
+1. Hard refresh Buying dashboard so v64 loads.
+2. Open an automatic valuation.
+3. Click **Use manual override**; the manual fields must open.
+4. Cancel the override and click **Refuse valuation**; the transaction must move to Refused Transactions.
+5. Customer Portal must show **Business not proceeding** and the refusal message.
+6. Repeat with an offer-ready/label-ready test item and confirm the refusal button is active.
+7. For a shipping-stage test where the customer has confirmed dispatch, confirm the refusal button is active and the customer sees the refusal state.
+8. Do not use an already-refused transaction for the acceptance/decline test.
+

@@ -157,3 +157,41 @@ TEST commits:
 7. For a shipping-stage test where the customer has confirmed dispatch, confirm the refusal button is active and the customer sees the refusal state.
 8. Do not use an already-refused transaction for the acceptance/decline test.
 
+
+
+## 2026-09-30 — Dynamic valuation actions and cancelled/refused customer section
+
+### Additional findings
+- The valuation buttons were still inactive because the first repair relied on dynamic per-button binding. The safer repair is delegated `data-act` handling at document level, so buttons created after the initial render are always actionable.
+- Existing refused transaction `BI-FC9C2C8F26` had `purchase_stage='none'` and an initial offer with `status='refused'`. The customer status RPC therefore fell through to the approved trading value and reported **valuation completed**. This was the reason it remained in the active valuation list.
+
+### Repair
+- Buying dashboard now uses delegated action handling for dynamic valuation controls.
+- Customer selling status now recognises a refused initial offer even when the older transaction has no `purchase_stage='offer_refused'`.
+- Customer dashboard splits `offer_refused` transactions from active sales.
+- Active sales remain under **My Sales**.
+- A new **Cancelled / Refused** section appears below **My Orders**, using the same expandable sale-card format.
+- Refused cards show:
+  - item
+  - refused/cancelled stage
+  - reason/status
+  - request reference
+  - clear explanation that the purchase will not proceed
+  - return-contact instruction if the item has already been sent.
+- Customer dashboard cache is now v145.
+
+### TEST commits
+- Delegated Buying actions: `a655b3f4957cab7a1466b3ff9d327524b7ddc20c`
+- Customer refused/cancelled rendering: `ac40adf61abf5c8c770d715f988e1fad9eb7f616`
+- Customer dashboard section: `11a820013a71326b021166dc12fdb4c98a9da9c1`
+- Customer dashboard cache v145: `6511519c81d1dcb9c647d842f9149ad499a6d4f8`
+- Customer refused-status migration: `2c25a0d359dc0e62ffbe5096ef25131526fe350b`
+
+### Required browser test
+1. Hard refresh both Subscriber Buying and Customer Portal.
+2. Automatic valuation: click **Use manual override** and verify the manual fields open.
+3. Enter a different cash/trade-in value and click **Approve manual valuation & send offer**.
+4. Test **Refuse valuation** and verify the item disappears from active My Sales/Buying and appears in Refused Transactions / Cancelled & Refused.
+5. Open the customer portal and confirm the refused item is no longer in the active valuation list.
+6. Confirm it appears below My Orders under **Cancelled / Refused**, with the same expandable card style and clear refusal explanation.
+7. Confirm an older refused transaction such as `BI-FC9C2C8F26` is also correctly classified as refused even though its legacy `purchase_stage` is `none`.

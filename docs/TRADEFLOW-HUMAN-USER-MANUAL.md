@@ -1371,3 +1371,10 @@ Automatic buying pricing uses the subscriber's latest **UK New** research price 
 UK Used research remains visible as market evidence/reference only. It is not used to calculate automatic buying prices.
 
 If there is no UK New research for the selected product, an automatic valuation is not produced and the item goes to the normal manual valuation workflow. A condition-specific manual override, when explicitly configured, remains an explicit manual price rather than an automatic research calculation.
+
+
+## 2026-09-30 — TEST migration-history clean-baseline checkpoint
+
+The TEST database migration history has been cleaned for the dedicated baseline workstream. Migration-history records `20260930181936` and `20260930182507` were removed as a history repair only; no business data or schema rollback was performed. The current function definitions remain present in TEST.
+
+Next step: in the dedicated `TradeFlow-Clean-Baseline-20260930` workspace, verify that `supabase/migrations` is empty and run `supabase db pull` against TEST. Review the generated baseline before any further migration or release changes. LIVE and the `production` branch must remain untouched.

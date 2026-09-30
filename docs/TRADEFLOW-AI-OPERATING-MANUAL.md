@@ -1620,3 +1620,11 @@ Do not create or copy media records to make a test photo appear. Verify `buying_
 The final-offer acceptance path exposed an inert **Confirm payment sent** button. Root cause: the `final_offer_accepted` renderer (`loadPayment`) created a `data-act="pay"` button without binding it, while the global click listener intentionally does not redispatch these actions. The button is now directly bound to the existing payment action; cache is v60. No database records were manually advanced.
 
 The Canon EOS R8 test is currently `final_offer_accepted` at £79 and requires browser verification of payment. The exact item has zero `buying_item_media` links; do not invent media. The customer portal already implements **Revised offer received** plus accept/refuse controls for `final_offer_sent`; the current Canon test has already moved beyond that state after acceptance.
+
+
+## Automatic Buying Valuation Basis — 30 September 2026
+Automatic buying valuation percentages are always applied to the latest subscriber-scoped **UK New** research price. All five condition percentages (sealed, opened/never used, excellent, good and poor) use UK New as their automatic basis.
+
+UK Used research is evidence for viewing/comparison only. It must never be selected or substituted as the automatic calculation basis. If UK New research is absent, the automatic valuation path must return the manual-valuation fallback. Do not substitute UK Used research merely because it exists.
+
+When an automatic pricing rule is saved, all condition reference fields must be stored as `uk_new`, regardless of legacy or client-supplied reference values. Existing legacy condition reference fields are normalised to `uk_new` by the migration that introduced this rule.

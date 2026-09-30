@@ -128,7 +128,7 @@ function conditionAutoAmount(p,ref,pct){
 function refSummary(p){
  if(!p||stateFor(p).key==="inactive")return researchInlineHtml(p||{})+'<div class="ref-summary">Not active for Buying. Select the product to add it.</div>';
  if(p.manual_offer_price!==null&&p.manual_offer_price!==undefined)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Manual price / override:</strong> '+money(p.manual_offer_price)+(p.rule_id?'<br><span class="muted">Automatic rule retained as fallback.</span>':'')+'</div>';
- if(p.rule_id)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Automatic rule:</strong> '+(p.sealed_percentage??"—")+"% new · "+(p.opened_never_used_percentage??"—")+"% new · "+(p.excellent_percentage??"—")+"% used · "+(p.good_percentage??"—")+"% used · "+(p.poor_percentage??"—")+"% used</div>";
+ if(p.rule_id)return researchInlineHtml(p)+'<div class="ref-summary"><strong>Automatic rule:</strong> '+(p.sealed_percentage??"—")+"% new · "+(p.opened_never_used_percentage??"—")+"% new · "+(p.excellent_percentage??"—")+"% new · "+(p.good_percentage??"—")+"% new · "+(p.poor_percentage??"—")+"% new</div>";
  return researchInlineHtml(p)+'<div class="ref-summary">Manual valuation — no fixed price or automatic rule configured.</div>';
 }
 function editorHtml(p,s){
@@ -136,20 +136,20 @@ function editorHtml(p,s){
  if(s.key==="manual")return '<div class="price-editor"><label class="price-help">Buying price / override (£)</label><input class="manual-input" data-master="'+p.product_id+'" type="number" min="0" step="0.01" value="'+esc(p.manual_offer_price??"")+'" placeholder="Enter price you are willing to pay"><button class="save-price" data-save-manual="'+p.product_id+'">Save price</button><div class="price-help">This fixed price overrides automatic pricing for this product.</div></div>';
  if(s.key==="auto"){
   const conditions=[
-   ["Sealed","sealed_percentage","sealed_manual_price","sealed_reference_type","uk_new"],
-   ["Opened","opened_never_used_percentage","opened_never_used_manual_price","opened_never_used_reference_type","uk_new"],
-   ["Excellent","excellent_percentage","excellent_manual_price","excellent_reference_type","uk_used"],
-   ["Good","good_percentage","good_manual_price","good_reference_type","uk_used"],
-   ["Poor","poor_percentage","poor_manual_price","poor_reference_type","uk_used"]
+   ["Sealed","sealed_percentage","sealed_manual_price"],
+   ["Opened","opened_never_used_percentage","opened_never_used_manual_price"],
+   ["Excellent","excellent_percentage","excellent_manual_price"],
+   ["Good","good_percentage","good_manual_price"],
+   ["Poor","poor_percentage","poor_manual_price"]
   ];
   return '<div class="price-editor">'+
-   '<div class="automatic-note"><strong>How automatic pricing works:</strong> choose whether each condition is calculated from the product’s UK New or UK Used research price, then set the percentage you are willing to purchase at. For example, 70% of a £599 UK New research price produces an automatic buying price of £419.30. If research is not available yet, the rule can still be saved and will calculate when research is added.</div>'+
+   '<div class="automatic-note"><strong>How automatic pricing works:</strong> all conditions are calculated from the product’s latest UK New research price. Set the percentage you are willing to purchase at for each condition. UK Used research is shown for reference only and is never used for automatic pricing. For example, 70% of a £599 UK New research price produces an automatic buying price of £419.30. If research is not available yet, the rule can still be saved and will calculate when research is added.</div>'+
    '<div class="research-basis"><strong>Available research:</strong> <span>'+researchText(p,"uk_new")+'</span> <span>'+researchText(p,"uk_used")+'</span></div>'+
    '<div class="condition-grid">'+conditions.map(([l,pct,ov,refField,defaultRef])=>{
     const ref=p[refField]||defaultRef,amount=conditionAutoAmount(p,ref,p[pct]);
     return '<div class="condition-row"><strong>'+l+'</strong><span class="basis-price">Basis</span><select class="reference-select" data-master="'+p.product_id+'" data-field="'+refField+'"><option value="uk_new" '+(ref==="uk_new"?"selected":"")+'>UK New</option><option value="uk_used" '+(ref==="uk_used"?"selected":"")+'>UK Used</option></select><label>%<input class="auto-input" data-master="'+p.product_id+'" data-field="'+pct+'" type="number" min="0" max="100" step="0.01" value="'+esc(p[pct]??"")+'" placeholder="%"></label><span class="calculated-price">Auto: '+(amount!==null?money(amount):"No research")+'</span><label>Override £<input class="condition-override-input" data-master="'+p.product_id+'" data-field="'+ov+'" type="number" min="0" step="0.01" value="'+esc(p[ov]??"")+'" placeholder="Auto"></label></div>';
    }).join("")+'</div>'+
-   '<button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">Each condition has its own research basis. Select UK New or UK Used independently. Research links above are clickable so you can verify the evidence. If there is no research, TradeFlow shows “No research” rather than leaving the field blank.</div></div>';
+   '<button class="save-price" data-save-auto="'+p.product_id+'">Save automatic rule</button><div class="price-help">All five conditions use UK New research only. UK Used research remains visible for reference and is not used to calculate automatic buying prices. If there is no UK New research, the automatic valuation falls back to manual valuation.</div></div>';
  }
  return "";
 }
@@ -197,15 +197,13 @@ function renderMaster(){
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));
- document.querySelectorAll(".auto-input,.reference-select").forEach(e=>e.addEventListener("input",()=>{
+ document.querySelectorAll(".auto-input").forEach(e=>e.addEventListener("input",()=>{
    const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;
-   const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};
-   const ref=p[refFields[e.dataset.field]]||((e.dataset.field==="sealed_percentage"||e.dataset.field==="opened_never_used_percentage")?"uk_new":"uk_used");
-   const amount=conditionAutoAmount(p,ref,e.value);
+   const amount=conditionAutoAmount(p,"uk_new",e.value);
    const row=e.closest(".condition-row"),out=row?.querySelector(".calculated-price");
    if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research");
  }));
- document.querySelectorAll(".auto-input,.reference-select").forEach(e=>e.addEventListener("change",()=>{const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;const refFields={sealed_percentage:"sealed_reference_type",opened_never_used_percentage:"opened_never_used_reference_type",excellent_percentage:"excellent_reference_type",good_percentage:"good_reference_type",poor_percentage:"poor_reference_type"};const field=e.dataset.field;const ref=field.endsWith("_reference_type")?e.value:(p[refFields[field]]||"uk_new");const pct=field.endsWith("_reference_type")?(p[field.replace("_reference_type","_percentage")]||""):e.value;const out=e.closest(".condition-row")?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,ref,pct);if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research")}));
+ document.querySelectorAll(".auto-input").forEach(e=>e.addEventListener("change",()=>{const p=master.find(x=>x.product_id===e.dataset.master);if(!p)return;const out=e.closest(".condition-row")?.querySelector(".calculated-price");const amount=conditionAutoAmount(p,"uk_new",e.value);if(out)out.textContent="Auto: "+(amount!==null?money(amount):"No research")}));
  document.querySelectorAll("[data-reset]").forEach(e=>e.addEventListener("click",()=>resetProduct(e.dataset.reset)));
  document.querySelectorAll("[data-visibility-product]").forEach(e=>e.addEventListener("click",async()=>{
   const hidden=e.dataset.visibility!=="true";
@@ -349,7 +347,7 @@ async function saveManual(masterId,button){
 }
 async function saveAuto(masterId,button){
  const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
- const refs={};document.querySelectorAll('.reference-select[data-master="'+masterId+'"]').forEach(i=>refs[i.dataset.field]=i.value);
+ 
  const overrides={};document.querySelectorAll('.condition-override-input[data-master="'+masterId+'"]').forEach(i=>overrides[i.dataset.field]=i.value===""?null:Number(i.value));
  const missing=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"].filter(k=>values[k]===null||values[k]===undefined||values[k]==="");
  if(missing.length)return msg("Automatic pricing cannot be saved until all five condition percentages are entered.","error");
@@ -363,11 +361,11 @@ async function saveAuto(masterId,button){
    p_manual_price:null,
    p_sealed_manual_price:overrides.sealed_manual_price,p_opened_never_used_manual_price:overrides.opened_never_used_manual_price,
    p_excellent_manual_price:overrides.excellent_manual_price,p_good_manual_price:overrides.good_manual_price,p_poor_manual_price:overrides.poor_manual_price,
-   p_sealed_reference_type:refs.sealed_reference_type||"uk_new",
-   p_opened_never_used_reference_type:refs.opened_never_used_reference_type||"uk_new",
-   p_excellent_reference_type:refs.excellent_reference_type||"uk_used",
-   p_good_reference_type:refs.good_reference_type||"uk_used",
-   p_poor_reference_type:refs.poor_reference_type||"uk_used"
+   p_sealed_reference_type:"uk_new",
+   p_opened_never_used_reference_type:"uk_new",
+   p_excellent_reference_type:"uk_new",
+   p_good_reference_type:"uk_new",
+   p_poor_reference_type:"uk_new"
   })});
   await loadPage();await loadStatusCounts();msg("Automatic buying rule saved. Each condition now has its own optional override.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}

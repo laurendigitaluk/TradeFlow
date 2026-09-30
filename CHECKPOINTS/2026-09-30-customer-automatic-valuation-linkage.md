@@ -352,3 +352,30 @@ A refused physical item remains an active action until it is returned. Return-re
 
 ### TEST state
 The current C50 refused item remains `return_pending` and is the active return action until return tracking is submitted.
+
+
+## 2026-09-30 — Return tracking finalization repaired
+
+### Live TEST finding
+The C50 return item `BI-9B99D90D5F` was still:
+- purchase stage: `return_pending`
+- return shipping status: `return_required`
+- no tracking number/service recorded.
+
+The return-publish RPC was doing an additional `workflow_transitions` insert after saving the return shipping row. That extra transition is not required for the return model and could prevent the customer return update from completing.
+
+### Repair
+- Simplified `subscriber_publish_buying_item_return_shipping` so the return shipping record itself is the source of truth.
+- It now requires only a tracking number and records `return_shipped`.
+- No separate workflow-transition insert is performed.
+- Return-shipped items are removed from the active Buying action list.
+- Buying dashboard cache bumped to v72.
+- Existing preferred shipping-service selection remains in the return panel.
+- Parcel2Go API remains excluded.
+
+### TEST commits
+- DB function repair: `660065ea047c7b1082cb03661c37740d2f26d445`
+- Active-list repair: `481dcdc75a165534d67a39bd3c87b5b8f41cde0b`
+- Buying dashboard cache: `f99645fcd84cfcc790c17610cecbb3460595e614`
+
+Next TEST: refresh Buying, open the green C50 return item, select a preferred shipping service, enter tracking, and send the return update. Then verify the customer portal.

@@ -329,3 +329,26 @@ The inspection screen previously required both normal confirmation ticks even wh
 
 ### TEST state
 `BI-9B99D90D5F` is now at `return_pending`, ready for the subscriber to enter return shipping details. The next test is to upload a return label, enter tracking, send the return update, then verify the same item in the Customer Portal shows the refusal reason and clickable tracking.
+
+
+## 2026-09-30 — Return-required items highlighted and preferred return shipping services added
+
+### Requested workflow
+A refused physical item remains an active action until it is returned. Return-required items must therefore be highlighted green in the Buying list, and the return action must use the subscriber's existing preferred shipping services from Shipping Settings.
+
+### Repair
+- `return_pending` is now included in the active/live Buying card highlighting.
+- Return-required cards use the same green action styling as other items requiring subscriber action.
+- The return panel now loads the subscriber's enabled `tenant_shipping_services` entries, matching the existing shipping handoff workflow.
+- Each preferred service has an **Open [service]** link and **Use this service** action.
+- Selecting a service fills the return carrier/service fields and opens the provider website so the subscriber can book the shipment directly with the provider.
+- TradeFlow does not require a return label upload.
+- Subscriber enters the resulting tracking number (and optional tracking URL) and sends the return tracking update to the customer.
+- This remains fully manual shipping; no Parcel2Go API has been reintroduced.
+
+### TEST commits
+- Return service UI and active highlighting: `c3957a064cc8b04abcb78fedea41ce61294b5727`
+- Buying dashboard cache/CSS: `7067809fc67d89a83ba9bd80ddb7197fcfbd4070`
+
+### TEST state
+The current C50 refused item remains `return_pending` and is the active return action until return tracking is submitted.

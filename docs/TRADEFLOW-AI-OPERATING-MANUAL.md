@@ -1694,3 +1694,7 @@ This repair is part of the clean-baseline workstream. The next local step is to 
 ## 2026-09-30 — TEST migration-history reset completed for clean baseline
 
 The TEST Supabase migration-history table was reset to zero rows. This changed only `supabase_migrations.schema_migrations`; it did not reset, drop, or alter application schema or business data. Immediate verification after the reset reports 0 migration-history rows, 93 public tables and 178 public functions. The purpose is to allow the empty local `supabase/migrations` workspace to perform the documented initial `db pull` against the actual TEST schema and generate one authoritative baseline migration. Do not run `db push`, `db reset --linked`, or any further migration-repair commands until that generated baseline has been inspected.
+
+
+## 2026-09-30 — TEST clean baseline pull completed
+The TEST Supabase migration-history reset was followed by a successful clean `supabase db pull --linked` using pg-delta. The generated local baseline is `supabase/migrations/20260930215656_remote_schema.sql`, and TEST migration history now contains exactly that one applied baseline entry. The TEST schema was verified to remain intact (93 public tables, 178 public functions). Do not run `db push`, `db reset --linked`, or further migration repair while the baseline is being reconciled with GitHub.

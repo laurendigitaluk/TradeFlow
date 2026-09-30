@@ -261,3 +261,22 @@ For Camerashack:
 - Buying controller/request navigation: `ad82c67184d3beeb14c366c4f0e5bdcd20c37b5d`
 - Buying dashboard cache v66: `84789e865769bfe93377b753dabe7b2debc03ee2`
 - Database migration file: `30ffaf2ec161889be0492daca2af7058b1c11e89`
+
+
+## 2026-09-30 — Buying dashboard direct navigation still failed to load
+
+### Additional root cause
+The Buying page still had a legacy fallback to the old `tradeflow_testlab_session` storage key and could begin loading before the authoritative subscriber tenant context had completed. The Dashboard itself uses the subscriber authentication layer, so Buying must use the same source of truth.
+
+### Repair
+- Buying now waits for `tradeflowSubscriberTenantReady` before loading workflow data.
+- It then explicitly takes the authenticated session, tenant ID and API key from `tradeflowSubscriberAuth`.
+- The legacy test-lab session remains only as a harmless fallback inside the controller but is no longer relied on when the subscriber auth context is available.
+- Buying dashboard cache bumped to v67.
+
+### TEST commits
+- Buying tenant-loading repair: `3c3211a18c3ee97a2b5ce6aeb1263439f8bf4a6f`
+- Buying dashboard cache v67: `1b7bfe0b50bd4a65f1e59ce6930e1c99dbaafa5d`
+
+### Browser test
+Hard refresh the subscriber Dashboard and click **OPEN BUYING**. The Buying page should now wait for the subscriber tenant context and then load the three active Camerashack Buying items. Dashboard transaction-level **OPEN BUYING** links should additionally open the requested transaction directly.

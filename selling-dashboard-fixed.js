@@ -163,7 +163,12 @@ $('listing-form').onsubmit=async e=>{
    if(!assetRow)throw Error('Select a valid inventory asset.');
    if(!editingListingId&&availableListingPhotoCount()<1)throw Error('Add at least one product photograph before sending this item to the website.');
    const listingData={source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}};
-   const inventoryUpdate={serial_number:$('asset-serial').value.trim()||null,location:$('asset-location').value.trim()||null,updated_at:new Date().toISOString()};
+   const serialNumber=$('asset-serial').value.trim()||null;
+   if(serialNumber){
+     const serialConflict=(await api('/rest/v1/inventory_assets?select=id,asset_reference,title&tenant_id=eq.'+encodeURIComponent(tenantId)+'&serial_number=eq.'+encodeURIComponent(serialNumber)+'&id=neq.'+encodeURIComponent(assetRow.id)+'&limit=1'))||[];
+     if(serialConflict[0])throw Error('Serial number '+JSON.stringify(serialNumber)+' is already assigned to inventory asset '+(serialConflict[0].asset_reference||serialConflict[0].id)+'. Use the correct unique serial number or clear the serial field before publishing.');
+   }
+   const inventoryUpdate={serial_number:serialNumber,location:$('asset-location').value.trim()||null,updated_at:new Date().toISOString()};
    if(editingListingId){
      msg('Saving listing changes…');
      await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(asset.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(inventoryUpdate)});

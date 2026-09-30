@@ -1,5 +1,36 @@
 # TradeFlow Human User Manual
 
+## Permanent backend environment and release model — 30 September 2026
+
+This manual is the **backend/business-operations manual**. It is separate from the customer/site-facing website manual. It explains how the TradeFlow business application works behind the public website and how staff operate the system.
+
+### Environment separation
+
+- **TradeFlow TEST:** GitHub `main` + Supabase `twfbmjwwqzxdxvclxbun`. Used for all development, repairs and test transactions.
+- **TradeFlow LIVE:** GitHub `production` + a separate production Supabase project. Used only for real business data.
+- The public/site manual remains `subscriber-website-manual.html` and describes the subscriber's website-building/public-site controls. It is not a replacement for this backend manual.
+
+### Release rule
+
+Changes are made in TEST first. The complete workflow is tested there. A release checkpoint records the approved Git commit and database migrations. Only then is that exact release promoted to the `production` branch and deployed to LIVE.
+
+### Backend workflow at a glance
+
+**Customer request → Buying → valuation → initial offer → customer decision → shipping/receipt → inspection → final offer → payment → Inventory → Sales → Retail Order → Fulfilment → Return/complete.**
+
+A separate direct-stock route is available where an item enters through the business's own product/inventory process rather than customer Buying.
+
+### Important operating boundaries
+
+- Customer shipping costs are not processed by TradeFlow. Shipping is manually arranged and recorded.
+- Parcel2Go API/checkout is retired.
+- Customer-facing status and internal subscriber workflow status are separate views of the same tenant-scoped transaction.
+- Buying is not complete when an offer is accepted. Payment completion is the point at which the purchase becomes inventory.
+- Inventory is the operational hand-off to Sales. Acquisition records remain internal accounting/audit records.
+- A sold listing remains a sold listing if a customer later requests a return; the return is transaction history and does not reopen the sale.
+- Tenant ID is the primary security boundary. Subscriber roles are owner/admin/staff; customers are separately authenticated and tenant-linked.
+
+
 
 > **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
 >

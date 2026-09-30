@@ -19,6 +19,57 @@
 ## 1. Purpose
 AI continuity companion for TradeFlow. It records architectural truth, decisions, faults, verification state and exact stopping point so future sessions resume without guessing.
 
+
+
+## 1A. Permanent TEST → LIVE environment architecture — 30 September 2026
+
+TradeFlow now uses a deliberate two-environment release model.
+
+### GitHub branches
+
+The single repository is:
+
+`laurendigitaluk/TradeFlow`
+
+The permanent branch roles are:
+
+- **`main` = TEST / STAGING code.** All normal development, repairs, migrations, browser fixes and feature work are made here first.
+- **`production` = LIVE release code.** This branch represents the exact code approved for the live TradeFlow environment. It must only receive a tested release from `main`.
+
+There is deliberately **not** a second GitHub repository for Live. GitHub branches provide the code separation while Supabase projects provide the database/runtime separation.
+
+### Supabase projects
+
+- **TradeFlow TEST:** `twfbmjwwqzxdxvclxbun`, eu-west-2.
+- **TradeFlow LIVE:** separate production project, to be created under the upgraded TradeFlow Live organisation.
+
+The TEST database contains deliberate test tenants, customers, orders, returns and other test data. LIVE must be a fresh production database built from the version-controlled migration history and must never be populated by copying TEST customer/transaction data.
+
+### Exact release path
+
+`feature/fix work` → `main` → TEST Supabase/browser verification → release checkpoint → promote the approved commit to `production` → apply the same version-controlled migrations/functions/configuration to LIVE → production smoke test.
+
+A Git commit is not evidence that LIVE works. LIVE is only considered released after the production database migration state, Edge Functions/configuration and browser smoke tests have been verified.
+
+### Database rule
+
+Database structure changes belong in timestamped `supabase/migrations/` files. Do not make an unrecorded production schema change in Supabase Studio and then continue development from memory. Production changes must be reproducible from Git.
+
+### Data rule
+
+TEST and LIVE data are separate. Never copy TEST customers, customer bank details, test payments, test orders or other test transaction data into LIVE.
+
+### Shipping rule
+
+The production shipping architecture is manual. Parcel2Go API, Parcel2Go checkout, quote creation and payment-link shipping flows are retired and must not be reintroduced.
+
+### Branch safety
+
+The `production` branch is a release branch. It must not become the place where experimental fixes are made. The next development change starts from `main` or a feature/checkpoint branch based on `main`, is tested in TEST, and is then promoted.
+
+This separation follows the project's existing Live Launch & Test/Production Runbook and the standard practice of keeping staging and production environments separate.
+
+
 ## 2. Mandatory procedure
 For significant work: **Retrieve → inspect current GitHub → inspect current Supabase → identify the first actual failure/boundary → change minimally → test → verify live → document → checkpoint.**
 
@@ -43,14 +94,15 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 **Proposed → Implemented → Tested → Verified Live** are separate states. A commit is not live verification. A transactional rollback test proves database behaviour, not a persistent browser journey.
 
 ## 5. Current environment checkpoint
-- GitHub: `laurendigitaluk/TradeFlow`, `main`.
-- Supabase: `twfbmjwwqzxdxvclxbun`, `eu-west-2`.
-- Recorded health: ACTIVE_HEALTHY.
-- Recorded RLS checkpoint: 60/60 public tables.
-- Customer security: 34/34.
-- Customer subscription tests: Buying 17/17; Selling 17/17.
-- Staff security lab: 19/19.
-- Hardening sequence through Retail Orders: 044–062, followed by fulfilment/returns hardening and external payment boundary migrations.
+- GitHub repository: `laurendigitaluk/TradeFlow`.
+- **TEST branch:** `main`.
+- **LIVE release branch:** `production`.
+- Current TEST Release Candidate before this documentation/release-branch promotion: `ec6536818522a0e89d08f9defa68f557259cf280`.
+- TEST Supabase: `twfbmjwwqzxdxvclxbun`, eu-west-2, ACTIVE_HEALTHY.
+- LIVE Supabase: separate production project; creation/onboarding remains the current release workstream.
+- Test One remains the frozen known-good historical baseline and must not be overwritten.
+- Current TEST security hardening includes restricted client execution of SECURITY DEFINER functions and hardened payment/ledger trigger search paths.
+- Manual shipping is authoritative; Parcel2Go API/checkout/payment-link shipping is retired.
 
 ## 6. Production onboarding remains OPEN
 Development tenant insertion/test-lab onboarding remains separate from the required production sequence:

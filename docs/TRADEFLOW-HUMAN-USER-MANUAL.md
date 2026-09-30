@@ -1323,3 +1323,18 @@ The current Canon EOS R8 test has accepted the revised £79 offer. Its payment s
 The Canon EOS R8 test currently has no stored customer-photo links. This is different from recent test items that do have media links; do not treat the absence of media for this item as proof that the photo renderer has deleted a photo.
 
 When a final offer is still `final_offer_sent`, the customer portal uses the wording **Revised offer received** and provides accept/refuse controls. Once the customer accepts it, the portal moves to the accepted state and those response controls are no longer shown.
+
+
+## Automatic buying pricing — UK New research basis — 30 September 2026
+
+Automatic buying pricing uses the subscriber's latest **UK New** research price as the calculation basis for every condition:
+
+- Sealed — subscriber-set percentage of UK New price
+- Opened / Never Used — subscriber-set percentage of UK New price
+- Excellent — subscriber-set percentage of UK New price
+- Good — subscriber-set percentage of UK New price
+- Poor — subscriber-set percentage of UK New price
+
+UK Used research remains visible as market evidence/reference only. It is not used to calculate automatic buying prices.
+
+If there is no UK New research for the selected product, an automatic valuation is not produced and the item goes to the normal manual valuation workflow. A condition-specific manual override, when explicitly configured, remains an explicit manual price rather than an automatic research calculation.

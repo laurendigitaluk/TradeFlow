@@ -228,3 +228,36 @@ Current TEST legacy refused item:
 - Customer HTML cache v146: `866b6dab1c1bd5d57e3cbf22f45d48c5fccdc9e3`
 - Customer cancelled count: `62434fd8eeb0135ccc37d23cdcf1ef04260cae79`
 - Database stage constraint: `1d9e410a1c8493f6bc7614a08e8b33ce2fd8e78d`
+
+
+## 2026-09-30 — Refused transaction incorrectly counted as active Buying work
+
+### Reported issue
+The subscriber Dashboard showed 4 Buying items even though one of them had been refused. That refused item also displayed a £100 valuation, making it appear as a new/random active offer. Clicking **OPEN BUYING** from the dashboard did not reliably take the user into the requested transaction.
+
+### Root causes
+1. `subscriber_get_business_workflow` treated every non-`none` purchase stage as active, so `offer_refused` was included in the main Buying workflow.
+2. `subscriber_get_business_workflow_counts` counted every non-purchased, non-closed buying item, so `offer_refused` inflated the Dashboard Buying count.
+3. The legacy refused C50 transaction `BI-FC9C2C8F26` legitimately still has its historical manual approved valuation of £100 and its initial offer is refused. The £100 was not a new random valuation; it was the old test valuation retained on the refused transaction.
+4. The dashboard's OPEN BUYING link supplied a request ID, but `buying-dashboard.js` did not use that request ID to open the corresponding item.
+
+### Repair
+- `subscriber_get_business_workflow` now excludes `purchase_stage='offer_refused'` from active workflow results.
+- `subscriber_get_business_workflow_counts` now excludes both `purchased` and `offer_refused` from active Buying counts.
+- `buying-dashboard.js` now reads the `request` query parameter and opens/scrolls directly to the requested buying item after loading.
+- Buying dashboard cache bumped from v65 to v66.
+- The historical £100 valuation remains attached to `BI-FC9C2C8F26` as audit/reference data and is no longer part of active Buying workflow counts or active item rendering.
+
+### TEST verification
+For Camerashack:
+- active Buying items: 3
+- refused Buying items: 1
+- refused item: `BI-FC9C2C8F26`
+- refused stage: `offer_refused`
+- refused initial offer: `refused`
+
+### TEST commits
+- Database repair migration: `exclude_refused_buying_items_from_active_workflow`
+- Buying controller/request navigation: `ad82c67184d3beeb14c366c4f0e5bdcd20c37b5d`
+- Buying dashboard cache v66: `84789e865769bfe93377b753dabe7b2debc03ee2`
+- Database migration file: `30ffaf2ec161889be0492daca2af7058b1c11e89`

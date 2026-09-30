@@ -218,7 +218,7 @@ begin
           v_trade_manual_price := case v_condition
             when 'sealed' then v_rule.sealed_trade_in_manual_price
             when 'opened_never_used' then v_rule.opened_never_used_trade_in_manual_price
-            when 'excellent' then v_rule.excellent_trade_in_excellent_trade_in_manual_price
+            when 'excellent' then v_rule.excellent_trade_in_manual_price
             when 'good' then v_rule.good_trade_in_manual_price
             when 'poor' then v_rule.poor_trade_in_manual_price
           end;

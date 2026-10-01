@@ -1396,3 +1396,19 @@ The TEST Supabase database has been captured successfully as a clean local basel
 - The 139 pre-baseline migration files are preserved under `docs/migration-archive/2026-09-30/` and are not active migrations.
 - No TEST schema/data reset or LIVE/production change was performed during repository reconciliation.
 - Before future schema deployment, verify local/remote migration status and use a dry run; never use `db reset --linked` on LIVE.
+
+
+## 2026-10-01 — Buying a new domain: ResellerClub availability stage
+
+TradeFlow is now being connected to **ResellerClub** for domain purchasing. GoDaddy is no longer the planned registrar and must not be used for the TradeFlow domain workflow.
+
+Subscriber domain settings now provide a **Buy a new domain** entry point. The first stage is an availability search only. Enter the domain name without its TLD, then TradeFlow checks the initial supported options `.co.uk`, `.com` and `.uk` through the TEST ResellerClub service.
+
+The search can return three states:
+- **Available** — the provider reports that the domain can be registered.
+- **Unavailable** — the provider reports that the domain is not available.
+- **Availability check unavailable** — the provider did not return a definitive answer. This must not be treated as available; the search can be repeated later.
+
+No payment or registration is performed by this search page. Customer pricing, Stripe payment, registrant details, domain registration, DNS/hosting connection and renewal remain later stages and must not be represented as complete until separately tested.
+
+The current implementation is on the TEST branch `resellerclub-domain-availability-20261001`. LIVE is unchanged.

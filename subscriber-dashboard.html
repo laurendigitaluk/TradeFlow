@@ -234,8 +234,22 @@ window.addEventListener('DOMContentLoaded',async()=>{
       headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
       body:JSON.stringify({p_tenant_id:tenantId})
     });
-    const soldText=await sold.text(); const soldRows=soldText?JSON.parse(soldText):[];
-    if(Array.isArray(soldRows)) dispatchRequired=soldRows.length;
+    const fulfil=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_retail_fulfilment_shipping',{
+      method:'POST',
+      headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
+      body:JSON.stringify({p_tenant_id:tenantId})
+    });
+    const soldText=await sold.text(), fulfilText=await fulfil.text();
+    const soldRows=soldText?JSON.parse(soldText):[];
+    const fulfilRows=fulfilText?JSON.parse(fulfilText):[];
+    const fulfilByOrder=new Map((Array.isArray(fulfilRows)?fulfilRows:[]).map(x=>[x.retail_order_id,x]));
+    if(Array.isArray(soldRows)){
+      dispatchRequired=soldRows.filter(x=>{
+        const f=fulfilByOrder.get(x.order_id);
+        const status=String(f?.fulfilment_status||x.fulfilment_status||'awaiting').toLowerCase();
+        return !f || status==='awaiting' || status==='label';
+      }).length;
+    }
   }catch{}
 
   let orderState=orders?'ACTION REQUIRED':'NO ACTION';

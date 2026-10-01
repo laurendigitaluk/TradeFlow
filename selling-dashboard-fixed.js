@@ -157,6 +157,7 @@ $('listing-form').onsubmit=async e=>{
    const dispatchTime=$('dispatch-time').value.trim()||null;
    if(!asset)throw Error('Select the inventory item you are preparing for sale.');
    if(!channel)throw Error('The Website sales channel is not configured for this business.');
+   if(!editingListingId&&availableListingPhotoCount()<1&&($('sales-photo-upload')?.files?.length||0)>0){await uploadSalesPhotos();}
    if(!title)throw Error('Enter a listing title.');
    if(!Number.isFinite(price)||price<0)throw Error('Enter a valid asking price.');
    if(!currency||currency.length!==3)throw Error('Enter a valid 3-letter currency code, normally GBP.');
@@ -164,7 +165,7 @@ $('listing-form').onsubmit=async e=>{
    if(!Number.isFinite(shippingPrice)||shippingPrice<0)throw Error('Enter a valid postage price.');
    const assetRow=assets.find(a=>a.id===asset);
    if(!assetRow)throw Error('Select a valid inventory asset.');
-   if(!editingListingId&&availableListingPhotoCount()<1)throw Error('Add at least one product photograph before sending this item to the website. Use Add photographs in the photographs section below.');
+   if(!editingListingId&&availableListingPhotoCount()<1)throw Error('Add at least one product photograph before sending this item to the website. Choose a photograph above and click Add photographs, or select a photograph and send it now.');
    const listingData={source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}};
    const serialNumber=$('asset-serial').value.trim()||null;
    if(serialNumber){

@@ -56,3 +56,17 @@ begin
  values(p_tenant_id,v_item.id,v_item.category_id,'IA-'||upper(substr(replace(gen_random_uuid()::text,'-',''),1,10)),'ready_for_sale',coalesce(v_item.title,v_bp.package_name),v_item.description,coalesce(p_condition_grade,v_item.item_condition),v_item.item_condition,1,p_purchase_price,p_purchase_price,'GBP',p_notes,'{}'::jsonb,jsonb_build_object('source','in_store','staff_inspected',true,'id_check_recorded',true),now(),now(),v_actor,v_bp.branch_id,v_master_id) returning id into v_inv;
  return jsonb_build_object('buying_item_id',v_item.id,'inventory_asset_id',v_inv,'purchase_stage','purchased','inventory_status','ready_for_sale');
 end $$;
+
+create or replace function public.subscriber_decline_in_store_valuation(
+ p_tenant_id uuid,p_buying_item_id uuid,p_notes text
+) returns jsonb language plpgsql security definer set search_path=pg_catalog,public as $$
+declare v_actor uuid:=auth.uid(); v_metadata jsonb;
+begin
+ if v_actor is null or not private.has_tenant_permission(p_tenant_id,v_actor,'buying.manage') then raise exception 'Permission required: buying.manage'; end if;
+ select coalesce(metadata,'{}'::jsonb) into v_metadata from public.buying_items where id=p_buying_item_id and tenant_id=p_tenant_id for update;
+ if not found then raise exception 'Buying item not found'; end if;
+ update public.buying_items
+ set metadata=v_metadata||jsonb_build_object('in_store_declined',true,'declined_at',now(),'declined_notes',p_notes),updated_at=now()
+ where id=p_buying_item_id and tenant_id=p_tenant_id;
+ return jsonb_build_object('buying_item_id',p_buying_item_id,'declined',true);
+end $$;

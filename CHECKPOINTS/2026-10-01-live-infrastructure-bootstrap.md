@@ -40,6 +40,11 @@ Deployed from the current main source:
 
 Obsolete Parcel2Go API functions and the TEST-only shipping provider test function were deliberately not deployed because the current TradeFlow shipping architecture is manual.
 
+## Internal LIVE configuration completed
+- `tradeflow_project_url` Vault secret configured.
+- A new random `tradeflow_notification_processor_secret` was generated and stored in the LIVE Vault.
+- The scheduled notification HTTP request was manually exercised through the existing pg_cron request path and reached the LIVE notification function. Email delivery remains intentionally unconfigured until the production Resend key is supplied.
+
 ## Secrets/configuration still outstanding
 Production secrets/configuration must be completed before real transactions:
 - Stripe secret key

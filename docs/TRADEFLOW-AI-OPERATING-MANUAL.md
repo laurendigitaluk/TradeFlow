@@ -1720,3 +1720,18 @@ TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_war
 ## 2026-10-01 — TEST/LIVE frontend environment separation
 
 TradeFlow browser code now selects its Supabase environment by host: localhost/127.0.0.1 and GitHub Pages resolve to TEST; production hosts resolve to TradeFlow Live. Customer/subscriber authentication also rewrites legacy hardcoded TEST Supabase request URLs in dependent browser code so production requests cannot silently remain on TEST. The browser uses only Supabase publishable keys; no service-role or secret key is placed in frontend code. The production PR remains unmerged until the intended production hostname, Auth redirects, Stripe, Resend, hosting configuration and production smoke tests are verified. See CHECKPOINTS/2026-10-01-test-live-frontend-environment-separation.md.
+
+
+## 2026-10-01 — ResellerClub registrar integration checkpoint
+
+The registrar decision is now **ResellerClub**. Previous GoDaddy investigation is abandoned and must not be resumed. The existing TradeFlow domain foundation is provider-neutral and remains authoritative: `domain_tld_catalog`, `tenant_domain_orders`, `tenant_domains`, `published_site_index` and `tenant_site_state` are not to be deleted or rebuilt.
+
+ResellerClub's current REST Sandbox has been independently verified before TradeFlow integration. Sandbox Web Pro ID / X-User-Id `1347028` and the Sandbox API key were accepted. Country API returned 200, Domains/TLD Catalog returned 200, the documented `mybrand-test-12345.com` availability request returned 200/available, and a `.co.uk` availability request returned 200/unknown. `unknown` must remain distinct from `available`; it means the registry did not return a definitive availability result and should be retried later.
+
+The first TradeFlow integration is availability-only. A TEST Edge Function `resellerclub-domain-availability` has been deployed with JWT verification enabled. It accepts a tenant-scoped subscriber request, verifies active `tenant_memberships`, calls ResellerClub server-side, and returns `available`, `unavailable`, or `unknown`. ResellerClub credentials must never be placed in browser code.
+
+The working source branch is `resellerclub-domain-availability-20261001`. It contains the Edge Function source plus the initial subscriber domain-search page. The branch is not yet a production release. The normal purchase flow, customer pricing, Stripe payment, customer/contact creation, registration, DNS/hosting connection, renewal and failure/refund handling remain disabled until each stage is separately verified.
+
+TEST Edge Function secrets required: `RESELLERCLUB_API_KEY`, `RESELLERCLUB_X_USER_ID` (Sandbox value `1347028`) and `RESELLERCLUB_API_BASE_URL` (Sandbox `https://api.sandbox.resellerclub.com/v2`). The API key must be entered directly into Supabase Edge Function Secrets and must never be pasted into chat, GitHub or frontend code. Supabase documents project secrets as the correct place for Edge Function credentials.
+
+No LIVE Supabase project, `production` branch, Stripe production flow or real domain registration has been changed by this registrar work.

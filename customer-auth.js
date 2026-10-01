@@ -1,8 +1,10 @@
 (()=>{
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const SUPABASE_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
+window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;
+const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
+const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 const tenantId=new URLSearchParams(location.search).get('tenant_id');
-const CUSTOMER_SITE_BASE='https://laurendigitaluk.github.io/TradeFlow/';
+const CUSTOMER_SITE_BASE=new URL('./',location.href).href;
 let businessName='this business';
 const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
 const PENDING_STORAGE=tenantId?'tradeflow_pending_customer_registration:'+tenantId:'tradeflow_pending_customer_registration:unknown';

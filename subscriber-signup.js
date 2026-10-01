@@ -1,4 +1,5 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co',KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
+const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl,KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 const $=id=>document.getElementById(id);
 $('signup-form').onsubmit=async e=>{e.preventDefault();const b=$('submit'),m=$('message');b.disabled=true;b.textContent='Creating account…';m.textContent='';
 try{

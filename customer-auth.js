@@ -1,6 +1,6 @@
 (()=>{
 const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
-window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;
+window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;const TRADEFLOW_FETCH=window.fetch.bind(window);window.fetch=(input,init)=>{const testUrl='https://twfbmjwwqzxdxvclxbun.supabase.co';const liveUrl=TRADEFLOW_RUNTIME.supabaseUrl;const rewrite=url=>typeof url==='string'?url.replace(testUrl,liveUrl):url;if(input instanceof Request)return TRADEFLOW_FETCH(new Request(rewrite(input.url),input),init);return TRADEFLOW_FETCH(rewrite(input),init)};
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 const tenantId=new URLSearchParams(location.search).get('tenant_id');

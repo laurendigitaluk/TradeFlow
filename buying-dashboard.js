@@ -1,6 +1,6 @@
 window.tradeflowBuyingDashboardScriptLoaded=true;
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://twfbmjwwqzxdxvclxbun.supabase.co';
+const KEY=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 const SESSION_STORAGE='tradeflow_testlab_session';
 const params=new URLSearchParams(location.search);let key=KEY,session=null,tenantId=params.get('tenant_id'),requestId=params.get('request'),current=[],openId=null,shippingServices=[];
 const $=id=>document.getElementById(id);

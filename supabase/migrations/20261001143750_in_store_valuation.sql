@@ -1,3 +1,5 @@
+alter table public.buying_items add column if not exists metadata jsonb not null default '{}'::jsonb;
+
 -- In-Store Valuation: staff-assisted purchase path
 -- Uses the same tenant buying catalogue and existing valuation engine as the online selling journey.
 create or replace function public.subscriber_create_in_store_valuation(

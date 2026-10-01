@@ -241,8 +241,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
   }
   set('buying',buying,'green',buying?'ACTION REQUIRED':'COMPLETE');
   set('inventory',inventory,inventory?'green':'red',inventory?'SEND TO SALES':'COMPLETE');
-  set('selling',listings,inventory?'green':listings?'blue':'red',inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'COMPLETE');
-  set('orders',orders,orders?'green':'red',orders?'ACTION REQUIRED':'COMPLETE');
+  set('selling',listings,listings?'blue':'red',listings?'ACTIVE LISTINGS':'COMPLETE');
+  set('orders',orders,orders?'green':'red',orders?'SEND TO FULFILMENT':'COMPLETE');
   set('fulfilment',fulfilment,'green',fulfilment?'ACTION REQUIRED':'COMPLETE');
   set('returns',returns,returns?'green':'red',returns?'ACTION REQUIRED':'COMPLETE');try{const historical=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/returns?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const ht=await historical.text();const hr=ht?JSON.parse(ht):[];if(Array.isArray(hr)&&hr.length&&!returns){const stateEl=document.getElementById('flow-state-returns');if(stateEl)stateEl.textContent='HISTORY AVAILABLE';const card=document.getElementById('flow-returns');if(card){card.classList.remove('flow-red');card.classList.add('flow-blue')}}}catch{}
  }catch(e){console.warn('Workflow counts:',e)}

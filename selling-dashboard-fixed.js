@@ -139,7 +139,7 @@ function cancelEdit(){
  serialDuplicateConfirmationKey=null;
  $('send-to-website')?.setAttribute('data-serial-confirmation','');
  $('send-to-website')&&( $('send-to-website').textContent='SEND TO WEBSITE' );
- $('listing-form')?.reset();
+ $('listing-form')?.reset();if($('channel')&&channels[0])$('channel').value=channels[0].id;
  $('currency').value='GBP';
  const asset=$('asset').value;
  if(asset)syncAssetContext();

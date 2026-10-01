@@ -227,31 +227,6 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const orders=Number(row?.active_retail_orders||0);
   const fulfilment=Number(row?.fulfilment_action_required||0);
   const returns=Number(row?.active_returns||0);
-  let dispatchRequired=0;
-  try{
-    const sold=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_sold_retail_items',{
-      method:'POST',
-      headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
-      body:JSON.stringify({p_tenant_id:tenantId})
-    });
-    const fulfil=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_retail_fulfilment_shipping',{
-      method:'POST',
-      headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
-      body:JSON.stringify({p_tenant_id:tenantId})
-    });
-    const soldText=await sold.text(), fulfilText=await fulfil.text();
-    const soldRows=soldText?JSON.parse(soldText):[];
-    const fulfilRows=fulfilText?JSON.parse(fulfilText):[];
-    const fulfilByOrder=new Map((Array.isArray(fulfilRows)?fulfilRows:[]).map(x=>[x.retail_order_id,x]));
-    if(Array.isArray(soldRows)){
-      dispatchRequired=soldRows.filter(x=>{
-        const f=fulfilByOrder.get(x.order_id);
-        const status=String(f?.fulfilment_status||x.fulfilment_status||'awaiting').toLowerCase();
-        return !f || status==='awaiting' || status==='label';
-      }).length;
-    }
-  }catch{}
-
   let orderState=orders?'ACTION REQUIRED':'NO ACTION';
   if(orders){
     try{
@@ -266,7 +241,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   }
   set('buying',buying,'green',buying?'ACTION REQUIRED':'COMPLETE');
   set('inventory',inventory,inventory?'green':'red',inventory?'SEND TO SALES':'COMPLETE');
-  set('selling',listings,dispatchRequired?'green':inventory?'green':listings?'blue':'red',dispatchRequired?dispatchRequired+' SOLD — DISPATCH REQUIRED':inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'COMPLETE');
+  set('selling',listings,inventory?'green':listings?'blue':'red',inventory?'LISTING ACTION REQUIRED':listings?'ACTIVE LISTINGS':'COMPLETE');
   set('orders',orders,orders?'green':'red',orders?'ACTION REQUIRED':'COMPLETE');
   set('fulfilment',fulfilment,'green',fulfilment?'ACTION REQUIRED':'COMPLETE');
   set('returns',returns,returns?'green':'red',returns?'ACTION REQUIRED':'COMPLETE');try{const historical=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/returns?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const ht=await historical.text();const hr=ht?JSON.parse(ht):[];if(Array.isArray(hr)&&hr.length&&!returns){const stateEl=document.getElementById('flow-state-returns');if(stateEl)stateEl.textContent='HISTORY AVAILABLE';const card=document.getElementById('flow-returns');if(card){card.classList.remove('flow-red');card.classList.add('flow-blue')}}}catch{}

@@ -73,16 +73,10 @@ function fileButton(kind,label,path,url){
   return path||url?'<button type="button" data-file-kind="'+kind+'" data-file-path="'+esc(path||'')+'" data-file-url="'+esc(url||'')+'">'+label+'</button>':'';
 }
 function updateFileCards(r){
-  const hasLabel=Boolean(r?.label_storage_path||r?.label_url||$('label-file').files?.length);
-  const hasQr=Boolean(r?.qr_storage_path||r?.qr_url||$('qr-file').files?.length);
   const carrier=String($('carrier')?.value||'').trim();
   const tracking=String($('tracking')?.value||'').trim();
   const ready=Boolean(carrier&&tracking);
-  $('label-card').classList.toggle('has-file',hasLabel);
-  $('qr-card').classList.toggle('has-file',hasQr);
-  $('label-file-status').innerHTML=r?.label_storage_path||r?.label_url?'<strong>Label already saved.</strong> '+fileButton('label','Add label',r.label_storage_path,r.label_url):$('label-file').files?.length?'<strong>New label selected.</strong>':'No label uploaded yet.';
-  $('qr-file-status').innerHTML=r?.qr_storage_path||r?.qr_url?'<strong>QR code already saved.</strong> '+fileButton('qr','Add QR code',r.qr_storage_path,r.qr_url):$('qr-file').files?.length?'<strong>New QR code selected.</strong>':'No QR code uploaded yet.';
-  $('handoff-validation').textContent=ready?'Carrier and tracking number are ready. You can complete the shipment.':'Enter a carrier and tracking number to complete the shipment. A label or QR code is optional.';
+  $('handoff-validation').textContent=ready?'Carrier and tracking number are ready. You can complete the shipment.':'Enter a carrier and tracking number to complete the shipment.';
   $('save-shipping').disabled=!ready;
 }
 function renderOrder(){
@@ -133,7 +127,6 @@ async function saveShipping(){
   const id=$('order').value,r=rows.find(x=>x.retail_order_id===id),b=$('save-shipping');
   if(!r)return msg('Select a paid order first.','error');
   const service=selectedService();
-  const lf=$('label-file').files?.[0],qf=$('qr-file').files?.[0];
   if(!service&&!r.shipping_provider)return msg('Select one of the configured shipping services first.','error');
   if(!$('carrier').value.trim() && !service?.service_name && !r.shipping_provider)return msg('Enter the shipping carrier or select a configured shipping service before completing the handoff.','error');
   if(!$('tracking').value.trim() && !r.tracking_number)return msg('Enter the tracking number before completing the handoff.','error');
@@ -160,8 +153,7 @@ async function saveShipping(){
       p_notes:null
     });
     msg(result?.notification_queued?'Shipping handoff completed. The customer notification has been queued.':'Shipping handoff completed.','success');
-    $('label-file').value='';$('qr-file').value='';
-    window.location.href='selling-dashboard.html';
+        window.location.href='selling-dashboard.html';
   }catch(e){
     msg(e.message||String(e),'error');
     const err=$('handoff-status');if(err)err.innerHTML='<div class="error-panel"><strong>Shipping handoff was not completed.</strong><div class="small" style="margin-top:4px">'+esc(e.message||String(e))+'</div></div>';
@@ -186,20 +178,12 @@ async function openFile(kind,path,direct){
 document.addEventListener('click',e=>{
   const u=e.target.closest('[data-use-service]');
   if(u){selectedServiceCode=u.dataset.useService;const s=selectedService();renderProviders();const r=rows.find(x=>x.retail_order_id===$('order').value);if(r){$('carrier').value=s?.service_name||'';$('shipping-service-url').value=s?.service_url||'';updatePreview(r)}msg((s?.service_name||'Shipping service')+' selected. Open the provider and complete the shipment there.','success');return}
-  const f=e.target.closest('[data-file-kind]');
-  if(f){
-    const input=$(f.dataset.fileKind==='label'?'label-file':'qr-file');
-    if(input){input.click();}
-    return;
-  }
-  const t=e.target.closest('[data-transition]');
+    const t=e.target.closest('[data-transition]');
   if(t){transition(t.dataset.transition,t);return}
 });
 $('order').addEventListener('change',renderOrder);
 $('save-shipping').addEventListener('click',saveShipping);
 $('refresh').addEventListener('click',load);
-$('label-file').addEventListener('change',()=>updateFileCards(rows.find(x=>x.retail_order_id===$('order').value)||{}));
-$('qr-file').addEventListener('change',()=>updateFileCards(rows.find(x=>x.retail_order_id===$('order').value)||{}));
 ['carrier','service','tracking','tracking-url','instructions'].forEach(id=>$(id).addEventListener('input',()=>{const r=rows.find(x=>x.retail_order_id===$('order').value)||{};updatePreview(r);updateFileCards(r)}));
 $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
 let booted=false;

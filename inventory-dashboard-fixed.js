@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key',SESSION_STORAGE='tradeflow_subscriber_session';
 const TENANTS={'test-business-a':{id:'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',label:'Test Business A'},'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'},'test-business-c':{id:'50641519-2aa5-4093-95e5-7e92bea733a6',label:'Test Business C'}};
 let key=null,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));

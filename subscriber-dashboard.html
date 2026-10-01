@@ -61,7 +61,7 @@
 <div id="status-process" class="process-card red"><span>In internal process</span><strong id="count-process">0</strong><span>Being valued or reviewed</span></div>
 <div id="status-attention" class="process-card red"><span>Needs attention</span><strong id="count-attention">0</strong><span>Inspection, testing, repair, final offer or payment</span></div>
 <div id="status-awaiting" class="process-card red"><span>Awaiting customer</span><strong id="count-awaiting">0</strong><span>Waiting for customer action</span></div>
-<div id="status-acquisitions" class="process-card red"><span>Completed purchases</span><strong id="count-acquisitions">0</strong><span>Now in Inventory</span></div>
+<div id="status-acquisitions" class="process-card red"><span>Completed sales</span><strong id="count-acquisitions">0</strong><span>Completed customer orders</span></div>
 </div>
 <div id="workflow-list" class="process-list"><div class="empty">Loading transaction status…</div></div>
 </section><section class="panel flow-panel">
@@ -73,6 +73,7 @@
 <a id="flow-selling" class="flow-step flow-yellow" href="selling-dashboard.html"><strong>Selling</strong><span id="flow-count-selling" class="flow-count">—</span><span id="flow-state-selling" class="flow-state">Loading</span><small>Listings &amp; sales channels</small><span class="flow-cta">OPEN SELLING</span></a>
 <a id="flow-orders" class="flow-step flow-yellow" href="fulfilment-dashboard.html"><strong>Orders &amp; Fulfilment</strong><span id="flow-count-orders" class="flow-count">—</span><span id="flow-state-orders" class="flow-state">Loading</span><small>Paid orders, shipping and dispatch</small><span class="flow-cta">OPEN FULFILMENT</span></a>
 <a id="flow-returns" class="flow-step flow-yellow" href="returns-dashboard.html"><strong>Returns</strong><span id="flow-count-returns" class="flow-count">—</span><span id="flow-state-returns" class="flow-state">Loading</span><small>Returns &amp; resolutions</small><span class="flow-cta">OPEN RETURNS</span></a>
+<a id="flow-completed-sales" class="flow-step flow-red" href="orders-dashboard.html#completed-orders"><strong>Completed Sales</strong><span id="flow-count-completed-sales" class="flow-count">—</span><span id="flow-state-completed-sales" class="flow-state">Loading</span><small>Completed customer sales</small><span class="flow-cta">VIEW COMPLETED SALES</span></a>
 </div>
 </section>
 
@@ -177,6 +178,17 @@ window.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('count-attention').textContent=counts.attention;
   document.getElementById('count-awaiting').textContent=counts.awaiting;
   document.getElementById('count-acquisitions').textContent=counts.acquisitions;
+  try{
+    const sr=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.completed&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
+    const st=await sr.text();const completedSales=st?JSON.parse(st):[];
+    const completedCount=Array.isArray(completedSales)?completedSales.length:0;
+    const countEl=document.getElementById('count-acquisitions'); if(countEl)countEl.textContent=completedCount;
+    const cs=document.getElementById('status-acquisitions'); if(cs){cs.classList.remove('green','yellow','blue','red');cs.classList.add(completedCount?'blue':'red');}
+    const fc=document.getElementById('flow-count-completed-sales'); if(fc)fc.textContent=completedCount;
+    const fs=document.getElementById('flow-state-completed-sales'); if(fs)fs.textContent=completedCount?'COMPLETED':'NONE';
+    const card=document.getElementById('flow-completed-sales'); if(card){card.classList.remove('flow-green','flow-yellow','flow-blue','flow-red');card.classList.add(completedCount?'flow-blue':'flow-red');}
+  }catch{}
+
   setProcessCard('status-new',counts.new,'green');
   setProcessCard('status-process',counts.process,'blue');
   setProcessCard('status-attention',counts.attention,'green');

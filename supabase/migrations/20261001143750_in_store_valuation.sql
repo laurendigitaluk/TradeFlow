@@ -16,7 +16,7 @@ begin
  insert into public.buying_requests(tenant_id,customer_id,request_reference,status,source,notes,submitted_at) values(p_tenant_id,v_customer,v_req_ref,'submitted','staff',coalesce(p_notes,'In-store valuation'),now()) returning id into v_request;
  v_ref:='BI-'||upper(substr(replace(gen_random_uuid()::text,'-',''),1,10));
  insert into public.buying_items(tenant_id,buying_request_id,category_id,buying_product_id,item_reference,status,title,description,quantity,sort_order,item_condition,purchase_stage)
- select p_tenant_id,v_request,bp.category_id,v_ref,'submitted',bp.package_name,bp.package_name,1,1,p_item_condition,'submitted' from public.tenant_buying_products bp where bp.id=p_buying_product_id returning id into v_item;
+ select p_tenant_id,v_request,bp.category_id,v_ref,'submitted',bp.package_name,bp.package_name,1,1,p_item_condition,'none' from public.tenant_buying_products bp where bp.id=p_buying_product_id returning id into v_item;
  if v_item is null then raise exception 'Selected catalogue product could not be created'; end if;
  update public.buying_items set metadata=jsonb_build_object('source','in_store','serial_number',nullif(trim(p_serial_number),''),'customer_condition',p_item_condition,'notes',p_notes) where id=v_item;
  return jsonb_build_object('customer_id',v_customer,'request_id',v_request,'buying_item_id',v_item,'request_reference',v_req_ref,'item_reference',v_ref);

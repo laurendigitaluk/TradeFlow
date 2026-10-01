@@ -63,7 +63,7 @@
 <div id="status-awaiting" class="process-card red"><span>Awaiting customer</span><strong id="count-awaiting">0</strong><span>Waiting for customer action</span></div>
 <div id="status-acquisitions" class="process-card red"><span>Completed sales</span><strong id="count-acquisitions">0</strong><span>Completed customer orders</span></div>
 </div>
-<div id="workflow-list" class="process-list"><div class="empty">Loading transaction status…</div></div>
+
 </section><section class="panel flow-panel">
 <div class="panel-heading"><div><div class="eyebrow">Core operation</div><h2>Your business workflow</h2></div><span class="status-pill">Existing workflows</span></div>
 <p class="section-intro">Follow each physical item from customer valuation through purchase, Inventory and Selling.</p>
@@ -157,7 +157,6 @@ window.addEventListener('DOMContentLoaded',async()=>{
    purchased:['complete','Purchase complete — now in Inventory']
   };
   const activeRows=rows.filter(x=>x.purchase_stage!=='purchased');
-  const uniqueAcquisitions=new Set(rows.filter(x=>x.acquisition_id&&['paid','completed'].includes(x.acquisition_status)).map(x=>x.acquisition_id));
   const classified=activeRows.map(x=>{
     const fallback=x.purchase_stage||x.request_status||'submitted';
     const info=stageInfo[fallback]||['process','Internal processing'];
@@ -170,46 +169,36 @@ window.addEventListener('DOMContentLoaded',async()=>{
    process:classified.filter(x=>x.cls==='process').length,
    attention:classified.filter(x=>x.cls==='attention').length,
    awaiting:classified.filter(x=>x.cls==='awaiting').length,
-   acquisitions:uniqueAcquisitions.size
+   acquisitions:0
   };
   const setProcessCard=(id,count,activeClass)=>{const el=document.getElementById(id);if(!el)return;el.classList.remove('green','yellow','blue','red');el.classList.add(count>0?activeClass:'red')};
   document.getElementById('count-new').textContent=counts.new;
   document.getElementById('count-process').textContent=counts.process;
   document.getElementById('count-attention').textContent=counts.attention;
   document.getElementById('count-awaiting').textContent=counts.awaiting;
-  document.getElementById('count-acquisitions').textContent=counts.acquisitions;
+  let completedCount=0;
   try{
     const [or,fr]=await Promise.all([
-      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}}),
-      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_fulfilments?select=retail_order_id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}})
+      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}}),
+      api('/rest/v1/rpc/subscriber_get_fulfilments',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})})
     ]);
-    const ordersData=await or.json(); const fulfilmentsData=await fr.json();
+    const ordersData=await or.json();
+    const fulfilmentsData=Array.isArray(fr)?fr:[];
     const completedOrderIds=new Set((Array.isArray(ordersData)?ordersData:[]).filter(o=>o.status==='completed').map(o=>o.id));
-    (Array.isArray(fulfilmentsData)?fulfilmentsData:[]).forEach(f=>{if(['dispatched','delivered'].includes(f.status)&&f.retail_order_id)completedOrderIds.add(f.retail_order_id)});
-    const completedCount=completedOrderIds.size;
-    const countEl=document.getElementById('count-acquisitions'); if(countEl)countEl.textContent=completedCount;
-    const cs=document.getElementById('status-acquisitions'); if(cs){cs.classList.remove('green','yellow','blue','red');cs.classList.add(completedCount?'blue':'red');}
-    const fc=document.getElementById('flow-count-completed-sales'); if(fc)fc.textContent=completedCount;
-    const fs=document.getElementById('flow-state-completed-sales'); if(fs)fs.textContent=completedCount?'COMPLETED':'NONE';
-    const card=document.getElementById('flow-completed-sales'); if(card){card.classList.remove('flow-green','flow-yellow','flow-blue','flow-red');card.classList.add(completedCount?'flow-blue':'flow-red');}
+    fulfilmentsData.forEach(f=>{if(['dispatched','delivered'].includes(f.status)&&f.retail_order_id)completedOrderIds.add(f.retail_order_id)});
+    completedCount=completedOrderIds.size;
   }catch{}
-
+  counts.acquisitions=completedCount;
+  document.getElementById('count-acquisitions').textContent=completedCount;
+  const cs=document.getElementById('status-acquisitions'); if(cs){cs.classList.remove('green','yellow','blue','red');cs.classList.add(completedCount?'blue':'red');}
+  const fc=document.getElementById('flow-count-completed-sales'); if(fc)fc.textContent=completedCount;
+  const fs=document.getElementById('flow-state-completed-sales'); if(fs)fs.textContent=completedCount?'COMPLETED':'NONE';
+  const card=document.getElementById('flow-completed-sales'); if(card){card.classList.remove('flow-green','flow-yellow','flow-blue','flow-red');card.classList.add(completedCount?'flow-blue':'flow-red');}
   setProcessCard('status-new',counts.new,'green');
   setProcessCard('status-process',counts.process,'blue');
   setProcessCard('status-attention',counts.attention,'green');
   setProcessCard('status-awaiting',counts.awaiting,'yellow');
-  setProcessCard('status-acquisitions',counts.acquisitions,'red');
-  document.getElementById('workflow-updated').textContent=(classified.length+uniqueAcquisitions.size)+' active record'+((classified.length+uniqueAcquisitions.size)===1?'':'s');
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  document.getElementById('workflow-list').innerHTML=classified.length
-   ?classified.map(x=>{
-      const cta=x.stage==='inspection'
-       ?'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.request_id)+'#tradeflow-inspection-workspace">OPEN INSPECTION</a>'
-       :'<a class="workflow-cta" href="buying-dashboard.html?request='+encodeURIComponent(x.request_id)+'">OPEN BUYING</a>';
-      const amount=x.amount!=null?'£'+Number(x.amount).toFixed(2):'—';
-      return '<div class="process-row '+(x.cls==='attention'?'green':x.cls==='awaiting'?'yellow':'blue')+'"><div><strong>'+esc(x.request_reference)+'</strong><div class="process-muted">'+esc(x.title||'Customer request')+'</div></div><div class="process-status">'+esc(x.label)+'</div><div class="process-amount">'+amount+'</div>'+cta+'</div>';
-    }).join('')
-   :'<div class="empty">No active buying transactions.</div>';
+  setProcessCard('status-acquisitions',completedCount,'blue');
  }catch(e){
   const el=document.getElementById('workflow-list');
   if(el)el.innerHTML='<div class="empty">Workflow status could not be loaded: '+String(e.message||e).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</div>';

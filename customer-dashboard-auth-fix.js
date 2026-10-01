@@ -4,8 +4,9 @@
  * startup error cannot make the Sign in button appear dead.
  */
 (()=>{
-  const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-  const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+  const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
+  const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
+  const KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
   const KEY_STORAGE='tradeflow_testlab_publishable_key';
   const SESSION_STORAGE='tradeflow_testlab_session';
 

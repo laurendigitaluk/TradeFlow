@@ -31,3 +31,95 @@ begin
  update public.buying_items set metadata=v_metadata||jsonb_build_object('in_store_declined',true,'declined_at',now(),'declined_notes',p_notes),updated_at=now() where id=p_buying_item_id and tenant_id=p_tenant_id;
  return jsonb_build_object('buying_item_id',p_buying_item_id,'declined',true);
 end $$;
+
+-- Allow a completed in-store purchase to create its linked Inventory asset.
+-- In-store purchases are already physically received and checked at the counter,
+-- so they do not have an acquisition/payment record from the online workflow.
+create or replace function public.guard_inventory_creation_boundary()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+declare
+  v_acq record;
+  v_item_stage text;
+  v_source text:=coalesce(new.metadata->>'source','');
+  v_buying_source text;
+begin
+  if new.acquisition_item_id is null then
+    if v_source='in_store' then
+      if new.created_by is null or new.created_by <> auth.uid() then
+        raise exception 'In-store inventory must be created by the authenticated subscriber user';
+      end if;
+      if new.buying_item_id is null then
+        raise exception 'In-store inventory requires a buying item';
+      end if;
+      if not private.has_tenant_feature(new.tenant_id,'module.inventory')
+         or not private.has_tenant_permission(new.tenant_id,auth.uid(),'inventory.manage') then
+        raise exception 'In-store inventory creation is not authorised for this subscriber';
+      end if;
+      select purchase_stage, metadata->>'source'
+        into v_item_stage, v_buying_source
+      from public.buying_items
+      where tenant_id=new.tenant_id and id=new.buying_item_id;
+      if v_buying_source <> 'in_store' or v_item_stage <> 'purchased' then
+        raise exception 'In-store inventory requires a completed in-store purchase';
+      end if;
+      if new.catalogue_product_id is null then
+        raise exception 'In-store inventory requires a catalogue product';
+      end if;
+      return new;
+    end if;
+
+    if v_source <> 'manual_inventory' then
+      raise exception 'Inventory assets without an acquisition must use the manual inventory creation path';
+    end if;
+    if new.created_by is null or new.created_by <> auth.uid() then
+      raise exception 'Manual inventory must be created by the authenticated subscriber user';
+    end if;
+    if not private.has_tenant_feature(new.tenant_id,'module.inventory')
+       or not private.has_tenant_permission(new.tenant_id,auth.uid(),'inventory.manage') then
+      raise exception 'Manual inventory creation is not authorised for this subscriber';
+    end if;
+    if new.catalogue_product_id is null then
+      raise exception 'Manual inventory requires a catalogue product';
+    end if;
+    return new;
+  end if;
+
+  select a.id,a.status,a.paid_at,a.metadata,ai.buying_item_id
+    into v_acq
+  from public.acquisition_items ai
+  join public.acquisitions a on a.tenant_id=ai.tenant_id and a.id=ai.acquisition_id
+  where ai.tenant_id=new.tenant_id and ai.id=new.acquisition_item_id;
+
+  if v_acq.id is null or v_acq.status not in ('paid','completed') or v_acq.paid_at is null then
+    raise exception 'Inventory assets require a completed acquisition';
+  end if;
+
+  select purchase_stage into v_item_stage
+  from public.buying_items
+  where tenant_id=new.tenant_id and id=v_acq.buying_item_id;
+
+  if v_item_stage not in ('final_offer_accepted','purchased','final_offer_required') then
+    raise exception 'Inventory assets require an accepted offer and completed payment or trade-in credit';
+  end if;
+
+  if coalesce(v_acq.metadata->>'source','')='trade_in_credit' then
+    if not exists(
+      select 1 from public.trade_in_transactions t
+      where t.tenant_id=new.tenant_id and t.acquisition_id=v_acq.id and t.status='credited'
+    ) then
+      raise exception 'Trade-in inventory requires a posted customer credit transaction';
+    end if;
+  elsif not exists(
+    select 1 from public.payment_records p
+    where p.tenant_id=new.tenant_id and p.acquisition_id=v_acq.id and p.status='paid' and p.direction='outbound'
+  ) then
+    raise exception 'Inventory assets require a recorded acquisition payment';
+  end if;
+
+  return new;
+end;
+$function$;

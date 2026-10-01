@@ -549,3 +549,12 @@ GitHub feature/checkpoint branch → `main` → TEST Supabase → browser/databa
 - **Human User Manual:** `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
 
 Last updated: 30 September 2026.
+
+
+## 2026-10-01 — ResellerClub domain integration boundary
+
+The TradeFlow registrar provider is now ResellerClub. The provider-neutral domain schema remains authoritative and is not to be replaced. The first backend integration boundary is the TEST Edge Function `resellerclub-domain-availability`, which keeps the ResellerClub API key server-side, verifies the subscriber JWT and active tenant membership, and returns normalised availability states.
+
+TEST ResellerClub configuration uses `RESELLERCLUB_API_KEY`, `RESELLERCLUB_X_USER_ID` and `RESELLERCLUB_API_BASE_URL`. Secrets belong in Supabase Edge Function Secrets, never browser code or GitHub. The Sandbox API was independently verified with 200 responses for Country and TLD APIs and a successful documented .com availability request. A .co.uk request returned provider status `unknown`, so that state remains non-purchasable until a definitive registry response is available.
+
+Do not add registration, customer/contact creation, Stripe domain payment, DNS/hosting provisioning or renewal code until the availability boundary has been browser-tested in TEST. LIVE and `production` remain untouched.

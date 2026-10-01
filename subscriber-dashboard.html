@@ -71,8 +71,7 @@
 <a id="flow-buying" class="flow-step flow-green" href="buying-dashboard.html?v=101"><strong>Buying</strong><span id="flow-count-buying" class="flow-count">—</span><span id="flow-state-buying" class="flow-state">Loading</span><small>Customer items from valuation through purchase</small><span class="flow-cta">OPEN BUYING</span></a>
 <a id="flow-inventory" class="flow-step flow-green" href="inventory-dashboard.html"><strong>Inventory</strong><span id="flow-count-inventory" class="flow-count">—</span><span id="flow-state-inventory" class="flow-state">Loading</span><small>Purchased stock, photos &amp; pre-sales preparation</small><span class="flow-cta">OPEN INVENTORY</span></a>
 <a id="flow-selling" class="flow-step flow-yellow" href="selling-dashboard.html"><strong>Selling</strong><span id="flow-count-selling" class="flow-count">—</span><span id="flow-state-selling" class="flow-state">Loading</span><small>Listings &amp; sales channels</small><span class="flow-cta">OPEN SELLING</span></a>
-<a id="flow-orders" class="flow-step flow-yellow" href="orders-dashboard.html"><strong>Orders</strong><span id="flow-count-orders" class="flow-count">—</span><span id="flow-state-orders" class="flow-state">Loading</span><small>Customer orders &amp; payment</small><span class="flow-cta">OPEN ORDERS</span></a>
-<a id="flow-fulfilment" class="flow-step flow-yellow" href="fulfilment-dashboard.html"><strong>Fulfilment</strong><span id="flow-count-fulfilment" class="flow-count">—</span><span id="flow-state-fulfilment" class="flow-state">Loading</span><small>Dispatch &amp; tracking</small><span class="flow-cta">OPEN FULFILMENT</span></a>
+<a id="flow-orders" class="flow-step flow-yellow" href="fulfilment-dashboard.html"><strong>Orders &amp; Fulfilment</strong><span id="flow-count-orders" class="flow-count">—</span><span id="flow-state-orders" class="flow-state">Loading</span><small>Paid orders, shipping and dispatch</small><span class="flow-cta">OPEN FULFILMENT</span></a>
 <a id="flow-returns" class="flow-step flow-yellow" href="returns-dashboard.html"><strong>Returns</strong><span id="flow-count-returns" class="flow-count">—</span><span id="flow-state-returns" class="flow-state">Loading</span><small>Returns &amp; resolutions</small><span class="flow-cta">OPEN RETURNS</span></a>
 </div>
 </section>
@@ -242,8 +241,9 @@ window.addEventListener('DOMContentLoaded',async()=>{
   set('buying',buying,'green',buying?'ACTION REQUIRED':'COMPLETE');
   set('inventory',inventory,inventory?'green':'red',inventory?'SEND TO SALES':'COMPLETE');
   set('selling',listings,listings?'blue':'red',listings?'ACTIVE LISTINGS':'COMPLETE');
-  set('orders',orders,orders?'green':'red',orders?'SEND TO FULFILMENT':'COMPLETE');
-  set('fulfilment',fulfilment,'green',fulfilment?'ACTION REQUIRED':'COMPLETE');
+  const orderFlowCount=Math.max(orders,fulfilment);
+  const orderFlowState=fulfilment?'SHIPPING / DISPATCH REQUIRED':orders?'ORDER READY FOR FULFILMENT':'COMPLETE';
+  set('orders',orderFlowCount,orderFlowCount?'green':'red',orderFlowState);
   set('returns',returns,returns?'green':'red',returns?'ACTION REQUIRED':'COMPLETE');try{const historical=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/returns?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const ht=await historical.text();const hr=ht?JSON.parse(ht):[];if(Array.isArray(hr)&&hr.length&&!returns){const stateEl=document.getElementById('flow-state-returns');if(stateEl)stateEl.textContent='HISTORY AVAILABLE';const card=document.getElementById('flow-returns');if(card){card.classList.remove('flow-red');card.classList.add('flow-blue')}}}catch{}
  }catch(e){console.warn('Workflow counts:',e)}
 });

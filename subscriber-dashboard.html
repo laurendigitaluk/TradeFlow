@@ -179,9 +179,14 @@ window.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('count-awaiting').textContent=counts.awaiting;
   document.getElementById('count-acquisitions').textContent=counts.acquisitions;
   try{
-    const sr=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.completed&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
-    const st=await sr.text();const completedSales=st?JSON.parse(st):[];
-    const completedCount=Array.isArray(completedSales)?completedSales.length:0;
+    const [or,fr]=await Promise.all([
+      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}}),
+      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_fulfilments?select=retail_order_id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}})
+    ]);
+    const ordersData=await or.json(); const fulfilmentsData=await fr.json();
+    const completedOrderIds=new Set((Array.isArray(ordersData)?ordersData:[]).filter(o=>o.status==='completed').map(o=>o.id));
+    (Array.isArray(fulfilmentsData)?fulfilmentsData:[]).forEach(f=>{if(['dispatched','delivered'].includes(f.status)&&f.retail_order_id)completedOrderIds.add(f.retail_order_id)});
+    const completedCount=completedOrderIds.size;
     const countEl=document.getElementById('count-acquisitions'); if(countEl)countEl.textContent=completedCount;
     const cs=document.getElementById('status-acquisitions'); if(cs){cs.classList.remove('green','yellow','blue','red');cs.classList.add(completedCount?'blue':'red');}
     const fc=document.getElementById('flow-count-completed-sales'); if(fc)fc.textContent=completedCount;

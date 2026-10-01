@@ -98,7 +98,7 @@ function renderOrder(){
   $('tracking').value=r.tracking_number||'';
   $('tracking-url').value=r.tracking_url||'';
   $('shipping-service-url').value=r.shipping_service_url||service?.service_url||'';
-  $('instructions').value=r.shipping_instructions||'Please follow the shipping label or QR code provided. Keep your tracking details and take the parcel to the booked courier or drop-off point shown by the shipping provider.';
+  $('instructions').value=r.shipping_instructions||'';
   const s=r.fulfilment_status||'awaiting';
   $('handoff-status').innerHTML=s==='label'?'<div class="notice success"><strong>Shipping handoff complete.</strong><div class="small">The customer has been sent the shipping details and the order is ready for dispatch.</div></div>':s==='dispatched'?'<div class="notice success"><strong>Dispatched.</strong><div class="small">The shipment has been marked as sent.</div></div>':'<div class="notice"><strong>Shipping handoff required.</strong><div class="small">Enter the carrier/service and tracking number, then send the shipping details to the customer. A label or QR code is not required.</div></div>';
   $('status-actions').innerHTML=s==='dispatched'?'<button type="button" data-transition="delivered">Mark delivered</button><button type="button" data-transition="returned">Mark returned</button>':s==='delivered'?'<button type="button" data-transition="returned">Mark returned</button>':'';

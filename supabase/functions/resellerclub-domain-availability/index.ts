@@ -83,7 +83,7 @@ Deno.serve(async (req: Request) => {
 
     if (!providerResponse.ok) {
       return json({
-        error: "ResellerClub availability request failed",
+        error: `ResellerClub availability request failed (HTTP ${providerResponse.status})`,
         provider_status: providerResponse.status,
         provider_message: providerBody?.message || providerBody?.error || null,
       }, 502);

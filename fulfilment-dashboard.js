@@ -130,11 +130,9 @@ async function saveShipping(){
   if(!service&&!r.shipping_provider)return msg('Select one of the configured shipping services first.','error');
   if(!$('carrier').value.trim() && !service?.service_name && !r.shipping_provider)return msg('Enter the shipping carrier or select a configured shipping service before completing the handoff.','error');
   if(!$('tracking').value.trim() && !r.tracking_number)return msg('Enter the tracking number before completing the handoff.','error');
-  b.disabled=true;b.textContent='Saving and sending…';msg('Uploading the shipping handoff…');
+  b.disabled=true;b.textContent='Saving and sending…';msg('Saving the shipping handoff…');
   try{
-    let labelPath=r.label_storage_path||null,qrPath=r.qr_storage_path||null;
-    if(lf){if(lf.size>10*1024*1024)throw Error('Shipping label must be 10 MB or smaller.');const ext=(lf.name.split('.').pop()||'pdf').toLowerCase();labelPath=await upload(tenantId+'/fulfilments/'+r.fulfilment_id+'/shipping-label-'+Date.now()+'.'+ext,lf);}
-    if(qf){if(qf.size>10*1024*1024)throw Error('QR code must be 10 MB or smaller.');const ext=(qf.name.split('.').pop()||'png').toLowerCase();qrPath=await upload(tenantId+'/fulfilments/'+r.fulfilment_id+'/shipping-qr-'+Date.now()+'.'+ext,qf);}
+    const labelPath=null,qrPath=null;
     const result=await rpc('subscriber_complete_retail_fulfilment_shipping',{
       p_fulfilment_id:r.fulfilment_id,
       p_shipping_method:'subscriber_override',

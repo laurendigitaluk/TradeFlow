@@ -180,7 +180,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   try{
     const [or,fr]=await Promise.all([
       fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}}),
-      api('/rest/v1/rpc/subscriber_get_fulfilments',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})})
+      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_retail_fulfilment_shipping',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId})}).then(async r=>{const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.error||t||('HTTP '+r.status));return b})
     ]);
     const ordersData=await or.json();
     const fulfilmentsData=Array.isArray(fr)?fr:[];

@@ -18,7 +18,7 @@
 .flow-step.flow-green:hover,.flow-step.flow-yellow:hover,.flow-step.flow-blue:hover,.flow-step.flow-red:hover{transform:translateY(-2px)}
 @media(max-width:1100px){.business-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.business-flow{grid-template-columns:1fr 1fr}}
-</style><style>.dashboard-grid .dashboard-card{border:1px solid #e1e5e8;background:#fff}.dashboard-grid .dashboard-card:hover{border-color:#e1e5e8}.dashboard-grid .completed-orders-card{border:1px solid #e1e5e8;background:#fff}</style></head>
+</style><style>.dashboard-grid .dashboard-card{border:1px solid #e1e5e8;background:#fff}.dashboard-grid .dashboard-card:hover{border-color:#e1e5e8}.dashboard-grid .completed-orders-card{border:1px solid #e1e5e8;background:#fff}.retail-counter-panel{border:2px solid #2d7a4d;background:#f4faf6;display:flex;align-items:center;justify-content:space-between;gap:24px}.retail-counter-panel .retail-copy{max-width:760px}.retail-counter-panel .retail-cta{display:inline-block;background:#2d7a4d;color:#fff;text-decoration:none;border-radius:7px;padding:12px 18px;font-weight:800;white-space:nowrap}.retail-counter-panel .retail-cta:hover{background:#245f3b}@media(max-width:800px){.retail-counter-panel{flex-direction:column;align-items:flex-start}}</style></head>
 <body>
 <header class="topbar">
   <a class="brand brand-link" href="subscriber-dashboard.html"><span id="business-brand">TradeFlow</span></a>
@@ -33,7 +33,7 @@
 <nav>
 <a class="active" href="subscriber-dashboard.html">Dashboard</a>
 <div class="nav-section">Business flow</div>
-<a href="buying-dashboard.html?v=101">Buying</a>
+<a href="buying-dashboard.html?v=101">Buying</a><a href="in-store-valuation.html" target="_blank" rel="noopener">In-Store Valuation</a>
 
 <a href="inventory-dashboard.html">Inventory</a>
 <a href="selling-dashboard.html">Selling</a>
@@ -52,6 +52,7 @@
 <section class="content">
 <div class="page-heading"><div><div class="eyebrow">Business workspace</div><h1>Business dashboard</h1><p class="intro">Manage your buying, stock, sales, orders and customers from one clear business workspace. Your website is managed separately.</p></div></div>
 <section class="welcome-panel panel"><div><div class="eyebrow">Your business</div><h2 id="welcome-business">Your business</h2><p id="welcome-copy">Welcome back. Your business workspace is ready.</p></div><div class="account-summary"><div><span>Email</span><strong id="summary-email">Loading…</strong></div><div><span>Role</span><strong id="summary-role">Loading…</strong></div></div></section>
+<section class="panel retail-counter-panel"><div class="retail-copy"><div class="eyebrow">Retail counter</div><h2>In-Store Valuation</h2><p class="section-intro">Open the dedicated customer-facing counter screen on the store PC. It is separate from the public website and customer online selling journey, while still using the same TradeFlow valuation engine.</p></div><a class="retail-cta" href="in-store-valuation.html" target="_blank" rel="noopener">OPEN IN-STORE VALUATION</a></section>
 
 <section class="panel process-panel" id="workflow-status">
 <div class="panel-heading"><div><div class="eyebrow">Live workflow</div><h2>Transactions in progress</h2></div><span id="workflow-updated" class="status-pill">Loading…</span></div>

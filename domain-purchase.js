@@ -9,8 +9,8 @@ async function check(tld,domain,auth){
 }
 function render(results){
   $('results').innerHTML=results.map(r=>{
-    const status=r.status==='available'?'Available':r.status==='unavailable'?'Unavailable':'Availability check unavailable';
-    const cls=r.status==='available'?'status-pill':r.status==='unavailable'?'status-pill muted':'status-pill warning';
+    const status=r.status==='available'?'Available':r.status==='unavailable'?'Unavailable':r.status==='error'?'Provider request failed':'Availability check unavailable';
+    const cls=r.status==='available'?'status-pill':r.status==='unavailable'?'status-pill muted':r.status==='error'?'status-pill warning':'status-pill warning';
     return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div><p class="small">'+(r.status==='unknown'?'The registry did not return a definitive answer. Try the search again later.':'TradeFlow has not opened purchasing for this result yet.')+'</p></div>';
   }).join('');
 }
@@ -27,7 +27,7 @@ function render(results){
     const results=[];
     for(const tld of TLDs){
       try{results.push(await check(tld,domain,auth));}
-      catch(err){results.push({domain:domain+'.'+tld,status:'unknown',error:err.message});}
+      catch(err){results.push({domain:domain+'.'+tld,status:'error',error:err.message});}
     }
     render(results);$('message').textContent='Availability check complete.';
    }catch(err){$('message').textContent=err.message||String(err);}

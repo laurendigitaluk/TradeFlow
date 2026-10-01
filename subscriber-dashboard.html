@@ -178,16 +178,13 @@ window.addEventListener('DOMContentLoaded',async()=>{
   document.getElementById('count-awaiting').textContent=counts.awaiting;
   let completedCount=0;
   try{
-    const [or,fr]=await Promise.all([
-      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}}),
-      fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_retail_fulfilment_shipping',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({p_tenant_id:tenantId})}).then(async r=>{const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.error||t||('HTTP '+r.status));return b})
-    ]);
-    const ordersData=await or.json();
-    const fulfilmentsData=Array.isArray(fr)?fr:[];
-    const completedOrderIds=new Set((Array.isArray(ordersData)?ordersData:[]).filter(o=>o.status==='completed').map(o=>o.id));
-    fulfilmentsData.forEach(f=>{if(['dispatched','delivered'].includes(f.status)&&f.retail_order_id)completedOrderIds.add(f.retail_order_id)});
-    completedCount=completedOrderIds.size;
-  }catch{}
+    const baseUrl=window.TRADEFLOW_CONFIG?.supabaseUrl;
+    if(!baseUrl)throw Error('Supabase configuration is not ready.');
+    const fr=await fetch(baseUrl+'/rest/v1/fulfilments?select=retail_order_id&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=in.(dispatched,delivered)&limit=1000',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
+    if(!fr.ok)throw Error('Completed sales query failed: HTTP '+fr.status);
+    const rows=await fr.json();
+    completedCount=new Set((Array.isArray(rows)?rows:[]).map(x=>x.retail_order_id).filter(Boolean)).size;
+  }catch(e){ console.error('Completed sales count failed',e); }
   counts.acquisitions=completedCount;
   document.getElementById('count-acquisitions').textContent=completedCount;
   const cs=document.getElementById('status-acquisitions'); if(cs){cs.classList.remove('green','yellow','blue','red');cs.classList.add(completedCount?'blue':'red');}

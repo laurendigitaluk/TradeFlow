@@ -296,7 +296,29 @@ async function handleResearch(
     return await handleResearch(userClient, tenantId, user.id, body);
   }
 
-  const config = readConfig();
+  const customerVisibleContext = audience === "customer" && customerContext ? {
+    customer: customerContext.customer,
+    buying_requests: (customerContext.buying_requests || []).map((x: any) => ({
+      request_reference: x.request_reference, status: x.status, submitted_at: x.submitted_at, updated_at: x.updated_at,
+    })),
+    buying_items: (customerContext.buying_items || []).map((x: any) => ({
+      item_reference: x.item_reference, status: x.status, title: x.title, purchase_stage: x.purchase_stage, purchase_stage_updated_at: x.purchase_stage_updated_at,
+    })),
+    offers: (customerContext.offers || []).map((x: any) => ({
+      offer_reference: x.offer_reference, status: x.status, amount: x.amount, currency: x.currency, published_at: x.published_at, responded_at: x.responded_at, expires_at: x.expires_at,
+    })),
+    acquisitions: (customerContext.acquisitions || []).map((x: any) => ({
+      acquisition_reference: x.acquisition_reference, status: x.status, agreed_total: x.agreed_total, currency: x.currency, accepted_at: x.accepted_at, received_at: x.received_at, finalised_at: x.finalised_at, paid_at: x.paid_at, completed_at: x.completed_at, shipping_carrier: x.shipping_carrier, shipping_service: x.shipping_service, shipping_tracking_number: x.shipping_tracking_number, shipping_tracking_url: x.shipping_tracking_url, shipping_status: x.shipping_status,
+    })),
+    retail_orders: (customerContext.retail_orders || []).map((x: any) => ({
+      order_reference: x.order_reference, status: x.status, currency: x.currency, total: x.total, payment_status: x.payment_status, placed_at: x.placed_at, paid_at: x.paid_at, completed_at: x.completed_at, cancelled_at: x.cancelled_at,
+    })),
+    returns: (customerContext.returns || []).map((x: any) => ({
+      return_reference: x.return_reference, return_type: x.return_type, status: x.status, requested_at: x.requested_at, authorised_at: x.authorised_at, received_at: x.received_at, resolved_at: x.resolved_at, closed_at: x.closed_at, refund_amount: x.refund_amount, currency: x.currency,
+    })),
+  } : null;
+
+    const config = readConfig();
   const providerAllowed = config.allowed.includes(config.provider);
 
   if (config.provider === "none") {
@@ -314,7 +336,7 @@ async function handleResearch(
         role: audience === "customer" ? "customer" : membership.role_code,
         audience,
         customer_id: customer?.id || null,
-        customer_context: customerContext,
+        customer_context: customerVisibleContext,
         question,
         knowledge,
       },

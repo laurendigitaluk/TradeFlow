@@ -1842,3 +1842,14 @@ Verification status must remain explicit:
 - GitHub release: **Implemented in GitHub**
 - LIVE database: **not yet directly verified in the current tool session**
 - Browser: **not yet verified**
+
+
+## LIVE LAUNCH CONTINUITY — 3 OCTOBER 2026
+
+TradeFlow has moved from TEST feature polishing to the LIVE launch path. CameraShack TEST data and TEST subscriber accounts are not the source of truth for the LIVE platform owner dashboard.
+
+The platform owner dashboard is a protected LIVE page. If signing out appears to return immediately to the sign-in prompt, that is expected: the protected dashboard requires an authenticated platform-owner session. A failed sign-in must be diagnosed from the browser Network request and LIVE account state rather than by repeatedly changing passwords.
+
+A current cache-boundary repair was committed to the production Worker so `platform-owner-dashboard.html` is served with `Cache-Control: no-store`. This prevents an older HTML document from selecting an obsolete dashboard JavaScript version.
+
+Next user acceptance step after deployment: open the LIVE Owner Dashboard in a clean browser session, sign in with the LIVE platform-owner account, confirm the dashboard loads LIVE data, then continue with the real LIVE subscriber/customer launch. Do not treat old TEST business names displayed by a stale page as LIVE businesses.

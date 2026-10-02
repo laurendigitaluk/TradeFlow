@@ -52,7 +52,7 @@ Relevant production commits:
 - `c2f5409af76cd3e96d57a1de5af1c10864943d7c` — complete recovery UI wiring
 - `a8821a4fcb5613d9e3117b41f2b4e1602c884272` — Worker route for both environments
 
-Current production branch HEAD: `a8821a4fcb5613d9e3117b41f2b4e1602c884272`.
+The owner-auth code repair sequence ended at `a8821a4fcb5613d9e3117b41f2b4e1602c884272`; this checkpoint and the manual updates were committed afterward.
 
 ## Validation performed
 

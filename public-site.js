@@ -29,8 +29,8 @@ function isCustomerSession(){
 function customerUrl(extra){
  const isTestWorker=location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev';
  const base=isTestWorker&&activeTenantId
-   ?'login?tenant_id='+encodeURIComponent(activeTenantId)
-   :'login';
+   ?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId)
+   :'customer-dashboard.html';
  return extra?base+'&'+extra:base;
 }
 function customerBasketUrl(listingId){

@@ -65,7 +65,7 @@ async function resendConfirmation(){
  if(!email)return message('Enter your email address first, then choose Resend confirmation email.','error');
  busy(button,true,'Sending…');
  try{
-  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);
+  const emailRedirectTo=new URL('/email-confirmed',location.origin);
   await authRequest('/auth/v1/resend',{type:'signup',email,options:{email_redirect_to:emailRedirectTo.href}});
   message('If your email address still needs confirmation, we’ll send you a new confirmation link. Please check your inbox and spam folder.','success');
  }catch(error){
@@ -78,7 +78,7 @@ async function requestPasswordReset(){
  if(!email)return message('Enter your email address first, then choose Forgot password.','error');
  busy(button,true,'Sending…');
  try{
-  const resetUrl=new URL('customer-password-reset.html',location.href);
+  const resetUrl=new URL('/reset-password',location.origin);
   const response=await authRequest('/auth/v1/recover?redirect_to='+encodeURIComponent(resetUrl.href),{email});
   void response;
   message('If an account exists for that email, a password reset email has been sent. Check your inbox and spam folder.','success');

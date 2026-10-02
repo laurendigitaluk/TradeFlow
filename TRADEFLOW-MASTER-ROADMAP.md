@@ -890,3 +890,12 @@ The pre-launch AI work now has a defined commercial and security architecture. G
 ## 2026-10-02 — Subscriber Assistant verified milestone
 
 The TEST Subscriber Assistant has passed browser verification for subscriber sign-in, tenant context and read-only approved knowledge retrieval with no external AI provider enabled. The current Cloudflare TEST branch is cloudflare-test. The next work is to verify the expanded knowledge set and implement Product Research as an evidence-and-approval workflow before introducing an external provider or customer-facing assistant.
+
+
+## 2026-10-02 — Final launch direction
+
+The TEST customer-facing Camera Shack URL experiment is now frozen. Do not continue adding TEST-only customer-domain aliases or tenant-ID URL work merely to imitate the eventual LIVE domain.
+
+The remaining pre-launch AI work is the final customer-facing TradeFlow chatbot/assistant, alongside the existing subscriber Assistant boundary. Once that is complete, proceed to LIVE: configure the real TradeFlow/Lauren Digital production domain, create/register the first real subscriber, publish that subscriber website, and register real customer accounts against the LIVE subscriber. Final customer and subscriber acceptance testing will then be performed on the real LIVE domain.
+
+Engineering rule remains unchanged: defects discovered in LIVE are reproduced/fixed in TEST and only the approved commit is promoted to LIVE. Do not make ad-hoc development changes directly in LIVE.

@@ -117,6 +117,7 @@ Deno.serve(async (req: Request) => {
         user_id: user.id,
         role: membership.role_code,
         question,
+        knowledge,
       },
       next_step: "No AI provider is enabled. Change the server-side TRADEFLOW_AI_CONFIG setting to select an approved provider; subscriber code does not need to change.",
     });

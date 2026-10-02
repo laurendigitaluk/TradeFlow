@@ -6,6 +6,24 @@
 
 This manual is the **backend/business-operations manual**. It is separate from the customer/site-facing website manual. It explains how the TradeFlow business application works behind the public website and how staff operate the system.
 
+
+## Current subscriber dashboard — 2 October 2026
+
+The **Business Dashboard** is the subscriber's operational home screen. You do not need to know TradeFlow's backend or database implementation to use it.
+
+The dashboard gives you a quick view of work across:
+
+- **Buying** — new customer requests and acquisition work.
+- **Inventory** — items that have completed the buying process and are available for stock/sales operations.
+- **Selling** — listings and sales activity.
+- **Orders** — customer retail orders.
+- **Fulfilment** — orders waiting to be completed and shipped.
+- **Returns** — return activity requiring attention.
+
+The dashboard also shows workflow/attention information so you can see where action is required. The colours used on workflow cards are operational guidance: green indicates action required from the business, blue indicates internal processing, yellow indicates waiting for the customer, and red indicates an exception or process needing attention.
+
+For subscriber operation, use the dashboard and the linked Buying, Inventory, Selling, Orders, Fulfilment, Returns, Customers, Website and Settings areas. Database tables, RLS policies, Edge Functions and internal API implementation are not part of the subscriber operating workflow.
+
 ### Environment separation
 
 - **TradeFlow TEST:** GitHub `main` + Supabase `twfbmjwwqzxdxvclxbun`. Used for all development, repairs and test transactions.

@@ -107,3 +107,27 @@ Implementation completed: tracked/deployed Porkbun dry-run v2; added/deployed po
 ## 2026-10-02 — Porkbun TEST contact-reconciliation failure and repair
 
 First TEST attempt: camerashack.co.uk registration succeeded at Porkbun sandbox with provider order 9913828. TradeFlow then received INVALID_INPUT: No existing admin contact to carry over; provide it explicitly while validating the registrant update. Root cause: our updateContacts request supplied only contacts.registrant instead of Porkbun's singular contact payload. Repair deployed as porkbun-domain-registration Edge Function version 2. It now uses {contact}, reuses the recorded sandbox provider order, and does not attempt a second registration. Next action: press Register in TEST sandbox again and inspect the result.
+
+
+## 2026-10-02 — Porkbun TEST sandbox registration verified
+
+The isolated TEST registration path has now completed successfully for the paid camerashack.co.uk order. Existing Porkbun sandbox provider order 9913828 was reused; no second registration was created. The TEST Edge Function was corrected for the stored .co.uk TLD representation and then corrected again to use the valid tenant_domains acquisition source value purchased.
+
+TEST result:
+- order status: registered
+- provider_order_id: 9913828
+- failure_reason: null
+- purchased_at: populated
+- tenant_domains: one active row created
+- acquisition_source: purchased
+- registrar_provider: porkbun
+- provider metadata records sandbox registration and contact_sync_deferred=true
+- LIVE remains untouched.
+
+Important verification note: the current reconciliation row and order have no populated SQL expires_at value, and the stored porkbun_expire_date metadata is also null. The browser reported expiry as recorded, but database verification does not confirm a persisted expiry date. This must be corrected/verified before treating expiry capture as complete.
+
+The Porkbun contact update is deliberately deferred for the isolated .co.uk sandbox path because immediate post-registration contact writes produced Nominet/Porkbun V096 and repeated registrant notifications. Registration and contact synchronisation are now separate test stages.
+
+TEST Edge Function porkbun-domain-registration is version 6. GitHub repair commits include 5a160c66e8b9debc759a9a0a34dbec0c19bafd8a for TLD normalization and 1298f832781b97c19e1506c945669a7e9430caf2 for the valid acquisition-source value.
+
+Next stage: verify/correct expiry capture, then test the existing provider-neutral domain connection and published-site hostname routing. Do not rebuild the domain foundation and do not touch LIVE.

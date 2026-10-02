@@ -1759,3 +1759,25 @@ Verification status must remain explicit:
 - GitHub release: **Implemented in GitHub**
 - LIVE database: **not yet directly verified in the current tool session**
 - Browser: **not yet verified**
+
+
+## CURRENT OVERRIDE — 3 OCTOBER 2026 — LIVE OWNER DASHBOARD CACHE BOUNDARY
+
+The LIVE release is now the active launch workstream. Do not return to CameraShack-specific TEST polishing unless a new defect is first reproduced in LIVE and the repair is deliberately promoted.
+
+Verified current state:
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`, ACTIVE_HEALTHY, `eu-west-2`.
+- LIVE platform owner membership exists and is active for the owner account.
+- LIVE `platform_ai_settings` exists with safe default `active_provider=none` and `allowed_providers=["none"]`.
+- LIVE Assistant messaging tables/RPCs exist.
+- LIVE `tradeflow-assistant` Edge Function is ACTIVE with JWT verification enabled.
+- LIVE inventory serial uniqueness has been restored; TEST duplicate-serial behaviour is not part of the production release.
+- Cloudflare Worker `tradeflow` has a confirmed production deployment for the latest owner-dashboard refresh.
+
+Latest browser evidence identified a serving/cache boundary issue: a clean Incognito browser was receiving `platform-owner-dashboard.js?v=4` with HTTP 304 even though the current production HTML in GitHub references `?v=6`. LIVE Supabase logs showed no `/auth/v1/token` request during the attempted owner sign-in. This points to stale Owner Dashboard HTML/asset selection, not a LIVE password or membership fault.
+
+Targeted repair committed to production: `6c9b061e5a20210aa8b6f416a3f8b68fb6357329` (`Prevent stale production owner dashboard HTML caching`). The Worker now returns `platform-owner-dashboard.html` with `Cache-Control: no-store`, so the protected dashboard cannot retain an older HTML reference to a previous JavaScript asset.
+
+Verification rule: Cloudflare deployment existence is not browser verification. After the new Worker version is served, the clean browser must show the current dashboard HTML selecting `platform-owner-dashboard.js?v=6` (or a newer cache-busted version), followed by a real LIVE `/auth/v1/token` request on sign-in and an active owner membership check.
+
+Do not change LIVE credentials, delete tenants, recreate the owner, or alter Supabase auth solely because the old browser asset was observed. The three test-looking businesses previously displayed were stale dashboard content and are not LIVE tenant records.

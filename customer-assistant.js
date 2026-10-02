@@ -24,8 +24,8 @@ window.addEventListener('DOMContentLoaded',async()=>{
    const r=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/tradeflow-assistant',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:tenantId,question,mode:'help',audience:'customer'})});
    const b=await r.json().catch(()=>({}));if(!r.ok)throw Error(b.error||'Assistant request failed.');
    const k=b?.assistant?.knowledge||[];const ctx=b?.assistant?.customer_context;
-   if(k.length)add('I found approved guidance relevant to your question. The live AI response provider is not enabled yet, so I have not sent your question to an external AI service.','system');
-   else add('The customer assistant gateway is connected, but the live AI response provider is not enabled yet.','system');
+   if(b?.assistant?.fallback_answer)add(b.assistant.fallback_answer,'system');
+   else add('The customer assistant gateway is connected, but no approved guidance matched this question.','system');
    if(ctx){document.getElementById('status-selling').textContent=String((ctx.buying_requests||[]).length);document.getElementById('status-orders').textContent=String((ctx.retail_orders||[]).length);document.getElementById('status-returns').textContent=String((ctx.returns||[]).length);}
    status.textContent='Gateway response received. Provider: none.';
   }catch(err){add(err.message||String(err),'system');status.textContent='Assistant request failed.';}

@@ -753,3 +753,13 @@ The first sandbox registration created provider order 9913828. The subsequent up
 The TEST registration path now reaches registered using existing provider order 9913828 and creates the active tenant_domains row with acquisition source purchased. Version 5 corrected .co.uk TLD normalization so the sandbox contact-defer branch is reached; version 6 corrected the reconciliation value to match the database tenant_domains_acquisition_source_chk constraint. No second Porkbun registration is created on retry.
 
 For the isolated .co.uk sandbox test, contact synchronisation is recorded as deferred rather than repeatedly calling updateContacts, avoiding the V096/new-registrant email loop. Expiry capture remains unverified: current TEST database expires_at and porkbun_expire_date are null.
+
+
+
+## 2026-10-02 — Porkbun TEST registration expiry reconciliation
+
+The Porkbun TEST registration path is now idempotent after a successful sandbox registration. For an already-registered sandbox order with a stored provider order ID, the registration function performs provider reconciliation only and does not create another registration.
+
+Expiry handling uses the provider's domain lookup and, when the direct lookup does not expose `expireDate` or `createDate`, falls back to Porkbun `/domain/listAll` and matches the exact hostname. TradeFlow stores the provider-returned expiry in both the domain-order and tenant-domain records. It must never invent an expiry date.
+
+Current TEST Edge Function version: 7. Current sandbox provider order: 9913828. The next manual test is to use **Refresh provider registration details** once and then verify the two SQL `expires_at` fields and the stored Porkbun expiry metadata. Only after that verification should provider-neutral website hostname routing be tested.

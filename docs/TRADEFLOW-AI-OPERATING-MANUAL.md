@@ -1956,3 +1956,22 @@ When continuing the Porkbun domain-registration workflow, treat the existing san
 The current Edge Function is version 7. For an already-registered sandbox order it performs reconciliation only. It reads the Porkbun domain record and falls back to `/domain/listAll` when the direct lookup lacks `expireDate` or `createDate`. Persist only provider-returned expiry data; do not calculate or invent a date.
 
 Immediate verification target is the TEST order's two `expires_at` fields plus the Porkbun expiry metadata. After expiry is verified, continue with the existing provider-neutral domain connection and `published_site_index` routing. Do not rebuild the domain foundation and do not touch LIVE.
+
+
+## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
+
+The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
+
+- Provider order: `9913828`.
+- TradeFlow order status: `registered`.
+- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
+- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
+- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
+- Provider expiry metadata is populated.
+- No second sandbox registration was created during reconciliation.
+
+The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
+
+Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
+
+**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.

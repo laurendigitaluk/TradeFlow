@@ -49,7 +49,7 @@ function card(r,similar=false){
   const unavailable=r.available===false||r.status==='unavailable';
   const status=available?'Available':unavailable?'Unavailable':r.status==='invalid'?'Not checkable':r.status==='error'?'Provider request failed':'Availability unavailable';
   const cls=available?'status-pill':unavailable?'status-pill muted':'status-pill warning';
-  const price=available&&r.price!=null?'<p class="small"><strong>Registration price:</strong> '+esc(String(r.currency||'USD'))+' '+esc(Number(r.price).toFixed(2))+'</p>':'';
+  const price=available&&r.customer_price_gbp!=null?'<p class="small"><strong>Registration price:</strong> £'+esc(Number(r.customer_price_gbp).toFixed(2))+'</p>':'';
   const action=available?'<button type="button" class="domain-select-button" data-domain="'+esc(r.domain)+'">Choose this domain</button>':'';
   return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div>'+price+(action?'<div class="actions" style="margin-top:12px">'+action+'</div>':'')+'</div>';
 }

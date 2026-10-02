@@ -1623,3 +1623,11 @@ The first sandbox attempt reached registration successfully but stopped at conta
 The TEST sandbox registration for camerashack.co.uk completed successfully and TradeFlow now reports the order as registered. Porkbun provider order 9913828 was reused rather than creating another registration. The domain is present as an active purchased domain in TEST. The browser expiry message should not yet be treated as authoritative because the database currently has no persisted expiry date.
 
 The .co.uk contact-application step is intentionally deferred for separate verification after registration; repeated immediate contact updates previously caused V096 and repeated registrant notifications.
+
+
+
+## 2026-10-02 — TEST domain registration status
+
+The TEST domain registration for `camerashack.co.uk` has completed in Porkbun's isolated sandbox. The existing provider order is retained; TradeFlow does not create another registration when refreshing provider details.
+
+If the TEST registrant page shows **Refresh provider registration details**, that action is a provider reconciliation step only. It refreshes registration and expiry information from Porkbun and does not start a new registration. This is a TEST-only control and must not be treated as a LIVE domain-registration action.

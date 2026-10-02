@@ -12,3 +12,5 @@ supabase/
 *.map
 .env*
 .dev.vars*
+
+# Cloudflare TEST branch deployment trigger

@@ -2,7 +2,7 @@ const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localh
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 const params=new URLSearchParams(location.search);
-const tenantId=params.get('tenant_id');
+let tenantId=params.get('tenant_id');
 let activeTenantId=tenantId;
 const page=params.get('page')||'home';
 const preview=params.get('preview')==='draft';
@@ -27,24 +27,20 @@ function isCustomerSession(){
  return !!sessionStorage.getItem(key);
 }
 function customerUrl(extra){
- const isTestWorker=location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev';
- const base=isTestWorker&&activeTenantId
-   ?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId)
-   :'customer-dashboard.html';
- return extra?base+'&'+extra:base;
+ const base='customer-dashboard.html';
+ return extra?base+'?'+extra:base;
 }
 function customerBasketUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
  const target=new URL('./customer-basket.html',location.href);
- target.searchParams.set('tenant_id',activeTenantId||'');
  target.searchParams.set('listing_id',listingId||'');
  target.searchParams.set('basket','1');
  target.searchParams.set('basket_v','1');
  return target.href;
 }
 function pageUrl(slug,extra){
- let u='public-site.html?tenant_id='+encodeURIComponent(activeTenantId||'')+'&page='+encodeURIComponent(slug);
- if(preview)u+='&preview=draft';
+ let u='public-site.html?page='+encodeURIComponent(slug);
+ if(preview&&tenantId)u='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page='+encodeURIComponent(slug)+'&preview=draft';
  if(extra)u+='&'+extra;
  return u;
 }
@@ -506,16 +502,24 @@ async function loadByTenant(){
 }
 
 async function loadByHostname(){
- if(tenantId)return loadByTenant();
- if(!hostname||hostname==='localhost')return loadByTenant();
- const rows=await api('/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1');
- if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');
- const siteTenantId=rows[0].tenant_id;
- activeTenantId=siteTenantId;
- try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(siteTenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
- await loadListings(siteTenantId);
- await loadPublicProfile(siteTenantId);
- applyContent(rows[0].content);
+  if(tenantId)return loadByTenant();
+  if(!hostname||hostname==='localhost'||hostname==='127.0.0.1')return loadByTenant();
+  let rows=await api('/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1');
+  if((!Array.isArray(rows)||rows.length!==1)&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
+    const published=await api('/rest/v1/rpc/get_published_sites');
+    if(Array.isArray(published)&&published.length===1){
+      const selected=published[0];
+      rows=[{tenant_id:selected.tenant_id,hostname:hostname,revision_number:selected.revision_number,content:selected.content,published_at:selected.published_at}];
+    }
+  }
+  if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');
+  const siteTenantId=rows[0].tenant_id;
+  activeTenantId=siteTenantId;
+  tenantId=siteTenantId;
+  try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(siteTenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
+  await loadListings(siteTenantId);
+  await loadPublicProfile(siteTenantId);
+  applyContent(rows[0].content);
 }
 
 (async()=>{

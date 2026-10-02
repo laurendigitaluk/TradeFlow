@@ -889,3 +889,9 @@ Gemma remains Gary's separate personal Quote System research system. It must not
 
 The gateway foundation is implemented; provider adapters, knowledge retrieval, usage accounting and subscriber-facing chat remain to be built and tested.
 \n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Subscriber Assistant\n\nThe active Cloudflare TEST branch for the current Assistant workstream is **cloudflare-test**. Historical references to main as TEST are retained for continuity and do not override this current Cloudflare deployment.\n\nThe TEST Subscriber Assistant is now authenticated and tenant-scoped. Its first browser test succeeded with provider=none and approved knowledge retrieval. The assistant remains read-only and does not have unrestricted SQL access.\n\nThe approved knowledge set has been expanded. Product Research remains a separate controlled workflow: research → evidence/sources → explicit subscriber approval → save approved evidence → existing buying calculation.\n
+
+## PLATFORM OWNER — AI PROVIDER CONTROL — 2 OCTOBER 2026
+
+The Owner Dashboard now contains an AI provider control section. It allows the platform owner to enable/disable Gemma, OpenAI, Anthropic, Google and subscriber-supplied AI, and select the active platform provider. `None` remains the default knowledge-only mode.
+
+Provider secrets are not stored in the Owner Dashboard. They must remain server-side. The platform AI setting is stored in `platform_ai_settings` and is accessed through owner-only RPC functions. The `tradeflow-assistant` Edge Function reads the approved platform configuration through the service-role path and continues to enforce subscriber/customer tenant separation.

@@ -83,7 +83,7 @@ Deno.serve(async req=>{
     const contactRes=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
       method:"POST",
       headers:pbHeaders,
-      body:JSON.stringify({contacts:{registrant},dryRun:true})
+      body:JSON.stringify({contacts:{registrant:contact},dryRun:true})
     });
     const contactPreview=await contactRes.json().catch(()=>null);
     if(!contactRes.ok||contactPreview?.status!=="SUCCESS"){

@@ -280,3 +280,29 @@ At chat close, the authoritative manuals were updated:
 - Human manual commit: `608157346b586325912847b552a672d1004b37fc`
 
 The next chat should update these manuals and the checkpoint again after the sandbox-registration stage is actually verified.
+
+
+
+## CURRENT STATE OVERRIDE — 2026-10-02 expiry reconciliation repair
+
+The earlier sections describing the next task as a first sandbox registration are historical and are superseded by this section.
+
+The TEST sandbox registration has already succeeded for `camerashack.co.uk` using provider order `9913828`. TradeFlow order status is `registered`, and one active `tenant_domains` row exists with `acquisition_source=purchased` and `registrar_provider=porkbun`. Contact synchronisation remains deliberately deferred for the .co.uk sandbox path because immediate contact updates produced V096 and repeated provider notifications.
+
+The remaining unverified item in this stage is **expiry persistence**. Direct TEST database verification showed both order and tenant-domain `expires_at` are null, even though the browser previously displayed “Expiry: recorded”. No date should be invented.
+
+A repair is now deployed as Porkbun registration Edge Function version 7. It:
+- keeps the existing provider order and never creates a second sandbox registration when reconciling an already-registered sandbox order;
+- reads Porkbun domain details server-side;
+- falls back to Porkbun `/domain/listAll` when the direct lookup lacks `expireDate` or `createDate`;
+- persists the provider expiry only when Porkbun actually returns it;
+- allows the registered TEST page to refresh provider registration details.
+
+Immediate next action:
+1. Open the existing TEST registrant page for the already-paid order.
+2. Press **Refresh provider registration details** once.
+3. Verify `tenant_domain_orders.expires_at` and `tenant_domains.expires_at` directly in TEST.
+4. Verify the provider expiry metadata is populated.
+5. Only then proceed to the existing provider-neutral website connection and `published_site_index` hostname routing.
+
+Do not register the domain again. Do not touch LIVE. Do not rebuild the domain foundation.

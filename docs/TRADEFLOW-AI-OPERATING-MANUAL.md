@@ -2047,3 +2047,46 @@ A genuine registered test domain is required for the real DNS/Cloudflare test.
 ### Continuity rule
 
 After every material chatbot or domain change, update the Master Roadmap, System Handbook where appropriate, this AI Operating Manual, the relevant human/subscriber manuals and a checkpoint. Do not claim a feature is verified without browser/database evidence.
+
+
+## 2026-10-02 — Subscriber AI rules, usage and cost architecture
+
+This section is authoritative for the planned TradeFlow AI subscriber feature.
+
+### Separation from Gemma
+
+Gemma is Gary's separate personal research system for Quote System evidence. It is not part of TradeFlow AI, subscriber websites, customer websites or subscriber chatbot operation. Do not connect Gemma credentials or infrastructure to the TradeFlow subscriber assistant.
+
+### Subscriber AI model
+
+TradeFlow's subscriber assistant uses a provider-neutral AI layer. The normal TradeFlow experience must not require a subscriber to connect Gary's personal AI account.
+
+The architecture may support an optional subscriber-owned AI/API connection. If enabled, the subscriber's provider/account is responsible for that provider's AI usage charges. Provider credentials must remain server-side and must never be exposed to browser code or another tenant.
+
+A centrally funded TradeFlow AI option may be introduced later only with explicit commercial limits and usage controls.
+
+### Data and usage boundary
+
+The assistant is read-only in its initial phase. It may use approved TradeFlow manuals and narrowly scoped tenant information needed for the current question. It must never receive unrestricted SQL/database access, whole-table dumps or continuous full-tenant synchronisation.
+
+Tenant-specific retrieval must be explicitly allowlisted and remain inside the authenticated tenant boundary.
+
+### Product Research
+
+Product Research is a separate controlled capability. A subscriber may request research for a specific product. The system gathers targeted evidence, presents the evidence and sources to the subscriber, and requires subscriber approval before saving evidence into the subscriber's research record or allowing that evidence to affect buying-price calculations.
+
+The AI must not silently change a subscriber's buying price merely because it found a price online.
+
+### Usage and cost controls
+
+AI requests and research requests should be measurable by tenant and provider. The system should support request/usage limits so excessive AI or database usage can be detected and stopped. The assistant must retrieve only the minimum data required for the request.
+
+Before public launch, the final subscriber-facing manual must state the actual pricing, included usage allowance, any limits and any optional subscriber-owned-provider charges. Do not publish invented prices or limits before those commercial settings are approved.
+
+### Customer-facing rules
+
+Subscriber AI is separate from the later customer-facing assistant. Customer websites must not inherit subscriber-private AI context, research evidence or business data unless an explicitly approved customer-facing route exposes it.
+
+### Required subscriber documentation
+
+The Human User Manual must explain the assistant, privacy boundary, usage, costs, optional own-AI connection, Product Research approval workflow and what happens when the assistant cannot answer. The Backend User Manual must document the corresponding operational controls. The AI Operating Manual remains the technical authority.

@@ -825,3 +825,8 @@ The domain work has also established an important TEST boundary. `camerashack.co
 ## 2026-10-02 — Subscriber AI architecture locked
 
 The pre-launch AI work now has a defined commercial and security architecture. Gemma remains a separate personal Quote System research tool and is not connected to subscriber/customer chatbots or websites. TradeFlow will use a provider-neutral AI layer for the Subscriber Assistant, with read-only documentation knowledge and narrowly scoped tenant retrieval. Product Research will be a separate evidence workflow requiring subscriber approval before research affects buying calculations. The architecture will support an optional subscriber-owned AI/API connection so the subscriber can bear their own provider usage costs; a centrally funded TradeFlow AI option is optional and requires explicit usage controls. AI must never receive unrestricted Supabase access. Subscriber AI rules, privacy, usage and cost responsibilities are documented in the Human User Manual, Backend User Manual and AI Operating Manual. Implementation now proceeds with the secure assistant backend before UI and research features.
+
+
+## 2026-10-02 — Subscriber Assistant verified milestone
+
+The TEST Subscriber Assistant has passed browser verification for subscriber sign-in, tenant context and read-only approved knowledge retrieval with no external AI provider enabled. The current Cloudflare TEST branch is cloudflare-test. The next work is to verify the expanded knowledge set and implement Product Research as an evidence-and-approval workflow before introducing an external provider or customer-facing assistant.

@@ -3,7 +3,7 @@ const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localh
 let T=window.TRADEFLOW_CUSTOMER_TENANT_ID||P.get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id')||'';
 let session=null,listing=null,credit=0,order=null,working=false;const PENDING_KEY='tradeflow_customer_pending_retail_order';const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
-const setAccountLink=()=>{const link=$('my-account-link');if(!link)return;link.href=new URL('customer-dashboard.html',location.href).href};
+const setAccountLink=()=>{const link=$('my-account-link');if(!link)return;link.href=new URL('/login',location.origin).href};
 const money=(v,c='GBP')=>{try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return c+' '+v}};
 const msg=(t,type='')=>{const e=$('basket-message');if(e){e.textContent=t||'';e.className='message '+type}};
 const read=()=>{try{const x=JSON.parse(localStorage.getItem(BK)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.tenant_id===T&&v.listing_id):[]}catch{return[]}};

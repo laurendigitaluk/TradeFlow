@@ -125,15 +125,15 @@ Deno.serve(async req=>{
     );
     if(deferSandboxUkContactSync){
       const finalMetadata={...orderMetadata,porkbun_contact_sync_deferred:true,porkbun_contact_sync_reason:"Porkbun/Nominet V096 immediately after sandbox registration"};
-      const domainRes=await fetch("https://api.porkbun.com/api/json/v3/domain/get/"+encodeURIComponent(order.hostname),{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
-      const domainInfo=await domainRes.json().catch(()=>null);
-      if(!domainRes.ok||domainInfo?.status!=="SUCCESS"||!domainInfo?.domain){
-        const reason=domainInfo?.code?String(domainInfo.code)+": "+String(domainInfo.message||""):String(domainInfo?.message||"Unable to verify registered domain.");
+      const providerLookup=await getProviderDomainInfo();
+      const domainInfo=providerLookup.info;
+      if(!providerLookup.ok||!domainInfo?.domain){
+        const reason=providerLookup.reason||"Unable to verify registered domain.";
         await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:"Sandbox registration completed but provider reconciliation lookup failed: "+reason,provider_order_id:String(created.orderId),metadata:{...finalMetadata,porkbun_reconciliation_lookup_failed:true}}).eq("id",orderId);
         return json({error:"Sandbox registration completed but provider reconciliation could not be verified.",provider_order_id:created.orderId},502);
       }
-      const expiresAt=domainInfo.expireDate?new Date(domainInfo.expireDate.replace(" ","T")+"Z").toISOString():null;
-      const registeredAt=domainInfo.createDate?new Date(domainInfo.createDate.replace(" ","T")+"Z").toISOString():new Date().toISOString();
+      const expiresAt=domainInfo.expireDate?new Date(String(domainInfo.expireDate).replace(" ","T")+"Z").toISOString():null;
+      const registeredAt=domainInfo.createDate?new Date(String(domainInfo.createDate).replace(" ","T")+"Z").toISOString():new Date().toISOString();
       const tenantDomainMetadata={sandbox:true,source:"tenant_domain_order",domain_order_id:order.id,provider_order_id:String(created.orderId),provider_request_id:created.requestId||null,registrant_record_id:registrant.id,contact_updated:false,contact_sync_deferred:true};
       const {data:existing}=await admin.from("tenant_domains").select("id").eq("tenant_id",tenantId).eq("hostname",order.hostname).maybeSingle();
       let domainRow;

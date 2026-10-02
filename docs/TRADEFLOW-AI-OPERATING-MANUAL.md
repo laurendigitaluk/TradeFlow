@@ -1937,3 +1937,12 @@ Do not touch LIVE. TEST order camerashack.co.uk is still registrant_details_save
 ## 2026-10-02 Porkbun TEST repair
 
 Observed first sandbox attempt: registration succeeded, contact reconciliation failed with INVALID_INPUT because no existing admin contact was available to carry over. Do not re-register the domain. The provider order is already recorded as 9913828. Version 2 of the registration function reuses that sandbox registration and applies the TradeFlow registrant as the single Porkbun contact payload. The next test is to press Register in TEST sandbox again.
+
+
+## 2026-10-02 Porkbun TEST sandbox registration — operating checkpoint
+
+Registration is now a verified TEST stage: provider order 9913828 is reused, the order is registered, and an active tenant_domains row exists with acquisition source purchased and registrar provider porkbun. porkbun-domain-registration is TEST version 6.
+
+Do not treat contact synchronization as complete. The .co.uk sandbox path deliberately records contact_sync_deferred=true because immediate contact updates produced V096 and repeated registrant notifications. Also do not treat expiry capture as complete: database expires_at and porkbun_expire_date are currently null.
+
+Next work: resolve expiry capture/verification, then test the existing published_site_index hostname routing and provider-neutral website connection architecture. Do not rebuild it and do not touch LIVE.

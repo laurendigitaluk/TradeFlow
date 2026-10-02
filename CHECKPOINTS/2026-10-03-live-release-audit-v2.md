@@ -62,21 +62,30 @@ After database/configuration parity:
 
 **Verification state:** GitHub release prepared. LIVE browser and LIVE database parity are not yet claimed verified.
 
+## LIVE backend verification completed — 2026-10-02
+Direct Supabase access to the LIVE project is now available and was used to inspect and repair the release boundary.
 
-## Post-audit hardening completed
-- Added version-controlled LIVE migration for `platform_ai_settings` and owner AI provider RPCs.
-- Added version-controlled LIVE migration for `assistant_conversations`, `assistant_messages` and the customer/subscriber messaging RPCs.
-- Updated `tradeflow-assistant` source to read provider selection from `platform_ai_settings` rather than the legacy `TRADEFLOW_AI_CONFIG` environment variable.
-- Updated the production Worker configuration and customer Assistant routes.
-- The TEST-only duplicate-serial migration remains excluded.
+Verified LIVE project:
+- Project: TradeFlow Live
+- Ref: gxsrajtqzdjvmceqcpgv
+- Region: eu-west-2
+- Status: ACTIVE_HEALTHY
 
-## Still blocked from direct LIVE verification
-The connected Supabase tool can access TEST but returns a permission error for the LIVE project ref `gxsrajtqzdjvmceqcpgv`. Therefore the following remain unverified and have not been falsely marked complete:
-- applying the two new LIVE migrations;
-- deploying the latest `tradeflow-assistant` Edge Function source to LIVE;
-- deploying any later domain/in-store Edge Functions to LIVE;
-- checking LIVE Auth/Storage/RLS/grants;
-- configuring/validating LIVE Stripe, Resend and provider secrets;
-- confirming the production Cloudflare Worker is serving this `production` branch.
+Verified/applied:
+- `platform_ai_settings` exists with the safe default `active_provider=none` and `allowed_providers=["none"]`.
+- `assistant_conversations` and `assistant_messages` exist with their tenant/customer/subscriber RPC layer.
+- `tradeflow-assistant` Edge Function is ACTIVE with JWT verification enabled and the production provider-neutral source deployed.
+- The LIVE inventory serial index was found non-unique because the TEST duplicate-serial migration had previously been applied. The production unique serial index was restored.
+- TEST-only helper RPCs `test_lab_current_customer` and `test_lab_current_customer_v2` were removed from LIVE.
+- No TEST data was copied into LIVE.
 
-The release is therefore **prepared in GitHub**, not yet claimed as browser-verified LIVE.
+Important:
+- The historical LIVE migration ledger still contains `20261001000002_allow_duplicate_inventory_serial_numbers_with_warning`; the schema effect has been explicitly reversed by the LIVE cleanup migration. The version-controlled production release does not include the TEST migration itself.
+- Supabase security advisors still report broader pre-existing security notices on the large baseline schema. These have not been treated as evidence that the new Assistant changes are unsafe; targeted Assistant tables/RPCs were created with RLS and authenticated-only execution.
+
+Remaining release verification:
+- Cloudflare production Worker deployment still needs browser/live-host verification.
+- LIVE Auth redirect/site URL configuration and external provider secrets need acceptance testing where required.
+- A fresh LIVE subscriber/customer acceptance test remains the next functional step.
+
+Verification state: LIVE database/schema and Assistant Edge Function are now directly verified. Browser/Cloudflare production serving is not yet claimed verified.

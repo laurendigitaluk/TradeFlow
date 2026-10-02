@@ -152,3 +152,7 @@ The project has deliberately stopped treating the Porkbun sandbox `camerashack.c
 6. Create LIVE customer account(s).
 7. Perform final real-world acceptance in LIVE.
 8. Any defects found in LIVE are fixed in TEST and promoted; do not patch LIVE directly.
+
+
+## 2026-10-02 — Customer Assistant version 10
+The TEST `tradeflow-assistant` Edge Function is ACTIVE at version 10 with JWT verification. The customer audience is tenant/customer scoped and read-only. Provider `none` now returns approved-knowledge fallback answers, so the assistant can provide useful help without an external AI provider or usage charge.

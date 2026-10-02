@@ -96,15 +96,19 @@ Deno.serve(async req=>{
     // is the completed registrar operation; contact synchronisation is verified
     // separately after the domain is reconciled.
     const getProviderDomainInfo=async()=>{
-      const providerLookup=await getProviderDomainInfo();
-      const domainInfo=providerLookup.info;
-      if(!providerLookup.ok||!domainInfo?.domain){
-        const reason=providerLookup.reason||"Unable to verify registered domain.";
+      const domainRes=await fetch("https://api.porkbun.com/api/json/v3/domain/get/"+encodeURIComponent(order.hostname),{
+        headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}
+      });
+      const domainInfo=await domainRes.json().catch(()=>null);
+      if(!domainRes.ok||domainInfo?.status!=="SUCCESS"||!domainInfo?.domain){
+        const reason=domainInfo?.code?String(domainInfo.code)+": "+String(domainInfo.message||""):String(domainInfo?.message||"Unable to verify registered domain.");
         return {ok:false,info:null,reason};
       }
       let info=domainInfo;
       if(!info.expireDate||!info.createDate){
-        const listRes=await fetch("https://api.porkbun.com/api/json/v3/domain/listAll",{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
+        const listRes=await fetch("https://api.porkbun.com/api/json/v3/domain/listAll",{
+          headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}
+        });
         const listInfo=await listRes.json().catch(()=>null);
         if(listRes.ok&&listInfo?.status==="SUCCESS"&&Array.isArray(listInfo.domains)){
           const match=listInfo.domains.find((item:any)=>String(item?.domain||"").toLowerCase()===String(order.hostname).toLowerCase());

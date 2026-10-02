@@ -23,8 +23,7 @@ a{display:inline-block;margin-top:18px;padding:11px 16px;border-radius:7px;backg
 <script>
 (()=>{
  const params=new URLSearchParams(location.search);
- const tenantId=params.get('tenant_id');
- if(tenantId)document.getElementById('continue').href='customer-dashboard.html?tenant_id='+encodeURIComponent(tenantId);
+ void params;
  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
  const error=hash.get('error_description')||hash.get('error');
  if(error){

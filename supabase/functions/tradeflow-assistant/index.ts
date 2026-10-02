@@ -322,12 +322,16 @@ async function handleResearch(
   const providerAllowed = config.allowed.includes(config.provider);
 
   if (config.provider === "none") {
+    const fallbackAnswer = knowledge.length
+      ? knowledge.map((entry) => entry.content).join("\n\n")
+      : "I could not find an approved TradeFlow guidance entry that matches that question.";
     return json({
       status: "accepted",
       assistant: {
         mode,
         provider: "none",
         provider_allowed: true,
+        fallback_answer: fallbackAnswer,
         available_providers: config.allowed,
         read_only: true,
         tenant_id: tenantId,

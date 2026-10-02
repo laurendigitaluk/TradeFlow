@@ -74,3 +74,24 @@ Latest documentation commits:
 - Backend manual: `bfeaa4c046b401af37c68d092edf6b938486835c`
 - Human manual: `4f2fa79bfdab5a83910ac878fe34bfdf4a4af102`
 - AI operating manual: `939c5d267bb1003c6346d7055b75182d31608c9b`
+
+## Chat closeout — 2026-10-02
+
+This checkpoint is the authoritative continuation point for the next chat.
+
+The verified TEST business flow ends at:
+`camerashack.co.uk` → £5.27 Stripe TEST payment → `payment_confirmed` → registrant details saved → `registrant_details_saved`.
+
+The browser UI reports that Porkbun sandbox validation passed. In the next chat, independently inspect the validation implementation and TEST logs/database before treating that report as an independently verified registrar API result.
+
+The next unverified business stage is **actual isolated Porkbun sandbox registration**, preceded by a controlled `dryRun: true` validation using the saved registrant record.
+
+Documentation was refreshed at chat close:
+- System handbook: `b43c4f1e4c50e3f76736fe5b4467567e4cdeb878`
+- AI operating manual: `f1d588b0897853ad47e14ed14cba97d714e1ab16`
+- Backend manual: `3dbd30089233bb09654936c9c838d94215a96d9c`
+- Human manual: `608157346b586325912847b552a672d1004b37fc`
+
+Current registrar correction: Porkbun is the active tested provider. Earlier ResellerClub material is historical only and must not be treated as the current implementation.
+
+LIVE remains untouched.

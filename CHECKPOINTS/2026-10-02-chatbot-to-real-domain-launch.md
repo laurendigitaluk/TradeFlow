@@ -118,3 +118,37 @@ Implemented in GitHub: documentation/continuity updates.
 Live/browser verification of the real custom-domain path: NOT YET VERIFIED.
 
 The chatbot itself remains the immediate workstream before returning to domain setup.
+
+
+## 2026-10-02 — Final chatbot boundary work completed in TEST
+
+The project has deliberately stopped treating the Porkbun sandbox `camerashack.co.uk` registration as a useful public-routing test.
+
+### Customer Assistant Phase 2
+- Added `customer-assistant.html` and `customer-assistant.js`.
+- Added clean TEST Worker route `/assistant`.
+- Added Assistant navigation to the customer portal.
+- Updated `tradeflow-assistant` Edge Function to accept `audience=customer`.
+- Customer identity is verified using `public.customers.auth_user_id` plus the tenant supplied by the customer website hostname.
+- Customer context is limited to that customer's buying requests/items, offers, acquisitions, retail orders and returns.
+- Product Research is explicitly unavailable to customers.
+- Customer assistant is read-only.
+- No bank details, unrestricted database access or cross-tenant information is included.
+- TEST Edge Function is now version 8, ACTIVE, JWT verification enabled.
+- AI provider remains `none`; no external AI request is made.
+
+### Documentation boundary
+- Backend User Manual is explicitly owner/platform-operator only.
+- Platform Owner Dashboard already contains the Backend User Manual link.
+- Subscriber dashboard does not link to the Backend User Manual.
+- Subscriber Website Manual now explains the subscriber/customer assistant boundary without exposing backend implementation details.
+
+### Next launch path
+1. Perform the remaining TEST customer-assistant browser check.
+2. Stop spending time on the sandbox public-domain routing.
+3. Purchase/configure the genuine production domain.
+4. Create the LIVE subscriber.
+5. Configure the LIVE subscriber website/domain.
+6. Create LIVE customer account(s).
+7. Perform final real-world acceptance in LIVE.
+8. Any defects found in LIVE are fixed in TEST and promoted; do not patch LIVE directly.

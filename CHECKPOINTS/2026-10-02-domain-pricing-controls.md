@@ -42,7 +42,7 @@ When work resumes, build the domain purchase/payment stage separately:
 Do not connect the current Choose button directly to Porkbun registration.
 
 ## GitHub
-Latest TEST `main` commit at checkpoint: `b04bec6dbe39fed4037000d19dc12fa141232b96`.
+Latest TEST `main` commit at checkpoint: `3cc2208e62702ee68d909a103d646bd985043822`.
 
 Relevant commits immediately before this checkpoint:
 - `749283c6f1738eaec44d49851c65e4d2fa70d35b` — Owner Dashboard domain pricing controls.
@@ -52,6 +52,6 @@ Relevant commits immediately before this checkpoint:
 - `b04bec6dbe39fed4037000d19dc12fa141232b96` — stale registrar wording removed.
 
 ## Supabase
-- Migration applied to TEST: `20261002023000_domain_pricing_controls`.
+- Migrations applied to TEST: `20261002023000_domain_pricing_controls`, followed by `20261002023500_domain_pricing_rls_cleanup`.
 - Porkbun Edge Function: `porkbun-domain-availability`, active version 5, JWT verification enabled.
 - LIVE was not modified.

@@ -1719,3 +1719,18 @@ The Cloudflare TEST Subscriber Assistant is browser-verified through authenticat
 The TEST Worker remains a development/staging environment. The Camera Shack sandbox domain and TEST-only customer URL routing are not being extended further. The next customer-facing validation target is the real LIVE subscriber domain.
 
 The final sequence is: complete the customer-facing assistant/chatbot → configure the real production domain → create/register a real LIVE subscriber → publish the subscriber website → register real customer accounts → run the final customer/subscriber acceptance tests. If defects are found, reproduce and fix them in TEST, then promote the approved release to LIVE. LIVE must not become the place where source code is patched directly.
+
+
+# CURRENT SYSTEM OVERRIDE — 2 OCTOBER 2026
+
+## Environment and release boundary
+The active Cloudflare TEST branch is `cloudflare-test`; TEST Supabase is `twfbmjwwqzxdxvclxbun`; LIVE Supabase is `gxsrajtqzdjvmceqcpgv`; LIVE remains untouched during current chatbot work. Older references to `main` as the current TEST branch are historical and must not override the current environment definition.
+
+## Public customer routing
+Customer-facing tenant context is resolved from the public hostname. Tenant UUIDs remain internal identifiers and must not be required in customer-facing URLs. TEST currently has a single published Camera Shack site, so the TEST Worker has a single-site fallback. LIVE must resolve the tenant from the genuine custom hostname through `published_site_index`.
+
+## Chatbot boundary
+TradeFlow has two read-only assistant audiences: subscriber and customer. Subscriber access is tenant-scoped through `tenant_memberships`. Customer access is tenant + customer scoped through `customers.auth_user_id`. The customer assistant can read only the authenticated customer's own workflow context and approved public/TradeFlow guidance. It cannot perform operational actions.
+
+## Launch sequence
+Complete the customer assistant boundary in TEST → purchase/configure the genuine production domain → create the LIVE subscriber → configure the LIVE subscriber website → create LIVE customer account(s) → run final real-domain acceptance. The Porkbun sandbox registration of `camerashack.co.uk` is not a substitute for a genuine public DNS/Cloudflare test.

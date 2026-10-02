@@ -86,28 +86,62 @@ Deno.serve(async req=>{
       email:registrant.email
     };
 
-    const contactRes=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
-      method:"POST",
-      headers:pbHeaders,
-      body:JSON.stringify({contact,dryRun:true})
-    });
-    const contactPreview=await contactRes.json().catch(()=>null);
-    if(!contactRes.ok||contactPreview?.status!=="SUCCESS"){
-      const reason=contactPreview?.code?String(contactPreview.code)+": "+String(contactPreview.message||""):String(contactPreview?.message||"Porkbun registrant validation failed.");
-      await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant requires provider contact validation: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_dry_run_failed:true}}).eq("id",orderId);
-      return json({error:"Sandbox registration succeeded, but the saved registrant could not be validated for application.",provider_order_id:created.orderId,provider_code:contactPreview?.code||null,provider_message:contactPreview?.message||null},502);
-    }
+    const normalize=(value:unknown)=>String(value??"").trim().toLowerCase();
+    const expectedFirst=normalize(contact.firstName);
+    const expectedLast=normalize(contact.lastName);
+    const expectedEmail=normalize(contact.email);
+    const expectedPostal=normalize(contact.postalCode);
 
-    const contactRes2=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
-      method:"POST",
-      headers:pbHeaders,
-      body:JSON.stringify({contact})
-    });
-    const contactApplied=await contactRes2.json().catch(()=>null);
-    if(!contactRes2.ok||contactApplied?.status!=="SUCCESS"){
-      const reason=contactApplied?.code?String(contactApplied.code)+": "+String(contactApplied.message||""):String(contactApplied?.message||"Porkbun registrant update failed.");
-      await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant could not be applied: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_update_failed:true}}).eq("id",orderId);
-      return json({error:"Sandbox registration succeeded, but applying the saved registrant failed.",provider_order_id:created.orderId,provider_code:contactApplied?.code||null,provider_message:contactApplied?.message||null},502);
+    const getContacts=async()=>{
+      const res=await fetch("https://api.porkbun.com/api/json/v3/domain/getContacts/"+encodeURIComponent(order.hostname),{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
+      const body=await res.json().catch(()=>null);
+      return {res,body};
+    };
+    const matchesSavedRegistrant=(body:any)=>{
+      const current=body?.contacts?.registrant;
+      if(!current) return false;
+      const currentNameFirst=normalize(current.firstName);
+      const currentNameLast=normalize(current.lastName);
+      const currentEmail=normalize(current.email);
+      const currentPostal=normalize(current.postalCode);
+      return currentEmail===expectedEmail && currentPostal===expectedPostal &&
+        currentNameFirst===expectedFirst && currentNameLast===expectedLast;
+    };
+
+    // A .uk/.co.uk registration can already have the correct registrant stored by
+    // Porkbun while the registry side of updateContacts returns V096. Check the
+    // authoritative Porkbun contact record before treating that response as fatal.
+    const existingContacts=await getContacts().catch(()=>null);
+    const contactAlreadyApplied=Boolean(existingContacts?.res?.ok && matchesSavedRegistrant(existingContacts.body));
+
+    if(!contactAlreadyApplied){
+      const contactRes=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
+        method:"POST",
+        headers:pbHeaders,
+        body:JSON.stringify({contact,dryRun:true})
+      });
+      const contactPreview=await contactRes.json().catch(()=>null);
+      if(!contactRes.ok||contactPreview?.status!=="SUCCESS"){
+        const reason=contactPreview?.code?String(contactPreview.code)+": "+String(contactPreview.message||""):String(contactPreview?.message||"Porkbun registrant validation failed.");
+        await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant requires provider contact validation: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_dry_run_failed:true}}).eq("id",orderId);
+        return json({error:"Sandbox registration succeeded, but the saved registrant could not be validated for application.",provider_order_id:created.orderId,provider_code:contactPreview?.code||null,provider_message:contactPreview?.message||null},502);
+      }
+
+      const contactRes2=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
+        method:"POST",
+        headers:pbHeaders,
+        body:JSON.stringify({contact})
+      });
+      const contactApplied=await contactRes2.json().catch(()=>null);
+      if(!contactRes2.ok||contactApplied?.status!=="SUCCESS"){
+        const postFailureContacts=await getContacts().catch(()=>null);
+        const appliedDespiteRegistryError=Boolean(postFailureContacts?.res?.ok && matchesSavedRegistrant(postFailureContacts.body));
+        if(!appliedDespiteRegistryError){
+          const reason=contactApplied?.code?String(contactApplied.code)+": "+String(contactApplied.message||""):String(contactApplied?.message||"Porkbun registrant update failed.");
+          await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant could not be applied: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_update_failed:true}}).eq("id",orderId);
+          return json({error:"Sandbox registration succeeded, but applying the saved registrant failed.",provider_order_id:created.orderId,provider_code:contactApplied?.code||null,provider_message:contactApplied?.message||null},502);
+        }
+      }
     }
 
     const domainRes=await fetch("https://api.porkbun.com/api/json/v3/domain/get/"+encodeURIComponent(order.hostname),{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});

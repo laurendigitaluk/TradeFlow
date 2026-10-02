@@ -89,3 +89,5 @@ The authoritative documentation split is now:
 **Subscriber:** `subscriber-website-manual.html` + `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
 
 **Internal owner/admin/technical continuity:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md` + `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` + `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` + `TRADEFLOW-MASTER-ROADMAP.md`
+
+- `subscriber-dashboard.html` no longer exposes the internal Backend User Manual link to subscribers. The internal manual remains in the repository for owner/admin/technical continuity only.

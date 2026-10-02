@@ -102,3 +102,8 @@ LIVE remains untouched.
 Verified before continuing: GitHub main was at the 2026-10-02 checkpoint commit; TEST Supabase is twfbmjwwqzxdxvclxbun; LIVE was not touched. Order 59409e55-5426-4b0b-9020-4615244e5d83 for camerashack.co.uk is registrant_details_saved, with provider_order_id, provider_domain_id, expiry and tenant_domains reconciliation still empty.
 
 Implementation completed: tracked/deployed Porkbun dry-run v2; added/deployed porkbun-domain-registration v1; added the TEST registration button to the registrant page. No sandbox registration has yet been executed. Next action: use Register in TEST sandbox, then inspect the provider order ID, expiry, registrant contact, tenant_domains row and order status before testing DNS/domain routing.
+
+
+## 2026-10-02 — Porkbun TEST contact-reconciliation failure and repair
+
+First TEST attempt: camerashack.co.uk registration succeeded at Porkbun sandbox with provider order 9913828. TradeFlow then received INVALID_INPUT: No existing admin contact to carry over; provide it explicitly while validating the registrant update. Root cause: our updateContacts request supplied only contacts.registrant instead of Porkbun's singular contact payload. Repair deployed as porkbun-domain-registration Edge Function version 2. It now uses {contact}, reuses the recorded sandbox provider order, and does not attempt a second registration. Next action: press Register in TEST sandbox again and inspect the result.

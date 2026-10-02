@@ -1611,3 +1611,8 @@ Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2G
 ## 2026-10-02 Domain registration user flow
 
 After registrant details are saved, the user sees the Porkbun TEST validation control. A successful dry run reveals a second control, Register in TEST sandbox. This is isolated from LIVE and does not perform a real-world domain registration. The flow is not complete until sandbox registration, registrant application, provider verification, and tenant_domains reconciliation have succeeded.
+
+
+## 2026-10-02 Domain registration test repair
+
+The first sandbox attempt reached registration successfully but stopped at contact reconciliation. The user should retry the existing Register in TEST sandbox action after the function update. The system must not create a second sandbox registration for the same order; it reuses provider order 9913828 and continues contact validation/reconciliation.

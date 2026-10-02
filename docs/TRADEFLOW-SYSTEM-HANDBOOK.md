@@ -1596,3 +1596,8 @@ Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2G
 The paid TEST order for camerashack.co.uk remains at registrant_details_saved with a successful Porkbun dry-run result. The dry-run implementation is now tracked in GitHub and deployed to TEST. A separate JWT-protected porkbun-domain-registration Edge Function is deployed to TEST but has not yet been invoked for sandbox registration. It loads the saved tenant_domain_registrants record server-side, uses the Porkbun sandbox, applies the saved registrant through Porkbun's contact-update API, verifies the domain, and reconciles into tenant_domains. LIVE remains untouched.
 
 Porkbun exposes a provider orderId rather than a separate domain identifier in the registration response. TradeFlow therefore records that value as provider_order_id and leaves provider_domain_id null rather than inventing an identifier.
+
+
+## 2026-10-02 Porkbun TEST contact-reconciliation repair
+
+The first TEST sandbox registration succeeded and returned Porkbun provider order 9913828. Reconciliation then failed because the initial updateContacts payload supplied only a registrant role and the sandbox had no existing admin contact to carry over. Porkbun documents that a single contact payload applies the supplied contact to all four contact roles. The registration function was corrected to use the single contact form, to reuse an already-created sandbox registration instead of registering again, and to allow a failed order with a recorded sandbox provider order to retry contact reconciliation. TEST Edge Function porkbun-domain-registration is now version 2. GitHub commit 685b1137de27e47e1a9278c3db38e98474aa754a. No LIVE change was made.

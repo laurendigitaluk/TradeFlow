@@ -1932,3 +1932,8 @@ Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2G
 ## 2026-10-02 Porkbun TEST registration checkpoint
 
 Do not touch LIVE. TEST order camerashack.co.uk is still registrant_details_saved; the saved registrant exists; no tenant_domains row exists yet; and the order metadata records porkbun_dry_run_would_succeed=true. The next action is the TEST UI button Register in TEST sandbox. The registration function is server-side and uses the saved registrant record, Porkbun sandbox credentials, idempotency, provider verification, and reconciliation before setting the order to registered.
+
+
+## 2026-10-02 Porkbun TEST repair
+
+Observed first sandbox attempt: registration succeeded, contact reconciliation failed with INVALID_INPUT because no existing admin contact was available to carry over. Do not re-register the domain. The provider order is already recorded as 9913828. Version 2 of the registration function reuses that sandbox registration and applies the TradeFlow registrant as the single Porkbun contact payload. The next test is to press Register in TEST sandbox again.

@@ -99,6 +99,7 @@ Deno.serve(async (req: Request) => {
   const { data: tenant, error: tenantError } = await admin.from("tenants").select("id,name").eq("id", tenantId).maybeSingle();
   if (tenantError || !tenant) return fail("TradeFlow business could not be resolved.", 404);
 
+  const knowledge = retrieveKnowledge(question);
   const config = readConfig();
   const providerAllowed = config.allowed.includes(config.provider);
 

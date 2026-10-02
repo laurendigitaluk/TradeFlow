@@ -36,12 +36,41 @@ function showAuth(message=''){
     overlay.innerHTML='<div style="width:min(430px,100%);background:#fff;border-radius:12px;padding:28px;box-shadow:0 20px 70px rgba(0,0,0,.3)"><div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;font-weight:800;color:#c46a2b">TradeFlow platform</div><h2>Owner sign in</h2><p>Sign in with your platform owner account.</p><label>Email<input id="owner-email-input" type="email" autocomplete="username" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:6px"></label><label style="display:block;margin-top:14px">Password<input id="owner-password-input" type="password" autocomplete="current-password" style="display:block;width:100%;box-sizing:border-box;padding:10px;margin-top:6px"></label><button id="owner-signin" type="button" style="margin-top:16px;padding:10px 16px">Sign in</button><div id="owner-auth-error" style="color:#a32929;margin-top:12px"></div></div>';
     document.body.appendChild(overlay);
     $('owner-signin').onclick=signIn;
+    $('owner-forgot').onclick=toggleOwnerReset;
+    $('owner-reset').onclick=requestOwnerPasswordReset;
     $('owner-password-input').onkeydown=e=>{if(e.key==='Enter')signIn()};
   }
   overlay.hidden=false;overlay.style.display='flex';$('owner-auth-error').textContent=message;
 }
 
 function hideAuth(){const el=$('owner-auth');if(el){el.hidden=true;el.style.display='none'}}
+function toggleOwnerReset(){
+  const box=$('owner-reset-box');
+  if(!box)return;
+  box.style.display=box.style.display==='none'?'block':'none';
+  const email=$('owner-email-input')?.value.trim();
+  if(email&&!$('owner-reset-email').value)$('owner-reset-email').value=email;
+  $('owner-reset-status').textContent='';
+}
+async function requestOwnerPasswordReset(){
+  const email=$('owner-reset-email').value.trim();
+  const status=$('owner-reset-status'),button=$('owner-reset');
+  if(!email){status.textContent='Enter the owner email address.';return}
+  button.disabled=true;status.textContent='Sending reset email…';
+  try{
+    const redirectTo=new URL('/owner-reset-password',location.origin).href;
+    const response=await fetch(`${SUPABASE_URL}/auth/v1/recover`,{
+      method:'POST',
+      headers:{apikey:KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,redirect_to:redirectTo})
+    });
+    const body=await response.text();
+    let data=null;try{data=body?JSON.parse(body):null}catch{}
+    if(!response.ok)throw Error(data?.msg||data?.message||data?.error_description||body||`HTTP ${response.status}`);
+    status.textContent='If that email belongs to the TradeFlow platform owner, a password reset email has been sent.';
+  }catch(e){status.textContent=e.message||String(e)}
+  finally{button.disabled=false}
+}
 
 async function establish(){
   const user=await request('/auth/v1/user');

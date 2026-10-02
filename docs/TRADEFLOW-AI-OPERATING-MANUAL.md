@@ -2166,3 +2166,13 @@ The provider selector supports these reserved choices: `none`, `gemma`, `openai`
 
 This is a gateway foundation, not a completed conversational AI feature. Provider adapters, approved documentation retrieval, usage accounting, subscriber settings and browser chat UI remain separate implementation/test stages.
 \n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Cloudflare Assistant verification\n\nThis section is authoritative for the current Subscriber Assistant work. The active Cloudflare TEST branch is **cloudflare-test**. Older sections that state main is the active TEST branch are historical continuity records and must not be used to select the branch for this workstream.\n\nVerified in TEST:\n- Cloudflare Worker: tradeflow-test.\n- Subscriber authentication on the Worker is working.\n- Root cause of the earlier 401 was runtime environment detection: the Worker hostname was not recognised as TEST by subscriber-auth.js, so the wrong runtime branch was selected.\n- The TEST Worker hostname is now explicitly recognised: tradeflow-test.leannelaurenlowe.workers.dev.\n- Subscriber Assistant authentication and tenant context were browser-tested successfully for the Camerashack TEST tenant.\n- A read-only Assistant request reached tradeflow-assistant and retrieved approved knowledge while provider=none.\n- No external AI provider is currently connected.\n\nApproved knowledge has now been expanded to cover settings, offers/payment, customer portal boundaries, selling workflow and published subscriber websites. This remains static approved knowledge; it does not grant unrestricted database access.\n\nNext controlled stage: verify the expanded knowledge in the browser, then implement the separate Product Research evidence workflow. Do not enable a paid/external AI provider merely to test knowledge retrieval.\n
+
+## 2026-10-02 — Launch sequence decision
+
+The current customer-facing TEST URL/tenant-ID routing experiment is frozen. Do not spend further work making the TEST Worker URL resemble a production subscriber domain.
+
+The remaining AI launch work is the **customer-facing assistant/chatbot** and the final provider connection. The subscriber Assistant remains a separate authenticated business tool.
+
+After the chatbot is complete, the project moves to the LIVE launch sequence: create/register a real subscriber in LIVE, configure the subscriber's real domain, register real customer accounts against that LIVE subscriber, and perform the final customer/subscriber acceptance tests on the real domain. Fixes must still be made in TEST first and then promoted; LIVE is not a development environment.
+
+Personal Gemma remains separate from TradeFlow customer/subscriber AI.

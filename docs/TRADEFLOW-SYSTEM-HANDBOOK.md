@@ -1712,3 +1712,10 @@ The current `camerashack.co.uk` domain is a Porkbun sandbox registration. It can
 ## 2026-10-02 — Current TEST Assistant milestone
 
 The Cloudflare TEST Subscriber Assistant is browser-verified through authentication, tenant resolution and read-only approved knowledge retrieval with provider=none. The active TEST deployment branch for this Cloudflare workstream is cloudflare-test; older main=TEST references are historical. The next pre-launch AI stage is controlled Product Research evidence workflow, followed by the separate customer read-only assistant. LIVE remains untouched.
+
+
+## 2026-10-02 — Final launch direction
+
+The TEST Worker remains a development/staging environment. The Camera Shack sandbox domain and TEST-only customer URL routing are not being extended further. The next customer-facing validation target is the real LIVE subscriber domain.
+
+The final sequence is: complete the customer-facing assistant/chatbot → configure the real production domain → create/register a real LIVE subscriber → publish the subscriber website → register real customer accounts → run the final customer/subscriber acceptance tests. If defects are found, reproduce and fix them in TEST, then promote the approved release to LIVE. LIVE must not become the place where source code is patched directly.

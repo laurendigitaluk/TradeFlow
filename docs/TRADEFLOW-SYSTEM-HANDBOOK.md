@@ -1620,3 +1620,22 @@ Expiry persistence remains a separate verification item. The current implementat
 TEST Edge Function `porkbun-domain-registration` is now version 7. The registered-state path is reconciliation-only when an existing Porkbun sandbox provider order is present; it cannot create a second registration. The TEST registrant page now exposes **Refresh provider registration details** for the already-registered order.
 
 Before website/domain routing work begins, verify the provider expiry and both TradeFlow expiry fields in TEST. LIVE remains untouched.
+
+
+## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
+
+The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
+
+- Provider order: `9913828`.
+- TradeFlow order status: `registered`.
+- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
+- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
+- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
+- Provider expiry metadata is populated.
+- No second sandbox registration was created during reconciliation.
+
+The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
+
+Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
+
+**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.

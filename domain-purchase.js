@@ -9,10 +9,21 @@ async function check(tld,domain,auth){
 }
 function render(results){
   $('results').innerHTML=results.map(r=>{
-    const status=r.available===true||r.status==='available'?'Available':r.available===false||r.status==='unavailable'?'Unavailable':r.status==='error'?'Provider request failed':'Availability check unavailable';
-    const cls=(r.available===true||r.status==='available')?'status-pill':(r.available===false||r.status==='unavailable')?'status-pill muted':r.status==='error'?'status-pill warning':'status-pill warning';
-    return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div><p class="small">'+(r.status==='unknown'&&!('available' in r)?'The registry did not return a definitive answer. Try the search again later.':r.status==='error'?esc(r.error||'The provider request failed without a message.'):'TradeFlow has not opened purchasing for this result yet.')+'</p></div>';
+    const available=r.available===true||r.status==='available';
+    const unavailable=r.available===false||r.status==='unavailable';
+    const status=available?'Available':unavailable?'Unavailable':r.status==='error'?'Provider request failed':'Availability check unavailable';
+    const cls=available?'status-pill':unavailable?'status-pill muted':r.status==='error'?'status-pill warning':'status-pill warning';
+    const price=available&&r.price!=null?'<p class="small"><strong>Registration price:</strong> '+esc(String(r.currency||'USD'))+' '+esc(Number(r.price).toFixed(2))+'</p>':'';
+    const action=available?'<button type="button" class="domain-select-button" data-domain="'+esc(r.domain)+'">Choose this domain</button>':'';
+    const detail=r.status==='unknown'&&!('available' in r)?'The registry did not return a definitive answer. Try the search again later.':r.status==='error'?esc(r.error||'The provider request failed without a message.'):'';
+    return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div>'+price+(detail?'<p class="small">'+detail+'</p>':'')+(action?'<div class="actions" style="margin-top:12px">'+action+'</div>':'')+'</div>';
   }).join('');
+  document.querySelectorAll('.domain-select-button').forEach(button=>{
+    button.onclick=()=>{
+      const domain=button.dataset.domain||'';
+      $('message').textContent='Selected '+domain+'. The purchase step is not enabled yet.';
+    };
+  });
 }
 (async()=>{
  try{

@@ -21,6 +21,66 @@ This handbook records TradeFlow architecture, security boundaries, workflow rule
 
 Authority order: **current GitHub code + current Supabase state + structured project memory/checkpoints + verified live behaviour**. A Git commit is implementation evidence, not proof of live behaviour.
 
+
+
+## CURRENT PROJECT STATE — 2 OCTOBER 2026
+
+**This section overrides older environment statements where they conflict.**
+
+### Current TEST/LIVE boundary
+- Repository: `laurendigitaluk/TradeFlow`.
+- Active TEST branch for the current Cloudflare work: `cloudflare-test`.
+- LIVE release branch: `production`.
+- TEST Supabase: `twfbmjwwqzxdxvclxbun`.
+- LIVE Supabase: separate production project `gxsrajtqzdjvmceqcpgv5`.
+- TEST Cloudflare Worker: `tradeflow-test`.
+- Never modify LIVE while completing TEST work.
+- Approved changes are fixed and verified in TEST first, then promoted to LIVE.
+
+### Current customer-facing architecture
+Customer-facing tenant identity is derived from the public hostname. Customer URLs must not expose internal tenant UUIDs.
+
+TEST currently has one published site, CameraShack, at `camerashack.co.uk`. The TEST Worker has a single-site fallback because the real custom domain is not yet attached to the TEST Worker.
+
+The intended LIVE customer experience is:
+
+**subscriber-selected domain → public website → Customer Login / Create Account → customer portal**
+
+Subscriber sessions and customer sessions are separate. A subscriber being signed in must never cause Customer Login to open the subscriber dashboard.
+
+### Clean TEST routes now implemented
+- `/` — public website.
+- `/login` — customer login/create-account portal.
+- `/basket` — customer basket.
+- `/email-confirmed` — customer email confirmation.
+- `/reset-password` — customer password reset.
+
+Preview-only subscriber workflows may still use internal tenant identifiers; these are not customer-facing URLs.
+
+### Domain registration and publishing
+The TEST domain-purchase workflow has been verified through Porkbun sandbox registration, Stripe TEST payment, registrant details and provider registration reconciliation. TEST database expiry is persisted in both domain-order and tenant-domain records.
+
+The published TEST site index currently contains exactly one CameraShack row. A real public DNS/Cloudflare custom-domain launch has not yet been verified.
+
+### AI / chatbot boundary
+Personal Gemma remains a separate research tool for adding evidence to the Quote/Buying Research system. It is not TradeFlow's subscriber/customer chatbot.
+
+TradeFlow's assistant uses a provider-neutral gateway. The subscriber-facing assistant is being completed as the final pre-launch feature. Provider choices are configurable; no provider credentials have been added and the TEST provider remains `none` unless deliberately changed.
+
+Product Research is implemented in TEST with explicit evidence approval before evidence is saved to `tenant_buying_research`. Research must not silently change a buying valuation.
+
+### Final pre-LIVE sequence
+1. Finish and acceptance-test the clean TEST customer website boundary.
+2. Complete and test the final TradeFlow Assistant/chatbot.
+3. Complete final TEST acceptance across the core workflows.
+4. Record a release checkpoint.
+5. Promote the tested release to `production`.
+6. Configure the real subscriber domain/Cloudflare custom domain.
+7. Run a clean LIVE smoke/acceptance test.
+
+Do not fix defects directly in LIVE. A LIVE defect returns to TEST, is repaired and verified there, then the tested release is promoted again.
+
+
 ## 2. Architecture baseline
 TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary tenant boundary.
 

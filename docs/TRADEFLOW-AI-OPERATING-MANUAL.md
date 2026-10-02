@@ -2210,3 +2210,23 @@ The TradeFlow Assistant is provider-neutral. The platform owner controls which A
 `None` is the safe knowledge-only mode. Enabling a provider does not add credentials and does not make a browser-side API call. Provider credentials must remain server-side. The architecture deliberately leaves open two future deployment models: a centrally managed provider (including a possible Gemma server/PC) or a subscriber-supplied provider connection.
 
 The Owner Dashboard stores only provider availability/selection. It does not store provider API secrets. The `tradeflow-assistant` gateway reads the platform AI configuration server-side and remains tenant-scoped. Provider-specific adapters are not activated until their credentials, limits and request/response contracts are deliberately configured.
+
+
+## Customer ↔ Subscriber Assistant Messaging — 2026-10-02
+
+TradeFlow now supports a provider-neutral customer-to-business assistant handoff.
+
+- Customers use **Customer Assistant** from the customer portal.
+- The existing AI/knowledge gateway remains provider-neutral and can continue to operate with no external AI provider.
+- If the assistant cannot provide an approved answer, the customer can choose **Send this question to the business**.
+- Customer messages are stored in tenant-isolated assistant conversations.
+- Subscriber users with an active tenant membership can open **TradeFlow Assistant → Customer Questions**.
+- Subscriber owner/admin/staff users can read the conversation, reply to the customer, and close the conversation.
+- Customer replies and subscriber replies remain scoped to the same tenant and customer conversation.
+- Provider credentials are not stored in the customer or subscriber browser UI.
+- The messaging layer does not require Gemma, OpenAI, Anthropic or Google to be enabled; those remain optional provider choices controlled by the platform owner.
+
+Security boundary:
+- Customer RPCs verify the authenticated user owns the customer record for the tenant.
+- Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
+- Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.

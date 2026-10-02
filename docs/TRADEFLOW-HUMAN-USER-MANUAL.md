@@ -1616,3 +1616,10 @@ After registrant details are saved, the user sees the Porkbun TEST validation co
 ## 2026-10-02 Domain registration test repair
 
 The first sandbox attempt reached registration successfully but stopped at contact reconciliation. The user should retry the existing Register in TEST sandbox action after the function update. The system must not create a second sandbox registration for the same order; it reuses provider order 9913828 and continues contact validation/reconciliation.
+
+
+## 2026-10-02 Porkbun TEST sandbox registration — user-facing result
+
+The TEST sandbox registration for camerashack.co.uk completed successfully and TradeFlow now reports the order as registered. Porkbun provider order 9913828 was reused rather than creating another registration. The domain is present as an active purchased domain in TEST. The browser expiry message should not yet be treated as authoritative because the database currently has no persisted expiry date.
+
+The .co.uk contact-application step is intentionally deferred for separate verification after registration; repeated immediate contact updates previously caused V096 and repeated registrant notifications.

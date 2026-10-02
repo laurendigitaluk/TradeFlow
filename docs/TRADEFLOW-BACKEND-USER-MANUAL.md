@@ -869,3 +869,16 @@ Product Research is a controlled feature: research a specific product, present e
 AI and research usage must be measurable and controllable by tenant/provider. Final customer-facing pricing, allowances and limits must be documented before public launch; do not invent commercial figures.
 
 The Human User Manual must explain these rules in plain language. The Backend User Manual must document the operational controls and security boundary.
+
+
+## 2026-10-02 — AI provider control foundation
+
+TradeFlow TEST now has a provider-neutral `tradeflow-assistant` Edge Function. It authenticates the subscriber, verifies active tenant membership and exposes only a read-only assistant boundary.
+
+The platform provider setting is server-side and can select from the reserved provider options `none`, `gemma`, `openai`, `anthropic`, `google` or `subscriber`. Changing the provider configuration does not require a subscriber website or chatbot code change.
+
+Current TEST provider: **none**. No external AI provider is connected.
+
+Gemma remains Gary's separate personal Quote System research system. It must not be connected to the TradeFlow subscriber or customer websites. If Gemma is later selected for TradeFlow, a separate TradeFlow-reachable Gemma instance must be used.
+
+The gateway foundation is implemented; provider adapters, knowledge retrieval, usage accounting and subscriber-facing chat remain to be built and tested.

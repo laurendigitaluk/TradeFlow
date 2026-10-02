@@ -1946,3 +1946,13 @@ Registration is now a verified TEST stage: provider order 9913828 is reused, the
 Do not treat contact synchronization as complete. The .co.uk sandbox path deliberately records contact_sync_deferred=true because immediate contact updates produced V096 and repeated registrant notifications. Also do not treat expiry capture as complete: database expires_at and porkbun_expire_date are currently null.
 
 Next work: resolve expiry capture/verification, then test the existing published_site_index hostname routing and provider-neutral website connection architecture. Do not rebuild it and do not touch LIVE.
+
+
+
+## 2026-10-02 — Current Porkbun TEST expiry-reconciliation rule
+
+When continuing the Porkbun domain-registration workflow, treat the existing sandbox registration as authoritative: provider order 9913828 is already registered for the TEST order. Never re-register it merely to recover missing expiry data.
+
+The current Edge Function is version 7. For an already-registered sandbox order it performs reconciliation only. It reads the Porkbun domain record and falls back to `/domain/listAll` when the direct lookup lacks `expireDate` or `createDate`. Persist only provider-returned expiry data; do not calculate or invent a date.
+
+Immediate verification target is the TEST order's two `expires_at` fields plus the Porkbun expiry metadata. After expiry is verified, continue with the existing provider-neutral domain connection and `published_site_index` routing. Do not rebuild the domain foundation and do not touch LIVE.

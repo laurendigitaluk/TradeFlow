@@ -347,12 +347,12 @@ async function handleResearch(
         question,
         knowledge,
       },
-      next_step: "No AI provider is enabled. Change the server-side TRADEFLOW_AI_CONFIG setting to select an approved provider; subscriber code does not need to change.",
+      next_step: "No AI provider is enabled. A platform owner can select an approved provider in the Owner Dashboard; subscriber code does not need to change.",
     });
   }
 
   if (!providerAllowed) {
-    return fail("The configured AI provider is not allowed by the server configuration.", 503);
+    return fail("The configured AI provider is not enabled by the platform owner.", 503);
   }
 
   const adapter = getProviderAdapter(config.provider);

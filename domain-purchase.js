@@ -32,6 +32,19 @@ function buildSearchDomains(raw){
   };
 }
 
+async function startDomainCheckout(domain,auth){
+  $('message').textContent='Rechecking domain and preparing secure checkout…';
+  const r=await fetch(SUPABASE_URL+'/functions/v1/create-domain-checkout-session',{
+    method:'POST',
+    headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token,'Content-Type':'application/json'},
+    body:JSON.stringify({tenant_id:auth.tenantId,domain})
+  });
+  const text=await r.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
+  if(!r.ok)throw Error(body?.error||body?.message||text||('HTTP '+r.status));
+  if(!body?.checkout_url)throw Error('Secure checkout could not be created.');
+  window.location.href=body.checkout_url;
+}
+
 async function checkMany(domains,auth){
   const r=await fetch(SUPABASE_URL+'/functions/v1/porkbun-domain-availability',{
     method:'POST',
@@ -58,7 +71,7 @@ function wireSelection(){
   document.querySelectorAll('.domain-select-button').forEach(button=>{
     button.onclick=()=>{
       const domain=button.dataset.domain||'';
-      $('message').textContent='Selected '+domain+'. The purchase step is not enabled yet.';
+      startDomainCheckout(domain,window.__tradeflowDomainAuth).catch(err=>{$('message').textContent=err.message||String(err);});
     };
   });
 }
@@ -81,6 +94,7 @@ function render(exactResults,suggestionResults){
 (async()=>{
  try{
   const auth=await window.tradeflowSubscriberAuthReady;
+  window.__tradeflowDomainAuth=auth;
   $('business-name').textContent=auth.tenants?.[auth.tenantId]||'Buy a domain';
   $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
   $('domain-search-form').onsubmit=async e=>{

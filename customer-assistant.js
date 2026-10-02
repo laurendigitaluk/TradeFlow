@@ -2,32 +2,15 @@ let customerAssistantReady=false;
 window.addEventListener('DOMContentLoaded',async()=>{
  const status=document.getElementById('assistant-status'),form=document.getElementById('assistant-form'),q=document.getElementById('assistant-question'),messages=document.getElementById('messages');
  const add=(text,kind='system')=>{const el=document.createElement('div');el.className='assistant-message '+kind;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;};
- const ready=window.tradeflowCustomerAuthReady?await window.tradeflowCustomerAuthReady:null;
- const tenantId=window.TRADEFLOW_CUSTOMER_TENANT_ID||'';
- const raw=sessionStorage.getItem('tradeflow_customer_session:'+tenantId)||'';let stored=null;try{stored=raw?JSON.parse(raw):null}catch{} const token=stored?.access_token||window.tradeflowPendingAuthSession?.access_token||'';
- const key=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'';
- if(!tenantId||!token||!key){status.textContent='Sign in to use the customer assistant.';return;}
- customerAssistantReady=true;
+ const ready=window.tradeflowCustomerAuthReady?await window.tradeflowCustomerAuthReady:null,tenantId=window.TRADEFLOW_CUSTOMER_TENANT_ID||'';
+ const raw=sessionStorage.getItem('tradeflow_customer_session:'+tenantId)||'';let stored=null;try{stored=raw?JSON.parse(raw):null}catch{}
+ const token=stored?.access_token||window.tradeflowPendingAuthSession?.access_token||'',key=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'';
+ if(!tenantId||!token||!key){status.textContent='Sign in to use the customer assistant.';return;} customerAssistantReady=true;
+ const api=async(name,body={})=>{const r=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(body)});const t=await r.text();let b={};try{b=t?JSON.parse(t):{}}catch{}if(!r.ok)throw Error(b.message||b.error||t||'Request failed');return b;};
+ const addBusinessButton=()=>{let b=document.getElementById('send-to-business');if(b)return b;b=document.createElement('button');b.id='send-to-business';b.type='button';b.textContent='Send this question to the business';b.style.cssText='margin-top:10px;border:1px solid #2d7a4d;border-radius:7px;padding:10px 14px;background:#f1f8f3;color:#1f6a3d;font-weight:800;cursor:pointer';form.parentElement.insertBefore(b,form.nextSibling);b.onclick=async()=>{const last=[...messages.querySelectorAll('.assistant-message.user')].pop()?.textContent||'';if(!last)return;b.disabled=true;b.textContent='Sending…';try{await api('customer_send_assistant_message',{p_tenant_id:tenantId,p_body:last});add('Your question has been sent to the business. They can reply through their TradeFlow dashboard.','system');b.remove();}catch(e){add(e.message||String(e),'system');b.disabled=false;b.textContent='Send this question to the business';}};return b;};
+ const loadConversation=async()=>{try{const data=await api('customer_get_assistant_conversation',{p_tenant_id:tenantId});const rows=data?.messages||[];if(rows.length){messages.innerHTML='';rows.forEach(m=>add(m.body,m.sender_type==='customer'?'user':'system'));}return rows;}catch{return[];}};
  status.textContent='Customer assistant connected.';
- try{
-  const p=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/tradeflow-assistant',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:tenantId,question:'Summarise my current account status.',mode:'help',audience:'customer'})});
-  const b=await p.json().catch(()=>({}));
-  const ctx=b?.assistant?.customer_context;
-  document.getElementById('status-selling').textContent=String((ctx?.buying_requests||[]).length);
-  document.getElementById('status-orders').textContent=String((ctx?.retail_orders||[]).length);
-  document.getElementById('status-returns').textContent=String((ctx?.returns||[]).length);
- }catch{}
- form.addEventListener('submit',async e=>{
-  e.preventDefault();const question=q.value.trim();if(!question)return;
-  add(question,'user');q.value='';status.textContent='Checking your account and approved TradeFlow guidance…';
-  try{
-   const r=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/tradeflow-assistant',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:tenantId,question,mode:'help',audience:'customer'})});
-   const b=await r.json().catch(()=>({}));if(!r.ok)throw Error(b.error||'Assistant request failed.');
-   const k=b?.assistant?.knowledge||[];const ctx=b?.assistant?.customer_context;
-   if(b?.assistant?.fallback_answer)add(b.assistant.fallback_answer,'system');
-   else add('The customer assistant gateway is connected, but no approved guidance matched this question.','system');
-   if(ctx){document.getElementById('status-selling').textContent=String((ctx.buying_requests||[]).length);document.getElementById('status-orders').textContent=String((ctx.retail_orders||[]).length);document.getElementById('status-returns').textContent=String((ctx.returns||[]).length);}
-   status.textContent='Gateway response received. Provider: none.';
-  }catch(err){add(err.message||String(err),'system');status.textContent='Assistant request failed.';}
- });
+ try{const p=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/tradeflow-assistant',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:tenantId,question:'Summarise my current account status.',mode:'help',audience:'customer'})});const b=await p.json().catch(()=>({}));const ctx=b?.assistant?.customer_context;document.getElementById('status-selling').textContent=String((ctx?.buying_requests||[]).length);document.getElementById('status-orders').textContent=String((ctx?.retail_orders||[]).length);document.getElementById('status-returns').textContent=String((ctx?.returns||[]).length);}catch{}
+ await loadConversation();
+ form.addEventListener('submit',async e=>{e.preventDefault();const question=q.value.trim();if(!question)return;add(question,'user');q.value='';status.textContent='Checking your account and approved TradeFlow guidance…';try{const r=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/tradeflow-assistant',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:tenantId,question,mode:'help',audience:'customer'})});const b=await r.json().catch(()=>({}));if(!r.ok)throw Error(b.error||'Assistant request failed.');const ctx=b?.assistant?.customer_context;if(ctx){document.getElementById('status-selling').textContent=String((ctx.buying_requests||[]).length);document.getElementById('status-orders').textContent=String((ctx.retail_orders||[]).length);document.getElementById('status-returns').textContent=String((ctx.returns||[]).length);}if(b?.assistant?.fallback_answer){add(b.assistant.fallback_answer,'system');document.getElementById('send-to-business')?.remove();}else{add('I could not find an approved answer for that question. You can send it directly to the business and they can reply through TradeFlow.','system');addBusinessButton();}status.textContent='Customer assistant response received.';}catch(err){add(err.message||String(err),'system');status.textContent='Assistant request failed.';}});
 });

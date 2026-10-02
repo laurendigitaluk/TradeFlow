@@ -1777,3 +1777,16 @@ Gemma used on Gary's own desktop remains a separate personal research tool for t
 
 If TradeFlow later uses a subscriber-owned AI connection, the subscriber will be responsible for that provider's own usage charges. TradeFlow will keep provider credentials server-side.
 \n\n## 2026-10-02 — CURRENT TEST: TradeFlow Assistant\n\nThe TEST Subscriber Assistant is now available to authenticated subscriber users. It is initially read-only and uses approved TradeFlow guidance. It does not independently change products, prices, orders, payments or other business records.\n\nIf no AI provider is enabled, the Assistant can still confirm that approved TradeFlow guidance matches the question, but it will not generate an external AI answer. No subscriber needs to connect Gary's personal Gemma system. If a subscriber-owned AI connection is introduced later, its provider usage costs remain the subscriber's responsibility.\n
+
+## CURRENT LAUNCH DIRECTION — 2 October 2026
+
+### Customer-facing boundary
+The current goal is to stop spending TEST effort on the sandbox `camerashack.co.uk` domain as a public-routing test. That domain is a Porkbun sandbox registration and cannot prove real public DNS/Cloudflare behaviour. The next launch path is to complete the customer-facing assistant in TEST, then use a genuine LIVE subscriber and genuine customer accounts against the real customer domain.
+
+### Customer Assistant
+Phase 2 is the customer read-only assistant. It is tenant-scoped and customer-scoped. It may use approved TradeFlow guidance plus the signed-in customer's own workflow context: buying requests/items, offers, acquisitions, retail orders and returns. It must not expose another customer, another tenant, bank details, unrestricted database records or operational subscriber-only information.
+
+The subscriber assistant remains the business-workspace assistant. The customer's assistant does not replace the normal Customer Portal; it provides an additional way to understand the customer's own status and TradeFlow process.
+
+### TEST → LIVE release rule
+The intended release path is: finish and verify the chatbot boundary in TEST → purchase/configure the genuine production domain → create a LIVE subscriber → configure that subscriber's real customer-facing website → create LIVE customer accounts → perform final acceptance in LIVE. LIVE fixes are not made directly; defects are corrected in TEST and promoted through the release path.

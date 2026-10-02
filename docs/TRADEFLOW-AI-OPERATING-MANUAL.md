@@ -2197,3 +2197,7 @@ The server-side AI provider remains `none`. No external AI request is being made
 
 ## Launch decision
 Do not spend further work trying to make the Porkbun sandbox domain prove public DNS/Cloudflare routing. Finish the customer assistant boundary, then move to the genuine LIVE domain/subscriber/customer launch path. TEST remains the place for code fixes; LIVE becomes the final real-world acceptance environment once the genuine domain is configured.
+
+
+## 2026-10-02 — Customer Assistant gateway version 10
+The TEST `tradeflow-assistant` Edge Function is now version 10 and ACTIVE with JWT verification enabled. Customer requests are tenant + customer scoped. When the provider is `none`, the gateway returns an approved-knowledge fallback answer rather than making an external AI request. This provides useful deterministic help while keeping external AI usage at zero.

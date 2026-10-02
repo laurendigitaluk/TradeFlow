@@ -92,9 +92,10 @@ Deno.serve(async req=>{
     // emails) on every retry. For this isolated sandbox test, registration itself
     // is the completed registrar operation; contact synchronisation is verified
     // separately after the domain is reconciled.
+    const normalizedTld=String(order.tld||"").trim().toLowerCase().replace(/^\./,"");
     const deferSandboxUkContactSync=Boolean(
       order.metadata?.porkbun_sandbox===true &&
-      (order.tld==="co.uk" || order.tld==="uk")
+      (normalizedTld==="co.uk" || normalizedTld==="uk")
     );
     if(deferSandboxUkContactSync){
       const finalMetadata={...orderMetadata,porkbun_contact_sync_deferred:true,porkbun_contact_sync_reason:"Porkbun/Nominet V096 immediately after sandbox registration"};

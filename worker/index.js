@@ -37,10 +37,11 @@ export default {
     if (env.TRADEFLOW_ENV === "test" && testKey) {
       const marker = ["U", "K", "V"].join("");
       const legacyMarker = ["K", "V"].join("");
-      const legacyKey = testKey.includes(marker)
-        ? testKey.replace(marker, legacyMarker)
-        : testKey;
-      transformed = replaceAll(transformed, legacyKey, testKey);
+      const activeTestKey = testKey.includes(marker)
+        ? testKey
+        : testKey.replace(legacyMarker, marker);
+      const legacyKey = activeTestKey.replace(marker, legacyMarker);
+      transformed = replaceAll(transformed, legacyKey, activeTestKey);
     }
 
     const headers = new Headers(asset.headers);

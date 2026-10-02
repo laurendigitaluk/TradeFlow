@@ -247,3 +247,36 @@ The next immediate objective is:
 **Porkbun TEST sandbox registration for the already-paid `camerashack.co.uk` order, beginning with a dry-run validation.**
 
 LIVE remains untouched.
+
+## Chat-close documentation state — 2026-10-02
+
+Before doing any new work, treat the current TEST state as authoritative rather than relying on older registrar references elsewhere in the repository.
+
+The current registrar is **Porkbun**. ResellerClub and GoDaddy are not current TradeFlow registrar providers. Manual shipping remains final; do not revive Parcel2Go API work.
+
+The payment and registrant stages are closed test stages:
+- `camerashack.co.uk`
+- £5.27 GBP TEST Stripe payment
+- `payment_confirmed`
+- registrant record saved
+- `registrant_details_saved`
+
+The browser currently reports Porkbun sandbox validation passed. The next chat must independently inspect the implementation/logs before treating that as proof of a successful Porkbun API dry run.
+
+### Exact next objective
+
+Build/verify the smallest TEST-only Porkbun registration path:
+
+**saved paid order → load saved registrant → Porkbun registration requirements → `dryRun: true` → sandbox registration → `tenant_domains` reconciliation → `registered` → existing domain connection/DNS test.**
+
+Do not repeat Stripe payment testing unless a dependency fails. Do not make a real registrar registration.
+
+### Documentation state
+
+At chat close, the authoritative manuals were updated:
+- System handbook commit: `b43c4f1e4c50e3f76736fe5b4467567e4cdeb878`
+- AI operating manual commit: `f1d588b0897853ad47e14ed14cba97d714e1ab16`
+- Backend manual commit: `3dbd30089233bb09654936c9c838d94215a96d9c`
+- Human manual commit: `608157346b586325912847b552a672d1004b37fc`
+
+The next chat should update these manuals and the checkpoint again after the sandbox-registration stage is actually verified.

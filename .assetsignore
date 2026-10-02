@@ -1,0 +1,14 @@
+.assetsignore
+wrangler.json
+wrangler.jsonc
+wrangler.toml
+worker/
+docs/
+CHECKPOINTS/
+supabase/
+.github/
+*.md
+*.sql
+*.map
+.env*
+.dev.vars*

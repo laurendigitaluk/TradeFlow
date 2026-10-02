@@ -4,7 +4,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
  const add=(text,kind='system')=>{const el=document.createElement('div');el.className='assistant-message '+kind;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight;};
  const ready=window.tradeflowCustomerAuthReady?await window.tradeflowCustomerAuthReady:null;
  const tenantId=window.TRADEFLOW_CUSTOMER_TENANT_ID||'';
- const token=ready?.access_token||ready?.session?.access_token||'';
+ const raw=sessionStorage.getItem('tradeflow_customer_session:'+tenantId)||'';let stored=null;try{stored=raw?JSON.parse(raw):null}catch{} const token=stored?.access_token||window.tradeflowPendingAuthSession?.access_token||'';
  const key=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'';
  if(!tenantId||!token||!key){status.textContent='Sign in to use the customer assistant.';return;}
  customerAssistantReady=true;

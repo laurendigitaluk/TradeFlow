@@ -2,7 +2,7 @@ const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';const $=id=>docume
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 const TLDs=['co.uk','com','uk'];
 async function check(tld,domain,auth){
-  const r=await fetch(SUPABASE_URL+'/functions/v1/resellerclub-domain-availability',{method:'POST',headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:auth.tenantId,domain_name:domain,tld})});
+  const r=await fetch(SUPABASE_URL+'/functions/v1/porkbun-domain-availability',{method:'POST',headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({domain})});
   const text=await r.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
   if(!r.ok)throw Error(body?.error||body?.message||text||('HTTP '+r.status));
   return body;
@@ -26,7 +26,7 @@ function render(results){
    try{
     const results=[];
     for(const tld of TLDs){
-      try{results.push(await check(tld,domain,auth));}
+      try{results.push(await check(tld,domain+'.'+tld,auth));}
       catch(err){results.push({domain:domain+'.'+tld,status:'error',error:err.message});}
     }
     render(results);$('message').textContent='Availability check complete.';

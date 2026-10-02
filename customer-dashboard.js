@@ -28,7 +28,7 @@ function restore(){
  }catch{}
 }
 async function profileCheck(){const p=await rpc('customer_get_profile');if(!p)return false;profile=Array.isArray(p)?p[0]:p;return Boolean(profile)}
-async function loadBrand(){try{const r=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=Array.isArray(r)?r[0]:r;const n=p?.business_name||'Customer Portal';$('brand-name').textContent=n;document.title=n+' Customer Portal';if(p?.logo_url)$('brand-logo').innerHTML='<img src="'+esc(p.logo_url)+'" alt="">';$('brand').href='public-site.html'}catch{}}
+async function loadBrand(){try{const r=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=Array.isArray(r)?r[0]:r;const n=p?.business_name||'Customer Portal';$('brand-name').textContent=n;document.title=n+' Customer Portal';if(p?.logo_url)$('brand-logo').innerHTML='<img src="'+esc(p.logo_url)+'" alt="">';$('brand').href='/'}catch{}}
 function updatePortalNav(saleRows,orderRows){
  const saleLink=document.querySelector('.sidebar a[href="#selling"]');
  const orderLink=document.querySelector('.sidebar a[href="#orders"]');

@@ -1601,3 +1601,10 @@ Porkbun exposes a provider orderId rather than a separate domain identifier in t
 ## 2026-10-02 Porkbun TEST contact-reconciliation repair
 
 The first TEST sandbox registration succeeded and returned Porkbun provider order 9913828. Reconciliation then failed because the initial updateContacts payload supplied only a registrant role and the sandbox had no existing admin contact to carry over. Porkbun documents that a single contact payload applies the supplied contact to all four contact roles. The registration function was corrected to use the single contact form, to reuse an already-created sandbox registration instead of registering again, and to allow a failed order with a recorded sandbox provider order to retry contact reconciliation. TEST Edge Function porkbun-domain-registration is now version 2. GitHub commit 685b1137de27e47e1a9278c3db38e98474aa754a. No LIVE change was made.
+
+
+## 2026-10-02 Porkbun TEST sandbox registration — verified
+
+The paid TEST order has now completed isolated Porkbun sandbox registration using existing provider order 9913828. The registration function reuses the existing sandbox order and reconciles the domain into tenant_domains. TEST Edge Function porkbun-domain-registration is version 6. The reconciled domain is active, uses acquisition source purchased, and records Porkbun as the registrar provider. Contact synchronisation is explicitly deferred for the .co.uk sandbox path because immediate registry contact writes produced V096; this is a separate verification stage.
+
+Database verification also found that the SQL expires_at fields and porkbun_expire_date metadata are currently null despite the browser reporting an expiry. Expiry capture therefore remains an open verification item and must not be documented as complete until the provider response and database values agree.

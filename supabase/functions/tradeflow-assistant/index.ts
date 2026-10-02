@@ -50,23 +50,26 @@ function getProviderAdapter(provider: Provider): ProviderAdapter {
   return new NotConfiguredAdapter(provider);
 }
 
-function readConfig(): { provider: Provider; allowed: Provider[] } {
-  const raw = Deno.env.get("TRADEFLOW_AI_CONFIG")?.trim();
-  if (!raw) return { provider: "none", allowed: ["none"] };
-  try {
-    const parsed = JSON.parse(raw) as AiConfig;
-    const allowed = Array.isArray(parsed.allowed)
-      ? parsed.allowed.filter((p): p is Provider =>
-          typeof p === "string" && (SUPPORTED_PROVIDERS as readonly string[]).includes(p))
-      : [];
-    const provider = typeof parsed.provider === "string" &&
-      (SUPPORTED_PROVIDERS as readonly string[]).includes(parsed.provider)
-      ? parsed.provider as Provider
-      : "none";
-    return { provider, allowed: allowed.length ? allowed : ["none"] };
-  } catch {
-    return { provider: "none", allowed: ["none"] };
-  }
+async function readConfig(admin: ReturnType<typeof createClient>): Promise<{ provider: Provider; allowed: Provider[] }> {
+  const { data, error } = await admin
+    .from("platform_ai_settings")
+    .select("active_provider,allowed_providers,subscriber_provider_enabled,gemma_enabled,openai_enabled,anthropic_enabled,google_enabled")
+    .eq("id", true)
+    .maybeSingle();
+
+  if (error || !data) return { provider: "none", allowed: ["none"] };
+
+  const allowed = Array.isArray(data.allowed_providers)
+    ? data.allowed_providers.filter((p: unknown): p is Provider =>
+        typeof p === "string" && (SUPPORTED_PROVIDERS as readonly string[]).includes(p))
+    : [];
+
+  const provider = typeof data.active_provider === "string" &&
+    (SUPPORTED_PROVIDERS as readonly string[]).includes(data.active_provider)
+    ? data.active_provider as Provider
+    : "none";
+
+  return { provider, allowed: allowed.length ? allowed : ["none"] };
 }
 
 Deno.serve(async (req: Request) => {
@@ -318,7 +321,7 @@ async function handleResearch(
     })),
   } : null;
 
-    const config = readConfig();
+    const config = await readConfig(admin);
   const providerAllowed = config.allowed.includes(config.provider);
 
   if (config.provider === "none") {

@@ -31,19 +31,32 @@ function dispatchAuthSuccess(data){
  window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
 }
 async function resolveTenantContext(){
- if(tenantId)return;
- const hostname=location.hostname;
- if(!hostname)return;
- try{
-  const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:SUPABASE_KEY}});
-  if(!response.ok)return;
-  const rows=await response.json();
-  if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){
-   tenantId=rows[0].tenant_id;
-   SESSION_STORAGE='tradeflow_customer_session:'+tenantId;
-   PENDING_STORAGE='tradeflow_pending_customer_registration:'+tenantId;
+ if(!tenantId){
+  const hostname=location.hostname;
+  if(hostname){
+   try{
+    const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:SUPABASE_KEY}});
+    if(response.ok){
+     const rows=await response.json();
+     if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id)tenantId=rows[0].tenant_id;
+    }
+   }catch{}
   }
- }catch{}
+ }
+ if(!tenantId&&location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
+  try{
+   const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/get_published_sites',{headers:{apikey:SUPABASE_KEY}});
+   if(response.ok){
+    const rows=await response.json();
+    if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id)tenantId=rows[0].tenant_id;
+   }
+  }catch{}
+ }
+ if(tenantId){
+  SESSION_STORAGE='tradeflow_customer_session:'+tenantId;
+  PENDING_STORAGE='tradeflow_pending_customer_registration:'+tenantId;
+  window.TRADEFLOW_CUSTOMER_TENANT_ID=tenantId;
+ }
 }
 async function loadBusinessName(){try{const r=await fetch(SUPABASE_URL+'/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:SUPABASE_KEY}});const rows=await r.json();businessName=rows?.[0]?.business_name||businessName}catch{}}
 async function resendConfirmation(){
@@ -52,7 +65,7 @@ async function resendConfirmation(){
  if(!email)return message('Enter your email address first, then choose Resend confirmation email.','error');
  busy(button,true,'Sending…');
  try{
-  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
+  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);
   await authRequest('/auth/v1/resend',{type:'signup',email,options:{email_redirect_to:emailRedirectTo.href}});
   message('If your email address still needs confirmation, we’ll send you a new confirmation link. Please check your inbox and spam folder.','success');
  }catch(error){
@@ -66,7 +79,6 @@ async function requestPasswordReset(){
  busy(button,true,'Sending…');
  try{
   const resetUrl=new URL('customer-password-reset.html',location.href);
-  resetUrl.searchParams.set('tenant_id',tenantId);
   const response=await authRequest('/auth/v1/recover?redirect_to='+encodeURIComponent(resetUrl.href),{email});
   void response;
   message('If an account exists for that email, a password reset email has been sent. Check your inbox and spam folder.','success');
@@ -107,7 +119,7 @@ async function signUp(){
  try{
   sessionStorage.removeItem(SESSION_STORAGE);clearLegacySharedState();
   sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
-  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);emailRedirectTo.searchParams.set('tenant_id',tenantId);
+  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);
   const data=await authRequest('/auth/v1/signup',{email,password,options:{email_redirect_to:emailRedirectTo.href}});
   if(!data?.access_token){
    setAuthMode(false);

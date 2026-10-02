@@ -14,6 +14,7 @@ function replaceAll(source, from, to) {
   return source.split(from).join(to);
 }
 
+// TEST customer API boundary repair
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);

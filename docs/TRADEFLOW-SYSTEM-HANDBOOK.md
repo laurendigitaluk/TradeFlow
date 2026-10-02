@@ -1647,3 +1647,8 @@ The TradeFlow chatbot is a pre-launch feature. Its first approved phase is a sub
 The public-domain architecture is separate from the chatbot. TradeFlow is the product/platform name; Lauren Digital is the company identity. The permanent Lauren Digital company domain will use the production Cloudflare/LIVE architecture. Subscriber websites may use their own custom domains and resolve through the published-site routing model.
 
 The current `camerashack.co.uk` domain is a Porkbun sandbox registration. It cannot prove real public DNS or Cloudflare custom-domain routing. The TEST Worker `tradeflow-test` is deployed from `cloudflare-test` and currently has no custom domain attached. A genuine registered domain will be used for the real DNS/Cloudflare test before launch. TEST and LIVE must remain strictly separated.
+
+
+## 2026-10-02 — Current TEST Assistant milestone
+
+The Cloudflare TEST Subscriber Assistant is browser-verified through authentication, tenant resolution and read-only approved knowledge retrieval with provider=none. The active TEST deployment branch for this Cloudflare workstream is cloudflare-test; older main=TEST references are historical. The next pre-launch AI stage is controlled Product Research evidence workflow, followed by the separate customer read-only assistant. LIVE remains untouched.

@@ -55,3 +55,13 @@ Relevant commits immediately before this checkpoint:
 - Migrations applied to TEST: `20261002023000_domain_pricing_controls`, followed by `20261002023500_domain_pricing_rls_cleanup`.
 - Porkbun Edge Function: `porkbun-domain-availability`, active version 5, JWT verification enabled.
 - LIVE was not modified.
+
+## Domain payment stage added on 2026-10-02
+- Added TEST Edge Function `create-domain-checkout-session`, JWT protected.
+- It authenticates the subscriber, verifies tenant membership, rechecks availability and current Porkbun USD cost server-side, calculates the trusted GBP retail price, creates/refreshes `tenant_domain_orders`, and creates a GBP Stripe Checkout session.
+- Stripe metadata carries `tenant_id`, `domain_order_id` and `hostname`.
+- Added `payment_confirmed` as a domain-order status.
+- Updated the existing TEST Stripe webhook to recognise domain payments and move the domain order to `payment_confirmed` after Stripe confirms payment.
+- The subscriber Choose button now starts the secure checkout flow.
+- Actual Porkbun registration is intentionally NOT triggered yet. Registrant ownership/contact information still needs to be captured and verified before a paid domain is submitted to the registrar. Porkbun's current API requires registration contact information and supports sandbox registration/testing, so this remains the next controlled stage.
+- LIVE remains untouched.

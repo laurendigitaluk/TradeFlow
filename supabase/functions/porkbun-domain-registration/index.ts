@@ -112,11 +112,11 @@ Deno.serve(async req=>{
       const {data:existing}=await admin.from("tenant_domains").select("id").eq("tenant_id",tenantId).eq("hostname",order.hostname).maybeSingle();
       let domainRow;
       if(existing){
-        const {data:updated,error}=await admin.from("tenant_domains").update({hostname:order.hostname,status:"active",domain_type:"custom",acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata,updated_at:new Date().toISOString()}).eq("id",existing.id).select("id").single();
+        const {data:updated,error}=await admin.from("tenant_domains").update({hostname:order.hostname,status:"active",domain_type:"custom",acquisition_source:"purchased",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata,updated_at:new Date().toISOString()}).eq("id",existing.id).select("id").single();
         if(error) throw new Error("Unable to reconcile tenant domain: "+error.message);
         domainRow=updated;
       }else{
-        const {data:createdDomain,error}=await admin.from("tenant_domains").insert({tenant_id:tenantId,hostname:order.hostname,status:"active",domain_type:"custom",is_primary:false,acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata}).select("id").single();
+        const {data:createdDomain,error}=await admin.from("tenant_domains").insert({tenant_id:tenantId,hostname:order.hostname,status:"active",domain_type:"custom",is_primary:false,acquisition_source:"purchased",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata}).select("id").single();
         if(error) throw new Error("Unable to create tenant domain reconciliation: "+error.message);
         domainRow=createdDomain;
       }
@@ -208,13 +208,13 @@ Deno.serve(async req=>{
     let domainRow;
     if(existing){
       const {data:updated,error}=await admin.from("tenant_domains").update({
-        hostname:order.hostname,status:"active",domain_type:"custom",acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata,updated_at:new Date().toISOString()
+        hostname:order.hostname,status:"active",domain_type:"custom",acquisition_source:"purchased",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata,updated_at:new Date().toISOString()
       }).eq("id",existing.id).select("id").single();
       if(error) throw new Error("Unable to reconcile tenant domain: "+error.message);
       domainRow=updated;
     }else{
       const {data:createdDomain,error}=await admin.from("tenant_domains").insert({
-        tenant_id:tenantId,hostname:order.hostname,status:"active",domain_type:"custom",is_primary:false,acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata
+        tenant_id:tenantId,hostname:order.hostname,status:"active",domain_type:"custom",is_primary:false,acquisition_source:"purchased",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata
       }).select("id").single();
       if(error) throw new Error("Unable to create tenant domain reconciliation: "+error.message);
       domainRow=createdDomain;

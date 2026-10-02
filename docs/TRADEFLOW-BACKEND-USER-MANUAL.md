@@ -746,3 +746,10 @@ The current TEST backend supports the sequence registrant_details_saved -> regis
 ## 2026-10-02 Domain registration backend repair
 
 The first sandbox registration created provider order 9913828. The subsequent updateContacts call failed because the previous payload specified only registrant and relied on existing admin contact data. The implementation now sends the saved contact as Porkbun's singular contact payload, which applies it to all four contact roles. A failed sandbox order with a recorded provider order is now treated as a reconciliation retry rather than a new registration attempt.
+
+
+## 2026-10-02 Porkbun TEST sandbox registration — verified state
+
+The TEST registration path now reaches registered using existing provider order 9913828 and creates the active tenant_domains row with acquisition source purchased. Version 5 corrected .co.uk TLD normalization so the sandbox contact-defer branch is reached; version 6 corrected the reconciliation value to match the database tenant_domains_acquisition_source_chk constraint. No second Porkbun registration is created on retry.
+
+For the isolated .co.uk sandbox test, contact synchronisation is recorded as deferred rather than repeatedly calling updateContacts, avoiding the V096/new-registrant email loop. Expiry capture remains unverified: current TEST database expires_at and porkbun_expire_date are null.

@@ -46,3 +46,16 @@ The provider choice is server-side, so changing provider does not require changi
 
 ## Verification
 The function was deployed successfully to TEST as version 2. No LIVE deployment was performed.
+
+
+## 2026-10-02 — Controlled provider adapter boundary
+
+TEST Edge Function version 3 now contains a provider adapter interface and a controlled adapter factory.
+
+All reserved providers currently resolve to a safe not-configured adapter. A selected provider therefore cannot accidentally make an external request before its credentials, limits and request/response contract are deliberately implemented.
+
+With provider `none`, the gateway continues to return the authenticated, tenant-scoped acceptance response.
+
+If a future provider is selected before its adapter is implemented, the gateway returns HTTP 503 and explicitly records that no external AI request was made.
+
+Next stage: implement one real provider adapter only after its server-side credentials and commercial controls are approved, then add the approved TradeFlow documentation retrieval layer before exposing the chatbot UI.

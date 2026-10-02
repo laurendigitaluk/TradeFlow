@@ -1639,3 +1639,11 @@ The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses 
 Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
 
 **Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
+
+## 2026-10-02 — Chatbot and domain launch continuity
+
+The TradeFlow chatbot is a pre-launch feature. Its first approved phase is a subscriber read-only assistant grounded in the finalized TradeFlow manuals and approved documentation, with only permitted authenticated tenant context. Later phases are customer read-only assistance, controlled messaging/enquiries, and only then controlled actions with explicit permissions and auditability. The chatbot must never have unrestricted database access or cross tenant boundaries.
+
+The public-domain architecture is separate from the chatbot. TradeFlow is the product/platform name; Lauren Digital is the company identity. The permanent Lauren Digital company domain will use the production Cloudflare/LIVE architecture. Subscriber websites may use their own custom domains and resolve through the published-site routing model.
+
+The current `camerashack.co.uk` domain is a Porkbun sandbox registration. It cannot prove real public DNS or Cloudflare custom-domain routing. The TEST Worker `tradeflow-test` is deployed from `cloudflare-test` and currently has no custom domain attached. A genuine registered domain will be used for the real DNS/Cloudflare test before launch. TEST and LIVE must remain strictly separated.

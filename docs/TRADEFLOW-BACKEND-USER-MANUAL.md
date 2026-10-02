@@ -940,3 +940,22 @@ Verification status must remain explicit:
 - GitHub release: **Implemented in GitHub**
 - LIVE database: **not yet directly verified in the current tool session**
 - Browser: **not yet verified**
+
+
+## LIVE RELEASE OPERATIONS UPDATE — 3 OCTOBER 2026
+
+The production Worker cache boundary for the protected Platform Owner Dashboard has been hardened.
+
+Production commit: `6c9b061e5a20210aa8b6f416a3f8b68fb6357329`.
+
+Change: `worker/index.js` now special-cases `/platform-owner-dashboard.html` before the normal static-asset early return and sets `Cache-Control: no-store`. The dashboard JavaScript was already served with `no-store`; the missing boundary was the HTML document that selects the JavaScript asset version.
+
+Observed failure evidence before repair:
+- clean Incognito browser requested `platform-owner-dashboard.js?v=4` with HTTP 304;
+- current production GitHub HTML referenced `platform-owner-dashboard.js?v=6`;
+- LIVE Supabase showed no `/auth/v1/token` request during the sign-in attempt;
+- LIVE owner auth user exists and has an active `platform_memberships` record.
+
+Operational rule: verify the actual browser asset/version and network request before changing LIVE Auth, owner membership, tenant records or credentials. Cloudflare deployment status and GitHub commit status are implementation evidence; the browser request is required for live serving verification.
+
+No Supabase schema or data change was made for this repair.

@@ -895,3 +895,23 @@ The gateway foundation is implemented; provider adapters, knowledge retrieval, u
 The Owner Dashboard now contains an AI provider control section. It allows the platform owner to enable/disable Gemma, OpenAI, Anthropic, Google and subscriber-supplied AI, and select the active platform provider. `None` remains the default knowledge-only mode.
 
 Provider secrets are not stored in the Owner Dashboard. They must remain server-side. The platform AI setting is stored in `platform_ai_settings` and is accessed through owner-only RPC functions. The `tradeflow-assistant` Edge Function reads the approved platform configuration through the service-role path and continues to enforce subscriber/customer tenant separation.
+
+
+## Customer ↔ Subscriber Assistant Messaging — 2026-10-02
+
+TradeFlow now supports a provider-neutral customer-to-business assistant handoff.
+
+- Customers use **Customer Assistant** from the customer portal.
+- The existing AI/knowledge gateway remains provider-neutral and can continue to operate with no external AI provider.
+- If the assistant cannot provide an approved answer, the customer can choose **Send this question to the business**.
+- Customer messages are stored in tenant-isolated assistant conversations.
+- Subscriber users with an active tenant membership can open **TradeFlow Assistant → Customer Questions**.
+- Subscriber owner/admin/staff users can read the conversation, reply to the customer, and close the conversation.
+- Customer replies and subscriber replies remain scoped to the same tenant and customer conversation.
+- Provider credentials are not stored in the customer or subscriber browser UI.
+- The messaging layer does not require Gemma, OpenAI, Anthropic or Google to be enabled; those remain optional provider choices controlled by the platform owner.
+
+Security boundary:
+- Customer RPCs verify the authenticated user owns the customer record for the tenant.
+- Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
+- Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.

@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Domain registration details | TradeFlow</title><link rel="stylesheet" href="subscriber-dashboard.css?v=7"></head><body>
+<header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a><div class="account"><strong id="business-name">Domain registration</strong><button id="sign-out" type="button">Sign out</button></div></header>
+<main class="layout"><aside class="sidebar"><div class="sidebar-heading">Business workspace</div><nav><a href="subscriber-dashboard.html">Dashboard</a><div class="nav-section">Business flow</div><a href="buying-dashboard.html">Buying</a><a href="inventory-dashboard.html">Inventory</a><a href="selling-dashboard.html">Selling</a><a href="orders-dashboard.html">Orders</a><a href="fulfilment-dashboard.html">Fulfilment</a><a href="returns-dashboard.html">Returns</a><div class="nav-section">Website</div><a href="subscriber-website.html">Website</a><a class="active" href="domain-settings.html">Website URL</a><div class="nav-section">Settings</div><a href="subscriber-dashboard.html#settings">Settings</a></nav></aside>
+<section class="content"><div class="page-heading"><div><div class="eyebrow">Domain registration</div><h1>Confirm registrant details</h1><p class="intro">Your payment has been received. Before TradeFlow can register the domain, we need the legal contact details that will be submitted to the registrar.</p></div></div>
+<section class="panel" id="payment-panel"><div class="panel-heading"><div><div class="eyebrow">Payment received</div><h2 id="domain-name">Loading domain…</h2></div><span class="status-pill">Payment confirmed</span></div><p id="payment-summary">Loading order details…</p><p class="small">These details are used for domain registration and may be subject to registry validation. Enter the registrant's real details.</p></section>
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Registrant</div><h2>Legal contact details</h2></div></div>
+<form id="registrant-form">
+<label>Full legal name<input id="registrant_name" required autocomplete="name"></label>
+<label>Organisation <span class="small">(optional)</span><input id="organisation" autocomplete="organization"></label>
+<label>Address line 1<input id="address_line1" required autocomplete="address-line1"></label>
+<label>Address line 2 <span class="small">(optional)</span><input id="address_line2" autocomplete="address-line2"></label>
+<label>Town / city<input id="city" required autocomplete="address-level2"></label>
+<label>County / region <span class="small">(optional)</span><input id="region" autocomplete="address-level1"></label>
+<label>Postcode<input id="postal_code" required autocomplete="postal-code"></label>
+<label>Country<select id="country_code" required><option value="GB">United Kingdom</option><option value="IE">Ireland</option><option value="US">United States</option><option value="CA">Canada</option><option value="AU">Australia</option><option value="NZ">New Zealand</option></select></label>
+<label>Email address<input id="email" type="email" required autocomplete="email"></label>
+<label>Telephone number<input id="phone" type="tel" required autocomplete="tel"></label>
+<label style="display:flex;gap:10px;align-items:flex-start"><input id="confirmation" type="checkbox" required style="width:auto;margin-top:4px"><span>I confirm that these are the correct registrant details and that I am authorised to register this domain using them.</span></label>
+<div class="actions" style="margin-top:18px"><button id="save-button" type="submit">Save registrant details</button><a class="secondary" href="domain-settings.html">Back to Website URL</a></div>
+<p id="message" class="small" role="status"></p></form></section>
+</section></main>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="domain-registrant.js?v=1"></script></body></html>

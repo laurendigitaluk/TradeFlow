@@ -61,3 +61,16 @@ Porkbun's current API documentation confirms that sandbox keys isolate registrat
 - Do not revive Parcel2Go API work.
 - Do not switch back to ResellerClub.
 - Do not send a real Porkbun registration request.
+
+## Documentation updated at chat close
+The following authoritative manuals were updated with this handover and next-stage rules:
+- `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`
+- `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+
+Latest documentation commits:
+- System handbook: `289fed62489bb7e025d14311a3a21b2829f26049`
+- Backend manual: `bfeaa4c046b401af37c68d092edf6b938486835c`
+- Human manual: `4f2fa79bfdab5a83910ac878fe34bfdf4a4af102`
+- AI operating manual: `939c5d267bb1003c6346d7055b75182d31608c9b`

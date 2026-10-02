@@ -2,14 +2,14 @@
 
 ## Permanent backend environment and release model — 30 September 2026
 
-**Backend User Manual:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`.
+**Platform Owner / internal Backend Manual:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md` — restricted internal reference linked from the Platform Owner Dashboard, not a subscriber operating manual.
 
 This manual is the **backend/business-operations manual**. It is separate from the customer/site-facing website manual. It explains how the TradeFlow business application works behind the public website and how staff operate the system.
 
 
 ## Current subscriber dashboard — 2 October 2026
 
-The **Business Dashboard** is the subscriber's operational home screen. You do not need to know TradeFlow's backend or database implementation to use it.
+The **Business Dashboard** is the subscriber's operational home screen. The subscriber should work from this dashboard and its linked business areas; the internal Backend User Manual is not a subscriber-facing document. You do not need to know TradeFlow's backend or database implementation to use it.
 
 The dashboard gives you a quick view of work across:
 

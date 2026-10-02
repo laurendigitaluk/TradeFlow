@@ -1,5 +1,5 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
+const KEY='sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
 const SESSION_KEY='tradeflow_platform_owner_session';
 let session=null;
 

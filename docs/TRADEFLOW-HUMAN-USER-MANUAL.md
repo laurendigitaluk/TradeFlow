@@ -1606,3 +1606,8 @@ Work in this exact order:
 
 Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
 
+
+
+## 2026-10-02 Domain registration user flow
+
+After registrant details are saved, the user sees the Porkbun TEST validation control. A successful dry run reveals a second control, Register in TEST sandbox. This is isolated from LIVE and does not perform a real-world domain registration. The flow is not complete until sandbox registration, registrant application, provider verification, and tenant_domains reconciliation have succeeded.

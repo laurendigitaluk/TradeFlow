@@ -1927,3 +1927,8 @@ Work in this exact order:
 
 Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
 
+
+
+## 2026-10-02 Porkbun TEST registration checkpoint
+
+Do not touch LIVE. TEST order camerashack.co.uk is still registrant_details_saved; the saved registrant exists; no tenant_domains row exists yet; and the order metadata records porkbun_dry_run_would_succeed=true. The next action is the TEST UI button Register in TEST sandbox. The registration function is server-side and uses the saved registrant record, Porkbun sandbox credentials, idempotency, provider verification, and reconciliation before setting the order to registered.

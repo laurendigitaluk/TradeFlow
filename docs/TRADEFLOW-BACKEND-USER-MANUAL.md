@@ -736,3 +736,8 @@ Work in this exact order:
 
 Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
 
+
+
+## 2026-10-02 Domain registration backend state
+
+The current TEST backend supports the sequence registrant_details_saved -> registering -> registered. Porkbun registration creates the domain using the account registration contact, so the implementation validates and applies the TradeFlow-saved registrant through Porkbun's updateContacts API before final reconciliation. For .co.uk, Porkbun performs address validation on registrant changes. The Porkbun order ID is stored as provider_order_id; no synthetic domain ID is created.

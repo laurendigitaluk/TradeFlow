@@ -95,3 +95,10 @@ Documentation was refreshed at chat close:
 Current registrar correction: Porkbun is the active tested provider. Earlier ResellerClub material is historical only and must not be treated as the current implementation.
 
 LIVE remains untouched.
+
+
+## 2026-10-02 — Porkbun TEST registration implementation checkpoint
+
+Verified before continuing: GitHub main was at the 2026-10-02 checkpoint commit; TEST Supabase is twfbmjwwqzxdxvclxbun; LIVE was not touched. Order 59409e55-5426-4b0b-9020-4615244e5d83 for camerashack.co.uk is registrant_details_saved, with provider_order_id, provider_domain_id, expiry and tenant_domains reconciliation still empty.
+
+Implementation completed: tracked/deployed Porkbun dry-run v2; added/deployed porkbun-domain-registration v1; added the TEST registration button to the registrant page. No sandbox registration has yet been executed. Next action: use Register in TEST sandbox, then inspect the provider order ID, expiry, registrant contact, tenant_domains row and order status before testing DNS/domain routing.

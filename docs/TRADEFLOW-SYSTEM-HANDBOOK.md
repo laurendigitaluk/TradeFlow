@@ -1589,3 +1589,10 @@ Work in this exact order:
 
 Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
 
+
+
+## 2026-10-02 Porkbun TEST registration implementation
+
+The paid TEST order for camerashack.co.uk remains at registrant_details_saved with a successful Porkbun dry-run result. The dry-run implementation is now tracked in GitHub and deployed to TEST. A separate JWT-protected porkbun-domain-registration Edge Function is deployed to TEST but has not yet been invoked for sandbox registration. It loads the saved tenant_domain_registrants record server-side, uses the Porkbun sandbox, applies the saved registrant through Porkbun's contact-update API, verifies the domain, and reconciles into tenant_domains. LIVE remains untouched.
+
+Porkbun exposes a provider orderId rather than a separate domain identifier in the registration response. TradeFlow therefore records that value as provider_order_id and leaves provider_domain_id null rather than inventing an identifier.

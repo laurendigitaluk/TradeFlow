@@ -27,19 +27,19 @@ function isCustomerSession(){
  return !!sessionStorage.getItem(key);
 }
 function customerUrl(extra){
- const base='customer-dashboard.html';
+ const base='/login';
  return extra?base+'?'+extra:base;
 }
 function customerBasketUrl(listingId){
  if(activeTenantId)localStorage.setItem('tradeflow_customer_tenant_id',activeTenantId);
- const target=new URL('./customer-basket.html',location.href);
+ const target=new URL('/basket',location.origin);
  target.searchParams.set('listing_id',listingId||'');
  target.searchParams.set('basket','1');
  target.searchParams.set('basket_v','1');
  return target.href;
 }
 function pageUrl(slug,extra){
- let u='public-site.html?page='+encodeURIComponent(slug);
+ let u='/?page='+encodeURIComponent(slug);
  if(preview&&tenantId)u='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page='+encodeURIComponent(slug)+'&preview=draft';
  if(extra)u+='&'+extra;
  return u;

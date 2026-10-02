@@ -91,3 +91,9 @@ The authoritative documentation split is now:
 **Internal owner/admin/technical continuity:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md` + `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` + `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` + `TRADEFLOW-MASTER-ROADMAP.md`
 
 - `subscriber-dashboard.html` no longer exposes the internal Backend User Manual link to subscribers. The internal manual remains in the repository for owner/admin/technical continuity only.
+
+
+## 2026-10-02 — TEST customer-domain work frozen
+The hostname/tenant architecture remains the intended production model, but no further TEST-only effort should be spent making the Cloudflare Worker URL look like a real Camera Shack domain. The sandbox Camera Shack domain is not being used for public routing verification.
+
+The project now moves to the final customer-facing assistant/chatbot. After that, launch moves to LIVE with a real subscriber, a real subscriber domain and real customer registrations. LIVE defects must be reproduced and fixed in TEST before promotion; LIVE is not a direct development environment.

@@ -1,8 +1,8 @@
-# TradeFlow Backend User Manual
+# TradeFlow Internal Backend & Owner Dashboard Manual
 
 **Purpose:** authoritative operational guide to the TradeFlow subscriber/business backend.  
-**Audience:** business owner, administrator, staff and anyone operating the TradeFlow backend.  
-**Not this manual:** this is not the customer-facing website manual. The public/subscriber website-building guide remains `subscriber-website-manual.html`.
+**Audience:** TradeFlow owner/admin operators who require internal backend and dashboard reference. This is an internal operational/technical manual, not the normal subscriber-facing manual.  
+**Subscriber-facing documentation:** normal subscriber operation belongs in `subscriber-website-manual.html` and `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`. This document retains deeper backend, security, workflow and implementation reference for owner/admin continuity and internal maintenance.
 
 ## 1. What TradeFlow is
 

@@ -9,9 +9,9 @@ async function check(tld,domain,auth){
 }
 function render(results){
   $('results').innerHTML=results.map(r=>{
-    const status=r.status==='available'?'Available':r.status==='unavailable'?'Unavailable':r.status==='error'?'Provider request failed':'Availability check unavailable';
-    const cls=r.status==='available'?'status-pill':r.status==='unavailable'?'status-pill muted':r.status==='error'?'status-pill warning':'status-pill warning';
-    return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div><p class="small">'+(r.status==='unknown'?'The registry did not return a definitive answer. Try the search again later.':r.status==='error'?esc(r.error||'The provider request failed without a message.'):'TradeFlow has not opened purchasing for this result yet.')+'</p></div>';
+    const status=r.available===true||r.status==='available'?'Available':r.available===false||r.status==='unavailable'?'Unavailable':r.status==='error'?'Provider request failed':'Availability check unavailable';
+    const cls=(r.available===true||r.status==='available')?'status-pill':(r.available===false||r.status==='unavailable')?'status-pill muted':r.status==='error'?'status-pill warning':'status-pill warning';
+    return '<div class="panel" style="margin-top:10px;padding:15px"><div style="display:flex;justify-content:space-between;gap:15px;align-items:center"><strong>'+esc(r.domain)+'</strong><span class="'+cls+'">'+status+'</span></div><p class="small">'+(r.status==='unknown'&&!('available' in r)?'The registry did not return a definitive answer. Try the search again later.':r.status==='error'?esc(r.error||'The provider request failed without a message.'):'TradeFlow has not opened purchasing for this result yet.')+'</p></div>';
   }).join('');
 }
 (async()=>{

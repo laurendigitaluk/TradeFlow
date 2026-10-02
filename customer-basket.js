@@ -30,32 +30,18 @@ async function resolveTenantContext(){
  if(!hostname)return;
  try{
   const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});
-  if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}
+  if(response.ok){
+   const rows=await response.json();
+   if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}
+  }
  }catch{}
  if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
-  try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}
+  try{
+   const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});
+   const rows=await response.json();
+   if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}
+  }catch{}
  }
- if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
-}
-async function resolveTenantContext(){
- if(T)return;
- const hostname=location.hostname;
- if(!hostname)return;
- try{
-  const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});
-  if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}
- }catch{}
- if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
-  try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}
- }
- if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
-}
-async function resolveTenantContext(){
- if(T)return;
- const hostname=location.hostname;
- if(!hostname)return;
- try{const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}}catch{}
- if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}}
  if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
 }
 async function loadListing(){

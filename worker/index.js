@@ -23,6 +23,8 @@ export default {
           "/": "/public-site.html",
           "/login": "/customer-dashboard.html",
           "/basket": "/customer-basket.html",
+          "/email-confirmed": "/customer-email-confirmed.html",
+          "/reset-password": "/customer-password-reset.html",
         }
       : {
           "/": "/public-site.html",

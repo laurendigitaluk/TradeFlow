@@ -1412,3 +1412,7 @@ The search can return three states:
 No payment or registration is performed by this search page. Customer pricing, Stripe payment, registrant details, domain registration, DNS/hosting connection and renewal remain later stages and must not be represented as complete until separately tested.
 
 The current implementation is on the TEST branch `resellerclub-domain-availability-20261001`. LIVE is unchanged.
+
+
+## Domain registration workflow update — 2026-10-02
+When a subscriber buys a domain, TradeFlow now follows this TEST sequence: domain availability/price check → Stripe Checkout → Stripe webhook confirmation → registrant details. The subscriber must provide the legal registrant name, address, country, email and telephone, confirm they are authorised to register the domain, and save the details before registrar registration is attempted. The current TEST implementation stores these details against the domain order in `tenant_domain_registrants`. Actual Porkbun registration is not yet triggered by the subscriber page.

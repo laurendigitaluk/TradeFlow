@@ -22,7 +22,7 @@ TradeFlow has two permanent environments.
 
 | Layer | TEST | LIVE |
 |---|---|---|
-| GitHub | `main` | `production` |
+| GitHub | `cloudflare-test` for current TEST Cloudflare work; `production` for LIVE | `production` |
 | Supabase | `twfbmjwwqzxdxvclxbun` | Separate production project |
 | Data | Test data | Real business data |
 | Purpose | Build, repair, test | Operate the live business |
@@ -31,7 +31,7 @@ Never experiment in LIVE. Never copy TEST customer or transaction data into LIVE
 
 The release path is:
 
-1. Make the change in a feature/checkpoint branch or `main`.
+1. Make the change in a feature/checkpoint branch or the active TEST branch (`cloudflare-test` for the current Cloudflare deployment).
 2. Deploy/test against TEST.
 3. Verify browser behaviour and database state.
 4. Record a release checkpoint.
@@ -855,6 +855,12 @@ A genuine registered test domain is required for the real DNS/Cloudflare test.
 
 After every material chatbot or domain change, update the Master Roadmap, System Handbook where appropriate, this AI Operating Manual, the relevant human/subscriber manuals and a checkpoint. Do not claim a feature is verified without browser/database evidence.
 
+
+## 2026-10-02 — Owner Dashboard documentation boundary
+
+This Backend User Manual is an internal Platform Owner/Owner Dashboard document. Subscribers should not be directed to this manual and do not need to understand TradeFlow's backend implementation.
+
+The restricted `platform-owner-dashboard.html` is the intended entry point and links to this manual. The subscriber Business Dashboard contains normal operational manuals only.
 
 ## 2026-10-02 — Subscriber AI rules, usage and cost
 

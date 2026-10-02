@@ -1737,3 +1737,16 @@ Product Research is a controlled feature: research a specific product, present e
 AI and research usage must be measurable and controllable by tenant/provider. Final customer-facing pricing, allowances and limits must be documented before public launch; do not invent commercial figures.
 
 The Human User Manual must explain these rules in plain language. The Backend User Manual must document the operational controls and security boundary.
+
+
+## 2026-10-02 — AI provider model
+
+TradeFlow is being built so its AI feature is not permanently tied to one AI company or model.
+
+The platform can be configured to use a supported provider without changing the subscriber's website or chatbot interface. Planned provider choices include Gemma, OpenAI, Anthropic, Google and a subscriber-owned provider connection.
+
+The current TEST setting is **no AI provider**. No external AI service is being charged by the TradeFlow assistant gateway at this stage.
+
+Gemma used on Gary's own desktop remains a separate personal research tool for the Quote System. It is not automatically available to TradeFlow subscribers or their customers.
+
+If TradeFlow later uses a subscriber-owned AI connection, the subscriber will be responsible for that provider's own usage charges. TradeFlow will keep provider credentials server-side.

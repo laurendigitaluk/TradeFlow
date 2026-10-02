@@ -27,7 +27,10 @@ function isCustomerSession(){
  return !!sessionStorage.getItem(key);
 }
 function customerUrl(extra){
- const base=activeTenantId?'customer-dashboard.html?tenant_id='+encodeURIComponent(activeTenantId):'customer-dashboard.html';
+ const isTestWorker=location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev';
+ const base=isTestWorker&&activeTenantId
+   ?'login?tenant_id='+encodeURIComponent(activeTenantId)
+   :'login';
  return extra?base+'&'+extra:base;
 }
 function customerBasketUrl(listingId){

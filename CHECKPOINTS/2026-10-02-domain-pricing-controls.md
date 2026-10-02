@@ -80,3 +80,17 @@ Relevant commits immediately before this checkpoint:
 
 ## Current TEST domain order
 - `camerashack.co.uk` — £5.27 GBP — `payment_confirmed` — order `59409e55-5426-4b0b-9020-4615244e5d83`.
+
+
+## Domain payment + registrant stage verified 2026-10-02
+- TEST Stripe payment for the domain purchase completed successfully.
+- TEST domain order for the current test domain reached `payment_confirmed` through the Stripe webhook.
+- Added `tenant_domain_registrants` with tenant/order-scoped RLS.
+- Added subscriber registrant-details page and protected `save-domain-registrant` Edge Function.
+- Registrant details were successfully saved during TEST.
+- Found and repaired a legacy duplicate `tenant_domain_orders` status constraint that still excluded `registrant_details_saved`. The TEST order was then advanced to `registrant_details_saved`.
+- Added protected `porkbun-domain-registration-dry-run` Edge Function.
+- The next UI action is **Validate registration**, which calls Porkbun's sandbox dry-run only. It does not register or charge anything.
+- Porkbun's current API documentation confirms sandbox registrations are isolated/no-charge, `dryRun:true` performs pre-flight validation without creating or charging, and `/domain/getRegistrationRequirements/{tld}` should be checked before registration. citeturn4view0turn6view0
+- Important provider finding: current Porkbun `/domain/create/{domain}` request schema does not accept per-order registrant contact fields; Porkbun exposes `/domain/updateContacts/{domain}` separately. For address-validated TLDs including .uk/.co.uk, contact updates can invoke address validation. This must be tested in sandbox before any LIVE registration design is finalised. citeturn5view2turn7view0
+- LIVE Supabase remains untouched.

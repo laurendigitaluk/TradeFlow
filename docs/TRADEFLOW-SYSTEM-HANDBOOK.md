@@ -1527,3 +1527,65 @@ Before changing code:
 6. Test in TEST.
 7. Verify database state.
 8. Update this documentation/checkpoint before moving to the next stage.
+
+
+# 2026-10-02 — DOMAIN REGISTRATION CURRENT-STATE OVERRIDE
+
+This section is authoritative for the current domain-registration work and supersedes any earlier registrar-provider description in this manual.
+
+## Current environment
+
+- TEST/STAGING GitHub branch: `main`
+- LIVE GitHub branch: `production`
+- TEST Supabase: `twfbmjwwqzxdxvclxbun`
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
+- LIVE has remained untouched during this domain-registration work.
+- Current tested registrar provider: **Porkbun**.
+- Porkbun TEST credentials are sandbox credentials.
+- **ResellerClub is not the active registrar provider. Do not continue or extend the ResellerClub integration.**
+- GoDaddy is not part of the TradeFlow registrar workflow.
+- Manual shipping remains the final shipping architecture; do not revive Parcel2Go API integration.
+
+## Verified TEST domain sequence
+
+The following stages have been completed in TEST:
+
+1. Porkbun availability search.
+2. GBP customer pricing using the trusted stored FX rate and 25% markup.
+3. Domain selection.
+4. Stripe TEST Checkout.
+5. Successful TEST payment for `camerashack.co.uk` — **£5.27 GBP**.
+6. Stripe webhook confirmation — order became `payment_confirmed`.
+7. Return to TradeFlow registrant-details page.
+8. Registrant details submitted and saved.
+9. Order became `registrant_details_saved`.
+10. TEST UI currently reports that Porkbun sandbox validation passed.
+
+The domain has **not** been registered with the real registrar. No LIVE domain registration has been performed.
+
+## Current database/business state
+
+The paid test order is for `camerashack.co.uk` at £5.27 GBP and is at `registrant_details_saved`. A one-to-one `tenant_domain_registrants` record is associated with the order.
+
+The existing provider-neutral domain architecture remains authoritative:
+`domain_tld_catalog`, `tenant_domain_orders`, `tenant_domains`, `published_site_index`, and `tenant_site_state`.
+
+## Next development stage
+
+The next stage is **Porkbun TEST sandbox registration**, not another payment test.
+
+Work in this exact order:
+
+1. Inspect current GitHub `main`, TEST Supabase schema/functions and the paid test order.
+2. Inspect/confirm Porkbun registration requirements for the domain TLD.
+3. Implement a TEST-only, JWT-protected dry-run registration validation using the saved registrant record.
+4. Confirm `dryRun: true` succeeds without creating a real registration.
+5. Perform the isolated Porkbun sandbox registration using sandbox credentials.
+6. Capture provider domain ID and registration/expiry information.
+7. Reconcile the result into the existing `tenant_domains` table.
+8. Move the order through `registering` to `registered` only after successful reconciliation.
+9. Test the existing domain connection/DNS/website-routing architecture.
+10. Update all relevant documentation and the checkpoint after successful verification.
+
+Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
+

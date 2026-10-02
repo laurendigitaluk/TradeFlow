@@ -1416,3 +1416,15 @@ The current implementation is on the TEST branch `resellerclub-domain-availabili
 
 ## Domain registration workflow update — 2026-10-02
 When a subscriber buys a domain, TradeFlow now follows this TEST sequence: domain availability/price check → Stripe Checkout → Stripe webhook confirmation → registrant details. The subscriber must provide the legal registrant name, address, country, email and telephone, confirm they are authorised to register the domain, and save the details before registrar registration is attempted. The current TEST implementation stores these details against the domain order in `tenant_domain_registrants`. Actual Porkbun registration is not yet triggered by the subscriber page.
+
+
+## Domain registration — TEST workflow update (2026-10-02)
+1. Subscriber selects an available domain and pays the displayed GBP price through Stripe Checkout.
+2. Stripe webhook moves the domain order to `payment_confirmed`.
+3. Subscriber is returned to the domain registrant-details page.
+4. Subscriber enters and confirms the legal registrant details.
+5. TradeFlow stores those details against the domain order and advances the order to `registrant_details_saved`.
+6. The next button, **Validate registration**, performs a Porkbun sandbox dry run only. It does not register a domain or charge the registrar account.
+7. Do not treat a successful Stripe payment as proof that the registrar registration has completed. Registration remains a separate controlled stage.
+
+Porkbun's current API provides sandbox operations and a dry-run mode that validates registration without creating or charging an order. The current API also exposes registration requirements by TLD. 

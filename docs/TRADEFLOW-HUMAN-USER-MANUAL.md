@@ -1797,3 +1797,23 @@ The intended release path is: finish and verify the chatbot boundary in TEST →
 The TradeFlow Assistant is available from the subscriber dashboard. It can answer questions using approved TradeFlow guidance and is designed to remain read-only for normal help questions. Product Research remains a separate controlled workflow and requires explicit approval before research evidence is saved.
 
 The AI provider may be configured by the TradeFlow platform owner. Subscribers do not need to understand the underlying AI infrastructure. The platform may later use a centrally managed AI service, Gemma, or allow a subscriber to connect an approved provider of their own. These options are deliberately kept open while the final AI provider decision is made.
+
+
+## Customer ↔ Subscriber Assistant Messaging — 2026-10-02
+
+TradeFlow now supports a provider-neutral customer-to-business assistant handoff.
+
+- Customers use **Customer Assistant** from the customer portal.
+- The existing AI/knowledge gateway remains provider-neutral and can continue to operate with no external AI provider.
+- If the assistant cannot provide an approved answer, the customer can choose **Send this question to the business**.
+- Customer messages are stored in tenant-isolated assistant conversations.
+- Subscriber users with an active tenant membership can open **TradeFlow Assistant → Customer Questions**.
+- Subscriber owner/admin/staff users can read the conversation, reply to the customer, and close the conversation.
+- Customer replies and subscriber replies remain scoped to the same tenant and customer conversation.
+- Provider credentials are not stored in the customer or subscriber browser UI.
+- The messaging layer does not require Gemma, OpenAI, Anthropic or Google to be enabled; those remain optional provider choices controlled by the platform owner.
+
+Security boundary:
+- Customer RPCs verify the authenticated user owns the customer record for the tenant.
+- Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
+- Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.

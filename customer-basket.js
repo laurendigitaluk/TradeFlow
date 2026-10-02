@@ -1,5 +1,5 @@
 (()=>{
-const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})(),U=TRADEFLOW_RUNTIME.supabaseUrl,K=TRADEFLOW_RUNTIME.supabasePublishableKey,P=new URLSearchParams(location.search),T=P.get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id')||'',L=P.get('listing_id')||'',BK='tradeflow_customer_basket';
+const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})(),U=TRADEFLOW_RUNTIME.supabaseUrl,K=TRADEFLOW_RUNTIME.supabasePublishableKey,P=new URLSearchParams(location.search),T=window.TRADEFLOW_CUSTOMER_TENANT_ID||P.get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id')||'',L=P.get('listing_id')||'',BK='tradeflow_customer_basket';
 let session=null,listing=null,credit=0,order=null,working=false;const PENDING_KEY='tradeflow_customer_pending_retail_order';const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 const setAccountLink=()=>{const link=$('my-account-link');if(!link)return;link.href=new URL('customer-dashboard.html',location.href).href};
@@ -34,6 +34,27 @@ async function resolveTenantContext(){
  if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
   try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}
  }
+ if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
+}
+async function resolveTenantContext(){
+ if(T)return;
+ const hostname=location.hostname;
+ if(!hostname)return;
+ try{
+  const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});
+  if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}
+ }catch{}
+ if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
+  try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}
+ }
+ if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
+}
+async function resolveTenantContext(){
+ if(T)return;
+ const hostname=location.hostname;
+ if(!hostname)return;
+ try{const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}}catch{}
+ if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}}
  if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
 }
 async function loadListing(){

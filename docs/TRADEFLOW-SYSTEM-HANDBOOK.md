@@ -1608,3 +1608,15 @@ The first TEST sandbox registration succeeded and returned Porkbun provider orde
 The paid TEST order has now completed isolated Porkbun sandbox registration using existing provider order 9913828. The registration function reuses the existing sandbox order and reconciles the domain into tenant_domains. TEST Edge Function porkbun-domain-registration is version 6. The reconciled domain is active, uses acquisition source purchased, and records Porkbun as the registrar provider. Contact synchronisation is explicitly deferred for the .co.uk sandbox path because immediate registry contact writes produced V096; this is a separate verification stage.
 
 Database verification also found that the SQL expires_at fields and porkbun_expire_date metadata are currently null despite the browser reporting an expiry. Expiry capture therefore remains an open verification item and must not be documented as complete until the provider response and database values agree.
+
+
+
+## 2026-10-02 — Porkbun TEST expiry reconciliation checkpoint
+
+The current TEST Porkbun sandbox registration for `camerashack.co.uk` is already registered under provider order `9913828`. The order is `registered` and an active `tenant_domains` row exists. Contact synchronisation is deliberately deferred for the isolated .co.uk sandbox path because immediate contact writes produced V096.
+
+Expiry persistence remains a separate verification item. The current implementation previously relied only on the immediate Porkbun domain lookup for `expireDate`, while Porkbun's documented domain inventory response also exposes `createDate` and `expireDate`. The registration function has therefore been repaired to fall back to `/domain/listAll` when the direct lookup lacks those fields. No expiry is calculated or fabricated.
+
+TEST Edge Function `porkbun-domain-registration` is now version 7. The registered-state path is reconciliation-only when an existing Porkbun sandbox provider order is present; it cannot create a second registration. The TEST registrant page now exposes **Refresh provider registration details** for the already-registered order.
+
+Before website/domain routing work begins, verify the provider expiry and both TradeFlow expiry fields in TEST. LIVE remains untouched.

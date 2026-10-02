@@ -306,3 +306,29 @@ Immediate next action:
 5. Only then proceed to the existing provider-neutral website connection and `published_site_index` hostname routing.
 
 Do not register the domain again. Do not touch LIVE. Do not rebuild the domain foundation.
+
+
+## CURRENT STATE OVERRIDE — 2026-10-02 expiry persistence VERIFIED
+
+The TEST Porkbun sandbox registration and expiry reconciliation are now verified end-to-end for `camerashack.co.uk`.
+
+Verified TEST database state:
+- `tenant_domain_orders.status = registered`
+- provider order: `9913828`
+- `tenant_domain_orders.expires_at = 2027-10-02 12:01:45+00`
+- `tenant_domains.status = active`
+- `tenant_domains.acquisition_source = purchased`
+- `tenant_domains.registrar_provider = porkbun`
+- `tenant_domains.expires_at = 2027-10-02 12:01:45+00`
+- order metadata contains `porkbun_expire_date = 2027-10-02 12:01:45`
+- no second registration was created.
+
+The expiry repair path is therefore closed. The current TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared provider lookup, including the direct Porkbun domain lookup and `/domain/listAll` fallback when required.
+
+Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This does not block the verified sandbox registration/expiry stage.
+
+### Next stage
+
+Proceed to the existing provider-neutral website/domain connection and hostname routing architecture. First inspect the current GitHub implementation and TEST Supabase state for `published_site_index`, `tenant_site_state`, website publish flow, `public-site.js`, and domain settings. Do not invent a hosting/DNS target and do not rebuild the domain foundation.
+
+LIVE remains untouched.

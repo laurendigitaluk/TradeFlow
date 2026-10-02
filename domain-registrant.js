@@ -17,7 +17,7 @@ async function loadOrder(auth){
  const auth=await window.tradeflowSubscriberAuthReady;window.__tradeflowDomainAuth=auth;
  $('business-name').textContent=auth.tenants?.[auth.tenantId]||'Domain registration';
  $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
- await loadOrder(auth);
+ const order=await loadOrder(auth);
  if(params.get('domain_payment')==='success'||order.status==='registered')showValidation();
  if(order.status==='registered'){
    $('validation-message').textContent='TEST registration is already recorded. Use the reconciliation action to refresh the provider expiry and registration details without creating another registration.';

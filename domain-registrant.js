@@ -12,6 +12,7 @@ async function loadOrder(auth){
   if(!['payment_confirmed','registrant_details_saved','registered'].includes(order.status)) throw Error('This domain order is not ready for registrant details.');
   $('domain-name').textContent=order.hostname;
   $('payment-summary').textContent='Payment received: £'+Number(order.retail_amount).toFixed(2)+' '+order.currency+'.';
+  return order;
 }
 (async()=>{try{
  const auth=await window.tradeflowSubscriberAuthReady;window.__tradeflowDomainAuth=auth;

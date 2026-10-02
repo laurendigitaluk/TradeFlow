@@ -31,6 +31,9 @@ export default {
           "/": "/public-site.html",
           "/login": "/customer-dashboard.html",
           "/basket": "/customer-basket.html",
+          "/assistant": "/customer-assistant.html",
+          "/email-confirmed": "/customer-email-confirmed.html",
+          "/reset-password": "/customer-password-reset.html",
         };
     const assetPath = cleanRoutes[url.pathname];
     const assetRequest = assetPath

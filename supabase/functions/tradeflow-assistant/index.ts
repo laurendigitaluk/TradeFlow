@@ -99,7 +99,131 @@ Deno.serve(async (req: Request) => {
   const { data: tenant, error: tenantError } = await admin.from("tenants").select("id,name").eq("id", tenantId).maybeSingle();
   if (tenantError || !tenant) return fail("TradeFlow business could not be resolved.", 404);
 
+
+type ResearchAction = "lookup" | "approve";
+const RESEARCH_TYPES = ["uk_new", "uk_used", "overseas"] as const;
+type ResearchType = typeof RESEARCH_TYPES[number];
+
+async function handleResearch(
+  client: ReturnType<typeof createClient>,
+  tenantId: string,
+  userId: string,
+  body: any,
+) {
+  const action = body?.research_action as ResearchAction;
+  if (action !== "lookup" && action !== "approve") return fail("Unsupported research action.", 400);
+
+  if (action === "lookup") {
+    const manufacturer = typeof body?.manufacturer === "string" ? body.manufacturer.trim() : "";
+    const model = typeof body?.model === "string" ? body.model.trim() : "";
+    const packageName = typeof body?.package_name === "string" ? body.package_name.trim() : "";
+    if (!manufacturer || !model) return fail("Manufacturer and model are required.", 400);
+
+    let productQuery = client.from("tenant_buying_products")
+      .select("id,manufacturer,model,package_name,active,manual_offer_price,automatic_percentage,pricing_notes")
+      .eq("tenant_id", tenantId)
+      .eq("active", true)
+      .ilike("manufacturer", manufacturer)
+      .ilike("model", model)
+      .limit(10);
+
+    const { data: products, error: productError } = await productQuery;
+    if (productError) return fail("Unable to search the Buying Catalogue.", 500);
+
+    const filteredProducts = (products || []).filter((p: any) =>
+      !packageName || (p.package_name || "").toLowerCase().includes(packageName.toLowerCase())
+    );
+
+    const results = [];
+    for (const product of filteredProducts) {
+      const { data: evidence, error: evidenceError } = await client.from("tenant_buying_research")
+        .select("id,evidence_type,source_name,source_url,observed_price,price_currency,item_condition,availability,notes,checked_at,created_by")
+        .eq("tenant_id", tenantId)
+        .eq("buying_product_id", product.id)
+        .order("checked_at", { ascending: false })
+        .limit(20);
+      if (evidenceError) return fail("Unable to retrieve existing research evidence.", 500);
+      results.push({ product, evidence: evidence || [] });
+    }
+
+    return json({
+      status: "accepted",
+      assistant: {
+        mode: "research",
+        research_action: "lookup",
+        tenant_id: tenantId,
+        read_only: true,
+        external_research_enabled: false,
+        products: results,
+        message: results.length
+          ? "Existing approved research evidence was found. No external research request was made."
+          : "No matching active Buying Catalogue product was found. No external research request was made.",
+      },
+    });
+  }
+
+  const productId = typeof body?.buying_product_id === "string" ? body.buying_product_id.trim() : "";
+  const evidence = body?.evidence && typeof body.evidence === "object" ? body.evidence : null;
+  if (!productId || !evidence) return fail("buying_product_id and evidence are required for approval.", 400);
+
+  const evidenceType = typeof evidence.evidence_type === "string" ? evidence.evidence_type.trim() : "";
+  const sourceName = typeof evidence.source_name === "string" ? evidence.source_name.trim() : "";
+  const sourceUrl = typeof evidence.source_url === "string" ? evidence.source_url.trim() : null;
+  const observedPrice = evidence.observed_price === null || evidence.observed_price === undefined || evidence.observed_price === ""
+    ? null : Number(evidence.observed_price);
+
+  if (!(RESEARCH_TYPES as readonly string[]).includes(evidenceType)) return fail("Unsupported evidence type.", 400);
+  if (!sourceName || sourceName.length > 300) return fail("A valid source name is required.", 400);
+  if (sourceUrl && sourceUrl.length > 2000) return fail("Source URL is too long.", 400);
+  if (observedPrice !== null && (!Number.isFinite(observedPrice) || observedPrice < 0)) return fail("Observed price must be a valid non-negative number.", 400);
+
+  const { data: product, error: productError } = await client.from("tenant_buying_products")
+    .select("id,manufacturer,model,package_name")
+    .eq("tenant_id", tenantId)
+    .eq("id", productId)
+    .eq("active", true)
+    .maybeSingle();
+  if (productError) return fail("Unable to validate the Buying Catalogue product.", 500);
+  if (!product) return fail("Buying Catalogue product not found or not available to this business.", 404);
+
+  const { data: inserted, error: insertError } = await client.from("tenant_buying_research").insert({
+    tenant_id: tenantId,
+    buying_product_id: productId,
+    evidence_type: evidenceType,
+    source_name: sourceName,
+    source_url: sourceUrl,
+    observed_price: observedPrice,
+    price_currency: "GBP",
+    item_condition: typeof evidence.item_condition === "string" ? evidence.item_condition.trim() || null : null,
+    availability: typeof evidence.availability === "string" ? evidence.availability.trim() || null : null,
+    notes: typeof evidence.notes === "string" ? evidence.notes.trim() || null : null,
+    checked_at: new Date().toISOString(),
+    created_by: userId,
+  }).select("id,evidence_type,source_name,source_url,observed_price,price_currency,item_condition,availability,notes,checked_at,created_by").single();
+
+  if (insertError) return fail(insertError.message || "Unable to save approved research evidence.", 400);
+
+  return json({
+    status: "approved",
+    assistant: {
+      mode: "research",
+      research_action: "approve",
+      tenant_id: tenantId,
+      read_only: false,
+      approved_by: userId,
+      product,
+      evidence: inserted,
+      message: "Research evidence was explicitly approved and saved to tenant_buying_research. Existing buying calculations can use the latest matching evidence.",
+    },
+  });
+}
+
   const knowledge = retrieveKnowledge(question);
+
+  if (mode === "research") {
+    return await handleResearch(userClient, tenantId, user.id, body);
+  }
+
   const config = readConfig();
   const providerAllowed = config.allowed.includes(config.provider);
 

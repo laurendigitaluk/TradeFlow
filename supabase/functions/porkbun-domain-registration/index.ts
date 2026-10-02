@@ -86,6 +86,45 @@ Deno.serve(async req=>{
       email:registrant.email
     };
 
+    // Porkbun's .co.uk sandbox registration has already emitted the new-registrant
+    // notification, but the immediate registry contact write can race Nominet's
+    // tag propagation and return V096. Do not keep firing contact writes (and
+    // emails) on every retry. For this isolated sandbox test, registration itself
+    // is the completed registrar operation; contact synchronisation is verified
+    // separately after the domain is reconciled.
+    const deferSandboxUkContactSync=Boolean(
+      order.metadata?.porkbun_sandbox===true &&
+      (order.tld==="co.uk" || order.tld==="uk")
+    );
+    if(deferSandboxUkContactSync){
+      const finalMetadata={...orderMetadata,porkbun_contact_sync_deferred:true,porkbun_contact_sync_reason:"Porkbun/Nominet V096 immediately after sandbox registration"};
+      const domainRes=await fetch("https://api.porkbun.com/api/json/v3/domain/get/"+encodeURIComponent(order.hostname),{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
+      const domainInfo=await domainRes.json().catch(()=>null);
+      if(!domainRes.ok||domainInfo?.status!=="SUCCESS"||!domainInfo?.domain){
+        const reason=domainInfo?.code?String(domainInfo.code)+": "+String(domainInfo.message||""):String(domainInfo?.message||"Unable to verify registered domain.");
+        await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:"Sandbox registration completed but provider reconciliation lookup failed: "+reason,provider_order_id:String(created.orderId),metadata:{...finalMetadata,porkbun_reconciliation_lookup_failed:true}}).eq("id",orderId);
+        return json({error:"Sandbox registration completed but provider reconciliation could not be verified.",provider_order_id:created.orderId},502);
+      }
+      const expiresAt=domainInfo.expireDate?new Date(domainInfo.expireDate.replace(" ","T")+"Z").toISOString():null;
+      const registeredAt=domainInfo.createDate?new Date(domainInfo.createDate.replace(" ","T")+"Z").toISOString():new Date().toISOString();
+      const tenantDomainMetadata={sandbox:true,source:"tenant_domain_order",domain_order_id:order.id,provider_order_id:String(created.orderId),provider_request_id:created.requestId||null,registrant_record_id:registrant.id,contact_updated:false,contact_sync_deferred:true};
+      const {data:existing}=await admin.from("tenant_domains").select("id").eq("tenant_id",tenantId).eq("hostname",order.hostname).maybeSingle();
+      let domainRow;
+      if(existing){
+        const {data:updated,error}=await admin.from("tenant_domains").update({hostname:order.hostname,status:"active",domain_type:"custom",acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata,updated_at:new Date().toISOString()}).eq("id",existing.id).select("id").single();
+        if(error) throw new Error("Unable to reconcile tenant domain: "+error.message);
+        domainRow=updated;
+      }else{
+        const {data:createdDomain,error}=await admin.from("tenant_domains").insert({tenant_id:tenantId,hostname:order.hostname,status:"active",domain_type:"custom",is_primary:false,acquisition_source:"domain_purchase",registrar_provider:"porkbun",registrar_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,auto_renew:true,provider_metadata:tenantDomainMetadata}).select("id").single();
+        if(error) throw new Error("Unable to create tenant domain reconciliation: "+error.message);
+        domainRow=createdDomain;
+      }
+      const completedMetadata={...finalMetadata,porkbun_registration_completed_at:new Date().toISOString(),porkbun_expire_date:domainInfo.expireDate||null,porkbun_reconciled_tenant_domain_id:domainRow.id};
+      const {error:orderUpdateError}=await admin.from("tenant_domain_orders").update({status:"registered",provider_order_id:String(created.orderId),provider_domain_id:null,purchased_at:registeredAt,expires_at:expiresAt,failure_reason:null,metadata:completedMetadata}).eq("id",orderId);
+      if(orderUpdateError) throw new Error("Domain was reconciled but order finalisation failed: "+orderUpdateError.message);
+      return json({status:"SUCCESS",order_id:orderId,hostname:order.hostname,provider:"porkbun",provider_order_id:String(created.orderId),provider_domain_id:null,registered_at:registeredAt,expires_at:expiresAt,tenant_domain_id:domainRow.id,sandbox:true,contact_sync_deferred:true});
+    }
+
     const normalize=(value:unknown)=>String(value??"").trim().toLowerCase();
     const expectedFirst=normalize(contact.firstName);
     const expectedLast=normalize(contact.lastName);

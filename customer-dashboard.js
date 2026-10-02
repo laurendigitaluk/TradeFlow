@@ -1,7 +1,7 @@
 const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
-let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id'),profile=null;
-const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
+let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id')||window.TRADEFLOW_CUSTOMER_TENANT_ID||'',profile=null;
+let SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
 const LEGACY_SESSION_STORAGE='tradeflow_customer_session';
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]||c))}
@@ -257,6 +257,10 @@ window.addEventListener('tradeflow-auth-success',async(event)=>{
 async function bootCustomerPortal(){
  try{
   if(window.tradeflowCustomerAuthReady)await window.tradeflowCustomerAuthReady;
+  tenantId=window.TRADEFLOW_CUSTOMER_TENANT_ID||new URLSearchParams(location.search).get('tenant_id')||tenantId||'';
+  SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
+  if(!tenantId)throw new Error('This customer website could not identify the business from its domain.');
+  loadBrand();
   restore();
   if(session?.access_token)await loadPortalOnce();else showAuth(true);
  }catch(e){
@@ -264,5 +268,4 @@ async function bootCustomerPortal(){
   message(e.message||String(e),'error');
  }
 }
-loadBrand();
 bootCustomerPortal();

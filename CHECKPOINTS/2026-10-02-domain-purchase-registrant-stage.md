@@ -131,3 +131,29 @@ The Porkbun contact update is deliberately deferred for the isolated .co.uk sand
 TEST Edge Function porkbun-domain-registration is version 6. GitHub repair commits include 5a160c66e8b9debc759a9a0a34dbec0c19bafd8a for TLD normalization and 1298f832781b97c19e1506c945669a7e9430caf2 for the valid acquisition-source value.
 
 Next stage: verify/correct expiry capture, then test the existing provider-neutral domain connection and published-site hostname routing. Do not rebuild the domain foundation and do not touch LIVE.
+
+
+
+## 2026-10-02 — Porkbun TEST expiry reconciliation repair deployed
+
+Current TEST database remains:
+- order status: `registered`
+- Porkbun provider order: `9913828`
+- `tenant_domains`: one active Porkbun row
+- order `expires_at`: still null pending provider reconciliation
+- tenant-domain `expires_at`: still null pending provider reconciliation
+- LIVE remains untouched.
+
+Root cause identified in the current implementation: the registration function read expiry only from the immediate `/domain/get/{domain}` response. Porkbun documents expiry information on its domain inventory/list response as well, so the repair now falls back to `/domain/listAll` when the direct domain lookup does not contain `expireDate` or `createDate`. No expiry date is fabricated.
+
+The TEST registration function was deployed as version 7. It is also now idempotent for the already-registered sandbox order: when the existing order is `registered` and already carries the Porkbun sandbox provider order, the function performs reconciliation only and cannot create a second registration.
+
+The registrant page was updated so an already-registered TEST order can use **Refresh provider registration details**. This reuses provider order 9913828 and is intended only to refresh provider registration/expiry data.
+
+GitHub commits for this repair:
+- `48ad16c9e6d75eafe93c3072e3de8a1dbc1baf04` — expiry fallback and registered-state reconciliation in the Porkbun function.
+- `cd41cf1ac165e5fdb21dffe1074b7fdb3c3a7046` — registrant page registered-state handling.
+- `bdf75bb949880c891628e8f9a470d3018f672b47` — return loaded order state correctly.
+- `80d8bee3e9a4d4720ce707be3556d46518e0b3fd` — refresh frontend script cache version.
+
+Next action: open the existing TEST registrant page for order 59409e55-5426-4b0b-9020-4615244e5d83 and press **Refresh provider registration details** once. Do not start a new registration and do not touch LIVE. After the click, verify the provider expiry and both TradeFlow expiry fields directly in TEST before moving to website routing.

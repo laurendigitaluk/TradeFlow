@@ -20,6 +20,9 @@ type ProviderRequest = {
   mode: "help" | "research";
   tenantId: string;
   userId: string;
+  audience: "subscriber" | "customer";
+  customerId?: string;
+  customerContext?: unknown;
 };
 
 type ProviderResponse = {
@@ -91,13 +94,76 @@ Deno.serve(async (req: Request) => {
   if (question.length > 4000) return fail("Question is too long.", 400);
   if (!["help", "research"].includes(mode)) return fail("Unsupported assistant mode.", 400);
 
-  const { data: membership, error: membershipError } = await userClient.from("tenant_memberships")
-    .select("tenant_id,role_code,status").eq("tenant_id", tenantId).eq("user_id", user.id).eq("status", "active").maybeSingle();
-  if (membershipError || !membership) return fail("You do not have access to this TradeFlow business.", 403);
+  const audience = body?.audience === "customer" ? "customer" : "subscriber";
+  let membership: any = null;
+  let customer: any = null;
+  let customerContext: any = null;
 
-  const admin = createClient(supabaseUrl, serviceRoleKey);
-  const { data: tenant, error: tenantError } = await admin.from("tenants").select("id,name").eq("id", tenantId).maybeSingle();
-  if (tenantError || !tenant) return fail("TradeFlow business could not be resolved.", 404);
+  if (audience === "customer") {
+    const { data: customerRow, error: customerError } = await admin.from("customers")
+      .select("id,tenant_id,auth_user_id,customer_reference,first_name,last_name,status")
+      .eq("tenant_id", tenantId)
+      .eq("auth_user_id", user.id)
+      .maybeSingle();
+    if (customerError || !customerRow) return fail("Customer account could not be resolved for this business.", 403);
+    customer = customerRow;
+
+    const { data: requests } = await admin.from("buying_requests")
+      .select("id,request_reference,status,submitted_at,updated_at")
+      .eq("tenant_id", tenantId).eq("customer_id", customer.id)
+      .order("updated_at", { ascending: false }).limit(10);
+
+    const requestIds = (requests || []).map((row: any) => row.id);
+    const { data: items } = requestIds.length
+      ? await admin.from("buying_items")
+        .select("id,buying_request_id,item_reference,status,title,purchase_stage,purchase_stage_updated_at")
+        .eq("tenant_id", tenantId).in("buying_request_id", requestIds)
+        .order("updated_at", { ascending: false }).limit(20)
+      : { data: [] as any[] };
+
+    const itemIds = (items || []).map((row: any) => row.id);
+    const { data: offers } = itemIds.length
+      ? await admin.from("offers")
+        .select("id,buying_item_id,offer_reference,status,amount,currency,published_at,responded_at,expires_at")
+        .eq("tenant_id", tenantId).in("buying_item_id", itemIds)
+        .order("updated_at", { ascending: false }).limit(20)
+      : { data: [] as any[] };
+
+    const { data: acquisitions } = await admin.from("acquisitions")
+      .select("id,acquisition_reference,status,agreed_total,currency,accepted_at,received_at,finalised_at,paid_at,completed_at,shipping_carrier,shipping_service,shipping_tracking_number,shipping_tracking_url,shipping_status")
+      .eq("tenant_id", tenantId).eq("customer_id", customer.id)
+      .order("updated_at", { ascending: false }).limit(10);
+
+    const { data: retailOrders } = await admin.from("retail_orders")
+      .select("id,order_reference,status,currency,total,payment_status,placed_at,paid_at,completed_at,cancelled_at")
+      .eq("tenant_id", tenantId).eq("customer_id", customer.id)
+      .order("updated_at", { ascending: false }).limit(10);
+
+    const { data: returns } = await admin.from("returns")
+      .select("id,return_reference,return_type,status,order_id,acquisition_id,requested_at,authorised_at,received_at,resolved_at,closed_at,refund_amount,currency")
+      .eq("tenant_id", tenantId).eq("customer_id", customer.id)
+      .order("updated_at", { ascending: false }).limit(10);
+
+    customerContext = {
+      customer: {
+        customer_reference: customer.customer_reference,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        status: customer.status,
+      },
+      buying_requests: requests || [],
+      buying_items: items || [],
+      offers: offers || [],
+      acquisitions: acquisitions || [],
+      retail_orders: retailOrders || [],
+      returns: returns || [],
+    };
+  } else {
+    const { data: membershipRow, error: membershipError } = await userClient.from("tenant_memberships")
+      .select("tenant_id,role_code,status").eq("tenant_id", tenantId).eq("user_id", user.id).eq("status", "active").maybeSingle();
+    if (membershipError || !membershipRow) return fail("You do not have access to this TradeFlow business.", 403);
+    membership = membershipRow;
+  }
 
 
 type ResearchAction = "lookup" | "approve";
@@ -239,7 +305,10 @@ async function handleResearch(
         tenant_id: tenantId,
         tenant_name: tenant.name,
         user_id: user.id,
-        role: membership.role_code,
+        role: audience === "customer" ? "customer" : membership.role_code,
+        audience,
+        customer_id: customer?.id || null,
+        customer_context: customerContext,
         question,
         knowledge,
       },
@@ -257,6 +326,9 @@ async function handleResearch(
     mode: mode as "help" | "research",
     tenantId,
     userId: user.id,
+    audience,
+    customerId: customer?.id,
+    customerContext,
   });
 
   if (result.status === "not_configured") {

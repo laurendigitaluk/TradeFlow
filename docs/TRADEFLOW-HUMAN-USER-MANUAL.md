@@ -1650,3 +1650,75 @@ The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses 
 Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
 
 **Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
+
+## 2026-10-02 — Chatbot continuity and pre-launch domain sequence
+
+The TradeFlow chatbot is a planned pre-launch component and must be completed and tested before the platform is declared ready for public launch.
+
+### Chatbot architecture already agreed
+
+**Phase 1 — Subscriber read-only assistant**
+- Answer how-to and system questions.
+- Primary knowledge source: the finalized Subscriber Website/User Manual plus approved TradeFlow documentation.
+- May use appropriate authenticated subscriber/tenant context where required to answer the subscriber's own questions.
+- Must not make arbitrary database changes.
+- Must not have unrestricted SQL/database access.
+
+Examples already agreed include: adding a logo, creating a listing, changing shipping services, buying a domain, understanding “Shipping Required”, understanding what happens after an item is received, and publishing a website.
+
+**Phase 2 — Customer read-only assistant**
+- Explain the customer's own item/order status and next steps.
+- Explain shipping, returns, orders and other customer-facing workflow states.
+- Customer data must remain tenant-scoped.
+
+**Phase 3 — Messaging/enquiries**
+- Controlled communication workflows.
+
+**Phase 4 — Controlled actions**
+- Only after the read-only phases are proven.
+- Any action must have explicit permissions, tenant scoping and auditability.
+
+### Chatbot security boundary
+
+The chatbot must never expose another tenant's customers, orders, inventory, valuations, payments, domains, business information or personal information.
+
+Safe architecture:
+
+Authenticated user → TradeFlow chatbot → verified tenant/user identity → explicitly allowed read-only data → approved documentation/manual knowledge.
+
+Not: chatbot → unrestricted database.
+
+### Chatbot documentation dependency
+
+The manuals must describe the actual current TradeFlow system before they become the chatbot's authoritative knowledge source. Historical sections may be retained for audit continuity but must not be treated as current instructions.
+
+### Agreed pre-launch order
+
+1. Complete and test the chatbot.
+2. Audit current GitHub, TEST Supabase, Cloudflare TEST and checkpoints.
+3. Choose the permanent Lauren Digital company domain.
+4. Purchase the genuine Lauren Digital domain.
+5. If required, purchase one inexpensive genuine test domain.
+6. Prove real public DNS → Cloudflare → TEST Worker → TEST Supabase → published subscriber website.
+7. Configure and verify the permanent Lauren Digital production domain separately.
+8. Promote only an approved tested release to Production.
+9. Complete final launch testing.
+
+### Real-domain testing boundary
+
+The Porkbun sandbox domain camerashack.co.uk is a simulated registration and cannot prove public DNS/Cloudflare routing. Do not force it through Cloudflare.
+
+A genuine registered test domain is required for the real DNS/Cloudflare test.
+
+### Current Cloudflare TEST state
+
+- Worker: tradeflow-test
+- Branch: cloudflare-test
+- Worker URL: https://tradeflow-test.leannelaurenlowe.workers.dev
+- Custom domains currently attached: none
+- TEST Supabase: twfbmjwwqzxdxvclxbun
+- LIVE must remain isolated.
+
+### Continuity rule
+
+After every material chatbot or domain change, update the Master Roadmap, System Handbook where appropriate, this AI Operating Manual, the relevant human/subscriber manuals and a checkpoint. Do not claim a feature is verified without browser/database evidence.

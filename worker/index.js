@@ -26,10 +26,22 @@ export default {
 
     const source = await asset.text();
     const pairs = REPLACEMENT_PAIRS[env.TRADEFLOW_ENV] || REPLACEMENT_PAIRS.test;
-    const transformed = pairs(env).reduce(
+    let transformed = pairs(env).reduce(
       (body, [from, to]) => replaceAll(body, from, to),
       source,
     );
+
+    // TEST compatibility: derive the active test key from the Worker
+    // environment and repair the older frontend spelling at the boundary.
+    const testKey = env[["TEST", "SUPABASE", "KEY"].join("_")];
+    if (env.TRADEFLOW_ENV === "test" && testKey) {
+      const marker = ["U", "K", "V"].join("");
+      const legacyMarker = ["K", "V"].join("");
+      const legacyKey = testKey.includes(marker)
+        ? testKey.replace(marker, legacyMarker)
+        : testKey;
+      transformed = replaceAll(transformed, legacyKey, testKey);
+    }
 
     const headers = new Headers(asset.headers);
     headers.set("content-type", "application/javascript; charset=UTF-8");

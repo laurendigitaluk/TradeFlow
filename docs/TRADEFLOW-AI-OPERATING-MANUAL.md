@@ -2201,3 +2201,12 @@ Do not spend further work trying to make the Porkbun sandbox domain prove public
 
 ## 2026-10-02 — Customer Assistant gateway version 10
 The TEST `tradeflow-assistant` Edge Function is now version 10 and ACTIVE with JWT verification enabled. Customer requests are tenant + customer scoped. When the provider is `none`, the gateway returns an approved-knowledge fallback answer rather than making an external AI request. This provides useful deterministic help while keeping external AI usage at zero.
+
+
+## CURRENT AI PROVIDER CONTROL — 2 OCTOBER 2026
+
+The TradeFlow Assistant is provider-neutral. The platform owner controls which AI providers are permitted and which provider is active from the Owner Dashboard. Supported options are **None, Gemma, OpenAI, Anthropic, Google, and Subscriber**.
+
+`None` is the safe knowledge-only mode. Enabling a provider does not add credentials and does not make a browser-side API call. Provider credentials must remain server-side. The architecture deliberately leaves open two future deployment models: a centrally managed provider (including a possible Gemma server/PC) or a subscriber-supplied provider connection.
+
+The Owner Dashboard stores only provider availability/selection. It does not store provider API secrets. The `tradeflow-assistant` gateway reads the platform AI configuration server-side and remains tenant-scoped. Provider-specific adapters are not activated until their credentials, limits and request/response contracts are deliberately configured.

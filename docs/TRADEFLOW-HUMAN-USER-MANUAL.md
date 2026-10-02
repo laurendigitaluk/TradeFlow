@@ -1722,3 +1722,18 @@ A genuine registered test domain is required for the real DNS/Cloudflare test.
 ### Continuity rule
 
 After every material chatbot or domain change, update the Master Roadmap, System Handbook where appropriate, this AI Operating Manual, the relevant human/subscriber manuals and a checkpoint. Do not claim a feature is verified without browser/database evidence.
+
+
+## 2026-10-02 — Subscriber AI rules, usage and cost
+
+TradeFlow AI is a separate subscriber feature and is not connected to Gary's personal Gemma research system. Gemma remains personal Quote System research infrastructure only.
+
+The initial Subscriber Assistant is read-only and uses approved TradeFlow documentation plus only the minimum authenticated tenant information required for the current question. It must not have unrestricted SQL/database access, whole-table dumps or cross-tenant access.
+
+An optional subscriber-owned AI/API connection may be supported. Where a subscriber uses their own provider, that provider's usage charges are the subscriber's responsibility. Provider credentials must be held server-side and must not be exposed to browser code or other tenants. A centrally funded TradeFlow AI option may be introduced later only with explicit commercial limits.
+
+Product Research is a controlled feature: research a specific product, present evidence and sources, obtain subscriber approval, then save approved evidence and allow the existing buying-price calculation to use it. AI must not silently alter buying prices.
+
+AI and research usage must be measurable and controllable by tenant/provider. Final customer-facing pricing, allowances and limits must be documented before public launch; do not invent commercial figures.
+
+The Human User Manual must explain these rules in plain language. The Backend User Manual must document the operational controls and security boundary.

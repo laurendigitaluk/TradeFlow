@@ -94,12 +94,17 @@ Deno.serve(async (req: Request) => {
   if (question.length > 4000) return fail("Question is too long.", 400);
   if (!["help", "research"].includes(mode)) return fail("Unsupported assistant mode.", 400);
 
-  const audience = body?.audience === "customer" ? "customer" : "subscriber";
+  const admin = createClient(supabaseUrl, serviceRoleKey);
+  const { data: tenant, error: tenantError } = await admin.from("tenants").select("id,name").eq("id", tenantId).maybeSingle();
+  if (tenantError || !tenant) return fail("TradeFlow business could not be resolved.", 404);
+
+    const audience = body?.audience === "customer" ? "customer" : "subscriber";
   let membership: any = null;
   let customer: any = null;
   let customerContext: any = null;
 
   if (audience === "customer") {
+    if (mode !== "help") return fail("Customer assistant supports help only.", 400);
     const { data: customerRow, error: customerError } = await admin.from("customers")
       .select("id,tenant_id,auth_user_id,customer_reference,first_name,last_name,status")
       .eq("tenant_id", tenantId)
@@ -287,6 +292,7 @@ async function handleResearch(
   const knowledge = retrieveKnowledge(question);
 
   if (mode === "research") {
+    if (audience !== "subscriber") return fail("Customer assistant does not have access to Product Research.", 403);
     return await handleResearch(userClient, tenantId, user.id, body);
   }
 

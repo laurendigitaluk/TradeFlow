@@ -7,9 +7,17 @@
 This manual is the **backend/business-operations manual**. It is separate from the customer/site-facing website manual. It explains how the TradeFlow business application works behind the public website and how staff operate the system.
 
 
+## Subscriber dashboard and owner documentation boundary — 2 October 2026
+
+The **Business Dashboard is the subscriber's operating home**. Subscribers do not need to read or understand the internal Backend User Manual, database tables, RLS policies, Edge Functions or implementation details.
+
+The internal **Backend User Manual is for the restricted Platform Owner/Owner Dashboard only**. It is linked from `platform-owner-dashboard.html`, not from the subscriber Business Dashboard. The subscriber dashboard should provide only normal business-operation manuals and controls.
+
+For subscriber operation, use the Business Dashboard and its linked Buying, Inventory, Selling, Orders, Fulfilment, Returns, Customers, Website and Settings areas.
+
 ## Current subscriber dashboard — 2 October 2026
 
-The **Business Dashboard** is the subscriber's operational home screen. The subscriber should work from this dashboard and its linked business areas; the internal Backend User Manual is not a subscriber-facing document. You do not need to know TradeFlow's backend or database implementation to use it.
+The **Business Dashboard** is the subscriber's operational home screen. The subscriber should work from this dashboard and its linked business areas; the internal Backend User Manual is not a subscriber-facing document and is not part of the subscriber workflow. You do not need to know TradeFlow's backend or database implementation to use it.
 
 The dashboard gives you a quick view of work across:
 

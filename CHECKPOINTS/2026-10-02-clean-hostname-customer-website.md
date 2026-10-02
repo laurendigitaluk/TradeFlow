@@ -73,3 +73,19 @@ After TEST Worker deployment:
 
 ## LIVE rule
 Do not copy TEST fallback behavior into LIVE. LIVE customer routing must use the subscriber's actual custom hostname, e.g. `camerashack.co.uk`, and resolve the tenant from `published_site_index`.
+
+
+## Documentation / memory synchronization — 2 October 2026
+
+The project documentation has been synchronized with the current position:
+
+- `subscriber-website-manual.html` now contains the subscriber-facing **Business Dashboard** guidance and current clean customer-domain launch position.
+- `docs/TRADEFLOW-HUMAN-USER-MANUAL.md` now treats the Business Dashboard as the subscriber's operational home and explicitly excludes backend/database implementation from normal subscriber operation.
+- `docs/TRADEFLOW-BACKEND-USER-MANUAL.md` has been reclassified as the **Internal Backend & Owner Dashboard Manual**. It remains available for owner/admin technical continuity but is no longer the normal subscriber-facing guide.
+- `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`, `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` and `TRADEFLOW-MASTER-ROADMAP.md` have current-state overrides covering the active TEST branch, TEST/LIVE separation, hostname-based customer architecture, domain registration state, AI/chatbot boundary and final release sequence.
+
+The authoritative documentation split is now:
+
+**Subscriber:** `subscriber-website-manual.html` + `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+
+**Internal owner/admin/technical continuity:** `docs/TRADEFLOW-BACKEND-USER-MANUAL.md` + `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` + `docs/TRADEFLOW-SYSTEM-HANDBOOK.md` + `TRADEFLOW-MASTER-ROADMAP.md`

@@ -3,11 +3,11 @@ const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localh
 window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;const TRADEFLOW_FETCH=window.fetch.bind(window);window.fetch=(input,init)=>{const testUrl='https://twfbmjwwqzxdxvclxbun.supabase.co';const liveUrl=TRADEFLOW_RUNTIME.supabaseUrl;const rewrite=url=>typeof url==='string'?url.replace(testUrl,liveUrl):url;if(input instanceof Request)return TRADEFLOW_FETCH(new Request(rewrite(input.url),input),init);return TRADEFLOW_FETCH(rewrite(input),init)};
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
-const tenantId=new URLSearchParams(location.search).get('tenant_id');
+let tenantId=new URLSearchParams(location.search).get('tenant_id');
 const CUSTOMER_SITE_BASE=new URL('./',location.href).href;
 let businessName='this business';
-const SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
-const PENDING_STORAGE=tenantId?'tradeflow_pending_customer_registration:'+tenantId:'tradeflow_pending_customer_registration:unknown';
+let SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
+let PENDING_STORAGE=tenantId?'tradeflow_pending_customer_registration:'+tenantId:'tradeflow_pending_customer_registration:unknown';
 const LEGACY_KEYS=['tradeflow_customer_session','tradeflow_customer_tenant_id','tradeflow_testlab_session','tradeflow_pending_customer_registration'];
 let authReadyResolve;
 window.tradeflowCustomerAuthReady=new Promise(resolve=>{authReadyResolve=resolve});
@@ -29,6 +29,21 @@ function saveSession(data){
 function dispatchAuthSuccess(data){
  window.tradeflowPendingAuthSession=data;
  window.dispatchEvent(new CustomEvent('tradeflow-auth-success',{detail:data}));
+}
+async function resolveTenantContext(){
+ if(tenantId)return;
+ const hostname=location.hostname;
+ if(!hostname)return;
+ try{
+  const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:SUPABASE_KEY}});
+  if(!response.ok)return;
+  const rows=await response.json();
+  if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){
+   tenantId=rows[0].tenant_id;
+   SESSION_STORAGE='tradeflow_customer_session:'+tenantId;
+   PENDING_STORAGE='tradeflow_pending_customer_registration:'+tenantId;
+  }
+ }catch{}
 }
 async function loadBusinessName(){try{const r=await fetch(SUPABASE_URL+'/rest/v1/tenant_public_profiles?select=business_name&tenant_id=eq.'+encodeURIComponent(tenantId),{headers:{apikey:SUPABASE_KEY}});const rows=await r.json();businessName=rows?.[0]?.business_name||businessName}catch{}}
 async function resendConfirmation(){
@@ -142,16 +157,18 @@ function setAuthMode(signup){
 }
 window.tradeflowCustomerSetAuthMode=setAuthMode;
 function bind(){
- clearLegacySharedState();
- $('auth-sign-in')?.addEventListener('click',signIn);
- $('auth-sign-up')?.addEventListener('click',signUp);
- $('auth-create-account')?.addEventListener('click',()=>setAuthMode(true));
- $('auth-back-sign-in')?.addEventListener('click',()=>setAuthMode(false));
- setAuthMode(false);
- $('auth-resend')?.addEventListener('click',resendConfirmation);
- $('auth-reset')?.addEventListener('click',requestPasswordReset);
- $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
- loadBusinessName().finally(()=>{setAuthMode(false);restoreExistingSession().finally(()=>authReadyResolve())});
+ resolveTenantContext().finally(()=>{
+  clearLegacySharedState();
+  $('auth-sign-in')?.addEventListener('click',signIn);
+  $('auth-sign-up')?.addEventListener('click',signUp);
+  $('auth-create-account')?.addEventListener('click',()=>setAuthMode(true));
+  $('auth-back-sign-in')?.addEventListener('click',()=>setAuthMode(false));
+  setAuthMode(false);
+  $('auth-resend')?.addEventListener('click',resendConfirmation);
+  $('auth-reset')?.addEventListener('click',requestPasswordReset);
+  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
+  loadBusinessName().finally(()=>{setAuthMode(false);restoreExistingSession().finally(()=>authReadyResolve())});
+ });
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();

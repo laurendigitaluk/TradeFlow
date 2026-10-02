@@ -2176,3 +2176,24 @@ The remaining AI launch work is the **customer-facing assistant/chatbot** and th
 After the chatbot is complete, the project moves to the LIVE launch sequence: create/register a real subscriber in LIVE, configure the subscriber's real domain, register real customer accounts against that LIVE subscriber, and perform the final customer/subscriber acceptance tests on the real domain. Fixes must still be made in TEST first and then promoted; LIVE is not a development environment.
 
 Personal Gemma remains separate from TradeFlow customer/subscriber AI.
+
+
+# CURRENT OVERRIDE — 2 OCTOBER 2026 — CUSTOMER ASSISTANT AND LAUNCH
+
+The current pre-launch AI workstream has moved from Subscriber Assistant Phase 1 to the customer-facing Phase 2 boundary.
+
+## Subscriber Assistant
+The subscriber assistant is read-only and tenant-scoped. It uses approved TradeFlow knowledge and, where applicable, controlled Product Research. It must not silently change buying prices or business records.
+
+## Customer Assistant
+The TEST `tradeflow-assistant` Edge Function now accepts an explicit `audience=customer` path. It verifies the authenticated user against `public.customers.auth_user_id` and the supplied tenant, then retrieves only that customer's own buying requests, buying items, offers, acquisitions, retail orders and returns. It deliberately excludes Product Research for customers.
+
+The customer assistant is read-only. It cannot change orders, offers, payments, inventory, valuations or other records. It must never expose another customer or tenant. Bank details and other sensitive operational fields are not included in its customer context.
+
+A customer-facing UI is now present as `customer-assistant.html` / `customer-assistant.js`, with the clean TEST route `/assistant`. The customer portal links to it. The Worker maps `/assistant` to the customer assistant page.
+
+## Provider state
+The server-side AI provider remains `none`. No external AI request is being made by the TEST gateway. The provider-neutral boundary remains the intended architecture. A real conversational provider must be configured server-side before the assistant can generate free-form AI answers. Do not put API credentials in browser code. The OpenAI Assistants API is no longer the current integration path; OpenAI's current documentation directs new integrations to the Responses API. citeturn1search0
+
+## Launch decision
+Do not spend further work trying to make the Porkbun sandbox domain prove public DNS/Cloudflare routing. Finish the customer assistant boundary, then move to the genuine LIVE domain/subscriber/customer launch path. TEST remains the place for code fixes; LIVE becomes the final real-world acceptance environment once the genuine domain is configured.

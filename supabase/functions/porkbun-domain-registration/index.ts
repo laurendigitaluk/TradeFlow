@@ -30,9 +30,13 @@ Deno.serve(async req=>{
     const {data:member}=await admin.from("tenant_memberships").select("tenant_id").eq("tenant_id",tenantId).eq("user_id",user.id).eq("status","active").maybeSingle();
     if(!member) return json({error:"You do not have access to this TradeFlow workspace."},403);
 
-    const {data:order}=await admin.from("tenant_domain_orders").select("id,tenant_id,hostname,tld,status,term_years,registrar_cost_usd,metadata").eq("id",orderId).eq("tenant_id",tenantId).maybeSingle();
+    const {data:order}=await admin.from("tenant_domain_orders").select("id,tenant_id,hostname,tld,status,term_years,registrar_cost_usd,provider_order_id,expires_at,purchased_at,metadata").eq("id",orderId).eq("tenant_id",tenantId).maybeSingle();
     if(!order) return json({error:"Domain order not found."},404);
-    if(!["registrant_details_saved","failed"].includes(order.status)) return json({error:"The domain is not ready for TEST registration/reconciliation."},409);
+    const existingSandboxOrderId=String(order.provider_order_id||"");
+    const sandboxAlreadyRegistered=Boolean(existingSandboxOrderId)&&order.metadata?.porkbun_sandbox===true;
+    const reconciliationOnly=order.status==="registered";
+    if(!["registrant_details_saved","failed","registered"].includes(order.status)) return json({error:"The domain is not ready for TEST registration/reconciliation."},409);
+    if(reconciliationOnly&&!sandboxAlreadyRegistered) return json({error:"Only a previously registered Porkbun TEST sandbox order can be reconciled from the registered state."},409);
     if(Number(order.term_years||1)!==1) return json({error:"The current Porkbun TEST registration path is limited to one year.",term_years:order.term_years},409);
 
     const {data:registrant}=await admin.from("tenant_domain_registrants").select("id,registrant_name,organisation,address_line1,address_line2,city,region,postal_code,country_code,email,phone").eq("domain_order_id",orderId).eq("tenant_id",tenantId).maybeSingle();
@@ -40,9 +44,6 @@ Deno.serve(async req=>{
 
     const dryRun=order.metadata?.porkbun_dry_run_would_succeed===true;
     if(!dryRun) return json({error:"A successful Porkbun dry run is required before sandbox registration."},409);
-    const existingSandboxOrderId=String(order.provider_order_id||"");
-    const sandboxAlreadyRegistered=Boolean(existingSandboxOrderId)&&order.metadata?.porkbun_sandbox===true;
-
     const cost=Math.round(Number(order.registrar_cost_usd||0)*100);
     if(!Number.isFinite(cost)||cost<=0) return json({error:"The saved registrar cost is invalid."},409);
 
@@ -51,7 +52,9 @@ Deno.serve(async req=>{
       porkbun_registration_started_at:new Date().toISOString(),
       porkbun_registrant_record_id:registrant.id
     };
-    await admin.from("tenant_domain_orders").update({status:"registering",failure_reason:null,metadata:registeringMetadata}).eq("id",orderId);
+    if(!reconciliationOnly){
+      await admin.from("tenant_domain_orders").update({status:"registering",failure_reason:null,metadata:registeringMetadata}).eq("id",orderId);
+    }
 
     let created={orderId:existingSandboxOrderId,requestId:order.metadata?.porkbun_registration_request_id||null};
     if(!sandboxAlreadyRegistered){
@@ -92,6 +95,25 @@ Deno.serve(async req=>{
     // emails) on every retry. For this isolated sandbox test, registration itself
     // is the completed registrar operation; contact synchronisation is verified
     // separately after the domain is reconciled.
+    const getProviderDomainInfo=async()=>{
+      const providerLookup=await getProviderDomainInfo();
+      const domainInfo=providerLookup.info;
+      if(!providerLookup.ok||!domainInfo?.domain){
+        const reason=providerLookup.reason||"Unable to verify registered domain.";
+        return {ok:false,info:null,reason};
+      }
+      let info=domainInfo;
+      if(!info.expireDate||!info.createDate){
+        const listRes=await fetch("https://api.porkbun.com/api/json/v3/domain/listAll",{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
+        const listInfo=await listRes.json().catch(()=>null);
+        if(listRes.ok&&listInfo?.status==="SUCCESS"&&Array.isArray(listInfo.domains)){
+          const match=listInfo.domains.find((item:any)=>String(item?.domain||"").toLowerCase()===String(order.hostname).toLowerCase());
+          if(match) info={...info,...match};
+        }
+      }
+      return {ok:true,info,reason:null};
+    };
+
     const normalizedTld=String(order.tld||"").trim().toLowerCase().replace(/^\./,"");
     const deferSandboxUkContactSync=Boolean(
       order.metadata?.porkbun_sandbox===true &&
@@ -184,10 +206,10 @@ Deno.serve(async req=>{
       }
     }
 
-    const domainRes=await fetch("https://api.porkbun.com/api/json/v3/domain/get/"+encodeURIComponent(order.hostname),{headers:{"X-API-Key":API_KEY,"X-Secret-API-Key":SECRET}});
-    const domainInfo=await domainRes.json().catch(()=>null);
-    if(!domainRes.ok||domainInfo?.status!=="SUCCESS"||!domainInfo?.domain){
-      const reason=domainInfo?.code?String(domainInfo.code)+": "+String(domainInfo.message||""):String(domainInfo?.message||"Unable to verify registered domain.");
+    const providerLookup=await getProviderDomainInfo();
+    const domainInfo=providerLookup.info;
+    if(!providerLookup.ok||!domainInfo?.domain){
+      const reason=providerLookup.reason||"Unable to verify registered domain.";
       await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:"Sandbox registration completed but provider reconciliation lookup failed: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_reconciliation_lookup_failed:true}}).eq("id",orderId);
       return json({error:"Sandbox registration completed but provider reconciliation could not be verified.",provider_order_id:created.orderId},502);
     }

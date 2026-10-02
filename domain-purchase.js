@@ -64,9 +64,9 @@ function wireSelection(){
 }
 
 function render(exactResults,suggestionResults){
-  const exactAvailable=exactResults.some(r=>r.available===true||r.status==='available');
+  const exactHasUnavailable=exactResults.some(r=>r.available===false||r.status==='unavailable');
   let html=exactResults.map(r=>card(r)).join('');
-  if(!exactAvailable){
+  if(exactHasUnavailable){
     const availableSuggestions=suggestionResults.filter(r=>r.available===true||r.status==='available');
     html+='<div style="margin-top:22px"><div class="eyebrow">Similar domain suggestions</div><h3>Try one of these available names</h3>';
     html+=availableSuggestions.length

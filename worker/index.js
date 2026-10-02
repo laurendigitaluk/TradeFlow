@@ -18,10 +18,35 @@ function replaceAll(source, from, to) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const asset = await env.ASSETS.fetch(request);
+    const cleanRoutes = env.TRADEFLOW_ENV === "test"
+      ? {
+          "/": "/public-site.html",
+          "/login": "/customer-dashboard.html",
+          "/basket": "/customer-basket.html",
+        }
+      : {
+          "/": "/public-site.html",
+          "/login": "/customer-dashboard.html",
+          "/basket": "/customer-basket.html",
+        };
+    const assetPath = cleanRoutes[url.pathname];
+    const assetRequest = assetPath
+      ? new Request(new URL(assetPath + url.search, url.origin), request)
+      : request;
+    const asset = await env.ASSETS.fetch(assetRequest);
 
-    if (!url.pathname.endsWith(".js") || !asset.ok) {
+    if (!assetPath && (!url.pathname.endsWith(".js") || !asset.ok)) {
       return asset;
+    }
+
+    if (assetPath) {
+      const headers = new Headers(asset.headers);
+      headers.set("cache-control", "no-store");
+      return new Response(asset.body, {
+        status: asset.status,
+        statusText: asset.statusText,
+        headers,
+      });
     }
 
     const source = await asset.text();

@@ -1,5 +1,7 @@
 const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';const $=id=>document.getElementById(id);
 const params=new URLSearchParams(window.location.search);const orderId=params.get('order_id');
+function showValidation(){const p=$('validation-panel');if(p)p.style.display='block';}
+async function validateRegistration(auth){const m=$('validation-message');if(!m)return;m.textContent='Checking Porkbun registration requirements…';const r=await fetch(SUPABASE_URL+'/functions/v1/porkbun-domain-registration-dry-run',{method:'POST',headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:auth.tenantId,order_id:orderId})});const t=await r.text();let body;try{body=JSON.parse(t)}catch{body=null}if(!r.ok)throw Error(body?.error||t||('HTTP '+r.status));m.textContent=body.would_succeed?'Porkbun sandbox validation passed. The registration request would succeed and no charge or real registration was made.':'Porkbun sandbox validation completed, but the registration is not currently ready: '+(body.message||'wouldSucceed=false');}
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 async function loadOrder(auth){
   if(!orderId) throw Error('No domain order was supplied.');
@@ -16,6 +18,8 @@ async function loadOrder(auth){
  $('business-name').textContent=auth.tenants?.[auth.tenantId]||'Domain registration';
  $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
  await loadOrder(auth);
+ if(params.get('domain_payment')==='success')showValidation();
+ const vb=$('validate-button');if(vb)vb.onclick=async()=>{vb.disabled=true;try{await validateRegistration(auth)}catch(err){$('validation-message').textContent=err.message||String(err)}finally{vb.disabled=false}};
  $('registrant-form').onsubmit=async e=>{
   e.preventDefault();$('message').textContent='Saving registrant details…';$('save-button').disabled=true;
   const data={tenant_id:auth.tenantId,order_id:orderId,registrant_name:$('registrant_name').value,organisation:$('organisation').value,address_line1:$('address_line1').value,address_line2:$('address_line2').value,city:$('city').value,region:$('region').value,postal_code:$('postal_code').value,country_code:$('country_code').value,email:$('email').value,phone:$('phone').value};
@@ -25,6 +29,7 @@ async function loadOrder(auth){
    if(!r.ok) throw Error(body?.error||text||('HTTP '+r.status));
    $('message').textContent='Registrant details saved. The domain is now ready for registration.';
    $('save-button').textContent='Details saved';
+   showValidation();
   }catch(err){$('message').textContent=err.message||String(err);$('save-button').disabled=false;}
  };
 }catch(err){$('message').textContent=err.message||String(err);}})();

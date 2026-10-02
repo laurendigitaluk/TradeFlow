@@ -2,7 +2,7 @@
 const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io');return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})(),U=TRADEFLOW_RUNTIME.supabaseUrl,K=TRADEFLOW_RUNTIME.supabasePublishableKey,P=new URLSearchParams(location.search),T=P.get('tenant_id')||localStorage.getItem('tradeflow_customer_tenant_id')||'',L=P.get('listing_id')||'',BK='tradeflow_customer_basket';
 let session=null,listing=null,credit=0,order=null,working=false;const PENDING_KEY='tradeflow_customer_pending_retail_order';const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
-const setAccountLink=()=>{const link=$('my-account-link');if(!link)return;const target=new URL('customer-dashboard.html',location.href);if(T)target.searchParams.set('tenant_id',T);link.href=target.href};
+const setAccountLink=()=>{const link=$('my-account-link');if(!link)return;link.href=new URL('customer-dashboard.html',location.href).href};
 const money=(v,c='GBP')=>{try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return c+' '+v}};
 const msg=(t,type='')=>{const e=$('basket-message');if(e){e.textContent=t||'';e.className='message '+type}};
 const read=()=>{try{const x=JSON.parse(localStorage.getItem(BK)||'[]');return Array.isArray(x)?x.filter(v=>v&&v.tenant_id===T&&v.listing_id):[]}catch{return[]}};
@@ -23,6 +23,19 @@ const remove=async id=>{
 };
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',K);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);const r=await fetch(U+path,{...o,headers:h}),t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||t||('HTTP '+r.status));return b}
 const rpc=(n,b={})=>api('/rest/v1/rpc/'+n,{method:'POST',body:JSON.stringify(Object.assign({p_tenant_id:T},b))});
+async function resolveTenantContext(){
+ if(T)return;
+ const hostname=location.hostname;
+ if(!hostname)return;
+ try{
+  const response=await fetch(U+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:K}});
+  if(response.ok){const rows=await response.json();if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}
+ }catch{}
+ if(!T&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
+  try{const response=await fetch(U+'/rest/v1/rpc/get_published_sites',{headers:{apikey:K}});const rows=await response.json();if(response.ok&&Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){T=rows[0].tenant_id;window.TRADEFLOW_CUSTOMER_TENANT_ID=T;}}catch{}
+ }
+ if(T)localStorage.setItem('tradeflow_customer_tenant_id',T);
+}
 async function loadListing(){
  const x=read();
  if(!x.length){listing=null;render();return}
@@ -55,6 +68,8 @@ const a=await rpc('customer_get_addresses'),rows=Array.isArray(a)?a:[],s=rows.fi
 async function proceed(){if(working||!session?.access_token||!listing)return;working=true;const b=$('proceed');b.disabled=true;b.textContent='Preparing payment…';try{const useCredit=!!$('use-customer-credit')?.checked;let o=await createOrder();if(useCredit){let creditResult=null;try{creditResult=await rpc('customer_apply_retail_credit',{p_order_id:o.order_id})}catch(e){const em=String(e?.message||e);if(!/existing card payment attempt is active/i.test(em))throw e;msg('Refreshing the payment attempt so your customer credit can be used first…');await rpc('customer_cancel_retail_order',{p_order_id:o.order_id,p_reason:'Restarting checkout to apply customer credit before card payment.'});order=null;setPending(null);o=await createOrder();creditResult=await rpc('customer_apply_retail_credit',{p_order_id:o.order_id})}const cx=Array.isArray(creditResult)?creditResult[0]:creditResult;if(cx?.completed){write(read().filter(v=>String(v.listing_id)!==String(listing.id)));setPending(null);$('payment-options').innerHTML='<div class="success-box"><strong>Payment complete</strong><p>Your customer credit has been applied.</p><p>Order reference: '+esc(o.order_reference)+'</p></div>';msg('Payment complete. Order '+esc(o.order_reference)+' has been placed.','success');b.hidden=true;return}}const r=await fetch(U+'/functions/v1/create-stripe-checkout-session',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:T,order_id:o.order_id})}),t=await r.text();let x=null;try{x=t?JSON.parse(t):null}catch{x={error:t}}if(!r.ok||!x?.checkout_url)throw Error(x?.error||'Stripe payment could not be started.');location.href=x.checkout_url}catch(e){order=null;msg(e.message||String(e),'error');b.disabled=false;b.textContent='Proceed to payment';working=false}}
 async function start(){
  try{
+  await resolveTenantContext();
+  if(!T)throw Error('This customer website could not identify the business from its domain.');
   setAccountLink();
   await loadListing();render();
   if(session?.access_token){

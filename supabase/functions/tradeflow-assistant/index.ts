@@ -14,6 +14,38 @@ const SUPPORTED_PROVIDERS = ["none", "gemma", "openai", "anthropic", "google", "
 type Provider = typeof SUPPORTED_PROVIDERS[number];
 type AiConfig = { provider?: string; allowed?: string[] };
 
+type ProviderRequest = {
+  question: string;
+  mode: "help" | "research";
+  tenantId: string;
+  userId: string;
+};
+
+type ProviderResponse = {
+  provider: Provider;
+  status: "not_configured";
+  answer: null;
+};
+
+interface ProviderAdapter {
+  readonly provider: Provider;
+  execute(request: ProviderRequest): Promise<ProviderResponse>;
+}
+
+class NotConfiguredAdapter implements ProviderAdapter {
+  constructor(readonly provider: Provider) {}
+
+  async execute(_request: ProviderRequest): Promise<ProviderResponse> {
+    return { provider: this.provider, status: "not_configured", answer: null };
+  }
+}
+
+function getProviderAdapter(provider: Provider): ProviderAdapter {
+  // Provider-specific network calls are deliberately not implemented until
+  // that provider's credentials, limits and request/response contract are approved.
+  return new NotConfiguredAdapter(provider);
+}
+
 function readConfig(): { provider: Provider; allowed: Provider[] } {
   const raw = Deno.env.get("TRADEFLOW_AI_CONFIG")?.trim();
   if (!raw) return { provider: "none", allowed: ["none"] };
@@ -69,24 +101,43 @@ Deno.serve(async (req: Request) => {
   const config = readConfig();
   const providerAllowed = config.allowed.includes(config.provider);
 
-  return json({
-    status: "accepted",
-    assistant: {
-      mode,
-      provider: config.provider,
-      provider_allowed: providerAllowed,
-      available_providers: config.allowed,
-      read_only: true,
-      tenant_id: tenantId,
-      tenant_name: tenant.name,
-      user_id: user.id,
-      role: membership.role_code,
-      question,
-    },
-    next_step: config.provider === "none"
-      ? "No AI provider is enabled. Change the server-side TRADEFLOW_AI_CONFIG setting to select an approved provider; subscriber code does not need to change."
-      : providerAllowed
-        ? "Provider selection is active. The provider adapter can be enabled independently of the subscriber interface."
-        : "The configured provider is not in the allowed provider list.",
+  if (config.provider === "none") {
+    return json({
+      status: "accepted",
+      assistant: {
+        mode,
+        provider: "none",
+        provider_allowed: true,
+        available_providers: config.allowed,
+        read_only: true,
+        tenant_id: tenantId,
+        tenant_name: tenant.name,
+        user_id: user.id,
+        role: membership.role_code,
+        question,
+      },
+      next_step: "No AI provider is enabled. Change the server-side TRADEFLOW_AI_CONFIG setting to select an approved provider; subscriber code does not need to change.",
+    });
+  }
+
+  if (!providerAllowed) {
+    return fail("The configured AI provider is not allowed by the server configuration.", 503);
+  }
+
+  const adapter = getProviderAdapter(config.provider);
+  const result = await adapter.execute({
+    question,
+    mode: mode as "help" | "research",
+    tenantId,
+    userId: user.id,
   });
+
+  if (result.status === "not_configured") {
+    return fail(
+      `The ${result.provider} provider is selected but its server-side adapter is not configured. No external AI request was made.`,
+      503,
+    );
+  }
+
+  return json({ status: "ok", assistant: result });
 });

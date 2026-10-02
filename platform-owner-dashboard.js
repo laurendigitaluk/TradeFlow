@@ -58,7 +58,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadDomainPricing();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -119,6 +119,8 @@ async function savePlatformEmail(e){
   status.textContent='Status: '+(data?.sender_verification_status==='verified'?'Ready — TradeFlow can send platform emails.':'Saved — sender/domain verification is still required.');
  }catch(e){status.textContent=e.message||String(e)}
 }
+async function loadAiSettings(){const s=$('ai-settings-status');if(!s)return;try{const d=await request('/rest/v1/rpc/platform_owner_get_ai_settings',{method:'POST',body:'{}'});$('ai-active-provider').value=d?.active_provider||'none';$('ai-gemma').checked=!!d?.gemma_enabled;$('ai-openai').checked=!!d?.openai_enabled;$('ai-anthropic').checked=!!d?.anthropic_enabled;$('ai-google').checked=!!d?.google_enabled;$('ai-subscriber').checked=!!d?.subscriber_provider_enabled;s.textContent='AI settings loaded. Active provider: '+($('ai-active-provider').selectedOptions[0]?.text||'None')+'.'}catch(e){s.textContent=e.message||String(e)}}
+async function saveAiSettings(e){e.preventDefault();const s=$('ai-settings-status'),b=e.currentTarget.querySelector('button[type="submit"]');const p={p_active_provider:$('ai-active-provider').value,p_subscriber_provider_enabled:$('ai-subscriber').checked,p_gemma_enabled:$('ai-gemma').checked,p_openai_enabled:$('ai-openai').checked,p_anthropic_enabled:$('ai-anthropic').checked,p_google_enabled:$('ai-google').checked};b.disabled=true;s.textContent='Saving…';try{const d=await request('/rest/v1/rpc/platform_owner_update_ai_settings',{method:'POST',body:JSON.stringify(p)});$('ai-active-provider').value=d?.active_provider||p.p_active_provider;s.textContent='Saved. Active provider: '+($('ai-active-provider').selectedOptions[0]?.text||'None')+'.'}catch(e){s.textContent=e.message||String(e)}finally{b.disabled=false}}
 function nextPlan(code){return null}
 function setActionMessage(text,isError=false){const el=$('action-message');if(el){el.textContent=text;el.className=isError?'action-message error':'action-message'}}
 async function manageSubscription(tenantId,action,planCode,name){if(action==='close'&&!confirm('Close the TradeFlow account for "'+name+'"? The tenant will be archived and its subscription cancelled. This does not delete its stored business data.'))return;if(action==='upgrade'&&!confirm('Upgrade "'+name+'" to '+planCode+'?'))return;setActionMessage(action==='close'?'Closing account…':'Updating subscription…');try{await request('/rest/v1/rpc/platform_admin_manage_subscription',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_action:action,p_plan_code:planCode})});setActionMessage(action==='close'?'Account closed.':'Subscription upgraded.');await loadTenants()}catch(e){setActionMessage(e.message||String(e),true)}}
@@ -161,10 +163,10 @@ function formatDate(value){if(!value)return'—';const d=new Date(value);return 
 
 $('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
 $('platform-email-form').onsubmit=savePlatformEmail;
-$('domain-pricing-form').onsubmit=saveDomainPricing;
+$('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail()}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings()}
   catch(e){showAuth('')}
 })();

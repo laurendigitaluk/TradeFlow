@@ -1739,3 +1739,13 @@ No LIVE Supabase project, `production` branch, Stripe production flow or real do
 
 ## Domain registration workflow — 2026-10-02 TEST
 The domain purchase path is now split into controlled stages. Stripe payment completion moves `tenant_domain_orders` to `payment_confirmed`. The next stage captures legal registrant data in `tenant_domain_registrants` through the JWT-protected `save-domain-registrant` Edge Function and then moves the order to `registrant_details_saved`. Do not bypass this stage or call Porkbun registration directly from the browser. The next implementation stage is a server-side Porkbun sandbox dry run/registration using the stored registrant data, with idempotency and reconciliation into `tenant_domains`. LIVE is not to be modified until the complete TEST lifecycle is verified.
+
+
+## Domain registration integration — current TEST state (2026-10-02)
+- TEST provider: Porkbun sandbox API.
+- Stripe domain payment is proven through `create-domain-checkout-session` -> Stripe Checkout -> `stripe-payment-webhook` -> `payment_confirmed`.
+- Registrant data is stored in `tenant_domain_registrants` and protected by tenant membership/website permissions.
+- `save-domain-registrant` is JWT protected and advances the order to `registrant_details_saved`; update errors must be surfaced rather than ignored.
+- `porkbun-domain-registration-dry-run` is JWT protected. It checks TLD registration requirements and calls Porkbun `/domain/create/{domain}` with `dryRun:true` and a zero/current quoted cost. No registration or charge occurs during this step.
+- Provider-specific finding: the current Porkbun create request schema does not carry arbitrary per-order registrant contacts. Porkbun exposes `/domain/updateContacts/{domain}` separately, and .uk/.co.uk contact changes may invoke address validation. Do not assume the saved TradeFlow registrant can be supplied directly to the create call. The sandbox must prove the safe sequence before LIVE registration is enabled.
+- LIVE is untouched.

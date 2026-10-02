@@ -1,4 +1,5 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { retrieveKnowledge } from "./knowledge.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const cors = {

@@ -65,3 +65,18 @@ Relevant commits immediately before this checkpoint:
 - The subscriber Choose button now starts the secure checkout flow.
 - Actual Porkbun registration is intentionally NOT triggered yet. Registrant ownership/contact information still needs to be captured and verified before a paid domain is submitted to the registrar. Porkbun's current API requires registration contact information and supports sandbox registration/testing, so this remains the next controlled stage.
 - LIVE remains untouched.
+
+
+## Domain purchase and registrant stage — 2026-10-02
+- TEST Stripe domain checkout was completed successfully for `camerashack.co.uk` at £5.27 GBP.
+- TEST `tenant_domain_orders` confirms status `payment_confirmed`, Stripe provider/reference and Stripe event metadata. No Porkbun registration has been performed.
+- Added `tenant_domain_registrants` to store the paid order's legal registrant contact details separately from the domain order.
+- Added `registrant_details_saved` as a domain-order status.
+- Added TEST Edge Function `save-domain-registrant` to validate and save registrant details for the authenticated tenant member.
+- Added `domain-registrant.html` / `domain-registrant.js` as the post-payment registrant details page.
+- Domain checkout success URL now goes to the registrant details page. Re-entry against an already-paid order is blocked instead of creating a duplicate payment order.
+- Next controlled stage: validate registrant details in the TEST UI, then implement Porkbun sandbox `dryRun` and sandbox registration, followed by reconciliation into `tenant_domains`.
+- LIVE remains untouched.
+
+## Current TEST domain order
+- `camerashack.co.uk` — £5.27 GBP — `payment_confirmed` — order `59409e55-5426-4b0b-9020-4615244e5d83`.

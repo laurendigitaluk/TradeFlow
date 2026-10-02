@@ -45,6 +45,16 @@ The following TEST JavaScript files were fetched from `cloudflare-test` and pars
 - `customer-basket.js`
 - `customer-dashboard-nav.js`
 
+## Clean TEST routes
+The TEST Worker now maps clean customer-facing paths without exposing internal HTML filenames:
+- `/` → published customer website (`public-site.html`)
+- `/login` → customer portal (`customer-dashboard.html`)
+- `/basket` → customer basket (`customer-basket.html`)
+- `/email-confirmed` → email confirmation page
+- `/reset-password` → password reset page
+
+Public website navigation uses `/?page=...` for normal published pages. Preview mode may still use an internal `tenant_id` because preview is an authenticated subscriber workflow, not a customer-facing URL.
+
 ## Deployment status
 GitHub source changes are committed to `cloudflare-test`. Cloudflare deployment of the latest commit has not been independently verified from this environment. Do not mark browser acceptance as PASS until the latest Worker deployment is confirmed.
 

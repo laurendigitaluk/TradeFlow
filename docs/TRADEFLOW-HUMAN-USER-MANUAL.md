@@ -1428,3 +1428,119 @@ When a subscriber buys a domain, TradeFlow now follows this TEST sequence: domai
 7. Do not treat a successful Stripe payment as proof that the registrar registration has completed. Registration remains a separate controlled stage.
 
 Porkbun's current API provides sandbox operations and a dry-run mode that validates registration without creating or charging an order. The current API also exposes registration requirements by TLD. 
+
+
+---
+
+# DOMAIN REGISTRATION HANDOVER — 2026-10-02
+
+## Verified current TEST state
+
+TradeFlow's domain-purchase flow has now reached the end of the payment and registrant-information stages in TEST/STAGING.
+
+Environment:
+- GitHub TEST/STAGING branch: `main`
+- TEST Supabase project: `twfbmjwwqzxdxvclxbun`
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`
+- LIVE has not been changed during this domain-registration work.
+- Current tested registrar: Porkbun.
+- Porkbun TEST credentials are sandbox credentials. Real registrar registration must remain disabled until TEST is fully verified.
+
+Verified sequence:
+1. Subscriber searches for a domain.
+2. Porkbun availability is checked server-side.
+3. TradeFlow calculates the customer price in GBP using the stored USD→GBP FX rate and platform markup.
+4. Subscriber chooses an available domain.
+5. TradeFlow creates a domain order and Stripe Checkout session.
+6. Stripe TEST payment was successfully completed for `camerashack.co.uk` at £5.27 GBP.
+7. Stripe webhook changed the domain order to `payment_confirmed`.
+8. Subscriber was returned to the domain registrant page.
+9. Registrant information was submitted and saved.
+10. The order is now `registrant_details_saved`.
+11. The TEST UI provides the next controlled step: Porkbun sandbox validation. The sandbox validation has been shown as passed in the UI.
+
+Current test order:
+- hostname: `camerashack.co.uk`
+- retail amount: £5.27 GBP
+- status: `registrant_details_saved`
+- Stripe Checkout/payment reference is stored.
+- A linked `tenant_domain_registrants` record exists.
+
+## Domain registrant architecture
+
+New TEST table:
+- `public.tenant_domain_registrants`
+- One-to-one with `tenant_domain_orders`.
+- Stores registrant name, organisation, address, city, region, postcode, country code, email and telephone.
+- Tenant RLS is enabled.
+- Tenant members can read their tenant's registrant record.
+- Website managers/editors can insert/update it.
+
+New domain-order status:
+- `registrant_details_saved`
+
+New TEST Edge Function:
+- `save-domain-registrant`
+- JWT protected.
+- Verifies the authenticated user and tenant membership.
+- Validates required registrant fields.
+- Saves the registrant record.
+- Moves the order from `payment_confirmed` to `registrant_details_saved`.
+
+New TEST frontend:
+- `domain-registrant.html`
+- `domain-registrant.js`
+
+The existing provider-neutral domain foundation remains in place and must not be rebuilt.
+
+## Domain payment architecture
+
+`create-domain-checkout-session` remains a TEST Edge Function. It:
+- authenticates the subscriber;
+- verifies tenant membership;
+- rechecks Porkbun availability server-side;
+- reads trusted platform pricing settings;
+- calculates the GBP retail price;
+- snapshots registrar USD cost, FX rate, markup and pricing period;
+- creates/reuses Stripe Checkout;
+- stores the Stripe Checkout session reference;
+- returns the customer to the registrant-details stage after successful payment.
+
+The existing Stripe webhook recognises domain payments through domain-order metadata and moves the order to `payment_confirmed`.
+
+Actual Porkbun registration has NOT been enabled.
+
+## Immediate next stage
+
+The next development/test stage is **Porkbun Sandbox Registration**:
+
+1. Use the saved registrant details for the paid TEST order.
+2. Perform a Porkbun `dryRun: true` registration validation first.
+3. Confirm the dry-run succeeds without making a real registration.
+4. Perform the isolated Porkbun sandbox registration.
+5. Record the provider domain ID and registration/expiry information.
+6. Reconcile the successful sandbox registration into the existing `tenant_domains` provider-neutral table.
+7. Test the existing domain connection/DNS/website-routing foundation against the newly registered sandbox domain.
+8. Verify renewal/expiry fields and ownership/contact synchronisation.
+9. Only after the entire TEST sequence is verified should LIVE registration be considered.
+
+Do not:
+- touch LIVE;
+- make a real Porkbun registration request;
+- revive Parcel2Go API work;
+- switch back to ResellerClub;
+- delete/rebuild the existing domain connection foundation;
+- connect the Choose button directly to registrar registration;
+- assume a sandbox registration is a real production domain.
+
+## Working rule for the next chat
+
+Before changing code:
+1. Read this handover and the latest domain checkpoint.
+2. Inspect current GitHub `main`.
+3. Inspect current TEST Supabase schema/functions/state.
+4. Identify the first unverified step.
+5. Make the smallest change necessary.
+6. Test in TEST.
+7. Verify database state.
+8. Update this documentation/checkpoint before moving to the next stage.

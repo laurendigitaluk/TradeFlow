@@ -5,14 +5,6 @@
  */
 (()=>{
   const sectionIds=['selling','orders','details'];
-  const tenantId=new URLSearchParams(location.search).get('tenant_id');
-  const setTenantLink=(selector,path)=>{
-    const link=document.querySelector(selector);
-    if(!link)return;
-    const target=new URL(path,location.href);
-    if(tenantId)target.searchParams.set('tenant_id',tenantId);
-    link.href=target.href;
-  };
   const show=(id,updateHash=true)=>{
     const target=sectionIds.includes(id)?id:'selling';
     const portal=document.getElementById('portal');

@@ -59,3 +59,13 @@ With provider `none`, the gateway continues to return the authenticated, tenant-
 If a future provider is selected before its adapter is implemented, the gateway returns HTTP 503 and explicitly records that no external AI request was made.
 
 Next stage: implement one real provider adapter only after its server-side credentials and commercial controls are approved, then add the approved TradeFlow documentation retrieval layer before exposing the chatbot UI.
+
+## 2026-10-02 — Approved knowledge layer deployed to TEST
+
+The `tradeflow-assistant` Edge Function has now been deployed to TEST as **version 5** with the version-controlled `knowledge.ts` dependency.
+
+The deployed function remains JWT-protected (`verify_jwt=true`). Its current provider remains `none`, so deployment does not make any external AI request or create provider usage charges.
+
+The knowledge layer is server-controlled and contains curated current TradeFlow guidance. Questions are matched against that controlled knowledge set before any provider execution boundary. Personal desktop Gemma remains separate.
+
+**Verification state:** deployment verified in TEST Supabase. An authenticated browser/function request still needs to be run before the retrieval response is marked runtime-verified. No LIVE environment was changed.

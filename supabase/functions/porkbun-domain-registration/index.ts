@@ -32,7 +32,7 @@ Deno.serve(async req=>{
 
     const {data:order}=await admin.from("tenant_domain_orders").select("id,tenant_id,hostname,tld,status,term_years,registrar_cost_usd,metadata").eq("id",orderId).eq("tenant_id",tenantId).maybeSingle();
     if(!order) return json({error:"Domain order not found."},404);
-    if(order.status!=="registrant_details_saved") return json({error:"The domain must be at registrant_details_saved before registration."},409);
+    if(!["registrant_details_saved","failed"].includes(order.status)) return json({error:"The domain is not ready for TEST registration/reconciliation."},409);
     if(Number(order.term_years||1)!==1) return json({error:"The current Porkbun TEST registration path is limited to one year.",term_years:order.term_years},409);
 
     const {data:registrant}=await admin.from("tenant_domain_registrants").select("id,registrant_name,organisation,address_line1,address_line2,city,region,postal_code,country_code,email,phone").eq("domain_order_id",orderId).eq("tenant_id",tenantId).maybeSingle();
@@ -40,6 +40,8 @@ Deno.serve(async req=>{
 
     const dryRun=order.metadata?.porkbun_dry_run_would_succeed===true;
     if(!dryRun) return json({error:"A successful Porkbun dry run is required before sandbox registration."},409);
+    const existingSandboxOrderId=String(order.provider_order_id||"");
+    const sandboxAlreadyRegistered=Boolean(existingSandboxOrderId)&&order.metadata?.porkbun_sandbox===true;
 
     const cost=Math.round(Number(order.registrar_cost_usd||0)*100);
     if(!Number.isFinite(cost)||cost<=0) return json({error:"The saved registrar cost is invalid."},409);
@@ -51,16 +53,20 @@ Deno.serve(async req=>{
     };
     await admin.from("tenant_domain_orders").update({status:"registering",failure_reason:null,metadata:registeringMetadata}).eq("id",orderId);
 
-    const createRes=await fetch("https://api.porkbun.com/api/json/v3/domain/create/"+encodeURIComponent(order.hostname),{
-      method:"POST",
-      headers:{...pbHeaders,"Idempotency-Key":"tradeflow-register-"+order.id},
-      body:JSON.stringify({cost,agreeToTerms:"yes"})
-    });
-    const created=await createRes.json().catch(()=>null);
-    if(!createRes.ok||created?.status!=="SUCCESS"){
-      const reason=created?.code?String(created.code)+": "+String(created.message||""):String(created?.message||"Porkbun registration failed.");
-      await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:reason,metadata:{...registeringMetadata,porkbun_registration_failed_at:new Date().toISOString(),porkbun_response_request_id:created?.requestId||null}}).eq("id",orderId);
-      return json({error:"Porkbun sandbox registration failed.",provider_code:created?.code||null,provider_message:created?.message||null},502);
+    let created={orderId:existingSandboxOrderId,requestId:order.metadata?.porkbun_registration_request_id||null};
+    if(!sandboxAlreadyRegistered){
+      const createRes=await fetch("https://api.porkbun.com/api/json/v3/domain/create/"+encodeURIComponent(order.hostname),{
+        method:"POST",
+        headers:{...pbHeaders,"Idempotency-Key":"tradeflow-register-"+order.id},
+        body:JSON.stringify({cost,agreeToTerms:"yes"})
+      });
+      const providerCreated=await createRes.json().catch(()=>null);
+      if(!createRes.ok||providerCreated?.status!=="SUCCESS"){
+        const reason=providerCreated?.code?String(providerCreated.code)+": "+String(providerCreated.message||""):String(providerCreated?.message||"Porkbun registration failed.");
+        await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:reason,metadata:{...registeringMetadata,porkbun_registration_failed_at:new Date().toISOString(),porkbun_response_request_id:providerCreated?.requestId||null}}).eq("id",orderId);
+        return json({error:"Porkbun sandbox registration failed.",provider_code:providerCreated?.code||null,provider_message:providerCreated?.message||null},502);
+      }
+      created={orderId:String(providerCreated.orderId),requestId:providerCreated.requestId||null};
     }
 
     const orderMetadata={...registeringMetadata,porkbun_provider_order_id:String(created.orderId),porkbun_registration_request_id:created.requestId||null,porkbun_sandbox:true};
@@ -83,24 +89,24 @@ Deno.serve(async req=>{
     const contactRes=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
       method:"POST",
       headers:pbHeaders,
-      body:JSON.stringify({contacts:{registrant:contact},dryRun:true})
+      body:JSON.stringify({contact,dryRun:true})
     });
     const contactPreview=await contactRes.json().catch(()=>null);
     if(!contactRes.ok||contactPreview?.status!=="SUCCESS"){
       const reason=contactPreview?.code?String(contactPreview.code)+": "+String(contactPreview.message||""):String(contactPreview?.message||"Porkbun registrant validation failed.");
-      await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:"Sandbox domain registered but saved registrant could not be applied: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_dry_run_failed:true}}).eq("id",orderId);
+      await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant requires provider contact validation: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_dry_run_failed:true}}).eq("id",orderId);
       return json({error:"Sandbox registration succeeded, but the saved registrant could not be validated for application.",provider_order_id:created.orderId,provider_code:contactPreview?.code||null,provider_message:contactPreview?.message||null},502);
     }
 
     const contactRes2=await fetch("https://api.porkbun.com/api/json/v3/domain/updateContacts/"+encodeURIComponent(order.hostname),{
       method:"POST",
       headers:pbHeaders,
-      body:JSON.stringify({contacts:{registrant:contact}})
+      body:JSON.stringify({contact})
     });
     const contactApplied=await contactRes2.json().catch(()=>null);
     if(!contactRes2.ok||contactApplied?.status!=="SUCCESS"){
       const reason=contactApplied?.code?String(contactApplied.code)+": "+String(contactApplied.message||""):String(contactApplied?.message||"Porkbun registrant update failed.");
-      await admin.from("tenant_domain_orders").update({status:"failed",failure_reason:"Sandbox domain registered but registrant update failed: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_update_failed:true}}).eq("id",orderId);
+      await admin.from("tenant_domain_orders").update({status:"registrant_details_saved",failure_reason:"Saved registrant could not be applied: "+reason,provider_order_id:String(created.orderId),metadata:{...orderMetadata,porkbun_contact_update_failed:true}}).eq("id",orderId);
       return json({error:"Sandbox registration succeeded, but applying the saved registrant failed.",provider_order_id:created.orderId,provider_code:contactApplied?.code||null,provider_message:contactApplied?.message||null},502);
     }
 

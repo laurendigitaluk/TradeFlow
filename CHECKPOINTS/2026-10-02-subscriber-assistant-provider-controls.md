@@ -12,7 +12,7 @@ TEST Supabase: `twfbmjwwqzxdxvclxbun`
 - Supported provider options remain: None, Gemma, OpenAI, Anthropic, Google, Subscriber.
 - Default remains None / knowledge-only.
 - Updated the Subscriber Assistant response handling so knowledge-only responses are displayed cleanly and provider availability is reported.
-- Deployed `tradeflow-assistant` Edge Function version 11 with the provider-neutral architecture intact.
+- Deployed `tradeflow-assistant` Edge Function version 12 with the provider-neutral architecture intact.
 
 ### Deliberate non-decisions
 - No Gemma PC/server connection has been made.
@@ -26,3 +26,7 @@ Browser-test the Owner Dashboard AI settings and Subscriber Assistant in TEST. I
 
 ## Release safety
 Do not modify LIVE directly. Any defect is repaired in TEST, verified, documented and then promoted deliberately.
+
+
+### Security verification
+The AI settings RPCs are owner-checked and anonymous EXECUTE access has been revoked. The Edge Function reads the platform AI setting through the owner-controlled configuration path; the legacy `TRADEFLOW_AI_CONFIG` environment reader is no longer used.

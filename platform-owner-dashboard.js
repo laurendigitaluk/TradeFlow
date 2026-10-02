@@ -58,11 +58,49 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadDomainPricing();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
 
+async function loadDomainPricing(){
+ const status=$('domain-pricing-status'),summary=$('domain-pricing-summary');if(!status)return;
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_get_domain_pricing',{method:'POST',body:'{}'});
+  if(!data){throw Error('Domain pricing settings are not configured.');}
+  $('domain-markup-percent').value=data.markup_percent??25;
+  $('domain-usd-to-gbp').value=data.usd_to_gbp_rate??0.74549089;
+  $('domain-fx-period-start').value=data.fx_period_start||'2025-10-01';
+  $('domain-fx-period-end').value=data.fx_period_end||'2026-09-30';
+  $('domain-fx-threshold').value=data.fx_review_threshold_percent??5;
+  $('domain-fx-last-reviewed').value=data.fx_last_reviewed||new Date().toISOString().slice(0,10);
+  if(summary){
+    const rate=Number(data.usd_to_gbp_rate);
+    const markup=Number(data.markup_percent);
+    const example=Number.isFinite(rate)&&Number.isFinite(markup)?(10*rate*(1+markup/100)).toFixed(2):'—';
+    summary.innerHTML='<strong>Current domain pricing:</strong> $1 = £'+rate.toFixed(4)+' · '+markup.toFixed(1)+'% markup · $10 registrar cost becomes £'+example+' customer price.<br><span class="muted">FX basis: '+escapeHtml(data.fx_basis||'12-month average')+' · '+escapeHtml(data.fx_period_start||'')+' to '+escapeHtml(data.fx_period_end||'')+' · last reviewed '+formatDate(data.fx_last_reviewed)+'</span>';
+  }
+  status.textContent='Domain pricing loaded.';
+ }catch(e){status.textContent=e.message||String(e);if(summary)summary.textContent='Unable to load domain pricing.'}
+}
+async function saveDomainPricing(e){
+ e.preventDefault();const status=$('domain-pricing-status'),button=e.currentTarget.querySelector('button[type="submit"]');
+ const payload={
+  p_markup_percent:Number($('domain-markup-percent').value),
+  p_usd_to_gbp_rate:Number($('domain-usd-to-gbp').value),
+  p_fx_period_start:$('domain-fx-period-start').value,
+  p_fx_period_end:$('domain-fx-period-end').value,
+  p_fx_review_threshold_percent:Number($('domain-fx-threshold').value),
+  p_fx_last_reviewed:$('domain-fx-last-reviewed').value
+ };
+ button.disabled=true;status.textContent='Saving…';
+ try{
+  await request('/rest/v1/rpc/platform_owner_update_domain_pricing',{method:'POST',body:JSON.stringify(payload)});
+  status.textContent='Saved. New domain searches will use the updated pricing settings.';
+  await loadDomainPricing();
+ }catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
 async function loadPlatformEmail(){
  const status=$('platform-email-status'),input=$('platform-email-input');if(!status||!input)return;
  try{
@@ -123,6 +161,7 @@ function formatDate(value){if(!value)return'—';const d=new Date(value);return 
 
 $('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
 $('platform-email-form').onsubmit=savePlatformEmail;
+$('domain-pricing-form').onsubmit=saveDomainPricing;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{

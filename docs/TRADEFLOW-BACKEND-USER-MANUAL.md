@@ -915,3 +915,28 @@ Security boundary:
 - Customer RPCs verify the authenticated user owns the customer record for the tenant.
 - Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
 - Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.
+
+
+## LIVE Release Audit — 2026-10-03
+
+TradeFlow now has a separate LIVE Supabase project, `gxsrajtqzdjvmceqcpgv`, in `eu-west-2`. The LIVE release branch is `production`.
+
+The current production code uses hostname-based environment separation and a production Worker configuration. TEST remains on `twfbmjwwqzxdxvclxbun`.
+
+The TEST-only duplicate inventory serial warning migration is deliberately excluded from the LIVE release.
+
+The provider-neutral Assistant architecture is included in the production code:
+- owner-controlled provider selection;
+- `none`, Gemma, OpenAI, Anthropic, Google and subscriber-provider options;
+- Customer Assistant;
+- customer-to-subscriber business messaging;
+- subscriber Customer Questions/reply workflow.
+
+The customer/subscriber messaging and AI-provider tables/RPCs have been added as version-controlled production migrations. The LIVE database and Edge Function deployment are not marked verified until the LIVE Supabase project can be directly inspected/deployed.
+
+Manual shipping remains the current architecture. Parcel2Go API and ResellerClub are not to be reintroduced.
+
+Verification status must remain explicit:
+- GitHub release: **Implemented in GitHub**
+- LIVE database: **not yet directly verified in the current tool session**
+- Browser: **not yet verified**

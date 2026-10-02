@@ -34,6 +34,7 @@ export default {
           "/assistant": "/customer-assistant.html",
           "/email-confirmed": "/customer-email-confirmed.html",
           "/reset-password": "/customer-password-reset.html",
+          "/owner-reset-password": "/platform-owner-password-reset.html",
         };
     const assetPath = cleanRoutes[url.pathname];
     const assetRequest = assetPath

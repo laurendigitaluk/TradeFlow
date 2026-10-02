@@ -1790,3 +1790,10 @@ The subscriber assistant remains the business-workspace assistant. The customer'
 
 ### TEST → LIVE release rule
 The intended release path is: finish and verify the chatbot boundary in TEST → purchase/configure the genuine production domain → create a LIVE subscriber → configure that subscriber's real customer-facing website → create LIVE customer accounts → perform final acceptance in LIVE. LIVE fixes are not made directly; defects are corrected in TEST and promoted through the release path.
+
+
+## TRADEFLOW ASSISTANT — CURRENT OPERATION
+
+The TradeFlow Assistant is available from the subscriber dashboard. It can answer questions using approved TradeFlow guidance and is designed to remain read-only for normal help questions. Product Research remains a separate controlled workflow and requires explicit approval before research evidence is saved.
+
+The AI provider may be configured by the TradeFlow platform owner. Subscribers do not need to understand the underlying AI infrastructure. The platform may later use a centrally managed AI service, Gemma, or allow a subscriber to connect an approved provider of their own. These options are deliberately kept open while the final AI provider decision is made.

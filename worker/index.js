@@ -41,6 +41,18 @@ export default {
       : request;
     const asset = await env.ASSETS.fetch(assetRequest);
 
+    // The protected platform owner dashboard must not be served from a stale
+    // browser/edge cache. Its HTML selects the current dashboard JS asset.
+    if (!assetPath && url.pathname === "/platform-owner-dashboard.html") {
+      const headers = new Headers(asset.headers);
+      headers.set("cache-control", "no-store");
+      return new Response(asset.body, {
+        status: asset.status,
+        statusText: asset.statusText,
+        headers,
+      });
+    }
+
     if (!assetPath && (!url.pathname.endsWith(".js") || !asset.ok)) {
       return asset;
     }

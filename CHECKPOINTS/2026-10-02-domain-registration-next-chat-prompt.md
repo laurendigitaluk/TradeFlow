@@ -332,3 +332,45 @@ Contact synchronisation remains deliberately deferred for the sandbox .co.uk pat
 Proceed to the existing provider-neutral website/domain connection and hostname routing architecture. First inspect the current GitHub implementation and TEST Supabase state for `published_site_index`, `tenant_site_state`, website publish flow, `public-site.js`, and domain settings. Do not invent a hosting/DNS target and do not rebuild the domain foundation.
 
 LIVE remains untouched.
+
+## POST-CHATBOT CONTINUATION — REAL DOMAIN / LAUREN DIGITAL LAUNCH
+
+The immediate work before returning to this domain stage is to complete and test the TradeFlow chatbot.
+
+When the chatbot is complete, resume here by auditing the current GitHub, TEST Supabase, Cloudflare TEST Worker, manuals and checkpoints. Do not assume the earlier state is unchanged.
+
+The chatbot is staged as:
+1. Subscriber read-only assistant.
+2. Customer read-only assistant.
+3. Controlled messaging/enquiries.
+4. Controlled actions only after earlier phases are proven.
+
+The chatbot must use the approved manuals/documentation and permitted tenant context, must not have unrestricted SQL/database access, and must not cross tenant boundaries.
+
+The permanent company identity is Lauren Digital. TradeFlow is the SaaS/product name for subscriber websites.
+
+The next domain work is NOT to force `camerashack.co.uk` through Cloudflare. That domain is a Porkbun sandbox registration and Cloudflare correctly reports that it is not a real registered public zone.
+
+Current Cloudflare TEST Worker:
+`tradeflow-test.leannelaurenlowe.workers.dev`
+
+Branch:
+`cloudflare-test`
+
+TEST Supabase:
+`twfbmjwwqzxdxvclxbun`
+
+No custom domain is currently attached to the TEST Worker.
+
+After chatbot completion:
+1. Choose the permanent Lauren Digital domain.
+2. Purchase the genuine domain.
+3. If needed, purchase one inexpensive genuine test domain.
+4. Use the genuine test domain to prove real DNS → Cloudflare → TEST Worker → TEST Supabase → published subscriber website.
+5. Verify tenant routing and environment isolation.
+6. Configure the permanent Lauren Digital production domain separately.
+7. Only then move to final production launch testing.
+
+Do not touch LIVE or production DNS while carrying out the TEST custom-domain proof.
+
+See `CHECKPOINTS/2026-10-02-chatbot-to-real-domain-launch.md` for the preserved state.

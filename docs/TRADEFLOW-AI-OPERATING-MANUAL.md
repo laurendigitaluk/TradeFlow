@@ -1735,3 +1735,7 @@ The working source branch is `resellerclub-domain-availability-20261001`. It con
 TEST Edge Function secrets required: `RESELLERCLUB_API_KEY`, `RESELLERCLUB_X_USER_ID` (Sandbox value `1347028`) and `RESELLERCLUB_API_BASE_URL` (Sandbox `https://api.sandbox.resellerclub.com/v2`). The API key must be entered directly into Supabase Edge Function Secrets and must never be pasted into chat, GitHub or frontend code. Supabase documents project secrets as the correct place for Edge Function credentials.
 
 No LIVE Supabase project, `production` branch, Stripe production flow or real domain registration has been changed by this registrar work.
+
+
+## Domain registration workflow — 2026-10-02 TEST
+The domain purchase path is now split into controlled stages. Stripe payment completion moves `tenant_domain_orders` to `payment_confirmed`. The next stage captures legal registrant data in `tenant_domain_registrants` through the JWT-protected `save-domain-registrant` Edge Function and then moves the order to `registrant_details_saved`. Do not bypass this stage or call Porkbun registration directly from the browser. The next implementation stage is a server-side Porkbun sandbox dry run/registration using the stored registrant data, with idempotency and reconciliation into `tenant_domains`. LIVE is not to be modified until the complete TEST lifecycle is verified.

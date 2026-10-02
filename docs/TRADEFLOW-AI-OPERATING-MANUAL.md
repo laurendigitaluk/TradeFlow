@@ -2255,3 +2255,14 @@ Verification status must remain explicit:
 - GitHub release: **Implemented in GitHub**
 - LIVE database: **not yet directly verified in the current tool session**
 - Browser: **not yet verified**
+
+
+## LIVE CONTINUITY / MEMORY UPDATE — 3 OCTOBER 2026
+
+The provider-neutral AI architecture is now included in the LIVE production release. LIVE remains deliberately configured with `active_provider=none` and `allowed_providers=["none"]` until a provider is deliberately configured and acceptance-tested. No external AI provider credentials belong in browser code.
+
+The current production workstream is now the real LIVE launch, including the Customer Assistant/customer-to-subscriber handoff and the permanent subscriber domain. Personal Gemma remains a separate research system and must not be connected to the TradeFlow customer/subscriber assistant by copying personal credentials or infrastructure into the product.
+
+A separate production infrastructure issue was identified in the Owner Dashboard: stale HTML caused a browser to select an obsolete JavaScript asset. This was repaired at the Worker boundary rather than by changing AI configuration or Supabase authentication. Production commit: `6c9b061e5a20210aa8b6f416a3f8b68fb6357329`.
+
+Memory/continuity rule: after every material LIVE change, refresh the AI Operating Manual, Human User Manual, Backend User Manual, System Handbook and a dated checkpoint. Record implementation separately from LIVE browser verification. Never infer LIVE behaviour from TEST behaviour or from a successful GitHub/Cloudflare deployment alone.

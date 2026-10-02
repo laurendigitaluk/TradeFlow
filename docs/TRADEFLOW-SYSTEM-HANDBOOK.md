@@ -1734,3 +1734,28 @@ TradeFlow has two read-only assistant audiences: subscriber and customer. Subscr
 
 ## Launch sequence
 Complete the customer assistant boundary in TEST → purchase/configure the genuine production domain → create the LIVE subscriber → configure the LIVE subscriber website → create LIVE customer account(s) → run final real-domain acceptance. The Porkbun sandbox registration of `camerashack.co.uk` is not a substitute for a genuine public DNS/Cloudflare test.
+
+
+## LIVE Release Audit — 2026-10-03
+
+TradeFlow now has a separate LIVE Supabase project, `gxsrajtqzdjvmceqcpgv`, in `eu-west-2`. The LIVE release branch is `production`.
+
+The current production code uses hostname-based environment separation and a production Worker configuration. TEST remains on `twfbmjwwqzxdxvclxbun`.
+
+The TEST-only duplicate inventory serial warning migration is deliberately excluded from the LIVE release.
+
+The provider-neutral Assistant architecture is included in the production code:
+- owner-controlled provider selection;
+- `none`, Gemma, OpenAI, Anthropic, Google and subscriber-provider options;
+- Customer Assistant;
+- customer-to-subscriber business messaging;
+- subscriber Customer Questions/reply workflow.
+
+The customer/subscriber messaging and AI-provider tables/RPCs have been added as version-controlled production migrations. The LIVE database and Edge Function deployment are not marked verified until the LIVE Supabase project can be directly inspected/deployed.
+
+Manual shipping remains the current architecture. Parcel2Go API and ResellerClub are not to be reintroduced.
+
+Verification status must remain explicit:
+- GitHub release: **Implemented in GitHub**
+- LIVE database: **not yet directly verified in the current tool session**
+- Browser: **not yet verified**

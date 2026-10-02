@@ -1631,3 +1631,22 @@ The .co.uk contact-application step is intentionally deferred for separate verif
 The TEST domain registration for `camerashack.co.uk` has completed in Porkbun's isolated sandbox. The existing provider order is retained; TradeFlow does not create another registration when refreshing provider details.
 
 If the TEST registrant page shows **Refresh provider registration details**, that action is a provider reconciliation step only. It refreshes registration and expiry information from Porkbun and does not start a new registration. This is a TEST-only control and must not be treated as a LIVE domain-registration action.
+
+
+## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
+
+The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
+
+- Provider order: `9913828`.
+- TradeFlow order status: `registered`.
+- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
+- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
+- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
+- Provider expiry metadata is populated.
+- No second sandbox registration was created during reconciliation.
+
+The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
+
+Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
+
+**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.

@@ -327,3 +327,10 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .branding-banner-actions .actions button[data-banner-upload]:hover{background:#285f88!important;transform:translateY(-1px);box-shadow:0 5px 12px rgba(47,111,159,.28)!important}
 .branding-control .actions button[data-logo-remove],
 .branding-banner-actions .actions button[data-banner-remove]{display:inline-flex!important;align-items:center;justify-content:center;min-width:108px!important;height:34px!important;padding:0 14px!important;border:1px solid #c46a2b!important;border-radius:7px!important;background:#fff!important;color:#a95722!important;font-size:11px!important;font-weight:800!important;cursor:pointer!important}
+
+
+/* Branding banner is the primary homepage hero visual across every template. */
+.banner-image-slot{display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:180px;}
+.banner-image-slot img{display:block;width:100%;height:100%;min-height:180px;max-height:360px;object-fit:cover;object-position:center center;}
+.business-facts.banner-image-slot,.commerce-panel.banner-image-slot{min-height:260px;border-radius:10px;overflow:hidden;}
+.business-facts.banner-image-slot img,.commerce-panel.banner-image-slot img{min-height:260px;max-height:360px;object-fit:cover;}

@@ -1928,3 +1928,29 @@ The authenticated `subscriber-cancel-subscription` Edge Function validates:
 It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
 
 The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.
+
+
+## 2026-10-03 — Customer Payment Provider Setup
+
+Subscriber Settings now contains **Checkout & payments → Customer payment provider**. The setup area provides six provider guides: Stripe, PayPal Business, SumUp, Square, Mollie and Revolut Business.
+
+For each provider the subscriber can:
+- open the official provider signup page;
+- open the provider's official setup guidance;
+- see the information/documents they should have ready;
+- record a non-secret provider account email;
+- record a non-secret provider/merchant ID when the provider supplies one;
+- record an optional payment link;
+- see the business postcode carried from Business Settings;
+- mark the provider setup checklist complete;
+- mark one provider as the primary intended customer payment provider.
+
+TradeFlow must never request a provider password, secret API key, bank login or other secret credential in these fields. Provider account verification remains with the provider.
+
+The setup record is not by itself proof that a provider is technically connected to TradeFlow checkout. A provider is only described as connected after its actual TradeFlow integration has been implemented and verified. Stripe is currently the live customer Checkout provider in the retail purchase flow; the other provider guides are onboarding preparation until their integrations are implemented.
+
+### Subscriber chatbot guidance
+
+Open **TradeFlow Assistant** from the subscriber dashboard when you need help with a TradeFlow workflow, page, setting or connected business process. Ask one clear question at a time and include the page or button name when possible. The Assistant uses approved TradeFlow knowledge and tenant-scoped context; it is not unrestricted database access.
+
+If the approved knowledge does not contain the answer, the Assistant must say so rather than inventing a feature or status. It must not ask for payment-provider passwords, secret API keys or bank logins. Customer questions that are handed to the business appear under **TradeFlow Assistant → Customer Questions**, where the subscriber can reply and close the conversation.

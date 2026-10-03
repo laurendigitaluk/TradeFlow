@@ -23,7 +23,7 @@ Deno.serve(async req=>{
   const plans=await rpc('/rest/v1/rpc/platform_owner_get_plans',{},auth);
   const plan=Array.isArray(plans)?plans.find((p:any)=>p.code==='enhanced'):null;
   if(!plan)return json({error:'TradeFlow plan is not configured.'},409);
-  if(plan.stripe_product_id&&plan.stripe_monthly_price_id)return json({product_id:plan.stripe_product_id,price_id:plan.stripe_monthly_price_id,reused:true});
+  if(plan.stripe_product_id&&plan.stripe_monthly_price_id&&(!plan.annual_price||plan.stripe_annual_price_id))return json({product_id:plan.stripe_product_id,price_id:plan.stripe_monthly_price_id,annual_price_id:plan.stripe_annual_price_id||null,reused:true});
   if(!plan.monthly_price||Number(plan.monthly_price)<=0)return json({error:'Set the TradeFlow monthly price before creating Stripe billing.'},409);
   const productParams=new URLSearchParams();
   productParams.set('name',String(plan.name||'TradeFlow'));
@@ -41,11 +41,24 @@ Deno.serve(async req=>{
   const priceRes=await fetch('https://api.stripe.com/v1/prices',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:priceParams});
   const price=await priceRes.json();
   if(!priceRes.ok)return json({error:price?.error?.message||'Unable to create the Stripe recurring Price.',product_id:product.id},502);
+  let annualPriceId=plan.stripe_annual_price_id||'';
+  if(plan.annual_price&&Number(plan.annual_price)>0){
+   const annualParams=new URLSearchParams();
+   annualParams.set('product',product.id);
+   annualParams.set('currency',String(plan.currency||'GBP').toLowerCase());
+   annualParams.set('unit_amount',String(Math.round(Number(plan.annual_price)*100)));
+   annualParams.set('recurring[interval]','year');
+   annualParams.set('metadata[tradeflow_plan_code]',String(plan.code));
+   const annualRes=await fetch('https://api.stripe.com/v1/prices',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:annualParams});
+   const annual=await annualRes.json();
+   if(!annualRes.ok)return json({error:annual?.error?.message||'Unable to create the Stripe annual recurring Price.',product_id:product.id,price_id:price.id},502);
+   annualPriceId=annual.id;
+  }
   const saved=await rpc('/rest/v1/rpc/platform_owner_update_plan',{
     p_plan_id:plan.id,p_name:plan.name,p_description:plan.description||'',p_website_visible:true,p_monthly_price:Number(plan.monthly_price),
     p_annual_price:plan.annual_price===null?null:Number(plan.annual_price),p_currency:plan.currency||'GBP',p_trial_days:Number(plan.trial_days??30),
-    p_stripe_product_id:product.id,p_stripe_monthly_price_id:price.id,p_stripe_annual_price_id:plan.stripe_annual_price_id||''
+    p_stripe_product_id:product.id,p_stripe_monthly_price_id:price.id,p_stripe_annual_price_id:annualPriceId
   },auth);
-  return json({product_id:product.id,price_id:price.id,plan:saved});
+  return json({product_id:product.id,price_id:price.id,annual_price_id:annualPriceId||null,plan:saved});
  }catch(e){return json({error:e instanceof Error?e.message:String(e)},500)}
 });

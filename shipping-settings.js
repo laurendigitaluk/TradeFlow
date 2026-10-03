@@ -5,7 +5,10 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Authorization','Bearer '+token);if(o.body)h.set('Content-Type','application/json');const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||'Request failed');return b}
 function render(){
  const box=$('shipping-service-list');
- box.innerHTML='<div class="shipping-service-grid">'+catalog.map(x=>{
+ const term=($('shipping-service-search')?.value||'').trim().toLowerCase();
+ const filtered=catalog.filter(x=>!term||[x.service_name,x.service_code,x.description].some(v=>String(v||'').toLowerCase().includes(term)));
+ const count=$('shipping-service-count');if(count)count.textContent=filtered.length+' service'+(filtered.length===1?'':'s')+' shown';
+ box.innerHTML='<div class="shipping-service-grid">'+filtered.map(x=>{
    const s=selected.find(v=>v.service_code===x.service_code);
    return '<label class="shipping-service-option"><input type="checkbox" data-service-code="'+esc(x.service_code)+'" '+(s?'checked':'')+'><span class="service-body"><span class="service-head"><strong>'+esc(x.service_name)+'</strong><a class="service-link" href="'+esc(x.service_url)+'" target="_blank" rel="noopener">Open website</a></span><span class="small">'+esc(x.description||'')+'</span></span></label>';
  }).join('')+'</div>';
@@ -18,6 +21,7 @@ async function load(){
   catalog=Array.isArray(settings?.catalog)?settings.catalog:[];
   selected=Array.isArray(settings?.selected)?settings.selected:[];
   render();
+  $('shipping-service-search')?.addEventListener('input',render);
  }catch(e){$('message').textContent=e.message||String(e);$('message').className='small error'}
 }
 $('save-shipping-services').onclick=async()=>{

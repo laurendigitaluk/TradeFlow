@@ -1943,3 +1943,14 @@ Other same-category overlaps found (such as Continuous Lighting / Continuous Lig
 Cross-category repeated branch names such as Light Stands, Camera Supports, Tripod Heads and Flash Accessories were also left intact because their parent categories differ; they are not automatically safe to merge without changing taxonomy semantics.
 
 The merge was applied to TEST first and verified, then promoted to LIVE via `20261003220000_merge_duplicate_drone_controller_branch.sql`.
+
+
+## 2026-10-03 — Website Builder Template Architecture Update
+
+The Website Builder now treats the ten templates as distinct layout compositions rather than simple colour variants. The same subscriber-editable headline, intro and CTA content is retained when switching templates.
+
+A new homepage banner preference is stored as `homepage.use_banner`. When enabled and a banner exists, the uploaded branding banner occupies the primary hero title position. When disabled, the editable text headline remains in that position. The underlying headline text is retained when the banner option is toggled, so subscribers can switch between text and banner without losing content.
+
+The banner option is presented in Branding as a clear checkbox: “Use banner in the homepage hero”. The fallback homepage hero image remains available separately.
+
+TEST/main and LIVE/production were updated for the same template engine and styling. Website Builder cache versions were advanced to JavaScript v69 and CSS v65.

@@ -16,19 +16,22 @@ Deno.serve(async req=>{
   const body=await req.json();
   const businessName=String(body?.business_name||'').trim();
   const planCode=String(body?.plan_code||'enhanced').trim();
+  const billingInterval=String(body?.billing_interval||'month').trim();
   if(!businessName)return json({error:'Business name is required.'},400);
   if(planCode!=='enhanced')return json({error:'The TradeFlow subscription plan is required.'},400);
-  const planRes=await fetch(SUPABASE_URL+'/rest/v1/plans?code=eq.enhanced&active=eq.true&select=id,code,name,description,monthly_price,currency,trial_days,stripe_monthly_price_id&limit=1',{headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`}});
+  const planRes=await fetch(SUPABASE_URL+'/rest/v1/plans?code=eq.enhanced&active=eq.true&select=id,code,name,description,monthly_price,annual_price,currency,trial_days,stripe_monthly_price_id,stripe_annual_price_id&limit=1',{headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`}});
   if(!planRes.ok)return json({error:'Unable to load the TradeFlow plan.'},500);
   const plans=await planRes.json(); const plan=plans?.[0];
   if(!plan)return json({error:'TradeFlow plan is not configured.'},409);
-  if(!plan.stripe_monthly_price_id)return json({error:'TradeFlow Stripe billing has not been connected yet. Please contact the platform owner.'},409);
+  const selectedPriceId=billingInterval==='year'?plan.stripe_annual_price_id:plan.stripe_monthly_price_id;
+  if(billingInterval!=='month'&&billingInterval!=='year')return json({error:'Choose a monthly or annual TradeFlow subscription.'},400);
+  if(!selectedPriceId)return json({error:`TradeFlow ${billingInterval==='year'?'annual':'monthly'} Stripe billing has not been connected yet. Please contact the platform owner.`},409);
   const origin=new URL(req.headers.get('origin')||req.headers.get('referer')||'').origin;
   if(!origin||origin==='null')return json({error:'Checkout origin could not be determined.'},400);
   const metadata={user_id:user.id,business_name:businessName,plan_code:plan.code};
   const params=new URLSearchParams();
   params.set('mode','subscription');
-  params.set('line_items[0][price]',plan.stripe_monthly_price_id);
+  params.set('line_items[0][price]',selectedPriceId);
   params.set('line_items[0][quantity]','1');
   params.set('customer_email',String(user.email||''));
   params.set('client_reference_id',String(user.id));
@@ -45,6 +48,6 @@ Deno.serve(async req=>{
   const stripeRes=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:params});
   const stripe=await stripeRes.json();
   if(!stripeRes.ok)return json({error:stripe?.error?.message||'Unable to start Stripe subscription checkout.'},502);
-  return json({checkout_url:stripe.url,session_id:stripe.id,trial_days:Number(plan.trial_days??30),monthly_price:Number(plan.monthly_price)});
+  return json({checkout_url:stripe.url,session_id:stripe.id,trial_days:Number(plan.trial_days??30),billing_interval:billingInterval,price:Number(billingInterval==='year'?plan.annual_price:plan.monthly_price)});
  }catch(e){return json({error:e instanceof Error?e.message:String(e)},500)}
 });

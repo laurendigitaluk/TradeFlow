@@ -2317,3 +2317,25 @@ The LIVE release boundary has been audited after reports of navigation reverting
 ## 2026-10-03 Commercial Onboarding Boundary
 
 The TradeFlow AI/Assistant layer is not responsible for subscriber billing or account provisioning. Commercial signup now requires the Stripe subscription before a subscriber tenant is created. Owner Dashboard access remains restricted to the platform owner; subscriber accounts remain separate. AI provider settings remain independent of the £59.99/month subscriber subscription.
+
+
+---
+
+## 2026-10-03 — LIVE Subscriber Subscription Cancellation Control
+
+TradeFlow LIVE now provides a small **Cancel subscription** control at the bottom of the subscriber dashboard navigation.
+
+Cancellation is deliberately protected by password re-authentication before the cancellation request is accepted. The subscriber's password is verified through Supabase Auth; the password is not stored by TradeFlow.
+
+The cancellation action schedules the connected Stripe subscription to cancel at the end of the current trial or billing period rather than creating a duplicate payment or immediately removing access.
+
+The authenticated `subscriber-cancel-subscription` Edge Function validates:
+- the signed-in subscriber identity;
+- active membership of the selected tenant;
+- the connected Stripe subscription;
+- the Stripe customer ID match;
+- the Stripe subscription metadata user ID when present.
+
+It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
+
+The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.

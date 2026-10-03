@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 let key,token,tenantId;
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));

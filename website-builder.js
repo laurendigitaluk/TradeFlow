@@ -2,7 +2,7 @@ const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true;
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true,bannerPosition='center';
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
@@ -233,7 +233,7 @@ function renderBrandingControls(){
  '<div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo uploaded</span>':'<span class="small">No business logo uploaded.</span>')+'<div class="actions"><button type="button" data-logo-upload>'+(logoUrl?'Replace logo':'Upload logo')+'</button>'+(logoUrl?'<button type="button" class="secondary" data-logo-remove>Remove logo</button>':'')+'</div></div>'+
  '<div class="branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner">':'<div class="generated-brand-banner-preview">'+esc(siteName||'Your Business')+'</div>')+
  '<div class="branding-banner-actions"><span class="small">'+(bannerUrl?'Website banner uploaded':'No banner uploaded — the business name will be used automatically')+'</span><div class="actions"><button type="button" data-banner-upload>Upload banner</button>'+(bannerUrl?'<button type="button" class="secondary" data-banner-remove>Remove banner</button>':'')+'</div></div>'+
- '<label class="check-control branding-banner-toggle"><input type="checkbox" data-use-banner '+(useBanner&&bannerUrl?'checked':'')+(bannerUrl?'':' disabled')+'> Use banner in the homepage hero</label></div>'+
+ '<label class="check-control branding-banner-toggle"><input type="checkbox" data-use-banner '+(useBanner&&bannerUrl?'checked':'')+(bannerUrl?'':' disabled')+'> Use banner as the website title banner</label><label class="banner-position-control"><span>Position</span><select data-banner-position><option value="left" '+(bannerPosition==='left'?'selected':'')+'>Left</option><option value="center" '+(bannerPosition==='center'?'selected':'')+'>Centre</option><option value="right" '+(bannerPosition==='right'?'selected':'')+'>Right</option></select></label></div>'+
  '<div class="actions"><a href="settings.html">Business Settings</a></div>';
  const logoUpload=box.querySelector('[data-logo-upload]');
  if(logoUpload)logoUpload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();});
@@ -244,7 +244,7 @@ function renderBrandingControls(){
  const remove=box.querySelector('[data-banner-remove]');
  if(remove)remove.addEventListener('click',()=>removeImage('banner'));
  const bannerToggle=box.querySelector('[data-use-banner]');
- if(bannerToggle)bannerToggle.addEventListener('change',()=>{useBanner=bannerToggle.checked;renderEditor();markDirty();setStatus(useBanner?'Banner will be used in the homepage hero title position.':'Text headline will be used in the homepage hero.','success');});
+ if(bannerToggle)bannerToggle.addEventListener('change',()=>{useBanner=bannerToggle.checked;renderEditor();markDirty();setStatus(useBanner?'Banner will be used as the website title banner.':'Text headline will be used instead of the banner.','success');}); const bannerPositionSelect=box.querySelector('[data-banner-position]');if(bannerPositionSelect)bannerPositionSelect.addEventListener('change',()=>{bannerPosition=bannerPositionSelect.value;renderEditor();markDirty();});
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -326,7 +326,7 @@ function templateHero(){
  templateCopy=cleanTemplateCopy(templateCopy);
  const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');
- const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':h;
+ const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':h;
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
  const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
  switch(currentTemplate){
@@ -359,7 +359,7 @@ function renderHome(){
 function pageTitleMarkup(p,opts={}){
  const title=opts.managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1');
  const body=opts.noBody?'':editText('page-body',p.body||'','p');
- const banner=(useBanner&&bannerUrl&&p.slug!=='customer-account')?'<div class="page-title-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
+ const banner=(useBanner&&bannerUrl&&p.slug!=='customer-account')?'<div class="page-title-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
  return banner+title+body;
 }
 function renderPage(p){
@@ -455,7 +455,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -495,7 +495,7 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
- bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';

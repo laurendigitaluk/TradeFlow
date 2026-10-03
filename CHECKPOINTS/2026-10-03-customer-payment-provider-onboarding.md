@@ -140,3 +140,13 @@ Implementation commits:
 - 60d56e23278d9f54fc8cf1c2c7fad14e41c57c3a — dropdown styling and cache-buster update.
 
 settings.js had previously passed syntax validation; the dropdown change preserves the same data/save functions. Browser verification of the refreshed deployed page remains required.
+
+## UI refinement — bordered provider cards and setup buttons
+
+The provider dropdowns were refined again after browser review. Each provider is now a clearly bordered card with a coloured **View setup** button. Clicking the provider/card control reveals the full provider setup details. The button changes to **Hide setup** when open. Stripe's full payment-method controls remain inside the Stripe provider details and are loaded into the Stripe card when the settings page loads.
+
+Implementation commits:
+- 529cb11522d6fcc94d7e8c0ad70cb22b5c36178b — clear provider setup button.
+- 761496055fa3fbfff3a0c2c9088c611f9c6baa93 — bordered card styling and cache-buster.
+
+settings.js syntax validation passed after the change.

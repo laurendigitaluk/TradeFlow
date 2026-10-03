@@ -1901,3 +1901,8 @@ The dashboard should be treated as the current source of truth for the conversat
 ## 2026-10-03 LIVE Site Boundary Update
 
 The LIVE site boundary has been repaired following an audit of links and navigation that could still lead to the former TEST site. Public plans, subscriber dashboard and the affected customer-facing workflow connections now use LIVE configuration. Customer notification links are designed to use the subscriber business's active primary domain rather than a retired TradeFlow TEST URL. Browser-level LIVE testing is still required after deployment propagation.
+
+
+## 2026-10-03 LIVE Subscriber Pricing and Signup
+
+The launch price is **£59.99 per month with one month (30 days) free**. Get Started no longer creates an unpaid TradeFlow business. A prospective subscriber creates their login account and is then sent to secure Stripe subscription checkout. Stripe collects the payment method and starts the 30-day trial; the TradeFlow business workspace is connected after Stripe confirms the subscription. The platform owner uses Owner Dashboard → Plans to review price/trial and create LIVE Stripe billing. Subscriber accounts do not receive Owner Dashboard access.

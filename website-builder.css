@@ -343,3 +343,10 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
   border:1px solid #c46a2b!important;border-radius:7px!important;
   background:#fff!important;color:#a95722!important;font-size:11px!important;font-weight:800!important;cursor:pointer!important;
 }
+
+
+/* Branding banner is the primary homepage hero visual across every template. */
+.banner-image-slot{display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:180px;}
+.banner-image-slot img{display:block;width:100%;height:100%;min-height:180px;max-height:360px;object-fit:cover;object-position:center center;}
+.business-facts.banner-image-slot,.commerce-panel.banner-image-slot{min-height:260px;border-radius:10px;overflow:hidden;}
+.business-facts.banner-image-slot img,.commerce-panel.banner-image-slot img{min-height:260px;max-height:360px;object-fit:cover;}

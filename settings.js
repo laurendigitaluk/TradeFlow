@@ -26,7 +26,7 @@ const PAYMENT_PROVIDERS=[
  {code:'mollie',name:'Mollie',description:'Online checkout, payment links and multiple payment methods.',signup:'https://my.mollie.com/dashboard/signup?lang=en',guide:'https://help.mollie.com/hc/en-gb/articles/210709969-How-do-I-create-an-account',ready:['Company details and stakeholder information','Live website URL','Business bank account','ID for legal representatives','Mollie account email','Optional Mollie payment link'],steps:['Create your Mollie account.','Open Start setup in the Mollie Dashboard.','Enter your business and website details.','Activate the payment methods you want to offer.','Finish verification and add your bank account for payouts.','Return to TradeFlow and record the non-secret details below.']},
  {code:'revolut',name:'Revolut Business',description:'Business banking plus online payment acceptance and Payment Links.',signup:'https://www.revolut.com/en-GB/business/',guide:'https://www.revolut.com/business/business-resources-onboarding-guide/',ready:['Full name, date of birth and nationality','Residential address and postcode','Government ID','Business legal and registration details','Registered and operating business address','Business activity description and website','Revolut Business account email','Merchant account for Payment Links/online payments'],steps:['Open a Revolut Business account.','Complete identity and business verification.','Provide registered and operating address details.','Choose the Business plan and complete account setup.','Set up the Merchant account/payment acceptance features you intend to use.','Return to TradeFlow and record the non-secret details below.']}
 ];
-let paymentProviderRows=[];
+let paymentProviderRows=[],stripeMethodRows=[];
 function providerRow(code){return paymentProviderRows.find(x=>x.provider===code&&x.connection_type==='customer_payments')||null}
 function providerStatus(row){
  if(!row)return 'Not set up';
@@ -41,11 +41,25 @@ function renderPaymentProviders(){
  host.innerHTML='<div class="payment-provider-grid">'+PAYMENT_PROVIDERS.map(p=>{
    const row=providerRow(p.code),m=row?.metadata||{},selected=m.primary===true;
    const accountEmail=m.account_email||'',accountRef=row?.provider_account_id||'',paymentLink=m.payment_link||'',postcode=m.business_postcode||'';
-   return '<article class="payment-provider-card '+(selected?'is-selected':'')+'" data-provider-card="'+esc(p.code)+'"><div class="panel-subheading"><div><h3>'+esc(p.name)+'</h3><div class="payment-provider-meta">'+esc(p.description)+'</div></div><span class="status-pill">'+esc(providerStatus(row))+'</span></div><div class="payment-provider-guide"><strong>Have these ready</strong><ul>'+p.ready.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><strong>Setup steps</strong><ol>'+p.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol></div><div class="payment-provider-actions"><a href="'+p.signup+'" target="_blank" rel="noopener">Open '+esc(p.name)+' signup</a><a href="'+p.guide+'" target="_blank" rel="noopener">Open official instructions</a><button type="button" class="primary provider-edit" data-provider="'+esc(p.code)+'">'+(row?'Edit setup':'Enter setup details')+'</button></div><div class="payment-provider-form" data-provider-form="'+esc(p.code)+'" hidden><div class="small"><strong>TradeFlow setup details</strong><br>These fields do not contain secret API keys. Enter only the non-secret information you want TradeFlow to remember.</div><div class="form-grid"><label>Provider account email<input class="pp-account-email" type="email" value="'+esc(accountEmail)+'" autocomplete="email"></label><label>Provider account / merchant ID<input class="pp-account-ref" value="'+esc(accountRef)+'" maxlength="200"></label><label>Payment link (if you use one)<input class="pp-payment-link" type="url" value="'+esc(paymentLink)+'" placeholder="https://..."></label><label>Business postcode<input class="pp-postcode" value="'+esc(postcode||businessPostcode||'')+'" readonly></label></div><label class="payment-provider-check"><input class="pp-primary" type="checkbox" '+(selected?'checked':'')+'> Use this as my primary customer payment provider</label><label class="payment-provider-check"><input class="pp-complete" type="checkbox" '+(m.setup_complete?'checked':'')+'> I have completed the provider setup and verification</label><div class="payment-provider-actions"><button type="button" class="primary provider-save" data-provider="'+esc(p.code)+'">Save payment setup</button><button type="button" class="provider-close" data-provider="'+esc(p.code)+'">Close</button></div><div class="small payment-provider-muted" style="margin-top:8px">TradeFlow will not ask for your provider password, secret key or bank login. Those remain with the payment provider.</div></div></article>';
+   const stripeOptions=p.code==='stripe'?'<div class="stripe-card-options"><div class="stripe-options-heading"><strong>Stripe checkout payment methods</strong><span class="payment-provider-muted">TradeFlow checkout</span></div><p class="small">Choose which Stripe payment methods TradeFlow asks Stripe Checkout to offer. Stripe still decides eligibility for the customer, country, currency, device and transaction.</p><div id="stripe-methods">Loading payment methods…</div><div class="notice"><strong>Apple Pay</strong><p class="small">Apple Pay is controlled by Stripe and the customer device/browser. It is not a separate switch here while card payments remain enabled.</p></div></div>':'';
+   return '<article class="payment-provider-card '+(selected?'is-selected':'')+'" data-provider-card="'+esc(p.code)+'"><div class="panel-subheading"><div><h3>'+esc(p.name)+'</h3><div class="payment-provider-meta">'+esc(p.description)+'</div></div><span class="status-pill">'+esc(providerStatus(row))+'</span></div><div class="payment-provider-guide"><strong>Have these ready</strong><ul>'+p.ready.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><strong>Setup steps</strong><ol>'+p.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol></div>'+stripeOptions+'<div class="payment-provider-actions"><a class="cta-secondary" href="'+p.signup+'" target="_blank" rel="noopener">Open '+esc(p.name)+' signup</a><a class="cta-secondary" href="'+p.guide+'" target="_blank" rel="noopener">Open official instructions</a><button type="button" class="primary provider-edit" data-provider="'+esc(p.code)+'">'+(row?'Edit setup':'Enter setup details')+'</button></div><div class="payment-provider-form" data-provider-form="'+esc(p.code)+'" hidden><div class="small"><strong>TradeFlow setup details</strong><br>These fields do not contain secret API keys. Enter only the non-secret information you want TradeFlow to remember.</div><div class="form-grid"><label>Provider account email<input class="pp-account-email" type="email" value="'+esc(accountEmail)+'" autocomplete="email"></label><label>Provider account / merchant ID<input class="pp-account-ref" value="'+esc(accountRef)+'" maxlength="200"></label><label>Payment link (if you use one)<input class="pp-payment-link" type="url" value="'+esc(paymentLink)+'" placeholder="https://..."></label><label>Business postcode<input class="pp-postcode" value="'+esc(postcode||businessPostcode||'')+'" readonly></label></div><label class="payment-provider-check"><input class="pp-primary" type="checkbox" '+(selected?'checked':'')+'> Use this as my primary customer payment provider</label><label class="payment-provider-check"><input class="pp-complete" type="checkbox" '+(m.setup_complete?'checked':'')+'> I have completed the provider setup and verification</label><div class="payment-provider-actions"><button type="button" class="primary provider-save" data-provider="'+esc(p.code)+'">Save payment setup</button><button type="button" class="cta-secondary provider-close" data-provider="'+esc(p.code)+'">Close</button></div><div class="small payment-provider-muted" style="margin-top:8px">TradeFlow will not ask for your provider password, secret key or bank login. Those remain with the payment provider.</div></div></article>';
  }).join('')+'</div>';
  host.querySelectorAll('.provider-edit').forEach(b=>b.onclick=()=>{const f=host.querySelector('[data-provider-form="'+b.dataset.provider+'"]');if(f)f.hidden=!f.hidden});
  host.querySelectorAll('.provider-close').forEach(b=>b.onclick=()=>{const f=host.querySelector('[data-provider-form="'+b.dataset.provider+'"]');if(f)f.hidden=true});
  host.querySelectorAll('.provider-save').forEach(b=>b.onclick=()=>savePaymentProvider(b.dataset.provider));
+}
+function renderStripeMethods(){
+ const host=$('stripe-methods');if(!host)return;
+ host.innerHTML=stripeMethodRows?.length?stripeMethodRows.map(x=>{
+  const required=x.method_code==='card';
+  return '<div class="stripe-method-row"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+(required?'Required base payment method for TradeFlow checkout.':'Customers will only see this method when it is enabled here and Stripe considers it eligible.')+'</div></div><label class="stripe-toggle"><input type="checkbox" class="stripe-method-toggle" data-method-id="'+esc(x.id)+'" '+(x.enabled?'checked':'')+(required?' disabled':'')+'><span>'+(x.enabled?'Enabled':'Disabled')+'</span></label></div>';
+ }).join(''):'<div class="empty">No Stripe payment methods configured.</div>';
+ host.querySelectorAll('.stripe-method-toggle').forEach(el=>el.addEventListener('change',async()=>{
+  const id=el.dataset.methodId,enabled=el.checked;el.disabled=true;
+  try{await api('/rest/v1/tenant_payment_methods?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({enabled})});const row=stripeMethodRows.find(x=>x.id===id);if(row)row.enabled=enabled;el.nextElementSibling.textContent=enabled?'Enabled':'Disabled';msg('Payment method setting saved.','success');}
+  catch(e){el.checked=!enabled;msg(e.message||String(e),'error');}
+  finally{el.disabled=false}
+ }));
 }
 async function savePaymentProvider(code){
  const provider=PAYMENT_PROVIDERS.find(x=>x.code===code),card=document.querySelector('[data-provider-card="'+code+'"]');if(!provider||!card)return;
@@ -71,7 +85,7 @@ async function savePaymentProvider(code){
    await api('/rest/v1/payment_provider_connections?on_conflict=tenant_id,provider,connection_type',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({tenant_id:tenantId,provider:code,connection_type:'customer_payments',status:'onboarding',provider_account_id:accountRef||null,display_name:provider.name,country_code:'GB',default_currency:'GBP',livemode:true,metadata})});
   }
   paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');
-  renderPaymentProviders();msg(provider.name+' payment setup saved.','success');
+  renderPaymentProviders();renderStripeMethods();msg(provider.name+' payment setup saved.','success');
  }catch(e){msg(e.message||String(e),'error')}
 }
 
@@ -101,23 +115,8 @@ async function load(){
    headers:{Prefer:'resolution=merge-duplicates,return=minimal'},
    body:JSON.stringify(defaults.map(x=>({...x,tenant_id:tenantId})))
   });
-  const rows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&method_code=in.(card,link,klarna,amazon_pay)&order=sort_order');
-  $('stripe-methods').innerHTML=rows?.length?rows.map(x=>{
-    const required=x.method_code==='card';
-    return '<div class="shipping-provider-card" style="display:flex;justify-content:space-between;align-items:center;gap:18px"><div><strong>'+esc(x.display_name)+'</strong><div class="small">'+(required?'Required base payment method for TradeFlow checkout.':'Customers will only see this method when it is enabled here and Stripe considers it eligible.')+'</div></div><label style="display:flex;align-items:center;gap:8px;white-space:nowrap"><input type="checkbox" class="stripe-method-toggle" data-method-id="'+esc(x.id)+'" data-method-code="'+esc(x.method_code)+'" '+(x.enabled?'checked':'')+(required?' disabled':'')+'> '+(x.enabled?'Enabled':'Disabled')+'</label></div>';
-  }).join(''):'<div class="empty">No Stripe payment methods configured.</div>';
-  document.querySelectorAll('.stripe-method-toggle').forEach(el=>el.addEventListener('change',async()=>{
-    const id=el.dataset.methodId;
-    const enabled=el.checked;
-    el.disabled=true;
-    try{
-      await api('/rest/v1/tenant_payment_methods?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({enabled})});
-      msg('Payment method setting saved.','success');
-    }catch(e){
-      el.checked=!enabled;
-      msg(e.message||String(e),'error');
-    }finally{el.disabled=false}
-  }));
+  stripeMethodRows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&method_code=in.(card,link,klarna,amazon_pay)&order=sort_order');
+  renderStripeMethods();
  }catch(e){msg(e.message||String(e),'error')}
 }
 $('email-form').onsubmit=async e=>{

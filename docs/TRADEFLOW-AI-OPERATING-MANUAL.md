@@ -2404,3 +2404,18 @@ Database restoration: Verified.
 Frontend LIVE browser verification of Master Catalogue filters/product loading: pending user/browser confirmation.
 
 Do not mark the browser step Verified Live until the LIVE Master Catalogue page successfully loads categories/manufacturers/products and a product can be selected without Failed to fetch.
+
+
+## 2026-10-03 — LIVE Catalogue Authorisation Repair
+
+The first LIVE Master Catalogue request reached Supabase but returned `400: Tenant user is not authorised to view catalogue`. Investigation traced this to missing platform authorization seed data in LIVE, not to the Master Catalogue data itself.
+
+TEST contained 3 roles, 35 permissions and 91 role-permission mappings. LIVE had 0 roles, 0 permissions and 0 mappings. LIVE also had 0 plan_features; the active Enhanced subscription therefore had no recorded `module.buying` or `catalogue.pre_filled` entitlement even though the subscription itself existed.
+
+The controlled repair `20261003213000_restore_platform_authorization_entitlements.sql` was created from verified TEST configuration using natural keys. It was applied to TEST first and verified at 3 roles / 35 permissions / 91 mappings, with 20 Enhanced plan features. It was then promoted and applied to LIVE.
+
+LIVE verification now confirms the Adventure Outpost owner has the active `categories.view` permission and the Enhanced subscription has both `module.buying` and `catalogue.pre_filled` enabled.
+
+No tenant memberships, customers, orders or transaction records were copied. Only platform role/permission/entitlement configuration was restored.
+
+Next verification: refresh the LIVE Master Catalogue page and select a manufacturer. The expected result is that the catalogue request proceeds beyond the previous authorization error and the manufacturer/product results load.

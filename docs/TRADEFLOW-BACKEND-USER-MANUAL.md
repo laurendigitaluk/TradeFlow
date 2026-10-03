@@ -1005,3 +1005,9 @@ subscriber_get_assistant_conversations returns only open conversations with at l
 The customer frontend polls the conversation every 15 seconds so subscriber replies appear without requiring a page reload. No email service is required for this path.
 
 LIVE browser E2E verification is still a separate test step and must not be represented as passed until performed.
+
+
+
+## 2026-10-03 LIVE Production Boundary Audit
+
+A deep LIVE boundary audit found and repaired unconditional TEST Supabase references in production frontend assets and retired GitHub Pages customer portal URLs in four LIVE notification functions. The affected functions now derive customer portal links from each tenant's active primary domain. The LIVE `create-stripe-checkout-session` Edge Function was also versioned to v2 and no longer contains a GitHub Pages fallback. Targeted LIVE Edge Functions and database routine definitions were re-audited for TEST Supabase, old GitHub Pages, TEST workers.dev, localhost and 127.0.0.1 references. See `CHECKPOINTS/2026-10-03-production-boundary-audit-and-live-url-repair.md`.

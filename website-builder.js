@@ -6,6 +6,18 @@ let siteName='Your Business',headerTagline='',footerText='',headline='',intro=''
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
+let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''}};
+function normalizeLayoutBlock(v,defaults){const x=Object.assign({},defaults,v||{});x.type=x.type==='image'?'image':'text';x.x=Number.isFinite(Number(x.x))?Number(x.x):0;x.y=Number.isFinite(Number(x.y))?Number(x.y):0;x.width=Math.max(20,Math.min(100,Number(x.width)||defaults.width));x.aspect=Math.max(.35,Math.min(4,Number(x.aspect)||defaults.aspect));x.image_url=String(x.image_url||'');x.text=String(x.text||'');return x;}
+function loadLayoutBlocks(home){const lb=home?.layout_blocks||{};layoutBlocks={heroTitle:normalizeLayoutBlock(lb.heroTitle,{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:headline}),heroImage:normalizeLayoutBlock(lb.heroImage,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl,text:''}),heroImage2:normalizeLayoutBlock(lb.heroImage2,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl2,text:''})};}
+function layoutBlockMarkup(id,block,content,tag='div',alt='Website image'){
+ const b=normalizeLayoutBlock(block,{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''});
+ const style='--lb-x:'+b.x+'%;--lb-y:'+b.y+'px;--lb-w:'+b.width+'%;--lb-aspect:'+b.aspect+';';
+ const toolbar='<div class="layout-block-tools"><button type="button" data-layout-type="'+esc(id)+'" data-layout-next="text">Text</button><button type="button" data-layout-type="'+esc(id)+'" data-layout-next="image">Image</button></div><span class="layout-drag-handle" title="Drag to reposition">↕</span><span class="layout-resize-handle" title="Drag to resize proportionally"></span>';
+ let body='';
+ if(b.type==='image') body=b.image_url?'<div class="layout-image-inner"><img src="'+esc(b.image_url)+'" alt="'+esc(alt)+'"></div><button type="button" class="layout-image-action" data-image-action="replace" data-image-target="layout:'+esc(id)+'">Replace image</button>':'<div class="layout-empty-image"><button type="button" data-image-action="add" data-image-target="layout:'+esc(id)+'">Add image</button></div>';
+ else body='<'+tag+' contenteditable="true" data-layout-edit="'+esc(id)+'">'+esc(b.text||content||'')+'</'+tag+'>';
+ return '<div class="layout-block layout-block-'+esc(b.type)+'" data-layout-block="'+esc(id)+'" style="'+style+'">'+toolbar+body+'</div>';
+}
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
 let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
@@ -326,12 +338,12 @@ function templateHeroImage(url,target,label,alt){
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
  const heroUrl=homeImageUrl;
- const img1=templateHeroImage(heroUrl,'home','Add the main image for this template.','Main website image');
- const img2=templateHeroImage(homeImageUrl2,'home2','Add a secondary image for this template.','Secondary website image');
+ const img1=layoutBlockMarkup('heroImage',layoutBlocks.heroImage,heroUrl?'':'Add the main image for this template.','div','Main website image');
+ const img2=layoutBlockMarkup('heroImage2',layoutBlocks.heroImage2,homeImageUrl2?'':'Add a secondary image for this template.','div','Secondary website image');
  templateCopy=cleanTemplateCopy(templateCopy);
  const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');
- const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':h;
+ const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':layoutBlockMarkup('heroTitle',layoutBlocks.heroTitle,headline,'h1',siteName||'Website image');
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
  const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
  switch(currentTemplate){
@@ -386,9 +398,17 @@ function renderEditor(){
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
  $('site-editor').style.setProperty('--accent',themeColors.accent);applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();
+ bindEditor();bindLayoutInteractions(root);
 }
 
+function bindLayoutInteractions(root){
+ root.querySelectorAll('[data-layout-type]').forEach(btn=>btn.addEventListener('click',e=>{e.stopPropagation();const id=btn.dataset.layoutType;if(!layoutBlocks[id])return;layoutBlocks[id].type=btn.dataset.layoutNext;markDirty();renderEditor();}));
+ root.querySelectorAll('[data-layout-edit]').forEach(el=>el.addEventListener('input',()=>{const id=el.dataset.layoutEdit;if(layoutBlocks[id]){layoutBlocks[id].text=el.innerText.trim();if(id==='heroTitle')headline=layoutBlocks[id].text;markDirty();}}));
+ root.querySelectorAll('[data-layout-block]').forEach(el=>{const id=el.dataset.layoutBlock,b=layoutBlocks[id];if(!b)return;const drag=el.querySelector('.layout-drag-handle'),resize=el.querySelector('.layout-resize-handle');
+  if(drag)drag.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();const sx=e.clientX,sy=e.clientY,ox=b.x,oy=b.y;const move=ev=>{b.x=Math.max(-45,Math.min(45,ox+(ev.clientX-sx)/Math.max(1,el.parentElement.clientWidth)*100));b.y=Math.max(-160,Math.min(160,oy+(ev.clientY-sy)));el.style.setProperty('--lb-x',b.x+'%');el.style.setProperty('--lb-y',b.y+'px');markDirty()};const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up)};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);});
+  if(resize)resize.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();const sx=e.clientX,sw=b.width,aw=Math.max(1,el.parentElement.clientWidth);const move=ev=>{b.width=Math.max(20,Math.min(100,sw+(ev.clientX-sx)/aw*100));el.style.setProperty('--lb-w',b.width+'%');markDirty()};const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up)};window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);});
+ });
+}
 function bindEditor(){
  const root=$('site-editor');
  root.querySelectorAll('[contenteditable="true"]').forEach(el=>{
@@ -460,7 +480,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -502,6 +522,7 @@ function loadContent(content){
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
  bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
+ loadLayoutBlocks(s.homepage||{});
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
@@ -529,6 +550,7 @@ async function uploadImage(file,target){
  if(!response.ok)throw new Error(responseText||'Image upload failed.');
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target==='home')homeImageUrl=url;
+ else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
  else if(target==='home2')homeImageUrl2=url;
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;

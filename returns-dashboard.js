@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv';
 let key=null,session=null,tenantId=null,rows=[];
 
 const $=id=>document.getElementById(id);

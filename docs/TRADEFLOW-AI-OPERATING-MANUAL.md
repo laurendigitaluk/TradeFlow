@@ -2306,3 +2306,9 @@ The provider-neutral Assistant gateway remains optional and owner-controlled. Th
 This handoff does not require an external AI provider. Subscriber replies are ordinary dashboard messages stored in assistant_messages; the customer sees them through the Customer Assistant polling path.
 
 No automatic AI action, buying-price change, order change, or unrestricted database access is introduced by this connection.
+
+
+
+## 2026-10-03 LIVE Boundary Continuity Note
+
+The LIVE release boundary has been audited after reports of navigation reverting to the former TEST site. Production frontend assets identified with unconditional TEST Supabase references were repaired. LIVE notification functions no longer contain the retired GitHub Pages customer portal URL and instead derive portal links from the tenant's active primary domain. The Stripe checkout Edge Function was updated to use the request's live origin rather than the retired GitHub Pages fallback. Environment-aware TEST references remain intentionally documented in the Worker and customer authentication boundary and must not be removed globally. Browser-level LIVE E2E remains outstanding after deployment/cache propagation.

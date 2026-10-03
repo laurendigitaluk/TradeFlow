@@ -94,6 +94,7 @@ function publicPageBanner(site){
  const pos=['left','center','right'].includes(site.homepage?.banner_position)?site.homepage.banner_position:'center';
  return useBanner&&bannerUrl?'<div class="public-page-banner banner-position-'+pos+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':'';
 }
+function publicLayoutBlock(home,id,defaultType,content,tag,alt){const b=home?.layout_blocks?.[id]||{};const type=b.type==='image'?'image':defaultType;const x=Math.max(-45,Math.min(45,Number(b.x)||0)),y=Math.max(-160,Math.min(160,Number(b.y)||0)),w=Math.max(20,Math.min(100,Number(b.width)||100)),aspect=Math.max(.35,Math.min(4,Number(b.aspect)||1.6));const style='--lb-x:'+x+'%;--lb-y:'+y+'px;--lb-w:'+w+'%;--lb-aspect:'+aspect+';';if(type==='image'){const u=String(b.image_url||'');return '<div class="public-layout-block public-layout-image" style="'+style+'">'+(u?'<img src="'+esc(u)+'" alt="'+esc(alt||'Website image')+'">':'')+'</div>';}return '<div class="public-layout-block public-layout-text" style="'+style+'"><'+tag+'>'+esc(b.text||content||'')+'</'+tag+'></div>';}
 function renderHero(site){
  const home=site.homepage||{};
  const t=site.template||'editorial';
@@ -130,10 +131,10 @@ function renderHero(site){
  const useBanner=site.homepage?.use_banner!==false;
  const bannerPosition=['left','center','right'].includes(site.homepage?.banner_position)?site.homepage.banner_position:'center';
  const heroUrl=home.image_url||'';
- const i1=heroUrl?heroImage(heroUrl,name+' website image'):'<div class="public-demo-image" aria-hidden="true"></div>';
+ const i1=publicLayoutBlock(home,'heroImage','image',heroUrl,'div',name+' website image');
  const h=esc(headline),p=esc(intro);
- const titleMarkup=useBanner&&bannerUrl?'<div class="public-hero-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(name)+' website banner" loading="eager"></div>':'<h1>'+h+'</h1>';
- const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
+ const titleMarkup=useBanner&&bannerUrl?'<div class="public-hero-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(name)+' website banner" loading="eager"></div>':publicLayoutBlock(home,'heroTitle','text',headline,'h1',name+' title image');
+ const i2=publicLayoutBlock(home,'heroImage2','image',home.image_url2,'div',name+' second image');
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
  case 'classic':return '<section class="tpl-hero classic-hero"><div class="classic-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+i1+'</div></section>';

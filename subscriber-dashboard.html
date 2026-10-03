@@ -18,7 +18,17 @@
 .flow-step.flow-green:hover,.flow-step.flow-yellow:hover,.flow-step.flow-blue:hover,.flow-step.flow-red:hover{transform:translateY(-2px)}
 @media(max-width:1100px){.business-flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:700px){.business-flow{grid-template-columns:1fr 1fr}}
-</style><style>.dashboard-grid .dashboard-card{border:1px solid #e1e5e8;background:#fff}.dashboard-grid .dashboard-card:hover{border-color:#e1e5e8}.dashboard-grid .completed-orders-card{border:1px solid #e1e5e8;background:#fff}.retail-counter-panel{border:2px solid #2d7a4d;background:#f4faf6;display:flex;align-items:center;justify-content:space-between;gap:24px}.retail-counter-panel .retail-copy{max-width:760px}.retail-counter-panel .retail-cta{display:inline-block;background:#2d7a4d;color:#fff;text-decoration:none;border-radius:7px;padding:12px 18px;font-weight:800;white-space:nowrap}.retail-counter-panel .retail-cta:hover{background:#245f3b}@media(max-width:800px){.retail-counter-panel{flex-direction:column;align-items:flex-start}}</style></head>
+</style><style>.dashboard-grid .dashboard-card{border:1px solid #e1e5e8;background:#fff}.dashboard-grid .dashboard-card:hover{border-color:#e1e5e8}.dashboard-grid .completed-orders-card{border:1px solid #e1e5e8;background:#fff}.retail-counter-panel{border:2px solid #2d7a4d;background:#f4faf6;display:flex;align-items:center;justify-content:space-between;gap:24px}.retail-counter-panel .retail-copy{max-width:760px}.retail-counter-panel .retail-cta{display:inline-block;background:#2d7a4d;color:#fff;text-decoration:none;border-radius:7px;padding:12px 18px;font-weight:800;white-space:nowrap}.retail-counter-panel .retail-cta:hover{background:#245f3b}@media(max-width:800px){.retail-counter-panel{flex-direction:column;align-items:flex-start}}</style><style>
+.cancel-subscription-link{display:block;margin:28px 10px 4px;padding:0;border:0;background:transparent;color:#7b8790;font:inherit;font-size:11px;text-align:left;text-decoration:underline;cursor:pointer}
+.cancel-subscription-link:hover{color:#18212b}
+.cancel-subscription-link:disabled{color:#7b8790;cursor:default;text-decoration:none}
+.cancel-password-label{display:block;margin:18px 0 6px;font-size:13px;color:#4b5965}
+#cancel-subscription-password{width:100%;box-sizing:border-box;font:inherit;border:1px solid #cfd6dc;border-radius:6px;padding:10px;background:#fff;color:var(--tf-ink)}
+.cancel-subscription-error{min-height:20px;margin-top:10px;color:#a33;font-size:13px}
+.cancel-subscription-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.cancel-subscription-actions button{padding:10px 14px;border-radius:7px;border:1px solid #cfd6dc;background:#fff;color:var(--tf-ink);cursor:pointer}
+.cancel-subscription-actions button:first-child{background:#8f3d3d;border-color:#8f3d3d;color:#fff}
+</style></head>
 <body>
 <header class="topbar">
   <a class="brand brand-link" href="subscriber-dashboard.html"><span id="business-brand">TradeFlow</span></a>
@@ -47,7 +57,7 @@
 <div class="nav-section">Settings</div>
 <a href="shipping-settings.html">Shipping Settings</a><a href="settings.html">Settings</a><a href="domain-settings.html">Website URL</a><a href="assistant.html">TradeFlow Assistant</a><a href="subscriber-customer-documentation.html">Customer Documentation</a>
 </nav>
-<div class="sidebar-note"><strong>Catalogue</strong><span>Catalogue management will be added when Gemma is ready to maintain the product catalogue.</span></div>
+<button id="cancel-subscription-link" class="cancel-subscription-link" type="button">Cancel subscription</button>
 </aside>
 <section class="content">
 <div class="page-heading"><div><div class="eyebrow">Business workspace</div><h1>Business dashboard</h1><p class="intro">Manage your buying, stock, sales, orders and customers from one clear business workspace. Your website is managed separately.</p></div></div>
@@ -94,7 +104,20 @@
 <section class="panel" id="settings"><div class="panel-heading"><div><div class="eyebrow">Business setup</div><h2>Settings</h2></div><span class="status-pill">Business settings</span></div><p>Update your business details, account settings and website connection.</p><div class="actions"><a href="settings.html">Open business settings</a><a href="domain-settings.html">Connect your website URL</a><button id="settings-account" type="button">View account details</button></div></section>
 </section></main>
 
-<div class="modal" id="account-modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><button class="modal-close" id="account-modal-close" type="button" aria-label="Close account details">×</button><div class="eyebrow">Signed-in account</div><h2 id="account-modal-title">Account details</h2><dl class="account-details"><div><dt>Business</dt><dd id="modal-business">Loading…</dd></div><div><dt>Email</dt><dd id="modal-email">Loading…</dd></div><div><dt>Role</dt><dd id="modal-role">Loading…</dd></div><div><dt>Tenant</dt><dd id="modal-tenant">Loading…</dd></div></dl><p class="modal-note">This is the account and business currently being used in this workspace.</p></div></div>
+<div class="modal" id="cancel-subscription-modal" hidden>
+<div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="cancel-subscription-title">
+<button class="modal-close" id="cancel-subscription-close" type="button" aria-label="Close cancellation dialog">×</button>
+<div class="eyebrow">Subscription</div>
+<h2 id="cancel-subscription-title">Cancel subscription</h2>
+<p id="cancel-subscription-copy">Your subscription will be cancelled at the end of the current trial or billing period. You will keep access until then.</p>
+<label class="cancel-password-label" for="cancel-subscription-password">Enter your TradeFlow password to confirm</label>
+<input id="cancel-subscription-password" type="password" autocomplete="current-password">
+<div id="cancel-subscription-error" class="cancel-subscription-error" role="alert"></div>
+<div class="cancel-subscription-actions">
+<button id="cancel-subscription-confirm" type="button">Confirm cancellation</button>
+<button id="cancel-subscription-abort" type="button">Keep subscription</button>
+</div>
+</div></div><div class="modal" id="account-modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="account-modal-title"><button class="modal-close" id="account-modal-close" type="button" aria-label="Close account details">×</button><div class="eyebrow">Signed-in account</div><h2 id="account-modal-title">Account details</h2><dl class="account-details"><div><dt>Business</dt><dd id="modal-business">Loading…</dd></div><div><dt>Email</dt><dd id="modal-email">Loading…</dd></div><div><dt>Role</dt><dd id="modal-role">Loading…</dd></div><div><dt>Tenant</dt><dd id="modal-tenant">Loading…</dd></div></dl><p class="modal-note">This is the account and business currently being used in this workspace.</p></div></div>
 <script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script>
 <script>
 window.addEventListener('DOMContentLoaded',async()=>{
@@ -261,5 +284,64 @@ window.addEventListener('DOMContentLoaded',async()=>{
  document.getElementById('account-modal-close')?.addEventListener('click',close);
  modal?.addEventListener('click',e=>{if(e.target===modal)close()});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal?.hidden)close()});
+});
+</script><script>
+window.addEventListener('DOMContentLoaded',async()=>{
+ const modal=document.getElementById('cancel-subscription-modal');
+ const open=document.getElementById('cancel-subscription-link');
+ const closeButton=document.getElementById('cancel-subscription-close');
+ const abort=document.getElementById('cancel-subscription-abort');
+ const confirm=document.getElementById('cancel-subscription-confirm');
+ const password=document.getElementById('cancel-subscription-password');
+ const error=document.getElementById('cancel-subscription-error');
+ const copy=document.getElementById('cancel-subscription-copy');
+ const close=()=>{if(modal)modal.hidden=true;if(error)error.textContent='';if(password)password.value='';};
+ open?.addEventListener('click',async()=>{
+   const a=await window.tradeflowSubscriberAuthReady;
+   if(!a?.tenantId){return;}
+   modal.hidden=false;
+   password?.focus();
+ });
+ closeButton?.addEventListener('click',close);
+ abort?.addEventListener('click',close);
+ modal?.addEventListener('click',e=>{if(e.target===modal)close()});
+ password?.addEventListener('keydown',e=>{if(e.key==='Enter')confirm?.click()});
+ confirm?.addEventListener('click',async()=>{
+   const a=await window.tradeflowSubscriberAuthReady;
+   const email=a?.session?.user?.email||a?.user?.email||'';
+   const tenantId=a?.tenantId;
+   const key=a?.key;
+   const value=password?.value||'';
+   if(!email||!tenantId||!key){error.textContent='Your subscriber session is not ready. Please sign in again.';return;}
+   if(!value){error.textContent='Enter your password to confirm cancellation.';password?.focus();return;}
+   confirm.disabled=true;abort.disabled=true;confirm.textContent='Confirming…';error.textContent='';
+   try{
+     const authRes=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/auth/v1/token?grant_type=password',{
+       method:'POST',
+       headers:{apikey:key,'Content-Type':'application/json'},
+       body:JSON.stringify({email,password:value})
+     });
+     const authBody=await authRes.json().catch(()=>({}));
+     if(!authRes.ok||!authBody?.access_token)throw Error(authBody?.error_description||authBody?.msg||'Password confirmation failed.');
+     const cancelRes=await fetch(window.TRADEFLOW_CONFIG.supabaseUrl+'/functions/v1/subscriber-cancel-subscription',{
+       method:'POST',
+       headers:{apikey:key,Authorization:'Bearer '+authBody.access_token,'Content-Type':'application/json'},
+       body:JSON.stringify({tenant_id:tenantId})
+     });
+     const cancelBody=await cancelRes.json().catch(()=>({}));
+     if(!cancelRes.ok||!cancelBody?.ok)throw Error(cancelBody?.error||'The subscription could not be cancelled.');
+     const when=cancelBody.cancellation_at?new Date(cancelBody.cancellation_at):null;
+     const dateText=when&&!Number.isNaN(when.getTime())?when.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}):'the end of the current billing period';
+     copy.textContent='Cancellation is scheduled. Your TradeFlow access remains available until '+dateText+'.';
+     error.textContent='';
+     confirm.hidden=true;
+     abort.textContent='Close';
+     password.hidden=true;
+     document.querySelector('.cancel-password-label')?.remove();
+     open.textContent='Cancellation scheduled';
+     open.disabled=true;
+   }catch(e){error.textContent=e?.message||String(e);}
+   finally{confirm.disabled=false;abort.disabled=false;confirm.textContent='Confirm cancellation';}
+ });
 });
 </script></body></html>

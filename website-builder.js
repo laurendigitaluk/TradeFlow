@@ -343,7 +343,7 @@ function templateHero(){
  templateCopy=cleanTemplateCopy(templateCopy);
  const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');
- const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':layoutBlockMarkup('heroTitle',layoutBlocks.heroTitle,headline,'h1',siteName||'Website image');
+ const titleMarkup=useBanner&&bannerUrl?layoutBlockMarkup('heroBanner',layoutBlocks.heroBanner,bannerUrl,'div',siteName||'Website banner'):layoutBlockMarkup('heroTitle',layoutBlocks.heroTitle,headline,'h1',siteName||'Website image');
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
  const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
  switch(currentTemplate){

@@ -2267,3 +2267,22 @@ A separate production infrastructure issue was identified in the Owner Dashboard
 
 Memory/continuity rule: after every material LIVE change, refresh the AI Operating Manual, Human User Manual, Backend User Manual, System Handbook and a dated checkpoint. Record implementation separately from LIVE browser verification. Never infer LIVE behaviour from TEST behaviour or from a successful GitHub/Cloudflare deployment alone.
 \n\n## LIVE owner-auth recovery boundary — 3 October 2026\n\nThe AI layer is not the cause of the owner login/reset problem. LIVE AI settings remain provider-neutral with \`active_provider=none\`; the Assistant Edge Function is ACTIVE and the platform owner AI controls are intact. The authentication issue is isolated to Supabase Auth redirect configuration plus the absence of a dedicated owner recovery page.\n\nThe new owner recovery page verifies an active platform-owner membership before changing the password. This keeps the AI/platform-owner boundary separate from customer password recovery.
+
+## LIVE CONTINUITY / MEMORY UPDATE — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
+
+The LIVE owner authentication path is now browser-verified after correcting the Cloudflare production branch.
+
+Cloudflare Workers & Pages was connected to `laurendigitaluk/TradeFlow` but had Production branch set to `main`, which is the TEST branch. It has now been corrected to `production`, the LIVE branch.
+
+A documentation-only commit `37b2d2133cf1f2e6d719c114f8d1e1c8fac25f84` triggered the fresh production deployment. A fresh browser session then successfully loaded the LIVE Owner Dashboard. The dashboard showed 0 subscriber businesses and 0 active businesses and no old TEST/Camerashack businesses.
+
+This confirms that the previous TEST-looking owner dashboard was a deployment-boundary problem, not evidence that the LIVE AI configuration or owner password needed changing.
+
+LIVE AI remains deliberately configured as:
+- `active_provider=none`
+- `allowed_providers=["none"]`
+- no external AI provider credentials in browser code.
+
+The next AI/product stage is the real LIVE customer/subscriber chatbot and launch workflow. Personal Gemma remains separate from TradeFlow AI.
+
+Continuity checkpoint: `CHECKPOINTS/2026-10-03-live-owner-login-verified.md`.

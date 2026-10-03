@@ -1,8 +1,8 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true;
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
@@ -232,7 +232,8 @@ function renderBrandingControls(){
  box.innerHTML='<div class="control-title">Branding</div><small>Keep your customer-facing logo and website banner together here. Your business name remains managed in Business Settings. The logo is used in the website header; the banner is used in the homepage hero. Recommended banner size: <b>1600 × 600 px</b> (8:3). PNG, JPEG or WebP, maximum 5 MB.</small>'+
  '<div class="branding-control">'+(logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><span class="small">Logo uploaded</span>':'<span class="small">No business logo uploaded.</span>')+'<div class="actions"><button type="button" data-logo-upload>'+(logoUrl?'Replace logo':'Upload logo')+'</button>'+(logoUrl?'<button type="button" class="secondary" data-logo-remove>Remove logo</button>':'')+'</div></div>'+
  '<div class="branding-banner-control">'+(bannerUrl?'<img src="'+esc(bannerUrl)+'" alt="Website banner">':'<div class="generated-brand-banner-preview">'+esc(siteName||'Your Business')+'</div>')+
- '<div class="branding-banner-actions"><span class="small">'+(bannerUrl?'Website banner uploaded':'No banner uploaded — the business name will be used automatically')+'</span><div class="actions"><button type="button" data-banner-upload>Upload banner</button>'+(bannerUrl?'<button type="button" class="secondary" data-banner-remove>Remove banner</button>':'')+'</div></div></div>'+
+ '<div class="branding-banner-actions"><span class="small">'+(bannerUrl?'Website banner uploaded':'No banner uploaded — the business name will be used automatically')+'</span><div class="actions"><button type="button" data-banner-upload>Upload banner</button>'+(bannerUrl?'<button type="button" class="secondary" data-banner-remove>Remove banner</button>':'')+'</div></div>'+
+ '<label class="check-control branding-banner-toggle"><input type="checkbox" data-use-banner '+(useBanner&&bannerUrl?'checked':'')+(bannerUrl?'':' disabled')+'> Use banner in the homepage hero</label></div>'+
  '<div class="actions"><a href="settings.html">Business Settings</a></div>';
  const logoUpload=box.querySelector('[data-logo-upload]');
  if(logoUpload)logoUpload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();});
@@ -242,6 +243,8 @@ function renderBrandingControls(){
  if(upload)upload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='banner';input.value='';input.click();});
  const remove=box.querySelector('[data-banner-remove]');
  if(remove)remove.addEventListener('click',()=>removeImage('banner'));
+ const bannerToggle=box.querySelector('[data-use-banner]');
+ if(bannerToggle)bannerToggle.addEventListener('change',()=>{useBanner=bannerToggle.checked;renderEditor();markDirty();setStatus(useBanner?'Banner will be used in the homepage hero title position.':'Text headline will be used in the homepage hero.','success');});
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -317,24 +320,26 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const heroUrl=bannerUrl||homeImageUrl;
- const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website banner')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
+ const heroUrl=useBanner&&bannerUrl?bannerUrl:homeImageUrl;
+ const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website hero')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
  const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
- templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
- const h=editText('headline',headline,'h1'),i=editText('intro',intro,'p');
+ templateCopy=cleanTemplateCopy(templateCopy);
+ const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
+ const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');
+ const titleMarkup=useBanner&&bannerUrl?'<div class="hero-banner-title"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':h;
  const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
  const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
  switch(currentTemplate){
- case 'editorial': return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+img1+img2+'</div></section>';
- case 'classic': return '<section class="tpl-hero classic-hero"><div class="classic-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+img1+'</div></section>';
- case 'grid': return '<section class="tpl-hero grid-hero"><div><div class="tpl-code">'+kicker+'</div>'+h+i+'<div class="grid-cta-row">'+a1+a2+'</div></div><div class="grid-image">'+img1+'</div></section>';
- case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
- case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts banner-image-slot">'+img1+'</div></section>';
- case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
- case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel banner-image-slot">'+img1+'</div></section>';
- default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
+ case 'editorial': return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+img1+img2+'</div></section>';
+ case 'classic': return '<section class="tpl-hero classic-hero"><div class="classic-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+img1+'</div></section>';
+ case 'grid': return '<section class="tpl-hero grid-hero"><div class="grid-main"><div class="tpl-code">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="grid-cta-row">'+a1+a2+'</div></div><div class="grid-image">'+img1+'</div></section>';
+ case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
+ case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
+ case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
+ case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts banner-image-slot">'+img1+'</div></section>';
+ case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
+ case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel banner-image-slot">'+img1+'</div></section>';
+ default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
 function renderHome(){
@@ -444,7 +449,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -484,7 +489,7 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
- bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';

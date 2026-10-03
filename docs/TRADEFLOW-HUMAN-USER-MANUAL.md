@@ -1954,3 +1954,8 @@ The setup record is not by itself proof that a provider is technically connected
 Open **TradeFlow Assistant** from the subscriber dashboard when you need help with a TradeFlow workflow, page, setting or connected business process. Ask one clear question at a time and include the page or button name when possible. The Assistant uses approved TradeFlow knowledge and tenant-scoped context; it is not unrestricted database access.
 
 If the approved knowledge does not contain the answer, the Assistant must say so rather than inventing a feature or status. It must not ask for payment-provider passwords, secret API keys or bank logins. Customer questions that are handed to the business appear under **TradeFlow Assistant → Customer Questions**, where the subscriber can reply and close the conversation.
+
+
+## 2026-10-03 — Shipping service catalogue restored
+
+Shipping Settings now uses the researched shipping-service catalogue. Subscribers can search the catalogue, tick the services they use, open each provider's official website, and save the selected services. The current catalogue contains 26 services/providers: Royal Mail, Parcelforce Worldwide, Evri, InPost, DPD, DHL eCommerce UK, UPS, FedEx, Yodel, Parcel2Go, Packlink, Sendcloud, Shippo, Shiptheory, Scurri, Metapack, Linnworks, Shiply, CitySprint, Stuart, Palletforce, Tuffnells, DX, APC Overnight, Whistl and Amazon Shipping. Selected services appear in Buying for the manual shipping handoff. Shipping remains subscriber-paid directly with the selected provider; TradeFlow does not collect or pay the shipping charge.

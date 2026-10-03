@@ -169,3 +169,32 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .public-hero-banner{width:min(100%,920px);margin:0 auto 22px;overflow:hidden;border-radius:8px;background:var(--header-bg,#fff);border:1px solid rgba(20,30,40,.10)}.public-hero-banner img{display:block;width:100%;height:auto;max-height:120px;object-fit:contain;object-position:center}.public-hero-banner.banner-position-left{margin-left:0;margin-right:auto}.public-hero-banner.banner-position-right{margin-left:auto;margin-right:0}
 
 .public-page-banner{width:min(100%,920px);margin:0 auto 22px;overflow:hidden;border-radius:8px;background:var(--header-bg,#fff);border:1px solid rgba(20,30,40,.10)}.public-page-banner img{display:block;width:100%;height:auto;max-height:120px;object-fit:contain}.public-page-banner.banner-position-left{margin-left:0;margin-right:auto}.public-page-banner.banner-position-right{margin-left:auto;margin-right:0}
+
+/* Keep the published banner proportional to its uploaded artwork.
+   The wrapper follows the image instead of creating letterbox space. */
+.public-hero-banner,
+.public-page-banner{
+  width:fit-content;
+  max-width:min(100%,980px);
+  height:auto;
+  margin:0 auto 22px;
+  overflow:visible;
+  border-radius:0;
+  background:transparent;
+  border:0;
+}
+.public-hero-banner img,
+.public-page-banner img{
+  display:block;
+  width:auto;
+  max-width:100%;
+  height:auto;
+  max-height:none;
+  object-fit:initial;
+  object-position:center;
+  background:transparent;
+}
+.public-hero-banner.banner-position-left,
+.public-page-banner.banner-position-left{margin-left:0;margin-right:auto}
+.public-hero-banner.banner-position-right,
+.public-page-banner.banner-position-right{margin-left:auto;margin-right:0}

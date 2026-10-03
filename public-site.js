@@ -77,10 +77,9 @@ function renderPublicNav(site,catalogue){
  const headerLinks=Array.isArray(site.header?.links)?site.header.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
- const buying='<a class="public-buy-link" href="'+pageUrl('sell')+'">Sell to Us</a>';
- const normal=links.filter(slug=>slug!=='buying'&&slug!=='shop').map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
+ const normal=links.map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
- return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+buying+'<a class="public-sell-link" href="'+pageUrl('shop')+'">Visit Shop</a><a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
+ return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+'<a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
 }
 
 function heroImage(url,alt,cls){
@@ -142,9 +141,9 @@ function renderHero(site){
  case 'studio':return '<section class="tpl-hero studio-hero"><div class="studio-image">'+i1+'</div><div class="studio-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div></section>';
  case 'horizon':return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+i1+'</div></section>';
  case 'field':return '<section class="tpl-hero field-hero"><div class="field-image">'+i1+'</div><div class="field-overlay"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business':return '<section class="tpl-hero business-hero"><div class="business-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"></div></section>';
+ case 'business':return '<section class="tpl-hero business-hero"><div class="business-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts">'+i1+'</div></section>';
  case 'luxe':return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+i1+'</div></section>';
- case 'commerce':return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"></div></section>';
+ case 'commerce':return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel">'+i1+'</div></section>';
  case 'impact':return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+i1+'</div></section>';default:return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
  }
 }
@@ -194,9 +193,9 @@ function renderFooter(site){
  const pages=Array.isArray(site.pages)?site.pages:[];
  const links=Array.isArray(footer.links)?footer.links:['home','buying','shop','about','contact'];
  const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
- const out=links.filter(slug=>slug!=='buying'&&(slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false))).map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
+ const out=links.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false)).map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
- return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'<a href="'+pageUrl('sell')+'">Sell to Us</a><a href="'+pageUrl('shop')+'">What We Sell</a><a href="'+customerUrl()+'">'+accountLabel+'</a></nav><small>Powered by TradeFlow</small></footer>';
+ return '<footer class="public-footer"><div><strong>'+esc(name)+'</strong><p>'+esc(footer.text||'')+'</p></div><nav>'+out+'<a href="'+customerUrl()+'">'+accountLabel+'</a></nav><small>Powered by TradeFlow</small></footer>';
 }
 
 function renderBusinessExtras(site){

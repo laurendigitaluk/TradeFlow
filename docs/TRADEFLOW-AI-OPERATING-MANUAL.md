@@ -2297,3 +2297,12 @@ The platform owner can open the AI Operating Manual directly from the Owner Dash
 Periodic AI audits must verify that documentation does not claim a provider, credential, capability or database action that is not actually enabled in LIVE. Current provider-neutral operation remains authoritative until the platform owner explicitly enables a provider.
 
 Customer Assistant documentation is separate from internal AI operating documentation. Customer-facing help may explain what the assistant can do, but must not expose provider credentials, internal prompts, backend implementation or platform-owner controls.
+
+
+## 2026-10-03 Customer Assistant Handoff
+
+The provider-neutral Assistant gateway remains optional and owner-controlled. The customer Assistant first uses approved TradeFlow knowledge and customer-scoped read-only account context. When no approved answer is available, the customer can hand the question to the subscriber through the tenant-isolated Assistant messaging layer.
+
+This handoff does not require an external AI provider. Subscriber replies are ordinary dashboard messages stored in assistant_messages; the customer sees them through the Customer Assistant polling path.
+
+No automatic AI action, buying-price change, order change, or unrestricted database access is introduced by this connection.

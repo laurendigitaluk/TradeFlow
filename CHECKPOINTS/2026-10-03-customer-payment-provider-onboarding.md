@@ -150,3 +150,50 @@ Implementation commits:
 - 761496055fa3fbfff3a0c2c9088c611f9c6baa93 — bordered card styling and cache-buster.
 
 settings.js syntax validation passed after the change.
+
+## Shipping Settings restoration — 3 October 2026
+
+Browser review showed the dedicated Shipping Settings page had no selectable services. The underlying LIVE database tables and RPCs already existed, but shipping_service_catalog contained zero rows, so the UI correctly rendered an empty catalogue.
+
+Restored the researched manual shipping catalogue with 26 active entries:
+- Royal Mail
+- Parcelforce Worldwide
+- Evri
+- InPost
+- DPD
+- DHL eCommerce UK
+- UPS
+- FedEx
+- Yodel
+- Parcel2Go
+- Packlink
+- Sendcloud
+- Shippo
+- Shiptheory
+- Scurri
+- Metapack
+- Linnworks
+- Shiply
+- CitySprint
+- Stuart
+- Palletforce
+- Tuffnells
+- DX
+- APC Overnight
+- Whistl
+- Amazon Shipping
+
+The dedicated Shipping Settings page now also has a searchable catalogue and preserves unsaved selections while filtering. The existing subscriber_get_shipping_service_settings and subscriber_save_shipping_services RPCs remain the authoritative selection workflow. The Business Settings shipping card is a navigation shortcut to the dedicated Shipping Settings workspace, not a second shipping catalogue.
+
+LIVE shipping-settings.js fallback Supabase URL was corrected to the LIVE project URL and cache-busted.
+
+Relevant commits:
+- b58a3db8ab2266d9a1bd816a2482369a82d4a6ce — LIVE Supabase fallback fix.
+- 088eac7ae2b1b7174b7ccbbb1dc27115bc200bad — shipping settings cache refresh.
+- ee0a2ac4aa7675b7e9ff34109aaac0e2e186311c — searchable catalogue UI.
+- d19c4050db31bb44d3d9c59538226ed9649368a8 — search filtering.
+- 9fcc460562a933c4d9a875bca7c6d8f360d430ec — preserve unsaved selections while searching.
+- d59a16a78e2360198e44125336d35c0b20d5ec44 — shipping catalogue added to Assistant knowledge.
+- LIVE tradeflow-assistant redeployed as version 7.
+
+The catalogue population has been verified directly in LIVE. Browser verification of the subscriber's selectable list and save action remains required.

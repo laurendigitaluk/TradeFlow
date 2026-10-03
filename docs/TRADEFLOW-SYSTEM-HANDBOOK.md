@@ -1802,3 +1802,20 @@ Do not change the owner password or modify LIVE tenant data as a response to the
 The project is now moving into the real LIVE launch sequence: customer/subscriber chatbot completion followed by genuine LIVE subscriber, domain and customer acceptance. Manual shipping remains authoritative; Parcel2Go API and ResellerClub remain retired.
 
 Continuity checkpoint: `CHECKPOINTS/2026-10-03-live-owner-login-verified.md`, commit `36c18d2ad4a305d282c657f9f9a11d974132dad0`.
+
+
+## DOCUMENTATION GOVERNANCE — LIVE OPERATING RULE — 3 OCTOBER 2026
+
+TradeFlow documentation is part of the production record. The platform owner must be able to access the maintained manuals from the Owner Dashboard. The current Owner Dashboard provides direct links to the System Handbook, Human User Manual, Subscriber Manual, Backend Manual and AI Operating Manual.
+
+The maintained documentation set is:
+- System Handbook — architecture, environments, security boundaries, deployment rules and current system state.
+- Human User Manual — operational instructions for platform owners and people operating TradeFlow.
+- Subscriber Manual — subscriber-facing operation of the TradeFlow business workspace and website.
+- Backend User Manual — Supabase schema/RPCs, Edge Functions, security, storage and deployment/backend operation.
+- AI Operating Manual — AI provider controls, assistant boundaries, approved knowledge and AI continuity.
+- Customer Documentation — separate customer-facing guidance maintained for the subscriber's customers; it must not expose platform-owner or backend material.
+
+After every material LIVE change, update the relevant manual(s) and create or update a dated checkpoint. During periodic audits, compare the documentation against the production GitHub branch and LIVE Supabase state. Do not treat an old manual statement as current merely because it remains in the historical text; the latest dated continuity section is authoritative where an explicit override exists.
+
+The Subscriber Dashboard now provides a Customer Documentation entry. The subscriber is responsible for maintaining the customer-facing business guidance; platform-owner/backend documentation remains internal.

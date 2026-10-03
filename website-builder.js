@@ -317,7 +317,7 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const heroUrl=homeImageUrl;
+ const heroUrl=bannerUrl||homeImageUrl;
  const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website banner')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
  const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy); const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
@@ -331,9 +331,9 @@ function templateHero(){
  case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
  case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
  case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts"></div></section>';
+ case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts banner-image-slot">'+img1+'</div></section>';
  case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
- case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel"></div></section>';
+ case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel banner-image-slot">'+img1+'</div></section>';
  default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }

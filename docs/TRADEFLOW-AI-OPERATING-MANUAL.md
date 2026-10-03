@@ -2367,3 +2367,8 @@ For chatbot use, the Assistant should:
 - never claim a provider is connected or a payment is successful unless the actual integration/event has been verified.
 
 The `tradeflow-assistant` Edge Function was redeployed with the updated approved knowledge after this change. AI provider operation remains provider-neutral; adding payment-provider instructions does not enable an external AI provider.
+
+
+## 2026-10-03 — Shipping catalogue knowledge
+
+The approved subscriber Assistant knowledge now includes the current Shipping Settings catalogue and the manual shipping workflow. The Assistant may explain how to select services and how the selected services appear in Buying, but must not claim a provider is technically integrated merely because it is listed or selected.

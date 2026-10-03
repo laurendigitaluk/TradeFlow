@@ -179,7 +179,7 @@ async function setupStripeBilling(){
  const status=$('stripe-setup-status'),button=$('setup-stripe');if(!status||!button)return;
  button.disabled=true;status.textContent='Setting up Stripe billing…';
  try{
-  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-subscription-setup',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({monthly_price:59.99})});
+  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-create-stripe-product',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:'{}'});
   const body=await response.json().catch(()=>null);
   if(!response.ok)throw Error(body?.error||'Stripe billing setup failed.');
   status.textContent='Stripe billing is ready. Product '+body.product_id+' · Monthly price '+body.price_id+'.';

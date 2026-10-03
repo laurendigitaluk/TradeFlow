@@ -39,17 +39,34 @@
 
 <section class="manual-card full"><h2>7. Changing the design later</h2><p>You can return to Website Builder at any time. Change the template, colours, background, typography, images or page wording, then save and publish again.</p><p><strong>Branding</strong> is kept together in Website Builder. The logo is used in the website header and the banner is used in the homepage hero. Reset design keeps your uploaded branding and content.</p></section>
 
-<section class="manual-card full"><h2>8. Quick troubleshooting</h2><ul><li><strong>A product is missing from What We Buy:</strong> check that it is active/selected in the Buying Catalogue.</li><li><strong>A product is missing from What We Sell:</strong> check Inventory, then check that a Selling listing exists and is published/available.</li><li><strong>The logo or banner is wrong:</strong> open Website Builder → <strong>Branding</strong>. The banner status and current logo are shown there together.</li><li><strong>My design change is not live:</strong> save the draft and then publish the website.</li><li><strong>I cannot find a product in the catalogue:</strong> use the Category, Branch and Manufacturer filters or search the Master Catalogue.</li></ul></section>
+<section class="manual-card full"><h2>7. Quick troubleshooting</h2><ul><li><strong>A product is missing from What We Buy:</strong> check that it is active/selected in the Buying Catalogue.</li><li><strong>A product is missing from What We Sell:</strong> check Inventory, then check that a Selling listing exists and is published/available.</li><li><strong>The logo or banner is wrong:</strong> open Website Builder → <strong>Branding</strong>. The banner status and current logo are shown there together.</li><li><strong>My design change is not live:</strong> save the draft and then publish the website.</li><li><strong>I cannot find a product in the catalogue:</strong> use the Category, Branch and Manufacturer filters or search the Master Catalogue.</li></ul></section>
+
+<section class="manual-card full"><h2>8. Account and subscription</h2>
+<p>Your TradeFlow business account and subscription are separate from your customer accounts.</p>
+<ul>
+<li>Use <strong>Account</strong> in the dashboard header to view the signed-in business account details.</li>
+<li>Your TradeFlow subscription is linked to the business account that owns the subscriber workspace.</li>
+<li>At the bottom of the dashboard's left-hand navigation there is a small <strong>Cancel subscription</strong> link.</li>
+<li>Cancellation requires you to confirm your TradeFlow password before the request is accepted.</li>
+<li>Cancellation is scheduled for the end of the current trial or billing period, so access is not removed immediately.</li>
+</ul>
+<div class="manual-note"><strong>Do not use customer account controls to manage the TradeFlow subscription.</strong> Customer accounts are for customers using the subscriber's website; the subscriber account controls the TradeFlow business workspace.</div>
+</section>
+
+<section class="manual-card full"><h2>9. Website Builder — practical workflow</h2>
+<p>Use this order when setting up or changing your website:</p>
+<div class="manual-step"><b>1</b><p><strong>Business details</strong><br>Check the business name and customer-facing contact information in Settings.</p></div>
+<div class="manual-step"><b>2</b><p><strong>Branding</strong><br>Open Website Builder → <strong>Branding</strong> and check the logo and website banner.</p></div>
+<div class="manual-step"><b>3</b><p><strong>Pages</strong><br>Choose the page you want to edit and change its editable text, images and presentation settings.</p></div>
+<div class="manual-step"><b>4</b><p><strong>Connected business content</strong><br>Maintain products in Buying Catalogue, Inventory and Selling rather than recreating product data in the Builder.</p></div>
+<div class="manual-step"><b>5</b><p><strong>Save and publish</strong><br>Save the draft, preview the result, then publish when the website is ready.</p></div>
+</section>
+
+<section class="manual-card full"><h2>10. Keeping customer-facing information separate</h2>
+<p>The subscriber Website Manual is for operating your TradeFlow website. It should contain practical instructions for the subscriber, not development history, test accounts, internal build dates, deployment notes or platform-owner work.</p>
+<p>Customer-facing information should be maintained separately in the <strong>Customer Documentation</strong> area. Do not place internal TradeFlow implementation details there.</p>
+</section>
 </div>
 </main>
 </body>
 </html>
-<!-- 2026-10-02 continuity update: chatbot and domain launch -->
-
-<section class="manual-card full"><h2>Current launch position — 2 October 2026</h2><p>TradeFlow is being completed in TEST before the live subscriber domain is connected. The customer-facing website is designed to identify the subscriber from the public domain, so customers do not need to see internal tenant IDs or TradeFlow development URLs.</p><p>In TEST the clean customer routes are <strong>/</strong> for the website, <strong>/login</strong> for Customer Login/Create Account and <strong>/basket</strong> for the customer basket. The real LIVE customer experience will use the subscriber's chosen public domain, such as <strong>camerashack.co.uk</strong>.</p><div class="manual-note"><strong>Subscriber/customer separation:</strong> the subscriber dashboard and customer portal are separate sessions. A subscriber being signed in must never redirect a customer's Customer Login to the subscriber dashboard.</div><p>The final pre-launch order is: finish the clean customer boundary, complete the TradeFlow Assistant, complete final TEST acceptance, promote the tested release to LIVE, connect the real domain and perform a clean LIVE acceptance test.</p></section>
-
-<section class="manual-card full"><h2>9. TradeFlow help assistant — planned pre-launch feature</h2><p>TradeFlow's help assistant is being developed as a staged feature. The first release is a <strong>read-only subscriber assistant</strong> that explains how to use TradeFlow and the Website Builder.</p><p>It is intended to answer questions such as how to add a logo, create a listing, change shipping services, buy a domain, understand a workflow status and publish the website.</p><div class="manual-note"><strong>The first chatbot phase does not have unrestricted database access.</strong> It uses approved TradeFlow manuals/documentation and only permitted information belonging to the signed-in subscriber's own business.</div><p>Later stages may add a customer read-only assistant, controlled messaging/enquiries and eventually controlled actions. Those later stages require separate permissions and testing.</p></section>
-<section class="manual-card full"><h2>10. Domains and launch</h2><p>TradeFlow is the SaaS/product name. Lauren Digital is the company identity. A subscriber may use their own public domain for their TradeFlow website.</p><p>The current <strong>camerashack.co.uk</strong> registration is a Porkbun sandbox test registration. It is useful for testing the TradeFlow domain-purchase workflow but it is not a genuine public DNS registration, so it is not proof of a live custom-domain connection.</p><p>Before public launch, a genuine registered domain will be used to verify the real DNS → Cloudflare → TradeFlow → published website path.</p></section>
-
-
-<section class="manual-card full"><h2>Current LIVE documentation position — 3 October 2026</h2><p>This manual is now the subscriber-facing documentation entry point. The subscriber dashboard provides access to the manual and a separate <strong>Customer Documentation</strong> area.</p><p>The subscriber manual explains how the business uses TradeFlow. The Customer Documentation area is for information that the subscriber wants its customers to see. Internal platform-owner, AI and backend manuals are not customer documentation.</p><div class="manual-note"><strong>Documentation maintenance:</strong> when TradeFlow changes a workflow or feature, the subscriber-facing instructions should be checked and updated. Customer-specific guidance should be maintained separately so it can describe the subscriber's own business policies, services and customer process without exposing TradeFlow internals.</div></section>

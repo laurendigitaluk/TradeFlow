@@ -1016,3 +1016,25 @@ A deep LIVE boundary audit found and repaired unconditional TEST Supabase refere
 ## 2026-10-03 LIVE Commercial Subscription Backend
 
 LIVE now has `plans.trial_days`, the `enhanced` TradeFlow plan at £59.99/month with 30 trial days, service-role-only `subscriber_finalize_signup` and `subscriber_sync_subscription`, and `public_get_available_plans()` exposes trial days. The legacy `subscriber_create_business` path is disabled so an unpaid subscriber cannot obtain a tenant. New Edge Functions are `platform-create-stripe-product` (owner-authenticated) and `subscriber-create-checkout-session` (subscriber-authenticated). `stripe-payment-webhook` is v2 and additionally handles subscriber checkout completion and subscription lifecycle events. Full LIVE Stripe browser verification remains outstanding.
+
+
+---
+
+## 2026-10-03 — LIVE Subscriber Subscription Cancellation Control
+
+TradeFlow LIVE now provides a small **Cancel subscription** control at the bottom of the subscriber dashboard navigation.
+
+Cancellation is deliberately protected by password re-authentication before the cancellation request is accepted. The subscriber's password is verified through Supabase Auth; the password is not stored by TradeFlow.
+
+The cancellation action schedules the connected Stripe subscription to cancel at the end of the current trial or billing period rather than creating a duplicate payment or immediately removing access.
+
+The authenticated `subscriber-cancel-subscription` Edge Function validates:
+- the signed-in subscriber identity;
+- active membership of the selected tenant;
+- the connected Stripe subscription;
+- the Stripe customer ID match;
+- the Stripe subscription metadata user ID when present.
+
+It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
+
+The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.

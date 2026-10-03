@@ -80,9 +80,18 @@ Updated:
 - `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`
 - `subscriber-website-manual.html`
 
+## Final implementation references
+
+- Settings UI commit: `9edc8838c2427c8e962383b0c9240c46faa958b7`
+- Settings provider logic commit: `adbc3ffd7d55d57169e36c01509e592487f0717e`
+- Assistant knowledge commit: `558c341a77c7319e27d3224036dfe3c2f4c04f9e`
+- Subscriber manual commit: `4c9a06dff762c990176bc99b229806cb290ad150`
+- Developer roadmap: `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-CUSTOMER-PAYMENTS.md`
+- LIVE `tradeflow-assistant` Edge Function version: 6
+
 ## Verification state
 
-Code/database structure verified.
+Code/database structure verified. `settings.js` syntax check passed.
 
 Not yet browser-verified:
 1. Subscriber opens Settings → Checkout & payments.

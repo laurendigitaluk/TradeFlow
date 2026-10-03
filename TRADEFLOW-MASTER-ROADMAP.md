@@ -814,3 +814,14 @@ Status: Implemented in GitHub + live DB verified; browser verification of the re
 A fresh customer valuation submission is live and correctly creates a submitted Buying Request/Item. The first substantive gap is catalogue binding: the public customer selling submission does not populate `buying_items.buying_product_id`, so `calculate_buying_item_valuation` correctly falls back to manual/product_not_selected. The public condition vocabulary also needs reconciliation with valuation rules. Later server-side workflow boundaries (offer acceptance, shipping, receipt, inspection, payment, acquisition and Inventory creation) have live evidence, but a fresh browser walk through every stage remains open. Subscriber localStorage session fallbacks remain a multi-tab isolation risk, and notification delivery remains queued/unverified.
 
 Audit checkpoint: `CHECKPOINTS/2026-09-28-end-to-end-customer-to-sales-audit.md`.
+
+
+## 2026-10-03 — Master Catalogue Restoration
+
+The TradeFlow Master Catalogue restoration was completed through the controlled TEST → Production path. TEST contains 32 categories, 177 branches, 73 manufacturers, 3,845 master products and 108 product identifiers, with 3,822 active/customer-visible products. Only TradeFlow-owned master catalogue data was promoted; no tenant/customer/test transaction data was copied.
+
+Production had two faults: an incomplete Supabase endpoint in buying-catalogue.js and empty catalogue_master_* tables. The version-controlled restoration migrations 20261003210000 through 20261003210009 restore the system-owned catalogue using natural-key joins. They were applied to TEST first and then LIVE. LIVE buying-catalogue.js was corrected to the full LIVE Supabase endpoint.
+
+Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
+
+Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.

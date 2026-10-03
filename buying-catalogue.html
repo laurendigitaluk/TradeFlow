@@ -49,6 +49,15 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 .pagination .btn{min-width:92px}
 .section-label{color:#527086}
 
+
+/* Clear catalogue selection actions */
+.bulk-toolbar .select-all{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #2f6f9f;border-radius:8px;background:#eef6ff;color:#245f91;cursor:pointer;box-shadow:0 3px 8px rgba(47,111,159,.10)}
+.bulk-toolbar .select-all:hover{background:#e2f0ff;border-color:#245f91}
+.bulk-toolbar #select-all-matching{padding:9px 13px;border:1px solid #2f6f9f;border-radius:8px;background:#2f6f9f;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(47,111,159,.14);transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.bulk-toolbar #select-all-matching:hover:not(:disabled){background:#285f88;transform:translateY(-2px);box-shadow:0 7px 16px rgba(47,111,159,.22)}
+.bulk-toolbar #bulk-add{padding:9px 13px;border:1px solid #c46a2b;border-radius:8px;background:linear-gradient(135deg,#c46a2b,#d47a37);color:#fff;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(196,106,43,.16);transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease}
+.bulk-toolbar #bulk-add:hover:not(:disabled){background:linear-gradient(135deg,#b85f24,#c96d2e);transform:translateY(-2px);box-shadow:0 7px 16px rgba(196,106,43,.22)}
+.bulk-toolbar #bulk-add:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 </style>
 </head>
 <body>

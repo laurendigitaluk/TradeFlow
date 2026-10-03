@@ -1011,3 +1011,8 @@ LIVE browser E2E verification is still a separate test step and must not be repr
 ## 2026-10-03 LIVE Production Boundary Audit
 
 A deep LIVE boundary audit found and repaired unconditional TEST Supabase references in production frontend assets and retired GitHub Pages customer portal URLs in four LIVE notification functions. The affected functions now derive customer portal links from each tenant's active primary domain. The LIVE `create-stripe-checkout-session` Edge Function was also versioned to v2 and no longer contains a GitHub Pages fallback. Targeted LIVE Edge Functions and database routine definitions were re-audited for TEST Supabase, old GitHub Pages, TEST workers.dev, localhost and 127.0.0.1 references. See `CHECKPOINTS/2026-10-03-production-boundary-audit-and-live-url-repair.md`.
+
+
+## 2026-10-03 LIVE Commercial Subscription Backend
+
+LIVE now has `plans.trial_days`, the `enhanced` TradeFlow plan at £59.99/month with 30 trial days, service-role-only `subscriber_finalize_signup` and `subscriber_sync_subscription`, and `public_get_available_plans()` exposes trial days. The legacy `subscriber_create_business` path is disabled so an unpaid subscriber cannot obtain a tenant. New Edge Functions are `platform-create-stripe-product` (owner-authenticated) and `subscriber-create-checkout-session` (subscriber-authenticated). `stripe-payment-webhook` is v2 and additionally handles subscriber checkout completion and subscription lifecycle events. Full LIVE Stripe browser verification remains outstanding.

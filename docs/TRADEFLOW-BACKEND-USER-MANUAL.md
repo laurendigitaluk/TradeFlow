@@ -1060,3 +1060,8 @@ RLS already provides tenant-member reads and tenant-manage permission for writes
 The live customer retail checkout remains `supabase/functions/create-stripe-checkout-session/index.ts` and currently uses `tenant_payment_methods` for Stripe Checkout method selection. Do not change the provider onboarding records into a claim of technical integration without implementing the provider-specific checkout/webhook path and verifying it end to end.
 
 The `tradeflow-assistant` knowledge source now contains the six provider setup guides and subscriber chatbot operating rules. The Edge Function must be redeployed after knowledge changes.
+
+
+## 2026-10-03 — Shipping backend catalogue
+
+`public.shipping_service_catalog` is now populated with 26 active researched manual shipping services. `public.tenant_shipping_services` remains the tenant selection store. `subscriber_get_shipping_service_settings(p_tenant_id)` returns the active catalogue and selected services. `subscriber_save_shipping_services(p_tenant_id,p_services)` saves the subscriber's selected services. No provider is represented as technically API-connected merely by catalogue selection.

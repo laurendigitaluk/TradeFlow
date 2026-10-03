@@ -1,4 +1,4 @@
-const TRADEFLOW_PUBLIC_SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const TRADEFLOW_PUBLIC_SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const TRADEFLOW_PUBLIC_KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
 async function tradeflowAvailablePlans(){
  const r=await fetch(TRADEFLOW_PUBLIC_SUPABASE_URL+'/rest/v1/rpc/public_get_available_plans',{method:'POST',headers:{apikey:TRADEFLOW_PUBLIC_KEY,'Content-Type':'application/json'},body:'{}'});

@@ -960,3 +960,15 @@ Operational rule: verify the actual browser asset/version and network request be
 
 No Supabase schema or data change was made for this repair.
 \n\n## LIVE authentication audit — 3 October 2026\n\nVerified directly in LIVE Supabase: project \`gxsrajtqzdjvmceqcpgv\` is ACTIVE_HEALTHY; the platform owner auth user exists and is confirmed; one active \`public.platform_memberships\` row exists for that user; and the production branch contains the dedicated owner password recovery flow.\n\nRoot cause of the reported reset failure: Supabase Auth was constructing the recovery redirect from the project's default Site URL, which was still localhost. Supabase documentation confirms that Site URL is the default redirect when no valid \`redirectTo\` is supplied and that password-reset redirect URLs must be on the allowed Redirect URLs list.\n\nCode repair: \`platform-owner-dashboard.js\` now requests recovery with an explicit \`redirect_to=/owner-reset-password\`; \`platform-owner-password-reset.html\` consumes the recovery session, verifies active owner membership, and calls \`updateUser({password})\`; Worker routes the recovery path in both TEST and LIVE configurations. No database schema/data change was required for this repair.\n\nRemaining infrastructure action: configure the LIVE Supabase Auth Site URL and allow-list the exact owner recovery URL. Then perform one fresh end-to-end owner reset test.\n
+
+## LIVE RELEASE OPERATIONS UPDATE — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
+
+The Cloudflare Git integration was found to have the TradeFlow repository's Production branch set incorrectly to `main`. In the TradeFlow environment model, `main` is TEST and `production` is LIVE.
+
+The Cloudflare Production branch has been corrected to `production`. A documentation-only commit `37b2d2133cf1f2e6d719c114f8d1e1c8fac25f84` triggered a fresh production deployment.
+
+Browser verification then confirmed successful LIVE platform-owner authentication and dashboard loading. The dashboard reported 0 subscriber businesses and 0 active businesses, with no stale TEST/Camerashack businesses visible.
+
+Operational rule: Cloudflare's configured production branch must remain `production`. Before any future LIVE deployment diagnosis, check the Git branch configuration and the actual deployed version before changing Supabase Auth, owner credentials, memberships or tenant data.
+
+No LIVE database change was required for this branch correction or owner-login verification.

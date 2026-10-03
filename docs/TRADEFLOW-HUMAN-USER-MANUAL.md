@@ -1895,3 +1895,9 @@ Customers can use Customer Assistant for approved TradeFlow help and account-sta
 The subscriber can open the conversation, reply, and close it. The customer sees subscriber replies in the Customer Assistant; the customer page refreshes the conversation automatically while open. This is dashboard-based communication and does not depend on email delivery.
 
 The dashboard should be treated as the current source of truth for the conversation.
+
+
+
+## 2026-10-03 LIVE Site Boundary Update
+
+The LIVE site boundary has been repaired following an audit of links and navigation that could still lead to the former TEST site. Public plans, subscriber dashboard and the affected customer-facing workflow connections now use LIVE configuration. Customer notification links are designed to use the subscriber business's active primary domain rather than a retired TradeFlow TEST URL. Browser-level LIVE testing is still required after deployment propagation.

@@ -130,3 +130,13 @@ Implementation commits:
 - `65fa5c9be511a6b12bbd0dcce8e518587d3bb8d6` — UI polish and removal of duplicate Stripe section.
 
 `settings.js` syntax check passed. Browser verification of the refreshed deployed page remains required.
+
+## UI refinement — provider dropdowns
+
+After browser review, the six payment providers were changed from large side-by-side blocks to compact expandable dropdowns. Each provider row shows its name, description, status and expand control. Setup instructions, provider links, setup fields and Stripe payment-method controls are revealed only when that provider is opened. Stripe remains a single provider and its checkout options remain inside the Stripe dropdown.
+
+Implementation commits:
+- 8ef1fa78ab572e2703054c6974d856f256cde952 — provider dropdown rendering.
+- 60d56e23278d9f54fc8cf1c2c7fad14e41c57c3a — dropdown styling and cache-buster update.
+
+settings.js had previously passed syntax validation; the dropdown change preserves the same data/save functions. Browser verification of the refreshed deployed page remains required.

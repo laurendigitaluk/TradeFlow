@@ -1854,3 +1854,19 @@ A current cache-boundary repair was committed to the production Worker so `platf
 
 Next user acceptance step after deployment: open the LIVE Owner Dashboard in a clean browser session, sign in with the LIVE platform-owner account, confirm the dashboard loads LIVE data, then continue with the real LIVE subscriber/customer launch. Do not treat old TEST business names displayed by a stale page as LIVE businesses.
 \n\n## Owner password recovery — LIVE\n\nIf the platform owner cannot sign in, use **Forgot your password?** on the LIVE Owner Dashboard. Enter the owner email and request a new reset email. The reset link now returns to the dedicated owner password page and verifies that the account still has an active TradeFlow platform-owner membership before allowing the password to change.\n\nThe first LIVE recovery test must be performed with a newly generated reset email after the LIVE Supabase Auth Site URL and Redirect URL configuration has been corrected. The old localhost/expired link must not be used.\n
+
+## LIVE LAUNCH CONTINUITY — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
+
+The LIVE platform owner login has now been successfully verified in a fresh browser session.
+
+Cloudflare Workers & Pages is connected to `laurendigitaluk/TradeFlow` and its Production branch is now correctly set to `production`. The previous `main` setting was the reason the Production Worker was serving the TEST branch.
+
+After the branch correction and a fresh production deployment, the Owner Dashboard loaded with the LIVE owner account and showed:
+
+- Subscriber businesses: **0**
+- Active businesses: **0**
+- No old TEST/Camerashack businesses.
+
+Do not change the owner password because of the former TEST-data display. The deployment boundary has been corrected and the LIVE dashboard is now browser-verified.
+
+Next operating stage: continue the real LIVE launch with the customer/subscriber chatbot and then the genuine subscriber/domain/customer acceptance flow. TEST/Camerashack is no longer the target for polishing the final launch path.

@@ -58,7 +58,10 @@ async function savePaymentProvider(code){
  const complete=form.querySelector('.pp-complete').checked;
  try{
   if(primary){
-   const others=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&provider=neq.'+encodeURIComponent(code),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({metadata:{primary:false}})});
+   const others=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&provider=neq.'+encodeURIComponent(code)+'&select=id,metadata');
+   for(const other of (Array.isArray(others)?others:[])){
+    await api('/rest/v1/payment_provider_connections?id=eq.'+encodeURIComponent(other.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({metadata:{...(other.metadata||{}),primary:false}})});
+   }
   }
   const metadata={account_email:accountEmail||null,payment_link:paymentLink||null,business_postcode:postcode||null,primary,setup_complete:complete};
   const existing=providerRow(code);

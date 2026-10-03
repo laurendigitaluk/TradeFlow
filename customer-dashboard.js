@@ -1,5 +1,5 @@
-const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://gxsrajtqzdjvmceqcpgv';
+const KEY=window.TRADEFLOW_CONFIG?.supabasePublishableKey||'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
 let key=KEY,session=null,tenantId=new URLSearchParams(location.search).get('tenant_id')||window.TRADEFLOW_CUSTOMER_TENANT_ID||'',profile=null;
 let SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
 const LEGACY_SESSION_STORAGE='tradeflow_customer_session';

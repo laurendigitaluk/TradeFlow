@@ -1870,3 +1870,19 @@ After the branch correction and a fresh production deployment, the Owner Dashboa
 Do not change the owner password because of the former TEST-data display. The deployment boundary has been corrected and the LIVE dashboard is now browser-verified.
 
 Next operating stage: continue the real LIVE launch with the customer/subscriber chatbot and then the genuine subscriber/domain/customer acceptance flow. TEST/Camerashack is no longer the target for polishing the final launch path.
+
+
+## DOCUMENTATION ACCESS AND MAINTENANCE — 3 OCTOBER 2026
+
+The LIVE Owner Dashboard now provides direct access to all maintained manuals:
+- System Handbook
+- Human User Manual
+- Subscriber Manual
+- Backend User Manual
+- AI Operating Manual
+
+The Owner Dashboard is the starting point for platform administration and documentation review. The links are intentionally visible to the platform owner so the owner does not need to know repository paths to find the current operating record.
+
+A separate Customer Documentation area is available to the subscriber workspace. Subscriber-facing customer guidance should be written for customers only; internal owner, AI and backend information must not be exposed there.
+
+Documentation is reviewed after material changes and periodically thereafter. When a feature, security boundary, database structure, deployment rule, assistant behaviour or workflow changes, update the relevant manual before treating the change as complete. A dated checkpoint should record material LIVE changes and distinguish implementation from browser/LIVE verification.

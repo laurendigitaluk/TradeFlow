@@ -1819,3 +1819,18 @@ The maintained documentation set is:
 After every material LIVE change, update the relevant manual(s) and create or update a dated checkpoint. During periodic audits, compare the documentation against the production GitHub branch and LIVE Supabase state. Do not treat an old manual statement as current merely because it remains in the historical text; the latest dated continuity section is authoritative where an explicit override exists.
 
 The Subscriber Dashboard now provides a Customer Documentation entry. The subscriber is responsible for maintaining the customer-facing business guidance; platform-owner/backend documentation remains internal.
+
+
+## 2026-10-03 Customer–Subscriber Assistant Connection Hardening
+
+The LIVE customer/subscriber Assistant messaging path is now hardened around dashboard-first communication.
+
+- Customer Assistant can send an unanswered question to the subscriber through the tenant-isolated messaging RPCs.
+- Subscriber TradeFlow Assistant exposes only open customer conversations that contain at least one message.
+- Opening the Customer Assistant no longer creates an empty subscriber-visible conversation.
+- Customer-side conversation refresh now polls for subscriber replies every 15 seconds.
+- The dashboard remains the source of truth; email notification is optional and is not required for this messaging path.
+- LIVE Supabase applied migration: 20261003004315_assistant_connection_hardening.
+- Production frontend commit: 551559d8a1b7f74384cf4ac8d847852f4ebe9448.
+
+Browser end-to-end customer-to-subscriber testing remains a launch verification step; this change is a code/database hardening release, not a claim of passed browser E2E.

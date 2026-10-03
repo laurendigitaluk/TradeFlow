@@ -1,5 +1,5 @@
 const TRADEFLOW_PLATFORM_HOST='';
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co',KEY_STORAGE='tradeflow_subscriber_publishable_key',$=id=>document.getElementById(id);let key=null,session=null,tenantId=null;
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv',KEY_STORAGE='tradeflow_subscriber_publishable_key',$=id=>document.getElementById(id);let key=null,session=null,tenantId=null;
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
 async function api(path,options={}){const h=new Headers(options.headers||{});h.set('apikey',key);if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);if(options.body)h.set('Content-Type','application/json');const r=await fetch(SUPABASE_URL+path,{...options,headers:h});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||t||'Request failed');return b}
 

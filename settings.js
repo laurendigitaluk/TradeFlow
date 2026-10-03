@@ -1,5 +1,5 @@
 const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
-let key,token,tenantId;
+let key,token,tenantId,businessPostcode='';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function msg(t,type=''){const e=$('message');e.textContent=t;e.className='small '+type}
@@ -18,6 +18,60 @@ function renderEmailStatus(s){
 
 
 
+const PAYMENT_PROVIDERS=[
+ {code:'stripe',name:'Stripe',description:'Online checkout, cards, wallets and payment links.',signup:'https://dashboard.stripe.com/register',guide:'https://stripe.com/gb/payments/payment-links',ready:['Business details and identity verification','Business bank account for payouts','Stripe account email','Stripe account ID if shown','Optional Stripe Payment Link for simple link-based payments'],steps:['Create your Stripe account.','Complete Stripe business verification.','Add your business bank account for payouts.','In Stripe Dashboard, confirm that payments are enabled.','Return to TradeFlow and record the non-secret account details below.']},
+ {code:'paypal',name:'PayPal Business',description:'PayPal, cards, Pay Later and online checkout.',signup:'https://www.paypal.com/uk/business/open-business-account',guide:'https://www.paypal.com/uk/webapps/mpp/business/accept-payments',ready:['Business name and address','Date of birth and home address','Business bank sort code and account number','PayPal Business account email','Optional PayPal payment link if you use one'],steps:['Open a PayPal Business account.','Confirm your business information.','Link your business bank account.','Complete any PayPal verification requested.','Return to TradeFlow and record the non-secret account details below.']},
+ {code:'sumup',name:'SumUp',description:'Simple online payments and reusable payment links.',signup:'https://www.sumup.com/en-gb/',guide:'https://www.sumup.com/en-gb/payment-links/',ready:['Email address and mobile number','Business type and category','Business address and postcode','Identity document and selfie','Website or social profile if requested','SumUp account email','Optional SumUp Payment Link'],steps:['Create your SumUp profile.','Complete identity and business verification.','Enter your business address, including postcode.','Open Payment Links in SumUp and create a payment link if you want link-based checkout.','Return to TradeFlow and record the non-secret details below.']},
+ {code:'square',name:'Square',description:'Online payments and simple Payment Links.',signup:'https://squareup.com/signup',guide:'https://squareup.com/help/gb/en/article/6692-get-started-with-square-checkout-links',ready:['Email and password','Business name, type and category','Estimated annual revenue','Business address and phone number','Identity verification','Square account email','Optional Square Payment Link'],steps:['Create your Square account and select United Kingdom.','Enter your business information.','Complete Square payment activation and identity verification.','Create a Payment Link in Square Dashboard if you want one.','Return to TradeFlow and record the non-secret details below.']},
+ {code:'mollie',name:'Mollie',description:'Online checkout, payment links and multiple payment methods.',signup:'https://my.mollie.com/dashboard/signup?lang=en',guide:'https://help.mollie.com/hc/en-gb/articles/210709969-How-do-I-create-an-account',ready:['Company details and stakeholder information','Live website URL','Business bank account','ID for legal representatives','Mollie account email','Optional Mollie payment link'],steps:['Create your Mollie account.','Open Start setup in the Mollie Dashboard.','Enter your business and website details.','Activate the payment methods you want to offer.','Finish verification and add your bank account for payouts.','Return to TradeFlow and record the non-secret details below.']},
+ {code:'revolut',name:'Revolut Business',description:'Business banking plus online payment acceptance and Payment Links.',signup:'https://www.revolut.com/en-GB/business/',guide:'https://www.revolut.com/business/business-resources-onboarding-guide/',ready:['Full name, date of birth and nationality','Residential address and postcode','Government ID','Business legal and registration details','Registered and operating business address','Business activity description and website','Revolut Business account email','Merchant account for Payment Links/online payments'],steps:['Open a Revolut Business account.','Complete identity and business verification.','Provide registered and operating address details.','Choose the Business plan and complete account setup.','Set up the Merchant account/payment acceptance features you intend to use.','Return to TradeFlow and record the non-secret details below.']}
+];
+let paymentProviderRows=[];
+function providerRow(code){return paymentProviderRows.find(x=>x.provider===code&&x.connection_type==='customer_payments')||null}
+function providerStatus(row){
+ if(!row)return 'Not set up';
+ const m=row.metadata||{};
+ if(m.setup_complete)return 'Setup recorded';
+ if(row.status==='active')return 'Connected';
+ if(row.status==='onboarding')return 'Setup in progress';
+ return row.status||'Not set up';
+}
+function renderPaymentProviders(){
+ const host=$('payment-providers');if(!host)return;
+ host.innerHTML='<div class="payment-provider-grid">'+PAYMENT_PROVIDERS.map(p=>{
+   const row=providerRow(p.code),m=row?.metadata||{},selected=m.primary===true;
+   const accountEmail=m.account_email||'',accountRef=row?.provider_account_id||'',paymentLink=m.payment_link||'',postcode=m.business_postcode||'';
+   return '<article class="payment-provider-card '+(selected?'is-selected':'')+'" data-provider-card="'+esc(p.code)+'"><div class="panel-subheading"><div><h3>'+esc(p.name)+'</h3><div class="payment-provider-meta">'+esc(p.description)+'</div></div><span class="status-pill">'+esc(providerStatus(row))+'</span></div><div class="payment-provider-guide"><strong>Have these ready</strong><ul>'+p.ready.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><strong>Setup steps</strong><ol>'+p.steps.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ol></div><div class="payment-provider-actions"><a href="'+p.signup+'" target="_blank" rel="noopener">Open '+esc(p.name)+' signup</a><a href="'+p.guide+'" target="_blank" rel="noopener">Open official instructions</a><button type="button" class="primary provider-edit" data-provider="'+esc(p.code)+'">'+(row?'Edit setup':'Enter setup details')+'</button></div><div class="payment-provider-form" data-provider-form="'+esc(p.code)+'" hidden><div class="small"><strong>TradeFlow setup details</strong><br>These fields do not contain secret API keys. Enter only the non-secret information you want TradeFlow to remember.</div><div class="form-grid"><label>Provider account email<input class="pp-account-email" type="email" value="'+esc(accountEmail)+'" autocomplete="email"></label><label>Provider account / merchant ID<input class="pp-account-ref" value="'+esc(accountRef)+'" maxlength="200"></label><label>Payment link (if you use one)<input class="pp-payment-link" type="url" value="'+esc(paymentLink)+'" placeholder="https://..."></label><label>Business postcode<input class="pp-postcode" value="'+esc(postcode||businessPostcode||'')+'" readonly></label></div><label class="payment-provider-check"><input class="pp-primary" type="checkbox" '+(selected?'checked':'')+'> Use this as my primary customer payment provider</label><label class="payment-provider-check"><input class="pp-complete" type="checkbox" '+(m.setup_complete?'checked':'')+'> I have completed the provider setup and verification</label><div class="payment-provider-actions"><button type="button" class="primary provider-save" data-provider="'+esc(p.code)+'">Save payment setup</button><button type="button" class="provider-close" data-provider="'+esc(p.code)+'">Close</button></div><div class="small payment-provider-muted" style="margin-top:8px">TradeFlow will not ask for your provider password, secret key or bank login. Those remain with the payment provider.</div></div></article>';
+ }).join('')+'</div>';
+ host.querySelectorAll('.provider-edit').forEach(b=>b.onclick=()=>{const f=host.querySelector('[data-provider-form="'+b.dataset.provider+'"]');if(f)f.hidden=!f.hidden});
+ host.querySelectorAll('.provider-close').forEach(b=>b.onclick=()=>{const f=host.querySelector('[data-provider-form="'+b.dataset.provider+'"]');if(f)f.hidden=true});
+ host.querySelectorAll('.provider-save').forEach(b=>b.onclick=()=>savePaymentProvider(b.dataset.provider));
+}
+async function savePaymentProvider(code){
+ const provider=PAYMENT_PROVIDERS.find(x=>x.code===code),card=document.querySelector('[data-provider-card="'+code+'"]');if(!provider||!card)return;
+ const form=card.querySelector('[data-provider-form="'+code+'"]');
+ const accountEmail=form.querySelector('.pp-account-email').value.trim().toLowerCase();
+ const accountRef=form.querySelector('.pp-account-ref').value.trim();
+ const paymentLink=form.querySelector('.pp-payment-link').value.trim();
+ const postcode=form.querySelector('.pp-postcode').value.trim();
+ const primary=form.querySelector('.pp-primary').checked;
+ const complete=form.querySelector('.pp-complete').checked;
+ try{
+  if(primary){
+   const others=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&provider=neq.'+encodeURIComponent(code),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({metadata:{primary:false}})});
+  }
+  const metadata={account_email:accountEmail||null,payment_link:paymentLink||null,business_postcode:postcode||null,primary,setup_complete:complete};
+  const existing=providerRow(code);
+  if(existing){
+   await api('/rest/v1/payment_provider_connections?id=eq.'+encodeURIComponent(existing.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({provider_account_id:accountRef||null,display_name:provider.name,country_code:'GB',default_currency:'GBP',status:'onboarding',metadata})});
+  }else{
+   await api('/rest/v1/payment_provider_connections?on_conflict=tenant_id,provider,connection_type',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({tenant_id:tenantId,provider:code,connection_type:'customer_payments',status:'onboarding',provider_account_id:accountRef||null,display_name:provider.name,country_code:'GB',default_currency:'GBP',livemode:true,metadata})});
+  }
+  paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');
+  renderPaymentProviders();msg(provider.name+' payment setup saved.','success');
+ }catch(e){msg(e.message||String(e),'error')}
+}
+
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
@@ -29,9 +83,9 @@ async function load(){
   setValue('business-name-input',tenants?.[0]?.name||a.tenants?.[tenantId]||'');
   
   setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
-  setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);setValue('description',p.description);
+  setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);businessPostcode=p.postcode||'';setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
-  const defaults=[
+  paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');\n  renderPaymentProviders();\n  const defaults=[
    {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
    {method_code:'link',display_name:'Link',enabled:true,sort_order:20},
    {method_code:'klarna',display_name:'Klarna',enabled:true,sort_order:30},

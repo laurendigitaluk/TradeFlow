@@ -2339,3 +2339,31 @@ The authenticated `subscriber-cancel-subscription` Edge Function validates:
 It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
 
 The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.
+
+
+## 2026-10-03 — Customer Payment Knowledge and Subscriber Assistant Operating Rules
+
+The approved TradeFlow Assistant knowledge now contains the subscriber workflow for customer payment provider setup and chatbot use.
+
+The six provider onboarding guides are:
+1. Stripe
+2. PayPal Business
+3. SumUp
+4. Square
+5. Mollie
+6. Revolut Business
+
+The Assistant should guide the subscriber through **Settings → Checkout & payments**, then to the relevant provider's official signup/instructions. It should explain what information the provider may request, including business details, identity verification, bank/payout details and business postcode where applicable. It should distinguish provider-side onboarding from TradeFlow technical integration.
+
+The Assistant must not request, store or repeat provider passwords, secret API keys, bank login credentials or other secrets. TradeFlow's provider setup fields are for non-secret details only.
+
+For chatbot use, the Assistant should:
+- answer from approved knowledge first;
+- use the signed-in tenant context only within the tenant security boundary;
+- give exact page/button paths where known;
+- avoid inventing capabilities, URLs, provider connection states or test results;
+- state when approved knowledge does not cover the question;
+- direct customer questions to the subscriber's Customer Questions area when appropriate;
+- never claim a provider is connected or a payment is successful unless the actual integration/event has been verified.
+
+The `tradeflow-assistant` Edge Function was redeployed with the updated approved knowledge after this change. AI provider operation remains provider-neutral; adding payment-provider instructions does not enable an external AI provider.

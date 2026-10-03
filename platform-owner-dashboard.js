@@ -172,6 +172,18 @@ function renderPlanAdmin(plans){
  '<div class="plan-editor-foot"><span class="plan-status" aria-live="polite"></span><button class="table-action" type="submit">Save plan</button></div></form>').join('');
  document.querySelectorAll('.plan-editor').forEach(form=>form.onsubmit=savePlan);
 }
+async function setupStripeBilling(){
+ const status=$('stripe-setup-status'),button=$('setup-stripe');if(!status||!button)return;
+ button.disabled=true;status.textContent='Setting up Stripe billing…';
+ try{
+  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-subscription-setup',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({monthly_price:59.99})});
+  const body=await response.json().catch(()=>null);
+  if(!response.ok)throw Error(body?.error||'Stripe billing setup failed.');
+  status.textContent='Stripe billing is ready. Product '+body.product_id+' · Monthly price '+body.price_id+'.';
+  await loadPlans();
+ }catch(e){status.textContent=e.message||String(e)}
+ finally{button.disabled=false}
+}
 async function loadPlans(){
  const error=$('plans-error'),host=$('plan-admin-list');if(!host)return;
  error.textContent='';host.innerHTML='<p class="muted">Loading plans…</p>';
@@ -190,7 +202,7 @@ function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
+$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;$('setup-stripe').onclick=setupStripeBilling;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};

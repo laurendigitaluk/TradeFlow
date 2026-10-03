@@ -53,10 +53,10 @@
 
     <section id="plans" class="panel">
       <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>Plans</h2></div><div><button id="setup-stripe" type="button">Set up Stripe billing</button> <button id="refresh-plans" type="button">Refresh plans</button></div></div>
-      <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices and Stripe Product/Price IDs here.</p>
+      <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
       <div id="plans-error" class="error" role="alert"></div><div id="stripe-setup-status" class="action-message" role="status"></div>
       <div id="plan-admin-list" class="plan-admin-list"><p class="muted">Loading plans…</p></div>
-      <p class="note">Stripe IDs identify the Product and recurring Prices already created in your Stripe account. This screen does not store a Stripe secret key.</p>
+      <p class="note">Stripe IDs identify the Product and recurring Prices used for subscriber billing. Use “Create Stripe billing” once to create the LIVE Product and monthly Price from the saved TradeFlow price. This screen does not store a Stripe secret key.</p>
     </section>
 
     <section id="email-settings" class="panel">

@@ -1782,3 +1782,23 @@ Verification rule: Cloudflare deployment existence is not browser verification. 
 
 Do not change LIVE credentials, delete tenants, recreate the owner, or alter Supabase auth solely because the old browser asset was observed. The three test-looking businesses previously displayed were stale dashboard content and are not LIVE tenant records.
 \n\n## LIVE owner authentication continuity — 3 October 2026\n\nThe LIVE platform owner account is present and has an active \`public.platform_memberships\` row. The password-reset incident was traced to the LIVE Supabase Auth redirect configuration still resolving password recovery to \`http://localhost:3000\`. The production application also had no dedicated platform-owner recovery page; the existing reset page was customer-specific.\n\nProduction code now includes a dedicated \`/owner-reset-password\` flow, an Owner Dashboard “Forgot your password?” action, an explicit Supabase \`redirect_to\` target, active-owner membership verification before password update, and a Worker route for the recovery page. This code is committed on \`production\`; deployment still needs live-browser verification.\n\nThe permanent LIVE Supabase Auth Site URL must be set to the eventual production site URL. Until the permanent customer domain is chosen, the Worker production origin can be used as the temporary LIVE application origin, with \`/owner-reset-password\` added to Supabase Auth Redirect URLs. Do not reuse the expired localhost reset link.\n
+
+## CURRENT OVERRIDE — 3 OCTOBER 2026 — LIVE OWNER LOGIN VERIFIED
+
+The Cloudflare production branch configuration has now been corrected and the LIVE Owner Dashboard has been browser-verified.
+
+- GitHub repository: `laurendigitaluk/TradeFlow`.
+- Cloudflare Production branch is now `production`; `main` remains the TEST branch.
+- Documentation-only trigger commit: `37b2d2133cf1f2e6d719c114f8d1e1c8fac25f84`.
+- Cloudflare subsequently created the new production deployment for that commit.
+- A fresh browser session successfully authenticated the LIVE platform owner and loaded the Owner Dashboard.
+- The LIVE dashboard showed **0 Subscriber businesses** and **0 Active businesses**.
+- The old TEST/Camerashack businesses were no longer displayed.
+
+This is now verified LIVE browser behaviour. The screenshot does not independently expose the network request, so the underlying Supabase Auth request is not claimed as separately network-verified.
+
+Do not change the owner password or modify LIVE tenant data as a response to the former TEST-data display. The former display was caused by the Cloudflare production branch being incorrectly set to `main`.
+
+The project is now moving into the real LIVE launch sequence: customer/subscriber chatbot completion followed by genuine LIVE subscriber, domain and customer acceptance. Manual shipping remains authoritative; Parcel2Go API and ResellerClub remain retired.
+
+Continuity checkpoint: `CHECKPOINTS/2026-10-03-live-owner-login-verified.md`, commit `36c18d2ad4a305d282c657f9f9a11d974132dad0`.

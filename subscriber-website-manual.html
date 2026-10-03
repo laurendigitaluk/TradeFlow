@@ -66,6 +66,40 @@
 <p>The subscriber Website Manual is for operating your TradeFlow website. It should contain practical instructions for the subscriber, not development history, test accounts, internal build dates, deployment notes or platform-owner work.</p>
 <p>Customer-facing information should be maintained separately in the <strong>Customer Documentation</strong> area. Do not place internal TradeFlow implementation details there.</p>
 </section>
+<section class="manual-card full"><h2>11. Customer payment setup</h2>
+<p>Before you start selling online, choose the payment provider you want customers to pay through. Open <strong>Settings → Checkout &amp; payments → Customer payment provider</strong>.</p>
+<p>TradeFlow currently provides six setup guides: <strong>Stripe, PayPal Business, SumUp, Square, Mollie and Revolut Business</strong>. You only need to set up the provider you intend to use first; you can record another provider later.</p>
+<ol>
+<li>Choose a provider.</li>
+<li>Use <strong>Open provider signup</strong> to create or sign in to the provider's business account.</li>
+<li>Use <strong>Open official instructions</strong> if you need help completing the provider's verification.</li>
+<li>Complete the provider's own business and identity checks and add the bank/payout information it requires.</li>
+<li>Return to TradeFlow and click <strong>Enter setup details</strong>.</li>
+<li>Enter the provider account email and, if the provider gives you one, the non-secret account or merchant ID.</li>
+<li>If you have created a payment link, you can record it in the Payment link box.</li>
+<li>Check the business postcode shown by TradeFlow and make sure it matches your Business Settings.</li>
+<li>Tick <strong>I have completed the provider setup and verification</strong> only after the provider says your account is ready.</li>
+<li>Choose <strong>Use this as my primary customer payment provider</strong> if this is the provider you intend to use.</li>
+<li>Click <strong>Save payment setup</strong>.</li>
+</ol>
+<div class="manual-note"><strong>Never enter your payment-provider password, secret API key, bank login or other secret credential into TradeFlow.</strong> Those remain with the payment provider.</div>
+<div class="manual-note"><strong>Important:</strong> completing this onboarding checklist does not by itself prove that the provider is technically connected to TradeFlow checkout. TradeFlow only treats a provider as technically connected after the relevant integration has been implemented and verified.</div>
+<p>Stripe is currently the live provider used by the TradeFlow customer retail Checkout. The other provider guides are onboarding preparation until their specific TradeFlow checkout integrations are completed.</p>
+</section>
+
+<section class="manual-card full"><h2>12. Using the TradeFlow Assistant</h2>
+<p>Use <strong>TradeFlow Assistant</strong> when you need help understanding a TradeFlow workflow, finding a setting or understanding how the business areas connect.</p>
+<ol>
+<li>Open <strong>TradeFlow Assistant</strong> from your subscriber dashboard.</li>
+<li>Ask one clear question at a time.</li>
+<li>Include the page name, button name or workflow stage if you know it. For example: <em>“Where do I set my customer payment provider?”</em></li>
+<li>Follow the answer using the exact page path provided.</li>
+<li>If the Assistant says that approved guidance does not cover something, do not assume that a feature exists. Ask the platform owner/support team or report the exact issue.</li>
+</ol>
+<p>The Assistant uses approved TradeFlow guidance and your signed-in business context. It is not unrestricted database access and should not be used to request or store payment-provider passwords, secret API keys or bank logins.</p>
+<h3>Customer Questions</h3>
+<p>If a customer sends a question to the business, open <strong>TradeFlow Assistant → Customer Questions</strong>. Select the conversation, read the customer's message, reply in the chat box, and close the conversation when it is finished. The customer can see your reply through Customer Assistant.</p>
+</section>
 </div>
 </main>
 </body>

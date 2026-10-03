@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow — Setting up your business</title><link rel="stylesheet" href="platform.css?v=16"><link rel="stylesheet" href="signup.css?v=2"></head><body><header class="topbar"><a class="brand" href="index.html">TradeFlow</a></header><main class="signup-wrap"><section class="signup-card"><div class="eyebrow">Subscription received</div><h1>Setting up your TradeFlow business</h1><p>Your one-month free trial has been started. TradeFlow is now waiting for the subscription confirmation before creating your private business workspace.</p><div id="status" class="success">Checking your TradeFlow account…</div><p class="small">This normally completes shortly. You do not need to pay again.</p><p><a class="button primary full" href="subscriber-login.html">Continue to sign in</a></p></section></main><script>
+const h=location.hostname,isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';
+const url=isTest?'https://twfbmjwwqzxdxvclxbun.supabase.co':'https://gxsrajtqzdjvmceqcpgv.supabase.co';
+const key=isTest?'sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9':'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+const status=document.getElementById('status');
+async function check(){try{const s=JSON.parse(localStorage.getItem('tradeflow_subscriber_session')||'null');if(!s?.access_token){status.textContent='Your subscription was received. Sign in to continue.';return}
+const r=await fetch(url+'/rest/v1/rpc/subscriber_get_my_memberships',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+s.access_token,'Content-Type':'application/json'}});
+const m=r.ok?await r.json():[];if(Array.isArray(m)&&m.length){localStorage.removeItem('tradeflow_pending_signup');location.href='subscriber-dashboard.html';return}
+status.textContent='Subscription received. TradeFlow is finishing your business setup…';setTimeout(check,2500)}catch(e){status.textContent='Subscription received. Sign in shortly to continue.'}}
+check();
+</script></body></html>

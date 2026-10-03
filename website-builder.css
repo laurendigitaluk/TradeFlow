@@ -353,8 +353,29 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 
 
 /* Hero banner-as-title option */
-.hero-banner-title{width:100%;margin:14px 0 22px;overflow:hidden;border-radius:10px;background:#e9eef2}
-.hero-banner-title img{display:block;width:100%;max-height:230px;object-fit:cover;object-position:center}
+/* A subscriber banner is a single title treatment, never a second hero image. */
+.hero-banner-title,
+.page-title-banner{width:min(100%,980px);margin:18px auto 24px;overflow:hidden;border-radius:8px;background:#e9eef2}
+.hero-banner-title img,
+.page-title-banner img{display:block;width:100%;height:auto;max-height:140px;object-fit:contain;object-position:center}
+.site-editor.template-classic .hero-banner-title,
+.site-editor.template-classic .page-title-banner{max-width:900px;margin-left:0}
+.site-editor.template-grid .hero-banner-title,
+.site-editor.template-grid .page-title-banner{max-width:760px;margin-left:0;border-radius:2px}
+.site-editor.template-studio .hero-banner-title,
+.site-editor.template-studio .page-title-banner{max-width:720px;margin-left:auto;margin-right:0}
+.site-editor.template-horizon .hero-banner-title,
+.site-editor.template-horizon .page-title-banner{max-width:1040px}
+.site-editor.template-field .hero-banner-title,
+.site-editor.template-field .page-title-banner{max-width:820px;margin-left:0;border-radius:0}
+.site-editor.template-business .hero-banner-title,
+.site-editor.template-business .page-title-banner{max-width:900px}
+.site-editor.template-luxe .hero-banner-title,
+.site-editor.template-luxe .page-title-banner{max-width:760px;margin-left:auto;margin-right:auto}
+.site-editor.template-commerce .hero-banner-title,
+.site-editor.template-commerce .page-title-banner{max-width:920px;margin-left:0}
+.site-editor.template-impact .hero-banner-title,
+.site-editor.template-impact .page-title-banner{max-width:780px;margin-left:0;border-radius:0}
 .branding-banner-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;padding:8px 9px;background:#f5f8fa;border:1px solid #dbe3e8;border-radius:7px;font-size:10px;font-weight:700}
 .branding-banner-toggle input{accent-color:#c46a2b}
 

@@ -1906,3 +1906,25 @@ The LIVE site boundary has been repaired following an audit of links and navigat
 ## 2026-10-03 LIVE Subscriber Pricing and Signup
 
 The launch price is **£59.99 per month with one month (30 days) free**. Get Started no longer creates an unpaid TradeFlow business. A prospective subscriber creates their login account and is then sent to secure Stripe subscription checkout. Stripe collects the payment method and starts the 30-day trial; the TradeFlow business workspace is connected after Stripe confirms the subscription. The platform owner uses Owner Dashboard → Plans to review price/trial and create LIVE Stripe billing. Subscriber accounts do not receive Owner Dashboard access.
+
+
+---
+
+## 2026-10-03 — LIVE Subscriber Subscription Cancellation Control
+
+TradeFlow LIVE now provides a small **Cancel subscription** control at the bottom of the subscriber dashboard navigation.
+
+Cancellation is deliberately protected by password re-authentication before the cancellation request is accepted. The subscriber's password is verified through Supabase Auth; the password is not stored by TradeFlow.
+
+The cancellation action schedules the connected Stripe subscription to cancel at the end of the current trial or billing period rather than creating a duplicate payment or immediately removing access.
+
+The authenticated `subscriber-cancel-subscription` Edge Function validates:
+- the signed-in subscriber identity;
+- active membership of the selected tenant;
+- the connected Stripe subscription;
+- the Stripe customer ID match;
+- the Stripe subscription metadata user ID when present.
+
+It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
+
+The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.

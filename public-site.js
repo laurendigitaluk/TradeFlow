@@ -88,6 +88,13 @@ function heroImage(url,alt,cls){
  return '<div class="public-demo-image '+(cls||'')+'" aria-hidden="true"></div>';
 }
 
+function publicPageBanner(site){
+ const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
+ const bannerUrl=String(branding.banner_url||window.__tradeflowPublicProfile?.banner_url||'');
+ const useBanner=site.homepage?.use_banner!==false;
+ const pos=['left','center','right'].includes(site.homepage?.banner_position)?site.homepage.banner_position:'center';
+ return useBanner&&bannerUrl?'<div class="public-page-banner banner-position-'+pos+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':'';
+}
 function renderHero(site){
  const home=site.homepage||{};
  const t=site.template||'editorial';
@@ -369,7 +376,7 @@ function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
  const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>'+esc(p.buying_action_heading||'Sell your items')+'</strong><span>'+esc(p.buying_action_text||'Choose a category to start your selling journey.')+'</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
@@ -383,7 +390,7 @@ function bindProductSearch(){const input=$('tradeflow-product-search');if(!input
 
 function renderContentPage(site,p){
  const image=p.image_url?'<img class="content-page-image" src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||p.title||'Page image')+'">':'';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function applyContent(content){

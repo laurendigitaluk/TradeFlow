@@ -1885,3 +1885,35 @@ Current retail customer checkout still calls `create-stripe-checkout-session`. T
 ## 2026-10-03 — Shipping catalogue restoration
 
 The LIVE `shipping_service_catalog` was empty even though the tenant selection table and RPCs already existed. The researched manual-service catalogue has been restored with 26 entries. `subscriber_get_shipping_service_settings` already returns active catalogue rows plus tenant selections, and `subscriber_save_shipping_services` persists subscriber choices. No new shipping architecture was introduced. The old Parcel2Go API workflow remains removed; Parcel2Go is a manual catalogue option/link.
+
+
+## 2026-10-03 — Master Catalogue Restoration
+
+The TradeFlow Master Catalogue restoration was completed through the controlled TEST → Production path.
+
+### Verified source state
+- TEST Supabase contains the TradeFlow-owned master catalogue: 32 categories, 177 branches, 73 manufacturers, 3,845 master products and 108 product identifiers.
+- 3,822 master products are currently active and customer-visible.
+- The catalogue is system-owned data only. No TEST customers, subscribers, orders, inventory, returns or transactions were copied.
+
+### Root causes found in Production
+1. Production buying-catalogue.js contained an incomplete Supabase endpoint instead of the full LIVE API URL.
+2. LIVE Supabase contained the catalogue schema and RPCs but the catalogue_master_* tables were empty.
+
+### Controlled repair
+A version-controlled master-catalogue data restoration was created from the verified TEST master catalogue using natural-key joins rather than tenant/test-record IDs. The restoration consists of 20261003210000_restore_master_catalogue_metadata.sql, 20261003210001 through 20261003210008 product snapshot migrations, and 20261003210009_restore_master_catalogue_identifiers.sql.
+
+These migrations were applied successfully to TEST first, where the catalogue counts remained correct, and were then applied to LIVE.
+
+The LIVE buying-catalogue.js endpoint was corrected to the full LIVE Supabase URL.
+
+### Architectural rule confirmed
+Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return.
+
+The Master Catalogue remains the controlled source for the initial product/category structure. When a subscriber activates a master product for Buying/Selling, TradeFlow creates the subscriber-facing category/branch/product structures; the same category structure can therefore carry the purchased product into Retail Selling without inventing a second unrelated category system.
+
+### Verification state
+Database restoration: Verified.
+Frontend LIVE browser verification of Master Catalogue filters/product loading: pending user/browser confirmation.
+
+Do not mark the browser step Verified Live until the LIVE Master Catalogue page successfully loads categories/manufacturers/products and a product can be selected without Failed to fetch.

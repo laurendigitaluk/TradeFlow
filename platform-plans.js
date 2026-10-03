@@ -8,7 +8,7 @@ async function tradeflowAvailablePlans(){
 function tradeflowPlanPrice(p){
  if(p.monthly_price===null||p.monthly_price===undefined)return '<strong>Price to be set</strong><span>per month</span>';
  const money=new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.monthly_price));
- const annual=p.annual_price===null||p.annual_price===undefined?'':'<small>'+new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.annual_price))+' per year</small>';return '<strong>'+money+'</strong><span>per month</span>'+annual;
+ const annual=p.annual_price===null||p.annual_price===undefined?'':'<small>'+new Intl.NumberFormat('en-GB',{style:'currency',currency:p.currency||'GBP'}).format(Number(p.annual_price))+' per year</small>';const trial=Number(p.trial_days||0)>0?'<small>'+Number(p.trial_days)+'-day free trial</small>':'';return '<strong>'+money+'</strong><span>per month</span>'+trial+annual;
 }
 function tradeflowPlanHighlights(code){
  return ['Complete buying and valuation workflow','Trade-ins, offers and customer portal','Inventory, selling, orders and fulfilment','Customer-facing website and Website Builder','TradeFlow starting catalogue'];

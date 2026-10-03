@@ -992,3 +992,16 @@ During periodic backend audits, compare this manual against the LIVE Supabase pr
 - retired integrations that must not be reintroduced.
 
 The Owner Dashboard provides direct access to this Backend Manual. The manual is internal platform documentation and is not customer-facing documentation.
+
+
+## 2026-10-03 Assistant Messaging Hardening
+
+The customer/subscriber Assistant messaging layer uses assistant_conversations and assistant_messages with security-definer RPC access. The hardening migration is 20261003004315_assistant_connection_hardening.
+
+customer_get_assistant_conversation is read-only with respect to conversation creation: it returns an existing open conversation or an empty result. A conversation is created when the customer actually sends a message through customer_send_assistant_message.
+
+subscriber_get_assistant_conversations returns only open conversations with at least one message, so closed conversations leave the active Customer Questions queue.
+
+The customer frontend polls the conversation every 15 seconds so subscriber replies appear without requiring a page reload. No email service is required for this path.
+
+LIVE browser E2E verification is still a separate test step and must not be represented as passed until performed.

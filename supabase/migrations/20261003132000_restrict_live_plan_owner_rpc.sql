@@ -1,0 +1,2 @@
+revoke execute on function public.platform_owner_update_plan(uuid,text,text,boolean,numeric,numeric,text,integer,text,text,text) from anon,public;
+grant execute on function public.platform_owner_update_plan(uuid,text,text,boolean,numeric,numeric,text,integer,text,text,text) to authenticated;

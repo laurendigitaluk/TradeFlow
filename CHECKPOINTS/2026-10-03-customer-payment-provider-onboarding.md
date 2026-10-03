@@ -115,3 +115,18 @@ The five other providers are currently documented/onboarding choices, not comple
 
 Implement and verify actual provider-specific customer checkout integrations one provider at a time, beginning with the existing Stripe architecture. Do not replace the working retail order/payment lifecycle or introduce a second checkout architecture.
 
+
+## UI refinement — 3 October 2026
+
+The subscriber payment settings UI was refined after browser review:
+- provider call-to-action buttons are now consistently coloured and aligned;
+- provider cards use a cleaner two-column card layout with actions aligned at the bottom;
+- the separate Stripe payment-methods panel was removed;
+- Stripe payment methods and the Apple Pay explanation are now rendered inside the Stripe provider card;
+- Stripe remains one provider choice rather than appearing twice.
+
+Implementation commits:
+- `c8fe7aa2407dfdd3eb1014d9d6871f64c1d73b2c` — Stripe options integrated into provider card.
+- `65fa5c9be511a6b12bbd0dcce8e518587d3bb8d6` — UI polish and removal of duplicate Stripe section.
+
+`settings.js` syntax check passed. Browser verification of the refreshed deployed page remains required.

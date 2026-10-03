@@ -1840,3 +1840,8 @@ Browser end-to-end customer-to-subscriber testing remains a launch verification 
 ## 2026-10-03 Production Boundary Audit
 
 The LIVE release has undergone a targeted URL/environment boundary audit. Unconditional TEST Supabase references in production frontend assets were removed. Public plans and subscriber dashboard now use the LIVE Supabase project. Customer notification portal URLs no longer point to the retired GitHub Pages TEST site; LIVE database functions derive the portal from the tenant's active primary domain. Stripe checkout no longer falls back to GitHub Pages. TEST configuration retained inside explicit environment-selection logic is intentional. See the dated checkpoint for the verified file and database scope.
+
+
+## 2026-10-03 LIVE Commercial Subscription Flow
+
+The launch commercial model is now **£59.99 GBP/month with a 30-day free trial**. LIVE `plans` contains the active website-visible `enhanced` plan. Subscriber onboarding is subscription-first: authenticated checkout creates a Stripe Billing subscription Checkout Session, and successful Stripe subscription webhook processing creates the subscriber tenant, membership and linked tenant subscription. The old direct unpaid business-creation path is disabled. Owner Dashboard now exposes monthly price, trial days and Stripe Product/Price IDs and can create the LIVE Stripe Product and recurring monthly Price. See checkpoint `CHECKPOINTS/2026-10-03-live-commercial-subscription-flow.md`.

@@ -2286,3 +2286,14 @@ LIVE AI remains deliberately configured as:
 The next AI/product stage is the real LIVE customer/subscriber chatbot and launch workflow. Personal Gemma remains separate from TradeFlow AI.
 
 Continuity checkpoint: `CHECKPOINTS/2026-10-03-live-owner-login-verified.md`.
+
+
+## AI DOCUMENTATION AND MEMORY CONTINUITY — 3 OCTOBER 2026
+
+The AI Operating Manual is part of the maintained TradeFlow memory/continuity record. After a material AI, assistant, provider, knowledge-source or security-boundary change, update this manual and record the change in a dated checkpoint.
+
+The platform owner can open the AI Operating Manual directly from the Owner Dashboard. The AI manual must remain aligned with the actual LIVE platform_ai_settings row, deployed tradeflow-assistant function and approved knowledge source.
+
+Periodic AI audits must verify that documentation does not claim a provider, credential, capability or database action that is not actually enabled in LIVE. Current provider-neutral operation remains authoritative until the platform owner explicitly enables a provider.
+
+Customer Assistant documentation is separate from internal AI operating documentation. Customer-facing help may explain what the assistant can do, but must not expose provider credentials, internal prompts, backend implementation or platform-owner controls.

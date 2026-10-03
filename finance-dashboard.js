@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv';
 const KEY_STORAGE='tradeflow_testlab_publishable_key'; const SESSION_STORAGE='tradeflow_testlab_session';
 const TENANTS={'test-business-a':{id:'f50fb889-c615-4e55-84d4-f0fd9f48b0b0',label:'Test Business A'},'test-business-b':{id:'373598f0-7d35-41be-8ed2-3cc7ee9709c7',label:'Test Business B'}};
 const key=localStorage.getItem(KEY_STORAGE),session=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');const tenantId=new URLSearchParams(location.search).get('tenant_id');const $=id=>document.getElementById(id);const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

@@ -1880,3 +1880,8 @@ Six onboarding providers are currently documented: Stripe, PayPal Business, SumU
 The existing `tenant_payment_methods` controls remain separate. They control Stripe Checkout payment-method options such as card, Link, Klarna and Amazon Pay when the TradeFlow Stripe customer checkout is used; they are not the same thing as choosing the company that receives subscriber customer payments.
 
 Current retail customer checkout still calls `create-stripe-checkout-session`. Therefore non-Stripe provider setup must not be represented as a completed technical checkout integration merely because the subscriber has filled in the onboarding form.
+
+
+## 2026-10-03 — Shipping catalogue restoration
+
+The LIVE `shipping_service_catalog` was empty even though the tenant selection table and RPCs already existed. The researched manual-service catalogue has been restored with 26 entries. `subscriber_get_shipping_service_settings` already returns active catalogue rows plus tenant selections, and `subscriber_save_shipping_services` persists subscriber choices. No new shipping architecture was introduced. The old Parcel2Go API workflow remains removed; Parcel2Go is a manual catalogue option/link.

@@ -578,7 +578,7 @@ function removeImage(target){
  else if(target==='home-buy')homeBuyImageUrl='';
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
- else if(target==='banner')bannerUrl='';
+ else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}

@@ -132,9 +132,9 @@ function renderHero(site){
  const bannerPosition=['left','center','right'].includes(site.homepage?.banner_position)?site.homepage.banner_position:'center';
  const heroUrl=home.image_url||'';
  const i1=heroUrl?heroImage(heroUrl,name+' website image'):'<div class="public-demo-image" aria-hidden="true"></div>';
- const titleMarkup=useBanner&&bannerUrl?'<div class="public-hero-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(name)+' website banner" loading="eager"></div>':''+titleMarkup+'';
- const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  const h=esc(headline),p=esc(intro);
+ const titleMarkup=useBanner&&bannerUrl?'<div class="public-hero-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(name)+' website banner" loading="eager"></div>':'<h1>'+h+'</h1>';
+ const i2=home.image_url2?heroImage(home.image_url2,name+' second image'):'<div class="public-demo-image" aria-hidden="true"></div>';
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
  case 'classic':return '<section class="tpl-hero classic-hero"><div class="classic-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+i1+'</div></section>';

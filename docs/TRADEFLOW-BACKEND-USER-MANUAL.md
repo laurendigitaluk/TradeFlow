@@ -1038,3 +1038,25 @@ The authenticated `subscriber-cancel-subscription` Edge Function validates:
 It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
 
 The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.
+
+
+## 2026-10-03 — Customer Payment Provider Setup Records
+
+The subscriber Settings page uses the existing `public.payment_provider_connections` table for customer-payment onboarding records.
+
+Relevant columns:
+- `tenant_id` — subscriber tenant security boundary.
+- `provider` — provider code such as `stripe`, `paypal`, `sumup`, `square`, `mollie` or `revolut`.
+- `connection_type` — `customer_payments` for these records.
+- `status` — the UI records onboarding setup as `onboarding`; this is not equivalent to an active API connection.
+- `provider_account_id` — optional non-secret provider/merchant account identifier.
+- `display_name` — provider display name.
+- `country_code` — currently `GB` for the UK onboarding flow.
+- `default_currency` — currently `GBP`.
+- `metadata` — stores non-secret setup information such as account email, optional payment link, business postcode, primary-provider flag and setup-complete flag.
+
+RLS already provides tenant-member reads and tenant-manage permission for writes on `payment_provider_connections`.
+
+The live customer retail checkout remains `supabase/functions/create-stripe-checkout-session/index.ts` and currently uses `tenant_payment_methods` for Stripe Checkout method selection. Do not change the provider onboarding records into a claim of technical integration without implementing the provider-specific checkout/webhook path and verifying it end to end.
+
+The `tradeflow-assistant` knowledge source now contains the six provider setup guides and subscriber chatbot operating rules. The Edge Function must be redeployed after knowledge changes.

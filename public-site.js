@@ -133,7 +133,7 @@ function renderHero(site){
  const heroUrl=home.image_url||'';
  const i1=publicLayoutBlock(home,'heroImage','image',heroUrl,'div',name+' website image');
  const h=esc(headline),p=esc(intro);
- const titleMarkup=useBanner&&bannerUrl?'<div class="public-hero-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(name)+' website banner" loading="eager"></div>':publicLayoutBlock(home,'heroTitle','text',headline,'h1',name+' title image');
+ const titleMarkup=useBanner&&bannerUrl?publicLayoutBlock(home,'heroBanner','image',bannerUrl,'div',name+' website banner'):publicLayoutBlock(home,'heroTitle','text',headline,'h1',name+' title image');
  const i2=publicLayoutBlock(home,'heroImage2','image',home.image_url2,'div',name+' second image');
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';

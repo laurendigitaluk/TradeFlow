@@ -972,3 +972,14 @@ LIVE verification now confirms the Adventure Outpost owner has the active `categ
 No tenant memberships, customers, orders or transaction records were copied. Only platform role/permission/entitlement configuration was restored.
 
 Next verification: refresh the LIVE Master Catalogue page and select a manufacturer. The expected result is that the catalogue request proceeds beyond the previous authorization error and the manufacturer/product results load.
+
+
+## 2026-10-03 — Master Catalogue Duplicate Branch Sweep
+
+A full sweep of the 32 Master Catalogue categories and 177 branches was performed in LIVE. Exact duplicate branch names and same-category near-duplicate branch names were reviewed rather than blindly merged. The clear semantic duplicate was `Drone Accessories → Drone Remote Controllers`, which contained one FIMI TX10A product, while `Drone Accessories → Drone Controllers` contained the other 39 controller products. The duplicate branch was consolidated into `Drone Controllers`, leaving 40 controller products in that branch.
+
+Other same-category overlaps found (such as Continuous Lighting / Continuous Lighting Kit, COB Video Light / COB Video Light Kit, Tripods / Video Tripods, Camera Sliders / Camera Sliders & Dollies, Underwater Drones / Water Drones) were deliberately left separate because they represent distinct product scopes rather than true duplicates.
+
+Cross-category repeated branch names such as Light Stands, Camera Supports, Tripod Heads and Flash Accessories were also left intact because their parent categories differ; they are not automatically safe to merge without changing taxonomy semantics.
+
+The merge was applied to TEST first and verified, then promoted to LIVE via `20261003220000_merge_duplicate_drone_controller_branch.sql`.

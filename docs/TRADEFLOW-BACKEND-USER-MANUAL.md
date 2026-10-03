@@ -972,3 +972,23 @@ Browser verification then confirmed successful LIVE platform-owner authenticatio
 Operational rule: Cloudflare's configured production branch must remain `production`. Before any future LIVE deployment diagnosis, check the Git branch configuration and the actual deployed version before changing Supabase Auth, owner credentials, memberships or tenant data.
 
 No LIVE database change was required for this branch correction or owner-login verification.
+
+
+## BACKEND DOCUMENTATION AUDIT RULE — 3 OCTOBER 2026
+
+The Backend User Manual is the maintained technical record of how the TradeFlow backend works. It must be kept current rather than treated as a one-time build document.
+
+At each material backend change, update this manual with the affected tables, columns, constraints, indexes, RLS/security-definer RPCs, Edge Functions, storage configuration, environment boundary, deployment dependency and verification result. Record whether the change was verified in LIVE or only in TEST.
+
+During periodic backend audits, compare this manual against the LIVE Supabase project and the production GitHub branch. Check at minimum:
+- current public tables and important relationships;
+- RLS and security-definer RPC boundaries;
+- important unique indexes and constraints;
+- deployed Edge Functions and their authentication requirements;
+- storage buckets and policies;
+- LIVE versus TEST environment boundaries;
+- production Worker configuration and routes;
+- current AI provider settings and assistant function configuration;
+- retired integrations that must not be reintroduced.
+
+The Owner Dashboard provides direct access to this Backend Manual. The manual is internal platform documentation and is not customer-facing documentation.

@@ -1975,3 +1975,14 @@ The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses 
 Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
 
 **Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
+
+
+## 2026-10-03 — Master Catalogue Restoration
+
+The TradeFlow Master Catalogue restoration was completed through the controlled TEST → Production path. TEST contains 32 categories, 177 branches, 73 manufacturers, 3,845 master products and 108 product identifiers, with 3,822 active/customer-visible products. Only TradeFlow-owned master catalogue data was promoted; no tenant/customer/test transaction data was copied.
+
+Production had two faults: an incomplete Supabase endpoint in buying-catalogue.js and empty catalogue_master_* tables. The version-controlled restoration migrations 20261003210000 through 20261003210009 restore the system-owned catalogue using natural-key joins. They were applied to TEST first and then LIVE. LIVE buying-catalogue.js was corrected to the full LIVE Supabase endpoint.
+
+Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
+
+Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.

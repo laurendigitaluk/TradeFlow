@@ -1867,3 +1867,16 @@ The authenticated `subscriber-cancel-subscription` Edge Function validates:
 It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
 
 The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.
+
+
+## 2026-10-03 — Customer Payment Provider Onboarding Boundary
+
+TradeFlow now exposes a subscriber-facing customer-payment onboarding workspace in Settings. It is deliberately separate from the subscriber's own TradeFlow subscription billing.
+
+The existing `payment_provider_connections` table is used for tenant-scoped customer-payment setup records. The subscriber may record non-secret account metadata and an optional payment link. The database connection record uses `connection_type='customer_payments'` and remains `onboarding` until an actual provider integration is implemented and verified.
+
+Six onboarding providers are currently documented: Stripe, PayPal Business, SumUp, Square, Mollie and Revolut Business. The UI links only to official provider signup/help pages. No provider secret is stored in the subscriber setup fields.
+
+The existing `tenant_payment_methods` controls remain separate. They control Stripe Checkout payment-method options such as card, Link, Klarna and Amazon Pay when the TradeFlow Stripe customer checkout is used; they are not the same thing as choosing the company that receives subscriber customer payments.
+
+Current retail customer checkout still calls `create-stripe-checkout-session`. Therefore non-Stripe provider setup must not be represented as a completed technical checkout integration merely because the subscriber has filled in the onboarding form.

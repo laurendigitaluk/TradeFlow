@@ -318,3 +318,28 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .branding-banner-actions .actions button{width:auto;min-width:0;display:inline-flex;align-items:center;justify-content:center;padding:7px 9px;font-size:10px;line-height:1.2;border:1px solid #ccd4da;background:#fff;border-radius:7px;cursor:pointer;box-sizing:border-box;}
 .branding-control .actions button.secondary,
 .branding-banner-actions .actions button.secondary{background:#f5f7f9;}
+
+
+/* Strong, unmistakable branding upload CTAs */
+.branding-control .actions button[data-logo-upload],
+.branding-banner-actions .actions button[data-banner-upload]{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  min-width:108px!important;height:34px!important;padding:0 14px!important;
+  border:0!important;border-radius:7px!important;
+  background:#2f6f9f!important;color:#fff!important;
+  font-size:11px!important;font-weight:800!important;line-height:1!important;
+  box-shadow:0 3px 8px rgba(47,111,159,.22)!important;
+  cursor:pointer!important;text-decoration:none!important;
+}
+.branding-control .actions button[data-logo-upload]:hover,
+.branding-banner-actions .actions button[data-banner-upload]:hover{
+  background:#285f88!important;transform:translateY(-1px);
+  box-shadow:0 5px 12px rgba(47,111,159,.28)!important;
+}
+.branding-control .actions button[data-logo-remove],
+.branding-banner-actions .actions button[data-banner-remove]{
+  display:inline-flex!important;align-items:center;justify-content:center;
+  min-width:108px!important;height:34px!important;padding:0 14px!important;
+  border:1px solid #c46a2b!important;border-radius:7px!important;
+  background:#fff!important;color:#a95722!important;font-size:11px!important;font-weight:800!important;cursor:pointer!important;
+}

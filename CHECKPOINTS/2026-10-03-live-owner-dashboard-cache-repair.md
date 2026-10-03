@@ -69,3 +69,26 @@ Following the user's explicit instruction, this checkpoint is accompanied by upd
 - `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
 
 These documents now record the current LIVE launch position, the cache-boundary evidence, the repair commit, and the verification rule. Future material changes must refresh the same documentation set plus a dated checkpoint so project continuity remains recoverable across chats.
+
+
+## Cloudflare production branch correction — 2026-10-03
+
+During LIVE owner-login verification, Cloudflare Workers & Pages → Settings → Builds was found configured with the GitHub repository `laurendigitaluk/TradeFlow` but the **Production branch was `main`**. In this project, `main` is TEST and `production` is LIVE.
+
+This explained why the Cloudflare Production Worker was serving TEST-connected Owner Dashboard behaviour even though the GitHub `production` branch source was already corrected to the LIVE Supabase project.
+
+The Cloudflare Production branch has now been changed to:
+
+`production`
+
+No application code, Supabase credentials, owner password, or database state was changed for this configuration repair.
+
+### Required verification
+
+Cloudflare must produce a new successful production deployment from the `production` branch before the LIVE owner login is retested. After deployment:
+
+1. Open a fresh Incognito session.
+2. Load the Owner Dashboard.
+3. Sign in with the LIVE owner credentials.
+4. Confirm the request reaches the LIVE Supabase Auth endpoint.
+5. Confirm the dashboard shows LIVE data rather than TEST data.

@@ -138,7 +138,8 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 @media(max-width:600px){.homepage-tile-grid{grid-template-columns:1fr}}
 /* Keep uploaded images inside their designed frames */
 .image-slot .visual-image,.hero-collage,.hero-collage>img,.tpl-hero img,.template-section img{overflow:hidden}
-.image-slot .visual-image img{width:100%;height:100%;object-fit:cover;display:block}
+.image-slot .visual-image{width:max-content;max-width:100%;background:transparent}
+.image-slot .visual-image img{display:block;width:auto;max-width:100%;height:auto;max-height:520px;object-fit:contain;background:transparent;border:0}
 
 /* Ten fresh template designs */
 .template-editorial .template-header{background:#fff}.editorial-hero{grid-template-columns:1fr 1fr;background:#fff;min-height:560px}.editorial-copy{padding-right:5%}.editorial-images{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:end}.editorial-images img,.editorial-images .demo-image{width:100%;height:470px;object-fit:contain;background:#edf1f4;border-radius:18px}.editorial-images img:last-child,.editorial-images .demo-image:last-child{height:300px}
@@ -355,9 +356,9 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 /* Hero banner-as-title option */
 /* A subscriber banner is a single title treatment, never a second hero image. */
 .hero-banner-title,
-.page-title-banner{width:min(100%,980px);margin:18px auto 24px;overflow:hidden;border-radius:8px;background:#e9eef2}
+.page-title-banner{display:block;width:max-content;max-width:100%;margin:18px auto 24px;overflow:visible;border-radius:0;background:transparent}
 .hero-banner-title img,
-.page-title-banner img{display:block;width:100%;height:auto;max-height:140px;object-fit:contain;object-position:center}
+.page-title-banner img{display:block;width:auto;max-width:100%;height:auto;max-height:none;object-fit:contain;object-position:center;border-radius:0;background:transparent}
 .site-editor.template-classic .hero-banner-title,
 .site-editor.template-classic .page-title-banner{max-width:900px;margin-left:0}
 .site-editor.template-grid .hero-banner-title,

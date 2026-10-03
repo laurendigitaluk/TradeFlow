@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;

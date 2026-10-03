@@ -11,7 +11,7 @@
 .shipping-service-option .service-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
 .shipping-service-option .service-link{font-size:.9rem}
 .shipping-custom{border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:16px;background:#fafbfc}
-.shipping-summary{margin-top:16px}
+.shipping-summary{margin-top:16px}.shipping-service-tools{display:flex;align-items:end;gap:12px;margin-top:14px;flex-wrap:wrap}.shipping-service-tools label{display:block;font-weight:600;width:100%}.shipping-service-tools input{max-width:420px;width:100%;padding:9px 11px;border:1px solid #cfd8dd;border-radius:7px}.shipping-service-tools .small{margin-bottom:9px}
 @media(max-width:800px){.shipping-service-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -33,7 +33,7 @@
 <section class="panel">
 <div class="panel-heading"><div><div class="eyebrow">Preferred shipping services</div><h2>Choose the services you use</h2></div><span class="status-pill">Business-wide</span></div>
 <p class="small">Tick the services you want to appear in Buying. Their official website links are already provided. The list below is ready to use. Tick the services you want available when creating shipping for a purchase.</p>
-<div id="shipping-service-list">Loading shipping services…</div>
+<div class="shipping-service-tools"><label for="shipping-service-search">Search shipping services</label><input id="shipping-service-search" type="search" placeholder="Search by provider or service name"><span id="shipping-service-count" class="small"></span></div><div id="shipping-service-list">Loading shipping services…</div>
 <div class="actions" style="margin-top:16px"><button id="save-shipping-services" type="button">Save shipping services</button></div>
 <div id="shipping-save-status" class="small" aria-live="polite"></div>
 </section>
@@ -44,5 +44,5 @@
 <div class="notice"><strong>3. Upload the handoff</strong><div class="small">Return to TradeFlow, upload the label and QR code if provided, enter the tracking number and send the shipping instructions to the customer.</div></div>
 </section>
 </section></main>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="shipping-settings.js?v=7"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="shipping-settings.js?v=8"></script>
 </body></html>

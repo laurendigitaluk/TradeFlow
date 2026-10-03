@@ -88,7 +88,9 @@ async function load(){
   setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);businessPostcode=p.postcode||'';setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
-  paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');\n  renderPaymentProviders();\n  const defaults=[
+  paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');
+  renderPaymentProviders();
+  const defaults=[
    {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
    {method_code:'link',display_name:'Link',enabled:true,sort_order:20},
    {method_code:'klarna',display_name:'Klarna',enabled:true,sort_order:30},

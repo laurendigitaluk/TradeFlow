@@ -2,7 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TradeFlow Business Settings</title><link rel="stylesheet" href="subscriber-dashboard.css?v=8">
 <style>
 .shipping-search-row{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin:12px 0}.shipping-provider-card{border:1px solid #dfe4e8;border-radius:8px;padding:14px;margin-top:10px}.shipping-provider-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.shipping-provider-form{border:1px solid #dfe4e8;border-radius:8px;padding:16px;background:#fafbfc}.panel-subheading{display:flex;justify-content:space-between;gap:12px}.notice{margin-top:14px;padding:12px;border:1px solid #dfe4e8;border-radius:8px}.required{font-weight:600}@media(max-width:700px){.shipping-search-row{grid-template-columns:1fr}}
-</style>
+ .payment-provider-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}.payment-provider-card{border:1px solid #dfe4e8;border-radius:10px;padding:16px;background:#fff}.payment-provider-card.is-selected{border:2px solid #2d7a4d;background:#f7fbf8}.payment-provider-card h3{margin:0}.payment-provider-meta{font-size:13px;color:#65737d;margin:6px 0 12px}.payment-provider-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.payment-provider-actions a,.payment-provider-actions button{display:inline-block;padding:8px 11px;border-radius:6px;border:1px solid #cfd9df;background:#fff;text-decoration:none;cursor:pointer;font:inherit}.payment-provider-actions .primary{background:#2d7a4d;color:#fff;border-color:#2d7a4d}.payment-provider-form{margin-top:14px;padding:14px;border:1px solid #dfe4e8;border-radius:8px;background:#fafbfc}.payment-provider-form .form-grid{margin-top:10px}.payment-provider-check{display:flex;align-items:center;gap:8px;margin-top:12px}.payment-provider-guide{margin-top:12px;padding:12px;border-left:4px solid #6b8fb3;background:#f7fbff}.payment-provider-guide ol{margin:8px 0 0 20px}.payment-provider-guide li{margin:5px 0}.payment-provider-status{font-weight:700}.payment-provider-muted{color:#65737d;font-size:12px}@media(max-width:800px){.payment-provider-grid{grid-template-columns:1fr}} </style>
 </head>
 <body>
 <header class="topbar"><a class="brand brand-link" href="subscriber-dashboard.html">TradeFlow</a><div class="account"><strong id="business-name">Business Settings</strong><button id="sign-out" type="button">Sign out</button></div></header>
@@ -55,7 +55,13 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Shipping</div><h2>Shipping services</h2></div><span class="status-pill">Managed separately</span></div><p>Shipping provider connections are managed from the dedicated Shipping Settings workspace. Connect your couriers there once; connected services then become available when creating shipping labels in Buying.</p><div class="actions"><a href="shipping-settings.html">Open Shipping Settings</a></div></section>
 
-<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Stripe checkout payment methods</h2></div><span class="status-pill">Subscriber controlled</span></div>
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Customer payment provider</h2></div><span class="status-pill">Subscriber controlled</span></div>
+<p>Choose the payment provider you want customers to pay through. TradeFlow provides the setup instructions, official account links and a small checklist for each provider.</p>
+<div class="notice"><strong>Keep this simple.</strong><p class="small">You do not need to enter API secret keys into TradeFlow. First create and verify your provider account. Then record the non-secret account details or payment link TradeFlow asks for. Direct provider checkout connections are enabled separately as each provider integration is completed.</p></div>
+<div id="payment-providers">Loading payment providers…</div>
+</section>
+
+<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Stripe checkout options</div><h2>Stripe payment methods</h2></div><span class="status-pill">Used when Stripe is connected</span></div>
 <p>Choose which Stripe payment methods TradeFlow asks Stripe Checkout to offer to customers. Stripe still decides whether an enabled method is eligible for the customer, country, currency, device and transaction.</p>
 <div id="stripe-methods">Loading payment methods…</div>
 <div class="notice"><strong>Apple Pay</strong><p class="small">Apple Pay is a Stripe wallet rather than a separate Checkout API payment-method type. TradeFlow cannot independently switch Apple Pay on or off from this setting while card payments remain enabled. Its availability is controlled by Stripe and the customer's device/browser eligibility.</p></div>
@@ -64,5 +70,5 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=12"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=13"></script>
 </body></html>

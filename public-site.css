@@ -176,3 +176,6 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .public-layout-image{aspect-ratio:var(--lb-aspect,1.6);overflow:hidden;}
 .public-layout-image img{display:block;width:100%;height:100%;object-fit:cover;}
 .public-layout-text>*{margin:0;}
+
+.public-layout-image{overflow:hidden;}
+.public-layout-image img{width:100%;height:100%;object-fit:contain;display:block;}

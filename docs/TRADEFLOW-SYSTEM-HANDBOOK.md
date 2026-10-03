@@ -1834,3 +1834,9 @@ The LIVE customer/subscriber Assistant messaging path is now hardened around das
 - Production frontend commit: 551559d8a1b7f74384cf4ac8d847852f4ebe9448.
 
 Browser end-to-end customer-to-subscriber testing remains a launch verification step; this change is a code/database hardening release, not a claim of passed browser E2E.
+
+
+
+## 2026-10-03 Production Boundary Audit
+
+The LIVE release has undergone a targeted URL/environment boundary audit. Unconditional TEST Supabase references in production frontend assets were removed. Public plans and subscriber dashboard now use the LIVE Supabase project. Customer notification portal URLs no longer point to the retired GitHub Pages TEST site; LIVE database functions derive the portal from the tenant's active primary domain. Stripe checkout no longer falls back to GitHub Pages. TEST configuration retained inside explicit environment-selection logic is intentional. See the dated checkpoint for the verified file and database scope.

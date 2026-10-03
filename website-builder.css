@@ -380,6 +380,25 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .branding-banner-toggle{display:flex;align-items:center;gap:7px;margin-top:8px;padding:8px 9px;background:#f5f8fa;border:1px solid #dbe3e8;border-radius:7px;font-size:10px;font-weight:700}
 .branding-banner-toggle input{accent-color:#c46a2b}
 
+/* Uploaded image sizing: keep each asset proportional and let its frame follow the asset. */
+.site-editor .tpl-hero .editorial-images img,
+.site-editor .tpl-hero .classic-frame img,
+.site-editor .tpl-hero .grid-image img,
+.site-editor .tpl-hero .studio-image img,
+.site-editor .tpl-hero .horizon-image img,
+.site-editor .tpl-hero .field-image img,
+.site-editor .tpl-hero .business-facts img,
+.site-editor .tpl-hero .luxe-image img,
+.site-editor .tpl-hero .commerce-panel img,
+.site-editor .tpl-hero .impact-image img{
+  width:100%;
+  height:auto;
+  min-height:0;
+  max-height:520px;
+  object-fit:contain;
+  background:transparent;
+}
+
 /* Ten deliberately different hero compositions */
 .site-editor.template-editorial .editorial-hero{grid-template-columns:1fr;max-width:1180px;margin:auto;text-align:center;padding:90px 8%;}
 .site-editor.template-editorial .editorial-copy{padding:0;max-width:900px;margin:auto}

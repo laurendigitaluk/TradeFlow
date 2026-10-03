@@ -574,6 +574,7 @@ async function uploadImage(file,target){
 function removeImage(target){
  if(target==='home')homeImageUrl='';
  else if(target==='home2')homeImageUrl2='';
+ else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url='';}
  else if(target==='home-buy')homeBuyImageUrl='';
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';

@@ -318,11 +318,16 @@ function navMarkup(){
  const links=pages.filter(p=>p.enabled&&['about','contact','buying','shop'].includes(p.slug)).map(p=>'<button type="button" data-nav-page="'+esc(p.slug)+'">'+esc(p.slug==='buying'?'What We Buy':p.slug==='shop'?'What We Sell':p.title)+'</button>').join('');
  return '<nav class="template-nav"><div class="template-brand">'+logoEditor()+'</div><div class="template-nav-links"><button type="button" data-nav-page="home">Home</button>'+links+'<span class="managed-login">Customer Login</span></div></nav>';
 }
+function templateHeroImage(url,target,label,alt){
+ const text=label||'Add an image to this template area.';
+ if(url)return '<div class="template-image-slot"><div class="template-image-frame"><img src="'+esc(url)+'" alt="'+esc(alt||siteName||'Website image')+'"><div class="template-image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(target)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(target)+'">Remove</button></div></div></div>';
+ return '<div class="template-image-slot template-image-empty"><button type="button" data-image-action="add" data-image-target="'+esc(target)+'">Add image</button><span>'+esc(text)+'</span></div>';
+}
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
  const heroUrl=homeImageUrl;
- const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website hero')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
- const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
+ const img1=templateHeroImage(heroUrl,'home','Add the main image for this template.','Main website image');
+ const img2=templateHeroImage(homeImageUrl2,'home2','Add a secondary image for this template.','Secondary website image');
  templateCopy=cleanTemplateCopy(templateCopy);
  const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
  const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');

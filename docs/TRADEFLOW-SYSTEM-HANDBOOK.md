@@ -1845,3 +1845,25 @@ The LIVE release has undergone a targeted URL/environment boundary audit. Uncond
 ## 2026-10-03 LIVE Commercial Subscription Flow
 
 The launch commercial model is now **£59.99 GBP/month with a 30-day free trial**. LIVE `plans` contains the active website-visible `enhanced` plan. Subscriber onboarding is subscription-first: authenticated checkout creates a Stripe Billing subscription Checkout Session, and successful Stripe subscription webhook processing creates the subscriber tenant, membership and linked tenant subscription. The old direct unpaid business-creation path is disabled. Owner Dashboard now exposes monthly price, trial days and Stripe Product/Price IDs and can create the LIVE Stripe Product and recurring monthly Price. See checkpoint `CHECKPOINTS/2026-10-03-live-commercial-subscription-flow.md`.
+
+
+---
+
+## 2026-10-03 — LIVE Subscriber Subscription Cancellation Control
+
+TradeFlow LIVE now provides a small **Cancel subscription** control at the bottom of the subscriber dashboard navigation.
+
+Cancellation is deliberately protected by password re-authentication before the cancellation request is accepted. The subscriber's password is verified through Supabase Auth; the password is not stored by TradeFlow.
+
+The cancellation action schedules the connected Stripe subscription to cancel at the end of the current trial or billing period rather than creating a duplicate payment or immediately removing access.
+
+The authenticated `subscriber-cancel-subscription` Edge Function validates:
+- the signed-in subscriber identity;
+- active membership of the selected tenant;
+- the connected Stripe subscription;
+- the Stripe customer ID match;
+- the Stripe subscription metadata user ID when present.
+
+It then sets Stripe `cancel_at_period_end=true` and synchronises the local TradeFlow subscription record.
+
+The obsolete dashboard note stating that catalogue management will be added when Gemma is ready has been removed. Catalogue/product management remains available through the existing **What We Buy** and **Products & Categories** areas.

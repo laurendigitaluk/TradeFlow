@@ -1886,3 +1886,12 @@ The Owner Dashboard is the starting point for platform administration and docume
 A separate Customer Documentation area is available to the subscriber workspace. Subscriber-facing customer guidance should be written for customers only; internal owner, AI and backend information must not be exposed there.
 
 Documentation is reviewed after material changes and periodically thereafter. When a feature, security boundary, database structure, deployment rule, assistant behaviour or workflow changes, update the relevant manual before treating the change as complete. A dated checkpoint should record material LIVE changes and distinguish implementation from browser/LIVE verification.
+
+
+## Customer Assistant → Business Questions
+
+Customers can use Customer Assistant for approved TradeFlow help and account-status guidance. If the assistant cannot provide an approved answer, the customer can use Send this question to the business. The question then appears in the subscriber's TradeFlow Assistant → Customer Questions area.
+
+The subscriber can open the conversation, reply, and close it. The customer sees subscriber replies in the Customer Assistant; the customer page refreshes the conversation automatically while open. This is dashboard-based communication and does not depend on email delivery.
+
+The dashboard should be treated as the current source of truth for the conversation.

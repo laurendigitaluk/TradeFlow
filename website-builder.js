@@ -398,7 +398,7 @@ function renderEditor(){
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
  $('site-editor').style.setProperty('--accent',themeColors.accent);applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();bindLayoutInteractions(root);
+ bindEditor();bindLayoutInteractions($('site-editor'));
 }
 
 function bindLayoutInteractions(root){

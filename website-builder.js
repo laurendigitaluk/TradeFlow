@@ -320,7 +320,7 @@ function navMarkup(){
 }
 function templateHeroImage(url,target,label,alt){
  const text=label||'Add an image to this template area.';
- if(url)return '<div class="template-image-slot"><div class="template-image-frame"><img src="'+esc(url)+'" alt="'+esc(alt||siteName||'Website image')+'"><div class="template-image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(target)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(target)+'">Remove</button></div></div></div>';
+ if(url)return '<div class="template-image-slot template-image-filled"><div class="template-image-frame"><img src="'+esc(url)+'" alt="'+esc(alt||siteName||'Website image')+'"><div class="template-image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(target)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(target)+'">Remove</button></div></div></div>';
  return '<div class="template-image-slot template-image-empty"><button type="button" data-image-action="add" data-image-target="'+esc(target)+'">Add image</button><span>'+esc(text)+'</span></div>';
 }
 function templateHero(){

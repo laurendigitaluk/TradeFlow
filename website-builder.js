@@ -320,7 +320,7 @@ function navMarkup(){
 }
 function templateHero(){
  const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const heroUrl=useBanner&&bannerUrl?bannerUrl:homeImageUrl;
+ const heroUrl=homeImageUrl;
  const img1=heroUrl?'<img src="'+esc(heroUrl)+'" alt="'+esc(siteName||'Website hero')+'">':'<div class="demo-image" aria-label="Main hero image"></div>';
  const img2=homeImageUrl2?'<img src="'+esc(homeImageUrl2)+'" alt="'+esc(siteName||'Second image')+'">':'<div class="demo-image" aria-label="Secondary hero image"></div>';
  templateCopy=cleanTemplateCopy(templateCopy);
@@ -356,11 +356,17 @@ function renderHome(){
  return navMarkup()+ordered+tiles+footerMarkup();
 }
 
+function pageTitleMarkup(p,opts={}){
+ const title=opts.managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1');
+ const body=opts.noBody?'':editText('page-body',p.body||'','p');
+ const banner=(useBanner&&bannerUrl&&p.slug!=='customer-account')?'<div class="page-title-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
+ return banner+title+body;
+}
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
- if(isBuying)return navMarkup()+'<section class="full-page buying-page"><div class="page-title-block">'+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- if(isShop)return navMarkup()+'<section class="full-page shop-page"><div class="page-title-block shop-page-title">'+(bannerUrl?'<div class="builder-shop-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(siteName||'Business')+'">':'')+editText('page-title',p.title,'h1')+editText('page-body',p.body||'','p')+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- return navMarkup()+'<section class="full-page content-page"><div class="page-title-block">'+(managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1'))+(managed?'':editText('page-body',p.body||'','p'))+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
+ if(isBuying)return navMarkup()+'<section class="full-page buying-page template-page"><div class="page-title-block">'+pageTitleMarkup(p)+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ if(isShop)return navMarkup()+'<section class="full-page shop-page template-page"><div class="page-title-block shop-page-title">'+pageTitleMarkup(p)+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ return navMarkup()+'<section class="full-page content-page template-page"><div class="page-title-block">'+pageTitleMarkup(p,{managed})+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
 }
 function renderBuilderPageHelp(){
  const box=$('builder-page-help');if(!box)return;

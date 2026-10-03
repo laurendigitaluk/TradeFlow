@@ -118,7 +118,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   setText('modal-email',email);
   setText('modal-role',role);
   setText('modal-tenant',tenantId);
-  const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_business_workflow',{
+  const r=await fetch('https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/rpc/subscriber_get_business_workflow',{
     method:'POST',
     headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
     body:JSON.stringify({p_tenant_id:tenantId})
@@ -128,7 +128,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   rows=Array.isArray(rows)?rows:[];
   let acceptedOffers=[];
   try{
-   const ar=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/offers?select=buying_item_id,offer_mode,status,responded_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.accepted&order=responded_at.desc',{
+   const ar=await fetch('https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/offers?select=buying_item_id,offer_mode,status,responded_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=eq.accepted&order=responded_at.desc',{
     headers:{apikey:key,Authorization:'Bearer '+session.access_token}
    });
    const at=await ar.text();acceptedOffers=at?JSON.parse(at):[];
@@ -209,7 +209,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const a=await window.tradeflowSubscriberAuthReady;
   const key=a?.key,session=a?.session,tenantId=a?.tenantId;
   if(!key||!session?.access_token||!tenantId)return;
-  const r=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/rpc/subscriber_get_business_workflow_counts',{
+  const r=await fetch('https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/rpc/subscriber_get_business_workflow_counts',{
     method:'POST',
     headers:{apikey:key,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
     body:JSON.stringify({p_tenant_id:tenantId})
@@ -233,7 +233,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   let orderState=orders?'ACTION REQUIRED':'NO ACTION';
   if(orders){
     try{
-      const or=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/retail_orders?select=status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=not.in.(completed,cancelled,refunded)&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
+      const or=await fetch('https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/retail_orders?select=status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&status=not.in.(completed,cancelled,refunded)&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});
       const ot=await or.text();const activeOrders=ot?JSON.parse(ot):[];
       if(Array.isArray(activeOrders)){
         const paid=activeOrders.filter(x=>x.status==='paid').length;
@@ -248,7 +248,7 @@ window.addEventListener('DOMContentLoaded',async()=>{
   const orderFlowCount=Math.max(orders,fulfilment);
   const orderFlowState=fulfilment?'SHIPPING / DISPATCH REQUIRED':orders?'ORDER READY FOR FULFILMENT':'COMPLETE';
   set('orders',orderFlowCount,orderFlowCount?'green':'red',orderFlowState);
-  set('returns',returns,returns?'green':'red',returns?'ACTION REQUIRED':'COMPLETE');try{const historical=await fetch('https://twfbmjwwqzxdxvclxbun.supabase.co/rest/v1/returns?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const ht=await historical.text();const hr=ht?JSON.parse(ht):[];if(Array.isArray(hr)&&hr.length&&!returns){const stateEl=document.getElementById('flow-state-returns');if(stateEl)stateEl.textContent='HISTORY AVAILABLE';const card=document.getElementById('flow-returns');if(card){card.classList.remove('flow-red');card.classList.add('flow-blue')}}}catch{}
+  set('returns',returns,returns?'green':'red',returns?'ACTION REQUIRED':'COMPLETE');try{const historical=await fetch('https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/returns?select=id,status&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=100',{headers:{apikey:key,Authorization:'Bearer '+session.access_token}});const ht=await historical.text();const hr=ht?JSON.parse(ht):[];if(Array.isArray(hr)&&hr.length&&!returns){const stateEl=document.getElementById('flow-state-returns');if(stateEl)stateEl.textContent='HISTORY AVAILABLE';const card=document.getElementById('flow-returns');if(card){card.classList.remove('flow-red');card.classList.add('flow-blue')}}}catch{}
  }catch(e){console.warn('Workflow counts:',e)}
 });
 </script><script>

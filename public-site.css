@@ -222,3 +222,28 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .public-nav-dropdown-menu.open{display:flex;flex-direction:column}
 .public-editable-hero-element.public-eh-image{display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent}
 .public-editable-hero-element.public-eh-image img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;background:transparent}
+
+/* LIVE unified fully-editable customer site */
+body[data-template="editable"]{
+ background-color:var(--site-background-color,#f5f6f8);
+ background-image:var(--site-background-image,none);
+ background-size:var(--site-background-size,cover);
+ background-repeat:var(--site-background-repeat,no-repeat);
+}
+body[data-template="editable"] .public-editable-hero-canvas,
+body[data-template="editable"] .template-section,
+body[data-template="editable"] .home-tile-section,
+body[data-template="editable"] .homepage-tiles,
+body[data-template="editable"] .full-page,
+body[data-template="editable"] .template-page,
+body[data-template="editable"] .editor-features{
+ background:transparent!important;
+}
+body[data-template="editable"] .public-editable-hero-canvas{border:0}
+body[data-template="editable"] .public-editable-hero-button,
+body[data-template="editable"] .tpl-actions a,
+body[data-template="editable"] .grid-cta-row a,
+body[data-template="editable"] .commerce-actions a{
+ background:var(--button-bg,var(--accent,#c46a2b))!important;
+ color:var(--button-text,#fff)!important;
+}

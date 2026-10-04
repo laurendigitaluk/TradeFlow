@@ -284,3 +284,16 @@ body[data-template="editable"] .public-nav-dropdown-toggle{
 .editable-home-tile .tile-copy b{margin-top:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:flex-start!important;width:150px!important;height:38px!important;min-height:38px!important;flex:0 0 150px!important;padding:0 12px!important;box-sizing:border-box!important;border-radius:5px!important;background:var(--button-bg,var(--accent,#c46a2b))!important;color:var(--button-text,#fff)!important;font-family:inherit!important;font-size:14px!important;line-height:1!important;letter-spacing:0!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;}
 .public-editable-hero-element.public-eh-button{display:flex;align-items:center;justify-content:flex-start;}
 .public-editable-hero-button{display:inline-flex;align-items:center;justify-content:center;width:150px;height:42px;min-height:42px;padding:0 14px;box-sizing:border-box;font-family:inherit;font-size:14px;line-height:1;letter-spacing:0;}
+
+/* Final published Buying / Retail page card parity with the builder. */
+.public-page-tiles{display:grid;grid-template-columns:repeat(var(--tile-columns,3),minmax(0,1fr));gap:18px;max-width:1180px;margin:28px auto 64px;padding:0 7%}
+.public-page-tile{display:flex;flex-direction:column;height:100%;min-width:0;border:1px solid #dfe5e9;border-radius:14px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,40,.07)}
+.public-page-tile .page-tile-image{height:180px;background:#edf1f4;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.public-page-tile .page-tile-image img{width:100%;height:100%;object-fit:contain;display:block}
+.public-page-tile .page-tile-image span{font-size:9px;color:#87939c;text-transform:uppercase;letter-spacing:.1em}
+.public-page-tile .page-tile-copy{display:flex;flex-direction:column;flex:1;min-height:150px;padding:18px;box-sizing:border-box}
+.public-page-tile .page-tile-copy h3{min-height:24px;margin:0 0 7px;font-family:inherit!important;font-size:18px!important;line-height:1.2!important;letter-spacing:0!important;color:#17202a!important}
+.public-page-tile .page-tile-copy p{min-height:48px;margin:0 0 7px;font-family:inherit!important;font-size:14px!important;line-height:1.5!important;letter-spacing:0!important;color:#68747e!important}
+.public-page-tile .page-tile-copy b{margin-top:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:flex-start!important;width:150px!important;height:38px!important;min-height:38px!important;flex:0 0 150px!important;padding:0 12px!important;box-sizing:border-box!important;border-radius:5px!important;background:var(--button-bg,var(--accent,#c46a2b))!important;color:var(--button-text,#fff)!important;font-family:inherit!important;font-size:14px!important;line-height:1!important;letter-spacing:0!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:900px){.public-page-tiles{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:6%;padding-right:6%}}
+@media(max-width:600px){.public-page-tiles{grid-template-columns:1fr}}

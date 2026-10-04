@@ -51,7 +51,7 @@ function editableHeroLinkOptions(selected){
 }
 function editableHeroElementMarkup(el,editable=true){
  const b=normalizeEditableHeroElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font)+';--gh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--gh-color:'+esc(b.color)+';--gh-align:'+esc(b.align)+';--gh-valign:'+esc(b.vAlign)+';--gh-line:'+esc(b.lineHeight)+';--gh-letter:'+esc(b.letterSpacing)+'px;';
  let body='';
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)
@@ -508,7 +508,7 @@ function bindGlobalHeader(root){
    const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');
    if(el){
      const key=control.dataset.ghStyle;
-     const cssKey=key==='fontSize'?'--eh-size':key==='vAlign'?'--eh-valign':key==='lineHeight'?'--eh-line':key==='letterSpacing'?'--eh-letter':'--eh-'+key;
+     const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':'--gh-'+key;
      el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'?control.value+'px':control.value);
    }
  }));

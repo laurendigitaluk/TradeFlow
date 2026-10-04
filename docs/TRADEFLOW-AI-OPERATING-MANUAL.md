@@ -2447,3 +2447,10 @@ TEST/main and LIVE/production were updated for the same template engine and styl
 When modifying the Website Builder starter experience, treat the fresh-subscriber layout in `resetToFreshWebsite()` as the source of the starter structure. Preserve the approved positions of the text/image boxes and do not seed subscriber-specific branding or placeholder copy. Business logo/banner remain tenant branding data, not generic starter-template assets.
 
 Do not change the established **Edit → Save Draft → Preview → Publish → LIVE** lifecycle. An unsaved deletion is expected to return after a browser reload; verify persistence by Save Draft before diagnosing deletion as a storage or rendering fault.
+
+## Website Builder border/radius rule — 4 October 2026
+
+For editable homepage text and image elements, border styling and rounded corners are content properties, not editor-selection decoration. Preserve the separation between the user's chosen border and the editor's selection outline.
+
+Available controls are Border style (None/Solid/Dashed/Dotted/Double), Border width (1–4px), Border colour, and Round corners (Square/2px/4px/8px/12px/20px/Fully round). Store the values in the editable element content and preserve them through Save Draft, reload and Publish. Do not reintroduce a hard-coded border that overrides the user's Border = None choice.
+

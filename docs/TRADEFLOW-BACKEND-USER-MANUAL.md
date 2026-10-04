@@ -926,3 +926,10 @@ For customer audience requests, the function retrieves only that customer's tena
 Customer-to-subscriber escalation uses the existing assistant_conversations and assistant_messages tables plus the controlled RPCs. Direct table access remains protected by RLS and the messaging RPCs enforce tenant membership/customer ownership.
 
 The current TEST deployment is Edge Function version 13. No AI provider is enabled. Do not add provider credentials or broaden the customer context without a separate security review.
+
+
+## 2026-10-04 — Fully editable homepage canvas implementation
+
+TEST Website Builder now stores homepage composition in `site.homepage.hero_elements`. Each element is a tenant-scoped text or image object with position and size percentages; text also stores font, size, colour, weight, alignment, letter spacing and line height. Image elements support uploaded media, object fit, corner radius and optional logo/banner roles. The editor updates this array directly and the public renderer consumes the same array. Uploads use the existing `tradeflow-site-media` bucket and `media_assets` metadata path; no new database table or external provider is introduced.
+
+The old template renderer remains only as a backwards-compatible fallback when a legacy draft has no `hero_elements` data. New TEST drafts use the editable canvas.

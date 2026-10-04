@@ -418,6 +418,19 @@ function renderContentPage(site,p){
  return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
+const publicCategoryBackgrounds={
+ none:null,
+ instruments:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M28 42v72a16 16 0 1 0 8 14V56h28V42H28z"/><circle cx="36" cy="128" r="7"/><path d="M103 32c-9 7-12 19-8 30l14 38c4 11 16 17 27 13l9-3-7-19-9 3c-3 1-6-1-7-4l-12-32 17-6-6-17-18 6z"/></g></svg>',
+ phones:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><rect x="30" y="20" width="48" height="92" rx="7"/><rect x="101" y="57" width="48" height="92" rx="7"/><circle cx="54" cy="101" r="3"/><circle cx="125" cy="138" r="3"/></g></svg>',
+ drones:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M64 82h52l12 18-18 12H70L52 100zM64 84 39 59M116 84l25-25M70 108l-24 24M110 108l24 24"/><ellipse cx="33" cy="53" rx="18" ry="5"/><ellipse cx="147" cy="53" rx="18" ry="5"/><ellipse cx="41" cy="136" rx="18" ry="5"/><ellipse cx="139" cy="136" rx="18" ry="5"/></g></svg>',
+ cameras:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><rect x="25" y="56" width="130" height="76" rx="8"/><path d="M52 56l10-17h36l10 17"/><circle cx="90" cy="94" r="25"/><circle cx="90" cy="94" r="10"/></g></svg>',
+ detectors:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M73 31c-15 3-24 17-21 32l12 62M64 125l-8 28M83 124l7 28"/><rect x="50" y="26" width="28" height="9" rx="3"/><path d="M48 119h44c9 0 16 7 16 16v8H41v-8c0-9 7-16 16-16z"/></g></svg>'
+};
+function publicCategoryBackground(category,colour){
+ const svg=publicCategoryBackgrounds[category];
+ if(!svg)return 'none';
+ return 'url("data:image/svg+xml,'+encodeURIComponent(svg.replace(/currentColor/g,colour||'#ffffff'))+'")';
+}
 function applyContent(content){
  window.__tradeflowSiteContent=content;
  const site=Object.assign({},content?.site||{});if(window.__tradeflowPublicProfile?.business_name)site.name=window.__tradeflowPublicProfile.business_name;

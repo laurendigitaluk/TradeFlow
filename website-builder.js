@@ -990,25 +990,7 @@ function initBuilder(){
  });
  (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function openHeroImagePicker(target){
- const input=document.createElement('input');
- input.type='file';
- input.accept='image/png,image/jpeg,image/webp';
- input.style.position='fixed';
- input.style.left='-9999px';
- input.style.width='1px';
- input.style.height='1px';
- document.body.appendChild(input);
- input.addEventListener('change',function(){
-   const file=input.files?.[0];
-   if(file)uploadImage(file,target).catch(function(err){setStatus(err.message||String(err),'error');});
-   setTimeout(function(){input.remove();},1000);
- });
- input.addEventListener('cancel',function(){setTimeout(function(){input.remove();},100);});
- input.click();
-}
-
-function bindEditableHero(root){
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
  const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
@@ -1018,12 +1000,6 @@ function bindEditableHero(root){
   if(kind==='image')o={role:'image',x:55,y:16,width:38,height:34,aspect:1.45,image_url:''};
   if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:62,width:24,height:10,aspect:4};
   const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
- }));
- root.querySelectorAll('[data-image-action][data-image-target^="hero-element:"]').forEach(btn=>btn.addEventListener('click',function(e){
-  e.preventDefault();e.stopPropagation();
-  const target=btn.dataset.imageTarget;
-  selectedEditableHeroId=target.slice(12);
-  openHeroImagePicker(target);
  }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();
@@ -1186,9 +1162,6 @@ function bindEditor(){
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
-   // Homepage editable hero images have their own upload handler. Do not attach a second
-   // file-picker handler here or one click can open the picker twice / lose the target.
-   if(target&&target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  });});

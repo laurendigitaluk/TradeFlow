@@ -68,18 +68,20 @@ function money(value,currency){
 }
 
 function renderPublicNav(site,catalogue){
- const name=site.name||'Your business';
  const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
- const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||'');
+ const name=site.name||'Your business';
+ const logoUrl=branding.logo_url||window.__tradeflowPublicProfile?.logo_url||site.logo_url||'';
  const logo=logoUrl?'<img src="'+esc(logoUrl)+'" alt="'+esc(name)+'">':'<span>'+esc(name)+'</span>';
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const pages=Array.isArray(site.pages)?site.pages:[];
  const headerLinks=Array.isArray(site.header?.links)?site.header.links:['home','buying','shop','about','contact'];
- const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'What We Sell':(pages.find(p=>p.slug===slug)?.title||slug);
+ const titleFor=slug=>slug==='home'?'Home':slug==='buying'?'What We Buy':slug==='shop'?'Visit Our Retail Shop':(pages.find(p=>p.slug===slug)?.title||slug);
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
  const normal=links.map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
+ const quoteItems=cats.map(cat=>'<a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">'+esc(cat.name)+'</a>').join('');
+ const quoteMenu='<div class="public-nav-dropdown"><button type="button" class="public-nav-dropdown-toggle">Request a Quote</button><div class="public-nav-dropdown-menu"><a href="'+pageUrl('sell')+'">Start a quote</a>'+(quoteItems?quoteItems:'')+'</div></div>';
  const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
- return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+'<a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
+ return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+quoteMenu+'<a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
 }
 
 function heroImage(url,alt,cls){
@@ -100,11 +102,15 @@ function renderEditableHeroPublic(site){
  const raw=Array.isArray(home.editable_elements)?home.editable_elements:[];
  if(!raw.length)return '';
  const elements=raw.map(function(v){
-  const b=Object.assign({type:'text',role:'text',x:5,y:10,width:40,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},v||{});
-  b.type=b.type==='image'?'image':'text';
+  const b=Object.assign({type:'text',role:'text',x:5,y:10,width:40,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0',button_text:'Learn more',button_link_type:'internal',button_link:'home'},v||{});
+  b.type=['image','button'].includes(b.type)?b.type:'text';
   b.x=Math.max(0,Math.min(92,Number(b.x)||0));b.y=Math.max(0,Math.min(92,Number(b.y)||0));b.width=Math.max(8,Math.min(92,Number(b.width)||40));b.aspect=Math.max(.35,Math.min(8,Number(b.aspect)||1.5));
   const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font||'inherit')+';--eh-size:'+esc(b.fontSize==='auto'||!b.fontSize?'inherit':Number(b.fontSize)+'px')+';--eh-color:'+esc(/^#[0-9a-f]{6}$/i.test(String(b.color||''))?b.color:'#17202a')+';--eh-align:'+esc(['left','center','right'].includes(b.align)?b.align:'left')+';--eh-valign:'+esc(['top','center','bottom'].includes(b.vAlign)?b.vAlign:'center')+';--eh-line:'+esc(String(b.lineHeight||'1.2'))+';--eh-letter:'+esc(String(b.letterSpacing||'0'))+'px;';
   if(b.type==='image')return '<div class="public-editable-hero-element public-eh-image" style="'+style+'">'+(b.image_url?'<img src="'+esc(b.image_url)+'" alt="'+esc(b.role||'Website image')+'">':'')+'</div>';
+  if(b.type==='button'){
+   const href=b.button_link_type==='custom'?String(b.button_link||'#'):pageUrl(String(b.button_link||'home'));
+   return '<div class="public-editable-hero-element public-eh-button" style="'+style+'"><a class="public-editable-hero-button" href="'+esc(href)+'">'+esc(b.button_text||'Learn more')+'</a></div>';
+  }
   return '<div class="public-editable-hero-element public-eh-text" style="'+style+'">'+esc(b.text||'')+'</div>';
  }).join('');
  return '<section class="public-editable-hero"><div class="public-editable-hero-canvas">'+elements+'</div></section>';

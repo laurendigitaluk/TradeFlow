@@ -1985,3 +1985,7 @@ The Shared top section editor now uses the same border controls as the Top of pa
 ## Website Builder toolbar consolidation — 4 October 2026
 
 The Top of page editing toolbar is now rendered inside the Shared top section editor. This keeps the add-element and formatting controls together while the editable homepage top-page canvas remains below it. The existing element data model and draft/publish lifecycle are unchanged.
+
+
+## 2026-10-04 Website Builder Toolbar Parity
+The Shared top section and Top of page editor toolbars must use the same five primary add controls and the same light neutral visual treatment. The Shared top section canvas sits underneath its toolbar and displays an explicit Add banner box when no banner exists. The old black toolbar treatment and the inline `builder-menu-ad-space` placeholder must not be reintroduced. A deliberate gap separates the Shared top section canvas from the Top of page toolbar.

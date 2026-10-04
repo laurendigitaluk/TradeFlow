@@ -1098,7 +1098,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    box?.classList.add('selected');
    renderEditableHeroToolbarOnly(root);
   });
-  node.addEventListener('click',function(e){e.stopPropagation();selectedEditableHeroId=node.dataset.ehEdit;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.closest('.editable-hero-element')?.classList.add('selected');});
+  node.addEventListener('click',function(e){e.stopPropagation();selectedEditableHeroId=node.dataset.ehEdit;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.closest('.editable-hero-element')?.classList.add('selected');renderEditableHeroToolbarOnly(root);});
   node.addEventListener('input',function(){const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText; if(el.role==='headline')headline=el.text.trim(); markDirty();});
   node.addEventListener('paste',function(e){
    const text=(e.clipboardData||window.clipboardData)?.getData('text/plain');
@@ -1158,7 +1158,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   if(mover)mover.addEventListener('pointerdown',beginMove);
   node.addEventListener('pointerdown',function(e){
    if(e.button!==undefined&&e.button!==0)return;
-   if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,.editable-hero-image-tools'))return;
+   if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,.editable-hero-image-tools,[contenteditable="true"]'))return;
    beginMove(e);
   });
   const resize=node.querySelector('.editable-hero-resize');

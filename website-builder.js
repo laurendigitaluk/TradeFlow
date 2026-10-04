@@ -126,7 +126,7 @@ const categoryBackgrounds={
  cameras:{label:'Cameras',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><rect x="25" y="56" width="130" height="76" rx="8"/><path d="M52 56l10-17h36l10 17"/><circle cx="90" cy="94" r="25"/><circle cx="90" cy="94" r="10"/></g></svg>'},
  detectors:{label:'Metal detectors',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M73 31c-15 3-24 17-21 32l12 62M64 125l-8 28M83 124l7 28"/><rect x="50" y="26" width="28" height="9" rx="3"/><path d="M48 119h44c9 0 16 7 16 16v8H41v-8c0-9 7-16 16-16z"/></g></svg>'}
 };
-function categoryBackgroundImage(category){const item=categoryBackgrounds[category];return item&&item.svg?'url("data:image/svg+xml,'+encodeURIComponent(item.svg)+'")':'none';}
+function categoryBackgroundImage(category){const item=categoryBackgrounds[category];if(!item||!item.svg)return 'none';const colour=themeColors.background_color2||'#ffffff';return 'url("data:image/svg+xml,'+encodeURIComponent(item.svg.replace(/currentColor/g,colour))+'")';}
 function applyWebsiteBackground(){
  const e=$('site-editor');if(!e)return;
  const style=themeColors.background_style||'none',category=themeColors.background_category||'none',c1=themeColors.background_color||themeColors.page_bg||'#f5f6f8',c2=themeColors.background_color2||'#ffffff';
@@ -134,7 +134,7 @@ function applyWebsiteBackground(){
  if(style==='stripes')image='repeating-linear-gradient(135deg,'+c1+' 0 18px,'+c2+' 18px 36px)';
  if(style==='dots')image='radial-gradient(circle,'+c2+' 1.8px,transparent 1.8px)';
  if(style==='gradient')image='linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)'; const categoryImage=categoryBackgroundImage(category); if(categoryImage!=='none')image=(image==='none'?'':image+',')+categoryImage;
- e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',style==='dots'?'18px 18px':'cover');e.style.setProperty('--site-background-repeat',style==='dots'?'repeat':'no-repeat');
+ e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',category!=='none'?(style==='dots'?'18px 18px,180px 180px':'cover,180px 180px'):(style==='dots'?'18px 18px':'cover'));e.style.setProperty('--site-background-repeat',style==='dots'?'repeat':'no-repeat');
 }
 function selectWebsiteBackground(){return false;}
 function selectPresetBackgroundMode(){return false;}

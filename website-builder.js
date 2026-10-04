@@ -635,6 +635,7 @@ function bindEditor(){
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
+   if(target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  });});
@@ -1036,6 +1037,17 @@ function initBuilder(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
  const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
+ canvas.querySelectorAll('[data-image-action][data-image-target^="hero-element:"]').forEach(function(control){
+  control.addEventListener('click',function(e){
+   e.preventDefault();e.stopPropagation();
+   const action=control.dataset.imageAction,target=control.dataset.imageTarget;
+   if(action==='remove'){removeImage(target);return;}
+   const input=$('image-file-input');
+   input.dataset.target=target;
+   input.value='';
+   input.click();
+  });
+ });
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
   if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,height:16,aspect:2.8};
@@ -1181,7 +1193,7 @@ function renderEditableHeroToolbarOnly(root){
  });
  format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehStyle]=control.value;const elNode=root.querySelector('[data-eh-id="'+CSS.escape(target.id)+'"]');if(elNode){const key=control.dataset.ehStyle;const cssKey={font:'--eh-font',fontSize:'--eh-size',color:'--eh-color',align:'--eh-align',vAlign:'--eh-valign',lineHeight:'--eh-line',letterSpacing:'--eh-letter'}[key];if(cssKey)elNode.style.setProperty(cssKey,key==='fontSize'?(control.value==='auto'?'inherit':Number(control.value)+'px'):key==='letterSpacing'?control.value+'px':control.value);};markDirty();});});
  format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehField]=control.value;markDirty();});});
- format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const input=$('image-file-input');input.dataset.target=control.dataset.imageTarget;input.value='';input.click();});});
+ format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const target=control.dataset.imageTarget;if(control.dataset.imageAction==='remove'){removeImage(target);return;}const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();});});
 }
 function bindEditor(){
  const root=$('site-editor');

@@ -88,8 +88,30 @@ function heroImage(url,alt,cls){
  return '<div class="public-demo-image '+(cls||'')+'" aria-hidden="true"></div>';
 }
 
+
+function renderEditableHero(site){
+ const home=site.homepage||{},els=Array.isArray(home.hero_elements)?home.hero_elements:[];
+ if(!els.length)return '';
+ const fonts=['Inter','Arial','Georgia','Times New Roman','Verdana','Trebuchet MS','Courier New'];
+ const align=['left','center','right'];
+ const safeFont=f=>fonts.includes(f)?f:'Inter';
+ const safeColor=c=>/^#[0-9a-fA-F]{6}$/.test(String(c||''))?String(c):'#17212b';
+ const items=els.map(el=>{
+  const x=Math.max(0,Math.min(100,Number(el.x)||0)),y=Math.max(0,Math.min(100,Number(el.y)||0)),w=Math.max(1,Math.min(100-x,Number(el.w)||20)),h=Math.max(1,Math.min(100-y,Number(el.h)||20));
+  const base='left:'+x+'%;top:'+y+'%;width:'+w+'%;height:'+h+'%;z-index:'+(Number(el.z)||1)+';';
+  if(el.type==='text'){
+   const style=base+'font-family:'+JSON.stringify(safeFont(el.font))+';font-size:'+Math.max(8,Math.min(140,Number(el.size)||24))+'px;color:'+safeColor(el.color)+';font-weight:'+Math.max(100,Math.min(900,Number(el.weight)||400))+';text-align:'+(align.includes(el.align)?el.align:'left')+';letter-spacing:'+Math.max(-5,Math.min(20,Number(el.letterSpacing)||0))+'px;line-height:'+Math.max(.7,Math.min(3,Number(el.lineHeight)||1.2))+';';
+   return '<div class="public-hero-element public-hero-text" style="'+style+'">'+esc(el.text||'')+'</div>';
+  }
+  if(!el.image_url)return '';
+  return '<div class="public-hero-element public-hero-image" style="'+base+'border-radius:'+Math.max(0,Math.min(80,Number(el.radius)||0))+'px"><img src="'+esc(el.image_url)+'" alt="'+esc(el.alt||'')+'" style="object-fit:'+(el.objectFit==='cover'?'cover':'contain')+'"></div>';
+ }).join('');
+ return '<section class="public-editable-hero"><div class="public-editable-hero-stage">'+items+'</div></section>';
+}
+
 function renderHero(site){
  const home=site.homepage||{};
+ if(Array.isArray(home.hero_elements)&&home.hero_elements.length)return renderEditableHero(site);
  const t=site.template||'editorial';
  const name=site.name||'Your business';
  const headline=home.headline||'A clear way to buy and sell';

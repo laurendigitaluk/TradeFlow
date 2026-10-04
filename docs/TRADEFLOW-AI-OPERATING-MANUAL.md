@@ -2441,3 +2441,9 @@ A new homepage banner preference is stored as `homepage.use_banner`. When enable
 The banner option is presented in Branding as a clear checkbox: “Use banner in the homepage hero”. The fallback homepage hero image remains available separately.
 
 TEST/main and LIVE/production were updated for the same template engine and styling. Website Builder cache versions were advanced to JavaScript v69 and CSS v65.
+
+
+## Website Builder starter-template rule — 4 October 2026
+When modifying the Website Builder starter experience, treat the fresh-subscriber layout in `resetToFreshWebsite()` as the source of the starter structure. Preserve the approved positions of the text/image boxes and do not seed subscriber-specific branding or placeholder copy. Business logo/banner remain tenant branding data, not generic starter-template assets.
+
+Do not change the established **Edit → Save Draft → Preview → Publish → LIVE** lifecycle. An unsaved deletion is expected to return after a browser reload; verify persistence by Save Draft before diagnosing deletion as a storage or rendering fault.

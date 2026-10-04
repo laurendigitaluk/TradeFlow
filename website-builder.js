@@ -475,7 +475,7 @@ function bindGlobalHeader(root){
  editor.querySelectorAll('[data-gh-add]').forEach(btn=>btn.addEventListener('click',()=>{
    const type=btn.dataset.ghAdd;
    if(type==='logo'){
-     const el=makeGlobalHeaderElement('image',{role:'logo',x:5,y:12,width:22,height:62,aspect:1.8,image_url:logoUrl||''});
+     const el=makeGlobalHeaderElement('image',{role:'logo',x:5,y:12,width:22,height:62,aspect:1.8,image_url:''});
      globalHeaderElements.push(el);selectedGlobalHeaderId=el.id;markDirty();renderEditor();
      if(!el.image_url){setStatus('Logo box added. Click Add image in the box to choose the logo.','success');}
      return;

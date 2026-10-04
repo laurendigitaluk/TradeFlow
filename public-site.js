@@ -430,6 +430,8 @@ function applyContent(content){
    html=p?renderContentPage(site,p):renderHome(site,catalogue,listings);
  }
  $('app').innerHTML=html;
+ document.querySelectorAll('.public-nav-dropdown-toggle').forEach(function(toggle){toggle.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const menu=toggle.parentElement?.querySelector('.public-nav-dropdown-menu');if(menu)menu.classList.toggle('open');});});
+ document.addEventListener('click',function closeQuoteMenu(e){if(!e.target.closest('.public-nav-dropdown'))document.querySelectorAll('.public-nav-dropdown-menu.open').forEach(function(menu){menu.classList.remove('open');});},{once:true});
  renderBusinessExtras(site);
  if(page==='sell')bindSellWizard(site,catalogue);if(page==='shop')bindProductSearch();
 }

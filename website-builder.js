@@ -10,7 +10,7 @@ let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='Wh
 let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
 let editableHeroElements=[],selectedEditableHeroId=null,heroCanvasHeight=760;
-let homepageHeroFormatVersion=2,homepageHeroFormatMigrationPending=false;
+let homepageHeroFormatVersion=3,homepageHeroFormatMigrationPending=false,homepageTextFormatMigrationPending=false,homepageTileFormatMigrationPending=false;
 let globalHeaderElements=[],selectedGlobalHeaderId=null,globalHeaderHeight=250;
 
 function applyBannerPositionToGlobalHeader(){
@@ -57,15 +57,15 @@ function loadEditableHeroElements(home){
  const savedVersion=Number(home?.editable_elements_version)||0;
  editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();
  homepageHeroFormatMigrationPending=false;
- if(savedVersion<2&&raw.length){
-   const textDefaults={font:'inherit',fontSize:'40',lineHeight:'1.2',letterSpacing:'0'};
+ if(savedVersion<3&&raw.length){
+   const textDefaults={font:'inherit',fontSize:'auto',lineHeight:'1.2',letterSpacing:'0'};
    editableHeroElements.forEach(el=>{if(el.type==='text')Object.assign(el,textDefaults);});
    editableHeroElements.filter(el=>el.type==='button').forEach((el,index)=>{
      Object.assign(el,{x:Math.min(72,8+index*28),y:62,width:24,height:10,aspect:4,font:'inherit',fontSize:'14',lineHeight:'1.2',letterSpacing:'0'});
    });
    homepageHeroFormatMigrationPending=true;
  }
- homepageHeroFormatVersion=Math.max(savedVersion,2);
+ homepageHeroFormatVersion=Math.max(savedVersion,3);
  selectedEditableHeroId=null;
 }
 function editableHeroLinkOptions(selected){
@@ -763,7 +763,7 @@ function buildContent(){
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
    global_header_elements:globalHeaderElements,
-   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:homepageHeroFormatVersion,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
+   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:homepageHeroFormatVersion,text_format_version:1,tile_format_version:1,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -823,15 +823,15 @@ function loadContent(content){
  selectedGlobalHeaderId=null;useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';applyBannerPositionToGlobalHeader();headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});heroCanvasHeight=Math.max(620,Math.min(1800,Number(s.homepage?.hero_canvas_height)||760));
- homepageTextStyles=Object.assign({buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}},s.homepage?.text_styles||{});homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
+ const rawHomepageTextStyles=s.homepage?.text_styles||{};homepageTextStyles={buyHeading:normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},rawHomepageTextStyles.buyHeading||{})),buyIntro:normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'},rawHomepageTextStyles.buyIntro||{})),sellHeading:normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},rawHomepageTextStyles.sellHeading||{})),sellIntro:normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'},rawHomepageTextStyles.sellIntro||{}));homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());const homepageTextFormatVersion=Number(s.homepage?.text_format_version)||0;const homepageTileFormatVersion=Number(s.homepage?.tile_format_version)||0;if(homepageTextFormatVersion<1)homepageTextFormatMigrationPending=true;if(homepageTileFormatVersion<1)homepageTileFormatMigrationPending=true;
  currentTemplate='editable';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
    body:cleanPageBody(p.slug,p.body),title_style:normalizeSiteTextStyle(p.title_style),body_style:normalizeSiteTextStyle(p.body_style),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
- selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=homepageHeroFormatMigrationPending;
- if(dirty){const state=$('save-state');if(state)state.textContent='Unsaved changes — formatting has been standardised.';}
+ selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=homepageHeroFormatMigrationPending||homepageTextFormatMigrationPending||homepageTileFormatMigrationPending;
+ if(dirty){if(homepageTextFormatMigrationPending){homepageTextStyles.buyHeading=normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},homepageTextStyles.buyHeading||{}));homepageTextStyles.sellHeading=normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},homepageTextStyles.sellHeading||{}));homepageTextStyles.buyIntro=normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'},homepageTextStyles.buyIntro||{}));homepageTextStyles.sellIntro=normalizeSiteTextStyle(Object.assign({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'},homepageTextStyles.sellIntro||{}));}if(homepageTileFormatMigrationPending)homepageTiles=homepageTiles.map(normalizeHomepageTile);const state=$('save-state');if(state)state.textContent='Unsaved changes — formatting has been standardised.';
  renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
 }
 
@@ -1372,39 +1372,3 @@ function applyTemplate(template){
  renderTemplates();renderHomepageControls();renderHeroImageControls();renderEditor();markDirty();
  setStatus(template+' template selected. Text, colours and images remain editable.','success');
 }
-function buildContent(){
- return {schema_version:2,template_reset_version:2,site:{
-   name:siteName.trim()||null,
-   pages:pages,
-   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,background_id:normalizeBackgroundId(themeColors.background_id),background_mode:themeColors.background_mode==='custom'?'custom':'preset',background_color:themeColors.background_mode==='custom'?(themeColors.page_bg||'#f5f6f8'):(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.color||'#f5faff'),background_image:themeColors.background_mode==='custom'?'':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.image||''),background_size:themeColors.background_mode==='custom'?'cover':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.size||'cover'),background_repeat:themeColors.background_mode==='custom'?'no-repeat':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.repeat||'no-repeat'),typography:typography},
-   social:socialLinks,
-   header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
-   reviews:reviewLinks,
-   branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
-   navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
-   category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
-   template:currentTemplate,template_copy:templateCopy,
-   contact:{text:(pages.find(p=>p.slug==='contact')?.body||'').trim()||null}
- }};
-}
-
-function cleanTemplateCopy(copy){
- const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
- const cta=['What do you have to sell?','What we buy','What we sell','Sell to us','Browse the shop','Explore the shop','Sell your items','Browse products','Retail shop','Shop products','Start selling','01 / WHAT WE BUY','02 / WHAT WE SELL','View product','View shop','View & buy'];
- const out=Object.assign({},copy||{});
- if(known.includes(String(out.kicker||'')) || /^\s*\d+\s*\/\s*/.test(String(out.kicker||'')))out.kicker='';
- if(cta.includes(String(out.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta1||'')))out.cta1='';
- if(String(out.cta2||'').trim().toLowerCase()==='what we sell')out.cta2='Visit our retail shop'; else if(cta.includes(String(out.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(out.cta2||'')))out.cta2='';
- return out;
-}
-function ensureHomepageTileCapacity(tiles){
- const existing=Array.isArray(tiles)?tiles:[];
- const byId=new Map(existing.map(t=>[t.id,t]));
- return defaultHomepageTiles().map(d=>byId.has(d.id)?Object.assign({},d,byId.get(d.id)):Object.assign({},d));
-}
-function cleanHomepageTiles(tiles){
- const defaults=new Map(defaultHomepageTiles().map(t=>[t.id,t]));
- return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
-}
-

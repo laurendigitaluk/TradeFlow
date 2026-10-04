@@ -14,19 +14,57 @@ function makeEditableHeroElement(type,overrides={}){
  return normalizeEditableHeroElement(Object.assign(base,overrides));
 }
 function normalizeEditableHeroElement(v){
- const d=Object.assign({id:'eh-'+Math.random().toString(36).slice(2,8),type:'text',role:'text',x:5,y:10,width:40,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},v||{});
- d.type=d.type==='image'?'image':'text';d.role=String(d.role||d.type);d.x=Math.max(0,Math.min(92,Number(d.x)||0));d.y=Math.max(0,Math.min(92,Number(d.y)||0));d.width=Math.max(8,Math.min(92,Number(d.width)||40));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));d.image_url=String(d.image_url||'');d.text=String(d.text||'');d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';d.align=['left','center','right'].includes(d.align)?d.align:'left';d.vAlign=['top','center','bottom'].includes(d.vAlign)?d.vAlign:'center';d.lineHeight=String(d.lineHeight||'1.2');d.letterSpacing=String(d.letterSpacing||'0');return d;
+ const d=Object.assign({id:'eh-'+Math.random().toString(36).slice(2,8),type:'text',role:'text',x:6,y:12,width:42,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0',button_text:'Learn more',button_link_type:'internal',button_link:'home'},v||{});
+ d.type=['image','button'].includes(d.type)?d.type:'text';
+ d.role=String(d.role||d.type);
+ d.x=Math.max(0,Math.min(92,Number(d.x)||0));d.y=Math.max(0,Math.min(92,Number(d.y)||0));
+ d.width=Math.max(8,Math.min(92,Number(d.width)||42));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));
+ d.image_url=String(d.image_url||'');d.text=String(d.text||'');
+ d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');
+ d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';
+ d.align=['left','center','right'].includes(d.align)?d.align:'left';
+ d.vAlign=['top','center','bottom'].includes(d.vAlign)?d.vAlign:'center';
+ d.lineHeight=String(d.lineHeight||'1.2');d.letterSpacing=String(d.letterSpacing||'0');
+ d.button_text=String(d.button_text||'Learn more');d.button_link_type=d.button_link_type==='custom'?'custom':'internal';d.button_link=String(d.button_link||'home');
+ return d;
+}
+function makeEditableHeroElement(type,overrides={}){
+ const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+ const base=type==='image'?{id,type:'image',role:'image',x:52,y:16,width:40,aspect:1.45,image_url:homeImageUrl||'',text:''}:type==='button'?{id,type:'button',role:'button',x:8,y:55,width:24,aspect:4,text:'Learn more',button_text:'Learn more',button_link_type:'internal',button_link:'home'}:{id,type:'text',role:'text',x:8,y:12,width:42,aspect:1,text:headline||'Add your headline',font:'inherit',fontSize:40,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
+ return normalizeEditableHeroElement(Object.assign(base,overrides));
 }
 function defaultEditableHeroElements(){
- const out=[];if(logoUrl)out.push(makeEditableHeroElement('image',{id:'logo',role:'logo',x:5,y:5,width:18,aspect:2.8,image_url:logoUrl}));if(bannerUrl)out.push(makeEditableHeroElement('image',{id:'banner',role:'banner',x:5,y:18,width:90,aspect:5,image_url:bannerUrl}));out.push(makeEditableHeroElement('text',{id:'headline',role:'headline',x:7,y:42,width:70,text:headline||'A clear way to buy and sell',fontSize:48}));if(intro)out.push(makeEditableHeroElement('text',{id:'intro',role:'intro',x:7,y:64,width:58,text:intro,fontSize:20,color:'#52606b',lineHeight:'1.4'}));return out;
+ return [
+  makeEditableHeroElement('text',{id:'headline',role:'headline',x:7,y:18,width:42,text:headline||'Add your headline',fontSize:40}),
+  makeEditableHeroElement('image',{id:'image-1',role:'image',x:55,y:14,width:38,aspect:1.45,image_url:homeImageUrl||''})
+ ];
 }
-function loadEditableHeroElements(home){const raw=Array.isArray(home?.editable_elements)?home.editable_elements:[];editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();if(editableHeroElements.length&&!selectedEditableHeroId)selectedEditableHeroId=editableHeroElements[0].id;}
+function loadEditableHeroElements(home){
+ const raw=Array.isArray(home?.editable_elements)?home.editable_elements:[];
+ editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();
+ selectedEditableHeroId=editableHeroElements[0]?.id||null;
+}
+function editableHeroLinkOptions(selected){
+ const internal=[{v:'home',l:'Home'},...pages.filter(p=>p.enabled!==false).map(p=>({v:p.slug,l:p.title||p.slug}))];
+ return internal.map(o=>'<option value="'+esc(o.v)+'" '+(selected===o.v?'selected':'')+'>'+esc(o.l)+'</option>').join('');
+}
 function editableHeroElementMarkup(el,editable=true){
- const b=normalizeEditableHeroElement(el),style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
- const body=b.type==='image'?(b.image_url?'<img src="'+esc(b.image_url)+'" alt="Website image">':'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>'):'<div class="editable-hero-text" contenteditable="'+(editable?'true':'false')+'" data-eh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
- return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':'eh-text')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'">×</button><span class="editable-hero-resize"></span>'+body+'</div>';
+ const b=normalizeEditableHeroElement(el);
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ let body='';
+ if(b.type==='image') body=b.image_url?'<img src="'+esc(b.image_url)+'" alt="Website image">':'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>';
+ else if(b.type==='button') body='<span class="editable-hero-button-preview">'+esc(b.button_text)+'</span>';
+ else body='<div class="editable-hero-text" contenteditable="'+(editable?'true':'false')+'" data-eh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
+ return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':b.type==='button'?'eh-button':'eh-text')+(b.id===selectedEditableHeroId?' selected':'')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'" aria-label="Delete element">×</button><span class="editable-hero-resize" aria-label="Resize element"></span>'+body+'</div>';
 }
-function renderEditableHero(){return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button></div><div class="editable-hero-canvas" data-editable-hero-canvas>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';}
+function renderEditableHero(){
+ const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
+ if(selected)selectedEditableHeroId=selected.id;
+ let controls='<span>Select a text box or button to edit its settings.</span>';
+ if(selected?.type==='text') controls='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+(selected.color||'#17202a')+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
+ if(selected?.type==='button') controls='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(selected.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal" '+(selected.button_link_type==='internal'?'selected':'')+'>TradeFlow page</option><option value="custom" '+(selected.button_link_type==='custom'?'selected':'')+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(selected.button_link)+'" placeholder="https://"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
+ return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="button">Add call-to-action button</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button><div class="editable-hero-format">'+controls+'</div></div><div class="editable-hero-canvas" data-editable-hero-canvas>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';
+}
 
 function normalizeLayoutBlock(v,defaults){const x=Object.assign({font:'inherit',fontSize:'auto',color:'inherit',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},defaults,v||{});x.type=x.type==='image'?'image':'text';x.x=Number.isFinite(Number(x.x))?Number(x.x):0;x.y=Number.isFinite(Number(x.y))?Number(x.y):0;x.width=Math.max(20,Math.min(100,Number(x.width)||defaults.width));x.aspect=Math.max(.35,Math.min(4,Number(x.aspect)||defaults.aspect));x.image_url=String(x.image_url||'');x.text=String(x.text||'');x.font=String(x.font||'inherit');x.fontSize=String(x.fontSize||'auto');x.color=String(x.color||'inherit');x.align=['left','center','right'].includes(x.align)?x.align:'left';x.vAlign=['top','center','bottom'].includes(x.vAlign)?x.vAlign:'center';x.lineHeight=String(x.lineHeight||'1.2');x.letterSpacing=String(x.letterSpacing||'0');return x;}
 function loadLayoutBlocks(home){const lb=home?.layout_blocks||{};layoutBlocks={heroTitle:normalizeLayoutBlock(lb.heroTitle,{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:headline}),heroImage:normalizeLayoutBlock(lb.heroImage,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl,text:''}),heroImage2:normalizeLayoutBlock(lb.heroImage2,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl2,text:''}),heroBanner:normalizeLayoutBlock(lb.heroBanner,{type:'image',x:0,y:0,width:60,aspect:4,image_url:String(home?.banner_url||bannerUrl||''),text:''})};}
@@ -531,7 +569,7 @@ function loadContent(content){
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
- currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
+ currentTemplate='editable';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
@@ -575,7 +613,7 @@ async function uploadImage(file,target){
      asset_kind:target==='logo'?'site_logo':target==='banner'?'site_banner':'site_image',retention_policy:'permanent'
    })});
  }catch(e){console.warn('Site image metadata insert failed',e)}
- dirty=true;renderHeroImageControls();renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
+ dirty=true;renderHeroImageControls();renderBrandingControls();renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
 }
 
 function removeImage(target){
@@ -589,7 +627,7 @@ function removeImage(target){
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
- markDirty();renderHeroImageControls();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
+ markDirty();renderHeroImageControls();renderBrandingControls();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
 }
 
 async function api(path,options){
@@ -663,7 +701,7 @@ async function loadDraft(){
 function resetDesignToDefaults(){
  if(!window.confirm('Reset the website design to its factory defaults? Your page text, pages and uploaded images will be kept.'))return;
  const palette=templatePalettes.editorial||{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'};
- currentTemplate='editorial';
+ currentTemplate='editable';
  themeColors=Object.assign({},palette,{background_id:'clean-wave',background_mode:'preset'});
  typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  templateCopy=Object.assign({},templateDefaults.editorial);
@@ -728,105 +766,53 @@ function initBuilder(){
  (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
- const canvas=root.querySelector('[data-editable-hero-canvas]');
- if(!canvas)return;
- root.querySelectorAll('[data-eh-add]').forEach(function(btn){
-  btn.addEventListener('click',function(e){
-   e.preventDefault();
-   const kind=btn.dataset.ehAdd;
-   const type=kind==='text'?'text':'image';
-   let o={};
-   if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,aspect:2.8};
-   if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,aspect:5};
-   if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:45,width:55,fontSize:32};
-   if(kind==='image')o={role:'image',x:55,y:45,width:35,aspect:1.5};
-   const el=makeEditableHeroElement(type,o);
-   editableHeroElements.push(el);
-   selectedEditableHeroId=el.id;
-   markDirty();
-   renderEditor();
-  });
- });
- root.querySelectorAll('[data-eh-delete]').forEach(function(btn){
-  btn.addEventListener('click',function(e){
-   e.preventDefault();
-   const id=btn.dataset.ehDelete;
-   editableHeroElements=editableHeroElements.filter(function(x){return x.id!==id;});
-   if(selectedEditableHeroId===id)selectedEditableHeroId=null;
-   markDirty();
-   renderEditor();
-  });
- });
- root.querySelectorAll('[data-eh-style]').forEach(function(control){
-  control.addEventListener('input',function(){
-   const el=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});
-   if(!el)return;
-   el[control.dataset.ehStyle]=control.value;
-   const node=root.querySelector('[data-eh-id="'+CSS.escape(el.id)+'"]');
-   if(node){
-    const key=control.dataset.ehStyle;
-    const prop=key==='fontSize'?'--eh-size':key==='vAlign'?'--eh-valign':key==='lineHeight'?'--eh-line':key==='letterSpacing'?'--eh-letter':'--eh-'+key;
-    const val=key==='fontSize'?(control.value==='auto'?'inherit':control.value+'px'):key==='letterSpacing'?control.value+'px':control.value;
-    node.style.setProperty(prop,val);
-   }
-   markDirty();
-  });
- });
- root.querySelectorAll('[data-eh-edit]').forEach(function(node){
-  node.addEventListener('input',function(){
-   const el=editableHeroElements.find(function(x){return x.id===node.dataset.ehEdit;});
-   if(!el)return;
-   el.text=node.innerText.trim();
-   if(el.role==='headline')headline=el.text;
-   if(el.role==='intro')intro=el.text;
-   markDirty();
-  });
- });
- root.querySelectorAll('[data-eh-id]').forEach(function(node){
-  const id=node.dataset.ehId;
-  const el=editableHeroElements.find(function(x){return x.id===id;});
-  if(!el)return;
+ const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
+ root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
+  e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
+  if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,aspect:2.8};
+  if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,aspect:5};
+  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,fontSize:32};
+  if(kind==='image')o={role:'image',x:55,y:16,width:38,aspect:1.45};
+  if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:58,width:24,aspect:4};
+  const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
+ }));
+ root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
+  e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();
+ }));
+ root.querySelectorAll('[data-eh-style]').forEach(control=>control.addEventListener('input',function(){
+  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);if(!el)return;el[control.dataset.ehStyle]=control.value;markDirty();renderEditor();
+ }));
+ root.querySelectorAll('[data-eh-field]').forEach(control=>control.addEventListener('input',function(){
+  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);if(!el)return;el[control.dataset.ehField]=control.value;markDirty();renderEditor();
+ }));
+ root.querySelectorAll('[data-eh-edit]').forEach(node=>node.addEventListener('input',function(){
+  const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText.trim();if(el.role==='headline')headline=el.text;markDirty();
+ }));
+ root.querySelectorAll('[data-eh-id]').forEach(node=>{
+  const id=node.dataset.ehId,el=editableHeroElements.find(x=>x.id===id);if(!el)return;
   node.addEventListener('pointerdown',function(e){
-   if(e.button!==undefined&&e.button!==0)return;
-   if(e.target.closest('button,select,input,[contenteditable="true"]'))return;
-   e.preventDefault();
-   selectedEditableHeroId=id;
-   root.querySelectorAll('.editable-hero-element.selected').forEach(function(x){x.classList.remove('selected');});
-   node.classList.add('selected');
+   if(e.button!==undefined&&e.button!==0)return;if(e.target.closest('button,select,input,[contenteditable="true"],a'))return;
+   e.preventDefault();selectedEditableHeroId=id;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);
    const sx=e.clientX,sy=e.clientY,ox=el.x,oy=el.y,rect=canvas.getBoundingClientRect();
-   function move(ev){
-    el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));
-    el.y=Math.max(0,Math.min(92,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));
-    node.style.left=el.x+'%';
-    node.style.top=el.y+'%';
-   }
-   function up(){
-    window.removeEventListener('pointermove',move);
-    window.removeEventListener('pointerup',up);
-    markDirty();
-   }
-   window.addEventListener('pointermove',move);
-   window.addEventListener('pointerup',up);
+   const move=ev=>{el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(92,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';};
+   const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();};
+   window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   });
   const resize=node.querySelector('.editable-hero-resize');
   if(resize)resize.addEventListener('pointerdown',function(e){
-   e.preventDefault();
-   e.stopPropagation();
-   selectedEditableHeroId=id;
-   const sx=e.clientX,sw=el.width,rect=canvas.getBoundingClientRect();
-   function move(ev){
-    el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));
-    node.style.width=el.width+'%';
-   }
-   function up(){
-    window.removeEventListener('pointermove',move);
-    window.removeEventListener('pointerup',up);
-    markDirty();
-   }
-   window.addEventListener('pointermove',move);
-   window.addEventListener('pointerup',up);
+   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;const sx=e.clientX,sw=el.width,rect=canvas.getBoundingClientRect();
+   const move=ev=>{el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));node.style.width=el.width+'%';};
+   const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();};
+   window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   });
  });
+}
+function renderEditableHeroToolbarOnly(root){
+ const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);const format=root.querySelector('.editable-hero-format');if(!format||!el)return;
+ let html='<span>Select a text box or button to edit its settings.</span>';
+ if(el.type==='text')html='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+el.color+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
+ if(el.type==='button')html='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(el.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal">TradeFlow page</option><option value="custom">Custom URL</option></select></label>'+(el.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(el.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(el.button_link)+'</select></label>');
+ format.innerHTML=html;bindEditableHero(root);
 }
 function bindEditor(){
  const root=$('site-editor');
@@ -926,217 +912,3 @@ function cleanHomepageTiles(tiles){
  return (Array.isArray(tiles)?tiles:[]).map(t=>{const d=defaults.get(t.id);if(!d)return t;const copy={...t};['title','body','cta'].forEach(k=>{if(copy[k]===d[k])copy[k]='';});return copy;});
 }
 
-function loadContent(content){
- const s=content?.site||{}; templateCopy=cleanTemplateCopy(Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{}));
- window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
- siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
- headline=s.homepage?.headline||'';
- intro=s.homepage?.intro||'';
- accent=s.theme?.accent||'#c46a2b';
- typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
- themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
- socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
- reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
- const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
- logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
- bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
- homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
- loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
- currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
- pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
-   enabled:p.enabled!==false,
-   title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
-   body:cleanPageBody(p.slug,p.body),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
- })):defaultPages();
- selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
- renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
-}
-
-async function uploadImage(file,target){
- if(!file)return;
- if(file.size>5242880)throw new Error('Image is larger than 5 MB.');
- if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
- if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
- setStatus('Uploading image…');
- const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target;
- const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
- const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
- const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{
-   method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file
- });
- const responseText=await response.text();
- if(!response.ok)throw new Error(responseText||'Image upload failed.');
- const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
- if(target==='home')homeImageUrl=url;
- else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
- else if(target==='home2')homeImageUrl2=url;
- else if(target==='home-buy')homeBuyImageUrl=url;
- else if(target==='home-sell')homeSellImageUrl=url;
- else if(target==='logo')logoUrl=url;
- else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;}
- else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
- else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
- else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
- else if(target.includes(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2='';p.image_alt2='';}}
- else {const p=pages.find(x=>x.slug===target);if(p){p.image_url=url;p.image_alt=p.title;}}
- try{
-   await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({
-     tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,
-     mime_type:file.type,byte_size:file.size,status:'active',created_by:session.user?.id||null,
-     asset_kind:target==='logo'?'site_logo':target==='banner'?'site_banner':'site_image',retention_policy:'permanent'
-   })});
- }catch(e){console.warn('Site image metadata insert failed',e)}
- dirty=true;renderHeroImageControls();renderEditor();renderPageList();setStatus('Image added. Save the draft to keep the website change.','success');
-}
-
-function removeImage(target){
- if(target==='home')homeImageUrl='';
- else if(target==='home2')homeImageUrl2='';
- else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url='';}
- else if(target==='home-buy')homeBuyImageUrl='';
- else if(target==='home-sell')homeSellImageUrl='';
- else if(target==='logo')logoUrl='';
- else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';}
- else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
- else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
- else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
- markDirty();renderHeroImageControls();renderEditor();setStatus('Image removed from this draft. Save the draft to keep the change.','success');
-}
-
-async function api(path,options){
- options=options||{};
- if(!supabaseKey)throw new Error('TradeFlow is not connected. Open the TradeFlow subscriber sign-in page first.');
- const headers=new Headers(options.headers||{});
- headers.set('apikey',supabaseKey);headers.set('Content-Type','application/json');
- if(session?.access_token)headers.set('Authorization','Bearer '+session.access_token);
- const response=await fetch(SUPABASE_URL+path,Object.assign({},options,{headers}));
- const text=await response.text();let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
- if(!response.ok){const detail=body&&(body.msg||body.message||body.error_description||body.error)||text||('HTTP '+response.status);throw new Error(detail)}
- return body;
-}
-
-async function restoreSession(){
- if(!window.tradeflowSubscriberAuthReady)throw new Error('Subscriber authentication layer did not load.');
- const auth=await window.tradeflowSubscriberAuthReady;
- if(!auth?.session?.access_token)throw new Error('Subscriber authentication did not provide an access token.');
- supabaseKey=auth.key;session=auth.session;tenantId=auth.tenantId;
- if(!tenantId)throw new Error('Subscriber authentication did not provide a tenant.');
- try{const profile=await api('/rest/v1/tenant_public_profiles?select=business_name,logo_url,banner_url&tenant_id=eq.'+encodeURIComponent(tenantId));const p=profile?.[0]||{};authoritativeBranding={logo_url:p.logo_url||'',banner_url:p.banner_url||''};if(p.business_name){siteName=p.business_name;window.__tradeflowBusinessNameLoaded=true;}}catch{authoritativeBranding={logo_url:'',banner_url:''};}
- return tenantId;
-}
-
-async function loadBuyingCatalogue(tenant){
- if(!tenant)return {categories:[],products:[]};
- const rows=await api('/rest/v1/rpc/get_public_buying_catalogue?p_tenant_id='+encodeURIComponent(tenant));
- const products=Array.isArray(rows)?rows:[];
- const map=new Map();
- for(const p of products){if(!map.has(p.category_id))map.set(p.category_id,{id:p.category_id,name:p.category_name,slug:p.category_slug,description:p.category_description||'',product_count:0});map.get(p.category_id).product_count++;}
- return {categories:Array.from(map.values()),products};
-}
-async function loadRetailListings(tenant){
- if(!tenant)return [];
- try{const rows=await api('/rest/v1/rpc/get_published_store_listings?p_tenant_id='+encodeURIComponent(tenant));return Array.isArray(rows)?rows:[]}
- catch(e){console.warn('TradeFlow retail preview listings unavailable:',e);return []}
-}
-async function clearFreshStartMedia(){
- try{
-   const assets=await api('/rest/v1/media_assets?select=storage_path&tenant_id=eq.'+encodeURIComponent(tenantId));
-   const paths=Array.isArray(assets)?assets.map(a=>a.storage_path).filter(Boolean):[];
-   if(paths.length)await fetch(SUPABASE_URL+'/storage/v1/object/remove',{method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({prefixes:paths})});
-   await api('/rest/v1/media_assets?tenant_id=eq.'+encodeURIComponent(tenantId),{method:'DELETE',headers:{Prefer:'return=minimal'}});
- }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
-}
-function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
- templateCopy=Object.assign({},templateDefaults.editorial);
- homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
- homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
- socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
- homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
- pages=defaultPages();selectedPage='home';currentTemplate='editable';editableHeroElements=defaultEditableHeroElements();window.__existingCategoryManifest=[];
-}
-async function loadDraft(){
- const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));
- if(!Array.isArray(rows)||rows.length!==1)throw new Error('Subscriber website state is not initialised.');
- draftRevisionId=rows[0].draft_revision_id;
- const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
- if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
- if(Number(drafts[0].content?.template_reset_version||0)<2){await clearFreshStartMedia();resetToFreshWebsite();dirty=true;renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();await api('/rest/v1/site_revisions?id=eq.'+encodeURIComponent(draftRevisionId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});dirty=false;const freshState=$('save-state');if(freshState)freshState.textContent='Fresh website saved';setStatus('Fresh website templates loaded. Previous website text, branding and images have been cleared.','success');}else{loadContent(drafts[0].content);}
- try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
- retailListings=await loadRetailListings(tenantId);
- renderEditor();
- if(validPageSlug(requestedPage))selectedPage=requestedPage;
- if(requestedTemplate)applyTemplate(requestedTemplate);
- setStatus('Website loaded. Click the page and edit directly on the preview.','success'); if(requestedFocus==='branding'){const box=$('branding-controls');if(box){box.scrollIntoView({behavior:'smooth',block:'center'});}}
-}
-
-function resetDesignToDefaults(){
- if(!window.confirm('Reset the website design to its factory defaults? Your page text, pages and uploaded images will be kept.'))return;
- const palette=templatePalettes.editorial||{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'};
- currentTemplate='editorial';
- themeColors=Object.assign({},palette,{background_id:'clean-wave',background_mode:'preset'});
- typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
- templateCopy=Object.assign({},templateDefaults.editorial);
- homepageTileCount=8;
- homepageTileColumns=4;
- homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};
- homepageOrder=['hero','buy','sell','trust'];
- applyWebsiteBackground();
- renderTemplates();
- renderHomepageControls();
- renderHeroImageControls();
- renderDesignControls();
- renderBrandingControls();
- renderTypographyControls();
- renderSectionControls();
- renderHeaderFooterControls();
- renderEditor();
- markDirty();
- setStatus('Design reset to factory defaults. Your content, pages and images were kept. Save the draft to keep the reset.','success');
-}
-async function saveDraft(){
- if(!draftRevisionId)await loadDraft();
- setStatus('Saving website draft…');
- await api('/rest/v1/site_revisions?id=eq.'+encodeURIComponent(draftRevisionId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{
-   method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})
- });
- dirty=false;const state=$('save-state');if(state)state.textContent='All changes saved';
- setStatus('Website draft saved to TradeFlow.','success');
-}
-
-async function publish(){
- if(!draftRevisionId)await loadDraft();
- if(dirty)await saveDraft();
- setStatus('Publishing website…');
- await api('/rest/v1/rpc/publish_site_revision',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_revision_id:draftRevisionId})});
- await loadDraft();
- setStatus('Website published. A new draft is ready for further edits.','success');
-}
-
-function initBuilder(){
- $('templates')&&renderTemplates();
- $('page-list')&&renderPageList();
- renderDesignControls();
- renderHeroImageControls();
- renderBrandingControls();
- renderPageManager();
- renderHeaderFooterControls();
- renderTypographyControls();
- renderSectionControls();
- renderBusinessExtras();
- $('image-file-input').addEventListener('change',e=>{
-   const file=e.target.files?.[0],target=e.target.dataset.target;
-   if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
- });
- $('save-draft').addEventListener('click',()=>saveDraft().catch(e=>setStatus(e.message||String(e),'error')));
- $('reset-design').addEventListener('click',resetDesignToDefaults);
- $('publish').addEventListener('click',()=>publish().catch(e=>setStatus(e.message||String(e),'error')));
- $('preview-customer').addEventListener('click',()=>location.href='customer-dashboard-preview.html'+(tenantId?'?tenant_id='+encodeURIComponent(tenantId):''));
- $('preview-site').addEventListener('click',e=>{
-   e.currentTarget.href='public-site.html?preview=draft'+(tenantId?'&tenant_id='+encodeURIComponent(tenantId):'');
- });
- (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
-}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();

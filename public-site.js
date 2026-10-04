@@ -213,6 +213,20 @@ function renderBusinessExtras(site){
  if(items.length||reviewItems.length)box.hidden=false,box.innerHTML='<div class="extras-inner">'+(items.length?'<strong>Follow us</strong>'+items.join(''):'')+(reviewItems.length?'<strong>Reviews</strong>'+reviewItems.join(''):'')+'</div>';
 }
 
+
+function renderGlobalHeaderPublic(site){
+ const raw=Array.isArray(site?.global_header_elements)?site.global_header_elements:[];
+ if(!raw.length)return '';
+ const elements=raw.map(function(v){
+   const b=Object.assign({type:'text',role:'text',x:8,y:20,width:60,height:45,text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0',image_url:''},v||{});
+   b.type=b.type==='image'?'image':'text';
+   b.x=Math.max(0,Math.min(92,Number(b.x)||0));b.y=Math.max(0,Math.min(80,Number(b.y)||0));b.width=Math.max(8,Math.min(92,Number(b.width)||40));b.height=Math.max(8,Math.min(90,Number(b.height)||30));
+   const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font||'inherit')+';--gh-size:'+esc(b.fontSize==='auto'||!b.fontSize?'inherit':Number(b.fontSize)+'px')+';--gh-color:'+esc(/^#[0-9a-f]{6}$/i.test(String(b.color||''))?b.color:'#17202a')+';--gh-align:'+esc(['left','center','right'].includes(b.align)?b.align:'left')+';--gh-valign:'+esc(['top','center','bottom'].includes(b.vAlign)?b.vAlign:'center')+';--gh-line:'+esc(String(b.lineHeight||'1.2'))+';--gh-letter:'+esc(String(b.letterSpacing||'0'))+'px;';
+   if(b.type==='image')return '<div class="public-global-header-element public-gh-image" style="'+style+'">'+(b.image_url?'<img src="'+esc(b.image_url)+'" alt="'+esc(b.role==='banner'?site.name||'Website banner':'Website image')+'">':'')+'</div>';
+   return '<div class="public-global-header-element public-gh-text" style="'+style+'">'+esc(b.text||'')+'</div>';
+ }).join('');
+ return '<section class="public-global-header"><div class="public-global-header-canvas">'+elements+'</div></section>';
+}
 function renderHome(site,catalogue,listings){
  const sections=Object.assign({hero:true,dual:true,buy:true,sell:true,trust:false,shop:true},site.homepage?.sections||{});
  const order=Array.isArray(site.homepage?.block_order)&&site.homepage.block_order.length?site.homepage.block_order:['hero','buy','sell','trust'];
@@ -222,7 +236,7 @@ function renderHome(site,catalogue,listings){
   sell:sections.sell!==false?renderSellingSection(site,listings):'',
   trust:''
  };
- let out=renderPublicNav(site,catalogue);
+ let out=renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site);
  const ordered=order.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
  if(sections.hero!==false)out+=ordered;
  else out+=ordered;
@@ -245,7 +259,7 @@ function renderSellPage(site,catalogue){
 <section class="sell-step" data-step="6" hidden><h2>A few final questions</h2><p>These details help our team review the request.</p><label>Is anything normally supplied with this package missing?<select id="sell-missing"><option value="">Choose…</option><option value="no">No</option><option value="yes">Yes</option></select></label><label>Do you have the legal right to sell this equipment?<select id="sell-ownership"><option value="">Choose…</option><option value="yes">Yes</option><option value="no">No</option><option value="not-sure">I am not sure</option></select></label><label id="sell-serial-wrap" hidden>Serial number<input id="sell-serial" autocomplete="off"></label><div id="sell-photo-upload" class="sell-photo-upload"></div><label>Anything else we should know? <span class="optional">(optional)</span><textarea id="sell-notes" rows="4" placeholder="Accessories, faults, missing items, history or anything else that matters."></textarea></label><div class="sell-actions"><button type="button" data-back>Back</button><button type="button" data-next>Review request</button></div></section>
 <section class="sell-step" data-step="7" hidden><h2>Check your selling request</h2><p>Review the details before submitting your valuation request.</p><div id="sell-summary" class="sell-summary"></div><div class="sell-handoff"><strong>Next step</strong><p>Submit your request here. Once it has been submitted, you will be taken to your customer account to view its progress, offers and completed purchase history.</p></div><div class="sell-actions"><button type="button" data-back>Back</button><button type="submit">Submit valuation request →</button></div></section>
 </form></main>`;
- return renderPublicNav(site,catalogue)+body.replace('__OPTIONS__',options)+renderFooter(site);
+ return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+body.replace('__OPTIONS__',options)+renderFooter(site);
 }
 
 async function getStoredCustomerSession(){
@@ -346,7 +360,7 @@ function renderProductPage(site,listings){
  const listingId=params.get('listing')||params.get('listing_id')||'';
  const item=list.find(x=>String(x.listing_id||'')===String(listingId));
  if(!item){
-   return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
+   return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page product-page"><div class="product-unavailable"><h1>Product unavailable</h1><p>This product is no longer published on this website.</p><a class="start-selling" href="'+pageUrl('shop')+'">Back to What We Sell</a></div></main>'+renderFooter(site);
  }
  const media=(window.__tradeflowListingMedia||[]).filter(x=>String(x.listing_id)===String(item.listing_id));
  const mainMedia=media[0];
@@ -381,21 +395,21 @@ function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
  const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>'+esc(p.buying_action_heading||'Sell your items')+'</strong><span>'+esc(p.buying_action_text||'Choose a category to start your selling journey.')+'</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- return renderPublicNav(site,catalogue)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const branding=site.branding&&typeof site.branding==='object'?site.branding:{}; const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||''); const bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
  const searchHeading=p.shop_search_heading||'Find a product';const configuredSearchPlaceholder=String(p.shop_search_placeholder||'').trim();const searchPlaceholder=configuredSearchPlaceholder&&configuredSearchPlaceholder.toUpperCase()!=='PLACEHOLDER'?configuredSearchPlaceholder:'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block shop-page-title">'+(bannerUrl?'<div class="shop-page-banner"><img src="'+esc(bannerUrl)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':(logoUrl?'<img class="shop-page-logo" src="'+esc(logoUrl)+'" alt="'+esc(site.name||'Business')+'">':'<h1>'+esc(site.name||'What We Sell')+'</h1>'))+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block shop-page-title">'+'<h1>'+esc(p.title||'What We Sell')+'</h1>'+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function bindProductSearch(){const input=$('tradeflow-product-search');if(!input)return;const cards=Array.from(document.querySelectorAll('[data-product-search]'));input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();cards.forEach(card=>{card.hidden=!!q&&!card.dataset.productSearch.includes(q)});const visible=cards.some(card=>!card.hidden);const grid=input.closest('main')?.querySelector('.shop-grid');if(grid){let empty=grid.querySelector('.search-empty');if(!visible){if(!empty){empty=document.createElement('div');empty.className='connected-empty search-empty';empty.textContent='No products match your search.';grid.appendChild(empty)}}else if(empty)empty.remove();}})}
 
 function renderContentPage(site,p){
  const image=p.image_url?'<img class="content-page-image" src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||p.title||'Page image')+'">':'';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function applyContent(content){

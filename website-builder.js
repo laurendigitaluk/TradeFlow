@@ -336,11 +336,11 @@ function renderBrandingControls(){
  '<label class="check-control branding-banner-toggle"><input type="checkbox" data-use-banner '+(useBanner&&bannerUrl?'checked':'')+(bannerUrl?'':' disabled')+'> Use banner as the website title banner</label><label class="banner-position-control"><span>Position</span><select data-banner-position><option value="left" '+(bannerPosition==='left'?'selected':'')+'>Left</option><option value="center" '+(bannerPosition==='center'?'selected':'')+'>Centre</option><option value="right" '+(bannerPosition==='right'?'selected':'')+'>Right</option></select></label></div>'+
  '<div class="actions"><a href="settings.html">Business Settings</a></div>';
  const logoUpload=box.querySelector('[data-logo-upload]');
- if(logoUpload)logoUpload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='logo';input.value='';input.click();});
+ if(logoUpload)logoUpload.addEventListener('click',()=>{openImagePicker('logo');});
  const logoRemove=box.querySelector('[data-logo-remove]');
  if(logoRemove)logoRemove.addEventListener('click',()=>removeImage('logo'));
  const upload=box.querySelector('[data-banner-upload]');
- if(upload)upload.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='banner';input.value='';input.click();});
+ if(upload)upload.addEventListener('click',()=>{openImagePicker('banner');});
  const remove=box.querySelector('[data-banner-remove]');
  if(remove)remove.addEventListener('click',()=>removeImage('banner'));
  const bannerToggle=box.querySelector('[data-use-banner]');
@@ -637,7 +637,7 @@ function bindEditor(){
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
-   const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
+   openImagePicker(target);
  });});
  let draggedBlock=null;
  root.querySelectorAll('[data-home-block]').forEach(el=>{
@@ -756,6 +756,19 @@ async function getImageDimensions(file){
   img.onerror=function(){URL.revokeObjectURL(url);resolve(null);};
   img.src=url;
  });
+}
+function openImagePicker(target){
+ const input=$('image-file-input');
+ if(!input){setStatus('Image picker is unavailable.','error');return;}
+ input.value='';
+ input.dataset.target=target;
+ const onChange=function(e){
+  input.removeEventListener('change',onChange,true);
+  const file=e.target.files?.[0];
+  if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
+ };
+ input.addEventListener('change',onChange,true);
+ input.click();
 }
 async function uploadImage(file,target){
  if(!file)return;
@@ -1022,10 +1035,7 @@ function initBuilder(){
  renderTypographyControls();
  renderSectionControls();
  renderBusinessExtras();
- $('image-file-input').addEventListener('change',e=>{
-   const file=e.target.files?.[0],target=e.target.dataset.target;
-   if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
- });
+
  $('save-draft').addEventListener('click',()=>saveDraft().catch(e=>setStatus(e.message||String(e),'error')));
  $('reset-design').addEventListener('click',resetDesignToDefaults);
  $('publish').addEventListener('click',()=>publish().catch(e=>setStatus(e.message||String(e),'error')));
@@ -1042,10 +1052,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    e.preventDefault();e.stopPropagation();
    const action=control.dataset.imageAction,target=control.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return;}
-   const input=$('image-file-input');
-   input.dataset.target=target;
-   input.value='';
-   input.click();
+   openImagePicker(target);
   });
  });
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
@@ -1193,7 +1200,7 @@ function renderEditableHeroToolbarOnly(root){
  });
  format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehStyle]=control.value;const elNode=root.querySelector('[data-eh-id="'+CSS.escape(target.id)+'"]');if(elNode){const key=control.dataset.ehStyle;const cssKey={font:'--eh-font',fontSize:'--eh-size',color:'--eh-color',align:'--eh-align',vAlign:'--eh-valign',lineHeight:'--eh-line',letterSpacing:'--eh-letter'}[key];if(cssKey)elNode.style.setProperty(cssKey,key==='fontSize'?(control.value==='auto'?'inherit':Number(control.value)+'px'):key==='letterSpacing'?control.value+'px':control.value);};markDirty();});});
  format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehField]=control.value;markDirty();});});
- format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const target=control.dataset.imageTarget;if(control.dataset.imageAction==='remove'){removeImage(target);return;}const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();});});
+ format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const target=control.dataset.imageTarget;if(control.dataset.imageAction==='remove'){removeImage(target);return;}openImagePicker(target);});});
 }
 function bindEditor(){
  const root=$('site-editor');
@@ -1219,7 +1226,7 @@ function bindEditor(){
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
    if(action==='remove'){removeImage(target);return}
-   const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
+   openImagePicker(target);
  });});
  let draggedBlock=null;
  root.querySelectorAll('[data-home-block]').forEach(el=>{

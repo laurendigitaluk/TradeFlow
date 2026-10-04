@@ -880,3 +880,94 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .page-custom-tiles .editable-home-tile{min-width:0!important;overflow:visible!important}
 .homepage-tiles .editable-home-tile .tile-copy,
 .page-custom-tiles .editable-home-tile .tile-copy{min-width:0!important;overflow:visible!important}
+
+/* Tile/editor control alignment: centre every editable tile element without changing tile count or data. */
+.homepage-tiles .editable-home-tile .tile-image,
+.page-custom-tiles .editable-home-tile .tile-image{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.homepage-tiles .editable-home-tile .tile-image button,
+.page-custom-tiles .editable-home-tile .tile-image button{
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.homepage-tiles .editable-home-tile .tile-copy,
+.page-custom-tiles .editable-home-tile .tile-copy{
+  align-items:center!important;
+  text-align:center!important;
+}
+.homepage-tiles .editable-home-tile .tile-copy h3,
+.homepage-tiles .editable-home-tile .tile-copy p,
+.homepage-tiles .editable-home-tile .tile-copy b,
+.page-custom-tiles .editable-home-tile .tile-copy h3,
+.page-custom-tiles .editable-home-tile .tile-copy p,
+.page-custom-tiles .editable-home-tile .tile-copy b{
+  text-align:center!important;
+}
+.homepage-tiles .editable-home-tile .tile-copy b,
+.page-custom-tiles .editable-home-tile .tile-copy b{
+  align-self:center!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+/* Branding controls: keep every upload/replace/remove button inside the narrow builder menu. */
+.branding-control.branding-item{
+  grid-template-columns:1fr!important;
+  width:100%!important;
+}
+.branding-control.branding-item .branding-preview{
+  width:100%!important;
+  justify-self:stretch!important;
+}
+.branding-item-content{
+  width:100%!important;
+  align-items:center!important;
+}
+.branding-status{
+  width:100%!important;
+  text-align:center!important;
+}
+.branding-actions{
+  width:100%!important;
+  justify-content:center!important;
+  align-items:center!important;
+  flex-wrap:wrap!important;
+}
+.branding-actions button{
+  flex:1 1 108px!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:160px!important;
+}
+.branding-banner-control.branding-item{
+  grid-template-columns:1fr!important;
+  width:100%!important;
+}
+.branding-banner-control.branding-item .branding-banner-preview{
+  grid-column:1!important;
+  width:100%!important;
+}
+.branding-banner-control.branding-item .branding-item-content{
+  grid-column:1!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+.branding-banner-control.branding-item .branding-actions{
+  width:100%!important;
+  justify-content:center!important;
+  flex-wrap:wrap!important;
+}
+.branding-banner-control.branding-item .branding-actions button{
+  flex:1 1 108px!important;
+  max-width:160px!important;
+}
+.branding-banner-control.branding-item .branding-banner-toggle,
+.branding-banner-control.branding-item .banner-position-control{
+  grid-column:1!important;
+  justify-self:center!important;
+}

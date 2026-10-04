@@ -762,12 +762,32 @@ function openImagePicker(target){
  if(!input){setStatus('Image picker is unavailable.','error');return;}
  input.value='';
  input.dataset.target=target;
- const onChange=function(e){
-  input.removeEventListener('change',onChange,true);
-  const file=e.target.files?.[0];
-  if(file)uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
+ input.onchange=null;
+ input.onchange=function(){
+   const file=input.files&&input.files[0];
+   input.onchange=null;
+   if(!file)return;
+   const previewUrl=URL.createObjectURL(file);
+   if(target.startsWith('hero-element:')){
+     const id=target.slice(12);
+     const el=editableHeroElements.find(x=>x.id===id);
+     if(el){
+       selectedEditableHeroId=id;
+       el.preview_url=previewUrl;
+       renderEditor();
+     } else {
+       URL.revokeObjectURL(previewUrl);
+       setStatus('The selected image box could not be found.','error');
+       return;
+     }
+   } else if(target.startsWith('global-header:')){
+     const id=target.slice(14);
+     const el=globalHeaderElements.find(x=>x.id===id);
+     if(el){selectedGlobalHeaderId=id;el.preview_url=previewUrl;renderEditor();}
+   }
+   setStatus('Image selected. Uploading…');
+   uploadImage(file,target).catch(err=>setStatus(err.message||String(err),'error'));
  };
- input.addEventListener('change',onChange,true);
  input.click();
 }
 async function uploadImage(file,target){

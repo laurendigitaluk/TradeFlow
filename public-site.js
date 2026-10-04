@@ -95,25 +95,31 @@ function publicPageBanner(site){
  return useBanner&&bannerUrl?'<div class="public-page-banner banner-position-'+pos+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(site.name||'Website banner')+'" loading="eager"></div>':'';
 }
 function publicLayoutBlock(home,id,defaultType,content,tag,alt){const b=home?.layout_blocks?.[id]||{};const type=b.type==='image'?'image':defaultType;const x=Math.max(-45,Math.min(45,Number(b.x)||0)),y=Math.max(-160,Math.min(160,Number(b.y)||0)),w=Math.max(20,Math.min(100,Number(b.width)||100)),aspect=Math.max(.35,Math.min(4,Number(b.aspect)||1.6));const font=['inherit','Inter','Arial','Georgia','Trebuchet MS','Verdana'].includes(String(b.font||''))?String(b.font):'inherit';const fontSize=b.fontSize==='auto'||!b.fontSize?'inherit':(Number.isFinite(Number(b.fontSize))?Number(b.fontSize)+'px':'inherit');const color=/^#[0-9a-f]{6}$/i.test(String(b.color||''))?String(b.color):'inherit';const align=['left','center','right'].includes(b.align)?b.align:'left';const vAlign=['top','center','bottom'].includes(b.vAlign)?b.vAlign:'center';const line=['1','1.2','1.4','1.6','2'].includes(String(b.lineHeight))?String(b.lineHeight):'1.2';const letter=['0','0.5','1','2','4'].includes(String(b.letterSpacing))?String(b.letterSpacing)+'px':'0';const style='--lb-x:'+x+'%;--lb-y:'+y+'px;--lb-w:'+w+'%;--lb-aspect:'+aspect+';--lb-font:'+font+';--lb-size:'+fontSize+';--lb-color:'+color+';--lb-align:'+align+';--lb-valign:'+vAlign+';--lb-line:'+line+';--lb-letter:'+letter+';';if(type==='image'){const u=String(b.image_url||'');return '<div class="public-layout-block public-layout-image" style="'+style+'">'+(u?'<img src="'+esc(u)+'" alt="'+esc(alt||'Website image')+'">':'')+'</div>';}return '<div class="public-layout-block public-layout-text" style="'+style+'"><'+tag+'>'+esc(b.text||content||'')+'</'+tag+'></div>';}
+function renderEditableHeroPublic(site){
+ const home=site.homepage||{};
+ const raw=Array.isArray(home.editable_elements)?home.editable_elements:[];
+ if(!raw.length)return '';
+ const elements=raw.map(function(v){
+  const b=Object.assign({type:'text',role:'text',x:5,y:10,width:40,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},v||{});
+  b.type=b.type==='image'?'image':'text';
+  b.x=Math.max(0,Math.min(92,Number(b.x)||0));b.y=Math.max(0,Math.min(92,Number(b.y)||0));b.width=Math.max(8,Math.min(92,Number(b.width)||40));b.aspect=Math.max(.35,Math.min(8,Number(b.aspect)||1.5));
+  const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font||'inherit')+';--eh-size:'+esc(b.fontSize==='auto'||!b.fontSize?'inherit':Number(b.fontSize)+'px')+';--eh-color:'+esc(/^#[0-9a-f]{6}$/i.test(String(b.color||''))?b.color:'#17202a')+';--eh-align:'+esc(['left','center','right'].includes(b.align)?b.align:'left')+';--eh-valign:'+esc(['top','center','bottom'].includes(b.vAlign)?b.vAlign:'center')+';--eh-line:'+esc(String(b.lineHeight||'1.2'))+';--eh-letter:'+esc(String(b.letterSpacing||'0'))+'px;';
+  if(b.type==='image')return '<div class="public-editable-hero-element public-eh-image" style="'+style+'">'+(b.image_url?'<img src="'+esc(b.image_url)+'" alt="'+esc(b.role||'Website image')+'">':'')+'</div>';
+  return '<div class="public-editable-hero-element public-eh-text" style="'+style+'">'+esc(b.text||'')+'</div>';
+ }).join('');
+ return '<section class="public-editable-hero"><div class="public-editable-hero-canvas">'+elements+'</div></section>';
+}
 function renderHero(site){
+ return renderEditableHeroPublic(site)||renderLegacyHero(site);
+}
+function renderLegacyHero(site){
  const home=site.homepage||{};
  const t=site.template||'editorial';
  const name=site.name||'Your business';
  const headline=home.headline||'A clear way to buy and sell';
  const intro=home.intro||'Make it simple for customers to see what you buy, what you sell and how to get started.';
  const copy=site.template_copy||{};
- const defaults={
-  editorial:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  classic:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  grid:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  studio:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  horizon:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  field:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  business:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  luxe:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  commerce:{kicker:'',cta1:'',cta2:'Visit our retail shop'},
-  impact:{kicker:'',cta1:'',cta2:'Visit our retail shop'}
- };
+ const defaults={editorial:{kicker:'',cta1:'',cta2:'Visit our retail shop'},classic:{kicker:'',cta1:'',cta2:'Visit our retail shop'},grid:{kicker:'',cta1:'',cta2:'Visit our retail shop'},studio:{kicker:'',cta1:'',cta2:'Visit our retail shop'},horizon:{kicker:'',cta1:'',cta2:'Visit our retail shop'},field:{kicker:'',cta1:'',cta2:'Visit our retail shop'},business:{kicker:'',cta1:'',cta2:'Visit our retail shop'},luxe:{kicker:'',cta1:'',cta2:'Visit our retail shop'},commerce:{kicker:'',cta1:'',cta2:'Visit our retail shop'},impact:{kicker:'',cta1:'',cta2:'Visit our retail shop'}};
  const d=defaults[t]||defaults.editorial;
  const known=['YOUR BUSINESS','ESTABLISHED SERVICE','BUY / SELL / TRADE','BUYING / SELLING','BUSINESS INFORMATION','PRIVATE SERVICE','BUY / SELL','BUY · SELL · TRADE'];
  const cta=['What do you have to sell?','What we buy','What we sell','Sell to us','Browse the shop','Explore the shop','Sell your items','Browse products','Retail shop','Shop products','Start selling','01 / WHAT WE BUY','02 / WHAT WE SELL'];
@@ -121,19 +127,11 @@ function renderHero(site){
  if(known.includes(String(safeCopy.kicker||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.kicker||'')))safeCopy.kicker='';
  if(cta.includes(String(safeCopy.cta1||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta1||'')))safeCopy.cta1='';
  if(String(safeCopy.cta2||'').trim().toLowerCase()==='what we sell')safeCopy.cta2='Visit our retail shop'; else if(cta.includes(String(safeCopy.cta2||'')) || /^\s*\d+\s*\/\s*/.test(String(safeCopy.cta2||'')))safeCopy.cta2='';
- const kicker=esc(safeCopy.kicker||d.kicker);
- const cta1=esc(safeCopy.cta1||d.cta1);
- const cta2=esc(safeCopy.cta2||d.cta2);
- const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'';
- const a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
- const branding=site.branding&&typeof site.branding==='object'?site.branding:{};
- const bannerUrl=String(branding.banner_url||window.__tradeflowPublicProfile?.banner_url||'');
- const useBanner=site.homepage?.use_banner!==false;
- const bannerPosition=['left','center','right'].includes(site.homepage?.banner_position)?site.homepage.banner_position:'center';
- const heroUrl=home.image_url||'';
- const i1=publicLayoutBlock(home,'heroImage','image',heroUrl,'div',name+' website image');
- const h=esc(headline),p=esc(intro);
- const titleMarkup=useBanner&&bannerUrl?publicLayoutBlock(home,'heroBanner','image',bannerUrl,'div',name+' website banner'):publicLayoutBlock(home,'heroTitle','text',headline,'h1',name+' title image');
+ const kicker=esc(safeCopy.kicker||d.kicker),cta1=esc(safeCopy.cta1||d.cta1),cta2=esc(safeCopy.cta2||d.cta2);
+ const a1=cta1?'<a href="'+pageUrl('sell')+'">'+cta1+'</a>':'',a2=cta2?'<a href="'+pageUrl('shop')+'">'+cta2+'</a>':'';
+ const branding=site.branding&&typeof site.branding==='object'?site.branding:{},bannerUrl=String(branding.banner_url||window.__tradeflowPublicProfile?.banner_url||'');
+ const heroUrl=home.image_url||'',i1=publicLayoutBlock(home,'heroImage','image',heroUrl,'div',name+' website image'),h=esc(headline),p=esc(intro);
+ const titleMarkup=home.use_banner!==false&&bannerUrl?publicLayoutBlock(home,'heroBanner','image',bannerUrl,'div',name+' website banner'):publicLayoutBlock(home,'heroTitle','text',headline,'h1',name+' title image');
  const i2=publicLayoutBlock(home,'heroImage2','image',home.image_url2,'div',name+' second image');
  switch(t){
  case 'editorial':return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
@@ -145,7 +143,8 @@ function renderHero(site){
  case 'business':return '<section class="tpl-hero business-hero"><div class="business-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts">'+i1+'</div></section>';
  case 'luxe':return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+i1+'</div></section>';
  case 'commerce':return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel">'+i1+'</div></section>';
- case 'impact':return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+i1+'</div></section>';default:return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
+ case 'impact':return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+i1+'</div></section>';
+ default:return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><span class="tpl-eyebrow">'+kicker+'</span>'+titleMarkup+'<p>'+p+'</p><div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+i1+i2+'</div></section>';
  }
 }
 

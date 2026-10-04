@@ -2453,3 +2453,7 @@ Do not change the established **Edit → Save Draft → Preview → Publish → 
 For editable homepage text and image elements, border styling and rounded corners are content properties, not editor-selection decoration. Preserve the separation between the user's chosen border and the editor's selection outline.
 
 Available controls are Border style (None/Solid/Dashed/Dotted/Double), Border width (1–4px), Border colour, and Round corners (Square/2px/4px/8px/12px/20px/Fully round). Store the values in the editable element content and preserve them through Save Draft, reload and Publish. Do not reintroduce a hard-coded border that overrides the user's Border = None choice.
+
+## Shared top section control parity — 4 October 2026
+
+Do not maintain a separate reduced formatting model for Shared top section elements. When Top of page gains border or corner controls, Shared top section text/image elements must expose the same controls and persist the same borderStyle, borderWidth, borderColor and borderRadius properties.

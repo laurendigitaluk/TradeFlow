@@ -23,7 +23,7 @@ function applyBannerPositionToGlobalHeader(){
 }
 function makeEditableHeroElement(type,overrides={}){
  const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
- const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
+ const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
  return normalizeEditableHeroElement(Object.assign(base,overrides));
 }
 function normalizeEditableHeroElement(v){
@@ -1098,7 +1098,7 @@ function resetToFreshWebsite(){
  editableHeroElements=[
   // Locked starter layout captured from the approved builder arrangement:
   // left text box, right image box, then the full-width lower text box.
-  makeEditableHeroElement('text',{id:'starter-text-1',role:'text',x:6,y:7.131578947809846,width:47.093378607809846,height:32.868421052190154,aspect:1,text:'Your Text Here',font:'inherit',fontSize:32,color:'#edf0f3',align:'center',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'}),
+  makeEditableHeroElement('text',{id:'starter-text-1',role:'text',x:6,y:7.131578947809846,width:47.093378607809846,height:32.868421052190154,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'center',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'}),
   makeEditableHeroElement('image',{id:'starter-image-1',role:'image',x:56,y:8.236842105263158,width:38,height:34,aspect:1.45,image_url:''}),
   makeEditableHeroElement('text',{id:'starter-text-2',role:'text',x:0,y:53.68421052631579,width:70.44991511035653,height:28,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'center',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'})
  ];

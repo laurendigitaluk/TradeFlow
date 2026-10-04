@@ -230,7 +230,7 @@ function defaultPages(){
    slug:p.slug,title:p.title,enabled:p.enabled,
    body:p.slug==='shop'?'Welcome to our shop. Browse our current products below.':
         p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',
-   image_url:'',image_alt:'',image_url2:'',image_alt2:'',title_style:{},body_style:{},tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
+   image_url:'',image_alt:'',image_url2:'',image_alt2:'',title_style:{},body_style:{},tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,page_tile_format_version:p.slug==='shop'||p.slug==='buying'?2:0,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
  }));
 }
 let pages=defaultPages();
@@ -829,10 +829,27 @@ function loadContent(content){
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
-   body:cleanPageBody(p.slug,p.body),title_style:normalizeSiteTextStyle(p.title_style),body_style:normalizeSiteTextStyle(p.body_style),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
+   body:cleanPageBody(p.slug,p.body),title_style:normalizeSiteTextStyle(p.title_style),body_style:normalizeSiteTextStyle(p.body_style),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,page_tile_format_version:p.slug==='shop'||p.slug==='buying'?2:0,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
- selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=homepageHeroFormatMigrationPending||homepageTextFormatMigrationPending||homepageTileFormatMigrationPending;
- if(dirty){if(homepageTextFormatMigrationPending){homepageTextStyles={buyHeading:normalizeSiteTextStyle({font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'}),buyIntro:normalizeSiteTextStyle({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'}),sellHeading:normalizeSiteTextStyle({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'}),sellIntro:normalizeSiteTextStyle({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'})};}if(homepageTileFormatMigrationPending){homepageTiles=homepageTiles.map(t=>{const n=normalizeHomepageTile(t);n.title_style={font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'};n.body_style={font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'};n.cta_style={font:'inherit',fontSize:'14',color:'#ffffff',lineHeight:'1.2',letterSpacing:'0'};return n;});}const state=$('save-state');if(state)state.textContent='Unsaved changes — formatting has been standardised.';}
+ let pageTileMigrationPending=false;
+ pages=pages.map(p=>{
+   if(p.slug!=='buying'&&p.slug!=='shop')return p;
+   const needs=Number(p.page_tile_format_version||0)<2;
+   if(needs){
+     p.tiles=(Array.isArray(p.tiles)?p.tiles:[]).map(tile=>{
+       const n=normalizeHomepageTile(tile);
+       n.title_style={font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'};
+       n.body_style={font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'};
+       n.cta_style={font:'inherit',fontSize:'14',color:'#ffffff',lineHeight:'1.2',letterSpacing:'0'};
+       return n;
+     });
+     p.page_tile_format_version=2;
+     pageTileMigrationPending=true;
+   }
+   return p;
+ });
+ selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=homepageHeroFormatMigrationPending||homepageTextFormatMigrationPending||homepageTileFormatMigrationPending||pageTileMigrationPending;homepageHeroFormatMigrationPending||homepageTextFormatMigrationPending||homepageTileFormatMigrationPending;
+ if(dirty){if(homepageTextFormatMigrationPending){homepageTextStyles={buyHeading:normalizeSiteTextStyle({font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'}),buyIntro:normalizeSiteTextStyle({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'}),sellHeading:normalizeSiteTextStyle({font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'}),sellIntro:normalizeSiteTextStyle({font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'})};}if(homepageTileFormatMigrationPending){homepageTiles=homepageTiles.map(t=>{const n=normalizeHomepageTile(t);n.title_style={font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'};n.body_style={font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'};n.cta_style={font:'inherit',fontSize:'14',color:'#ffffff',lineHeight:'1.2',letterSpacing:'0'};return n;});}const state=$('save-state');if(state)state.textContent='Unsaved changes — formatting has been standardised.';}
  renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
 }
 

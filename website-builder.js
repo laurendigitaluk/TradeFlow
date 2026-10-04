@@ -1079,9 +1079,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
   if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,height:16,aspect:2.8};
   if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,height:20,aspect:5};
-  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,height:18,fontSize:32};
+  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,height:18,font:'inherit',fontSize:40};
   if(kind==='image')o={role:'image',x:55,y:16,width:38,height:34,aspect:1.45,image_url:''};
-  if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:62,width:24,height:10,aspect:4};
+  if(kind==='button'){const buttonCount=editableHeroElements.filter(x=>x.type==='button').length;const buttonX=Math.min(72,8+buttonCount*28);o={role:'button',button_text:'Learn more',text:'Learn more',x:buttonX,y:62,width:24,height:10,aspect:4};}
   const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
  }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){

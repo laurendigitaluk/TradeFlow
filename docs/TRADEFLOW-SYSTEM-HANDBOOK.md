@@ -1974,7 +1974,6 @@ The LIVE Website Builder editable homepage elements now support user-controlled 
 - Existing elements without a saved corner-radius value default to square corners, preserving backward compatibility.
 
 Implementation commits:
-- website-builder.js: 4321e9bea51cdc6a2a88d903672e956af61bb1
+- website-builder.js: 816a02d85cc6194b1ff8e0cf4757c0d803d352fe
 - website-builder.css: 8dba5889960c1413166f834e1eb830f4bf6b8f9a
 - website-builder.html asset bump: b26f73238f84ad87eaa0b22126f5b0221558c147
-

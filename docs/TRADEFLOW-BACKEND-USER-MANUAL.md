@@ -915,3 +915,14 @@ Security boundary:
 - Customer RPCs verify the authenticated user owns the customer record for the tenant.
 - Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
 - Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.
+
+
+## Customer Assistant — implementation boundary — 4 October 2026
+
+The TEST customer assistant is implemented through the provider-neutral tradeflow-assistant Edge Function. The function authenticates the caller, resolves the tenant, then verifies either active subscriber membership or the authenticated customer record for that tenant.
+
+For customer audience requests, the function retrieves only that customer's tenant-scoped requests/items, offers, acquisitions/shipping state, retail orders and returns. A customer cannot request Product Research. The provider-none path now converts this permitted context into deterministic customer-facing answers for common status, selling, order, shipping/tracking and return questions; it does not grant database access to the model or browser.
+
+Customer-to-subscriber escalation uses the existing assistant_conversations and assistant_messages tables plus the controlled RPCs. Direct table access remains protected by RLS and the messaging RPCs enforce tenant membership/customer ownership.
+
+The current TEST deployment is Edge Function version 13. No AI provider is enabled. Do not add provider credentials or broaden the customer context without a separate security review.

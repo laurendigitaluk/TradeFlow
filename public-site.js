@@ -380,7 +380,7 @@ function renderProductPage(site,listings){
  else if(shippingMethod==='included')postageText='Included in price';
  else if(shippingMethod==='free')postageText='Free';
  else if(shippingMethod==='customer_pays')postageText='Not set';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+
    '<main class="public-page product-page"><div class="product-detail">'+
    '<header class="product-heading"><h1>'+esc(item.title||'Product')+'</h1></header>'+
    '<div class="product-main"><div class="product-gallery">'+gallery+'</div>'+
@@ -395,7 +395,7 @@ function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
  const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>'+esc(p.buying_action_heading||'Sell your items')+'</strong><span>'+esc(p.buying_action_text||'Choose a category to start your selling journey.')+'</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
@@ -409,7 +409,7 @@ function bindProductSearch(){const input=$('tradeflow-product-search');if(!input
 
 function renderContentPage(site,p){
  const image=p.image_url?'<img class="content-page-image" src="'+esc(p.image_url)+'" alt="'+esc(p.image_alt||p.title||'Page image')+'">':'';
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+publicPageBanner(site)+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+'<h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function applyContent(content){

@@ -547,7 +547,7 @@ async function uploadImage(file,target){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
  setStatus('Uploading image…');
- const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target;
+ const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('hero-element:')?'hero-elements':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
  const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{
@@ -562,7 +562,7 @@ async function uploadImage(file,target){
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
- else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;}
+ else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -585,7 +585,7 @@ function removeImage(target){
  else if(target==='home-buy')homeBuyImageUrl='';
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
- else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';}
+ else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el)el.image_url='';}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
@@ -755,6 +755,21 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    if(selectedEditableHeroId===id)selectedEditableHeroId=null;
    markDirty();
    renderEditor();
+  });
+ });
+ root.querySelectorAll('[data-eh-style]').forEach(function(control){
+  control.addEventListener('input',function(){
+   const el=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});
+   if(!el)return;
+   el[control.dataset.ehStyle]=control.value;
+   const node=root.querySelector('[data-eh-id="'+CSS.escape(el.id)+'"]');
+   if(node){
+    const key=control.dataset.ehStyle;
+    const prop=key==='fontSize'?'--eh-size':key==='vAlign'?'--eh-valign':key==='lineHeight'?'--eh-line':key==='letterSpacing'?'--eh-letter':'--eh-'+key;
+    const val=key==='fontSize'?(control.value==='auto'?'inherit':control.value+'px'):key==='letterSpacing'?control.value+'px':control.value;
+    node.style.setProperty(prop,val);
+   }
+   markDirty();
   });
  });
  root.querySelectorAll('[data-eh-edit]').forEach(function(node){

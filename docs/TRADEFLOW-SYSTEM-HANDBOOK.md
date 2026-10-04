@@ -1981,3 +1981,7 @@ Implementation commits:
 ## Website Builder shared top section parity — 4 October 2026
 
 The Shared top section editor now uses the same border controls as the Top of page editable canvas for selected text, photo, banner and logo elements: Border style, Border width, Border colour and Round corners. The chosen values are stored on the shared header element and applied to both the editor element and image clipping where applicable.
+
+## Website Builder toolbar consolidation — 4 October 2026
+
+The Top of page editing toolbar is now rendered inside the Shared top section editor. This keeps the add-element and formatting controls together while the editable homepage top-page canvas remains below it. The existing element data model and draft/publish lifecycle are unchanged.

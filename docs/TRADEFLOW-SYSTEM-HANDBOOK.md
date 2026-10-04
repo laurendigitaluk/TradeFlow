@@ -1977,3 +1977,7 @@ Implementation commits:
 - website-builder.js: 816a02d85cc6194b1ff8e0cf4757c0d803d352fe
 - website-builder.css: 8dba5889960c1413166f834e1eb830f4bf6b8f9a
 - website-builder.html asset bump: b26f73238f84ad87eaa0b22126f5b0221558c147
+
+## Website Builder shared top section parity — 4 October 2026
+
+The Shared top section editor now uses the same border controls as the Top of page editable canvas for selected text, photo, banner and logo elements: Border style, Border width, Border colour and Round corners. The chosen values are stored on the shared header element and applied to both the editor element and image clipping where applicable.

@@ -498,6 +498,7 @@ function bindEditor(){
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
+   if(target&&target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  });});
@@ -823,6 +824,13 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:62,width:24,height:10,aspect:4};
   const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
  }));
+ root.querySelectorAll('[data-image-action][data-image-target^="hero-element:"]').forEach(btn=>btn.addEventListener('click',function(e){
+  e.preventDefault();e.stopPropagation();
+  const target=btn.dataset.imageTarget;
+  selectedEditableHeroId=target.slice(12);
+  const input=$('image-file-input');
+  input.dataset.target=target;input.value='';input.click();
+ }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();
  }));
@@ -871,8 +879,8 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
    let dragging=!isText;
    let finished=false;
    function apply(ev){
-    el.x=Math.max(0,Math.min(100-el.width,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));
-    el.y=Math.max(0,Math.min(100-el.height,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));
+    el.x=Math.max(6,Math.min(94-el.width,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));
+    el.y=Math.max(2,Math.min(98-el.height,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));
     node.style.left=el.x+'%';node.style.top=el.y+'%';
    }
    function move(ev){

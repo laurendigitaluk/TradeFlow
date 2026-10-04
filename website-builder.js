@@ -508,7 +508,7 @@ function makeGlobalHeaderElement(type,overrides={}){
 }
 function globalHeaderElementMarkup(el){
  const b=normalizeGlobalHeaderElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-radius:'+esc(b.borderRadius||'0')+';';
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-bg:'+esc(b.backgroundColor||'#ffffff')+';--eh-radius:'+esc(b.borderRadius||'0')+';';
  let body='';
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)

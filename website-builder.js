@@ -7,6 +7,27 @@ let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
+let editableHeroElements=[],selectedEditableHeroId=null;
+function makeEditableHeroElement(type,overrides={}){
+ const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+ const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
+ return normalizeEditableHeroElement(Object.assign(base,overrides));
+}
+function normalizeEditableHeroElement(v){
+ const d=Object.assign({id:'eh-'+Math.random().toString(36).slice(2,8),type:'text',role:'text',x:5,y:10,width:40,aspect:1.5,image_url:'',text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},v||{});
+ d.type=d.type==='image'?'image':'text';d.role=String(d.role||d.type);d.x=Math.max(0,Math.min(92,Number(d.x)||0));d.y=Math.max(0,Math.min(92,Number(d.y)||0));d.width=Math.max(8,Math.min(92,Number(d.width)||40));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));d.image_url=String(d.image_url||'');d.text=String(d.text||'');d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';d.align=['left','center','right'].includes(d.align)?d.align:'left';d.vAlign=['top','center','bottom'].includes(d.vAlign)?d.vAlign:'center';d.lineHeight=String(d.lineHeight||'1.2');d.letterSpacing=String(d.letterSpacing||'0');return d;
+}
+function defaultEditableHeroElements(){
+ const out=[];if(logoUrl)out.push(makeEditableHeroElement('image',{id:'logo',role:'logo',x:5,y:5,width:18,aspect:2.8,image_url:logoUrl}));if(bannerUrl)out.push(makeEditableHeroElement('image',{id:'banner',role:'banner',x:5,y:18,width:90,aspect:5,image_url:bannerUrl}));out.push(makeEditableHeroElement('text',{id:'headline',role:'headline',x:7,y:42,width:70,text:headline||'A clear way to buy and sell',fontSize:48}));if(intro)out.push(makeEditableHeroElement('text',{id:'intro',role:'intro',x:7,y:64,width:58,text:intro,fontSize:20,color:'#52606b',lineHeight:'1.4'}));return out;
+}
+function loadEditableHeroElements(home){const raw=Array.isArray(home?.editable_elements)?home.editable_elements:[];editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();if(editableHeroElements.length&&!selectedEditableHeroId)selectedEditableHeroId=editableHeroElements[0].id;}
+function editableHeroElementMarkup(el,editable=true){
+ const b=normalizeEditableHeroElement(el),style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ const body=b.type==='image'?(b.image_url?'<img src="'+esc(b.image_url)+'" alt="Website image">':'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>'):'<div class="editable-hero-text" contenteditable="'+(editable?'true':'false')+'" data-eh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
+ return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':'eh-text')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'">×</button><span class="editable-hero-resize"></span>'+body+'</div>';
+}
+function renderEditableHero(){return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button></div><div class="editable-hero-canvas" data-editable-hero-canvas>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';}
+
 function normalizeLayoutBlock(v,defaults){const x=Object.assign({font:'inherit',fontSize:'auto',color:'inherit',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},defaults,v||{});x.type=x.type==='image'?'image':'text';x.x=Number.isFinite(Number(x.x))?Number(x.x):0;x.y=Number.isFinite(Number(x.y))?Number(x.y):0;x.width=Math.max(20,Math.min(100,Number(x.width)||defaults.width));x.aspect=Math.max(.35,Math.min(4,Number(x.aspect)||defaults.aspect));x.image_url=String(x.image_url||'');x.text=String(x.text||'');x.font=String(x.font||'inherit');x.fontSize=String(x.fontSize||'auto');x.color=String(x.color||'inherit');x.align=['left','center','right'].includes(x.align)?x.align:'left';x.vAlign=['top','center','bottom'].includes(x.vAlign)?x.vAlign:'center';x.lineHeight=String(x.lineHeight||'1.2');x.letterSpacing=String(x.letterSpacing||'0');return x;}
 function loadLayoutBlocks(home){const lb=home?.layout_blocks||{};layoutBlocks={heroTitle:normalizeLayoutBlock(lb.heroTitle,{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:headline}),heroImage:normalizeLayoutBlock(lb.heroImage,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl,text:''}),heroImage2:normalizeLayoutBlock(lb.heroImage2,{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:homeImageUrl2,text:''}),heroBanner:normalizeLayoutBlock(lb.heroBanner,{type:'image',x:0,y:0,width:60,aspect:4,image_url:String(home?.banner_url||bannerUrl||''),text:''})};}
 function layoutBlockMarkup(id,block,content,tag='div',alt='Website image'){
@@ -336,30 +357,7 @@ function templateHeroImage(url,target,label,alt){
  if(url)return '<div class="template-image-slot template-image-filled"><div class="template-image-frame"><img src="'+esc(url)+'" alt="'+esc(alt||siteName||'Website image')+'"><div class="template-image-tools"><button type="button" data-image-action="replace" data-image-target="'+esc(target)+'">Replace image</button><button type="button" data-image-action="remove" data-image-target="'+esc(target)+'">Remove</button></div></div></div>';
  return '<div class="template-image-slot template-image-empty"><button type="button" data-image-action="add" data-image-target="'+esc(target)+'">Add image</button><span>'+esc(text)+'</span></div>';
 }
-function templateHero(){
- const d=templateDefaults[currentTemplate]||templateDefaults.editorial;
- const heroUrl=homeImageUrl;
- const img1=layoutBlockMarkup('heroImage',layoutBlocks.heroImage,heroUrl?'':'Add the main image for this template.','div','Main website image');
- const img2=layoutBlockMarkup('heroImage2',layoutBlocks.heroImage2,homeImageUrl2?'':'Add a secondary image for this template.','div','Secondary website image');
- templateCopy=cleanTemplateCopy(templateCopy);
- const kicker=editText('templateKicker',templateCopy.kicker||d.kicker,'span');
- const h=editText('headline',headline,'h1'),introMarkup=editText('intro',intro,'p');
- const titleMarkup=useBanner&&bannerUrl?layoutBlockMarkup('heroBanner',layoutBlocks.heroBanner,bannerUrl,'div',siteName||'Website banner'):layoutBlockMarkup('heroTitle',layoutBlocks.heroTitle,headline,'h1',siteName||'Website image');
- const a1='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta1">'+esc(templateCopy.cta1||d.cta1)+'</b>';
- const a2='<b class="editable-hero-cta" contenteditable="true" data-template-field="cta2">'+esc(templateCopy.cta2||d.cta2)+'</b>';
- switch(currentTemplate){
- case 'editorial': return '<section class="tpl-hero editorial-hero"><div class="editorial-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="editorial-images">'+img1+img2+'</div></section>';
- case 'classic': return '<section class="tpl-hero classic-hero"><div class="classic-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="classic-frame">'+img1+'</div></section>';
- case 'grid': return '<section class="tpl-hero grid-hero"><div class="grid-main"><div class="tpl-code">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="grid-cta-row">'+a1+a2+'</div></div><div class="grid-image">'+img1+'</div></section>';
- case 'studio': return '<section class="tpl-hero studio-hero"><div class="studio-image">'+img1+'</div><div class="studio-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'horizon': return '<section class="tpl-hero horizon-hero"><div class="horizon-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="horizon-image">'+img1+'</div></section>';
- case 'field': return '<section class="tpl-hero field-hero"><div class="field-image">'+img1+'</div><div class="field-overlay"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div></section>';
- case 'business': return '<section class="tpl-hero business-hero"><div class="business-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="business-facts banner-image-slot">'+img1+'</div></section>';
- case 'luxe': return '<section class="tpl-hero luxe-hero"><div class="luxe-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="luxe-image">'+img1+'</div></section>';
- case 'commerce': return '<section class="tpl-hero commerce-hero"><div class="commerce-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="commerce-actions">'+a1+a2+'</div></div><div class="commerce-panel banner-image-slot">'+img1+'</div></section>';
- default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+titleMarkup+introMarkup+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
- }
-}
+function templateHero(){return renderEditableHero();}
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
@@ -399,7 +397,7 @@ function renderEditor(){
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
  $('site-editor').style.setProperty('--accent',themeColors.accent);applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();bindLayoutInteractions($('site-editor'));
+ bindEditor();bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));
 }
 
 function bindLayoutInteractions(root){
@@ -499,7 +497,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -541,7 +539,7 @@ function loadContent(content){
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
  bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
- loadLayoutBlocks(s.homepage||{});
+ loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate=templateHeadlines[s.template]?s.template:'editorial';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
@@ -652,10 +650,10 @@ function resetToFreshWebsite(){
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
+ homepageTiles=defaultHomepageTiles();editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
- pages=defaultPages();selectedPage='home';currentTemplate='editorial';window.__existingCategoryManifest=[];
+ pages=defaultPages();selectedPage='home';currentTemplate='editable';editableHeroElements=defaultEditableHeroElements();window.__existingCategoryManifest=[];
 }
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));

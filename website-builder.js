@@ -1096,9 +1096,11 @@ function resetToFreshWebsite(){
  homeSellHeading='What We Sell';homeSellIntro='Showcase the products and collections customers can browse and buy.';
  homepageTiles=defaultHomepageTiles();homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};
  editableHeroElements=[
-  makeEditableHeroElement('text',{id:'starter-text-1',role:'text',x:7,y:4,width:47,height:34,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'left',vAlign:'top',lineHeight:'1.2',letterSpacing:'0'}),
-  makeEditableHeroElement('image',{id:'starter-image-1',role:'image',x:58,y:4,width:35,height:34,aspect:1.45,image_url:''}),
-  makeEditableHeroElement('text',{id:'starter-text-2',role:'text',x:7,y:42,width:88,height:24,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'left',vAlign:'top',lineHeight:'1.2',letterSpacing:'0'})
+  // Locked starter layout captured from the approved builder arrangement:
+  // left text box, right image box, then the full-width lower text box.
+  makeEditableHeroElement('text',{id:'starter-text-1',role:'text',x:6,y:7.131578947809846,width:47.093378607809846,height:32.868421052190154,aspect:1,text:'Your Text Here',font:'inherit',fontSize:32,color:'#edf0f3',align:'center',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'}),
+  makeEditableHeroElement('image',{id:'starter-image-1',role:'image',x:56,y:8.236842105263158,width:38,height:34,aspect:1.45,image_url:''}),
+  makeEditableHeroElement('text',{id:'starter-text-2',role:'text',x:0,y:53.68421052631579,width:70.44991511035653,height:28,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'center',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'})
  ];
  themeColors={accent:'#a84f2d',button_bg:'#a84f2d',button_text:'#ffffff',page_bg:'#fbf7f2',text:'#2b211d',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#42332a',background_style:'none',background_category:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};

@@ -18,7 +18,7 @@ function normalizeEditableHeroElement(v){
  d.type=['image','button'].includes(d.type)?d.type:'text';
  d.role=String(d.role||d.type);
  d.x=Math.max(0,Math.min(92,Number(d.x)||0));d.y=Math.max(0,Math.min(92,Number(d.y)||0));
- d.width=Math.max(8,Math.min(92,Number(d.width)||42));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));
+ d.width=Math.max(8,Math.min(92,Number(d.width)||42));d.height=Math.max(8,Math.min(90,Number(d.height)||28));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));
  d.image_url=String(d.image_url||'');d.text=String(d.text||'');
  d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');
  d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';
@@ -30,13 +30,13 @@ function normalizeEditableHeroElement(v){
 }
 function makeEditableHeroElement(type,overrides={}){
  const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
- const base=type==='image'?{id,type:'image',role:'image',x:52,y:16,width:40,aspect:1.45,image_url:homeImageUrl||'',text:''}:type==='button'?{id,type:'button',role:'button',x:8,y:55,width:24,aspect:4,text:'Learn more',button_text:'Learn more',button_link_type:'internal',button_link:'home'}:{id,type:'text',role:'text',x:8,y:12,width:42,aspect:1,text:headline||'Add your headline',font:'inherit',fontSize:40,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
+ const base=type==='image'?{id,type:'image',role:'image',x:52,y:16,width:40,height:34,aspect:1.45,image_url:'',text:''}:type==='button'?{id,type:'button',role:'button',x:8,y:55,width:24,aspect:4,text:'Learn more',button_text:'Learn more',button_link_type:'internal',button_link:'home'}:{id,type:'text',role:'text',x:8,y:12,width:42,aspect:1,text:headline||'Add your headline',font:'inherit',fontSize:40,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
  return normalizeEditableHeroElement(Object.assign(base,overrides));
 }
 function defaultEditableHeroElements(){
  return [
   makeEditableHeroElement('text',{id:'headline',role:'headline',x:7,y:18,width:42,text:headline||'Add your headline',fontSize:40}),
-  makeEditableHeroElement('image',{id:'image-1',role:'image',x:55,y:14,width:38,aspect:1.45,image_url:homeImageUrl||''})
+  makeEditableHeroElement('image',{id:'image-1',role:'image',x:55,y:14,width:38,height:34,aspect:1.45,image_url:''})
  ];
 }
 function loadEditableHeroElements(home){
@@ -50,13 +50,20 @@ function editableHeroLinkOptions(selected){
 }
 function editableHeroElementMarkup(el,editable=true){
  const b=normalizeEditableHeroElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;'+(b.type==='image'?'aspect-ratio:'+b.aspect+';':'')+'--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
  let body='';
- if(b.type==='image') body=b.image_url?'<img src="'+esc(b.image_url)+'" alt="Website image">':'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>';
- else if(b.type==='button') body='<span class="editable-hero-button-preview">'+esc(b.button_text)+'</span>';
- else body='<div class="editable-hero-text" contenteditable="'+(editable?'true':'false')+'" data-eh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
- return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':b.type==='button'?'eh-button':'eh-text')+(b.id===selectedEditableHeroId?' selected':'')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'" aria-label="Delete element">×</button><span class="editable-hero-resize" aria-label="Resize element"></span>'+body+'</div>';
+ if(b.type==='image'){
+   body=b.image_url
+    ?'<div class="editable-hero-image-wrap"><img src="'+esc(b.image_url)+'" alt="Website image"></div><div class="editable-hero-image-tools"><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(b.id)+'">Remove image</button></div>'
+    :'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>';
+ }else if(b.type==='button'){
+   body='<span class="editable-hero-button-preview">'+esc(b.button_text)+'</span>';
+ }else{
+   body='<div class="editable-hero-text" contenteditable="'+(editable?'true':'false')+'" data-eh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
+ }
+ return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':b.type==='button'?'eh-button':'eh-text')+(b.id===selectedEditableHeroId?' selected':'')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><span class="editable-hero-move" title="Drag to move" aria-label="Drag to move">↕</span><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'" aria-label="Delete element">×</button><span class="editable-hero-resize" aria-label="Resize element"></span>'+body+'</div>';
 }
+
 function renderEditableHero(){
  const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
  if(selected)selectedEditableHeroId=selected.id;
@@ -769,21 +776,15 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
-  if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,aspect:2.8};
-  if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,aspect:5};
-  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,fontSize:32};
-  if(kind==='image')o={role:'image',x:55,y:16,width:38,aspect:1.45};
-  if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:58,width:24,aspect:4};
+  if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,height:16,aspect:2.8};
+  if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,height:20,aspect:5};
+  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,height:18,fontSize:32};
+  if(kind==='image')o={role:'image',x:55,y:16,width:38,height:34,aspect:1.45,image_url:''};
+  if(kind==='button')o={role:'button',button_text:'Learn more',text:'Learn more',x:8,y:62,width:24,height:10,aspect:4};
   const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
  }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();
- }));
- root.querySelectorAll('[data-eh-style]').forEach(control=>control.addEventListener('input',function(){
-  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);if(!el)return;el[control.dataset.ehStyle]=control.value;markDirty();renderEditor();
- }));
- root.querySelectorAll('[data-eh-field]').forEach(control=>control.addEventListener('input',function(){
-  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);if(!el)return;el[control.dataset.ehField]=control.value;markDirty();renderEditor();
  }));
  root.querySelectorAll('[data-eh-edit]').forEach(node=>node.addEventListener('input',function(){
   const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText.trim();if(el.role==='headline')headline=el.text;markDirty();
@@ -791,28 +792,46 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  root.querySelectorAll('[data-eh-id]').forEach(node=>{
   const id=node.dataset.ehId,el=editableHeroElements.find(x=>x.id===id);if(!el)return;
   node.addEventListener('pointerdown',function(e){
-   if(e.button!==undefined&&e.button!==0)return;if(e.target.closest('button,select,input,[contenteditable="true"],a'))return;
-   e.preventDefault();selectedEditableHeroId=id;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);
+   if(e.button!==undefined&&e.button!==0)return;
+   if(e.target.closest('button,select,input,[contenteditable="true"],a,.editable-hero-resize'))return;
+   e.preventDefault();
+   selectedEditableHeroId=id;
+   root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));
+   node.classList.add('selected');
+   renderEditableHeroToolbarOnly(root);
+  });
+  const mover=node.querySelector('.editable-hero-move');
+  if(mover)mover.addEventListener('pointerdown',function(e){
+   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
    const sx=e.clientX,sy=e.clientY,ox=el.x,oy=el.y,rect=canvas.getBoundingClientRect();
-   const move=ev=>{el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(92,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';};
-   const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();};
+   function move(ev){el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(90,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';}
+   function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditableHeroToolbarOnly(root);}
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   });
   const resize=node.querySelector('.editable-hero-resize');
   if(resize)resize.addEventListener('pointerdown',function(e){
-   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;const sx=e.clientX,sw=el.width,rect=canvas.getBoundingClientRect();
-   const move=ev=>{el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));node.style.width=el.width+'%';};
-   const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();};
+   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
+   const sx=e.clientX,sy=e.clientY,sw=el.width,sh=el.height,rect=canvas.getBoundingClientRect();
+   function move(ev){
+    el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));
+    el.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,rect.height)*100));
+    node.style.width=el.width+'%';node.style.height=el.height+'%';
+   }
+   function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();}
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   });
  });
 }
 function renderEditableHeroToolbarOnly(root){
  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);const format=root.querySelector('.editable-hero-format');if(!format||!el)return;
- let html='<span>Select a text box or button to edit its settings.</span>';
+ let html='<span>Select an element, then drag the ↕ handle to move it or the corner handle to resize it.</span>';
  if(el.type==='text')html='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+el.color+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
+ if(el.type==='image')html='<span>Image</span><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(el.id)+'">Change image</button>'+(el.image_url?'<button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(el.id)+'">Remove image</button>':'<button type="button" data-image-action="add" data-image-target="hero-element:'+esc(el.id)+'">Add image</button>');
  if(el.type==='button')html='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(el.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal">TradeFlow page</option><option value="custom">Custom URL</option></select></label>'+(el.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(el.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(el.button_link)+'</select></label>');
- format.innerHTML=html;format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehStyle]=control.value;markDirty();renderEditor();}});});format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehField]=control.value;markDirty();renderEditor();}});});
+ format.innerHTML=html;
+ format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehStyle]=control.value;markDirty();renderEditor();}});});
+ format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehField]=control.value;markDirty();renderEditor();}});});
+ format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const input=$('image-file-input');input.dataset.target=control.dataset.imageTarget;input.value='';input.click();});});
 }
 function bindEditor(){
  const root=$('site-editor');

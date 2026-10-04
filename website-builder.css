@@ -657,3 +657,31 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
  background-size:var(--site-background-size,cover);
  background-repeat:var(--site-background-repeat,no-repeat);
 }
+
+/* LIVE unified fully-editable template: one global background layer */
+.site-editor.template-editable .editor-hero,
+.site-editor.template-editable .editable-hero-editor,
+.site-editor.template-editable .editable-hero-canvas,
+.site-editor.template-editable .template-section,
+.site-editor.template-editable .homepage-tiles,
+.site-editor.template-editable .home-tile-section,
+.site-editor.template-editable .full-page,
+.site-editor.template-editable .template-page,
+.site-editor.template-editable .editor-features{
+ background:transparent!important;
+}
+.site-editor.template-editable .editable-hero-canvas{
+ border-color:rgba(75,85,99,.35);
+}
+.editable-hero-button-preview{
+ background:var(--button-bg,var(--accent,#c46a2b))!important;
+ color:var(--button-text,#fff)!important;
+}
+.site-editor.template-editable .editor-nav{
+ background:var(--header-bg,#fff);
+}
+.site-editor.template-editable .home-tile,
+.site-editor.template-editable .buy-category-card,
+.site-editor.template-editable .sell-product-grid article{
+ background:rgba(255,255,255,.9);
+}

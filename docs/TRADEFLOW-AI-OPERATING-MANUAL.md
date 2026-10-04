@@ -2468,3 +2468,16 @@ Shared top section and Top of page toolbars must retain the same light neutral b
 
 ## 2026-10-04 — Final Website Builder Starter Template Lock
 The approved Website Builder starter arrangement is now the reusable default for new subscribers. Fresh-start coordinates are locked to the approved left text, right image, and lower full-width text boxes. Starter text is blank; no placeholder copy is seeded. The layout is a starting template, not an immutable subscriber canvas. Production integrity and link checks are recorded in CHECKPOINTS/2026-10-04-website-builder-starter-template-lock-final.md.
+
+## 2026-10-04 Tile Link Destination Control
+
+Website Builder homepage tiles and custom-page tiles (including What We Buy / What We Sell) now provide an explicit destination control for the tile's link text/CTA.
+
+- **Link type:** TradeFlow page or Custom URL.
+- **Link to:** when TradeFlow page is selected, choose any enabled site page; when Custom URL is selected, enter the destination URL.
+- The link text remains the editable **CTA / Add link text** field.
+- Internal page links use the site's normal page routing. Custom HTTP/HTTPS links are validated by the public site before being rendered as links.
+- The destination is saved as part of the tile configuration and is used by both the builder preview model and the published public site.
+- A blank CTA/link text does not create a public link.
+
+This is part of the reusable standard website template. New subscribers receive the control as part of the standard tile editor; existing tile layout/positioning is not changed by adding the destination fields.

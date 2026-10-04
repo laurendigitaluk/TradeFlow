@@ -481,6 +481,7 @@ function renderEditor(){
 
 function bindEditor(){
  const root=$('site-editor');
+ bindHeroCanvas();
  root.querySelectorAll('[contenteditable="true"]').forEach(el=>{
    el.addEventListener('input',()=>{
      const field=el.dataset.edit;

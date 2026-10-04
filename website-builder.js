@@ -616,13 +616,14 @@ async function uploadImage(file,target){
  const responseText=await response.text();
  if(!response.ok)throw new Error(responseText||'Image upload failed.');
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
+ if(target.startsWith('hero-element:')){const id=target.slice(12);selectedEditableHeroId=id;}
  if(target==='home')homeImageUrl=url;
  else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
  else if(target==='home2')homeImageUrl2=url;
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
- else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
+ else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;selectedEditableHeroId=id;if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}

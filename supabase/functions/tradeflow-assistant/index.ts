@@ -296,6 +296,87 @@ async function handleResearch(
     return await handleResearch(userClient, tenantId, user.id, body);
   }
 
+function buildCustomerFallbackAnswer(question: string, context: any, knowledge: any[]): string {
+  const q = question.toLowerCase();
+  const money = (amount: unknown, currency = "GBP") => {
+    const n = Number(amount);
+    return Number.isFinite(n) ? new Intl.NumberFormat("en-GB", { style: "currency", currency }).format(n) : null;
+  };
+  const stage = (value: unknown) => {
+    const v = String(value || "").toLowerCase();
+    const map: Record<string,string> = {
+      submitted: "request submitted",
+      valuation_ready: "valuation ready",
+      offer_ready: "offer received",
+      offer_accepted: "offer accepted",
+      awaiting_item: "awaiting your item",
+      received: "item received",
+      inspection: "under inspection",
+      inspection_passed: "inspection passed",
+      final_offer_received: "final offer received",
+      payment_pending: "payment pending",
+      paid: "paid",
+      completed: "completed",
+      refused: "closed/refused",
+    };
+    return map[v] || (v ? v.replace(/_/g, " ") : "in progress");
+  };
+
+  const requests = Array.isArray(context?.buying_requests) ? context.buying_requests : [];
+  const items = Array.isArray(context?.buying_items) ? context.buying_items : [];
+  const offers = Array.isArray(context?.offers) ? context.offers : [];
+  const acquisitions = Array.isArray(context?.acquisitions) ? context.acquisitions : [];
+  const orders = Array.isArray(context?.retail_orders) ? context.retail_orders : [];
+  const returns = Array.isArray(context?.returns) ? context.returns : [];
+
+  if (q.includes("shipping") || q.includes("tracking") || q.includes("post") || q.includes("label")) {
+    if (!acquisitions.length) return "I do not currently have a shipping or tracking record for your account. If you are expecting a shipping instruction or label, please contact the business.";
+    const lines = acquisitions.slice(0, 5).map((a: any) => {
+      const tracking = a.shipping_tracking_number ? ` Tracking: ${a.shipping_tracking_number}.` : "";
+      const service = [a.shipping_carrier, a.shipping_service].filter(Boolean).join(" — ");
+      return `${a.acquisition_reference || "Sale"}: ${stage(a.status)}.${service ? " Service: " + service + "." : ""}${tracking}`;
+    });
+    return "Here is the shipping information currently recorded for your account:\n\n" + lines.join("\n");
+  }
+
+  if (q.includes("return")) {
+    if (!returns.length) return "I do not currently have a return recorded for your account.";
+    return "Here are the returns currently recorded for your account:\n\n" +
+      returns.slice(0, 5).map((r: any) => `${r.return_reference || "Return"}: ${stage(r.status)}.${r.refund_amount != null ? " Refund: " + (money(r.refund_amount, r.currency || "GBP") || "") + "." : ""}`).join("\n");
+  }
+
+  if (q.includes("order") || q.includes("purchase") || q.includes("bought")) {
+    if (!orders.length) return "I do not currently have a retail order recorded for your account.";
+    return "Here are the retail orders currently recorded for your account:\n\n" +
+      orders.slice(0, 5).map((o: any) => {
+        const total = money(o.total, o.currency || "GBP");
+        return `${o.order_reference || "Order"}: ${stage(o.status)}.${total ? " Total: " + total + "." : ""}${o.payment_status ? " Payment: " + stage(o.payment_status) + "." : ""}`;
+      }).join("\n");
+  }
+
+  if (q.includes("sell") || q.includes("valuation") || q.includes("offer") || q.includes("item") || q.includes("progress") || q.includes("status") || q.includes("account")) {
+    const lines:string[] = [];
+    if (items.length) {
+      lines.push("Selling to this business:");
+      items.slice(0, 5).forEach((item:any) => {
+        const offer = offers.find((o:any) => o.buying_item_id === item.id);
+        const amount = offer ? money(offer.amount, offer.currency || "GBP") : null;
+        lines.push(`• ${item.title || item.item_reference || "Item"} — ${stage(item.purchase_stage || item.status)}${amount ? ". Offer: " + amount : ""}.`);
+      });
+    } else if (requests.length) {
+      lines.push(`You have ${requests.length} selling request${requests.length === 1 ? "" : "s"} recorded.`);
+    }
+    if (orders.length) lines.push(`Retail orders: ${orders.length}.`);
+    if (returns.length) lines.push(`Returns: ${returns.length}.`);
+    if (lines.length) return "Here is the current information I can see for your account:\n\n" + lines.join("\n");
+  }
+
+  if (knowledge.length) {
+    return knowledge.map((entry:any) => entry.content).join("\n\n");
+  }
+  return "I could not find an approved answer for that question. You can send the question directly to the business and they can reply through TradeFlow.";
+}
+
   const customerVisibleContext = audience === "customer" && customerContext ? {
     customer: customerContext.customer,
     buying_requests: (customerContext.buying_requests || []).map((x: any) => ({
@@ -322,9 +403,11 @@ async function handleResearch(
   const providerAllowed = config.allowed.includes(config.provider);
 
   if (config.provider === "none") {
-    const fallbackAnswer = knowledge.length
-      ? knowledge.map((entry) => entry.content).join("\n\n")
-      : "I could not find an approved TradeFlow guidance entry that matches that question.";
+    const fallbackAnswer = audience === "customer"
+      ? buildCustomerFallbackAnswer(question, customerContext, knowledge)
+      : (knowledge.length
+        ? knowledge.map((entry) => entry.content).join("\n\n")
+        : "I could not find an approved TradeFlow guidance entry that matches that question.");
     return json({
       status: "accepted",
       assistant: {

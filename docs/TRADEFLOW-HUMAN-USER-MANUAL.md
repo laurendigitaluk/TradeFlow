@@ -1835,3 +1835,10 @@ Customers cannot use the assistant to change orders, offers, payments, inventory
 The customer assistant does not expose another customer's information, tenant identifiers, database details or subscriber administration.
 
 This section describes the current TEST implementation and must be browser-verified with an authenticated customer before it is treated as LIVE acceptance evidence.
+
+
+## 2026-10-04 — Fully editable website builder override
+
+The TEST Website Builder homepage design has been changed from fixed template layouts to one fully editable homepage canvas. Subscribers can add text boxes, image boxes, their uploaded logo and their uploaded banner, then drag and resize those elements directly on the homepage. Selected text supports font, size, colour, alignment, letter spacing, line spacing and weight controls. The saved canvas is rendered by the same public-site data on the customer-facing website. The existing tile section and connected What We Buy / What We Sell sections remain underneath the editable canvas.
+
+This replaces the need to choose between multiple fixed homepage templates. Existing legacy template data remains readable as a fallback, but new saved homepage drafts use the editable canvas.

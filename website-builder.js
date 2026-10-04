@@ -34,7 +34,7 @@ function normalizeEditableHeroElement(v){
  d.width=Math.max(8,Math.min(92,Number(d.width)||42));d.height=Math.max(8,Math.min(90,Number(d.height)||28));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));
  d.image_url=String(d.image_url||'');d.text=String(d.text||'');
  d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto'); if(d.type==='text'&&d.fontSize==='auto')d.fontSize=d.role==='headline'?'40':'18';
- d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';
+ d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a'; d.backgroundColor=/^#[0-9a-f]{6}$/i.test(String(d.backgroundColor||''))?String(d.backgroundColor):'#ffffff';
  d.align=['left','center','right'].includes(d.align)?d.align:'left';
  d.vAlign=['top','center','bottom'].includes(d.vAlign)?d.vAlign:'center';
  d.lineHeight=String(d.lineHeight||'1.2');d.letterSpacing=String(d.letterSpacing||'0');d.borderStyle=['none','solid','dashed','dotted','double'].includes(d.borderStyle)?d.borderStyle:'none';d.borderWidth=String(d.borderWidth||'1');d.borderColor=/^#[0-9a-f]{6}$/i.test(String(d.borderColor||''))?String(d.borderColor):'#d9e0e5';d.borderRadius=['0','2','4','8','12','20','50%'].includes(String(d.borderRadius))?String(d.borderRadius):'0';
@@ -77,7 +77,7 @@ function editableHeroLinkOptions(selected){
 }
 function editableHeroElementMarkup(el,editable=true){
  const b=normalizeEditableHeroElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font)+';--gh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--gh-color:'+esc(b.color)+';--gh-align:'+esc(b.align)+';--gh-valign:'+esc(b.vAlign)+';--gh-line:'+esc(b.lineHeight)+';--gh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-radius:'+esc(b.borderRadius||'0')+';--eh-button-font:'+esc(b.font)+';--eh-button-size:'+esc((Number(b.fontSize)||14)+'px');
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font)+';--gh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--gh-color:'+esc(b.color)+';--gh-align:'+esc(b.align)+';--gh-valign:'+esc(b.vAlign)+';--gh-line:'+esc(b.lineHeight)+';--gh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-bg:'+esc(b.backgroundColor||'#ffffff')+';--eh-radius:'+esc(b.borderRadius||'0')+';--eh-button-font:'+esc(b.font)+';--eh-button-size:'+esc((Number(b.fontSize)||14)+'px');
  let body='';
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)
@@ -91,10 +91,10 @@ function editableHeroElementMarkup(el,editable=true){
  return '<div class="editable-hero-element '+(b.type==='image'?'eh-image':b.type==='button'?'eh-button':'eh-text')+(b.id===selectedEditableHeroId?' selected':'')+'" data-eh-id="'+esc(b.id)+'" style="'+style+'"><span class="editable-hero-move" title="Drag to move" aria-label="Drag to move">↕</span><button type="button" class="editable-hero-delete" data-eh-delete="'+esc(b.id)+'" aria-label="Delete element">×</button><span class="editable-hero-resize" aria-label="Resize element"></span>'+body+'</div>';
 }
 
-function editableHeroBorderControls(el){
- const radius=String(el.borderRadius||'0');
- const selected=(value,current)=>value===current?' selected':'';
- return '<label>Border<select data-eh-style="borderStyle"><option value="none"'+selected('none',el.borderStyle)+'>None</option><option value="solid"'+selected('solid',el.borderStyle)+'>Solid</option><option value="dashed"'+selected('dashed',el.borderStyle)+'>Dashed</option><option value="dotted"'+selected('dotted',el.borderStyle)+'>Dotted</option><option value="double"'+selected('double',el.borderStyle)+'>Double</option></select></label><label>Border width<select data-eh-style="borderWidth"><option value="1"'+selected('1',el.borderWidth)+'>1px</option><option value="2"'+selected('2',el.borderWidth)+'>2px</option><option value="3"'+selected('3',el.borderWidth)+'>3px</option><option value="4"'+selected('4',el.borderWidth)+'>4px</option></select></label><label>Border colour<input type="color" data-eh-style="borderColor" value="'+(el.borderColor||'#d9e0e5')+'"></label><label>Round corners<select data-eh-style="borderRadius"><option value="0"'+selected('0',radius)+'>Square</option><option value="2"'+selected('2',radius)+'>2px</option><option value="4"'+selected('4',radius)+'>4px</option><option value="8"'+selected('8',radius)+'>8px</option><option value="12"'+selected('12',radius)+'>12px</option><option value="20"'+selected('20',radius)+'>20px</option><option value="50%"'+selected('50%',radius)+'>Fully round</option></select></label>';
+function editableHeroBorderControls(el,prefix='eh',disabled=false){
+ const radius=String(el?.borderRadius||'0'),background=el?.backgroundColor||'#ffffff',d=disabled?' disabled':'';
+ const a=k=>'data-'+prefix+'-style="'+k+'"',selected=(value,current)=>value===current?' selected':'';
+ return '<label>Border<select '+a('borderStyle')+d+'><option value="none"'+selected('none',el?.borderStyle||'none')+'>None</option><option value="solid"'+selected('solid',el?.borderStyle)+'>Solid</option><option value="dashed"'+selected('dashed',el?.borderStyle)+'>Dashed</option><option value="dotted"'+selected('dotted',el?.borderStyle)+'>Dotted</option><option value="double"'+selected('double',el?.borderStyle)+'>Double</option></select></label><label>Border width<select '+a('borderWidth')+d+'><option value="1"'+selected('1',String(el?.borderWidth||'1'))+'>1px</option><option value="2"'+selected('2',el?.borderWidth)+'>2px</option><option value="3"'+selected('3',el?.borderWidth)+'>3px</option><option value="4"'+selected('4',el?.borderWidth)+'>4px</option></select></label><label>Border colour<input type="color" '+a('borderColor')+d+' value="'+(el?.borderColor||'#d9e0e5')+'"></label><label>Round corners<select '+a('borderRadius')+d+'><option value="0"'+selected('0',radius)+'>Square</option><option value="2"'+selected('2',radius)+'>2px</option><option value="4"'+selected('4',radius)+'>4px</option><option value="8"'+selected('8',radius)+'>8px</option><option value="12"'+selected('12',radius)+'>12px</option><option value="20"'+selected('20',radius)+'>20px</option><option value="50%"'+selected('50%',radius)+'>Fully round</option></select></label><label>Background colour<input type="color" '+a('backgroundColor')+d+' value="'+background+'"></label>';
 }
 function renderEditableHero(){
  const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
@@ -539,11 +539,11 @@ function renderGlobalHeaderEditor(){
     '<label>Text colour<input type="color" data-gh-style="color" '+(textTarget?'':'disabled')+' value="'+esc(textTarget?.color||'#17202a')+'"></label>'+
     '<label>Line spacing<select data-gh-style="lineHeight" '+(textTarget?'':'disabled')+'>'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],textTarget?.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
     '<label>Letter spacing<select data-gh-style="letterSpacing" '+(textTarget?'':'disabled')+'>'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],textTarget?.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
- let controls=textMenu;
+ let controls=textMenu+(selected?editableHeroBorderControls(selected,'gh'):editableHeroBorderControls(null,'gh',true));
  if(selected&&selected.type==='text'){
-   controls=textMenu+editableHeroBorderControls(selected);
+   controls=textMenu+editableHeroBorderControls(selected,'gh');
  }else if(selected&&selected.type==='image'){
-   controls=editableHeroBorderControls(selected)+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
+   controls=textMenu+editableHeroBorderControls(selected,'gh')+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
  }else if(selected&&selected.type==='button'){
    controls='<label>Button text<input type="text" data-gh-field="button_text" value="'+esc(selected.button_text||'Learn more')+'"></label><label>Link type<select data-gh-field="button_link_type"><option value="internal"'+selectedOpt('internal',selected.button_link_type)+'>TradeFlow page</option><option value="custom"'+selectedOpt('custom',selected.button_link_type)+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-gh-field="button_link" value="'+esc(selected.button_link||'')+'"></label>':'<label>Page<select data-gh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
  }
@@ -601,7 +601,7 @@ function bindGlobalHeader(root){
    const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');
    if(el){
      const key=control.dataset.ghStyle;
-     const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':key==='borderStyle'?'--eh-border-style':key==='borderWidth'?'--eh-border-width':key==='borderColor'?'--eh-border-color':key==='borderRadius'?'--eh-radius':'--gh-'+key;
+     const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':key==='borderStyle'?'--eh-border-style':key==='borderWidth'?'--eh-border-width':key==='borderColor'?'--eh-border-color':key==='borderRadius'?'--eh-radius':key==='backgroundColor'?'--eh-bg':'--gh-'+key;
      el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'||key==='borderWidth'||key==='borderRadius'?(control.value==='50%'?'50%':control.value+'px'):control.value);
    }
  }));

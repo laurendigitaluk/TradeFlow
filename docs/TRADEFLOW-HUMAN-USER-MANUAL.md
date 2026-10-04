@@ -1817,3 +1817,21 @@ Security boundary:
 - Customer RPCs verify the authenticated user owns the customer record for the tenant.
 - Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
 - Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.
+
+
+## Customer Assistant — current TEST behaviour — 4 October 2026
+
+The Customer Assistant is a read-only customer help area available from the customer portal. It is restricted to the signed-in customer's own account within the current business.
+
+It can provide approved TradeFlow guidance and, while the current TEST AI provider is disabled, can give account-specific information for the customer's own:
+- selling requests and items;
+- offers;
+- acquisition/shipping status;
+- retail orders; and
+- returns.
+
+Customers cannot use the assistant to change orders, offers, payments, inventory or other business records. If the assistant cannot provide an approved answer, the customer can send the question to the business. Subscriber owner/admin/staff users can then reply through TradeFlow Assistant → Customer Questions.
+
+The customer assistant does not expose another customer's information, tenant identifiers, database details or subscriber administration.
+
+This section describes the current TEST implementation and must be browser-verified with an authenticated customer before it is treated as LIVE acceptance evidence.

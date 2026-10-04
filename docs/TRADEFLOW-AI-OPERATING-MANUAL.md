@@ -2457,3 +2457,7 @@ Available controls are Border style (None/Solid/Dashed/Dotted/Double), Border wi
 ## Shared top section control parity — 4 October 2026
 
 Do not maintain a separate reduced formatting model for Shared top section elements. When Top of page gains border or corner controls, Shared top section text/image elements must expose the same controls and persist the same borderStyle, borderWidth, borderColor and borderRadius properties.
+
+## Top of page toolbar location — 4 October 2026
+
+The Top of page toolbar must be presented within the Shared top section editor rather than as a separate toolbar between sections. Do not remove the Top of page editable canvas; only consolidate its controls into the Shared top section UI.

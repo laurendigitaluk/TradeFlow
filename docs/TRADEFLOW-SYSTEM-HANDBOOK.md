@@ -1989,3 +1989,6 @@ The Top of page editing toolbar is now rendered inside the Shared top section ed
 
 ## 2026-10-04 Toolbar parity correction
 Shared top section and Top of page toolbars must retain the same light neutral background and complete text formatting menu. Shared top section now renders Text, Font, Size, Text colour, Line spacing and Letter spacing controls even before a text box is selected; controls are disabled until a shared text box is selected. Do not revert either toolbar to the black background or remove the Shared text controls.
+
+## 2026-10-04 — Final Website Builder Starter Template Lock
+The approved Website Builder starter arrangement is now the reusable default for new subscribers. Fresh-start coordinates are locked to the approved left text, right image, and lower full-width text boxes. Starter text is blank; no placeholder copy is seeded. The layout is a starting template, not an immutable subscriber canvas. Production integrity and link checks are recorded in CHECKPOINTS/2026-10-04-website-builder-starter-template-lock-final.md.

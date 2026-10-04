@@ -832,16 +832,55 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  });
  root.querySelectorAll('[data-eh-id]').forEach(node=>{
   const id=node.dataset.ehId,el=editableHeroElements.find(x=>x.id===id);if(!el)return;
-  node.addEventListener('click',function(e){if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,[contenteditable="true"]'))return;selectedEditableHeroId=id;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);});
+  node.addEventListener('click',function(e){
+   if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,[contenteditable="true"]'))return;
+   selectedEditableHeroId=id;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);
+  });
   const mover=node.querySelector('.editable-hero-move');
   const beginMove=function(e){
-   if(e.button!==undefined&&e.button!==0)return;e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
+   if(e.button!==undefined&&e.button!==0)return;
+   if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-image-tools'))return;
+   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
+   root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);
    const sx=e.clientX,sy=e.clientY,ox=el.x,oy=el.y,rect=canvas.getBoundingClientRect();
-   function move(ev){el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(94,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';}
-   function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();}
+   const isText=e.target.closest('[contenteditable="true"]');
+   let dragging=!isText;
+   let finished=false;
+   function apply(ev){
+    el.x=Math.max(0,Math.min(100-el.width,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));
+    el.y=Math.max(0,Math.min(100-el.height,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));
+    node.style.left=el.x+'%';node.style.top=el.y+'%';
+   }
+   function move(ev){
+    if(!dragging){
+     const dx=ev.clientX-sx,dy=ev.clientY-sy;
+     if(Math.hypot(dx,dy)<5)return;
+     dragging=true;
+    }
+    if(dragging){ev.preventDefault();apply(ev);}
+   }
+   function up(ev){
+    window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);
+    if(!dragging&&isText){
+     const textNode=node.querySelector('[contenteditable="true"]');
+     if(textNode){try{textNode.focus({preventScroll:true});}catch{textNode.focus();}}
+     return;
+    }
+    if(dragging){apply(ev);markDirty();}
+   }
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   };
   if(mover)mover.addEventListener('pointerdown',beginMove);
+  node.addEventListener('pointerdown',function(e){
+   if(e.button!==undefined&&e.button!==0)return;
+   if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,.editable-hero-image-tools'))return;
+   if(e.target.closest('[contenteditable="true"]')){
+    selectedEditableHeroId=id;
+    root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');
+    return;
+   }
+   beginMove(e);
+  });
   const resize=node.querySelector('.editable-hero-resize');
   if(resize)resize.addEventListener('pointerdown',function(e){
    e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;

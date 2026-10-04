@@ -6,6 +6,10 @@ let siteName='Your Business',headerTagline='',footerText='',headline='',intro=''
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
+let heroElements=[];
+let selectedHeroElementId=null;
+const HERO_FONTS=['Inter','Arial','Georgia','Times New Roman','Verdana','Trebuchet MS','Courier New'];
+const HERO_ALIGN=['left','center','right'];
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
 let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
@@ -337,11 +341,114 @@ function templateHero(){
  default: return '<section class="tpl-hero impact-hero"><div class="impact-word">BUY.<br>SELL.</div><div class="impact-copy"><div class="tpl-eyebrow">'+kicker+'</div>'+h+i+'<div class="tpl-actions">'+a1+a2+'</div></div><div class="impact-image">'+img1+'</div></section>';
  }
 }
+function makeHeroElement(type,overrides={}){
+ const id='hero-'+Date.now()+'-'+Math.random().toString(36).slice(2,7);
+ const base=type==='text'?{id,type:'text',text:'New text',x:10,y:15,w:45,h:18,font:'Inter',size:38,color:'#17212b',weight:700,align:'left',letterSpacing:0,lineHeight:1.08}:{id,type:'image',image_url:'',alt:'',x:55,y:18,w:35,h:40,objectFit:'contain',radius:0};
+ return Object.assign(base,overrides,{id:overrides.id||id});
+}
+function defaultHeroElements(){
+ const out=[];
+ if(bannerUrl)out.push(makeHeroElement('image',{id:'hero-banner',image_url:bannerUrl,alt:siteName+' banner',x:4,y:4,w:92,h:28,objectFit:'contain',radius:0,role:'banner'}));
+ if(logoUrl)out.push(makeHeroElement('image',{id:'hero-logo',image_url:logoUrl,alt:siteName+' logo',x:7,y:7,w:20,h:14,objectFit:'contain',radius:0,role:'logo'}));
+ if(headline)out.push(makeHeroElement('text',{id:'hero-headline',text:headline,x:8,y:36,w:58,h:24,size:52,weight:800}));
+ if(intro)out.push(makeHeroElement('text',{id:'hero-intro',text:intro,x:8,y:62,w:50,h:18,size:18,weight:400,color:'#59656f',lineHeight:1.5}));
+ if(homeImageUrl)out.push(makeHeroElement('image',{id:'hero-image',image_url:homeImageUrl,alt:siteName+' image',x:67,y:35,w:27,h:48,objectFit:'contain',radius:12}));
+ return out;
+}
+function heroStyle(el){
+ const style=\`left:\${Number(el.x)||0}%;top:\${Number(el.y)||0}%;width:\${Number(el.w)||20}%;height:\${Number(el.h)||20}%;z-index:\${Number(el.z)||1};\`;
+ if(el.type==='text')return style+\`font-family:\${JSON.stringify(el.font||'Inter')};font-size:\${Math.max(8,Number(el.size)||24)}px;color:\${el.color||'#17212b'};font-weight:\${Number(el.weight)||400};text-align:\${HERO_ALIGN.includes(el.align)?el.align:'left'};letter-spacing:\${Number(el.letterSpacing)||0}px;line-height:\${Math.max(.7,Number(el.lineHeight)||1.2)};\`;
+ return style+\`border-radius:\${Math.max(0,Number(el.radius)||0)}px;\`;
+}
+function renderHeroCanvasEditor(){
+ const elements=Array.isArray(heroElements)?heroElements:[];
+ const markup=elements.map(el=>{
+  const selected=selectedHeroElementId===el.id?' selected':'';
+  if(el.type==='text'){
+   return \`<div class="hero-element hero-text-element\${selected}" draggable="false" data-hero-id="\${esc(el.id)}" style="\${esc(heroStyle(el))}">
+     <div class="hero-element-label">Text</div><div class="hero-text-content" contenteditable="true" data-hero-text="\${esc(el.id)}">\${esc(el.text||'')}</div><span class="hero-resize" data-hero-resize="\${esc(el.id)}"></span>
+   </div>\`;
+  }
+  return \`<div class="hero-element hero-image-element\${selected}" draggable="false" data-hero-id="\${esc(el.id)}" style="\${esc(heroStyle(el))}">
+    <div class="hero-element-label">\${esc(el.role==='logo'?'Logo':el.role==='banner'?'Banner':'Image')}</div>
+    \${el.image_url?\`<img src="\${esc(el.image_url)}" alt="\${esc(el.alt||'')}" style="object-fit:\${el.objectFit==='cover'?'cover':'contain'}">\`:'<button type="button" class="hero-image-empty" data-hero-upload="'+esc(el.id)+'">Add image</button>'}
+    <span class="hero-resize" data-hero-resize="\${esc(el.id)}"></span>
+  </div>\`;
+ }).join('');
+ return \`<section class="editable-hero-canvas" id="hero-canvas">
+   <div class="hero-canvas-toolbar">
+    <strong>Fully editable homepage</strong>
+    <button type="button" data-add-hero="text">Add text box</button>
+    <button type="button" data-add-hero="image">Add image box</button>
+    <button type="button" data-add-hero="logo">Add logo</button>
+    <button type="button" data-add-hero="banner">Add banner</button>
+    <span>Drag boxes to position them · drag the corner to resize</span>
+   </div>
+   <div class="hero-canvas-stage">\${markup||'<div class="hero-canvas-empty">Use the buttons above to build your homepage.</div>'}</div>
+ </section>\`;
+}
+function renderHeroElementControls(){
+ const box=$('hero-element-controls');if(!box)return;
+ const el=heroElements.find(x=>x.id===selectedHeroElementId);
+ if(!el){box.innerHTML='<div class="control-title">Selected element</div><small>Select a text or image box on the homepage to edit it.</small>';return}
+ const common=\`<button type="button" data-hero-delete="\${esc(el.id)}">Delete selected</button>\`;
+ if(el.type==='text'){
+  box.innerHTML='<div class="control-title">Selected text</div><small>Change the selected text box without changing its position.</small>'+
+   '<label class="select-control"><span>Font</span><select data-hero-style="font">'+HERO_FONTS.map(f=>'<option '+(el.font===f?'selected':'')+'>'+f+'</option>').join('')+'</select></label>'+
+   '<label class="select-control"><span>Size</span><input type="number" min="8" max="140" data-hero-style="size" value="'+Number(el.size||24)+'"></label>'+
+   '<label class="select-control"><span>Colour</span><input type="color" data-hero-style="color" value="'+esc(el.color||'#17212b')+'"></label>'+
+   '<label class="select-control"><span>Alignment</span><select data-hero-style="align">'+HERO_ALIGN.map(a=>'<option value="'+a+'" '+(el.align===a?'selected':'')+'>'+a+'</option>').join('')+'</select></label>'+
+   '<label class="select-control"><span>Letter spacing</span><input type="number" step="0.5" min="-5" max="20" data-hero-style="letterSpacing" value="'+Number(el.letterSpacing||0)+'"></label>'+
+   '<label class="select-control"><span>Line spacing</span><input type="number" step="0.05" min=".7" max="3" data-hero-style="lineHeight" value="'+Number(el.lineHeight||1.2)+'"></label>'+
+   '<label class="select-control"><span>Weight</span><select data-hero-style="weight">'+[400,500,600,700,800,900].map(w=>'<option value="'+w+'" '+(Number(el.weight)===w?'selected':'')+'>'+w+'</option>').join('')+'</select></label>'+common;
+ }else{
+  box.innerHTML='<div class="control-title">Selected image</div><small>Move and resize the image directly on the canvas.</small>'+
+   '<label class="select-control"><span>Image fit</span><select data-hero-style="objectFit"><option value="contain" '+(el.objectFit!=='cover'?'selected':'')+'>Contain</option><option value="cover" '+(el.objectFit==='cover'?'selected':'')+'>Cover</option></select></label>'+
+   '<label class="select-control"><span>Corner radius</span><input type="number" min="0" max="80" data-hero-style="radius" value="'+Number(el.radius||0)+'"></label>'+
+   '<button type="button" data-hero-replace="'+esc(el.id)+'">Replace image</button>'+common;
+ }
+ box.querySelectorAll('[data-hero-style]').forEach(input=>input.addEventListener('input',()=>{const key=input.dataset.heroStyle;el[key]=input.type==='number'?Number(input.value):input.value;markDirty();renderEditor();renderHeroElementControls();}));
+ box.querySelectorAll('[data-hero-delete]').forEach(b=>b.addEventListener('click',()=>{heroElements=heroElements.filter(x=>x.id!==b.dataset.heroDelete);selectedHeroElementId=null;markDirty();renderEditor();renderHeroElementControls();}));
+ box.querySelectorAll('[data-hero-replace]').forEach(b=>b.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='canvas:'+b.dataset.heroReplace;input.value='';input.click();}));
+}
+function bindHeroCanvas(){
+ const stage=$('hero-canvas')?.querySelector('.hero-canvas-stage');if(!stage)return;
+ stage.querySelectorAll('[data-add-hero]').forEach(b=>b.addEventListener('click',()=>{
+   const type=b.dataset.addHero;
+   if(type==='text'){const el=makeHeroElement('text',{text:'Click to edit this text'});heroElements.push(el);selectedHeroElementId=el.id;markDirty();renderEditor();renderHeroElementControls();return}
+   const el=makeHeroElement('image',{role:type==='logo'?'logo':type==='banner'?'banner':'image',image_url:type==='logo'?logoUrl:type==='banner'?bannerUrl:'',alt:type==='logo'?siteName+' logo':type==='banner'?siteName+' banner':''});
+   heroElements.push(el);selectedHeroElementId=el.id;markDirty();renderEditor();renderHeroElementControls();
+   if(!el.image_url){const input=$('image-file-input');input.dataset.target='canvas:'+el.id;input.value='';input.click();}
+ }));
+ stage.querySelectorAll('[data-hero-upload]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();selectedHeroElementId=b.dataset.heroUpload;const input=$('image-file-input');input.dataset.target='canvas:'+b.dataset.heroUpload;input.value='';input.click();}));
+ stage.querySelectorAll('[data-hero-id]').forEach(elNode=>{
+   elNode.addEventListener('pointerdown',e=>{
+    if(e.target.closest('[contenteditable="true"],button,.hero-resize'))return;
+    const id=elNode.dataset.heroId,el=heroElements.find(x=>x.id===id);if(!el)return;
+    selectedHeroElementId=id;renderHeroElementControls();
+    const sr=stage.getBoundingClientRect(),er=elNode.getBoundingClientRect(),ox=e.clientX-er.left,oy=e.clientY-er.top;
+    elNode.setPointerCapture(e.pointerId);
+    const move=ev=>{el.x=Math.max(0,Math.min(100-el.w,(ev.clientX-sr.left-ox)/sr.width*100));el.y=Math.max(0,Math.min(100-el.h,(ev.clientY-sr.top-oy)/sr.height*100));elNode.style.left=el.x+'%';elNode.style.top=el.y+'%';markDirty();};
+    const up=()=>{elNode.removeEventListener('pointermove',move);elNode.removeEventListener('pointerup',up);};
+    elNode.addEventListener('pointermove',move);elNode.addEventListener('pointerup',up);
+   });
+ });
+ stage.querySelectorAll('[data-hero-resize]').forEach(handle=>handle.addEventListener('pointerdown',e=>{
+   e.preventDefault();e.stopPropagation();const id=handle.dataset.heroResize,el=heroElements.find(x=>x.id===id);if(!el)return;
+   const sr=stage.getBoundingClientRect();handle.setPointerCapture(e.pointerId);
+   const move=ev=>{el.w=Math.max(8,Math.min(100-el.x,(ev.clientX-sr.left)/sr.width*100-el.x));el.h=Math.max(8,Math.min(100-el.y,(ev.clientY-sr.top)/sr.height*100-el.y));const n=handle.closest('.hero-element');n.style.width=el.w+'%';n.style.height=el.h+'%';markDirty();};
+   const up=()=>{handle.removeEventListener('pointermove',move);handle.removeEventListener('pointerup',up);};
+   handle.addEventListener('pointermove',move);handle.addEventListener('pointerup',up);
+ }));
+ stage.querySelectorAll('[data-hero-text]').forEach(t=>t.addEventListener('input',()=>{const el=heroElements.find(x=>x.id===t.dataset.heroText);if(el){el.text=t.innerText;markDirty();}}));
+ stage.querySelectorAll('[data-hero-id]').forEach(n=>n.addEventListener('click',e=>{if(e.target.closest('[contenteditable="true"]'))return;selectedHeroElementId=n.dataset.heroId;renderHeroElementControls();}));
+}
+
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
-  hero:homepageSections.hero!==false?templateHero():'',
+  hero:homepageSections.hero!==false?renderHeroCanvasEditor():'',
   buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+imageBlock(homeBuyImageUrl,'home-buy','Add a What We Buy image.',homeBuyHeading||'What We Buy')+'</div>'+buyingPreview()+'</section>':'',
   sell:homepageSections.sell!==false?'<section class="template-section selling-block" draggable="true" data-home-block="sell"><div class="section-intro"><div>'+editText('sellHeading',homeSellHeading,'h2')+editText('sellIntro',homeSellIntro,'p')+'</div>'+imageBlock(homeSellImageUrl,'home-sell','Add a What We Sell image.',homeSellHeading||'What We Sell')+'</div>'+sellingPreview()+'</section>':'',
   trust:''
@@ -494,7 +601,7 @@ function loadContent(content){
    body:cleanPageBody(p.slug,p.body),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
- renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
+ renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderHeroElementControls();renderEditor();
 }
 
 async function uploadImage(file,target){
@@ -594,10 +701,10 @@ function resetToFreshWebsite(){
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
+ homepageTiles=defaultHomepageTiles();heroElements=[];selectedHeroElementId=null;themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
- pages=defaultPages();selectedPage='home';currentTemplate='editorial';window.__existingCategoryManifest=[];
+ pages=defaultPages();selectedPage='home';currentTemplate='editable';heroElements=[];selectedHeroElementId=null;window.__existingCategoryManifest=[];
 }
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));

@@ -801,6 +801,7 @@ function cleanHomepageTiles(tiles){
 }
 
 function loadContent(content){
+ homepageTextFormatMigrationPending=false;homepageTileFormatMigrationPending=false;homepageHeroFormatMigrationPending=false;
  const s=content?.site||{}; templateCopy=cleanTemplateCopy(Object.assign({},templateDefaults[s.template]||templateDefaults.editorial,s.template_copy||{}));
  window.__existingCategoryManifest=Array.isArray(s.category_manifest)?s.category_manifest:[];
  siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';

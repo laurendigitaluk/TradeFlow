@@ -99,25 +99,23 @@ function editableHeroBorderControls(el){
 function renderEditableHero(){
  const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
  if(selected)selectedEditableHeroId=selected.id;
- const fontOptions=[
-  ['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],
-  ['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],
-  ['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],
-  ['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']
- ];
+ return '<section class="editable-hero-editor"><div class="editable-hero-canvas" data-editable-hero-canvas style="height:'+heroCanvasHeight+'px;min-height:'+heroCanvasHeight+'px"><div class="editable-hero-height-handle" data-eh-height-handle title="Drag to make the top section taller or shorter">↕</div>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';
+}
+function renderEditableHeroToolbar(){
+ const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
+ if(selected)selectedEditableHeroId=selected.id;
+ const fontOptions=[['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']];
  const selectedOpt=(value,current)=>value===current?' selected':'';
  const textControls=el=>'<label class="editable-hero-text-control">Text<textarea data-eh-text rows="1">'+esc(el.text)+'</textarea></label><label>Font<select data-eh-style="font">'+fontOptions.map(o=>'<option value="'+esc(o[0])+'"'+selectedOpt(o[0],el.font)+'>'+esc(o[1])+'</option>').join('')+'</select></label>'+
- '<label>Size<select data-eh-style="fontSize"><option value="auto"'+selectedOpt('auto',el.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(String(n),String(el.fontSize))+'>'+n+'px</option>').join('')+'</select></label>'+
+ '<label>Size<select data-eh-style="fontSize"><option value="auto"'+selectedOpt('auto',el.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(String(n),el.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
  '<label>Text colour<input type="color" data-eh-style="color" value="'+(el.color||themeColors.text||'#17202a')+'"></label>'+
- ''+
- ''+
  '<label>Line spacing<select data-eh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],String(el.lineHeight))+'>'+o[1]+'</option>').join('')+'</select></label>'+
  '<label>Letter spacing<select data-eh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],String(el.letterSpacing))+'>'+o[1]+'</option>').join('')+'</select></label>';
  let controls='<span>Select an element. Use its move handle to drag it or the corner handle to resize it.</span>';
  if(selected?.type==='text')controls=textControls(selected)+editableHeroBorderControls(selected);
  if(selected?.type==='image')controls=editableHeroBorderControls(selected)+'<span>Image</span><button type="button" data-image-action="'+(selected.image_url?'replace':'add')+'" data-image-target="hero-element:'+esc(selected.id)+'">'+(selected.image_url?'Change image':'Add image')+'</button>'+(selected.image_url?'<button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(selected.id)+'">Remove image</button>':'');
  if(selected?.type==='button')controls='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(selected.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal"'+selectedOpt('internal',selected.button_link_type)+'>TradeFlow page</option><option value="custom"'+selectedOpt('custom',selected.button_link_type)+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(selected.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
- return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="button">Add call-to-action button</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button><div class="editable-hero-format">'+controls+'</div></div><div class="editable-hero-canvas" data-editable-hero-canvas style="height:'+heroCanvasHeight+'px;min-height:'+heroCanvasHeight+'px"><div class="editable-hero-height-handle" data-eh-height-handle title="Drag to make the top section taller or shorter">↕</div>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';
+ return '<div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="button">Add call-to-action button</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button><div class="editable-hero-format">'+controls+'</div></div>';
 }
 
 function normalizeLayoutBlock(v,defaults){const x=Object.assign({font:'inherit',fontSize:'auto',color:'inherit',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0',borderStyle:'none',borderWidth:'1',borderColor:'#d9e0e5'},defaults,v||{});x.type=x.type==='image'?'image':'text';x.x=Number.isFinite(Number(x.x))?Number(x.x):0;x.y=Number.isFinite(Number(x.y))?Number(x.y):0;x.width=Math.max(20,Math.min(100,Number(x.width)||defaults.width));x.aspect=Math.max(.35,Math.min(4,Number(x.aspect)||defaults.aspect));x.image_url=String(x.image_url||'');x.text=String(x.text||'');x.font=String(x.font||'inherit');x.fontSize=String(x.fontSize||'auto');x.color=String(x.color||'inherit');x.align=['left','center','right'].includes(x.align)?x.align:'left';x.vAlign=['top','center','bottom'].includes(x.vAlign)?x.vAlign:'center';x.lineHeight=String(x.lineHeight||'1.2');x.letterSpacing=String(x.letterSpacing||'0');x.borderStyle=['none','solid','dashed','dotted','double'].includes(x.borderStyle)?x.borderStyle:'none';x.borderWidth=String(x.borderWidth||'1');x.borderColor=/^#[0-9a-f]{6}$/i.test(String(x.borderColor||''))?String(x.borderColor):'#d9e0e5';return x;}
@@ -548,7 +546,9 @@ function renderGlobalHeaderEditor(){
   '<button type="button" data-gh-add="logo">Add logo</button>'+
   '<span class="global-header-help">Appears at the top of every page · fixed height</span>'+
   '<div class="global-header-format">'+controls+'</div></div>'+
-  '<div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div></section>';
+  '<div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div>'+
+  renderEditableHeroToolbar()+
+  '</section>';
 }
 function bindGlobalHeader(root){
  const editor=root.querySelector('.global-header-editor');if(!editor)return;
@@ -1193,7 +1193,7 @@ function initBuilder(){
  (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
- const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
+ const canvas=root.querySelector('[data-editable-hero-canvas]');const toolbar=root.querySelector('.editable-hero-toolbar');if(!canvas||!toolbar)return;
  canvas.querySelectorAll('[data-image-action][data-image-target^="hero-element:"]').forEach(function(control){
   control.addEventListener('click',function(e){
    e.preventDefault();e.stopPropagation();

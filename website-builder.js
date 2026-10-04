@@ -53,7 +53,7 @@ function editableHeroElementMarkup(el,editable=true){
  const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
  let body='';
  if(b.type==='image'){
-   body=b.image_url
+   body=(b.image_url||b.preview_url)
     ?'<div class="editable-hero-image-wrap"><img src="'+esc(b.preview_url||b.image_url)+'" alt="Website image"></div><div class="editable-hero-image-tools"><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(b.id)+'">Remove image</button></div>'
     :'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>';
  }else if(b.type==='button'){
@@ -134,7 +134,7 @@ function applyWebsiteBackground(){
  if(style==='stripes')image='repeating-linear-gradient(135deg,'+c1+' 0 18px,'+c2+' 18px 36px)';
  if(style==='dots')image='radial-gradient(circle,'+c2+' 1.8px,transparent 1.8px)';
  if(style==='gradient')image='linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)'; const categoryImage=categoryBackgroundImage(category); if(categoryImage!=='none')image=(image==='none'?'':image+',')+categoryImage;
- e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',category!=='none'?(style==='dots'?'18px 18px,180px 180px':'cover,180px 180px'):(style==='dots'?'18px 18px':'cover'));e.style.setProperty('--site-background-repeat',style==='dots'?'repeat':'no-repeat');
+ e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',category!=='none'?(style==='dots'?'18px 18px,180px 180px':'cover,180px 180px'):(style==='dots'?'18px 18px':'cover'));e.style.setProperty('--site-background-repeat',category!=='none'?(style==='gradient'?'no-repeat,repeat':'repeat,repeat'):(style==='dots'?'repeat':'no-repeat'));
 }
 function selectWebsiteBackground(){return false;}
 function selectPresetBackgroundMode(){return false;}

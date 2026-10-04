@@ -2461,3 +2461,7 @@ Do not maintain a separate reduced formatting model for Shared top section eleme
 ## Top of page toolbar location — 4 October 2026
 
 The Top of page toolbar must be presented within the Shared top section editor rather than as a separate toolbar between sections. Do not remove the Top of page editable canvas; only consolidate its controls into the Shared top section UI.
+
+
+## 2026-10-04 Website Builder Toolbar Parity
+The Shared top section and Top of page editor toolbars must use the same five primary add controls and the same light neutral visual treatment. The Shared top section canvas sits underneath its toolbar and displays an explicit Add banner box when no banner exists. The old black toolbar treatment and the inline `builder-menu-ad-space` placeholder must not be reintroduced. A deliberate gap separates the Shared top section canvas from the Top of page toolbar.

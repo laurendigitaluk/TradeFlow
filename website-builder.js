@@ -559,6 +559,7 @@ function renderGlobalHeaderEditor(){
   '<div class="global-header-canvas" data-global-header-canvas>'+bannerPlaceholder+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div>'+
   renderEditableHeroToolbar()+
   '</section>';
+}
 function bindGlobalHeader(root){
  const editor=root.querySelector('.global-header-editor');if(!editor)return;
  editor.querySelectorAll('[data-gh-add]').forEach(btn=>btn.addEventListener('click',()=>{

@@ -432,7 +432,7 @@ function globalHeaderElementMarkup(el){
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)
     ?'<div class="global-header-image-wrap"><img src="'+esc(b.preview_url||b.image_url)+'" alt="Website image"></div><div class="global-header-image-tools"><button type="button" data-image-action="replace" data-image-target="global-header:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="global-header:'+esc(b.id)+'">Remove image</button></div>'
-    :'<div class="global-header-empty-image"><button type="button" data-image-action="add" data-image-target="global-header:'+esc(b.id)+'">'+(b.role==='banner'?'Add banner':'Add image')+'</button></div>';
+    :'<div class="global-header-empty-image"><button type="button" data-image-action="add" data-image-target="global-header:'+esc(b.id)+'">'+(b.role==='banner'?'Add banner':b.role==='logo'?'Add logo':'Add photo')+'</button></div>';
  }else{
    body='<div class="global-header-text" contenteditable="true" data-gh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
  }
@@ -440,20 +440,48 @@ function globalHeaderElementMarkup(el){
 }
 function renderGlobalHeaderEditor(){
  const selected=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);
- const fontOptions=[['inherit','Site default'],['Arial','Arial'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Georgia','Georgia'],['Garamond','Garamond'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype']];
+ const fontOptions=[
+  ['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],
+  ['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],
+  ['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],
+  ['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']
+ ];
  const opts=(items,current)=>items.map(o=>'<option value="'+esc(o[0])+'" '+(o[0]===current?'selected':'')+'>'+esc(o[1])+'</option>').join('');
- let controls='<span>Select a box to move or resize it. This top section is shared by every page and has a fixed height.</span>';
- if(selected&&selected.type==='text')controls='<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label><label>Size<select data-gh-style="fontSize">'+[['auto','Auto'],['16','16px'],['20','20px'],['24','24px'],['28','28px'],['32','32px'],['40','40px'],['48','48px'],['56','56px']].map(o=>'<option value="'+o[0]+'" '+(o[0]===String(selected.fontSize)?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label><label>Align<select data-gh-style="align"><option value="left" '+(selected.align==='left'?'selected':'')+'>Left</option><option value="center" '+(selected.align==='center'?'selected':'')+'>Centre</option><option value="right" '+(selected.align==='right'?'selected':'')+'>Right</option></select></label>';
- return '<section class="global-header-editor"><div class="global-header-toolbar"><strong>Shared top section</strong><button type="button" data-gh-add="banner">Add banner</button><button type="button" data-gh-add="image">Add photo</button><button type="button" data-gh-add="text">Add text box</button><span class="global-header-help">Appears at the top of every page · fixed height</span><div class="global-header-format">'+controls+'</div></div><div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div></section>';
+ const selectedOpt=(v,current)=>v===String(current)?' selected':'';
+ let controls='<span>Select a box to edit it. Use the move handle to drag and the corner handle to resize.</span>';
+ if(selected&&selected.type==='text'){
+   controls='<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label>'+
+    '<label>Size<select data-gh-style="fontSize"><option value="auto"'+selectedOpt('auto',selected.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(n,selected.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
+    '<label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label>'+
+    '<label>Horizontal<select data-gh-style="align"><option value="left"'+selectedOpt('left',selected.align)+'>Left</option><option value="center"'+selectedOpt('center',selected.align)+'>Centre</option><option value="right"'+selectedOpt('right',selected.align)+'>Right</option></select></label>'+
+    '<label>Vertical<select data-gh-style="vAlign"><option value="top"'+selectedOpt('top',selected.vAlign)+'>Top</option><option value="center"'+selectedOpt('center',selected.vAlign)+'>Centre</option><option value="bottom"'+selectedOpt('bottom',selected.vAlign)+'>Bottom</option></select></label>'+
+    '<label>Line spacing<select data-gh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
+    '<label>Letter spacing<select data-gh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
+ }else if(selected&&selected.type==='image'){
+   controls='<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
+ }
+ return '<section class="global-header-editor"><div class="global-header-toolbar">'+
+  '<strong>Shared top section</strong>'+
+  '<button type="button" data-gh-add="banner">Add banner</button>'+
+  '<button type="button" data-gh-add="image">Add photo</button>'+
+  '<button type="button" data-gh-add="text">Add text box</button>'+
+  '<button type="button" data-gh-add="logo">Add logo</button>'+
+  '<span class="global-header-help">Appears at the top of every page · fixed height</span>'+
+  '<div class="global-header-format">'+controls+'</div></div>'+
+  '<div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div></section>';
 }
 function bindGlobalHeader(root){
  const editor=root.querySelector('.global-header-editor');if(!editor)return;
  editor.querySelectorAll('[data-gh-add]').forEach(btn=>btn.addEventListener('click',()=>{
    const type=btn.dataset.ghAdd;
-   const el=makeGlobalHeaderElement(type==='text'?'text':'image',{role:type==='banner'?'banner':type});
-   if(type==='banner'&&bannerUrl)el.image_url=bannerUrl;
+   if(type==='logo'){
+     const el=makeGlobalHeaderElement('image',{role:'logo',x:5,y:12,width:22,height:62,aspect:1.8,image_url:logoUrl||''});
+     globalHeaderElements.push(el);selectedGlobalHeaderId=el.id;markDirty();renderEditor();
+     if(!el.image_url){setStatus('Logo box added. Click Add image in the box to choose the logo.','success');}
+     return;
+   }
+   const el=makeGlobalHeaderElement(type==='text'?'text':'image',{role:type==='banner'?'banner':'photo'});
    globalHeaderElements.push(el);selectedGlobalHeaderId=el.id;markDirty();renderEditor();
-   if(type!=='text'&&!el.image_url){const input=$('image-file-input');input.dataset.target='global-header:'+el.id;input.value='';input.click();}
  }));
  editor.querySelectorAll('[data-gh-id]').forEach(el=>{
    const id=el.dataset.ghId,b=globalHeaderElements.find(x=>x.id===id);if(!b)return;
@@ -462,7 +490,11 @@ function bindGlobalHeader(root){
      if(e.target.closest('[contenteditable="true"],button,input,select,.global-header-image-tools,.global-header-resize'))return;
      selectedGlobalHeaderId=id;el.classList.add('selected');e.preventDefault();e.stopPropagation();
      const sx=e.clientX,sy=e.clientY,ox=b.x,oy=b.y,parent=el.parentElement;
-     const move=ev=>{b.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));b.y=Math.max(0,Math.min(80,oy+(ev.clientY-sy)));el.style.left=b.x+'%';el.style.top=b.y+'px';};
+     const move=ev=>{
+       b.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));
+       b.y=Math.max(0,Math.min(80,oy+(ev.clientY-sy)/Math.max(1,parent.clientHeight)*100));
+       el.style.left=b.x+'%';el.style.top=b.y+'%';
+     };
      const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditor();};
      window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
    });
@@ -471,18 +503,31 @@ function bindGlobalHeader(root){
    e.preventDefault();e.stopPropagation();const id=btn.dataset.ghDelete;globalHeaderElements=globalHeaderElements.filter(x=>x.id!==id);selectedGlobalHeaderId=null;markDirty();renderEditor();
  }));
  editor.querySelectorAll('[data-gh-style]').forEach(control=>control.addEventListener('input',()=>{
-   const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b)return;b[control.dataset.ghStyle]=control.value;markDirty();
-   const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');if(el){el.style.setProperty('--eh-'+(control.dataset.ghStyle==='fontSize'?'size':control.dataset.ghStyle),control.dataset.ghStyle==='fontSize'&&control.value!=='auto'?control.value+'px':control.value);}
+   const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b)return;
+   b[control.dataset.ghStyle]=control.value;markDirty();
+   const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');
+   if(el){
+     const key=control.dataset.ghStyle;
+     const cssKey=key==='fontSize'?'--eh-size':key==='vAlign'?'--eh-valign':key==='lineHeight'?'--eh-line':key==='letterSpacing'?'--eh-letter':'--eh-'+key;
+     el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'?control.value+'px':control.value);
+   }
  }));
- editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{const b=globalHeaderElements.find(x=>x.id===el.dataset.ghEdit);if(b){b.text=el.innerText;markDirty();}}));
+ editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{
+   const b=globalHeaderElements.find(x=>x.id===el.dataset.ghEdit);if(b){b.text=el.innerText;markDirty();}
+ }));
  editor.querySelectorAll('.global-header-resize').forEach(handle=>handle.addEventListener('pointerdown',e=>{
    e.preventDefault();e.stopPropagation();const el=handle.parentElement,b=globalHeaderElements.find(x=>x.id===el.dataset.ghId);if(!b)return;
    selectedGlobalHeaderId=b.id;const sx=e.clientX,sy=e.clientY,sw=b.width,sh=b.height,parent=el.parentElement;
-   const move=ev=>{b.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));b.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,parent.clientHeight)*100));el.style.width=b.width+'%';el.style.height=b.height+'%';};
+   const move=ev=>{
+     b.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));
+     b.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,parent.clientHeight)*100));
+     el.style.width=b.width+'%';el.style.height=b.height+'%';
+   };
    const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditor();};
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
  }));
 }
+
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
@@ -500,8 +545,7 @@ function renderHome(){
 function pageTitleMarkup(p,opts={}){
  const title=opts.managed?'<h1>'+esc(p.title)+'</h1>':editText('page-title',p.title,'h1');
  const body=opts.noBody?'':editText('page-body',p.body||'','p');
- const banner=(useBanner&&bannerUrl&&p.slug!=='customer-account')?'<div class="page-title-banner banner-position-'+bannerPosition+'"><img src="'+esc(bannerUrl)+'" alt="'+esc(siteName||'Website banner')+'"></div>':'';
- return banner+title+body;
+ return title+body;
 }
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';

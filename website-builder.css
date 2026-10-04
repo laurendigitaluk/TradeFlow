@@ -1035,3 +1035,23 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .global-header-text-control textarea{width:150px;min-height:24px;height:24px;resize:horizontal;box-sizing:border-box;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:4px 6px;font-size:10px}
 .global-header-text-control textarea:disabled{background:#eef1f3;color:#8a959e}
 .global-header-toolbar.editable-hero-toolbar button,.editable-hero-toolbar.top-page-toolbar button{color:#17212b !important}
+
+/* Builder menu option tiles — orange accent borders */
+.global-header-toolbar.editable-hero-toolbar button,
+.global-header-toolbar.editable-hero-toolbar select,
+.global-header-toolbar.editable-hero-toolbar input[type="color"],
+.global-header-toolbar.editable-hero-toolbar input[type="text"],
+.global-header-toolbar.editable-hero-toolbar input[type="url"],
+.global-header-toolbar.editable-hero-toolbar textarea,
+.editable-hero-toolbar.top-page-toolbar button,
+.editable-hero-toolbar.top-page-toolbar select,
+.editable-hero-toolbar.top-page-toolbar input[type="color"],
+.editable-hero-toolbar.top-page-toolbar input[type="text"],
+.editable-hero-toolbar.top-page-toolbar input[type="url"],
+.editable-hero-toolbar.top-page-toolbar textarea{
+  border:1px solid #c45f20 !important;
+}
+.global-header-toolbar.editable-hero-toolbar button:hover,
+.editable-hero-toolbar.top-page-toolbar button:hover{
+  border-color:#a94f17 !important;
+}

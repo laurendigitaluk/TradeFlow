@@ -191,3 +191,7 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .business-facts:has(.public-layout-block) .public-layout-block,.commerce-panel:has(.public-layout-block) .public-layout-block{background:#fff;border:1px solid #d7dee3;padding:20px;}
 .luxe-image:has(.public-layout-block) .public-layout-block{background:#1b2329;border:1px solid rgba(255,255,255,.12);padding:18px;}
 .impact-image:has(.public-layout-block) .public-layout-block{background:rgba(255,255,255,.12);border-radius:20px;}
+
+/* Saved per-block text formatting */
+.public-layout-text{display:flex;flex-direction:column;justify-content:var(--lb-valign,center);align-items:stretch;text-align:var(--lb-align,left);font-family:var(--lb-font,inherit);font-size:var(--lb-size,inherit);color:var(--lb-color,inherit);line-height:var(--lb-line,1.2);letter-spacing:var(--lb-letter,0px);box-sizing:border-box;}
+.public-layout-text>*{width:100%;margin:0;color:inherit;font-family:inherit;font-size:inherit;line-height:inherit;letter-spacing:inherit;text-align:inherit;}

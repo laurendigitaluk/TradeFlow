@@ -77,7 +77,7 @@ function editableHeroLinkOptions(selected){
 }
 function editableHeroElementMarkup(el,editable=true){
  const b=normalizeEditableHeroElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font)+';--gh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--gh-color:'+esc(b.color)+';--gh-align:'+esc(b.align)+';--gh-valign:'+esc(b.vAlign)+';--gh-line:'+esc(b.lineHeight)+';--gh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-button-font:'+esc(b.font)+';--eh-button-size:'+esc((Number(b.fontSize)||14)+'px');
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--gh-font:'+esc(b.font)+';--gh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--gh-color:'+esc(b.color)+';--gh-align:'+esc(b.align)+';--gh-valign:'+esc(b.vAlign)+';--gh-line:'+esc(b.lineHeight)+';--gh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-radius:'+esc(b.borderRadius||'0')+';--eh-button-font:'+esc(b.font)+';--eh-button-size:'+esc((Number(b.fontSize)||14)+'px');
  let body='';
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)

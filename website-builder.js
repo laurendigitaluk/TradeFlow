@@ -705,7 +705,7 @@ async function uploadImage(file,target){
  // Show the selected image immediately in the canvas while the upload completes.
  if(target.startsWith('global-header:')){
   const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});
-  if(el){selectedGlobalHeaderId=id;el.preview_url=URL.createObjectURL(file);if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(78,Math.max(18,(el.width/100*100)/el.aspect/2.5));}renderEditor();}
+  if(el){selectedGlobalHeaderId=id;el.preview_url=URL.createObjectURL(file);if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}renderEditor();}
  }
  if(target.startsWith('hero-element:')){
   const previewId=target.slice(12);
@@ -730,7 +730,7 @@ async function uploadImage(file,target){
  if(!response.ok)throw new Error(responseText||'Image upload failed.');
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target.startsWith('hero-element:')){const id=target.slice(12);selectedEditableHeroId=id;}
- if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedGlobalHeaderId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,(imageDimensions.width/imageDimensions.height)*18)):el.width;el.height=Math.min(78,Math.max(14,(el.width/100*100)/el.aspect/2.5));}if(el.role==='banner')bannerUrl=url;}}
+ if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedGlobalHeaderId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,(imageDimensions.width/imageDimensions.height)*18)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}if(el.role==='banner')bannerUrl=url;}}
  else if(target==='home')homeImageUrl=url;
  else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
  else if(target==='home2')homeImageUrl2=url;

@@ -1065,3 +1065,17 @@ The `tradeflow-assistant` knowledge source now contains the six provider setup g
 ## 2026-10-03 — Shipping backend catalogue
 
 `public.shipping_service_catalog` is now populated with 26 active researched manual shipping services. `public.tenant_shipping_services` remains the tenant selection store. `subscriber_get_shipping_service_settings(p_tenant_id)` returns the active catalogue and selected services. `subscriber_save_shipping_services(p_tenant_id,p_services)` saves the subscriber's selected services. No provider is represented as technically API-connected merely by catalogue selection.
+
+
+## 2026-10-04 Tile Link Destination Control
+
+Website Builder homepage tiles and custom-page tiles (including What We Buy / What We Sell) now provide an explicit destination control for the tile's link text/CTA.
+
+- **Link type:** TradeFlow page or Custom URL.
+- **Link to:** when TradeFlow page is selected, choose any enabled site page; when Custom URL is selected, enter the destination URL.
+- The link text remains the editable **CTA / Add link text** field.
+- Internal page links use the site's normal page routing. Custom HTTP/HTTPS links are validated by the public site before being rendered as links.
+- The destination is saved as part of the tile configuration and is used by both the builder preview model and the published public site.
+- A blank CTA/link text does not create a public link.
+
+This is part of the reusable standard website template. New subscribers receive the control as part of the standard tile editor; existing tile layout/positioning is not changed by adding the destination fields.

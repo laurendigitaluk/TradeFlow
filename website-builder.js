@@ -7,7 +7,7 @@ let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
-let editableHeroElements=[],selectedEditableHeroId=null;
+let editableHeroElements=[],selectedEditableHeroId=null,heroCanvasHeight=760;
 function makeEditableHeroElement(type,overrides={}){
  const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
  const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
@@ -67,10 +67,25 @@ function editableHeroElementMarkup(el,editable=true){
 function renderEditableHero(){
  const selected=editableHeroElements.find(x=>x.id===selectedEditableHeroId)||editableHeroElements.find(x=>x.type==='text')||editableHeroElements[0];
  if(selected)selectedEditableHeroId=selected.id;
- let controls='<span>Select a text box or button to edit its settings.</span>';
- if(selected?.type==='text') controls='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+(selected.color||'#17202a')+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
- if(selected?.type==='button') controls='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(selected.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal" '+(selected.button_link_type==='internal'?'selected':'')+'>TradeFlow page</option><option value="custom" '+(selected.button_link_type==='custom'?'selected':'')+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(selected.button_link)+'" placeholder="https://"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
- return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="button">Add call-to-action button</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button><div class="editable-hero-format">'+controls+'</div></div><div class="editable-hero-canvas" data-editable-hero-canvas>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';
+ const fontOptions=[
+  ['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],
+  ['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],
+  ['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],
+  ['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']
+ ];
+ const selectedOpt=(value,current)=>value===current?' selected':'';
+ const textControls=el=>'<label>Font<select data-eh-style="font">'+fontOptions.map(o=>'<option value="'+esc(o[0])+'"'+selectedOpt(o[0],el.font)+'>'+esc(o[1])+'</option>').join('')+'</select></label>'+
+ '<label>Size<select data-eh-style="fontSize"><option value="auto"'+selectedOpt('auto',el.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(String(n),String(el.fontSize))+'>'+n+'px</option>').join('')+'</select></label>'+
+ '<label>Text colour<input type="color" data-eh-style="color" value="'+(el.color||'#17202a')+'"></label>'+
+ '<label>Horizontal<select data-eh-style="align"><option value="left"'+selectedOpt('left',el.align)+'>Left</option><option value="center"'+selectedOpt('center',el.align)+'>Centre</option><option value="right"'+selectedOpt('right',el.align)+'>Right</option></select></label>'+
+ '<label>Vertical<select data-eh-style="vAlign"><option value="top"'+selectedOpt('top',el.vAlign)+'>Top</option><option value="center"'+selectedOpt('center',el.vAlign)+'>Centre</option><option value="bottom"'+selectedOpt('bottom',el.vAlign)+'>Bottom</option></select></label>'+
+ '<label>Line spacing<select data-eh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],String(el.lineHeight))+'>'+o[1]+'</option>').join('')+'</select></label>'+
+ '<label>Letter spacing<select data-eh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],String(el.letterSpacing))+'>'+o[1]+'</option>').join('')+'</select></label>';
+ let controls='<span>Select an element. Use its move handle to drag it or the corner handle to resize it.</span>';
+ if(selected?.type==='text')controls=textControls(selected);
+ if(selected?.type==='image')controls='<span>Image</span><button type="button" data-image-action="'+(selected.image_url?'replace':'add')+'" data-image-target="hero-element:'+esc(selected.id)+'">'+(selected.image_url?'Change image':'Add image')+'</button>'+(selected.image_url?'<button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(selected.id)+'">Remove image</button>':'');
+ if(selected?.type==='button')controls='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(selected.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal"'+selectedOpt('internal',selected.button_link_type)+'>TradeFlow page</option><option value="custom"'+selectedOpt('custom',selected.button_link_type)+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(selected.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
+ return '<section class="editable-hero-editor"><div class="editable-hero-toolbar"><strong>Top of page</strong><button type="button" data-eh-add="text">Add text box</button><button type="button" data-eh-add="image">Add image box</button><button type="button" data-eh-add="button">Add call-to-action button</button><button type="button" data-eh-add="logo">Add logo</button><button type="button" data-eh-add="banner">Add banner</button><div class="editable-hero-format">'+controls+'</div></div><div class="editable-hero-canvas" data-editable-hero-canvas style="height:'+heroCanvasHeight+'px;min-height:'+heroCanvasHeight+'px"><div class="editable-hero-height-handle" data-eh-height-handle title="Drag to make the top section taller or shorter">↕</div>'+editableHeroElements.map(x=>editableHeroElementMarkup(x,true)).join('')+'</div></section>';
 }
 
 function normalizeLayoutBlock(v,defaults){const x=Object.assign({font:'inherit',fontSize:'auto',color:'inherit',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'},defaults,v||{});x.type=x.type==='image'?'image':'text';x.x=Number.isFinite(Number(x.x))?Number(x.x):0;x.y=Number.isFinite(Number(x.y))?Number(x.y):0;x.width=Math.max(20,Math.min(100,Number(x.width)||defaults.width));x.aspect=Math.max(.35,Math.min(4,Number(x.aspect)||defaults.aspect));x.image_url=String(x.image_url||'');x.text=String(x.text||'');x.font=String(x.font||'inherit');x.fontSize=String(x.fontSize||'auto');x.color=String(x.color||'inherit');x.align=['left','center','right'].includes(x.align)?x.align:'left';x.vAlign=['top','center','bottom'].includes(x.vAlign)?x.vAlign:'center';x.lineHeight=String(x.lineHeight||'1.2');x.letterSpacing=String(x.letterSpacing||'0');return x;}
@@ -532,7 +547,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
+   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -574,7 +589,7 @@ function loadContent(content){
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
  bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
- loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});
+ loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});heroCanvasHeight=Math.max(620,Math.min(1800,Number(s.homepage?.hero_canvas_height)||760));
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate='editable';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
@@ -786,51 +801,50 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();
  }));
- root.querySelectorAll('[data-eh-edit]').forEach(node=>node.addEventListener('input',function(){
-  const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText.trim();if(el.role==='headline')headline=el.text;markDirty();
- }));
+ root.querySelectorAll('[data-eh-edit]').forEach(node=>{
+  node.addEventListener('click',function(e){e.stopPropagation();selectedEditableHeroId=node.dataset.ehEdit;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.closest('.editable-hero-element')?.classList.add('selected');renderEditableHeroToolbarOnly(root);});
+  node.addEventListener('input',function(){const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText.trim();if(el.role==='headline')headline=el.text;markDirty();});
+ });
  root.querySelectorAll('[data-eh-id]').forEach(node=>{
   const id=node.dataset.ehId,el=editableHeroElements.find(x=>x.id===id);if(!el)return;
-  node.addEventListener('pointerdown',function(e){
-   if(e.button!==undefined&&e.button!==0)return;
-   if(e.target.closest('button,select,input,[contenteditable="true"],a,.editable-hero-resize'))return;
-   e.preventDefault();
-   selectedEditableHeroId=id;
-   root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));
-   node.classList.add('selected');
-   renderEditableHeroToolbarOnly(root);
-  });
+  node.addEventListener('click',function(e){if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,[contenteditable="true"]'))return;selectedEditableHeroId=id;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');renderEditableHeroToolbarOnly(root);});
   const mover=node.querySelector('.editable-hero-move');
-  if(mover)mover.addEventListener('pointerdown',function(e){
-   e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
+  const beginMove=function(e){
+   if(e.button!==undefined&&e.button!==0)return;e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
    const sx=e.clientX,sy=e.clientY,ox=el.x,oy=el.y,rect=canvas.getBoundingClientRect();
-   function move(ev){el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(90,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';}
-   function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditableHeroToolbarOnly(root);}
+   function move(ev){el.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.y=Math.max(0,Math.min(94,oy+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.left=el.x+'%';node.style.top=el.y+'%';}
+   function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();}
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
-  });
+  };
+  if(mover)mover.addEventListener('pointerdown',beginMove);
   const resize=node.querySelector('.editable-hero-resize');
   if(resize)resize.addEventListener('pointerdown',function(e){
    e.preventDefault();e.stopPropagation();selectedEditableHeroId=id;
    const sx=e.clientX,sy=e.clientY,sw=el.width,sh=el.height,rect=canvas.getBoundingClientRect();
-   function move(ev){
-    el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));
-    el.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,rect.height)*100));
-    node.style.width=el.width+'%';node.style.height=el.height+'%';
-   }
+   function move(ev){el.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,rect.width)*100));el.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,rect.height)*100));node.style.width=el.width+'%';node.style.height=el.height+'%';}
    function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();}
    window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
   });
  });
+ const heightHandle=canvas.querySelector('[data-eh-height-handle]');
+ if(heightHandle)heightHandle.addEventListener('pointerdown',function(e){
+  e.preventDefault();e.stopPropagation();const sy=e.clientY,start=heroCanvasHeight;
+  function move(ev){heroCanvasHeight=Math.max(620,Math.min(1800,start+(ev.clientY-sy)));canvas.style.height=heroCanvasHeight+'px';canvas.style.minHeight=heroCanvasHeight+'px';}
+  function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();}
+  window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+ });
 }
 function renderEditableHeroToolbarOnly(root){
  const el=editableHeroElements.find(x=>x.id===selectedEditableHeroId);const format=root.querySelector('.editable-hero-format');if(!format||!el)return;
- let html='<span>Select an element, then drag the ↕ handle to move it or the corner handle to resize it.</span>';
- if(el.type==='text')html='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+el.color+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
- if(el.type==='image')html='<span>Image</span><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(el.id)+'">Change image</button>'+(el.image_url?'<button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(el.id)+'">Remove image</button>':'<button type="button" data-image-action="add" data-image-target="hero-element:'+esc(el.id)+'">Add image</button>');
- if(el.type==='button')html='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(el.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal">TradeFlow page</option><option value="custom">Custom URL</option></select></label>'+(el.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(el.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(el.button_link)+'</select></label>');
+ const fontOptions=[['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']];
+ const opt=(v,c)=>v===c?' selected':'';
+ let html='<span>Selected element: drag ↕ to move, corner to resize.</span>';
+ if(el.type==='text')html='<label>Font<select data-eh-style="font">'+fontOptions.map(o=>'<option value="'+esc(o[0])+'"'+opt(o[0],el.font)+'>'+esc(o[1])+'</option>').join('')+'</select></label><label>Size<select data-eh-style="fontSize"><option value="auto"'+opt('auto',el.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+opt(String(n),String(el.fontSize))+'>'+n+'px</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+el.color+'"></label><label>Horizontal<select data-eh-style="align"><option value="left"'+opt('left',el.align)+'>Left</option><option value="center"'+opt('center',el.align)+'>Centre</option><option value="right"'+opt('right',el.align)+'>Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top"'+opt('top',el.vAlign)+'>Top</option><option value="center"'+opt('center',el.vAlign)+'>Centre</option><option value="bottom"'+opt('bottom',el.vAlign)+'>Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+opt(o[0],String(el.lineHeight))+'>'+o[1]+'</option>').join('')+'</select></label><label>Letter spacing<select data-eh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+opt(o[0],String(el.letterSpacing))+'>'+o[1]+'</option>').join('')+'</select></label>';
+ if(el.type==='image')html='<span>Image</span><button type="button" data-image-action="'+(el.image_url?'replace':'add')+'" data-image-target="hero-element:'+esc(el.id)+'">'+(el.image_url?'Change image':'Add image')+'</button>'+(el.image_url?'<button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(el.id)+'">Remove image</button>':'');
+ if(el.type==='button')html='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(el.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal"'+opt('internal',el.button_link_type)+'>TradeFlow page</option><option value="custom"'+opt('custom',el.button_link_type)+'>Custom URL</option></select></label>'+(el.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(el.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(el.button_link)+'</select></label>');
  format.innerHTML=html;
- format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehStyle]=control.value;markDirty();renderEditor();}});});
- format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehField]=control.value;markDirty();renderEditor();}});});
+ format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehStyle]=control.value;const elNode=root.querySelector('[data-eh-id="'+CSS.escape(target.id)+'"]');if(elNode){const key=control.dataset.ehStyle;const cssKey={font:'--eh-font',fontSize:'--eh-size',color:'--eh-color',align:'--eh-align',vAlign:'--eh-valign',lineHeight:'--eh-line',letterSpacing:'--eh-letter'}[key];if(cssKey)elNode.style.setProperty(cssKey,key==='fontSize'?(control.value==='auto'?'inherit':Number(control.value)+'px'):key==='letterSpacing'?control.value+'px':control.value);};markDirty();});});
+ format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(!target)return;target[control.dataset.ehField]=control.value;markDirty();});});
  format.querySelectorAll('[data-image-action]').forEach(function(control){control.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();const input=$('image-file-input');input.dataset.target=control.dataset.imageTarget;input.value='';input.click();});});
 }
 function bindEditor(){

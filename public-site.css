@@ -297,3 +297,22 @@ body[data-template="editable"] .public-nav-dropdown-toggle{
 .public-page-tile .page-tile-copy b{margin-top:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:flex-start!important;width:150px!important;height:38px!important;min-height:38px!important;flex:0 0 150px!important;padding:0 12px!important;box-sizing:border-box!important;border-radius:5px!important;background:var(--button-bg,var(--accent,#c46a2b))!important;color:var(--button-text,#fff)!important;font-family:inherit!important;font-size:14px!important;line-height:1!important;letter-spacing:0!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
 @media(max-width:900px){.public-page-tiles{grid-template-columns:repeat(2,minmax(0,1fr));padding-left:6%;padding-right:6%}}
 @media(max-width:600px){.public-page-tiles{grid-template-columns:1fr}}
+
+/* Final published homepage catalogue card parity. */
+.homepage-tiles .homepage-tile-grid{align-items:stretch}
+.homepage-tiles .editable-home-tile{display:flex;flex-direction:column;height:100%}
+.homepage-tiles .editable-home-tile .tile-copy{display:flex;flex-direction:column;flex:1;min-height:150px;padding:18px;box-sizing:border-box}
+.homepage-tiles .editable-home-tile .tile-copy h3{min-height:24px;margin:0 0 7px;font-family:inherit!important;font-size:18px!important;line-height:1.2!important;letter-spacing:0!important;color:#17202a!important}
+.homepage-tiles .editable-home-tile .tile-copy p{min-height:48px;margin:0 0 7px;font-family:inherit!important;font-size:14px!important;line-height:1.5!important;letter-spacing:0!important;color:#68747e!important}
+.homepage-tiles .editable-home-tile .tile-copy b{margin-top:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:flex-start!important;width:150px!important;height:38px!important;min-height:38px!important;flex:0 0 150px!important;padding:0 12px!important;box-sizing:border-box!important;border-radius:5px!important;background:var(--button-bg,var(--accent,#c46a2b))!important;color:var(--button-text,#fff)!important;font-family:inherit!important;font-size:14px!important;line-height:1!important;letter-spacing:0!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+
+/* Published buying/selling catalogue cards: shared typography and bottom CTA geometry. */
+.buying-section .buy-category-card,.selling-section .sell-product-card{display:flex!important;flex-direction:column!important;height:100%!important;min-height:300px!important}
+.buying-section .buy-category-copy{display:flex!important;flex-direction:column!important;flex:1!important;padding:19px!important}
+.buying-section .buy-category-copy h3,.selling-section .sell-product-card h3{font-family:inherit!important;font-size:18px!important;line-height:1.2!important;letter-spacing:0!important;color:#17202a!important;margin:8px 0 7px!important}
+.buying-section .buy-category-copy p{font-family:inherit!important;font-size:14px!important;line-height:1.5!important;letter-spacing:0!important;color:#68747e!important;margin:7px 0!important}
+.buying-section .buy-category-copy a,.selling-section .sell-product-card a{margin-top:auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;align-self:flex-start!important;width:150px!important;height:38px!important;min-height:38px!important;padding:0 12px!important;box-sizing:border-box!important;border-radius:5px!important;background:var(--button-bg,var(--accent,#c46a2b))!important;color:var(--button-text,#fff)!important;font-family:inherit!important;font-size:14px!important;line-height:1!important;letter-spacing:0!important;font-weight:800!important;text-decoration:none!important;white-space:nowrap}
+.selling-section .sell-product-card{padding:0 0 17px!important}
+.selling-section .sell-product-card .sell-photo{flex:0 0 150px!important;height:150px!important;margin-bottom:15px!important}
+.selling-section .sell-product-card>span{font-family:inherit!important;font-size:9px!important;line-height:1.2!important;letter-spacing:.14em!important}
+.selling-section .sell-product-card>strong{font-family:inherit!important;font-size:14px!important;line-height:1.2!important}

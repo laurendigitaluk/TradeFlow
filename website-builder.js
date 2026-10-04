@@ -54,7 +54,7 @@ function editableHeroElementMarkup(el,editable=true){
  let body='';
  if(b.type==='image'){
    body=b.image_url
-    ?'<div class="editable-hero-image-wrap"><img src="'+esc(b.image_url)+'" alt="Website image"></div><div class="editable-hero-image-tools"><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(b.id)+'">Remove image</button></div>'
+    ?'<div class="editable-hero-image-wrap"><img src="'+esc(b.preview_url||b.image_url)+'" alt="Website image"></div><div class="editable-hero-image-tools"><button type="button" data-image-action="replace" data-image-target="hero-element:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="hero-element:'+esc(b.id)+'">Remove image</button></div>'
     :'<div class="editable-hero-empty-image"><button type="button" data-image-action="add" data-image-target="hero-element:'+esc(b.id)+'">Add image</button></div>';
  }else if(b.type==='button'){
    body='<span class="editable-hero-button-preview">'+esc(b.button_text)+'</span>';
@@ -102,7 +102,7 @@ function layoutBlockMarkup(id,block,content,tag='div',alt='Website image'){
 }
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
-let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
+let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
 const websiteBackgrounds=[
  {id:'clean-wave',label:'Clean Gradient',color:'#f5f8fb',image:'linear-gradient(135deg,#f4f8fc 0%,#dce9f4 48%,#ffffff 100%)',size:'cover',repeat:'no-repeat'},
  {id:'soft-blue',label:'Blue Gradient',color:'#eaf3fb',image:'linear-gradient(135deg,#e7f3ff 0%,#b9d9f2 50%,#f8fbff 100%)',size:'cover',repeat:'no-repeat'},
@@ -117,23 +117,19 @@ const websiteBackgrounds=[
  {id:'soft-hex',label:'Hex Pattern',color:'#f2f5f7',image:'linear-gradient(30deg,rgba(45,60,75,.30) 12%,transparent 12.5%,transparent 87%,rgba(45,60,75,.30) 87.5%),linear-gradient(150deg,color-mix(in srgb,var(--accent) 25%,transparent) 12%,transparent 12.5%,transparent 87%,color-mix(in srgb,var(--accent) 25%,transparent) 87.5%),linear-gradient(60deg,rgba(45,60,75,.22) 25%,transparent 25.5%,transparent 75%,rgba(45,60,75,.22) 75%)',size:'56px 96px',repeat:'repeat'},
  {id:'dark-geometry',label:'Dark Geometry',color:'#111820',image:'linear-gradient(135deg,#111820 25%,#263747 25% 50%,#111820 50% 75%,#34495a 75%)',size:'80px 80px',repeat:'repeat'}
 ];
-function normalizeBackgroundId(id){
- const valid=new Set(websiteBackgrounds.map(x=>x.id));
- if(valid.has(id))return id;
- const legacyMap={
-  music:'clean-wave',camera:'clean-wave',mobile:'clean-wave',instruments:'warm-sand',drone:'soft-blue',tools:'fine-diagonal',
-  vehicles:'clean-wave',home:'warm-sand',kitchen:'clean-wave',fashion:'soft-lavender',office:'fine-grid',toys:'sunset',
-  gaming:'dark-geometry','clean-wave':'clean-wave','pastel-gradient':'clean-wave','blue-wave':'soft-blue','green-wave':'soft-green',
-  'warm-wave':'warm-sand','purple-wave':'soft-lavender','dark-wave':'dark-geometry','hexagon-pattern':'soft-hex',
-  'dot-pattern':'soft-dots','diagonal-stripes':'wide-diagonal','soft-bokeh':'clean-wave',marble:'warm-sand',watercolour:'sunset',
-  'abstract-shapes':'sunset','soft-texture':'clean-wave','colour-blend':'sunset'
- };
- return legacyMap[id]||'clean-wave';
+function normalizeBackgroundId(id){return id||'clean-wave';}
+function applyWebsiteBackground(){
+ const e=$('site-editor');if(!e)return;
+ const style=themeColors.background_style||'none',c1=themeColors.background_color||themeColors.page_bg||'#f5f6f8',c2=themeColors.background_color2||'#ffffff';
+ let image='none';
+ if(style==='stripes')image='repeating-linear-gradient(135deg,'+c1+' 0 18px,'+c2+' 18px 36px)';
+ if(style==='dots')image='radial-gradient(circle,'+c2+' 1.8px,transparent 1.8px)';
+ if(style==='gradient')image='linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)';
+ e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',style==='dots'?'18px 18px':'cover');e.style.setProperty('--site-background-repeat',style==='dots'?'repeat':'no-repeat');
 }
-function applyWebsiteBackground(){const e=$('site-editor');if(!e)return;const mode=themeColors.background_mode==='custom'?'custom':'preset';themeColors.background_id=normalizeBackgroundId(themeColors.background_id);const p=websiteBackgrounds.find(x=>x.id===themeColors.background_id)||websiteBackgrounds[0];e.dataset.backgroundMode=mode;e.style.setProperty('--site-background-color',mode==='custom'?themeColors.page_bg:p.color);e.style.setProperty('--site-background-image',mode==='custom'?'none':p.image);e.style.setProperty('--site-background-size',mode==='custom'?'cover':p.size);e.style.setProperty('--site-background-repeat',mode==='custom'?'no-repeat':p.repeat);}
-function selectWebsiteBackground(id){const p=websiteBackgrounds.find(x=>x.id===id);if(!p)return;themeColors.background_id=p.id;themeColors.background_mode='preset';applyWebsiteBackground();renderEditor();markDirty();setStatus(p.label+' selected. Brand colours remain editable. Save the draft to keep the change.','success');}
-function selectPresetBackgroundMode(){themeColors.background_mode='preset';applyWebsiteBackground();renderDesignControls();renderEditor();markDirty();setStatus('Preset background mode enabled. Choose a pattern or gradient below.','success');}
-function selectCustomBackground(){themeColors.background_mode='custom';applyWebsiteBackground();renderDesignControls();renderEditor();markDirty();setStatus('Custom colours selected. No background pattern or gradient is applied.','success');}
+function selectWebsiteBackground(){return false;}
+function selectPresetBackgroundMode(){return false;}
+function selectCustomBackground(){themeColors.background_style='none';applyWebsiteBackground();renderDesignControls();renderEditor();markDirty();}
 window.tradeflowSelectWebsiteBackground=selectWebsiteBackground;
 window.tradeflowSelectPresetBackgroundMode=selectPresetBackgroundMode;
 window.tradeflowSelectCustomBackground=selectCustomBackground;
@@ -281,7 +277,7 @@ function renderPageTilesEditor(p){
 
 function resetDesignColours(){
  const p=templatePalettes[currentTemplate]||templatePalettes.editorial;
- themeColors={...themeColors,accent:p.accent,text:p.text,page_bg:p.page_bg,header_bg:p.header_bg,buy_bg:p.buy_bg,sell_bg:p.sell_bg,footer_bg:p.footer_bg,background_id:'clean-wave',background_mode:'preset'};
+ themeColors={...themeColors,accent:p.accent,text:p.text,page_bg:p.page_bg,header_bg:p.header_bg,buy_bg:p.buy_bg,sell_bg:p.sell_bg,footer_bg:p.footer_bg,background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
  typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  applyWebsiteBackground();
  renderDesignControls();renderEditor();markDirty();
@@ -291,8 +287,9 @@ function renderDesignControls(){
  const box=$('design-controls');if(!box)return;
  const colors=[['accent','Brand / accent'],['text','Text'],['page_bg','Page background'],['header_bg','Header / navigation'],['buy_bg','Buying section'],['sell_bg','Selling section'],['footer_bg','Footer']];
  const palettes={professional:{label:'Professional',description:'Navy, blue-grey and restrained gold',accent:'#2563a8',text:'#172a3a',page_bg:'#f3f6f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e8eef4',footer_bg:'#142635'},warm:{label:'Warm',description:'Terracotta, cream and soft brown',accent:'#a84f2d',text:'#2b211d',page_bg:'#fbf7f2',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#3a2b25'},dark:{label:'Dark',description:'Charcoal, slate and warm gold',accent:'#d79a55',text:'#f2f4f5',page_bg:'#151b20',header_bg:'#101419',buy_bg:'#182027',sell_bg:'#202a32',footer_bg:'#0b0f12'},clean:{label:'Clean',description:'Fresh blue with white space',accent:'#1769aa',text:'#17202a',page_bg:'#f7f9fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#edf3f8',footer_bg:'#172b3a'},ocean:{label:'Ocean',description:'Deep teal, aqua and cool mist',accent:'#087f8c',text:'#12343a',page_bg:'#edf7f7',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dcefee',footer_bg:'#10383d'},emerald:{label:'Emerald',description:'Rich green, sage and ivory',accent:'#16825b',text:'#17352a',page_bg:'#f0f7f3',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#deeee6',footer_bg:'#17382d'},royal:{label:'Royal',description:'Indigo, violet and soft lavender',accent:'#5b4bb7',text:'#242044',page_bg:'#f5f3fb',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e9e5f6',footer_bg:'#28204d'},sunset:{label:'Sunset',description:'Coral, amber and warm sand',accent:'#e45f3a',text:'#3a241e',page_bg:'#fff6f0',header_bg:'#fffdf9',buy_bg:'#ffffff',sell_bg:'#f8e4d8',footer_bg:'#40251e'},citrus:{label:'Citrus',description:'Lively orange, lemon and fresh cream',accent:'#e38b1f',text:'#302615',page_bg:'#fff9ec',header_bg:'#fffef8',buy_bg:'#ffffff',sell_bg:'#f7edc9',footer_bg:'#3a2d16'},berry:{label:'Berry',description:'Raspberry, plum and pale blush',accent:'#b43d69',text:'#351e2a',page_bg:'#fbf2f6',header_bg:'#fffafd',buy_bg:'#ffffff',sell_bg:'#f2dce5',footer_bg:'#3d2030'},coral:{label:'Coral',description:'Bright coral with coastal blue-grey',accent:'#e85d5d',text:'#302225',page_bg:'#fff5f3',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f5e1e1',footer_bg:'#3b252b'},sky:{label:'Sky',description:'Clear blue, powder blue and navy',accent:'#1684d8',text:'#183047',page_bg:'#f1f8fe',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dcecf9',footer_bg:'#15314a'},forest:{label:'Forest',description:'Deep green, moss and natural cream',accent:'#2f6b45',text:'#203026',page_bg:'#f2f6f1',header_bg:'#fffefa',buy_bg:'#ffffff',sell_bg:'#e2ebdf',footer_bg:'#1d3525'},plum:{label:'Plum',description:'Plum, mauve and warm stone',accent:'#7a3f70',text:'#302333',page_bg:'#f7f2f6',header_bg:'#fffdfd',buy_bg:'#ffffff',sell_bg:'#e9dce7',footer_bg:'#302034'},teal:{label:'Teal',description:'Vivid teal balanced with graphite',accent:'#009688',text:'#163332',page_bg:'#eff9f8',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#d9efec',footer_bg:'#163b39'},electric:{label:'Electric',description:'Bright blue, cobalt and cool grey',accent:'#1769ff',text:'#18233b',page_bg:'#f2f6ff',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#dfe8ff',footer_bg:'#172650'},rose:{label:'Rose',description:'Modern rose, blush and charcoal',accent:'#d34f78',text:'#30222a',page_bg:'#fff4f7',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f5dfe6',footer_bg:'#3b2530'},monochrome:{label:'Monochrome',description:'Black, white and neutral grey',accent:'#3f4650',text:'#1e2328',page_bg:'#f4f5f6',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#e7e9eb',footer_bg:'#20252a'}};
- box.innerHTML='<div class="control-title">Website background</div><small>Choose a simple pattern or gradient, or use Custom colours for a clean background. Brand colours remain editable.</small><div class="background-mode-row"><button type="button" class="background-mode '+(themeColors.background_mode!=='custom'?'selected':'')+'" onclick="window.tradeflowSelectPresetBackgroundMode();return false;">Use preset background</button><button type="button" class="background-mode '+(themeColors.background_mode==='custom'?'selected':'')+'" onclick="window.tradeflowSelectCustomBackground();return false;">Use custom colours</button></div><div class="background-grid">'+websiteBackgrounds.map(p=>'<button type="button" class="background-option '+(themeColors.background_id===p.id?'selected':'')+'" data-background="'+p.id+'" title="'+esc(p.label)+'" onclick="window.tradeflowSelectWebsiteBackground(\''+p.id+'\');return false;"><span style="background-color:'+p.color+';background-image:'+p.image+';background-size:'+p.size+';background-repeat:'+p.repeat+';pointer-events:none"></span><b style="pointer-events:none">'+esc(p.label)+'</b></button>').join('')+'</div><div class="control-title">Brand colours</div><small>These colours control the header, page surfaces, buying section, selling section and footer. They remain editable when a preset background is active.</small><button type="button" class="design-reset-button" onclick="resetDesignColours();return false;">Reset design colours</button><div class="color-grid">'+colors.map(([key,label])=>'<label class="color-control"><span>'+label+'</span><input type="color" data-color="'+key+'" value="'+esc(themeColors[key])+'"><code>'+esc(themeColors[key])+'</code></label>').join('')+'</div><div class="preset-row"><span>Quick palettes</span><small>Choose a coordinated starting palette, then fine-tune any colour above.</small>'+Object.entries(palettes).map(([id,p])=>'<button type="button" data-palette="'+id+'" title="'+esc(p.label+' — '+p.description)+'"><i style="background:'+p.accent+'"></i>'+esc(p.label)+'</button>').join('')+'</div>';
- box.querySelectorAll('[data-background]').forEach(b=>{b.addEventListener('click',e=>e.stopPropagation());});
+ box.innerHTML='<div class="control-title">Website background</div><small>Choose a base colour and optionally add stripes, dots or an ombre gradient. The background covers the whole website, including the editable top area.</small><label class="color-control"><span>Background colour</span><input type="color" data-bg-color="1" value="'+esc(themeColors.background_color||themeColors.page_bg||'#f5f6f8')+'"><code>'+esc(themeColors.background_color||themeColors.page_bg||'#f5f6f8')+'</code></label><label class="select-control"><span>Background pattern</span><select data-bg-style><option value="none" '+(themeColors.background_style==='none'?'selected':'')+'>None — solid colour</option><option value="stripes" '+(themeColors.background_style==='stripes'?'selected':'')+'>Stripes</option><option value="dots" '+(themeColors.background_style==='dots'?'selected':'')+'>Dots</option><option value="gradient" '+(themeColors.background_style==='gradient'?'selected':'')+'>Ombre / gradient</option></select></label><label class="color-control"><span>Pattern / second colour</span><input type="color" data-bg-color="2" value="'+esc(themeColors.background_color2||'#ffffff')+'"><code>'+esc(themeColors.background_color2||'#ffffff')+'</code></label><div class="background-preview"></div><div class="control-title">Brand colours</div><small>These colours control the header, page surfaces, buying section, selling section and footer.</small><button type="button" class="design-reset-button" onclick="resetDesignColours();return false;">Reset design colours</button><div class="color-grid">'+colors.map(([key,label])=>'<label class="color-control"><span>'+label+'</span><input type="color" data-color="'+key+'" value="'+esc(themeColors[key])+'"><code>'+esc(themeColors[key])+'</code></label>').join('')+'</div><div class="preset-row"><span>Quick palettes</span><small>Choose a coordinated starting palette, then fine-tune any colour above.</small>'+Object.entries(palettes).map(([id,p])=>'<button type="button" data-palette="'+id+'" title="'+esc(p.label+' — '+p.description)+'"><i style="background:'+p.accent+'"></i>'+esc(p.label)+'</button>').join('')+'</div>';
+ box.querySelectorAll('[data-bg-color]').forEach(input=>input.addEventListener('input',()=>{themeColors[input.dataset.bgColor==='1'?'background_color':'background_color2']=input.value;applyWebsiteBackground();renderDesignControls();markDirty();}));
+ box.querySelectorAll('[data-bg-style]').forEach(input=>input.addEventListener('change',()=>{themeColors.background_style=input.value;applyWebsiteBackground();renderDesignControls();renderEditor();markDirty();}));
  box.querySelectorAll('[data-color]').forEach(input=>input.addEventListener('input',()=>{themeColors[input.dataset.color]=input.value;renderEditor();renderDesignControls();markDirty();}));
  
  box.querySelectorAll('[data-palette]').forEach(b=>b.addEventListener('click',()=>{const p=palettes[b.dataset.palette];themeColors={...themeColors,accent:p.accent,text:p.text,page_bg:p.page_bg,header_bg:p.header_bg,buy_bg:p.buy_bg,sell_bg:p.sell_bg,footer_bg:p.footer_bg};renderDesignControls();renderEditor();markDirty();}));
@@ -533,7 +530,7 @@ function applyTemplate(template){
  if(!templateHeadlines[template])return;
  const previousDefaults=Object.values(templateDefaults).some(d=>d.kicker===templateCopy.kicker&&d.cta1===templateCopy.cta1&&d.cta2===templateCopy.cta2);
  currentTemplate=template;
- themeColors=Object.assign({},templatePalettes[template]||templatePalettes.editorial,{background_id:themeColors.background_id||'clean-wave',background_mode:themeColors.background_mode||'preset'});
+ themeColors=Object.assign({},themeColors,templatePalettes[template]||templatePalettes.editorial);
  if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
  if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);
  renderTemplates();renderHomepageControls();renderHeroImageControls();renderEditor();markDirty();
@@ -543,7 +540,7 @@ function buildContent(){
  return {schema_version:2,template_reset_version:2,site:{
    name:siteName.trim()||null,
    pages:pages,
-   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,background_id:normalizeBackgroundId(themeColors.background_id),background_mode:themeColors.background_mode==='custom'?'custom':'preset',background_color:themeColors.background_mode==='custom'?(themeColors.page_bg||'#f5f6f8'):(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.color||'#f5faff'),background_image:themeColors.background_mode==='custom'?'':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.image||''),background_size:themeColors.background_mode==='custom'?'cover':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.size||'cover'),background_repeat:themeColors.background_mode==='custom'?'no-repeat':(websiteBackgrounds.find(x=>x.id===themeColors.background_id)?.repeat||'no-repeat'),typography:typography},
+   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,background_style:['none','stripes','dots','gradient'].includes(themeColors.background_style)?themeColors.background_style:'none',background_color:themeColors.background_color||themeColors.page_bg||'#f5f6f8',background_color2:themeColors.background_color2||'#ffffff',typography:typography},
    social:socialLinks,
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
@@ -583,7 +580,7 @@ function loadContent(content){
  intro=s.homepage?.intro||'';
  accent=s.theme?.accent||'#c46a2b';
  typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
- themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};
+ themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_style:['none','stripes','dots','gradient'].includes(s.theme?.background_style)?s.theme.background_style:(s.theme?.background_mode==='custom'?'none':'gradient'),background_color:s.theme?.background_color||s.theme?.page_bg||'#f5f6f8',background_color2:s.theme?.background_color2||'#ffffff'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
@@ -624,7 +621,7 @@ async function uploadImage(file,target){
   const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
   if(previewEl){
    selectedEditableHeroId=previewId;
-   previewEl.image_url=URL.createObjectURL(file);
+   previewEl.preview_url=URL.createObjectURL(file);
    if(imageDimensions?.width&&imageDimensions?.height){
     previewEl.aspect=imageDimensions.width/imageDimensions.height;
    }
@@ -648,7 +645,7 @@ async function uploadImage(file,target){
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
- else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;selectedEditableHeroId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;if(el.role==='banner'){const canvas=document.querySelector('[data-editable-hero-canvas]');const rect=canvas?.getBoundingClientRect();const canvasWidth=rect?.width||1000;const canvasHeight=rect?.height||760;const targetWidthPct=Math.min(70,Math.max(25,(imageDimensions.width/imageDimensions.height)*canvasHeight/canvasWidth*30));el.width=targetWidthPct;el.height=Math.min(45,(targetWidthPct/100*canvasWidth/(imageDimensions.width/imageDimensions.height))/canvasHeight*100);}}if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
+ else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedEditableHeroId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;if(el.role==='banner'){const canvas=document.querySelector('[data-editable-hero-canvas]');const rect=canvas?.getBoundingClientRect();const canvasWidth=rect?.width||1000;const canvasHeight=rect?.height||760;const targetWidthPct=Math.min(70,Math.max(25,(imageDimensions.width/imageDimensions.height)*canvasHeight/canvasWidth*30));el.width=targetWidthPct;el.height=Math.min(45,(targetWidthPct/100*canvasWidth/(imageDimensions.width/imageDimensions.height))/canvasHeight*100);}}if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -671,7 +668,7 @@ function removeImage(target){
  else if(target==='home-buy')homeBuyImageUrl='';
  else if(target==='home-sell')homeSellImageUrl='';
  else if(target==='logo')logoUrl='';
- else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el)el.image_url='';}
+ else if(target==='banner'){bannerUrl='';layoutBlocks.heroBanner.image_url='';} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url='';el.preview_url='';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url='';p.image_alt='';}}
@@ -726,7 +723,7 @@ function resetToFreshWebsite(){
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_id:'clean-wave',background_mode:'preset'};
+ homepageTiles=defaultHomepageTiles();editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
  pages=defaultPages();selectedPage='home';currentTemplate='editable';editableHeroElements=defaultEditableHeroElements();window.__existingCategoryManifest=[];
@@ -750,7 +747,7 @@ function resetDesignToDefaults(){
  if(!window.confirm('Reset the website design to its factory defaults? Your page text, pages and uploaded images will be kept.'))return;
  const palette=templatePalettes.editorial||{accent:'#b85c38',page_bg:'#f7f4f0',text:'#20252a',header_bg:'#fffdfb',buy_bg:'#fffdfb',sell_bg:'#f0ebe6',footer_bg:'#20252a'};
  currentTemplate='editable';
- themeColors=Object.assign({},palette,{background_id:'clean-wave',background_mode:'preset'});
+ themeColors=Object.assign({},palette,{background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'});
  typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;

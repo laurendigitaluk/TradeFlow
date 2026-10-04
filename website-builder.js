@@ -238,11 +238,29 @@ function currentPage(){return selectedPage==='home'?{slug:'home',title:'Home pag
 function renderPageList(){
  const box=$('page-list');if(!box)return;
  const items=[{slug:'home',title:'Home page',hint:'Main landing page',enabled:true},...pages.map(p=>({slug:p.slug,title:p.title,hint:p.slug==='shop'?'Retail selling page':p.slug==='buying'?'Buying page':pageDef(p.slug).hint,enabled:p.enabled}))];
- box.innerHTML=items.map(p=>'<div class="page-row '+(p.slug===selectedPage?'selected':'')+'"><button type="button" class="page-link" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>'+(p.slug==='home'||p.slug==='customer-account'?'':p.slug==='buying'||p.slug==='shop'?'<button type="button" class="page-visibility" data-toggle-page="'+esc(p.slug)+'">'+(p.enabled===false?'Show':'Hide')+'</button>':'<button type="button" class="page-delete" data-delete-page="'+esc(p.slug)+'" title="Delete page">Delete</button>')+'</div>').join('');
+ const pageRows=items.map(p=>'<div class="page-row '+(p.slug===selectedPage?'selected':'')+'"><button type="button" class="page-link" data-page="'+esc(p.slug)+'"><span class="page-link-icon">'+(p.slug==='home'?'HOME':p.slug==='shop'?'SHOP':p.slug==='buying'?'BUY':'PAGE')+'</span><span><b>'+esc(p.title)+'</b><small>'+esc(p.enabled===false?'Hidden from website':p.hint)+'</small></span></button>'+(p.slug==='home'||p.slug==='customer-account'?'':p.slug==='buying'||p.slug==='shop'?'<button type="button" class="page-visibility" data-toggle-page="'+esc(p.slug)+'">'+(p.enabled===false?'Show':'Hide')+'</button>':'<button type="button" class="page-delete" data-delete-page="'+esc(p.slug)+'" title="Delete page">Delete</button>')+'</div>').join('');
+ const homepageSectionRows=
+   '<div class="sidebar-subheading">Homepage sections</div>'+
+   '<div class="homepage-section-option"><label><input type="checkbox" data-home-section="buy" '+(homepageSections.buy!==false?'checked':'')+'> <span><b>What We Buy</b><small>Show this section on the Home page</small></span></label>'+(homepageSections.buy!==false?'':'<button type="button" data-add-home-section="buy">Add to page</button>')+'</div>'+
+   '<div class="homepage-section-option"><label><input type="checkbox" data-home-section="sell" '+(homepageSections.sell!==false?'checked':'')+'> <span><b>What We Sell</b><small>Show this section on the Home page</small></span></label>'+(homepageSections.sell!==false?'':'<button type="button" data-add-home-section="sell">Add to page</button>')+'</div>';
+ box.innerHTML=pageRows+homepageSectionRows;
  box.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>selectPage(b.dataset.page)));
  box.querySelectorAll('[data-toggle-page]').forEach(b=>b.addEventListener('click',()=>{
    const slug=b.dataset.togglePage,page=pages.find(p=>p.slug===slug);if(!page)return;
    page.enabled=page.enabled===false;markDirty();renderPageList();renderHeaderFooterControls();renderEditor();setStatus(page.enabled?'What We Buy / What We Sell page shown.':'What We Buy / What We Sell page hidden from the customer website.','success');
+ }));
+ box.querySelectorAll('[data-home-section]').forEach(b=>b.addEventListener('change',()=>{
+   const key=b.dataset.homeSection;
+   homepageSections[key]=b.checked;
+   if(!b.checked&&selectedPage==='home')selectedPage='home';
+   markDirty();renderPageList();renderEditor();
+   setStatus((key==='buy'?'What We Buy':'What We Sell')+(b.checked?' added to':' removed from')+' the Home page. Save the draft to keep the change.','success');
+ }));
+ box.querySelectorAll('[data-add-home-section]').forEach(b=>b.addEventListener('click',()=>{
+   const key=b.dataset.addHomeSection;
+   homepageSections[key]=true;
+   markDirty();renderPageList();renderEditor();
+   setStatus((key==='buy'?'What We Buy':'What We Sell')+' added back to the Home page. Save the draft to keep the change.','success');
  }));
  box.querySelectorAll('[data-delete-page]').forEach(b=>b.addEventListener('click',()=>{
    const slug=b.dataset.deletePage,page=pages.find(p=>p.slug===slug);if(!page)return;
@@ -253,7 +271,6 @@ function renderPageList(){
    selectedPage='home';markDirty();renderPageList();renderPageManager();renderHeaderFooterControls();renderBuilderPageHelp();renderEditor();setStatus('Page deleted from the draft. Save the draft to keep the change.','success');
  }));
 }
-
 function renderHeroImageControls(){const box=$('hero-image-controls');if(box)box.innerHTML='';}
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
@@ -958,7 +975,25 @@ function initBuilder(){
  });
  (async()=>{const saveState=$('save-state');try{if(saveState)saveState.textContent='Connecting to your website…';await Promise.race([restoreSession(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Subscriber session timed out. Please refresh and sign in again.')),15000))]);if(saveState)saveState.textContent='Loading website draft…';await Promise.race([loadDraft(),new Promise((_,reject)=>setTimeout(()=>reject(new Error('Website draft loading timed out. Please refresh the builder.')),20000))]);if(saveState)saveState.textContent='Website loaded';}catch(error){if(saveState)saveState.textContent='Website could not be loaded';setStatus(error.message||String(error),'error');console.error('TradeFlow Website Builder load error',error)}})();
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function openHeroImagePicker(target){
+ const input=document.createElement('input');
+ input.type='file';
+ input.accept='image/png,image/jpeg,image/webp';
+ input.style.position='fixed';
+ input.style.left='-9999px';
+ input.style.width='1px';
+ input.style.height='1px';
+ document.body.appendChild(input);
+ input.addEventListener('change',function(){
+   const file=input.files?.[0];
+   if(file)uploadImage(file,target).catch(function(err){setStatus(err.message||String(err),'error');});
+   setTimeout(function(){input.remove();},1000);
+ });
+ input.addEventListener('cancel',function(){setTimeout(function(){input.remove();},100);});
+ input.click();
+}
+
+function bindEditableHero(root){
  const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
@@ -973,8 +1008,7 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   e.preventDefault();e.stopPropagation();
   const target=btn.dataset.imageTarget;
   selectedEditableHeroId=target.slice(12);
-  const input=$('image-file-input');
-  input.dataset.target=target;input.value='';input.click();
+  openHeroImagePicker(target);
  }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();e.stopPropagation();const id=btn.dataset.ehDelete;editableHeroElements=editableHeroElements.filter(x=>x.id!==id);if(selectedEditableHeroId===id)selectedEditableHeroId=editableHeroElements[0]?.id||null;markDirty();renderEditor();

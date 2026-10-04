@@ -253,15 +253,7 @@ function renderPageList(){
  }));
 }
 
-function renderHeroImageControls(){
- const box=$('hero-image-controls');if(!box)return;
- const imageState=(url)=>url?'Image uploaded':'No image selected';
- const secondaryUsed=currentTemplate==='editorial';
- box.innerHTML='<div class="control-title">Additional homepage images</div><small>Your Branding banner is the primary homepage hero image. This section is for the fallback hero image and the optional second image used by templates that support it.</small><div class="hero-image-control"><div><b>Fallback hero image</b><span>'+imageState(homeImageUrl)+'</span></div><button type="button" data-hero-image="home">'+(homeImageUrl?'Replace photo':'Add photo')+'</button></div><div class="hero-image-control"><div><b>Secondary hero image</b><span>'+imageState(homeImageUrl2)+(secondaryUsed?' · used by this template':' · not used by this template')+'</span></div><button type="button" data-hero-image="home2">'+(homeImageUrl2?'Replace photo':'Add photo')+'</button></div>';
- box.querySelectorAll('[data-hero-image]').forEach(button=>button.addEventListener('click',()=>{
-   const input=$('image-file-input');input.dataset.target=button.dataset.heroImage;input.value='';input.click();
- }));
-}
+function renderHeroImageControls(){const box=$('hero-image-controls');if(box)box.innerHTML='';}
 function renderHomepageControls(){
  const box=$('homepage-controls');if(!box)return;
  const p=currentPage();

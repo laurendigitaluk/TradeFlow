@@ -2,6 +2,8 @@ const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
+let selectedSiteText=null;
+let homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};
 let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true,bannerPosition='center';
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
@@ -150,18 +152,18 @@ let typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'s
 let homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:false,shop:true};
 let headerLinks=[],footerLinks=[],homepageOrder=['hero','buy','sell'];
 function defaultHomepageTiles(){return [
- {id:'buy-1',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'buy-2',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'buy-3',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'buy-4',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-1',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-2',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-3',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-4',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'buy-5',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'buy-6',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:''},
- {id:'sell-6',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:''}
+ {id:'buy-1',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'buy-2',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'buy-3',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'buy-4',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-1',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-2',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-3',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-4',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'buy-5',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-5',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'buy-6',side:'buy',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}},
+ {id:'sell-6',side:'sell',title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}}
 ]}
 homepageTiles=defaultHomepageTiles();
 const params=new URLSearchParams(location.search),requestedTemplate=params.get('template'),requestedPage=params.get('page'),requestedFocus=params.get('focus');
@@ -207,13 +209,13 @@ function defaultPages(){
    slug:p.slug,title:p.title,enabled:p.enabled,
    body:p.slug==='shop'?'Welcome to our shop. Browse our current products below.':
         p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',
-   image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
+   image_url:'',image_alt:'',image_url2:'',image_alt2:'',title_style:{},body_style:{},tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
  }));
 }
 let pages=defaultPages();
 
 function defaultPageTiles(prefix){
- return Array.from({length:12},(_,i)=>({id:prefix+'-'+(i+1),title:'',body:'',image_url:'',image_alt:'',cta:''}));
+ return Array.from({length:12},(_,i)=>({id:prefix+'-'+(i+1),title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}}));
 }
 function ensurePageTileCapacity(tiles,prefix){
  const existing=Array.isArray(tiles)?tiles:[];const byId=new Map(existing.map(t=>[t.id,t]));
@@ -228,6 +230,35 @@ function pageTileConfig(p){
  return {tiles:ensurePageTileCapacity(cleanPageTiles(p.tiles,prefix),prefix),count:[3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6,columns:[2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3};
 }
 function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c))}
+function normalizeSiteTextStyle(v){
+ const d=Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},v||{});
+ d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');
+ d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';
+ d.lineHeight=String(d.lineHeight||'1.2');d.letterSpacing=String(d.letterSpacing||'0');
+ return d;
+}
+function siteTextStyleCss(v){
+ const d=normalizeSiteTextStyle(v);
+ return 'font-family:'+esc(d.font)+';font-size:'+esc(d.fontSize==='auto'?'inherit':(Number(d.fontSize)||16)+'px')+';color:'+esc(d.color)+';line-height:'+esc(d.lineHeight)+';letter-spacing:'+esc(d.letterSpacing)+'px;';
+}
+function siteTextStyleForField(field,el){
+ if(field==='page-title')return normalizeSiteTextStyle(currentPage()?.title_style);
+ if(field==='page-body')return normalizeSiteTextStyle(currentPage()?.body_style);
+ if(homepageTextStyles[field])return normalizeSiteTextStyle(homepageTextStyles[field]);
+ if(el?.dataset?.tileField){
+   const tile=(el.dataset.pageTileId?currentPage()?.tiles:homepageTiles)?.find(x=>x.id===(el.dataset.pageTileId||el.dataset.tileId));
+   return normalizeSiteTextStyle(tile?.[el.dataset.tileField+'_style']);
+ }
+ return normalizeSiteTextStyle();
+}
+function siteTextTarget(el){
+ if(!el)return null;
+ const field=el.dataset.edit||'';
+ if(field==='page-title'||field==='page-body')return {field,style:siteTextStyleForField(field,el)};
+ if(homepageTextStyles[field])return {field,style:siteTextStyleForField(field,el)};
+ if(el.dataset.tileField)return {field:'tile-'+el.dataset.tileField,style:siteTextStyleForField('',el)};
+ return null;
+}
 function setStatus(text,type){const el=$('status');if(el){el.textContent=text||'';el.dataset.type=type||''}}
 function markDirty(){dirty=true;const el=$('save-state');if(el)el.textContent='Unsaved changes';}
 function pageDef(slug){return pageDefinitions.find(p=>p.slug===slug)||{slug:slug,title:slug,hint:'Optional',enabled:true,prompt:'Add the information customers need on this page.'}}
@@ -291,7 +322,7 @@ function renderHomepageControls(){
 function renderPageTilesEditor(p){
  const cfg=pageTileConfig(p);p.tiles=cfg.tiles;p.tile_count=cfg.count;p.tile_columns=cfg.columns;
  const visible=cfg.tiles.slice(0,cfg.count);
- return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>'<article class="editable-home-tile page-tile" draggable="true" data-page-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'"><button type="button" data-image-action="remove" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Remove</button>':'<button type="button" data-image-action="add" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('')+'</div></section>';
+ return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>'<article class="editable-home-tile page-tile" draggable="true" data-page-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'"><button type="button" data-image-action="remove" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Remove</button>':'<button type="button" data-image-action="add" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="title" style="'+siteTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3><p contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="body" style="'+siteTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p><b contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="cta" style="'+siteTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b></div></article>').join('')+'</div></section>';
 }
 
 function resetDesignColours(){
@@ -325,7 +356,7 @@ function renderHeaderFooterControls(){
 function renderPageManager(){
  const box=$('page-manager');if(!box)return;
  box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>';
- const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:0,tile_columns:3,tiles:[],seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
+ const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',title_style:{},body_style:{},image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:0,tile_columns:3,tiles:[],seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
 }
 function renderBrandingControls(){
  const box=$('branding-controls');if(!box)return;
@@ -395,7 +426,7 @@ function imageBlock(url,kind,label,alt){
  return '<div class="image-slot"><div class="image-slot-label">'+heading+'</div><div class="image-drop"><button type="button" data-image-action="add" data-image-target="'+esc(kind)+'">Add image</button><span>'+esc(label)+'</span><small>PNG, JPEG or WebP · maximum 5 MB</small></div></div>';
 }
 
-function editText(field,value,tag='span',cls=''){return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'">'+esc(value||'')+'</'+tag+'>'}
+function editText(field,value,tag='span',cls=''){const st=siteTextStyleForField(field);return '<'+tag+' class="'+cls+'" contenteditable="true" data-edit="'+field+'" data-site-text="1" style="'+siteTextStyleCss(st)+'">'+esc(value||'')+'</'+tag+'>'}
 function logoEditor(){return logoUrl?'<div class="brand-mark"><img src="'+esc(logoUrl)+'" alt="'+esc(siteName)+'"><button type="button" data-image-action="replace" data-image-target="logo">Change logo</button></div>':'<div class="brand-mark"><button type="button" data-image-action="add" data-image-target="logo">Add logo</button><span>'+esc(siteName||'Your business')+'</span></div>'}
 function buyingPreview(){
  const products=Array.isArray(buyingCatalogue.products)?buyingCatalogue.products:[];
@@ -470,8 +501,6 @@ function renderGlobalHeaderEditor(){
    controls='<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label>'+
     '<label>Size<select data-gh-style="fontSize"><option value="auto"'+selectedOpt('auto',selected.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(n,selected.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
     '<label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label>'+
-    '<label>Horizontal<select data-gh-style="align"><option value="left"'+selectedOpt('left',selected.align)+'>Left</option><option value="center"'+selectedOpt('center',selected.align)+'>Centre</option><option value="right"'+selectedOpt('right',selected.align)+'>Right</option></select></label>'+
-    '<label>Vertical<select data-gh-style="vAlign"><option value="top"'+selectedOpt('top',selected.vAlign)+'>Top</option><option value="center"'+selectedOpt('center',selected.vAlign)+'>Centre</option><option value="bottom"'+selectedOpt('bottom',selected.vAlign)+'>Bottom</option></select></label>'+
     '<label>Line spacing<select data-gh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
     '<label>Letter spacing<select data-gh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
  }else if(selected&&selected.type==='image'){
@@ -547,7 +576,7 @@ function bindGlobalHeader(root){
 
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
- const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
+ const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-site-text="1" data-tile-id="'+esc(tile.id)+'" data-tile-field="title" style="'+siteTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3><p contenteditable="true" data-site-text="1" data-tile-id="'+esc(tile.id)+'" data-tile-field="body" style="'+siteTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p><b contenteditable="true" data-site-text="1" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta" style="'+siteTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b></div></article>').join('');
  const blocks={
   hero:homepageSections.hero!==false?templateHero():'',
   buy:homepageSections.buy!==false?'<section class="template-section buying-block" draggable="true" data-home-block="buy"><div class="section-intro"><div>'+editText('buyHeading',homeBuyHeading,'h2')+editText('buyIntro',homeBuyIntro,'p')+'</div>'+imageBlock(homeBuyImageUrl,'home-buy','Add a What We Buy image.',homeBuyHeading||'What We Buy')+'</div>'+buyingPreview()+'</section>':'',
@@ -576,14 +605,41 @@ function renderBuilderPageHelp(){
  if(selectedPage==='shop'){box.hidden=false;box.innerHTML='<strong>How What We Sell works:</strong> this page is connected automatically to your <b>Selling</b> listings. Products you set up for sale and publish through Selling appear here. You do not need to add the products again in the Website Builder. <a href="selling-dashboard.html">Open Selling</a> · <a href="subscriber-website-manual.html">Read the Website Manual</a>';return}
  box.hidden=true;box.innerHTML='';
 }
+function renderSiteTextToolbar(){
+ const fonts=[['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype'],['Book Antiqua','Book Antiqua']];
+ const opts=fonts.map(o=>'<option value="'+esc(o[0])+'">'+esc(o[1])+'</option>').join('');
+ return '<div class="site-text-format-toolbar" data-site-text-toolbar hidden><strong>Text</strong><label>Font<select data-site-text-style="font">'+opts+'</select></label><label>Size<select data-site-text-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'">'+n+'px</option>').join('')+'</select></label><label>Text colour<input type="color" data-site-text-style="color"></label><label>Line spacing<select data-site-text-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'">'+o[1]+'</option>').join('')+'</select></label><label>Letter spacing<select data-site-text-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'">'+o[1]+'</option>').join('')+'</select></label></div>';
+}
+function bindSiteTextToolbar(root){
+ const toolbar=root.querySelector('[data-site-text-toolbar]');if(!toolbar)return;
+ const font=toolbar.querySelector('[data-site-text-style="font"]'),size=toolbar.querySelector('[data-site-text-style="fontSize"]'),color=toolbar.querySelector('[data-site-text-style="color"]'),line=toolbar.querySelector('[data-site-text-style="lineHeight"]'),letter=toolbar.querySelector('[data-site-text-style="letterSpacing"]');
+ function sync(el){
+   const target=siteTextTarget(el);if(!target)return;
+   selectedSiteText=el;
+   const st=normalizeSiteTextStyle(target.style);
+   font.value=st.font;size.value=st.fontSize;color.value=st.color;line.value=st.lineHeight;letter.value=st.letterSpacing;
+   toolbar.hidden=false;
+ }
+ root.querySelectorAll('[data-site-text="1"]').forEach(el=>{el.addEventListener('focus',()=>sync(el));el.addEventListener('click',e=>{e.stopPropagation();sync(el);});});
+ toolbar.querySelectorAll('[data-site-text-style]').forEach(control=>control.addEventListener('input',()=>{
+   const el=selectedSiteText;if(!el)return;
+   const target=siteTextTarget(el);if(!target)return;
+   const key=control.dataset.siteTextStyle;const st=normalizeSiteTextStyle(target.style);st[key]=control.value;
+   if(el.dataset.edit==='page-title')currentPage().title_style=st;
+   else if(el.dataset.edit==='page-body')currentPage().body_style=st;
+   else if(el.dataset.edit&&homepageTextStyles[el.dataset.edit])homepageTextStyles[el.dataset.edit]=st;
+   else if(el.dataset.tileField){const tile=(el.dataset.pageTileId?currentPage().tiles:homepageTiles)?.find(x=>x.id===(el.dataset.pageTileId||el.dataset.tileId));if(tile)tile[el.dataset.tileField+'_style']=st;}
+   el.style.cssText+=siteTextStyleCss(st);markDirty();
+ }));
+}
 function renderEditor(){
  const p=currentPage();
  $('editing-page-name').textContent=p.slug==='home'?'Home page':p.title;
  $('browser-label').textContent=(siteName||'Your business')+' · '+(p.slug==='home'?'Home':p.title);
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
- $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
+ $('site-editor').innerHTML=renderSiteTextToolbar()+(p.slug==='home'?renderHome():renderPage(p));
  $('site-editor').style.setProperty('--accent',themeColors.accent);$('site-editor').style.setProperty('--button-bg',themeColors.button_bg||themeColors.accent);$('site-editor').style.setProperty('--button-text',themeColors.button_text||'#ffffff');applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();bindGlobalHeader($('site-editor'));bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));
+ bindEditor();bindGlobalHeader($('site-editor'));bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));bindSiteTextToolbar($('site-editor'));
 }
 
 function bindLayoutInteractions(root){
@@ -686,7 +742,7 @@ function buildContent(){
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
    global_header_elements:globalHeaderElements,
-   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
+   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -736,12 +792,12 @@ function loadContent(content){
  selectedGlobalHeaderId=null;useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});heroCanvasHeight=Math.max(620,Math.min(1800,Number(s.homepage?.hero_canvas_height)||760));
- homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
+ homepageTextStyles=Object.assign({buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}},s.homepage?.text_styles||{});homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
  currentTemplate='editable';
  pages=Array.isArray(s.pages)&&s.pages.length?s.pages.map(p=>Object.assign({},p,{
    enabled:p.enabled!==false,
    title:p.slug==='shop'&&(!p.title||p.title==='Shop')?'Retail Shop':(p.title||p.slug),
-   body:cleanPageBody(p.slug,p.body),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
+   body:cleanPageBody(p.slug,p.body),title_style:normalizeSiteTextStyle(p.title_style),body_style:normalizeSiteTextStyle(p.body_style),image_url:p.image_url||'',image_alt:p.image_alt||'',image_url2:p.image_url2||'',image_alt2:p.image_alt2||'',tile_count:p.slug==='shop'||p.slug==='buying'?([3,4,6,8,9,10,12].includes(Number(p.tile_count))?Number(p.tile_count):6):0,tile_columns:p.slug==='shop'||p.slug==='buying'?([2,3,4].includes(Number(p.tile_columns))?Number(p.tile_columns):3):3,tiles:p.slug==='shop'||p.slug==='buying'?ensurePageTileCapacity(cleanPageTiles(p.tiles,p.slug==='shop'?'shop-tile':'buying-tile'),p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:p.seo_title||'',seo_description:p.seo_description||''
  })):defaultPages();
  selectedPage=validPageSlug(requestedPage)?requestedPage:'home';dirty=false;
  renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
@@ -981,7 +1037,7 @@ function resetToFreshWebsite(){
  templateCopy=Object.assign({},templateDefaults.editorial);
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
  homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
+ homepageTiles=defaultHomepageTiles();homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
  pages=defaultPages();selectedPage='home';currentTemplate='editable';editableHeroElements=defaultEditableHeroElements();window.__existingCategoryManifest=[];

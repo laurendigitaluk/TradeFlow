@@ -496,3 +496,9 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .layout-text-tools select{border:1px solid #cbd3d9;background:#fff;color:#17202a;border-radius:4px;padding:3px 5px;font-size:10px;max-width:100px;}
 .layout-text-tools input[type=color]{width:24px;height:22px;padding:1px;border:1px solid #cbd3d9;border-radius:4px;background:#fff;}
 @media(max-width:800px){.layout-text-tools{max-width:calc(100vw - 40px);}.layout-text-tools select{max-width:88px;}}
+
+/* Image blocks hug the image itself: no template background, padding or artificial frame */
+.layout-block.layout-block-image{aspect-ratio:auto!important;min-height:0!important;height:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;}
+.layout-block.layout-block-image .layout-image-inner{width:100%;height:auto!important;overflow:visible!important;background:transparent!important;border:0!important;padding:0!important;}
+.layout-block.layout-block-image img{display:block;width:100%;height:auto!important;max-height:none!important;object-fit:contain!important;background:transparent!important;border:0!important;}
+.classic-frame:has(.layout-block),.grid-image:has(.layout-block),.studio-image:has(.layout-block),.horizon-image:has(.layout-block),.field-image:has(.layout-block),.business-facts:has(.layout-block),.luxe-image:has(.layout-block),.commerce-panel:has(.layout-block),.impact-image:has(.layout-block){background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;}

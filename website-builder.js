@@ -508,7 +508,7 @@ function makeGlobalHeaderElement(type,overrides={}){
 }
 function globalHeaderElementMarkup(el){
  const b=normalizeGlobalHeaderElement(el);
- const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;--eh-border-style:'+esc(b.borderStyle)+';--eh-border-width:'+esc(b.borderWidth)+'px;--eh-border-color:'+esc(b.borderColor)+';--eh-radius:'+esc(b.borderRadius||'0')+';';
  let body='';
  if(b.type==='image'){
    body=(b.image_url||b.preview_url)
@@ -531,13 +531,14 @@ function renderGlobalHeaderEditor(){
  const selectedOpt=(v,current)=>v===String(current)?' selected':'';
  let controls='<span>Select a box to edit it. Use the move handle to drag and the corner handle to resize.</span>';
  if(selected&&selected.type==='text'){
-   controls='<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label>'+
+   controls=editableHeroBorderControls(selected)+
+    '<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label>'+
     '<label>Size<select data-gh-style="fontSize"><option value="auto"'+selectedOpt('auto',selected.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(n,selected.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
     '<label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label>'+
     '<label>Line spacing<select data-gh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
     '<label>Letter spacing<select data-gh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
  }else if(selected&&selected.type==='image'){
-   controls='<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
+   controls=editableHeroBorderControls(selected)+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
  }
  return '<section class="global-header-editor"><div class="global-header-toolbar">'+
   '<strong>Shared top section</strong>'+
@@ -587,8 +588,8 @@ function bindGlobalHeader(root){
    const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');
    if(el){
      const key=control.dataset.ghStyle;
-     const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':'--gh-'+key;
-     el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'||key==='borderWidth'?control.value+'px':control.value);
+     const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':key==='borderStyle'?'--eh-border-style':key==='borderWidth'?'--eh-border-width':key==='borderColor'?'--eh-border-color':key==='borderRadius'?'--eh-radius':'--gh-'+key;
+     el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'||key==='borderWidth'||key==='borderRadius'?(control.value==='50%'?'50%':control.value+'px'):control.value);
    }
  }));
  editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{

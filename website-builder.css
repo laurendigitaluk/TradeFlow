@@ -538,3 +538,23 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .editable-hero-image-action{position:absolute;right:8px;top:8px;z-index:55;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}
 .editable-hero-element:not(.selected) .editable-hero-delete,.editable-hero-element:not(.selected) .editable-hero-resize,.editable-hero-element:not(.selected) .editable-hero-image-action{opacity:.55}
 @media(max-width:900px){.editable-hero-format{width:100%;margin-left:0}.editable-hero-canvas{min-height:440px}.editable-hero-toolbar{align-items:flex-start}.editable-hero-format label{margin-bottom:2px}}
+
+/* LIVE editable homepage refinement */
+.editable-hero-element:not(.selected) .editable-hero-delete,
+.editable-hero-element:not(.selected) .editable-hero-resize{display:none}
+.editable-hero-element.selected .editable-hero-delete{display:block}
+.editable-hero-element.selected .editable-hero-resize{display:block}
+.editable-hero-element.eh-button{min-height:42px;display:flex;align-items:center;justify-content:flex-start}
+.editable-hero-button-preview{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 18px;border-radius:5px;background:var(--accent,#c46a2b);color:#fff;font-weight:800;cursor:pointer;white-space:nowrap}
+.editable-hero-toolbar{align-items:flex-start}
+.editable-hero-format{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:auto}
+.editable-hero-format label{display:flex;align-items:center;gap:4px;font-size:9px;font-weight:700;color:#fff}
+.editable-hero-format input[type=text],
+.editable-hero-format input[type=url],
+.editable-hero-format select{height:28px;max-width:150px;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:3px 6px;font-size:10px}
+.editable-hero-format input[type=color]{width:30px;height:28px;padding:2px;border:1px solid #cbd3d9;border-radius:4px;background:#fff}
+.editable-hero-format span{font-size:10px;color:#dfe6eb}
+.editable-hero-element.eh-image img{background:transparent}
+.editable-hero-element.eh-image{background:transparent}
+.editable-hero-element.eh-text{padding:2px}
+@media(max-width:900px){.editable-hero-format{width:100%;margin-left:0}.editable-hero-format label{margin-bottom:2px}}

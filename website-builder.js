@@ -541,6 +541,8 @@ function renderGlobalHeaderEditor(){
     '<label>Letter spacing<select data-gh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
  }else if(selected&&selected.type==='image'){
    controls=editableHeroBorderControls(selected)+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
+ }else if(selected&&selected.type==='button'){
+   controls='<label>Button text<input type="text" data-gh-field="button_text" value="'+esc(selected.button_text||'Learn more')+'"></label><label>Link type<select data-gh-field="button_link_type"><option value="internal"'+selectedOpt('internal',selected.button_link_type)+'>TradeFlow page</option><option value="custom"'+selectedOpt('custom',selected.button_link_type)+'>Custom URL</option></select></label>'+(selected.button_link_type==='custom'?'<label>URL<input type="url" data-gh-field="button_link" value="'+esc(selected.button_link||'')+'"></label>':'<label>Page<select data-gh-field="button_link">'+editableHeroLinkOptions(selected.button_link)+'</select></label>');
  }
  const hasBanner=globalHeaderElements.some(x=>x&&x.type==='image'&&x.role==='banner');
  const bannerPlaceholder=hasBanner?'':'<div class="global-header-banner-placeholder"><span>Add banner</span><button type="button" data-gh-add="banner">Add banner</button></div>';
@@ -598,6 +600,10 @@ function bindGlobalHeader(root){
      const cssKey=key==='fontSize'?'--gh-size':key==='vAlign'?'--gh-valign':key==='lineHeight'?'--gh-line':key==='letterSpacing'?'--gh-letter':key==='borderStyle'?'--eh-border-style':key==='borderWidth'?'--eh-border-width':key==='borderColor'?'--eh-border-color':key==='borderRadius'?'--eh-radius':'--gh-'+key;
      el.style.setProperty(cssKey,key==='fontSize'&&control.value!=='auto'?control.value+'px':key==='letterSpacing'||key==='borderWidth'||key==='borderRadius'?(control.value==='50%'?'50%':control.value+'px'):control.value);
    }
+ }));
+ editor.querySelectorAll('[data-gh-field]').forEach(control=>control.addEventListener('input',()=>{
+   const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b)return;
+   b[control.dataset.ghField]=control.value;markDirty();
  }));
  editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{
    const b=globalHeaderElements.find(x=>x.id===el.dataset.ghEdit);if(b){b.text=el.innerText;markDirty();}

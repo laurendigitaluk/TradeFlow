@@ -2230,3 +2230,18 @@ Security boundary:
 - Customer RPCs verify the authenticated user owns the customer record for the tenant.
 - Subscriber RPCs verify an active tenant membership with owner/admin/staff role.
 - Assistant conversation/message tables have RLS enabled and direct client table access is revoked; access is through the controlled RPCs.
+
+
+## CURRENT OVERRIDE — 4 October 2026 — Customer Assistant v13
+
+The TEST customer assistant has now been audited against the current cloudflare-test GitHub branch and TEST Supabase project.
+
+- tradeflow-assistant remains provider-neutral and active_provider=none.
+- Subscriber Assistant remains read-only and tenant-scoped.
+- Customer Assistant remains authenticated, tenant/customer-scoped and read-only.
+- Customer context is retrieved only for the authenticated customer of the supplied tenant: selling requests/items, offers, acquisitions/shipping, retail orders and returns. Bank details, credentials and other customers' records are not included.
+- With provider none, the customer gateway now produces deterministic customer-facing answers from that authenticated context for status, selling/valuation/offer, order, shipping/tracking and return questions. It falls back to approved knowledge where appropriate.
+- Customer-to-business messaging remains a separate controlled workflow through assistant_conversations / assistant_messages and the guarded customer/subscriber RPCs.
+- No external AI provider has been enabled and no provider credentials were added.
+
+The change is committed on cloudflare-test as 0be95ffb3d13c4247a667c98e5b3604c6bb92766 and deployed to TEST Edge Function version 13. Browser verification with an authenticated TEST customer is still required before LIVE.

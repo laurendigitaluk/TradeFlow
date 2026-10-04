@@ -532,7 +532,7 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .editable-hero-element.eh-image{overflow:visible}
 .editable-hero-element-image img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:transparent}
 .editable-hero-empty-image{width:100%;min-height:120px;border:2px dashed #aeb8c0;background:rgba(255,255,255,.65);display:flex;align-items:center;justify-content:center}
-.editable-hero-empty-image button{border:1px solid #cbd3d9;background:#fff;border-radius:5px;padding:8px 12px;font-weight:700;cursor:pointer}
+.editable-hero-empty-image button{border:1px solid #a94f17;background:#c45f20;color:#fff;border-radius:5px;padding:8px 12px;font-weight:700;cursor:pointer}.editable-hero-empty-image button:hover{background:#a94f17}
 .editable-hero-delete{position:absolute;right:-9px;top:-9px;width:22px;height:22px;border:0;border-radius:50%;background:#17212b;color:#fff;font-size:16px;line-height:20px;cursor:pointer;z-index:55}
 .editable-hero-resize{position:absolute;right:-8px;bottom:-8px;width:16px;height:16px;border-radius:3px;background:var(--accent,#c46a2b);border:2px solid #fff;cursor:nwse-resize;z-index:55}
 .editable-hero-image-action{position:absolute;right:8px;top:8px;z-index:55;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:5px 8px;font-size:10px;font-weight:800;cursor:pointer}

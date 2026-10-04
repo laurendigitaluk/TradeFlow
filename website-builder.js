@@ -42,7 +42,7 @@ function defaultEditableHeroElements(){
 function loadEditableHeroElements(home){
  const raw=Array.isArray(home?.editable_elements)?home.editable_elements:[];
  editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();
- selectedEditableHeroId=editableHeroElements[0]?.id||null;
+ selectedEditableHeroId=null;
 }
 function editableHeroLinkOptions(selected){
  const internal=[{v:'home',l:'Home'},...pages.filter(p=>p.enabled!==false).map(p=>({v:p.slug,l:p.title||p.slug}))];
@@ -812,7 +812,7 @@ function renderEditableHeroToolbarOnly(root){
  let html='<span>Select a text box or button to edit its settings.</span>';
  if(el.type==='text')html='<label>Font<select data-eh-style="font"><option value="inherit">Site</option><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Trebuchet MS">Trebuchet</option><option value="Verdana">Verdana</option></select></label><label>Size<select data-eh-style="fontSize"><option value="auto">Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72].map(n=>'<option value="'+n+'">'+n+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-eh-style="color" value="'+el.color+'"></label><label>Horizontal<select data-eh-style="align"><option value="left">Left</option><option value="center">Centre</option><option value="right">Right</option></select></label><label>Vertical<select data-eh-style="vAlign"><option value="top">Top</option><option value="center">Centre</option><option value="bottom">Bottom</option></select></label><label>Line spacing<select data-eh-style="lineHeight"><option value="1">Tight</option><option value="1.2">Normal</option><option value="1.4">Relaxed</option><option value="1.6">Loose</option><option value="2">Double</option></select></label><label>Letter spacing<select data-eh-style="letterSpacing"><option value="0">Normal</option><option value="0.5">0.5px</option><option value="1">1px</option><option value="2">2px</option><option value="4">4px</option></select></label>';
  if(el.type==='button')html='<label>Button text<input type="text" data-eh-field="button_text" value="'+esc(el.button_text)+'"></label><label>Link type<select data-eh-field="button_link_type"><option value="internal">TradeFlow page</option><option value="custom">Custom URL</option></select></label>'+(el.button_link_type==='custom'?'<label>URL<input type="url" data-eh-field="button_link" value="'+esc(el.button_link)+'"></label>':'<label>Page<select data-eh-field="button_link">'+editableHeroLinkOptions(el.button_link)+'</select></label>');
- format.innerHTML=html;bindEditableHero(root);
+ format.innerHTML=html;format.querySelectorAll('[data-eh-style]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehStyle]=control.value;markDirty();renderEditor();}});});format.querySelectorAll('[data-eh-field]').forEach(function(control){control.addEventListener('input',function(){const target=editableHeroElements.find(function(x){return x.id===selectedEditableHeroId;});if(target){target[control.dataset.ehField]=control.value;markDirty();renderEditor();}});});
 }
 function bindEditor(){
  const root=$('site-editor');

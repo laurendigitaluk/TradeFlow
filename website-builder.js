@@ -11,6 +11,15 @@ let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
 let editableHeroElements=[],selectedEditableHeroId=null,heroCanvasHeight=760;
 let globalHeaderElements=[],selectedGlobalHeaderId=null,globalHeaderHeight=250;
+
+function applyBannerPositionToGlobalHeader(){
+ const pos=['left','center','right'].includes(bannerPosition)?bannerPosition:'center';
+ const banner=globalHeaderElements.find(x=>x&&x.type==='image'&&x.role==='banner');
+ if(!banner)return;
+ const width=Math.max(8,Math.min(92,Number(banner.width)||50));
+ const x=pos==='left'?6:pos==='right'?94-width:(100-width)/2;
+ banner.x=Math.max(0,Math.min(92,x));
+}
 function makeEditableHeroElement(type,overrides={}){
  const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
  const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
@@ -375,7 +384,7 @@ function renderBrandingControls(){
  const remove=box.querySelector('[data-banner-remove]');
  if(remove)remove.addEventListener('click',()=>removeImage('banner'));
  const bannerToggle=box.querySelector('[data-use-banner]');
- if(bannerToggle)bannerToggle.addEventListener('change',()=>{useBanner=bannerToggle.checked;renderEditor();markDirty();setStatus(useBanner?'Banner will be used as the website title banner.':'Text headline will be used instead of the banner.','success');}); const bannerPositionSelect=box.querySelector('[data-banner-position]');if(bannerPositionSelect)bannerPositionSelect.addEventListener('change',()=>{bannerPosition=bannerPositionSelect.value;renderEditor();markDirty();});
+ if(bannerToggle)bannerToggle.addEventListener('change',()=>{useBanner=bannerToggle.checked;renderEditor();markDirty();setStatus(useBanner?'Banner will be used as the website title banner.':'Text headline will be used instead of the banner.','success');}); const bannerPositionSelect=box.querySelector('[data-banner-position]');if(bannerPositionSelect)bannerPositionSelect.addEventListener('change',()=>{bannerPosition=bannerPositionSelect.value;applyBannerPositionToGlobalHeader();renderEditor();markDirty();});
 }
 function renderBusinessExtras(){
  const box=$('business-extras');if(!box)return;
@@ -789,7 +798,7 @@ function loadContent(content){
  }else if(bannerUrl){
    globalHeaderElements=[normalizeGlobalHeaderElement({id:'gh-banner',type:'image',role:'banner',x:25,y:10,width:50,height:80,aspect:4,image_url:bannerUrl,text:''})];
  }else globalHeaderElements=[];
- selectedGlobalHeaderId=null;useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ selectedGlobalHeaderId=null;useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';applyBannerPositionToGlobalHeader();headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});heroCanvasHeight=Math.max(620,Math.min(1800,Number(s.homepage?.hero_canvas_height)||760));
  homepageTextStyles=Object.assign({buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}},s.homepage?.text_styles||{});homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());

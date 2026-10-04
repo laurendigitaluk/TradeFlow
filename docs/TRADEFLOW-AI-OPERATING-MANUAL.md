@@ -2461,3 +2461,7 @@ Do not maintain a separate reduced formatting model for Shared top section eleme
 ## Top of page toolbar location — 4 October 2026
 
 The Top of page toolbar must be presented within the Shared top section editor rather than as a separate toolbar between sections. Do not remove the Top of page editable canvas; only consolidate its controls into the Shared top section UI.
+
+
+## 2026-10-04 Toolbar parity correction
+Shared top section and Top of page toolbars must retain the same light neutral background and complete text formatting menu. Shared top section now renders Text, Font, Size, Text colour, Line spacing and Letter spacing controls even before a text box is selected; controls are disabled until a shared text box is selected. Do not revert either toolbar to the black background or remove the Shared text controls.

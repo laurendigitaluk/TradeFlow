@@ -1137,6 +1137,9 @@ function bindEditor(){
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
+   // Homepage editable hero images have their own upload handler. Do not attach a second
+   // file-picker handler here or one click can open the picker twice / lose the target.
+   if(target&&target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  });});

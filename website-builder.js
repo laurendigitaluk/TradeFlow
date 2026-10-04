@@ -129,11 +129,11 @@ const categoryBackgrounds={
 function categoryBackgroundImage(category){const item=categoryBackgrounds[category];return item&&item.svg?'url("data:image/svg+xml,'+encodeURIComponent(item.svg)+'")':'none';}
 function applyWebsiteBackground(){
  const e=$('site-editor');if(!e)return;
- const style=themeColors.background_style||'none',c1=themeColors.background_color||themeColors.page_bg||'#f5f6f8',c2=themeColors.background_color2||'#ffffff';
+ const style=themeColors.background_style||'none',category=themeColors.background_category||'none',c1=themeColors.background_color||themeColors.page_bg||'#f5f6f8',c2=themeColors.background_color2||'#ffffff';
  let image='none';
  if(style==='stripes')image='repeating-linear-gradient(135deg,'+c1+' 0 18px,'+c2+' 18px 36px)';
  if(style==='dots')image='radial-gradient(circle,'+c2+' 1.8px,transparent 1.8px)';
- if(style==='gradient')image='linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)';
+ if(style==='gradient')image='linear-gradient(135deg,'+c1+' 0%,'+c2+' 100%)'; const categoryImage=categoryBackgroundImage(category); if(categoryImage!=='none')image=(image==='none'?'':image+',')+categoryImage;
  e.style.setProperty('--site-background-color',c1);e.style.setProperty('--site-background-image',image);e.style.setProperty('--site-background-size',style==='dots'?'18px 18px':'cover');e.style.setProperty('--site-background-repeat',style==='dots'?'repeat':'no-repeat');
 }
 function selectWebsiteBackground(){return false;}
@@ -550,7 +550,7 @@ function buildContent(){
  return {schema_version:2,template_reset_version:2,site:{
    name:siteName.trim()||null,
    pages:pages,
-   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,background_style:['none','stripes','dots','gradient'].includes(themeColors.background_style)?themeColors.background_style:'none',background_color:themeColors.background_color||themeColors.page_bg||'#f5f6f8',background_color2:themeColors.background_color2||'#ffffff',typography:typography},
+   theme:{accent:themeColors.accent||accent||'#c46a2b',page_bg:themeColors.page_bg,text:themeColors.text,header_bg:themeColors.header_bg,buy_bg:themeColors.buy_bg,sell_bg:themeColors.sell_bg,footer_bg:themeColors.footer_bg,background_style:['none','stripes','dots','gradient'].includes(themeColors.background_style)?themeColors.background_style:'none',background_category:['none','instruments','phones','drones','cameras','detectors'].includes(themeColors.background_category)?themeColors.background_category:'none',background_color:themeColors.background_color||themeColors.page_bg||'#f5f6f8',background_color2:themeColors.background_color2||'#ffffff',typography:typography},
    social:socialLinks,
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
@@ -590,7 +590,7 @@ function loadContent(content){
  intro=s.homepage?.intro||'';
  accent=s.theme?.accent||'#c46a2b';
  typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
- themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_style:['none','stripes','dots','gradient'].includes(s.theme?.background_style)?s.theme.background_style:(s.theme?.background_mode==='custom'?'none':'gradient'),background_color:s.theme?.background_color||s.theme?.page_bg||'#f5f6f8',background_color2:s.theme?.background_color2||'#ffffff'};
+ themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_style:['none','stripes','dots','gradient'].includes(s.theme?.background_style)?s.theme.background_style:(s.theme?.background_mode==='custom'?'none':'gradient'),background_category:['none','instruments','phones','drones','cameras','detectors'].includes(s.theme?.background_category)?s.theme.background_category:'none',background_color:s.theme?.background_color||s.theme?.page_bg||'#f5f6f8',background_color2:s.theme?.background_color2||'#ffffff'};
  socialLinks=Object.assign({facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true},s.social||{});
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  const branding=s.branding&&typeof s.branding==='object'?s.branding:{};

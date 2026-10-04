@@ -267,3 +267,11 @@ body[data-template="editable"] .public-nav-dropdown-toggle{
  .public-global-header-canvas{height:210px;min-height:210px}
  .public-global-header-element.public-gh-text{font-size:min(var(--gh-size,inherit),8vw)}
 }
+
+/* Final alignment pass: published editable cards */
+.homepage-tile-grid{align-items:stretch}
+.editable-home-tile{display:flex;flex-direction:column;height:100%}
+.editable-home-tile .tile-copy{display:flex;flex-direction:column;flex:1;box-sizing:border-box}
+.editable-home-tile .tile-copy h3{min-height:22px}
+.editable-home-tile .tile-copy p{min-height:48px}
+.editable-home-tile .tile-copy b{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;min-height:38px;padding:9px 15px;box-sizing:border-box;border-radius:5px;background:var(--button-bg,var(--accent,#c46a2b));color:var(--button-text,#fff)!important;text-decoration:none;font-weight:800;white-space:nowrap}

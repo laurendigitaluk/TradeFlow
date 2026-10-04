@@ -971,3 +971,47 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
   grid-column:1!important;
   justify-self:center!important;
 }
+
+/* Final branding CTA consistency: every logo/banner action uses the same button treatment. */
+#branding-controls .branding-actions button,
+#branding-controls .branding-banner-actions button,
+#branding-controls button[data-logo-upload],
+#branding-controls button[data-logo-remove],
+#branding-controls button[data-banner-upload],
+#branding-controls button[data-banner-remove]{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:1 1 108px!important;
+  width:auto!important;
+  min-width:108px!important;
+  max-width:160px!important;
+  height:34px!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:0 12px!important;
+  box-sizing:border-box!important;
+  border:1px solid #2f6f9f!important;
+  border-radius:6px!important;
+  background:#2f6f9f!important;
+  color:#fff!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+  transform:none!important;
+}
+#branding-controls .branding-actions button:hover,
+#branding-controls .branding-banner-actions button:hover,
+#branding-controls button[data-logo-upload]:hover,
+#branding-controls button[data-logo-remove]:hover,
+#branding-controls button[data-banner-upload]:hover,
+#branding-controls button[data-banner-remove]:hover{
+  background:#285f88!important;
+  border-color:#285f88!important;
+  color:#fff!important;
+  transform:none!important;
+  box-shadow:none!important;
+}

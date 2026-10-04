@@ -960,3 +960,8 @@ Authenticated browser verification is still required for:
 7. another tenant/customer cannot see the conversation.
 
 After those checks pass, stop further TEST customer-URL experimentation and proceed to the genuine LIVE domain/subscriber/customer setup described by the launch sequence.
+
+
+## 2026-10-04 — Website Builder architecture simplified
+
+The homepage builder has been deliberately simplified after repeated template-layout fixes. TEST now uses one fully editable homepage canvas rather than ten fixed template compositions. Subscribers can add and position text/image boxes and place their uploaded logo and banner anywhere in the canvas, with direct resizing and text styling controls. The existing tile section and connected buying/selling sections remain below it. The same `hero_elements` layout data is rendered by the public website. LIVE remains untouched until TEST browser acceptance is complete.

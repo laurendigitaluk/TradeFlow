@@ -588,3 +588,5 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .editable-hero-element.selected .editable-hero-move{display:flex;align-items:center;justify-content:center}
 .editable-hero-format{min-width:0}
 .editable-hero-format select{max-width:155px}
+.editable-hero-format .editable-hero-text-control{align-items:flex-start!important}
+.editable-hero-format .editable-hero-text-control textarea{width:180px;min-width:150px;height:28px;min-height:28px;max-width:240px;resize:none;overflow:hidden;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:5px 6px;font-size:10px;line-height:1.2;font-family:inherit}

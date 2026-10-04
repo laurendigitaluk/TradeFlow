@@ -247,3 +247,11 @@ body[data-template="editable"] .commerce-actions a{
  background:var(--button-bg,var(--accent,#c46a2b))!important;
  color:var(--button-text,#fff)!important;
 }
+
+body[data-template="editable"] .public-account-link,
+body[data-template="editable"] .public-sell-link,
+body[data-template="editable"] .public-nav-dropdown-toggle{
+ background:var(--button-bg,var(--accent,#c46a2b))!important;
+ color:var(--button-text,#fff)!important;
+ border-color:var(--button-bg,var(--accent,#c46a2b))!important;
+}

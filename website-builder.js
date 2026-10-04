@@ -635,7 +635,6 @@ function bindEditor(){
  root.querySelectorAll('[data-nav-page]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();selectPage(el.dataset.navPage)}));
  root.querySelectorAll('[data-image-action]').forEach(el=>{el.draggable=false;el.addEventListener('pointerdown',e=>e.stopPropagation());el.addEventListener('click',e=>{e.stopPropagation();
    const action=el.dataset.imageAction,target=el.dataset.imageTarget;
-   if(target&&target.startsWith('hero-element:'))return;
    if(action==='remove'){removeImage(target);return}
    const input=$('image-file-input');input.dataset.target=target;input.value='';input.click();
  });});
@@ -1037,15 +1036,6 @@ function initBuilder(){
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initBuilder);else initBuilder();function bindEditableHero(root){
  const canvas=root.querySelector('[data-editable-hero-canvas]');if(!canvas)return;
- canvas.querySelectorAll('[data-image-action][data-image-target^="hero-element:"]').forEach(function(control){
-  control.addEventListener('click',function(e){
-   e.preventDefault();e.stopPropagation();
-   const action=control.dataset.imageAction,target=control.dataset.imageTarget;
-   if(action==='remove'){removeImage(target);return;}
-   const input=$('image-file-input');
-   input.dataset.target=target;input.value='';input.click();
-  });
- });
  root.querySelectorAll('[data-eh-add]').forEach(btn=>btn.addEventListener('click',function(e){
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
   if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,height:16,aspect:2.8};

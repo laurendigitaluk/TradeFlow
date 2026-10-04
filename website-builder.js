@@ -102,7 +102,7 @@ function layoutBlockMarkup(id,block,content,tag='div',alt='Website image'){
 }
 let buyingCatalogue={categories:[],products:[]};
 let retailListings=[];
-let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
+let themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_category:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
 const websiteBackgrounds=[
  {id:'clean-wave',label:'Clean Gradient',color:'#f5f8fb',image:'linear-gradient(135deg,#f4f8fc 0%,#dce9f4 48%,#ffffff 100%)',size:'cover',repeat:'no-repeat'},
  {id:'soft-blue',label:'Blue Gradient',color:'#eaf3fb',image:'linear-gradient(135deg,#e7f3ff 0%,#b9d9f2 50%,#f8fbff 100%)',size:'cover',repeat:'no-repeat'},
@@ -118,6 +118,15 @@ const websiteBackgrounds=[
  {id:'dark-geometry',label:'Dark Geometry',color:'#111820',image:'linear-gradient(135deg,#111820 25%,#263747 25% 50%,#111820 50% 75%,#34495a 75%)',size:'80px 80px',repeat:'repeat'}
 ];
 function normalizeBackgroundId(id){return id||'clean-wave';}
+const categoryBackgrounds={
+ none:{label:'None'},
+ instruments:{label:'Musical instruments',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M28 42v72a16 16 0 1 0 8 14V56h28V42H28z"/><circle cx="36" cy="128" r="7"/><path d="M103 32c-9 7-12 19-8 30l14 38c4 11 16 17 27 13l9-3-7-19-9 3c-3 1-6-1-7-4l-12-32 17-6-6-17-18 6z"/></g></svg>'},
+ phones:{label:'Mobile phones',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><rect x="30" y="20" width="48" height="92" rx="7"/><rect x="101" y="57" width="48" height="92" rx="7"/><circle cx="54" cy="101" r="3"/><circle cx="125" cy="138" r="3"/></g></svg>'},
+ drones:{label:'Drones',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M64 82h52l12 18-18 12H70L52 100zM64 84 39 59M116 84l25-25M70 108l-24 24M110 108l24 24"/><ellipse cx="33" cy="53" rx="18" ry="5"/><ellipse cx="147" cy="53" rx="18" ry="5"/><ellipse cx="41" cy="136" rx="18" ry="5"/><ellipse cx="139" cy="136" rx="18" ry="5"/></g></svg>'},
+ cameras:{label:'Cameras',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><rect x="25" y="56" width="130" height="76" rx="8"/><path d="M52 56l10-17h36l10 17"/><circle cx="90" cy="94" r="25"/><circle cx="90" cy="94" r="10"/></g></svg>'},
+ detectors:{label:'Metal detectors',svg:'<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180"><g fill="none" stroke="currentColor" stroke-width="3" opacity=".24"><path d="M73 31c-15 3-24 17-21 32l12 62M64 125l-8 28M83 124l7 28"/><rect x="50" y="26" width="28" height="9" rx="3"/><path d="M48 119h44c9 0 16 7 16 16v8H41v-8c0-9 7-16 16-16z"/></g></svg>'}
+};
+function categoryBackgroundImage(category){const item=categoryBackgrounds[category];return item&&item.svg?'url("data:image/svg+xml,'+encodeURIComponent(item.svg)+'")':'none';}
 function applyWebsiteBackground(){
  const e=$('site-editor');if(!e)return;
  const style=themeColors.background_style||'none',c1=themeColors.background_color||themeColors.page_bg||'#f5f6f8',c2=themeColors.background_color2||'#ffffff';

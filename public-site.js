@@ -195,7 +195,14 @@ function renderHomepageTiles(site){
  const columns=[2,3,4].includes(Number(home.tile_columns))?Number(home.tile_columns):4;
  const visible=tiles.slice(0,count);
  if(!visible.length)return '';
- const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><div class="tile-copy">'+(tile.title?'<h3 style="'+publicTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3>':'')+(tile.body?'<p style="'+publicTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p>':'')+(tile.cta?'<b style="'+publicTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
+ const cards=visible.map(tile=>{
+   const linkType=tile.cta_link_type==='custom'?'custom':'internal';
+   const rawLink=String(tile.cta_link||'home');
+   let href=linkType==='custom'?'':pageUrl(rawLink);
+   if(linkType==='custom'){try{const u=new URL(rawLink,location.href);href=['http:','https:'].includes(u.protocol)?u.href:'';}catch{href='';}}
+   const cta=tile.cta&&href?'<a class="tile-cta-link" href="'+esc(href)+'"'+(linkType==='custom'?' target="_blank" rel="noopener"':'')+'>'+esc(tile.cta)+'</a>':(tile.cta?'<b style="'+publicTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b>':'');
+   return '<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><div class="tile-copy">'+(tile.title?'<h3 style="'+publicTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3>':'')+(tile.body?'<p style="'+publicTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p>':'')+cta+'</div></article>';
+ }).join('');
  return '<section class="homepage-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+columns+'">'+cards+'</div></section>';
 }
 

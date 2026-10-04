@@ -231,8 +231,7 @@ const pageDefinitions=[
 function defaultPages(){
  return pageDefinitions.map(p=>({
    slug:p.slug,title:p.title,enabled:p.enabled,
-   body:p.slug==='shop'?'Welcome to our shop. Browse our current products below.':
-        p.slug==='customer-account'?'':p.slug==='contact'?'Add your contact details here.':'',
+   body:'',
    image_url:'',image_alt:'',image_url2:'',image_alt2:'',title_style:{},body_style:{},tile_count:p.slug==='shop'||p.slug==='buying'?6:0,tile_columns:p.slug==='shop'||p.slug==='buying'?3:3,page_tile_format_version:p.slug==='shop'||p.slug==='buying'?2:0,tiles:p.slug==='shop'||p.slug==='buying'?defaultPageTiles(p.slug==='shop'?'shop-tile':'buying-tile'):[],seo_title:'',seo_description:''
  }));
 }
@@ -1091,14 +1090,20 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#c46a2b';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
- templateCopy=Object.assign({},templateDefaults.editorial);
- homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What we buy';homeBuyIntro='Tell customers what you are looking to buy.';
- homeSellHeading='What we sell';homeSellIntro='Show customers what is available to buy.';
- homepageTiles=defaultHomepageTiles();homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};editableHeroElements=[];themeColors={accent:'#c46a2b',page_bg:'#f5f6f8',text:'#17202a',header_bg:'#ffffff',buy_bg:'#ffffff',sell_bg:'#f4f6f7',footer_bg:'#17202a',background_style:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
+ siteName='';headerTagline='';footerText='';headline='';intro='';accent='#a84f2d';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
+ templateCopy={};
+ homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What We Buy';homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.';
+ homeSellHeading='What We Sell';homeSellIntro='Showcase the products and collections customers can browse and buy.';
+ homepageTiles=defaultHomepageTiles();homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};
+ editableHeroElements=[
+  makeEditableHeroElement('text',{id:'starter-text-1',role:'text',x:7,y:4,width:47,height:34,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'left',vAlign:'top',lineHeight:'1.2',letterSpacing:'0'}),
+  makeEditableHeroElement('image',{id:'starter-image-1',role:'image',x:58,y:4,width:35,height:34,aspect:1.45,image_url:''}),
+  makeEditableHeroElement('text',{id:'starter-text-2',role:'text',x:7,y:42,width:88,height:24,aspect:1,text:'',font:'inherit',fontSize:18,color:'#17202a',align:'left',vAlign:'top',lineHeight:'1.2',letterSpacing:'0'})
+ ];
+ themeColors={accent:'#a84f2d',button_bg:'#a84f2d',button_text:'#ffffff',page_bg:'#fbf7f2',text:'#2b211d',header_bg:'#fffaf5',buy_bg:'#fffdf9',sell_bg:'#f3e7dc',footer_bg:'#42332a',background_style:'none',background_category:'none',background_color:'#f5f6f8',background_color2:'#ffffff'};
  socialLinks={facebook:'',instagram:'',linkedin:'',youtube:'',tiktok:'',x:'',show_share:true};reviewLinks=[];typography={font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'};
  homepageSections={hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true};headerLinks=['home','buying','shop','about','contact'];footerLinks=['home','buying','shop','about','contact'];homepageOrder=['hero','buy','sell','trust'];
- pages=defaultPages();selectedPage='home';currentTemplate='editable';editableHeroElements=defaultEditableHeroElements();window.__existingCategoryManifest=[];
+ pages=defaultPages();selectedPage='home';currentTemplate='editable';window.__existingCategoryManifest=[];
 }
 async function loadDraft(){
  const rows=await api('/rest/v1/tenant_site_state?select=tenant_id,draft_revision_id,published_revision_id&tenant_id=eq.'+encodeURIComponent(tenantId));

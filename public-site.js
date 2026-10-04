@@ -113,7 +113,7 @@ function renderEditableHeroPublic(site){
   }
   return '<div class="public-editable-hero-element public-eh-text" style="'+style+'">'+esc(b.text||'')+'</div>';
  }).join('');
- return '<section class="public-editable-hero"><div class="public-editable-hero-canvas">'+elements+'</div></section>';
+ const canvasHeight=Math.max(620,Math.min(1800,Number(home.hero_canvas_height)||760)); return '<section class="public-editable-hero"><div class="public-editable-hero-canvas" style="height:'+canvasHeight+'px;min-height:'+canvasHeight+'px">'+elements+'</div></section>';
 }
 function renderHero(site){
  return renderEditableHeroPublic(site)||renderLegacyHero(site);

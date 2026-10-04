@@ -1026,3 +1026,12 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .global-header-banner-placeholder button{border:1px solid #a94f17;background:#c45f20;color:#fff;border-radius:5px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer}
 .global-header-element.gh-button{display:flex;align-items:center;justify-content:flex-start}
 .global-header-button-preview{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 18px;border-radius:5px;background:var(--accent,#c46a2b);color:#fff;font-weight:800;white-space:nowrap}
+
+/* Website Builder toolbar parity — Shared top section and Top of page */
+.global-header-toolbar.editable-hero-toolbar,.editable-hero-toolbar.top-page-toolbar{background:#f3f5f7 !important;color:#17212b !important;border:1px solid #dfe4e8 !important;border-radius:7px !important;box-sizing:border-box}
+.global-header-toolbar.editable-hero-toolbar strong,.editable-hero-toolbar.top-page-toolbar strong{color:#17212b !important}
+.global-header-toolbar.editable-hero-toolbar .global-header-format,.editable-hero-toolbar.top-page-toolbar .editable-hero-format{margin-left:auto}
+.global-header-text-control{min-width:170px}
+.global-header-text-control textarea{width:150px;min-height:24px;height:24px;resize:horizontal;box-sizing:border-box;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:4px 6px;font-size:10px}
+.global-header-text-control textarea:disabled{background:#eef1f3;color:#8a959e}
+.global-header-toolbar.editable-hero-toolbar button,.editable-hero-toolbar.top-page-toolbar button{color:#17212b !important}

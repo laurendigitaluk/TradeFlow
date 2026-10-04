@@ -769,7 +769,7 @@ function openImagePicker(target){
    if(!file)return;
    const previewUrl=URL.createObjectURL(file);
    if(target.startsWith('hero-element:')){
-     const id=target.slice(12);
+     const id=target.slice(13);
      const el=editableHeroElements.find(x=>x.id===id);
      if(el){
        selectedEditableHeroId=id;
@@ -794,7 +794,7 @@ async function uploadImage(file,target){
  if(!file)return;
  let replacedOldUrl='';
  if(target.startsWith('global-header:'))replacedOldUrl=globalHeaderElements.find(x=>x.id===target.slice(14))?.image_url||'';
- else if(target.startsWith('hero-element:'))replacedOldUrl=editableHeroElements.find(x=>x.id===target.slice(12))?.image_url||'';
+ else if(target.startsWith('hero-element:'))replacedOldUrl=editableHeroElements.find(x=>x.id===target.slice(13))?.image_url||'';
  else if(target==='logo')replacedOldUrl=logoUrl;
  else if(target==='banner')replacedOldUrl=bannerUrl;
  else if(target==='home')replacedOldUrl=homeImageUrl;
@@ -818,7 +818,7 @@ async function uploadImage(file,target){
  const imageDimensionsPromise=getImageDimensions(file);
  setStatus('Image selected. Uploading…');
  if(target.startsWith('hero-element:')){
-   const previewId=target.slice(12);
+   const previewId=target.slice(13);
    const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
    if(previewEl){
      selectedEditableHeroId=previewId;
@@ -845,7 +845,7 @@ async function uploadImage(file,target){
    }
  }
  if(target.startsWith('hero-element:')){
-   const el=editableHeroElements.find(function(x){return x.id===target.slice(12);});
+   const el=editableHeroElements.find(function(x){return x.id===target.slice(13);});
    if(el&&imageDimensions?.width&&imageDimensions?.height)el.aspect=imageDimensions.width/imageDimensions.height;
  }
  setStatus('Uploading image to website storage…');
@@ -861,7 +861,7 @@ async function uploadImage(file,target){
    throw new Error(responseText||'Image upload failed.');
  }
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
- if(target.startsWith('hero-element:')){const id=target.slice(12);selectedEditableHeroId=id;}
+ if(target.startsWith('hero-element:')){const id=target.slice(13);selectedEditableHeroId=id;}
  if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedGlobalHeaderId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,(imageDimensions.width/imageDimensions.height)*18)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}if(el.role==='banner')bannerUrl=url;}}
  else if(target==='home')homeImageUrl=url;
  else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
@@ -869,7 +869,7 @@ async function uploadImage(file,target){
  else if(target==='home-buy')homeBuyImageUrl=url;
  else if(target==='home-sell')homeSellImageUrl=url;
  else if(target==='logo')logoUrl=url;
- else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedEditableHeroId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;if(el.role==='banner'){const canvas=document.querySelector('[data-editable-hero-canvas]');const rect=canvas?.getBoundingClientRect();const canvasWidth=rect?.width||1000;const canvasHeight=rect?.height||760;const targetWidthPct=Math.min(70,Math.max(25,(imageDimensions.width/imageDimensions.height)*canvasHeight/canvasWidth*30));el.width=targetWidthPct;el.height=Math.min(45,(targetWidthPct/100*canvasWidth/(imageDimensions.width/imageDimensions.height))/canvasHeight*100);}}if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
+ else if(target==='banner'){bannerUrl=url;layoutBlocks.heroBanner.image_url=url;} else if(target.startsWith('hero-element:')){const id=target.slice(13),el=editableHeroElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedEditableHeroId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;if(el.role==='banner'){const canvas=document.querySelector('[data-editable-hero-canvas]');const rect=canvas?.getBoundingClientRect();const canvasWidth=rect?.width||1000;const canvasHeight=rect?.height||760;const targetWidthPct=Math.min(70,Math.max(25,(imageDimensions.width/imageDimensions.height)*canvasHeight/canvasWidth*30));el.width=targetWidthPct;el.height=Math.min(45,(targetWidthPct/100*canvasWidth/(imageDimensions.width/imageDimensions.height))/canvasHeight*100);}}if(el.role==='logo')logoUrl=url;if(el.role==='banner')bannerUrl=url;}}
  else if(target.endsWith(':image2')){const p=pages.find(x=>x.slug===target.split(':')[0]);if(p){p.image_url2=url;p.image_alt2=p.title+' second image';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){tile.image_url=url;tile.image_alt=tile.title;}}
@@ -924,7 +924,7 @@ async function removeImage(target){
  else if(target==='home-sell'){oldUrl=homeSellImageUrl;homeSellImageUrl='';}
  else if(target==='logo'){oldUrl=logoUrl;logoUrl='';}
  else if(target==='banner'){oldUrl=bannerUrl;bannerUrl='';layoutBlocks.heroBanner.image_url='';}
- else if(target.startsWith('hero-element:')){const id=target.slice(12),el=editableHeroElements.find(function(x){return x.id===id;});if(el){oldUrl=el.image_url||'';el.image_url='';el.preview_url='';}}
+ else if(target.startsWith('hero-element:')){const id=target.slice(13),el=editableHeroElements.find(function(x){return x.id===id;});if(el){oldUrl=el.image_url||'';el.image_url='';el.preview_url='';}}
  else if(target.startsWith('tile:')){const tile=homepageTiles.find(x=>x.id===target.slice(5));if(tile){oldUrl=tile.image_url||'';tile.image_url='';tile.image_alt='';}}
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');const p=pages.find(x=>x.slug===parts[1]);const tile=p?.tiles?.find(x=>x.id===parts[3]);if(tile){oldUrl=tile.image_url||'';tile.image_url='';tile.image_alt='';}}
  else {const p=pages.find(x=>x.slug===target);if(p){oldUrl=p.image_url||'';p.image_url='';p.image_alt='';}}

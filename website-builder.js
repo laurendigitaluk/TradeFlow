@@ -273,8 +273,7 @@ function renderSectionControls(){
 
 function renderTemplates(){
  const box=$('templates');if(!box)return;
- box.innerHTML=templates.map(t=>'<button type="button" class="template-card '+(t.id===currentTemplate?'selected':'')+'" data-template="'+t.id+'"><span class="template-mini template-mini-'+t.id+'"><i></i><b></b><em></em><u></u></span><strong>'+esc(t.name)+'</strong><small>'+esc(t.desc)+'</small></button>').join('');
- box.querySelectorAll('[data-template]').forEach(b=>b.addEventListener('click',()=>applyTemplate(b.dataset.template)));
+ box.innerHTML='<div class="template-card selected editable-template-card"><div class="template-mini template-mini-editable"><i></i><b></b><em></em><u></u></div><strong>Fully editable</strong><small>Build the homepage yourself with movable text and image boxes.</small></div>';
 }
 
 function navMarkup(){
@@ -610,7 +609,7 @@ async function uploadImage(file,target){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
  setStatus('Uploading image…');
- const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target;
+ const slug=target.startsWith('canvas:')?'canvas-'+target.slice(7):target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
  const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{

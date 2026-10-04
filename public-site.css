@@ -255,3 +255,15 @@ body[data-template="editable"] .public-nav-dropdown-toggle{
  color:var(--button-text,#fff)!important;
  border-color:var(--button-bg,var(--accent,#c46a2b))!important;
 }
+
+/* LIVE shared fixed top section across every customer-facing page */
+.public-global-header{width:100%;padding:0;margin:0;background:transparent}
+.public-global-header-canvas{position:relative;width:100%;height:250px;min-height:250px;overflow:hidden;background:transparent}
+.public-global-header-element{position:absolute;box-sizing:border-box;background:transparent}
+.public-global-header-element.public-gh-text{display:flex;flex-direction:column;justify-content:var(--gh-valign,center);text-align:var(--gh-align,left);font-family:var(--gh-font,inherit);font-size:var(--gh-size,inherit);color:var(--gh-color,var(--text-color,#17202a));line-height:var(--gh-line,1.2);letter-spacing:var(--gh-letter,0)}
+.public-global-header-element.public-gh-image{display:flex;align-items:center;justify-content:center;overflow:hidden;background:transparent}
+.public-global-header-element.public-gh-image img{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;background:transparent}
+@media(max-width:700px){
+ .public-global-header-canvas{height:210px;min-height:210px}
+ .public-global-header-element.public-gh-text{font-size:min(var(--gh-size,inherit),8vw)}
+}

@@ -784,7 +784,7 @@ function normalizeHomepageTile(tile){
  const t=Object.assign({title_style:{},body_style:{},cta_style:{}},tile||{});
  const titleDefaults={font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'};
  const bodyDefaults={font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'};
- const ctaDefaults={font:'inherit',fontSize:'14',color:'#c46a2b',lineHeight:'1.2',letterSpacing:'0'};
+ const ctaDefaults={font:'inherit',fontSize:'14',color:'#ffffff',lineHeight:'1.2',letterSpacing:'0'};
  t.title_style=Object.assign({},titleDefaults,t.title_style||{});
  t.body_style=Object.assign({},bodyDefaults,t.body_style||{});
  t.cta_style=Object.assign({},ctaDefaults,t.cta_style||{});

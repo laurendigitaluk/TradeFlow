@@ -501,6 +501,8 @@ function makeGlobalHeaderElement(type,overrides={}){
  const id='gh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
  const base=type==='image'
    ?{id,type:'image',role:'photo',x:5,y:12,width:30,height:70,aspect:1.5,image_url:'',text:''}
+   :type==='button'
+   ?{id,type:'button',role:'button',x:8,y:62,width:22,height:10,aspect:4,text:'Learn more',button_text:'Learn more',button_link_type:'internal',button_link:'home',font:'inherit',fontSize:14,color:'#fff',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'}
    :{id,type:'text',role:'text',x:8,y:28,width:70,height:42,aspect:1,text:'Edit this text',font:'inherit',fontSize:28,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
  return normalizeGlobalHeaderElement(Object.assign(base,overrides));
 }
@@ -512,10 +514,12 @@ function globalHeaderElementMarkup(el){
    body=(b.image_url||b.preview_url)
     ?'<div class="global-header-image-wrap"><img src="'+esc(b.preview_url||b.image_url)+'" alt="Website image"></div><div class="global-header-image-tools"><button type="button" data-image-action="replace" data-image-target="global-header:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="global-header:'+esc(b.id)+'">Remove image</button></div>'
     :'<div class="global-header-empty-image"><button type="button" data-image-action="add" data-image-target="global-header:'+esc(b.id)+'">'+(b.role==='banner'?'Add banner':b.role==='logo'?'Add logo':'Add photo')+'</button></div>';
+ }else if(b.type==='button'){
+   body='<span class="global-header-button-preview">'+esc(b.button_text||'Learn more')+'</span>';
  }else{
    body='<div class="global-header-text" contenteditable="true" data-gh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
  }
- return '<div class="global-header-element '+(b.type==='image'?'gh-image':'gh-text')+(b.id===selectedGlobalHeaderId?' selected':'')+'" data-gh-id="'+esc(b.id)+'" style="'+style+'"><span class="global-header-move" title="Drag to move">↕</span><button type="button" class="global-header-delete" data-gh-delete="'+esc(b.id)+'">×</button><span class="global-header-resize" aria-label="Resize element"></span>'+body+'</div>';
+ return '<div class="global-header-element '+(b.type==='image'?'gh-image':b.type==='button'?'gh-button':'gh-text')+(b.id===selectedGlobalHeaderId?' selected':'')+'" data-gh-id="'+esc(b.id)+'" style="'+style+'"><span class="global-header-move" title="Drag to move">↕</span><button type="button" class="global-header-delete" data-gh-delete="'+esc(b.id)+'">×</button><span class="global-header-resize" aria-label="Resize element"></span>'+body+'</div>';
 }
 function renderGlobalHeaderEditor(){
  const selected=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);
@@ -538,19 +542,21 @@ function renderGlobalHeaderEditor(){
  }else if(selected&&selected.type==='image'){
    controls=editableHeroBorderControls(selected)+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
  }
- return '<section class="global-header-editor"><div class="global-header-toolbar editable-hero-toolbar">'+
+ const hasBanner=globalHeaderElements.some(x=>x&&x.type==='image'&&x.role==='banner');
+ const bannerPlaceholder=hasBanner?'':'<div class="global-header-banner-placeholder"><span>Add banner</span><button type="button" data-gh-add="banner">Add banner</button></div>';
+ return '<section class="global-header-editor">'+
+  '<div class="global-header-toolbar editable-hero-toolbar">'+
   '<strong>Shared top section</strong>'+
-  '<button type="button" data-gh-add="banner">Add banner</button>'+
-  '<button type="button" data-gh-add="image">Add photo</button>'+
   '<button type="button" data-gh-add="text">Add text box</button>'+
+  '<button type="button" data-gh-add="image">Add image box</button>'+
+  '<button type="button" data-gh-add="button">Add call-to-action button</button>'+
   '<button type="button" data-gh-add="logo">Add logo</button>'+
-  '<span class="global-header-help">Appears at the top of every page · fixed height</span>'+
+  '<button type="button" data-gh-add="banner">Add banner</button>'+
   '<div class="global-header-format">'+controls+'</div>'+
-  renderEditableHeroToolbar()+
   '</div>'+
-  '<div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div>'+
+  '<div class="global-header-canvas" data-global-header-canvas>'+bannerPlaceholder+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div>'+
+  renderEditableHeroToolbar()+
   '</section>';
-}
 function bindGlobalHeader(root){
  const editor=root.querySelector('.global-header-editor');if(!editor)return;
  editor.querySelectorAll('[data-gh-add]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -561,7 +567,7 @@ function bindGlobalHeader(root){
      if(!el.image_url){setStatus('Logo box added. Click Add image in the box to choose the logo.','success');}
      return;
    }
-   const el=makeGlobalHeaderElement(type==='text'?'text':'image',{role:type==='banner'?'banner':'photo'});
+   const el=makeGlobalHeaderElement(type==='button'?'button':type==='text'?'text':'image',{role:type==='banner'?'banner':type==='button'?'button':'photo'});
    globalHeaderElements.push(el);selectedGlobalHeaderId=el.id;markDirty();renderEditor();
  }));
  editor.querySelectorAll('[data-gh-id]').forEach(el=>{

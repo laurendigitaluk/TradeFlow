@@ -411,8 +411,8 @@ function renderHeroElementControls(){
  box.querySelectorAll('[data-hero-replace]').forEach(b=>b.addEventListener('click',()=>{const input=$('image-file-input');input.dataset.target='canvas:'+b.dataset.heroReplace;input.value='';input.click();}));
 }
 function bindHeroCanvas(){
- const stage=$('hero-canvas')?.querySelector('.hero-canvas-stage');if(!stage)return;
- stage.querySelectorAll('[data-add-hero]').forEach(b=>b.addEventListener('click',()=>{
+ const canvas=$('hero-canvas');if(!canvas)return; const stage=canvas.querySelector('.hero-canvas-stage');if(!stage)return;
+ canvas.querySelectorAll('[data-add-hero]').forEach(b=>b.addEventListener('click',()=>{
    const type=b.dataset.addHero;
    if(type==='text'){const el=makeHeroElement('text',{text:'Click to edit this text'});heroElements.push(el);selectedHeroElementId=el.id;markDirty();renderEditor();renderHeroElementControls();return}
    const el=makeHeroElement('image',{role:type==='logo'?'logo':type==='banner'?'banner':'image',image_url:type==='logo'?logoUrl:type==='banner'?bannerUrl:'',alt:type==='logo'?siteName+' logo':type==='banner'?siteName+' banner':''});

@@ -615,3 +615,21 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .editable-hero-element.eh-image.eh-banner{
  background:transparent!important;
 }
+
+/* LIVE top-canvas background and safe-area guides */
+.editable-hero-canvas{
+ background:transparent!important;
+}
+.editable-hero-canvas::before,
+.editable-hero-canvas::after{
+ content:"";
+ position:absolute;
+ top:0;
+ bottom:0;
+ width:1px;
+ border-left:1px dashed rgba(75,85,99,.45);
+ pointer-events:none;
+ z-index:1;
+}
+.editable-hero-canvas::before{left:6%}
+.editable-hero-canvas::after{right:6%}

@@ -447,7 +447,7 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 
 
 /* LIVE content-block layout system */
-.layout-block{position:relative;width:var(--lb-w,100%);transform:translate(var(--lb-x,0%),var(--lb-y,0));transition:none;box-sizing:border-box;min-width:80px;}
+.layout-block{border-style:var(--lb-border-style,none);border-width:var(--lb-border-width,1px);border-color:var(--lb-border-color,#d9e0e5);position:relative;width:var(--lb-w,100%);transform:translate(var(--lb-x,0%),var(--lb-y,0));transition:none;box-sizing:border-box;min-width:80px;}
 .layout-block.layout-block-image{aspect-ratio:var(--lb-aspect,1.6);overflow:visible;}
 .layout-block.layout-block-image .layout-image-inner{width:100%;height:100%;overflow:hidden;border-radius:inherit;}
 .layout-block.layout-block-image img{display:block;width:100%;height:100%;object-fit:cover;}
@@ -525,7 +525,7 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .editable-hero-format select{height:28px;border:1px solid #cbd3d9;background:#fff;color:#17212b;border-radius:4px;padding:3px 6px;font-size:10px}
 .editable-hero-format input[type=color]{width:28px;height:28px;padding:2px;border:1px solid #cbd3d9;border-radius:4px;background:#fff}
 .editable-hero-canvas{position:relative;min-height:520px;width:100%;overflow:visible;background:var(--header-bg,#fff);border:1px solid #d9e0e5;border-radius:10px;isolation:isolate}
-.editable-hero-element{position:absolute;box-sizing:border-box;min-width:40px;touch-action:none;cursor:move;outline:1px solid transparent}
+.editable-hero-element{position:absolute;box-sizing:border-box;min-width:40px;touch-action:none;cursor:move;outline:1px solid transparent};border-style:var(--eh-border-style,none);border-width:var(--eh-border-width,1px);border-color:var(--eh-border-color,#d9e0e5)
 .editable-hero-element.selected{outline:2px solid var(--accent,#c46a2b);outline-offset:3px;z-index:40}
 .editable-hero-element.eh-text{min-height:42px;display:flex;flex-direction:column;justify-content:var(--eh-valign,center);text-align:var(--eh-align,left);font-family:var(--eh-font,inherit);font-size:var(--eh-size,inherit);color:var(--eh-color,inherit);line-height:var(--eh-line,1.2);letter-spacing:var(--eh-letter,0px)}
 .editable-hero-text{width:100%;outline:none;cursor:text}

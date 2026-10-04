@@ -838,3 +838,45 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
  .branding-banner-control.branding-item .branding-item-content{align-items:flex-start!important;flex-direction:column!important}
  .branding-banner-control.branding-item .branding-actions{width:100%!important}
 }
+
+/* Final compact homepage tile CTAs: empty/editable CTA fields must look like small buttons, never large blocks. */
+.homepage-tiles .editable-home-tile .tile-copy b,
+.page-custom-tiles .editable-home-tile .tile-copy b{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  align-self:flex-start!important;
+  flex:0 0 120px!important;
+  width:120px!important;
+  max-width:100%!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
+  margin-top:auto!important;
+  padding:0 10px!important;
+  box-sizing:border-box!important;
+  border-radius:5px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+}
+.homepage-tiles .editable-home-tile .tile-copy b:empty:before,
+.page-custom-tiles .editable-home-tile .tile-copy b:empty:before{
+  display:block!important;
+  width:auto!important;
+  max-width:100%!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  font-size:12px!important;
+  line-height:1!important;
+}
+.homepage-tiles .editable-home-tile,
+.page-custom-tiles .editable-home-tile{min-width:0!important;overflow:visible!important}
+.homepage-tiles .editable-home-tile .tile-copy,
+.page-custom-tiles .editable-home-tile .tile-copy{min-width:0!important;overflow:visible!important}

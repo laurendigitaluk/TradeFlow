@@ -200,3 +200,11 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 .public-layout-image{aspect-ratio:auto!important;height:auto!important;background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;overflow:visible!important;}
 .public-layout-image img{display:block;width:100%;height:auto!important;max-height:none!important;object-fit:contain!important;background:transparent!important;border:0!important;}
 .classic-frame:has(.public-layout-block),.grid-image:has(.public-layout-block),.studio-image:has(.public-layout-block),.horizon-image:has(.public-layout-block),.field-image:has(.public-layout-block),.business-facts:has(.public-layout-block),.luxe-image:has(.public-layout-block),.commerce-panel:has(.public-layout-block),.impact-image:has(.public-layout-block){background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;}
+
+/* LIVE fully editable homepage canvas */
+.public-editable-hero{width:100%;padding:0;margin:0;background:transparent}
+.public-editable-hero-canvas{position:relative;width:100%;min-height:560px;overflow:hidden;background:var(--header-bg,#fff);border:0}
+.public-editable-hero-element{position:absolute;box-sizing:border-box}
+.public-editable-hero-element.public-eh-text{display:flex;flex-direction:column;justify-content:var(--eh-valign,center);text-align:var(--eh-align,left);font-family:var(--eh-font,inherit);font-size:var(--eh-size,inherit);color:var(--eh-color,inherit);line-height:var(--eh-line,1.2);letter-spacing:var(--eh-letter,0)}
+.public-editable-hero-element.public-eh-image img{display:block;width:100%;height:auto;max-width:100%;object-fit:contain;background:transparent}
+@media(max-width:700px){.public-editable-hero-canvas{min-height:430px}.public-editable-hero-element.public-eh-text{font-size:min(var(--eh-size,inherit),8vw)}}

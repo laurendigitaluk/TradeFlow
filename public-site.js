@@ -79,7 +79,7 @@ function renderPublicNav(site,catalogue){
  const links=headerLinks.filter(slug=>slug==='home'||pages.some(p=>p.slug===slug&&p.enabled!==false));
  const normal=links.map(slug=>'<a href="'+pageUrl(slug)+'">'+esc(titleFor(slug))+'</a>').join('');
  const quoteItems=cats.map(cat=>'<a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">'+esc(cat.name)+'</a>').join('');
- const quoteMenu='<div class="public-nav-dropdown"><button type="button" class="public-nav-dropdown-toggle">Request a Quote</button><div class="public-nav-dropdown-menu"><a href="'+pageUrl('sell')+'">Start a quote</a>'+(quoteItems?quoteItems:'')+'</div></div>';
+ const quoteMenu='<div class="public-nav-dropdown"><button type="button" class="public-nav-dropdown-toggle">Sell to us</button><div class="public-nav-dropdown-menu"><a href="'+pageUrl('sell')+'">Sell an item</a>'+(quoteItems?quoteItems:'')+'</div></div>';
  const accountLabel=isCustomerSession()?'Customer Account':'Customer Login';
  return '<header class="public-header"><div class="public-nav"><a class="public-brand" href="'+pageUrl('home')+'">'+logo+'</a><div class="public-nav-links">'+normal+quoteMenu+'<a class="public-account-link" href="'+customerUrl()+'">'+accountLabel+'</a></div></div></header>';
 }

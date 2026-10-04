@@ -806,12 +806,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   node.setAttribute('spellcheck','true');
   node.addEventListener('pointerdown',function(e){
    if(e.button!==undefined&&e.button!==0)return;
-   e.stopPropagation();
    selectedEditableHeroId=node.dataset.ehEdit;
+   const box=node.closest('.editable-hero-element');
    root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));
-   node.closest('.editable-hero-element')?.classList.add('selected');
+   box?.classList.add('selected');
    renderEditableHeroToolbarOnly(root);
-   requestAnimationFrame(()=>{try{node.focus({preventScroll:true});}catch{node.focus();}});
   });
   node.addEventListener('click',function(e){e.stopPropagation();selectedEditableHeroId=node.dataset.ehEdit;root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.closest('.editable-hero-element')?.classList.add('selected');});
   node.addEventListener('input',function(){const el=editableHeroElements.find(x=>x.id===node.dataset.ehEdit);if(!el)return;el.text=node.innerText; if(el.role==='headline')headline=el.text.trim(); markDirty();});
@@ -874,11 +873,6 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   node.addEventListener('pointerdown',function(e){
    if(e.button!==undefined&&e.button!==0)return;
    if(e.target.closest('button,select,input,a,.editable-hero-resize,.editable-hero-move,.editable-hero-image-tools'))return;
-   if(e.target.closest('[contenteditable="true"]')){
-    selectedEditableHeroId=id;
-    root.querySelectorAll('.editable-hero-element.selected').forEach(x=>x.classList.remove('selected'));node.classList.add('selected');
-    return;
-   }
    beginMove(e);
   });
   const resize=node.querySelector('.editable-hero-resize');

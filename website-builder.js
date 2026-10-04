@@ -349,7 +349,6 @@ function renderHomepageControls(){
 function renderPageTilesEditor(p){
  const cfg=pageTileConfig(p);p.tiles=cfg.tiles;p.tile_count=cfg.count;p.tile_columns=cfg.columns;
  const visible=cfg.tiles.slice(0,cfg.count);
- const pageOptions=pages.filter(x=>x.enabled&&x.slug!=='customer-account').map(x=>'<option value="'+esc(x.slug)+'"'+(tileLinkValuePlaceholder(x.slug,tileLinkValuePlaceholder.current)?' selected':'')+'>'+esc(x.slug==='home'?'Home':x.slug==='buying'?'What We Buy':x.slug==='shop'?'What We Sell':x.title)+'</option>').join('');
  return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>{
    const linkOptions=pages.filter(x=>x.enabled&&x.slug!=='customer-account').map(x=>'<option value="'+esc(x.slug)+'"'+(tile.cta_link_type==='internal'&&tile.cta_link===x.slug?' selected':'')+'>'+esc(x.slug==='home'?'Home':x.slug==='buying'?'What We Buy':x.slug==='shop'?'What We Sell':x.title)+'</option>').join('');
    const linkControl=tile.cta_link_type==='custom'

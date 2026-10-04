@@ -8,6 +8,7 @@ let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='Wh
 let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
 let editableHeroElements=[],selectedEditableHeroId=null,heroCanvasHeight=760;
+let globalHeaderElements=[],selectedGlobalHeaderId=null,globalHeaderHeight=250;
 function makeEditableHeroElement(type,overrides={}){
  const id='eh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
  const base=type==='image'?{id,type:'image',role:'image',x:5,y:8,width:38,aspect:1.5,image_url:'',text:''}:{id,type:'text',role:'text',x:8,y:42,width:62,aspect:1,text:'Edit this text',font:'inherit',fontSize:32,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
@@ -406,6 +407,82 @@ function templateHeroImage(url,target,label,alt){
  return '<div class="template-image-slot template-image-empty"><button type="button" data-image-action="add" data-image-target="'+esc(target)+'">Add image</button><span>'+esc(text)+'</span></div>';
 }
 function templateHero(){return renderEditableHero();}
+
+function normalizeGlobalHeaderElement(v){
+ const d=normalizeEditableHeroElement(v||{});
+ d.id=String(v?.id||d.id);
+ d.x=Math.max(0,Math.min(92,Number(d.x)||0));
+ d.y=Math.max(0,Math.min(80,Number(d.y)||0));
+ d.width=Math.max(8,Math.min(92,Number(d.width)||40));
+ d.height=Math.max(8,Math.min(90,Number(d.height)||30));
+ d.role=String(v?.role||d.role||d.type);
+ return d;
+}
+function makeGlobalHeaderElement(type,overrides={}){
+ const id='gh-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,7);
+ const base=type==='image'
+   ?{id,type:'image',role:'photo',x:5,y:12,width:30,height:70,aspect:1.5,image_url:'',text:''}
+   :{id,type:'text',role:'text',x:8,y:28,width:70,height:42,aspect:1,text:'Edit this text',font:'inherit',fontSize:28,color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0'};
+ return normalizeGlobalHeaderElement(Object.assign(base,overrides));
+}
+function globalHeaderElementMarkup(el){
+ const b=normalizeGlobalHeaderElement(el);
+ const style='left:'+b.x+'%;top:'+b.y+'%;width:'+b.width+'%;height:'+b.height+'%;--eh-font:'+esc(b.font)+';--eh-size:'+esc(b.fontSize==='auto'?'inherit':(Number(b.fontSize)||16)+'px')+';--eh-color:'+esc(b.color)+';--eh-align:'+esc(b.align)+';--eh-valign:'+esc(b.vAlign)+';--eh-line:'+esc(b.lineHeight)+';--eh-letter:'+esc(b.letterSpacing)+'px;';
+ let body='';
+ if(b.type==='image'){
+   body=(b.image_url||b.preview_url)
+    ?'<div class="global-header-image-wrap"><img src="'+esc(b.preview_url||b.image_url)+'" alt="Website image"></div><div class="global-header-image-tools"><button type="button" data-image-action="replace" data-image-target="global-header:'+esc(b.id)+'">Change image</button><button type="button" data-image-action="remove" data-image-target="global-header:'+esc(b.id)+'">Remove image</button></div>'
+    :'<div class="global-header-empty-image"><button type="button" data-image-action="add" data-image-target="global-header:'+esc(b.id)+'">'+(b.role==='banner'?'Add banner':'Add image')+'</button></div>';
+ }else{
+   body='<div class="global-header-text" contenteditable="true" data-gh-edit="'+esc(b.id)+'">'+esc(b.text)+'</div>';
+ }
+ return '<div class="global-header-element '+(b.type==='image'?'gh-image':'gh-text')+(b.id===selectedGlobalHeaderId?' selected':'')+'" data-gh-id="'+esc(b.id)+'" style="'+style+'"><span class="global-header-move" title="Drag to move">↕</span><button type="button" class="global-header-delete" data-gh-delete="'+esc(b.id)+'">×</button><span class="global-header-resize" aria-label="Resize element"></span>'+body+'</div>';
+}
+function renderGlobalHeaderEditor(){
+ const selected=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);
+ const fontOptions=[['inherit','Site default'],['Arial','Arial'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Georgia','Georgia'],['Garamond','Garamond'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica'],['Palatino Linotype','Palatino Linotype']];
+ const opts=(items,current)=>items.map(o=>'<option value="'+esc(o[0])+'" '+(o[0]===current?'selected':'')+'>'+esc(o[1])+'</option>').join('');
+ let controls='<span>Select a box to move or resize it. This top section is shared by every page and has a fixed height.</span>';
+ if(selected&&selected.type==='text')controls='<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label><label>Size<select data-gh-style="fontSize">'+[['auto','Auto'],['16','16px'],['20','20px'],['24','24px'],['28','28px'],['32','32px'],['40','40px'],['48','48px'],['56','56px']].map(o=>'<option value="'+o[0]+'" '+(o[0]===String(selected.fontSize)?'selected':'')+'>'+o[1]+'</option>').join('')+'</select></label><label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label><label>Align<select data-gh-style="align"><option value="left" '+(selected.align==='left'?'selected':'')+'>Left</option><option value="center" '+(selected.align==='center'?'selected':'')+'>Centre</option><option value="right" '+(selected.align==='right'?'selected':'')+'>Right</option></select></label>';
+ return '<section class="global-header-editor"><div class="global-header-toolbar"><strong>Shared top section</strong><button type="button" data-gh-add="banner">Add banner</button><button type="button" data-gh-add="image">Add photo</button><button type="button" data-gh-add="text">Add text box</button><span class="global-header-help">Appears at the top of every page · fixed height</span><div class="global-header-format">'+controls+'</div></div><div class="global-header-canvas" data-global-header-canvas>'+globalHeaderElements.map(globalHeaderElementMarkup).join('')+'</div></section>';
+}
+function bindGlobalHeader(root){
+ const editor=root.querySelector('.global-header-editor');if(!editor)return;
+ editor.querySelectorAll('[data-gh-add]').forEach(btn=>btn.addEventListener('click',()=>{
+   const type=btn.dataset.ghAdd;
+   const el=makeGlobalHeaderElement(type==='text'?'text':'image',{role:type==='banner'?'banner':type});
+   if(type==='banner'&&bannerUrl)el.image_url=bannerUrl;
+   globalHeaderElements.push(el);selectedGlobalHeaderId=el.id;markDirty();renderEditor();
+   if(type!=='text'&&!el.image_url){const input=$('image-file-input');input.dataset.target='global-header:'+el.id;input.value='';input.click();}
+ }));
+ editor.querySelectorAll('[data-gh-id]').forEach(el=>{
+   const id=el.dataset.ghId,b=globalHeaderElements.find(x=>x.id===id);if(!b)return;
+   el.addEventListener('pointerdown',e=>{
+     if(e.button!==undefined&&e.button!==0)return;
+     if(e.target.closest('[contenteditable="true"],button,input,select,.global-header-image-tools,.global-header-resize'))return;
+     selectedGlobalHeaderId=id;el.classList.add('selected');e.preventDefault();e.stopPropagation();
+     const sx=e.clientX,sy=e.clientY,ox=b.x,oy=b.y,parent=el.parentElement;
+     const move=ev=>{b.x=Math.max(0,Math.min(92,ox+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));b.y=Math.max(0,Math.min(80,oy+(ev.clientY-sy)));el.style.left=b.x+'%';el.style.top=b.y+'px';};
+     const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditor();};
+     window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+   });
+ });
+ editor.querySelectorAll('[data-gh-delete]').forEach(btn=>btn.addEventListener('click',e=>{
+   e.preventDefault();e.stopPropagation();const id=btn.dataset.ghDelete;globalHeaderElements=globalHeaderElements.filter(x=>x.id!==id);selectedGlobalHeaderId=null;markDirty();renderEditor();
+ }));
+ editor.querySelectorAll('[data-gh-style]').forEach(control=>control.addEventListener('input',()=>{
+   const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b)return;b[control.dataset.ghStyle]=control.value;markDirty();
+   const el=editor.querySelector('[data-gh-id="'+CSS.escape(b.id)+'"]');if(el){el.style.setProperty('--eh-'+(control.dataset.ghStyle==='fontSize'?'size':control.dataset.ghStyle),control.dataset.ghStyle==='fontSize'&&control.value!=='auto'?control.value+'px':control.value);}
+ }));
+ editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{const b=globalHeaderElements.find(x=>x.id===el.dataset.ghEdit);if(b){b.text=el.innerText;markDirty();}}));
+ editor.querySelectorAll('.global-header-resize').forEach(handle=>handle.addEventListener('pointerdown',e=>{
+   e.preventDefault();e.stopPropagation();const el=handle.parentElement,b=globalHeaderElements.find(x=>x.id===el.dataset.ghId);if(!b)return;
+   selectedGlobalHeaderId=b.id;const sx=e.clientX,sy=e.clientY,sw=b.width,sh=b.height,parent=el.parentElement;
+   const move=ev=>{b.width=Math.max(8,Math.min(92,sw+(ev.clientX-sx)/Math.max(1,parent.clientWidth)*100));b.height=Math.max(8,Math.min(90,sh+(ev.clientY-sy)/Math.max(1,parent.clientHeight)*100));el.style.width=b.width+'%';el.style.height=b.height+'%';};
+   const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);markDirty();renderEditor();};
+   window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+ }));
+}
 function renderHome(){
  const visibleTiles=homepageTiles.slice(0,homepageTileCount);
  const tileMarkup=visibleTiles.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'" draggable="true" data-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title)+'">':'<button type="button" data-image-action="add" data-image-target="tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="title">'+esc(tile.title)+'</h3><p contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="body">'+esc(tile.body)+'</p><b contenteditable="true" data-tile-id="'+esc(tile.id)+'" data-tile-field="cta">'+esc(tile.cta)+'</b></div></article>').join('');
@@ -417,7 +494,7 @@ function renderHome(){
  };
  const tiles=visibleTiles.length?'<section class="homepage-tiles" data-home-tiles><div class="homepage-tile-grid" style="--tile-columns:'+homepageTileColumns+'">'+tileMarkup+'</div></section>':'';
  const ordered=homepageOrder.filter(k=>blocks[k]).map(k=>blocks[k]).join('');
- return navMarkup()+ordered+tiles+footerMarkup();
+ return navMarkup()+renderGlobalHeaderEditor()+ordered+tiles+footerMarkup();
 }
 
 function pageTitleMarkup(p,opts={}){
@@ -428,9 +505,9 @@ function pageTitleMarkup(p,opts={}){
 }
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
- if(isBuying)return navMarkup()+'<section class="full-page buying-page template-page"><div class="page-title-block">'+pageTitleMarkup(p)+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- if(isShop)return navMarkup()+'<section class="full-page shop-page template-page"><div class="page-title-block shop-page-title">'+pageTitleMarkup(p)+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- return navMarkup()+'<section class="full-page content-page template-page"><div class="page-title-block">'+pageTitleMarkup(p,{managed})+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
+ if(isBuying)return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page buying-page template-page"><div class="page-title-block">'+pageTitleMarkup(p)+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ if(isShop)return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page shop-page template-page"><div class="page-title-block shop-page-title">'+pageTitleMarkup(p)+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page content-page template-page"><div class="page-title-block">'+pageTitleMarkup(p,{managed})+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
 }
 function renderBuilderPageHelp(){
  const box=$('builder-page-help');if(!box)return;
@@ -445,7 +522,7 @@ function renderEditor(){
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=p.slug==='home'?renderHome():renderPage(p);
  $('site-editor').style.setProperty('--accent',themeColors.accent);$('site-editor').style.setProperty('--button-bg',themeColors.button_bg||themeColors.accent);$('site-editor').style.setProperty('--button-text',themeColors.button_text||'#ffffff');applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));
+ bindEditor();bindGlobalHeader($('site-editor'));bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));
 }
 
 function bindLayoutInteractions(root){
@@ -547,6 +624,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
+   global_header_elements:globalHeaderElements,
    homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
@@ -587,7 +665,14 @@ function loadContent(content){
  reviewLinks=Array.isArray(s.reviews)?s.reviews.map(r=>({label:r.label||'',url:r.url||''})).slice(0,4):[];
  const branding=s.branding&&typeof s.branding==='object'?s.branding:{};
  logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(authoritativeBranding.logo_url||s.logo_url||'');
- bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
+ bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(authoritativeBranding.banner_url||'');
+ const hasGlobalHeader=Object.prototype.hasOwnProperty.call(s,'global_header_elements');
+ if(hasGlobalHeader){
+   globalHeaderElements=Array.isArray(s.global_header_elements)?s.global_header_elements.map(normalizeGlobalHeaderElement):[];
+ }else if(bannerUrl){
+   globalHeaderElements=[normalizeGlobalHeaderElement({id:'gh-banner',type:'image',role:'banner',x:25,y:10,width:50,height:80,aspect:4,image_url:bannerUrl,text:''})];
+ }else globalHeaderElements=[];
+ selectedGlobalHeaderId=null;useBanner=s.homepage?.use_banner!==false;bannerPosition=['left','center','right'].includes(s.homepage?.banner_position)?s.homepage.banner_position:'center';headerLinks=Array.isArray(s.header?.links)?s.header.links:['home','buying','shop','about','contact'];footerLinks=Array.isArray(s.footer?.links)?s.footer.links:['home','buying','shop','about','contact'];
  homeImageUrl=s.homepage?.image_url||'';homeImageUrl2=s.homepage?.image_url2||'';homeBuyImageUrl=s.homepage?.buy_image_url||'';homeSellImageUrl=s.homepage?.sell_image_url||'';
  loadLayoutBlocks(s.homepage||{});loadEditableHeroElements(s.homepage||{});heroCanvasHeight=Math.max(620,Math.min(1800,Number(s.homepage?.hero_canvas_height)||760));
  homeBuyHeading=s.homepage?.buy_heading||'What we buy';homeBuyIntro=s.homepage?.buy_intro||'Tell customers the types of products, equipment or services you are looking to buy.';homeSellHeading=s.homepage?.sell_heading||'What we sell';homeSellIntro=s.homepage?.sell_intro||'Showcase the products and collections customers can browse and buy.';homepageTileCount=[3,4,6,8,9,10,12].includes(Number(s.homepage?.tile_count))?Number(s.homepage.tile_count):8;homepageTileColumns=[2,3,4].includes(Number(s.homepage?.tile_columns))?Number(s.homepage.tile_columns):4;homepageTiles=ensureHomepageTileCapacity(Array.isArray(s.homepage?.tiles)&&s.homepage.tiles.length?cleanHomepageTiles(s.homepage.tiles):defaultHomepageTiles());
@@ -618,6 +703,10 @@ async function uploadImage(file,target){
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
  const imageDimensions=await getImageDimensions(file);
  // Show the selected image immediately in the canvas while the upload completes.
+ if(target.startsWith('global-header:')){
+  const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});
+  if(el){selectedGlobalHeaderId=id;el.preview_url=URL.createObjectURL(file);if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(78,Math.max(18,(el.width/100*100)/el.aspect/2.5));}renderEditor();}
+ }
  if(target.startsWith('hero-element:')){
   const previewId=target.slice(12);
   const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
@@ -631,7 +720,7 @@ async function uploadImage(file,target){
   }
  }
  setStatus('Uploading image…');
- const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('hero-element:')?'hero-elements':target;
+ const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('global-header:')?'global-header':target.startsWith('hero-element:')?'hero-elements':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
  const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{
@@ -641,7 +730,8 @@ async function uploadImage(file,target){
  if(!response.ok)throw new Error(responseText||'Image upload failed.');
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target.startsWith('hero-element:')){const id=target.slice(12);selectedEditableHeroId=id;}
- if(target==='home')homeImageUrl=url;
+ if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedGlobalHeaderId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,(imageDimensions.width/imageDimensions.height)*18)):el.width;el.height=Math.min(78,Math.max(14,(el.width/100*100)/el.aspect/2.5));}if(el.role==='banner')bannerUrl=url;}}
+ else if(target==='home')homeImageUrl=url;
  else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url=url;}
  else if(target==='home2')homeImageUrl2=url;
  else if(target==='home-buy')homeBuyImageUrl=url;
@@ -664,7 +754,8 @@ async function uploadImage(file,target){
 }
 
 function removeImage(target){
- if(target==='home')homeImageUrl='';
+ if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url='';el.preview_url='';} }
+ else if(target==='home')homeImageUrl='';
  else if(target==='home2')homeImageUrl2='';
  else if(target.startsWith('layout:')){const id=target.slice(7);if(layoutBlocks[id])layoutBlocks[id].image_url='';}
  else if(target==='home-buy')homeBuyImageUrl='';

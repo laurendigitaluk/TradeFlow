@@ -723,3 +723,53 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .global-header-element.selected .global-header-resize{display:block}
 .global-header-element.selected .global-header-image-tools{display:flex}
 .global-header-element:not(.selected) .global-header-image-tools{display:none}
+
+
+/* Universal formatting toolbar for editable page/site text */
+.site-text-format-toolbar{
+ position:relative;
+ z-index:100;
+ display:flex;
+ align-items:center;
+ gap:6px;
+ flex-wrap:wrap;
+ padding:7px 9px;
+ margin:0 0 8px;
+ background:#17212b;
+ color:#fff;
+ border-radius:7px;
+ box-shadow:0 3px 10px rgba(20,30,40,.12);
+}
+.site-text-format-toolbar[hidden]{display:none!important}
+.site-text-format-toolbar strong{font-size:10px;margin-right:3px}
+.site-text-format-toolbar label{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;color:#fff;white-space:nowrap}
+.site-text-format-toolbar select{
+ height:28px;
+ min-width:70px;
+ border:1px solid #cbd3d9;
+ background:#fff;
+ color:#17212b;
+ border-radius:4px;
+ padding:3px 6px;
+ font-size:10px;
+}
+.site-text-format-toolbar label:first-of-type select{min-width:125px}
+.site-text-format-toolbar input[type=color]{
+ width:30px;
+ height:28px;
+ padding:2px;
+ border:1px solid #cbd3d9;
+ border-radius:4px;
+ background:#fff;
+}
+.site-editor [data-site-text="1"]{
+ transition:outline .08s ease;
+}
+.site-editor [data-site-text="1"]:focus{
+ outline:2px solid rgba(196,106,43,.65);
+ outline-offset:2px;
+}
+@media(max-width:900px){
+ .site-text-format-toolbar{align-items:flex-start}
+ .site-text-format-toolbar label{margin-bottom:2px}
+}

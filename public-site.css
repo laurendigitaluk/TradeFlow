@@ -179,3 +179,15 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 
 .public-layout-image{overflow:hidden;}
 .public-layout-image img{width:100%;height:100%;object-fit:contain;display:block;}
+
+
+/* Keep published template image shading attached to movable layout blocks */
+.classic-frame:has(.public-layout-block),.grid-image:has(.public-layout-block),.studio-image:has(.public-layout-block),.horizon-image:has(.public-layout-block),.field-image:has(.public-layout-block),.business-facts:has(.public-layout-block),.luxe-image:has(.public-layout-block),.commerce-panel:has(.public-layout-block),.impact-image:has(.public-layout-block){background:transparent;border:0;box-shadow:none;padding:0;}
+.classic-frame:has(.public-layout-block) .public-layout-block{background:#fff;border:1px solid #d8cbb8;box-shadow:12px 12px 0 rgba(80,60,40,.10);padding:18px;}
+.classic-frame:has(.public-layout-block) .public-layout-image{background:#f5f2ec;}
+.grid-image:has(.public-layout-block) .public-layout-block{border:1px solid rgba(255,255,255,.18);padding:12px;background:rgba(255,255,255,.04);}
+.studio-image:has(.public-layout-block),.horizon-image:has(.public-layout-block) .public-layout-block{background:#ddd3c8;}
+.field-image:has(.public-layout-block) .public-layout-block{background:#24362c;}
+.business-facts:has(.public-layout-block) .public-layout-block,.commerce-panel:has(.public-layout-block) .public-layout-block{background:#fff;border:1px solid #d7dee3;padding:20px;}
+.luxe-image:has(.public-layout-block) .public-layout-block{background:#1b2329;border:1px solid rgba(255,255,255,.12);padding:18px;}
+.impact-image:has(.public-layout-block) .public-layout-block{background:rgba(255,255,255,.12);border-radius:20px;}

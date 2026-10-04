@@ -241,7 +241,8 @@ function defaultPages(){
 let pages=defaultPages();
 
 function defaultPageTiles(prefix){
- return Array.from({length:12},(_,i)=>({id:prefix+'-'+(i+1),title:'',body:'',image_url:'',image_alt:'',cta:'',title_style:{},body_style:{},cta_style:{}}));
+ const defaultLink=prefix==='shop-tile'?'shop':'buying';
+ return Array.from({length:12},(_,i)=>({id:prefix+'-'+(i+1),title:'',body:'',image_url:'',image_alt:'',cta:'',cta_link_type:'internal',cta_link:defaultLink,title_style:{},body_style:{},cta_style:{}}));
 }
 function ensurePageTileCapacity(tiles,prefix){
  const existing=Array.isArray(tiles)?tiles:[];const byId=new Map(existing.map(t=>[t.id,t]));
@@ -348,7 +349,14 @@ function renderHomepageControls(){
 function renderPageTilesEditor(p){
  const cfg=pageTileConfig(p);p.tiles=cfg.tiles;p.tile_count=cfg.count;p.tile_columns=cfg.columns;
  const visible=cfg.tiles.slice(0,cfg.count);
- return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>'<article class="editable-home-tile page-tile" draggable="true" data-page-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'"><button type="button" data-image-action="remove" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Remove</button>':'<button type="button" data-image-action="add" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="title" style="'+siteTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3><p contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="body" style="'+siteTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p><b contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="cta" style="'+siteTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b></div></article>').join('')+'</div></section>';
+ const pageOptions=pages.filter(x=>x.enabled&&x.slug!=='customer-account').map(x=>'<option value="'+esc(x.slug)+'"'+(tileLinkValuePlaceholder(x.slug,tileLinkValuePlaceholder.current)?' selected':'')+'>'+esc(x.slug==='home'?'Home':x.slug==='buying'?'What We Buy':x.slug==='shop'?'What We Sell':x.title)+'</option>').join('');
+ return '<section class="homepage-tiles page-custom-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+cfg.columns+'">'+visible.map(tile=>{
+   const linkOptions=pages.filter(x=>x.enabled&&x.slug!=='customer-account').map(x=>'<option value="'+esc(x.slug)+'"'+(tile.cta_link_type==='internal'&&tile.cta_link===x.slug?' selected':'')+'>'+esc(x.slug==='home'?'Home':x.slug==='buying'?'What We Buy':x.slug==='shop'?'What We Sell':x.title)+'</option>').join('');
+   const linkControl=tile.cta_link_type==='custom'
+    ?'<label class="page-tile-link-control">Link URL<input type="url" data-page-tile-link="'+esc(tile.id)+'" value="'+esc(tile.cta_link||'')+'" placeholder="https://example.com"></label>'
+    :'<label class="page-tile-link-control">Link to<select data-page-tile-link="'+esc(tile.id)+'">'+linkOptions+'</select></label>';
+   return '<article class="editable-home-tile page-tile" draggable="true" data-page-tile-id="'+esc(tile.id)+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'"><button type="button" data-image-action="remove" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Remove</button>':'<button type="button" data-image-action="add" data-image-target="page:'+esc(p.slug)+':tile:'+esc(tile.id)+'">Add image</button>')+'</div><div class="tile-copy"><h3 contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="title" style="'+siteTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3><p contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="body" style="'+siteTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p><b contenteditable="true" data-site-text="1" data-page-tile-id="'+esc(tile.id)+'" data-tile-field="cta" style="'+siteTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b><label class="page-tile-link-type">Link type<select data-page-tile-link-type="'+esc(tile.id)+'"><option value="internal"'+(tile.cta_link_type==='internal'?' selected':'')+'>TradeFlow page</option><option value="custom"'+(tile.cta_link_type==='custom'?' selected':'')+'>Custom URL</option></select></label>'+linkControl+'</div></article>';
+ }).join('')+'</div></section>';
 }
 
 function resetDesignColours(){
@@ -694,9 +702,19 @@ function renderEditor(){
  $('site-editor').className='site-editor template-'+currentTemplate;$('site-editor').dataset.font=typography.font;$('site-editor').dataset.heroSize=typography.hero;$('site-editor').dataset.sectionSize=typography.section;$('site-editor').dataset.bodySize=typography.body;$('site-editor').dataset.navSize=typography.nav;$('site-editor').dataset.buttonStyle=typography.button;$('site-editor').dataset.headerStyle=typography.header;$('site-editor').dataset.footerStyle=typography.footer;
  $('site-editor').innerHTML=renderSiteTextToolbar()+(p.slug==='home'?renderHome():renderPage(p));
  $('site-editor').style.setProperty('--accent',themeColors.accent);$('site-editor').style.setProperty('--button-bg',themeColors.button_bg||themeColors.accent);$('site-editor').style.setProperty('--button-text',themeColors.button_text||'#ffffff');applyWebsiteBackground();$('site-editor').style.setProperty('--page-bg',themeColors.page_bg);$('site-editor').style.setProperty('--text-color',themeColors.text);$('site-editor').style.setProperty('--header-bg',themeColors.header_bg);$('site-editor').style.setProperty('--buy-bg',themeColors.buy_bg);$('site-editor').style.setProperty('--sell-bg',themeColors.sell_bg);$('site-editor').style.setProperty('--footer-bg',themeColors.footer_bg);
- bindEditor();bindGlobalHeader($('site-editor'));bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));bindSiteTextToolbar($('site-editor'));
+ bindEditor();bindGlobalHeader($('site-editor'));bindEditableHero($('site-editor'));bindLayoutInteractions($('site-editor'));bindPageTileLinkControls($('site-editor'));bindSiteTextToolbar($('site-editor'));
 }
 
+function bindPageTileLinkControls(root){
+ root.querySelectorAll('[data-page-tile-link-type]').forEach(control=>control.addEventListener('change',()=>{
+   const id=control.dataset.pageTileLinkType,p=currentPage(),tile=(p.tiles||[]).find(t=>t.id===id);if(!tile)return;
+   tile.cta_link_type=control.value;tile.cta_link=control.value==='internal'?(p.slug==='shop'?'shop':'buying'):'';markDirty();renderEditor();
+ }));
+ root.querySelectorAll('[data-page-tile-link]').forEach(control=>control.addEventListener('input',()=>{
+   const id=control.dataset.pageTileLink,p=currentPage(),tile=(p.tiles||[]).find(t=>t.id===id);if(!tile)return;
+   tile.cta_link=control.value;markDirty();
+ }));
+}
 function bindLayoutInteractions(root){
  root.querySelectorAll('[data-layout-type]').forEach(btn=>btn.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const id=btn.dataset.layoutType;if(!layoutBlocks[id])return;layoutBlocks[id].type=btn.dataset.layoutNext;if(layoutBlocks[id].type==='text'&&!layoutBlocks[id].text)layoutBlocks[id].text=id==='heroTitle'?headline:'';markDirty();renderEditor();}));
  root.querySelectorAll('[data-layout-edit]').forEach(el=>el.addEventListener('input',()=>{const id=el.dataset.layoutEdit;if(layoutBlocks[id]){layoutBlocks[id].text=el.innerText.trim();if(id==='heroTitle')headline=layoutBlocks[id].text;markDirty();}}));
@@ -815,7 +833,9 @@ function cleanTemplateCopy(copy){
  return out;
 }
 function normalizeHomepageTile(tile){
- const t=Object.assign({title_style:{},body_style:{},cta_style:{}},tile||{});
+ const t=Object.assign({title_style:{},body_style:{},cta_style:{},cta_link_type:'internal',cta_link:'home'},tile||{});
+ t.cta_link_type=t.cta_link_type==='custom'?'custom':'internal';
+ t.cta_link=String(t.cta_link||'home');
  const titleDefaults={font:'inherit',fontSize:'18',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'};
  const bodyDefaults={font:'inherit',fontSize:'14',color:'#68747e',lineHeight:'1.5',letterSpacing:'0'};
  const ctaDefaults={font:'inherit',fontSize:'14',color:'#ffffff',lineHeight:'1.2',letterSpacing:'0'};

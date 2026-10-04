@@ -531,14 +531,17 @@ function renderGlobalHeaderEditor(){
  ];
  const opts=(items,current)=>items.map(o=>'<option value="'+esc(o[0])+'" '+(o[0]===current?'selected':'')+'>'+esc(o[1])+'</option>').join('');
  const selectedOpt=(v,current)=>v===String(current)?' selected':'';
- let controls='<span>Select a box to edit it. Use the move handle to drag and the corner handle to resize.</span>';
+ const textTarget=selected&&selected.type==='text'?selected:null;
+ const textValue=textTarget?String(textTarget.text||''):'';
+ const textMenu='<label class="global-header-text-control">Text<textarea data-gh-text rows="1" '+(textTarget?'':'disabled')+'>'+esc(textValue)+'</textarea></label>'+
+    '<label>Font<select data-gh-style="font" '+(textTarget?'':'disabled')+'>'+opts(fontOptions,textTarget?.font||'inherit')+'</select></label>'+
+    '<label>Size<select data-gh-style="fontSize" '+(textTarget?'':'disabled')+'><option value="auto"'+selectedOpt('auto',textTarget?.fontSize||'auto')+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(n,textTarget?.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
+    '<label>Text colour<input type="color" data-gh-style="color" '+(textTarget?'':'disabled')+' value="'+esc(textTarget?.color||'#17202a')+'"></label>'+
+    '<label>Line spacing<select data-gh-style="lineHeight" '+(textTarget?'':'disabled')+'>'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],textTarget?.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
+    '<label>Letter spacing<select data-gh-style="letterSpacing" '+(textTarget?'':'disabled')+'>'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],textTarget?.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
+ let controls=textMenu;
  if(selected&&selected.type==='text'){
-   controls=editableHeroBorderControls(selected)+
-    '<label>Font<select data-gh-style="font">'+opts(fontOptions,selected.font)+'</select></label>'+
-    '<label>Size<select data-gh-style="fontSize"><option value="auto"'+selectedOpt('auto',selected.fontSize)+'>Auto</option>'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+selectedOpt(n,selected.fontSize)+'>'+n+'px</option>').join('')+'</select></label>'+
-    '<label>Text colour<input type="color" data-gh-style="color" value="'+esc(selected.color||'#17202a')+'"></label>'+
-    '<label>Line spacing<select data-gh-style="lineHeight">'+[['1','Tight'],['1.2','Normal'],['1.4','Relaxed'],['1.6','Loose'],['2','Double']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.lineHeight)+'>'+o[1]+'</option>').join('')+'</select></label>'+
-    '<label>Letter spacing<select data-gh-style="letterSpacing">'+[['0','Normal'],['0.5','0.5px'],['1','1px'],['2','2px'],['4','4px'],['8','8px']].map(o=>'<option value="'+o[0]+'"'+selectedOpt(o[0],selected.letterSpacing)+'>'+o[1]+'</option>').join('')+'</select></label>';
+   controls=textMenu+editableHeroBorderControls(selected);
  }else if(selected&&selected.type==='image'){
    controls=editableHeroBorderControls(selected)+'<span>'+esc(selected.role==='banner'?'Banner':'Photo')+' selected. Click the image controls to change or remove it.</span>';
  }else if(selected&&selected.type==='button'){
@@ -605,6 +608,10 @@ function bindGlobalHeader(root){
  editor.querySelectorAll('[data-gh-field]').forEach(control=>control.addEventListener('input',()=>{
    const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b)return;
    b[control.dataset.ghField]=control.value;markDirty();
+ }));
+ editor.querySelectorAll('[data-gh-text]').forEach(el=>el.addEventListener('input',()=>{
+   const b=globalHeaderElements.find(x=>x.id===selectedGlobalHeaderId);if(!b||b.type!=='text')return;
+   b.text=el.value;markDirty();
  }));
  editor.querySelectorAll('[data-gh-edit]').forEach(el=>el.addEventListener('input',()=>{
    const b=globalHeaderElements.find(x=>x.id===el.dataset.ghEdit);if(b){b.text=el.innerText;markDirty();}

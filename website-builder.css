@@ -685,3 +685,11 @@ button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inh
 .site-editor.template-editable .sell-product-grid article{
  background:rgba(255,255,255,.9);
 }
+
+.site-editor.template-editable .managed-login,
+.site-editor.template-editable .hero-actions span,
+.site-editor.template-editable .hero-actions a{
+ background:var(--button-bg,var(--accent,#c46a2b))!important;
+ color:var(--button-text,#fff)!important;
+ border-color:var(--button-bg,var(--accent,#c46a2b))!important;
+}

@@ -762,31 +762,46 @@ async function uploadImage(file,target){
  if(file.size>5242880)throw new Error('Image is larger than 5 MB.');
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
- const imageDimensions=await getImageDimensions(file);
- // Use a data URL for the immediate preview so the image cannot disappear because an object URL was revoked or the editor rerendered.
+ // Build the local preview first. Do not wait for image decoding or Supabase.
+ // The selected photograph must appear in the editor immediately.
  const previewUrl=await new Promise(function(resolve,reject){
    const reader=new FileReader();
    reader.onload=function(){resolve(String(reader.result||''));};
-   reader.onerror=reject;
+   reader.onerror=function(){reject(new Error('The selected image could not be read by the browser.'));};
    reader.readAsDataURL(file);
  });
+ const imageDimensionsPromise=getImageDimensions(file);
  setStatus('Image selected. Uploading…');
- // Show the selected image immediately in the canvas while the upload completes.
+ if(target.startsWith('hero-element:')){
+   const previewId=target.slice(12);
+   const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
+   if(previewEl){
+     selectedEditableHeroId=previewId;
+     previewEl.preview_url=previewUrl;
+     renderEditor();
+   }
+ }
  if(target.startsWith('global-header:')){
-  const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});
-  if(el){selectedGlobalHeaderId=id;el.preview_url=previewUrl;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}renderEditor();}
+   const previewId=target.slice(14);
+   const previewEl=globalHeaderElements.find(function(x){return x.id===previewId;});
+   if(previewEl){
+     selectedGlobalHeaderId=previewId;
+     previewEl.preview_url=previewUrl;
+     renderEditor();
+   }
+ }
+ const imageDimensions=await imageDimensionsPromise;
+ if(target.startsWith('global-header:')){
+   const el=globalHeaderElements.find(function(x){return x.id===target.slice(14);});
+   if(el&&imageDimensions?.width&&imageDimensions?.height){
+     el.aspect=imageDimensions.width/imageDimensions.height;
+     el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;
+     el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));
+   }
  }
  if(target.startsWith('hero-element:')){
-  const previewId=target.slice(12);
-  const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
-  if(previewEl){
-   selectedEditableHeroId=previewId;
-   previewEl.preview_url=previewUrl;
-   if(imageDimensions?.width&&imageDimensions?.height){
-    previewEl.aspect=imageDimensions.width/imageDimensions.height;
-   }
-   renderEditor();
-  }
+   const el=editableHeroElements.find(function(x){return x.id===target.slice(12);});
+   if(el&&imageDimensions?.width&&imageDimensions?.height)el.aspect=imageDimensions.width/imageDimensions.height;
  }
  setStatus('Uploading image to website storage…');
  const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('global-header:')?'global-header':target.startsWith('hero-element:')?'hero-elements':target;

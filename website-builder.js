@@ -10,7 +10,7 @@ let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='Wh
 let homepageTiles=[];
 let layoutBlocks={heroTitle:{type:'text',x:0,y:0,width:100,aspect:2,image_url:'',text:''},heroImage:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroImage2:{type:'image',x:0,y:0,width:100,aspect:1.6,image_url:'',text:''},heroBanner:{type:'image',x:0,y:0,width:60,aspect:4,image_url:'',text:''}};
 let editableHeroElements=[],selectedEditableHeroId=null,heroCanvasHeight=760;
-let homepageHeroFormatVersion=3,homepageHeroFormatMigrationPending=false,homepageTextFormatMigrationPending=false,homepageTileFormatMigrationPending=false;
+let homepageHeroFormatVersion=4,homepageHeroFormatMigrationPending=false,homepageTextFormatMigrationPending=false,homepageTileFormatMigrationPending=false;
 let globalHeaderElements=[],selectedGlobalHeaderId=null,globalHeaderHeight=250;
 
 function applyBannerPositionToGlobalHeader(){
@@ -33,7 +33,7 @@ function normalizeEditableHeroElement(v){
  d.x=Math.max(0,Math.min(92,Number(d.x)||0));d.y=Math.max(0,Math.min(92,Number(d.y)||0));
  d.width=Math.max(8,Math.min(92,Number(d.width)||42));d.height=Math.max(8,Math.min(90,Number(d.height)||28));d.aspect=Math.max(.35,Math.min(8,Number(d.aspect)||1.5));
  d.image_url=String(d.image_url||'');d.text=String(d.text||'');
- d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto');
+ d.font=String(d.font||'inherit');d.fontSize=String(d.fontSize||'auto'); if(d.type==='text'&&d.fontSize==='auto')d.fontSize=d.role==='headline'?'40':'18';
  d.color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?String(d.color):'#17202a';
  d.align=['left','center','right'].includes(d.align)?d.align:'left';
  d.vAlign=['top','center','bottom'].includes(d.vAlign)?d.vAlign:'center';
@@ -57,15 +57,18 @@ function loadEditableHeroElements(home){
  const savedVersion=Number(home?.editable_elements_version)||0;
  editableHeroElements=raw.length?raw.map(normalizeEditableHeroElement):defaultEditableHeroElements();
  homepageHeroFormatMigrationPending=false;
- if(savedVersion<3&&raw.length){
-   const textDefaults={font:'inherit',fontSize:'auto',lineHeight:'1.2',letterSpacing:'0'};
-   editableHeroElements.forEach(el=>{if(el.type==='text')Object.assign(el,textDefaults);});
+ if(savedVersion<4&&raw.length){
+   editableHeroElements.forEach(el=>{
+     if(el.type==='text'){
+       Object.assign(el,{font:'inherit',fontSize:el.role==='headline'?40:18,lineHeight:'1.2',letterSpacing:'0'});
+     }
+   });
    editableHeroElements.filter(el=>el.type==='button').forEach((el,index)=>{
-     Object.assign(el,{x:Math.min(72,8+index*28),y:62,width:24,height:10,aspect:4,font:'inherit',fontSize:'14',lineHeight:'1.2',letterSpacing:'0'});
+     Object.assign(el,{x:Math.min(72,8+index*26),y:62,width:22,height:10,aspect:4,font:'inherit',fontSize:14,lineHeight:'1.2',letterSpacing:'0'});
    });
    homepageHeroFormatMigrationPending=true;
  }
- homepageHeroFormatVersion=Math.max(savedVersion,3);
+ homepageHeroFormatVersion=Math.max(savedVersion,4);
  selectedEditableHeroId=null;
 }
 function editableHeroLinkOptions(selected){
@@ -763,7 +766,7 @@ function buildContent(){
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
    global_header_elements:globalHeaderElements,
-   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:homepageHeroFormatVersion,text_format_version:2,tile_format_version:2,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
+   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:4,text_format_version:2,tile_format_version:2,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -1185,9 +1188,9 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   e.preventDefault();const kind=btn.dataset.ehAdd;const type=kind==='text'?'text':kind==='button'?'button':'image';let o={};
   if(kind==='logo')o={role:'logo',image_url:logoUrl,x:5,y:5,width:18,height:16,aspect:2.8};
   if(kind==='banner')o={role:'banner',image_url:bannerUrl,x:5,y:18,width:90,height:20,aspect:5};
-  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,height:18,font:'inherit',fontSize:40,lineHeight:'1.2',letterSpacing:'0'};
+  if(kind==='text')o={role:'text',text:'Edit this text',x:8,y:42,width:42,height:18,font:'inherit',fontSize:18,lineHeight:'1.2',letterSpacing:'0'};
   if(kind==='image')o={role:'image',x:55,y:16,width:38,height:34,aspect:1.45,image_url:''};
-  if(kind==='button'){const buttonCount=editableHeroElements.filter(x=>x.type==='button').length;const buttonX=Math.min(72,8+buttonCount*28);o={role:'button',button_text:'Learn more',text:'Learn more',x:buttonX,y:62,width:24,height:10,aspect:4,font:'inherit',fontSize:14,lineHeight:'1.2',letterSpacing:'0'};}
+  if(kind==='button'){const buttonCount=editableHeroElements.filter(x=>x.type==='button').length;const buttonX=Math.min(72,8+buttonCount*26);o={role:'button',button_text:'Learn more',text:'Learn more',x:buttonX,y:62,width:22,height:10,aspect:4,font:'inherit',fontSize:14,lineHeight:'1.2',letterSpacing:'0'};}
   const el=makeEditableHeroElement(type,o);editableHeroElements.push(el);selectedEditableHeroId=el.id;markDirty();renderEditor();
  }));
  root.querySelectorAll('[data-eh-delete]').forEach(btn=>btn.addEventListener('click',function(e){

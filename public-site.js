@@ -19,6 +19,12 @@ async function api(path){
  return body;
 }
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));}
+function publicTextStyleCss(v){
+ const d=Object.assign({font:'inherit',fontSize:'auto',color:'#17202a',lineHeight:'1.2',letterSpacing:'0'},v||{});
+ const font=String(d.font||'inherit'),size=String(d.fontSize||'auto'),color=/^#[0-9a-f]{6}$/i.test(String(d.color||''))?d.color:'#17202a';
+ const line=String(d.lineHeight||'1.2'),letter=String(d.letterSpacing||'0');
+ return 'font-family:'+esc(font)+';font-size:'+esc(size==='auto'?'inherit':(Number(size)||16)+'px')+';color:'+esc(color)+';line-height:'+esc(line)+';letter-spacing:'+esc(letter)+'px;';
+}
 function isSubscriberSession(){
  return !!localStorage.getItem('tradeflow_subscriber_session');
 }
@@ -168,7 +174,7 @@ function renderBuyingSection(site,catalogue){
    const imageMarkup=image?'<img src="'+esc(image)+'" alt="'+esc(cat.name)+'" loading="lazy">':'<span aria-hidden="true"></span>';
    return '<article class="buy-category-card"><div class="buy-category-image">'+imageMarkup+'</div><div class="buy-category-copy"><h3>'+esc(cat.name)+'</h3><strong>'+items.length+' '+(items.length===1?'product':'products')+'</strong><p>'+esc(cat.description||'Products selected for this business buying list.')+'</p><a href="'+pageUrl('sell','category='+encodeURIComponent(cat.id))+'">Sell this type →</a></div></article>';
  }).join('');
- return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div></section>';
+ const ts=home.text_styles||{};return '<section class="public-section buying-section"><div class="section-intro buying-intro"><div><h2 style="'+publicTextStyleCss(ts.buyHeading)+'">'+esc(heading)+'</h2><p style="'+publicTextStyleCss(ts.buyIntro)+'">'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div></section>';
 }
 
 function renderSellingSection(site,listings){
@@ -179,7 +185,7 @@ function renderSellingSection(site,listings){
  const sectionImageMarkup=sectionImage?'<img src="'+esc(sectionImage)+'" alt="'+esc(home.sell_image_alt||heading)+'" loading="lazy">':'<span aria-hidden="true"></span>';
  const list=Array.isArray(listings)?listings:[];
  const cards=list.slice(0,6).map(p=>'<article class="sell-product-card"><div class="sell-photo">'+(p.image_url?'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(p.category_name||'')+'</span><h3>'+esc(p.title||'Product')+'</h3><strong>'+esc(p.asking_price!=null?money(p.asking_price,p.currency):'')+'</strong><a href="'+publicProductUrl(p.listing_id)+'">View product</a></article>').join('');
- return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2>'+esc(heading)+'</h2><p>'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
+ const ts=home.text_styles||{};return '<section class="public-section selling-section"><div class="section-intro selling-intro"><div><h2 style="'+publicTextStyleCss(ts.sellHeading)+'">'+esc(heading)+'</h2><p style="'+publicTextStyleCss(ts.sellIntro)+'">'+esc(intro)+'</p></div><div class="section-intro-image">'+sectionImageMarkup+'</div></div>'+(cards?'<div class="sell-product-grid">'+cards+'</div>':'')+'</section>';
 }
 
 function renderHomepageTiles(site){
@@ -189,7 +195,7 @@ function renderHomepageTiles(site){
  const columns=[2,3,4].includes(Number(home.tile_columns))?Number(home.tile_columns):4;
  const visible=tiles.slice(0,count);
  if(!visible.length)return '';
- const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><div class="tile-copy">'+(tile.title?'<h3>'+esc(tile.title)+'</h3>':'')+(tile.body?'<p>'+esc(tile.body)+'</p>':'')+(tile.cta?'<b>'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
+ const cards=visible.map(tile=>'<article class="editable-home-tile '+(tile.side==='buy'?'buy-tile':'sell-tile')+'"><div class="tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'">':'<span aria-hidden="true"></span>')+'</div><div class="tile-copy">'+(tile.title?'<h3 style="'+publicTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3>':'')+(tile.body?'<p style="'+publicTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p>':'')+(tile.cta?'<b style="'+publicTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
  return '<section class="homepage-tiles"><div class="homepage-tile-grid" style="--tile-columns:'+columns+'">'+cards+'</div></section>';
 }
 
@@ -347,7 +353,7 @@ function bindSellWizard(site,catalogue){
 function renderPageTiles(site,p){
  const cfg=pageTileConfigPublic(p);
  if(!cfg.tiles.length)return '';
- const cards=cfg.tiles.slice(0,cfg.count).map(tile=>'<article class="public-page-tile"><div class="page-tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><div class="page-tile-copy">'+(tile.title?'<h3>'+esc(tile.title)+'</h3>':'')+(tile.body?'<p>'+esc(tile.body)+'</p>':'')+(tile.cta?'<b>'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
+ const cards=cfg.tiles.slice(0,cfg.count).map(tile=>'<article class="public-page-tile"><div class="page-tile-image">'+(tile.image_url?'<img src="'+esc(tile.image_url)+'" alt="'+esc(tile.image_alt||tile.title||'')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><div class="page-tile-copy">'+(tile.title?'<h3 style="'+publicTextStyleCss(tile.title_style)+'">'+esc(tile.title)+'</h3>':'')+(tile.body?'<p style="'+publicTextStyleCss(tile.body_style)+'">'+esc(tile.body)+'</p>':'')+(tile.cta?'<b style="'+publicTextStyleCss(tile.cta_style)+'">'+esc(tile.cta)+'</b>':'')+'</div></article>').join('');
  return '<section class="public-page-tiles" style="--tile-columns:'+cfg.columns+'">'+cards+'</section>';
 }
 function pageTileConfigPublic(p){
@@ -395,14 +401,14 @@ function renderBuyingPage(site,catalogue){
  const cats=Array.isArray(catalogue?.categories)?catalogue.categories:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='buying')||{};
  const selector='<div class="public-filter valuation-start"><div class="valuation-start-copy"><strong>'+esc(p.buying_action_heading||'Sell your items')+'</strong><span>'+esc(p.buying_action_text||'Choose a category to start your selling journey.')+'</span></div><label><span>Choose a category</span><select aria-label="Choose a category" onchange="if(this.value)location.href=this.value"><option value="">Choose a category…</option>'+cats.map(c=>'<option value="'+esc(pageUrl('sell','category='+encodeURIComponent(c.id)))+'">'+esc(c.name)+'</option>').join('')+'</select></label></div>';
- return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+'<h1>'+esc(p.title||'What We Buy')+'</h1><p>'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
+ return renderPublicNav(site,catalogue)+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block">'+'<h1 style="'+publicTextStyleCss(p.title_style)+'">'+esc(p.title||'What We Buy')+'</h1><p style="'+publicTextStyleCss(p.body_style)+'">'+esc(p.body||'')+'</p></div>'+selector+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
  const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const branding=site.branding&&typeof site.branding==='object'?site.branding:{}; const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||''); const bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
  const searchHeading=p.shop_search_heading||'Find a product';const configuredSearchPlaceholder=String(p.shop_search_placeholder||'').trim();const searchPlaceholder=configuredSearchPlaceholder&&configuredSearchPlaceholder.toUpperCase()!=='PLACEHOLDER'?configuredSearchPlaceholder:'Search products, categories or descriptions…';const cards=list.map(item=>'<article class="shop-product" data-product-search="'+esc([item.title,item.category_name,item.description].filter(Boolean).join(' ').toLowerCase())+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block shop-page-title">'+'<h1>'+esc(p.title||'What We Sell')+'</h1>'+'<p>'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block shop-page-title">'+'<h1 style="'+publicTextStyleCss(p.title_style)+'">'+esc(p.title||'What We Sell')+'</h1>'+'<p style="'+publicTextStyleCss(p.body_style)+'">'+esc(p.body||'')+'</p></div>'+renderPageTiles(site,p)+'<div class="public-filter product-search"><label><span>'+esc(searchHeading)+'</span><input type="search" id="tradeflow-product-search" placeholder="'+esc(searchPlaceholder)+'" autocomplete="off"></label></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
 }
 
 function bindProductSearch(){const input=$('tradeflow-product-search');if(!input)return;const cards=Array.from(document.querySelectorAll('[data-product-search]'));input.addEventListener('input',()=>{const q=input.value.trim().toLowerCase();cards.forEach(card=>{card.hidden=!!q&&!card.dataset.productSearch.includes(q)});const visible=cards.some(card=>!card.hidden);const grid=input.closest('main')?.querySelector('.shop-grid');if(grid){let empty=grid.querySelector('.search-empty');if(!visible){if(!empty){empty=document.createElement('div');empty.className='connected-empty search-empty';empty.textContent='No products match your search.';grid.appendChild(empty)}}else if(empty)empty.remove();}})}

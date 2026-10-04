@@ -533,9 +533,9 @@ function selectPage(slug){
 }
 
 function applyTemplate(template){
- if(!templateHeadlines[template])return;
+ if(template!=='editable')template='editable';
  const previousDefaults=Object.values(templateDefaults).some(d=>d.kicker===templateCopy.kicker&&d.cta1===templateCopy.cta1&&d.cta2===templateCopy.cta2);
- currentTemplate=template;
+ currentTemplate='editable';
  themeColors=Object.assign({},templatePalettes[template]||templatePalettes.editorial,{background_id:themeColors.background_id||'clean-wave',background_mode:themeColors.background_mode||'preset'});
  if(!headline||Object.values(templateHeadlines).includes(headline))headline=templateHeadlines[template];
  if(!templateCopy.kicker||previousDefaults)templateCopy=Object.assign({},templateDefaults[template]||templateDefaults.editorial);

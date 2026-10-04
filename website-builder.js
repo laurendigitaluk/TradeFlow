@@ -746,24 +746,32 @@ async function uploadImage(file,target){
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
  const imageDimensions=await getImageDimensions(file);
+ // Use a data URL for the immediate preview so the image cannot disappear because an object URL was revoked or the editor rerendered.
+ const previewUrl=await new Promise(function(resolve,reject){
+   const reader=new FileReader();
+   reader.onload=function(){resolve(String(reader.result||''));};
+   reader.onerror=reject;
+   reader.readAsDataURL(file);
+ });
+ setStatus('Image selected. Uploading…');
  // Show the selected image immediately in the canvas while the upload completes.
  if(target.startsWith('global-header:')){
   const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});
-  if(el){selectedGlobalHeaderId=id;el.preview_url=URL.createObjectURL(file);if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}renderEditor();}
+  if(el){selectedGlobalHeaderId=id;el.preview_url=previewUrl;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,el.width||55)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}renderEditor();}
  }
  if(target.startsWith('hero-element:')){
   const previewId=target.slice(12);
   const previewEl=editableHeroElements.find(function(x){return x.id===previewId;});
   if(previewEl){
    selectedEditableHeroId=previewId;
-   previewEl.preview_url=URL.createObjectURL(file);
+   previewEl.preview_url=previewUrl;
    if(imageDimensions?.width&&imageDimensions?.height){
     previewEl.aspect=imageDimensions.width/imageDimensions.height;
    }
    renderEditor();
   }
  }
- setStatus('Uploading image…');
+ setStatus('Uploading image to website storage…');
  const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('global-header:')?'global-header':target.startsWith('hero-element:')?'hero-elements':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
  const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
@@ -771,7 +779,10 @@ async function uploadImage(file,target){
    method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file
  });
  const responseText=await response.text();
- if(!response.ok)throw new Error(responseText||'Image upload failed.');
+ if(!response.ok){
+   setStatus('Image preview is visible, but the upload failed. '+(responseText||''),'error');
+   throw new Error(responseText||'Image upload failed.');
+ }
  const url=SUPABASE_URL+'/storage/v1/object/public/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/');
  if(target.startsWith('hero-element:')){const id=target.slice(12);selectedEditableHeroId=id;}
  if(target.startsWith('global-header:')){const id=target.slice(14),el=globalHeaderElements.find(function(x){return x.id===id;});if(el){el.image_url=url;el.preview_url='';selectedGlobalHeaderId=id;if(imageDimensions?.width&&imageDimensions?.height){el.aspect=imageDimensions.width/imageDimensions.height;el.width=el.role==='banner'?Math.min(72,Math.max(35,(imageDimensions.width/imageDimensions.height)*18)):el.width;el.height=Math.min(80,Math.max(10,el.width*4/Math.max(.35,el.aspect)));}if(el.role==='banner')bannerUrl=url;}}

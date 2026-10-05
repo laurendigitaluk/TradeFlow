@@ -2005,3 +2005,7 @@ Website Builder homepage tiles and custom-page tiles (including What We Buy / Wh
 - A blank CTA/link text does not create a public link.
 
 This is part of the reusable standard website template. New subscribers receive the control as part of the standard tile editor; existing tile layout/positioning is not changed by adding the destination fields.
+
+
+## LOCKED STANDARD WEBSITE BUILDER — 2026-10-05
+The Website Builder has reached the approved reusable standard company/service website baseline. Treat the current home/top-section layout, banner, text/image/button boxes, tiles, page structures, editor controls, and positioning as a locked point set. New subscribers must receive this arrangement through the existing `resetToFreshWebsite()` / `template_reset_version: 2` behaviour. Do not redesign or reposition the baseline without explicit user approval. The exact restore/reference checkpoint is `CHECKPOINTS/2026-10-05-standard-website-builder-locked.md` and the continuation prompt is `CONTINUATION-PROMPTS/2026-10-05-standard-website-builder-locked.md`.

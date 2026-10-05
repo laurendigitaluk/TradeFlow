@@ -2028,3 +2028,7 @@ A new homepage banner preference is stored as `homepage.use_banner`. When enable
 The banner option is presented in Branding as a clear checkbox: “Use banner in the homepage hero”. The fallback homepage hero image remains available separately.
 
 TEST/main and LIVE/production were updated for the same template engine and styling. Website Builder cache versions were advanced to JavaScript v69 and CSS v65.
+
+
+## LOCKED STANDARD WEBSITE BUILDER — 2026-10-05
+The Website Builder is approved and locked as the reusable standard website template for company/service subscribers. The current arrangement is the point set: banner, text/image/button boxes, tiles, page layouts and editor controls are to remain as approved. Future work should start from this checkpoint and must not alter the baseline without explicit approval. See `CHECKPOINTS/2026-10-05-standard-website-builder-locked.md`.

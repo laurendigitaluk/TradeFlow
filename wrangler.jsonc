@@ -1,0 +1,21 @@
+{
+  "$schema": "https://developers.cloudflare.com/workers/wrangler/config-schema.json",
+  "name": "tradeflow",
+  "main": "./worker/index.js",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "vars": {
+    "TRADEFLOW_ENV": "production",
+    "TEST_SUPABASE_URL": "https://twfbmjwwqzxdxvclxbun.supabase.co",
+    "TEST_SUPABASE_KEY": "sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9",
+    "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv.supabase.co",
+    "LIVE_SUPABASE_KEY": "sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz"
+  },
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/*.js"
+    ]
+  }
+}

@@ -61,12 +61,22 @@ Deno.serve(async req=>{
       .upsert({tenant_id:tenantId,domain_order_id:orderId,...registrant,confirmed_at:new Date().toISOString()},{onConflict:"domain_order_id"})
       .select("id,domain_order_id,confirmed_at")
       .single();
-    if(savedError) return json({error:"Unable to save registrant details.",details:savedError.message},500);
+    if(savedError){
+      return json({
+        error:"Unable to save registrant details.",
+        details:savedError.message,
+        code:savedError.code||null,
+        hint:savedError.hint||null
+      },500);
+    }
 
-    await admin.from("tenant_domain_orders").update({
+    const {error:updateError}=await admin.from("tenant_domain_orders").update({
       status:"registrant_details_saved",
       metadata: {registrant_details_saved:true, registrant_email:registrant.email}
     }).eq("id",orderId);
+    if(updateError){
+      return json({error:"Registrant details were saved, but the domain order status could not be updated.",details:updateError.message,code:updateError.code||null},500);
+    }
 
     return json({status:"SUCCESS",order_id:orderId,hostname:order.hostname,registrant_id:saved.id,confirmed_at:saved.confirmed_at});
   }catch(e){

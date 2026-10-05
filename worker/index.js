@@ -30,7 +30,8 @@ export default {
     const assetRequest = assetPath
       ? new Request(new URL(assetPath + url.search, url.origin), request)
       : request;
-    const asset = await env.ASSETS.fetch(assetRequest);
+    const assetFetchRequest = new Request(assetRequest, { cache: "no-store" });
+    const asset = await env.ASSETS.fetch(assetFetchRequest);
 
     if (!assetPath && url.pathname === "/platform-owner-dashboard.html") {
       const headers = new Headers(asset.headers);
@@ -38,7 +39,7 @@ export default {
       return new Response(asset.body, { status: asset.status, statusText: asset.statusText, headers });
     }
 
-    if (!assetPath && (!url.pathname.endsWith(".js") || !asset.ok)) return asset;
+    if (!assetPath && (!asset.ok || (!url.pathname.endsWith(".js") && !url.pathname.endsWith(".html")))) return asset;
 
     if (assetPath) {
       const headers = new Headers(asset.headers);

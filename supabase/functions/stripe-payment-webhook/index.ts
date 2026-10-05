@@ -78,11 +78,36 @@ Deno.serve(async req=>{
     return json({received:true,subscription_synced:synced});
   }
 
-  let tenantId=object.metadata?.tenant_id,paymentId=object.metadata?.payment_id,orderId=object.metadata?.order_id,providerPaymentId=object.id,amount=Number(object.amount_total??object.amount_received??0)/100,currency=String(object.currency||'gbp').toUpperCase(),newStatus:string|null=null;
+  let tenantId=object.metadata?.tenant_id,paymentId=object.metadata?.payment_id,orderId=object.metadata?.order_id,domainOrderId=object.metadata?.domain_order_id,providerPaymentId=object.id,amount=Number(object.amount_total??object.amount_received??0)/100,currency=String(object.currency||'gbp').toUpperCase(),newStatus:string|null=null;
   if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded'){if(object.payment_status!=='paid')return json({received:true,ignored:'payment_not_paid'});newStatus='paid'}
   else if(event.type==='checkout.session.expired'){newStatus='cancelled'}
   else if(event.type==='payment_intent.succeeded'||event.type==='payment_intent.payment_failed'){newStatus=event.type==='payment_intent.succeeded'?'paid':'failed';amount=Number(object.amount_received??object.amount??0)/100;currency=String(object.currency||'gbp').toUpperCase()}
   else return json({received:true});
+  if(domainOrderId){
+    if(newStatus==='paid'){
+      const {data:domainOrder,error:domainOrderError}=await admin.from('tenant_domain_orders').select('id,tenant_id,status,payment_reference,metadata').eq('id',String(domainOrderId)).maybeSingle();
+      if(domainOrderError||!domainOrder)return json({error:'Domain order not found for Stripe payment.'},404);
+      const mergedMetadata={...(domainOrder.metadata||{}),stripe_event_id:event.id,stripe_payment_event_type:event.type};
+      if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded') mergedMetadata.stripe_checkout_session_id=object.id;
+      if(event.type==='payment_intent.succeeded') mergedMetadata.stripe_payment_intent_id=object.id;
+      const nextStatus=['registrant_details_saved','registered'].includes(domainOrder.status)?domainOrder.status:'payment_confirmed';
+      const {error:updateError}=await admin.from('tenant_domain_orders').update({
+        status:nextStatus,
+        payment_provider:'stripe',
+        payment_reference:domainOrder.payment_reference||((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded')?object.id:null),
+        failure_reason:null,
+        metadata:mergedMetadata,
+        updated_at:new Date().toISOString()
+      }).eq('id',domainOrder.id);
+      if(updateError)return json({error:updateError.message},500);
+      return json({received:true,domain_payment_confirmed:true,order_id:domainOrder.id,status:nextStatus});
+    }
+    if(newStatus==='cancelled'){
+      const {error:updateError}=await admin.from('tenant_domain_orders').update({status:'cancelled',failure_reason:'Stripe Checkout session expired.',updated_at:new Date().toISOString()}).eq('id',String(domainOrderId)).eq('status','pending_payment');
+      if(updateError)return json({error:updateError.message},500);
+      return json({received:true,domain_payment_cancelled:true,order_id:String(domainOrderId)});
+    }
+  }
   if(!tenantId||!paymentId||!newStatus)return json({received:true,ignored:'not_a_tradeflow_order_payment'});
   const payload={p_provider:'stripe',p_event_id:event.id,p_event_type:event.type,p_tenant_id:tenantId,p_payment_id:paymentId,p_provider_payment_id:providerPaymentId,p_new_status:newStatus,p_amount:amount,p_currency:currency,p_metadata:{stripe_event_id:event.id,stripe_order_id:orderId||null}};
   const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(payload)});

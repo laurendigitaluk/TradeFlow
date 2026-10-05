@@ -16,6 +16,17 @@ Deno.serve(async req=>{
   if(!["registrant_details_saved","registering","failed"].includes(o.status))return J({error:"Domain order is not ready for production registration.",status:o.status},409);
   const {data:r}=await db.from("tenant_domain_registrants").select("id,registrant_name,organisation,address_line1,address_line2,city,region,postal_code,country_code,email,phone").eq("domain_order_id",orderId).eq("tenant_id",tenantId).maybeSingle();if(!r)return J({error:"Saved registrant details not found."},409);
   const ph={"X-API-Key":A,"X-Secret-API-Key":S,"Content-Type":"application/json"},tld=String(o.tld||"").replace(/^\./,"").toLowerCase();
+  // Mirror the proven TEST registration preflight: validate the TLD registration
+  // capability first, then confirm the exact domain is still available.
+  const rr=await fetch(B+"/domain/getRegistrationRequirements/"+encodeURIComponent(tld),{headers:{"X-API-Key":A,"X-Secret-API-Key":S}});
+  const rd=await rr.json().catch(()=>null);
+  if(!rr.ok||rd?.status!=="SUCCESS")return J({error:"Porkbun registration requirements lookup failed.",provider_code:rd?.code||null,provider_message:rd?.message||null,request_id:rd?.requestId||null},502);
+  if(rd?.apiRegisterable===false)return J({error:"Porkbun does not permit API registration for this TLD.",tld,provider_code:"TLD_NOT_API_REGISTERABLE",provider_message:rd?.message||null},409);
+  const av=await fetch(B+"/domain/checkDomain/"+encodeURIComponent(o.hostname),{method:"POST",headers:ph,body:JSON.stringify({domain:o.hostname})});
+  const ad=await av.json().catch(()=>null);
+  if(!av.ok||ad?.status!=="SUCCESS")return J({error:"Porkbun availability check failed.",provider_code:ad?.code||null,provider_message:ad?.message||null,request_id:ad?.requestId||null},502);
+  const ar=ad?.response||{};
+  if(ar?.avail!=="yes")return J({error:"The domain is no longer available for registration at Porkbun.",hostname:o.hostname,availability:ar?.avail||null,provider_code:"DOMAIN_NOT_AVAILABLE",provider_message:ad?.message||null,request_id:ad?.requestId||null},409);
   const preflightCost=Math.round(Number(o.registrar_cost_usd||0)*100);if(!Number.isFinite(preflightCost)||preflightCost<=0)return J({error:"Saved registrar cost is invalid.",paid_registrar_cost_usd:o.registrar_cost_usd},409);const q=await fetch(B+"/domain/create/"+encodeURIComponent(o.hostname),{method:"POST",headers:ph,body:JSON.stringify({cost:preflightCost,agreeToTerms:"yes",dryRun:true})}),qd=await q.json().catch(()=>null);
   if(!q.ok||qd?.status!=="SUCCESS")return J({error:"Porkbun production preflight failed.",provider_code:qd?.code||null,provider_message:qd?.message||null,would_succeed:qd?.wouldSucceed??false},502);
   const current=Number(qd?.cost??qd?.price),saved=Number(o.registrar_cost_usd);if(!Number.isFinite(current)||!Number.isFinite(saved)||Math.round(current*100)!==Math.round(saved*100))return J({error:"Current Porkbun price differs from the price already paid. Registration blocked.",paid_registrar_cost_usd:saved,current_registrar_cost_usd:current},409);

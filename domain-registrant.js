@@ -2,6 +2,12 @@ const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';const $=id=>docume
 const params=new URLSearchParams(window.location.search);const orderId=params.get('order_id');
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function showRegistrationReady(){const p=$('registration-ready-panel');if(p)p.style.display='block';}
+async function reconcilePayment(auth){
+  const r=await fetch(SUPABASE_URL+'/functions/v1/reconcile-domain-payment',{method:'POST',headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token,'Content-Type':'application/json'},body:JSON.stringify({tenant_id:auth.tenantId,order_id:orderId})});
+  const text=await r.text();let body;try{body=JSON.parse(text)}catch{body=null}
+  if(!r.ok) throw Error(body?.error||text||('HTTP '+r.status));
+  return body;
+}
 async function loadOrder(auth){
   if(!orderId) throw Error('No domain order was supplied.');
   const r=await fetch(SUPABASE_URL+'/rest/v1/tenant_domain_orders?id=eq.'+encodeURIComponent(orderId)+'&select=id,tenant_id,hostname,status,retail_amount,currency,expires_at,provider_order_id,payment_reference',{headers:{apikey:auth.key,Authorization:'Bearer '+auth.session.access_token}});
@@ -25,6 +31,7 @@ async function loadOrder(auth){
  const auth=await window.tradeflowSubscriberAuthReady;window.__tradeflowDomainAuth=auth;
  $('business-name').textContent=auth.tenants?.[auth.tenantId]||'Domain registration';
  $('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();
+ await reconcilePayment(auth);
  await loadOrder(auth);
  $('registrant-form').onsubmit=async e=>{
   e.preventDefault();$('message').textContent='Saving registrant details…';$('save-button').disabled=true;

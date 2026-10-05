@@ -1079,3 +1079,7 @@ Website Builder homepage tiles and custom-page tiles (including What We Buy / Wh
 - A blank CTA/link text does not create a public link.
 
 This is part of the reusable standard website template. New subscribers receive the control as part of the standard tile editor; existing tile layout/positioning is not changed by adding the destination fields.
+
+
+## LOCKED STANDARD WEBSITE BUILDER — 2026-10-05
+Production baseline recorded for backend/support purposes. New subscriber starter behaviour is controlled by `resetToFreshWebsite()` and `template_reset_version: 2`. Preserve the approved starter element coordinates, page/tile structures and builder control behaviour. Do not overwrite existing subscriber drafts on reload. Use the locked checkpoint before diagnosing or modifying Website Builder behaviour.

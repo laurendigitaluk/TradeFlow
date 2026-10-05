@@ -17,6 +17,10 @@
 <label>Telephone number<input id="phone" type="tel" required autocomplete="tel"></label>
 <label style="display:flex;gap:10px;align-items:flex-start"><input id="confirmation" type="checkbox" required style="width:auto;margin-top:4px"><span>I confirm that these are the correct registrant details and that I am authorised to register this domain using them.</span></label>
 <div class="actions" style="margin-top:18px"><button id="save-button" type="submit">Save registrant details</button><a class="secondary" href="domain-settings.html">Back to Website URL</a></div>
-<p id="message" class="small" role="status"></p><div id="validation-panel" style="display:none;margin-top:18px;padding:14px;border:1px solid #ddd;border-radius:8px"><strong>Next step: validate Porkbun registration</strong><p class="small">This performs a Porkbun sandbox dry run only. It does not register the domain or charge the registrar account.</p><button id="validate-button" type="button">Validate registration</button><p id="validation-message" class="small" role="status"></p><div id="registration-panel" style="display:none;margin-top:14px;padding:14px;border:1px solid #ddd;border-radius:8px"><strong>TEST sandbox registration</strong><p class="small">The dry run passes for a new registration. If the domain is already registered in the TEST sandbox, this action only reconciles the existing provider record and does not create a second registration.</p><button id="register-button" type="button">Register in TEST sandbox</button><p id="registration-message" class="small" role="status"></p></div></div></form></section>
+<p id="message" class="small" role="status"></p>
+<div id="registration-ready-panel" style="display:none;margin-top:18px;padding:14px;border:1px solid #ddd;border-radius:8px">
+<strong>Next step: domain registration</strong>
+<p class="small">Your payment and registrant details are recorded. TradeFlow will continue with the registrar registration only after the production registration path has been verified.</p>
+</div></form></section>
 </section></main>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="domain-registrant.js?v=3"></script></body></html>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="domain-registrant.js?v=4"></script></body></html>

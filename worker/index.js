@@ -39,7 +39,14 @@ export default {
       return new Response(asset.body, { status: asset.status, statusText: asset.statusText, headers });
     }
 
-    if (!assetPath && (!asset.ok || (!url.pathname.endsWith(".js") && !url.pathname.endsWith(".html")))) return asset;
+    if (!assetPath && (!url.pathname.endsWith(".js") || !asset.ok)) {
+      if (url.pathname.endsWith(".html") && asset.ok) {
+        const headers = new Headers(asset.headers);
+        headers.set("cache-control", "no-store");
+        return new Response(asset.body, { status: asset.status, statusText: asset.statusText, headers });
+      }
+      return asset;
+    }
 
     if (assetPath) {
       const headers = new Headers(asset.headers);

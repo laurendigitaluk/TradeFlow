@@ -2485,3 +2485,45 @@ This is part of the reusable standard website template. New subscribers receive 
 
 ## LOCKED STANDARD WEBSITE BUILDER — 2026-10-05
 The approved Website Builder arrangement is now the standard reusable template for future company/service subscribers. Preserve the exact layout and point set: home/top section, banner, text boxes, image boxes, CTA buttons, tiles, page structures, and editor controls. Do not make visual or structural changes to this baseline unless the user explicitly reopens it. New subscriber onboarding must continue to use `template_reset_version: 2`. Read `CHECKPOINTS/2026-10-05-standard-website-builder-locked.md` before future builder work.
+
+# 2026-10-05 — STANDARD WEBSITE BUILDER LOCKED BASELINE
+
+The current LIVE/production Website Builder is now the approved standard reusable website template and is locked as the design/reference point for future company/service websites and new subscribers.
+
+## Lock rule
+Do not redesign, reposition, resize, restructure, or replace the locked Website Builder arrangement unless the user explicitly reopens the baseline. Future work must build around this baseline rather than silently changing it.
+
+## Locked scope
+- Home page structure and page composition.
+- Shared top/banner section and its current arrangement.
+- Text-box, image-box and CTA/button positions and proportions.
+- Homepage body layout and tiles.
+- What We Buy and What We Sell sections.
+- Buying Catalogue / Buying page structure.
+- Retail Shop page and tile structure.
+- About, Contact and Customer Account pages.
+- Shared top-section editor and Top-of-page editor.
+- Text, font, size, colour, line spacing, letter spacing, border and background controls.
+- Current light editor toolbar treatment and orange-accented control borders.
+- Subscriber-specific branding remains tenant-specific; the template does not hard-code a subscriber's identity.
+- Edit → Save Draft → Preview → Publish → LIVE workflow remains authoritative.
+
+## New-subscriber starter layout
+`resetToFreshWebsite()` is the source of the standard fresh-subscriber arrangement. `template_reset_version: 2` protects established drafts from being reset on reload.
+
+Approved starter elements:
+- Left text box: x 6, y 7.131578947809846, width 47.093378607809846, height 32.868421052190154.
+- Right image box: x 56, y 8.236842105263158, width 38, height 34.
+- Lower text box: x 0, y 53.68421052631579, width 70.44991511035653, height 28.
+
+Starter text boxes are blank by design. Do not restore placeholder copy such as “Your Text Here” or “Edit this text” into the fresh starter content.
+
+## Reuse objective
+This locked arrangement is the standard starting template that can later be transferred/reused for other company/service websites. Do not build a separate style-system-dependent replacement unless explicitly requested. Preserve the existing page/content-box architecture.
+
+## Reference restore point
+Immutable restore branch: `LOCKED-standard-website-builder-2026-10-05`.
+Production code state captured before documentation-only updates: `f3ff7f9d34030dbcde3440e21c097726ddef4f1d`.
+
+## Next stage
+The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.

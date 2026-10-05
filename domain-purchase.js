@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv5';const $=id=>document.getElementById(id);
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv5.supabase.co';const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 const TLDs=['co.uk','com','uk'];
 

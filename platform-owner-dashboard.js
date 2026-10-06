@@ -13,7 +13,7 @@ async function request(path,options={},retry=true){
   headers.set('apikey',KEY);
   if(session?.access_token)headers.set('Authorization',`Bearer ${session.access_token}`);
   if(options.body)headers.set('Content-Type','application/json');
-  const response=await fetch(`${SUPABASE_URL}${path}`,{...options,headers});
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);let response;try{response=await fetch(`${SUPABASE_URL}${path}`,{...options,headers,signal:controller.signal})}catch(err){if(err?.name==='AbortError')throw Error(`Request timed out: ${path}`);throw err}finally{clearTimeout(timeout)}
   const text=await response.text();
   let body=null;try{body=text?JSON.parse(text):null}catch{body=text}
   if(!response.ok){
@@ -230,7 +230,7 @@ function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-$('refresh').onclick=loadTenants;
+$('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};

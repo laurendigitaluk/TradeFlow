@@ -96,25 +96,111 @@ async function signIn(){
 async function loadDomainActions(){
   const root=$('domain-actions-list'),error=$('domain-actions-error');
   if(!root)return;
-  error.textContent='';root.innerHTML='<p class="muted">Loading domain requests…</p>';
+  error.textContent='';
+  root.innerHTML='<p class="muted">Loading domain requests…</p>';
+
+  const phases=[
+    {key:'reviewed',title:'Step 1 — Review the request',text:'Confirm the subscriber, hostname and tenant match. Check that the hostname is not already in use.',button:'Confirm request reviewed'},
+    {key:'connection_prepared',title:'Step 2 — Prepare the TradeFlow connection',text:'Prepare the approved Cloudflare custom-hostname connection for this subscriber. Do not invent a DNS target. Record the exact DNS instruction returned by the approved connection setup.',button:'Mark connection prepared'},
+    {key:'customer_instructions_sent',title:'Step 3 — Give the customer the DNS instructions',text:'Give the customer the exact DNS record(s) they must add at their registrar. Never request their registrar password.',button:'Mark instructions issued'},
+    {key:'dns_verified',title:'Step 4 — Verify DNS',text:'Wait for the customer to make the DNS change, then verify that the hostname resolves to the approved TradeFlow connection.',button:'DNS verified'},
+    {key:'ssl_verified',title:'Step 5 — Verify SSL / HTTPS',text:'Confirm the customer hostname has a valid HTTPS connection before activation.',button:'SSL verified'},
+    {key:'routing_verified',title:'Step 6 — Verify tenant routing',text:'Confirm the hostname serves the correct subscriber website and cannot resolve to another tenant.',button:'Routing verified'}
+  ];
+
+  function phaseIndex(meta){
+    if(meta.routing_verified)return 6;
+    if(meta.ssl_verified)return 5;
+    if(meta.dns_verified)return 4;
+    if(meta.customer_instructions_sent)return 3;
+    if(meta.connection_prepared)return 2;
+    if(meta.reviewed)return 1;
+    return 0;
+  }
+
   try{
     const rows=await request('/rest/v1/rpc/platform_owner_list_domain_actions',{method:'POST',body:'{}'});
-    if(!Array.isArray(rows)||!rows.length){root.innerHTML='<p class="muted">No open subscriber domain connection requests.</p>';return}
+    if(!Array.isArray(rows)||!rows.length){
+      root.innerHTML='<p class="muted">No open subscriber domain connection requests.</p>';
+      return;
+    }
+
     root.innerHTML=rows.map(row=>{
       const m=row.metadata||{};
+      const current=phaseIndex(m);
+      const completed=(key)=>!!m[key];
+      const disabled=(i)=>i>current+1||row.action_status==='active';
       const dns=String(m.dns_instructions||'');
-      return '<article class="note" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start"><div><strong>'+escapeHtml(row.tenant_name||'Subscriber')+'</strong><div>'+escapeHtml(row.hostname)+'</div><div class="muted">Requested '+formatDate(row.created_at)+' · '+escapeHtml(row.action_status)+'</div></div><select data-domain-action="'+row.action_id+'"><option value="requested">Requested</option><option value="dns_ready">DNS ready</option><option value="verification_failed">Verification failed</option><option value="verified">Verified</option><option value="active">Active</option></select></div><label style="display:block;margin-top:12px">DNS instructions<textarea data-domain-dns="'+row.action_id+'" rows="3" placeholder="Enter the exact DNS records the subscriber must add.">'+escapeHtml(dns)+'</textarea></label><label style="display:block;margin-top:12px">Owner notes<textarea data-domain-notes="'+row.action_id+'" rows="2" placeholder="Verification notes or correction instructions.">'+escapeHtml(row.notes||'')+'</textarea></label><div style="display:flex;gap:12px;align-items:center;margin-top:12px"><label><input type="checkbox" data-domain-dns-ok="'+row.action_id+'"> DNS verified</label><label><input type="checkbox" data-domain-ssl-ok="'+row.action_id+'"> SSL verified</label><label><input type="checkbox" data-domain-routing-ok="'+row.action_id+'"> Routing verified</label><button type="button" data-domain-save="'+row.action_id+'">Save domain action</button><span class="muted" data-domain-status="'+row.action_id+'"></span></div></article>'
-    }).join('');
-    root.querySelectorAll('[data-domain-save]').forEach(btn=>btn.onclick=async()=>{
-      const id=btn.dataset.domainSave,status=root.querySelector('[data-domain-action="'+id+'"]').value;
-      const dns=root.querySelector('[data-domain-dns="'+id+'"]').value,notes=root.querySelector('[data-domain-notes="'+id+'"]').value;
-      const meta={dns_instructions:dns,dns_verified:root.querySelector('[data-domain-dns-ok="'+id+'"]').checked,ssl_verified:root.querySelector('[data-domain-ssl-ok="'+id+'"]').checked,routing_verified:root.querySelector('[data-domain-routing-ok="'+id+'"]').checked};
-      const out=root.querySelector('[data-domain-status="'+id+'"]');btn.disabled=true;out.textContent='Saving…';
-      try{await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:status,p_notes:notes,p_metadata:meta})});out.textContent='Saved';await loadDomainActions()}catch(e){out.textContent=e.message||String(e)}finally{btn.disabled=false}
-    });
-  }catch(e){error.textContent=e.message||String(e);root.innerHTML=''}
-}
+      const notes=String(row.notes||'');
+      const statusLabel=row.action_status==='dns_ready'?'DNS ready':row.action_status==='verified'?'Verified':row.action_status==='verification_failed'?'Verification failed':row.action_status==='active'?'Active':'Requested';
 
+      return '<article class="note" style="margin-top:12px;padding:18px">'+
+        '<div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">'+
+          '<div><strong>'+escapeHtml(row.tenant_name||'Subscriber')+'</strong><div style="margin-top:4px"><strong>'+escapeHtml(row.hostname)+'</strong></div><div class="muted">Requested '+formatDate(row.created_at)+' · '+escapeHtml(statusLabel)+'</div></div>'+
+          '<span class="eyebrow">Phase '+Math.min(current+1,6)+' of 6</span>'+
+        '</div>'+
+        '<div style="margin-top:16px;display:grid;gap:10px">'+
+          phases.map((p,i)=>{
+            const done=completed(p.key);
+            const isNext=!done&&i===current;
+            return '<div style="border:1px solid '+(done?'#b7d7bd':isNext?'#d9b27c':'#e5e7eb')+';border-radius:8px;padding:12px;background:'+(done?'#f4faf5':isNext?'#fffaf2':'#fff')+'">'+
+              '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><strong>'+(done?'✓ ':'')+escapeHtml(p.title)+'</strong><p class="muted" style="margin:5px 0 0">'+escapeHtml(p.text)+'</p></div>'+
+              (done?'<span class="muted">Completed</span>':isNext?'<button type="button" data-domain-phase="'+escapeAttr(row.action_id)+'" data-phase="'+p.key+'">'+escapeHtml(p.button)+'</button>':'<span class="muted">Waiting</span>')+
+              '</div>'+
+              (p.key==='connection_prepared'&&isNext?'<div class="note" style="margin-top:10px"><strong>Preparation checklist</strong><ol style="margin:8px 0 0 20px"><li>Confirm the hostname belongs to this subscriber.</li><li>Prepare the approved Cloudflare custom-hostname connection.</li><li>Use the actual DNS target supplied by that connection.</li><li>Do not activate the TradeFlow domain yet.</li></ol></div>':'')+
+              '</div>';
+          }).join('')+
+        '</div>'+
+        '<label style="display:block;margin-top:14px"><strong>Exact DNS instructions for customer</strong><textarea data-domain-dns="'+escapeAttr(row.action_id)+'" rows="4" placeholder="Enter the exact DNS record(s) returned by the approved connection setup.">'+escapeHtml(dns)+'</textarea></label>'+
+        '<label style="display:block;margin-top:12px"><strong>Owner notes</strong><textarea data-domain-notes="'+escapeAttr(row.action_id)+'" rows="3" placeholder="Record verification notes, customer corrections or other owner information.">'+escapeHtml(notes)+'</textarea></label>'+
+        '<div style="display:flex;gap:12px;align-items:center;margin-top:12px"><button type="button" data-domain-save="'+escapeAttr(row.action_id)+'">Save notes / DNS instructions</button><span class="muted" data-domain-status="'+escapeAttr(row.action_id)+'"></span></div>'+
+      '</article>';
+    }).join('');
+
+    root.querySelectorAll('[data-domain-phase]').forEach(btn=>btn.onclick=async()=>{
+      const id=btn.dataset.domainPhase,key=btn.dataset.phase;
+      const status=root.querySelector('[data-domain-action-status="'+id+'"]');
+      const out=root.querySelector('[data-domain-status="'+id+'"]');
+      btn.disabled=true;
+      if(out)out.textContent='Saving…';
+      try{
+        const dns=root.querySelector('[data-domain-dns="'+id+'"]').value.trim();
+        const notes=root.querySelector('[data-domain-notes="'+id+'"]').value.trim();
+        if(key==='connection_prepared'&&!dns)throw Error('Enter the exact DNS instructions before marking the connection prepared.');
+        if(key==='customer_instructions_sent'&&!dns)throw Error('Enter the exact DNS instructions before issuing them to the customer.');
+        const meta={};
+        meta[key]=true;
+        if(dns)meta.dns_instructions=dns;
+        if(key==='dns_verified')meta.dns_verified=true;
+        if(key==='ssl_verified')meta.ssl_verified=true;
+        if(key==='routing_verified')meta.routing_verified=true;
+        let actionStatus='requested';
+        if(key==='connection_prepared'||key==='customer_instructions_sent')actionStatus='dns_ready';
+        if(key==='dns_verified'||key==='ssl_verified'||key==='routing_verified')actionStatus='dns_ready';
+        await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:actionStatus,p_notes:notes,p_metadata:meta})});
+        if(out)out.textContent='Saved';
+        await loadDomainActions();
+      }catch(e){
+        if(out)out.textContent=e.message||String(e);
+        btn.disabled=false;
+      }
+    });
+
+    root.querySelectorAll('[data-domain-save]').forEach(btn=>btn.onclick=async()=>{
+      const id=btn.dataset.domainSave,out=root.querySelector('[data-domain-status="'+id+'"]');
+      const dns=root.querySelector('[data-domain-dns="'+id+'"]').value.trim();
+      const notes=root.querySelector('[data-domain-notes="'+id+'"]').value.trim();
+      btn.disabled=true;if(out)out.textContent='Saving…';
+      try{
+        await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:'requested',p_notes:notes,p_metadata:{dns_instructions:dns}})});
+        if(out)out.textContent='Saved';await loadDomainActions();
+      }catch(e){if(out)out.textContent=e.message||String(e);btn.disabled=false}
+    });
+  }catch(e){
+    error.textContent=e.message||String(e);
+    root.innerHTML='';
+  }
+}
 async function loadPlatformEmail(){
  const status=$('platform-email-status'),input=$('platform-email-input');if(!status||!input)return;
  try{

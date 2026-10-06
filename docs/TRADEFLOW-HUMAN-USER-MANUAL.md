@@ -130,28 +130,29 @@ The code and database checkpoint are saved. Browser verification of the newest b
 Do not modify GearCashOut while working on this TradeFlow checkpoint.
 
 
-## Website domains and future domain purchasing — 19 September 2026
+## Website domains — customer-owned domain connection
 
-TradeFlow can already store a custom website address against your business. The current **Website URL** area is for connecting a domain you already own.
+TradeFlow subscribers can use the included TradeFlow website address or connect a domain that they already own.
 
-A future TradeFlow domain service is now supported by the database design. The intended customer journey is:
+The current customer-owned domain process is:
 
-1. Open **Website / Domain** in the business dashboard.
-2. Search for a domain name.
-3. See current availability and price.
-4. Choose the domain and registration period.
-5. Pay through TradeFlow.
-6. TradeFlow registers the domain through its domain provider.
-7. TradeFlow connects the domain to the customer's website and enables the required SSL/hosting routing.
-8. The domain appears in the business account with its registration and renewal information.
+1. Buy the domain yourself from a reputable registrar.
+2. Keep the domain in your own registrar account.
+3. Sign in to TradeFlow and open **Website → Website URL**.
+4. Enter the domain and save it.
+5. TradeFlow creates a connection request for the Platform Owner.
+6. The Platform Owner prepares the website connection and supplies the required DNS instructions.
+7. The subscriber adds the exact DNS records at their registrar.
+8. TradeFlow verifies DNS and the secure website connection.
+9. The domain is activated for the subscriber website.
 
-The database now records the information needed for purchased domains, including registration status, provider reference, purchase amount, expiry date and auto-renewal state.
+TradeFlow does **not** require the subscriber to transfer the domain to TradeFlow and must never request the subscriber's registrar password.
 
-**Important:** the domain-purchase button/search/checkout and automatic DNS/hosting connection are not yet live. The current Website URL page only records a domain as pending for later connection.
+The subscriber remains responsible for registrar billing, renewal, account security and accurate registrant/contact information.
 
-Domain availability and prices will be checked with the selected registrar at the time of purchase; the prices stored in TradeFlow's TLD catalogue are configuration/pricing data, not a promise of current availability.
+The customer-facing website manual, subscriber-website-manual.html, contains the detailed step-by-step instructions and examples of domain registrars.
 
-
+**Retired direction:** TradeFlow does not currently sell/register domains on behalf of subscribers through the previous automatic registrar-purchase workflow. Historical documentation about automatic domain purchasing is retained only where required for audit continuity and is not a current operating instruction.
 
 
 ## Website Builder final refinement pass — 19 September 2026

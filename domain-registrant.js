@@ -9,7 +9,7 @@ async function registerDomain(auth){
  const body={tenant_id:auth.tenantId,order_id:orderId};
  const pre=await fetch(SUPABASE_URL+'/functions/v1/porkbun-domain-registration',{method:'POST',headers,body:JSON.stringify({...body,action:'preflight'})});
  const pt=await pre.text();let pb;try{pb=JSON.parse(pt)}catch{pb=null}
- if(!pre.ok||pb?.status!=='PREFLIGHT_SUCCESS'){const detail=pb?.provider_message?` ${pb.provider_message}`:'';const code=pb?.provider_code?` [${pb.provider_code}]`:'';const action=pb?.next_action?.hint?` Next action: ${pb.next_action.hint}`:'';throw Error((pb?.error||pt||('HTTP '+pre.status))+code+detail+action);}
+ if(!pre.ok||pb?.status!=='PREFLIGHT_SUCCESS'){const detail=pb?.provider_message?(' Porkbun message: '+pb.provider_message):'';const code=pb?.provider_code?(' [Porkbun code: '+pb.provider_code+']'):'';const action=pb?.next_action?(typeof pb.next_action==='string'?(' Next action: '+pb.next_action):(' Next action: '+(pb.next_action.hint||pb.next_action.action||JSON.stringify(pb.next_action)))):'';const request=pb?.request_id?(' Request ID: '+pb.request_id):'';throw Error((pb?.error||pt||('HTTP '+pre.status))+code+detail+action+request);}
  message.textContent='Registration check passed. Registering '+(pb.hostname||'the domain')+'…';
  if(button)button.textContent='Registering domain…';
  const rr=await fetch(SUPABASE_URL+'/functions/v1/porkbun-domain-registration',{method:'POST',headers,body:JSON.stringify({...body,action:'register'})});

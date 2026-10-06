@@ -25,7 +25,6 @@
       <a href="subscriber-website-manual.html" target="_blank" rel="noopener">Subscriber Manual</a>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-BACKEND-USER-MANUAL.md" target="_blank" rel="noopener">Backend Manual</a>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-AI-OPERATING-MANUAL.md" target="_blank" rel="noopener">AI Operating Manual</a>
-      <a href="#settings">Platform settings</a>
     </nav>
   </aside>
   <section class="content">
@@ -77,52 +76,9 @@
 
 <section id="ai-settings" class="panel"><div class="eyebrow">Artificial intelligence</div><h2>TradeFlow Assistant provider</h2><p>Choose which AI providers TradeFlow is permitted to use. API keys are not stored here; credentials remain server-side.</p><div class="note"><strong>Provider-neutral</strong><p>TradeFlow can remain on None, use centrally managed Gemma/OpenAI/Anthropic/Google, or allow Subscriber so a subscriber can supply their own approved provider later.</p></div><form id="ai-settings-form" style="max-width:760px"><label>Active platform provider<select id="ai-active-provider"><option value="none">None — knowledge-only mode</option><option value="gemma">Gemma</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option><option value="subscriber">Subscriber chooses their own provider</option></select></label><div style="margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><label><input id="ai-gemma" type="checkbox"> Allow Gemma</label><label><input id="ai-openai" type="checkbox"> Allow OpenAI</label><label><input id="ai-anthropic" type="checkbox"> Allow Anthropic</label><label><input id="ai-google" type="checkbox"> Allow Google</label><label><input id="ai-subscriber" type="checkbox"> Allow subscriber-supplied AI</label></div><div class="plan-editor-foot" style="margin-top:16px"><span id="ai-settings-status" class="muted" aria-live="polite">Loading AI settings…</span><button type="submit">Save AI settings</button></div></form></section>
 
-<section id="settings" class="panel">
-      <div class="eyebrow">Platform administration</div>
-      <h2>Platform settings</h2>
-      <p>Platform-level administration for TradeFlow. Tenant settings remain inside the subscriber workspace.</p>
-
-      <div class="note" style="margin-top:16px">
-        <strong>Domain pricing and exchange-rate monitoring</strong>
-        <p>TradeFlow receives registrar domain prices from Porkbun in US dollars. Customer domain charges are displayed and collected in UK pounds using the fixed USD-to-GBP rate below, then the domain markup is applied.</p>
-        <p><strong>Review the exchange rate regularly.</strong> The stored rate is not updated automatically. Review it when the market rate moves by the monitoring threshold shown below. TradeFlow will not silently change existing orders when these settings are changed.</p>
-        <p><a id="fx-source-link" href="https://www.bankofengland.co.uk/boeapps/database/index.asp?EC=XUMAUSS&From=Template&G0Xtop.x=1&G0Xtop.y=1&Travel=NIxSUx" target="_blank" rel="noopener">Monitor Bank of England USD into Sterling rates</a></p>
-      </div>
-
-      <form id="domain-pricing-form" style="margin-top:18px">
-        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
-          <label>Domain markup %
-            <input id="domain-markup-percent" name="markup_percent" type="number" min="0" max="1000" step="0.1" required>
-            <small>Applied after the USD registrar cost is converted to GBP.</small>
-          </label>
-          <label>USD → GBP rate
-            <input id="domain-usd-to-gbp" name="usd_to_gbp_rate" type="number" min="0.00000001" max="9.99999999" step="0.00000001" required>
-            <small>GBP received for each US dollar of registrar cost.</small>
-          </label>
-          <label>Rate period start
-            <input id="domain-fx-period-start" name="fx_period_start" type="date" required>
-          </label>
-          <label>Rate period end
-            <input id="domain-fx-period-end" name="fx_period_end" type="date" required>
-          </label>
-          <label>Review threshold %
-            <input id="domain-fx-threshold" name="fx_review_threshold_percent" type="number" min="0.1" max="100" step="0.1" required>
-            <small>Review the stored rate when the current market rate moves this far from it.</small>
-          </label>
-          <label>Last reviewed
-            <input id="domain-fx-last-reviewed" name="fx_last_reviewed" type="date" required>
-          </label>
-        </div>
-        <div class="plan-editor-foot" style="margin-top:16px">
-          <span id="domain-pricing-status" class="muted" aria-live="polite">Loading domain pricing…</span>
-          <button type="submit">Save domain pricing</button>
-        </div>
-      </form>
-
-      <div id="domain-pricing-summary" class="note" style="margin-top:16px"></div>
-    </section>
+</section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=12" defer></script>
+<script src="platform-owner-dashboard.js?v=13" defer></script>
 </body>
 </html>

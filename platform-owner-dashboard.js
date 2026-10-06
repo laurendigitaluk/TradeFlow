@@ -93,6 +93,26 @@ async function signIn(){
 }
 
 
+async function prepareCloudflareConnection(actionId){
+  const out=document.querySelector('[data-domain-status="'+actionId+'"]');
+  const buttons=[...document.querySelectorAll('[data-domain-phase="'+actionId+'"]')];
+  buttons.forEach(b=>b.disabled=true);
+  if(out)out.textContent='Preparing Cloudflare connection…';
+  try{
+    const result=await request('/functions/v1/platform-prepare-custom-domain',{
+      method:'POST',
+      body:JSON.stringify({action_id:actionId})
+    });
+    if(out)out.textContent='Connection prepared automatically.';
+    await loadDomainActions();
+    return result;
+  }catch(e){
+    if(out)out.textContent=e.message||String(e);
+    buttons.forEach(b=>b.disabled=false);
+    throw e;
+  }
+}
+
 async function loadDomainActions(){
   const root=$('domain-actions-list'),error=$('domain-actions-error');
   if(!root)return;
@@ -147,7 +167,7 @@ async function loadDomainActions(){
             const isNext=!done&&i===current;
             return '<div style="border:1px solid '+(done?'#b7d7bd':isNext?'#d9b27c':'#e5e7eb')+';border-radius:8px;padding:12px;background:'+(done?'#f4faf5':isNext?'#fffaf2':'#fff')+'">'+
               '<div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start"><div><strong>'+(done?'✓ ':'')+escapeHtml(p.title)+'</strong><p class="muted" style="margin:5px 0 0">'+escapeHtml(p.text)+'</p></div>'+
-              (done?'<span class="muted">Completed</span>':isNext?'<button type="button" data-domain-phase="'+escapeAttr(row.action_id)+'" data-phase="'+p.key+'">'+escapeHtml(p.button)+'</button>':'<span class="muted">Waiting</span>')+
+              (done?'<span class="muted">Completed</span>':isNext?(p.key==='connection_prepared'?'<button type="button" data-domain-phase="'+escapeAttr(row.action_id)+'" data-phase="'+p.key+'">Prepare connection automatically</button>':'<button type="button" data-domain-phase="'+escapeAttr(row.action_id)+'" data-phase="'+p.key+'">'+escapeHtml(p.button)+'</button>'):'<span class="muted">Waiting</span>')+
               '</div>'+
               (p.key==='connection_prepared'&&isNext?'<div class="note" style="margin-top:10px"><strong>Preparation checklist</strong><ol style="margin:8px 0 0 20px"><li>Confirm the hostname belongs to this subscriber.</li><li>Prepare the approved Cloudflare custom-hostname connection.</li><li>Use the actual DNS target supplied by that connection.</li><li>Do not activate the TradeFlow domain yet.</li></ol></div>':'')+
               '</div>';
@@ -161,6 +181,7 @@ async function loadDomainActions(){
 
     root.querySelectorAll('[data-domain-phase]').forEach(btn=>btn.onclick=async()=>{
       const id=btn.dataset.domainPhase,key=btn.dataset.phase;
+      if(key==='connection_prepared'){try{await prepareCloudflareConnection(id)}catch{}return;}
       const status=root.querySelector('[data-domain-action-status="'+id+'"]');
       const out=root.querySelector('[data-domain-status="'+id+'"]');
       btn.disabled=true;

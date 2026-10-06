@@ -87,9 +87,32 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();await loadDomainActions();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
+}
+
+
+async function loadDomainActions(){
+  const root=$('domain-actions-list'),error=$('domain-actions-error');
+  if(!root)return;
+  error.textContent='';root.innerHTML='<p class="muted">Loading domain requests…</p>';
+  try{
+    const rows=await request('/rest/v1/rpc/platform_owner_list_domain_actions',{method:'POST',body:'{}'});
+    if(!Array.isArray(rows)||!rows.length){root.innerHTML='<p class="muted">No open subscriber domain connection requests.</p>';return}
+    root.innerHTML=rows.map(row=>{
+      const m=row.metadata||{};
+      const dns=String(m.dns_instructions||'');
+      return '<article class="note" style="margin-top:12px"><div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start"><div><strong>'+escapeHtml(row.tenant_name||'Subscriber')+'</strong><div>'+escapeHtml(row.hostname)+'</div><div class="muted">Requested '+formatDate(row.created_at)+' · '+escapeHtml(row.action_status)+'</div></div><select data-domain-action="'+row.action_id+'"><option value="requested">Requested</option><option value="dns_ready">DNS ready</option><option value="verification_failed">Verification failed</option><option value="verified">Verified</option><option value="active">Active</option></select></div><label style="display:block;margin-top:12px">DNS instructions<textarea data-domain-dns="'+row.action_id+'" rows="3" placeholder="Enter the exact DNS records the subscriber must add.">'+escapeHtml(dns)+'</textarea></label><label style="display:block;margin-top:12px">Owner notes<textarea data-domain-notes="'+row.action_id+'" rows="2" placeholder="Verification notes or correction instructions.">'+escapeHtml(row.notes||'')+'</textarea></label><div style="display:flex;gap:12px;align-items:center;margin-top:12px"><label><input type="checkbox" data-domain-dns-ok="'+row.action_id+'"> DNS verified</label><label><input type="checkbox" data-domain-ssl-ok="'+row.action_id+'"> SSL verified</label><label><input type="checkbox" data-domain-routing-ok="'+row.action_id+'"> Routing verified</label><button type="button" data-domain-save="'+row.action_id+'">Save domain action</button><span class="muted" data-domain-status="'+row.action_id+'"></span></div></article>'
+    }).join('');
+    root.querySelectorAll('[data-domain-save]').forEach(btn=>btn.onclick=async()=>{
+      const id=btn.dataset.domainSave,status=root.querySelector('[data-domain-action="'+id+'"]').value;
+      const dns=root.querySelector('[data-domain-dns="'+id+'"]').value,notes=root.querySelector('[data-domain-notes="'+id+'"]').value;
+      const meta={dns_instructions:dns,dns_verified:root.querySelector('[data-domain-dns-ok="'+id+'"]').checked,ssl_verified:root.querySelector('[data-domain-ssl-ok="'+id+'"]').checked,routing_verified:root.querySelector('[data-domain-routing-ok="'+id+'"]').checked};
+      const out=root.querySelector('[data-domain-status="'+id+'']);btn.disabled=true;out.textContent='Saving…';
+      try{await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:status,p_notes:notes,p_metadata:meta})});out.textContent='Saved';await loadDomainActions()}catch(e){out.textContent=e.message||String(e)}finally{btn.disabled=false}
+    });
+  }catch(e){error.textContent=e.message||String(e);root.innerHTML=''}
 }
 
 async function loadDomainPricing(){

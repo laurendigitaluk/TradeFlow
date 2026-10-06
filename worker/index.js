@@ -31,6 +31,49 @@ export default {
       ? new Request(new URL(assetPath + url.search, url.origin), request)
       : request;
     const assetFetchRequest = new Request(assetRequest, { cache: "no-store" });
+
+    if (url.pathname === "/api/subscriber-login") {
+      if (request.method !== "POST") return new Response("Method Not Allowed", { status: 405 });
+      try {
+        const payload = await request.json();
+        const email = String(payload?.email || "").trim();
+        const password = String(payload?.password || "");
+        if (!email || !password) return Response.json({ error: "Enter your email and password." }, { status: 400 });
+        const supabaseUrl = env.TRADEFLOW_ENV === "production" ? env.LIVE_SUPABASE_URL : env.TEST_SUPABASE_URL;
+        const supabaseKey = env.TRADEFLOW_ENV === "production" ? env.LIVE_SUPABASE_KEY : env.TEST_SUPABASE_KEY;
+        const authResponse = await fetch(supabaseUrl + "/auth/v1/token?grant_type=password", {
+          method: "POST",
+          headers: { apikey: supabaseKey, "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          cache: "no-store",
+        });
+        const authText = await authResponse.text();
+        let authBody = null;
+        try { authBody = authText ? JSON.parse(authText) : null; } catch {}
+        if (!authResponse.ok || !authBody?.access_token) {
+          return Response.json({ error: authBody?.error_description || authBody?.message || "Sign in failed." }, { status: authResponse.status || 401 });
+        }
+        const membershipResponse = await fetch(supabaseUrl + "/rest/v1/rpc/subscriber_get_my_memberships", {
+          method: "POST",
+          headers: {
+            apikey: supabaseKey,
+            Authorization: "Bearer " + authBody.access_token,
+            "Content-Type": "application/json",
+          },
+          body: "{}",
+          cache: "no-store",
+        });
+        const membershipText = await membershipResponse.text();
+        let memberships = [];
+        try { memberships = membershipText ? JSON.parse(membershipText) : []; } catch {}
+        if (!membershipResponse.ok || !Array.isArray(memberships) || memberships.length === 0) {
+          return Response.json({ error: "Your account was verified, but no active TradeFlow business could be found." }, { status: 403 });
+        }
+        return Response.json({ ...authBody, memberships }, { headers: { "Cache-Control": "no-store" } });
+      } catch (error) {
+        return Response.json({ error: error?.message || "Subscriber sign in failed." }, { status: 500 });
+      }
+    }
     if (url.pathname === "/subscriber-runtime-config.js") {
       const isTest = env.TRADEFLOW_ENV !== "production";
       const supabaseUrl = isTest ? env.TEST_SUPABASE_URL : env.LIVE_SUPABASE_URL;

@@ -1282,13 +1282,7 @@ Retail order cancellation:
 - Do not expose customer cancellation for paid, fulfilment, completed, refunded, or already-cancelled orders.
 
 
-## 24 September 2026 — Parcel2Go shipping integration standard
-
-Use Parcel2Go as TradeFlow's single integrated multi-carrier provider. Do not reintroduce separate Royal Mail, Evri, Yodel, DPD, DHL, UPS or FedEx credential setup unless the architecture is explicitly changed and checkpointed.
-
-For each tenant, the normal setup is:
-1. Subscriber enters Parcel2Go Client ID and Client Secret in Shipping Settings.
-2. TradeFlow stores the secret in Supabase Vault through the tenant-authorized connection RPC.
+zed connection RPC.
 3. TradeFlow tests OAuth server-side through the shipping-provider-test Edge Function.
 4. Successful authentication changes the tenant connection to connected.
 5. Buying uses the connected Parcel2Go account as the integrated shipping connection.
@@ -1314,11 +1308,6 @@ Customer acceptance selects one initial option. The other published initial/revi
 ## Initial offer workflow clarification — 24 September 2026
 
 The customer must see the cash and trade-in choices together as one offer. Do not create two simultaneous published initial offer records for the two choices. Use the single offer record linked to the valuation; the customer acceptance choice is `cash` or `trade_in`, and the accepted amount is recorded on that offer.
-
-
-## 24 September 2026 — Integrated Parcel2Go shipping implementation
-
-The subscriber Buying dashboard now owns the Parcel2Go shipping handoff UI directly. The flow is: accepted initial offer → enter parcel dimensions → request Parcel2Go quotes → select a courier service → explicitly create the shipment → complete payment in Parcel2Go. The new parcel2go-subscriber-shipping Edge Function keeps provider credentials server-side, validates buying.manage permission, reads the subscriber's connected Parcel2Go connection, uses the customer's delivery address and subscriber collection address, and stores the resulting shipping order/payment/tracking/label references against buying_item_shipping. Manual shipping remains the fallback. Do not claim the integrated quote/order flow is browser-verified until it has been exercised with a real customer delivery address and Parcel2Go test/live account.
 
 
 ## 24 September 2026 — Customer delivery-address diagnostic fix
@@ -1797,38 +1786,12 @@ TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_war
 TradeFlow browser code now selects its Supabase environment by host: localhost/127.0.0.1 and GitHub Pages resolve to TEST; production hosts resolve to TradeFlow Live. Customer/subscriber authentication also rewrites legacy hardcoded TEST Supabase request URLs in dependent browser code so production requests cannot silently remain on TEST. The browser uses only Supabase publishable keys; no service-role or secret key is placed in frontend code. The production PR remains unmerged until the intended production hostname, Auth redirects, Stripe, Resend, hosting configuration and production smoke tests are verified. See CHECKPOINTS/2026-10-01-test-live-frontend-environment-separation.md.
 
 
-## 2026-10-01 — ResellerClub registrar integration checkpoint
-
-The registrar decision is now **ResellerClub**. Previous GoDaddy investigation is abandoned and must not be resumed. The existing TradeFlow domain foundation is provider-neutral and remains authoritative: `domain_tld_catalog`, `tenant_domain_orders`, `tenant_domains`, `published_site_index` and `tenant_site_state` are not to be deleted or rebuilt.
-
-ResellerClub's current REST Sandbox has been independently verified before TradeFlow integration. Sandbox Web Pro ID / X-User-Id `1347028` and the Sandbox API key were accepted. Country API returned 200, Domains/TLD Catalog returned 200, the documented `mybrand-test-12345.com` availability request returned 200/available, and a `.co.uk` availability request returned 200/unknown. `unknown` must remain distinct from `available`; it means the registry did not return a definitive availability result and should be retried later.
-
-The first TradeFlow integration is availability-only. A TEST Edge Function `resellerclub-domain-availability` has been deployed with JWT verification enabled. It accepts a tenant-scoped subscriber request, verifies active `tenant_memberships`, calls ResellerClub server-side, and returns `available`, `unavailable`, or `unknown`. ResellerClub credentials must never be placed in browser code.
-
-The working source branch is `resellerclub-domain-availability-20261001`. It contains the Edge Function source plus the initial subscriber domain-search page. The branch is not yet a production release. The normal purchase flow, customer pricing, Stripe payment, customer/contact creation, registration, DNS/hosting connection, renewal and failure/refund handling remain disabled until each stage is separately verified.
-
-TEST Edge Function secrets required: `RESELLERCLUB_API_KEY`, `RESELLERCLUB_X_USER_ID` (Sandbox value `1347028`) and `RESELLERCLUB_API_BASE_URL` (Sandbox `https://api.sandbox.resellerclub.com/v2`). The API key must be entered directly into Supabase Edge Function Secrets and must never be pasted into chat, GitHub or frontend code. Supabase documents project secrets as the correct place for Edge Function credentials.
-
-No LIVE Supabase project, `production` branch, Stripe production flow or real domain registration has been changed by this registrar work.
-
-
-## Domain registration workflow — 2026-10-02 TEST
-The domain purchase path is now split into controlled stages. Stripe payment completion moves `tenant_domain_orders` to `payment_confirmed`. The next stage captures legal registrant data in `tenant_domain_registrants` through the JWT-protected `save-domain-registrant` Edge Function and then moves the order to `registrant_details_saved`. Do not bypass this stage or call Porkbun registration directly from the browser. The next implementation stage is a server-side Porkbun sandbox dry run/registration using the stored registrant data, with idempotency and reconciliation into `tenant_domains`. LIVE is not to be modified until the complete TEST lifecycle is verified.
-
-
-## Domain registration integration — current TEST state (2026-10-02)
-- TEST provider: Porkbun sandbox API.
-- Stripe domain payment is proven through `create-domain-checkout-session` -> Stripe Checkout -> `stripe-payment-webhook` -> `payment_confirmed`.
-- Registrant data is stored in `tenant_domain_registrants` and protected by tenant membership/website permissions.
-- `save-domain-registrant` is JWT protected and advances the order to `registrant_details_saved`; update errors must be surfaced rather than ignored.
-- `porkbun-domain-registration-dry-run` is JWT protected. It checks TLD registration requirements and calls Porkbun `/domain/create/{domain}` with `dryRun:true` and a zero/current quoted cost. No registration or charge occurs during this step.
+zero/current quoted cost. No registration or charge occurs during this step.
 - Provider-specific finding: the current Porkbun create request schema does not carry arbitrary per-order registrant contacts. Porkbun exposes `/domain/updateContacts/{domain}` separately, and .uk/.co.uk contact changes may invoke address validation. Do not assume the saved TradeFlow registrant can be supplied directly to the create call. The sandbox must prove the safe sequence before LIVE registration is enabled.
 - LIVE is untouched.
 
 
 ---
-
-# DOMAIN REGISTRATION HANDOVER — 2026-10-02
 
 ## Verified current TEST state
 
@@ -1942,10 +1905,6 @@ Before changing code:
 8. Update this documentation/checkpoint before moving to the next stage.
 
 
-# 2026-10-02 — DOMAIN REGISTRATION CURRENT-STATE OVERRIDE
-
-This section is authoritative for the current domain-registration work and supersedes any earlier registrar-provider description in this manual.
-
 ## Current environment
 
 - TEST/STAGING GitHub branch: `main`
@@ -2004,52 +1963,11 @@ Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2G
 
 
 
-## 2026-10-02 Porkbun TEST registration checkpoint
-
-Do not touch LIVE. TEST order camerashack.co.uk is still registrant_details_saved; the saved registrant exists; no tenant_domains row exists yet; and the order metadata records porkbun_dry_run_would_succeed=true. The next action is the TEST UI button Register in TEST sandbox. The registration function is server-side and uses the saved registrant record, Porkbun sandbox credentials, idempotency, provider verification, and reconciliation before setting the order to registered.
-
-
-## 2026-10-02 Porkbun TEST repair
-
-Observed first sandbox attempt: registration succeeded, contact reconciliation failed with INVALID_INPUT because no existing admin contact was available to carry over. Do not re-register the domain. The provider order is already recorded as 9913828. Version 2 of the registration function reuses that sandbox registration and applies the TradeFlow registrant as the single Porkbun contact payload. The next test is to press Register in TEST sandbox again.
-
-
-## 2026-10-02 Porkbun TEST sandbox registration — operating checkpoint
-
-Registration is now a verified TEST stage: provider order 9913828 is reused, the order is registered, and an active tenant_domains row exists with acquisition source purchased and registrar provider porkbun. porkbun-domain-registration is TEST version 6.
-
-Do not treat contact synchronization as complete. The .co.uk sandbox path deliberately records contact_sync_deferred=true because immediate contact updates produced V096 and repeated registrant notifications. Also do not treat expiry capture as complete: database expires_at and porkbun_expire_date are currently null.
+zation as complete. The .co.uk sandbox path deliberately records contact_sync_deferred=true because immediate contact updates produced V096 and repeated registrant notifications. Also do not treat expiry capture as complete: database expires_at and porkbun_expire_date are currently null.
 
 Next work: resolve expiry capture/verification, then test the existing published_site_index hostname routing and provider-neutral website connection architecture. Do not rebuild it and do not touch LIVE.
 
 
-
-## 2026-10-02 — Current Porkbun TEST expiry-reconciliation rule
-
-When continuing the Porkbun domain-registration workflow, treat the existing sandbox registration as authoritative: provider order 9913828 is already registered for the TEST order. Never re-register it merely to recover missing expiry data.
-
-The current Edge Function is version 7. For an already-registered sandbox order it performs reconciliation only. It reads the Porkbun domain record and falls back to `/domain/listAll` when the direct lookup lacks `expireDate` or `createDate`. Persist only provider-returned expiry data; do not calculate or invent a date.
-
-Immediate verification target is the TEST order's two `expires_at` fields plus the Porkbun expiry metadata. After expiry is verified, continue with the existing provider-neutral domain connection and `published_site_index` routing. Do not rebuild the domain foundation and do not touch LIVE.
-
-
-## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
-
-The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
-
-- Provider order: `9913828`.
-- TradeFlow order status: `registered`.
-- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
-- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
-- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
-- Provider expiry metadata is populated.
-- No second sandbox registration was created during reconciliation.
-
-The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
-
-Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
-
-**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
 
 ## 2026-10-02 — Chatbot continuity and pre-launch domain sequence
 

@@ -31,6 +31,14 @@ export default {
       ? new Request(new URL(assetPath + url.search, url.origin), request)
       : request;
     const assetFetchRequest = new Request(assetRequest, { cache: "no-store" });
+    if (url.pathname === "/subscriber-runtime-config.js") {
+      const isTest = env.TRADEFLOW_ENV !== "production";
+      const supabaseUrl = isTest ? env.TEST_SUPABASE_URL : env.LIVE_SUPABASE_URL;
+      const supabaseKey = isTest ? env.TEST_SUPABASE_KEY : env.LIVE_SUPABASE_KEY;
+      return new Response(`window.TRADEFLOW_CONFIG={environment:${JSON.stringify(isTest ? "test" : "production")},supabaseUrl:${JSON.stringify(supabaseUrl)},supabasePublishableKey:${JSON.stringify(supabaseKey)}};`, {
+        headers: { "content-type": "application/javascript; charset=UTF-8", "cache-control": "no-store" },
+      });
+    }
     const asset = await env.ASSETS.fetch(assetFetchRequest);
 
     if (!assetPath && url.pathname === "/platform-owner-dashboard.html") {

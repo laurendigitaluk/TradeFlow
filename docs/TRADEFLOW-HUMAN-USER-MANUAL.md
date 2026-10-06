@@ -398,10 +398,6 @@ TradeFlow does not handle customer shipping payments or shipping expenses. For i
 
 The shipping handoff is an information and workflow facility only. It may contain a subscriber-provided label, URL, QR code, courier/service details, tracking information and instructions. The subscriber can use its own shipping arrangement or the future Voila route. The financial responsibility for shipping remains outside TradeFlow's transaction and accounting model.
 
-## Connected Parcel2Go shipping
-After an offer is accepted, a subscriber can use a connected Parcel2Go account instead of manually supplying a label. The subscriber's connected shipping service is used to arrange the shipment; the customer does not arrange or pay the shipping through TradeFlow. The £ offer remains separate from shipping. Manual label and QR handoff remains available as an override.
-
-
 ### Shipping handoff and customer confirmation
 
 Shipping settings are business-wide and are shared by Buying/acquisitions and the Retail Shop sales/fulfilment workflow. Configure shipping providers once under Settings → Shipping services.
@@ -947,26 +943,6 @@ Closed test-only selling requests are also excluded from the active selling-requ
 In **My Orders**, customers can cancel their own retail order while it is still `initiated` or `pending_payment`. Paid, fulfilment, completed, refunded or otherwise progressed orders cannot be cancelled through this customer action.
 
 
-### Parcel2Go shipping connection — 24 September 2026
-
-Subscribers only need one integrated shipping connection in TradeFlow: Parcel2Go.
-
-To connect it:
-1. Go to Shipping Settings.
-2. Enter your Parcel2Go API Client ID.
-3. Enter your Parcel2Go API Client Secret.
-4. Choose Live / production for your real Parcel2Go account, or Sandbox when deliberately testing with separate sandbox credentials.
-5. Select Save and test connection.
-
-TradeFlow securely stores the Client Secret and tests the connection for you. When the test succeeds, Shipping Settings shows Connected and the Buying workflow can use Parcel2Go for integrated shipping.
-
-You do not need to enter Royal Mail, Evri, Yodel, DPD or other courier credentials separately. Parcel2Go provides the available courier/service choices through its own shipping network.
-
-The connection test only verifies authentication. It does not create or purchase a shipment. Parcel2Go's API supports quoting, booking, labels and tracking as separate steps. citeturn2view0turn3view0
-
-The Client Secret should never be shared with TradeFlow support or entered into chat; enter it directly into Shipping Settings.
-
-
 ## Initial offers: cash and trade-in
 
 The Buying dashboard now has one **Offer** stage for manual initial offers. It contains:
@@ -984,11 +960,6 @@ The **final offer is not created when the customer accepts the initial offer**. 
 ## Shipping state after initial acceptance — 24 September 2026
 
 After the customer accepts the initial cash or trade-in option, the item moves into the receipt workflow. If the subscriber has not yet created a shipping label or QR code, the customer portal must show **Shipping label required — not ready to send**. Only after the label/QR or equivalent shipping handoff is actually available should the portal show **Shipping instructions sent — ready to send**.
-
-
-## ## Parcel2Go integrated shipping — 24 September 2026
-
-When a customer accepts the initial offer, the Buying request now presents an **Integrated shipping — Parcel2Go** section. Enter the parcel weight and dimensions, choose **GET PARCEL2GO QUOTES**, compare the available courier services, then select the service you want and create the shipment. The shipment is created against the subscriber's connected Parcel2Go account; TradeFlow does not take the shipping payment. The subscriber must complete the Parcel2Go payment step before the customer is told that the item is ready to send. A customer delivery address is required for the integrated quote. A **Manual shipping fallback** remains available for a manually supplied label or QR code. The integrated quote/order workflow is currently implemented but still requires browser verification before being treated as fully verified.
 
 
 ## Test Two — Current Shipping Workflow State (25 September 2026)
@@ -1418,48 +1389,6 @@ The TEST Supabase database has been captured successfully as a clean local basel
 - No TEST schema/data reset or LIVE/production change was performed during repository reconciliation.
 - Before future schema deployment, verify local/remote migration status and use a dry run; never use `db reset --linked` on LIVE.
 
-
-## 2026-10-01 — Buying a new domain: ResellerClub availability stage
-
-TradeFlow is now being connected to **ResellerClub** for domain purchasing. GoDaddy is no longer the planned registrar and must not be used for the TradeFlow domain workflow.
-
-Subscriber domain settings now provide a **Buy a new domain** entry point. The first stage is an availability search only. Enter the domain name without its TLD, then TradeFlow checks the initial supported options `.co.uk`, `.com` and `.uk` through the TEST ResellerClub service.
-
-The search can return three states:
-- **Available** — the provider reports that the ## Website domains — current subscriber workflow
-
-TradeFlow uses **subscriber-owned domains only**.
-
-Buy and manage your domain with the registrar of your choice. TradeFlow does not purchase, renew or pay for your domain and never asks for your registrar password.
-
-To connect your domain:
-
-1. Open **Website → Website URL**.
-2. Enter the domain you already own, for example `www.example.co.uk`.
-3. TradeFlow sends the connection request to the Platform Owner.
-4. The Platform Owner prepares the connection and provides the exact DNS instructions.
-5. Apply those instructions at your registrar.
-6. TradeFlow verifies DNS, secure HTTPS/SSL and website routing.
-7. The domain becomes active only after verification.
-
-Until the checks are complete, the domain remains pending.
-
-s.
-- Must not have unrestricted SQL/database access.
-
-Examples already agreed include: adding a logo, creating a listing, changing shipping services, buying a domain, understanding “Shipping Required”, understanding what happens after an item is received, and publishing a website.
-
-**Phase 2 — Customer read-only assistant**
-- Explain the customer's own item/order status and next steps.
-- Explain shipping, returns, orders and other customer-facing workflow states.
-- Customer data must remain tenant-scoped.
-
-**Phase 3 — Messaging/enquiries**
-- Controlled communication workflows.
-
-**Phase 4 — Controlled actions**
-- Only after the read-only phases are proven.
-- Any action must have explicit permissions, tenant scoping and auditability.
 
 ### Chatbot security boundary
 

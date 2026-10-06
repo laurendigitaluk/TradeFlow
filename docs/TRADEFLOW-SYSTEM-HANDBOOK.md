@@ -1074,25 +1074,6 @@ Do not describe an item as browser verified when only GitHub or database verific
 
 
 
-## 24 September 2026 — Parcel2Go subscriber shipping connection
-
-TradeFlow uses Parcel2Go as the single integrated multi-carrier shipping provider. Subscribers do not configure individual courier credentials in TradeFlow.
-
-Subscriber setup:
-- Open Shipping Settings.
-- Enter the subscriber's Parcel2Go API Client ID and API Client Secret.
-- Select the appropriate Parcel2Go environment (Live for the subscriber's production account; Sandbox only when using separate sandbox credentials).
-- Select Save and test connection.
-- TradeFlow stores the secret in Supabase Vault and performs the Parcel2Go OAuth client-credentials test server-side.
-- A successful test marks the tenant's Parcel2Go connection connected.
-
-The browser never receives the stored Client Secret. The Buying workflow treats a connected Parcel2Go account as the integrated shipping connection; the subscriber does not select or maintain separate direct-carrier integrations in TradeFlow.
-
-The connection test does not create, purchase or pay for a shipment. Parcel2Go's API supports live quoting, order creation, payment, labels and tracking; these remain separate operational stages and must not be conflated with credential testing. citeturn2view0turn3view0
-
-Current verification: the Camerashack test subscriber successfully authenticated against Parcel2Go Live in the browser on 24 September 2026. No shipment was created.
-
-
 ## Initial offer workflow — 24 September 2026
 
 TradeFlow now treats the initial customer offer as one workflow with two possible manual values: **Manual offer — Cash** and **Manual offer — Trade-in**. A manual initial offer may publish one or both values, and the customer can choose which published option to accept. Each option is stored as an offer with an explicit `offer_mode` of `cash` or `trade_in`.
@@ -1105,11 +1086,6 @@ When the customer accepts one initial option, the selected cash/trade-in mode an
 ## Initial offer workflow clarification — 24 September 2026
 
 Each manual initial offer is represented by one published `offers` record linked to one approved `trading_values` record. The linked valuation holds both `cash_price` and `trade_in_price`; the customer chooses one option from the same offer. The selected `offer_mode` and accepted `amount` are recorded on that offer. There is no second published initial offer record for the other choice.
-
-
-## 24 September 2026 — Parcel2Go integrated pre-acquisition shipping UI
-
-The Buying dashboard now exposes the connected Parcel2Go workflow directly in the shipping handoff. When an initial offer is accepted, the subscriber can enter parcel weight and dimensions, request live Parcel2Go courier quotes, compare returned services, and explicitly create a selected shipment. Shipment creation is performed server-side by the parcel2go-subscriber-shipping Edge Function; the subscriber's connected Parcel2Go account remains responsible for shipping payment. Manual label/QR shipping remains available as a fallback. The obsolete shipping-label-selector.js helper has been removed. This is Implemented in GitHub; live browser verification of the quote/order flow remains pending.
 
 
 ## 24 September 2026 — Customer delivery-address type correction
@@ -1463,8 +1439,6 @@ TradeFlow browser code now selects its Supabase environment by host: localhost/1
 
 ---
 
-# DOMAIN REGISTRATION HANDOVER — 2026-10-02
-
 ## Verified current TEST state
 
 TradeFlow's domain-purchase flow has now reached the end of the payment and registrant-information stages in TEST/STAGING.
@@ -1577,10 +1551,6 @@ Before changing code:
 8. Update this documentation/checkpoint before moving to the next stage.
 
 
-# 2026-10-02 — DOMAIN REGISTRATION CURRENT-STATE OVERRIDE
-
-This section is authoritative for the current domain-registration work and supersedes any earlier registrar-provider description in this manual.
-
 ## Current environment
 
 - TEST/STAGING GitHub branch: `main`
@@ -1638,55 +1608,6 @@ Work in this exact order:
 Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
 
 
-
-## 2026-10-02 Porkbun TEST registration implementation
-
-The paid TEST order for camerashack.co.uk remains at registrant_details_saved with a successful Porkbun dry-run result. The dry-run implementation is now tracked in GitHub and deployed to TEST. A separate JWT-protected porkbun-domain-registration Edge Function is deployed to TEST but has not yet been invoked for sandbox registration. It loads the saved tenant_domain_registrants record server-side, uses the Porkbun sandbox, applies the saved registrant through Porkbun's contact-update API, verifies the domain, and reconciles into tenant_domains. LIVE remains untouched.
-
-Porkbun exposes a provider orderId rather than a separate domain identifier in the registration response. TradeFlow therefore records that value as provider_order_id and leaves provider_domain_id null rather than inventing an identifier.
-
-
-## 2026-10-02 Porkbun TEST contact-reconciliation repair
-
-The first TEST sandbox registration succeeded and returned Porkbun provider order 9913828. Reconciliation then failed because the initial updateContacts payload supplied only a registrant role and the sandbox had no existing admin contact to carry over. Porkbun documents that a single contact payload applies the supplied contact to all four contact roles. The registration function was corrected to use the single contact form, to reuse an already-created sandbox registration instead of registering again, and to allow a failed order with a recorded sandbox provider order to retry contact reconciliation. TEST Edge Function porkbun-domain-registration is now version 2. GitHub commit 685b1137de27e47e1a9278c3db38e98474aa754a. No LIVE change was made.
-
-
-## 2026-10-02 Porkbun TEST sandbox registration — verified
-
-The paid TEST order has now completed isolated Porkbun sandbox registration using existing provider order 9913828. The registration function reuses the existing sandbox order and reconciles the domain into tenant_domains. TEST Edge Function porkbun-domain-registration is version 6. The reconciled domain is active, uses acquisition source purchased, and records Porkbun as the registrar provider. Contact synchronisation is explicitly deferred for the .co.uk sandbox path because immediate registry contact writes produced V096; this is a separate verification stage.
-
-Database verification also found that the SQL expires_at fields and porkbun_expire_date metadata are currently null despite the browser reporting an expiry. Expiry capture therefore remains an open verification item and must not be documented as complete until the provider response and database values agree.
-
-
-
-## 2026-10-02 — Porkbun TEST expiry reconciliation checkpoint
-
-The current TEST Porkbun sandbox registration for `camerashack.co.uk` is already registered under provider order `9913828`. The order is `registered` and an active `tenant_domains` row exists. Contact synchronisation is deliberately deferred for the isolated .co.uk sandbox path because immediate contact writes produced V096.
-
-Expiry persistence remains a separate verification item. The current implementation previously relied only on the immediate Porkbun domain lookup for `expireDate`, while Porkbun's documented domain inventory response also exposes `createDate` and `expireDate`. The registration function has therefore been repaired to fall back to `/domain/listAll` when the direct lookup lacks those fields. No expiry is calculated or fabricated.
-
-TEST Edge Function `porkbun-domain-registration` is now version 7. The registered-state path is reconciliation-only when an existing Porkbun sandbox provider order is present; it cannot create a second registration. The TEST registrant page now exposes **Refresh provider registration details** for the already-registered order.
-
-Before website/domain routing work begins, verify the provider expiry and both TradeFlow expiry fields in TEST. LIVE remains untouched.
-
-
-## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
-
-The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
-
-- Provider order: `9913828`.
-- TradeFlow order status: `registered`.
-- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
-- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
-- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
-- Provider expiry metadata is populated.
-- No second sandbox registration was created during reconciliation.
-
-The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
-
-Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
-
-**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
 
 ## 2026-10-02 — Chatbot and domain launch continuity
 

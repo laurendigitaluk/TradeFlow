@@ -58,45 +58,9 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadDomainActions();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadDomainPricing();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
-}
-
-async function loadDomainActions(){
- const error=$('domain-actions-error'),host=$('domain-actions-list'),count=$('domain-action-count');
- if(!host)return;
- error.textContent='';host.innerHTML='<p class="muted">Loading domain actions…</p>';
- try{
-  const rows=await request('/rest/v1/rpc/platform_owner_list_domain_actions',{method:'POST',body:'{}'});
-  const actions=Array.isArray(rows)?rows:[];
-  if(count)count.textContent=actions.length;
-  if(!actions.length){host.innerHTML='<p class="muted">No open domain connection actions.</p>';return}
-  host.innerHTML=actions.map(renderDomainAction).join('');
-  host.querySelectorAll('[data-domain-action]').forEach(form=>form.onsubmit=saveDomainAction);
- }catch(e){error.textContent=e.message||String(e);host.innerHTML='<p class="muted">Unable to load domain actions.</p>'}
-}
-function renderDomainAction(a){
- return '<article class="domain-action-card"><div class="domain-action-head"><div><div class="eyebrow">'+escapeHtml(a.action_status)+'</div><h3>'+escapeHtml(a.business_name||'Business')+'</h3><strong>'+escapeHtml(a.hostname)+'</strong><p class="muted">'+escapeHtml(a.message||'')+'</p></div><span class="domain-status">'+escapeHtml(a.domain_status||'pending')+'</span></div>'+
- '<div class="domain-action-meta">Requested '+formatDate(a.created_at)+' · Domain ID '+escapeHtml(a.domain_id)+'</div>'+
- '<form data-domain-action data-id="'+escapeAttr(a.action_id)+'"><div class="domain-action-fields">'+
- '<label>Status<select name="status"><option value="open" '+(a.action_status==='open'?'selected':'')+'>Open</option><option value="in_progress" '+(a.action_status==='in_progress'?'selected':'')+'>In progress</option><option value="awaiting_customer" '+(a.action_status==='awaiting_customer'?'selected':'')+'>Awaiting customer DNS</option><option value="failed" '+(a.action_status==='failed'?'selected':'')+'>Failed / needs correction</option></select></label>'+
- '<label>Owner notes<textarea name="notes" rows="3" placeholder="Record what was checked or what the subscriber must correct.">'+escapeHtml(a.owner_notes||'')+'</textarea></label></div>'+
- '<div class="dns-editor"><strong>Exact DNS instructions</strong><p class="muted">Only enter records approved by the actual hosting/Cloudflare configuration. Do not invent a target.</p>'+
- '<div class="dns-record-editor"><input name="rtype" placeholder="Type (A/CNAME)"><input name="rname" placeholder="Name / host"><input name="rtarget" placeholder="Exact target"><input name="rttl" placeholder="TTL (e.g. Auto)"></div>'+
- '<div class="domain-action-foot"><span class="domain-action-status" aria-live="polite"></span><button type="submit">Save action</button></div></form></article>';
-}
-async function saveDomainAction(e){
- e.preventDefault();const form=e.currentTarget,status=form.querySelector('.domain-action-status'),button=form.querySelector('button[type="submit"]'),data=new FormData(form);
- button.disabled=true;status.textContent='Saving…';
- const type=String(data.get('rtype')||'').trim().toUpperCase(),name=String(data.get('rname')||'').trim(),target=String(data.get('rtarget')||'').trim(),ttl=String(data.get('rttl')||'Auto').trim();
- if((type||name||target)&&(!type||!name||!target)){status.textContent='Complete the DNS record fields or leave them all blank.';button.disabled=false;return}
- try{
-  const records=type?[{type,name,target,ttl}]:[];
-  await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:form.dataset.id,p_status:String(data.get('status')),p_dns_instructions:{records},p_owner_notes:String(data.get('notes')||'')})});
-  status.textContent='Saved.';await loadDomainActions();
- }catch(err){status.textContent=err.message||String(err)}
- finally{button.disabled=false}
 }
 
 async function loadDomainPricing(){
@@ -195,12 +159,12 @@ function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;$('refresh-domain-actions').onclick=loadDomainActions;
+$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('domain-pricing-form').onsubmit=saveDomainPricing;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions()}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail()}
   catch(e){showAuth('')}
 })();

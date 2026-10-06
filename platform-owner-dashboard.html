@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TradeFlow Owner Dashboard</title>
-<link rel="stylesheet" href="platform-owner-dashboard.css?v=5">
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=4">
 </head>
 <body>
 <header class="topbar">
@@ -17,7 +17,6 @@
     <nav>
       <a class="active" href="#overview">Overview</a>
       <a href="#businesses">Subscriber businesses</a>
-      <a href="#domain-actions">Domain connections <span id="domain-action-count" class="nav-count">0</span></a>
       <a href="#plans">Plans</a>
       <a href="#settings">Platform settings</a>
     </nav>
@@ -33,14 +32,7 @@
       <article><span>TradeFlow plan</span><strong id="tradeflow-count">—</strong></article>
     </section>
 
-    <section id="domain-actions" class="panel">
-<div class="panel-head"><div><div class="eyebrow">Customer-owned domains</div><h2>Domain connection actions</h2></div><button id="refresh-domain-actions" type="button">Refresh</button></div>
-<p class="muted">Review subscriber requests, prepare the approved hosting connection, and give the subscriber exact DNS instructions. Do not mark a domain complete until DNS, SSL and tenant routing have actually been verified.</p>
-<div id="domain-actions-error" class="error" role="alert"></div>
-<div id="domain-actions-list" class="domain-actions-list"><p class="muted">Loading domain actions…</p></div>
-</section>
-
-<section id="businesses" class="panel">
+    <section id="businesses" class="panel">
       <div class="panel-head"><div><div class="eyebrow">Tenants</div><h2>Subscriber businesses</h2></div><button id="refresh" type="button">Refresh</button></div>
       <p class="muted">This view shows real subscriber businesses only. Development and security test tenants are kept out of the commercial subscriber list.</p>
       <div id="error" class="error" role="alert"></div><div id="action-message" class="action-message" role="status"></div>
@@ -115,6 +107,6 @@
     </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=6" defer></script>
+<script src="platform-owner-dashboard.js?v=5" defer></script>
 </body>
 </html>

@@ -439,6 +439,137 @@ For example, changing a public website button does not itself purchase an item, 
 
 The separate `subscriber-website-manual.html` explains the website-building controls. This backend manual explains what happens after those public-site journeys enter TradeFlow.
 
+
+## 22A. Customer-owned domain connection — Platform Owner procedure
+
+The approved domain model is now:
+
+**Subscriber buys and owns the domain → subscriber submits the domain in TradeFlow → Platform Owner receives an action request → Platform Owner prepares the connection → subscriber applies the supplied DNS records → TradeFlow verifies DNS/SSL → domain becomes active.**
+
+TradeFlow does **not** purchase the subscriber's domain and does not require the subscriber's registrar password.
+
+### 1. Receive the request
+
+When a subscriber enters a domain under **Website → Website URL** and saves it, TradeFlow must create a domain-connection request for the Platform Owner.
+
+The request should contain, at minimum:
+
+- subscriber business name;
+- tenant ID internally;
+- domain hostname;
+- domain record ID;
+- date/time requested;
+- current domain status;
+- requested action.
+
+The Platform Owner notification should be clearly marked:
+
+**DOMAIN CONNECTION REQUIRED**
+
+The notification is an internal owner action and must never expose another tenant's information.
+
+### 2. Review the domain
+
+Open the domain request and confirm:
+
+1. The subscriber/business is the correct tenant.
+2. The hostname is correctly entered.
+3. The domain is intended to be the subscriber's primary website address.
+4. There is no conflicting active domain already using the requested hostname.
+5. The request is not a duplicate of an existing open domain request.
+
+Do not ask the subscriber for their registrar password.
+
+### 3. Prepare the TradeFlow connection
+
+The Platform Owner prepares the custom-domain connection using the approved TradeFlow/Cloudflare hosting architecture.
+
+**Do not invent DNS targets.**
+
+Do **not** tell the subscriber to change nameservers unless the actual hosting architecture requires it.
+
+The exact DNS records supplied to the subscriber must come from the current TradeFlow connection service/configuration.
+
+Update the request to indicate that owner action is in progress.
+
+### 4. Give the subscriber the DNS instructions
+
+The subscriber should receive concise instructions containing:
+
+- hostname/type of each required DNS record;
+- exact target/value;
+- whether an existing record must be replaced;
+- any TTL guidance if applicable;
+- the registrar/DNS management area they need to open;
+- a warning not to change unrelated email records.
+
+The Platform Owner must not request registrar credentials.
+
+### 5. Verify DNS
+
+After the subscriber has made the DNS changes:
+
+1. Check the expected DNS record.
+2. Confirm that the record resolves to the approved TradeFlow/Cloudflare target.
+3. Confirm that the hostname belongs to the requesting tenant.
+4. Continue to secure-hostname/SSL verification.
+
+DNS propagation can take time. Do not mark the domain active merely because the subscriber says the record was added.
+
+### 6. Verify SSL and activate
+
+Once the custom hostname is accepted by the hosting/Cloudflare layer:
+
+1. Confirm the secure hostname is provisioned.
+2. Confirm HTTPS works.
+3. Confirm the hostname routes to the correct tenant's published website.
+4. Confirm the published site is the correct subscriber website.
+5. Mark the domain active.
+6. Set it as the tenant's primary domain where that was the requested action.
+7. Record the activation timestamp.
+
+The final verification must prove tenant routing. A domain resolving to a generic TradeFlow page is not sufficient.
+
+### 7. Completion
+
+The owner action is complete only when:
+
+- DNS is verified;
+- SSL/HTTPS is verified;
+- the correct subscriber website loads on the custom hostname;
+- the domain record is active;
+- the primary-domain setting is correct;
+- the outstanding owner notification/action is closed.
+
+### 8. Failure handling
+
+If DNS or SSL verification fails:
+
+- keep the domain in its current non-active status;
+- record the actual failure;
+- do not mark the domain active manually;
+- tell the subscriber exactly what needs correcting;
+- allow the owner action to remain open until the problem is resolved.
+
+Do not delete and recreate the domain record simply to clear an error.
+
+### 9. Domain ownership and renewal
+
+The subscriber owns the registrar account and the domain.
+
+TradeFlow is responsible for the website connection, not the subscriber's registrar account.
+
+The subscriber remains responsible for:
+
+- registrar renewal;
+- registrar billing;
+- registrar account security;
+- accurate registrant/contact details;
+- any registrar-specific domain verification.
+
+TradeFlow must not imply that a domain purchased by the subscriber is registered to Lauren Digital.
+
+
 ## 23. Security and permissions
 
 Security is enforced at several layers:

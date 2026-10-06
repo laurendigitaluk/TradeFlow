@@ -1432,48 +1432,15 @@ The database lookup index on inventory serials is intentionally non-unique. This
 
 TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_warning. Selling cache: selling-dashboard-fixed.js?v=69. Browser verification must deliberately test a duplicate serial and confirm warning → explicit continuation → successful save.
 
-## 2026-10-01 — TEST/LIVE frontend environment separation
+## 2026-10-06 — Current environment and domain boundary
 
-TradeFlow browser code now selects its Supabase environment by host: localhost/127.0.0.1 and GitHub Pages resolve to TEST; production hosts resolve to TradeFlow Live. Customer/subscriber authentication also rewrites legacy hardcoded TEST Supabase request URLs in dependent browser code so production requests cannot silently remain on TEST. The browser uses only Supabase publishable keys; no service-role or secret key is placed in frontend code. The production PR remains unmerged until the intended production hostname, Auth redirects, Stripe, Resend, hosting configuration and production smoke tests are verified. See CHECKPOINTS/2026-10-01-test-live-frontend-environment-separation.md.
+The LIVE release branch is `production` and LIVE Supabase is `gxsrajtqzdjvmceqcpgv5`. The application path is GitHub → Cloudflare Worker → LIVE Supabase.
 
+The Website Builder publication workflow remains separate from application deployment and the 5 October standard Website Builder baseline is locked.
 
----
+Subscriber domains are customer-owned. TradeFlow no longer purchases, renews or registers subscriber domains. The current workflow is subscriber request → Platform Owner preparation → exact DNS → subscriber DNS change → DNS/SSL/routing verification → active.
 
-## Verified current TEST state
-
-TradeFlow's domain-purchase flow has now reached the end of the payment and registrant-information stages in TEST/STAGING.
-
-Environment:
-- GitHub TEST/STAGING branch: `main`
-- TEST Supabase project: `twfbmjwwqzxdxvclxbun`
-- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`
-- LIVE has not been changed during this domain-registration work.
-- Current tested registrar: Porkbun.
-- Porkbun TEST credentials are sandbox credentials. Real registrar registration must remain disabled until TEST is fully verified.
-
-Verified sequence:
-1. Subscriber searches for a domain.
-2. Porkbun availability is checked server-side.
-3. TradeFlow calculates the customer price in GBP using the stored USD→GBP FX rate and platform markup.
-4. Subscriber chooses an available domain.
-5. TradeFlow creates a domain order and Stripe Checkout session.
-6. Stripe TEST payment was successfully completed for `camerashack.co.uk` at £5.27 GBP.
-7. Stripe webhook changed the domain order to `payment_confirmed`.
-8. Subscriber was returned to the domain registrant page.
-9. Registrant information was submitted and saved.
-10. The order is now `registrant_details_saved`.
-11. The TEST UI provides the next controlled step: Porkbun sandbox validation. The sandbox validation has been shown as passed in the UI.
-
-Current test order:
-- hostname: `camerashack.co.uk`
-- retail amount: £5.27 GBP
-- status: `registrant_details_saved`
-- Stripe Checkout/payment reference is stored.
-- A linked `tenant_domain_registrants` record exists.
-
-## Retired domain-registration history removed from the system handbook
-
-The former TradeFlow/Porkbun subscriber domain-purchase and registrant-registration workflow is retired. Historical implementation detail remains in dated checkpoints under `CHECKPOINTS/` rather than the current system handbook.
+The old TradeFlow/Porkbun subscriber domain-purchase and registrant workflow is retired. Historical implementation detail remains in checkpoints, not in the current operating handbook.
 
 ## 2026-10-02 — Chatbot and domain launch continuity
 

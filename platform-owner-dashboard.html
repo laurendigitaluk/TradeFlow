@@ -59,11 +59,11 @@
 </section>
 
 <section id="plans" class="panel">
-      <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>Plans</h2></div><div><button id="setup-stripe" type="button">Set up Stripe billing</button> <button id="refresh-plans" type="button">Refresh plans</button></div></div>
+      <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>TradeFlow plan</h2></div></div>
       <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
       <div id="plans-error" class="error" role="alert"></div><div id="stripe-setup-status" class="action-message" role="status"></div>
       <div id="plan-admin-list" class="plan-admin-list"><p class="muted">Loading plans…</p></div>
-      <p class="note">Stripe IDs identify the Product and recurring Prices used for subscriber billing. Use “Create Stripe billing” once to create the LIVE Product and monthly Price from the saved TradeFlow price. This screen does not store a Stripe secret key.</p>
+      <p class="note">Stripe Product and Price IDs are already configured for LIVE subscriber billing. This dashboard only manages the saved TradeFlow plan details; Stripe secret keys are never stored here.</p>
     </section>
 
     <section id="email-settings" class="panel">
@@ -123,6 +123,6 @@
     </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=9" defer></script>
+<script src="platform-owner-dashboard.js?v=10" defer></script>
 </body>
 </html>

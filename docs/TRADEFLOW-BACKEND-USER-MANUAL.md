@@ -472,6 +472,25 @@ Confirm the hostname serves the correct subscriber's published website and canno
 ### Phase 7 — Activate
 Only activate after DNS, SSL and tenant routing are all verified. The activation RPC enforces these three checks. Activation updates the tenant domain and published-site index for the tenant's current published revision.
 
+### Automatic Cloudflare connection preparation
+
+The Owner Dashboard uses the protected platform-prepare-custom-domain Edge Function for Phase 2. The Platform Owner does not manually create a Cloudflare custom hostname or invent DNS records.
+
+The Edge Function:
+1. validates the signed-in Platform Owner;
+2. loads the requested tenant/domain;
+3. checks Cloudflare for an existing custom hostname;
+4. creates the custom hostname if required;
+5. retrieves Cloudflare hostname/SSL validation information;
+6. stores the Cloudflare hostname ID, status, validation information and approved CNAME target in the domain-action metadata;
+7. advances the request to DNS ready.
+
+Required server-side configuration:
+- CLOUDFLARE_API_TOKEN
+- CLOUDFLARE_ZONE_ID
+- CLOUDFLARE_SAAS_CNAME_TARGET
+
+The Cloudflare API token must remain a Supabase Edge Function secret and must never be placed in browser JavaScript, HTML or GitHub. The token needs the Cloudflare permission required to create custom hostnames (SSL and Certificates Write). Cloudflare's custom-hostname API supplies the hostname and validation data; the customer then makes the required DNS change at their registrar.
 ### Owner Dashboard controls
 The Owner Dashboard records the phase progress in the domain-action metadata. The current workflow is owner-guided: the Cloudflare connection preparation itself must use the approved Cloudflare configuration and its actual DNS target; the dashboard must not invent or silently substitute infrastructure values.
 

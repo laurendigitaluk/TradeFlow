@@ -236,6 +236,6 @@ $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubm
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await loadDomainActions()}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadDomainPricing()])}
   catch(e){showAuth('')}
 })();

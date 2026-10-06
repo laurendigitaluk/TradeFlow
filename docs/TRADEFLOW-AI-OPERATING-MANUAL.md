@@ -1011,9 +1011,9 @@ Shipping for customer selling/acquisition requests is customer-paid and customer
 
 The existing `acquisitions.shipping_*` fields remain the authoritative handoff record. Automated Voila integration must preserve this boundary: it may obtain/generate the operational label and tracking information through the configured courier connection, but it must not create a TradeFlow shipping payment or expense ledger.
 
-## Connected shipping implementation
-Parcel2Go is the first automated shipping provider implementation. The subscriber-owned provider connection is stored securely, the customer can request a server-side quote, choose a service and receive Parcel2Go's payment/deeplink. Shipping money never passes through TradeFlow. Future work must add signed Parcel2Go webhooks, post-payment label retrieval and tracking synchronisation before describing the route as fully automated.
+## Current shipping architecture
 
+Manual subscriber-managed shipping is authoritative. Subscribers select services in **Settings → Shipping Settings**, use the provider outside TradeFlow, and return labels/QR/tracking/instructions to TradeFlow. Parcel2Go API/checkout/payment-link shipping is retired.
 
 ### Shipping state authority — 22 September 2026
 

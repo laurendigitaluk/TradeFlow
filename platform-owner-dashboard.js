@@ -109,7 +109,7 @@ async function loadDomainActions(){
       const id=btn.dataset.domainSave,status=root.querySelector('[data-domain-action="'+id+'"]').value;
       const dns=root.querySelector('[data-domain-dns="'+id+'"]').value,notes=root.querySelector('[data-domain-notes="'+id+'"]').value;
       const meta={dns_instructions:dns,dns_verified:root.querySelector('[data-domain-dns-ok="'+id+'"]').checked,ssl_verified:root.querySelector('[data-domain-ssl-ok="'+id+'"]').checked,routing_verified:root.querySelector('[data-domain-routing-ok="'+id+'"]').checked};
-      const out=root.querySelector('[data-domain-status="'+id+'']);btn.disabled=true;out.textContent='Saving…';
+      const out=root.querySelector('[data-domain-status="'+id+'"]');btn.disabled=true;out.textContent='Saving…';
       try{await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:status,p_notes:notes,p_metadata:meta})});out.textContent='Saved';await loadDomainActions()}catch(e){out.textContent=e.message||String(e)}finally{btn.disabled=false}
     });
   }catch(e){error.textContent=e.message||String(e);root.innerHTML=''}

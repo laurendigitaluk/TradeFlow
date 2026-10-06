@@ -105,10 +105,12 @@ async function loadDomainActions(){
     {key:'customer_instructions_sent',title:'Step 3 — Give the customer the DNS instructions',text:'Give the customer the exact DNS record(s) they must add at their registrar. Never request their registrar password.',button:'Mark instructions issued'},
     {key:'dns_verified',title:'Step 4 — Verify DNS',text:'Wait for the customer to make the DNS change, then verify that the hostname resolves to the approved TradeFlow connection.',button:'DNS verified'},
     {key:'ssl_verified',title:'Step 5 — Verify SSL / HTTPS',text:'Confirm the customer hostname has a valid HTTPS connection before activation.',button:'SSL verified'},
-    {key:'routing_verified',title:'Step 6 — Verify tenant routing',text:'Confirm the hostname serves the correct subscriber website and cannot resolve to another tenant.',button:'Routing verified'}
+    {key:'routing_verified',title:'Step 6 — Verify tenant routing',text:'Confirm the hostname serves the correct subscriber website and cannot resolve to another tenant.',button:'Routing verified'},
+    {key:'activated',title:'Step 7 — Activate the domain',text:'Only activate after DNS, SSL and tenant routing have all been verified.',button:'Activate domain'}
   ];
 
   function phaseIndex(meta){
+    if(meta.activated)return 7;
     if(meta.routing_verified)return 6;
     if(meta.ssl_verified)return 5;
     if(meta.dns_verified)return 4;
@@ -137,7 +139,7 @@ async function loadDomainActions(){
       return '<article class="note" style="margin-top:12px;padding:18px">'+
         '<div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start">'+
           '<div><strong>'+escapeHtml(row.tenant_name||'Subscriber')+'</strong><div style="margin-top:4px"><strong>'+escapeHtml(row.hostname)+'</strong></div><div class="muted">Requested '+formatDate(row.created_at)+' · '+escapeHtml(statusLabel)+'</div></div>'+
-          '<span class="eyebrow">Phase '+Math.min(current+1,6)+' of 6</span>'+
+          '<span class="eyebrow">Phase '+Math.min(current+1,7)+' of 7</span>'+
         '</div>'+
         '<div style="margin-top:16px;display:grid;gap:10px">'+
           phases.map((p,i)=>{
@@ -174,9 +176,14 @@ async function loadDomainActions(){
         if(key==='dns_verified')meta.dns_verified=true;
         if(key==='ssl_verified')meta.ssl_verified=true;
         if(key==='routing_verified')meta.routing_verified=true;
+        if(key==='activated'){
+          if(m.dns_verified!==true || m.ssl_verified!==true || m.routing_verified!==true)throw Error('DNS, SSL and tenant routing must all be verified before activation.');
+          meta.activated=true;
+        }
         let actionStatus='requested';
         if(key==='connection_prepared'||key==='customer_instructions_sent')actionStatus='dns_ready';
         if(key==='dns_verified'||key==='ssl_verified'||key==='routing_verified')actionStatus='dns_ready';
+        if(key==='activated')actionStatus='active';
         await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:actionStatus,p_notes:notes,p_metadata:meta})});
         if(out)out.textContent='Saved';
         await loadDomainActions();

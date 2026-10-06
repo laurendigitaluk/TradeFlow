@@ -1781,94 +1781,15 @@ The database lookup index on inventory serials is intentionally non-unique. This
 
 TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_warning. Selling cache: selling-dashboard-fixed.js?v=69. Browser verification must deliberately test a duplicate serial and confirm warning → explicit continuation → successful save.
 
-## 2026-10-01 — TEST/LIVE frontend environment separation
+## 2026-10-06 — Current TEST/LIVE and domain boundary
 
-TradeFlow browser code now selects its Supabase environment by host: localhost/127.0.0.1 and GitHub Pages resolve to TEST; production hosts resolve to TradeFlow Live. Customer/subscriber authentication also rewrites legacy hardcoded TEST Supabase request URLs in dependent browser code so production requests cannot silently remain on TEST. The browser uses only Supabase publishable keys; no service-role or secret key is placed in frontend code. The production PR remains unmerged until the intended production hostname, Auth redirects, Stripe, Resend, hosting configuration and production smoke tests are verified. See CHECKPOINTS/2026-10-01-test-live-frontend-environment-separation.md.
+TradeFlow uses `production` as the LIVE release branch and the dedicated LIVE Supabase project `gxsrajtqzdjvmceqcpgv5`. Development/repair work must not silently change LIVE. Browser fixes are verified before promotion.
 
+The current production website architecture is stable and the Website Builder baseline is locked.
 
-zero/current quoted cost. No registration or charge occurs during this step.
-- Provider-specific finding: the current Porkbun create request schema does not carry arbitrary per-order registrant contacts. Porkbun exposes `/domain/updateContacts/{domain}` separately, and .uk/.co.uk contact changes may invoke address validation. Do not assume the saved TradeFlow registrant can be supplied directly to the create call. The sandbox must prove the safe sequence before LIVE registration is enabled.
-- LIVE is untouched.
+The old TradeFlow/Porkbun subscriber domain-purchase workflow is retired. Subscriber domains are customer-owned and are connected through the Website URL request → Platform Owner preparation → exact DNS instructions → DNS/SSL/routing verification → activation workflow.
 
-
----
-
-## Retired domain-registration history removed from the operating manual
-
-The former TradeFlow/Porkbun subscriber domain-purchase and registrant-registration workflow is retired. Detailed historical implementation notes remain available in the dated checkpoints under `CHECKPOINTS/`; they are deliberately not retained here as operating instructions.
-
-## 2026-10-02 — Chatbot continuity and pre-launch domain sequence
-
-The TradeFlow chatbot is a planned pre-launch component and must be completed and tested before the platform is declared ready for public launch.
-
-### Chatbot architecture already agreed
-
-**Phase 1 — Subscriber read-only assistant**
-- Answer how-to and system questions.
-- Primary knowledge source: the finalized Subscriber Website/User Manual plus approved TradeFlow documentation.
-- May use appropriate authenticated subscriber/tenant context where required to answer the subscriber's own questions.
-- Must not make arbitrary database changes.
-- Must not have unrestricted SQL/database access.
-
-Examples already agreed include: adding a logo, creating a listing, changing shipping services, buying a domain, understanding “Shipping Required”, understanding what happens after an item is received, and publishing a website.
-
-**Phase 2 — Customer read-only assistant**
-- Explain the customer's own item/order status and next steps.
-- Explain shipping, returns, orders and other customer-facing workflow states.
-- Customer data must remain tenant-scoped.
-
-**Phase 3 — Messaging/enquiries**
-- Controlled communication workflows.
-
-**Phase 4 — Controlled actions**
-- Only after the read-only phases are proven.
-- Any action must have explicit permissions, tenant scoping and auditability.
-
-### Chatbot security boundary
-
-The chatbot must never expose another tenant's customers, orders, inventory, valuations, payments, domains, business information or personal information.
-
-Safe architecture:
-
-Authenticated user → TradeFlow chatbot → verified tenant/user identity → explicitly allowed read-only data → approved documentation/manual knowledge.
-
-Not: chatbot → unrestricted database.
-
-### Chatbot documentation dependency
-
-The manuals must describe the actual current TradeFlow system before they become the chatbot's authoritative knowledge source. Historical sections may be retained for audit continuity but must not be treated as current instructions.
-
-### Agreed pre-launch order
-
-1. Complete and test the chatbot.
-2. Audit current GitHub, TEST Supabase, Cloudflare TEST and checkpoints.
-3. Choose the permanent Lauren Digital company domain.
-4. Purchase the genuine Lauren Digital domain.
-5. If required, purchase one inexpensive genuine test domain.
-6. Prove real public DNS → Cloudflare → TEST Worker → TEST Supabase → published subscriber website.
-7. Configure and verify the permanent Lauren Digital production domain separately.
-8. Promote only an approved tested release to Production.
-9. Complete final launch testing.
-
-### Real-domain testing boundary
-
-The Porkbun sandbox domain camerashack.co.uk is a simulated registration and cannot prove public DNS/Cloudflare routing. Do not force it through Cloudflare.
-
-A genuine registered test domain is required for the real DNS/Cloudflare test.
-
-### Current Cloudflare TEST state
-
-- Worker: tradeflow-test
-- Branch: cloudflare-test
-- Worker URL: https://tradeflow-test.leannelaurenlowe.workers.dev
-- Custom domains currently attached: none
-- TEST Supabase: twfbmjwwqzxdxvclxbun
-- LIVE must remain isolated.
-
-### Continuity rule
-
-After every material chatbot or domain change, update the Master Roadmap, System Handbook where appropriate, this AI Operating Manual, the relevant human/subscriber manuals and a checkpoint. Do not claim a feature is verified without browser/database evidence.
-
+The platform infrastructure domain `laurendigital.co.uk` has been purchased directly through Porkbun. Cloudflare is currently waiting for the new nameserver delegation to propagate; it is not yet an active production zone.
 
 ## 2026-10-02 — Subscriber AI rules, usage and cost architecture
 

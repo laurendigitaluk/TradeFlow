@@ -199,7 +199,7 @@ async function loadDomainActions(){
       const notes=root.querySelector('[data-domain-notes="'+id+'"]').value.trim();
       btn.disabled=true;if(out)out.textContent='Saving…';
       try{
-        await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:'requested',p_notes:notes,p_metadata:{dns_instructions:dns}})});
+        await request('/rest/v1/rpc/platform_owner_update_domain_action',{method:'POST',body:JSON.stringify({p_action_id:id,p_status:rows.find(r=>r.action_id===id)?.action_status||'requested',p_notes:notes,p_metadata:{dns_instructions:dns}})});
         if(out)out.textContent='Saved';await loadDomainActions();
       }catch(e){if(out)out.textContent=e.message||String(e);btn.disabled=false}
     });

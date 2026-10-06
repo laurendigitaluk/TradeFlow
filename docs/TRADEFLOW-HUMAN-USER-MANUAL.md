@@ -156,28 +156,23 @@ The code and database checkpoint are saved. Browser verification of the newest b
 Do not modify GearCashOut while working on this TradeFlow checkpoint.
 
 
-## Website domains and future domain purchasing — 19 September 2026
+## Website domains — current subscriber workflow
 
-TradeFlow can already store a custom website address against your business. The current **Website URL** area is for connecting a domain you already own.
+TradeFlow uses **subscriber-owned domains only**.
 
-A future TradeFlow domain service is now supported by the database design. The intended customer journey is:
+Buy and manage your domain with the registrar of your choice. TradeFlow does not purchase, renew or pay for your domain and never asks for your registrar password.
 
-1. Open **Website / Domain** in the business dashboard.
-2. Search for a domain name.
-3. See current availability and price.
-4. Choose the domain and registration period.
-5. Pay through TradeFlow.
-6. TradeFlow registers the domain through its domain provider.
-7. TradeFlow connects the domain to the customer's website and enables the required SSL/hosting routing.
-8. The domain appears in the business account with its registration and renewal information.
+To connect your domain:
 
-The database now records the information needed for purchased domains, including registration status, provider reference, purchase amount, expiry date and auto-renewal state.
+1. Open **Website → Website URL**.
+2. Enter the domain you already own, for example `www.example.co.uk`.
+3. TradeFlow sends the connection request to the Platform Owner.
+4. The Platform Owner prepares the connection and provides the exact DNS instructions.
+5. Apply those instructions at your registrar.
+6. TradeFlow verifies DNS, secure HTTPS/SSL and website routing.
+7. The domain becomes active only after verification.
 
-**Important:** the domain-purchase button/search/checkout and automatic DNS/hosting connection are not yet live. The current Website URL page only records a domain as pending for later connection.
-
-Domain availability and prices will be checked with the selected registrar at the time of purchase; the prices stored in TradeFlow's TLD catalogue are configuration/pricing data, not a promise of current availability.
-
-
+Until the checks are complete, the domain remains pending.
 
 
 ## Website Builder final refinement pass — 19 September 2026
@@ -1431,263 +1426,25 @@ TradeFlow is now being connected to **ResellerClub** for domain purchasing. GoDa
 Subscriber domain settings now provide a **Buy a new domain** entry point. The first stage is an availability search only. Enter the domain name without its TLD, then TradeFlow checks the initial supported options `.co.uk`, `.com` and `.uk` through the TEST ResellerClub service.
 
 The search can return three states:
-- **Available** — the provider reports that the domain can be registered.
-- **Unavailable** — the provider reports that the domain is not available.
-- **Availability check unavailable** — the provider did not return a definitive answer. This must not be treated as available; the search can be repeated later.
+- **Available** — the provider reports that the ## Website domains — current subscriber workflow
 
-No payment or registration is performed by this search page. Customer pricing, Stripe payment, registrant details, domain registration, DNS/hosting connection and renewal remain later stages and must not be represented as complete until separately tested.
+TradeFlow uses **subscriber-owned domains only**.
 
-The current implementation is on the TEST branch `resellerclub-domain-availability-20261001`. LIVE is unchanged.
+Buy and manage your domain with the registrar of your choice. TradeFlow does not purchase, renew or pay for your domain and never asks for your registrar password.
 
+To connect your domain:
 
-## Domain registration workflow update — 2026-10-02
-When a subscriber buys a domain, TradeFlow now follows this TEST sequence: domain availability/price check → Stripe Checkout → Stripe webhook confirmation → registrant details. The subscriber must provide the legal registrant name, address, country, email and telephone, confirm they are authorised to register the domain, and save the details before registrar registration is attempted. The current TEST implementation stores these details against the domain order in `tenant_domain_registrants`. Actual Porkbun registration is not yet triggered by the subscriber page.
+1. Open **Website → Website URL**.
+2. Enter the domain you already own, for example `www.example.co.uk`.
+3. TradeFlow sends the connection request to the Platform Owner.
+4. The Platform Owner prepares the connection and provides the exact DNS instructions.
+5. Apply those instructions at your registrar.
+6. TradeFlow verifies DNS, secure HTTPS/SSL and website routing.
+7. The domain becomes active only after verification.
 
+Until the checks are complete, the domain remains pending.
 
-## Domain registration — TEST workflow update (2026-10-02)
-1. Subscriber selects an available domain and pays the displayed GBP price through Stripe Checkout.
-2. Stripe webhook moves the domain order to `payment_confirmed`.
-3. Subscriber is returned to the domain registrant-details page.
-4. Subscriber enters and confirms the legal registrant details.
-5. TradeFlow stores those details against the domain order and advances the order to `registrant_details_saved`.
-6. The next button, **Validate registration**, performs a Porkbun sandbox dry run only. It does not register a domain or charge the registrar account.
-7. Do not treat a successful Stripe payment as proof that the registrar registration has completed. Registration remains a separate controlled stage.
-
-Porkbun's current API provides sandbox operations and a dry-run mode that validates registration without creating or charging an order. The current API also exposes registration requirements by TLD. 
-
-
----
-
-# DOMAIN REGISTRATION HANDOVER — 2026-10-02
-
-## Verified current TEST state
-
-TradeFlow's domain-purchase flow has now reached the end of the payment and registrant-information stages in TEST/STAGING.
-
-Environment:
-- GitHub TEST/STAGING branch: `main`
-- TEST Supabase project: `twfbmjwwqzxdxvclxbun`
-- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`
-- LIVE has not been changed during this domain-registration work.
-- Current tested registrar: Porkbun.
-- Porkbun TEST credentials are sandbox credentials. Real registrar registration must remain disabled until TEST is fully verified.
-
-Verified sequence:
-1. Subscriber searches for a domain.
-2. Porkbun availability is checked server-side.
-3. TradeFlow calculates the customer price in GBP using the stored USD→GBP FX rate and platform markup.
-4. Subscriber chooses an available domain.
-5. TradeFlow creates a domain order and Stripe Checkout session.
-6. Stripe TEST payment was successfully completed for `camerashack.co.uk` at £5.27 GBP.
-7. Stripe webhook changed the domain order to `payment_confirmed`.
-8. Subscriber was returned to the domain registrant page.
-9. Registrant information was submitted and saved.
-10. The order is now `registrant_details_saved`.
-11. The TEST UI provides the next controlled step: Porkbun sandbox validation. The sandbox validation has been shown as passed in the UI.
-
-Current test order:
-- hostname: `camerashack.co.uk`
-- retail amount: £5.27 GBP
-- status: `registrant_details_saved`
-- Stripe Checkout/payment reference is stored.
-- A linked `tenant_domain_registrants` record exists.
-
-## Domain registrant architecture
-
-New TEST table:
-- `public.tenant_domain_registrants`
-- One-to-one with `tenant_domain_orders`.
-- Stores registrant name, organisation, address, city, region, postcode, country code, email and telephone.
-- Tenant RLS is enabled.
-- Tenant members can read their tenant's registrant record.
-- Website managers/editors can insert/update it.
-
-New domain-order status:
-- `registrant_details_saved`
-
-New TEST Edge Function:
-- `save-domain-registrant`
-- JWT protected.
-- Verifies the authenticated user and tenant membership.
-- Validates required registrant fields.
-- Saves the registrant record.
-- Moves the order from `payment_confirmed` to `registrant_details_saved`.
-
-New TEST frontend:
-- `domain-registrant.html`
-- `domain-registrant.js`
-
-The existing provider-neutral domain foundation remains in place and must not be rebuilt.
-
-## Domain payment architecture
-
-`create-domain-checkout-session` remains a TEST Edge Function. It:
-- authenticates the subscriber;
-- verifies tenant membership;
-- rechecks Porkbun availability server-side;
-- reads trusted platform pricing settings;
-- calculates the GBP retail price;
-- snapshots registrar USD cost, FX rate, markup and pricing period;
-- creates/reuses Stripe Checkout;
-- stores the Stripe Checkout session reference;
-- returns the customer to the registrant-details stage after successful payment.
-
-The existing Stripe webhook recognises domain payments through domain-order metadata and moves the order to `payment_confirmed`.
-
-Actual Porkbun registration has NOT been enabled.
-
-## Immediate next stage
-
-The next development/test stage is **Porkbun Sandbox Registration**:
-
-1. Use the saved registrant details for the paid TEST order.
-2. Perform a Porkbun `dryRun: true` registration validation first.
-3. Confirm the dry-run succeeds without making a real registration.
-4. Perform the isolated Porkbun sandbox registration.
-5. Record the provider domain ID and registration/expiry information.
-6. Reconcile the successful sandbox registration into the existing `tenant_domains` provider-neutral table.
-7. Test the existing domain connection/DNS/website-routing foundation against the newly registered sandbox domain.
-8. Verify renewal/expiry fields and ownership/contact synchronisation.
-9. Only after the entire TEST sequence is verified should LIVE registration be considered.
-
-Do not:
-- touch LIVE;
-- make a real Porkbun registration request;
-- revive Parcel2Go API work;
-- switch back to ResellerClub;
-- delete/rebuild the existing domain connection foundation;
-- connect the Choose button directly to registrar registration;
-- assume a sandbox registration is a real production domain.
-
-## Working rule for the next chat
-
-Before changing code:
-1. Read this handover and the latest domain checkpoint.
-2. Inspect current GitHub `main`.
-3. Inspect current TEST Supabase schema/functions/state.
-4. Identify the first unverified step.
-5. Make the smallest change necessary.
-6. Test in TEST.
-7. Verify database state.
-8. Update this documentation/checkpoint before moving to the next stage.
-
-
-# 2026-10-02 — DOMAIN REGISTRATION CURRENT-STATE OVERRIDE
-
-This section is authoritative for the current domain-registration work and supersedes any earlier registrar-provider description in this manual.
-
-## Current environment
-
-- TEST/STAGING GitHub branch: `main`
-- LIVE GitHub branch: `production`
-- TEST Supabase: `twfbmjwwqzxdxvclxbun`
-- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
-- LIVE has remained untouched during this domain-registration work.
-- Current tested registrar provider: **Porkbun**.
-- Porkbun TEST credentials are sandbox credentials.
-- **ResellerClub is not the active registrar provider. Do not continue or extend the ResellerClub integration.**
-- GoDaddy is not part of the TradeFlow registrar workflow.
-- Manual shipping remains the final shipping architecture; do not revive Parcel2Go API integration.
-
-## Verified TEST domain sequence
-
-The following stages have been completed in TEST:
-
-1. Porkbun availability search.
-2. GBP customer pricing using the trusted stored FX rate and 25% markup.
-3. Domain selection.
-4. Stripe TEST Checkout.
-5. Successful TEST payment for `camerashack.co.uk` — **£5.27 GBP**.
-6. Stripe webhook confirmation — order became `payment_confirmed`.
-7. Return to TradeFlow registrant-details page.
-8. Registrant details submitted and saved.
-9. Order became `registrant_details_saved`.
-10. TEST UI currently reports that Porkbun sandbox validation passed.
-
-The domain has **not** been registered with the real registrar. No LIVE domain registration has been performed.
-
-## Current database/business state
-
-The paid test order is for `camerashack.co.uk` at £5.27 GBP and is at `registrant_details_saved`. A one-to-one `tenant_domain_registrants` record is associated with the order.
-
-The existing provider-neutral domain architecture remains authoritative:
-`domain_tld_catalog`, `tenant_domain_orders`, `tenant_domains`, `published_site_index`, and `tenant_site_state`.
-
-## Next development stage
-
-The next stage is **Porkbun TEST sandbox registration**, not another payment test.
-
-Work in this exact order:
-
-1. Inspect current GitHub `main`, TEST Supabase schema/functions and the paid test order.
-2. Inspect/confirm Porkbun registration requirements for the domain TLD.
-3. Implement a TEST-only, JWT-protected dry-run registration validation using the saved registrant record.
-4. Confirm `dryRun: true` succeeds without creating a real registration.
-5. Perform the isolated Porkbun sandbox registration using sandbox credentials.
-6. Capture provider domain ID and registration/expiry information.
-7. Reconcile the result into the existing `tenant_domains` table.
-8. Move the order through `registering` to `registered` only after successful reconciliation.
-9. Test the existing domain connection/DNS/website-routing architecture.
-10. Update all relevant documentation and the checkpoint after successful verification.
-
-Do not touch LIVE, do not use real registrar credentials, do not revive Parcel2Go or ResellerClub, and do not rebuild the existing domain foundation.
-
-
-
-## 2026-10-02 Domain registration user flow
-
-After registrant details are saved, the user sees the Porkbun TEST validation control. A successful dry run reveals a second control, Register in TEST sandbox. This is isolated from LIVE and does not perform a real-world domain registration. The flow is not complete until sandbox registration, registrant application, provider verification, and tenant_domains reconciliation have succeeded.
-
-
-## 2026-10-02 Domain registration test repair
-
-The first sandbox attempt reached registration successfully but stopped at contact reconciliation. The user should retry the existing Register in TEST sandbox action after the function update. The system must not create a second sandbox registration for the same order; it reuses provider order 9913828 and continues contact validation/reconciliation.
-
-
-## 2026-10-02 Porkbun TEST sandbox registration — user-facing result
-
-The TEST sandbox registration for camerashack.co.uk completed successfully and TradeFlow now reports the order as registered. Porkbun provider order 9913828 was reused rather than creating another registration. The domain is present as an active purchased domain in TEST. The browser expiry message should not yet be treated as authoritative because the database currently has no persisted expiry date.
-
-The .co.uk contact-application step is intentionally deferred for separate verification after registration; repeated immediate contact updates previously caused V096 and repeated registrant notifications.
-
-
-
-## 2026-10-02 — TEST domain registration status
-
-The TEST domain registration for `camerashack.co.uk` has completed in Porkbun's isolated sandbox. The existing provider order is retained; TradeFlow does not create another registration when refreshing provider details.
-
-If the TEST registrant page shows **Refresh provider registration details**, that action is a provider reconciliation step only. It refreshes registration and expiry information from Porkbun and does not start a new registration. This is a TEST-only control and must not be treated as a LIVE domain-registration action.
-
-
-## 2026-10-02 — Porkbun TEST registration and expiry VERIFIED
-
-The Porkbun sandbox registration stage is now verified in TEST for `camerashack.co.uk`.
-
-- Provider order: `9913828`.
-- TradeFlow order status: `registered`.
-- `tenant_domain_orders.expires_at`: 2027-10-02 12:01:45 UTC.
-- The reconciled `tenant_domains` row is `active`, with `acquisition_source=purchased` and `registrar_provider=porkbun`.
-- `tenant_domains.expires_at`: 2027-10-02 12:01:45 UTC.
-- Provider expiry metadata is populated.
-- No second sandbox registration was created during reconciliation.
-
-The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses the shared Porkbun provider lookup and its `/domain/listAll` fallback when the direct domain lookup lacks lifecycle dates. Expiry is persisted only when returned by the provider.
-
-Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
-
-**Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
-
-## 2026-10-02 — Chatbot continuity and pre-launch domain sequence
-
-The TradeFlow chatbot is a planned pre-launch component and must be completed and tested before the platform is declared ready for public launch.
-
-### Chatbot architecture already agreed
-
-**Phase 1 — Subscriber read-only assistant**
-- Answer how-to and system questions.
-- Primary knowledge source: the finalized Subscriber Website/User Manual plus approved TradeFlow documentation.
-- May use appropriate authenticated subscriber/tenant context where required to answer the subscriber's own questions.
-- Must not make arbitrary database changes.
+s.
 - Must not have unrestricted SQL/database access.
 
 Examples already agreed include: adding a logo, creating a listing, changing shipping services, buying a domain, understanding “Shipping Required”, understanding what happens after an item is received, and publishing a website.

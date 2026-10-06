@@ -25,62 +25,40 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 
 
 
-## CURRENT PROJECT STATE — 2 OCTOBER 2026
+## CURRENT PROJECT STATE — 6 OCTOBER 2026
 
-**This section overrides older environment statements where they conflict.**
+### Current architecture
+TradeFlow is being completed against LIVE while the product is being finished. The permanent future release model remains TEST → verify → promote to LIVE once the known-good LIVE baseline is captured.
 
-### Current TEST/LIVE boundary
-- Repository: `laurendigitaluk/TradeFlow`.
-- Active TEST branch for the current Cloudflare work: `cloudflare-test`.
-- LIVE release branch: `production`.
-- TEST Supabase: `twfbmjwwqzxdxvclxbun`.
-- LIVE Supabase: separate production project `gxsrajtqzdjvmceqcpgv5`.
-- TEST Cloudflare Worker: `tradeflow-test`.
-- Never modify LIVE while completing TEST work.
-- Approved changes are fixed and verified in TEST first, then promoted to LIVE.
+LIVE:
+- GitHub branch: `production`
+- Supabase: `gxsrajtqzdjvmceqcpgv5`
+- Cloudflare Worker → LIVE Supabase
+- Website Builder has a locked standard baseline from 5 October 2026.
 
-### Current customer-facing architecture
-Customer-facing tenant identity is derived from the public hostname. Customer URLs must not expose internal tenant UUIDs.
+### Website Builder
+The approved reusable Website Builder is locked. Do not redesign, reposition, resize, restructure or replace the locked arrangement without an explicit reopen decision. The draft/publish revision workflow remains authoritative and must not be confused with application deployment.
 
-TEST currently has one published site, CameraShack, at `camerashack.co.uk`. The TEST Worker has a single-site fallback because the real custom domain is not yet attached to the TEST Worker.
+### Domain architecture
+TradeFlow's old automatic subscriber domain-purchase workflow is retired.
 
-The intended LIVE customer experience is:
+Current subscriber model:
+**Subscriber buys/owns domain → enters hostname in TradeFlow → Platform Owner prepares connection → exact DNS instructions → subscriber applies DNS → DNS/SSL/routing verification → active domain.**
 
-**subscriber-selected domain → public website → Customer Login / Create Account → customer portal**
+No registrar password is requested. No DNS target is invented. No unverified domain is activated.
 
-Subscriber sessions and customer sessions are separate. A subscriber being signed in must never cause Customer Login to open the subscriber dashboard.
+Platform infrastructure domain:
+- `laurendigital.co.uk` was purchased directly through Porkbun.
+- Cloudflare Free zone setup is in progress.
+- Nameserver delegation has been submitted and Cloudflare is currently waiting for propagation.
+- The zone is not yet treated as active.
+- TradeFlow's Cloudflare custom-hostname automation is implemented, but final live testing waits for the active zone and real SaaS CNAME target.
 
-### Clean TEST routes now implemented
-- `/` — public website.
-- `/login` — customer login/create-account portal.
-- `/basket` — customer basket.
-- `/email-confirmed` — customer email confirmation.
-- `/reset-password` — customer password reset.
+### Shipping
+Manual subscriber-managed shipping is authoritative. Parcel2Go API/checkout/payment-link shipping is retired.
 
-Preview-only subscriber workflows may still use internal tenant identifiers; these are not customer-facing URLs.
-
-### Domain registration and publishing
-The TEST domain-purchase workflow has been verified through Porkbun sandbox registration, Stripe TEST payment, registrant details and provider registration reconciliation. TEST database expiry is persisted in both domain-order and tenant-domain records.
-
-The published TEST site index currently contains exactly one CameraShack row. A real public DNS/Cloudflare custom-domain launch has not yet been verified.
-
-### AI / chatbot boundary
-Personal Gemma remains a separate research tool for adding evidence to the Quote/Buying Research system. It is not TradeFlow's subscriber/customer chatbot.
-
-TradeFlow's assistant uses a provider-neutral gateway. The subscriber-facing assistant is being completed as the final pre-launch feature. Provider choices are configurable; no provider credentials have been added and the TEST provider remains `none` unless deliberately changed.
-
-Product Research is implemented in TEST with explicit evidence approval before evidence is saved to `tenant_buying_research`. Research must not silently change a buying valuation.
-
-### Final pre-LIVE sequence
-1. Finish and acceptance-test the clean TEST customer website boundary.
-2. Complete and test the final TradeFlow Assistant/chatbot.
-3. Complete final TEST acceptance across the core workflows.
-4. Record a release checkpoint.
-5. Promote the tested release to `production`.
-6. Configure the real subscriber domain/Cloudflare custom domain.
-7. Run a clean LIVE smoke/acceptance test.
-
-Do not fix defects directly in LIVE. A LIVE defect returns to TEST, is repaired and verified there, then the tested release is promoted again.
+### Code/documentation cleanup — 6 October 2026
+Retired domain-purchase/registrant frontend, old domain-purchase Edge Function source, Parcel2Go source, ResellerClub source and unused duplicate dashboard runtimes have been removed from the production repository. Historical checkpoints remain as audit evidence.
 
 
 ## Master roadmap
@@ -1025,3 +1003,22 @@ Production code state captured before documentation-only updates: `f3ff7f9d34030
 
 ## Next stage
 The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+## 2026-10-06 — Full LIVE website/code/documentation audit
+
+The LIVE production repository and LIVE Supabase project were audited against the current working architecture. The 5 October Website Builder lock remains protected. The current subscriber-owned domain connection model is authoritative, and the obsolete automatic TradeFlow/Porkbun purchase path is retired.
+
+Cleanup completed in the production repository:
+- removed the retired domain purchase/search frontend;
+- removed the retired registrant/registration frontend;
+- removed source for the retired Porkbun registration, availability, dry-run, checkout, payment-reconciliation and registrant-save functions;
+- removed retired Parcel2Go and ResellerClub function source;
+- removed the unused shipping-provider test function source;
+- removed unused duplicate Inventory/Selling/customer-auth repair runtimes that were no longer referenced by the active pages;
+- added the deployed automatic Cloudflare custom-domain preparation function to version control at `supabase/functions/platform-prepare-custom-domain/index.ts`.
+
+LIVE Supabase audit confirmed the current domain workflow objects remain in place: `tenant_domains`, `platform_owner_domain_actions`, `subscriber_request_custom_domain()`, `platform_owner_list_domain_actions()`, `platform_owner_update_domain_action()` and the automatic Cloudflare preparation Edge Function.
+
+The old domain-pricing/order tables and historical domain-registration Edge Functions may still exist in LIVE Supabase for historical/schema compatibility. They are no longer part of the active subscriber Website URL workflow and their removal must be handled separately from the working website code, with dependency checks before any destructive database cleanup.
+
+Supabase advisory findings were reviewed. Existing security/performance advisories are broader than this website cleanup and were not changed blindly as part of this audit.

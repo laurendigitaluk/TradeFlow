@@ -1662,3 +1662,8 @@ Production had two faults: an incomplete Supabase endpoint in buying-catalogue.j
 Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
 
 Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.
+
+
+## 2026-10-06 — customer-owned domain workflow
+
+The current customer-owned domain workflow is now implemented in TEST. After a subscriber saves a domain in Website URL, TradeFlow sends the request into the Platform Owner domain-connection action workflow. The subscriber waits for the Platform Owner's exact DNS instructions and then applies those records at the registrar. The subscriber still owns the registrar account and remains responsible for renewal. TradeFlow must never request the registrar password or invent a DNS target.

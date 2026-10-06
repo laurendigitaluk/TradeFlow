@@ -913,3 +913,8 @@ The TEST Edge Function is version 9. The .co.uk sandbox reconciliation now uses 
 Contact synchronisation remains deliberately deferred for the sandbox .co.uk path because immediate contact updates produced Nominet V096. This is a separate contact-sync issue and does not invalidate the verified registration/expiry stage.
 
 **Next stage:** inspect and test the existing provider-neutral website/domain connection, website publish flow, `published_site_index` hostname routing and `tenant_site_state`. Do not rebuild the domain foundation, invent a DNS/hosting target, or modify LIVE.
+
+
+## 2026-10-06 — customer-owned domain action implementation
+
+The TEST implementation now creates a Platform Owner domain-connection action when a subscriber requests a customer-owned domain from Website URL. The Platform Owner dashboard exposes the open action, allows the owner to record notes and exact approved DNS records, and controls the action state. Completion is blocked until the domain is already active and has both DNS verification and activation timestamps. The actual hosting/Cloudflare provisioning and DNS/SSL verification layer remains a separate implementation stage and must not be replaced by manual activation.

@@ -23,62 +23,50 @@ Authority order: **current GitHub code + current Supabase state + structured pro
 
 
 
-## CURRENT PROJECT STATE — 2 OCTOBER 2026
+## CURRENT PROJECT STATE — 6 OCTOBER 2026
 
-**This section overrides older environment statements where they conflict.**
+This is the current operational baseline for the LIVE website and infrastructure.
 
-### Current TEST/LIVE boundary
-- Repository: `laurendigitaluk/TradeFlow`.
-- Active TEST branch for the current Cloudflare work: `cloudflare-test`.
+### Environment
+- GitHub repository: `laurendigitaluk/TradeFlow`.
 - LIVE release branch: `production`.
-- TEST Supabase: `twfbmjwwqzxdxvclxbun`.
-- LIVE Supabase: separate production project `gxsrajtqzdjvmceqcpgv5`.
-- TEST Cloudflare Worker: `tradeflow-test`.
-- Never modify LIVE while completing TEST work.
-- Approved changes are fixed and verified in TEST first, then promoted to LIVE.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv5`.
+- LIVE application path: GitHub → Cloudflare Worker → LIVE Supabase.
+- Website publication remains separate: Website Builder draft → Save Draft → Preview → Publish → published revision → new draft.
 
-### Current customer-facing architecture
-Customer-facing tenant identity is derived from the public hostname. Customer URLs must not expose internal tenant UUIDs.
+### Website Builder
+The 5 October 2026 Website Builder baseline is locked. Preserve the approved page structures, hero/top section, text/image/button positions, image proportions, typography, colours, backgrounds, borders, rounded corners, What We Buy/What We Sell sections, tiles and starter template. Do not redesign or restructure it unless the user explicitly reopens the baseline.
 
-TEST currently has one published site, CameraShack, at `camerashack.co.uk`. The TEST Worker has a single-site fallback because the real custom domain is not yet attached to the TEST Worker.
+### Domain architecture
+## CURRENT DOMAIN MODEL — 6 OCTOBER 2026
 
-The intended LIVE customer experience is:
+TradeFlow no longer sells, registers, renews or pays for subscriber domains.
 
-**subscriber-selected domain → public website → Customer Login / Create Account → customer portal**
+The current subscriber workflow is:
 
-Subscriber sessions and customer sessions are separate. A subscriber being signed in must never cause Customer Login to open the subscriber dashboard.
+1. Subscriber buys and owns a domain with the registrar of their choice.
+2. Subscriber opens **Website URL** and enters the hostname.
+3. TradeFlow creates a connection request for the Platform Owner.
+4. The Platform Owner prepares the approved hosting connection and exact DNS instructions.
+5. The subscriber applies those exact DNS instructions at their registrar.
+6. TradeFlow verifies DNS, SSL/HTTPS and tenant routing.
+7. Only after all required checks pass is the domain activated and connected to the subscriber's published website.
 
-### Clean TEST routes now implemented
-- `/` — public website.
-- `/login` — customer login/create-account portal.
-- `/basket` — customer basket.
-- `/email-confirmed` — customer email confirmation.
-- `/reset-password` — customer password reset.
+TradeFlow must never request the registrar password and must never invent DNS targets.
 
-Preview-only subscriber workflows may still use internal tenant identifiers; these are not customer-facing URLs.
+The old TradeFlow/Porkbun purchase, Stripe domain checkout and registrant-registration journey is retired. Old dated domain-registration notes are historical evidence only and are not current operating instructions.
 
-### Domain registration and publishing
-The TEST domain-purchase workflow has been verified through Porkbun sandbox registration, Stripe TEST payment, registrant details and provider registration reconciliation. TEST database expiry is persisted in both domain-order and tenant-domain records.
+For the current platform infrastructure, `laurendigital.co.uk` has been purchased directly through Porkbun and is being configured as the Lauren Digital/TradeFlow infrastructure domain. Cloudflare is currently waiting for the new nameserver delegation to propagate; the zone is not yet treated as active.
 
-The published TEST site index currently contains exactly one CameraShack row. A real public DNS/Cloudflare custom-domain launch has not yet been verified.
 
-### AI / chatbot boundary
-Personal Gemma remains a separate research tool for adding evidence to the Quote/Buying Research system. It is not TradeFlow's subscriber/customer chatbot.
+### Shipping
+Manual subscriber-managed shipping is authoritative. Parcel2Go API/checkout/payment-link shipping and old connected-provider experiments are retired.
 
-TradeFlow's assistant uses a provider-neutral gateway. The subscriber-facing assistant is being completed as the final pre-launch feature. Provider choices are configurable; no provider credentials have been added and the TEST provider remains `none` unless deliberately changed.
+### Cloudflare/domain connection
+The Platform Owner domain workflow is phased and uses the protected `platform-prepare-custom-domain` Edge Function for automatic Cloudflare custom-hostname preparation. The function source is now versioned in the repository. DNS, SSL/HTTPS and tenant-routing verification remain mandatory before activation.
 
-Product Research is implemented in TEST with explicit evidence approval before evidence is saved to `tenant_buying_research`. Research must not silently change a buying valuation.
-
-### Final pre-LIVE sequence
-1. Finish and acceptance-test the clean TEST customer website boundary.
-2. Complete and test the final TradeFlow Assistant/chatbot.
-3. Complete final TEST acceptance across the core workflows.
-4. Record a release checkpoint.
-5. Promote the tested release to `production`.
-6. Configure the real subscriber domain/Cloudflare custom domain.
-7. Run a clean LIVE smoke/acceptance test.
-
-Do not fix defects directly in LIVE. A LIVE defect returns to TEST, is repaired and verified there, then the tested release is promoted again.
+### Cleanup rule
+Historical checkpoints remain available for audit/restore purposes, but they must not be used as current implementation instructions. Obsolete source for the retired domain-purchase/registrant flow, Parcel2Go, ResellerClub and unused duplicate dashboard runtimes has been removed from the LIVE production repository.
 
 
 ## 2. Architecture baseline

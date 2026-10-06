@@ -58,6 +58,9 @@ export default {
     const pairs = REPLACEMENT_PAIRS[env.TRADEFLOW_ENV] || REPLACEMENT_PAIRS.test;
     let transformed = pairs(env).reduce((body, [from, to]) => replaceAll(body, from, to), source);
 
+    const runtimePairs = env.TRADEFLOW_ENV === 'production' ? [['__TRADEFLOW_LIVE_KEY__', env.LIVE_SUPABASE_KEY]] : [['__TRADEFLOW_TEST_KEY__', env.TEST_SUPABASE_KEY]];
+    transformed = runtimePairs.reduce((body, [from, to]) => replaceAll(body, from, to), transformed);
+
     const testKey = env[["TEST", "SUPABASE", "KEY"].join("_")];
     if (env.TRADEFLOW_ENV === "test" && testKey) {
       const marker = ["U", "K", "V"].join("");

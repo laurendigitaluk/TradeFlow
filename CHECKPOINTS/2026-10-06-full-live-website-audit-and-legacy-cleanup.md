@@ -100,3 +100,21 @@ Wait for Cloudflare nameserver propagation. Once the zone is Active, continue wi
 7. verify DNS, SSL and tenant routing before activation.
 
 Do not invent DNS targets or mark a domain active before verification.
+
+
+## Final audit verification — 6 October 2026
+
+Production branch after the audit: `8cf6fec399dbc3778bbc73c600b68a53327af97e`.
+
+Verified after cleanup:
+- the retired domain purchase/registrant frontend files are absent from the production root;
+- retired Parcel2Go, ResellerClub, domain-registration/checkout and shipping-test function source is absent from `supabase/functions` in production;
+- unused duplicate Inventory, Selling and customer-auth repair runtimes removed by the audit are absent;
+- `domain-settings.js` still calls `subscriber_request_custom_domain` and remains the active Website URL workflow;
+- Platform Owner Dashboard still calls `platform-prepare-custom-domain` automatically;
+- obsolete Domain Pricing UI is absent from the Owner Dashboard;
+- the version-controlled `platform-prepare-custom-domain/index.ts` source exactly matches the currently deployed LIVE Edge Function version 2 source.
+
+The cleanup did not alter the locked Website Builder arrangement, subscriber authentication, customer authentication, buying/inventory/selling workflow, shipping catalogue workflow or active domain-connection RPCs.
+
+One remaining infrastructure cleanup item is intentionally not destructive: already-deployed retired Supabase Edge Functions and historical domain-order/pricing database objects remain in LIVE because the current connector does not provide Edge Function deletion and database dependency proof is not yet complete. They are not used by the active Website URL workflow.

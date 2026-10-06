@@ -178,7 +178,7 @@ async function loadDomainActions(){
         if(key==='routing_verified')meta.routing_verified=true;
         if(key==='activated'){
           if(m.dns_verified!==true || m.ssl_verified!==true || m.routing_verified!==true)throw Error('DNS, SSL and tenant routing must all be verified before activation.');
-          meta.activated=true;
+          meta.activated=true;meta.dns_verified=true;meta.ssl_verified=true;meta.routing_verified=true;
         }
         let actionStatus='requested';
         if(key==='connection_prepared'||key==='customer_instructions_sent')actionStatus='dns_ready';

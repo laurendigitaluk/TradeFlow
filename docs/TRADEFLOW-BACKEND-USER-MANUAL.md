@@ -439,6 +439,43 @@ For example, changing a public website button does not itself purchase an item, 
 
 The separate `subscriber-website-manual.html` explains the website-building controls. This backend manual explains what happens after those public-site journeys enter TradeFlow.
 
+
+## 22B. Owner step-by-step domain connection workflow
+
+The Owner Dashboard now presents each subscriber-owned domain request as a controlled seven-phase workflow. The Platform Owner must complete each phase in order.
+
+### Phase 1 — Review the request
+Confirm:
+- the subscriber/business is correct;
+- the requested hostname is correct;
+- the hostname is not already connected to another tenant.
+
+Do not change DNS or activate the domain at this stage.
+
+### Phase 2 — Prepare the TradeFlow connection
+Prepare the approved Cloudflare/custom-hostname connection for the requested hostname. Use the actual connection target produced by the approved hosting configuration. Never invent a DNS target.
+
+Record the exact DNS instructions in the Owner Dashboard before marking the connection prepared.
+
+### Phase 3 — Issue the customer instructions
+Give the customer the exact DNS record(s) they must add at their registrar. The customer remains responsible for the registrar account, domain ownership, renewal and DNS change. Never request the registrar password.
+
+### Phase 4 — Verify DNS
+After the customer has made the change, verify that the hostname resolves to the approved TradeFlow connection. Do not treat the customer's confirmation alone as verification.
+
+### Phase 5 — Verify SSL / HTTPS
+Confirm the requested hostname has working HTTPS/SSL.
+
+### Phase 6 — Verify tenant routing
+Confirm the hostname serves the correct subscriber's published website and cannot resolve to another tenant.
+
+### Phase 7 — Activate
+Only activate after DNS, SSL and tenant routing are all verified. The activation RPC enforces these three checks. Activation updates the tenant domain and published-site index for the tenant's current published revision.
+
+### Owner Dashboard controls
+The Owner Dashboard records the phase progress in the domain-action metadata. The current workflow is owner-guided: the Cloudflare connection preparation itself must use the approved Cloudflare configuration and its actual DNS target; the dashboard must not invent or silently substitute infrastructure values.
+
+
 ## 23. Security and permissions
 
 Security is enforced at several layers:
@@ -1124,4 +1161,4 @@ Immutable restore branch: `LOCKED-standard-website-builder-2026-10-05`.
 Production code state captured before documentation-only updates: `f3ff7f9d34030dbcde3440e21c097726ddef4f1d`.
 
 ## Next stage
-The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.\n\n## 2026-10-06 — LIVE customer-owned domain connection\n\nAutomatic TradeFlow/Porkbun domain purchase is retired. LIVE now uses subscriber-owned domains only. The subscriber retains registrar ownership, billing and renewal.\n\nThe LIVE connection workflow is: subscriber enters an existing hostname → `subscriber_request_custom_domain()` creates/updates the `tenant_domains` record with `acquisition_source=customer_owned` and creates a `platform_owner_domain_actions` request → Platform Owner prepares the approved hosting connection and exact DNS instructions → subscriber applies the instructions → Platform Owner verifies DNS, SSL and tenant routing → `platform_owner_update_domain_action()` may activate the domain only when all three verification flags are true.\n\nThe active domain is then inserted into `published_site_index` for the tenant’s current published revision. Do not invent DNS targets, request registrar passwords, or manually activate an unverified hostname.\n\nLIVE implementation migration: `20261006130000_customer_owned_domain_connection_live` plus `20261006133000_subscriber_domain_status_live`.\n
+The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.\n\n## 2026-10-06 — LIVE customer-owned domain connection\n\nAutomatic TradeFlow/Porkbun domain purchase is retired. LIVE now uses subscriber-owned domains only. The subscriber retains registrar ownership, billing and renewal.\n\nThe LIVE connection workflow is: subscriber enters an existing hostname → `subscriber_request_custom_domain()` creates/updates the `tenant_domains` record with `acquisition_source=connected` and creates a `platform_owner_domain_actions` request → Platform Owner prepares the approved hosting connection and exact DNS instructions → subscriber applies the instructions → Platform Owner verifies DNS, SSL and tenant routing → `platform_owner_update_domain_action()` may activate the domain only when all three verification flags are true.\n\nThe active domain is then inserted into `published_site_index` for the tenant’s current published revision. Do not invent DNS targets, request registrar passwords, or manually activate an unverified hostname.\n\nLIVE implementation migration: `20261006130000_customer_owned_domain_connection_live` plus `20261006133000_subscriber_domain_status_live`.\n

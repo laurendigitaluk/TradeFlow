@@ -51,7 +51,14 @@
       </div>
     </section>
 
-    <section id="plans" class="panel">
+    <section id="domain-connections" class="panel">
+<div class="panel-head"><div><div class="eyebrow">Subscriber domains</div><h2>Domain connection requests</h2></div><button id="refresh-domain-actions" type="button">Refresh</button></div>
+<p class="muted">Subscribers own and renew their domains. Review each request, prepare the approved hosting connection, give the exact DNS instructions, then verify DNS, SSL and tenant routing before activating it.</p>
+<div id="domain-actions-error" class="error" role="alert"></div>
+<div id="domain-actions-list"><p class="muted">Loading domain requests…</p></div>
+</section>
+
+<section id="plans" class="panel">
       <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>Plans</h2></div><div><button id="setup-stripe" type="button">Set up Stripe billing</button> <button id="refresh-plans" type="button">Refresh plans</button></div></div>
       <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
       <div id="plans-error" class="error" role="alert"></div><div id="stripe-setup-status" class="action-message" role="status"></div>

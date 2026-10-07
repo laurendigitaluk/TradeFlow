@@ -156,6 +156,36 @@ The code and database checkpoint are saved. Browser verification of the newest b
 Do not modify GearCashOut while working on this TradeFlow checkpoint.
 
 
+## LIVE TradeFlow website address — 7 October 2026
+
+The LIVE TradeFlow platform now uses the branded address:
+
+**https://tradeflow.laurendigital.co.uk**
+
+This is the normal platform address for subscriber sign-in and the business workspace.
+
+### Cleaner subscriber URLs
+
+TradeFlow keeps the internal tenant ID private from normal subscriber-facing URLs.
+
+The internal tenant ID still exists and is used securely by TradeFlow, but the browser can use a business slug such as:
+
+**Adventure Outpost → adventure-outpost**
+
+This is only a cleaner URL/routing identifier. It does not replace TradeFlow's internal security or tenant identification.
+
+### Lauren Digital and future products
+
+Lauren Digital is the parent/company brand. TradeFlow is a Lauren Digital product.
+
+The planned structure is:
+
+- **laurendigital.co.uk** — Lauren Digital parent/company website.
+- **tradeflow.laurendigital.co.uk** — TradeFlow.
+- Future Lauren Digital products may have their own subdomains when they are ready.
+
+Subscriber-owned domains remain separate: a subscriber buys and owns their own domain and uses TradeFlow's Website URL connection process to connect it.
+
 ## Website domains — current subscriber workflow
 
 TradeFlow uses **subscriber-owned domains only**.
@@ -1464,7 +1494,7 @@ Gemma used on Gary's own desktop remains a separate personal research tool for t
 If TradeFlow later uses a subscriber-owned AI connection, the subscriber will be responsible for that provider's own usage charges. TradeFlow will keep provider credentials server-side.
 \n\n## 2026-10-02 — CURRENT TEST: TradeFlow Assistant\n\nThe TEST Subscriber Assistant is now available to authenticated subscriber users. It is initially read-only and uses approved TradeFlow guidance. It does not independently change products, prices, orders, payments or other business records.\n\nIf no AI provider is enabled, the Assistant can still confirm that approved TradeFlow guidance matches the question, but it will not generate an external AI answer. No subscriber needs to connect Gary's personal Gemma system. If a subscriber-owned AI connection is introduced later, its provider usage costs remain the subscriber's responsibility.\n
 
-## CURRENT LAUNCH DIRECTION — 6 OCTOBER 2026
+## CURRENT LAUNCH DIRECTION — 7 OCTOBER 2026
 
 TradeFlow is now moving through the real LIVE domain/infrastructure stage.
 
@@ -1475,7 +1505,7 @@ Subscriber websites remain tenant-specific and customer-facing. Customers use th
 Subscriber domains are customer-owned. TradeFlow does not purchase or renew them. To connect one, the subscriber enters the existing hostname in **Website URL**, waits for the Platform Owner's connection instructions, applies the exact DNS instructions and waits for DNS/SSL/routing verification.
 
 ### Current platform infrastructure
-The Lauren Digital/TradeFlow infrastructure domain `laurendigital.co.uk` has been purchased directly through Porkbun. Cloudflare nameserver propagation is currently pending.
+The Lauren Digital/TradeFlow infrastructure domain `laurendigital.co.uk` has been purchased directly through Porkbun and is now active in Cloudflare. The LIVE TradeFlow platform is available at `https://tradeflow.laurendigital.co.uk`.
 
 ### Release rule
 The Website Builder is locked. Do not redesign the standard template while completing domain infrastructure. Application defects must be repaired in the controlled development/release process and then promoted to LIVE after verification.

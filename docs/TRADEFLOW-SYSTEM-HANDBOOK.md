@@ -23,7 +23,7 @@ Authority order: **current GitHub code + current Supabase state + structured pro
 
 
 
-## CURRENT PROJECT STATE — 6 OCTOBER 2026
+## CURRENT PROJECT STATE — 7 OCTOBER 2026
 
 This is the current operational baseline for the LIVE website and infrastructure.
 
@@ -56,7 +56,7 @@ TradeFlow must never request the registrar password and must never invent DNS ta
 
 The old TradeFlow/Porkbun purchase, Stripe domain checkout and registrant-registration journey is retired. Old dated domain-registration notes are historical evidence only and are not current operating instructions.
 
-For the current platform infrastructure, `laurendigital.co.uk` has been purchased directly through Porkbun and is being configured as the Lauren Digital/TradeFlow infrastructure domain. Cloudflare is currently waiting for the new nameserver delegation to propagate; the zone is not yet treated as active.
+For the current platform infrastructure, `laurendigital.co.uk` has been purchased directly through Porkbun and is now active in Cloudflare. The existing LIVE `tradeflow` Worker is connected to `tradeflow.laurendigital.co.uk` as a Cloudflare Custom Domain, and the branded URL has been browser-verified over HTTPS.
 
 
 ### Shipping
@@ -68,6 +68,38 @@ The Platform Owner domain workflow is phased and uses the protected `platform-pr
 ### Cleanup rule
 Historical checkpoints remain available for audit/restore purposes, but they must not be used as current implementation instructions. Obsolete source for the retired domain-purchase/registrant flow, Parcel2Go, ResellerClub and unused duplicate dashboard runtimes has been removed from the LIVE production repository.
 
+
+## 2026-10-07 — Branded LIVE platform and URL architecture
+
+Lauren Digital is the parent/company brand. TradeFlow is a product of Lauren Digital.
+
+The active LIVE platform URL is:
+
+`https://tradeflow.laurendigital.co.uk`
+
+It is the existing `tradeflow` Cloudflare Worker connected through a Worker Custom Domain. No second Worker is required.
+
+### Tenant ID exposure rule
+
+`tenant_id` remains the authoritative internal tenant boundary and must remain available internally for authentication, RLS, database queries and API operations.
+
+Normal subscriber-facing browser URLs should not expose the raw tenant UUID when a stable business slug can be used. The subscriber workspace resolves a URL-safe business slug and removes the legacy `tenant_id` query parameter from the visible browser URL.
+
+Example:
+
+`Adventure Outpost` → `adventure-outpost`
+
+This is a presentation/routing change only; it does not replace the internal tenant security boundary.
+
+### Future Lauren Digital site structure
+
+The intended future parent/product structure is:
+
+- `laurendigital.co.uk` — Lauren Digital parent/company site.
+- `tradeflow.laurendigital.co.uk` — TradeFlow.
+- Future products may use their own subdomains when ready.
+
+A future parent homepage and separate owner-only login route are planned architecture only. Do not implement them as part of the current TradeFlow work without an explicit instruction.
 
 ## 2. Architecture baseline
 TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary tenant boundary.
@@ -1446,7 +1478,7 @@ The old TradeFlow/Porkbun subscriber domain-purchase and registrant workflow is 
 
 The domain architecture is now subscriber-owned domains only. TradeFlow does not purchase, renew or register subscriber domains.
 
-The platform infrastructure domain `laurendigital.co.uk` has been purchased directly through Porkbun. Cloudflare is currently waiting for nameserver propagation. The zone is not yet active.
+The platform infrastructure domain `laurendigital.co.uk` has been purchased directly through Porkbun and is active in Cloudflare. The LIVE TradeFlow Worker is connected at `tradeflow.laurendigital.co.uk`.
 
 The LIVE subscriber domain workflow remains:
 subscriber enters existing hostname → Platform Owner prepares connection automatically → exact DNS instructions → subscriber applies DNS → DNS/SSL/routing verification → activation.

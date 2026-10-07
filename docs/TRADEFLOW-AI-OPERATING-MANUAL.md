@@ -12,8 +12,8 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 4.3  
-**Date:** 19 September 2026  
+**Version:** 4.4  
+**Date:** 7 October 2026  
 **Project:** TradeFlow
 
 ## 1. Purpose
@@ -23,7 +23,7 @@ AI continuity companion for TradeFlow. It records architectural truth, decisions
 
 
 
-## CURRENT PROJECT STATE — 6 OCTOBER 2026
+## CURRENT PROJECT STATE — 7 OCTOBER 2026
 
 **This section overrides older environment statements where they conflict.**
 
@@ -60,7 +60,7 @@ TradeFlow must never request the registrar password and must never invent DNS ta
 
 The old TradeFlow/Porkbun purchase, Stripe domain checkout and registrant-registration journey is retired. Old dated domain-registration notes are historical evidence only and are not current operating instructions.
 
-For the current platform infrastructure, `laurendigital.co.uk` has been purchased directly through Porkbun and is being configured as the Lauren Digital/TradeFlow infrastructure domain. Cloudflare is currently waiting for the new nameserver delegation to propagate; the zone is not yet treated as active.
+For the current platform infrastructure, `laurendigital.co.uk` has been purchased directly through Porkbun and is now active in Cloudflare on the Free plan. The LIVE `tradeflow` Worker is connected to the production Custom Domain `tradeflow.laurendigital.co.uk`, and the URL has been browser-verified over HTTPS with the LIVE TradeFlow site and an authenticated subscriber workspace.
 
 
 ### Current shipping architecture
@@ -92,9 +92,46 @@ The old deployed Supabase Edge Functions associated with the retired domain-purc
 - Subscriber-owned domain request workflow: implemented and browser-tested through the pending/requested stage.
 - Owner phased domain workflow: implemented.
 - Automatic Cloudflare preparation: deployed and source-versioned; final live invocation awaits an active Cloudflare SaaS zone and configured zone/CNAME values.
-- `laurendigital.co.uk`: purchased directly at Porkbun; Cloudflare nameserver propagation is currently pending.
-- Do not mark the platform domain active until Cloudflare reports the zone active and the actual Worker/SaaS routing is verified.
+- `laurendigital.co.uk`: purchased directly at Porkbun; Cloudflare zone is active.
+- LIVE `tradeflow` Worker custom domain: `tradeflow.laurendigital.co.uk`.
+- Browser verification: public TradeFlow site loads over HTTPS; subscriber sign-in and the Adventure Outpost business workspace load successfully.
+- The root `laurendigital.co.uk` is reserved for the future Lauren Digital parent/company site; it is not the TradeFlow application URL.
+- Future product subdomains may use the same parent domain, but must be configured only when the corresponding product is ready.
 
+
+## 2026-10-07 — LIVE branded platform URL and clean subscriber URL model
+
+The LIVE TradeFlow platform now has the branded application URL:
+
+`https://tradeflow.laurendigital.co.uk`
+
+This is the existing `tradeflow` Cloudflare Worker connected through a Worker Custom Domain. Do not create another Worker for this platform URL.
+
+### Tenant UUIDs and subscriber-facing URLs
+
+`tenant_id` remains the authoritative internal tenant/security identifier and must continue to be used internally for Supabase scoping, authentication state and database/API operations.
+
+A tenant UUID must not be exposed unnecessarily in normal subscriber-facing browser URLs. The subscriber workspace now resolves the tenant's URL-safe business slug and removes a legacy `tenant_id` query parameter from the browser address bar.
+
+Current example:
+
+`Adventure Outpost` → `adventure-outpost`
+
+The slug is a presentation/routing identifier, not a replacement for the internal tenant UUID and must not weaken tenant isolation.
+
+### Lauren Digital parent-site architecture
+
+Lauren Digital is the parent/company brand. TradeFlow is one product of Lauren Digital.
+
+Future intended structure:
+
+- `laurendigital.co.uk` — Lauren Digital parent/company site.
+- `tradeflow.laurendigital.co.uk` — TradeFlow platform.
+- Future products may receive their own subdomains when those products are ready.
+
+Customer-owned subscriber domains remain separate and continue to use the approved subscriber-owned domain connection workflow.
+
+A future Lauren Digital parent site and owner-only login route are architectural plans, not current implementation work. Do not redesign the existing TradeFlow application or Website Builder to implement them unless explicitly instructed.
 
 ## 1A. Permanent TEST → LIVE environment architecture — 30 September 2026
 

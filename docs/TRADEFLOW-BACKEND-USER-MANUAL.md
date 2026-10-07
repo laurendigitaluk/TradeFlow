@@ -439,6 +439,39 @@ For example, changing a public website button does not itself purchase an item, 
 
 The separate `subscriber-website-manual.html` explains the website-building controls. This backend manual explains what happens after those public-site journeys enter TradeFlow.
 
+## 2026-10-07 — LIVE platform URL and business-slug routing
+
+The LIVE TradeFlow application is now connected to the existing production Worker through:
+
+`https://tradeflow.laurendigital.co.uk`
+
+Cloudflare Custom Domain is attached to the existing `tradeflow` Worker. Do not create a second Worker for the TradeFlow platform.
+
+### URL identifier rule
+
+The database `tenant_id` remains the authoritative internal tenant/security boundary. It must continue to be used for tenant-scoped database queries, authentication state, RLS and internal API calls.
+
+Do not expose the tenant UUID in normal subscriber-facing browser URLs when a business slug can be used instead.
+
+The current subscriber workspace resolves a URL-safe business slug, for example:
+
+`Adventure Outpost` → `adventure-outpost`
+
+The subscriber workspace also removes a legacy `tenant_id` query parameter from the browser URL after the authenticated tenant context is established.
+
+This is a URL presentation/routing improvement only. It does not replace tenant UUIDs internally and must not weaken tenant isolation.
+
+### Lauren Digital / TradeFlow domain structure
+
+Lauren Digital is the parent/company brand.
+
+- `laurendigital.co.uk` is the parent/company domain.
+- `tradeflow.laurendigital.co.uk` is the LIVE TradeFlow platform.
+- Future Lauren Digital products may use separate product subdomains when ready.
+- Subscriber-owned domains remain customer-specific and continue through the existing Platform Owner connection/verification workflow.
+
+A future Lauren Digital parent homepage and separate owner-only login route are planned architecture, not current application work.
+
 
 ## 22B. Owner step-by-step domain connection workflow
 

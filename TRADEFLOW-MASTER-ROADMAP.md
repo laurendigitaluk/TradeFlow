@@ -25,7 +25,7 @@ Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate
 
 
 
-## CURRENT PROJECT STATE — 6 OCTOBER 2026
+## CURRENT PROJECT STATE — 7 OCTOBER 2026
 
 ### Current architecture
 TradeFlow is being completed against LIVE while the product is being finished. The permanent future release model remains TEST → verify → promote to LIVE once the known-good LIVE baseline is captured.
@@ -48,11 +48,11 @@ Current subscriber model:
 No registrar password is requested. No DNS target is invented. No unverified domain is activated.
 
 Platform infrastructure domain:
-- `laurendigital.co.uk` was purchased directly through Porkbun.
-- Cloudflare Free zone setup is in progress.
-- Nameserver delegation has been submitted and Cloudflare is currently waiting for propagation.
-- The zone is not yet treated as active.
-- TradeFlow's Cloudflare custom-hostname automation is implemented, but final live testing waits for the active zone and real SaaS CNAME target.
+- `laurendigital.co.uk` was purchased directly through Porkbun and is active in Cloudflare on the Free plan.
+- The existing LIVE `tradeflow` Worker is connected through Cloudflare Custom Domain at `tradeflow.laurendigital.co.uk`.
+- The branded TradeFlow URL has been browser-verified over HTTPS; public homepage and authenticated subscriber workspace both load.
+- Customer-owned subscriber domains remain a separate connection workflow.
+- Future Cloudflare for SaaS/custom-hostname automation remains relevant for subscriber-owned domains, but the TradeFlow platform itself does not need another Worker.
 
 ### Shipping
 Manual subscriber-managed shipping is authoritative. Parcel2Go API/checkout/payment-link shipping is retired.
@@ -60,6 +60,30 @@ Manual subscriber-managed shipping is authoritative. Parcel2Go API/checkout/paym
 ### Code/documentation cleanup — 6 October 2026
 Retired domain-purchase/registrant frontend, old domain-purchase Edge Function source, Parcel2Go source, ResellerClub source and unused duplicate dashboard runtimes have been removed from the production repository. Historical checkpoints remain as audit evidence.
 
+
+## 2026-10-07 — URL architecture milestone
+
+### LIVE platform
+**Verified Live:** `https://tradeflow.laurendigital.co.uk`
+
+The existing `tradeflow` Worker is connected to the active `laurendigital.co.uk` zone through a Cloudflare Custom Domain. The public site and authenticated subscriber workspace have been browser-tested on the branded URL.
+
+### Subscriber URL hygiene
+`tenant_id` remains the internal tenant/security identifier. It must not be removed from internal database/RLS/authentication use.
+
+Normal subscriber-facing browser URLs should use a stable business slug rather than exposing a raw tenant UUID. Current example:
+
+`Adventure Outpost` → `adventure-outpost`
+
+The current subscriber workspace removes the legacy `tenant_id` query parameter from the visible URL after tenant context is established.
+
+### Lauren Digital parent/product structure
+- `laurendigital.co.uk` — Lauren Digital parent/company site.
+- `tradeflow.laurendigital.co.uk` — TradeFlow platform.
+- Future products may receive separate subdomains when ready.
+- Customer-owned subscriber domains remain independent of the Lauren Digital product subdomains.
+
+A future Lauren Digital homepage and separate owner-only login route are recorded as planned architecture, not current implementation scope.
 
 ## Master roadmap
 | # | Domain | Status | Current evidence / next action |

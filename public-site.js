@@ -3,6 +3,7 @@ const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 const params=new URLSearchParams(location.search);
 let tenantId=params.get('tenant_id');
+let businessSlug=params.get('business')||'';
 let activeTenantId=tenantId;
 const page=params.get('page')||'home';
 const preview=params.get('preview')==='draft';
@@ -45,8 +46,9 @@ function customerBasketUrl(listingId){
  return target.href;
 }
 function pageUrl(slug,extra){
- let u='/?page='+encodeURIComponent(slug);
- if(preview&&tenantId)u='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page='+encodeURIComponent(slug)+'&preview=draft';
+ let u=businessSlug?('/?business='+encodeURIComponent(businessSlug)+'&page='+encodeURIComponent(slug)):'/?page='+encodeURIComponent(slug);
+ if(preview&&businessSlug)u='public-site.html?business='+encodeURIComponent(businessSlug)+'&page='+encodeURIComponent(slug)+'&preview=draft';
+ else if(preview&&tenantId)u='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page='+encodeURIComponent(slug)+'&preview=draft';
  if(extra)u+='&'+extra;
  return u;
 }
@@ -549,6 +551,13 @@ function renderCustomerContact(){
 }
 
 async function loadDraftPreview(){
+ if(!tenantId&&businessSlug){
+  const resolved=await api('/rest/v1/rpc/get_published_site_by_slug',{method:'POST',body:JSON.stringify({p_slug:businessSlug})});
+  const row=Array.isArray(resolved)?resolved[0]:resolved;
+  if(!row?.tenant_id)throw new Error('No published TradeFlow website was found for this business.');
+  tenantId=row.tenant_id;
+  activeTenantId=tenantId;
+ }
  if(!tenantId)throw new Error('No subscriber tenant was supplied for preview.');
  let subscriberSession=null;
  try{subscriberSession=JSON.parse(localStorage.getItem('tradeflow_subscriber_session')||'null')}catch{}
@@ -571,6 +580,20 @@ async function loadDraftPreview(){
  applyContent(drafts[0].content);
 }
 
+async function loadByBusinessSlug(){
+ if(!businessSlug)throw new Error('No business was supplied.');
+ const rows=await api('/rest/v1/rpc/get_published_site_by_slug',{method:'POST',body:JSON.stringify({p_slug:businessSlug})});
+ const selected=Array.isArray(rows)?rows[0]:rows;
+ if(!selected?.tenant_id)throw new Error('No published website was found for this business.');
+ tenantId=selected.tenant_id;
+ activeTenantId=tenantId;
+ if(preview)return loadDraftPreview();
+ try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(tenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
+ await loadListings(tenantId);
+ await loadPublicProfile(tenantId);
+ applyContent(selected.content);
+}
+
 async function loadByTenant(){
  if(!tenantId)throw new Error('No subscriber tenant was supplied. Open the public site with its tenant_id or active domain.');
  if(preview)return loadDraftPreview();
@@ -583,6 +606,7 @@ async function loadByTenant(){
 }
 
 async function loadByHostname(){
+  if(businessSlug)return loadByBusinessSlug();
   if(tenantId)return loadByTenant();
   if(!hostname||hostname==='localhost'||hostname==='127.0.0.1')return loadByTenant();
   let rows=await api('/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1');

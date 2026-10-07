@@ -99,8 +99,14 @@ async function prepareCloudflareConnection(actionId){
   buttons.forEach(b=>b.disabled=true);
   if(out)out.textContent='Preparing Cloudflare connection…';
   try{
+    // Explicitly require the authenticated Platform Owner JWT for this
+    // protected Edge Function. Do not rely on an implicit browser header.
+    if(!session?.access_token) throw Error('Your Platform Owner session has expired. Please sign in again.');
     const result=await request('/functions/v1/platform-prepare-custom-domain',{
       method:'POST',
+      headers:{
+        Authorization:`Bearer ${session.access_token}`
+      },
       body:JSON.stringify({action_id:actionId})
     });
     if(out)out.textContent='Connection prepared automatically.';

@@ -11,9 +11,10 @@
     document.documentElement.dataset.tradeflowTenantId=tenantId;
     document.documentElement.dataset.tradeflowTenantName=name;
     const params=new URLSearchParams(location.search);
-    if(params.get('tenant_id')!==tenantId){
-      params.set('tenant_id',tenantId);
-      history.replaceState(null,'',`${location.pathname}?${params.toString()}`);
+    if(params.has('tenant_id')){
+      params.delete('tenant_id');
+      const next=params.toString();
+      history.replaceState(null,'',next?`${location.pathname}?${params.toString()}`:location.pathname);
     }
     return auth;
   };

@@ -208,10 +208,18 @@ Deno.serve(async (req) => {
       prepared_at: new Date().toISOString()
     };
 
-    const updateResponse = await sb(
-      "/rest/v1/rpc/platform_owner_update_domain_action",
+    // The owner update RPC performs its own auth.uid()/Platform Owner
+    // check, so call it with the authenticated owner JWT rather than the
+    // service-role identity used for direct table reads.
+    const updateResponse = await fetch(
+      SUPABASE_URL + "/rest/v1/rpc/platform_owner_update_domain_action",
       {
         method: "POST",
+        headers: {
+          apikey: SERVICE_ROLE_KEY,
+          Authorization: auth,
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           p_action_id: actionId,
           p_status: "dns_ready",

@@ -1,4 +1,7 @@
 -- Fix subscriber custom-domain status visibility.
+-- Drop the existing signature first because the return type is changing.
+drop function if exists public.subscriber_get_custom_domain_status();
+
 -- This read-only RPC is scoped to the caller's active tenant membership.
 -- It must not depend on the website permission/feature gate because that gate
 -- can legitimately block a status read while the subscriber still needs to

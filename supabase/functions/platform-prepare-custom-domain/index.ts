@@ -146,11 +146,10 @@ Deno.serve(async (req) => {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
+            // Do not send custom_metadata: this Cloudflare account/zone is not
+            // provisioned for the Custom Hostnames metadata feature. TradeFlow
+            // keeps the tenant/domain mapping in its own database metadata.
             hostname,
-            custom_metadata: {
-              tradeflow_tenant_id: String(domain.tenant_id),
-              tradeflow_domain_id: String(domain.id)
-            },
             ssl: {
               method: "http",
               type: "dv",

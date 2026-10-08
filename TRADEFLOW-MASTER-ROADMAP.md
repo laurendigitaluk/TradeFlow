@@ -1046,3 +1046,33 @@ LIVE Supabase audit confirmed the current domain workflow objects remain in plac
 The old domain-pricing/order tables and historical domain-registration Edge Functions may still exist in LIVE Supabase for historical/schema compatibility. They are no longer part of the active subscriber Website URL workflow and their removal must be handled separately from the working website code, with dependency checks before any destructive database cleanup.
 
 Supabase advisory findings were reviewed. Existing security/performance advisories are broader than this website cleanup and were not changed blindly as part of this audit.
+
+
+## 2026-10-08 — Custom-domain LIVE acceptance milestone
+
+### COMPLETE — first real subscriber-owned domain
+The subscriber-owned custom-domain architecture has now completed its first full LIVE acceptance test.
+
+**Subscriber:** Adventure Outpost  
+**Hostname:** www.scenesource.co.uk  
+**Result:** Active · Primary  
+**LIVE platform:** https://tradeflow.laurendigital.co.uk
+
+Verified sequence:
+1. Review request
+2. Prepare connection automatically
+3. Give exact DNS instructions
+4. Verify DNS
+5. Verify SSL / HTTPS
+6. Verify tenant routing
+7. Activate domain
+
+Cloudflare routing was corrected by adding the verified wildcard route */* for the laurendigital.co.uk zone to the existing tradeflow Worker. The previous customer-hostname 522 was thereby resolved. The verified test DNS record was www CNAME → customers.laurendigital.co.uk.
+
+The final activation JavaScript defect (m is not defined) was fixed in production commit 25bbc9c86a5778e5911850c2ad64234696c221f4 and deployed in Cloudflare Production deployment 244d6f94.
+
+### NEXT DOMAIN TEST
+The next domain test is now a **reuse test**, not an infrastructure rebuild. Start with a new subscriber-owned domain request and prove that the existing architecture handles it without creating another Worker or another wildcard route. Verify each owner phase one at a time and record the result in a new dated checkpoint.
+
+### Documentation lock
+After every material domain change/test, update the AI Operating Manual, Backend/Owner Manual, Human/Subscriber Manual, System Handbook and this roadmap, and create a dated checkpoint. Do not mark a domain active manually and do not claim verification without evidence.

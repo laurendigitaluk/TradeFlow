@@ -1792,3 +1792,35 @@ Production code state captured before documentation-only updates: `f3ff7f9d34030
 
 ## Next stage
 The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.\n\n## 2026-10-06 — LIVE domain model\n\nTradeFlow uses subscriber-owned domains only. Subscribers buy, own, renew and manage their domain with their chosen registrar. In TradeFlow, open **Website → Website URL**, enter the domain, and submit the connection request. The Platform Owner prepares the connection and provides exact DNS instructions. The subscriber applies those instructions. TradeFlow verifies DNS, SSL and tenant routing before the domain is activated.\n\nTradeFlow does not purchase the domain, hold the registrar account, request the registrar password, or activate an unverified domain.\n
+
+## 2026-10-08 — Subscriber-owned domains: LIVE workflow verified
+
+TradeFlow's current domain model has been proven with a real LIVE subscriber domain. Subscribers own and manage their domain with their chosen registrar. TradeFlow connects the domain to the subscriber website but does not ask for the registrar password and does not take ownership of the domain.
+
+### Connect an existing domain
+1. Open **Website URL** in your TradeFlow dashboard.
+2. Enter the domain/hostname you already own.
+3. TradeFlow creates a connection request for the Platform Owner.
+4. Wait for the Platform Owner to provide the exact DNS instruction.
+5. Add that exact DNS record at your registrar.
+6. TradeFlow verifies DNS, HTTPS/SSL and that the hostname reaches your own TradeFlow website.
+7. The Platform Owner activates the domain only after those checks pass.
+
+Your domain remains pending while connection work is incomplete. Do not guess a DNS target. Use the exact record displayed by TradeFlow.
+
+### LIVE proof
+This process has been successfully completed for www.scenesource.co.uk. The subscriber dashboard now reports **Domain active** and the published subscriber website responds on the customer-owned hostname.
+
+### What the subscriber is responsible for
+- owning the domain;
+- registrar account security;
+- renewal and registrar billing;
+- applying the DNS instruction supplied by TradeFlow.
+
+### What TradeFlow handles
+- the connection request;
+- the approved hosting connection;
+- verification of DNS, SSL/HTTPS and tenant routing;
+- activation after verification.
+
+Do not send registrar passwords, payment-provider passwords or other secret credentials to TradeFlow support.

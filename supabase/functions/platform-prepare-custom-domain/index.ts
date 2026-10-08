@@ -66,22 +66,50 @@ Deno.serve(async (req) => {
     const actionId = String(body.action_id || "");
     if (!actionId) return json({ error: "action_id is required" }, 400);
 
-    const actionResponse = await sb(
-      "/rest/v1/platform_owner_domain_actions?id=eq." +
-      encodeURIComponent(actionId) +
-      "&select=id,tenant_id,tenant_domain_id,status,metadata&limit=1"
+    // The Owner Dashboard already uses the authorised public RPC for domain
+    // actions. Keep this Edge Function on that same contract rather than
+    // querying the underlying action table directly through PostgREST.
+    // The RPC must run with the authenticated Platform Owner JWT so its
+    // auth.uid()/owner checks remain intact.
+    const actionListResponse = await fetch(
+      SUPABASE_URL + "/rest/v1/rpc/platform_owner_list_domain_actions",
+      {
+        method: "POST",
+        headers: {
+          apikey: SERVICE_ROLE_KEY,
+          Authorization: auth,
+          "Content-Type": "application/json"
+        },
+        body: "{}"
+      }
     );
-    if (!actionResponse.ok) return json({ error: "Unable to load domain request" }, 500);
-    const actions = await actionResponse.json();
-    const action = actions?.[0];
+    if (!actionListResponse.ok) {
+      const actionListBody = await actionListResponse.text().catch(() => "");
+      return json({
+        error: "Unable to load domain requests",
+        detail: actionListBody || "platform_owner_list_domain_actions failed"
+      }, 500);
+    }
+
+    const actionRows = await actionListResponse.json().catch(() => []);
+    const action = Array.isArray(actionRows)
+      ? actionRows.find((row: any) => String(row?.action_id || "") === actionId)
+      : null;
+
     if (!action) return json({ error: "Domain request not found" }, 404);
-    if (action.status === "active") return json({ error: "Domain is already active" }, 409);
+    if (action.action_status === "active") return json({ error: "Domain is already active" }, 409);
+
+    const tenantId = String(action.tenant_id || "");
+    const hostnameFromAction = String(action.hostname || "").toLowerCase().trim();
+    if (!tenantId || !hostnameFromAction) {
+      return json({ error: "Domain request is missing tenant or hostname information" }, 500);
+    }
 
     const domainResponse = await sb(
-      "/rest/v1/tenant_domains?id=eq." +
-      encodeURIComponent(action.tenant_domain_id) +
-      "&tenant_id=eq." +
-      encodeURIComponent(action.tenant_id) +
+      "/rest/v1/tenant_domains?tenant_id=eq." +
+      encodeURIComponent(tenantId) +
+      "&hostname=eq." +
+      encodeURIComponent(hostnameFromAction) +
       "&select=id,tenant_id,hostname,status,domain_type,acquisition_source,metadata&limit=1"
     );
     if (!domainResponse.ok) return json({ error: "Unable to load requested domain" }, 500);

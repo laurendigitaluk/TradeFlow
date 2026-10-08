@@ -2246,3 +2246,45 @@ Production code state captured before documentation-only updates: `f3ff7f9d34030
 
 ## Next stage
 The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+## 2026-10-08 — LIVE subscriber-owned domain workflow VERIFIED end-to-end
+
+This is the current verified domain state and supersedes earlier statements that the LIVE custom-domain workflow was still awaiting its final invocation.
+
+### Verified LIVE test
+- Subscriber: **Adventure Outpost**
+- Customer-owned hostname: **www.scenesource.co.uk**
+- LIVE TradeFlow platform: **https://tradeflow.laurendigital.co.uk**
+- The domain reached **Active · Primary** through the controlled Platform Owner workflow.
+- The subscriber Website URL page reports: **Domain active. Your published TradeFlow website is connected to this domain.**
+
+### Verified owner sequence
+1. Review request — completed.
+2. Prepare TradeFlow connection automatically — completed.
+3. Give customer exact DNS instructions — completed.
+4. Verify DNS — completed.
+5. Verify SSL / HTTPS — completed.
+6. Verify tenant routing — completed.
+7. Activate domain — completed.
+
+No domain was manually marked active. Activation occurred only after DNS, SSL and tenant-routing verification were complete.
+
+### Verified DNS / Cloudflare routing
+The customer DNS record used in this test was:
+- CNAME www → customers.laurendigital.co.uk
+
+The LIVE Cloudflare tradeflow Worker now has the wildcard route */* on the laurendigital.co.uk zone with **Fail closed (block)** selected. This routing change resolved the previous 522 for the customer-owned hostname and allowed the request to reach the existing TradeFlow Worker.
+
+Do not invent the CNAME target for future domains. The approved preparation workflow must provide the exact target for each connection. Do not create another Worker for customer domains.
+
+### Defects found and permanently recorded
+1. The LIVE owner dashboard initially omitted the Authorization bearer token when calling platform-prepare-custom-domain. Fixed in production commit c7f0914e9a8686ba5d6e45e360b765ce0e2662e5.
+2. The LIVE preparation function initially failed to load the owner domain action through its direct table lookup. Fixed by using the authenticated owner RPC in production commit 03fe258aea835a51e6f68924cc5e49cb09fb71cb.
+3. The customer-owned hostname initially returned Cloudflare 522 because the existing Worker had no zone route for the external hostname. The Cloudflare wildcard route */* to the existing tradeflow Worker resolved this routing boundary.
+4. The final owner-dashboard activation click exposed a JavaScript ReferenceError: m is not defined. The activation handler was corrected in production commit 25bbc9c86a5778e5911850c2ad64234696c221f4; Cloudflare Production deployment 244d6f94 confirmed the fix was deployed.
+
+### Next-domain test rule
+The next subscriber-domain test should reuse this architecture. Do not rebuild the Cloudflare Worker, do not recreate the wildcard route, do not manually create a custom hostname unless the approved function fails, and do not manually activate the domain. Start with a fresh subscriber-owned domain request and verify the seven phases one at a time.
+
+### Documentation rule
+After every material domain change or test, update this AI Operating Manual, the Backend/Owner Manual, the Human/Subscriber Manual, the System Handbook, the Master Roadmap and a dated checkpoint. Do not claim a phase is verified without browser/database/Cloudflare evidence.

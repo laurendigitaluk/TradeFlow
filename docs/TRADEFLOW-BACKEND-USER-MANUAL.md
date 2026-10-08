@@ -1224,3 +1224,42 @@ The protected Edge Function `platform-prepare-custom-domain` is now version-cont
 The retired domain purchase/registrant frontend and retired domain-purchase Edge Function source have been removed from the production repository. Parcel2Go, ResellerClub and unused duplicate dashboard runtimes were also removed from the production source tree. Historical database objects and already-deployed retired functions were not destructively removed during this audit because the available project connector does not expose a delete-function operation and database dependencies have not yet been fully proven absent.
 
 The 5 October Website Builder baseline remains locked and must not be changed during domain/infrastructure work.
+
+
+## 2026-10-08 — LIVE owner/subscriber custom-domain workflow VERIFIED
+
+The LIVE subscriber-owned domain architecture has now passed a complete real-domain acceptance test using **Adventure Outpost** and **www.scenesource.co.uk**.
+
+### Authoritative owner workflow
+The Platform Owner Dashboard must use these seven phases in order:
+
+1. Review the request.
+2. Prepare the TradeFlow connection automatically.
+3. Give the customer the exact DNS instructions returned by the approved connection setup.
+4. Verify DNS.
+5. Verify SSL / HTTPS.
+6. Verify tenant routing.
+7. Activate the domain.
+
+Activation must remain blocked until DNS, SSL and tenant routing are verified. Never manually set a tenant domain to active simply because the customer says the DNS has been changed.
+
+### LIVE acceptance evidence
+- www.scenesource.co.uk became **Active · Primary**.
+- The subscriber Website URL page reported **Domain active. Your published TradeFlow website is connected to this domain.**
+- The Platform Owner Dashboard showed no open subscriber domain connection requests after activation.
+- The customer DNS record was CNAME www → customers.laurendigital.co.uk.
+- The existing LIVE tradeflow Worker received customer-owned hostname traffic after the Cloudflare zone wildcard route */* was added to the laurendigital.co.uk zone.
+- Cloudflare route failure mode was **Fail closed (block)**.
+
+### Cloudflare routing rule
+The wildcard route is an infrastructure prerequisite for customer-owned hostnames entering the existing SaaS/TradeFlow Worker. Do not create a second Worker for each subscriber. Do not put the wildcard route into Wrangler configuration unless the complete exclusion strategy has been designed and tested; the current verified LIVE route is managed in Cloudflare.
+
+### Known fixes that are now part of the baseline
+- Owner dashboard sends the authenticated Platform Owner JWT to platform-prepare-custom-domain (c7f0914e9a8686ba5d6e45e360b765ce0e2662e5).
+- Owner action lookup uses the authenticated owner RPC (03fe258aea835a51e6f68924cc5e49cb09fb71cb).
+- Activation metadata is read from the current domain-action row rather than an out-of-scope variable (25bbc9c86a5778e5911850c2ad64234696c221f4). Cloudflare Production deployment 244d6f94 contains that fix.
+
+### Future subscriber test procedure
+For the next domain, reuse the exact architecture but do not assume the DNS target. The approved preparation function must supply the exact target/instructions. The subscriber changes DNS at their registrar; TradeFlow verifies DNS, SSL and routing; the owner activates only after all checks pass.
+
+The subscriber never supplies a registrar password and TradeFlow never stores one.

@@ -18,25 +18,31 @@ function replaceAll(source, from, to) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
-    const cleanRoutes = env.TRADEFLOW_ENV === "test"
-      ? {
-          "/": "/public-site.html",
-          "/login": "/customer-dashboard.html",
-          "/basket": "/customer-basket.html",
-          "/assistant": "/customer-assistant.html",
-          "/email-confirmed": "/customer-email-confirmed.html",
-          "/reset-password": "/customer-password-reset.html",
-          "/owner-reset-password": "/platform-owner-password-reset.html",
-        }
-      : {
-          "/": "/public-site.html",
-          "/login": "/customer-dashboard.html",
-          "/basket": "/customer-basket.html",
-          "/assistant": "/customer-assistant.html",
-          "/email-confirmed": "/customer-email-confirmed.html",
-          "/reset-password": "/customer-password-reset.html",
-          "/owner-reset-password": "/platform-owner-password-reset.html",
-        };
+    // Platform-owned hostnames keep the TradeFlow application/marketing homepage.
+    // Subscriber-owned vanity domains must instead enter the public-site shell at "/".
+    // The public-site JavaScript then resolves the tenant from published_site_index
+    // using the actual request hostname.
+    const hostname = url.hostname.toLowerCase();
+    const platformHostnames = new Set([
+      "tradeflow.laurendigital.co.uk",
+      "tradeflow.leannelaurenlowe.workers.dev",
+      "tradeflow-test.leannelaurenlowe.workers.dev",
+      "laurendigital.co.uk",
+      "www.laurendigital.co.uk",
+      "localhost",
+      "127.0.0.1",
+    ]);
+    const isSubscriberDomain = !platformHostnames.has(hostname) && !hostname.endsWith(".github.io");
+    const cleanRoutes = {
+      "/login": "/customer-dashboard.html",
+      "/basket": "/customer-basket.html",
+      "/assistant": "/customer-assistant.html",
+      "/email-confirmed": "/customer-email-confirmed.html",
+      "/reset-password": "/customer-password-reset.html",
+      "/owner-reset-password": "/platform-owner-password-reset.html",
+    };
+    if (isSubscriberDomain) cleanRoutes["/"] = "/public-site.html";
+
     const assetPath = cleanRoutes[url.pathname];
     const assetRequest = assetPath
       ? new Request(new URL(assetPath + url.search, url.origin), request)

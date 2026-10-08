@@ -1827,3 +1827,34 @@ Production code state captured before documentation-only updates: `f3ff7f9d34030
 
 ## Next stage
 The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+## CURRENT OVERRIDE — 2026-10-08 — LIVE custom-domain acceptance VERIFIED
+
+This section is the latest system truth for subscriber-owned domains and supersedes older domain statements that describe the workflow as unverified or still awaiting final LIVE setup.
+
+### Verified architecture
+Subscriber-owned domain → TradeFlow Website URL request → Platform Owner seven-phase workflow → Cloudflare custom hostname → subscriber DNS → DNS verification → SSL/HTTPS verification → tenant routing verification → activation → published subscriber website.
+
+### Verified LIVE test
+- Subscriber: **Adventure Outpost**
+- Hostname: **www.scenesource.co.uk**
+- Result: **Active · Primary**
+- Subscriber Website URL page confirmed: **Domain active. Your published TradeFlow website is connected to this domain.**
+- Owner Dashboard showed no open subscriber domain connection requests after activation.
+
+### Cloudflare infrastructure now verified
+The existing LIVE tradeflow Worker is used for customer-owned hostnames. The laurendigital.co.uk Cloudflare zone has a wildcard Worker route */* pointing to the existing tradeflow Worker. The route uses **Fail closed (block)**. This resolved the 522 routing boundary encountered during the SceneSource test.
+
+The subscriber DNS record used for the verified test was:
+www CNAME → customers.laurendigital.co.uk
+
+The exact CNAME target for future domains must always come from the approved Cloudflare connection preparation. Never invent or substitute a target.
+
+### Verified defect history
+- c7f0914e9a8686ba5d6e45e360b765ce0e2662e5 — owner dashboard authentication header repair.
+- 03fe258aea835a51e6f68924cc5e49cb09fb71cb — authenticated owner RPC domain-action lookup repair.
+- Cloudflare */* route — fixed customer-owned hostname 522 routing boundary.
+- 25bbc9c86a5778e5911850c2ad64234696c221f4 — activation JavaScript scope repair; deployed in Cloudflare Production deployment 244d6f94.
+
+### Release/acceptance rule
+A domain feature is not complete merely because source code exists. It is verified only after browser evidence confirms the real hostname, the owner workflow and the subscriber Website URL state. Future defects must be reproduced/fixed in the controlled development/release process and then promoted to LIVE.

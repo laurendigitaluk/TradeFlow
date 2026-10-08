@@ -102,6 +102,12 @@ async function prepareCloudflareConnection(actionId){
     // Explicitly require the authenticated Platform Owner JWT for this
     // protected Edge Function. Do not rely on an implicit browser header.
     if(!session?.access_token) throw Error('Your Platform Owner session has expired. Please sign in again.');
+    if(out)out.textContent='Sending authenticated request to Supabase…';
+    console.debug('[TradeFlow custom-domain] Step 2 request', {
+      endpoint:'/functions/v1/platform-prepare-custom-domain',
+      action_id:actionId,
+      has_access_token:!!session?.access_token
+    });
     const result=await request('/functions/v1/platform-prepare-custom-domain',{
       method:'POST',
       headers:{
@@ -109,11 +115,13 @@ async function prepareCloudflareConnection(actionId){
       },
       body:JSON.stringify({action_id:actionId})
     });
+    console.debug('[TradeFlow custom-domain] Step 2 response', result);
     if(out)out.textContent='Connection prepared automatically.';
     await loadDomainActions();
     return result;
   }catch(e){
-    if(out)out.textContent=e.message||String(e);
+    console.error('[TradeFlow custom-domain] Step 2 failed', e);
+    if(out)out.textContent='Supabase/Cloudflare error: '+(e.message||String(e));
     buttons.forEach(b=>b.disabled=false);
     throw e;
   }
@@ -187,7 +195,7 @@ async function loadDomainActions(){
 
     root.querySelectorAll('[data-domain-phase]').forEach(btn=>btn.onclick=async()=>{
       const id=btn.dataset.domainPhase,key=btn.dataset.phase;
-      if(key==='connection_prepared'){try{await prepareCloudflareConnection(id)}catch{}return;}
+      if(key==='connection_prepared'){try{await prepareCloudflareConnection(id)}catch(e){console.error('[TradeFlow custom-domain] click handler failed',e)}return;}
       const status=root.querySelector('[data-domain-action-status="'+id+'"]');
       const out=root.querySelector('[data-domain-status="'+id+'"]');
       btn.disabled=true;

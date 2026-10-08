@@ -212,7 +212,9 @@ async function loadDomainActions(){
         if(key==='ssl_verified')meta.ssl_verified=true;
         if(key==='routing_verified')meta.routing_verified=true;
         if(key==='activated'){
-          if(m.dns_verified!==true || m.ssl_verified!==true || m.routing_verified!==true)throw Error('DNS, SSL and tenant routing must all be verified before activation.');
+          const currentRow=rows.find(r=>r.action_id===id);
+          const currentMetadata=currentRow?.metadata||{};
+          if(currentMetadata.dns_verified!==true || currentMetadata.ssl_verified!==true || currentMetadata.routing_verified!==true)throw Error('DNS, SSL and tenant routing must all be verified before activation.');
           meta.activated=true;meta.dns_verified=true;meta.ssl_verified=true;meta.routing_verified=true;
         }
         let actionStatus='requested';

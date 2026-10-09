@@ -1833,3 +1833,7 @@ A LIVE test found that the subscriber website could be displayed at the internal
 A production routing repair has been committed. The intended customer-facing URLs remain clean paths such as `/`, `/buying`, `/sell`, `/shop`, `/about` and `/contact`. Do not document `/public-site` as a normal customer-facing URL.
 
 Browser verification remains outstanding until the new deployment has been tested anonymously.
+
+## 2026-10-09 — LIVE subscriber website loading repair
+
+If the public website remains on “Loading website…” at the correct root URL, this can indicate that the public-site JavaScript has failed before it can load the published website. The 9 October audit found and repaired an invalid JavaScript regular-expression literal, then changed the script cache version to `public-site.js?v=26`. Wait for the production deployment and test the site anonymously before making any domain or account changes. Browser verification remains outstanding.

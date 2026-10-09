@@ -56,3 +56,20 @@ New rule: fresh-start initialisation occurs only when there is no published revi
 No subscriber-specific content was fabricated or overwritten by this follow-up repair. The current public content remains whatever is actually stored in the published revision.
 
 Status: domain routing repaired; destructive reset protection repaired; intended subscriber homepage content still requires final LIVE verification.
+
+
+
+## 2026-10-09 second routing root cause — Cloudflare HTML handling
+
+The first Worker-first repair correctly caused subscriber vanity traffic to reach `public-site.html`, but clean URL navigation still failed. Deep audit found that `worker/index.js` fetches `/public-site.html` through the `ASSETS` binding. Cloudflare's default `html_handling: auto-trailing-slash` applies to those asset-binding requests and canonicalises `/public-site.html` to `/public-site`. The browser therefore changed to `/public-site`, after which `public-site.js` correctly treated the unknown path as `home`.
+
+This is why the earlier JavaScript clean-page mapping did not solve the observed behaviour: the browser was being redirected before the clean page route could be interpreted.
+
+LIVE Supabase was audited directly. `published_site_index` has one public row for `www.scenesource.co.uk`, mapped to tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`; `tenant_domains` shows the hostname active and primary; public SELECT policy on `published_site_index` allows anonymous access. The database is not the cause of the current navigation defect.
+
+Repair committed to production:
+- `6a94244ec769a1d7f38aac29df0290a432cf1654` — `html_handling: none` and `run_worker_first: true`.
+- `49c775fa30d2e5ea1fbad823e76e60e9acbc016e` — trailing-slash page normalisation.
+- `ff8ce11cdd1d6ee6c6ce87970dc48a4eb5d2a03` — public-site JS cache refresh.
+
+Status: **root cause identified and source repaired; browser verification pending the new Cloudflare deployment.**

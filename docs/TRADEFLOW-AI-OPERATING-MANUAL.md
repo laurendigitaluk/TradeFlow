@@ -1,5 +1,18 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
+> **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
+>
+> - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
+> - LIVE Adventure Outpost tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52` is active. LIVE has 2 non-deleted Auth users: 1 platform-owner membership and 1 active Adventure Outpost subscriber membership. The `public.customers` table contains 0 records, including 0 customer-login links for Adventure Outpost. No SceneSource website customer has been confirmed or created.
+> - `www.scenesource.co.uk` is the active primary domain and has published-site revision 1. Do not alter DNS, SSL, Cloudflare routing, the published site, or account credentials as part of this audit.
+> - **Open code/configuration discrepancy:** `wrangler.jsonc` declares `LIVE_SUPABASE_URL` as `https://gxsrajtqzdjvmceqcpgv2.supabase.co`, which does not match the verified LIVE project URL. The browser-facing runtime code uses the correct project URL. Do not deploy a configuration correction until the Worker transformation and LIVE route/session tests are run.
+> - **Open retired-code discrepancy:** five old LIVE domain-purchase/registration Edge Functions remain ACTIVE (`porkbun-domain-availability`, `create-domain-checkout-session`, `reconcile-domain-payment`, `save-domain-registrant`, `porkbun-domain-registration`). The current subscriber domain-settings frontend does not call them. LIVE still has two legacy domain-order records and one registrant record. Do not delete the records or disable the functions until their status, credentials and callers are reviewed. The current subscriber domain model remains customer-owned domains plus Platform Owner connection/verification.
+> - LIVE Supabase reports RLS enabled on all 98 public tables. Advisors also report 14 RLS-enabled tables with no policies, 14 anon-callable SECURITY DEFINER functions, 160 authenticated-callable SECURITY DEFINER functions, disabled leaked-password protection, and performance findings (64 unindexed foreign keys, 166 RLS init-plan findings, 105 unused indexes, 14 multiple-permissive-policy findings and 3 duplicate indexes). These are review queues, not permission to bulk-change policies or indexes; review each against intended access and current code before repair.
+> - The `production` and `main` branches have diverged substantially. Do not merge or force-sync them as part of cleanup.
+> - The customer registration code and tenant-registration RPC exist, but the three-role Chrome session test and live clean-route acceptance tests remain **PENDING**. The external site could not be independently fetched by the audit tools; the latest recorded browser screenshot in the continuation checkpoint showed the homepage rendering.
+>
+> This snapshot supersedes older conflicting environment/status notes. Audit queries were read-only. No LIVE runtime code, database rows, authentication accounts, subscriptions, DNS, Cloudflare settings or published content were changed.
+
 
 > **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
 >
@@ -31,7 +44,7 @@ AI continuity companion for TradeFlow. It records architectural truth, decisions
 - Repository: `laurendigitaluk/TradeFlow`.
 - `production` is the LIVE release branch.
 - `main`/development branches remain the repair and development side; do not treat old TEST-only URLs as production.
-- LIVE Supabase: `gxsrajtqzdjvmceqcpgv5`.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`.
 - LIVE architecture remains GitHub → Cloudflare Worker → LIVE Supabase.
 - Website publishing is separate from application deployment: Website Builder draft → Preview → Publish → published revision becomes LIVE.
 - The locked LIVE Website Builder baseline from 5 October 2026 must not be redesigned or structurally altered unless explicitly reopened.
@@ -1820,7 +1833,7 @@ TEST migration: 20260930232732_allow_duplicate_inventory_serial_numbers_with_war
 
 ## 2026-10-06 — Current TEST/LIVE and domain boundary
 
-TradeFlow uses `production` as the LIVE release branch and the dedicated LIVE Supabase project `gxsrajtqzdjvmceqcpgv5`. Development/repair work must not silently change LIVE. Browser fixes are verified before promotion.
+TradeFlow uses `production` as the LIVE release branch and the dedicated LIVE Supabase project `gxsrajtqzdjvmceqcpgv`. Development/repair work must not silently change LIVE. Browser fixes are verified before promotion.
 
 The current production website architecture is stable and the Website Builder baseline is locked.
 

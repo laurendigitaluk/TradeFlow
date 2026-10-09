@@ -1870,6 +1870,6 @@ Production repair: `wrangler.jsonc` now uses `html_handling: "none"` and `run_wo
 
 ## 2026-10-09 — Public-site controller parse failure
 
-A LIVE anonymous request to the correct subscriber root URL remained on the static loading shell. Production `public-site.js` contained a malformed regex literal in trailing-slash normalisation, which is a parse-time error and prevents the whole script from running. Since `loadByHostname()` never starts, this symptom precedes all Supabase reads and is not explained by a missing `published_site_index` row.
+A LIVE anonymous request to the correct subscriber root URL remained on the static loading shell. Production public-site.js contained a malformed regex literal in trailing-slash normalisation, which is a parse-time error and prevents the whole script from running. Since loadByHostname() never starts, this symptom precedes all Supabase reads and is not explained by a missing published_site_index row.
 
-Fixed by production commit `c1e4952d7588e071dc5ce132030afbd0cca97b89`; `public-site.html` now references `public-site.js?v=26` from commit `19aedd3cb17626834c1674999950488c9025a802`. Await deployment and verify in an anonymous browser. Keep DNS, SSL, domain state, Supabase records and authentication unchanged.
+Fixed by production commit c1e4952d7588e071dc5ce132030afbd0cca97b89; public-site.html now references public-site.js?v=26 from commit 19aedd3cb17626834c1674999950488c9025a802. Await deployment and verify in an anonymous browser. Keep DNS, SSL, domain state, Supabase records and authentication unchanged.

@@ -1173,7 +1173,17 @@ async function loadDraft(){
  draftRevisionId=rows[0].draft_revision_id;
  const drafts=await api('/rest/v1/site_revisions?select=id,revision_number,status,content&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(draftRevisionId)+'&status=eq.draft');
  if(!Array.isArray(drafts)||drafts.length!==1)throw new Error('The current website draft revision could not be loaded.');
- if(Number(drafts[0].content?.template_reset_version||0)<2){await clearFreshStartMedia();resetToFreshWebsite();dirty=true;renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();await api('/rest/v1/site_revisions?id=eq.'+encodeURIComponent(draftRevisionId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});dirty=false;const freshState=$('save-state');if(freshState)freshState.textContent='Fresh website saved';setStatus('Fresh website templates loaded. Previous website text, branding and images have been cleared.','success');}else{loadContent(drafts[0].content);}
+ const publishedRevisionId=rows[0].published_revision_id||null;
+ const draftContent=drafts[0].content;
+ const hasExistingDraftContent=!!draftContent&&typeof draftContent==='object'&&Object.keys(draftContent).length>0;
+ const isBrandNewSubscriber=!publishedRevisionId&&!hasExistingDraftContent;
+ if(isBrandNewSubscriber){
+   await clearFreshStartMedia();resetToFreshWebsite();dirty=true;renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
+   await api('/rest/v1/site_revisions?id=eq.'+encodeURIComponent(draftRevisionId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({content:buildContent()})});
+   dirty=false;const freshState=$('save-state');if(freshState)freshState.textContent='Fresh website saved';setStatus('Fresh website template initialised.','success');
+ }else{
+   loadContent(draftContent);
+ }
  try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
  retailListings=await loadRetailListings(tenantId);
  renderEditor();

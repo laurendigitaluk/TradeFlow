@@ -164,3 +164,11 @@ Repairs committed to production:
 - 19aedd3cb17626834c1674999950488c9025a802 — Refresh public-site script after startup fix; public-site.html now loads public-site.js?v=26 to bypass the cached invalid script.
 
 Status: source repaired; browser verification is still required after the Cloudflare deployment. Do not change DNS, SSL, domain activation, Supabase records, authentication, or the existing Cloudflare route for this client-side parse failure. Wait for deployment to show Ready, then test the root URL anonymously. If the loading shell remains, inspect the first Console/Network error before making further changes.
+
+## 2026-10-09 — Platform root 404 introduced by disabled HTML fallback
+
+The screenshot after setting Cloudflare Static Assets to `html_handling: "none"` showed `https://tradeflow.laurendigital.co.uk/` returning 404. With HTML handling disabled, the Worker must explicitly map the platform-owned root path to `/index.html`; the previous code only explicitly mapped the subscriber-owned root to `/public-site.html` and had relied on Cloudflare's automatic index fallback for the platform root.
+
+Repair committed to production: `adf0021c25a95fc39c46587dbde98a0af6ef654a` — `Restore platform homepage with explicit index routing`. `worker/index.js` now maps `/` to `/index.html` for platform-owned hostnames, while subscriber vanity domains continue to map `/` to `/public-site.html`.
+
+Status: code committed; wait for Cloudflare deployment to become Ready, then verify both `https://tradeflow.laurendigital.co.uk/` and `https://www.scenesource.co.uk/`. Do not change DNS, SSL, Supabase or the existing SaaS route.

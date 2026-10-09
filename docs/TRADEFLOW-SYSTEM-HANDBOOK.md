@@ -1858,3 +1858,12 @@ The exact CNAME target for future domains must always come from the approved Clo
 
 ### Release/acceptance rule
 A domain feature is not complete merely because source code exists. It is verified only after browser evidence confirms the real hostname, the owner workflow and the subscriber Website URL state. Future defects must be reproduced/fixed in the controlled development/release process and then promoted to LIVE.
+
+
+## 2026-10-09 — LIVE clean public-route root cause and repair
+
+The LIVE SceneSource anonymous routing audit identified a second defect after Worker-first root routing was introduced. The Worker rewrites subscriber clean paths to `public-site.html` through `env.ASSETS.fetch()`. Cloudflare default `html_handling: auto-trailing-slash` can redirect that internal HTML asset request to `/public-site`, causing the browser to leave the intended clean route and the public renderer to fall back to its home page.
+
+LIVE Supabase was independently checked: the published hostname exists in `published_site_index`, the domain exists as active/primary in `tenant_domains`, and the published index has an anonymous SELECT policy. The database is not the current failure point.
+
+Production repair: `wrangler.jsonc` now uses `html_handling: "none"` and `run_worker_first: true`; public-site JavaScript was also made tolerant of trailing slashes and cache-bumped. Browser verification is pending deployment. Preserve the existing Cloudflare SaaS `*/*` route and domain/SSL state.

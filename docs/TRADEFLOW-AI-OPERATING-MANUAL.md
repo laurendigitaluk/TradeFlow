@@ -2363,7 +2363,7 @@ The Subscriber Website Manual must contain subscriber-facing instructions only. 
 
 ## 2026-10-09 — TEST environment drift discovered during cleanup
 
-The `cloudflare-test` branch is not a current copy of LIVE production:
+The `cloudflare-test` branch is not a current copy of LIVE production. GitHub branch comparison currently reports it diverged from `production` by 21 commits ahead and 756 commits behind; do not merge or fast-forward it as a whole. Direct file/schema inspection also confirms environment-specific architecture drift:
 
 - TEST `domain-settings.html` contained a retired `Buy a new domain` CTA linking to `domain-purchase.html`; the current LIVE architecture is subscriber-owned domains only.
 - TEST `domain-settings.js` directly inserts/patches `tenant_domains` and does not use the current subscriber domain-request/status RPCs.

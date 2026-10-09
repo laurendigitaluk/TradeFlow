@@ -41,7 +41,19 @@ export default {
       "/reset-password": "/customer-password-reset.html",
       "/owner-reset-password": "/platform-owner-password-reset.html",
     };
-    if (isSubscriberDomain) cleanRoutes["/"] = "/public-site.html";
+    if (isSubscriberDomain) {
+      cleanRoutes["/"] = "/public-site.html";
+      // Public subscriber pages use clean paths such as /buying and /sell.
+      // Keep the public-site application behind the Worker; static assets retain
+      // normal ASSETS handling.
+      if (
+        url.pathname !== "/" &&
+        !url.pathname.includes(".") &&
+        !cleanRoutes[url.pathname]
+      ) {
+        cleanRoutes[url.pathname] = "/public-site.html";
+      }
+    }
 
     const assetPath = cleanRoutes[url.pathname];
     const assetRequest = assetPath

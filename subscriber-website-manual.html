@@ -175,3 +175,5 @@ Production code state captured before documentation-only updates: `f3ff7f9d34030
 
 ## Next stage
 The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+<section class="manual-card full"><h2>2026-10-09 — LIVE clean public URL routing audit</h2><p>The SceneSource LIVE test exposed a routing-layer issue where the internal <code>/public-site</code> path could appear instead of the clean public website URL. The cause was in the Cloudflare Worker/static-asset routing layer, not the subscriber's domain record or website content.</p><p>The production routing has now been repaired. Normal customer-facing website URLs remain clean paths such as <code>/</code>, <code>/buying</code>, <code>/sell</code>, <code>/shop</code>, <code>/about</code> and <code>/contact</code>. <code>/public-site</code> is an internal implementation path and should not be treated as the normal customer-facing URL.</p><p>Browser acceptance of the repaired deployment is still required.</p></section>

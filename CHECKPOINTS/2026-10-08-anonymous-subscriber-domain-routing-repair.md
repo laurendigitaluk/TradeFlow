@@ -152,3 +152,29 @@ The code/configuration repair is committed to production. The screenshot supplie
 Next verification must start with a fresh anonymous request to `https://www.scenesource.co.uk/` after the new deployment is Ready. Expected: the address remains `/`, SceneSource renders, What We Buy becomes `/buying`, Retail Shop `/shop`, About `/about`, Contact `/contact`, and Sell to us `/sell` without returning to `/public-site`.
 
 Do not change DNS, Cloudflare custom-hostname/SSL, Supabase domain records, activation, authentication, or the existing SaaS `*/*` route.
+
+## 2026-10-09 — Root cause of persistent “Loading website…” screen
+
+The user's later browser screenshot showed the clean root URL (`https://www.scenesource.co.uk/`) but the page remained on the static “Loading website…” screen for hours. This is a different symptom from the earlier `/public-site` redirect.
+
+A source-level audit of production `public-site.js` found a malformed regular-expression literal in the new trailing-slash normalisation line:
+
+```js
+const normalizedPath=(location.pathname.replace(/\\/+$/,'')||'/');
+```
+
+The intended expression is:
+
+```js
+const normalizedPath=(location.pathname.replace(/\\/+$/,'')||'/');
+```
+
+The malformed version is invalid JavaScript syntax, which prevents the entire public-site controller from executing. That explains why the static loading shell remained visible and why neither hostname lookup nor the Supabase request could start. The Supabase publication was present, so the browser had not reached the data-loading stage.
+
+Repair committed to production:
+- `c1e4952d7588e071dc5ce132030afbd0cca97b89` — `Fix public website startup regex syntax`.
+- `19aedd3cb17626834c1674999950488c9025a802` — `Refresh public-site script after startup fix`; `public-site.html` now loads `public-site.js?v=26` to bypass the old cached script.
+
+The corrected source line is `location.pathname.replace(/\\/+$/,'')` in JavaScript source (regex matching one or more forward slashes). This diagnosis was based on the production source; a full browser run after the Cloudflare deployment is still required.
+
+Do not change DNS, SSL, domain activation, Supabase records, login/authentication, or the existing Cloudflare route to address the loading screen. First wait for the deployment containing both commits to become Ready, then reload the exact root URL anonymously and inspect the first browser Console/Network error only if the loading screen persists.

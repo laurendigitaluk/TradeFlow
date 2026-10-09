@@ -1899,3 +1899,14 @@ The `cloudflare-test` branch is not a current copy of LIVE production:
 - Legacy TEST Edge Functions remain active; the connector does not expose function deletion. Do not invoke or disable them without a separate caller, secret and dependency review.
 - Do not blindly copy production files into TEST: the environment-specific Supabase URL/publishable key and required migrations/RPCs must be handled explicitly. The next safe TEST task is a controlled refresh/alignment plan and regression test, not deployment of the UI-only cleanup branch.
 
+## Static session-isolation code review — 9 October 2026
+
+Production source review found distinct role/session storage keys:
+- Platform Owner: `tradeflow_platform_owner_session` in localStorage.
+- Subscriber: `tradeflow_subscriber_session` plus `tradeflow_subscriber_tenant_id` in localStorage.
+- Customer: `tradeflow_customer_session:<tenant_id>` in sessionStorage, with pending registration stored separately per tenant.
+- Customer auth cleanup removes known legacy shared customer/test keys; it does not explicitly remove the current Platform Owner or Subscriber keys.
+- The public-site controller checks for the subscriber key and uses the tenant-scoped customer session key.
+
+This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
+

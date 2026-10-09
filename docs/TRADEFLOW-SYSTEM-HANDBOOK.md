@@ -1873,3 +1873,7 @@ Production repair: `wrangler.jsonc` now uses `html_handling: "none"` and `run_wo
 A LIVE anonymous request to the correct subscriber root URL remained on the static loading shell. Production public-site.js contained a malformed regex literal in trailing-slash normalisation, which is a parse-time error and prevents the whole script from running. Since loadByHostname() never starts, this symptom precedes all Supabase reads and is not explained by a missing published_site_index row.
 
 Fixed by production commit c1e4952d7588e071dc5ce132030afbd0cca97b89; public-site.html now references public-site.js?v=26 from commit 19aedd3cb17626834c1674999950488c9025a802. Await deployment and verify in an anonymous browser. Keep DNS, SSL, domain state, Supabase records and authentication unchanged.
+
+## 2026-10-09 — Explicit platform root routing
+
+Disabling Cloudflare HTML handling resolved the internal public-site canonical redirect but also removed the automatic `/` to `/index.html` fallback for platform-owned hosts. The platform homepage then returned 404. Production Worker commit `adf0021c25a95fc39c46587dbde98a0af6ef654a` now maps platform-owned `/` explicitly to `/index.html`; subscriber vanity `/` remains mapped to `/public-site.html`. Browser verification is pending deployment.

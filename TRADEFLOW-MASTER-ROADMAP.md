@@ -1085,3 +1085,9 @@ The first anonymous SceneSource routing repair exposed a second Cloudflare Stati
 LIVE Supabase was audited and the SceneSource publication/domain records are present and publicly readable; no database repair was required. Production routing has been repaired with `html_handling: "none"` and Worker-first execution, with public-site JS trailing-slash normalisation and cache refresh.
 
 Status: **source repair committed; browser acceptance pending.** The next acceptance test must prove the root URL and each enabled clean public page route without `/public-site` appearing in the browser address bar.
+
+## 2026-10-09 — LIVE loading-screen parse failure repaired
+
+The latest browser test remained at “Loading website…” on the correct subscriber root URL. Production `public-site.js` had an invalid regex literal in the trailing-slash normalisation code, preventing the entire public-site controller from parsing. Fixed in `c1e4952d7588e071dc5ce132030afbd0cca97b89`; script cache version advanced to `public-site.js?v=26` in `19aedd3cb17626834c1674999950488c9025a802`.
+
+Status: source fix committed; browser acceptance still pending Cloudflare deployment. Verify root rendering and clean page navigation before declaring the domain/site acceptance complete.

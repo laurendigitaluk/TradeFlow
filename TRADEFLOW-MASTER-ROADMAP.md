@@ -1091,3 +1091,7 @@ Status: **source repair committed; browser acceptance pending.** The next accept
 The latest browser test remained at “Loading website…” on the correct subscriber root URL. Production public-site.js had an invalid regex literal in the trailing-slash normalisation code, preventing the entire public-site controller from parsing. Fixed in c1e4952d7588e071dc5ce132030afbd0cca97b89; script cache version advanced to public-site.js?v=26 in 19aedd3cb17626834c1674999950488c9025a802.
 
 Status: source fix committed; browser acceptance still pending Cloudflare deployment. Verify root rendering and clean page navigation before declaring the domain/site acceptance complete.
+
+## 2026-10-09 — Restore platform homepage routing
+
+After `html_handling: "none"`, `tradeflow.laurendigital.co.uk/` returned 404 because the Worker had not explicitly mapped platform `/` to `/index.html`. Fixed in production Worker commit `adf0021c25a95fc39c46587dbde98a0af6ef654a`. Await deployment; test platform root and subscriber root separately before accepting the routing repair.

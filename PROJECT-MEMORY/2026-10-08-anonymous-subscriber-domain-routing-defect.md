@@ -42,3 +42,17 @@ Do not alter SceneSource DNS, Cloudflare custom-hostname/SSL state, Supabase dom
 **Source/configuration repair committed. LIVE deployment and anonymous SceneSource verification pending.**
 
 This supersedes the earlier narrower root-cause description that treated the problem solely as Worker hostname detection. The Worker hostname logic was correct; the Worker was not being invoked for the root static asset.
+
+
+## 2026-10-09 follow-up audit
+After the Worker-first routing repair, the anonymous SceneSource request began rendering the subscriber public-site application and Adventure Outpost/Action Outfit branding, proving the earlier marketing-page routing defect was repaired.
+
+The rendered page was sparse/starter-like. A separate source audit found that `website-builder.js` contained a destructive migration rule: any draft with `template_reset_version < 2` was automatically cleared and replaced with the fresh starter template, even when a published revision already existed.
+
+Repair commit: `f769bc17c0721b91fcc8d86c4f5bcf42de47c2fb` — **Prevent destructive website reset for existing subscribers**.
+
+New rule: fresh-start initialisation occurs only when there is no published revision and no existing draft content. Existing subscriber content is loaded non-destructively.
+
+No subscriber-specific content was fabricated or overwritten by this follow-up repair. The current public content remains whatever is actually stored in the published revision.
+
+Status: domain routing repaired; destructive reset protection repaired; intended subscriber homepage content still requires final LIVE verification.

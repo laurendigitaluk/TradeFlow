@@ -123,3 +123,14 @@ Production source review found distinct role/session storage keys:
 
 This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
 
+## 2026-10-09 — TEST environment drift discovered during cleanup
+
+The `cloudflare-test` branch is not a current copy of LIVE production:
+
+- TEST `domain-settings.html` contained a retired `Buy a new domain` CTA linking to `domain-purchase.html`; the current LIVE architecture is subscriber-owned domains only.
+- TEST `domain-settings.js` directly inserts/patches `tenant_domains` and does not use the current subscriber domain-request/status RPCs.
+- Read-only TEST schema inspection found none of `subscriber_request_custom_domain()`, `subscriber_get_custom_domain_status()`, `platform_owner_list_domain_actions()` or `platform_owner_update_domain_action()`.
+- TEST `platform-owner-dashboard.html/js` still exposes old domain-pricing/FX controls and does not implement the current owner domain-action workflow.
+- An isolated branch `cleanup/test-retired-domain-ui-20261009` removes the obsolete purchase CTA and four directly accessible legacy purchase/registrant UI files. It also contains a checkpoint explaining that this branch is **not safe to deploy yet** because TEST frontend/backend architecture is stale. No LIVE code or database was changed.
+- Legacy TEST Edge Functions remain active; the connector does not expose function deletion. Do not invoke or disable them without a separate caller, secret and dependency review.
+- Do not blindly copy production files into TEST: the environment-specific Supabase URL/publishable key and required migrations/RPCs must be handled explicitly. The next safe TEST task is a controlled refresh/alignment plan and regression test, not deployment of the UI-only cleanup branch.

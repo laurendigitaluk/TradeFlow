@@ -1,22 +1,44 @@
-# Project Memory — 2026-10-08 Anonymous subscriber-domain routing defect
+# Project Memory — 2026-10-09 Anonymous subscriber-domain routing deep audit
 
-A LIVE anonymous test of `www.scenesource.co.uk` exposed a final public-routing defect after the domain itself had already reached **Domain active · Primary** in the subscriber workspace.
+A LIVE anonymous test of `www.scenesource.co.uk` exposed a public-routing defect after the domain itself had already reached **Domain active · Primary**.
 
-Observed:
-- Authenticated subscriber workspace: domain active.
-- Incognito/customer request to `www.scenesource.co.uk/`: TradeFlow platform landing page appeared instead of the subscriber homepage.
+## Evidence
+- `tradeflow.leannelaurenlowe.workers.dev/` correctly served the TradeFlow platform homepage.
+- `www.scenesource.co.uk/` served the TradeFlow marketing homepage instead of the subscriber website.
+- Production Worker source contained the intended vanity-domain root rewrite.
+- Cloudflare production branch/deployment and `*/*` route were already present.
 
-Root cause:
-The public-site application already resolves subscriber content by request hostname through `published_site_index`. The Worker root-path boundary was not safely distinguishing platform-owned hosts from subscriber vanity hosts.
+## Actual root cause
+The Worker uses Cloudflare Static Assets with `assets.directory = "."`. Static assets are served asset-first unless `assets.run_worker_first` matches the request path.
 
-Repair:
-Production commit `8309776842514f707eb5e6ef08a800a887668d77` — `Route subscriber vanity domains to public website`.
+Production `wrangler.jsonc` previously contained only:
 
-Rule:
-- Platform hosts retain the normal TradeFlow application root.
-- Subscriber vanity hosts rewrite `/` to `/public-site.html`.
-- Public-site JavaScript then resolves the tenant from the actual hostname.
+```json
+"run_worker_first": ["/*.js"]
+```
 
-Do not change SceneSource DNS, Supabase domain state, SSL/custom-hostname state or activation while this routing repair is being deployed/verified.
+Therefore the root request `/` could serve the repository's normal `index.html` directly without invoking `worker/index.js`. That exactly explains why the platform marketing page was returned even though the Worker source contained the correct subscriber-host routing logic.
 
-Status: source repair committed; anonymous LIVE browser verification pending.
+## Repair
+Production commit `40c08d470ee9c7778b4418bee07e5b89e56b3b3e` — **Fix Worker-first routing for application entry paths**.
+
+`run_worker_first` now covers:
+- `/`
+- `/login`
+- `/basket`
+- `/assistant`
+- `/email-confirmed`
+- `/reset-password`
+- `/owner-reset-password`
+- `/platform-owner-dashboard.html`
+- `/*.js`
+
+This preserves selective Worker execution while allowing normal static assets to remain asset-first.
+
+## Safety
+Do not alter SceneSource DNS, Cloudflare custom-hostname/SSL state, Supabase domain records, domain activation, authentication, or the existing `*/*` route while this repair is being verified.
+
+## Status
+**Source/configuration repair committed. LIVE deployment and anonymous SceneSource verification pending.**
+
+This supersedes the earlier narrower root-cause description that treated the problem solely as Worker hostname detection. The Worker hostname logic was correct; the Worker was not being invoked for the root static asset.

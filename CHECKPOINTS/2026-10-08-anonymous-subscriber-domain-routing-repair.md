@@ -109,3 +109,46 @@ This repair does not invent or restore subscriber-specific content. Existing pub
 4. SceneSource/Adventure Outpost published content: not modified or fabricated by this audit. The current browser result shows the data currently published is sparse/starter content.
 
 Do not mark the final custom-domain acceptance complete until the intended subscriber homepage content is confirmed on the anonymous root URL.
+
+
+## 2026-10-09 deep audit — second routing defect identified and repaired
+
+The previous selective `run_worker_first` repair did not fully solve clean public-page navigation. A deeper audit of Cloudflare Static Assets behaviour and the Worker's internal `env.ASSETS.fetch()` path identified the missing interaction.
+
+### Actual second root cause
+`worker/index.js` internally rewrites subscriber routes such as `/`, `/buying`, `/sell`, `/shop`, `/about` and `/contact` to the static asset `/public-site.html`.
+
+Production Wrangler was still using Cloudflare's default `html_handling: "auto-trailing-slash"`. Cloudflare's asset binding applies HTML handling to requests made through `env.ASSETS.fetch()`. Under that mode, a direct `/public-site.html` asset request is canonicalised to `/public-site` with a redirect. The Worker was therefore returning a redirect to `/public-site` instead of returning the public-site shell at the originally requested clean URL.
+
+That explains the observed behaviour:
+- `/` could become `/public-site`;
+- the public-site application then loaded its homepage because `/public-site` is not one of the clean page slugs;
+- clicking What We Buy/About/Contact could therefore appear to return to the same homepage instead of remaining on the requested clean route.
+
+This was a routing/asset-handling interaction, not a Supabase tenant-data failure.
+
+### LIVE database audit
+LIVE Supabase project `gxsrajtqzdjvmceqcpgv2` is healthy. The `published_site_index` contains exactly one published row for `www.scenesource.co.uk`, mapped to tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`. `tenant_domains` contains the same hostname as `active` and `is_primary=true`. `published_site_index` permits public/anonymous SELECT. This confirms the tenant/domain publication data is present and publicly readable; no database repair is justified for this defect.
+
+### Second repair
+Production `wrangler.jsonc` was changed to:
+
+```json
+"html_handling": "none",
+"run_worker_first": true
+```
+
+Commit: `6a94244ec769a1d7f38aac29df0290a432cf1654` — **Correct Worker-first routing configuration**.
+
+`html_handling: "none"` prevents the internal `/public-site.html` asset fetch from generating the unwanted canonical redirect. `run_worker_first: true` makes the Worker own application routing before static-asset matching, removing path-pattern gaps from the public clean URL boundary. Normal assets are still returned through the existing `ASSETS` binding.
+
+The public-site JavaScript was also cache-bumped and made tolerant of trailing slashes:
+- `49c775fa30d2e5ea1fbad823e76e60e9acbc016e` — **Handle trailing-slash clean subscriber page routes**
+- `ff8ce11cdd1d6ee6c6ce87970dc48a4eb5d2a03` — **Refresh public-site JavaScript asset version**
+
+### Verification state
+The code/configuration repair is committed to production. The screenshot supplied after the repair still shows the browser on the older `/public-site` URL and the Cloudflare deployment in progress, so this repair is **not yet browser-verified**.
+
+Next verification must start with a fresh anonymous request to `https://www.scenesource.co.uk/` after the new deployment is Ready. Expected: the address remains `/`, SceneSource renders, What We Buy becomes `/buying`, Retail Shop `/shop`, About `/about`, Contact `/contact`, and Sell to us `/sell` without returning to `/public-site`.
+
+Do not change DNS, Cloudflare custom-hostname/SSL, Supabase domain records, activation, authentication, or the existing SaaS `*/*` route.

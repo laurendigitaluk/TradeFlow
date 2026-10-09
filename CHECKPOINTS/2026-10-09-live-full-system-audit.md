@@ -29,9 +29,10 @@ This was a read-only audit of current LIVE Supabase state, current production co
 ## Critical open discrepancy: Worker environment URL
 
 - `public-site.js`, `platform-owner-dashboard.js` and other runtime source refer to the verified LIVE project URL `https://gxsrajtqzdjvmceqcpgv.supabase.co`.
-- `wrangler.jsonc` currently declares `LIVE_SUPABASE_URL` as `https://gxsrajtqzdjvmceqcpgv2.supabase.co`, with an extra trailing `2` in the project ref.
-- `worker/index.js` transforms JavaScript asset source using these variables. The malformed setting is a real configuration mismatch even though the live public-site source selects the correct URL for the current production hostname.
-- **Do not silently edit/deploy this configuration.** First create a controlled candidate change, test the Worker rewrite output, verify all routes and the three-role session test on a non-production environment, then promote only after evidence.
+- `wrangler.jsonc` on production currently declares `LIVE_SUPABASE_URL` as `https://gxsrajtqzdjvmceqcpgv2.supabase.co`, with an extra trailing `2` in the project ref.
+- An isolated candidate correction is committed on `audit/fix-live-supabase-url-20261009` at `04fc24cad71aaf6efe5e7472022bfd5bc6b8d939`; the branch-only config now uses `https://gxsrajtqzdjvmceqcpgv.supabase.co`.
+- A static Worker-source transformation check confirmed the candidate removes the malformed URL and retains the correct LIVE URL in the transformed public-site source. This is not a runtime or browser test.
+- **The candidate is not merged or deployed.** First test the Worker rewrite on a controlled non-production runtime, then verify all clean routes and the three-role session test before any promotion.
 
 ## Critical open discrepancy: retired domain purchase functions still deployed
 
@@ -72,7 +73,7 @@ LIVE has two legacy `tenant_domain_orders` records (one `pending_payment`, one `
 ## Next actions (in order)
 
 1. Preserve current LIVE state and the known-good Website Builder baseline.
-2. Prepare an isolated candidate fix for the `wrangler.jsonc` LIVE URL typo and statically test Worker transformation; do not deploy yet.
+2. Test the existing candidate branch `audit/fix-live-supabase-url-20261009` in a controlled non-production Worker runtime; verify all clean routes and the three-role session test before any promotion.
 3. Review the five retired domain-purchase Edge Functions, their secret configuration and the two legacy orders. Keep `platform-prepare-custom-domain` intact.
 4. Run the user-observed Chrome test: platform owner, Adventure Outpost subscriber and a new SceneSource website customer, including refresh/navigation and sign-out isolation. Do not create the customer until the user approves the LIVE registration step.
 5. Browser-test the clean public routes and record actual results.

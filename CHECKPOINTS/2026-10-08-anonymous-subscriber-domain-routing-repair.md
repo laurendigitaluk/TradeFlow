@@ -172,3 +172,13 @@ The screenshot after setting Cloudflare Static Assets to `html_handling: "none"`
 Repair committed to production: `adf0021c25a95fc39c46587dbde98a0af6ef654a` — `Restore platform homepage with explicit index routing`. `worker/index.js` now maps `/` to `/index.html` for platform-owned hostnames, while subscriber vanity domains continue to map `/` to `/public-site.html`.
 
 Status: code committed; wait for Cloudflare deployment to become Ready, then verify both `https://tradeflow.laurendigital.co.uk/` and `https://www.scenesource.co.uk/`. Do not change DNS, SSL, Supabase or the existing SaaS route.
+
+## 2026-10-09 — LIVE multi-account session-isolation test is next
+
+The latest user screenshot shows the Adventure Outpost subscriber dashboard, the Platform Owner Dashboard and the SceneSource public subscriber website open at the same time in Google Chrome. The public website at https://www.scenesource.co.uk/ is now rendering the Action Outfit/Adventure Outpost content after the public-site loading/routing repairs. Do not infer that all clean routes or all session-isolation cases have passed merely because the homepage renders.
+
+Next acceptance task: perform a read-only audit of LIVE customer/account records to establish whether a SceneSource website customer already exists. Distinguish website customers from subscriber owner accounts, business customers, test records and abandoned registrations. Do not create duplicate users or subscribers. Adventure Outpost is already present as the subscriber tenant and is currently signed in; do not create a second subscriber account or new Stripe checkout. If no suitable website customer exists, use the normal public Customer Login/registration flow to create one, with the user's approval and a clearly identifiable test email they control.
+
+Then prove that the Platform Owner, Adventure Outpost subscriber, and SceneSource website customer can each remain signed in simultaneously in the same Chrome browser without one role replacing, impersonating or logging out another. Refresh/navigate each surface and test sign-out isolation. Preserve the established design: subscriber/business owners log into TradeFlow; the public website's Customer Login is for the subscriber's own customers. Do not add a business-owner login link to the public site.
+
+Use the continuation prompt/checkpoint CHECKPOINTS/2026-10-09-live-multi-account-session-isolation-next-test.md. Work step by step; use LIVE evidence, read-only inspection first, do not expose credentials, do not weaken auth/RLS/tenant isolation, and do not change DNS/SSL/Cloudflare/domain state for an account-session test. Record pass/fail evidence before marking acceptance complete.

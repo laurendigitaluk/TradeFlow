@@ -36,6 +36,22 @@ First inspect LIVE Supabase and the relevant customer/subscriber account screens
 
 If there is no suitable registered **website customer** account, create one through the normal public Customer Login/registration flow on https://www.scenesource.co.uk/ using a clearly identifiable test email address that the user controls. Do not create a second subscriber account unless the read-only audit proves the existing Adventure Outpost subscriber account is absent or unusable and the user explicitly approves creating another.
 
+## Read-only LIVE account and safety audit — 9 October 2026
+
+Verified against the LIVE Supabase project `gxsrajtqzdjvmceqcpgv` (not TEST):
+
+- `public.tenants` contains Adventure Outpost with tenant ID `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`.
+- `auth.users` contains exactly 2 non-deleted, email-confirmed users: one active Platform Owner and one active Adventure Outpost subscriber owner.
+- `public.tenant_memberships` contains one active Adventure Outpost owner membership; `public.platform_memberships` contains one active Platform Owner membership.
+- `public.customers` contains 0 rows and 0 customer-to-auth links. **There is no registered SceneSource website customer account yet.** Do not create one without the user's explicit approval.
+- `www.scenesource.co.uk` is the active primary custom domain for Adventure Outpost; the domain is verified/activated and `published_site_index` contains published revision 1.
+- All 98 public tables have RLS enabled. Supabase advisors report 14 RLS-enabled tables without policies, 14 anon-executable SECURITY DEFINER functions, 160 authenticated-executable SECURITY DEFINER functions, disabled leaked-password protection, 64 unindexed foreign keys, 166 RLS init-plan findings, 105 unused indexes, 14 multiple-permissive-policy findings and 3 duplicate indexes. Treat these as review items; do not bulk-change policies or indexes.
+- The production Worker config still contains the malformed LIVE URL `gxsrajtqzdjvmceqcpgv2.supabase.co`. The one-line correction already exists on isolated branch `audit/fix-live-supabase-url-20261009` at commit `04fc24cad71aaf6efe5e7472022bfd5bc6b8d939`; it is not deployed. Do not repeat the fix or promote it until controlled runtime and browser route/session tests pass.
+- Six retired domain-purchase/registration Edge Functions are still ACTIVE, including `index`, whose deployed source duplicates the legacy Stripe/Porkbun checkout flow. LIVE contains an `adventureoutpost.co.uk` order in `pending_payment`, a `laurendigital.co.uk` order in `registrant_details_saved`, and one registrant record. Neither order is positively marked sandbox. The latter order may be eligible for the old registration path if production Porkbun credentials are configured. Do not invoke the old endpoints; verify all callers and provider-secret configuration before disabling anything.
+- The external web-fetch tool could not independently fetch the public domain or its clean routes. The latest user-observed browser screenshot showed the homepage rendering; the route matrix and three-role Chrome session test remain pending.
+
+No LIVE records, authentication accounts, billing, domains, Worker settings or published content were changed by this audit.
+
 ## Test objective: all roles can coexist in one browser
 
 Prove that these distinct contexts work at the same time in the same Chrome browser:

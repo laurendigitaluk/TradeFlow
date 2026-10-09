@@ -49,3 +49,5 @@ Production source review found distinct role/session storage keys:
 
 This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
 
+### Current production-based Worker URL candidate
+The refreshed isolated branch `audit/fix-live-supabase-url-current-production-20261009` is based directly on current `production` and changes only the malformed LIVE URL in `wrangler.jsonc`. Commit: `2aee9090f9da25a73adb7487afbf59610b3a98ca`. The older candidate is 12 commits behind/diverged. No CI statuses are reported and the refreshed candidate is not deployed; runtime/browser tests remain mandatory before promotion.

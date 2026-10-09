@@ -111,3 +111,15 @@ Do not declare acceptance until these results have been observed and documented.
 - LIVE domain is `www.scenesource.co.uk`, tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`, status active, verified/activated timestamps populated. Do not confuse LIVE (`gxsrajtqzdjvmceqcpgv`) with TEST (`twfbmjwwqzxdxvclxbun`).
 - The user identified the appended `Subscriber-owned domains — LIVE` section and all content after it in `subscriber-website-manual.html` as Platform Owner-only material. On the isolated audit branch this 5,206-character tail was removed from the Subscriber Manual, leaving the original subscriber-facing manual ending cleanly at `</body></html>`. Owner domain workflow, platform address and customer-test notes were moved into the AI Operating Manual, Backend Manual, Human Manual, System Handbook and Master Roadmap. Verify these changes before considering any merge.
 - Continue only in isolated branches. No production deployment, database mutation, account creation, Edge Function disablement or billing/domain action is authorised by this checkpoint.
+
+## Static session-isolation code review — 9 October 2026
+
+Production source review found distinct role/session storage keys:
+- Platform Owner: `tradeflow_platform_owner_session` in localStorage.
+- Subscriber: `tradeflow_subscriber_session` plus `tradeflow_subscriber_tenant_id` in localStorage.
+- Customer: `tradeflow_customer_session:<tenant_id>` in sessionStorage, with pending registration stored separately per tenant.
+- Customer auth cleanup removes known legacy shared customer/test keys; it does not explicitly remove the current Platform Owner or Subscriber keys.
+- The public-site controller checks for the subscriber key and uses the tenant-scoped customer session key.
+
+This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
+

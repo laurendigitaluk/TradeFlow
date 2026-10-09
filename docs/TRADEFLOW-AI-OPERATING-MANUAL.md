@@ -2307,3 +2307,7 @@ The anonymous LIVE test showed the browser at https://www.scenesource.co.uk/ but
 Fixed in production commit c1e4952d7588e071dc5ce132030afbd0cca97b89 (Fix public website startup regex syntax). The HTML reference was cache-bumped to public-site.js?v=26 in commit 19aedd3cb17626834c1674999950488c9025a802 to prevent reuse of the invalid cached script.
 
 Status: source repaired; browser verification awaits the new Cloudflare deployment. Do not change the already-verified domain/DNS/SSL state or Supabase publication records for this client-side parse failure.
+
+## 2026-10-09 — Platform root 404 after HTML handling repair
+
+The screenshot showed `tradeflow.laurendigital.co.uk/` returning 404 after `html_handling: "none"` was enabled. That setting disables the automatic static index fallback, so platform root routing must explicitly fetch `/index.html`. Production Worker commit `adf0021c25a95fc39c46587dbde98a0af6ef654a` adds that explicit mapping for platform-owned hostnames while retaining `/public-site.html` for subscriber-owned domains. Await deployment and verify both platform and subscriber roots anonymously.

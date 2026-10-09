@@ -73,3 +73,14 @@ Repair committed to production:
 - `ff8ce11cdd1d6ee6c6ce87970dc48a4eb5d2a03` — public-site JS cache refresh.
 
 Status: **root cause identified and source repaired; browser verification pending the new Cloudflare deployment.**
+
+
+## 2026-10-09 — Persistent loading screen: JavaScript syntax root cause
+
+The later anonymous browser screenshot showed `https://www.scenesource.co.uk/` itself, but only the static “Loading website…” shell appeared for hours. Production `public-site.js` had an invalid regular-expression literal in the trailing-slash normalisation line. Because the whole file could not parse, the startup code never ran, so hostname lookup and Supabase loading never began. This explains the loading shell more directly than a missing domain/database row.
+
+Repair commits:
+- `c1e4952d7588e071dc5ce132030afbd0cca97b89` — corrected the malformed regex in `public-site.js`.
+- `19aedd3cb17626834c1674999950488c9025a802` — bumped the script reference in `public-site.html` to `public-site.js?v=26` to avoid a stale cached copy.
+
+The source line now uses `location.pathname.replace(/\\/+$/,'')`, which correctly strips trailing forward slashes. Wait for the Cloudflare deployment to become Ready, then verify anonymously at the root URL. Do not alter DNS, SSL, domain activation, Supabase publication records, authentication or Cloudflare routes unless new evidence identifies one of those layers as failing.

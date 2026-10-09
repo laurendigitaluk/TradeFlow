@@ -8,13 +8,21 @@
     "TRADEFLOW_ENV": "production",
     "TEST_SUPABASE_URL": "https://twfbmjwwqzxdxvclxbun.supabase.co",
     "TEST_SUPABASE_KEY": "sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9",
-    "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv.supabase.co",
+    "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv2.supabase.co",
     "LIVE_SUPABASE_KEY": "sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz"
   },
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
     "run_worker_first": [
+      "/",
+      "/login",
+      "/basket",
+      "/assistant",
+      "/email-confirmed",
+      "/reset-password",
+      "/owner-reset-password",
+      "/platform-owner-dashboard.html",
       "/*.js"
     ]
   }

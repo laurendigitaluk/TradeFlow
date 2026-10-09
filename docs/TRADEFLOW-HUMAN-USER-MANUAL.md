@@ -1824,3 +1824,12 @@ This process has been successfully completed for www.scenesource.co.uk. The subs
 - activation after verification.
 
 Do not send registrar passwords, payment-provider passwords or other secret credentials to TradeFlow support.
+
+
+## 2026-10-09 — LIVE public website URL routing audit
+
+A LIVE test found that the subscriber website could be displayed at the internal `/public-site` path but clean public page navigation was not yet reliable. The cause was identified in the Cloudflare Worker/static-asset routing layer rather than the subscriber website content or domain record.
+
+A production routing repair has been committed. The intended customer-facing URLs remain clean paths such as `/`, `/buying`, `/sell`, `/shop`, `/about` and `/contact`. Do not document `/public-site` as a normal customer-facing URL.
+
+Browser verification remains outstanding until the new deployment has been tested anonymously.

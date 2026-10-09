@@ -84,3 +84,28 @@ If the anonymous SceneSource test still fails after this deployment, inspect the
 Cloudflare's current Static Assets documentation states that matching static assets are served without invoking Worker code by default, and that `assets.run_worker_first` is the control for invoking Worker code before static asset serving. Cloudflare's Workers-as-fallback-origin documentation separately confirms that the `*/*` zone route is the correct mechanism for custom-hostname traffic.
 
 Status: **deep-audit source fix committed; LIVE verification pending deployment.**
+
+
+## Follow-up finding from anonymous public-site verification — 2026-10-09
+The anonymous request now reaches the subscriber public-site application rather than the TradeFlow marketing homepage. The browser showed the Adventure Outpost/Action Outfit branding and subscriber navigation, confirming the Worker-first root routing repair is functioning.
+
+A second issue was then visible: the published page content is currently a starter/fresh layout with empty hero content rather than populated subscriber copy. Source audit found a separate destructive behaviour in `website-builder.js`: any existing draft with `template_reset_version < 2` was automatically cleared and replaced with the fresh starter template, regardless of whether the subscriber already had a published revision.
+
+## Follow-up repair
+Production commit:
+`f769bc17c0721b91fcc8d86c4f5bcf42de47c2fb`
+
+Commit message:
+`Prevent destructive website reset for existing subscribers`
+
+The builder now initialises the fresh starter template only when there is **no published revision and no existing draft content**. Existing subscribers/drafts are loaded non-destructively, including older content versions.
+
+This repair does not invent or restore subscriber-specific content. Existing published/draft data must remain the source of truth.
+
+## Current status
+1. Vanity-domain root routing: source/configuration repaired and browser now reaches subscriber public-site rendering.
+2. Domain/SSL/activation: unchanged and previously verified.
+3. Existing-subscriber website data: destructive reset protection repaired.
+4. SceneSource/Adventure Outpost published content: not modified or fabricated by this audit. The current browser result shows the data currently published is sparse/starter content.
+
+Do not mark the final custom-domain acceptance complete until the intended subscriber homepage content is confirmed on the anonymous root URL.

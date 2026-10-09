@@ -1263,3 +1263,12 @@ The wildcard route is an infrastructure prerequisite for customer-owned hostname
 For the next domain, reuse the exact architecture but do not assume the DNS target. The approved preparation function must supply the exact target/instructions. The subscriber changes DNS at their registrar; TradeFlow verifies DNS, SSL and routing; the owner activates only after all checks pass.
 
 The subscriber never supplies a registrar password and TradeFlow never stores one.
+
+
+## 2026-10-09 — LIVE subscriber clean-URL routing audit
+
+A LIVE anonymous-domain audit identified a Cloudflare Static Assets HTML-handling issue in the public subscriber routing boundary. The Worker internally serves `public-site.html` for subscriber-owned clean routes, but default `auto-trailing-slash` handling could redirect that internal asset request to `/public-site`. This was not a Supabase domain-data problem.
+
+LIVE database verification confirmed `www.scenesource.co.uk` is present in `published_site_index` and `tenant_domains`, with the domain active and primary. Production `wrangler.jsonc` now uses `html_handling: "none"` and `run_worker_first: true`; public-site JS is trailing-slash tolerant and cache-bumped.
+
+Browser verification remains required after deployment. Do not manually activate domains, change DNS, or alter the existing Cloudflare SaaS route to address this issue.

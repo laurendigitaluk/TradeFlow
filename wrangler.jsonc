@@ -16,22 +16,5 @@
     "binding": "ASSETS",
     "html_handling": "none",
     "run_worker_first": true,
-    "legacy_run_worker_first_routes": [
-      "/",
-      "/buying",
-      "/sell",
-      "/shop",
-      "/product",
-      "/about",
-      "/contact",
-      "/login",
-      "/basket",
-      "/assistant",
-      "/email-confirmed",
-      "/reset-password",
-      "/owner-reset-password",
-      "/platform-owner-dashboard.html",
-      "/*.js"
-    ]
   }
 }

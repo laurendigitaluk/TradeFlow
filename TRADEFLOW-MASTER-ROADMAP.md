@@ -1076,3 +1076,12 @@ The next domain test is now a **reuse test**, not an infrastructure rebuild. Sta
 
 ### Documentation lock
 After every material domain change/test, update the AI Operating Manual, Backend/Owner Manual, Human/Subscriber Manual, System Handbook and this roadmap, and create a dated checkpoint. Do not mark a domain active manually and do not claim verification without evidence.
+
+
+## 2026-10-09 — LIVE subscriber clean-URL routing repair
+
+The first anonymous SceneSource routing repair exposed a second Cloudflare Static Assets interaction. The Worker correctly rewrites subscriber clean routes to `public-site.html`, but default HTML handling can redirect that internal asset request to `/public-site`. This made clean navigation appear to return to the homepage.
+
+LIVE Supabase was audited and the SceneSource publication/domain records are present and publicly readable; no database repair was required. Production routing has been repaired with `html_handling: "none"` and Worker-first execution, with public-site JS trailing-slash normalisation and cache refresh.
+
+Status: **source repair committed; browser acceptance pending.** The next acceptance test must prove the root URL and each enabled clean public page route without `/public-site` appearing in the browser address bar.

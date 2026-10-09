@@ -50,6 +50,10 @@ Verified against the LIVE Supabase project `gxsrajtqzdjvmceqcpgv` (not TEST):
 - Six retired domain-purchase/registration Edge Functions are still ACTIVE, including `index`, whose deployed source duplicates the legacy Stripe/Porkbun checkout flow. LIVE contains an `adventureoutpost.co.uk` order in `pending_payment`, a `laurendigital.co.uk` order in `registrant_details_saved`, and one registrant record. Neither order is positively marked sandbox. The latter order may be eligible for the old registration path if production Porkbun credentials are configured. Do not invoke the old endpoints; verify all callers and provider-secret configuration before disabling anything.
 - The external web-fetch tool could not independently fetch the public domain or its clean routes. The latest user-observed browser screenshot showed the homepage rendering; the route matrix and three-role Chrome session test remain pending.
 
+### Additional TEST cleanup finding
+
+The TEST project still has active Edge Functions `parcel2go-customer-shipping` v7, `parcel2go-subscriber-shipping` v11 and `shipping-provider-test` v8. The active `cloudflare-test` branch still contains direct-access legacy pages `domain-purchase.html/js` and `domain-registrant.html/js`, which call the old TEST Stripe/Porkbun registration endpoints. The current `domain-settings.js` and subscriber dashboard files inspected do not link to those pages, but direct URLs remain possible. These files/functions were not disabled or removed because a complete repo-wide caller audit and regression plan are still required. Remove them only in an isolated cleanup branch after checking the historical domain-registration checkpoint and verifying that the current customer-owned domain workflow remains intact.
+
 No LIVE records, authentication accounts, billing, domains, Worker settings or published content were changed by this audit.
 
 ## Test objective: all roles can coexist in one browser

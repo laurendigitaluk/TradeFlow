@@ -1861,3 +1861,29 @@ Next acceptance task: perform a read-only audit of LIVE customer/account records
 Then prove that the Platform Owner, Adventure Outpost subscriber, and SceneSource website customer can each remain signed in simultaneously in the same Chrome browser without one role replacing, impersonating or logging out another. Refresh/navigate each surface and test sign-out isolation. Preserve the established design: subscriber/business owners log into TradeFlow; the public website's Customer Login is for the subscriber's own customers. Do not add a business-owner login link to the public site.
 
 Use the continuation prompt/checkpoint CHECKPOINTS/2026-10-09-live-multi-account-session-isolation-next-test.md. Work step by step; use LIVE evidence, read-only inspection first, do not expose credentials, do not weaken auth/RLS/tenant isolation, and do not change DNS/SSL/Cloudflare/domain state for an account-session test. Record pass/fail evidence before marking acceptance complete.
+
+## 2026-10-09 — Platform Owner only: LIVE domain and customer-session audit
+
+**Audience boundary:** this section is for the Platform Owner / developer manuals only. Do not expose these operational details in the Subscriber Website Manual or public/customer-facing pages.
+
+### LIVE domain connection — authoritative owner procedure
+
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`. TEST project: `twfbmjwwqzxdxvclxbun`. Verify the environment before every query or change.
+- The Adventure Outpost tenant ID is `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`.
+- LIVE `public.tenant_domains` confirms `www.scenesource.co.uk` is the primary custom domain with status `active`, and its verification/activation timestamps are populated. `public.published_site_index` has a published revision for the hostname.
+- TradeFlow uses subscriber-owned domains only. The subscriber buys, owns, renews and manages their domain with their chosen registrar. TradeFlow does not buy or renew it, and must never request the registrar password.
+- Owner sequence: review the tenant and hostname → prepare the approved Cloudflare custom-hostname connection → give the subscriber the exact DNS record returned by the connection setup → verify DNS → verify SSL/HTTPS → verify tenant routing → activate only after all three checks pass. Never guess DNS targets or manually activate an unverified hostname.
+- Branded platform address: `https://tradeflow.laurendigital.co.uk`. A tenant slug is a presentation/routing identifier, not a substitute for the internal tenant ID and tenant authorization boundary.
+
+### LIVE customer-account status — read-only audit
+
+- Exactly 2 non-deleted, email-confirmed Auth users were present: the Platform Owner (`leannelaurenlowe@hotmail.com`) and the Adventure Outpost subscriber owner (`valley-discounts@outlook.com`).
+- One active Platform Owner membership and one active Adventure Outpost owner membership were present.
+- LIVE `public.customers` contained 0 rows and 0 customer-to-auth links at the time of the audit. No SceneSource website customer account had been registered yet.
+- The user has explicitly said they will create the test customer themselves using the public customer registration flow. Do not create a customer, duplicate the subscriber, or initiate another subscription checkout on their behalf.
+- After the user registers, re-query LIVE read-only to verify the new customer record belongs to Adventure Outpost and is linked to the correct Auth user. Then test owner, subscriber and customer sessions in the same Chrome browser: independent sign-in state, refresh/navigation persistence, correct role-specific routes, and signing out of one role without disrupting the others. Do not claim session isolation passes until browser evidence is recorded.
+
+### Subscriber manual boundary
+
+The Subscriber Website Manual must contain subscriber-facing instructions only. The platform domain verification workflow, internal tenant/security explanation, audit counts, and owner/customer three-role test belong in these owner/developer manuals and the audit checkpoint, not in the subscriber manual. The 9 October cleanup branch removes the appended owner-only material that had appeared after the subscriber manual's main closing section. Keep that material out of future subscriber-manual edits.
+

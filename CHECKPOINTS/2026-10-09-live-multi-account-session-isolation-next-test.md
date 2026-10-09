@@ -34,7 +34,7 @@ First inspect LIVE Supabase and the relevant customer/subscriber account screens
 - Do not create a duplicate subscriber, duplicate subscription, or new Stripe checkout. The Adventure Outpost subscriber session already exists in the current browser.
 - Report what exists and what does not exist before taking any create-account action.
 
-If there is no suitable registered **website customer** account, create one through the normal public Customer Login/registration flow on https://www.scenesource.co.uk/ using a clearly identifiable test email address that the user controls. Do not create a second subscriber account unless the read-only audit proves the existing Adventure Outpost subscriber account is absent or unusable and the user explicitly approves creating another.
+If there is no suitable registered **website customer** account, the user will create one themselves through the normal public Customer Login/registration flow on https://www.scenesource.co.uk/ using a clearly identifiable test email address they control. Do not create the customer on the user's behalf. Do not create a second subscriber account unless the read-only audit proves the existing Adventure Outpost subscriber account is absent or unusable and the user explicitly approves creating another.
 
 ## Read-only LIVE account and safety audit — 9 October 2026
 
@@ -103,3 +103,11 @@ Produce a clear pass/fail matrix for:
 - Public website clean routes still work.
 
 Do not declare acceptance until these results have been observed and documented.
+
+## 2026-10-09 — User-owned test registration and subscriber-manual boundary
+
+- User explicitly approved the next LIVE customer test but stated they will create the customer themselves. Assistant must not create the account, enter credentials, or change LIVE Auth/customer data on their behalf.
+- Read-only LIVE verification confirms 2 non-deleted, email-confirmed Auth users; one active Platform Owner membership; one active Adventure Outpost owner membership; 0 rows in `public.customers`; 0 customer-to-auth links.
+- LIVE domain is `www.scenesource.co.uk`, tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`, status active, verified/activated timestamps populated. Do not confuse LIVE (`gxsrajtqzdjvmceqcpgv`) with TEST (`twfbmjwwqzxdxvclxbun`).
+- The user identified the appended `Subscriber-owned domains — LIVE` section and all content after it in `subscriber-website-manual.html` as Platform Owner-only material. On the isolated audit branch this 5,206-character tail was removed from the Subscriber Manual, leaving the original subscriber-facing manual ending cleanly at `</body></html>`. Owner domain workflow, platform address and customer-test notes were moved into the AI Operating Manual, Backend Manual, Human Manual, System Handbook and Master Roadmap. Verify these changes before considering any merge.
+- Continue only in isolated branches. No production deployment, database mutation, account creation, Edge Function disablement or billing/domain action is authorised by this checkpoint.

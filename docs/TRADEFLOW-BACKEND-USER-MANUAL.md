@@ -1272,3 +1272,9 @@ A LIVE anonymous-domain audit identified a Cloudflare Static Assets HTML-handlin
 LIVE database verification confirmed `www.scenesource.co.uk` is present in `published_site_index` and `tenant_domains`, with the domain active and primary. Production `wrangler.jsonc` now uses `html_handling: "none"` and `run_worker_first: true`; public-site JS is trailing-slash tolerant and cache-bumped.
 
 Browser verification remains required after deployment. Do not manually activate domains, change DNS, or alter the existing Cloudflare SaaS route to address this issue.
+
+## 2026-10-09 — LIVE public website loading-shell repair
+
+The browser was at the correct subscriber root URL but remained on “Loading website…”. Production `public-site.js` contained an invalid regular-expression literal in its trailing-slash normalisation code. This prevents JavaScript parsing and means no public hostname/Supabase lookup runs. The published SceneSource row was already present in LIVE Supabase, so no database change was appropriate.
+
+Production fixes: `c1e4952d7588e071dc5ce132030afbd0cca97b89` corrects the JavaScript syntax; `19aedd3cb17626834c1674999950488c9025a802` bumps the HTML script URL to `public-site.js?v=26`. Browser verification is pending deployment. Preserve domain, SSL, authentication and database state.

@@ -34,7 +34,27 @@ First inspect LIVE Supabase and the relevant customer/subscriber account screens
 - Do not create a duplicate subscriber, duplicate subscription, or new Stripe checkout. The Adventure Outpost subscriber session already exists in the current browser.
 - Report what exists and what does not exist before taking any create-account action.
 
-If there is no suitable registered **website customer** account, create one through the normal public Customer Login/registration flow on https://www.scenesource.co.uk/ using a clearly identifiable test email address that the user controls. Do not create a second subscriber account unless the read-only audit proves the existing Adventure Outpost subscriber account is absent or unusable and the user explicitly approves creating another.
+If there is no suitable registered **website customer** account, the user will create one themselves through the normal public Customer Login/registration flow on https://www.scenesource.co.uk/ using a clearly identifiable test email address they control. Do not create the customer on the user's behalf. Do not create a second subscriber account unless the read-only audit proves the existing Adventure Outpost subscriber account is absent or unusable and the user explicitly approves creating another.
+
+## Read-only LIVE account and safety audit — 9 October 2026
+
+Verified against the LIVE Supabase project `gxsrajtqzdjvmceqcpgv` (not TEST):
+
+- `public.tenants` contains Adventure Outpost with tenant ID `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`.
+- `auth.users` contains exactly 2 non-deleted, email-confirmed users: one active Platform Owner and one active Adventure Outpost subscriber owner.
+- `public.tenant_memberships` contains one active Adventure Outpost owner membership; `public.platform_memberships` contains one active Platform Owner membership.
+- `public.customers` contains 0 rows and 0 customer-to-auth links. **There is no registered SceneSource website customer account yet.** Do not create one without the user's explicit approval.
+- `www.scenesource.co.uk` is the active primary custom domain for Adventure Outpost; the domain is verified/activated and `published_site_index` contains published revision 1.
+- All 98 public tables have RLS enabled. Supabase advisors report 14 RLS-enabled tables without policies, 14 anon-executable SECURITY DEFINER functions, 160 authenticated-executable SECURITY DEFINER functions, disabled leaked-password protection, 64 unindexed foreign keys, 166 RLS init-plan findings, 105 unused indexes, 14 multiple-permissive-policy findings and 3 duplicate indexes. Treat these as review items; do not bulk-change policies or indexes.
+- The production Worker config still contains the malformed LIVE URL `gxsrajtqzdjvmceqcpgv2.supabase.co`. The one-line correction already exists on isolated branch `audit/fix-live-supabase-url-20261009` at commit `04fc24cad71aaf6efe5e7472022bfd5bc6b8d939`; it is not deployed. Do not repeat the fix or promote it until controlled runtime and browser route/session tests pass.
+- Six retired domain-purchase/registration Edge Functions are still ACTIVE, including `index`, whose deployed source duplicates the legacy Stripe/Porkbun checkout flow. LIVE contains an `adventureoutpost.co.uk` order in `pending_payment`, a `laurendigital.co.uk` order in `registrant_details_saved`, and one registrant record. Neither order is positively marked sandbox. The latter order may be eligible for the old registration path if production Porkbun credentials are configured. Do not invoke the old endpoints; verify all callers and provider-secret configuration before disabling anything.
+- The external web-fetch tool could not independently fetch the public domain or its clean routes. The latest user-observed browser screenshot showed the homepage rendering; the route matrix and three-role Chrome session test remain pending.
+
+### Additional TEST cleanup finding
+
+The TEST project still has active Edge Functions `parcel2go-customer-shipping` v7, `parcel2go-subscriber-shipping` v11 and `shipping-provider-test` v8. The active `cloudflare-test` branch still contains direct-access legacy pages `domain-purchase.html/js` and `domain-registrant.html/js`, which call the old TEST Stripe/Porkbun registration endpoints. The current `domain-settings.js` and subscriber dashboard files inspected do not link to those pages, but direct URLs remain possible. These files/functions were not disabled or removed because a complete repo-wide caller audit and regression plan are still required. Remove them only in an isolated cleanup branch after checking the historical domain-registration checkpoint and verifying that the current customer-owned domain workflow remains intact.
+
+No LIVE records, authentication accounts, billing, domains, Worker settings or published content were changed by this audit.
 
 ## Test objective: all roles can coexist in one browser
 
@@ -83,3 +103,23 @@ Produce a clear pass/fail matrix for:
 - Public website clean routes still work.
 
 Do not declare acceptance until these results have been observed and documented.
+
+## 2026-10-09 — User-owned test registration and subscriber-manual boundary
+
+- User explicitly approved the next LIVE customer test but stated they will create the customer themselves. Assistant must not create the account, enter credentials, or change LIVE Auth/customer data on their behalf.
+- Read-only LIVE verification confirms 2 non-deleted, email-confirmed Auth users; one active Platform Owner membership; one active Adventure Outpost owner membership; 0 rows in `public.customers`; 0 customer-to-auth links.
+- LIVE domain is `www.scenesource.co.uk`, tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`, status active, verified/activated timestamps populated. Do not confuse LIVE (`gxsrajtqzdjvmceqcpgv`) with TEST (`twfbmjwwqzxdxvclxbun`).
+- The user identified the appended `Subscriber-owned domains — LIVE` section and all content after it in `subscriber-website-manual.html` as Platform Owner-only material. On the isolated audit branch this 5,206-character tail was removed from the Subscriber Manual, leaving the original subscriber-facing manual ending cleanly at `</body></html>`. Owner domain workflow, platform address and customer-test notes were moved into the AI Operating Manual, Backend Manual, Human Manual, System Handbook and Master Roadmap. Verify these changes before considering any merge.
+- Continue only in isolated branches. No production deployment, database mutation, account creation, Edge Function disablement or billing/domain action is authorised by this checkpoint.
+
+## Static session-isolation code review — 9 October 2026
+
+Production source review found distinct role/session storage keys:
+- Platform Owner: `tradeflow_platform_owner_session` in localStorage.
+- Subscriber: `tradeflow_subscriber_session` plus `tradeflow_subscriber_tenant_id` in localStorage.
+- Customer: `tradeflow_customer_session:<tenant_id>` in sessionStorage, with pending registration stored separately per tenant.
+- Customer auth cleanup removes known legacy shared customer/test keys; it does not explicitly remove the current Platform Owner or Subscriber keys.
+- The public-site controller checks for the subscriber key and uses the tenant-scoped customer session key.
+
+This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
+

@@ -2288,3 +2288,14 @@ The next subscriber-domain test should reuse this architecture. Do not rebuild t
 
 ### Documentation rule
 After every material domain change or test, update this AI Operating Manual, the Backend/Owner Manual, the Human/Subscriber Manual, the System Handbook, the Master Roadmap and a dated checkpoint. Do not claim a phase is verified without browser/database/Cloudflare evidence.
+
+
+## 2026-10-09 — LIVE clean subscriber URL routing deep-audit override
+
+A second routing defect was identified after the initial Worker-first root repair. The Worker internally fetches `public-site.html` through the `ASSETS` binding for subscriber clean routes. Cloudflare Static Assets default HTML handling (`auto-trailing-slash`) also applies to asset-binding requests and can redirect `/public-site.html` to `/public-site`. That caused the browser to leave the requested clean route; `public-site.js` then treated `/public-site` as the home page.
+
+LIVE database verification found the SceneSource publication/domain data present and publicly readable. No Supabase data repair is justified for this routing defect.
+
+Production repair: `wrangler.jsonc` now uses `html_handling: "none"` and `run_worker_first: true`. Public-site JS was also made trailing-slash tolerant and cache-bumped. Commits: `6a94244ec769a1d7f38aac29df0290a432cf1654`, `49c775fa30d2e5ea1fbad823e76e60e9acbc016e`, `ff8ce11cdd1d6ee6c6ce87970dc48a4eb5d2a03`.
+
+Status: source repair committed; anonymous browser verification remains required after deployment. Do not claim clean subscriber URLs verified until `/`, `/buying`, `/sell`, `/shop`, `/about` and `/contact` have each been browser-tested.

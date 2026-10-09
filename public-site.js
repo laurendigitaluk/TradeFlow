@@ -46,10 +46,15 @@ function customerBasketUrl(listingId){
  return target.href;
 }
 function pageUrl(slug,extra){
- let u=businessSlug?('/?business='+encodeURIComponent(businessSlug)+'&page='+encodeURIComponent(slug)):'/?page='+encodeURIComponent(slug);
+ let u;
  if(preview&&businessSlug)u='public-site.html?business='+encodeURIComponent(businessSlug)+'&page='+encodeURIComponent(slug)+'&preview=draft';
  else if(preview&&tenantId)u='public-site.html?tenant_id='+encodeURIComponent(tenantId)+'&page='+encodeURIComponent(slug)+'&preview=draft';
- if(extra)u+='&'+extra;
+ else if(businessSlug)u='/?business='+encodeURIComponent(businessSlug)+'&page='+encodeURIComponent(slug);
+ else u=slug==='home'?'/':'/'+encodeURIComponent(slug);
+ if(extra){
+   const separator=u.includes('?')?'&':'?';
+   u+=separator+extra;
+ }
  return u;
 }
 function publicProductUrl(listingId){

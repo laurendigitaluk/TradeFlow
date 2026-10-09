@@ -155,26 +155,12 @@ Do not change DNS, Cloudflare custom-hostname/SSL, Supabase domain records, acti
 
 ## 2026-10-09 — Root cause of persistent “Loading website…” screen
 
-The user's later browser screenshot showed the clean root URL (`https://www.scenesource.co.uk/`) but the page remained on the static “Loading website…” screen for hours. This is a different symptom from the earlier `/public-site` redirect.
+The user's later browser screenshot showed the clean root URL https://www.scenesource.co.uk/ but the page remained on the static “Loading website…” screen for hours. This differs from the earlier /public-site redirect.
 
-A source-level audit of production `public-site.js` found a malformed regular-expression literal in the new trailing-slash normalisation line:
+Production public-site.js contained a malformed regular-expression literal in trailing-slash normalisation: the slash was incorrectly escaped, making the expression invalid JavaScript syntax. The corrected source expression is /\\/+$/ in the JavaScript regex literal notation (one escaped forward slash followed by +$). This parse-time error prevents the entire public-site controller from executing. Consequently, hostname resolution and the Supabase query never started, leaving the static loading shell visible. The LIVE publication was present, so no database change was warranted.
 
-```js
-const normalizedPath=(location.pathname.replace(/\\/+$/,'')||'/');
-```
+Repairs committed to production:
+- c1e4952d7588e071dc5ce132030afbd0cca97b89 — Fix public website startup regex syntax.
+- 19aedd3cb17626834c1674999950488c9025a802 — Refresh public-site script after startup fix; public-site.html now loads public-site.js?v=26 to bypass the cached invalid script.
 
-The intended expression is:
-
-```js
-const normalizedPath=(location.pathname.replace(/\\/+$/,'')||'/');
-```
-
-The malformed version is invalid JavaScript syntax, which prevents the entire public-site controller from executing. That explains why the static loading shell remained visible and why neither hostname lookup nor the Supabase request could start. The Supabase publication was present, so the browser had not reached the data-loading stage.
-
-Repair committed to production:
-- `c1e4952d7588e071dc5ce132030afbd0cca97b89` — `Fix public website startup regex syntax`.
-- `19aedd3cb17626834c1674999950488c9025a802` — `Refresh public-site script after startup fix`; `public-site.html` now loads `public-site.js?v=26` to bypass the old cached script.
-
-The corrected source line is `location.pathname.replace(/\\/+$/,'')` in JavaScript source (regex matching one or more forward slashes). This diagnosis was based on the production source; a full browser run after the Cloudflare deployment is still required.
-
-Do not change DNS, SSL, domain activation, Supabase records, login/authentication, or the existing Cloudflare route to address the loading screen. First wait for the deployment containing both commits to become Ready, then reload the exact root URL anonymously and inspect the first browser Console/Network error only if the loading screen persists.
+Status: source repaired; browser verification is still required after the Cloudflare deployment. Do not change DNS, SSL, domain activation, Supabase records, authentication, or the existing Cloudflare route for this client-side parse failure. Wait for deployment to show Ready, then test the root URL anonymously. If the loading shell remains, inspect the first Console/Network error before making further changes.

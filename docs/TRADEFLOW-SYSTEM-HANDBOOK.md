@@ -1867,3 +1867,9 @@ The LIVE SceneSource anonymous routing audit identified a second defect after Wo
 LIVE Supabase was independently checked: the published hostname exists in `published_site_index`, the domain exists as active/primary in `tenant_domains`, and the published index has an anonymous SELECT policy. The database is not the current failure point.
 
 Production repair: `wrangler.jsonc` now uses `html_handling: "none"` and `run_worker_first: true`; public-site JavaScript was also made tolerant of trailing slashes and cache-bumped. Browser verification is pending deployment. Preserve the existing Cloudflare SaaS `*/*` route and domain/SSL state.
+
+## 2026-10-09 — Public-site controller parse failure
+
+A LIVE anonymous request to the correct subscriber root URL remained on the static loading shell. Production `public-site.js` contained a malformed regex literal in trailing-slash normalisation, which is a parse-time error and prevents the whole script from running. Since `loadByHostname()` never starts, this symptom precedes all Supabase reads and is not explained by a missing `published_site_index` row.
+
+Fixed by production commit `c1e4952d7588e071dc5ce132030afbd0cca97b89`; `public-site.html` now references `public-site.js?v=26` from commit `19aedd3cb17626834c1674999950488c9025a802`. Await deployment and verify in an anonymous browser. Keep DNS, SSL, domain state, Supabase records and authentication unchanged.

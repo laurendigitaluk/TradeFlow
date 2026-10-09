@@ -2302,8 +2302,8 @@ Status: source repair committed; anonymous browser verification remains required
 
 ## 2026-10-09 — LIVE subscriber site stuck on loading shell: root cause and repair
 
-The later anonymous LIVE test showed the browser at `https://www.scenesource.co.uk/` but the page remained on “Loading website…” for hours. Audit of production `public-site.js` found an invalid regular-expression literal in the newly added trailing-slash normalisation expression. A JavaScript parse error prevents the entire controller from executing, which explains why the hostname resolution and Supabase query did not start.
+The anonymous LIVE test showed the browser at https://www.scenesource.co.uk/ but the page remained on “Loading website…” for hours. Production public-site.js contained an invalid regular-expression literal in the newly added trailing-slash normalisation expression. A JavaScript parse error prevents the entire controller from executing, which explains why hostname resolution and the Supabase query did not start.
 
-Fixed in production commit `c1e4952d7588e071dc5ce132030afbd0cca97b89` (`Fix public website startup regex syntax`). The HTML reference was cache-bumped to `public-site.js?v=26` in commit `19aedd3cb17626834c1674999950488c9025a802` to prevent reuse of the invalid cached script.
+Fixed in production commit c1e4952d7588e071dc5ce132030afbd0cca97b89 (Fix public website startup regex syntax). The HTML reference was cache-bumped to public-site.js?v=26 in commit 19aedd3cb17626834c1674999950488c9025a802 to prevent reuse of the invalid cached script.
 
 Status: source repaired; browser verification awaits the new Cloudflare deployment. Do not change the already-verified domain/DNS/SSL state or Supabase publication records for this client-side parse failure.

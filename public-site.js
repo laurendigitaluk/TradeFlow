@@ -5,7 +5,16 @@ const params=new URLSearchParams(location.search);
 let tenantId=params.get('tenant_id');
 let businessSlug=params.get('business')||'';
 let activeTenantId=tenantId;
-const page=params.get('page')||'home';
+const cleanPageMap={
+ '/':'home',
+ '/buying':'buying',
+ '/sell':'sell',
+ '/shop':'shop',
+ '/product':'product',
+ '/about':'about',
+ '/contact':'contact'
+};
+const page=params.get('page')||cleanPageMap[location.pathname]||'home';
 const preview=params.get('preview')==='draft';
 const hostname=location.hostname;
 const $=id=>document.getElementById(id);

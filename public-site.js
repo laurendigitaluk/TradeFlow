@@ -14,7 +14,8 @@ const cleanPageMap={
  '/about':'about',
  '/contact':'contact'
 };
-const page=params.get('page')||cleanPageMap[location.pathname]||'home';
+const normalizedPath=(location.pathname.replace(/\\/+$/,'')||'/');
+const page=params.get('page')||cleanPageMap[normalizedPath]||'home';
 const preview=params.get('preview')==='draft';
 const hostname=location.hostname;
 const $=id=>document.getElementById(id);

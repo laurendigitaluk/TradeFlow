@@ -253,6 +253,9 @@ async function loadPortalOnce(){
 }
 window.addEventListener('tradeflow-auth-success',async(event)=>{
  if(window.tradeflowCustomerAuthReady)await window.tradeflowCustomerAuthReady;
+ tenantId=window.TRADEFLOW_CUSTOMER_TENANT_ID||new URLSearchParams(location.search).get('tenant_id')||tenantId||'';
+ SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
+ if(!isUuid(tenantId)){showAuth(true);message('This customer website could not identify the business from its domain. Please refresh; your account has not been changed.','error');return}
  if(event?.detail?.access_token)session=event.detail;else restore();
  await loadPortalOnce();
 });

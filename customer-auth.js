@@ -34,13 +34,18 @@ async function resolveTenantContext(){
  if(!tenantId){
   const hostname=location.hostname;
   if(hostname){
-   try{
-    const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1',{headers:{apikey:SUPABASE_KEY}});
-    if(response.ok){
-     const rows=await response.json();
-     if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id)tenantId=rows[0].tenant_id;
-    }
-   }catch{}
+   const candidates=[hostname];
+   if(hostname.startsWith('www.'))candidates.push(hostname.slice(4));
+   else if(hostname.includes('.')&&!['localhost','127.0.0.1'].includes(hostname))candidates.push('www.'+hostname);
+   for(const candidate of candidates){
+    try{
+     const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=tenant_id&hostname=eq.'+encodeURIComponent(candidate)+'&limit=1',{headers:{apikey:SUPABASE_KEY}});
+     if(response.ok){
+      const rows=await response.json();
+      if(Array.isArray(rows)&&rows.length===1&&rows[0]?.tenant_id){tenantId=rows[0].tenant_id;break}
+     }
+    }catch{}
+   }
   }
  }
  if(!tenantId&&location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){

@@ -4,6 +4,7 @@ window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;const TRADEFLOW_FETCH=window.fetch.bin
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 let tenantId=new URLSearchParams(location.search).get('tenant_id');
+let tenantContextPromise=null;
 const CUSTOMER_SITE_BASE=new URL('./',location.href).href;
 let businessName='this business';
 let SESSION_STORAGE=tenantId?'tradeflow_customer_session:'+tenantId:'tradeflow_customer_session:unknown';
@@ -98,7 +99,10 @@ async function registerCustomer(accessToken,first,last){
 }
 async function signIn(){
  const email=$('auth-email')?.value.trim(),password=$('auth-password')?.value||'',button=$('auth-sign-in');
- if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
+ if(!email||!password)return message('Enter your email and password.','error');
+ busy(button,true,'Connecting…');
+ try{if(tenantContextPromise)await Promise.race([tenantContextPromise,new Promise(resolve=>setTimeout(resolve,5000))]);}catch{}
+ if(!tenantId){busy(button,false);return message('We could not identify the business for this customer portal. Refresh the page and try again. If this continues, the site configuration needs attention.','error');}
  if(!email||!password)return message('Enter your email and password.','error');
  busy(button,true,'Signing in…');
  try{
@@ -174,18 +178,19 @@ function setAuthMode(signup){
 }
 window.tradeflowCustomerSetAuthMode=setAuthMode;
 function bind(){
- resolveTenantContext().finally(()=>{
-  clearLegacySharedState();
-  $('auth-sign-in')?.addEventListener('click',signIn);
-  $('auth-sign-up')?.addEventListener('click',signUp);
-  $('auth-create-account')?.addEventListener('click',()=>setAuthMode(true));
-  $('auth-back-sign-in')?.addEventListener('click',()=>setAuthMode(false));
-  setAuthMode(false);
-  $('auth-resend')?.addEventListener('click',resendConfirmation);
-  $('auth-reset')?.addEventListener('click',requestPasswordReset);
-  $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
-  loadBusinessName().finally(()=>{setAuthMode(false);restoreExistingSession().finally(()=>authReadyResolve())});
- });
+ // Bind the controls immediately. Tenant lookup must never prevent the sign-in
+ // button from receiving a click if the domain lookup is slow or unavailable.
+ clearLegacySharedState();
+ $('auth-sign-in')?.addEventListener('click',signIn);
+ $('auth-sign-up')?.addEventListener('click',signUp);
+ $('auth-create-account')?.addEventListener('click',()=>setAuthMode(true));
+ $('auth-back-sign-in')?.addEventListener('click',()=>setAuthMode(false));
+ setAuthMode(false);
+ $('auth-resend')?.addEventListener('click',resendConfirmation);
+ $('auth-reset')?.addEventListener('click',requestPasswordReset);
+ $('auth-password')?.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();signIn()}});
+ tenantContextPromise=resolveTenantContext();
+ tenantContextPromise.catch(()=>{}).then(()=>loadBusinessName()).finally(()=>{setAuthMode(false);restoreExistingSession().finally(()=>authReadyResolve())});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
 })();

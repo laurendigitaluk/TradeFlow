@@ -1,0 +1,26 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
+const cors={"Access-Control-Allow-Origin":"*","Access-Control-Allow-Headers":"authorization, x-client-info, apikey, content-type","Access-Control-Allow-Methods":"GET, OPTIONS"};
+Deno.serve(async(req:Request)=>{
+ if(req.method==="OPTIONS") return new Response("ok",{headers:cors});
+ if(req.method!=="GET") return new Response("GET required",{status:405,headers:cors});
+ const auth=req.headers.get("Authorization"); if(!auth)return new Response("Authentication required",{status:401,headers:cors});
+ const supabase=createClient(Deno.env.get("SUPABASE_URL")!,Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+ const {data:{user},error:userError}=await supabase.auth.getUser(auth.replace(/^Bearer\s+/i,""));
+ if(userError||!user)return new Response("Authentication required",{status:401,headers:cors});
+ const url=new URL(req.url),tenantId=url.searchParams.get("tenant_id")||"",itemId=url.searchParams.get("buying_item_id")||"",kind=url.searchParams.get("kind")||"";
+ if(!tenantId||!itemId||!["label","qr"].includes(kind))return new Response("Invalid request",{status:400,headers:cors});
+ const {data:customer}=await supabase.from("customers").select("id").eq("tenant_id",tenantId).eq("auth_user_id",user.id).maybeSingle();
+ if(!customer)return new Response("Customer account not found",{status:403,headers:cors});
+ const {data:item}=await supabase.from("buying_items").select("id,buying_request_id").eq("tenant_id",tenantId).eq("id",itemId).maybeSingle();
+ if(!item)return new Response("Buying item not found",{status:404,headers:cors});
+ const {data:request}=await supabase.from("buying_requests").select("id").eq("tenant_id",tenantId).eq("id",item.buying_request_id).eq("customer_id",customer.id).maybeSingle();
+ if(!request)return new Response("Buying request does not belong to this customer",{status:403,headers:cors});
+ const {data:shipping,error:shippingError}=await supabase.from("buying_item_shipping").select("shipping_label_storage_path,shipping_qr_storage_path").eq("tenant_id",tenantId).eq("buying_item_id",itemId).maybeSingle();
+ if(shippingError)return new Response(shippingError.message,{status:500,headers:cors});
+ const path=kind==="label"?shipping?.shipping_label_storage_path:shipping?.shipping_qr_storage_path;
+ if(!path)return new Response("Shipping file is not available yet",{status:404,headers:cors});
+ const {data:file,error:fileError}=await supabase.storage.from("tradeflow-media").download(path);
+ if(fileError||!file)return new Response(fileError?.message||"Could not open shipping file",{status:500,headers:cors});
+ return new Response(file,{status:200,headers:{...cors,"Content-Type":file.type||"application/octet-stream","Content-Disposition":"inline"}});
+});

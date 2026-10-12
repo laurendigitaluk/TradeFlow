@@ -1,6 +1,6 @@
 (()=>{
 const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
-window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;const TRADEFLOW_FETCH=window.fetch.bind(window);window.fetch=(input,init)=>{const testUrl='https://twfbmjwwqzxdxvclxbun.supabase.co';const liveUrl=TRADEFLOW_RUNTIME.supabaseUrl;const rewrite=url=>typeof url==='string'?url.replace(testUrl,liveUrl):url;if(input instanceof Request)return TRADEFLOW_FETCH(new Request(rewrite(input.url),input),init);return TRADEFLOW_FETCH(rewrite(input),init)};
+window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;
 let tenantId=new URLSearchParams(location.search).get('tenant_id');
@@ -17,7 +17,7 @@ const message=(text,type='')=>{const e=$('customer-message');if(e){e.textContent
 const busy=(button,value,label)=>{if(!button)return;if(value){if(!button.disabled)button.dataset.authLabel=button.textContent;button.disabled=true;if(label)button.textContent=label}else{button.disabled=false;if(button.dataset.authLabel){button.textContent=button.dataset.authLabel;delete button.dataset.authLabel}}};
 function clearLegacySharedState(){LEGACY_KEYS.forEach(k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch{}})}
 async function authRequest(path,body){
- const response=await fetch(SUPABASE_URL+path,{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});
+ const headers=new Headers();headers.set('apikey',SUPABASE_KEY);headers.set('Content-Type','application/json');const response=await window.fetch(new URL(path,SUPABASE_URL+'/').href,{method:'POST',headers,body:JSON.stringify(body),cache:'no-store',credentials:'omit'});
  const text=await response.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}
  if(!response.ok)throw Error(data?.msg||data?.message||data?.error_description||data?.error||text||'Authentication request failed.');
  return data;

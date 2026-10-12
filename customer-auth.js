@@ -14,7 +14,7 @@ let authReadyResolve;
 window.tradeflowCustomerAuthReady=new Promise(resolve=>{authReadyResolve=resolve});
 const $=id=>document.getElementById(id);
 const message=(text,type='')=>{const e=$('customer-message');if(e){e.textContent=text;e.className=type}};
-const busy=(button,value,label)=>{if(!button)return;button.disabled=value;if(value){button.dataset.authLabel=button.textContent;if(label)button.textContent=label}else if(button.dataset.authLabel)button.textContent=button.dataset.authLabel};
+const busy=(button,value,label)=>{if(!button)return;if(value){if(!button.disabled)button.dataset.authLabel=button.textContent;button.disabled=true;if(label)button.textContent=label}else{button.disabled=false;if(button.dataset.authLabel){button.textContent=button.dataset.authLabel;delete button.dataset.authLabel}}};
 function clearLegacySharedState(){LEGACY_KEYS.forEach(k=>{try{localStorage.removeItem(k);sessionStorage.removeItem(k)}catch{}})}
 async function authRequest(path,body){
  const response=await fetch(SUPABASE_URL+path,{method:'POST',headers:{apikey:SUPABASE_KEY,'Content-Type':'application/json'},body:JSON.stringify(body)});

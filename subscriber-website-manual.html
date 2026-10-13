@@ -102,5 +102,13 @@
 </section>
 </div>
 </main>
+
+
+<section class="manual-update" id="customer-portal-login-2026-10-13">
+<h2>13 October 2026 — Customer portal sign-in update</h2>
+<p>The user confirmed that the existing Adventure Outpost customer account signs in in both regular Chrome and Chrome Incognito at <code>https://www.scenesource.co.uk/login</code>. Both windows show the same customer portal and accepted DJI Osmo Action 6 Adventure Combo cash offer (£70.00), along with the prompt to add bank details before payment. This verifies the observed sign-in in these two browser contexts only; it does not prove all customer accounts, password recovery, valuation or customer/subscriber messaging are fully verified.</p>
+<p>The recovery-origin code repair was merged to production in commit <code>f676fb13198d78f997ef5cb017af303e83c97efa</code> (PR #124). When recovery starts on a platform hostname, the code resolves the tenant's unique published hostname and directs the recovery link to that tenant's <code>/reset-password</code> route. A missing or ambiguous hostname fails closed. No customer account, password, bank details, customer data, tenant data, DNS or Supabase Auth settings were changed. TEST remains untouched.</p>
+<p>The optional trailing empty <code>#</code> in <code>https://www.scenesource.co.uk/login#</code> is harmless and needs no fix. Remaining checks: confirm Cloudflare deployment and Supabase Auth allowed-redirect settings; test a fresh recovery email through password update and sign-in. Do not claim full recovery or valuation/messaging acceptance until separately verified.</p>
+</section>
 </body>
 </html>

@@ -21,3 +21,9 @@ Environment: LIVE source only; TEST Supabase project `twfbmjwwqzxdxvclxbun` unto
 
 ## Status: CODE PREPARED, NOT YET DEPLOYED/VERIFIED
 After merge/deploy, verify a real customer can save their own bank details, see a success message, reload My Details and retrieve the saved values, and see the outstanding bank-details notice clear. The screenshot's sample bank values must not be treated as genuine details. Do not mark resolved until this passes in the live portal.
+
+
+## Merge status update — 2026-10-13
+The expired-session refresh repair has now been merged into `production` in commit `e6dcbb985dd4308a1860ce54642e59df7be5ccd7` (PR #125). Production source verification confirms the refresh/retry helper is present and `customer-dashboard.html` references `customer-dashboard.js?v=152`.
+
+This confirms GitHub production source only. Cloudflare deployment and live customer acceptance are still unverified. The checkpoint remains open until a customer saves their own correct bank details, the save succeeds, the details reload from LIVE, and the bank-details-required warning clears. Do not use the screenshot's sample values.

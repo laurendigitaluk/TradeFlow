@@ -199,7 +199,11 @@ end;
 $function$;
 
 -- Platform-owner RPCs should never be invocable by unauthenticated callers.
-revoke execute on function public.platform_owner_get_domain_pricing() from anon;
-revoke execute on function public.platform_owner_list_domain_actions() from anon;
-revoke execute on function public.platform_owner_update_domain_action(uuid,text,text,jsonb) from anon;
-revoke execute on function public.platform_owner_update_domain_pricing(numeric,numeric,date,date,numeric,date) from anon;
+revoke execute on function public.platform_owner_get_domain_pricing() from public, anon;
+grant execute on function public.platform_owner_get_domain_pricing() to authenticated;
+revoke execute on function public.platform_owner_list_domain_actions() from public, anon;
+grant execute on function public.platform_owner_list_domain_actions() to authenticated;
+revoke execute on function public.platform_owner_update_domain_action(uuid,text,text,jsonb) from public, anon;
+grant execute on function public.platform_owner_update_domain_action(uuid,text,text,jsonb) to authenticated;
+revoke execute on function public.platform_owner_update_domain_pricing(numeric,numeric,date,date,numeric,date) from public, anon;
+grant execute on function public.platform_owner_update_domain_pricing(numeric,numeric,date,date,numeric,date) to authenticated;

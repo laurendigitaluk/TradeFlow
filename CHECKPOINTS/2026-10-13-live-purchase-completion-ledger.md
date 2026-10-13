@@ -25,4 +25,8 @@ PR #126 was merged to production at `708dba463a2aa67ac1d8acbf9c59fd8f8806b407`. 
 
 
 ## Security follow-up — 13 October 2026
-A second branch `fix/restrict-subscriber-domain-rpcs-20261013` contains migration `supabase/migrations/20261013200000_restrict_subscriber_domain_rpcs.sql`, removing PUBLIC/anon execute from `subscriber_get_my_tenant_slug(uuid)` and `subscriber_request_custom_domain(text)` while retaining authenticated execute. This follow-up is not applied yet.
+A second branch `fix/restrict-subscriber-domain-rpcs-20261013` contains migration `supabase/migrations/20261013200000_restrict_subscriber_domain_rpcs.sql`, removing PUBLIC/anon execute from `subscriber_get_my_tenant_slug(uuid)` and `subscriber_request_custom_domain(text)` while retaining authenticated execute. PR #127 was merged and migration `restrict_subscriber_domain_rpcs_20261013` applied successfully to LIVE (version `20261013183455`). Read-only checks confirm anon execution is false and authenticated execution is true for both functions.
+
+
+## Security follow-up — 13 October 2026
+PR #127 was merged and migration `restrict_subscriber_domain_rpcs_20261013` applied to LIVE. Permission checks confirm `subscriber_get_my_tenant_slug(uuid)` and `subscriber_request_custom_domain(text)` are no longer executable by anon and remain executable by authenticated users. The remaining 8 anon-executable SECURITY DEFINER functions are the public catalogue, published-site/listing/media, and plan endpoints; their output boundaries should be reviewed, not blanket-revoked.

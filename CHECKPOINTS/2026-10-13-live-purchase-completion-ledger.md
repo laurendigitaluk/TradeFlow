@@ -21,4 +21,8 @@ The existing transaction is ACQ-10F8FFABBC12 for £70 GBP. Its payment reference
 - Revokes anonymous execution from four platform-owner-only domain management RPCs while preserving authenticated calls and their internal platform-owner checks.
 
 ## Release status
-The migration is a proposed change on an isolated branch and is not applied to LIVE yet. Before applying, inspect the migration and verify SQL syntax/function signatures. Then apply to LIVE, run read-only catalog/permission checks and validate a fresh controlled purchase flow. Do not retroactively modify ACQ-10F8FFABBC12 without a separate explicit reconciliation step.
+PR #126 was merged to production at `708dba463a2aa67ac1d8acbf9c59fd8f8806b407`. Migration `fix_purchase_completion_ledger_and_timestamps_20261013` was applied successfully to LIVE (recorded version `20261013183319`). Read-only checks confirmed the function contains the ledger insert, guarded completion transitions and placeholder-reference rejection; the four platform-owner-only RPCs now deny anon while allowing authenticated callers. Existing ACQ-10F8FFABBC12 remains untouched. A fresh controlled purchase-flow test remains pending.
+
+
+## Security follow-up — 13 October 2026
+A second branch `fix/restrict-subscriber-domain-rpcs-20261013` contains migration `supabase/migrations/20261013200000_restrict_subscriber_domain_rpcs.sql`, removing PUBLIC/anon execute from `subscriber_get_my_tenant_slug(uuid)` and `subscriber_request_custom_domain(text)` while retaining authenticated execute. This follow-up is not applied yet.

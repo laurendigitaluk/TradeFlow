@@ -1,25 +1,21 @@
 # TradeFlow
 
-## Customer Test Lab
+TradeFlow is a multi-tenant buying, valuation, purchasing, inventory, selling, retail-order, fulfilment and returns platform.
 
-This repository currently contains the TradeFlow backend foundation and a temporary Customer Test Lab used for authenticated security testing.
+## Current project operating authority
 
-### Test tenants
-- Customer A → TradeFlow Test Business A (`test-business-a`)
-- Customer B → TradeFlow Test Business B (`test-business-b`)
+Read the **Authoritative Environment Decision — 13 October 2026** at the top of `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` before performing development, testing, deployment, or environment changes.
 
-The test-lab onboarding function only permits accounts to attach to tenants explicitly marked as test tenants. It does not grant staff or owner membership.
+The former TEST-first release plan is retired. The agreed sequence is to verify and repair the environment that was being built as LIVE, preserve the validated environment as the new TEST copy, then create a separate LIVE environment from the validated baseline.
 
-### Run the test lab
+## Manuals
 
-1. Enable GitHub Pages for this repository using the `main` branch and repository root.
-2. Open the resulting GitHub Pages site.
-3. Enter the TradeFlow Supabase publishable key once. It is stored only in the browser's local storage.
-4. Create Customer A with a dedicated test email and password and select **Customer A — Test Business A**.
-5. Sign out.
-6. Create Customer B with a different test email and password and select **Customer B — Test Business B**.
-7. Use the two accounts for the authenticated tenant-isolation tests.
+- AI continuity and operating rules: `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+- System and architecture: `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- Internal backend / Platform Owner: `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`
+- Human user guide: `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+- Subscriber website guide: `subscriber-website-manual.html`
 
-Do not use real customer data in the test tenants.
+## Safety
 
-The Customer Test Lab is temporary test infrastructure and must be removed/replaced by the proper production customer registration flow before TradeFlow goes live.
+A branch commit is not proof of deployment. Verify the deployed Worker, served assets, runtime configuration and Supabase project independently. Do not use the temporary Customer Test Lab instructions from older repository history as the current operating procedure. Do not change LIVE accounts or data while diagnosing authentication without explicit approval.

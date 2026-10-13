@@ -1377,3 +1377,10 @@ The customer dashboard API helper now detects an HTTP 401, refreshes the existin
 - No customer/account/tenant rows, auth users, schema, RLS, or RPC definitions were changed.
 - LIVE only; TEST remains untouched.
 - This repair is on branch `fix-customer-bank-save-expired-session-20261013` and is not yet verified in the deployed site. Merge/deploy is required, then a customer must save their own real bank details and confirm the saved values reload. Never treat the screenshot's example bank values as real data.
+
+
+## LIVE PURCHASE COMPLETION / LEDGER REPAIR — 13 OCTOBER 2026 (PROPOSED, NOT DEPLOYED)
+
+Read-only audit found that LIVE `subscriber_complete_purchase` marked the payment/acquisition/item paid and created inventory, but omitted the purchase ledger entry and left acquisition/item completion timestamps and inventory `ready_for_sale_at` unset. The existing transaction ACQ-10F8FFABBC12 (£70 GBP; manual payment reference `test`) was not modified; the reference is not independent evidence of a bank transfer.
+
+An isolated production-based branch `fix/live-purchase-completion-ledger-20261013` contains proposed migration `supabase/migrations/20261013195000_fix_purchase_completion_ledger_and_timestamps.sql`. It records manual subscriber confirmation explicitly, rejects empty/placeholder payment references, populates received/finalised/paid/ready-for-sale timestamps, creates a posted purchase debit linked to payment/acquisition/inventory/customer, transitions acquisition and acquisition item from paid to completed using the guarded workflow RPC, and revokes anonymous execute on four platform-owner-only domain RPCs. Migration is not applied to LIVE and the PR is not yet merged. Do not edit the existing transaction until a separate reconciliation decision is made. TEST project `twfbmjwwqzxdxvclxbun` remains untouched.

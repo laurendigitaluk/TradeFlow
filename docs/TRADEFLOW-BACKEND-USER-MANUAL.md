@@ -1351,3 +1351,14 @@ Production source review found distinct role/session storage keys:
 
 This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
 
+
+
+## 2026-10-13 — LIVE customer portal sign-in restored and cross-browser check passed
+
+The user confirmed that the existing Adventure Outpost customer account can now sign in in both the regular Chrome window and Chrome Incognito at `https://www.scenesource.co.uk/login`. Both windows show the same customer portal, accepted DJI Osmo Action 6 Adventure Combo offer (cash offer £70.00), and the same pending bank-details notice. This is a user-observed pass for sign-in and session restoration in two browser contexts; it is not proof that every customer account, every recovery path, or the valuation/messaging workflow has passed.
+
+The recovery-origin repair was merged to `production` in commit `f676fb13198d78f997ef5cb017af303e83c97efa` (PR #124). When recovery starts on a platform hostname, customer-auth code resolves the tenant's unique published hostname and directs the recovery link to that tenant's `/reset-password` route; it fails closed when the hostname is missing/ambiguous. No customer/Auth accounts, passwords, bank details, customer records, tenant data, DNS, or Supabase Auth settings were changed during this repair. TEST Supabase remains untouched.
+
+The optional trailing empty fragment in `https://www.scenesource.co.uk/login#` is equivalent to the same URL without the final `#` for this flow. It is not an authentication token or an error; no change is required.
+
+**Remaining verification:** Cloudflare deployment of PR #124 and Supabase Auth allowed-redirect settings have not been independently confirmed by the available tools. The user has observed successful sign-in in both windows, but a fresh password-recovery email → reset page → password update → sign-in journey has not been recorded as passed. Do not claim that complete recovery journey or the separate valuation/messaging issue is resolved until tested. The current customer portal also correctly displays the prompt to add bank details before payment can proceed; do not edit or invent bank details.

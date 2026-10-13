@@ -78,13 +78,26 @@ async function resendConfirmation(){
   message(error.message||String(error),'error');
  }finally{busy(button,false)}
 }
+async function resolveCustomerPortalOrigin(){
+ const host=location.hostname.toLowerCase();
+ const platformHosts=new Set(['tradeflow.laurendigital.co.uk','tradeflow.leannelaurenlowe.workers.dev','tradeflow-test.leannelaurenlowe.workers.dev','laurendigital.co.uk','www.laurendigital.co.uk','localhost','127.0.0.1']);
+ if(!platformHosts.has(host))return location.origin;
+ if(!tenantId)throw Error('This Customer Portal link is missing its business identifier. Open the customer portal from the business website and try again.');
+ const response=await fetch(SUPABASE_URL+'/rest/v1/published_site_index?select=hostname&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=2',{headers:{apikey:SUPABASE_KEY},cache:'no-store'});
+ if(!response.ok)throw Error('The business customer-portal address could not be resolved. Please open the customer portal from the business website and request the reset again.');
+ const rows=await response.json();
+ const hosts=[...new Set((Array.isArray(rows)?rows:[]).map(row=>String(row?.hostname||'').trim().toLowerCase()).filter(Boolean))];
+ if(hosts.length!==1)throw Error('The business customer-portal address is missing or ambiguous. Please contact the business owner before requesting a password reset.');
+ return 'https://'+hosts[0];
+}
 async function requestPasswordReset(){
  const email=$('auth-email')?.value.trim(),button=$('auth-reset');
  if(!tenantId)return message('This Customer Portal link is missing its business identifier.','error');
  if(!email)return message('Enter your email address first, then choose Forgot password.','error');
  busy(button,true,'Sending…');
  try{
-  const resetUrl=new URL('/reset-password',location.origin);
+  const portalOrigin=await resolveCustomerPortalOrigin();
+  const resetUrl=new URL('/reset-password',portalOrigin);
   const response=await authRequest('/auth/v1/recover?redirect_to='+encodeURIComponent(resetUrl.href),{email});
   void response;
   message('If an account exists for that email, a password reset email has been sent. Check your inbox and spam folder.','success');

@@ -2404,3 +2404,18 @@ The recovery-origin repair was merged to `production` in commit `f676fb13198d78f
 The optional trailing empty fragment in `https://www.scenesource.co.uk/login#` is equivalent to the same URL without the final `#` for this flow. It is not an authentication token or an error; no change is required.
 
 **Remaining verification:** Cloudflare deployment of PR #124 and Supabase Auth allowed-redirect settings have not been independently confirmed by the available tools. The user has observed successful sign-in in both windows, but a fresh password-recovery email → reset page → password update → sign-in journey has not been recorded as passed. Do not claim that complete recovery journey or the separate valuation/messaging issue is resolved until tested. The current customer portal also correctly displays the prompt to add bank details before payment can proceed; do not edit or invent bank details.
+
+
+## 2026-10-13 — Bank-details save failure: expired customer access token
+
+### Confirmed root cause
+LIVE Supabase logs show repeated `POST /rest/v1/rpc/customer_save_bank_details` requests returning HTTP 401 with PostgREST `PGRST303`. The log's JWT timestamps show the access token had expired before these save attempts. The LIVE customer row exists for the signed-in user, but the corresponding `customer_bank_details` row did not exist after the failed attempts. The save RPC itself validates the authenticated user and validates UK sort code/account number lengths; there is no evidence that the function or schema is the cause of this particular failure.
+
+### Code repair prepared
+The customer dashboard API helper now detects an HTTP 401, refreshes the existing Supabase session using its refresh token, stores the renewed session in the existing tenant-scoped session storage, and retries the original request once. Concurrent requests share one refresh operation to avoid racing token rotation. Dashboard script URL is bumped from `customer-dashboard.js?v=151` to `v152` to avoid stale browser caching.
+
+### Safety and status
+- No bank details have been written by an administrative query; no values have been invented or copied from the screenshot.
+- No customer/account/tenant rows, auth users, schema, RLS, or RPC definitions were changed.
+- LIVE only; TEST remains untouched.
+- This repair is on branch `fix-customer-bank-save-expired-session-20261013` and is not yet verified in the deployed site. Merge/deploy is required, then a customer must save their own real bank details and confirm the saved values reload. Never treat the screenshot's example bank values as real data.

@@ -8,7 +8,33 @@ function esc(v){return String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&
 function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return c+' '+v}}
 function message(t,type=''){const e=$('customer-message');if(e){e.textContent=t||'';e.className='message '+type}}
 function showAuth(v){$('auth-panel').hidden=!v;$('portal').hidden=v;const account=$('customer-account');if(account)account.hidden=v;if($('purchase'))$('purchase').hidden=true}
-async function api(path,o={}){const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);const r=await fetch(SUPABASE_URL+path,{...o,headers:h});const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||t||('HTTP '+r.status));return b}
+let sessionRefreshPromise=null;
+async function refreshCustomerSession(){
+ if(!session?.refresh_token)return false;
+ if(sessionRefreshPromise)return sessionRefreshPromise;
+ sessionRefreshPromise=(async()=>{
+  const response=await fetch(SUPABASE_URL+'/auth/v1/token?grant_type=refresh_token',{
+   method:'POST',headers:{apikey:key,'Content-Type':'application/json'},cache:'no-store',
+   body:JSON.stringify({refresh_token:session.refresh_token})
+  });
+  const text=await response.text();let data=null;try{data=text?JSON.parse(text):null}catch{data=text}
+  if(!response.ok||!data?.access_token)throw Error(data?.msg||data?.message||data?.error_description||data?.error||'Your customer session has expired. Please sign in again.');
+  saveSession(data);
+  return true;
+ })();
+ try{return await sessionRefreshPromise}finally{sessionRefreshPromise=null}
+}
+async function api(path,o={}){
+ const send=()=>{const h=new Headers(o.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization','Bearer '+session.access_token);return fetch(SUPABASE_URL+path,{...o,headers:h,cache:o.cache||'no-store'})};
+ let r=await send();
+ if(r.status===401&&session?.refresh_token){
+  try{await refreshCustomerSession();r=await send()}
+  catch(error){throw Error('Your customer session could not be refreshed. Please sign out and sign in again, then retry.')}
+ }
+ const t=await r.text();let b=null;try{b=t?JSON.parse(t):null}catch{b=t}
+ if(!r.ok)throw Error(b?.message||b?.msg||b?.error_description||b?.error||t||('HTTP '+r.status));
+ return b
+}
 function isUuid(value){return typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value)}
 async function rpc(name,body){if(!isUuid(tenantId))throw Error('Customer portal is still resolving the business account. Please refresh the page; no changes have been made.');return api('/rest/v1/rpc/'+name,{method:'POST',body:JSON.stringify(Object.assign({p_tenant_id:tenantId},body||{}))})}
 function saveSession(v){

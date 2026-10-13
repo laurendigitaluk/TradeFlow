@@ -2439,3 +2439,10 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Security advisor after the previous hardening still reports 14 RLS-enabled tables with no policies, 8 anonymous-executable SECURITY DEFINER functions and `pg_net` in `public`. The table warning is not by itself a leak: direct access is blocked by RLS, and direct grants on `customer_credit_accounts` are now revoked. The remaining anonymous-callable functions return public published/catalogue data or public plan data; review their returned columns and intended public use individually rather than bulk-revoking. `private` schema has no anon USAGE, so its anon execute ACL findings are not directly exposed through PostgREST.
 - The migration source and security follow-up are being recorded in the production repository. No broad RLS policies were added and no payment/customer data was edited.
 - Status: function-level correction is applied in LIVE and verified by reading its deployed definition. Existing transaction reconciliation and browser end-to-end verification remain pending. Do not mark the whole transaction test passed until a controlled follow-up confirms a non-placeholder reference, completion timestamps, linked ledger entry, inventory timestamp and customer-facing status agree.
+
+
+## Additional LIVE ACL hardening — 2026-10-13
+
+- Applied migration `20261013200946_revoke_anon_private_helper_function_execute_20261013` in LIVE Supabase. Removed `PUBLIC`/`anon` EXECUTE grants from `private.is_active_tenant`, `private.platform_admin_list_subscriber_accounts`, `private.platform_admin_manage_subscription`, and `private.queue_buying_request_received_notification` where direct client execution is not intended.
+- Verified `anon` no longer has EXECUTE on these four functions. The `private` schema has no `USAGE` grant to `anon`; owner-context SECURITY DEFINER code can continue to call its helper functions.
+- No records, table data, customer data or payment data were changed. TEST remains untouched.

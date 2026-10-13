@@ -2384,3 +2384,12 @@ Production source review found distinct role/session storage keys:
 
 This is encouraging static evidence that role storage is separated, but it is **not a runtime pass**. Owner and subscriber may share an origin while using different keys; the SceneSource customer domain is a different origin with separate browser storage. After the user creates the customer, test each role in the actual Chrome setup, including sign-in, refresh, route navigation and role-specific sign-out. Record observed outcomes; do not infer success from code alone.
 
+
+
+## 2026-10-13 — Customer password recovery origin repair (verification pending)
+
+LIVE customer login continued to return Supabase `invalid_credentials`, so the existing account/password must not be recreated or altered directly. The recovery request logs showed that the reset request was initiated from the TradeFlow platform Worker origin, and the recovery email consequently returned to that platform origin instead of the subscriber's customer website. The customer reset page is tenant-site-relative and the customer login is tenant-scoped, so this origin mismatch can strand recovery outside the correct portal.
+
+Candidate production repair in branch `fix-customer-password-reset-tenant-origin-20261013`: when Forgot password is used on a platform hostname, resolve the tenant's unique published hostname from LIVE `published_site_index` and set `redirect_to` to that tenant's `/reset-password` route. If the tenant hostname is missing or ambiguous, stop with an explicit error instead of sending a reset link to the wrong host. On an actual subscriber hostname, preserve that origin. No password, Auth user, customer row, membership, tenant data, DNS or Supabase Auth configuration is changed by this code repair.
+
+**Status: not yet proven fixed.** PR review/merge, Cloudflare deployment, allowed-redirect configuration and a fresh recovery email → password update → sign-in → customer dashboard journey must be verified. Previous reset emails may already be expired and must not be treated as valid test evidence. The TEST Supabase project remains untouched.

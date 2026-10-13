@@ -10,7 +10,7 @@ create or replace function public.subscriber_complete_purchase(
 returns jsonb
 language plpgsql
 security definer
-set search_path to 'public', 'private'
+set search_path to 'pg_catalog', 'public', 'private'
 as $function$
 declare
   v_actor uuid := auth.uid();
@@ -70,6 +70,9 @@ begin
   if v_bank.id is null then raise exception 'Customer bank details are required before payment can be recorded'; end if;
   if nullif(trim(coalesce(p_payment_reference,'')),'') is null then
     raise exception 'Bank payment reference is required before payment can be recorded';
+  end if;
+  if lower(trim(p_payment_reference)) in ('test','testing','n/a','na','none','pending','placeholder') then
+    raise exception 'Enter the actual bank transfer reference, not a placeholder';
   end if;
 
   v_amount:=v_offer.amount;

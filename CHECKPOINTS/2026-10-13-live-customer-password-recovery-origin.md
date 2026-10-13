@@ -19,5 +19,9 @@ Environment: LIVE source branch only; TEST Supabase `twfbmjwwqzxdxvclxbun` untou
 - TEST environment untouched.
 - System Handbook and AI Operating Manual updated to record this candidate and its pending status.
 
-## Status: NOT VERIFIED
+## Status: PARTIAL PASS — sign-in verified; recovery still pending
 The change must be reviewed, merged to production, deployed to Cloudflare and tested with a newly requested recovery email. Verify that the email redirects to `https://www.scenesource.co.uk/reset-password`, password update succeeds, normal sign-in succeeds, and the customer portal dashboard loads. Also verify that the LIVE Supabase Auth redirect allow-list accepts the tenant hostname. Do not report the portal fixed until this complete journey passes. Previous recovery links may be expired and are not valid test evidence.
+
+
+## User-observed follow-up — 2026-10-13 15:26 UK
+The user confirmed that sign-in now works in both regular Chrome and Chrome Incognito. Both show the same customer account and the same accepted £70 cash offer; the customer portal displays the bank-details-required notice. The empty trailing fragment in `/login#` is harmless. This does not prove the fresh recovery-email/password-update flow, Cloudflare deployment, allowed-redirect configuration, or valuation/messaging flow. Do not mark those as passed.

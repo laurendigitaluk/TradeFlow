@@ -22,7 +22,6 @@
     return true;
   };
   const bind=()=>{
-    setTenantLink('a[href="customer-basket.html"]','customer-basket.html');
     document.querySelectorAll('a[href^="#"]').forEach(link=>{
       link.addEventListener('click',e=>{
         const id=link.getAttribute('href').slice(1);

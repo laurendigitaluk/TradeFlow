@@ -2012,3 +2012,11 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Applied migration `20261013200946_revoke_anon_private_helper_function_execute_20261013` in LIVE Supabase. Removed `PUBLIC`/`anon` EXECUTE grants from `private.is_active_tenant`, `private.platform_admin_list_subscriber_accounts`, `private.platform_admin_manage_subscription`, and `private.queue_buying_request_received_notification` where direct client execution is not intended.
 - Verified `anon` no longer has EXECUTE on these four functions. The `private` schema has no `USAGE` grant to `anon`; owner-context SECURITY DEFINER code can continue to call its helper functions.
 - No records, table data, customer data or payment data were changed. TEST remains untouched.
+
+
+## LIVE explicit deny policies for locked tables — 2026-10-13
+
+- Applied LIVE migration `20261013201345_explicit_deny_policies_for_locked_tables_20261013` to the 14 previously policy-free RLS tables: `assistant_conversations`, `assistant_messages`, `catalogue_master_branches`, `catalogue_master_categories`, `catalogue_master_manufacturers`, `catalogue_master_product_identifiers`, `catalogue_master_products`, `customer_bank_details`, `customer_credit_accounts`, `customer_credit_holds`, `payment_provider_events`, `platform_ai_settings`, `platform_owner_domain_actions`, and `tenant_catalogue_state`.
+- Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
+- Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
+- This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.

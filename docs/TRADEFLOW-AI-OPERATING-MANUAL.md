@@ -2513,3 +2513,11 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - Keep a `Find a product` search field and add a category selector based on categories present in the published listings, with product counts. Search filters the existing product cards by name, description and category without changing the underlying listing data.
 - On the shop page only, suppress empty placeholder elements from the configurable global-header canvas so blank image/text placeholders do not render as six empty tiles. Preserve populated logo/banner/header elements and all other pages' template layout.
 - Public site asset cache versions advance to `public-site.js?v=28` and `public-site.css?v=32`. Verify LIVE What We Sell with several published products, category filtering, text search, no-results state, and confirm other pages still show their configured tiles. TEST remains untouched.
+
+
+## 14 October 2026 — What We Sell page layout
+
+- The dedicated public `shop` route must show the subscriber's published product listings automatically. Do not render the generic editable page tiles/cards on this route; those remain available on ordinary content pages where appropriate.
+- Keep the `Find a product` search input and category selector on What We Sell. The search matches product title, description, and category; the category dropdown is populated from the published listing categories and includes product counts. Product cards must come from published retail listings, not static subscriber-edited tiles.
+- Production renderer `renderShopPage` already builds the title, search/category filters, product grid and empty state without calling `renderPageTiles`. Advance the public renderer script cache key from v28 to v29 so deployed browsers fetch that renderer instead of a stale cached version.
+- Verify on the actual public `/shop` URL that the six placeholder tiles are gone, the search/category controls remain, and all published products are automatically listed. Do not change other website pages or TEST.

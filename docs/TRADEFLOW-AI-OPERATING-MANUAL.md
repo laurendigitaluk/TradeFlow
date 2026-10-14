@@ -2473,3 +2473,11 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - Shipping Settings should be reachable from the Settings sidebar. Its selected courier links serve manual Buying and retail-order fulfilment workflows. Do not restore the retired Parcel2Go API or old TEST provider connection. Customers pay their shipping provider directly; TradeFlow must not collect or pay postage.
 - The selling dashboard's Supabase URL fallback must point to LIVE. The shared subscriber-auth runtime remains responsible for selecting TEST versus LIVE from the environment; verify the deployed page on the LIVE domain before considering the change complete.
 - No direct LIVE database rows were changed as part of this code audit. Category flags change only when a subscriber publishes an item to Website through the updated flow. After merge/deploy, verify with a controlled test item and inspect the resulting Website channel, category/branch flags, listing, and public shop visibility.
+
+
+## 14 October 2026 — Selling publish permission error
+
+- LIVE Selling showed `permission denied for table inventory_assets` when publishing the existing Adventure Outpost inventory item. The authenticated role has SELECT but no direct UPDATE grant on `public.inventory_assets`; do not restore broad table UPDATE access to work around this.
+- Repair approach: route the Selling form's serial-number/location save through `public.subscriber_update_inventory_asset_sales_fields`, a narrowly scoped SECURITY DEFINER RPC. It must require an authenticated active tenant member with `inventory.manage` and the `module.inventory` feature, and update only the specified asset within that tenant.
+- Apply the migration to LIVE through the version-controlled migration process before deploying the new Selling JavaScript. The client uses the RPC for both new listings and editing existing listings; direct `inventory_assets` PATCH calls for these fields are removed.
+- Regression checks: publishing still creates the listing and transitions inventory state through the existing workflow RPC; editing still saves listing details; a user without tenant permission cannot update another tenant's asset. TEST remains untouched.

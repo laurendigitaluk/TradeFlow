@@ -2497,3 +2497,11 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - Replace those remaining direct status PATCH requests with `subscriber_sync_inventory_asset_status`, a SECURITY DEFINER RPC restricted to the two expected transitions: `ready_for_sale → listed` and `listed → ready_for_sale`. It requires authenticated `inventory.manage` permission and the `module.inventory` feature, and scopes updates to the tenant and asset.
 - The publish path now uses the resolved asset's ID rather than an out-of-scope `assetRow.id`. Script cache key advances to v91.
 - Apply migration `20261014190000_subscriber_sync_inventory_asset_status.sql` to LIVE before deployment. Verify logs show RPC calls and no direct inventory_assets UPDATE, then check public published storefront (not only `template-preview=draft`). TEST remains untouched.
+
+
+## 14 October 2026 — What We Sell page layout
+
+- The subscriber's What We Sell / Retail Shop page should be driven by published retail listings. Do not show the generic six editable page tiles or the “Find a product” search field on this page.
+- Website Builder's shop page now renders the page title/body and subscriber-linked product cards only; it no longer exposes the page-tile editor controls for the shop page. The What We Buy page and Home page retain their own category/tile controls.
+- Public storefront rendering of the shop page no longer includes `renderPageTiles(site,p)` or the product-search filter. Published subscriber listings remain automatically rendered in the product grid, with the existing empty-state message when there are no published products.
+- Cache keys advanced: Website Builder `v123`; public storefront `v27`. Verify the editor and public `/shop` page after deployment; confirm What We Buy and Home tiles are unchanged.

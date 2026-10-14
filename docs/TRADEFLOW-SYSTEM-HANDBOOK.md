@@ -2057,3 +2057,11 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Repair approach: route the Selling form's serial-number/location save through `public.subscriber_update_inventory_asset_sales_fields`, a narrowly scoped SECURITY DEFINER RPC. It requires an authenticated user with `inventory.manage` and the `module.inventory` feature, and updates only the specified asset within that tenant.
 - Apply migration `20261014180000_subscriber_update_inventory_asset_sales_fields.sql` to LIVE through the version-controlled migration process before deploying the new Selling JavaScript. The client uses the RPC for both new listings and editing existing listings; direct `inventory_assets` PATCH calls for these fields are removed.
 - Regression checks: publishing still creates the listing and transitions inventory state through the existing workflow RPC; editing still saves listing details; a user without tenant permission cannot update another tenant's asset. TEST remains untouched.
+
+
+## 14 October 2026 — Follow-up after repeated Selling permission error
+
+- After PR #142 merged and the scoped LIVE RPC was installed, the screenshot still showed `permission denied for table inventory_assets`.
+- LIVE Postgres logs for 14 October 2026 at 17:34:52 UTC show the browser was still issuing a direct PostgREST `UPDATE public.inventory_assets` for `location`, `serial_number`, and `updated_at`. That request did not call the new RPC, so the deployed page was still executing an older Selling JavaScript asset or an alternate old write path.
+- The canonical production `selling-dashboard.html` now advances the script query key to `selling-dashboard-fixed.js?v=90` to force a distinct asset URL. The current production JS calls `subscriber_update_inventory_asset_sales_fields` for both publish and edit and has no direct serial/location PATCH.
+- Do not grant direct UPDATE on `inventory_assets`. After the new deployment is ready, verify the browser requests the v90 JS and the database logs show a POST to the scoped RPC, not a direct table UPDATE. Then verify listing creation and workflow transitions.

@@ -225,7 +225,7 @@ $('listing-form').onsubmit=async e=>{
    const inventoryUpdate={serial_number:serialNumber,location:$('asset-location').value.trim()||null,updated_at:new Date().toISOString()};
    if(editingListingId){
      msg('Saving listing changes…');
-     const updatedAsset=await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(assetRow.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify(inventoryUpdate)});
+     const updatedAsset=await api('/rest/v1/rpc/subscriber_update_inventory_asset_sales_fields',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_asset_id:assetRow.id,p_serial_number:inventoryUpdate.serial_number,p_location:inventoryUpdate.location})});
      if(!Array.isArray(updatedAsset)||!updatedAsset[0])throw Error('The inventory item could not be updated. Please refresh the Selling page and try again.');
      const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
      const saved=(updated||[])[0];
@@ -241,7 +241,7 @@ $('listing-form').onsubmit=async e=>{
    const category=assetRow.category_id,branch=assetRow.branch_id;
    if(!asset||!channel||!category||!branch)throw Error('The Website sales channel is not configured for this business.');
    await ensureWebsiteCategory(assetRow);
-   await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(assetRow.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(inventoryUpdate)});
+   await api('/rest/v1/rpc/subscriber_update_inventory_asset_sales_fields',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_asset_id:assetRow.id,p_serial_number:inventoryUpdate.serial_number,p_location:inventoryUpdate.location})});
    const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:listingData,created_by:session?.user?.id||null})});
    const created=(data||[])[0];
    if(created?.id){await carryInventoryMedia(asset,created.id);await transition(created.id,'draft','ready');await transition(created.id,'ready','published');await transitionInventory(assetRow.id,'ready_for_sale','listed')}

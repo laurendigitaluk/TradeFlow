@@ -316,3 +316,14 @@ body[data-template="editable"] .public-nav-dropdown-toggle{
 .selling-section .sell-product-card .sell-photo{flex:0 0 150px!important;height:150px!important;margin-bottom:15px!important}
 .selling-section .sell-product-card>span{font-family:inherit!important;font-size:9px!important;line-height:1.2!important;letter-spacing:.14em!important}
 .selling-section .sell-product-card>strong{font-family:inherit!important;font-size:14px!important;line-height:1.2!important}
+
+/* What We Sell: subscriber-published catalogue with page-local product filters. */
+.shop-product-filters{max-width:1180px;margin:28px auto 22px;padding:20px 22px;border:1px solid rgba(20,30,40,.12);border-radius:10px;background:var(--header-bg,#fff)}
+.shop-search-label{display:block;margin-bottom:10px;font-size:15px;font-weight:800;color:var(--text-color,#17202a)}
+.shop-filter-controls{display:grid;grid-template-columns:minmax(0,2fr) minmax(220px,1fr);gap:14px;align-items:end}
+.shop-filter-controls input,.shop-filter-controls select{width:100%;min-height:44px;padding:11px 13px;border:1px solid #cbd3d9;border-radius:6px;background:#fff;color:#17202a;font:inherit}
+.shop-filter-controls label{display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:700}
+.shop-result-count{margin:10px 0 0;color:#65717b;font-size:12px}
+.shop-product[hidden],[data-shop-no-results][hidden]{display:none!important}
+.shop-page .shop-grid{margin-top:0}
+@media(max-width:700px){.shop-filter-controls{grid-template-columns:1fr}.shop-product-filters{padding:16px;margin-top:20px}}

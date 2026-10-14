@@ -244,10 +244,11 @@ function renderBusinessExtras(site){
 }
 
 
-function renderGlobalHeaderPublic(site){
+function renderGlobalHeaderPublic(site,options){
+ const opts=options||{};
  const raw=Array.isArray(site?.global_header_elements)?site.global_header_elements:[];
  if(!raw.length)return '';
- const elements=raw.map(function(v){
+ const elements=raw.filter(function(v){if(!opts.hideEmptyPlaceholders)return true;const type=v?.type==='image'?'image':'text';return type==='image'?Boolean(String(v?.image_url||'').trim()):Boolean(String(v?.text||'').trim());}).map(function(v){
    const b=Object.assign({type:'text',role:'text',x:8,y:20,width:60,height:45,text:'',font:'inherit',fontSize:'auto',color:'#17202a',align:'left',vAlign:'center',lineHeight:'1.2',letterSpacing:'0',image_url:''},v||{});
    b.type=b.type==='image'?'image':'text';
    b.x=Math.max(0,Math.min(92,Number(b.x)||0));b.y=Math.max(0,Math.min(80,Number(b.y)||0));b.width=Math.max(8,Math.min(92,Number(b.width)||40));b.height=Math.max(8,Math.min(90,Number(b.height)||30));
@@ -437,9 +438,25 @@ function renderBuyingPage(site,catalogue){
 
 function renderShopPage(site,listings){
  const list=Array.isArray(listings)?listings:[];
- const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{}; const branding=site.branding&&typeof site.branding==='object'?site.branding:{}; const logoUrl=Object.prototype.hasOwnProperty.call(branding,'logo_url')?String(branding.logo_url||''):(window.__tradeflowPublicProfile?.logo_url||site.logo_url||''); const bannerUrl=Object.prototype.hasOwnProperty.call(branding,'banner_url')?String(branding.banner_url||''):(window.__tradeflowPublicProfile?.banner_url||'');
-const cards=list.map(item=>'<article class="shop-product"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(item.category_name||'Product')+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>').join('');
- return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site)+'<main class="public-page"><div class="page-title-block shop-page-title">'+'<h1 style="'+publicTextStyleCss(p.title_style)+'">'+esc(p.title||'What We Sell')+'</h1>'+'<p style="'+publicTextStyleCss(p.body_style)+'">'+esc(p.body||'')+'</p></div><div class="shop-grid">'+(cards||'<div class="connected-empty">No products are currently published.</div>')+'</div></main>'+renderFooter(site);
+ const p=(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug==='shop')||{};
+ const categoryCounts=new Map();
+ list.forEach(item=>{const name=String(item.category_name||'Uncategorised').trim()||'Uncategorised';categoryCounts.set(name,(categoryCounts.get(name)||0)+1);});
+ const categoryOptions=Array.from(categoryCounts.entries()).sort((a,b)=>a[0].localeCompare(b[0])).map(([name,count])=>'<option value="'+esc(name)+'">'+esc(name)+' ('+count+')</option>').join('');
+ const cards=list.map(item=>{
+   const category=String(item.category_name||'Uncategorised').trim()||'Uncategorised';
+   const searchText=[item.title,item.description,category].filter(Boolean).join(' ').toLowerCase();
+   return '<article class="shop-product" data-shop-product data-category="'+esc(category)+'" data-search="'+esc(searchText)+'"><div class="shop-photo">'+(item.image_url?'<img src="'+esc(item.image_url)+'" alt="'+esc(item.title||'Product')+'" loading="lazy">':'<span aria-hidden="true"></span>')+'</div><span>'+esc(category)+'</span><h2>'+esc(item.title||'Product')+'</h2><p>'+esc(item.description||'Available from this business.')+'</p><strong>'+esc(item.asking_price!=null?money(item.asking_price,item.currency):'Contact us')+'</strong><a href="'+publicProductUrl(item.listing_id)+'">View product</a></article>';
+ }).join('');
+ const search=list.length?'<section class="shop-product-filters" aria-label="Find a product"><label class="shop-search-label" for="shop-product-search">Find a product</label><div class="shop-filter-controls"><input id="shop-product-search" type="search" placeholder="Search product names or descriptions…" autocomplete="off"><label for="shop-category-filter">Category<select id="shop-category-filter"><option value="">All categories ('+list.length+')</option>'+categoryOptions+'</select></label></div><p id="shop-result-count" class="shop-result-count" aria-live="polite">'+list.length+' '+(list.length===1?'product':'products')+'</p></section>':'';
+ const empty=list.length?'<div class="connected-empty" data-shop-no-results hidden>No products match your search. Try another product name or category.</div>':'<div class="connected-empty">No products are currently published.</div>';
+ return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+renderGlobalHeaderPublic(site,{hideEmptyPlaceholders:true})+'<main class="public-page shop-page"><div class="page-title-block shop-page-title"><h1 style="'+publicTextStyleCss(p.title_style)+'">'+esc(p.title||'What We Sell')+'</h1><p style="'+publicTextStyleCss(p.body_style)+'">'+esc(p.body||'')+'</p></div>'+search+'<div class="shop-grid">'+cards+empty+'</div></main>'+renderFooter(site);
+}
+function bindShopFilters(){
+ const search=document.getElementById('shop-product-search'),category=document.getElementById('shop-category-filter');
+ if(!search||!category)return;
+ const cards=Array.from(document.querySelectorAll('[data-shop-product]')),count=document.getElementById('shop-result-count'),empty=document.querySelector('[data-shop-no-results]');
+ const apply=()=>{const q=search.value.trim().toLowerCase(),cat=category.value;let visible=0;cards.forEach(card=>{const matchText=!q||String(card.dataset.search||'').includes(q);const matchCategory=!cat||card.dataset.category===cat;const show=matchText&&matchCategory;card.hidden=!show;if(show)visible++;});if(count)count.textContent=visible+' '+(visible===1?'product':'products');if(empty)empty.hidden=visible!==0;};
+ search.addEventListener('input',apply);category.addEventListener('change',apply);
 }
 
 function renderContentPage(site,p){
@@ -511,6 +528,7 @@ function applyContent(content){
  document.addEventListener('click',function closeQuoteMenu(e){if(!e.target.closest('.public-nav-dropdown'))document.querySelectorAll('.public-nav-dropdown-menu.open').forEach(function(menu){menu.classList.remove('open');});},{once:true});
  renderBusinessExtras(site);
  if(page==='sell')bindSellWizard(site,catalogue);
+ if(page==='shop')bindShopFilters();
 }
 
 async function loadBuyingCatalogue(tenant){

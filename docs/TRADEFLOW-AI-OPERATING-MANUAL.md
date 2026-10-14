@@ -2454,3 +2454,13 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+
+## Current continuation — item-level Finance (14 October 2026)
+
+User approved making item-level purchase/sale/expense tracking the central financial workflow. Keep the existing LIVE £70 DJI Osmo Action 6 Adventure Combo payment/acquisition test intact. The Finance page's existing payment records and ledger entries are not to be duplicated or rewritten for this feature.
+
+The isolated branch `item-level-finance-workflow-20261014` adds an item profitability section: inventory asset, purchase cost, extra costs, paid/completed retail sale proceeds, and profit/loss when a sale is realised. It adds a form for additional costs and aligns offered cost types with the actual LIVE CHECK constraint: `shipping_in`, `repair`, `testing`, `refurbishment`, `fees`, `other`. The database also permits `purchase`, but the UI must avoid double-counting when the asset already has `purchase_price`.
+
+Important distinction: this UI does not yet provide authoritative sale completion or automatic ledger posting. It reads the existing retail order and item records and shows paid/completed sale proceeds. After review, open a PR, inspect its full diff, merge only the isolated change, then verify Cloudflare deployment and browser behaviour in LIVE. Never touch TEST. Do not insert sample costs into LIVE just to test rendering. Confirm existing payment/acquisition data remains unchanged.

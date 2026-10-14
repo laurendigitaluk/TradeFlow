@@ -1,7 +1,7 @@
 const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://twfbmjwwqzxdxvclxbun.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key',SESSION_STORAGE='tradeflow_subscriber_session';
 let key=null,session=null,tenantId=null,editingListingId=null,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
-function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||''}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
+function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||'';const status=$('submit-status');if(status){status.className=`small ${type}`.trim();status.textContent=t||''}}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
 async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 let rows=[],soldRows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null,selectedSourceMediaIds=new Set(),sourceLoadToken=0,serialDuplicateConfirmationKey=null;
 async function waitForSubscriber(){
@@ -146,7 +146,7 @@ function cancelEdit(){
  if(asset)syncAssetContext();
  msg('Listing edit cancelled.','success');
 }
-const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const serialInput=$('asset-serial');if(serialInput)serialInput.addEventListener('input',()=>{serialDuplicateConfirmationKey=null;if($('send-to-website'))$('send-to-website').textContent='SEND TO WEBSITE';});const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=()=>{if(!listingForm)return;msg('Creating listing…');if(typeof listingForm.requestSubmit==='function')listingForm.requestSubmit();else listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
+const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const serialInput=$('asset-serial');if(serialInput)serialInput.addEventListener('input',()=>{serialDuplicateConfirmationKey=null;if($('send-to-website'))$('send-to-website').textContent='SEND TO WEBSITE';});const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=e=>{e.preventDefault();if(!listingForm)return;msg('Creating listing…');listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
 $('listing-form').onsubmit=async e=>{
  e.preventDefault();
  if(!tenantId){msg('Your subscriber session or business context is missing. Refresh the page and sign in again before sending this item to the website.','error');return;}

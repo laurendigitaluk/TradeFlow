@@ -149,7 +149,7 @@ function cancelEdit(){
 const listingForm=$('listing-form');if(listingForm)listingForm.noValidate=true;const serialInput=$('asset-serial');if(serialInput)serialInput.addEventListener('input',()=>{serialDuplicateConfirmationKey=null;if($('send-to-website'))$('send-to-website').textContent='SEND TO WEBSITE';});const sendToWebsite=$('send-to-website');if(sendToWebsite)sendToWebsite.onclick=()=>{if(!listingForm)return;msg('Creating listing…');if(typeof listingForm.requestSubmit==='function')listingForm.requestSubmit();else listingForm.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));};
 $('listing-form').onsubmit=async e=>{
  e.preventDefault();
- if(!tenantId)return;
+ if(!tenantId){msg('Your subscriber session or business context is missing. Refresh the page and sign in again before sending this item to the website.','error');return;}
  try{
    const asset=$('asset').value,channel=$('channel').value,title=$('title').value.trim(),price=Number($('price').value),currency=$('currency').value.trim().toUpperCase();
    const condition=$('asset-condition').value;

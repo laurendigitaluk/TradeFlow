@@ -28,6 +28,26 @@ async function markSoldDispatched(id,b){if(!id)return;b.disabled=true;try{const 
 
 async function renderChannelMatrix(assetId){const el=$('channel-matrix');if(!el)return;try{const allChannels=channels;const listings=await api(`/rest/v1/listings?select=id,channel_id,status,listing_reference,asking_price,currency,title&tenant_id=eq.${encodeURIComponent(tenantId)}&asset_id=eq.${encodeURIComponent(assetId)}&order=updated_at.desc`)||[];if(!allChannels.length){el.innerHTML='<div class="empty">No sales channels are configured.</div>';return}el.innerHTML=allChannels.map(c=>{const l=listings.find(x=>x.channel_id===c.id&& !['sold','delisted'].includes(String(x.status||'').toLowerCase()));const status=l?statusLabel(l.status):'Not listed';const connected=!!l;return `<div class="channel-matrix-row ${connected?'connected':'not-listed'}"><div><strong>${esc(String(c.channel_type||'').toLowerCase()==='storefront'?'Website':c.name)}</strong><div class="small">${l?esc(l.listing_reference):'No listing for this product'}</div></div><div class="channel-matrix-status">${esc(status)}</div><div>${l?money(l.asking_price,l.currency):'—'}</div><div>${l?`<button type="button" class="channel-matrix-action" data-channel-edit="${l.id}">EDIT LISTING</button>`:'Not listed'}</div></div>`}).join('');document.querySelectorAll('[data-channel-edit]').forEach(b=>b.onclick=()=>beginEdit(b.dataset.channelEdit,true))}catch(e){el.innerHTML=`<div class="small error">Channel status could not be loaded: ${esc(e.message||String(e))}</div>`}}
 
+async function ensureWebsiteChannel(){
+ const active=channels.find(c=>String(c.channel_type||'').toLowerCase()==='storefront'&&c.active!==false);
+ if(active)return active;
+ const all=(await api('/rest/v1/sales_channels?select=id,name,channel_type,slug,active&tenant_id=eq.'+encodeURIComponent(tenantId)+'&order=name'))||[];
+ const existing=all.find(c=>String(c.channel_type||'').toLowerCase()==='storefront');
+ if(existing){
+   if(existing.active===false){
+     const updated=(await api('/rest/v1/sales_channels?id=eq.'+encodeURIComponent(existing.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({active:true,updated_at:new Date().toISOString()})}))||[];
+     const channel=updated[0]||{...existing,active:true};channels=[channel];$('channel').innerHTML='<option value="'+channel.id+'">Website</option>';$('channel').value=channel.id;return channel;
+   }
+   channels=[existing];$('channel').innerHTML='<option value="'+existing.id+'">Website</option>';$('channel').value=existing.id;return existing;
+ }
+ const used=new Set(all.map(c=>String(c.slug||'')));
+ const slug=['website','website-storefront','storefront'].find(s=>!used.has(s));
+ if(!slug)throw Error('A Website sales channel could not be created because the business already uses the available Website channel identifiers. Open Sales Channels and check the existing channels.');
+ const created=(await api('/rest/v1/sales_channels',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,name:'Website',channel_type:'storefront',slug,description:'Customer-facing TradeFlow website',active:true,settings:{}})}))||[];
+ const channel=created[0];
+ if(!channel?.id)throw Error('TradeFlow could not create the Website sales channel. Check your Selling permission and subscription, then retry.');
+ channels=[channel];$('channel').innerHTML='<option value="'+channel.id+'">Website</option>';$('channel').value=channel.id;return channel;
+}
 async function loadLookups(){
  const focusAsset=new URLSearchParams(location.search).get('asset');
  const assetQuery=focusAsset
@@ -151,13 +171,12 @@ $('listing-form').onsubmit=async e=>{
  e.preventDefault();
  if(!tenantId){msg('Your subscriber session or business context is missing. Refresh the page and sign in again before sending this item to the website.','error');return;}
  try{
-   const asset=$('asset').value,channel=$('channel').value,title=$('title').value.trim(),price=Number($('price').value),currency=$('currency').value.trim().toUpperCase();
+   const asset=$('asset').value;let channel=$('channel').value;const title=$('title').value.trim(),price=Number($('price').value),currency=$('currency').value.trim().toUpperCase();
    const condition=$('asset-condition').value;
    const shippingMethod=$('shipping-method').value;
    const shippingPrice=Number($('shipping-price').value||0);
    const dispatchTime=$('dispatch-time').value.trim()||null;
    if(!asset)throw Error('Select the inventory item you are preparing for sale.');
-   if(!channel)throw Error('The Website sales channel is not configured for this business.');
    if(!editingListingId&&availableListingPhotoCount()<1&&($('sales-photo-upload')?.files?.length||0)>0){await uploadSalesPhotos();}
    if(!title)throw Error('Enter a listing title.');
    if(!Number.isFinite(price)||price<0)throw Error('Enter a valid asking price.');
@@ -166,6 +185,7 @@ $('listing-form').onsubmit=async e=>{
    if(!Number.isFinite(shippingPrice)||shippingPrice<0)throw Error('Enter a valid postage price.');
    const assetRow=assets.find(a=>a.id===asset);
    if(!assetRow)throw Error('Select a valid inventory asset.');
+   if(!editingListingId&&!channel){const websiteChannel=await ensureWebsiteChannel();channel=websiteChannel.id;}
    if(!editingListingId&&availableListingPhotoCount()<1)throw Error('Add at least one product photograph before sending this item to the website. Choose a photograph above and click Add photographs, or select a photograph and send it now.');
    const listingData={source:'selling-dashboard',condition,shipping:{method:shippingMethod,price:shippingPrice,dispatch_time:dispatchTime}};
    const serialNumber=$('asset-serial').value.trim()||null;

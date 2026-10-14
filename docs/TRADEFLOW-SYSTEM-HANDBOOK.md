@@ -2073,3 +2073,11 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Website Builder's shop page now renders the page title/body and subscriber-linked product cards only; it no longer exposes the page-tile editor controls for the shop page. The What We Buy page and Home page retain their own category/tile controls.
 - Public storefront rendering of the shop page no longer includes `renderPageTiles(site,p)` or the product-search filter. Published subscriber listings remain automatically rendered in the product grid, with the existing empty-state message when there are no published products.
 - Cache keys advanced: Website Builder `v123`; public storefront `v27`. Verify the editor and public `/shop` page after deployment; confirm What We Buy and Home tiles are unchanged.
+
+
+## 14 October 2026 — What We Sell page layout and catalogue search
+
+- The What We Sell / Retail Shop page should not show the six blank template tiles. Tile selection is not part of this page; the product list must be populated automatically from the subscriber's published retail listings.
+- Keep a `Find a product` search field and add a category selector based on categories present in the published listings, with product counts. Search filters the existing product cards by name, description and category without changing the underlying listing data.
+- On the shop page only, suppress empty placeholder elements from the configurable global-header canvas so blank image/text placeholders do not render as six empty tiles. Preserve populated logo/banner/header elements and all other pages' template layout.
+- Public site asset cache versions advance to `public-site.js?v=28` and `public-site.css?v=32`. Verify LIVE What We Sell with several published products, category filtering, text search, no-results state, and confirm other pages still show their configured tiles. TEST remains untouched.

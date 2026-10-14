@@ -2521,3 +2521,27 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - Keep the `Find a product` search input and category selector on What We Sell. The search matches product title, description, and category; the category dropdown is populated from the published listing categories and includes product counts. Product cards must come from published retail listings, not static subscriber-edited tiles.
 - Production renderer `renderShopPage` already builds the title, search/category filters, product grid and empty state without calling `renderPageTiles`. Advance the public renderer script cache key from v28 to v29 so deployed browsers fetch that renderer instead of a stale cached version.
 - Verify on the actual public `/shop` URL that the six placeholder tiles are gone, the search/category controls remain, and all published products are automatically listed. Do not change other website pages or TEST.
+
+
+## 14 October 2026 — Working What We Sell template and next retail purchase test
+
+### Accepted What We Sell / Retail Shop template
+- The dedicated What We Sell page is an automatically populated catalogue of the subscriber's published retail listings. Subscribers do not manually select or fill six generic tiles on this page.
+- Remove the six empty/template tile placeholders on the dedicated What We Sell / Retail Shop page only. Do not remove editable tiles or content blocks from Home, What We Buy, or other website pages.
+- Keep the **Find a product** search field. Keep the **Category** dropdown, populated automatically from the categories present in the subscriber's published listings and showing per-category counts. Search text and selected category filter the product cards; result count updates and a helpful no-results message appears when nothing matches.
+- Product cards are populated from published listings and should show the available product image, title, category, description, asking price, and View product link. The page must not depend on manual tile entry.
+- Current public-shop screenshot on 14 October shows the DJI Osmo Action 6 Adventure Combo at £125.00 and the Find a product/search and Category controls. This confirms the intended layout is visible; it does not by itself prove checkout or fulfilment works.
+- PR #146 is the latest documented implementation for this page. Public shop script cache key is v29. Keep this behaviour as the working template for future subscriber websites; do not regress to the six placeholders or remove search/category filtering.
+
+### LIVE selling permission and category work
+- PR #139 covers Website channel creation and preservation of original buying category/branch IDs. PR #141 adds category/branch sellability checks and makes Shipping Settings discoverable. PR #142 adds a permission-scoped RPC for serial number/location updates. PR #143 routes inventory status synchronisation through a narrowly scoped RPC and removes remaining direct inventory status PATCH calls.
+- LIVE Supabase project remains `gxsrajtqzdjvmceqcpgv`; TEST project `twfbmjwwqzxdxvclxbun` is reference-only and must not be changed.
+- No broad authenticated UPDATE grant is to be added to `inventory_assets`. Inventory mutations must remain tenant-scoped and permission-checked through approved RPCs.
+- After PR #143, the LIVE database migration was applied. Production Selling script source uses cache key v91. The complete Selling-to-publication workflow has not yet been independently verified end-to-end; check logs for RPC calls rather than direct table updates.
+
+### Next test — purchase the published DJI Osmo Action 6
+- Product shown: **DJI Osmo Action 6 Adventure Combo**, asking price **£125.00**, on the public `/shop` page for Adventure Outpost.
+- First establish the payment mode and whether checkout can be tested without a real charge. Do not initiate a live-money charge or invent/assume test credentials. Use a confirmed safe test route only.
+- Follow the product link to product detail and checkout. Verify basket/checkout retains the correct tenant, listing, title, price and currency; customer authentication/registration works without looping; order is created once; payment status matches the actual payment outcome; and no record is marked paid before verified payment.
+- After the controlled purchase, verify the order appears consistently in the customer portal, subscriber order/sales view, and finance/ledger records; check stock/inventory transitions to sold/reserved according to the intended workflow; and confirm the public listing is no longer purchasable if sold. Check shipping choice/tracking expectations separately and do not let TradeFlow collect postage fees.
+- Do not reuse the earlier simulated purchase as proof of a real transaction. Keep LIVE/TEST clearly separated, record each observed status/reference, and stop at the first failure for diagnosis rather than repeatedly retrying checkout.

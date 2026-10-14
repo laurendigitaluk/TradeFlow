@@ -110,5 +110,18 @@
 <p>The recovery-origin code repair was merged to production in commit <code>f676fb13198d78f997ef5cb017af303e83c97efa</code> (PR #124). When recovery starts on a platform hostname, the code resolves the tenant's unique published hostname and directs the recovery link to that tenant's <code>/reset-password</code> route. A missing or ambiguous hostname fails closed. No customer account, password, bank details, customer data, tenant data, DNS or Supabase Auth settings were changed. TEST remains untouched.</p>
 <p>The optional trailing empty <code>#</code> in <code>https://www.scenesource.co.uk/login#</code> is harmless and needs no fix. Remaining checks: confirm Cloudflare deployment and Supabase Auth allowed-redirect settings; test a fresh recovery email through password update and sign-in. Do not claim full recovery or valuation/messaging acceptance until separately verified.</p>
 </section>
+
+<section id="working-what-we-sell-template" style="margin:2rem auto;max-width:900px;padding:1.25rem;border:1px solid #d5dbe1;border-radius:12px">
+<h2>Working template: What We Sell / Retail Shop</h2>
+<p>This page is a live catalogue, not a manually edited tile layout. Published subscriber listings populate the product cards automatically.</p>
+<ul>
+<li>Do not use the six generic editable tile placeholders on this page. Other pages, including Home and What We Buy, keep their own existing editable content.</li>
+<li>Keep the <strong>Find a product</strong> search field and the automatically populated <strong>Category</strong> dropdown with product counts.</li>
+<li>Search text and category selection filter the published product cards; show an updated result count and a clear no-results message.</li>
+<li>Product cards should use the published listing's image, title, category, description, price and View product link where available.</li>
+</ul>
+<h2>Next controlled test: DJI Osmo Action 6</h2>
+<p>The Adventure Outpost public shop currently shows the DJI Osmo Action 6 Adventure Combo at £125.00. Before checkout, confirm a safe payment test mode so no real charge is made. Verify product details, basket, customer authentication, order creation, payment status, customer and subscriber dashboards, finance records, inventory state and listing availability. Stop at the first failure and preserve the evidence.</p>
+</section>
 </body>
 </html>

@@ -27,9 +27,11 @@ async function loadItemFinancials(){
   const selector=$('cost-asset');if(selector){const previous=selector.value;selector.innerHTML='<option value="">Choose an inventory item</option>'+(assets||[]).map(a=>'<option value="'+esc(a.id)+'">'+esc(a.asset_reference+' — '+(a.title||'Inventory item'))+'</option>').join('');if(previous&&[...(assets||[])].some(a=>a.id===previous))selector.value=previous}
   if(!assets?.length){root.innerHTML='<div class="empty">No inventory items are available for this business yet.</div>';return}
   root.innerHTML=assets.map(a=>{
-   const extra=costsByAsset.get(a.id)||[];
+   const allCosts=costsByAsset.get(a.id)||[];
+   const purchaseRows=allCosts.filter(c=>c.cost_type==='purchase');
+   const extra=allCosts.filter(c=>c.cost_type!=='purchase');
+   const purchase=purchaseRows.length?purchaseRows.reduce((n,c)=>n+Number(c.amount||0),0):Number(a.purchase_price||0);
    const extraTotal=extra.reduce((n,c)=>n+Number(c.amount||0),0);
-   const purchase=Number(a.purchase_price||0);
    const saleRows=salesByAsset.get(a.id)||[];
    const completed=saleRows.filter(i=>['paid','completed'].includes(String(i.order.status||'').toLowerCase())||String(i.order.payment_status||'').toLowerCase()==='paid');
    const saleTotal=completed.reduce((n,i)=>n+Number(i.line_total||0),0);
@@ -39,7 +41,7 @@ async function loadItemFinancials(){
    const currency=a.currency||'GBP';
    const costRows=extra.length?'<div class="item-cost-list">'+extra.map(c=>'<div class="item-cost-row"><span>'+esc(String(c.cost_type||'other').replaceAll('_',' '))+' — '+esc(c.description||'No description')+'<br><small>'+esc(c.incurred_at?new Date(c.incurred_at).toLocaleDateString('en-GB'):'')+'</small></span><strong>'+money(c.amount,c.currency||currency)+'</strong></div>').join('')+'</div>':'<p class="item-finance-subtitle">No additional costs recorded.</p>';
    const saleText=realised?money(saleTotal,currency):saleRows.length?'Sale in progress — not counted as realised income':'Not sold yet';
-   return '<article class="item-finance-card"><h3>'+esc(a.title||a.asset_reference)+'</h3><div class="item-finance-subtitle">'+esc(a.asset_reference)+' · '+esc(String(a.status||'').replaceAll('_',' '))+'</div><div class="item-profit-grid"><div class="item-profit-metric"><small>Purchase cost</small><strong>'+money(purchase,currency)+'</strong></div><div class="item-profit-metric"><small>Additional costs</small><strong>'+money(extraTotal,currency)+'</strong></div><div class="item-profit-metric"><small>Sale proceeds</small><strong>'+saleText+'</strong></div><div class="item-profit-metric"><small>'+(realised?'Profit / loss':'Estimated cost to date')+'</small><strong>'+(realised?money(result,currency):money(costTotal,currency))+'</strong></div></div><details><summary>Cost breakdown ('+extra.length+' additional '+(extra.length===1?'cost':'costs')+')</summary>'+costRows+'</details>'+(saleRows.length?'<p class="item-finance-subtitle">Sales records: '+saleRows.map(i=>esc(i.order.order_reference||i.order.id)+' ('+esc(i.order.status)+')').join(', ')+'</p>':'')+'</article>';
+   return '<article class="item-finance-card"><h3>'+esc(a.title||a.asset_reference)+'</h3><div class="item-finance-subtitle">'+esc(a.asset_reference)+' · '+esc(String(a.status||'').replaceAll('_',' '))+'</div><div class="item-profit-grid"><div class="item-profit-metric"><small>Purchase cost</small><strong>'+money(purchase,currency)+'</strong></div><div class="item-profit-metric"><small>Additional costs</small><strong>'+money(extraTotal,currency)+'</strong></div><div class="item-profit-metric"><small>Sale proceeds</small><strong>'+saleText+'</strong></div><div class="item-profit-metric"><small>'+(realised?'Profit / loss':'Estimated cost to date')+'</small><strong>'+(realised?money(result,currency):money(costTotal,currency))+'</strong></div></div><details><summary>Cost breakdown ('+allCosts.length+' recorded '+(allCosts.length===1?'cost':'costs')+')</summary>'+costRows+'</details>'+(saleRows.length?'<p class="item-finance-subtitle">Sales records: '+saleRows.map(i=>esc(i.order.order_reference||i.order.id)+' ('+esc(i.order.status)+')').join(', ')+'</p>':'')+'</article>';
   }).join('');
  }catch(e){root.innerHTML='<div class="empty">Item costs and sales could not be loaded: '+esc(e.message||String(e))+'</div>'}
 }

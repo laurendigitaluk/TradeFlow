@@ -2020,3 +2020,14 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+## Selling: inherited retail categories and Website channel (2026-10-14)
+
+The Selling workflow must retain the inventory asset's original `category_id` and `branch_id` when publishing a listing. Do not ask subscribers to recreate the buying category or branch as a separate retail taxonomy. TEST evidence: Camerashack has published listings retaining the original `Camera` → `Photography Cameras` IDs; the branch's `selling_enabled` flag is false for some existing published listings, so do not assume that flag alone prevents publishing.
+
+LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the Selling form to report “The Website sales channel is not configured for this business.” PR #139 was merged to `production` (commit `04486a98d188ad29c06196971d516259ef9c7035`) to reactivate an existing storefront channel or create a tenant-scoped Website channel during publishing when none exists. Script cache version is `v87`. This is code-merged, not proof of successful LIVE deployment or browser publication; verify after Cloudflare deployment. Do not write channel rows directly to LIVE as a substitute for testing the workflow.
+
+## Retail shipping settings: current boundary
+
+`shipping-settings.html` configures provider/service links for the Buying workflow (inbound customer shipments); it is not a store-wide retail delivery policy page. The Selling form stores per-listing postage method, price, and dispatch time in `listings.listing_data.shipping`; `public-site.js` displays the resulting P&P summary. As of this audit, no separate store-wide Retail Shipping Settings page was found. Do not direct users to Buying Shipping Settings as though it controls retail checkout. A dedicated retail shipping settings feature must be designed and connected to listing defaults/public storefront behavior before claiming it exists.

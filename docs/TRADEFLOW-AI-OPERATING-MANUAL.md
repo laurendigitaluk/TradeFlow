@@ -2463,3 +2463,13 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 ## Retail shipping settings: do not confuse with Buying shipping
 
 `shipping-settings.html` is for selecting manual provider/service links used in Buying/inbound customer shipments. Retail listing postage is currently stored per item under `listings.listing_data.shipping` (method, price, dispatch time), and the public storefront renders a P&P summary from those listing values. No dedicated store-wide Retail Shipping Settings page was found during the 2026-10-14 audit. If the subscriber needs store-wide retail defaults/policies, build a separate feature and connect it to the listing/public-site flow; do not relabel the Buying settings page.
+
+
+## 14 October 2026 — LIVE category inheritance and shipping-settings follow-up
+
+- Environment boundary remains strict: work in LIVE only; TEST project `twfbmjwwqzxdxvclxbun` is a reference and must not be modified.
+- LIVE Adventure Outpost currently has no `sales_channels` row, and its active buying categories/branches are marked `selling_enabled=false`. PR #139's Website-channel creation and original category/branch ID preservation therefore still need a real publish-path verification.
+- Follow-up code change: when publishing an inventory asset to Website, reuse its original buying category and branch, enable their existing `selling_enabled` flags if needed, and verify the flags before creating the listing. Do not create duplicate shop categories or branches.
+- Shipping Settings should be reachable from the Settings sidebar. Its selected courier links serve manual Buying and retail-order fulfilment workflows. Do not restore the retired Parcel2Go API or old TEST provider connection. Customers pay their shipping provider directly; TradeFlow must not collect or pay postage.
+- The selling dashboard's Supabase URL fallback must point to LIVE. The shared subscriber-auth runtime remains responsible for selecting TEST versus LIVE from the environment; verify the deployed page on the LIVE domain before considering the change complete.
+- No direct LIVE database rows were changed as part of this code audit. Category flags change only when a subscriber publishes an item to Website through the updated flow. After merge/deploy, verify with a controlled test item and inspect the resulting Website channel, category/branch flags, listing, and public shop visibility.

@@ -1,8 +1,8 @@
-const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://twfbmjwwqzxdxvclxbun.supabase.co';
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://gxsrajtqzdjvmceqcpgv.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key',SESSION_STORAGE='tradeflow_subscriber_session';
 let key=null,session=null,tenantId=null,editingListingId=null,$=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function msg(t,type=''){$('message').className=`small ${type}`.trim();$('message').textContent=t||'';const status=$('submit-status');if(status){status.className=`small ${type}`.trim();status.textContent=t||''}}function money(v,c='GBP'){if(v==null)return'—';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency:c}).format(Number(v))}catch{return`${c} ${v}`}}
-async function api(path,options={}){if(!key)throw Error('TradeFlow test-lab publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
+async function api(path,options={}){if(!key)throw Error('TradeFlow subscriber publishable key is not connected.');const h=new Headers(options.headers||{});h.set('apikey',key);h.set('Content-Type','application/json');if(session?.access_token)h.set('Authorization',`Bearer ${session.access_token}`);const r=await fetch(`${SUPABASE_URL}${path}`,{...options,headers:h});const text=await r.text();let b=null;try{b=text?JSON.parse(text):null}catch{b=text}if(!r.ok)throw Error(b?.message||b?.msg||b?.error||text||`HTTP ${r.status}`);return b}
 let rows=[],soldRows=[],assets=[],channels=[],categories=[],branches=[],sourceMedia=[],sourceInspectionMedia=[],latestInspection=null,selectedSourceMediaIds=new Set(),sourceLoadToken=0,serialDuplicateConfirmationKey=null;
 async function waitForSubscriber(){
  const ready=window.tradeflowSubscriberAuthReady;
@@ -47,6 +47,27 @@ async function ensureWebsiteChannel(){
  const channel=created[0];
  if(!channel?.id)throw Error('TradeFlow could not create the Website sales channel. Check your Selling permission and subscription, then retry.');
  channels=[channel];$('channel').innerHTML='<option value="'+channel.id+'">Website</option>';$('channel').value=channel.id;return channel;
+}
+async function ensureWebsiteCategory(assetRow){
+ if(!assetRow?.category_id||!assetRow?.branch_id)throw Error('This inventory item is missing its original buying category or branch. Complete the Buying category assignment before publishing it.');
+ const categoryPath='/rest/v1/categories?select=id,active,selling_enabled&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(assetRow.category_id);
+ const branchPath='/rest/v1/category_branches?select=id,category_id,active,selling_enabled&tenant_id=eq.'+encodeURIComponent(tenantId)+'&id=eq.'+encodeURIComponent(assetRow.branch_id)+'&category_id=eq.'+encodeURIComponent(assetRow.category_id);
+ const [categoryRows,branchRows]=await Promise.all([api(categoryPath),api(branchPath)]);
+ const category=categoryRows?.[0],branch=branchRows?.[0];
+ if(!category||!branch)throw Error('The original buying category and branch could not be found for this inventory item. No duplicate shop category will be created.');
+ if(category.active===false||branch.active===false)throw Error('The original buying category or branch is inactive. Reactivate it in Categories & Products before publishing.');
+ if(category.selling_enabled!==true){
+   await api('/rest/v1/categories?id=eq.'+encodeURIComponent(category.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({selling_enabled:true,updated_at:new Date().toISOString()})});
+ }
+ if(branch.selling_enabled!==true){
+   await api('/rest/v1/category_branches?id=eq.'+encodeURIComponent(branch.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({selling_enabled:true,updated_at:new Date().toISOString()})});
+ }
+ const [verifiedCategory,verifiedBranch]=await Promise.all([api(categoryPath),api(branchPath)]);
+ if(verifiedCategory?.[0]?.selling_enabled!==true||verifiedBranch?.[0]?.selling_enabled!==true){
+   throw Error('TradeFlow could not enable the original buying category and branch for the Website. Check category permissions and try again.');
+ }
+ categories=[...categories.filter(x=>x.id!==category.id),verifiedCategory[0]];
+ branches=[...branches.filter(x=>x.id!==branch.id),verifiedBranch[0]];
 }
 async function loadLookups(){
  const focusAsset=new URLSearchParams(location.search).get('asset');
@@ -219,6 +240,7 @@ $('listing-form').onsubmit=async e=>{
    if(existing[0]){msg(`This item is already listed as ${existing[0].listing_reference}. Use EDIT to change it.`,'success');await load();return}
    const category=assetRow.category_id,branch=assetRow.branch_id;
    if(!asset||!channel||!category||!branch)throw Error('The Website sales channel is not configured for this business.');
+   await ensureWebsiteCategory(assetRow);
    await api('/rest/v1/inventory_assets?id=eq.'+encodeURIComponent(assetRow.id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify(inventoryUpdate)});
    const data=await api('/rest/v1/listings',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify({tenant_id:tenantId,asset_id:asset,channel_id:channel,category_id:category,branch_id:branch,title,description:$('description').value.trim()||null,asking_price:price,currency,quantity:1,listing_data:listingData,created_by:session?.user?.id||null})});
    const created=(data||[])[0];

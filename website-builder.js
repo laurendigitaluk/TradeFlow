@@ -662,7 +662,7 @@ function pageTitleMarkup(p,opts={}){
 function renderPage(p){
  const isShop=p.slug==='shop',isBuying=p.slug==='buying',managed=p.slug==='customer-account';
  if(isBuying)return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page buying-page template-page"><div class="page-title-block">'+pageTitleMarkup(p)+'</div>'+buyingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
- if(isShop)return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page shop-page template-page"><div class="page-title-block shop-page-title">'+pageTitleMarkup(p)+'</div>'+sellingPreview()+renderPageTilesEditor(p)+'</section>'+footerMarkup();
+ if(isShop)return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page shop-page template-page"><div class="page-title-block shop-page-title">'+pageTitleMarkup(p)+'</div>'+sellingPreview()+'</section>'+footerMarkup();
  return navMarkup()+renderGlobalHeaderEditor()+'<section class="full-page content-page template-page"><div class="page-title-block">'+pageTitleMarkup(p,{managed})+'</div>'+imageBlock(p.image_url,p.slug,'Add a branded image to this page.',p.image_alt||p.title)+'</section>'+footerMarkup();
 }
 function renderBuilderPageHelp(){

@@ -2049,3 +2049,11 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Repair approach: route the Selling form's serial-number/location save through `public.subscriber_update_inventory_asset_sales_fields`, a narrowly scoped SECURITY DEFINER RPC. It must require an authenticated active tenant member with `inventory.manage` and the `module.inventory` feature, and update only the specified asset within that tenant.
 - Apply the migration to LIVE through the version-controlled migration process before deploying the new Selling JavaScript. The client uses the RPC for both new listings and editing existing listings; direct `inventory_assets` PATCH calls for these fields are removed.
 - Regression checks: publishing still creates the listing and transitions inventory state through the existing workflow RPC; editing still saves listing details; a user without tenant permission cannot update another tenant's asset. TEST remains untouched.
+
+
+## 14 October 2026 — Selling inventory permission error
+
+- LIVE Selling showed `permission denied for table inventory_assets` when publishing the existing Adventure Outpost inventory item. The authenticated role has SELECT but no direct UPDATE grant on `public.inventory_assets`; do not restore broad table UPDATE access to work around this.
+- Repair approach: route the Selling form's serial-number/location save through `public.subscriber_update_inventory_asset_sales_fields`, a narrowly scoped SECURITY DEFINER RPC. It requires an authenticated user with `inventory.manage` and the `module.inventory` feature, and updates only the specified asset within that tenant.
+- Apply migration `20261014180000_subscriber_update_inventory_asset_sales_fields.sql` to LIVE through the version-controlled migration process before deploying the new Selling JavaScript. The client uses the RPC for both new listings and editing existing listings; direct `inventory_assets` PATCH calls for these fields are removed.
+- Regression checks: publishing still creates the listing and transitions inventory state through the existing workflow RPC; editing still saves listing details; a user without tenant permission cannot update another tenant's asset. TEST remains untouched.

@@ -2454,3 +2454,12 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+## Operational note: Website channel and inherited category publication (2026-10-14)
+
+Expected behavior: publishing an inventory item carries the existing `category_id` and `branch_id` into its retail listing. Subscribers should not manually duplicate buying categories/branches for the storefront. TEST/Camerashack contains published listings linked to `Camera` → `Photography Cameras`; LIVE/Adventure Outpost was missing all `sales_channels` rows. PR #139 (merged to `production`, commit `04486a98d188ad29c06196971d516259ef9c7035`) now attempts to reactivate or create the tenant's Website storefront channel during publishing when none is active. Verify the Cloudflare deployment and live publish before marking the fault resolved. TEST remains reference-only and must not be changed.
+
+## Retail shipping settings: do not confuse with Buying shipping
+
+`shipping-settings.html` is for selecting manual provider/service links used in Buying/inbound customer shipments. Retail listing postage is currently stored per item under `listings.listing_data.shipping` (method, price, dispatch time), and the public storefront renders a P&P summary from those listing values. No dedicated store-wide Retail Shipping Settings page was found during the 2026-10-14 audit. If the subscriber needs store-wide retail defaults/policies, build a separate feature and connect it to the listing/public-site flow; do not relabel the Buying settings page.

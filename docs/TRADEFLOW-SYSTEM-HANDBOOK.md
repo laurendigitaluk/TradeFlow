@@ -2020,3 +2020,13 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+
+## Item-level Finance workflow — 14 October 2026
+
+The Finance page is being centred on the physical inventory asset. The intended item-level record joins the original purchase cost, additional inventory costs, retail sale proceeds, and profit/loss view. The inventory asset's `purchase_price` is the purchase-cost source unless a recorded `inventory_costs` row of type `purchase` exists; do not count both as separate purchase costs. Additional cost types supported by LIVE `inventory_costs.cost_type` are `shipping_in`, `repair`, `testing`, `refurbishment`, `fees`, and `other`. The UI labels these in plain English.
+
+The Finance UI distinguishes payment transactions from accounting/item-cost records. A payment tracks money movement and payment status. Inventory costs and ledger entries describe costs or accounting events; they must not be treated as proof that money moved. Do not create duplicate payments or ledger entries for presentation/testing.
+
+The current implementation adds a read view and an additional-cost form to Finance. The sale calculation counts proceeds only where the linked retail order is paid or completed. A sale in progress is displayed as un-realised, not as profit. This first UI stage does not replace the authoritative retail-order completion/payment workflow and does not automatically create ledger entries. Live verification remains required after deployment: confirm the current £70 acquisition/purchase test remains unchanged, inventory items load for the active tenant, cost entries can be saved under tenant permissions, and a genuine paid/completed sale is reflected against the correct inventory asset. No TEST project changes are permitted.

@@ -2057,3 +2057,11 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Repair approach: route the Selling form's serial-number/location save through `public.subscriber_update_inventory_asset_sales_fields`, a narrowly scoped SECURITY DEFINER RPC. It requires an authenticated user with `inventory.manage` and the `module.inventory` feature, and updates only the specified asset within that tenant.
 - Apply migration `20261014180000_subscriber_update_inventory_asset_sales_fields.sql` to LIVE through the version-controlled migration process before deploying the new Selling JavaScript. The client uses the RPC for both new listings and editing existing listings; direct `inventory_assets` PATCH calls for these fields are removed.
 - Regression checks: publishing still creates the listing and transitions inventory state through the existing workflow RPC; editing still saves listing details; a user without tenant permission cannot update another tenant's asset. TEST remains untouched.
+
+
+## 14 October 2026 — Inventory status synchronisation follow-up
+
+- LIVE logs confirmed the serial/location RPC returns HTTP 200, but Selling's listing-status synchronisation still attempted direct PATCH requests to `inventory_assets`, causing the same permission error after a listing status transition.
+- Replace those remaining direct status PATCH requests with `subscriber_sync_inventory_asset_status`, a SECURITY DEFINER RPC restricted to the two expected transitions: `ready_for_sale → listed` and `listed → ready_for_sale`. It requires authenticated `inventory.manage` permission and the `module.inventory` feature, and scopes updates to the tenant and asset.
+- The publish path now uses the resolved asset's ID rather than an out-of-scope `assetRow.id`. Script cache key advances to v91.
+- Apply migration `20261014190000_subscriber_sync_inventory_asset_status.sql` to LIVE before deployment. Verify logs show RPC calls and no direct inventory_assets UPDATE, then check public published storefront (not only `template-preview=draft`). TEST remains untouched.

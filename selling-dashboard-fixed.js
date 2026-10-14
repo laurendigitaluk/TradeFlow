@@ -226,7 +226,7 @@ $('listing-form').onsubmit=async e=>{
    if(editingListingId){
      msg('Saving listing changes…');
      const updatedAsset=await api('/rest/v1/rpc/subscriber_update_inventory_asset_sales_fields',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_asset_id:assetRow.id,p_serial_number:inventoryUpdate.serial_number,p_location:inventoryUpdate.location})});
-     if(!Array.isArray(updatedAsset)||!updatedAsset[0])throw Error('The inventory item could not be updated. Please refresh the Selling page and try again.');
+     if(!updatedAsset?.ok)throw Error('The inventory item could not be updated. Please refresh the Selling page and try again.');
      const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
      const saved=(updated||[])[0];
      await load();

@@ -56,7 +56,7 @@ Deno.serve(async (req: Request) => {
   const origin = req.headers.get("origin") || "";
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders(origin) });
   if (req.method !== "POST") return json({ error: "Method not allowed." }, 405, origin);
-  if (!STRIPE_SECRET_KEY) return json({ error: "Stripe is not configured on this LIVE environment." }, 503, origin);
+  if (!/^(sk|rk)_live_/.test(STRIPE_SECRET_KEY)) return json({ error: "LIVE Stripe Connect requires a live-mode Stripe secret key. No account was created." }, 503, origin);
 
   const bearer = (req.headers.get("authorization") || "").match(/^Bearer\\s+(.+)$/i)?.[1];
   const publicKey = req.headers.get("apikey") || "";

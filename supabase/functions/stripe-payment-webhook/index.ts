@@ -123,6 +123,11 @@ Deno.serve(async req=>{
       return json({received:true,domain_payment_cancelled:true,order_id:String(domainOrderId)});
     }
   }
+  const connectAcct = typeof event.account === 'string' ? event.account : '';
+  if (connectAcct && tenantId) {
+    const rows = await restTable('payment_provider_connections?select=tenant_id,status&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.' + encodeURIComponent(connectAcct) + '&limit=2');
+    if (!Array.isArray(rows) || rows.length !== 1 || rows[0].status !== 'active' || String(rows[0].tenant_id) !== String(tenantId)) return json({error:'Stripe connected account does not match the payment tenant.'},403);
+  }
   if(!tenantId||!paymentId||!newStatus)return json({received:true,ignored:'not_a_tradeflow_order_payment'});
   const payload={p_provider:'stripe',p_event_id:event.id,p_event_type:event.type,p_tenant_id:tenantId,p_payment_id:paymentId,p_provider_payment_id:providerPaymentId,p_new_status:newStatus,p_amount:amount,p_currency:currency,p_metadata:{stripe_event_id:event.id,stripe_order_id:orderId||null}};
   const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(payload)});

@@ -54,7 +54,7 @@ Deno.serve(async req=>{
   if(!Number.isFinite(ts)||Math.abs(Date.now()/1000-ts)>300)return json({error:'Expired Stripe signature'},400);
   const expected=await hmac(STRIPE_WEBHOOK_SECRET,`${ts}.${raw}`);
   if(!safeEqual(expected,provided))return json({error:'Invalid Stripe signature'},400);
-  const event=JSON.parse(raw),object=event?.data?.object;
+  const event=JSON.parse(raw),object=event?.data?.object;const stripeAccountHeaders=event?.account?{'Stripe-Account':String(event.account)}:{};
   if(!event?.id||!event?.type||!object)return json({received:true});
 
   if(event.type==='checkout.session.completed' && object.mode==='subscription'){
@@ -131,8 +131,8 @@ Deno.serve(async req=>{
   if(conflict&&newStatus==='paid'){
     if(!STRIPE_SECRET_KEY)return json({error:'Stripe secret is required to refund a payment when the product has already sold'},503);
     const paymentIntentId=object?.payment_intent;if(!paymentIntentId)return json({error:'Stripe PaymentIntent missing for conflict refund'},500);
-    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
-    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
+    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...stripeAccountHeaders,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
+    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...stripeAccountHeaders}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
     const cancelPayload={...payload,p_event_id:`${event.id}:conflict-refunded`,p_event_type:'stripe.checkout.session.conflict_refunded',p_new_status:'cancelled'};
     const cr=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(cancelPayload)});if(!cr.ok)return json({error:await cr.text()},500);
     return json({received:true,refunded:true,reason:'product_already_sold'});

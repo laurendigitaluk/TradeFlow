@@ -1,5 +1,6 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
+## Current continuation checkpoint — Stripe Connect (15 October 2026)\n\nUser direction: work in LIVE (`production` branch, Supabase `gxsrajtqzdjvmceqcpgv`); the old TEST site is reference only and a fresh TEST environment will be produced after LIVE is complete. An isolated branch `feature/live-stripe-connect-onboarding-20261015` currently contains a draft Stripe Connect onboarding UI and Edge Function. It is not merged/deployed. LIVE Supabase tool access returned permission denied, so deployed secrets, function inventory and schema have not been independently verified. Next: inspect branch diff and syntax, verify Stripe Connect and LIVE `STRIPE_SECRET_KEY` configuration through authorized access, confirm DB columns/constraints, then design and test checkout/webhook transfer routing before release. Do not deploy the Edge Function until the permission/configuration checks are complete; do not claim payment routing works yet.\n\n
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.

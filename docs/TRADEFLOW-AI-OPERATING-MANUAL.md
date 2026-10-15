@@ -1,6 +1,10 @@
 # TradeFlow AI Operating Manual & Continuity Base
 
-## Current continuation checkpoint — Stripe Connect (15 October 2026)\n\nUser direction: work in LIVE (`production` branch, Supabase `gxsrajtqzdjvmceqcpgv`); the old TEST site is reference only and a fresh TEST environment will be produced after LIVE is complete. An isolated branch `feature/live-stripe-connect-onboarding-20261015` currently contains a draft Stripe Connect onboarding UI and Edge Function. It is not merged/deployed. LIVE Supabase tool access returned permission denied, so deployed secrets, function inventory and schema have not been independently verified. Next: inspect branch diff and syntax, verify Stripe Connect and LIVE `STRIPE_SECRET_KEY` configuration through authorized access, confirm DB columns/constraints, then design and test checkout/webhook transfer routing before release. Do not deploy the Edge Function until the permission/configuration checks are complete; do not claim payment routing works yet.\n\n
+## Current continuation checkpoint — Stripe Connect (15 October 2026)
+
+User direction: work in LIVE (`production` branch, Supabase `gxsrajtqzdjvmceqcpgv`); the old TEST site is reference only and a fresh TEST environment will be produced after LIVE is complete. An isolated branch `feature/live-stripe-connect-onboarding-20261015` currently contains a draft Stripe Connect onboarding UI and Edge Function. It is not merged/deployed. LIVE Supabase tool access returned permission denied, so deployed secrets, function inventory and schema have not been independently verified. Next: inspect branch diff and syntax, verify Stripe Connect and LIVE `STRIPE_SECRET_KEY` configuration through authorized access, confirm DB columns/constraints, then design and test checkout/webhook transfer routing before release. Do not deploy the Edge Function until the permission/configuration checks are complete; do not claim payment routing works yet.
+
+
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
@@ -1394,7 +1398,8 @@ The repaired files are syntax-verified. A subsequent audit found a second cache-
 
 When the latest Test Two browser screenshots were compared with the current source, two defects remained despite the earlier cache-version repair.
 
-- The customer description parser converted literal \\n sequences to real newline characters and then used the wrong split expression, so the entire customer submission remained one line. This is corrected by splitting on actual newline characters after conversion.
+- The customer description parser converted literal \
+ sequences to real newline characters and then used the wrong split expression, so the entire customer submission remained one line. This is corrected by splitting on actual newline characters after conversion.
 - The controller already returned status-approved for submitted, but the Buying stylesheet did not define that class (nor the related review/offer/refused status classes). The status therefore remained visually neutral. Explicit status-pill state styling has been added.
 
 Before changing code, the live Test Two record was checked: request BR-4C34C6F633, item BI-9D1C8F01FB, item status submitted, customer CUS-E82930637A58, and two media records. No test data was reset or modified.
@@ -1899,7 +1904,25 @@ The provider selector supports these reserved choices: `none`, `gemma`, `openai`
 **Gemma rule:** the personal desktop Gemma/Quote System remains completely separate. A future TradeFlow Gemma provider requires a dedicated TradeFlow-reachable Gemma instance; it must not expose the personal desktop research instance.
 
 This is a gateway foundation, not a completed conversational AI feature. Provider adapters, approved documentation retrieval, usage accounting, subscriber settings and browser chat UI remain separate implementation/test stages.
-\n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Cloudflare Assistant verification\n\nThis section is authoritative for the current Subscriber Assistant work. The active Cloudflare TEST branch is **cloudflare-test**. Older sections that state main is the active TEST branch are historical continuity records and must not be used to select the branch for this workstream.\n\nVerified in TEST:\n- Cloudflare Worker: tradeflow-test.\n- Subscriber authentication on the Worker is working.\n- Root cause of the earlier 401 was runtime environment detection: the Worker hostname was not recognised as TEST by subscriber-auth.js, so the wrong runtime branch was selected.\n- The TEST Worker hostname is now explicitly recognised: tradeflow-test.leannelaurenlowe.workers.dev.\n- Subscriber Assistant authentication and tenant context were browser-tested successfully for the Camerashack TEST tenant.\n- A read-only Assistant request reached tradeflow-assistant and retrieved approved knowledge while provider=none.\n- No external AI provider is currently connected.\n\nApproved knowledge has now been expanded to cover settings, offers/payment, customer portal boundaries, selling workflow and published subscriber websites. This remains static approved knowledge; it does not grant unrestricted database access.\n\nNext controlled stage: verify the expanded knowledge in the browser, then implement the separate Product Research evidence workflow. Do not enable a paid/external AI provider merely to test knowledge retrieval.\n
+
+
+## 2026-10-02 — CURRENT TEST OVERRIDE: Cloudflare Assistant verification
+
+This section is authoritative for the current Subscriber Assistant work. The active Cloudflare TEST branch is **cloudflare-test**. Older sections that state main is the active TEST branch are historical continuity records and must not be used to select the branch for this workstream.
+
+Verified in TEST:
+- Cloudflare Worker: tradeflow-test.
+- Subscriber authentication on the Worker is working.
+- Root cause of the earlier 401 was runtime environment detection: the Worker hostname was not recognised as TEST by subscriber-auth.js, so the wrong runtime branch was selected.
+- The TEST Worker hostname is now explicitly recognised: tradeflow-test.leannelaurenlowe.workers.dev.
+- Subscriber Assistant authentication and tenant context were browser-tested successfully for the Camerashack TEST tenant.
+- A read-only Assistant request reached tradeflow-assistant and retrieved approved knowledge while provider=none.
+- No external AI provider is currently connected.
+
+Approved knowledge has now been expanded to cover settings, offers/payment, customer portal boundaries, selling workflow and published subscriber websites. This remains static approved knowledge; it does not grant unrestricted database access.
+
+Next controlled stage: verify the expanded knowledge in the browser, then implement the separate Product Research evidence workflow. Do not enable a paid/external AI provider merely to test knowledge retrieval.
+
 
 ## 2026-10-02 — Launch sequence decision
 
@@ -2000,7 +2023,13 @@ The current production workstream is now the real LIVE launch, including the Cus
 A separate production infrastructure issue was identified in the Owner Dashboard: stale HTML caused a browser to select an obsolete JavaScript asset. This was repaired at the Worker boundary rather than by changing AI configuration or Supabase authentication. Production commit: `6c9b061e5a20210aa8b6f416a3f8b68fb6357329`.
 
 Memory/continuity rule: after every material LIVE change, refresh the AI Operating Manual, Human User Manual, Backend User Manual, System Handbook and a dated checkpoint. Record implementation separately from LIVE browser verification. Never infer LIVE behaviour from TEST behaviour or from a successful GitHub/Cloudflare deployment alone.
-\n\n## LIVE owner-auth recovery boundary — 3 October 2026\n\nThe AI layer is not the cause of the owner login/reset problem. LIVE AI settings remain provider-neutral with \`active_provider=none\`; the Assistant Edge Function is ACTIVE and the platform owner AI controls are intact. The authentication issue is isolated to Supabase Auth redirect configuration plus the absence of a dedicated owner recovery page.\n\nThe new owner recovery page verifies an active platform-owner membership before changing the password. This keeps the AI/platform-owner boundary separate from customer password recovery.
+
+
+## LIVE owner-auth recovery boundary — 3 October 2026
+
+The AI layer is not the cause of the owner login/reset problem. LIVE AI settings remain provider-neutral with \`active_provider=none\`; the Assistant Edge Function is ACTIVE and the platform owner AI controls are intact. The authentication issue is isolated to Supabase Auth redirect configuration plus the absence of a dedicated owner recovery page.
+
+The new owner recovery page verifies an active platform-owner membership before changing the password. This keeps the AI/platform-owner boundary separate from customer password recovery.
 
 ## LIVE CONTINUITY / MEMORY UPDATE — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
 

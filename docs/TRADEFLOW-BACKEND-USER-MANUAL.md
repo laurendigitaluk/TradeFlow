@@ -1,5 +1,10 @@
 # TradeFlow Internal Backend & Owner Dashboard Manual
 
+## Stripe Connect implementation checkpoint — 15 October 2026
+
+The LIVE subscriber payment setup is being moved from manual account-detail recording to hosted Stripe Connect onboarding. Draft implementation exists on branch `feature/live-stripe-connect-onboarding-20261015` only. It validates owner/admin membership and requires a live-mode Stripe secret key, but has not been deployed. Existing retail checkout still uses the platform account and does not yet transfer funds to a connected subscriber. Before release, verify the actual LIVE schema and secrets, Stripe Connect enablement, onboarding return paths, webhook configuration, transfer/fee model and tenant-specific checkout routing. Keep the platform subscription billing flow separate.
+
+
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
@@ -16,7 +21,9 @@
 
 **Purpose:** authoritative operational guide to the TradeFlow subscriber/business backend.  
 **Audience:** TradeFlow Platform Owner/admin operators who require internal backend, security and Owner Dashboard reference. This is an internal operational/technical manual and is not part of the subscriber-facing workflow.  
-**Subscriber-facing documentation:** normal subscriber operation belongs in `subscriber-website-manual.html` and `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`.\n\n**Owner Dashboard:** `platform-owner-dashboard.html` is the restricted Platform Owner entry point. The Backend Manual link is available from that Owner Dashboard and is intentionally not exposed in the subscriber dashboard. This document retains deeper backend, security, workflow and implementation reference for owner/admin continuity and internal maintenance. Subscriber users do not need this manual; it is linked from the restricted Platform Owner Dashboard only.
+**Subscriber-facing documentation:** normal subscriber operation belongs in `subscriber-website-manual.html` and `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`.
+
+**Owner Dashboard:** `platform-owner-dashboard.html` is the restricted Platform Owner entry point. The Backend Manual link is available from that Owner Dashboard and is intentionally not exposed in the subscriber dashboard. This document retains deeper backend, security, workflow and implementation reference for owner/admin continuity and internal maintenance. Subscriber users do not need this manual; it is linked from the restricted Platform Owner Dashboard only.
 
 ## 1. What TradeFlow is
 
@@ -991,7 +998,16 @@ Current TEST provider: **none**. No external AI provider is connected.
 Gemma remains Gary's separate personal Quote System research system. It must not be connected to the TradeFlow subscriber or customer websites. If Gemma is later selected for TradeFlow, a separate TradeFlow-reachable Gemma instance must be used.
 
 The gateway foundation is implemented; provider adapters, knowledge retrieval, usage accounting and subscriber-facing chat remain to be built and tested.
-\n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Subscriber Assistant\n\nThe active Cloudflare TEST branch for the current Assistant workstream is **cloudflare-test**. Historical references to main as TEST are retained for continuity and do not override this current Cloudflare deployment.\n\nThe TEST Subscriber Assistant is now authenticated and tenant-scoped. Its first browser test succeeded with provider=none and approved knowledge retrieval. The assistant remains read-only and does not have unrestricted SQL access.\n\nThe approved knowledge set has been expanded. Product Research remains a separate controlled workflow: research → evidence/sources → explicit subscriber approval → save approved evidence → existing buying calculation.\n
+
+
+## 2026-10-02 — CURRENT TEST OVERRIDE: Subscriber Assistant
+
+The active Cloudflare TEST branch for the current Assistant workstream is **cloudflare-test**. Historical references to main as TEST are retained for continuity and do not override this current Cloudflare deployment.
+
+The TEST Subscriber Assistant is now authenticated and tenant-scoped. Its first browser test succeeded with provider=none and approved knowledge retrieval. The assistant remains read-only and does not have unrestricted SQL access.
+
+The approved knowledge set has been expanded. Product Research remains a separate controlled workflow: research → evidence/sources → explicit subscriber approval → save approved evidence → existing buying calculation.
+
 
 ## PLATFORM OWNER — AI PROVIDER CONTROL — 2 OCTOBER 2026
 
@@ -1062,7 +1078,18 @@ Observed failure evidence before repair:
 Operational rule: verify the actual browser asset/version and network request before changing LIVE Auth, owner membership, tenant records or credentials. Cloudflare deployment status and GitHub commit status are implementation evidence; the browser request is required for live serving verification.
 
 No Supabase schema or data change was made for this repair.
-\n\n## LIVE authentication audit — 3 October 2026\n\nVerified directly in LIVE Supabase: project \`gxsrajtqzdjvmceqcpgv\` is ACTIVE_HEALTHY; the platform owner auth user exists and is confirmed; one active \`public.platform_memberships\` row exists for that user; and the production branch contains the dedicated owner password recovery flow.\n\nRoot cause of the reported reset failure: Supabase Auth was constructing the recovery redirect from the project's default Site URL, which was still localhost. Supabase documentation confirms that Site URL is the default redirect when no valid \`redirectTo\` is supplied and that password-reset redirect URLs must be on the allowed Redirect URLs list.\n\nCode repair: \`platform-owner-dashboard.js\` now requests recovery with an explicit \`redirect_to=/owner-reset-password\`; \`platform-owner-password-reset.html\` consumes the recovery session, verifies active owner membership, and calls \`updateUser({password})\`; Worker routes the recovery path in both TEST and LIVE configurations. No database schema/data change was required for this repair.\n\nRemaining infrastructure action: configure the LIVE Supabase Auth Site URL and allow-list the exact owner recovery URL. Then perform one fresh end-to-end owner reset test.\n
+
+
+## LIVE authentication audit — 3 October 2026
+
+Verified directly in LIVE Supabase: project \`gxsrajtqzdjvmceqcpgv\` is ACTIVE_HEALTHY; the platform owner auth user exists and is confirmed; one active \`public.platform_memberships\` row exists for that user; and the production branch contains the dedicated owner password recovery flow.
+
+Root cause of the reported reset failure: Supabase Auth was constructing the recovery redirect from the project's default Site URL, which was still localhost. Supabase documentation confirms that Site URL is the default redirect when no valid \`redirectTo\` is supplied and that password-reset redirect URLs must be on the allowed Redirect URLs list.
+
+Code repair: \`platform-owner-dashboard.js\` now requests recovery with an explicit \`redirect_to=/owner-reset-password\`; \`platform-owner-password-reset.html\` consumes the recovery session, verifies active owner membership, and calls \`updateUser({password})\`; Worker routes the recovery path in both TEST and LIVE configurations. No database schema/data change was required for this repair.
+
+Remaining infrastructure action: configure the LIVE Supabase Auth Site URL and allow-list the exact owner recovery URL. Then perform one fresh end-to-end owner reset test.
+
 
 ## LIVE RELEASE OPERATIONS UPDATE — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
 
@@ -1227,7 +1254,18 @@ Immutable restore branch: `LOCKED-standard-website-builder-2026-10-05`.
 Production code state captured before documentation-only updates: `f3ff7f9d34030dbcde3440e21c097726ddef4f1d`.
 
 ## Next stage
-The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.\n\n## 2026-10-06 — LIVE customer-owned domain connection\n\nAutomatic TradeFlow/Porkbun domain purchase is retired. LIVE now uses subscriber-owned domains only. The subscriber retains registrar ownership, billing and renewal.\n\nThe LIVE connection workflow is: subscriber enters an existing hostname → `subscriber_request_custom_domain()` creates/updates the `tenant_domains` record with `acquisition_source=connected` and creates a `platform_owner_domain_actions` request → Platform Owner prepares the approved hosting connection and exact DNS instructions → subscriber applies the instructions → Platform Owner verifies DNS, SSL and tenant routing → `platform_owner_update_domain_action()` may activate the domain only when all three verification flags are true.\n\nThe active domain is then inserted into `published_site_index` for the tenant’s current published revision. Do not invent DNS targets, request registrar passwords, or manually activate an unverified hostname.\n\nLIVE implementation migration: `20261006130000_customer_owned_domain_connection_live` plus `20261006133000_subscriber_domain_status_live`.\n
+The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+## 2026-10-06 — LIVE customer-owned domain connection
+
+Automatic TradeFlow/Porkbun domain purchase is retired. LIVE now uses subscriber-owned domains only. The subscriber retains registrar ownership, billing and renewal.
+
+The LIVE connection workflow is: subscriber enters an existing hostname → `subscriber_request_custom_domain()` creates/updates the `tenant_domains` record with `acquisition_source=connected` and creates a `platform_owner_domain_actions` request → Platform Owner prepares the approved hosting connection and exact DNS instructions → subscriber applies the instructions → Platform Owner verifies DNS, SSL and tenant routing → `platform_owner_update_domain_action()` may activate the domain only when all three verification flags are true.
+
+The active domain is then inserted into `published_site_index` for the tenant’s current published revision. Do not invent DNS targets, request registrar passwords, or manually activate an unverified hostname.
+
+LIVE implementation migration: `20261006130000_customer_owned_domain_connection_live` plus `20261006133000_subscriber_domain_status_live`.
+
 
 ## 2026-10-06 — Backend audit and current domain architecture
 

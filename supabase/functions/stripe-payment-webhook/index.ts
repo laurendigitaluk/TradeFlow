@@ -14,6 +14,14 @@ async function callRpc(name:string,body:unknown){
  if(!r.ok)throw Error(d?.message||d?.hint||d?.details||d||`RPC ${name} failed`);
  return d;
 }
+
+async function restTable(path:string,init:RequestInit={}){
+ const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{...init,headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',...(init.headers||{})}});
+ const t=await r.text();let d:any;try{d=t?JSON.parse(t):null}catch{d=t}
+ if(!r.ok)throw Error(d?.message||d?.hint||d?.details||d||'Database request failed');
+ return d;
+}
+
 async function getStripeSubscription(id:string){
  if(!STRIPE_SECRET_KEY)throw Error('Stripe secret is required to read the subscription.');
  const r=await fetch(`https://api.stripe.com/v1/subscriptions/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`}});
@@ -46,8 +54,13 @@ Deno.serve(async req=>{
   if(!Number.isFinite(ts)||Math.abs(Date.now()/1000-ts)>300)return json({error:'Expired Stripe signature'},400);
   const expected=await hmac(STRIPE_WEBHOOK_SECRET,`${ts}.${raw}`);
   if(!safeEqual(expected,provided))return json({error:'Invalid Stripe signature'},400);
-  const event=JSON.parse(raw),object=event?.data?.object;
+  const event=JSON.parse(raw),object=event?.data?.object;const stripeAccountHeaders=event?.account?{'Stripe-Account':String(event.account)}:{};
   if(!event?.id||!event?.type||!object)return json({received:true});
+  // Subscription and domain-order payments belong to the platform Stripe account only.
+  // Reject Connect-scoped events before they can mutate these platform-owned records.
+  if (event.account && (object.mode === 'subscription' || object.metadata?.domain_order_id)) {
+    return json({error:'Connected-account event is not valid for platform subscription or domain-order payments.'},403);
+  }
 
   if(event.type==='checkout.session.completed' && object.mode==='subscription'){
     const metadata=object.metadata||{};
@@ -85,28 +98,41 @@ Deno.serve(async req=>{
   else return json({received:true});
   if(domainOrderId){
     if(newStatus==='paid'){
-      const {data:domainOrder,error:domainOrderError}=await admin.from('tenant_domain_orders').select('id,tenant_id,status,payment_reference,metadata').eq('id',String(domainOrderId)).maybeSingle();
-      if(domainOrderError||!domainOrder)return json({error:'Domain order not found for Stripe payment.'},404);
+      const rows=await restTable("tenant_domain_orders?select=id,tenant_id,status,payment_reference,metadata&id=eq."+encodeURIComponent(String(domainOrderId))+"&limit=1");
+      const domainOrder=Array.isArray(rows)?rows[0]:null;
+      if(!domainOrder)return json({error:'Domain order not found for Stripe payment.'},404);
       const mergedMetadata={...(domainOrder.metadata||{}),stripe_event_id:event.id,stripe_payment_event_type:event.type};
       if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded') mergedMetadata.stripe_checkout_session_id=object.id;
       if(event.type==='payment_intent.succeeded') mergedMetadata.stripe_payment_intent_id=object.id;
       const nextStatus=['registrant_details_saved','registered'].includes(domainOrder.status)?domainOrder.status:'payment_confirmed';
-      const {error:updateError}=await admin.from('tenant_domain_orders').update({
-        status:nextStatus,
-        payment_provider:'stripe',
-        payment_reference:domainOrder.payment_reference||((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded')?object.id:null),
-        failure_reason:null,
-        metadata:mergedMetadata,
-        updated_at:new Date().toISOString()
-      }).eq('id',domainOrder.id);
-      if(updateError)return json({error:updateError.message},500);
+      await restTable("tenant_domain_orders?id=eq."+encodeURIComponent(String(domainOrder.id)),{
+        method:'PATCH',
+        headers:{Prefer:'return=minimal'},
+        body:JSON.stringify({
+          status:nextStatus,
+          payment_provider:'stripe',
+          payment_reference:domainOrder.payment_reference||((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded')?object.id:null),
+          failure_reason:null,
+          metadata:mergedMetadata,
+          updated_at:new Date().toISOString()
+        })
+      });
       return json({received:true,domain_payment_confirmed:true,order_id:domainOrder.id,status:nextStatus});
     }
     if(newStatus==='cancelled'){
-      const {error:updateError}=await admin.from('tenant_domain_orders').update({status:'cancelled',failure_reason:'Stripe Checkout session expired.',updated_at:new Date().toISOString()}).eq('id',String(domainOrderId)).eq('status','pending_payment');
-      if(updateError)return json({error:updateError.message},500);
+      await restTable("tenant_domain_orders?id=eq."+encodeURIComponent(String(domainOrderId))+"&status=eq.pending_payment",{
+        method:'PATCH',
+        headers:{Prefer:'return=minimal'},
+        body:JSON.stringify({status:'cancelled',failure_reason:'Stripe Checkout session expired.',updated_at:new Date().toISOString()})
+      });
       return json({received:true,domain_payment_cancelled:true,order_id:String(domainOrderId)});
     }
+  }
+  const connectAcct = typeof event.account === 'string' ? event.account : '';
+  if (connectAcct) {
+    if (!tenantId) return json({error:'Connected-account payment event is missing its tenant reference.'},403);
+    const rows = await restTable('payment_provider_connections?select=tenant_id,status&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.' + encodeURIComponent(connectAcct) + '&limit=2');
+    if (!Array.isArray(rows) || rows.length !== 1 || rows[0].status !== 'active' || String(rows[0].tenant_id) !== String(tenantId)) return json({error:'Stripe connected account does not match the payment tenant.'},403);
   }
   if(!tenantId||!paymentId||!newStatus)return json({received:true,ignored:'not_a_tradeflow_order_payment'});
   const payload={p_provider:'stripe',p_event_id:event.id,p_event_type:event.type,p_tenant_id:tenantId,p_payment_id:paymentId,p_provider_payment_id:providerPaymentId,p_new_status:newStatus,p_amount:amount,p_currency:currency,p_metadata:{stripe_event_id:event.id,stripe_order_id:orderId||null}};
@@ -116,8 +142,8 @@ Deno.serve(async req=>{
   if(conflict&&newStatus==='paid'){
     if(!STRIPE_SECRET_KEY)return json({error:'Stripe secret is required to refund a payment when the product has already sold'},503);
     const paymentIntentId=object?.payment_intent;if(!paymentIntentId)return json({error:'Stripe PaymentIntent missing for conflict refund'},500);
-    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
-    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
+    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...stripeAccountHeaders,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
+    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...stripeAccountHeaders}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
     const cancelPayload={...payload,p_event_id:`${event.id}:conflict-refunded`,p_event_type:'stripe.checkout.session.conflict_refunded',p_new_status:'cancelled'};
     const cr=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(cancelPayload)});if(!cr.ok)return json({error:await cr.text()},500);
     return json({received:true,refunded:true,reason:'product_already_sold'});

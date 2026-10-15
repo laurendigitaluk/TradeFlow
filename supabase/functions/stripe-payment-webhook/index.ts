@@ -56,6 +56,11 @@ Deno.serve(async req=>{
   if(!safeEqual(expected,provided))return json({error:'Invalid Stripe signature'},400);
   const event=JSON.parse(raw),object=event?.data?.object;const stripeAccountHeaders=event?.account?{'Stripe-Account':String(event.account)}:{};
   if(!event?.id||!event?.type||!object)return json({received:true});
+  // Subscription and domain-order payments belong to the platform Stripe account only.
+  // Reject Connect-scoped events before they can mutate these platform-owned records.
+  if (event.account && (object.mode === 'subscription' || object.metadata?.domain_order_id)) {
+    return json({error:'Connected-account event is not valid for platform subscription or domain-order payments.'},403);
+  }
 
   if(event.type==='checkout.session.completed' && object.mode==='subscription'){
     const metadata=object.metadata||{};

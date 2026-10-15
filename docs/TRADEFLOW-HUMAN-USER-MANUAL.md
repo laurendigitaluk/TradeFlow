@@ -1,6 +1,10 @@
 # TradeFlow Human User Manual
 
-## Stripe payment setup — release status (15 October 2026)\n\nThe current LIVE page still contains legacy provider setup fields. A simpler Stripe Connect flow is being prepared in an isolated GitHub branch, but it is not yet released. Until the release is verified, subscribers should not interpret “Setup recorded” as a verified Stripe connection. The intended process is to select **Connect Stripe**, complete Stripe's hosted onboarding, return to TradeFlow, and confirm that the connection status is **Connected**. Customer payment routing must also be verified before accepting retail payments through a connected account.\n\n
+## Stripe payment setup — release status (15 October 2026)
+
+The current LIVE page still contains legacy provider setup fields. A simpler Stripe Connect flow is being prepared in an isolated GitHub branch, but it is not yet released. Until the release is verified, subscribers should not interpret “Setup recorded” as a verified Stripe connection. The intended process is to select **Connect Stripe**, complete Stripe's hosted onboarding, return to TradeFlow, and confirm that the connection status is **Connected**. Customer payment routing must also be verified before accepting retail payments through a connected account.
+
+
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
@@ -1507,7 +1511,14 @@ The current TEST setting is **no AI provider**. No external AI service is being 
 Gemma used on Gary's own desktop remains a separate personal research tool for the Quote System. It is not automatically available to TradeFlow subscribers or their customers.
 
 If TradeFlow later uses a subscriber-owned AI connection, the subscriber will be responsible for that provider's own usage charges. TradeFlow will keep provider credentials server-side.
-\n\n## 2026-10-02 — CURRENT TEST: TradeFlow Assistant\n\nThe TEST Subscriber Assistant is now available to authenticated subscriber users. It is initially read-only and uses approved TradeFlow guidance. It does not independently change products, prices, orders, payments or other business records.\n\nIf no AI provider is enabled, the Assistant can still confirm that approved TradeFlow guidance matches the question, but it will not generate an external AI answer. No subscriber needs to connect Gary's personal Gemma system. If a subscriber-owned AI connection is introduced later, its provider usage costs remain the subscriber's responsibility.\n
+
+
+## 2026-10-02 — CURRENT TEST: TradeFlow Assistant
+
+The TEST Subscriber Assistant is now available to authenticated subscriber users. It is initially read-only and uses approved TradeFlow guidance. It does not independently change products, prices, orders, payments or other business records.
+
+If no AI provider is enabled, the Assistant can still confirm that approved TradeFlow guidance matches the question, but it will not generate an external AI answer. No subscriber needs to connect Gary's personal Gemma system. If a subscriber-owned AI connection is introduced later, its provider usage costs remain the subscriber's responsibility.
+
 
 ## CURRENT LAUNCH DIRECTION — 7 OCTOBER 2026
 
@@ -1586,7 +1597,14 @@ The platform owner dashboard is a protected LIVE page. If signing out appears to
 A current cache-boundary repair was committed to the production Worker so `platform-owner-dashboard.html` is served with `Cache-Control: no-store`. This prevents an older HTML document from selecting an obsolete dashboard JavaScript version.
 
 Next user acceptance step after deployment: open the LIVE Owner Dashboard in a clean browser session, sign in with the LIVE platform-owner account, confirm the dashboard loads LIVE data, then continue with the real LIVE subscriber/customer launch. Do not treat old TEST business names displayed by a stale page as LIVE businesses.
-\n\n## Owner password recovery — LIVE\n\nIf the platform owner cannot sign in, use **Forgot your password?** on the LIVE Owner Dashboard. Enter the owner email and request a new reset email. The reset link now returns to the dedicated owner password page and verifies that the account still has an active TradeFlow platform-owner membership before allowing the password to change.\n\nThe first LIVE recovery test must be performed with a newly generated reset email after the LIVE Supabase Auth Site URL and Redirect URL configuration has been corrected. The old localhost/expired link must not be used.\n
+
+
+## Owner password recovery — LIVE
+
+If the platform owner cannot sign in, use **Forgot your password?** on the LIVE Owner Dashboard. Enter the owner email and request a new reset email. The reset link now returns to the dedicated owner password page and verifies that the account still has an active TradeFlow platform-owner membership before allowing the password to change.
+
+The first LIVE recovery test must be performed with a newly generated reset email after the LIVE Supabase Auth Site URL and Redirect URL configuration has been corrected. The old localhost/expired link must not be used.
+
 
 ## LIVE LAUNCH CONTINUITY — 3 OCTOBER 2026 — OWNER LOGIN VERIFIED
 
@@ -1806,7 +1824,14 @@ Immutable restore branch: `LOCKED-standard-website-builder-2026-10-05`.
 Production code state captured before documentation-only updates: `f3ff7f9d34030dbcde3440e21c097726ddef4f1d`.
 
 ## Next stage
-The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.\n\n## 2026-10-06 — LIVE domain model\n\nTradeFlow uses subscriber-owned domains only. Subscribers buy, own, renew and manage their domain with their chosen registrar. In TradeFlow, open **Website → Website URL**, enter the domain, and submit the connection request. The Platform Owner prepares the connection and provides exact DNS instructions. The subscriber applies those instructions. TradeFlow verifies DNS, SSL and tenant routing before the domain is activated.\n\nTradeFlow does not purchase the domain, hold the registrar account, request the registrar password, or activate an unverified domain.\n
+The next chat will decide the next development stage. Do not infer or start that stage automatically. First read this lock and the continuation prompt, inspect current production state, and wait for the user's next instruction.
+
+## 2026-10-06 — LIVE domain model
+
+TradeFlow uses subscriber-owned domains only. Subscribers buy, own, renew and manage their domain with their chosen registrar. In TradeFlow, open **Website → Website URL**, enter the domain, and submit the connection request. The Platform Owner prepares the connection and provides exact DNS instructions. The subscriber applies those instructions. TradeFlow verifies DNS, SSL and tenant routing before the domain is activated.
+
+TradeFlow does not purchase the domain, hold the registrar account, request the registrar password, or activate an unverified domain.
+
 
 ## 2026-10-08 — Subscriber-owned domains: LIVE workflow verified
 

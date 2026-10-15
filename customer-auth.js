@@ -141,7 +141,7 @@ async function signUp(){
  try{
   sessionStorage.removeItem(SESSION_STORAGE);clearLegacySharedState();
   sessionStorage.setItem(PENDING_STORAGE,JSON.stringify({tenant_id:tenantId,email,first_name:first,last_name:last||null}));
-  const emailRedirectTo=new URL('customer-email-confirmed.html',CUSTOMER_SITE_BASE);
+  const emailRedirectTo=new URL('/email-confirmed',location.origin);
   const data=await authRequest('/auth/v1/signup',{email,password,options:{email_redirect_to:emailRedirectTo.href}});
   if(!data?.access_token){
    setAuthMode(false);

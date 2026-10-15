@@ -14,6 +14,14 @@ async function callRpc(name:string,body:unknown){
  if(!r.ok)throw Error(d?.message||d?.hint||d?.details||d||`RPC ${name} failed`);
  return d;
 }
+
+async function restTable(path:string,init:RequestInit={}){
+ const r=await fetch(`${SUPABASE_URL}/rest/v1/${path}`,{...init,headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',...(init.headers||{})}});
+ const t=await r.text();let d:any;try{d=t?JSON.parse(t):null}catch{d=t}
+ if(!r.ok)throw Error(d?.message||d?.hint||d?.details||d||'Database request failed');
+ return d;
+}
+
 async function getStripeSubscription(id:string){
  if(!STRIPE_SECRET_KEY)throw Error('Stripe secret is required to read the subscription.');
  const r=await fetch(`https://api.stripe.com/v1/subscriptions/${encodeURIComponent(id)}`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`}});
@@ -85,26 +93,33 @@ Deno.serve(async req=>{
   else return json({received:true});
   if(domainOrderId){
     if(newStatus==='paid'){
-      const {data:domainOrder,error:domainOrderError}=await admin.from('tenant_domain_orders').select('id,tenant_id,status,payment_reference,metadata').eq('id',String(domainOrderId)).maybeSingle();
-      if(domainOrderError||!domainOrder)return json({error:'Domain order not found for Stripe payment.'},404);
+      const rows=await restTable("tenant_domain_orders?select=id,tenant_id,status,payment_reference,metadata&id=eq."+encodeURIComponent(String(domainOrderId))+"&limit=1");
+      const domainOrder=Array.isArray(rows)?rows[0]:null;
+      if(!domainOrder)return json({error:'Domain order not found for Stripe payment.'},404);
       const mergedMetadata={...(domainOrder.metadata||{}),stripe_event_id:event.id,stripe_payment_event_type:event.type};
       if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded') mergedMetadata.stripe_checkout_session_id=object.id;
       if(event.type==='payment_intent.succeeded') mergedMetadata.stripe_payment_intent_id=object.id;
       const nextStatus=['registrant_details_saved','registered'].includes(domainOrder.status)?domainOrder.status:'payment_confirmed';
-      const {error:updateError}=await admin.from('tenant_domain_orders').update({
-        status:nextStatus,
-        payment_provider:'stripe',
-        payment_reference:domainOrder.payment_reference||((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded')?object.id:null),
-        failure_reason:null,
-        metadata:mergedMetadata,
-        updated_at:new Date().toISOString()
-      }).eq('id',domainOrder.id);
-      if(updateError)return json({error:updateError.message},500);
+      await restTable("tenant_domain_orders?id=eq."+encodeURIComponent(String(domainOrder.id)),{
+        method:'PATCH',
+        headers:{Prefer:'return=minimal'},
+        body:JSON.stringify({
+          status:nextStatus,
+          payment_provider:'stripe',
+          payment_reference:domainOrder.payment_reference||((event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded')?object.id:null),
+          failure_reason:null,
+          metadata:mergedMetadata,
+          updated_at:new Date().toISOString()
+        })
+      });
       return json({received:true,domain_payment_confirmed:true,order_id:domainOrder.id,status:nextStatus});
     }
     if(newStatus==='cancelled'){
-      const {error:updateError}=await admin.from('tenant_domain_orders').update({status:'cancelled',failure_reason:'Stripe Checkout session expired.',updated_at:new Date().toISOString()}).eq('id',String(domainOrderId)).eq('status','pending_payment');
-      if(updateError)return json({error:updateError.message},500);
+      await restTable("tenant_domain_orders?id=eq."+encodeURIComponent(String(domainOrderId))+"&status=eq.pending_payment",{
+        method:'PATCH',
+        headers:{Prefer:'return=minimal'},
+        body:JSON.stringify({status:'cancelled',failure_reason:'Stripe Checkout session expired.',updated_at:new Date().toISOString()})
+      });
       return json({received:true,domain_payment_cancelled:true,order_id:String(domainOrderId)});
     }
   }

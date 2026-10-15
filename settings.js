@@ -90,6 +90,32 @@ async function savePaymentProvider(code){
  }catch(e){msg(e.message||String(e),'error')}
 }
 
+async function loadStripeConnectStatus(){
+ const status=$('stripe-connect-status'),message=$('stripe-connect-message'),button=$('stripe-connect-button');
+ if(!status||!message||!button||!tenantId)return;
+ status.textContent='Checking connection…';message.textContent='';
+ try{
+  const result=await api('/functions/v1/stripe-connect-onboarding',{method:'POST',body:JSON.stringify({tenant_id:tenantId,action:'status'})});
+  if(result.connected){
+   status.textContent='Connected';message.textContent='Stripe is connected. Charges and payouts are enabled.';
+   button.textContent='Connected';button.disabled=true;
+  }else{
+   status.textContent=result.status==='onboarding'?'Setup incomplete':'Not connected';
+   message.textContent=result.message||'Connect Stripe to start receiving customer payments.';
+   button.textContent=result.status==='onboarding'?'Continue Stripe setup':'Connect Stripe';button.disabled=false;
+  }
+ }catch(e){status.textContent='Unable to verify';message.textContent=e.message||'Could not check Stripe status. Please try again.';button.disabled=false}
+}
+async function startStripeConnect(){
+ const button=$('stripe-connect-button'),message=$('stripe-connect-message');
+ if(!tenantId){message.textContent='Your business workspace is not ready. Please sign in again.';return}
+ button.disabled=true;message.textContent='Opening secure Stripe setup…';
+ try{
+  const result=await api('/functions/v1/stripe-connect-onboarding',{method:'POST',body:JSON.stringify({tenant_id:tenantId,action:'connect'})});
+  if(!result.url)throw Error(result.error||'Stripe did not return a secure setup link.');
+  window.location.assign(result.url);
+ }catch(e){message.textContent=e.message||'Unable to start Stripe setup.';button.disabled=false}
+}
 async function load(){
  try{
   const a=await window.tradeflowSubscriberAuthReady;key=a.key;token=a.session.access_token;tenantId=a.tenantId;
@@ -105,6 +131,11 @@ async function load(){
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
   paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');
   renderPaymentProviders();
+  $('stripe-connect-button')?.addEventListener('click',startStripeConnect);
+  $('stripe-refresh-status')?.addEventListener('click',loadStripeConnectStatus);
+  const stripeReturn=new URLSearchParams(location.search).get('stripe_connect');
+  if(stripeReturn){history.replaceState({},'',location.pathname);}
+  await loadStripeConnectStatus();
   const defaults=[
    {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
    {method_code:'link',display_name:'Link',enabled:true,sort_order:20},

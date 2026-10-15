@@ -1,5 +1,6 @@
 # TradeFlow Internal Backend & Owner Dashboard Manual
 
+## Stripe Connect implementation checkpoint — 15 October 2026\n\nThe LIVE subscriber payment setup is being moved from manual account-detail recording to hosted Stripe Connect onboarding. Draft implementation exists on branch `feature/live-stripe-connect-onboarding-20261015` only. It validates owner/admin membership and requires a live-mode Stripe secret key, but has not been deployed. Existing retail checkout still uses the platform account and does not yet transfer funds to a connected subscriber. Before release, verify the actual LIVE schema and secrets, Stripe Connect enablement, onboarding return paths, webhook configuration, transfer/fee model and tenant-specific checkout routing. Keep the platform subscription billing flow separate.\n\n
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.

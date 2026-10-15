@@ -1,5 +1,6 @@
 # TradeFlow Human User Manual
 
+## Stripe payment setup — release status (15 October 2026)\n\nThe current LIVE page still contains legacy provider setup fields. A simpler Stripe Connect flow is being prepared in an isolated GitHub branch, but it is not yet released. Until the release is verified, subscribers should not interpret “Setup recorded” as a verified Stripe connection. The intended process is to select **Connect Stripe**, complete Stripe's hosted onboarding, return to TradeFlow, and confirm that the connection status is **Connected**. Customer payment routing must also be verified before accepting retail payments through a connected account.\n\n
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.

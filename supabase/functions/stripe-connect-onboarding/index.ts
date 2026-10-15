@@ -2,7 +2,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY") || "";
+const ALLOWED_ORIGINS = new Set(["https://tradeflow.laurendigital.co.uk", "https://www.scenesource.co.uk", "https://scenesource.co.uk", "https://laurendigitaluk.github.io"]);
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") || "";
 const headers = {
   "Content-Type": "application/json",
@@ -55,17 +55,17 @@ Deno.serve(async (req: Request) => {
   }
   if (req.method !== "POST") return json({ error: "Method not allowed." }, 405);
   if (!STRIPE_SECRET_KEY) return json({ error: "Stripe is not configured on this LIVE environment." }, 503);
-  if (!SUPABASE_ANON_KEY) return json({ error: "Subscriber authentication is not configured on this environment." }, 503);
+  const origin = req.headers.get("origin") || "";
 
   const authorization = req.headers.get("authorization") || "";
   const bearer = authorization.match(/^Bearer\s+(.+)$/i)?.[1];
-  if (!bearer) return json({ error: "Please sign in again." }, 401);
+  if (!bearer) return json({ error: "Please sign in again." }, 401, origin);
 
   try {
     const authResponse = await fetch(SUPABASE_URL + "/auth/v1/user", {
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: "Bearer " + bearer },
+      headers: { apikey: req.headers.get("apikey") || "", Authorization: "Bearer " + bearer },
     });
-    if (!authResponse.ok) return json({ error: "Your session has expired. Please sign in again." }, 401);
+    if (!authResponse.ok) return json({ error: "Your session has expired. Please sign in again." }, 401, origin);
     const user = await authResponse.json();
     const body = await req.json();
     const tenantId = String(body?.tenant_id || "");
@@ -80,7 +80,7 @@ Deno.serve(async (req: Request) => {
       "&role_code=in.(owner,admin)&status=eq.active&limit=1",
     );
     if (!Array.isArray(memberships) || memberships.length !== 1) {
-      return json({ error: "Only an active business owner or administrator can connect Stripe." }, 403);
+      return json({ error: "Only an active business owner or administrator can connect Stripe." }, 403, origin);
     }
 
     const existingRows = await rest(
@@ -91,7 +91,7 @@ Deno.serve(async (req: Request) => {
 
     if (action === "status") {
       if (!existing?.provider_account_id) {
-        return json({ connected: false, status: "not_connected", message: "Stripe has not been connected yet." });
+        return json({ connected: false, status: "not_connected", message: "Stripe has not been connected yet." }, 200, origin);
       }
       const account = await stripe("accounts/" + encodeURIComponent(existing.provider_account_id));
       const connected = account.charges_enabled === true && account.payouts_enabled === true && account.details_submitted === true;
@@ -133,7 +133,7 @@ Deno.serve(async (req: Request) => {
     if (accountId) {
       const existingAccount = await stripe("accounts/" + encodeURIComponent(accountId));
       if (existingAccount.livemode === false) {
-        return json({ error: "The saved Stripe account is in test mode. LIVE onboarding requires a live connected account." }, 409);
+        return json({ error: "The saved Stripe account is in test mode. LIVE onboarding requires a live connected account." }, 409, origin);
       }
     } else {
       const form = new URLSearchParams();
@@ -176,8 +176,8 @@ Deno.serve(async (req: Request) => {
     linkForm.set("type", "account_onboarding");
     const accountLink = await stripe("account_links", { method: "POST", body: linkForm.toString() });
     if (!accountLink.url) return json({ error: "Stripe did not return an onboarding link." }, 502);
-    return json({ url: accountLink.url, account_id: accountId, status: "onboarding" });
+    return json({ url: accountLink.url, account_id: accountId, status: "onboarding" }, 200, origin);
   } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unable to start Stripe onboarding." }, 500);
+    return json({ error: error instanceof Error ? error.message : "Unable to start Stripe onboarding." }, 500, origin);
   }
 });

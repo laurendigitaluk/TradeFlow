@@ -124,7 +124,8 @@ Deno.serve(async req=>{
     }
   }
   const connectAcct = typeof event.account === 'string' ? event.account : '';
-  if (connectAcct && tenantId) {
+  if (connectAcct) {
+    if (!tenantId) return json({error:'Connected-account payment event is missing its tenant reference.'},403);
     const rows = await restTable('payment_provider_connections?select=tenant_id,status&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.' + encodeURIComponent(connectAcct) + '&limit=2');
     if (!Array.isArray(rows) || rows.length !== 1 || rows[0].status !== 'active' || String(rows[0].tenant_id) !== String(tenantId)) return json({error:'Stripe connected account does not match the payment tenant.'},403);
   }

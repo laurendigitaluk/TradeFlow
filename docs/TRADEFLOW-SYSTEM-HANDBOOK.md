@@ -1,6 +1,10 @@
 # TradeFlow Human / Developer System Handbook
 
-## Stripe Connect — current implementation checkpoint (15 October 2026)\n\nThe LIVE codebase currently records provider account details but does not itself establish a verified Stripe Connect relationship. A proposed implementation is being prepared on isolated branch `feature/live-stripe-connect-onboarding-20261015`: subscriber Settings receives a simple Connect Stripe panel, and a JWT-protected Edge Function validates active tenant owner/admin membership, creates/reuses a Stripe connected account, generates a hosted onboarding link, and refreshes connection status. The function refuses to run unless `STRIPE_SECRET_KEY` is a live-mode key. This branch is not merged or deployed; no connected account has been created by this code. Before release, verify LIVE secrets and schema, confirm Stripe Connect is enabled for the platform account, test return/refresh routes, and complete checkout/webhook fund-routing design. Do not mark a subscriber connected until Stripe reports charges, payouts and details submitted. Existing checkout still uses the platform Stripe key and is not yet routed to connected subscriber accounts.\n\n
+## Stripe Connect — current implementation checkpoint (15 October 2026)
+
+The LIVE codebase currently records provider account details but does not itself establish a verified Stripe Connect relationship. A proposed implementation is being prepared on isolated branch `feature/live-stripe-connect-onboarding-20261015`: subscriber Settings receives a simple Connect Stripe panel, and a JWT-protected Edge Function validates active tenant owner/admin membership, creates/reuses a Stripe connected account, generates a hosted onboarding link, and refreshes connection status. The function refuses to run unless `STRIPE_SECRET_KEY` is a live-mode key. This branch is not merged or deployed; no connected account has been created by this code. Before release, verify LIVE secrets and schema, confirm Stripe Connect is enabled for the platform account, test return/refresh routes, and complete checkout/webhook fund-routing design. Do not mark a subscriber connected until Stripe reports charges, payouts and details submitted. Existing checkout still uses the platform Stripe key and is not yet routed to connected subscriber accounts.
+
+
 > **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
 >
 > - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
@@ -1174,7 +1178,10 @@ Current state: Implemented in GitHub and syntax-verified; browser verification r
 
 The next browser test showed that the previous Buying-dashboard repairs were not sufficient. A fresh audit of the current GitHub source and live Test Two data identified two separate frontend defects still present in main:
 
-1. Customer-supplied description parsing was still wrong. The Test Two buying_items.description stores literal \\n separators. The controller correctly converted those separators to real newline characters, but then incorrectly attempted to split the converted text using the literal \\n pattern again. The result was one long line, so the key/value parser treated the entire submission as a single field. The repair changes the second split to /\\n+/, after conversion, so Product type, Manufacturer, Model, Package, Condition, Missing items and Legal right to sell render as separate fields.
+1. Customer-supplied description parsing was still wrong. The Test Two buying_items.description stores literal \
+ separators. The controller correctly converted those separators to real newline characters, but then incorrectly attempted to split the converted text using the literal \
+ pattern again. The result was one long line, so the key/value parser treated the entire submission as a single field. The repair changes the second split to /\
++/, after conversion, so Product type, Manufacturer, Model, Package, Condition, Missing items and Legal right to sell render as separate fields.
 2. The green Submitted status class had no CSS definition. requestStatusClass('submitted') already returned status-approved, but no loaded stylesheet defined .status-pill.status-approved. The browser therefore used the neutral base status-pill styling. Explicit status-pill colour classes have now been added for approved, review, offer and refused states.
 
 The live Test Two database was checked before the repair. The current Nikon request is BR-4C34C6F633, item BI-9D1C8F01FB, customer CUS-E82930637A58; both request and item are submitted, the item has quantity 1, the description contains the expected literal newline separators, and two media records are present. No database data, RLS policy, workflow transition or media record was changed.
@@ -1572,7 +1579,16 @@ Targeted repair committed to production: `6c9b061e5a20210aa8b6f416a3f8b68fb63573
 Verification rule: Cloudflare deployment existence is not browser verification. After the new Worker version is served, the clean browser must show the current dashboard HTML selecting `platform-owner-dashboard.js?v=6` (or a newer cache-busted version), followed by a real LIVE `/auth/v1/token` request on sign-in and an active owner membership check.
 
 Do not change LIVE credentials, delete tenants, recreate the owner, or alter Supabase auth solely because the old browser asset was observed. The three test-looking businesses previously displayed were stale dashboard content and are not LIVE tenant records.
-\n\n## LIVE owner authentication continuity — 3 October 2026\n\nThe LIVE platform owner account is present and has an active \`public.platform_memberships\` row. The password-reset incident was traced to the LIVE Supabase Auth redirect configuration still resolving password recovery to \`http://localhost:3000\`. The production application also had no dedicated platform-owner recovery page; the existing reset page was customer-specific.\n\nProduction code now includes a dedicated \`/owner-reset-password\` flow, an Owner Dashboard “Forgot your password?” action, an explicit Supabase \`redirect_to\` target, active-owner membership verification before password update, and a Worker route for the recovery page. This code is committed on \`production\`; deployment still needs live-browser verification.\n\nThe permanent LIVE Supabase Auth Site URL must be set to the eventual production site URL. Until the permanent customer domain is chosen, the Worker production origin can be used as the temporary LIVE application origin, with \`/owner-reset-password\` added to Supabase Auth Redirect URLs. Do not reuse the expired localhost reset link.\n
+
+
+## LIVE owner authentication continuity — 3 October 2026
+
+The LIVE platform owner account is present and has an active \`public.platform_memberships\` row. The password-reset incident was traced to the LIVE Supabase Auth redirect configuration still resolving password recovery to \`http://localhost:3000\`. The production application also had no dedicated platform-owner recovery page; the existing reset page was customer-specific.
+
+Production code now includes a dedicated \`/owner-reset-password\` flow, an Owner Dashboard “Forgot your password?” action, an explicit Supabase \`redirect_to\` target, active-owner membership verification before password update, and a Worker route for the recovery page. This code is committed on \`production\`; deployment still needs live-browser verification.
+
+The permanent LIVE Supabase Auth Site URL must be set to the eventual production site URL. Until the permanent customer domain is chosen, the Worker production origin can be used as the temporary LIVE application origin, with \`/owner-reset-password\` added to Supabase Auth Redirect URLs. Do not reuse the expired localhost reset link.
+
 
 ## CURRENT OVERRIDE — 3 OCTOBER 2026 — LIVE OWNER LOGIN VERIFIED
 

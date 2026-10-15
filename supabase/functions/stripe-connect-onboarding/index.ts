@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY") || "";
+const STRIPE_LIVE_MODE = /^(sk|rk)_live_/.test(STRIPE_SECRET_KEY);
 const ALLOWED_ORIGINS = new Set([
   "https://tradeflow.laurendigital.co.uk",
   "https://www.scenesource.co.uk",
@@ -95,7 +96,7 @@ Deno.serve(async (req: Request) => {
         return json({ connected: false, status: "not_connected", message: "Stripe has not been connected yet." }, 200, origin);
       }
       const account = await stripe("accounts/" + encodeURIComponent(existing.provider_account_id));
-      const connected = account.livemode === true && account.charges_enabled === true &&
+      const connected = STRIPE_LIVE_MODE && account.charges_enabled === true &&
         account.payouts_enabled === true && account.details_submitted === true;
       await rest(
         "payment_provider_connections?id=eq." + encodeURIComponent(existing.id) + "&tenant_id=eq." + encodeURIComponent(tenantId),
@@ -104,7 +105,7 @@ Deno.serve(async (req: Request) => {
           headers: { Prefer: "return=minimal" },
           body: JSON.stringify({
             status: connected ? "active" : "onboarding",
-            livemode: account.livemode === true,
+            livemode: STRIPE_LIVE_MODE,
             charges_enabled: account.charges_enabled === true,
             payouts_enabled: account.payouts_enabled === true,
             details_submitted: account.details_submitted === true,
@@ -130,9 +131,10 @@ Deno.serve(async (req: Request) => {
     }
 
     let accountId = existing?.provider_account_id || "";
+    if (accountId && !/^acct_[A-Za-z0-9]+$/.test(accountId)) return json({ error: "The saved Stripe account reference is not a connected-account ID. Contact support before reconnecting." }, 409, origin);
     if (accountId) {
       const account = await stripe("accounts/" + encodeURIComponent(accountId));
-      if (account.livemode !== true) {
+      if (!STRIPE_LIVE_MODE) {
         return json({ error: "The saved Stripe account is not a live connected account. Contact support before reconnecting." }, 409, origin);
       }
     } else {

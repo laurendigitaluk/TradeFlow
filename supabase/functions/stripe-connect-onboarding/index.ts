@@ -86,7 +86,7 @@ Deno.serve(async (req: Request) => {
     }
 
     const existingRows = await rest(
-      "payment_provider_connections?select=id,provider_account_id,status,metadata&tenant_id=eq." +
+      "payment_provider_connections?select=id,provider_account_id,status,metadata,connected_at&tenant_id=eq." +
       encodeURIComponent(tenantId) + "&provider=eq.stripe&connection_type=eq.customer_payments&limit=1",
     );
     const existing = Array.isArray(existingRows) ? existingRows[0] : null;
@@ -117,7 +117,7 @@ Deno.serve(async (req: Request) => {
               account_type: account.type || null,
               last_verified_at: new Date().toISOString(),
             },
-            connected_at: connected ? new Date().toISOString() : null,
+            connected_at: connected ? (existing.connected_at || new Date().toISOString()) : null,
           }),
         },
       );
@@ -144,7 +144,7 @@ Deno.serve(async (req: Request) => {
       if (user.email) form.set("email", String(user.email));
       form.set("capabilities[card_payments][requested]", "true");
       form.set("capabilities[transfers][requested]", "true");
-      const account = await stripe("accounts", { method: "POST", body: form.toString() });
+      const account = await stripe("accounts", { method: "POST", headers: { "Idempotency-Key": "tradeflow-connect-account-" + tenantId }, body: form.toString() });
       accountId = String(account.id || "");
       if (!accountId) return json({ error: "Stripe did not return a connected account ID." }, 502, origin);
       await rest("payment_provider_connections?on_conflict=tenant_id,provider,connection_type", {

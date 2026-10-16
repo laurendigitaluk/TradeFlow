@@ -13,6 +13,14 @@ const reservationBody=await reservationRes.json();const reservation=Array.isArra
 if(!reservation?.attempt_id||!reservation?.idempotency_key)return json({error:'Checkout attempt reservation returned incomplete data.'},500);
 const attemptId=reservation.attempt_id;const idem=reservation.idempotency_key;
 
+// Pin the account identity before making any Stripe API request. This matters
+// when Stripe accepts a request but the network response is lost: a retry must
+// not replay the same idempotency key against a different connected account.
+const pinRes=await fetch(`${SUPABASE_URL}/rest/v1/retail_checkout_attempts?id=eq.${encodeURIComponent(attemptId)}&status=in.(creating,open)`,{method:'PATCH',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({stripe_account_id:connectedAccountId,updated_at:new Date().toISOString()})});
+if(!pinRes.ok)return json({error:'Unable to pin the checkout attempt to the verified Stripe account.'},409);
+const pinnedRows=await pinRes.json();
+if(!Array.isArray(pinnedRows)||pinnedRows.length!==1||pinnedRows[0].stripe_account_id!==connectedAccountId)return json({error:'Checkout attempt account identity conflicts with the current Stripe connection. Reconciliation is required.'},409);
+
 // Reuse the exact session reserved for this attempt; do not infer it from the payment row.
 if(reservation.stripe_session_id){
  // A saved session is reusable only for the same connected Stripe account.

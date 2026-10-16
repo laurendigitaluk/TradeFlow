@@ -115,3 +115,10 @@ These are source-level/type-check results only. SQL migration execution, Postgre
 A further source review found that the attempt-aware settlement RPC checked whether a Stripe event ID already existed, but did not serialize concurrent deliveries of that same event ID before the check. Concurrent copies routed against different attempts could therefore race past the existence check. Feature commit `deae2f31171a4bb917c76b9cd48e3a9f960b0165` adds a transaction-scoped PostgreSQL advisory lock keyed by the Stripe event ID before row locking and deduplication.
 
 This is a candidate-side concurrency safeguard, not a verified fix until PostgreSQL tests demonstrate duplicate deliveries serialize correctly and do not double-settle or incorrectly complete a second attempt. The lock ordering and interaction with `process_external_payment_event` must be exercised in disposable PostgreSQL, including two simultaneous calls with the same event ID targeting distinct attempts. Do not apply the migration to LIVE. Current feature-vs-production comparison is now 143 commits ahead / 2 behind before this latest commit; branch counts should be refreshed before integration.
+
+
+## Latest comparison after concurrency safeguard — 16 October 2026
+
+The latest GitHub compare reports the feature branch **147 commits ahead and 2 commits behind** `production`, still diverged from merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. Production head observed remains `419dc34b42bb60b175b65e9beacb430a195c7a00`. The ahead count includes documentation/checkpoint commits; it is not a measure of completed validation.
+
+The settlement migration now includes a transaction-scoped advisory lock for each Stripe event ID (commit `deae2f31171a4bb917c76b9cd48e3a9f960b0165`). The commit-status connector currently reports no status entries for this commit or the latest manual update, and the workflow-run lookup used here only returns pull-request-triggered runs. Therefore, there is no newly verified CI result for the latest SQL change. The release gate remains closed pending disposable PostgreSQL tests, Stripe test-mode lifecycle tests, and a reviewed settings/branch integration plan.

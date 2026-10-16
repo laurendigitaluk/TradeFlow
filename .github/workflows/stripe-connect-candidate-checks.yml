@@ -74,3 +74,15 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f tests/stripe-connect/sql/regression.sql
+
+      - name: Install Python PostgreSQL driver
+        run: python -m pip install "psycopg[binary]"
+
+      - name: Test concurrent duplicate Stripe event delivery
+        env:
+          PGHOST: localhost
+          PGPORT: "5432"
+          PGDATABASE: tradeflow_test
+          PGUSER: postgres
+          PGPASSWORD: postgres
+        run: python tests/stripe-connect/sql/concurrent_duplicate_event.py

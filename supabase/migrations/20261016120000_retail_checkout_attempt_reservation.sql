@@ -11,6 +11,7 @@ create table if not exists public.retail_checkout_attempts (
   status text not null default 'creating'
     check (status in ('creating','open','expired','failed','completed','cancelled')),
   stripe_session_id text,
+  stripe_payment_intent_id text,
   session_expires_at timestamptz,
   last_error text,
   metadata jsonb not null default '{}'::jsonb,
@@ -19,6 +20,10 @@ create table if not exists public.retail_checkout_attempts (
   unique (payment_id, attempt_number),
   unique (stripe_session_id)
 );
+
+create unique index if not exists retail_checkout_attempts_payment_intent_uidx
+  on public.retail_checkout_attempts (stripe_payment_intent_id)
+  where stripe_payment_intent_id is not null;
 
 create index if not exists retail_checkout_attempts_tenant_payment_idx
   on public.retail_checkout_attempts (tenant_id, payment_id, attempt_number desc);

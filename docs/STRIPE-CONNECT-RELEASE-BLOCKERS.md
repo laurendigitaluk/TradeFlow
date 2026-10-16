@@ -136,3 +136,10 @@ Candidate code is now present on the feature branch:
 **Not yet verified:** no Deno typecheck, SQL migration application on disposable PostgreSQL, automated concurrency/crash-recovery tests, Stripe test-mode refund, or CI run has been executed on these changes. The batch mode has not been scheduled/configured. Do not deploy this candidate or apply the migration to LIVE.
 
 **Remaining release blockers:** test refund API timeout after Stripe accepts the request; test database write failure after Stripe response; verify retry returns the same refund using the same key; test pending/failed refund states, missing PaymentIntent, amount/currency/account/session mismatches, duplicate/out-of-order events, and the full regression suite. Review whether Stripe API permanent failures should remain in reconciliation rather than automatic retry. Reconcile the feature branch's divergence before release.
+
+
+## Follow-up webhook routing correction — 16 October 2026
+
+A further source review found that the webhook's generic lifecycle guard returned early for every `checkout.session.expired` event before the connected-account attempt-aware branch could see it. The feature-branch webhook was corrected in commit `54013c8a7e9faf522166c9fe716be5ad22fad963`: Connect-scoped retail Session expiry can now reach the attempt-aware RPC; PaymentIntent-only events and platform-context retail expiry remain blocked pending explicit reconciliation.
+
+The latest comparison reports this feature branch as **89 commits ahead and 2 behind** `production`, still diverged from the same merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. The repository integration decision remains blocked until the two production-only commits and the broader feature diff are reviewed. No CI status checks or workflow runs were returned for the latest candidate commits.

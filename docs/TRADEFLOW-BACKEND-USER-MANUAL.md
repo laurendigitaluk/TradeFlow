@@ -1466,3 +1466,6 @@ Follow-up correction: commit `54013c8a7e9faf522166c9fe716be5ad22fad963` allows c
 
 
 Concurrency safety follow-up: the candidate settlement and refund-claim RPCs now lock the payment row before the checkout attempt, matching checkout reservation order. Validate concurrent reservation, webhook settlement and refund claims on disposable PostgreSQL before deployment. No concurrency test has been run yet.
+
+
+Stripe Connect candidate webhook note (16 October 2026): candidate commit `bb4001785446440645078869b034868c617fae93` adds the `checkout.session.async_payment_failed` event to the attempt-aware Connect retail handler, where it records the exact attempt as failed. This remains untested source code. Do not deploy or apply candidate migrations to LIVE until Deno checks, disposable PostgreSQL tests, Stripe test-mode event/retry tests, and branch reconciliation are complete. The feature branch currently compares as 108 commits ahead and 2 behind production.

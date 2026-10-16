@@ -117,3 +117,9 @@ This is a containment fix, not the completed lifecycle implementation. It means 
 - No Deno typecheck, unit test, webhook replay, Stripe test-mode request, migration test, or LIVE change was performed.
 - Required regression tests: retail session expiry leaves order/payment/inventory unchanged; duplicate session success is idempotent; PaymentIntent events cannot mutate retail payment state; domain-order expiry retains its intended behavior; delayed successful payment after order cancellation is safely reconciled/refunded exactly once.
 
+## PaymentIntent identity persistence added
+
+Commits `b4d92ec645d96b1395acee08176a6db5f5553023` and `aa51595ad20ec27a262961eb03e81cad30ac11cc` extend the candidate migration with `stripe_payment_intent_id` plus a partial unique index, and save Stripe's PaymentIntent ID on the attempt when Checkout Session creation returns it. This is preparatory identity storage only; it does not yet make PaymentIntent webhook handling attempt-aware or atomic. PaymentIntent IDs can be absent at initial session creation, so the future handler must also reconcile by retrieving the exact Session on the connected account and safely associate its PaymentIntent before accepting an event.
+
+Validation remains pending: the migration has not been applied or tested, the Edge Function has not been typechecked, and the checkout/webhook test matrix has not been run.
+

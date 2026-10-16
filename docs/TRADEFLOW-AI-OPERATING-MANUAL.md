@@ -2646,3 +2646,6 @@ Follow-up source review corrected an early webhook guard that had prevented Conn
 
 
 Additional refund safety: candidate commit `d7f5b1d39f9355e61fce74250baeb85bdeb52f46` adds a pre-refund reconciliation lookup for an existing Stripe refund tagged with the exact checkout attempt ID. This supplements the stable idempotency key for delayed recovery beyond Stripe's key-retention window. Test this with Stripe test mode before release; no test evidence is currently verified.
+
+
+Concurrency review also corrected a potential payment/attempt lock inversion. Candidate settlement and refund-claim RPCs now lock payment first and attempt second, matching checkout reservation. Test concurrent checkout reservation, expiry/success webhooks and refund claims on disposable PostgreSQL before release; no concurrency test has yet run.

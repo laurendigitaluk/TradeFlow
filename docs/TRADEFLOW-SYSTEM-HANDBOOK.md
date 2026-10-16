@@ -2153,3 +2153,7 @@ The candidate settlement and refund-claim RPCs were subsequently changed to lock
 ## Connect asynchronous failure webhook checkpoint — 16 October 2026
 
 Commit `bb4001785446440645078869b034868c617fae93` adds `checkout.session.async_payment_failed` to the attempt-aware Connect retail webhook path and maps it to the existing atomic `failed` transition. This is a source-level correction only. Verify with Stripe test mode that the event is recorded against the exact attempt and that a retry is safe; also verify subscription and domain-order checkout remain unaffected. The feature branch is diverged from production, with feature-only and production-only commits still requiring review, so no merge/deployment is approved by this checkpoint.
+
+## Terminal-payment event persistence checkpoint — 16 October 2026
+
+Read-only inspection of the current LIVE `process_external_payment_event` definition showed an early return for terminal payment statuses before provider-event insertion. Candidate commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` adds an idempotent event insert to the attempt-aware successful paid path. Test both normal settlement and an already-paid terminal path in disposable PostgreSQL before release. No migration or function has been deployed to LIVE.

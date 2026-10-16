@@ -217,7 +217,10 @@ begin
   insert into public.payment_provider_events(provider, event_id, event_type, metadata)
   values ('stripe', p_event_id, p_event_type,
     coalesce(p_metadata, '{}'::jsonb) || jsonb_build_object('checkout_attempt_id', v_attempt.id,
-      'settlement_outcome', 'refund_required'));
+      'settlement_outcome', 'refund_required'))
+  on conflict (provider, event_id) do update
+    set event_type = excluded.event_type,
+        metadata = public.payment_provider_events.metadata || excluded.metadata;
   return jsonb_build_object('outcome', 'refund_required', 'attempt_id', v_attempt.id,
     'refund_status', 'required');
 end;

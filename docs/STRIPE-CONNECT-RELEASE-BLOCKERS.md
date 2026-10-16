@@ -102,3 +102,10 @@ Feature-branch commit: `d186934af4f2da031bbf209f603519c565d12be1`.
 The Stripe webhook now returns a retryable HTTP 503 for retail Connect Checkout Session and PaymentIntent lifecycle events rather than passing them into `process_external_payment_event` without exact attempt binding. Platform subscription and domain-order branches remain ahead of this guard and are not targeted by it.
 
 This is a deliberate safety stop, not a functioning settlement implementation: retail Connect payments will not be settled by this candidate webhook until the attempt-aware atomic RPC and its refund/recovery path are implemented and tested. Repeated 503 responses can eventually exhaust Stripe's automatic retry window, so this branch must not be deployed as a customer-facing production webhook. No LIVE deployment or payment was made.
+
+
+## Candidate implementation checkpoint — 16 October 2026
+
+- Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` introduces service-role-only `process_retail_checkout_attempt_event`. It locks the exact attempt and payment, validates tenant/account/Session/optional PaymentIntent/amount/currency, handles expiry per-attempt, calls the existing payment transition for verified paid Sessions, and records a durable refund intent when the existing transition rejects a late success.
+- The webhook now routes connected-account retail Checkout Session events (`completed`, `async_payment_succeeded`, `expired`) through that RPC. PaymentIntent-only lifecycle events remain deliberately blocked because they cannot safely be mapped to the canonical Session without reconciliation.
+- This is candidate code, not a release-ready implementation. Refund execution/recovery is still missing; account/event edge cases and all SQL semantics require disposable-database tests. The function depends on the existing `process_external_payment_event` behavior and has not been typechecked or integration-tested. Do not deploy or apply migrations to LIVE.

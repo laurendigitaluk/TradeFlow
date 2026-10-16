@@ -58,7 +58,7 @@ declare
   v_attempt public.retail_checkout_attempts%rowtype;
   v_next integer;
 begin
-  if current_setting('request.jwt.claim.role', true) <> 'service_role' then
+  if current_setting('request.jwt.claim.role', true) is distinct from 'service_role' then
     raise exception 'Service role required';
   end if;
 

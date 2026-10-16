@@ -130,3 +130,9 @@ The feature branch now includes an isolated PostgreSQL CI job in `.github/workfl
 The settlement fallback was adjusted to upsert the existing `payment_provider_events` row when the legacy transition has already recorded the event but declines the business transition. A read-only inspection of TRADEFLOW LIVE confirmed the existing table has `UNIQUE (provider, event_id)`, matching the candidate's conflict target. No LIVE schema or data was changed by that inspection.
 
 **Execution status:** the test files and workflow are committed to the feature branch, but no successful run of the new PostgreSQL job has been verified yet. Treat this as a test harness added, not passing test evidence. The fixture intentionally stubs `process_external_payment_event`; it does not validate the full TradeFlow ledger, inventory, credit, or order side effects. Stripe test-mode lifecycle tests, actual runtime/browser checkout, commission collection, and branch/settings reconciliation remain outstanding. Do not apply candidate migrations to LIVE or merge the feature branch until the workflow run is confirmed and remaining release blockers are resolved.
+
+### Additional regression assertions — 16 October 2026
+
+The isolated SQL regression suite now also asserts that a mismatched PaymentIntent is rejected without recording the event, and that a late paid Session for a superseded checkout attempt creates a durable refund intent without changing the already-settled payment. Expected-value assertions use `IS DISTINCT FROM` so unexpected NULL values fail the tests rather than slipping through SQL's three-valued logic.
+
+The concurrent test still expects one `applied` and one `duplicate` result for concurrent deliveries of the same Stripe event ID. These tests are committed but not yet confirmed by an observed successful GitHub Actions run.

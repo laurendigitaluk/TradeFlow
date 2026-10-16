@@ -142,7 +142,7 @@ Candidate code is now present on the feature branch:
 
 A further source review found that the webhook's generic lifecycle guard returned early for every `checkout.session.expired` event before the connected-account attempt-aware branch could see it. The feature-branch webhook was corrected in commit `54013c8a7e9faf522166c9fe716be5ad22fad963`: Connect-scoped retail Session expiry can now reach the attempt-aware RPC; PaymentIntent-only events and platform-context retail expiry remain blocked pending explicit reconciliation.
 
-The latest comparison reports this feature branch as **89 commits ahead and 2 behind** `production`, still diverged from the same merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. The repository integration decision remains blocked until the two production-only commits and the broader feature diff are reviewed. No CI status checks or workflow runs were returned for the latest candidate commits.
+The latest comparison reports this feature branch as **104 commits ahead and 2 behind** `production`, still diverged from the same merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. The repository integration decision remains blocked until the two production-only commits and the broader feature diff are reviewed. No CI status checks or workflow runs were returned for the latest candidate commits.
 
 
 ## Long-delay refund recovery guard — 16 October 2026
@@ -157,3 +157,8 @@ This is still untested source code. The lookup must be exercised in Stripe test 
 A source review identified a potential deadlock: checkout reservation locks the payment row before the attempt row, while the candidate settlement/refund claim paths previously locked the attempt before the payment. Both candidate paths have now been changed to read the attempt identity without a lock, then lock payment first and the exact attempt second, re-reading the attempt under lock. Commits: `260602e25e23e21da4c1277c033bbe68eafc6ca9` (settlement migration) and `9a3f2e981023e480bea6ea6c1c0cde4e7530dadf` (refund worker RPC migration).
 
 This is a source-level concurrency correction only. Validate with concurrent PostgreSQL tests that race checkout reservation, expiry/success webhook settlement, and refund claims. Do not deploy until tested.
+
+
+## Asynchronous payment failure handling — 16 October 2026
+
+Source review found that `checkout.session.async_payment_failed` was not included in the attempt-aware Connect retail Session event set. The handler returned without recording the attempt-level failure. Commit `bb4001785446440645078869b034868c617fae93` now routes this event to the existing atomic `failed` transition and includes it in the Connect retail release guard. This is source-only and untested. Validate the event with Stripe test mode and confirm the failed attempt can be retried without affecting subscription/domain checkout. The feature branch currently compares as 104 commits ahead and 2 behind `production`; review divergence before release. Do not deploy.

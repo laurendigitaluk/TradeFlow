@@ -140,16 +140,6 @@ Deno.serve(async req=>{
     return json({ received: true, ignored: 'retail_attempt_lifecycle_event_requires_attempt_aware_handler' });
   }
 
-  // Retail orders use Checkout Session IDs as their canonical provider payment IDs.
-  // PaymentIntent events carry a different ID and must not be sent through the
-  // legacy payment RPC as if they were Checkout Session events. Session expiry
-  // is attempt-level and must not cancel the order or restore inventory.
-  if (!domainOrderId && (event.type === 'checkout.session.expired' ||
-      event.type === 'payment_intent.succeeded' ||
-      event.type === 'payment_intent.payment_failed')) {
-    return json({ received: true, ignored: 'retail_attempt_lifecycle_event_requires_attempt_aware_handler' });
-  }
-
   const connectAcct = typeof event.account === 'string' ? event.account : '';
   if (connectAcct) {
     if (!tenantId) return json({error:'Connected-account payment event is missing its tenant reference.'},403);

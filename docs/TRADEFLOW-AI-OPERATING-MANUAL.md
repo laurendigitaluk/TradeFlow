@@ -2652,3 +2652,5 @@ Concurrency review also corrected a potential payment/attempt lock inversion. Ca
 
 
 Webhook follow-up: commit `bb4001785446440645078869b034868c617fae93` adds `checkout.session.async_payment_failed` to the attempt-aware Connect retail webhook handler and maps it to the atomic `failed` transition. This closes a source-level omission for asynchronous payment methods, but is not yet tested. Add a Stripe test-mode case and verify retry behavior. Current feature/production comparison is diverged from production, with feature-only and production-only commits still requiring review; do not merge or deploy before reconciliation and full validation.
+
+Additional SQL review: LIVE's existing `process_external_payment_event` returns early for already-terminal payment rows before inserting `payment_provider_events`. Candidate commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` makes the attempt-aware paid-success path persist the event itself using `ON CONFLICT DO NOTHING`. Validate event deduplication and payment/attempt state in disposable PostgreSQL; source review is not a passing test. No LIVE changes authorised.

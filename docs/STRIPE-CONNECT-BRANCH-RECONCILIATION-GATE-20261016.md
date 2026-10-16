@@ -7,9 +7,9 @@ Latest reviewed feature commit before this note: `07ef1087edb1d4b65226ecefa48b89
 
 ## Current comparison
 
-GitHub's compare endpoint currently reports the feature branch as **44 commits ahead and 2 commits behind** `production`, with a divergent history. The merge base is `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`; the current production comparison commit is `419dc34b42bb60b175b65e9beacb430a195c7a00`.
+GitHub's compare endpoint reports the feature branch as **diverged**, with **2 commits on production not yet incorporated**. On the latest check before this documentation update, the feature branch was 126 commits ahead and 2 behind; that ahead count changes as checkpoint documentation commits are added. The merge base remains `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`, and the production head observed was `419dc34b42bb60b175b65e9beacb430a195c7a00`.
 
-This is a material change from earlier notes that described 42 commits ahead. Treat the current compare result as the latest snapshot and re-run it immediately before any merge/rebase decision.
+Treat the exact ahead count as a timestamped snapshot, not a stable invariant. The critical point is that the histories remain divergent. Do not merge/rebase blindly.
 
 ## Required before integration
 

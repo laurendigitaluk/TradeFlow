@@ -2661,3 +2661,10 @@ Review correction (16 October 2026): a deeper control-flow check found that the 
 ## Stripe Connect refund recovery note — 16 October 2026
 
 The Stripe Connect retail refund worker now paginates the connected account's Stripe refund list when searching for an existing refund by exact `tradeflow_checkout_attempt_id` metadata. It stops when a match is found, the list is exhausted, or a defensive 100-page ceiling is reached; incomplete pagination is treated as retryable. Source commit: `29fcf17c1079a152aeeba92a6b8742e9ddab3956`. This is not yet validated with Deno, PostgreSQL concurrency tests, or Stripe test mode. Do not deploy to LIVE until those tests and branch reconciliation are complete.
+
+
+## Stripe Connect duplicate-event concurrency review — 16 October 2026
+
+The candidate settlement RPC now obtains a transaction-scoped advisory lock derived from the Stripe event ID before resolving/locking the attempt and payment. This addresses a source-level race where concurrent copies of one Stripe event might both pass the provider-event existence check. Commit: `deae2f31171a4bb917c76b9cd48e3a9f960b0165`.
+
+Validation status: **not yet proven**. Disposable PostgreSQL tests must run concurrent duplicate deliveries against the same and different attempts, confirm exactly one business transition, and check lock ordering/deadlocks with checkout reservation and refund claiming. This does not authorize a LIVE migration or deployment.

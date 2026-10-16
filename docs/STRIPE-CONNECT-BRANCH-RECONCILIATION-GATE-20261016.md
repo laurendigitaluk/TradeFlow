@@ -90,3 +90,10 @@ This is a defensive check, but checkout creation does not visibly compare the or
 The checkout function also creates the Session as a direct charge in the connected account without a visible `application_fee_amount`. Commission collection remains an unresolved product/payment design decision, separate from the amount consistency guard.
 
 No code change was made for this finding because the correct payment-record creation contract and amount source must be verified first. No LIVE data, deployment, migration, or Stripe object was changed.
+
+
+## Latest branch comparison after amount-invariant note
+
+The latest compare endpoint snapshot reports **139 commits ahead and 2 commits behind** production, still diverged from merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. Production head observed: `419dc34b42bb60b175b65e9beacb430a195c7a00`. The two production-only commits still require inspection; settings overlap remains a merge risk. The updated ahead count includes subsequent feature-branch checkpoint/documentation commits and is not evidence of additional runtime validation.
+
+Release gate remains closed: no verified Deno run, disposable database migration test, Stripe test-mode lifecycle test, or end-to-end customer checkout test is available. Do not merge, deploy, or apply candidate migrations to LIVE on the basis of source inspection alone.

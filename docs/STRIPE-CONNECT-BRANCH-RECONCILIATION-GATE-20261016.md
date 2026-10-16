@@ -108,3 +108,10 @@ The earlier TypeScript issue in `stripe-payment-webhook/index.ts` was fixed in c
 
 These are source-level/type-check results only. SQL migration execution, PostgreSQL concurrency and recovery tests, Stripe test-mode lifecycle behavior, and browser end-to-end checkout remain unverified. Release gate stays closed. No LIVE database, deployment, migration, customer transaction, or Stripe object was changed.
 
+
+
+## Duplicate Stripe event concurrency guard — 16 October 2026
+
+A further source review found that the attempt-aware settlement RPC checked whether a Stripe event ID already existed, but did not serialize concurrent deliveries of that same event ID before the check. Concurrent copies routed against different attempts could therefore race past the existence check. Feature commit `deae2f31171a4bb917c76b9cd48e3a9f960b0165` adds a transaction-scoped PostgreSQL advisory lock keyed by the Stripe event ID before row locking and deduplication.
+
+This is a candidate-side concurrency safeguard, not a verified fix until PostgreSQL tests demonstrate duplicate deliveries serialize correctly and do not double-settle or incorrectly complete a second attempt. The lock ordering and interaction with `process_external_payment_event` must be exercised in disposable PostgreSQL, including two simultaneous calls with the same event ID targeting distinct attempts. Do not apply the migration to LIVE. Current feature-vs-production comparison is now 143 commits ahead / 2 behind before this latest commit; branch counts should be refreshed before integration.

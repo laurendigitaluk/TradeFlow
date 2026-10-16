@@ -143,3 +143,10 @@ Candidate code is now present on the feature branch:
 A further source review found that the webhook's generic lifecycle guard returned early for every `checkout.session.expired` event before the connected-account attempt-aware branch could see it. The feature-branch webhook was corrected in commit `54013c8a7e9faf522166c9fe716be5ad22fad963`: Connect-scoped retail Session expiry can now reach the attempt-aware RPC; PaymentIntent-only events and platform-context retail expiry remain blocked pending explicit reconciliation.
 
 The latest comparison reports this feature branch as **89 commits ahead and 2 behind** `production`, still diverged from the same merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. The repository integration decision remains blocked until the two production-only commits and the broader feature diff are reviewed. No CI status checks or workflow runs were returned for the latest candidate commits.
+
+
+## Long-delay refund recovery guard — 16 October 2026
+
+The candidate worker now checks the connected account's Stripe refund list for a refund tagged with the exact `tradeflow_checkout_attempt_id` before issuing another refund. The stable idempotency key remains the primary retry mechanism; the metadata lookup is a secondary recovery guard for a delayed retry after Stripe's idempotency-key retention window. A matching succeeded/pending/failed refund is reconciled into the database instead of blindly posting another refund. Commit: `d7f5b1d39f9355e61fce74250baeb85bdeb52f46`.
+
+This is still untested source code. The lookup must be exercised in Stripe test mode, including a simulated crash after Stripe accepts the refund but before the database write, and a delayed retry. Do not deploy.

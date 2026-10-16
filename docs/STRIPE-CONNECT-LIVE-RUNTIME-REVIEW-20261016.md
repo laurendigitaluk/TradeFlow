@@ -41,3 +41,15 @@ The candidate `reserve_retail_checkout_attempt` only accepts payment statuses `p
 ## Release status
 
 **Blocked.** Do not merge, apply the migration to LIVE, or deploy Edge Functions until the implementation and tests above pass review. Preserve the DJI Osmo Action 6 Adventure Combo transaction (sale £125, acquisition cost £70, seller payment already marked paid by bank transfer).
+
+
+## Follow-up source-of-truth check — webhook guard discrepancy
+
+A later GitHub read on 16 October 2026 found an important mismatch between the prior documentation and the actual file currently reachable from `feature/live-stripe-connect-onboarding-20261015`:
+
+- The branch's `supabase/functions/stripe-payment-webhook/index.ts` blob is `8bd39c9984021f3830bca0317baeb2c84e4516e1`.
+- That file still contains the legacy path that maps `checkout.session.expired` to `cancelled`, maps PaymentIntent events into the generic payment handler, and uses a refund request without a Stripe idempotency-key header.
+- The documented interim guard is therefore **not present in the webhook file currently read from this branch**, despite earlier notes describing it as present.
+- The referenced commit `e5b18ed2d6b16fd0939f11378aa0bc02a1436538` only adds documentation; its diff does not modify the webhook implementation.
+
+Treat the source file as authoritative. Do not assume the interim guard exists in the candidate branch, and do not deploy it. Reconcile the commit graph and apply the intended guard (or a complete reviewed atomic implementation) to the correct feature branch, then fetch the file again and verify its exact blob/commit before any further claims. The production branch has not been modified by this review.

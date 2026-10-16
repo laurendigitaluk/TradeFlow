@@ -2643,3 +2643,6 @@ Next: fetch and inspect the exact latest commit; test SQL on disposable PostgreS
 
 
 Follow-up source review corrected an early webhook guard that had prevented Connect `checkout.session.expired` events from reaching `process_retail_checkout_attempt_event`. Commit: `54013c8a7e9faf522166c9fe716be5ad22fad963`. Latest feature/production comparison: 89 commits ahead, 2 behind, diverged. No successful CI/test evidence has been verified. Continue with disposable PostgreSQL and Deno tests before further release decisions.
+
+
+Additional refund safety: candidate commit `d7f5b1d39f9355e61fce74250baeb85bdeb52f46` adds a pre-refund reconciliation lookup for an existing Stripe refund tagged with the exact checkout attempt ID. This supplements the stable idempotency key for delayed recovery beyond Stripe's key-retention window. Test this with Stripe test mode before release; no test evidence is currently verified.

@@ -179,10 +179,46 @@ Deno.serve(async req=>{
     if (outcome?.outcome === 'reconciliation_required') {
       return json({received:true,settlement:outcome.outcome,reason:outcome.reason,event_id:event.id},409);
     }
+    // A refund intent is durable before the worker is invoked. Also retry the
+    // worker on duplicate Stripe deliveries while the intent remains pending;
+    // this recovers transient API failures and crashes after Stripe accepted a refund.
+    const shouldProcessRefund =
+      (outcome?.outcome === 'refund_required' || outcome?.outcome === 'duplicate') &&
+      !!outcome?.attempt_id &&
+      ['required', 'requested'].includes(String(outcome?.refund_status || ''));
+    if (shouldProcessRefund) {
+      const workerResponse = await fetch(`${SUPABASE_URL}/functions/v1/process-retail-checkout-refund`, {
+        method: 'POST',
+        headers: {
+          apikey: SERVICE_ROLE_KEY,
+          Authorization: `Bearer ${SERVICE_ROLE_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({attempt_id: String(outcome.attempt_id)})
+      });
+      const workerText = await workerResponse.text();
+      let workerResult:any;
+      try { workerResult = workerText ? JSON.parse(workerText) : null; } catch { workerResult = workerText; }
+      if (!workerResponse.ok) {
+        // Stripe retries the webhook; the attempt's stable refund idempotency
+        // key makes another worker attempt safe.
+        return json({
+          received: false,
+          settlement: outcome.outcome,
+          refund_status: 'requested',
+          refund_worker_retryable: true,
+          event_id: event.id
+        }, 503);
+      }
+      return json({
+        received: true,
+        settlement: outcome.outcome,
+        refund_status: workerResult?.outcome || outcome.refund_status,
+        refund_worker: workerResult?.outcome || 'processed',
+        event_id: event.id
+      });
+    }
     if (outcome?.outcome === 'refund_required') {
-      // A durable refund intent has been stored; acknowledge the event so
-      // Stripe does not retry indefinitely. Refund execution/reconciliation is
-      // a separate worker and must not be implied by this acknowledgement.
       return json({received:true,settlement:outcome.outcome,refund_status:outcome.refund_status,event_id:event.id});
     }
     return json({received:true,settlement:outcome?.outcome||'unknown',event_id:event.id});

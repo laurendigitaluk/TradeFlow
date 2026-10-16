@@ -2609,3 +2609,17 @@ Branch: `feature/live-stripe-connect-onboarding-20261015`; PR #151 remains draft
 7. Update the human/backend/system manuals with verified final results after tests, not assumptions.
 
 LIVE project remains `gxsrajtqzdjvmceqcpgv`; TEST remains reference-only. No production deployment, Stripe account creation, customer charge, or change to SaaS subscription billing was made during this continuation. Existing DJI Osmo Action 6 Adventure Combo transaction (£125 sale, £70 acquisition, seller bank-transfer payment marked paid) must remain unchanged.
+
+
+### Follow-up investigation — payment-attempt idempotency (16 October 2026)
+
+Read-only inspection of the LIVE database function `customer_create_order_payment(p_tenant_id, p_order_id, p_idempotency_key)` confirmed:
+- It locks the order row and checks customer ownership/status.
+- It returns an existing payment record when a pending/processing payment already exists for that order, even if the request supplied a new idempotency key.
+- It has unique indexes on `(tenant_id, idempotency_key)` and `(tenant_id, provider, provider_payment_id)`; provider webhook events have unique `(provider,event_id)`.
+
+This exposes a specific mismatch in the feature branch checkout function: it creates a fresh random attempt UUID/idempotency key on every invocation, while the database RPC can return the same existing payment record. The Stripe Checkout idempotency key therefore changes even when the payment record does not. Concurrent requests can create distinct Checkout Sessions for one payment record, and the last database update may overwrite the session ID. Simply making the Stripe idempotency key permanently equal to the payment ID is not a complete fix because an expired session may need a genuinely new attempt while Stripe still caches the old idempotent response.
+
+Required fix before release: introduce an atomic, database-backed checkout-attempt reservation/version per payment record (or equivalent serialised mechanism) so concurrent requests share one active session, while an explicitly expired/cancelled session can safely advance to a new attempt. Persist and compare the attempt/session identity before returning the Checkout URL. Test concurrent calls, repeated calls, expired-session retry, and failed-session retry. Do not treat a fresh UUID alone as protection.
+
+The LIVE database schema was inspected read-only. No database changes were made. GitHub Actions returned no workflow runs associated with the latest manual commit; this is not evidence of a successful build or test. The feature branch is 36 commits ahead and 2 behind `production`, so compare/rebase review is a release prerequisite. No deployment is authorised by this checkpoint.

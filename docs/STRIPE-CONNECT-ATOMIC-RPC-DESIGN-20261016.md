@@ -113,3 +113,8 @@ Candidate migration `20261016170000_retail_checkout_refund_worker_rpcs.sql` adds
 Candidate Edge Function `process-retail-checkout-refund` retrieves the exact Session in the connected-account context, validates the Session ID, paid state, PaymentIntent, amount and currency, then requests a full refund with the stable attempt key. It persists success only when Stripe returns `succeeded`; pending refunds remain retryable, while mismatches and permanent API rejection move to reconciliation. The webhook calls the worker for new refund intents and duplicate deliveries while an intent remains pending. A service-role-only batch mode scans up to 20 pending intents for a future scheduler/recovery caller.
 
 This implementation is still source-only and untested. The batch recovery caller has not been scheduled. No LIVE migration or deployment is permitted until disposable PostgreSQL, Deno and Stripe test-mode tests pass.
+
+
+### Delayed recovery after Stripe idempotency retention
+
+The candidate worker now lists refunds for the exact PaymentIntent in the pinned connected account and reconciles a prior refund whose `metadata.tradeflow_checkout_attempt_id` matches the attempt before issuing another refund. This supplements, but does not replace, the stable Stripe idempotency key. It is intended to avoid duplicate refunds if recovery is delayed beyond Stripe's idempotency-key retention period. This path remains untested and must be verified in Stripe test mode.

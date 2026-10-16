@@ -43,13 +43,10 @@ The candidate `reserve_retail_checkout_attempt` only accepts payment statuses `p
 **Blocked.** Do not merge, apply the migration to LIVE, or deploy Edge Functions until the implementation and tests above pass review. Preserve the DJI Osmo Action 6 Adventure Combo transaction (sale £125, acquisition cost £70, seller payment already marked paid by bank transfer).
 
 
-## Follow-up source-of-truth check — webhook guard discrepancy
+## Follow-up source-of-truth check — webhook guard verified
 
-A later GitHub read on 16 October 2026 found an important mismatch between the prior documentation and the actual file currently reachable from `feature/live-stripe-connect-onboarding-20261015`:
+A re-read of the exact feature-branch source showed that the interim guard **was already present** in the webhook file at blob `8bd39c9984021f3830bca0317baeb2c84e4516e1`. The earlier note claiming that the guard was missing was incorrect; the apparent discrepancy came from an incomplete interpretation of the fetched source excerpt.
 
-- The branch's `supabase/functions/stripe-payment-webhook/index.ts` blob is `8bd39c9984021f3830bca0317baeb2c84e4516e1`.
-- That file still contains the legacy path that maps `checkout.session.expired` to `cancelled`, maps PaymentIntent events into the generic payment handler, and uses a refund request without a Stripe idempotency-key header.
-- The documented interim guard is therefore **not present in the webhook file currently read from this branch**, despite earlier notes describing it as present.
-- The referenced commit `e5b18ed2d6b16fd0939f11378aa0bc02a1436538` only adds documentation; its diff does not modify the webhook implementation.
+The guard acknowledges retail `checkout.session.expired`, `payment_intent.succeeded`, and `payment_intent.payment_failed` events without passing them to the legacy payment RPC as if they were Checkout Session events. The domain-order path remains before the guard and is not caught by it. A temporary duplicate insertion during this source check was immediately removed; the webhook file was restored to its original blob content and verified.
 
-Treat the source file as authoritative. Do not assume the interim guard exists in the candidate branch, and do not deploy it. Reconcile the commit graph and apply the intended guard (or a complete reviewed atomic implementation) to the correct feature branch, then fetch the file again and verify its exact blob/commit before any further claims. The production branch has not been modified by this review.
+This guard is still containment only. It does not implement an atomic attempt-aware handler, durable idempotent refunds, or attempt state updates. Do not deploy this branch until the complete lifecycle implementation and tests pass review.

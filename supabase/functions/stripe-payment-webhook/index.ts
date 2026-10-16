@@ -150,6 +150,7 @@ Deno.serve(async req=>{
   const isConnectRetailSession = !!event.account &&
     (event.type === 'checkout.session.completed' ||
      event.type === 'checkout.session.async_payment_succeeded' ||
+     event.type === 'checkout.session.async_payment_failed' ||
      event.type === 'checkout.session.expired') &&
     object.mode === 'payment' && !domainOrderId;
   if (isConnectRetailSession) {
@@ -158,6 +159,7 @@ Deno.serve(async req=>{
     }
     let transition:string;
     if (event.type === 'checkout.session.expired') transition = 'expired';
+    else if (event.type === 'checkout.session.async_payment_failed') transition = 'failed';
     else {
       if (object.payment_status !== 'paid') return json({received:true,ignored:'payment_not_paid'});
       transition = 'paid';
@@ -235,6 +237,7 @@ Deno.serve(async req=>{
   const isRetailCheckoutEvent = !domainOrderId &&
     (event.type === 'checkout.session.completed' ||
      event.type === 'checkout.session.async_payment_succeeded' ||
+     event.type === 'checkout.session.async_payment_failed' ||
      event.type === 'checkout.session.expired' ||
      event.type === 'payment_intent.succeeded' ||
      event.type === 'payment_intent.payment_failed') &&

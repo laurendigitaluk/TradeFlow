@@ -61,3 +61,11 @@ The latest workflow lookup for commit `f7f0af67543deed44ca08b6691fd67849d18d891`
 PR #151 remains a draft and its description still states that retail checkout charges through the platform account. The feature checkout source uses connected-account direct-charge context. Update the PR description only after the intended charge model and TradeFlow commission policy are explicitly settled. No `application_fee_amount` was present in the reviewed Checkout Session parameters; commission collection remains unverified.
 
 No merge, rebase, LIVE deployment, migration, Stripe account creation, or charge was performed during this follow-up.
+
+## Settings overlap inspection — follow-up
+
+The latest read-only fetch confirms the production settings.js is 21,940 characters and retains the legacy PAYMENT_PROVIDERS catalogue plus providerRow, providerStatus, renderPaymentProviders, and savePaymentProvider. The feature branch settings.js is 10,215 characters and removes those legacy provider setup/save routines while retaining the Stripe Connect status/onboarding and Stripe payment-method controls. Both versions retain the Connect panel event handlers and load the tenant's Stripe payment methods. The feature branch additionally handles Stripe's stripe_connect=refresh return by requesting a fresh onboarding link; production currently strips the query string and then only refreshes status.
+
+This clarifies the overlap: integration must preserve the feature branch's intended single-Stripe-provider simplification and refresh-link handling, while confirming no other live settings workflow depends on the legacy provider functions. Do not simply take production's settings.js, because it reintroduces legacy UI code and loses the explicit refresh return handling. Do not simply overwrite production either; reconcile the two-file change against the actual production UI and existing data model.
+
+No code was changed as part of this source comparison. No database, payment, or LIVE deployment was touched.

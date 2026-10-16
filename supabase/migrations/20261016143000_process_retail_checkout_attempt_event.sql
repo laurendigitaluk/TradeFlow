@@ -33,6 +33,7 @@ begin
   if coalesce(p_event_id, '') = '' or coalesce(p_event_type, '') = ''
      or coalesce(p_connected_account_id, '') = ''
      or coalesce(p_checkout_session_id, '') = ''
+     or p_new_status is null
      or p_new_status not in ('paid', 'failed', 'expired') then
     raise exception 'Invalid retail checkout event arguments';
   end if;

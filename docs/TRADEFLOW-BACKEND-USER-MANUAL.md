@@ -1450,3 +1450,8 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+## Stripe Connect backend release warning — 16 October 2026
+
+Candidate migration commit `565fc9e2b74be58ed83122691b9e904f6bfa30de` adds an attempt-scoped refund intent when a late paid event belongs to a Checkout Session superseded by another non-null canonical Session. It does not execute a refund. The feature branch remains unvalidated: do not deploy the webhook or apply candidate migrations to LIVE. Before release, implement idempotent connected-account refund execution and recovery, test duplicate/out-of-order events and the NULL Session recovery case in disposable infrastructure, and verify Deno/CI results on the exact candidate commit.

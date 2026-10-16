@@ -205,12 +205,45 @@ Deno.serve(async (request) => {
   try {
     const body = await request.json().catch(() => ({}));
     const attemptId = body?.attempt_id;
-    if (typeof attemptId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(attemptId)) {
-      return json({ error: "A valid attempt_id is required" }, 400);
+    if (attemptId !== undefined && attemptId !== null && attemptId !== "") {
+      if (typeof attemptId !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(attemptId)) {
+        return json({ error: "A valid attempt_id is required when supplied" }, 400);
+      }
+      const result = await processAttempt(attemptId);
+      if (result.outcome === "requested") return json({ ...result, retryable: true }, 503);
+      return json(result);
     }
-    const result = await processAttempt(attemptId);
-    if (result.outcome === "requested") return json({ ...result, retryable: true }, 503);
-    return json(result);
+
+    // Scheduled recovery can call this endpoint without an attempt ID. It only
+    // scans durable intents and remains protected by the service-role check.
+    const pendingResponse = await fetch(
+      `${SUPABASE_URL}/rest/v1/retail_checkout_attempts?refund_status=in.(required,requested)&select=id&order=updated_at.asc&limit=20`,
+      { headers: { apikey: SERVICE_ROLE_KEY, Authorization: `Bearer ${SERVICE_ROLE_KEY}` } }
+    );
+    if (!pendingResponse.ok) {
+      throw new Error(`Unable to list pending refund intents (${pendingResponse.status}).`);
+    }
+    const pending = await pendingResponse.json();
+    if (!Array.isArray(pending)) throw new Error("Pending refund intent query returned an invalid response.");
+
+    const results: unknown[] = [];
+    let retryableFailure = false;
+    for (const row of pending) {
+      if (typeof row?.id !== "string") continue;
+      try {
+        const result = await processAttempt(row.id);
+        results.push(result);
+        if (result.outcome === "requested") retryableFailure = true;
+      } catch (error) {
+        retryableFailure = true;
+        results.push({
+          attempt_id: row.id,
+          outcome: "retryable_error",
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    return json({ processed: results.length, results, retryable: retryableFailure }, retryableFailure ? 503 : 200);
   } catch (error) {
     return json({
       error: error instanceof Error ? error.message : String(error),

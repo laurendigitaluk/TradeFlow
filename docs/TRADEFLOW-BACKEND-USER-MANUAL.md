@@ -1469,3 +1469,6 @@ Concurrency safety follow-up: the candidate settlement and refund-claim RPCs now
 
 
 Stripe Connect candidate webhook note (16 October 2026): candidate commit `bb4001785446440645078869b034868c617fae93` adds the `checkout.session.async_payment_failed` event to the attempt-aware Connect retail handler, where it records the exact attempt as failed. This remains untested source code. Do not deploy or apply candidate migrations to LIVE until Deno checks, disposable PostgreSQL tests, Stripe test-mode event/retry tests, and branch reconciliation are complete. The feature branch currently compares as diverged from production, with feature-only and production-only commits still requiring review.
+
+
+Candidate Stripe Connect database note (16 October 2026): `process_external_payment_event` on LIVE returns early for already-terminal payment rows before inserting the Stripe provider event. Candidate migration commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` now performs an idempotent provider-event insert on the attempt-aware successful paid path. This is untested; validate normal and terminal payment cases in disposable PostgreSQL before deployment.

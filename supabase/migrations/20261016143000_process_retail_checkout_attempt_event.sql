@@ -40,24 +40,16 @@ begin
 
   -- Lock the exact attempt first; a PaymentIntent ID is corroborating identity,
   -- never a substitute for the canonical Checkout Session ID.
+  -- Match the Session without a row lock first so we can acquire locks in
+  -- the same payment -> attempt order used by reserve_retail_checkout_attempt.
+  -- Locking attempt -> payment here could deadlock against a concurrent retry.
   select a.* into v_attempt
     from public.retail_checkout_attempts a
    where a.tenant_id = p_tenant_id
-     and a.stripe_session_id = p_checkout_session_id
-   for update;
+     and a.stripe_session_id = p_checkout_session_id;
 
   if not found then
     return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'attempt_not_found');
-  end if;
-
-  if v_attempt.stripe_account_id is distinct from p_connected_account_id then
-    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'connected_account_mismatch');
-  end if;
-
-  if p_payment_intent_id is not null
-     and v_attempt.stripe_payment_intent_id is not null
-     and v_attempt.stripe_payment_intent_id is distinct from p_payment_intent_id then
-    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'payment_intent_mismatch');
   end if;
 
   select p.* into v_payment
@@ -69,6 +61,26 @@ begin
 
   if not found then
     return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'payment_record_not_found');
+  end if;
+
+  -- Re-read and lock the exact attempt only after its payment row is locked.
+  select a.* into v_attempt
+    from public.retail_checkout_attempts a
+   where a.id = v_attempt.id
+   for update;
+
+  if not found or v_attempt.stripe_session_id is distinct from p_checkout_session_id then
+    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'attempt_changed_during_lock');
+  end if;
+
+  if v_attempt.stripe_account_id is distinct from p_connected_account_id then
+    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'connected_account_mismatch');
+  end if;
+
+  if p_payment_intent_id is not null
+     and v_attempt.stripe_payment_intent_id is not null
+     and v_attempt.stripe_payment_intent_id is distinct from p_payment_intent_id then
+    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'payment_intent_mismatch');
   end if;
 
   v_amount := round(coalesce(v_payment.amount, 0)::numeric, 2);

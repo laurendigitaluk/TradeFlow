@@ -124,8 +124,74 @@ async function processAttempt(attemptId: string) {
     return { attempt_id: attemptId, outcome: "reconciliation_required", reason: "session_validation_mismatch" };
   }
 
+  // The idempotency key is the primary retry boundary. Also reconcile a refund
+  // already created for this exact attempt before POSTing again: Stripe may prune
+  // idempotency keys after its retention window, while a delayed recovery run may
+  // happen later. Match the attempt metadata, not merely the PaymentIntent.
+  const refundsResponse = await fetch(
+    `https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(paymentIntentId)}&limit=100`,
+    { headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}`, "Stripe-Account": accountId } }
+  );
+  const refundsRaw = await refundsResponse.text();
+  let refundsList: any;
+  try { refundsList = refundsRaw ? JSON.parse(refundsRaw) : null; } catch { refundsList = null; }
+  if (!refundsResponse.ok) {
+    if (refundsResponse.status === 429 || refundsResponse.status >= 500) {
+      await finish({
+        attemptId, idempotencyKey, status: "requested", paymentIntentId,
+        error: `Temporary Stripe refund reconciliation failure (${refundsResponse.status}).`,
+      });
+      throw new Error("Temporary Stripe refund reconciliation failure; retry required.");
+    }
+    await finish({
+      attemptId, idempotencyKey, status: "reconciliation_required", paymentIntentId,
+      error: `Stripe refund reconciliation was rejected (${refundsResponse.status}).`,
+    });
+    return { attempt_id: attemptId, outcome: "reconciliation_required", reason: "refund_lookup_rejected" };
+  }
+  if (!Array.isArray(refundsList?.data)) {
+    await finish({
+      attemptId, idempotencyKey, status: "requested", paymentIntentId,
+      error: "Stripe refund reconciliation response was incomplete.",
+    });
+    throw new Error("Stripe refund reconciliation response was incomplete; retry required.");
+  }
+  const priorRefund = refundsList.data.find((item: any) =>
+    item?.metadata?.tradeflow_checkout_attempt_id === attemptId
+  );
+  if (priorRefund) {
+    const priorRefundId = String(priorRefund.id || "");
+    if (!priorRefundId) {
+      await finish({
+        attemptId, idempotencyKey, status: "requested", paymentIntentId,
+        error: "Matched Stripe refund had no ID; retry/reconcile required.",
+      });
+      throw new Error("Matched Stripe refund had no ID; retry required.");
+    }
+    if (priorRefund.status === "succeeded") {
+      const result = await finish({
+        attemptId, idempotencyKey, status: "succeeded",
+        refundId: priorRefundId, paymentIntentId,
+      });
+      return { attempt_id: attemptId, outcome: "succeeded", refund_id: priorRefundId, recovered: true, database_result: result };
+    }
+    if (priorRefund.status === "failed" || priorRefund.status === "canceled") {
+      await finish({
+        attemptId, idempotencyKey, status: "failed", refundId: priorRefundId,
+        paymentIntentId, error: `Previously created Stripe refund is ${String(priorRefund.status)}.`,
+      });
+      return { attempt_id: attemptId, outcome: "failed", refund_id: priorRefundId, recovered: true };
+    }
+    await finish({
+      attemptId, idempotencyKey, status: "requested", refundId: priorRefundId,
+      paymentIntentId, error: `Previously created Stripe refund is not final (${String(priorRefund.status || "unknown")}).`,
+    });
+    return { attempt_id: attemptId, outcome: "requested", refund_id: priorRefundId, stripe_status: priorRefund.status, recovered: true };
+  }
+
   // No amount is supplied: this is a full refund. Reusing the same stable key
-  // recovers safely if Stripe accepted the request but the database write failed.
+  // is the primary retry boundary; the lookup above covers delayed recovery after
+  // Stripe's idempotency-key retention window.
   const params = new URLSearchParams({
     payment_intent: paymentIntentId,
     reason: "duplicate",

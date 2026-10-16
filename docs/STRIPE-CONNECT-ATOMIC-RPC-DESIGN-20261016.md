@@ -83,3 +83,10 @@ For `refund_required`:
 ## Safety gate
 
 This design is not executable evidence. It must be implemented and reviewed on the feature branch, tested in disposable infrastructure and Stripe test mode, and reconciled against current production before any merge. Do not apply the candidate migration to LIVE or deploy functions as part of this design step.
+
+
+## Incremental implementation progress — 16 October 2026
+
+The candidate checkout path now pins `stripe_account_id` to the attempt before the first Stripe Checkout Session request. Retry logic rejects an attempt whose recorded account differs from the currently verified connected account. This closes the account-switching gap when a Stripe request succeeds remotely but its response is lost. The reservation RPC's role check was also changed to fail closed when the JWT role claim is missing (`IS DISTINCT FROM 'service_role'`).
+
+A follow-on candidate migration adds durable connected-account and refund workflow columns, including a unique refund idempotency key. These changes are on the feature branch only. They are not a substitute for the attempt-aware settlement RPC: webhook settlement and refund recovery remain incomplete. No Deno typecheck, disposable PostgreSQL migration test, Stripe test-mode integration test, LIVE migration, or deployment has been performed.

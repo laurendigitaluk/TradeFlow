@@ -32,3 +32,45 @@ jobs:
           supabase/functions/stripe-payment-webhook/index.ts
           supabase/functions/stripe-connect-onboarding/index.ts
           supabase/functions/process-retail-checkout-refund/index.ts
+
+  candidate-sql-regression:
+    name: Exercise candidate Stripe Connect SQL in isolated PostgreSQL
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: tradeflow_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d tradeflow_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Build isolated fixture and apply candidate migrations
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f tests/stripe-connect/sql/fixture.sql
+          psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f supabase/migrations/20261016120000_retail_checkout_attempt_reservation.sql
+          psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f supabase/migrations/20261016133000_retail_checkout_attempt_account_and_refund_state.sql
+          psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f supabase/migrations/20261016143000_process_retail_checkout_attempt_event.sql
+          psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f supabase/migrations/20261016170000_retail_checkout_refund_worker_rpcs.sql
+
+      - name: Run settlement, duplicate, mismatch and refund regressions
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d tradeflow_test -v ON_ERROR_STOP=1 -f tests/stripe-connect/sql/regression.sql

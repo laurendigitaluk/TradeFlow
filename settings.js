@@ -36,6 +36,38 @@ function providerStatus(row){
  if(row.status==='onboarding')return 'Setup in progress';
  return row.status||'Not set up';
 }
+
+async function loadStripeConnectStatus(){
+ const status=$('stripe-connect-status'),message=$('stripe-connect-message'),button=$('stripe-connect-button');
+ if(!status||!message||!button||!tenantId)return;
+ status.textContent='Checking connection…';message.textContent='';button.disabled=true;
+ try{
+  const result=await api('/functions/v1/stripe-connect-onboarding',{method:'POST',body:JSON.stringify({tenant_id:tenantId,action:'status'})});
+  if(result.connected){
+   status.textContent='Connected';message.textContent='Stripe is connected. Charges and payouts are enabled.';
+   button.textContent='Connected';button.disabled=true;
+  }else{
+   status.textContent=result.status==='onboarding'?'Setup incomplete':'Not connected';
+   message.textContent=result.message||'Connect Stripe to start receiving customer payments.';
+   button.textContent=result.status==='onboarding'?'Continue Stripe setup':'Connect Stripe';button.disabled=false;
+  }
+ }catch(e){
+  status.textContent='Unable to verify';
+  message.textContent=e.message||'Could not check Stripe status. Please try again.';
+  button.textContent='Connect Stripe';button.disabled=false;
+ }
+}
+async function startStripeConnect(){
+ const button=$('stripe-connect-button'),message=$('stripe-connect-message');
+ if(!tenantId){message.textContent='Your business workspace is not ready. Please sign in again.';return}
+ button.disabled=true;message.textContent='Opening secure Stripe setup…';
+ try{
+  const result=await api('/functions/v1/stripe-connect-onboarding',{method:'POST',body:JSON.stringify({tenant_id:tenantId,action:'connect'})});
+  if(!result.url)throw Error(result.error||'Stripe did not return a secure setup link.');
+  window.location.assign(result.url);
+ }catch(e){message.textContent=e.message||'Unable to start Stripe setup.';button.disabled=false}
+}
+
 function renderPaymentProviders(){
  const host=$('payment-providers');if(!host)return;
  host.innerHTML='<div class="payment-provider-list">'+PAYMENT_PROVIDERS.map(p=>{
@@ -57,7 +89,7 @@ function renderStripeMethods(){
  }).join(''):'<div class="empty">No Stripe payment methods configured.</div>';
  host.querySelectorAll('.stripe-method-toggle').forEach(el=>el.addEventListener('change',async()=>{
   const id=el.dataset.methodId,enabled=el.checked;el.disabled=true;
-  try{await api('/rest/v1/tenant_payment_methods?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({enabled})});const row=stripeMethodRows.find(x=>x.id===id);if(row)row.enabled=enabled;el.nextElementSibling.textContent=enabled?'Enabled':'Disabled';msg('Payment method setting saved.','success');}
+  try{await api('/rest/v1/tenant_payment_methods?id=eq.'+encodeURIComponent(id)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=minimal'},body:JSON.stringify({enabled})});const row=stripeMethodRows.find(x=>x.id===id);if(row)row.enabled=enabled;el.nextElementSibling.textContent=enabled?'Enabled':'Disabled';msg('Payment method setting saved.','success');}
   catch(e){el.checked=!enabled;msg(e.message||String(e),'error');}
   finally{el.disabled=false}
  }));
@@ -103,8 +135,11 @@ async function load(){
   setValue('public-email',p.public_email);const emailStatus=await api('/rest/v1/rpc/subscriber_get_email_status',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId})});setValue('business-email',emailStatus?.business_email||p.public_email||'');renderEmailStatus(emailStatus);setValue('public-phone',p.public_phone);setValue('country-code',p.country_code||'GB');
   setValue('address-line1',p.address_line1);setValue('address-line2',p.address_line2);setValue('city',p.city);setValue('county',p.county);setValue('postcode',p.postcode);businessPostcode=p.postcode||'';setValue('description',p.description);
   setChecked('show-email',p.show_email);setChecked('show-phone',p.show_phone);setChecked('show-address',p.show_address);
-  paymentProviderRows=await api('/rest/v1/payment_provider_connections?tenant_id=eq.'+encodeURIComponent(tenantId)+'&connection_type=eq.customer_payments&select=id,provider,connection_type,status,provider_account_id,display_name,metadata');
-  renderPaymentProviders();
+  $('stripe-connect-button')?.addEventListener('click',startStripeConnect);
+  $('stripe-refresh-status')?.addEventListener('click',loadStripeConnectStatus);
+  const stripeReturn=new URLSearchParams(location.search).get('stripe_connect');
+  if(stripeReturn) history.replaceState({},'',location.pathname);
+  await loadStripeConnectStatus();
   const defaults=[
    {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
    {method_code:'link',display_name:'Link',enabled:true,sort_order:20},
@@ -113,7 +148,7 @@ async function load(){
   ];
   await api('/rest/v1/tenant_payment_methods?on_conflict=tenant_id,method_code',{
    method:'POST',
-   headers:{Prefer:'resolution=merge-duplicates,return=minimal'},
+   headers:{Prefer:'resolution=ignore-duplicates,return=minimal'},
    body:JSON.stringify(defaults.map(x=>({...x,tenant_id:tenantId})))
   });
   stripeMethodRows=await api('/rest/v1/tenant_payment_methods?select=id,method_code,display_name,enabled,sort_order&tenant_id=eq.'+encodeURIComponent(tenantId)+'&method_code=in.(card,link,klarna,amazon_pay)&order=sort_order');

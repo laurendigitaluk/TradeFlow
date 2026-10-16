@@ -66,3 +66,14 @@ The current function can cancel an unpaid retail order and restore its listing a
 ## Existing transaction to preserve
 
 The previously recorded DJI Osmo Action 6 Adventure Combo transaction (sale £125, acquisition cost £70, seller payment marked paid by bank transfer) must remain unchanged during this work.
+
+
+## 16 October 2026 — reservation migration candidate added (not release-ready)
+
+Candidate migration: `supabase/migrations/20261016120000_retail_checkout_attempt_reservation.sql` (feature branch only).
+
+It introduces a private-by-default `retail_checkout_attempts` table and service-role-only `reserve_retail_checkout_attempt` RPC. The RPC locks the payment row, returns the same attempt/idempotency key for `creating` or `open` attempts, and advances the attempt number only after the prior attempt has been explicitly marked terminal. A stale `creating` attempt is intentionally not automatically replaced, because the Stripe request may still be in flight.
+
+**This is only a schema/RPC candidate, not a completed checkout fix.** The checkout Edge Function has not yet been wired to this RPC, and webhook code does not yet update the attempt lifecycle. The migration has not been applied to LIVE and has not been validated by a PostgreSQL migration/test run. Before use, validate function permissions and service-role claims in the actual PostgREST environment, then implement the Edge Function and webhook changes together. In particular, webhook events for an older session must be matched to the exact attempt/session and must not be rejected or applied merely because the payment record now points at a newer session.
+
+Latest candidate commit: `830903e974bd9dce88df97d0c0145947f2d16f37`. Re-fetch the file and run migration/test validation before relying on this checkpoint.

@@ -1460,3 +1460,6 @@ Candidate migration commit `565fc9e2b74be58ed83122691b9e904f6bfa30de` adds an at
 ## Stripe Connect refund recovery candidate — 16 October 2026
 
 The feature branch now contains the service-role-only `process-retail-checkout-refund` Edge Function and two claim/finalize RPCs in migration `20261016170000_retail_checkout_refund_worker_rpcs.sql`. The worker verifies the exact Checkout Session in the connected-account context before issuing a full refund, uses a stable idempotency key, and records Stripe-confirmed outcomes. It can process one attempt or scan up to 20 pending intents in batch mode. Batch mode has not been scheduled. All changes are untested candidates; do not deploy or apply migrations to LIVE until disposable PostgreSQL, Deno, Stripe test-mode and CI verification passes.
+
+
+Follow-up correction: commit `54013c8a7e9faf522166c9fe716be5ad22fad963` allows connected-account retail Checkout Session expiry events to reach the attempt-aware RPC instead of being swallowed by a generic early-return guard. This is untested candidate code; do not deploy or apply the candidate migration to LIVE.

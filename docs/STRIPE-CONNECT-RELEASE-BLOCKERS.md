@@ -113,7 +113,7 @@ This is a deliberate safety stop, not a functioning settlement implementation: r
 
 ## Follow-up inspection and candidate correction — 16 October 2026
 
-A fresh GitHub comparison reports the feature branch as **71 commits ahead and 2 behind** `production`, with divergent history. The merge base remains `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`; production head observed during this inspection is `419dc34b42bb60b175b65e9beacb430a195c7a00`. The integration branch is separate and must not be merged or rebased blindly.
+The initial GitHub comparison at the start of this follow-up inspection (before the checkpoint commits below) reported the feature branch as **71 commits ahead and 2 behind** `production`, with divergent history. Recheck the branch comparison before any integration decision. The merge base remains `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`; production head observed during this inspection is `419dc34b42bb60b175b65e9beacb430a195c7a00`. The integration branch is separate and must not be merged or rebased blindly.
 
 Read-only inspection of the LIVE `process_external_payment_event` definition confirmed that it checks `payment_records.provider_payment_id` against the supplied Checkout Session ID and has terminal-state early returns. The candidate attempt-aware RPC previously rejected all payment-session mismatches before handling expiry/failure or recording a refund intent. This prevented a late paid event from an older attempt from entering the durable refund queue.
 

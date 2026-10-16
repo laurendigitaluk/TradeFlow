@@ -2135,3 +2135,10 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 ## Stripe Connect engineering checkpoint — 16 October 2026
 
 The candidate attempt-aware settlement migration received a source-level correction in commit `565fc9e2b74be58ed83122691b9e904f6bfa30de`. Exact-attempt expiry/failure events are no longer rejected solely because the payment record points to a newer Checkout Session; a paid event from a superseded Session with a different non-null canonical Session now records a durable refund intent. This is not a release-ready payment flow. No migration was applied to LIVE, and no Deno, disposable PostgreSQL, Stripe test-mode, or CI test has been verified. Refund execution/recovery and the NULL Session recovery case remain outstanding. Production must remain untouched until the release gates pass.
+
+
+## Stripe Connect refund worker checkpoint — 16 October 2026
+
+Candidate branch adds migration `20261016170000_retail_checkout_refund_worker_rpcs.sql`, internal Edge Function `process-retail-checkout-refund`, and webhook invocation for durable pending refund intents. The worker is restricted to the service-role credential, retrieves the exact Checkout Session in the attempt's connected-account context, validates paid status/PaymentIntent/amount/currency, and uses the attempt's stable Stripe refund idempotency key. It supports single-attempt invocation and batch recovery of up to 20 pending intents. The batch mode is not scheduled yet.
+
+This is not release-ready. The candidate has not passed Deno checks, disposable PostgreSQL migration tests, Stripe test-mode integration tests or verified CI. Do not apply candidate migrations to LIVE or deploy Edge Functions. Preserve the existing DJI Osmo Action 6 Adventure Combo transaction.

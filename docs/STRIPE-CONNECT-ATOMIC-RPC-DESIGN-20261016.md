@@ -97,3 +97,10 @@ A follow-on candidate migration adds durable connected-account and refund workfl
 - Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` introduces service-role-only `process_retail_checkout_attempt_event`. It locks the exact attempt and payment, validates tenant/account/Session/optional PaymentIntent/amount/currency, handles expiry per-attempt, calls the existing payment transition for verified paid Sessions, and records a durable refund intent when the existing transition rejects a late success.
 - The webhook now routes connected-account retail Checkout Session events (`completed`, `async_payment_succeeded`, `expired`) through that RPC. PaymentIntent-only lifecycle events remain deliberately blocked because they cannot safely be mapped to the canonical Session without reconciliation.
 - This is candidate code, not a release-ready implementation. Refund execution/recovery is still missing; account/event edge cases and all SQL semantics require disposable-database tests. The function depends on the existing `process_external_payment_event` behavior and has not been typechecked or integration-tested. Do not deploy or apply migrations to LIVE.
+
+
+## Superseded-session guard correction — 16 October 2026
+
+A source review found that the candidate RPC's early `payment_records.provider_payment_id` equality check blocked expiry/failure processing for an exact older attempt and returned only `reconciliation_required` for a late paid event from a superseded Session. The candidate migration was amended in commit `565fc9e2b74be58ed83122691b9e904f6bfa30de`: expiry/failure are now handled against the matched attempt, while a paid event whose Session differs from a different non-null canonical Session records a durable `refund_status='required'` intent and returns `refund_required`.
+
+This remains source-level candidate work. It has not been tested on disposable PostgreSQL, and the missing canonical Session ID recovery case is still unresolved. The RPC only records refund intent; no Stripe refund is executed by SQL, and the separate idempotent refund worker/recovery path remains a release blocker.

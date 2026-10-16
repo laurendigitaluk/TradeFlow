@@ -50,3 +50,14 @@ The GitHub connector returned no combined status checks or workflow runs for the
 The current feature-branch checkout function creates the retail Checkout Session using the stored connected account in the Stripe `Stripe-Account` request header. This is a connected-account direct-charge context, rather than a platform-account Checkout Session. The draft PR #151 description says retail checkout still charges through the platform account; that wording appears stale relative to the current feature source and must be reconciled before review/merge. The function currently does not set an application fee in the inspected Session parameters, so do not assume TradeFlow commission collection is implemented by this path.
 
 These findings are read-only source observations. No LIVE database, deployment, connected account, or Stripe payment was changed.
+
+
+## Follow-up audit snapshot — 16 October 2026
+
+A fresh GitHub compare reports the feature branch **135 commits ahead and 2 commits behind** `production`, with merge base still `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. The two production-only changes touch `settings.html` and `settings.js`, the same files modified by the feature branch. This is a confirmed overlap, not merely theoretical divergence. Review the actual combined behavior for the subscriber payment settings panel, Stripe Connect status refresh, and any legacy payment-provider settings before integration. Do not cherry-pick or merge either side automatically.
+
+The latest workflow lookup for commit `f7f0af67543deed44ca08b6691fd67849d18d891` returned no pull-request-triggered workflow runs. The connector lookup does not enumerate push-triggered runs, so it cannot establish whether the new push workflow executed. The workflow file is present on the feature branch, but a passing Deno check is still unverified. Confirm the actual Actions run or obtain an explicit successful check result before relying on it.
+
+PR #151 remains a draft and its description still states that retail checkout charges through the platform account. The feature checkout source uses connected-account direct-charge context. Update the PR description only after the intended charge model and TradeFlow commission policy are explicitly settled. No `application_fee_amount` was present in the reviewed Checkout Session parameters; commission collection remains unverified.
+
+No merge, rebase, LIVE deployment, migration, Stripe account creation, or charge was performed during this follow-up.

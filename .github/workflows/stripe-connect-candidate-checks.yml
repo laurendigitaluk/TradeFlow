@@ -20,6 +20,16 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Check subscriber settings JavaScript syntax
+        run: node --check settings.js
+
+      - name: Verify Stripe Connect settings controls exist
+        run: |
+          grep -q 'id="stripe-connect-button"' settings.html
+          grep -q 'id="stripe-refresh-status"' settings.html
+          grep -q 'id="stripe-methods"' settings.html
+          grep -q 'settings.js?v=20' settings.html
+
       - name: Set up Deno
         uses: denoland/setup-deno@v2
         with:

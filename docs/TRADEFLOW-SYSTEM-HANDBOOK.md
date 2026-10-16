@@ -2157,3 +2157,5 @@ Commit `bb4001785446440645078869b034868c617fae93` adds `checkout.session.async_p
 ## Terminal-payment event persistence checkpoint — 16 October 2026
 
 Read-only inspection of the current LIVE `process_external_payment_event` definition showed an early return for terminal payment statuses before provider-event insertion. Candidate commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` adds an idempotent event insert to the attempt-aware successful paid path. Test both normal settlement and an already-paid terminal path in disposable PostgreSQL before release. No migration or function has been deployed to LIVE.
+
+Review correction (16 October 2026): a deeper control-flow check found that the proposed terminal-payment event insert in commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` was redundant/unreachable in the successful branch because the attempt-aware RPC already checks terminal payment statuses before calling the legacy helper. The insert has been removed in commit `4d0848f6b65945d52362d0cb7cbaa7889613e584`. Do not treat the earlier note as a confirmed defect or fix. The broader checkout/refund implementation remains untested and blocked from release.

@@ -136,3 +136,17 @@ The settlement fallback was adjusted to upsert the existing `payment_provider_ev
 The isolated SQL regression suite now also asserts that a mismatched PaymentIntent is rejected without recording the event, and that a late paid Session for a superseded checkout attempt creates a durable refund intent without changing the already-settled payment. Expected-value assertions use `IS DISTINCT FROM` so unexpected NULL values fail the tests rather than slipping through SQL's three-valued logic.
 
 The concurrent test still expects one `applied` and one `duplicate` result for concurrent deliveries of the same Stripe event ID. These tests are committed but not yet confirmed by an observed successful GitHub Actions run.
+
+## Latest CI verification — 16 October 2026, 19:14 UTC
+
+GitHub Actions run [38953346975](https://github.com/laurendigitaluk/TradeFlow/actions/runs/38953346975) passed on feature commit `0e59819c8e7cee825a9e2e6d7ba7c0818bd037ab`:
+- Deno type-check for checkout, webhook, onboarding and refund Edge Functions: passed.
+- Isolated PostgreSQL 16 fixture setup and application of all four candidate migrations: passed.
+- SQL settlement, mismatch, late-session refund-intent, duplicate-event and refund-finalization regressions: passed.
+- Concurrent duplicate Stripe event delivery test: passed.
+
+This is verified CI evidence for the candidate SQL harness and type-check at that exact commit. It is not full production-schema or end-to-end proof: the fixture stubs `process_external_payment_event`, so actual ledger, inventory, credit and order workflow side effects are not exercised. Stripe test-mode lifecycle tests remain outstanding.
+
+For the same commit, the Cloudflare `tradeflow` build succeeded but the `tradeflow-test` preview check failed. The failure cause has not been established. Do not interpret the successful `tradeflow` build as a LIVE deployment.
+
+Release gate remains closed pending the commission/charge-model decision, Stripe test-mode lifecycle tests, reconciliation of the production/feature settings overlap, investigation of the failed test preview, and explicit release authorization. No LIVE migration, deployment, merge/rebase, or Stripe mutation was performed. Preserve the active DJI Osmo Action 6 Adventure Combo test transaction.

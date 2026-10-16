@@ -2575,3 +2575,37 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - Follow the product link to product detail and checkout. Verify basket/checkout retains the correct tenant, listing, title, price and currency; customer authentication/registration works without looping; order is created once; payment status matches the actual payment outcome; and no record is marked paid before verified payment.
 - After the controlled purchase, verify the order appears consistently in the customer portal, subscriber order/sales view, and finance/ledger records; check stock/inventory transitions to sold/reserved according to the intended workflow; and confirm the public listing is no longer purchasable if sold. Check shipping choice/tracking expectations separately and do not let TradeFlow collect postage fees.
 - Do not reuse the earlier simulated purchase as proof of a real transaction. Keep LIVE/TEST clearly separated, record each observed status/reference, and stop at the first failure for diagnosis rather than repeatedly retrying checkout.
+
+
+## Stripe Connect continuation — isolated branch update (16 October 2026)
+
+Branch: `feature/live-stripe-connect-onboarding-20261015`; PR #151 remains draft. Latest isolated commits:
+- `17b6c11116322bef75000d7512c9ce95142d5986` — configure connected accounts using stable Accounts v1 controller settings.
+- `e021c63843d068a0b61f7bf8e9eb592d63c03bb7` — regenerate onboarding link when Stripe returns to the refresh URL.
+- `0d2ae8b412c0f887fe220d45c2477e22236150e5` — retrieve and verify seller connected-account settings before creating retail checkout.
+
+### Current proposed account settings
+- `controller[fees][payer]=account`
+- `controller[losses][payments]=stripe`
+- `controller[stripe_dashboard][type]=full`
+- Request `capabilities[card_payments][requested]=true`.
+- Do not add TradeFlow application fees. Subscriber retail charges are intended to be direct charges on their connected account.
+- TradeFlow SaaS subscription billing remains on the platform account.
+
+### Guards added on the feature branch
+- Status check now verifies Full Dashboard, account-paid processing fees, Stripe-managed eligible losses, active card-payments capability, charges, payouts and submitted details.
+- Existing saved connected accounts with a mismatched controller configuration are rejected with a 409 response; the code does not silently replace or delete them.
+- Retail checkout retrieves the connected account from Stripe and validates controller configuration and readiness before creating a Checkout Session. It sends `Stripe-Account` on the session request and does not set an application fee.
+- Stripe's `refresh_url` return now requests a new account-onboarding link. Normal return still checks status.
+- These are proposed branch changes only. They have not been deployed to LIVE and have not been verified against an actual Stripe account.
+
+### Remaining blockers — do not release
+1. Run actual TypeScript/Deno lint or type-check and automated tests against the exact branch commits; inspect CI checks and the full diff.
+2. Review checkout payment-attempt creation/idempotency. The code generates a fresh attempt UUID on each request, so verify the database RPC really reuses an existing pending attempt and that repeated clicks cannot create duplicate payment records or sessions.
+3. Inspect database constraints and payment-event RPC behaviour before finalising webhook event handling.
+4. Complete and test Connect webhook signature/configuration, event idempotency, refund lifecycle and dispute lifecycle, including duplicate and out-of-order events. Do not allow later events to reverse an already-final status incorrectly.
+5. Confirm connected-account webhook delivery and event.account tenant mapping without changing platform subscription or legacy domain-payment processing.
+6. Test in a safe non-live-money setup, including onboarding, status refresh, direct-charge checkout, cancel/failure/success, refund and dispute flows. No LIVE account or charge should be created as a test.
+7. Update the human/backend/system manuals with verified final results after tests, not assumptions.
+
+LIVE project remains `gxsrajtqzdjvmceqcpgv`; TEST remains reference-only. No production deployment, Stripe account creation, customer charge, or change to SaaS subscription billing was made during this continuation. Existing DJI Osmo Action 6 Adventure Combo transaction (£125 sale, £70 acquisition, seller bank-transfer payment marked paid) must remain unchanged.

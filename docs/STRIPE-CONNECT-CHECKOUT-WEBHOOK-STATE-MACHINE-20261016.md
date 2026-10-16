@@ -100,3 +100,20 @@ Do not close issue #152, merge, or deploy until:
 - test Stripe events validate connected-account identity and idempotency in a safe test environment;
 - the candidate diff is reviewed against current production;
 - no LIVE migration, Edge Function deployment, connected account, or charge has been performed without explicit authorization.
+
+## Interim webhook guard added after review
+
+Commit `7147c8ad9c02658e9ac48644c7ce0661dac5f90a` adds a deliberately conservative guard in `stripe-payment-webhook`:
+
+- Retail `checkout.session.expired` events are acknowledged without cancelling the payment/order or restoring inventory.
+- Retail `payment_intent.succeeded` and `payment_intent.payment_failed` events are acknowledged without passing their PaymentIntent IDs to the legacy payment RPC as if they were Checkout Session IDs.
+- Domain-order event handling remains on its existing path.
+
+This is a containment fix, not the completed lifecycle implementation. It means the current retail flow depends on canonical Checkout Session completed/async-succeeded events for settlement. Attempt status is not yet updated atomically by webhook processing; expired attempts are currently marked lazily by the checkout retry path. PaymentIntent-only recovery, durable conflict-refund handling, event-to-attempt matching, and a single transactional state machine remain release blockers. Do not deploy this branch or apply its migration to LIVE based on this guard alone.
+
+## Validation status after interim guard
+
+- Static source edit committed to the feature branch.
+- No Deno typecheck, unit test, webhook replay, Stripe test-mode request, migration test, or LIVE change was performed.
+- Required regression tests: retail session expiry leaves order/payment/inventory unchanged; duplicate session success is idempotent; PaymentIntent events cannot mutate retail payment state; domain-order expiry retains its intended behavior; delayed successful payment after order cancellation is safely reconciled/refunded exactly once.
+

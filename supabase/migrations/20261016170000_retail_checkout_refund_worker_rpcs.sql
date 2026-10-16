@@ -21,10 +21,31 @@ as $function$
 declare
   v_attempt public.retail_checkout_attempts%rowtype;
   v_payment public.payment_records%rowtype;
+  v_payment_found boolean := false;
 begin
   if current_setting('request.jwt.claim.role', true) is distinct from 'service_role' then
     raise exception 'Service role required';
   end if;
+
+  -- Read attempt identity without locking, then acquire locks in the same
+  -- payment -> attempt order as checkout reservation and webhook settlement.
+  select a.* into v_attempt
+    from public.retail_checkout_attempts a
+   where a.id = p_attempt_id;
+
+  if not found then
+    return query select 'not_found'::text, null::uuid, null::uuid, null::uuid,
+      null::text, null::text, null::text, null::text, null::numeric, null::text;
+    return;
+  end if;
+
+  select p.* into v_payment
+    from public.payment_records p
+   where p.id = v_attempt.payment_id
+     and p.tenant_id = v_attempt.tenant_id
+     and p.retail_order_id is not null
+   for update;
+  v_payment_found := found;
 
   select a.* into v_attempt
     from public.retail_checkout_attempts a
@@ -53,14 +74,7 @@ begin
     return;
   end if;
 
-  select p.* into v_payment
-    from public.payment_records p
-   where p.id = v_attempt.payment_id
-     and p.tenant_id = v_attempt.tenant_id
-     and p.retail_order_id is not null
-   for update;
-
-  if not found
+  if not v_payment_found
      or coalesce(v_attempt.stripe_account_id, '') = ''
      or coalesce(v_attempt.stripe_session_id, '') = ''
      or coalesce(v_attempt.refund_idempotency_key, '') = ''

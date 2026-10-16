@@ -2148,3 +2148,8 @@ A subsequent source review found and corrected the webhook's early return for Co
 
 
 The candidate settlement and refund-claim RPCs were subsequently changed to lock payment before attempt, matching checkout reservation and reducing payment/attempt deadlock risk. Commits: `260602e25e23e21da4c1277c033bbe68eafc6ca9` and `9a3f2e981023e480bea6ea6c1c0cde4e7530dadf`. This requires disposable PostgreSQL concurrency testing and is not verified by source inspection alone.
+
+
+## Connect asynchronous failure webhook checkpoint — 16 October 2026
+
+Commit `bb4001785446440645078869b034868c617fae93` adds `checkout.session.async_payment_failed` to the attempt-aware Connect retail webhook path and maps it to the existing atomic `failed` transition. This is a source-level correction only. Verify with Stripe test mode that the event is recorded against the exact attempt and that a retry is safe; also verify subscription and domain-order checkout remain unaffected. The feature branch is 104 commits ahead and 2 behind production, so no merge/deployment is approved by this checkpoint.

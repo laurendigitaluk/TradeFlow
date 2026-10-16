@@ -77,3 +77,19 @@ It introduces a private-by-default `retail_checkout_attempts` table and service-
 **This is only a schema/RPC candidate, not a completed checkout fix.** The checkout Edge Function has not yet been wired to this RPC, and webhook code does not yet update the attempt lifecycle. The migration has not been applied to LIVE and has not been validated by a PostgreSQL migration/test run. Before use, validate function permissions and service-role claims in the actual PostgREST environment, then implement the Edge Function and webhook changes together. In particular, webhook events for an older session must be matched to the exact attempt/session and must not be rejected or applied merely because the payment record now points at a newer session.
 
 Latest candidate commit: `830903e974bd9dce88df97d0c0145947f2d16f37`. Re-fetch the file and run migration/test validation before relying on this checkpoint.
+
+## 16 October 2026 — checkout function wired to reservation candidate (still not release-ready)
+
+Feature-branch commit: `c149ef6e365e617424db7a24bb9d241b9bb3603e`.
+
+The checkout Edge Function now calls `reserve_retail_checkout_attempt` after obtaining the payment record and uses the returned stable idempotency key for the Stripe Checkout Session request. It attempts to reuse the session stored on that exact attempt, and writes the resulting session ID and expiry to the attempt row before linking the session to the payment record. The previous per-request random idempotency key was removed.
+
+This is an **unvalidated implementation step**, not a complete concurrency fix. The webhook does not yet advance attempt statuses or safely process events against the exact attempt. Recovery after Stripe creates a session but the function fails before saving the session ID still needs an explicit, tested path. The current implementation must not be deployed until those gaps are closed.
+
+Additional required checks:
+- Type-check/lint the updated Edge Function.
+- Verify the PostgREST return shape for `reserve_retail_checkout_attempt` and service-role claim check.
+- Test simultaneous requests where one request persists the session before another.
+- Test the failure window between Stripe session creation and attempt persistence.
+- Ensure the webhook can safely handle events for a session whose ID was created but not yet persisted locally.
+

@@ -134,9 +134,13 @@ Deno.serve(async req=>{
   // Checkout Session completed/async-succeeded event is the canonical retail
   // settlement signal. Session expiry is handled as an attempt-level event by
   // the checkout retry path; it must not cancel the order or release inventory.
-  if (!domainOrderId && (event.type === 'checkout.session.expired' ||
+  if (!domainOrderId && (
       event.type === 'payment_intent.succeeded' ||
-      event.type === 'payment_intent.payment_failed')) {
+      event.type === 'payment_intent.payment_failed' ||
+      (event.type === 'checkout.session.expired' && !event.account))) {
+    // Connect Checkout Session expiry is handled by the attempt-aware branch
+    // below. PaymentIntent-only events and platform-context retail expiry stay
+    // blocked until their identity can be reconciled without guessing.
     return json({ received: true, ignored: 'retail_attempt_lifecycle_event_requires_attempt_aware_handler' });
   }
 

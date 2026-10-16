@@ -55,14 +55,26 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Shipping</div><h2>Shipping services</h2></div><span class="status-pill">Managed separately</span></div><p>Choose your preferred courier links once in Shipping Settings. The saved services are available to the Buying handoff and retail-order fulfilment; TradeFlow does not buy postage or connect to a courier API.</p><div class="actions"><a href="shipping-settings.html">Open Shipping Settings</a></div></section>
 
-<section class="panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Customer payment provider</h2></div><span class="status-pill">Subscriber controlled</span></div>
-<p>Choose the payment provider you want customers to pay through. TradeFlow provides the setup instructions, official account links and a small checklist for each provider.</p>
-<div class="notice"><strong>Keep this simple.</strong><p class="small">You do not need to enter API secret keys into TradeFlow. First create and verify your provider account. Then record the non-secret account details or payment link TradeFlow asks for. Direct provider checkout connections are enabled separately as each provider integration is completed.</p></div>
-<div id="payment-providers">Loading payment providers…</div>
+<section class="panel" id="payment-settings-panel"><div class="panel-heading"><div><div class="eyebrow">Checkout &amp; payments</div><h2>Connect your payment account</h2></div><span class="status-pill">Stripe Connect</span></div>
+<p>Connect one Stripe account to receive customer payments. You will complete setup securely on Stripe; TradeFlow will not ask for your Stripe password or secret API keys.</p>
+<div id="stripe-connect-panel" class="notice" style="margin:14px 0">
+<strong>Stripe account connection</strong>
+<p class="small">Use this single connection for customer payments. TradeFlow subscription billing remains separate.</p>
+<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+<span id="stripe-connect-status" class="status-pill">Checking connection…</span>
+<button id="stripe-connect-button" type="button">Connect Stripe</button>
+<button id="stripe-refresh-status" type="button" class="cta-secondary">Check connection</button>
+</div>
+<p id="stripe-connect-message" class="small" aria-live="polite"></p>
+</div>
+<div class="stripe-card-options"><div class="stripe-options-heading"><strong>Customer checkout methods</strong><span class="payment-provider-muted">Managed through Stripe</span></div>
+<p class="small">Cards are the base method. Link, Klarna and Amazon Pay can be offered when enabled and eligible in Stripe. Apple Pay is handled by Stripe when supported by your account, domain and customer device. You do not need a separate connection for each method.</p>
+<div id="stripe-methods">Loading payment methods…</div>
+</div>
 </section>
 
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=16"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=19"></script>
 </body></html>

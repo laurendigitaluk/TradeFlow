@@ -76,3 +76,17 @@ Read-only comparison of settings.html and settings.js shows all DOM IDs referenc
 The feature settings.html retains substantial generic legacy payment-provider CSS, and includes a rule targeting a Stripe provider card under #payment-providers even though no such provider-card container exists in the inspected page. This appears to be dead styling residue, not evidence of an active provider UI. It can be cleaned up during a reviewed settings reconciliation, but is not a reason to change LIVE independently.
 
 Static ID/reference check only; this is not browser execution, Deno validation, database validation, or proof that onboarding/checkout works end-to-end. No production files were modified.
+
+## Checkout amount invariant review — 16 October 2026
+
+A further source review identified a settlement invariant that must be tested and preferably enforced before release:
+
+- `create-stripe-checkout-session` sets Stripe's Checkout `line_items[0][price_data][unit_amount]` from the retail order's `amount_due`.
+- The attempt-aware webhook passes Stripe's `amount_total` to `process_retail_checkout_attempt_event`.
+- That RPC compares the received amount and currency with the linked `payment_records.amount` and `payment_records.currency`. A mismatch produces `reconciliation_required` rather than settlement.
+
+This is a defensive check, but checkout creation does not visibly compare the order amount against the newly created/reused payment record before creating the Stripe Session. If those records can differ, a legitimate paid checkout could be routed to reconciliation and leave the order unsettled. The source review alone does not prove that the values currently diverge; inspect `customer_create_order_payment` and test the invariant with real schema data in a disposable environment. Before release, either derive the Checkout amount from the validated payment record or explicitly reject a mismatch before calling Stripe, while preserving customer authorization and currency checks.
+
+The checkout function also creates the Session as a direct charge in the connected account without a visible `application_fee_amount`. Commission collection remains an unresolved product/payment design decision, separate from the amount consistency guard.
+
+No code change was made for this finding because the correct payment-record creation contract and amount source must be verified first. No LIVE data, deployment, migration, or Stripe object was changed.

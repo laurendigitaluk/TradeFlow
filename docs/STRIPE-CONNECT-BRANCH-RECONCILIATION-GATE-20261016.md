@@ -26,3 +26,25 @@ The earlier GitHub Actions lookup for checkout commit `aa000aeb34e904e2f13c43919
 ## Safety
 
 No merge, rebase, deployment, LIVE migration, connected-account creation, or live charge is authorised by this note. Preserve the existing DJI Osmo Action 6 Adventure Combo transaction (sale £125, acquisition cost £70, seller payment marked paid by bank transfer).
+
+
+## Additional validation findings — 16 October 2026
+
+### Existing duplicate migration version
+
+The production branch contains two distinct migration files with the same version prefix, `20261002131500`:
+
+- `supabase/migrations/20261002131500_domain_registrant_details.sql`
+- `supabase/migrations/20261002131500_domain_registrant_details_status.sql`
+
+Both files are also present on the feature branch. This is a migration-order/replay hazard for fresh database setup and branch migration validation, because migration tooling commonly expects each migration version to be unique. The duplicate has not been proven to be the cause of the earlier Supabase branch failure. Do not rename or rewrite these historical migrations casually: LIVE's migration history is not a direct filename-for-filename mirror. Resolve this only with a reviewed migration-history plan and test it against a disposable database.
+
+### CI and source validation
+
+The repository search returned no matching GitHub workflow files, and the latest refund-worker commit returned no combined status checks or workflow runs. Deno checks, SQL migration execution, PostgreSQL concurrency tests, and Stripe test-mode tests remain unrun. Treat source inspection as review only, not validation evidence.
+
+### Checkout routing observation
+
+The current feature-branch checkout function creates the retail Checkout Session using the stored connected account in the Stripe `Stripe-Account` request header. This is a connected-account direct-charge context, rather than a platform-account Checkout Session. The draft PR #151 description says retail checkout still charges through the platform account; that wording appears stale relative to the current feature source and must be reconciled before review/merge. The function currently does not set an application fee in the inspected Session parameters, so do not assume TradeFlow commission collection is implemented by this path.
+
+These findings are read-only source observations. No LIVE database, deployment, connected account, or Stripe payment was changed.

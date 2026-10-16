@@ -196,6 +196,15 @@ begin
            stripe_payment_intent_id = coalesce(stripe_payment_intent_id, p_payment_intent_id),
            last_event_id = p_event_id, last_event_type = p_event_type, updated_at = now()
      where id = v_attempt.id;
+
+    -- The legacy helper returns early for already-terminal payment records,
+    -- before inserting the provider event. Persist the event here as well;
+    -- ON CONFLICT keeps this safe when the helper already recorded it.
+    insert into public.payment_provider_events(provider, event_id, event_type, metadata)
+    values ('stripe', p_event_id, p_event_type,
+      coalesce(p_metadata, '{}'::jsonb) || jsonb_build_object('checkout_attempt_id', v_attempt.id))
+    on conflict (provider, event_id) do nothing;
+
     return jsonb_build_object('outcome', 'applied', 'attempt_id', v_attempt.id);
   end if;
 

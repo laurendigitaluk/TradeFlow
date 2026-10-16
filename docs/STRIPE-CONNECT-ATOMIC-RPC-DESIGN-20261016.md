@@ -90,3 +90,10 @@ This design is not executable evidence. It must be implemented and reviewed on t
 The candidate checkout path now pins `stripe_account_id` to the attempt before the first Stripe Checkout Session request. Retry logic rejects an attempt whose recorded account differs from the currently verified connected account. This closes the account-switching gap when a Stripe request succeeds remotely but its response is lost. The reservation RPC's role check was also changed to fail closed when the JWT role claim is missing (`IS DISTINCT FROM 'service_role'`).
 
 A follow-on candidate migration adds durable connected-account and refund workflow columns, including a unique refund idempotency key. These changes are on the feature branch only. They are not a substitute for the attempt-aware settlement RPC: webhook settlement and refund recovery remain incomplete. No Deno typecheck, disposable PostgreSQL migration test, Stripe test-mode integration test, LIVE migration, or deployment has been performed.
+
+
+## Candidate implementation checkpoint — 16 October 2026
+
+- Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` introduces service-role-only `process_retail_checkout_attempt_event`. It locks the exact attempt and payment, validates tenant/account/Session/optional PaymentIntent/amount/currency, handles expiry per-attempt, calls the existing payment transition for verified paid Sessions, and records a durable refund intent when the existing transition rejects a late success.
+- The webhook now routes connected-account retail Checkout Session events (`completed`, `async_payment_succeeded`, `expired`) through that RPC. PaymentIntent-only lifecycle events remain deliberately blocked because they cannot safely be mapped to the canonical Session without reconciliation.
+- This is candidate code, not a release-ready implementation. Refund execution/recovery is still missing; account/event edge cases and all SQL semantics require disposable-database tests. The function depends on the existing `process_external_payment_event` behavior and has not been typechecked or integration-tested. Do not deploy or apply migrations to LIVE.

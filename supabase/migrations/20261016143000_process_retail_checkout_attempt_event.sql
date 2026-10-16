@@ -38,6 +38,11 @@ begin
     raise exception 'Invalid retail checkout event arguments';
   end if;
 
+  -- Serialize deliveries sharing one Stripe event ID before taking row locks.
+  -- Without this lock, concurrent copies routed to different attempts could both
+  -- pass the provider-event existence check and race through settlement.
+  perform pg_advisory_xact_lock(hashtextextended('stripe:event:' || p_event_id, 0));
+
   -- Lock the exact attempt first; a PaymentIntent ID is corroborating identity,
   -- never a substitute for the canonical Checkout Session ID.
   -- Match the Session without a row lock first so we can acquire locks in

@@ -150,3 +150,10 @@ The latest comparison reports this feature branch as **89 commits ahead and 2 be
 The candidate worker now checks the connected account's Stripe refund list for a refund tagged with the exact `tradeflow_checkout_attempt_id` before issuing another refund. The stable idempotency key remains the primary retry mechanism; the metadata lookup is a secondary recovery guard for a delayed retry after Stripe's idempotency-key retention window. A matching succeeded/pending/failed refund is reconciled into the database instead of blindly posting another refund. Commit: `d7f5b1d39f9355e61fce74250baeb85bdeb52f46`.
 
 This is still untested source code. The lookup must be exercised in Stripe test mode, including a simulated crash after Stripe accepts the refund but before the database write, and a delayed retry. Do not deploy.
+
+
+## Lock-order correction — 16 October 2026
+
+A source review identified a potential deadlock: checkout reservation locks the payment row before the attempt row, while the candidate settlement/refund claim paths previously locked the attempt before the payment. Both candidate paths have now been changed to read the attempt identity without a lock, then lock payment first and the exact attempt second, re-reading the attempt under lock. Commits: `260602e25e23e21da4c1277c033bbe68eafc6ca9` (settlement migration) and `9a3f2e981023e480bea6ea6c1c0cde4e7530dadf` (refund worker RPC migration).
+
+This is a source-level concurrency correction only. Validate with concurrent PostgreSQL tests that race checkout reservation, expiry/success webhook settlement, and refund claims. Do not deploy until tested.

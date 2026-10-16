@@ -16,10 +16,17 @@ const attemptId=reservation.attempt_id;const idem=reservation.idempotency_key;
 // Pin the account identity before making any Stripe API request. This matters
 // when Stripe accepts a request but the network response is lost: a retry must
 // not replay the same idempotency key against a different connected account.
-const pinRes=await fetch(`${SUPABASE_URL}/rest/v1/retail_checkout_attempts?id=eq.${encodeURIComponent(attemptId)}&status=in.(creating,open)`,{method:'PATCH',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({stripe_account_id:connectedAccountId,updated_at:new Date().toISOString()})});
-if(!pinRes.ok)return json({error:'Unable to pin the checkout attempt to the verified Stripe account.'},409);
-const pinnedRows=await pinRes.json();
-if(!Array.isArray(pinnedRows)||pinnedRows.length!==1||pinnedRows[0].stripe_account_id!==connectedAccountId)return json({error:'Checkout attempt account identity conflicts with the current Stripe connection. Reconciliation is required.'},409);
+const identityReadRes=await fetch(`${SUPABASE_URL}/rest/v1/retail_checkout_attempts?id=eq.${encodeURIComponent(attemptId)}&select=id,status,stripe_account_id&limit=1`,{headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`}});
+if(!identityReadRes.ok)return json({error:'Unable to read checkout attempt account identity.'},503);
+const identityRows=await identityReadRes.json();
+if(!Array.isArray(identityRows)||identityRows.length!==1||!['creating','open'].includes(identityRows[0].status))return json({error:'Checkout attempt is missing or no longer active.'},409);
+if(identityRows[0].stripe_account_id&&identityRows[0].stripe_account_id!==connectedAccountId)return json({error:'Checkout attempt belongs to a different Stripe account. Reconciliation is required.'},409);
+if(!identityRows[0].stripe_account_id){
+ const pinRes=await fetch(`${SUPABASE_URL}/rest/v1/retail_checkout_attempts?id=eq.${encodeURIComponent(attemptId)}&status=eq.creating&stripe_account_id=is.null`,{method:'PATCH',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify({stripe_account_id:connectedAccountId,updated_at:new Date().toISOString()})});
+ if(!pinRes.ok)return json({error:'Unable to pin the checkout attempt to the verified Stripe account.'},409);
+ const pinnedRows=await pinRes.json();
+ if(!Array.isArray(pinnedRows)||pinnedRows.length!==1||pinnedRows[0].stripe_account_id!==connectedAccountId)return json({error:'Checkout attempt account identity changed concurrently. Reconciliation is required.'},409);
+}
 
 // Reuse the exact session reserved for this attempt; do not infer it from the payment row.
 if(reservation.stripe_session_id){

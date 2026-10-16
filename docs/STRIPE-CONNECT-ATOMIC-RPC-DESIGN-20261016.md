@@ -118,3 +118,8 @@ This implementation is still source-only and untested. The batch recovery caller
 ### Delayed recovery after Stripe idempotency retention
 
 The candidate worker now lists refunds for the exact PaymentIntent in the pinned connected account and reconciles a prior refund whose `metadata.tradeflow_checkout_attempt_id` matches the attempt before issuing another refund. This supplements, but does not replace, the stable Stripe idempotency key. It is intended to avoid duplicate refunds if recovery is delayed beyond Stripe's idempotency-key retention period. This path remains untested and must be verified in Stripe test mode.
+
+
+### Lock ordering correction
+
+The candidate settlement RPC and refund-claim RPC now acquire locks in the same order as checkout reservation: identify the attempt without locking, lock its payment row, then re-read and lock the exact attempt. This avoids the previously identified payment/attempt lock inversion. Validate with disposable PostgreSQL concurrency/deadlock tests; source inspection is not proof that the concurrency cases pass.

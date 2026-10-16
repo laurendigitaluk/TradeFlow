@@ -55,6 +55,12 @@ begin
   insert into public.payment_provider_events(provider, event_id, event_type, metadata)
   values (p_provider, p_event_id, p_event_type, coalesce(p_metadata, '{}'::jsonb));
 
+  -- Test-only failure injection models a downstream transition that records
+  -- the provider event but declines the business-state transition.
+  if coalesce(p_metadata->>'force_reject', 'false') = 'true' then
+    return false;
+  end if;
+
   update public.payment_records
      set status = p_new_status,
          provider = p_provider,

@@ -41,7 +41,9 @@ Both files are also present on the feature branch. This is a migration-order/rep
 
 ### CI and source validation
 
-The repository search returned no matching GitHub workflow files, and the latest refund-worker commit returned no combined status checks or workflow runs. Deno checks, SQL migration execution, PostgreSQL concurrency tests, and Stripe test-mode tests remain unrun. Treat source inspection as review only, not validation evidence.
+A feature-branch workflow was added in commit `f7f0af67543deed44ca08b6691fd67849d18d891`: `.github/workflows/stripe-connect-candidate-checks.yml`. It runs `deno check --no-lock` on the retail checkout, payment webhook, Connect onboarding, and refund worker Edge Functions for pushes to this feature branch and pull requests targeting `production`.
+
+The GitHub connector returned no combined status checks or workflow runs for the workflow-creation commit at the time of this check. Therefore, this workflow is configured in source but its execution is not yet confirmed. It does not validate SQL migrations, database concurrency, Stripe test-mode behavior, or browser journeys. Those remain outstanding. Treat source inspection as review only, not validation evidence.
 
 ### Checkout routing observation
 

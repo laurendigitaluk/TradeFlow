@@ -128,37 +128,61 @@ async function processAttempt(attemptId: string) {
   // already created for this exact attempt before POSTing again: Stripe may prune
   // idempotency keys after its retention window, while a delayed recovery run may
   // happen later. Match the attempt metadata, not merely the PaymentIntent.
-  const refundsResponse = await fetch(
-    `https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(paymentIntentId)}&limit=100`,
-    { headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}`, "Stripe-Account": accountId } }
-  );
-  const refundsRaw = await refundsResponse.text();
-  let refundsList: any;
-  try { refundsList = refundsRaw ? JSON.parse(refundsRaw) : null; } catch { refundsList = null; }
-  if (!refundsResponse.ok) {
-    if (refundsResponse.status === 429 || refundsResponse.status >= 500) {
+  let priorRefund: any = null;
+  let startingAfter: string | null = null;
+  let refundsPagesChecked = 0;
+  while (true) {
+    const refundQuery = new URLSearchParams({
+      payment_intent: paymentIntentId,
+      limit: "100",
+    });
+    if (startingAfter) refundQuery.set("starting_after", startingAfter);
+
+    const refundsResponse = await fetch(
+      `https://api.stripe.com/v1/refunds?${refundQuery.toString()}`,
+      { headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}`, "Stripe-Account": accountId } }
+    );
+    const refundsRaw = await refundsResponse.text();
+    let refundsList: any;
+    try { refundsList = refundsRaw ? JSON.parse(refundsRaw) : null; } catch { refundsList = null; }
+    if (!refundsResponse.ok) {
+      if (refundsResponse.status === 429 || refundsResponse.status >= 500) {
+        await finish({
+          attemptId, idempotencyKey, status: "requested", paymentIntentId,
+          error: `Temporary Stripe refund reconciliation failure (${refundsResponse.status}).`,
+        });
+        throw new Error("Temporary Stripe refund reconciliation failure; retry required.");
+      }
+      await finish({
+        attemptId, idempotencyKey, status: "reconciliation_required", paymentIntentId,
+        error: `Stripe refund reconciliation was rejected (${refundsResponse.status}).`,
+      });
+      return { attempt_id: attemptId, outcome: "reconciliation_required", reason: "refund_lookup_rejected" };
+    }
+    if (!Array.isArray(refundsList?.data) || typeof refundsList?.has_more !== "boolean") {
       await finish({
         attemptId, idempotencyKey, status: "requested", paymentIntentId,
-        error: `Temporary Stripe refund reconciliation failure (${refundsResponse.status}).`,
+        error: "Stripe refund reconciliation response was incomplete.",
       });
-      throw new Error("Temporary Stripe refund reconciliation failure; retry required.");
+      throw new Error("Stripe refund reconciliation response was incomplete; retry required.");
     }
-    await finish({
-      attemptId, idempotencyKey, status: "reconciliation_required", paymentIntentId,
-      error: `Stripe refund reconciliation was rejected (${refundsResponse.status}).`,
-    });
-    return { attempt_id: attemptId, outcome: "reconciliation_required", reason: "refund_lookup_rejected" };
+
+    refundsPagesChecked += 1;
+    priorRefund = refundsList.data.find((item: any) =>
+      item?.metadata?.tradeflow_checkout_attempt_id === attemptId
+    ) || null;
+    if (priorRefund || !refundsList.has_more) break;
+
+    const lastRefund = refundsList.data[refundsList.data.length - 1];
+    if (!lastRefund?.id || refundsPagesChecked >= 100) {
+      await finish({
+        attemptId, idempotencyKey, status: "requested", paymentIntentId,
+        error: "Stripe refund reconciliation could not safely complete pagination.",
+      });
+      throw new Error("Stripe refund reconciliation pagination was incomplete; retry required.");
+    }
+    startingAfter = String(lastRefund.id);
   }
-  if (!Array.isArray(refundsList?.data)) {
-    await finish({
-      attemptId, idempotencyKey, status: "requested", paymentIntentId,
-      error: "Stripe refund reconciliation response was incomplete.",
-    });
-    throw new Error("Stripe refund reconciliation response was incomplete; retry required.");
-  }
-  const priorRefund = refundsList.data.find((item: any) =>
-    item?.metadata?.tradeflow_checkout_attempt_id === attemptId
-  );
   if (priorRefund) {
     const priorRefundId = String(priorRefund.id || "");
     if (!priorRefundId) {

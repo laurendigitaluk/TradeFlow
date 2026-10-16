@@ -140,6 +140,54 @@ Deno.serve(async req=>{
     return json({ received: true, ignored: 'retail_attempt_lifecycle_event_requires_attempt_aware_handler' });
   }
 
+  // Attempt-aware handler for connected-account retail Checkout Sessions.
+  // PaymentIntent-only events remain blocked below until they can be reconciled
+  // to the canonical Session ID without guessing.
+  const isConnectRetailSession = !!event.account &&
+    (event.type === 'checkout.session.completed' ||
+     event.type === 'checkout.session.async_payment_succeeded' ||
+     event.type === 'checkout.session.expired') &&
+    object.mode === 'payment' && !domainOrderId;
+  if (isConnectRetailSession) {
+    if (!tenantId || !paymentId || !object.id) {
+      return json({error:'Retail Checkout Session is missing required payment identity.',retryable:false,event_id:event.id},400);
+    }
+    let transition:string;
+    if (event.type === 'checkout.session.expired') transition = 'expired';
+    else {
+      if (object.payment_status !== 'paid') return json({received:true,ignored:'payment_not_paid'});
+      transition = 'paid';
+    }
+    const settlement = await callRpc('process_retail_checkout_attempt_event', {
+      p_event_id: String(event.id),
+      p_event_type: String(event.type),
+      p_tenant_id: String(tenantId),
+      p_connected_account_id: String(event.account),
+      p_checkout_session_id: String(object.id),
+      p_payment_intent_id: object.payment_intent ? String(object.payment_intent) : null,
+      p_new_status: transition,
+      p_amount: Number(object.amount_total ?? 0) / 100,
+      p_currency: String(object.currency || 'gbp').toUpperCase(),
+      p_metadata: {
+        stripe_event_id: String(event.id),
+        stripe_event_type: String(event.type),
+        stripe_order_id: orderId || null,
+        stripe_payment_id: String(paymentId)
+      }
+    });
+    const outcome = Array.isArray(settlement) ? settlement[0] : settlement;
+    if (outcome?.outcome === 'reconciliation_required') {
+      return json({received:true,settlement:outcome.outcome,reason:outcome.reason,event_id:event.id},409);
+    }
+    if (outcome?.outcome === 'refund_required') {
+      // A durable refund intent has been stored; acknowledge the event so
+      // Stripe does not retry indefinitely. Refund execution/reconciliation is
+      // a separate worker and must not be implied by this acknowledgement.
+      return json({received:true,settlement:outcome.outcome,refund_status:outcome.refund_status,event_id:event.id});
+    }
+    return json({received:true,settlement:outcome?.outcome||'unknown',event_id:event.id});
+  }
+
   // Release gate: retail Connect checkout events must not fall through to the
   // legacy payment RPC. That RPC does not atomically bind the event to the exact
   // checkout attempt, and its boolean result cannot safely drive late refunds.

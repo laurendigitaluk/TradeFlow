@@ -1,0 +1,34 @@
+name: Stripe Connect candidate checks
+
+on:
+  push:
+    branches:
+      - feature/live-stripe-connect-onboarding-20261015
+  pull_request:
+    branches:
+      - production
+
+permissions:
+  contents: read
+
+jobs:
+  edge-function-typecheck:
+    name: Type-check Stripe Connect Edge Functions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type-check checkout, webhook, onboarding and refund functions
+        run: >-
+          deno check --no-lock
+          supabase/functions/create-stripe-checkout-session/index.ts
+          supabase/functions/stripe-payment-webhook/index.ts
+          supabase/functions/stripe-connect-onboarding/index.ts
+          supabase/functions/process-retail-checkout-refund/index.ts

@@ -1455,3 +1455,8 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 ## Stripe Connect backend release warning — 16 October 2026
 
 Candidate migration commit `565fc9e2b74be58ed83122691b9e904f6bfa30de` adds an attempt-scoped refund intent when a late paid event belongs to a Checkout Session superseded by another non-null canonical Session. It does not execute a refund. The feature branch remains unvalidated: do not deploy the webhook or apply candidate migrations to LIVE. Before release, implement idempotent connected-account refund execution and recovery, test duplicate/out-of-order events and the NULL Session recovery case in disposable infrastructure, and verify Deno/CI results on the exact candidate commit.
+
+
+## Stripe Connect refund recovery candidate — 16 October 2026
+
+The feature branch now contains the service-role-only `process-retail-checkout-refund` Edge Function and two claim/finalize RPCs in migration `20261016170000_retail_checkout_refund_worker_rpcs.sql`. The worker verifies the exact Checkout Session in the connected-account context before issuing a full refund, uses a stable idempotency key, and records Stripe-confirmed outcomes. It can process one attempt or scan up to 20 pending intents in batch mode. Batch mode has not been scheduled. All changes are untested candidates; do not deploy or apply migrations to LIVE until disposable PostgreSQL, Deno, Stripe test-mode and CI verification passes.

@@ -2668,3 +2668,9 @@ The Stripe Connect retail refund worker now paginates the connected account's St
 The candidate settlement RPC now obtains a transaction-scoped advisory lock derived from the Stripe event ID before resolving/locking the attempt and payment. This addresses a source-level race where concurrent copies of one Stripe event might both pass the provider-event existence check. Commit: `deae2f31171a4bb917c76b9cd48e3a9f960b0165`.
 
 Validation status: **not yet proven**. Disposable PostgreSQL tests must run concurrent duplicate deliveries against the same and different attempts, confirm exactly one business transition, and check lock ordering/deadlocks with checkout reservation and refund claiming. This does not authorize a LIVE migration or deployment.
+
+## Stripe Connect candidate validation status — 16 October 2026
+
+For the feature branch `feature/live-stripe-connect-onboarding-20261015`, an isolated PostgreSQL CI job and regression fixtures have been added. The suite exercises account and amount mismatches, successful settlement, sequential duplicate events, a downstream-transition rejection that must retain a refund intent, refund claim/completion idempotency, and concurrent deliveries sharing one Stripe event ID.
+
+Do not report the new SQL tests as passed until the GitHub Actions run is inspected and succeeds. The test fixture stubs the existing payment transition and is not proof of full TradeFlow business side effects. Stripe test-mode lifecycle coverage, commission policy, and reconciliation of production's `settings.html`/`settings.js` overlap remain release blockers. Never apply the candidate migrations or deploy the feature to TRADEFLOW LIVE without explicit authorization and verified test evidence.

@@ -2656,3 +2656,8 @@ Webhook follow-up: commit `bb4001785446440645078869b034868c617fae93` adds `check
 Additional SQL review: LIVE's existing `process_external_payment_event` returns early for already-terminal payment rows before inserting `payment_provider_events`. Candidate commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` makes the attempt-aware paid-success path persist the event itself using `ON CONFLICT DO NOTHING`. Validate event deduplication and payment/attempt state in disposable PostgreSQL; source review is not a passing test. No LIVE changes authorised.
 
 Review correction (16 October 2026): a deeper control-flow check found that the proposed terminal-payment event insert in commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` was redundant/unreachable in the successful branch because the attempt-aware RPC already checks terminal payment statuses before calling the legacy helper. The insert has been removed in commit `4d0848f6b65945d52362d0cb7cbaa7889613e584`. Do not treat the earlier note as a confirmed defect or fix. The broader checkout/refund implementation remains untested and blocked from release.
+
+
+## Stripe Connect refund recovery note — 16 October 2026
+
+The Stripe Connect retail refund worker now paginates the connected account's Stripe refund list when searching for an existing refund by exact `tradeflow_checkout_attempt_id` metadata. It stops when a match is found, the list is exhausted, or a defensive 100-page ceiling is reached; incomplete pagination is treated as retryable. Source commit: `29fcf17c1079a152aeeba92a6b8742e9ddab3956`. This is not yet validated with Deno, PostgreSQL concurrency tests, or Stripe test mode. Do not deploy to LIVE until those tests and branch reconciliation are complete.

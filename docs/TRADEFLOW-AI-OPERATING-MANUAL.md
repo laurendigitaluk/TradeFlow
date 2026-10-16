@@ -2628,3 +2628,15 @@ The LIVE database schema was inspected read-only. No database changes were made.
 ## Current Stripe Connect continuation — 16 October 2026
 
 Latest source-level candidate correction: commit `565fc9e2b74be58ed83122691b9e904f6bfa30de` updates `supabase/migrations/20261016143000_process_retail_checkout_attempt_event.sql` to preserve exact-attempt expiry/failure handling when the payment row points to a newer Session and to record a durable refund intent for a late paid event from a superseded Session. This change is untested. No LIVE migration/deployment or real Stripe operation is authorised. Next: inspect the new diff; implement and test refund execution/recovery; resolve recovery when the payment record's canonical Session ID is NULL; run disposable PostgreSQL and Deno tests; verify CI evidence; recheck the current feature/production divergence and reconcile it without blind merge/rebase.
+
+
+## Stripe Connect refund worker continuation — 16 October 2026
+
+New feature-branch candidate files:
+- `supabase/migrations/20261016170000_retail_checkout_refund_worker_rpcs.sql`
+- `supabase/functions/process-retail-checkout-refund/index.ts`
+- updated `supabase/functions/stripe-payment-webhook/index.ts`
+
+The worker claims durable `required/requested` refund intents, retrieves the exact Checkout Session with the pinned connected account, validates paid state/PaymentIntent/amount/currency, and requests a full refund with the stable per-attempt Stripe idempotency key. It persists confirmed results and includes a batch mode for up to 20 pending intents; no scheduler is configured yet. The webhook invokes it for new refund intents and duplicate deliveries while the intent is pending.
+
+Next: fetch and inspect the exact latest commit; test SQL on disposable PostgreSQL; run Deno check/lint and lifecycle tests; run Stripe test-mode cases including Stripe-accepted/database-write-failed recovery; verify duplicate/out-of-order delivery and non-regression of platform subscriptions/domain orders; configure and test scheduled batch recovery; review feature/production divergence before any release. No LIVE migration/deployment or real payment operation is authorised.

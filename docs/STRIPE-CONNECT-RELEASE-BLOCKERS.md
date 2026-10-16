@@ -109,3 +109,17 @@ This is a deliberate safety stop, not a functioning settlement implementation: r
 - Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` introduces service-role-only `process_retail_checkout_attempt_event`. It locks the exact attempt and payment, validates tenant/account/Session/optional PaymentIntent/amount/currency, handles expiry per-attempt, calls the existing payment transition for verified paid Sessions, and records a durable refund intent when the existing transition rejects a late success.
 - The webhook now routes connected-account retail Checkout Session events (`completed`, `async_payment_succeeded`, `expired`) through that RPC. PaymentIntent-only lifecycle events remain deliberately blocked because they cannot safely be mapped to the canonical Session without reconciliation.
 - This is candidate code, not a release-ready implementation. Refund execution/recovery is still missing; account/event edge cases and all SQL semantics require disposable-database tests. The function depends on the existing `process_external_payment_event` behavior and has not been typechecked or integration-tested. Do not deploy or apply migrations to LIVE.
+
+
+## Follow-up inspection and candidate correction — 16 October 2026
+
+A fresh GitHub comparison reports the feature branch as **71 commits ahead and 2 behind** `production`, with divergent history. The merge base remains `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`; production head observed during this inspection is `419dc34b42bb60b175b65e9beacb430a195c7a00`. The integration branch is separate and must not be merged or rebased blindly.
+
+Read-only inspection of the LIVE `process_external_payment_event` definition confirmed that it checks `payment_records.provider_payment_id` against the supplied Checkout Session ID and has terminal-state early returns. The candidate attempt-aware RPC previously rejected all payment-session mismatches before handling expiry/failure or recording a refund intent. This prevented a late paid event from an older attempt from entering the durable refund queue.
+
+Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` was amended in commit `565fc9e2b74be58ed83122691b9e904f6bfa30de` so:
+- exact-attempt expiry/failure events can be handled without being blocked solely because the payment row now references a newer Session;
+- a paid event for an attempt whose Session differs from a different, non-null canonical payment Session records `refund_status='required'`, a stable attempt-based refund idempotency key, and the original event identity, then returns `refund_required`;
+- the guard does not treat a missing canonical Session ID as proof that the payment is a superseded attempt.
+
+**Validation status:** source-level edit only. No disposable PostgreSQL migration test, Deno check, Stripe test-mode refund, automated lifecycle test, or CI success has been verified. Refund execution/recovery is still not implemented, and the NULL canonical Session recovery case remains unresolved. Do not apply this migration to LIVE or deploy the webhook.

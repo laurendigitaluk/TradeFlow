@@ -2142,3 +2142,6 @@ The candidate attempt-aware settlement migration received a source-level correct
 Candidate branch adds migration `20261016170000_retail_checkout_refund_worker_rpcs.sql`, internal Edge Function `process-retail-checkout-refund`, and webhook invocation for durable pending refund intents. The worker is restricted to the service-role credential, retrieves the exact Checkout Session in the attempt's connected-account context, validates paid status/PaymentIntent/amount/currency, and uses the attempt's stable Stripe refund idempotency key. It supports single-attempt invocation and batch recovery of up to 20 pending intents. The batch mode is not scheduled yet.
 
 This is not release-ready. The candidate has not passed Deno checks, disposable PostgreSQL migration tests, Stripe test-mode integration tests or verified CI. Do not apply candidate migrations to LIVE or deploy Edge Functions. Preserve the existing DJI Osmo Action 6 Adventure Combo transaction.
+
+
+A subsequent source review found and corrected the webhook's early return for Connect `checkout.session.expired` events, allowing these events to reach the attempt-aware settlement branch. Feature-branch commit: `54013c8a7e9faf522166c9fe716be5ad22fad963`. This correction is source-reviewed only and remains untested; no LIVE changes are authorised.

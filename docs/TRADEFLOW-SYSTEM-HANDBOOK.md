@@ -2145,3 +2145,6 @@ This is not release-ready. The candidate has not passed Deno checks, disposable 
 
 
 A subsequent source review found and corrected the webhook's early return for Connect `checkout.session.expired` events, allowing these events to reach the attempt-aware settlement branch. Feature-branch commit: `54013c8a7e9faf522166c9fe716be5ad22fad963`. This correction is source-reviewed only and remains untested; no LIVE changes are authorised.
+
+
+The candidate settlement and refund-claim RPCs were subsequently changed to lock payment before attempt, matching checkout reservation and reducing payment/attempt deadlock risk. Commits: `260602e25e23e21da4c1277c033bbe68eafc6ca9` and `9a3f2e981023e480bea6ea6c1c0cde4e7530dadf`. This requires disposable PostgreSQL concurrency testing and is not verified by source inspection alone.

@@ -54,7 +54,7 @@ Deno.serve(async req=>{
   if(!Number.isFinite(ts)||Math.abs(Date.now()/1000-ts)>300)return json({error:'Expired Stripe signature'},400);
   const expected=await hmac(STRIPE_WEBHOOK_SECRET,`${ts}.${raw}`);
   if(!safeEqual(expected,provided))return json({error:'Invalid Stripe signature'},400);
-  const event=JSON.parse(raw),object=event?.data?.object;const stripeAccountHeaders=event?.account?{'Stripe-Account':String(event.account)}:{};
+  const event=JSON.parse(raw),object=event?.data?.object;const stripeAccountHeaders:Record<string,string>=event?.account?{'Stripe-Account':String(event.account)}:{};
   if(!event?.id||!event?.type||!object)return json({received:true});
   // Subscription and domain-order payments belong to the platform Stripe account only.
   // Reject Connect-scoped events before they can mutate these platform-owned records.

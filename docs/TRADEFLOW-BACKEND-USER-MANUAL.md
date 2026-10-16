@@ -1487,3 +1487,11 @@ This has not been validated in PostgreSQL. Before release, test concurrent dupli
 Candidate checkout migrations remain feature-branch only. The CI workflow now provisions a disposable PostgreSQL 16 database, applies the candidate migration set, and runs settlement/refund SQL regressions plus a concurrent duplicate-event test. The workflow and tests have been added, but a successful run has not yet been verified. Do not interpret their presence as a passing test.
 
 Before release, confirm the SQL job passes, complete Stripe test-mode lifecycle tests, settle the connected-account charge and TradeFlow commission design, and reconcile the feature/production overlap in subscriber settings. No candidate migration is authorized for TRADEFLOW LIVE at this stage.
+
+## Latest Stripe Connect candidate CI checkpoint — 16 October 2026
+
+GitHub Actions run [38953346975](https://github.com/laurendigitaluk/TradeFlow/actions/runs/38953346975) passed on feature commit `0e59819c8e7cee825a9e2e6d7ba7c0818bd037ab`. The Deno type-check passed, and the isolated PostgreSQL 16 job successfully applied the four candidate migrations, ran SQL settlement/refund regressions, and passed the concurrent duplicate-event test.
+
+Scope limitation: the PostgreSQL fixture stubs `process_external_payment_event`; it does not verify the actual TradeFlow ledger, inventory, credit-hold or order-workflow side effects. Stripe test-mode lifecycle and recovery tests remain outstanding. On the same commit, the Cloudflare `tradeflow` build passed but the `tradeflow-test` preview failed; its cause is not yet confirmed.
+
+Release blockers remain the connected-account charge/commission decision, Stripe test-mode lifecycle coverage, production-versus-feature settings reconciliation, and investigation of the failed test preview. No LIVE migration/deployment, merge/rebase or Stripe mutation is authorized. Preserve the DJI Osmo Action 6 Adventure Combo test transaction.

@@ -18,6 +18,7 @@ A separate integration branch was created from current production. The two produ
 Latest integration commits:
 - `affc357f453c06a02ac97e7c0044047473e768c0` — reconcile settings JavaScript.
 - `5ab27dcda969800d811add00aee594c576c18ba8` — bump settings script cache key.
+- `3703b9f5e095019601ea94cc3092002609b267db` — integration checkpoint documentation.
 
 ## Static source checks
 
@@ -31,12 +32,25 @@ The repository fetch checks confirmed:
 
 These are source-string consistency checks only. They are not a JavaScript parser/typecheck, browser test, Supabase test, Stripe onboarding test, or end-to-end checkout test.
 
+## Runtime-write review
+
+The current `load()` path POSTs four default rows to `tenant_payment_methods` on every settings-page load, using `on_conflict=tenant_id,method_code` and `Prefer: resolution=ignore-duplicates,return=minimal`. It then reads the rows back for display.
+
+This is an actual database write at runtime, even though the insert is intended to be idempotent. It has not been executed during this source review. Before browser testing, verify:
+- the unique constraint matches `(tenant_id, method_code)`;
+- the subscriber's authenticated request is permitted by the table's RLS policies;
+- inserting defaults on page load is an intentional product decision rather than a hidden settings mutation;
+- existing rows are not overwritten by defaults (the current ignore-duplicates preference means existing enabled/disabled choices should remain unchanged);
+- defaulting Link, Klarna and Amazon Pay to enabled is appropriate for the intended UI, while the checkout function still validates the connected account and Stripe's support for each requested method.
+
+A safer long-term approach may be to seed defaults during tenant setup or through an explicit, narrowly scoped initialization operation, instead of performing a write every time settings loads. Do not change this behavior without checking the tenant onboarding flow and schema constraints.
+
 ## Remaining review items
 
 1. Check the integration diff against production and review the complete `settings.js` flow, including its startup calls and database writes to the tenant payment-method settings.
 2. Run a JavaScript syntax check and available project CI/tests.
 3. Validate the Stripe method allow-list and actual checkout session creation agree. UI enablement alone must not imply Stripe supports a method for every connected account or transaction.
-4. Continue the unresolved checkout-attempt-aware webhook lifecycle work in issue #152 before release.
+4. Continue the unresolved checkout-attempt-aware webhook lifecycle work in issue #152 before release. In the current feature webhook, Checkout Session IDs and PaymentIntent IDs are treated as interchangeable provider-payment IDs; expired sessions can cancel the payment record; and checkout attempts are not updated atomically with webhook processing. These are release blockers, not just UI concerns.
 
 ## Safeguards
 

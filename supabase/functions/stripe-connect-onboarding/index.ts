@@ -96,8 +96,12 @@ Deno.serve(async (req: Request) => {
         return json({ connected: false, status: "not_connected", message: "Stripe has not been connected yet." }, 200, origin);
       }
       const account = await stripe("accounts/" + encodeURIComponent(existing.provider_account_id));
-      const connected = STRIPE_LIVE_MODE && account.charges_enabled === true &&
-        account.payouts_enabled === true && account.details_submitted === true;
+      const controller = account.controller || {};
+      const configurationOk = controller.stripe_dashboard?.type === "full" &&
+        controller.fees?.payer === "account" && controller.losses?.payments === "stripe";
+      const connected = STRIPE_LIVE_MODE && configurationOk &&
+        account.charges_enabled === true && account.payouts_enabled === true &&
+        account.details_submitted === true && account.capabilities?.card_payments === "active";
       await rest(
         "payment_provider_connections?id=eq." + encodeURIComponent(existing.id) + "&tenant_id=eq." + encodeURIComponent(tenantId),
         {
@@ -126,7 +130,10 @@ Deno.serve(async (req: Request) => {
         charges_enabled: account.charges_enabled === true,
         payouts_enabled: account.payouts_enabled === true,
         details_submitted: account.details_submitted === true,
-        message: connected ? "Stripe is connected and payouts are enabled." : "Stripe setup still needs to be completed in Stripe.",
+        configuration_ok: configurationOk,
+        message: connected ? "Stripe is connected and payouts are enabled." :
+          (!configurationOk ? "This connected account does not match TradeFlow's required Full Dashboard/direct-charge responsibility settings. Do not reconnect it automatically; contact the platform owner." :
+          "Stripe setup still needs to be completed in Stripe."),
       }, 200, origin);
     }
 
@@ -137,13 +144,24 @@ Deno.serve(async (req: Request) => {
       if (!STRIPE_LIVE_MODE) {
         return json({ error: "The saved Stripe account is not a live connected account. Contact support before reconnecting." }, 409, origin);
       }
+      const controller = account.controller || {};
+      if (controller.stripe_dashboard?.type !== "full" ||
+          controller.fees?.payer !== "account" || controller.losses?.payments !== "stripe") {
+        return json({
+          error: "The saved Stripe account uses a different Connect configuration. TradeFlow will not silently reuse or replace it. Review the account with the platform owner before proceeding.",
+          code: "CONNECTED_ACCOUNT_CONFIGURATION_MISMATCH",
+        }, 409, origin);
+      }
     } else {
       const form = new URLSearchParams();
-      form.set("type", "express");
       form.set("country", "GB");
       if (user.email) form.set("email", String(user.email));
+      form.set("controller[fees][payer]", "account");
+      form.set("controller[losses][payments]", "stripe");
+      form.set("controller[stripe_dashboard][type]", "full");
       form.set("capabilities[card_payments][requested]", "true");
-      form.set("capabilities[transfers][requested]", "true");
+      form.set("metadata[tradeflow_tenant_id]", tenantId);
+      form.set("metadata[tradeflow_product]", "TradeFlow");
       const account = await stripe("accounts", { method: "POST", headers: { "Idempotency-Key": "tradeflow-connect-account-" + tenantId }, body: form.toString() });
       accountId = String(account.id || "");
       if (!accountId) return json({ error: "Stripe did not return a connected account ID." }, 502, origin);

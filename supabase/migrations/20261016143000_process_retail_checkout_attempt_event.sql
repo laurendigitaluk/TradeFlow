@@ -71,10 +71,6 @@ begin
     return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'payment_record_not_found');
   end if;
 
-  if v_payment.provider_payment_id is distinct from p_checkout_session_id then
-    return jsonb_build_object('outcome', 'reconciliation_required', 'reason', 'payment_session_mismatch');
-  end if;
-
   v_amount := round(coalesce(v_payment.amount, 0)::numeric, 2);
   v_currency := upper(coalesce(v_payment.currency, ''));
   if round(coalesce(p_amount, -1)::numeric, 2) is distinct from v_amount
@@ -120,6 +116,31 @@ begin
     values ('stripe', p_event_id, p_event_type,
       coalesce(p_metadata, '{}'::jsonb) || jsonb_build_object('checkout_attempt_id', v_attempt.id));
     return jsonb_build_object('outcome', 'failed', 'attempt_id', v_attempt.id);
+  end if;
+
+  -- An expiry/failure belongs to its exact attempt even if the payment row now
+  -- points at a newer Session. Do not let stale lifecycle events affect that row.
+  -- A paid event from a different, non-null Session is a second charge candidate:
+  -- persist a refund intent for this exact attempt instead of passing it to the
+  -- legacy settlement RPC or silently treating it as the canonical payment.
+  if p_new_status = 'paid'
+     and v_payment.provider_payment_id is not null
+     and v_payment.provider_payment_id is distinct from p_checkout_session_id then
+    update public.retail_checkout_attempts
+       set refund_status = 'required',
+           refund_idempotency_key = coalesce(refund_idempotency_key,
+             'tradeflow-refund-' || v_attempt.id::text),
+           last_event_id = p_event_id, last_event_type = p_event_type, updated_at = now()
+     where id = v_attempt.id;
+    insert into public.payment_provider_events(provider, event_id, event_type, metadata)
+    values ('stripe', p_event_id, p_event_type,
+      coalesce(p_metadata, '{}'::jsonb) || jsonb_build_object(
+        'checkout_attempt_id', v_attempt.id,
+        'settlement_outcome', 'refund_required',
+        'reason', 'payment_session_mismatch'
+      ));
+    return jsonb_build_object('outcome', 'refund_required', 'attempt_id', v_attempt.id,
+      'refund_status', 'required', 'reason', 'payment_session_mismatch');
   end if;
 
   -- A previous attempt may have settled the order already. Do not infer that

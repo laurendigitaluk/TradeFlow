@@ -69,3 +69,10 @@ The latest read-only fetch confirms the production settings.js is 21,940 charact
 This clarifies the overlap: integration must preserve the feature branch's intended single-Stripe-provider simplification and refresh-link handling, while confirming no other live settings workflow depends on the legacy provider functions. Do not simply take production's settings.js, because it reintroduces legacy UI code and loses the explicit refresh return handling. Do not simply overwrite production either; reconcile the two-file change against the actual production UI and existing data model.
 
 No code was changed as part of this source comparison. No database, payment, or LIVE deployment was touched.
+## DOM/reference sanity check — 16 October 2026
+
+Read-only comparison of settings.html and settings.js shows all DOM IDs referenced by feature-branch settings.js exist in feature-branch settings.html. Production settings.js references one absent ID, payment-providers; the corresponding renderPaymentProviders() function first checks for that element and returns when it is absent, so this specific missing element is guarded and is not by itself a demonstrated runtime failure. Production HTML already presents the single Stripe Connect panel and tenant Stripe method controls, despite the old provider functions still being present in its JavaScript.
+
+The feature settings.html retains substantial generic legacy payment-provider CSS, and includes a rule targeting a Stripe provider card under #payment-providers even though no such provider-card container exists in the inspected page. This appears to be dead styling residue, not evidence of an active provider UI. It can be cleaned up during a reviewed settings reconciliation, but is not a reason to change LIVE independently.
+
+Static ID/reference check only; this is not browser execution, Deno validation, database validation, or proof that onboarding/checkout works end-to-end. No production files were modified.

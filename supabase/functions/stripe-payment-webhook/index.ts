@@ -140,6 +140,25 @@ Deno.serve(async req=>{
     return json({ received: true, ignored: 'retail_attempt_lifecycle_event_requires_attempt_aware_handler' });
   }
 
+  // Release gate: retail Connect checkout events must not fall through to the
+  // legacy payment RPC. That RPC does not atomically bind the event to the exact
+  // checkout attempt, and its boolean result cannot safely drive late refunds.
+  // Return a retryable error until the attempt-aware settlement RPC is present.
+  const isRetailCheckoutEvent = !domainOrderId &&
+    (event.type === 'checkout.session.completed' ||
+     event.type === 'checkout.session.async_payment_succeeded' ||
+     event.type === 'checkout.session.expired' ||
+     event.type === 'payment_intent.succeeded' ||
+     event.type === 'payment_intent.payment_failed') &&
+    (object.mode === 'payment' || event.type.startsWith('payment_intent.'));
+  if (isRetailCheckoutEvent && event.account) {
+    return json({
+      error: 'Retail Connect settlement is blocked pending the attempt-aware atomic webhook handler.',
+      retryable: true,
+      event_id: event.id
+    }, 503);
+  }
+
   const connectAcct = typeof event.account === 'string' ? event.account : '';
   if (connectAcct) {
     if (!tenantId) return json({error:'Connected-account payment event is missing its tenant reference.'},403);

@@ -93,3 +93,12 @@ Additional required checks:
 - Test the failure window between Stripe session creation and attempt persistence.
 - Ensure the webhook can safely handle events for a session whose ID was created but not yet persisted locally.
 
+
+
+## 16 October 2026 — unsafe legacy retail webhook settlement blocked on feature branch
+
+Feature-branch commit: `d186934af4f2da031bbf209f603519c565d12be1`.
+
+The Stripe webhook now returns a retryable HTTP 503 for retail Connect Checkout Session and PaymentIntent lifecycle events rather than passing them into `process_external_payment_event` without exact attempt binding. Platform subscription and domain-order branches remain ahead of this guard and are not targeted by it.
+
+This is a deliberate safety stop, not a functioning settlement implementation: retail Connect payments will not be settled by this candidate webhook until the attempt-aware atomic RPC and its refund/recovery path are implemented and tested. Repeated 503 responses can eventually exhaust Stripe's automatic retry window, so this branch must not be deployed as a customer-facing production webhook. No LIVE deployment or payment was made.

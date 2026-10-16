@@ -1481,3 +1481,9 @@ Review correction (16 October 2026): a deeper control-flow check found that the 
 The feature-branch settlement migration now serializes duplicate Stripe webhook deliveries with a transaction-scoped advisory lock keyed by event ID before acquiring attempt/payment row locks. This is intended to prevent concurrent copies of one event racing past the duplicate-event check. Candidate commit: `deae2f31171a4bb917c76b9cd48e3a9f960b0165`.
 
 This has not been validated in PostgreSQL. Before release, test concurrent duplicate events targeting the same and different attempts, event replay after settlement, and lock interaction with checkout reservation and refund claiming. Do not apply this candidate migration to LIVE before those tests pass and branch integration is reviewed.
+
+## Stripe Connect release gate — 16 October 2026
+
+Candidate checkout migrations remain feature-branch only. The CI workflow now provisions a disposable PostgreSQL 16 database, applies the candidate migration set, and runs settlement/refund SQL regressions plus a concurrent duplicate-event test. The workflow and tests have been added, but a successful run has not yet been verified. Do not interpret their presence as a passing test.
+
+Before release, confirm the SQL job passes, complete Stripe test-mode lifecycle tests, settle the connected-account charge and TradeFlow commission design, and reconcile the feature/production overlap in subscriber settings. No candidate migration is authorized for TRADEFLOW LIVE at this stage.

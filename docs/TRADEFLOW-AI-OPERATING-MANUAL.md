@@ -2642,10 +2642,13 @@ The worker claims durable `required/requested` refund intents, retrieves the exa
 Next: fetch and inspect the exact latest commit; test SQL on disposable PostgreSQL; run Deno check/lint and lifecycle tests; run Stripe test-mode cases including Stripe-accepted/database-write-failed recovery; verify duplicate/out-of-order delivery and non-regression of platform subscriptions/domain orders; configure and test scheduled batch recovery; review feature/production divergence before any release. No LIVE migration/deployment or real payment operation is authorised.
 
 
-Follow-up source review corrected an early webhook guard that had prevented Connect `checkout.session.expired` events from reaching `process_retail_checkout_attempt_event`. Commit: `54013c8a7e9faf522166c9fe716be5ad22fad963`. Latest feature/production comparison: 89 commits ahead, 2 behind, diverged. No successful CI/test evidence has been verified. Continue with disposable PostgreSQL and Deno tests before further release decisions.
+Follow-up source review corrected an early webhook guard that had prevented Connect `checkout.session.expired` events from reaching `process_retail_checkout_attempt_event`. Commit: `54013c8a7e9faf522166c9fe716be5ad22fad963`. Latest feature/production comparison: 104 commits ahead, 2 behind, diverged. No successful CI/test evidence has been verified. Continue with disposable PostgreSQL and Deno tests before further release decisions.
 
 
 Additional refund safety: candidate commit `d7f5b1d39f9355e61fce74250baeb85bdeb52f46` adds a pre-refund reconciliation lookup for an existing Stripe refund tagged with the exact checkout attempt ID. This supplements the stable idempotency key for delayed recovery beyond Stripe's key-retention window. Test this with Stripe test mode before release; no test evidence is currently verified.
 
 
 Concurrency review also corrected a potential payment/attempt lock inversion. Candidate settlement and refund-claim RPCs now lock payment first and attempt second, matching checkout reservation. Test concurrent checkout reservation, expiry/success webhooks and refund claims on disposable PostgreSQL before release; no concurrency test has yet run.
+
+
+Webhook follow-up: commit `bb4001785446440645078869b034868c617fae93` adds `checkout.session.async_payment_failed` to the attempt-aware Connect retail webhook handler and maps it to the atomic `failed` transition. This closes a source-level omission for asynchronous payment methods, but is not yet tested. Add a Stripe test-mode case and verify retry behavior. Current feature/production comparison is 104 commits ahead and 2 behind; do not merge or deploy before reconciliation and full validation.

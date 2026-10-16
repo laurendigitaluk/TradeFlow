@@ -97,3 +97,14 @@ No code change was made for this finding because the correct payment-record crea
 The latest compare endpoint snapshot reports **139 commits ahead and 2 commits behind** production, still diverged from merge base `dc5e0dfeabd0f86e98a1b709e01c31b1185cb5a1`. Production head observed: `419dc34b42bb60b175b65e9beacb430a195c7a00`. The two production-only commits still require inspection; settings overlap remains a merge risk. The updated ahead count includes subsequent feature-branch checkpoint/documentation commits and is not evidence of additional runtime validation.
 
 Release gate remains closed: no verified Deno run, disposable database migration test, Stripe test-mode lifecycle test, or end-to-end customer checkout test is available. Do not merge, deploy, or apply candidate migrations to LIVE on the basis of source inspection alone.
+
+## Follow-up validation and checkout amount guard — 16 October 2026
+
+The contract for `customer_create_order_payment(uuid, uuid, text)` was located in `supabase/migrations/20260930215656_remote_schema.sql`. It returns `payment_id`, `status`, `amount`, and `currency`; for a new payment row it copies amount and currency from the locked retail order. However, when the stable order-level idempotency key already exists, or an active pending/processing payment is reused, the function returns that existing payment row without asserting that its amount and currency still match the current order. The earlier mismatch concern was therefore a real contract gap, not merely an unknown RPC contract.
+
+Feature-branch commit `0158a73f00f547b12b0af90c99f304f54c2e7ada` now validates the returned/reused payment record against the current order before any Stripe API request that creates or retrieves a connected-account checkout session: amount is compared in minor units, currency is normalized and compared, and invalid/missing values are rejected with HTTP 409 and a reconciliation message. This is intended to prevent a stale payment record from creating a Checkout Session at a different amount/currency. It does not reconcile or repair an existing mismatched record; that remains an explicit recovery task.
+
+The earlier TypeScript issue in `stripe-payment-webhook/index.ts` was fixed in commit `3122bd227a796e447089c7c312a9eccf503ee7f2` by typing the Stripe account header map as `Record<string, string>`. GitHub Actions run `38946930897` completed successfully after that fix. The follow-up run for checkout amount validation, `38947040326`, also completed successfully; its configured Deno check passed for checkout, webhook, Connect onboarding, and refund-worker functions.
+
+These are source-level/type-check results only. SQL migration execution, PostgreSQL concurrency and recovery tests, Stripe test-mode lifecycle behavior, and browser end-to-end checkout remain unverified. Release gate stays closed. No LIVE database, deployment, migration, customer transaction, or Stripe object was changed.
+

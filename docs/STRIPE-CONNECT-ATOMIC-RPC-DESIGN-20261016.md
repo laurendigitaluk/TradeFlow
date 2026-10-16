@@ -104,3 +104,12 @@ A follow-on candidate migration adds durable connected-account and refund workfl
 A source review found that the candidate RPC's early `payment_records.provider_payment_id` equality check blocked expiry/failure processing for an exact older attempt and returned only `reconciliation_required` for a late paid event from a superseded Session. The candidate migration was amended in commit `565fc9e2b74be58ed83122691b9e904f6bfa30de`: expiry/failure are now handled against the matched attempt, while a paid event whose Session differs from a different non-null canonical Session records a durable `refund_status='required'` intent and returns `refund_required`.
 
 This remains source-level candidate work. It has not been tested on disposable PostgreSQL, and the missing canonical Session ID recovery case is still unresolved. The RPC only records refund intent; no Stripe refund is executed by SQL, and the separate idempotent refund worker/recovery path remains a release blocker.
+
+
+## Refund worker implementation candidate — 16 October 2026
+
+Candidate migration `20261016170000_retail_checkout_refund_worker_rpcs.sql` adds service-role-only claim/finalize RPCs. The claim RPC locks the attempt, verifies the related retail payment record and amount/currency inputs, and returns the pinned connected account, exact Checkout Session, stored PaymentIntent if present, and stable refund idempotency key. A `requested` intent is reclaimable to support crash recovery. The finalizer checks the same idempotency key, avoids regressing an already-succeeded refund, and persists refund ID, PaymentIntent and status.
+
+Candidate Edge Function `process-retail-checkout-refund` retrieves the exact Session in the connected-account context, validates the Session ID, paid state, PaymentIntent, amount and currency, then requests a full refund with the stable attempt key. It persists success only when Stripe returns `succeeded`; pending refunds remain retryable, while mismatches and permanent API rejection move to reconciliation. The webhook calls the worker for new refund intents and duplicate deliveries while an intent remains pending. A service-role-only batch mode scans up to 20 pending intents for a future scheduler/recovery caller.
+
+This implementation is still source-only and untested. The batch recovery caller has not been scheduled. No LIVE migration or deployment is permitted until disposable PostgreSQL, Deno and Stripe test-mode tests pass.

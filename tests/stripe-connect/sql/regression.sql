@@ -48,6 +48,19 @@ begin
     raise exception 'Expected connected-account mismatch, got %', v;
   end if;
 
+  -- PaymentIntent mismatch must stop before recording or settling.
+  v := public.process_retail_checkout_attempt_event(
+    'evt_test_wrong_payment_intent', 'checkout.session.completed',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'acct_test_expected',
+    'cs_test_success', 'pi_test_wrong', 'paid', 125.00, 'GBP', '{}'::jsonb);
+  if v->>'outcome' <> 'reconciliation_required'
+     or v->>'reason' <> 'payment_intent_mismatch' then
+    raise exception 'Expected PaymentIntent mismatch, got %', v;
+  end if;
+  if exists (select 1 from public.payment_provider_events where event_id = 'evt_test_wrong_payment_intent') then
+    raise exception 'PaymentIntent mismatch unexpectedly recorded a provider event';
+  end if;
+
   -- Amount mismatch must not change the payment or write a provider event.
   v := public.process_retail_checkout_attempt_event(
     'evt_test_wrong_amount', 'checkout.session.completed',
@@ -72,6 +85,30 @@ begin
   if (select status from public.payment_records where id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb') <> 'paid'
      or (select status from public.retail_checkout_attempts where id = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc') <> 'completed' then
     raise exception 'Successful settlement did not update both payment and attempt';
+  end if;
+
+  -- A paid late Session for the same payment must create a refund intent,
+  -- not settle the same retail order a second time.
+  insert into public.retail_checkout_attempts
+    (id, tenant_id, payment_id, attempt_number, idempotency_key, status,
+     stripe_session_id, stripe_payment_intent_id, stripe_account_id)
+  values
+    ('abababab-abab-4bab-8bab-abababababab',
+     'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+     'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 2, 'test-checkout-late-session', 'open',
+     'cs_test_late', 'pi_test_late', 'acct_test_expected');
+  v := public.process_retail_checkout_attempt_event(
+    'evt_test_late_paid_session', 'checkout.session.completed',
+    'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'acct_test_expected',
+    'cs_test_late', 'pi_test_late', 'paid', 125.00, 'GBP', '{}'::jsonb);
+  if v->>'outcome' <> 'refund_required' or v->>'refund_status' <> 'required' then
+    raise exception 'Expected late paid Session refund intent, got %', v;
+  end if;
+  if (select refund_status from public.retail_checkout_attempts where id = 'abababab-abab-4bab-8bab-abababababab') <> 'required' then
+    raise exception 'Late paid Session did not persist a refund intent';
+  end if;
+  if (select status from public.payment_records where id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb') <> 'paid' then
+    raise exception 'Late paid Session changed the already-settled payment';
   end if;
 
   -- Sequential duplicate delivery must not settle again.

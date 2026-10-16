@@ -1472,3 +1472,5 @@ Stripe Connect candidate webhook note (16 October 2026): candidate commit `bb400
 
 
 Candidate Stripe Connect database note (16 October 2026): `process_external_payment_event` on LIVE returns early for already-terminal payment rows before inserting the Stripe provider event. Candidate migration commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` now performs an idempotent provider-event insert on the attempt-aware successful paid path. This is untested; validate normal and terminal payment cases in disposable PostgreSQL before deployment.
+
+Review correction (16 October 2026): a deeper control-flow check found that the proposed terminal-payment event insert in commit `11049bf110a4da05b3078b59b83a56a7ad9fc88a` was redundant/unreachable in the successful branch because the attempt-aware RPC already checks terminal payment statuses before calling the legacy helper. The insert has been removed in commit `4d0848f6b65945d52362d0cb7cbaa7889613e584`. Do not treat the earlier note as a confirmed defect or fix. The broader checkout/refund implementation remains untested and blocked from release.

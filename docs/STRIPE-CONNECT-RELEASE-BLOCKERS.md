@@ -123,3 +123,16 @@ Candidate migration `20261016143000_process_retail_checkout_attempt_event.sql` w
 - the guard does not treat a missing canonical Session ID as proof that the payment is a superseded attempt.
 
 **Validation status:** source-level edit only. No disposable PostgreSQL migration test, Deno check, Stripe test-mode refund, automated lifecycle test, or CI success has been verified. Refund execution/recovery is still not implemented, and the NULL canonical Session recovery case remains unresolved. Do not apply this migration to LIVE or deploy the webhook.
+
+
+## Refund worker candidate added — 16 October 2026
+
+Candidate code is now present on the feature branch:
+- Migration `20261016170000_retail_checkout_refund_worker_rpcs.sql` adds service-role-only `claim_retail_checkout_refund` and `finish_retail_checkout_refund` RPCs. A `requested` intent is reclaimable after a crash, and the attempt's stable idempotency key is checked before final state is written.
+- Edge Function `supabase/functions/process-retail-checkout-refund/index.ts` retrieves the exact Checkout Session using its pinned connected-account context, checks paid status, PaymentIntent, amount and currency, then requests a full refund with a stable Stripe idempotency key. It persists Stripe-confirmed outcomes and keeps transient errors retryable.
+- The webhook invokes the worker for `refund_required` outcomes and for duplicate event deliveries while the attempt remains `required` or `requested`.
+- The worker also supports a service-role-only batch mode (no `attempt_id`) that scans up to 20 durable pending intents, intended for a scheduled recovery caller.
+
+**Not yet verified:** no Deno typecheck, SQL migration application on disposable PostgreSQL, automated concurrency/crash-recovery tests, Stripe test-mode refund, or CI run has been executed on these changes. The batch mode has not been scheduled/configured. Do not deploy this candidate or apply the migration to LIVE.
+
+**Remaining release blockers:** test refund API timeout after Stripe accepts the request; test database write failure after Stripe response; verify retry returns the same refund using the same key; test pending/failed refund states, missing PaymentIntent, amount/currency/account/session mismatches, duplicate/out-of-order events, and the full regression suite. Review whether Stripe API permanent failures should remain in reconciliation rather than automatic retry. Reconcile the feature branch's divergence before release.

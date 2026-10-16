@@ -76,7 +76,12 @@ async function load(){
   $('stripe-refresh-status')?.addEventListener('click',loadStripeConnectStatus);
   const stripeReturn=new URLSearchParams(location.search).get('stripe_connect');
   if(stripeReturn){history.replaceState({},'',location.pathname);}
-  await loadStripeConnectStatus();
+  if(stripeReturn==='refresh'){
+   // Stripe requires refresh_url to create a fresh single-use onboarding link.
+   await startStripeConnect();
+  }else{
+   await loadStripeConnectStatus();
+  }
   const defaults=[
    {method_code:'card',display_name:'Credit or debit card',enabled:true,sort_order:10},
    {method_code:'link',display_name:'Link',enabled:true,sort_order:20},

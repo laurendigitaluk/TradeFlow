@@ -2674,3 +2674,11 @@ Validation status: **not yet proven**. Disposable PostgreSQL tests must run conc
 For the feature branch `feature/live-stripe-connect-onboarding-20261015`, an isolated PostgreSQL CI job and regression fixtures have been added. The suite exercises account and amount mismatches, successful settlement, sequential duplicate events, a downstream-transition rejection that must retain a refund intent, refund claim/completion idempotency, and concurrent deliveries sharing one Stripe event ID.
 
 Do not report the new SQL tests as passed until the GitHub Actions run is inspected and succeeds. The test fixture stubs the existing payment transition and is not proof of full TradeFlow business side effects. Stripe test-mode lifecycle coverage, commission policy, and reconciliation of production's `settings.html`/`settings.js` overlap remain release blockers. Never apply the candidate migrations or deploy the feature to TRADEFLOW LIVE without explicit authorization and verified test evidence.
+
+## Latest Stripe Connect candidate CI checkpoint — 16 October 2026
+
+GitHub Actions run [38953346975](https://github.com/laurendigitaluk/TradeFlow/actions/runs/38953346975) passed on feature commit `0e59819c8e7cee825a9e2e6d7ba7c0818bd037ab`. The Deno type-check passed, and the isolated PostgreSQL 16 job successfully applied the four candidate migrations, ran SQL settlement/refund regressions, and passed the concurrent duplicate-event test.
+
+Scope limitation: the PostgreSQL fixture stubs `process_external_payment_event`; it does not verify the actual TradeFlow ledger, inventory, credit-hold or order-workflow side effects. Stripe test-mode lifecycle and recovery tests remain outstanding. On the same commit, the Cloudflare `tradeflow` build passed but the `tradeflow-test` preview failed; its cause is not yet confirmed.
+
+Release blockers remain the connected-account charge/commission decision, Stripe test-mode lifecycle coverage, production-versus-feature settings reconciliation, and investigation of the failed test preview. No LIVE migration/deployment, merge/rebase or Stripe mutation is authorized. Preserve the DJI Osmo Action 6 Adventure Combo test transaction.

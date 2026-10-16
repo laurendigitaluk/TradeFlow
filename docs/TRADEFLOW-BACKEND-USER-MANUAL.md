@@ -1463,3 +1463,6 @@ The feature branch now contains the service-role-only `process-retail-checkout-r
 
 
 Follow-up correction: commit `54013c8a7e9faf522166c9fe716be5ad22fad963` allows connected-account retail Checkout Session expiry events to reach the attempt-aware RPC instead of being swallowed by a generic early-return guard. This is untested candidate code; do not deploy or apply the candidate migration to LIVE.
+
+
+Concurrency safety follow-up: the candidate settlement and refund-claim RPCs now lock the payment row before the checkout attempt, matching checkout reservation order. Validate concurrent reservation, webhook settlement and refund claims on disposable PostgreSQL before deployment. No concurrency test has been run yet.

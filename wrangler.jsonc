@@ -11,6 +11,17 @@
     "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv.supabase.co",
     "LIVE_SUPABASE_KEY": "sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz"
   },
+  "previews": [
+    {
+      "v8": {
+        "TRADEFLOW_ENV": "test",
+        "TEST_SUPABASE_URL": "https://twfbmjwwqzxdxvclxbun.supabase.co",
+        "TEST_SUPABASE_KEY": "sb_publishable_AvcMgtKV0O5k8H6k94mZQ_qH4pEIS9",
+        "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv.supabase.co",
+        "LIVE_SUPABASE_KEY": "sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz"
+      }
+    }
+  ],
   "assets": {
     "directory": ".",
     "binding": "ASSETS",

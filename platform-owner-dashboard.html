@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TradeFlow Owner Dashboard</title>
+<title>Lauren Digital Owner Dashboard</title>
 <link rel="stylesheet" href="platform-owner-dashboard.css?v=4">
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">TradeFlow</a>
+  <a class="brand" href="/">Lauren Digital</a>
   <div class="top-actions"><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-HUMAN-USER-MANUAL.md" target="_blank" rel="noopener">Human Manual</a><a href="subscriber-website-manual.html" target="_blank" rel="noopener">Subscriber Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-BACKEND-USER-MANUAL.md" target="_blank" rel="noopener">Backend Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-AI-OPERATING-MANUAL.md" target="_blank" rel="noopener">AI Manual</a><span id="owner-email">Platform Owner</span><button id="sign-out" type="button">Sign out</button></div>
 </header>
 <main class="shell">
@@ -28,9 +28,16 @@
     </nav>
   </aside>
   <section class="content">
-    <div class="eyebrow">TradeFlow SaaS</div>
+    <div class="eyebrow">Lauren Digital platform</div>
     <h1>Owner Dashboard</h1>
-    <p class="intro">Manage the TradeFlow platform and its subscriber businesses. Subscriber operational data remains inside each business tenant.</p>
+    <p class="intro">Manage Lauren Digital's product pages and the TradeFlow platform. Subscriber operational data remains inside each business tenant.</p>
+
+    <section id="product-pages" class="panel">
+      <div class="panel-head"><div><div class="eyebrow">Parent brand</div><h2>Lauren Digital product pages</h2></div><button id="refresh-product-pages" type="button">Refresh pages</button></div>
+      <p class="muted">Edit the public homepage details for TradeFlow, StudioFlow and BusinessFlow here. Changes are stored in the platform database and appear on the public product cards/pages after saving. Use “Hidden” to remove a product from public listings.</p>
+      <div id="product-pages-error" class="error" role="alert"></div>
+      <div id="product-pages-list" class="plan-admin-list"><p class="muted">Sign in to load product pages.</p></div>
+    </section>
 
     <section id="overview" class="stats">
       <article><span>Subscriber businesses</span><strong id="tenant-count">—</strong></article>
@@ -79,6 +86,6 @@
 </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=14" defer></script>
+<script src="platform-owner-dashboard.js?v=15" defer></script>
 </body>
 </html>

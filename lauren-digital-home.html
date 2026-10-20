@@ -49,14 +49,14 @@ footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-
   <div class="container">
    <div class="section-head"><div class="eyebrow">Explore the product family</div><h2>One brand. Purpose-built platforms.</h2><p>Start with the platform that fits your work. Each product has its own branded experience, with more options planned for the future.</p></div>
    <div class="products">
-    <article class="product featured">
+    <article class="product featured" data-product-card="tradeflow">
      <div class="product-icon">TF</div><span class="tag">Available</span><h3>TradeFlow</h3><p>A platform for buy-and-sell businesses, bringing buying workflows, valuations, inventory, sales and customer-facing websites together.</p><a class="product-link" href="https://tradeflow.laurendigital.co.uk/">Visit TradeFlow <span aria-hidden="true">→</span></a>
     </article>
-    <article class="product">
-     <div class="product-icon">SF</div><span class="tag soon">Planned</span><h3>StudioFlow</h3><p>A future platform concept for studio and creative-business workflows. Product scope and launch details will be announced when development is ready.</p><a class="product-link" href="mailto:hello@laurendigital.co.uk?subject=StudioFlow%20updates">Register interest <span aria-hidden="true">→</span></a>
+    <article class="product" data-product-card="studioflow">
+     <div class="product-icon">SF</div><span class="tag soon">Planned</span><h3>StudioFlow</h3><p>A future platform concept for studio and creative-business workflows. Product scope and launch details will be announced when development is ready.</p><a class="product-link" href="/studioflow">Register interest <span aria-hidden="true">→</span></a>
     </article>
-    <article class="product">
-     <div class="product-icon">BF</div><span class="tag soon">Concept</span><h3>BusinessFlow</h3><p>A placeholder for a potential broader business-management platform. The name and scope are provisional and may change as the product family develops.</p><a class="product-link" href="mailto:hello@laurendigital.co.uk?subject=Future%20Lauren%20Digital%20platforms">Suggest a platform <span aria-hidden="true">→</span></a>
+    <article class="product" data-product-card="businessflow">
+     <div class="product-icon">BF</div><span class="tag soon">Concept</span><h3>BusinessFlow</h3><p>A placeholder for a potential broader business-management platform. The name and scope are provisional and may change as the product family develops.</p><a class="product-link" href="/businessflow">Suggest a platform <span aria-hidden="true">→</span></a>
     </article>
    </div>
   </div>
@@ -72,5 +72,27 @@ footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-
  <section class="cta"><div class="container"><div class="cta-panel"><div><h2>Looking for a platform for your business?</h2><p>Explore TradeFlow today, or get in touch about future Lauren Digital products.</p></div><a class="btn primary" href="https://tradeflow.laurendigital.co.uk/">Explore TradeFlow <span aria-hidden="true">→</span></a></div></div></section>
 </main>
 <footer><div class="container foot"><div><div class="foot-brand">Lauren Digital</div><small>Digital platforms for business</small></div><div class="foot-links"><a href="#products">Our platforms</a><a href="#about">About</a><a href="https://owner.laurendigital.co.uk/">Owner portal</a><a href="https://tradeflow.laurendigital.co.uk/">TradeFlow</a></div><small>© <span id="year">2026</span> Lauren Digital</small></div></footer>
+
+<script>
+(async()=>{
+ const API='https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/platform_product_pages?select=slug,product_name,status,headline,tagline,description,button_label,button_url';
+ const KEY='sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+ const urls={tradeflow:'https://tradeflow.laurendigital.co.uk/',studioflow:'/studioflow',businessflow:'/businessflow'};
+ try{
+  const res=await fetch(API,{headers:{apikey:KEY}});if(!res.ok)return;
+  const pages=await res.json();
+  for(const p of pages){
+   const card=document.querySelector('[data-product-card="'+p.slug+'"]');if(!card)continue;
+   if(p.status==='hidden'){card.hidden=true;continue}
+   card.querySelector('h3').textContent=p.product_name;
+   card.querySelector('p').textContent=p.description||p.tagline||'';
+   const tag=card.querySelector('.tag');tag.textContent=p.status==='published'?'Available':'Coming soon';tag.className='tag'+(p.status==='published'?'':' soon');
+   const link=card.querySelector('.product-link');link.textContent=(p.button_label||'Learn more')+' →';link.href=p.button_url||urls[p.slug]||'#';
+   if(p.status!=='published'&&p.slug!=='tradeflow'){link.href=urls[p.slug]||'#'}
+  }
+ }catch(e){/* Keep the built-in fallback copy visible if the content API is unavailable. */}
+})();
+</script>
+
 </body>
 </html>

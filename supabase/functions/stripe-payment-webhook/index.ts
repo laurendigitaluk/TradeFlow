@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL=Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const STRIPE_WEBHOOK_SECRET=Deno.env.get('STRIPE_WEBHOOK_SECRET');
+const STRIPE_WEBHOOK_SECRET=Deno.env.get('STRIPE_WEBHOOK_SECRET');const EXPECTED_STRIPE_MODE=Deno.env.get('TRADEFLOW_STRIPE_MODE')||'live';
 const STRIPE_SECRET_KEY=Deno.env.get('STRIPE_SECRET_KEY');
 const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type'};
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers});
@@ -46,7 +46,7 @@ Deno.serve(async req=>{
   if(!Number.isFinite(ts)||Math.abs(Date.now()/1000-ts)>300)return json({error:'Expired Stripe signature'},400);
   const expected=await hmac(STRIPE_WEBHOOK_SECRET,`${ts}.${raw}`);
   if(!safeEqual(expected,provided))return json({error:'Invalid Stripe signature'},400);
-  const event=JSON.parse(raw),object=event?.data?.object;
+  const event=JSON.parse(raw),object=event?.data?.object;if((EXPECTED_STRIPE_MODE!=='live'&&EXPECTED_STRIPE_MODE!=='test')||event.livemode!==(EXPECTED_STRIPE_MODE==='live'))return json({error:'Stripe webhook mode does not match this TradeFlow environment.'},400);
   if(!event?.id||!event?.type||!object)return json({received:true});
 
   if(event.type==='checkout.session.completed' && object.mode==='subscription'){
@@ -67,7 +67,8 @@ Deno.serve(async req=>{
     return json({received:true,subscriber_signup:true,tenant_id:tenantId});
   }
 
-  if(event.type==='customer.subscription.updated'||event.type==='customer.subscription.deleted'){
+  if(event.type==='account.updated'){const accountId=String(object.id||event.account||'');if(!accountId.startsWith('acct_'))return json({received:true,ignored:'missing_connected_account_id'});const enabled=object.charges_enabled===true&&object.payouts_enabled===true&&object.details_submitted===true&&object.capabilities?.card_payments==='active';const patch={status:enabled?'active':'onboarding',charges_enabled:object.charges_enabled===true,payouts_enabled:object.payouts_enabled===true,details_submitted:object.details_submitted===true,livemode:object.livemode===true,default_currency:object.default_currency?String(object.default_currency).toUpperCase():null,country_code:object.country?String(object.country).toUpperCase():null,metadata:{stripe_account_id:accountId,card_payments_capability:object.capabilities?.card_payments||null,requirements_due:object.requirements?.currently_due||[],requirements_past_due:object.requirements?.past_due||[],stripe_event_id:event.id},updated_at:new Date().toISOString()};const updated=await fetch(`${SUPABASE_URL}/rest/v1/payment_provider_connections?provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.${encodeURIComponent(accountId)}`,{method:'PATCH',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation'},body:JSON.stringify(patch)});if(!updated.ok)return json({error:await updated.text()},500);const rows=await updated.json();return json({received:true,connected_account_updated:true,matched_connections:Array.isArray(rows)?rows.length:0,status:enabled?'active':'onboarding'});}
+if(event.type==='customer.subscription.updated'||event.type==='customer.subscription.deleted'){
     const f=subscriptionFields(object);
     if(!f.subscription_id)return json({received:true});
     const synced=await callRpc('subscriber_sync_subscription',{
@@ -108,16 +109,16 @@ Deno.serve(async req=>{
       return json({received:true,domain_payment_cancelled:true,order_id:String(domainOrderId)});
     }
   }
-  if(!tenantId||!paymentId||!newStatus)return json({received:true,ignored:'not_a_tradeflow_order_payment'});
+  if(!tenantId||!paymentId||!newStatus)return json({received:true,ignored:'not_a_tradeflow_order_payment'});if(event.account){const conn=await fetch(`${SUPABASE_URL}/rest/v1/payment_provider_connections?tenant_id=eq.${encodeURIComponent(String(tenantId))}&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.${encodeURIComponent(String(event.account))}&select=id&limit=1`,{headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`}});if(!conn.ok)return json({error:'Unable to validate connected Stripe account for payment event.'},500);const rows=await conn.json();if(!Array.isArray(rows)||!rows.length)return json({error:'Connected Stripe account does not match this TradeFlow tenant.'},403);}else if(event.type==='checkout.session.completed'||event.type==='checkout.session.async_payment_succeeded'||event.type==='checkout.session.expired'||event.type==='payment_intent.succeeded'||event.type==='payment_intent.payment_failed'){return json({error:'Retail payments must arrive as connected-account events.'},400);}
   const payload={p_provider:'stripe',p_event_id:event.id,p_event_type:event.type,p_tenant_id:tenantId,p_payment_id:paymentId,p_provider_payment_id:providerPaymentId,p_new_status:newStatus,p_amount:amount,p_currency:currency,p_metadata:{stripe_event_id:event.id,stripe_order_id:orderId||null}};
   const r=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(payload)});
   if(!r.ok)return json({error:await r.text()},500);
   const result=await r.json();const conflict=Array.isArray(result)?result[0]===false:result===false;
   if(conflict&&newStatus==='paid'){
     if(!STRIPE_SECRET_KEY)return json({error:'Stripe secret is required to refund a payment when the product has already sold'},503);
-    const paymentIntentId=object?.payment_intent;if(!paymentIntentId)return json({error:'Stripe PaymentIntent missing for conflict refund'},500);
-    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
-    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
+    const paymentIntentId=object?.payment_intent;if(!paymentIntentId)return json({error:'Stripe PaymentIntent missing for conflict refund'},500);if(!event.account)return json({error:'Subscriber-account refund requires a connected-account event.'},500);const connectedStripeHeader={'Stripe-Account':String(event.account)};
+    let refund=await fetch('https://api.stripe.com/v1/refunds',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...connectedStripeHeader,'Content-Type':'application/x-www-form-urlencoded','Idempotency-Key':`tradeflow-conflict-refund-${String(paymentIntentId)}`},body:new URLSearchParams({payment_intent:String(paymentIntentId),reason:'requested_by_customer'}).toString()});
+    if(!refund.ok){const existing=await fetch(`https://api.stripe.com/v1/refunds?payment_intent=${encodeURIComponent(String(paymentIntentId))}&limit=10`,{headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,...connectedStripeHeader}});const er=existing.ok?await existing.json():null;const already=Array.isArray(er?.data)&&er.data.some((x:any)=>x.status==='succeeded'||x.status==='pending');if(!already)return json({error:'Payment could not be refunded after the product became unavailable'},500)}
     const cancelPayload={...payload,p_event_id:`${event.id}:conflict-refunded`,p_event_type:'stripe.checkout.session.conflict_refunded',p_new_status:'cancelled'};
     const cr=await fetch(`${SUPABASE_URL}/rest/v1/rpc/process_external_payment_event`,{method:'POST',headers:{apikey:SERVICE_ROLE_KEY,Authorization:`Bearer ${SERVICE_ROLE_KEY}`,'Content-Type':'application/json'},body:JSON.stringify(cancelPayload)});if(!cr.ok)return json({error:await cr.text()},500);
     return json({received:true,refunded:true,reason:'product_already_sold'});

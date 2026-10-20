@@ -2113,3 +2113,76 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Follow the product link to product detail and checkout. Verify basket/checkout retains the correct tenant, listing, title, price and currency; customer authentication/registration works without looping; order is created once; payment status matches the actual payment outcome; and no record is marked paid before verified payment.
 - After the controlled purchase, verify the order appears consistently in the customer portal, subscriber order/sales view, and finance/ledger records; check stock/inventory transitions to sold/reserved according to the intended workflow; and confirm the public listing is no longer purchasable if sold. Check shipping choice/tracking expectations separately and do not let TradeFlow collect postage fees.
 - Do not reuse the earlier simulated purchase as proof of a real transaction. Keep LIVE/TEST clearly separated, record each observed status/reference, and stop at the first failure for diagnosis rather than repeatedly retrying checkout.
+
+
+---
+
+# Environment Status Addendum — 21 October 2026
+
+This addendum supersedes any earlier environment references in this document where they conflict. It records the currently verified environment split and the remaining Stripe TEST verification work. It does not claim end-to-end payment success.
+
+## Authoritative Supabase environments
+
+| Purpose | Project | Project ID | URL | Current state |
+|---|---|---|---|---|
+| LIVE / production | TradeFlow Live | `gxsrajtqzdjvmceqcpgv` | `https://gxsrajtqzdjvmceqcpgv.supabase.co` | Active; production must be protected |
+| Current TEST / staging | TradeFlow TEST | `nnsshnfkjcflucjrftzi` | `https://nnsshnfkjcflucjrftzi.supabase.co` | Active; intended for isolated validation |
+| Legacy TEST | Previous TradeFlow TEST | `twfbmjwwqzxdxvclxbun` | `https://twfbmjwwqzxdxvclxbun.supabase.co` | Legacy/reference only; not approved for deletion yet |
+
+LIVE and current TEST are in the TradeFlow Pro organization. The current TEST project was created on 20 October 2026. The old TEST project must not be confused with the new TEST project.
+
+## Mandatory safety boundary
+
+- Make development, deployment, Stripe test-key changes, webhook testing, and purchase-flow tests against current TEST only unless a separately approved LIVE change is explicitly required.
+- Do not change LIVE secrets, production functions, production configuration, or production data as part of this TEST repair.
+- Never paste Stripe secret keys or webhook signing secrets into chat, issues, manuals, commits, or logs. Enter them only in the intended Supabase project's Edge Function Secrets interface.
+- Treat Stripe test mode and Stripe live mode as separate systems. A TEST connected account must never be reused as a LIVE connected account, or vice versa.
+- The repository's production branch and `wrangler.jsonc` are not to be repointed as part of TEST work. The isolated TEST configuration is `wrangler.test.jsonc`.
+
+## Stripe Connect TEST repair — status
+
+The following functions are deployed and reported ACTIVE in the new TEST project:
+
+- `stripe-connect-onboarding` — JWT verification enabled.
+- `create-stripe-checkout-session` — JWT verification enabled.
+- `stripe-payment-webhook` — JWT verification disabled; requests must be verified with the Stripe webhook signature.
+- `stripe-connect-webhook` — JWT verification disabled; requests must be verified with the Stripe webhook signature.
+
+The code branch for the repair is `test/stripe-connect-test-mode-repair-20261020`. Source-level mode guards were added to reject test/live key, account, and event mismatches. Static source assertions passed, but these checks are not a substitute for runtime tests.
+
+Stripe Sandbox has two active TEST event destinations configured to the new TEST project's function endpoints:
+
+- Platform payments → `/functions/v1/stripe-payment-webhook`
+- Connected accounts → `/functions/v1/stripe-connect-webhook`
+
+The platform destination is configured for checkout-session and payment-intent success/failure events. The Connect destination is configured for `account.updated`, `account.application.authorized`, and `account.application.deauthorized`. No successful delivery has yet been demonstrated in the recorded evidence.
+
+## Secrets and verification
+
+The operator reported entering the three Stripe secrets in the new TEST project's Edge Function Secrets. Their values cannot be read back through the available inspection, so their correctness is not independently verified. Confirm that the project has:
+
+- `TRADEFLOW_STRIPE_MODE=test`
+- `STRIPE_SECRET_KEY` using a Stripe TEST secret key
+- `STRIPE_WEBHOOK_SECRET` copied from the TEST **TradeFlow TEST - Platform Payments** destination
+- `STRIPE_CONNECT_WEBHOOK_SECRET` copied from the TEST **TradeFlow TEST - Connect Events** destination
+
+Never copy a signing secret from one destination into the other. If a secret was entered before its corresponding endpoint was created or rotated, re-copy the current secret into TEST Supabase only.
+
+## Known open verification items
+
+1. Send a Stripe Sandbox test event to the platform webhook and inspect the delivery status, HTTP response, and new TEST Edge Function logs.
+2. Repeat separately for the Connect webhook.
+3. Investigate the platform webhook source's reported `admin` client reference before declaring payment/domain-order handling healthy; verify that the client is declared and initialized on every relevant path.
+4. Run Connect onboarding in TEST and verify account mode, onboarding completion, webhook processing, and persisted account status.
+5. Run a complete TEST checkout and confirm Stripe event delivery, database state transitions, and dashboard outcomes.
+6. Only after those pass, update the test-purchase runbook and resume the planned DJI Osmo Action 6 purchase-flow test.
+
+Until these are complete, do not describe Stripe Connect, checkout, or webhook handling as end-to-end verified.
+
+## Legacy TEST project retirement decision
+
+**Do not delete `twfbmjwwqzxdxvclxbun` yet.** It remains a legacy/reference environment until a read-only retirement audit confirms that no current Worker, application environment variable, CI/CD workflow, Supabase function, webhook, manual, or recovery procedure still depends on it, and that required schema/catalogue/reference data and any useful logs or backups have been preserved. The old project should be paused only after dependency checks and a restore/retention decision; permanent deletion requires a separate explicit owner approval after that checklist passes.
+
+## Update policy
+
+This addendum records verified configuration and outstanding checks as of 21 October 2026. Update the status after runtime evidence is collected. Do not rewrite an unverified state as complete.

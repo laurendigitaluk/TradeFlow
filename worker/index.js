@@ -40,6 +40,8 @@ export default {
       "/email-confirmed": "/customer-email-confirmed.html",
       "/reset-password": "/customer-password-reset.html",
       "/owner-reset-password": "/platform-owner-password-reset.html",
+      "/platform-owner-login": "/platform-owner-login.html",
+      "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
     if (isSubscriberDomain) {
       cleanRoutes["/"] = "/public-site.html";

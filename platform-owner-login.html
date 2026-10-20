@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>TradeFlow | Lauren Digital Owner Login</title>
+<style>
+:root{color-scheme:light;--navy:#10283f;--orange:#f47721;--ink:#17202a;--muted:#627181;--line:#dce3e9}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(125deg,#0d2439 0%,#173c59 56%,#9b4a1e 100%);display:grid;place-items:center;padding:24px}
+.wrap{width:min(100%,460px)}.brand{color:#fff;display:flex;align-items:center;gap:12px;margin:0 0 24px 4px}.mark{width:42px;height:42px;border-radius:11px;background:var(--orange);display:grid;place-items:center;color:#fff;font-weight:900;font-size:1.2rem}.brand-name{font-size:1.25rem;font-weight:800;letter-spacing:-.03em}.brand-sub{display:block;font-size:.73rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#d5e0e9;margin-top:2px}
+.card{background:#fff;border:1px solid #ffffff70;border-radius:18px;padding:36px;box-shadow:0 24px 80px #06152255}.eyebrow{color:#b95b1c;font-size:.72rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1{font-size:2rem;letter-spacing:-.04em;margin:9px 0 10px}.intro{color:var(--muted);line-height:1.55;margin:0 0 26px}.field{display:block;font-weight:700;font-size:.88rem;margin:17px 0 0}.field input{display:block;width:100%;margin-top:7px;padding:13px 14px;border:1px solid #cbd5df;border-radius:9px;font:inherit;outline:none}.field input:focus{border-color:#d86a22;box-shadow:0 0 0 3px #f4772120}.primary{width:100%;border:0;border-radius:9px;background:var(--orange);color:white;font:inherit;font-weight:800;padding:13px 16px;margin-top:22px;cursor:pointer}.primary:hover{background:#df6417}.primary:disabled{opacity:.65;cursor:wait}.link{display:block;margin:16px auto 0;border:0;background:none;color:#285c82;text-decoration:underline;text-underline-offset:3px;font:inherit;cursor:pointer}.status{margin-top:16px;line-height:1.45;font-size:.9rem;color:#a22d2d}.status.ok{color:#246642}.reset{display:none;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}.reset.show{display:block}.foot{text-align:center;color:#e3ebf1;font-size:.78rem;margin-top:18px}.foot a{color:#fff}.security{display:flex;gap:9px;align-items:flex-start;padding:12px;background:#f4f7f9;border-radius:9px;color:#566574;font-size:.8rem;line-height:1.45;margin-top:22px}.security svg{flex:none;margin-top:1px}@media(max-width:480px){body{padding:16px}.card{padding:27px 22px}h1{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand"><div class="mark" aria-hidden="true">T</div><div><div class="brand-name">TradeFlow</div><span class="brand-sub">A Lauren Digital platform</span></div></div>
+  <section class="card" aria-labelledby="page-title">
+    <div class="eyebrow">Restricted access</div>
+    <h1 id="page-title">Platform owner login</h1>
+    <p class="intro">Sign in to manage the TradeFlow platform, subscriber accounts and platform settings. This portal is separate from subscriber business login.</p>
+    <form id="login-form">
+      <label class="field" for="owner-email">Owner email address
+        <input id="owner-email" name="email" type="email" autocomplete="username" required>
+      </label>
+      <label class="field" for="owner-password">Password
+        <input id="owner-password" name="password" type="password" autocomplete="current-password" required>
+      </label>
+      <button class="primary" id="sign-in" type="submit">Sign in to owner portal</button>
+    </form>
+    <button class="link" id="show-reset" type="button">Forgot your password?</button>
+    <form id="reset-form" class="reset">
+      <label class="field" for="reset-email">Owner email address
+        <input id="reset-email" type="email" autocomplete="email" required>
+      </label>
+      <button class="primary" id="send-reset" type="submit">Send password reset email</button>
+    </form>
+    <div id="status" class="status" role="status" aria-live="polite"></div>
+    <div class="security"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span>Owner access is verified against the active platform-owner membership. A valid TradeFlow user account alone is not sufficient.</span></div>
+  </section>
+  <div class="foot">© Lauren Digital · <a href="/">TradeFlow home</a></div>
+</main>
+<script src="platform-owner-login.js?v=1" defer></script>
+</body>
+</html>

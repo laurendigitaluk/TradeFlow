@@ -87,7 +87,7 @@ footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-
    card.querySelector('h3').textContent=p.product_name;
    card.querySelector('p').textContent=p.description||p.tagline||'';
    const tag=card.querySelector('.tag');tag.textContent=p.status==='published'?'Available':'Coming soon';tag.className='tag'+(p.status==='published'?'':' soon');
-   const link=card.querySelector('.product-link');link.textContent=(p.button_label||'Learn more')+' →';link.href=urls[p.slug]||p.button_url||'#';
+   const link=card.querySelector('.product-link');link.textContent=(p.button_label||'Learn more')+' →';link.href=p.button_url||urls[p.slug]||'#';
    if(p.status!=='published'&&p.slug!=='tradeflow'){link.href=urls[p.slug]||'#'}
   }
  }catch(e){/* Keep the built-in fallback copy visible if the content API is unavailable. */}

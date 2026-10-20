@@ -25,8 +25,8 @@ insert into public.platform_product_pages
 (slug,product_name,status,headline,tagline,description,button_label,button_url)
 values
 ('tradeflow','TradeFlow','published','Your buy and sell business. Built your way.','Buying, inventory, selling and customer workflows in one connected platform.','TradeFlow gives buy-and-sell businesses tools for valuations, buying workflows, inventory, sales and customer-facing websites.','Visit TradeFlow','https://tradeflow.laurendigital.co.uk/'),
-('studioflow','StudioFlow','coming_soon','A clearer way to run your creative studio.','StudioFlow is in development.','A planned platform for studio and creative-business workflows. Features and launch details will be shared when they are ready.','Coming soon','#'),
-('businessflow','BusinessFlow','coming_soon','Practical digital tools for your business.','A future Lauren Digital product concept.','BusinessFlow is a provisional concept for broader business workflows. Its name, scope and availability may change as the product family develops.','Coming soon','#')
+('studioflow','StudioFlow','coming_soon','A clearer way to run your creative studio.','StudioFlow is in development.','A planned platform for studio and creative-business workflows. Features and launch details will be shared when they are ready.','View StudioFlow','/studioflow'),
+('businessflow','BusinessFlow','coming_soon','Practical digital tools for your business.','A future Lauren Digital product concept.','BusinessFlow is a provisional concept for broader business workflows. Its name, scope and availability may change as the product family develops.','View BusinessFlow','/businessflow')
 on conflict (slug) do nothing;
 
 create or replace function public.platform_owner_get_product_pages()

@@ -28,6 +28,7 @@ export default {
       "tradeflow.leannelaurenlowe.workers.dev",
       "tradeflow-test.leannelaurenlowe.workers.dev",
       "laurendigital.co.uk",
+      "owner.laurendigital.co.uk",
       "www.laurendigital.co.uk",
       "localhost",
       "127.0.0.1",
@@ -43,6 +44,9 @@ export default {
       "/platform-owner-login": "/platform-owner-login.html",
       "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
+    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
+      cleanRoutes["/"] = "/platform-owner-login.html";
+    }
     if (isSubscriberDomain) {
       cleanRoutes["/"] = "/public-site.html";
       // Public subscriber pages use clean paths such as /buying and /sell.
@@ -55,7 +59,7 @@ export default {
       ) {
         cleanRoutes[url.pathname] = "/public-site.html";
       }
-    } else if (url.pathname === "/") {
+    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk") {
       // With html_handling disabled, the Worker must explicitly resolve the
       // platform root to index.html instead of relying on static index fallback.
       cleanRoutes["/"] = "/index.html";

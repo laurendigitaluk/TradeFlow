@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Lauren Digital builds practical digital platforms for businesses. Explore TradeFlow and discover the next products in our growing platform family.">
+<meta name="theme-color" content="#10283f">
+<title>Lauren Digital — Digital platforms built for business</title>
+<style>
+:root{--navy:#10283f;--navy2:#173c59;--orange:#f47721;--ink:#172533;--muted:#637282;--line:#e1e7ed;--paper:#f6f8fa;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--white);line-height:1.5}a{color:inherit}.container{width:min(1160px,calc(100% - 48px));margin:auto}
+header{height:78px;display:flex;align-items:center;border-bottom:1px solid #e8edf1;background:#fff}.head{display:flex;align-items:center;justify-content:space-between;gap:24px}.brand{display:flex;align-items:center;gap:11px;text-decoration:none}.brandmark{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:var(--orange);color:#fff;font-weight:900;font-size:1.25rem}.brandtext{font-size:1.18rem;font-weight:850;letter-spacing:-.045em}.brandtext small{display:block;color:#647282;font-size:.62rem;font-weight:750;letter-spacing:.13em;text-transform:uppercase;margin-top:-2px}.nav{display:flex;align-items:center;gap:26px}.nav a{text-decoration:none;font-size:.9rem;font-weight:650;color:#405063}.nav a:hover{color:#c45c17}.nav .owner{padding:10px 15px;border:1px solid #d6dfe7;border-radius:9px;color:var(--navy)}
+.hero{background:linear-gradient(115deg,#0d2439 0%,#173c59 65%,#8e451f 120%);color:#fff;overflow:hidden}.hero-inner{display:grid;grid-template-columns:1.12fr .88fr;align-items:center;gap:56px;padding-top:94px;padding-bottom:94px;min-height:520px}.eyebrow{font-size:.76rem;letter-spacing:.17em;text-transform:uppercase;font-weight:850;color:#ffad73}.hero h1{font-size:clamp(2.8rem,5.5vw,4.8rem);line-height:1.02;letter-spacing:-.065em;margin:16px 0 22px;max-width:700px}.hero h1 span{color:#ff8a32}.hero p{font-size:1.1rem;line-height:1.75;color:#e0e8ef;max-width:620px;margin:0}.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:13px 19px;border-radius:9px;text-decoration:none;font-weight:800;font-size:.92rem}.primary{background:var(--orange);color:#fff;box-shadow:0 8px 22px #0002}.primary:hover{background:#e86b1c}.outline{border:1px solid #ffffff5e;color:#fff}.visual{min-height:320px;position:relative;display:grid;place-items:center}.orb{position:absolute;width:310px;height:310px;border-radius:50%;background:linear-gradient(145deg,#f47721,#e4a06d);filter:blur(1px);opacity:.16;right:5%;top:0}.product-stack{position:relative;width:min(100%,420px);padding:25px;border:1px solid #ffffff30;border-radius:20px;background:#ffffff0e;backdrop-filter:blur(8px);box-shadow:0 25px 70px #06142155;transform:rotate(1deg)}.stack-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff28;padding-bottom:17px;margin-bottom:17px}.stack-brand{display:flex;align-items:center;gap:9px;font-weight:800}.mini-mark{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:var(--orange);font-weight:900}.live{font-size:.7rem;color:#b8f4d0;background:#145b47;padding:5px 9px;border-radius:99px}.stack-card{border:1px solid #ffffff24;background:#ffffff0b;border-radius:12px;padding:16px;margin-top:11px}.stack-card strong{display:block;font-size:1.03rem}.stack-card span{display:block;font-size:.8rem;color:#cbd8e2;margin-top:4px}.stack-footer{display:flex;gap:8px;margin-top:15px}.stack-footer i{height:5px;background:#ff8a32;border-radius:9px;display:block}.stack-footer i:nth-child(1){width:40%}.stack-footer i:nth-child(2){width:25%;opacity:.65}.stack-footer i:nth-child(3){width:15%;opacity:.4}
+.section{padding:82px 0}.section-head{max-width:700px;margin-bottom:34px}.section-head .eyebrow{color:#c75f1c}.section h2{font-size:clamp(2rem,3vw,2.8rem);letter-spacing:-.05em;line-height:1.1;margin:10px 0 13px}.section-head p{margin:0;color:var(--muted);font-size:1.02rem;line-height:1.7}.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.product{border:1px solid var(--line);border-radius:16px;padding:25px;display:flex;flex-direction:column;min-height:280px;background:#fff;box-shadow:0 6px 25px #0d24390a}.product.featured{border-top:4px solid var(--orange);padding-top:22px}.product-icon{height:47px;width:47px;display:grid;place-items:center;background:#fff0e5;color:#ba5719;border-radius:12px;font-size:1.15rem;font-weight:900;margin-bottom:18px}.product h3{margin:0;font-size:1.35rem;letter-spacing:-.03em}.product p{color:var(--muted);font-size:.94rem;line-height:1.7;margin:10px 0 20px}.product .product-link{margin-top:auto;text-decoration:none;color:#b95316;font-weight:850;display:inline-flex;align-items:center;gap:9px}.product .product-link:hover{text-decoration:underline;text-underline-offset:4px}.tag{display:inline-flex;align-self:flex-start;font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;font-weight:850;padding:5px 8px;border-radius:5px;background:#eaf6ef;color:#267047;margin-bottom:12px}.tag.soon{background:#f0f3f6;color:#657385}.about{background:var(--paper)}.about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:60px;align-items:start}.about-grid h2{margin-top:0}.principles{display:grid;grid-template-columns:1fr 1fr;gap:20px}.principle{border-left:3px solid var(--orange);padding-left:15px}.principle strong{display:block;margin-bottom:5px}.principle span{color:var(--muted);font-size:.91rem;line-height:1.65}
+.cta{padding:65px 0;background:#fff}.cta-panel{background:var(--navy);border-radius:18px;padding:38px 42px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px}.cta-panel h2{font-size:1.8rem;margin:0 0 8px;letter-spacing:-.04em}.cta-panel p{margin:0;color:#d4e0e9;max-width:650px}.cta-panel .btn{white-space:nowrap}
+footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-items:center;justify-content:space-between;gap:20px}.foot-brand{font-weight:850;color:#fff}.foot small{color:#a9b9c7}.foot-links{display:flex;gap:19px;flex-wrap:wrap}.foot-links a{font-size:.85rem;color:#dce5ec;text-decoration:none}.foot-links a:hover{text-decoration:underline}
+@media(max-width:850px){.nav{gap:14px}.hero-inner{grid-template-columns:1fr;gap:28px;padding-top:68px;padding-bottom:60px}.visual{min-height:270px}.product-stack{max-width:520px}.products{grid-template-columns:1fr 1fr}.about-grid{grid-template-columns:1fr;gap:25px}.cta-panel{align-items:flex-start;flex-direction:column}}
+@media(max-width:600px){.container{width:min(100% - 32px,1160px)}header{height:auto;min-height:72px;padding:12px 0}.head{align-items:flex-start}.nav{justify-content:flex-end;flex-wrap:wrap;gap:8px 13px}.nav a{font-size:.8rem}.nav .owner{padding:7px 9px}.brandtext{font-size:1rem}.brandmark{width:36px;height:36px}.hero-inner{padding-top:55px}.hero h1{font-size:2.75rem}.hero p{font-size:1rem}.visual{min-height:240px}.product-stack{padding:18px}.section{padding:58px 0}.products{grid-template-columns:1fr}.product{min-height:235px}.principles{grid-template-columns:1fr}.cta-panel{padding:28px 23px}.foot{align-items:flex-start;flex-direction:column}.foot-links{gap:12px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="container head">
+  <a class="brand" href="#top" aria-label="Lauren Digital home"><span class="brandmark">L</span><span class="brandtext">Lauren Digital<small>Digital platforms for business</small></span></a>
+  <nav class="nav" aria-label="Main navigation"><a href="#products">Our platforms</a><a href="#about">About</a><a class="owner" href="https://owner.laurendigital.co.uk/">Owner sign in</a></nav>
+ </div>
+</header>
+<main id="top">
+ <section class="hero">
+  <div class="container hero-inner">
+   <div>
+    <div class="eyebrow">One parent brand. A growing platform family.</div>
+    <h1>Digital platforms.<br><span>Built for business.</span></h1>
+    <p>Lauren Digital creates focused digital platforms that help businesses manage their work, serve customers and grow with confidence. Each product has its own identity, tools and website — connected by one parent brand.</p>
+    <div class="actions"><a class="btn primary" href="#products">Explore our platforms <span aria-hidden="true">→</span></a><a class="btn outline" href="#about">About Lauren Digital</a></div>
+   </div>
+   <div class="visual" aria-hidden="true">
+    <div class="orb"></div><div class="product-stack">
+     <div class="stack-top"><div class="stack-brand"><span class="mini-mark">L</span> Lauren Digital</div><span class="live">Platform family</span></div>
+     <div class="stack-card"><strong>TradeFlow</strong><span>Buying, inventory, selling and customer workflows.</span></div>
+     <div class="stack-card"><strong>StudioFlow</strong><span>Creative studio workflows · planned</span></div>
+     <div class="stack-card"><strong>More focused tools</strong><span>New ideas will join the family as they are developed.</span></div>
+     <div class="stack-footer"><i></i><i></i><i></i></div>
+    </div>
+   </div>
+  </div>
+ </section>
+ <section class="section" id="products">
+  <div class="container">
+   <div class="section-head"><div class="eyebrow">Explore the product family</div><h2>One brand. Purpose-built platforms.</h2><p>Start with the platform that fits your work. Each product has its own branded experience, with more options planned for the future.</p></div>
+   <div class="products">
+    <article class="product featured">
+     <div class="product-icon">TF</div><span class="tag">Available</span><h3>TradeFlow</h3><p>A platform for buy-and-sell businesses, bringing buying workflows, valuations, inventory, sales and customer-facing websites together.</p><a class="product-link" href="https://tradeflow.laurendigital.co.uk/">Visit TradeFlow <span aria-hidden="true">→</span></a>
+    </article>
+    <article class="product">
+     <div class="product-icon">SF</div><span class="tag soon">Planned</span><h3>StudioFlow</h3><p>A future platform concept for studio and creative-business workflows. Product scope and launch details will be announced when development is ready.</p><a class="product-link" href="mailto:hello@laurendigital.co.uk?subject=StudioFlow%20updates">Register interest <span aria-hidden="true">→</span></a>
+    </article>
+    <article class="product">
+     <div class="product-icon">BF</div><span class="tag soon">Concept</span><h3>BusinessFlow</h3><p>A placeholder for a potential broader business-management platform. The name and scope are provisional and may change as the product family develops.</p><a class="product-link" href="mailto:hello@laurendigital.co.uk?subject=Future%20Lauren%20Digital%20platforms">Suggest a platform <span aria-hidden="true">→</span></a>
+    </article>
+   </div>
+  </div>
+ </section>
+ <section class="section about" id="about">
+  <div class="container about-grid">
+   <div><div class="eyebrow">About Lauren Digital</div><h2>Independent products. A shared direction.</h2></div>
+   <div><p style="color:var(--muted);margin-top:0;line-height:1.8">Lauren Digital is the parent brand for a growing family of focused digital products. Rather than forcing every business into one giant system, each platform is designed around a specific set of needs and can develop its own clear identity.</p>
+    <div class="principles"><div class="principle"><strong>Purpose-built</strong><span>Tools shaped around real business workflows.</span></div><div class="principle"><strong>Distinct brands</strong><span>Each product gets its own name, website and experience.</span></div><div class="principle"><strong>Built in stages</strong><span>New platforms appear when they are ready, not just because they are listed here.</span></div><div class="principle"><strong>Room to grow</strong><span>A consistent parent brand with space for future ideas.</span></div></div>
+   </div>
+  </div>
+ </section>
+ <section class="cta"><div class="container"><div class="cta-panel"><div><h2>Looking for a platform for your business?</h2><p>Explore TradeFlow today, or get in touch about future Lauren Digital products.</p></div><a class="btn primary" href="https://tradeflow.laurendigital.co.uk/">Explore TradeFlow <span aria-hidden="true">→</span></a></div></div></section>
+</main>
+<footer><div class="container foot"><div><div class="foot-brand">Lauren Digital</div><small>Digital platforms for business</small></div><div class="foot-links"><a href="#products">Our platforms</a><a href="#about">About</a><a href="https://owner.laurendigital.co.uk/">Owner portal</a><a href="https://tradeflow.laurendigital.co.uk/">TradeFlow</a></div><small>© <span id="year">2026</span> Lauren Digital</small></div></footer>
+</body>
+</html>

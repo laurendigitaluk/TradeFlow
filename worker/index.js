@@ -44,7 +44,7 @@ export default {
       "/platform-owner-login": "/platform-owner-login.html",
       "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
-    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
+    if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {\n      cleanRoutes["/"] = "/lauren-digital-home.html";\n    }\n    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/platform-owner-login.html";
     }
     if (isSubscriberDomain) {
@@ -59,7 +59,7 @@ export default {
       ) {
         cleanRoutes[url.pathname] = "/public-site.html";
       }
-    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk") {
+    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk" && hostname !== "laurendigital.co.uk" && hostname !== "www.laurendigital.co.uk") {
       // With html_handling disabled, the Worker must explicitly resolve the
       // platform root to index.html instead of relying on static index fallback.
       cleanRoutes["/"] = "/index.html";

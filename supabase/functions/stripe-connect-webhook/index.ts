@@ -3,6 +3,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const STRIPE_CONNECT_WEBHOOK_SECRET = Deno.env.get("STRIPE_CONNECT_WEBHOOK_SECRET");
+const EXPECTED_STRIPE_MODE = Deno.env.get("TRADEFLOW_STRIPE_MODE") || "live";
 const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
@@ -71,6 +72,9 @@ Deno.serve(async (request: Request) => {
     if (!valid) return json({ error: "Invalid Stripe signature" }, 400);
 
     const event = JSON.parse(rawBody);
+    if ((EXPECTED_STRIPE_MODE !== "live" && EXPECTED_STRIPE_MODE !== "test") || event.livemode !== (EXPECTED_STRIPE_MODE === "live")) {
+      return json({ error: "Stripe webhook mode does not match this TradeFlow environment." }, 400);
+    }
     const object = event?.data?.object;
     if (!event?.id || !event?.type || !object) return json({ received: true });
 
@@ -138,11 +142,11 @@ Deno.serve(async (request: Request) => {
     if (!tenantId || !paymentId) return json({ received: true, ignored: "not_a_tradeflow_order_payment" });
 
     const connectionResponse = await rest(
-      `payment_provider_connections?tenant_id=eq.${encodeURIComponent(tenantId)}&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.${encodeURIComponent(accountId)}&select=id&limit=1`,
+      `payment_provider_connections?tenant_id=eq.${encodeURIComponent(tenantId)}&provider=eq.stripe&connection_type=eq.customer_payments&provider_account_id=eq.${encodeURIComponent(accountId)}&select=id,livemode&limit=1`,
     );
     if (!connectionResponse.ok) return json({ error: "Unable to validate connected Stripe account." }, 500);
     const connections = await connectionResponse.json();
-    if (!Array.isArray(connections) || connections.length !== 1) {
+    if (!Array.isArray(connections) || connections.length !== 1 || connections[0].livemode !== (EXPECTED_STRIPE_MODE === "live")) {
       return json({ error: "Connected Stripe account does not match this TradeFlow tenant." }, 403);
     }
 

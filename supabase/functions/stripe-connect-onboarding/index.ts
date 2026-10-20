@@ -105,6 +105,9 @@ Deno.serve(async (req: Request) => {
       if (!existing?.provider_account_id) {
         return json({ connected: false, status: "not_connected", message: "Stripe has not been connected yet." }, 200, origin);
       }
+      if (existing.livemode !== (EXPECTED_STRIPE_MODE === "live")) {
+        return json({ error: "The saved connected account belongs to a different Stripe mode. No Stripe request was made." }, 409, origin);
+      }
       diagnosticStage = "stripe_existing_account_retrieve";
       const account = await stripeV2("core/accounts/" + encodeURIComponent(existing.provider_account_id) + "?include%5B0%5D=configuration.merchant&include%5B1%5D=defaults&include%5B2%5D=requirements");
       const controller = account.controller || {};

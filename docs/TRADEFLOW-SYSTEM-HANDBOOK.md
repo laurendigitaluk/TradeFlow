@@ -2236,3 +2236,13 @@ Migration `supabase/migrations/20261021203732_harden_published_security_definer_
 7. Re-run advisors and record actual outcomes before preparing a separately reviewed LIVE plan.
 
 Reference: Supabase password-security documentation https://supabase.com/docs/guides/auth/password-security
+
+
+## ADDITIONAL TEST PERFORMANCE FIX — 21 OCTOBER 2026
+
+A second TEST-only migration was applied: `supabase/migrations/20261021203931_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
+- Removed `customer_credit_accounts_tenant_customer_uidx`; retained the identical constraint-backed `customer_credit_accounts_tenant_id_customer_id_key` index.
+- Removed `payment_records_tenant_idempotency_idx`; retained `payment_records_tenant_id_idempotency_key_uidx` with the same partial unique predicate.
+- Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.
+
+Post-migration SQL verified the retained payment idempotency and tenant-primary indexes. The Supabase performance advisor's `duplicate_index` finding fell from 3 to 0; other performance warnings remain. No workload benchmark is claimed because TEST is newly created and has only one active tenant. Rollback, only if required, is to recreate the three removed indexes using their exact original definitions; this restores the previous redundant state and is not the preferred outcome.

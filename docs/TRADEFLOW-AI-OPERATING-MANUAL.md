@@ -2611,3 +2611,12 @@ Do not mark untested functionality complete. Update this note only when supporte
 - Access remains gated by an active plan, an enabled matching `plan_features` row, and `ended_at` being null or in the future. Trial and paid/past-due rules remain unchanged.
 - Applied to LIVE and verified the function definition, `SECURITY DEFINER` status, and pinned `search_path` (`pg_catalog, public`). This confirms the database function update, not a full end-to-end complimentary tenant browser test.
 - Do not route complimentary subscriptions through Stripe or alter Stripe price IDs for this change. Verify a designated complimentary tenant can access its enabled features and that ended/inactive subscriptions remain denied.
+
+## Security and performance audit continuation — 21 October 2026
+
+- Rechecked Supabase advisors for TEST and LIVE. Both report the same major categories: public-schema pg_net extension, 8 anon-executable SECURITY DEFINER functions, 164 authenticated-executable SECURITY DEFINER functions, and 65 unindexed foreign-key findings.
+- Both environments have RLS enabled on all 99 ordinary tables in public (99/99; none disabled). This is a coverage check only, not proof that every policy expression is correct.
+- Do not blanket-revoke SECURITY DEFINER execution grants: public published-site/catalogue and public-plan RPCs may intentionally need anon access, and authenticated RPCs require per-function authorization review.
+- Do not add all 65 foreign-key indexes blindly. Review existing index coverage, query plans and write overhead first; prioritize tenant-scoped transactional tables and high-traffic lookups.
+- Continue by comparing exact RLS policy expressions and security-sensitive RPC bodies across TEST and LIVE, then review advisor findings in batches. LIVE is the behavioural reference and must remain stable; TEST-only Stripe configuration must remain isolated.
+- Complimentary subscription access was added to LIVE in migration 20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql. Database function definition verified; an end-to-end browser test for an actual complimentary tenant is still outstanding.

@@ -38,7 +38,7 @@ Deno.serve(async (req: Request) => {
 
     // Only allow recovery for an existing account that already owns a complimentary/manual tenant.
     const accountResponse = await fetch(
-      SUPABASE_URL + "/rest/v1/tenant_memberships?select=user_id,tenant_id,tenant:tenants!inner(status,tenant_subscriptions(status,billing_provider,provider_status))&user_id=not.is.null&status=eq.active",
+      SUPABASE_URL + "/rest/v1/tenant_memberships?select=user_id,tenant_id,tenant:tenants!inner(status,tenant_subscriptions(status,billing_provider,provider_status))&user_id=not.is.null",
       { headers: { apikey: SERVICE_ROLE_KEY, Authorization: "Bearer " + SERVICE_ROLE_KEY } },
     );
     if (!accountResponse.ok) return json({ error: "Unable to verify existing subscriber access. No email was sent." }, 500);
@@ -51,9 +51,9 @@ Deno.serve(async (req: Request) => {
     const user = (userPayload.users || []).find((u: any) => String(u.email || "").toLowerCase() === email);
     if (!user) return json({ error: "No existing TradeFlow account was found for that email. Use Create complimentary subscriber for a new account." }, 404);
     const eligible = rows.some((row: any) => row.user_id === user.id &&
-      row.tenant?.status === "active" &&
       Array.isArray(row.tenant?.tenant_subscriptions) &&
-      row.tenant.tenant_subscriptions.some((s: any) => s.status === "active" && s.billing_provider === "manual" && s.provider_status === "complimentary"));
+      row.tenant.tenant_subscriptions.some((s: any) => s.billing_provider === "manual" && s.provider_status === "complimentary"));
+    // Resending a setup link must work even if the existing complimentary test workspace was archived or its subscription was cancelled.
     if (!eligible) return json({ error: "This account does not currently have an active complimentary workspace. No recovery email was sent." }, 409);
 
     const recovery = await fetch(SUPABASE_URL + "/auth/v1/recover?redirect_to=" + encodeURIComponent(ORIGIN + "/subscriber-invitation-accept.html"), {

@@ -865,3 +865,12 @@ The customer dashboard API helper now detects an HTTP 401, refreshes the existin
 - No customer/account/tenant rows, auth users, schema, RLS, or RPC definitions were changed.
 - LIVE only; TEST remains untouched.
 - This repair is on branch `fix-customer-bank-save-expired-session-20261013` and is not yet verified in the deployed site. Merge/deploy is required, then a customer must save their own real bank details and confirm the saved values reload. Never treat the screenshot's example bank values as real data.
+
+
+## Release gate update — 22 October 2026
+
+- Do not merge the TEST branch wholesale into production; branches have diverged (TEST 114 commits ahead and 26 behind).
+- Keep TEST and LIVE Supabase/Stripe configuration separate. TEST project: `nnsshnfkjcflucjrftzi`; LIVE project: `gxsrajtqzdjvmceqcpgv`.
+- Browser-confirmed in TEST: owner product-page editor displays TradeFlow Published, StudioFlow Coming soon and BusinessFlow Coming soon; complimentary subscriber can set password, sign in, sign out and sign in again using the subscriber portal.
+- Not yet verified: resend setup email end-to-end, product setting save/refresh persistence, and full browser regression after deployment.
+- Do not delete legacy files until runtime references, Worker routing, Edge Functions, migrations and rollback/checkpoint dependencies have been reviewed. No LIVE changes were made during this verification.

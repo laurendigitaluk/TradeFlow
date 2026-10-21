@@ -155,3 +155,17 @@ Until these are complete, do not describe Stripe Connect, checkout, or webhook h
 ## Update policy
 
 This addendum records verified configuration and outstanding checks as of 21 October 2026. Update the status after runtime evidence is collected. Do not rewrite an unverified state as complete.
+
+## TEST subscriber registration — subscription redirect not observed (21 October 2026)
+
+During manual verification of the new TEST Worker at `https://tradeflow-test.leannelaurenlowe.workers.dev/`, a synthetic subscriber account was created through the subscriber registration flow. Registration did **not** redirect the user to Stripe Checkout or a subscription/payment page.
+
+- This is a recorded TEST observation, not proof that the LIVE subscription flow is broken.
+- The operator reports that LIVE Stripe subscription checkout works; do not alter LIVE configuration or code to address this TEST-only observation.
+- The TEST project currently has no migrated subscriber/tenant records, so the new test subscriber must be verified in the new TEST Supabase project.
+- Investigate the registration → tenant creation → subscription/trial setup → Stripe Checkout hand-off, including whether a redirect is intentionally deferred until a later step or is missing due to TEST configuration.
+- Check browser-visible registration outcome, relevant TEST Worker requests, Supabase Auth and database records, and Edge Function logs before changing code.
+- Do not manually create database rows or mark a subscription as paid to bypass the expected application flow.
+- Once the cause is identified, add a repeatable TEST case and verify the correct next step after registration. Keep LIVE untouched.
+
+Status: **Open — documented, not yet diagnosed.**

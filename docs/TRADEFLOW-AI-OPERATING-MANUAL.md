@@ -2741,3 +2741,12 @@ TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and 
 - Git commit: `e73ad3c8dcad922fc8daa569b63b9196ec6a86d0` on `test/stripe-connect-test-mode-repair-20261020`.
 - GitHub Actions reports no workflow runs for this branch. Therefore, the source fix is committed but hosted TEST asset deployment and browser verification are still pending. Do not ask the user to press the resend button until the served JavaScript is confirmed updated and the flow is tested.
 - No account, tenant, membership, subscription, LIVE, or Stripe records were changed by this correction.
+
+
+## TEST resend email validation correction — 21 October 2026
+
+- Screenshot showed `Enter a valid subscriber email address.` despite an apparently valid email. Root cause: the email-validation regex in `supabase/functions/platform-resend-complimentary-setup/index.ts` had over-escaped backslashes, so it tested for literal backslash/s characters rather than whitespace and a literal dot correctly.
+- Corrected the regex to `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` and committed as `170a6ef121fc719840d00be040bd515a5976d7f0` on `test/stripe-connect-test-mode-repair-20261020`.
+- Deployed TEST Edge Function `platform-resend-complimentary-setup` as ACTIVE version 3 with JWT verification enabled.
+- The resend request had failed validation before attempting email delivery, so this screenshot does not indicate an email provider or JWT failure. Next step is a single retry from the TEST owner dashboard. If validation passes, investigate the next response rather than retrying repeatedly.
+- No tenant/account/subscription data, LIVE resources, or Stripe settings were changed by this fix.

@@ -2603,3 +2603,11 @@ Do not mark untested functionality complete. Update this note only when supporte
 - Supabase advisors show existing SECURITY DEFINER access warnings, pg_net in public schema, and unindexed foreign-key warnings. Review individually; do not blanket-revoke or change extension placement.
 - RLS being enabled on inspected tables does not prove every policy is correct. Matching frontend code/advisor counts do not establish complete environment parity.
 - Remaining checks: product rows in both catalogues, TEST Save draft browser confirmation, TEST Sandbox checkout/webhook/status, and advisor review. Keep TEST/LIVE data separate and do not mark untested flows complete.
+
+
+## Complimentary subscription feature access — 21 October 2026
+
+- LIVE migration `20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql` updates `private.has_tenant_feature(uuid,text)` to recognise explicitly active manual complimentary subscriptions (`billing_provider = 'manual'`, `provider_status = 'complimentary'`).
+- Access remains gated by an active plan, an enabled matching `plan_features` row, and `ended_at` being null or in the future. Trial and paid/past-due rules remain unchanged.
+- Applied to LIVE and verified the function definition, `SECURITY DEFINER` status, and pinned `search_path` (`pg_catalog, public`). This confirms the database function update, not a full end-to-end complimentary tenant browser test.
+- Do not route complimentary subscriptions through Stripe or alter Stripe price IDs for this change. Verify a designated complimentary tenant can access its enabled features and that ended/inactive subscriptions remain denied.

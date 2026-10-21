@@ -348,6 +348,7 @@ async function createComplimentarySubscriber(event){
  finally{button.disabled=false}
 }
 
+$('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
 $('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;

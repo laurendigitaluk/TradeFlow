@@ -380,7 +380,8 @@ async function resendComplimentarySetupLink(event){
  const button=$('complimentary-resend-submit'),status=$('complimentary-resend-status');
  button.disabled=true;status.textContent='Sending account setup link…';
  try{
-  const session=await request('/auth/v1/user');
+  if(!session?.access_token)throw Error('Your platform-owner session has expired. Sign in again and retry.');
+  await request('/auth/v1/user');
   const email=$('complimentary-resend-email').value.trim().toLowerCase();
   const response=await fetch(SUPABASE_URL+'/functions/v1/platform-resend-complimentary-setup',{
    method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},

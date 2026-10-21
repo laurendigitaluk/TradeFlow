@@ -349,6 +349,33 @@ function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
+async function createComplimentarySubscriber(event){
+ event.preventDefault();
+ const form=event.currentTarget,button=$('complimentary-submit'),status=$('complimentary-status');
+ button.disabled=true;status.textContent='Creating invitation and complimentary workspace…';
+ const payload={
+  business_name:$('complimentary-business-name').value.trim(),
+  owner_name:$('complimentary-owner-name').value.trim(),
+  email:$('complimentary-owner-email').value.trim()
+ };
+ try{
+  await request('/auth/v1/user');
+  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-create-complimentary-subscriber',{
+   method:'POST',
+   headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
+   body:JSON.stringify(payload)
+  });
+  const raw=await response.text();let data=null;try{data=raw?JSON.parse(raw):null}catch{}
+  if(!response.ok)throw Error(data?.error||data?.message||raw||'Unable to create complimentary subscriber.');
+  status.textContent=data?.message||'Complimentary subscriber workspace created and invitation sent.';
+  form.reset();
+  await loadTenants();
+ }catch(error){status.textContent=error?.message||String(error)}
+ finally{button.disabled=false}
+}
+
+
+$('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
 $('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;

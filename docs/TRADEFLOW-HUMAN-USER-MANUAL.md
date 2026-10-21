@@ -2005,3 +2005,10 @@ This note records observed results and open checks; it is not a claim that every
 - Do not merge/deploy the complimentary-subscriber release candidate until LIVE owner origin/redirect configuration, migration compatibility, owner-only access, invitation flow, and paid Stripe signup regression checks have been verified.
 
 Update this status only when new browser observations, query results, webhook deliveries, or controlled end-to-end tests support the change. Do not mark untested functionality complete.
+
+
+## Update — 22 October 2026: product settings and subscriber sign-in test
+
+The TEST owner dashboard now visibly includes product-page settings for TradeFlow, StudioFlow and BusinessFlow. Their expected statuses are TradeFlow Published; StudioFlow and BusinessFlow Coming soon. A complimentary TEST subscriber successfully set a password and accessed the subscriber dashboard, then signed out and signed back in. Use the subscriber login page for subscriber accounts; the platform-owner login is for platform-owner accounts only.
+
+Do not use the resend setup-link button until guided to do so; its full end-to-end behavior is not yet verified. LIVE remains separate and was not changed by this test. Do not delete old project files as a general cleanup step until dependencies and runtime references are checked.

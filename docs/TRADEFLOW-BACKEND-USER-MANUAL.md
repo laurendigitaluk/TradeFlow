@@ -1470,3 +1470,8 @@ Do not mark untested functionality complete. Update this note only when supporte
 - Supabase advisors show existing SECURITY DEFINER access warnings, pg_net in public schema, and unindexed foreign-key warnings. Review individually; do not blanket-revoke or change extension placement.
 - RLS being enabled on inspected tables does not prove every policy is correct. Matching frontend code/advisor counts do not establish complete environment parity.
 - Remaining checks: product rows in both catalogues, TEST Save draft browser confirmation, TEST Sandbox checkout/webhook/status, and advisor review. Keep TEST/LIVE data separate and do not mark untested flows complete.
+
+
+## Release verification note — 22 October 2026
+
+Production and TEST are divergent; the TEST branch must not be merged wholesale into production. Keep TEST project `nnsshnfkjcflucjrftzi` and LIVE project `gxsrajtqzdjvmceqcpgv` isolated. TEST UI shows all three product settings and correct publication statuses. Complimentary subscriber login/logout/login was confirmed in the subscriber portal; using the owner login for that account was an invalid test. The resend email flow and save/refresh persistence still require dedicated verification. No LIVE database or Stripe changes were made during this verification. Do not delete archived migrations/checkpoints or runtime files without a dependency/reference audit.

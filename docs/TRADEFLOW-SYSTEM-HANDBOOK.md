@@ -2286,3 +2286,12 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - The operation remains restricted to the TEST owner portal origin and authenticated active platform-owner membership. The function still rejects accounts that have no existing complimentary/manual subscription record.
 - TEST account `scenesource1@gmail.com` remains available for recovery. No authentication account, tenant, membership, or subscription was deleted or modified in this change. No LIVE resources or Stripe settings were changed.
 - Next verification: use the TEST owner dashboard's “Resend account setup link” section for this existing email, complete password setup from the email, then separately review and restore the archived/cancelled workspace only if required for the no-payment access test.
+
+
+## TEST owner resend session-token correction — 21 October 2026
+
+- Fixed `platform-owner-dashboard.js` resend handler to use the dashboard's stored `session.access_token` for the Edge Function Authorization header. The handler previously assigned the response from `/auth/v1/user` to a variable named `session`, then attempted to read `session.access_token`; `/auth/v1/user` returns user data, not the session token, causing the request to fail with `Invalid JWT`.
+- The handler now checks that a stored access token exists, validates the current user with `/auth/v1/user`, and sends the Edge Function request with the existing stored access token. If no token is present, it instructs the owner to sign in again.
+- Git commit: `e73ad3c8dcad922fc8daa569b63b9196ec6a86d0` on `test/stripe-connect-test-mode-repair-20261020`.
+- GitHub Actions reports no workflow runs for this branch. Therefore, the source fix is committed but hosted TEST asset deployment and browser verification are still pending. Do not ask the user to press the resend button until the served JavaScript is confirmed updated and the flow is tested.
+- No account, tenant, membership, subscription, LIVE, or Stripe records were changed by this correction.

@@ -2052,3 +2052,16 @@ This addendum records verified configuration and outstanding checks as of 21 Oct
 5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE origin/redirects, migration compatibility, owner-only access, invitation flow, and paid checkout regression are verified.
 
 This note records evidence and open items as of 21 October 2026. Do not mark untested flows complete.
+
+
+## SECURITY CHECKPOINT — 21 OCTOBER 2026
+
+The security audit is in progress. TEST is the repair and verification environment; LIVE has not been changed by this checkpoint.
+
+One database hardening change has been applied and verified in TEST: the published website, published listings, published listing media and media-visibility RPC functions now use an empty database `search_path` while keeping their existing permissions. The migration is recorded in `supabase/migrations/20261021203732_harden_published_security_definer_search_paths.sql`.
+
+The TEST project currently has no published-site records, so only negative-path database smoke tests could be completed. A populated website/browser regression is still required. The Website Builder Save Draft action also needs a successful end-to-end test.
+
+The current Supabase advisors still report password protection disabled and other function/RLS/index review items. These do not mean all reported objects are unsafe; they are being checked individually to avoid breaking public websites, customer purchases or tenant access. The Auth setting requires the owner to enable leaked-password protection in the TEST Supabase Dashboard under Authentication → Attack Protection/password security, then verify login, password change and recovery. LIVE should follow only after TEST passes.
+
+The complimentary-subscriber release PR #157 remains a draft and is not live. Paid Stripe checkout must remain unchanged. Do not treat this checkpoint as final security approval.

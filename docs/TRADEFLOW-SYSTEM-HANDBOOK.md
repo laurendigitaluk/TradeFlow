@@ -2268,3 +2268,12 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - TEST dashboard product-page editor is present for TradeFlow, StudioFlow, and BusinessFlow; Cloudflare deployment history showed the dashboard parity deployment as Ready and the owner confirmed the section is visible.
 - Product page statuses in TEST are TradeFlow `published`, StudioFlow `coming_soon`, BusinessFlow `coming_soon`.
 - Remaining browser check: save a harmless field change and confirm it persists after refreshing the section. Complimentary subscriber end-to-end testing still requires a dedicated approved test email. Do not promote this dashboard work to LIVE until required TEST checks pass.
+
+
+## Complimentary invitation acceptance repair — 21 October 2026
+
+- The complimentary-subscriber Edge Function now redirects invitation emails to `subscriber-invitation-accept.html` rather than `subscriber-login.html`.
+- The new acceptance page presents email, password, and password-confirmation fields; it validates the invite access token and matching email, sets the password through Supabase Auth, stores the resulting subscriber session, and then redirects to the subscriber dashboard. It does not initiate Stripe checkout.
+- TEST Edge Function `platform-create-complimentary-subscriber` redeployed successfully as ACTIVE version 3 with JWT verification enabled.
+- The initial invitation to `scenesource1@gmail.com` arrived, but the click-through showed the ordinary sign-in page and failed. Do not treat the invitation flow as verified until a fresh invitation is issued after this change and account activation, dashboard access, and complimentary feature access are tested end-to-end.
+- Do not change LIVE or reuse the existing invite link for this test; its redirect points to the old sign-in route. The current repair is TEST-only.

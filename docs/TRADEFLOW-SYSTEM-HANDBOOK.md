@@ -2205,3 +2205,34 @@ This addendum records verified configuration and outstanding checks as of 21 Oct
 5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE origin/redirects, migration compatibility, owner-only access, invitation flow, and paid checkout regression are verified.
 
 This note records evidence and open items as of 21 October 2026. Do not mark untested flows complete.
+
+
+## SECURITY AUDIT CHECKPOINT — 21 OCTOBER 2026 (TEST)
+
+### Environment and release boundary
+- TEST branch: `test/stripe-connect-test-mode-repair-20261020`.
+- TEST Supabase: `nnsshnfkjcflucjrftzi`.
+- LIVE branch: `production`; LIVE Supabase: `gxsrajtqzdjvmceqcpgv`.
+- The retired TEST Supabase project `twfbmjwwqzxdxvclxbun` must never be used.
+- No LIVE changes were made by this checkpoint.
+
+### Applied change
+Migration `supabase/migrations/20261021203732_harden_published_security_definer_search_paths.sql` sets `search_path = ''` on six published-site/listing/media SECURITY DEFINER functions after their definitions were inspected and application-table references were confirmed schema-qualified. Migration succeeded. A database readback confirmed all six settings are empty and execution ACLs are unchanged. Rollback can restore `pg_catalog, public` on `get_published_site_by_slug`, `get_published_site_preview`, `get_published_sites`, and `public` on `get_published_store_listing_media`, `get_published_store_listings`, `is_published_tradeflow_media`.
+
+### Actual verification state
+- Negative-path smoke test: nonexistent site slug returns 0 rows; published-site query returns 0 rows; nonexistent tenant listings return 0 rows; nonexistent media returns false.
+- TEST contains no published-site records, so populated-site and browser regression tests have not passed or been run; they remain pending.
+- `site_revisions` RLS is enabled; authenticated UPDATE table privilege is present; anon UPDATE privilege is absent. Browser Save Draft remains unverified.
+- Source inspection has so far confirmed ownership/tenant checks in selected customer order/payment/credit functions, tenant permission/feature checks in selected catalogue writes, and platform-owner/email checks in complimentary provisioning. Full SECURITY DEFINER coverage and tenant-isolation testing remain pending.
+- Fresh advisors: leaked-password protection disabled; 8 anon-callable and 164 authenticated-callable SECURITY DEFINER functions; 65 unindexed foreign keys; 166 RLS init-plan findings; 14 multiple-permissive-policy findings; 3 duplicate indexes; unused-index and Auth connection-allocation warnings. Treat as review queues, not bulk-change instructions.
+
+### Outstanding
+1. Owner enables leaked-password protection in TEST Auth → Attack Protection/password security; test signup/password change/login/recovery. Apply equivalent LIVE setting only after TEST is verified.
+2. Finish function grant/body review, especially payment, platform-owner and complimentary provisioning RPCs; verify public RPCs return only intended published data.
+3. Run allowed/denied tenant-isolation tests for website drafts, catalogue/pricing, customer orders/addresses/payments, owner-only operations and private storage.
+4. Test Website Builder Save Draft and populated public website/listings in TEST.
+5. Review and measure RLS/index/extension/connection performance findings; keep migrations minimal and reversible.
+6. PR #157 remains OPEN/DRAFT and is not merged/deployed. Verify canonical owner origin, redirect allow-list, invitation/recovery, owner-only access and paid checkout regression before release.
+7. Re-run advisors and record actual outcomes before preparing a separately reviewed LIVE plan.
+
+Reference: Supabase password-security documentation https://supabase.com/docs/guides/auth/password-security

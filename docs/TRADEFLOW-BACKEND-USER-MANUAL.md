@@ -1543,3 +1543,13 @@ This note records evidence and open items as of 21 October 2026. Do not mark unt
 The available connected tools do not expose the Auth leaked-password-protection setting. In TEST Dashboard → Authentication → Attack Protection/password security, enable leaked-password protection and confirm it is saved. Then test sign-up/password changes, login and recovery before making the equivalent LIVE change. Reference: https://supabase.com/docs/guides/auth/password-security
 
 PR #157 remains open/draft, not merged or deployed. Do not deploy to LIVE until origin/redirects, invitations/recovery, owner-only provisioning and standard paid Stripe checkout are verified. This audit step made no LIVE changes.
+
+
+## ADDITIONAL TEST PERFORMANCE FIX — 21 OCTOBER 2026
+
+A second TEST-only migration was applied: `supabase/migrations/20261021203931_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
+- Removed `customer_credit_accounts_tenant_customer_uidx`; retained the identical constraint-backed `customer_credit_accounts_tenant_id_customer_id_key` index.
+- Removed `payment_records_tenant_idempotency_idx`; retained `payment_records_tenant_id_idempotency_key_uidx` with the same partial unique predicate.
+- Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.
+
+Post-migration SQL verified the retained payment idempotency and tenant-primary indexes. The Supabase performance advisor's `duplicate_index` finding fell from 3 to 0; other performance warnings remain. No workload benchmark is claimed because TEST is newly created and has only one active tenant. Rollback, only if required, is to recreate the three removed indexes using their exact original definitions; this restores the previous redundant state and is not the preferred outcome.

@@ -59,6 +59,15 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 .bulk-toolbar #bulk-add:hover:not(:disabled){background:linear-gradient(135deg,#b85f24,#c96d2e);transform:translateY(-2px);box-shadow:0 7px 16px rgba(196,106,43,.22)}
 .bulk-toolbar #bulk-add:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
 </style>
+<style>
+/* Clear catalogue call-to-action tabs */
+.catalogue-tabs{display:flex;gap:10px;margin-top:18px;align-items:center}
+.catalogue-tab{appearance:none;padding:11px 18px;border:1px solid #2f6f9f;border-radius:9px;background:#2f6f9f;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(47,111,159,.16);transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease}
+.catalogue-tab:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 16px rgba(47,111,159,.22);background:#285f88}
+.catalogue-tab:focus-visible{outline:3px solid rgba(82,143,190,.25);outline-offset:2px}
+.catalogue-tab.active{background:linear-gradient(135deg,#c46a2b,#d47a37);border-color:#c46a2b;color:#fff;box-shadow:0 5px 14px rgba(196,106,43,.22)}
+.catalogue-tab.active:hover:not(:disabled){background:linear-gradient(135deg,#b85f24,#c96d2e)}
+</style>
 </head>
 <body>
 <header class="topbar"><div class="brand"><strong>TradeFlow</strong><span class="brand-context">Buying &amp; Pricing</span></div><div class="account"><span id="business-name">Buying Pricing</span><button id="sign-out" type="button">Sign out</button></div></header>
@@ -99,10 +108,3 @@ window.addEventListener('unhandledrejection',e=>{const m=document.getElementById
 </script>
 <script src="subscriber-auth.js?v=9"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=45"></script>
 </body></html>
-/* Clear catalogue call-to-action tabs */
-.catalogue-tabs{display:flex;gap:10px;margin-top:18px;align-items:center}
-.catalogue-tab{appearance:none;padding:11px 18px;border:1px solid #2f6f9f;border-radius:9px;background:#2f6f9f;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(47,111,159,.16);transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease}
-.catalogue-tab:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 16px rgba(47,111,159,.22);background:#285f88}
-.catalogue-tab:focus-visible{outline:3px solid rgba(82,143,190,.25);outline-offset:2px}
-.catalogue-tab.active{background:linear-gradient(135deg,#c46a2b,#d47a37);border-color:#c46a2b;color:#fff;box-shadow:0 5px 14px rgba(196,106,43,.22)}
-.catalogue-tab.active:hover:not(:disabled){background:linear-gradient(135deg,#b85f24,#c96d2e)}

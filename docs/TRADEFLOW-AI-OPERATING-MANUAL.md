@@ -2750,3 +2750,12 @@ TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and 
 - Deployed TEST Edge Function `platform-resend-complimentary-setup` as ACTIVE version 3 with JWT verification enabled.
 - The resend request had failed validation before attempting email delivery, so this screenshot does not indicate an email provider or JWT failure. Next step is a single retry from the TEST owner dashboard. If validation passes, investigate the next response rather than retrying repeatedly.
 - No tenant/account/subscription data, LIVE resources, or Stripe settings were changed by this fix.
+
+
+## TEST complimentary subscriber access restored — 21 October 2026
+
+- The existing test account `scenesource1@gmail.com` completed the recovery email flow, but subscriber sign-in displayed “This account is not an active member of a TradeFlow business.”
+- TEST database inspection found tenant `test-test` (`e89c35a7-7518-45f8-b1f7-6324a0eba458`) had status `archived`; its owner membership was already `active`; its subscription was `cancelled` but explicitly marked `billing_provider=manual`, `provider_status=complimentary`, and `metadata.complimentary=true`.
+- Restored only this existing TEST workspace: set tenant status to `active`, cleared `archived_at`, restored the same manual complimentary subscription to `active`, cleared `ended_at`, and removed close-only metadata (`closed_at`, `close_reason`, `closed_by_platform_owner`). Kept the existing account, tenant, membership, plan, and complimentary billing markers. No Stripe fields or payment data changed.
+- A read-after-write query confirmed tenant `active`, owner membership `active`, subscription `active`, `billing_provider=manual`, `provider_status=complimentary`, and `metadata.complimentary=true`.
+- Next verification: user should sign in on the TEST subscriber login page with `scenesource1@gmail.com` and the newly set password. Confirm dashboard loads the existing `test test` workspace. Do not create a duplicate account. LIVE remains untouched.

@@ -1,7 +1,8 @@
 (() => {
   'use strict';
-  const SUPABASE_URL = 'https://gxsrajtqzdjvmceqcpgv.supabase.co';
-  const KEY = 'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+  const isTestHost = location.hostname === 'tradeflow-test.leannelaurenlowe.workers.dev';
+  const SUPABASE_URL = isTestHost ? 'https://nnsshnfkjcflucjrftzi.supabase.co' : 'https://gxsrajtqzdjvmceqcpgv.supabase.co';
+  const KEY = isTestHost ? 'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ' : 'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
   const SESSION_KEY = 'tradeflow_platform_owner_session';
   const $ = id => document.getElementById(id);
   const status = $('status');

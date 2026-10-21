@@ -375,7 +375,25 @@ async function createComplimentarySubscriber(event){
  finally{button.disabled=false}
 }
 
+async function resendComplimentarySetupLink(event){
+ event.preventDefault();
+ const button=$('complimentary-resend-submit'),status=$('complimentary-resend-status');
+ button.disabled=true;status.textContent='Sending account setup link…';
+ try{
+  const session=await request('/auth/v1/user');
+  const email=$('complimentary-resend-email').value.trim().toLowerCase();
+  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-resend-complimentary-setup',{
+   method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
+   body:JSON.stringify({email})
+  });
+  const raw=await response.text();let data={};try{data=raw?JSON.parse(raw):{}}catch{}
+  if(!response.ok)throw Error(data?.error||data?.message||raw||'Unable to send account setup link.');
+  status.textContent=data?.message||'Account setup link sent.';
+ }catch(e){status.textContent=e.message||String(e)}
+ finally{button.disabled=false}
+}
 $('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
+$('complimentary-resend-form')?.addEventListener('submit',resendComplimentarySetupLink);
 $('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;

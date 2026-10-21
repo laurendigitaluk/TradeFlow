@@ -2759,3 +2759,11 @@ TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and 
 - Restored only this existing TEST workspace: set tenant status to `active`, cleared `archived_at`, restored the same manual complimentary subscription to `active`, cleared `ended_at`, and removed close-only metadata (`closed_at`, `close_reason`, `closed_by_platform_owner`). Kept the existing account, tenant, membership, plan, and complimentary billing markers. No Stripe fields or payment data changed.
 - A read-after-write query confirmed tenant `active`, owner membership `active`, subscription `active`, `billing_provider=manual`, `provider_status=complimentary`, and `metadata.complimentary=true`.
 - Next verification: user should sign in on the TEST subscriber login page with `scenesource1@gmail.com` and the newly set password. Confirm dashboard loads the existing `test test` workspace. Do not create a duplicate account. LIVE remains untouched.
+
+
+## TEST complimentary subscriber end-to-end checkpoint — 21 October 2026
+
+- Browser evidence confirms `scenesource1@gmail.com` successfully signed out and signed back in after password recovery; the existing `test test` subscriber dashboard loaded and showed the account as business owner.
+- The latest platform-owner dashboard screenshot confirms both `test test` (`scenesource1@gmail.com`) and `TradeFlow Complimentary Test` (`leannelauren07@gmail.com`) are visible in the Subscriber businesses list, each with Enhanced plan, subscription `active`, and workspace status `active`.
+- This verifies subscriber password recovery/sign-in persistence and owner-list visibility for the repaired TEST workspace. The screenshot does not independently prove resend does not create duplicates; that remains untested. Do not send additional recovery links unless needed.
+- TEST only. LIVE remains untouched. Continue with a read-only database duplicate check and confirm complimentary/manual billing markers for the repaired workspace; do not create or close another subscriber to test this.

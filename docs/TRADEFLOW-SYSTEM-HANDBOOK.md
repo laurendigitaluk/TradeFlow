@@ -2253,3 +2253,11 @@ Post-migration SQL verified the retained payment idempotency and tenant-primary 
 Review found TEST's `enhanced` plan had `annual_price = NULL` and its `public_get_available_plans()` RPC omitted `trial_days`, while LIVE had annual price GBP 499.99 and returned the trial-days field. No dependent database objects were found for the RPC. TEST-only migration `supabase/migrations/20261021204236_align_test_public_plan_rpc_and_annual_price.sql` sets the TEST annual display price to GBP 499.99 only when the expected existing monthly/trial values match, then recreates the public RPC with the nine-column result shape used by LIVE. It retains `SECURITY DEFINER`, an empty `search_path`, and explicit EXECUTE grants for `anon`, `authenticated`, and `service_role`; PUBLIC execution is revoked. No Stripe product or price IDs were copied.
 
 Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual, 30-day trial; the RPC returns `trial_days = 30`; anonymous/authenticated/service-role execution succeeds at privilege level; PUBLIC execution is false. Stripe product/monthly/annual Price IDs remain absent in TEST as intended for the separate Sandbox setup. Browser pricing/checkout regression remains pending. Rollback, only if required, must restore the previous eight-column RPC definition and set `annual_price = NULL` for the TEST `enhanced` plan; this would reintroduce the known mismatch and is not recommended without a confirmed compatibility issue.
+
+
+## Owner dashboard parity — 21 October 2026
+
+- The TEST platform-owner dashboard now includes the same Lauren Digital product-page editor section as LIVE for TradeFlow, StudioFlow, and BusinessFlow.
+- TEST `platform-owner-dashboard.js` loads product pages using `public.platform_owner_get_product_pages`, saves through `public.platform_owner_update_product_page`, and wires the refresh control. These RPCs were confirmed present in the TEST Supabase database.
+- TEST commits: HTML `8b9eaa9fbde7e620833f63e05e67ffeb50d5eb5c`; JavaScript `c5ad613cd0237f4ebf172811e9fa00614bcf913f`.
+- This is a source-level parity repair only. Hosted TEST delivery and browser-based save/refresh checks are still required. Do not copy LIVE Stripe identifiers or secrets into TEST. No LIVE dashboard files or subscriber records were changed for this repair.

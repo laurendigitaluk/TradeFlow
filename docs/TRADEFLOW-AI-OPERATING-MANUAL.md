@@ -2620,3 +2620,12 @@ Do not mark untested functionality complete. Update this note only when supporte
 - Do not add all 65 foreign-key indexes blindly. Review existing index coverage, query plans and write overhead first; prioritize tenant-scoped transactional tables and high-traffic lookups.
 - Continue by comparing exact RLS policy expressions and security-sensitive RPC bodies across TEST and LIVE, then review advisor findings in batches. LIVE is the behavioural reference and must remain stable; TEST-only Stripe configuration must remain isolated.
 - Complimentary subscription access was added to LIVE in migration 20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql. Database function definition verified; an end-to-end browser test for an actual complimentary tenant is still outstanding.
+
+
+## LIVE COMPLIMENTARY SUBSCRIBER WORKFLOW — 21 OCTOBER 2026
+
+LIVE now has the complimentary subscriber workflow integrated into the platform owner dashboard source on the `production` branch. The form is in `platform-owner-dashboard.html`; `platform-owner-dashboard.js` validates the session and calls the `platform-create-complimentary-subscriber` Edge Function. The LIVE function is deployed as version 1, with JWT verification enabled and CORS restricted to `https://owner.laurendigital.co.uk`.
+
+The LIVE RPC `public.platform_owner_create_complimentary_subscriber(uuid,text,text,text)` checks `private.is_platform_owner(auth.uid())`, validates that the invited auth user's email matches the requested email, refuses an existing active owner or duplicate tenant slug, and creates an active tenant membership and active manual complimentary subscription. Complimentary status is `status='active'`, `billing_provider='manual'`, `provider_status='complimentary'`; it is not a subscription status. Feature access remains governed by `private.has_tenant_feature` and enabled plan-feature rows.
+
+Commits: RPC migration `29f43a9d882a35a625b57ef242f8a0ecf51823a0`; dashboard HTML `bcfe3ec2707ab4461ce932eee9ca7719f570d113`; dashboard JS `e3b3b77a9b4bcf03ee7596e8939b220a154b536b`. The Edge Function is deployed in LIVE, but the hosted Cloudflare Worker asset rollout and a full browser test have not been independently verified. Do not claim the workflow is fully proven until a dedicated approved test address completes invitation, workspace creation, and feature access verification. No invitation or new tenant was created during this implementation.

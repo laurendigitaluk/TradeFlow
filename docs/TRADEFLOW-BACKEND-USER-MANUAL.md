@@ -1524,3 +1524,22 @@ Do not mark untested functionality complete. Update this note only when supporte
 5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE origin/redirects, migration compatibility, owner-only access, invitation flow, and paid checkout regression are verified.
 
 This note records evidence and open items as of 21 October 2026. Do not mark untested flows complete.
+
+
+## BACKEND SECURITY AND PERFORMANCE AUDIT — 21 OCTOBER 2026
+
+**Environment:** TEST Supabase `nnsshnfkjcflucjrftzi`; TEST branch `test/stripe-connect-test-mode-repair-20261020`. LIVE project `gxsrajtqzdjvmceqcpgv` and `production` remain unchanged.
+
+### Applied TEST migration
+`supabase/migrations/20261021203732_harden_published_security_definer_search_paths.sql` sets `search_path = ''` for six published-site/listing/media SECURITY DEFINER RPCs. Their inspected SQL references application tables using schema-qualified names. Migration application succeeded; follow-up SQL verified the empty paths and preserved execution ACLs. Rollback is available by restoring the previous paths (`pg_catalog, public` for the three site RPCs; `public` for the three listing/media RPCs).
+
+### Verification and limits
+- Read-only smoke tests returned no site/listing rows and `false` for a nonexistent media path. TEST currently has no published-site records, so these results are only negative-path smoke tests; populated-site browser testing remains pending.
+- Reviewed order-payment, credit, cancellation and retail-order functions contain authentication and customer/order ownership checks. Catalogue write functions check tenant permission and feature entitlements. Complimentary subscriber provisioning checks platform-owner status and verifies the invited user's email. Full function coverage and adversarial cross-tenant tests remain outstanding.
+- `site_revisions`: RLS enabled; authenticated has UPDATE table privilege; anon does not. This confirms database grants, not successful browser Save Draft behaviour.
+- Advisors still flag leaked-password protection disabled, 8 anon-callable and 164 authenticated-callable SECURITY DEFINER functions, 65 unindexed foreign keys, 166 RLS init-plan warnings, 14 multiple-permissive-policy warnings, 3 duplicate-index warnings, unused indexes and Auth connection allocation. Review in context; no blanket revocations or index removals.
+
+### Owner action required
+The available connected tools do not expose the Auth leaked-password-protection setting. In TEST Dashboard → Authentication → Attack Protection/password security, enable leaked-password protection and confirm it is saved. Then test sign-up/password changes, login and recovery before making the equivalent LIVE change. Reference: https://supabase.com/docs/guides/auth/password-security
+
+PR #157 remains open/draft, not merged or deployed. Do not deploy to LIVE until origin/redirects, invitations/recovery, owner-only provisioning and standard paid Stripe checkout are verified. This audit step made no LIVE changes.

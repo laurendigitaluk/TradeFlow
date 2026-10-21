@@ -2188,3 +2188,12 @@ Do not mark untested functionality complete. Update this note only when supporte
 - Do not add all 65 foreign-key indexes blindly. Review existing index coverage, query plans and write overhead first; prioritize tenant-scoped transactional tables and high-traffic lookups.
 - Continue by comparing exact RLS policy expressions and security-sensitive RPC bodies across TEST and LIVE, then review advisor findings in batches. LIVE is the behavioural reference and must remain stable; TEST-only Stripe configuration must remain isolated.
 - Complimentary subscription access was added to LIVE in migration 20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql. Database function definition verified; an end-to-end browser test for an actual complimentary tenant is still outstanding.
+
+
+## Platform owner dashboard and complimentary subscribers — 21 October 2026
+
+- The LIVE platform owner portal is hosted at `https://owner.laurendigital.co.uk`; the complimentary-subscriber Edge Function accepts requests only from that origin and requires a valid JWT plus an active platform-owner membership.
+- LIVE Edge Function `platform-create-complimentary-subscriber` is ACTIVE at version 1 with JWT verification enabled. It sends an invitation, then provisions an active tenant, active owner membership, and an `enhanced` complimentary subscription through `public.platform_owner_create_complimentary_subscriber`.
+- The provisioning RPC is SECURITY DEFINER with an empty search path; execution is granted to authenticated and not anon. The RPC checks platform-owner access, verifies the invited user's email, rejects duplicate slugs and existing active owner membership, and does not create a Stripe checkout.
+- TEST owner dashboard now includes the Lauren Digital product-page editor for TradeFlow, StudioFlow and BusinessFlow. The owner confirmed the section is visible and the Cloudflare deployment shows Ready. Database records currently show TradeFlow `published`, StudioFlow `coming_soon`, BusinessFlow `coming_soon`.
+- Remaining verification: confirm a harmless product-page edit persists after save/refresh; run complimentary onboarding end-to-end using a dedicated approved test email; verify no duplicate invite/workspace on retry. No LIVE subscriber was created and no LIVE Stripe settings were changed during the dashboard-parity repair.

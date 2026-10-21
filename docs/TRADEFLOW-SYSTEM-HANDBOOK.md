@@ -2113,3 +2113,31 @@ LIVE audit found Adventure Outpost had no rows in `sales_channels`, causing the 
 - Follow the product link to product detail and checkout. Verify basket/checkout retains the correct tenant, listing, title, price and currency; customer authentication/registration works without looping; order is created once; payment status matches the actual payment outcome; and no record is marked paid before verified payment.
 - After the controlled purchase, verify the order appears consistently in the customer portal, subscriber order/sales view, and finance/ledger records; check stock/inventory transitions to sold/reserved according to the intended workflow; and confirm the public listing is no longer purchasable if sold. Check shipping choice/tracking expectations separately and do not let TradeFlow collect postage fees.
 - Do not reuse the earlier simulated purchase as proof of a real transaction. Keep LIVE/TEST clearly separated, record each observed status/reference, and stop at the first failure for diagnosis rather than repeatedly retrying checkout.
+
+---
+
+## Environment audit and handover — 21 October 2026 (LIVE / production)
+
+This is an environment-specific status note. It records observed results and outstanding checks, not a claim that every feature has passed end-to-end testing.
+
+### Verified / recorded
+- The stray catalogue-tab CSS text was corrected in `buying-catalogue.html`; the user confirmed the LIVE Buying & Pricing page displays cleanly after the correction.
+- The production catalogue page source was compared with TEST and `buying-catalogue.js` matched at the time of review. This does not prove the filtered product query returns results.
+- Do not apply the TEST-only `site_revisions` privilege migration to LIVE without checking current grants and the RLS policy first. No LIVE database grant was made during this review.
+- LIVE Stripe flows are reported by the owner as working; this audit did not run a live payment or alter Stripe configuration.
+- Catalogue product-row verification remains open: a prior screenshot showed category filters populated but zero product rows. Test a known product and inspect the RPC response before declaring the catalogue fully verified.
+
+### Quick audit results
+- Supabase table listing reported row-level security enabled on the inspected public tables in both environments. This is a baseline check, not a proof that every RLS policy is correct.
+- Supabase advisors showed matching categories of existing warnings in TEST and LIVE at review time: SECURITY DEFINER functions executable by anon/authenticated roles, `pg_net` in the public schema, and unindexed foreign keys. Review each finding in context; do not blanket-revoke access or move extensions without checking dependencies.
+- Matching advisor counts and frontend source do not establish full schema, migration, function, data, or deployment parity between TEST and LIVE.
+- TEST and LIVE intentionally contain separate business/customer/payment records. Shared catalogue behaviour must be verified at the product-data and query level; do not assume database rows are physically shared merely because the interface is the same.
+
+### Release guardrails
+- Keep LIVE production branch/project separate from TEST repair branch/project.
+- No LIVE schema change, Stripe change, migration, or deployment was made as part of the TEST `site_revisions` grant.
+- Do not merge or deploy the complimentary-subscriber release candidate until its LIVE origin/redirect configuration, migration compatibility, owner-only authorization, invitation flow, and paid Stripe signup regression checks are verified.
+- The immediate remaining technical checks are: (1) verify product rows/search in both master catalogues; (2) verify TEST Website Builder Save draft; (3) finish TEST Stripe Sandbox monthly checkout and webhook/status confirmation; (4) review and prioritize the existing Supabase advisor findings.
+
+### Update rule
+Replace any item above only when a new browser observation, query result, webhook delivery, or controlled end-to-end test supports the change. Do not mark untested functionality as complete.

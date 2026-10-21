@@ -2298,3 +2298,12 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 
 
 - Follow-up cache invalidation: `platform-owner-dashboard.html` now references `platform-owner-dashboard.js?v=17` (previously `v=16`) so browsers request the corrected JS URL rather than reusing a cached copy. HTML commit: `76fafe053f96bfafbbcb474d066415c19bad8a23`. The repository source confirms the new version reference and the corrected JS source. Hosted Cloudflare publication and runtime response are not directly observable through the connected tools, so end-to-end verification remains pending.
+
+
+## TEST resend email validation correction — 21 October 2026
+
+- Screenshot showed `Enter a valid subscriber email address.` despite an apparently valid email. Root cause: the email-validation regex in `supabase/functions/platform-resend-complimentary-setup/index.ts` had over-escaped backslashes, so it tested for literal backslash/s characters rather than whitespace and a literal dot correctly.
+- Corrected the regex to `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` and committed as `170a6ef121fc719840d00be040bd515a5976d7f0` on `test/stripe-connect-test-mode-repair-20261020`.
+- Deployed TEST Edge Function `platform-resend-complimentary-setup` as ACTIVE version 3 with JWT verification enabled.
+- The resend request had failed validation before attempting email delivery, so this screenshot does not indicate an email provider or JWT failure. Next step is a single retry from the TEST owner dashboard. If validation passes, investigate the next response rather than retrying repeatedly.
+- No tenant/account/subscription data, LIVE resources, or Stripe settings were changed by this fix.

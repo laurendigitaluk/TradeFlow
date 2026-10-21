@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accept your TradeFlow invitation</title>
+<link rel="stylesheet" href="platform.css?v=16">
+<link rel="stylesheet" href="signup.css?v=2">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="index.html">TradeFlow</a></header>
+<main class="signup-wrap">
+<section class="signup-card">
+<div class="eyebrow">Subscriber account setup</div>
+<h1>Set your password</h1>
+<p>Complete your invitation to access your TradeFlow business workspace.</p>
+<form id="accept-form">
+<label>Email<input id="email" type="email" autocomplete="username" required></label>
+<label>Create password<input id="password" type="password" autocomplete="new-password" minlength="8" required></label>
+<label>Confirm password<input id="confirm-password" type="password" autocomplete="new-password" minlength="8" required></label>
+<button class="primary full" id="submit" type="submit">Activate account</button>
+<div id="message" role="status"></div>
+</form>
+</section>
+</main>
+<script>
+window.addEventListener('DOMContentLoaded',()=>{
+ const params=new URLSearchParams(location.search), hash=new URLSearchParams(location.hash.slice(1));
+ const token=hash.get('access_token'), type=hash.get('type')||params.get('type'), msg=document.getElementById('message');
+ const h=location.hostname,isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';
+ const url=isTest?'https://nnsshnfkjcflucjrftzi.supabase.co':'https://gxsrajtqzdjvmceqcpgv.supabase.co';
+ const key=isTest?'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ':'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+ if(!token || (type && type!=='invite')){msg.className='error';msg.textContent='This invitation link is missing or invalid. Please open the latest invitation email or ask the platform owner to resend it.';return;}
+ document.getElementById('accept-form').addEventListener('submit',async ev=>{
+  ev.preventDefault();
+  const password=document.getElementById('password').value, confirm=document.getElementById('confirm-password').value, email=document.getElementById('email').value.trim(), button=document.getElementById('submit');
+  if(password.length<8){msg.className='error';msg.textContent='Use a password with at least 8 characters.';return;}
+  if(password!==confirm){msg.className='error';msg.textContent='The passwords do not match.';return;}
+  button.disabled=true;button.textContent='Activating account…';msg.textContent='';
+  try{
+   const res=await fetch(url+'/auth/v1/user',{method:'PUT',headers:{apikey:key,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({password})});
+   const user=await res.json();
+   if(!res.ok)throw Error(user.msg||user.message||user.error_description||'Could not activate this invitation. Please request a new invitation.');
+   if(user.email&&email&&user.email.toLowerCase()!==email.toLowerCase())throw Error('The email address does not match this invitation.');
+   const session={access_token:token,token_type:'bearer',user};
+   localStorage.setItem('tradeflow_subscriber_session',JSON.stringify(session));
+   msg.className='success';msg.textContent='Your password is set. Opening your business workspace…';
+   location.replace('subscriber-dashboard.html');
+  }catch(e){msg.className='error';msg.textContent=e.message||String(e);}
+  finally{button.disabled=false;button.textContent='Activate account';}
+ });
+});
+</script>
+</body>
+</html>

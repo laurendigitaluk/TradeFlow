@@ -64,6 +64,18 @@
 <div id="domain-actions-list"><p class="muted">Loading domain requests…</p></div>
 </section>
 
+<section id="complimentary-access" class="panel">
+      <div class="panel-head"><div><div class="eyebrow">Platform owner controls</div><h2>Create complimentary subscriber</h2></div></div>
+      <p class="muted">Invite a new subscriber without Stripe checkout. The account receives an active TradeFlow workspace with complimentary billing status. An invitation email is sent so the subscriber can set up access. Existing accounts are not attached automatically.</p>
+      <form id="complimentary-subscriber-form" style="max-width:680px">
+        <label>Business name<input id="complimentary-business-name" name="business_name" required maxlength="120" placeholder="Example Test Business"></label>
+        <label>Subscriber owner name<input id="complimentary-owner-name" name="owner_name" required maxlength="120" autocomplete="name" placeholder="Full name"></label>
+        <label>Subscriber email<input id="complimentary-owner-email" name="email" type="email" required autocomplete="email" placeholder="subscriber@example.com"></label>
+        <p><button id="complimentary-submit" type="submit">Create complimentary account and send invitation</button></p>
+      </form>
+      <div id="complimentary-status" class="action-message" role="status" aria-live="polite"></div>
+    </section>
+
 <section id="plans" class="panel">
       <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>TradeFlow plan</h2></div></div>
       <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
@@ -86,6 +98,6 @@
 </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=15" defer></script>
+<script src="platform-owner-dashboard.js?v=16" defer></script>
 </body>
 </html>

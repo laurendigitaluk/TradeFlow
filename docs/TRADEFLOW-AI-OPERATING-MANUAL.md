@@ -2618,3 +2618,23 @@ Until these are complete, do not describe Stripe Connect, checkout, or webhook h
 ## Update policy
 
 This addendum records verified configuration and outstanding checks as of 21 October 2026. Update the status after runtime evidence is collected. Do not rewrite an unverified state as complete.
+
+---
+
+## Environment audit and handover — 21 October 2026 (TEST / Stripe Sandbox)
+
+### Verified observations and open checks
+- Catalogue-tab CSS leakage was corrected in the environment's source. LIVE page cleanliness was confirmed by the owner; TEST category filters load, but a recent screenshot still showed zero product rows. Product retrieval/search is not yet verified.
+- The TEST Website Builder site_revisions authenticated UPDATE grant was applied and verified at database privilege level; browser Save draft still needs confirmation. Complimentary subscriber workspace was exercised by the owner. Paid TEST checkout remains unverified; enhanced plan was previously observed at £59.99 monthly with 30-day trial but missing Stripe Price IDs. Verify current config and use Sandbox only. Configured TEST payment/Connect webhooks have not had successful delivery verified.
+- Supabase advisors showed matching categories of existing warnings in TEST and LIVE: SECURITY DEFINER functions callable by anon/authenticated roles, pg_net in the public schema, and unindexed foreign keys. Investigate each finding in context; avoid blanket revocations or extension moves.
+- Supabase table inspection reported RLS enabled on inspected public tables, but this does not prove every policy is correct. Matching source/advisor counts do not establish full schema, migration, function, data, or deployment parity.
+- LIVE and TEST business/customer/payment records are separate. Do not copy tenant, customer, or payment records across environments. Verify shared master-catalogue behaviour at the query/data layer rather than assuming the interface means physical database sharing.
+
+### Release guardrails and next steps
+1. Verify product rows and known-product search in both master catalogues.
+2. Confirm TEST Website Builder Save draft succeeds in the browser after the privilege grant.
+3. Complete TEST Stripe Sandbox monthly checkout, webhook delivery, and subscription status in the owner dashboard; keep complimentary subscriptions free and isolated from Stripe.
+4. Review and prioritize the Supabase advisor findings.
+5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE owner origin/redirect configuration, migration compatibility, owner-only access, invitation flow, and paid Stripe signup regression checks are verified.
+
+Do not mark untested functionality complete. Update this note only when supported by a browser observation, query result, successful webhook delivery, or controlled end-to-end test.

@@ -1229,3 +1229,8 @@ A second isolated branch `fix/restrict-subscriber-domain-rpcs-20261013` contains
 - Each now has an explicit `FOR ALL TO anon, authenticated USING (false) WITH CHECK (false)` policy. This is deliberate deny-all, not a public-read or tenant-read policy. The tables remain RPC/service-role only; direct client table grants remain absent.
 - Read-back verification confirms 14/14 policies exist, each has false USING and WITH CHECK, and there are zero direct anon/authenticated/PUBLIC table grants on these tables. Supabase security advisor no longer reports the `rls_enabled_no_policy` finding. TEST was not modified.
 - This clears the misleading no-policy warning without opening customer bank data, credit data, payment-provider events, internal AI settings, domain-action history, or master catalogue tables to direct client queries. Existing controlled SECURITY DEFINER RPCs are unaffected because these tables are not FORCE RLS.
+
+
+## Current release state — 22 October 2026
+
+Production and TEST branches are divergent (TEST is 114 commits ahead and 26 behind); do not perform a wholesale merge. TEST now visibly includes the three product-page controls with intended statuses, and subscriber password setup plus repeat login were confirmed through the subscriber portal. The resend setup-link action remains unverified. LIVE has not been changed during this verification. Before any legacy-code removal, inspect runtime references, routing, deployed functions, migrations and restore points; retain historical migrations and checkpoints. Promote only individually reviewed, environment-neutral fixes after tests and explicit deployment verification.

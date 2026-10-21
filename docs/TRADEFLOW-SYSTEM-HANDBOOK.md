@@ -2197,3 +2197,12 @@ Do not mark untested functionality complete. Update this note only when supporte
 - The provisioning RPC is SECURITY DEFINER with an empty search path; execution is granted to authenticated and not anon. The RPC checks platform-owner access, verifies the invited user's email, rejects duplicate slugs and existing active owner membership, and does not create a Stripe checkout.
 - TEST owner dashboard now includes the Lauren Digital product-page editor for TradeFlow, StudioFlow and BusinessFlow. The owner confirmed the section is visible and the Cloudflare deployment shows Ready. Database records currently show TradeFlow `published`, StudioFlow `coming_soon`, BusinessFlow `coming_soon`.
 - Remaining verification: confirm a harmless product-page edit persists after save/refresh; run complimentary onboarding end-to-end using a dedicated approved test email; verify no duplicate invite/workspace on retry. No LIVE subscriber was created and no LIVE Stripe settings were changed during the dashboard-parity repair.
+
+
+## Production/TEST release boundary update — 22 October 2026
+
+The latest GitHub comparison confirms that `production` and `test/stripe-connect-test-mode-repair-20261020` have diverged (TEST 114 commits ahead, 26 behind). Do not merge the entire TEST branch into LIVE. It includes TEST-specific Stripe Connect, invite acceptance and resend code. LIVE is the production baseline; TEST project is `nnsshnfkjcflucjrftzi`; LIVE project is `gxsrajtqzdjvmceqcpgv`.
+
+TEST browser verification: the owner dashboard displays TradeFlow (Published), StudioFlow (Coming soon) and BusinessFlow (Coming soon). The complimentary test subscriber successfully reached the subscriber dashboard and could sign out/in again when using the subscriber login page. The platform-owner sign-in error was a wrong-login-page test, not evidence of a broken subscriber password.
+
+The resend setup-link button is still unverified and must not be pressed again until the next explicitly guided test. No LIVE records, schema, Stripe settings or deployments were changed by this verification. Do not delete old files in bulk: first prove they are unreferenced by runtime HTML/JS, Worker routes, Edge Functions, migrations, manuals or rollback checkpoints. Keep archived migration/checkpoint records.

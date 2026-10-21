@@ -2161,3 +2161,13 @@ Replace any item above only when a new browser observation, query result, webhoo
 5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE owner origin/redirect configuration, migration compatibility, owner-only access, invitation flow, and paid Stripe signup regression checks are verified.
 
 Do not mark untested functionality complete. Update this note only when supported by a browser observation, query result, successful webhook delivery, or controlled end-to-end test.
+
+## Audit note — 21 October 2026 — LIVE
+
+- Owner confirmed the LIVE Buying & Pricing page is clean after the catalogue-tab CSS correction.
+- Product retrieval remains unverified: a recent catalogue screenshot showed categories but zero product rows. Verify known-product search before calling this complete.
+- The TEST-only site_revisions UPDATE grant was not applied to LIVE. Check existing table grants and RLS before any production change.
+- LIVE Stripe is owner-reported working; no live payment was run in this audit.
+- Supabase advisors show existing SECURITY DEFINER access warnings, pg_net in public schema, and unindexed foreign-key warnings. Review individually; do not blanket-revoke or change extension placement.
+- RLS being enabled on inspected tables does not prove every policy is correct. Matching frontend code/advisor counts do not establish complete environment parity.
+- Remaining checks: product rows in both catalogues, TEST Save draft browser confirmation, TEST Sandbox checkout/webhook/status, and advisor review. Keep TEST/LIVE data separate and do not mark untested flows complete.

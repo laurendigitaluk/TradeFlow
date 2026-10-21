@@ -2277,3 +2277,12 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - TEST Edge Function `platform-create-complimentary-subscriber` redeployed successfully as ACTIVE version 3 with JWT verification enabled.
 - The initial invitation to `scenesource1@gmail.com` arrived, but the click-through showed the ordinary sign-in page and failed. Do not treat the invitation flow as verified until a fresh invitation is issued after this change and account activation, dashboard access, and complimentary feature access are tested end-to-end.
 - Do not change LIVE or reuse the existing invite link for this test; its redirect points to the old sign-in route. The current repair is TEST-only.
+
+
+## Existing complimentary account resend — 21 October 2026
+
+- TEST Edge Function `platform-resend-complimentary-setup` was updated and redeployed as ACTIVE version 2 with JWT verification enabled.
+- The eligibility check now recognizes existing accounts linked to a complimentary/manual subscription even if the membership is inactive, the tenant is archived, or the subscription is cancelled. Resending only calls Supabase Auth recovery email; it does not create, attach, reactivate, or alter any workspace or subscription.
+- The operation remains restricted to the TEST owner portal origin and authenticated active platform-owner membership. The function still rejects accounts that have no existing complimentary/manual subscription record.
+- TEST account `scenesource1@gmail.com` remains available for recovery. No authentication account, tenant, membership, or subscription was deleted or modified in this change. No LIVE resources or Stripe settings were changed.
+- Next verification: use the TEST owner dashboard's “Resend account setup link” section for this existing email, complete password setup from the email, then separately review and restore the archived/cancelled workspace only if required for the no-payment access test.

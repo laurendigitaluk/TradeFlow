@@ -2706,3 +2706,11 @@ TEST repository review found the complimentary-subscriber form and TEST-only Edg
 The TEST owner-dashboard HTML was aligned to the parent platform identity: document title `Lauren Digital Owner Dashboard`, eyebrow `Lauren Digital platform`, and brand link `Lauren Digital`. This removes the visible `TradeFlow SaaS` label from that dashboard (commit `88faea05c1852fb1517a53f1650c2601ac3e7e2b`). TradeFlow remains the product name in relevant plan and product copy. LIVE has not been changed by these UI edits.
 
 TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and repository migrations for `public.platform_owner_create_complimentary_subscriber` plus complimentary feature access. The endpoint is TEST-origin restricted and verifies the caller's platform-owner membership before invitation/provisioning. Do not test by creating a real subscriber invitation without an approved dedicated test email. Before promoting to LIVE, port the feature as a complete set: dashboard markup and JavaScript, LIVE-origin-specific Edge Function configuration, the owner-authorized creation RPC/migration, complimentary entitlement logic, docs, and a dedicated end-to-end test. Do not copy TEST Supabase credentials or Stripe IDs into LIVE. No LIVE subscriber, subscription, or dashboard record was changed in this repair.
+
+
+## Owner dashboard parity — 21 October 2026
+
+- The TEST platform-owner dashboard now includes the same Lauren Digital product-page editor section as LIVE for TradeFlow, StudioFlow, and BusinessFlow.
+- TEST `platform-owner-dashboard.js` loads product pages using `public.platform_owner_get_product_pages`, saves through `public.platform_owner_update_product_page`, and wires the refresh control. These RPCs were confirmed present in the TEST Supabase database.
+- TEST commits: HTML `8b9eaa9fbde7e620833f63e05e67ffeb50d5eb5c`; JavaScript `c5ad613cd0237f4ebf172811e9fa00614bcf913f`.
+- This is a source-level parity repair only. Hosted TEST delivery and browser-based save/refresh checks are still required. Do not copy LIVE Stripe identifiers or secrets into TEST. No LIVE dashboard files or subscriber records were changed for this repair.

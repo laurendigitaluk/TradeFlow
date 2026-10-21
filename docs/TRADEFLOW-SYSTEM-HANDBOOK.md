@@ -2261,3 +2261,10 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - TEST `platform-owner-dashboard.js` loads product pages using `public.platform_owner_get_product_pages`, saves through `public.platform_owner_update_product_page`, and wires the refresh control. These RPCs were confirmed present in the TEST Supabase database.
 - TEST commits: HTML `8b9eaa9fbde7e620833f63e05e67ffeb50d5eb5c`; JavaScript `c5ad613cd0237f4ebf172811e9fa00614bcf913f`.
 - This is a source-level parity repair only. Hosted TEST delivery and browser-based save/refresh checks are still required. Do not copy LIVE Stripe identifiers or secrets into TEST. No LIVE dashboard files or subscriber records were changed for this repair.
+
+
+## TEST owner dashboard parity — 21 October 2026
+
+- TEST dashboard product-page editor is present for TradeFlow, StudioFlow, and BusinessFlow; Cloudflare deployment history showed the dashboard parity deployment as Ready and the owner confirmed the section is visible.
+- Product page statuses in TEST are TradeFlow `published`, StudioFlow `coming_soon`, BusinessFlow `coming_soon`.
+- Remaining browser check: save a harmless field change and confirm it persists after refreshing the section. Complimentary subscriber end-to-end testing still requires a dedicated approved test email. Do not promote this dashboard work to LIVE until required TEST checks pass.

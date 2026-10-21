@@ -44,7 +44,7 @@ begin
     tenant_id,plan_id,status,billing_provider,provider_status,started_at,current_period_start,
     metadata,provider_metadata
   ) values (
-    v_tenant_id,v_plan_id,'active','complimentary','complimentary',now(),now(),
+    v_tenant_id,v_plan_id,'active','manual','complimentary',now(),now(),
     jsonb_build_object('complimentary',true,'granted_by_platform_owner',auth.uid(),'reason','Platform-owner complimentary access'),
     jsonb_build_object('billing_exempt',true,'stripe_required',false)
   );

@@ -2657,3 +2657,26 @@ Do not mark untested functionality complete. Update this note only when supporte
 5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE origin/redirects, migration compatibility, owner-only access, invitation flow, and paid checkout regression are verified.
 
 This note records evidence and open items as of 21 October 2026. Do not mark untested flows complete.
+
+
+## SECURITY AUDIT CONTINUATION — 21 OCTOBER 2026 (TEST FIRST)
+
+Environment verified from the connected project: TEST is Supabase `nnsshnfkjcflucjrftzi`, Git branch `test/stripe-connect-test-mode-repair-20261020`; LIVE remains `gxsrajtqzdjvmceqcpgv` on `production`. The retired TEST project `twfbmjwwqzxdxvclxbun` must not be used. LIVE was not changed in this audit step.
+
+Fresh TEST and LIVE advisor results report leaked-password protection disabled, 8 anonymous-callable and 164 authenticated-callable SECURITY DEFINER functions, and performance warnings. These are review queues, not proof every function is vulnerable. Direct SQL inspection was available in TEST and confirmed reviewed customer-order/payment/credit functions check the authenticated customer and order ownership; catalogue write functions check tenant permissions/features; complimentary provisioning checks platform-owner authority and invited-user email. This is a partial source review, not a full tenant-isolation certification.
+
+### Verified TEST change
+Migration `supabase/migrations/20261021203732_harden_published_security_definer_search_paths.sql` sets an empty `search_path` for six public-facing SECURITY DEFINER functions, whose inspected bodies use schema-qualified table references: `get_published_site_by_slug(text)`, `get_published_site_preview(uuid)`, `get_published_sites()`, `get_published_store_listing_media(uuid)`, `get_published_store_listings(uuid)`, and `is_published_tradeflow_media(text,text)`.
+
+TEST migration application succeeded. A follow-up SQL query confirmed all six remain SECURITY DEFINER, have empty `search_path`, and retain their prior execution ACLs. Read-only smoke tests passed for nonexistent slug/media lookups; published site/listing queries returned zero rows because TEST currently has no published-site records. Therefore, populated-site browser regression remains pending. Rollback: restore each function's previous setting with `ALTER FUNCTION ... SET search_path TO 'pg_catalog','public'` for the three site RPCs, or `SET search_path TO 'public'` for the three listing/media RPCs; only do so if a verified compatibility issue requires rollback.
+
+### Required follow-up / blockers
+- Leaked-password protection cannot be configured through the connected Supabase tools currently available. In the TEST project dashboard, open Authentication → Attack Protection (or the current Auth password-security settings) and enable leaked password protection. Confirm the setting is saved; then test sign-up/password change, sign-in and recovery. Repeat on LIVE only after TEST verification and a separate production review. Supabase docs: https://supabase.com/docs/guides/auth/password-security
+- Review all flagged SECURITY DEFINER function bodies and grants; do not blanket-revoke intentional public published-site/catalogue RPCs.
+- Review 65 unindexed foreign keys, 166 RLS init-plan warnings, 14 multiple-permissive-policy warnings, 3 duplicate-index warnings, unused indexes and Auth connection allocation individually.
+- TEST `site_revisions` has RLS enabled; authenticated has UPDATE table privilege and anon does not. The browser Save Draft flow is still unverified end-to-end.
+- TEST has no published-site records, so public-site regression must be repeated once safe TEST fixture data is available.
+- PR #157 (complimentary subscriber release) remains OPEN and DRAFT; it is not merged or deployed. Keep it separate until owner origin/redirect allow-list, invitation/recovery, owner-only provisioning and paid Stripe regression tests pass.
+- Do not modify LIVE database, Auth configuration, Stripe, DNS or application deployment as part of this TEST change.
+
+This is a partial security-hardening checkpoint, not a declaration that TradeFlow is fully secure. Update this section only when the next findings and test results are verified.

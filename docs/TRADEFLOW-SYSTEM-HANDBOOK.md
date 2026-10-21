@@ -2295,3 +2295,6 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - Git commit: `e73ad3c8dcad922fc8daa569b63b9196ec6a86d0` on `test/stripe-connect-test-mode-repair-20261020`.
 - GitHub Actions reports no workflow runs for this branch. Therefore, the source fix is committed but hosted TEST asset deployment and browser verification are still pending. Do not ask the user to press the resend button until the served JavaScript is confirmed updated and the flow is tested.
 - No account, tenant, membership, subscription, LIVE, or Stripe records were changed by this correction.
+
+
+- Follow-up cache invalidation: `platform-owner-dashboard.html` now references `platform-owner-dashboard.js?v=17` (previously `v=16`) so browsers request the corrected JS URL rather than reusing a cached copy. HTML commit: `76fafe053f96bfafbbcb474d066415c19bad8a23`. The repository source confirms the new version reference and the corrected JS source. Hosted Cloudflare publication and runtime response are not directly observable through the connected tools, so end-to-end verification remains pending.

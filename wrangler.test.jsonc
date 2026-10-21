@@ -7,9 +7,9 @@
   "vars": {
     "TRADEFLOW_ENV": "test",
     "TEST_SUPABASE_URL": "https://nnsshnfkjcflucjrftzi.supabase.co",
-    "TEST_SUPABASE_KEY": "REPLACE_WITH_NEW_TEST_SUPABASE_PUBLISHABLE_KEY",
+    "TEST_SUPABASE_KEY": "sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ",
     "LIVE_SUPABASE_URL": "https://gxsrajtqzdjvmceqcpgv.supabase.co",
-    "LIVE_SUPABASE_KEY": "REPLACE_WITH_LIVE_SUPABASE_PUBLISHABLE_KEY"
+    "LIVE_SUPABASE_KEY": "sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz"
   },
   "assets": {
     "directory": ".",

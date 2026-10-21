@@ -2714,3 +2714,12 @@ TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and 
 - TEST `platform-owner-dashboard.js` loads product pages using `public.platform_owner_get_product_pages`, saves through `public.platform_owner_update_product_page`, and wires the refresh control. These RPCs were confirmed present in the TEST Supabase database.
 - TEST commits: HTML `8b9eaa9fbde7e620833f63e05e67ffeb50d5eb5c`; JavaScript `c5ad613cd0237f4ebf172811e9fa00614bcf913f`.
 - This is a source-level parity repair only. Hosted TEST delivery and browser-based save/refresh checks are still required. Do not copy LIVE Stripe identifiers or secrets into TEST. No LIVE dashboard files or subscriber records were changed for this repair.
+
+
+## Complimentary invitation acceptance repair — 21 October 2026
+
+- The complimentary-subscriber Edge Function now redirects invitation emails to `subscriber-invitation-accept.html` rather than `subscriber-login.html`.
+- The new acceptance page presents email, password, and password-confirmation fields; it validates the invite access token and matching email, sets the password through Supabase Auth, stores the resulting subscriber session, and then redirects to the subscriber dashboard. It does not initiate Stripe checkout.
+- TEST Edge Function `platform-create-complimentary-subscriber` redeployed successfully as ACTIVE version 3 with JWT verification enabled.
+- The initial invitation to `scenesource1@gmail.com` arrived, but the click-through showed the ordinary sign-in page and failed. Do not treat the invitation flow as verified until a fresh invitation is issued after this change and account activation, dashboard access, and complimentary feature access are tested end-to-end.
+- Do not change LIVE or reuse the existing invite link for this test; its redirect points to the old sign-in route. The current repair is TEST-only.

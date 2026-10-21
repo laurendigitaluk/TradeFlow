@@ -1,5 +1,6 @@
-const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
-const KEY='sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+const IS_TEST_HOST=location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev'||location.hostname==='localhost'||location.hostname==='127.0.0.1'||location.hostname.endsWith('.github.io');
+const SUPABASE_URL=IS_TEST_HOST?'https://nnsshnfkjcflucjrftzi.supabase.co':'https://gxsrajtqzdjvmceqcpgv.supabase.co';
+const KEY=IS_TEST_HOST?'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ':'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
 const SESSION_KEY='tradeflow_platform_owner_session';
 let session=null;
 

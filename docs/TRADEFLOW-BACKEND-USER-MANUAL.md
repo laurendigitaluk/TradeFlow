@@ -1553,3 +1553,10 @@ A second TEST-only migration was applied: `supabase/migrations/20261021203931_re
 - Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.
 
 Post-migration SQL verified the retained payment idempotency and tenant-primary indexes. The Supabase performance advisor's `duplicate_index` finding fell from 3 to 0; other performance warnings remain. No workload benchmark is claimed because TEST is newly created and has only one active tenant. Rollback, only if required, is to recreate the three removed indexes using their exact original definitions; this restores the previous redundant state and is not the preferred outcome.
+
+
+## TEST/LIVE PLAN-CONFIGURATION DRIFT FIX — 21 OCTOBER 2026
+
+Review found TEST's `enhanced` plan had `annual_price = NULL` and its `public_get_available_plans()` RPC omitted `trial_days`, while LIVE had annual price GBP 499.99 and returned the trial-days field. No dependent database objects were found for the RPC. TEST-only migration `supabase/migrations/20261021204236_align_test_public_plan_rpc_and_annual_price.sql` sets the TEST annual display price to GBP 499.99 only when the expected existing monthly/trial values match, then recreates the public RPC with the nine-column result shape used by LIVE. It retains `SECURITY DEFINER`, an empty `search_path`, and explicit EXECUTE grants for `anon`, `authenticated`, and `service_role`; PUBLIC execution is revoked. No Stripe product or price IDs were copied.
+
+Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual, 30-day trial; the RPC returns `trial_days = 30`; anonymous/authenticated/service-role execution succeeds at privilege level; PUBLIC execution is false. Stripe product/monthly/annual Price IDs remain absent in TEST as intended for the separate Sandbox setup. Browser pricing/checkout regression remains pending. Rollback, only if required, must restore the previous eight-column RPC definition and set `annual_price = NULL` for the TEST `enhanced` plan; this would reintroduce the known mismatch and is not recommended without a confirmed compatibility issue.

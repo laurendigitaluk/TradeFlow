@@ -47,7 +47,7 @@ Deno.serve(async (req: Request) => {
     const slugBase = businessName.toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
     if (!slugBase) return json({ error: "Choose a business name containing letters or numbers." }, 400);
 
-    const inviteResponse = await fetch(SUPABASE_URL + "/auth/v1/invite?redirect_to=" + encodeURIComponent(origin + "/subscriber-login.html"), {
+    const inviteResponse = await fetch(SUPABASE_URL + "/auth/v1/invite?redirect_to=" + encodeURIComponent(origin + "/subscriber-invitation-accept.html"), {
       method: "POST",
       headers: { apikey: SERVICE_ROLE_KEY, Authorization: "Bearer " + SERVICE_ROLE_KEY, "Content-Type": "application/json" },
       body: JSON.stringify({

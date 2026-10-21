@@ -2069,7 +2069,7 @@ The complimentary-subscriber release PR #157 remains a draft and is not live. Pa
 
 ## ADDITIONAL TEST PERFORMANCE FIX — 21 OCTOBER 2026
 
-A second TEST-only migration was applied: `supabase/migrations/20261021203931_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
+A second TEST-only migration was applied: `supabase/migrations/20261021203935_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
 - Removed `customer_credit_accounts_tenant_customer_uidx`; retained the identical constraint-backed `customer_credit_accounts_tenant_id_customer_id_key` index.
 - Removed `payment_records_tenant_idempotency_idx`; retained `payment_records_tenant_id_idempotency_key_uidx` with the same partial unique predicate.
 - Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.

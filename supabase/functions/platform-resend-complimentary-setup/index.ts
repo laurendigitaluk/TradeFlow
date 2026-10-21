@@ -34,7 +34,7 @@ Deno.serve(async (req: Request) => {
 
     const body = await req.json();
     const email = String(body?.email || "").trim().toLowerCase();
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) return json({ error: "Enter a valid subscriber email address." }, 400);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: "Enter a valid subscriber email address." }, 400);
 
     // Only allow recovery for an existing account that already owns a complimentary/manual tenant.
     const accountResponse = await fetch(

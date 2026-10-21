@@ -69,6 +69,15 @@
       <div id="complimentary-status" class="action-message" role="status" aria-live="polite"></div>
     </section>
 
+    <section id="complimentary-resend" class="panel">
+      <div class="panel-head"><div><div class="eyebrow">Account recovery</div><h2>Resend account setup link</h2></div></div>
+      <p class="muted">Use this when a complimentary invitation was already sent or the subscriber has an existing TradeFlow login. This sends a password-setup link to the existing account; it does not create another account or workspace.</p>
+      <form id="complimentary-resend-form" style="max-width:680px">
+        <label>Existing subscriber email<input id="complimentary-resend-email" name="email" type="email" required autocomplete="email" placeholder="subscriber@example.com"></label>
+        <p><button id="complimentary-resend-submit" type="submit">Send account setup link</button></p>
+      </form>
+      <div id="complimentary-resend-status" class="action-message" role="status" aria-live="polite"></div>
+    </section>
     <section id="domain-connections" class="panel">
 <div class="panel-head"><div><div class="eyebrow">Subscriber domains</div><h2>Domain connection requests</h2></div><button id="refresh-domain-actions" type="button">Refresh</button></div>
 <p class="muted">Work through each request in order. TradeFlow guides the Platform Owner through review, connection preparation, customer DNS instructions, DNS verification, SSL verification and tenant-routing verification before activation.</p>

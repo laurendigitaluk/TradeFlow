@@ -2573,3 +2573,23 @@ This is an environment-specific status note. It records observed results and out
 
 ### Update rule
 Replace any item above only when a new browser observation, query result, webhook delivery, or controlled end-to-end test supports the change. Do not mark untested functionality as complete.
+
+---
+
+## Environment audit and handover — 21 October 2026 (LIVE / production)
+
+### Verified observations and open checks
+- Catalogue-tab CSS leakage was corrected in the environment's source. LIVE page cleanliness was confirmed by the owner; TEST category filters load, but a recent screenshot still showed zero product rows. Product retrieval/search is not yet verified.
+- The owner confirmed the LIVE Buying & Pricing page displays cleanly after the catalogue-tab CSS correction. Do not apply the TEST-only site_revisions grant to LIVE without checking existing grants and RLS first. LIVE Stripe is owner-reported working; no live payment was run.
+- Supabase advisors showed matching categories of existing warnings in TEST and LIVE: SECURITY DEFINER functions callable by anon/authenticated roles, pg_net in the public schema, and unindexed foreign keys. Investigate each finding in context; avoid blanket revocations or extension moves.
+- Supabase table inspection reported RLS enabled on inspected public tables, but this does not prove every policy is correct. Matching source/advisor counts do not establish full schema, migration, function, data, or deployment parity.
+- LIVE and TEST business/customer/payment records are separate. Do not copy tenant, customer, or payment records across environments. Verify shared master-catalogue behaviour at the query/data layer rather than assuming the interface means physical database sharing.
+
+### Release guardrails and next steps
+1. Verify product rows and known-product search in both master catalogues.
+2. Confirm TEST Website Builder Save draft succeeds in the browser after the privilege grant.
+3. Complete TEST Stripe Sandbox monthly checkout, webhook delivery, and subscription status in the owner dashboard; keep complimentary subscriptions free and isolated from Stripe.
+4. Review and prioritize the Supabase advisor findings.
+5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE owner origin/redirect configuration, migration compatibility, owner-only access, invitation flow, and paid Stripe signup regression checks are verified.
+
+Do not mark untested functionality complete. Update this note only when supported by a browser observation, query result, successful webhook delivery, or controlled end-to-end test.

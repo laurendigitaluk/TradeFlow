@@ -1988,3 +1988,20 @@ This is an environment-specific status note. It records observed results and out
 
 ### Update rule
 Replace any item above only when a new browser observation, query result, webhook delivery, or controlled end-to-end test supports the change. Do not mark untested functionality as complete.
+
+---
+
+## Environment audit and handover — 21 October 2026 (LIVE / production)
+
+This note records observed results and open checks; it is not a claim that every feature passed end-to-end testing.
+
+- The stray catalogue-tab CSS text was corrected in `buying-catalogue.html`. The owner confirmed the LIVE Buying & Pricing page displays cleanly after refresh.
+- The production `buying-catalogue.js` was compared with TEST and matched at review time. This does not prove filtered product queries return rows. A previous screenshot showed populated category filters but zero product rows; verify a known product before marking product selection complete.
+- Do not apply the TEST-only `site_revisions` grant to LIVE without checking current grants and RLS policy first. No LIVE database grant was made in this review.
+- LIVE Stripe workflows are reported by the owner as working; no live payment or Stripe configuration change was performed in this audit.
+- Supabase advisor snapshots showed existing warnings in both environments: SECURITY DEFINER functions callable by anon/authenticated roles, `pg_net` in the public schema, and unindexed foreign keys. Review each finding in context; do not blanket-revoke access or move extensions without dependency checks.
+- Similar frontend source and advisor counts do not establish complete schema, migration, function, data, or deployment parity. LIVE and TEST business/customer/payment records remain separate.
+- Remaining checks: verify product search and product rows in both catalogues; confirm TEST Website Builder Save draft; complete TEST Stripe Sandbox checkout and webhook/status verification; review and prioritize advisor findings.
+- Do not merge/deploy the complimentary-subscriber release candidate until LIVE owner origin/redirect configuration, migration compatibility, owner-only access, invitation flow, and paid Stripe signup regression checks have been verified.
+
+Update this status only when new browser observations, query results, webhook deliveries, or controlled end-to-end tests support the change. Do not mark untested functionality complete.

@@ -270,6 +270,33 @@ function nextPlan(code){return null}
 function setActionMessage(text,isError=false){const el=$('action-message');if(el){el.textContent=text;el.className=isError?'action-message error':'action-message'}}
 async function manageSubscription(tenantId,action,planCode,name){if(action==='close'&&!confirm('Close the TradeFlow account for "'+name+'"? The tenant will be archived and its subscription cancelled. This does not delete its stored business data.'))return;if(action==='upgrade'&&!confirm('Upgrade "'+name+'" to '+planCode+'?'))return;setActionMessage(action==='close'?'Closing account…':'Updating subscription…');try{await request('/rest/v1/rpc/platform_admin_manage_subscription',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_action:action,p_plan_code:planCode})});setActionMessage(action==='close'?'Account closed.':'Subscription upgraded.');await loadTenants()}catch(e){setActionMessage(e.message||String(e),true)}}
 async function loadTenants(){const error=$('error');error.textContent='';$('tenant-rows').innerHTML='<tr><td colspan="9">Loading…</td></tr>';try{const [rows,accounts]=await Promise.all([request('/rest/v1/rpc/platform_admin_list_tenants',{method:'POST',body:'{}'}),request('/rest/v1/rpc/platform_admin_list_subscriber_accounts',{method:'POST',body:'{}'})]);const tenants=Array.isArray(rows)?rows:[],subscriberAccounts=Array.isArray(accounts)?accounts:[],subscriberIds=new Set(subscriberAccounts.map(x=>x.tenant_id)),subscriberTenants=tenants.filter(x=>subscriberIds.has(x.tenant_id));$('tenant-count').textContent=subscriberAccounts.length;$('active-count').textContent=subscriberAccounts.filter(x=>x.business_status==='active').length;$('tradeflow-count').textContent=subscriberTenants.filter(x=>x.plan_code==='enhanced').length;if(!subscriberAccounts.length){$('tenant-rows').innerHTML='<tr><td colspan="9">No subscriber businesses found.</td></tr>';return}const tenantMap=new Map(subscriberTenants.map(x=>[x.tenant_id,x]));$('tenant-rows').innerHTML=subscriberAccounts.map(t=>{const d=tenantMap.get(t.tenant_id)||{},current=d.plan_code||'—',next=nextPlan(current);let actions='';if(t.business_status==='archived'){actions='<span class="muted">Closed</span>'}else{actions+='<button class="table-action danger" data-action="close" data-tenant="'+t.tenant_id+'" data-name="'+escapeAttr(t.business_name)+'">Close account</button>'}return '<tr><td><strong>'+escapeHtml(t.business_name||'—')+'</strong></td><td>'+escapeHtml(t.owner_name||'—')+'</td><td>'+escapeHtml(t.owner_email||'—')+'</td><td>'+escapeHtml(current)+'</td><td>'+escapeHtml(d.subscription_status||'—')+'</td><td>'+escapeHtml(t.business_status||'—')+'</td><td>'+formatDate(t.joined_at)+'</td><td><a class="table-action" href="public-site.html?tenant_id='+encodeURIComponent(t.tenant_id)+'" target="_blank" rel="noopener">View website</a></td><td class="actions-cell">'+actions+'</td></tr>'}).join('');document.querySelectorAll('[data-action]').forEach(b=>b.onclick=()=>manageSubscription(b.dataset.tenant,b.dataset.action,b.dataset.plan,b.dataset.name))}catch(e){error.textContent=e.message||String(e);$('tenant-rows').innerHTML='<tr><td colspan="9">Unable to load platform data.</td></tr>'}}
+async function loadProductPages(){
+ const host=$('product-pages-list'),error=$('product-pages-error');if(!host)return;
+ error.textContent='';host.innerHTML='<p class="muted">Loading product pages…</p>';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_get_product_pages',{method:'POST',body:'{}'});
+  if(!Array.isArray(rows)||!rows.length){host.innerHTML='<p class="muted">No product pages are configured.</p>';return}
+  host.innerHTML=rows.map(p=>'<form class="plan-editor product-page-editor" data-product-slug="'+escapeAttr(p.slug)+'">'+
+   '<div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(p.slug)+'</div><h3>'+escapeHtml(p.product_name)+'</h3></div>'+
+   '<label class="plan-live">Page status<select name="status"><option value="published" '+(p.status==='published'?'selected':'')+'>Published</option><option value="coming_soon" '+(p.status==='coming_soon'?'selected':'')+'>Coming soon</option><option value="hidden" '+(p.status==='hidden'?'selected':'')+'>Hidden</option></select></label></div>'+
+   '<label>Product name<input name="product_name" maxlength="80" required value="'+escapeAttr(p.product_name)+'"></label>'+
+   '<label>Headline<input name="headline" maxlength="180" required value="'+escapeAttr(p.headline)+'"></label>'+
+   '<label>Tagline<input name="tagline" maxlength="300" value="'+escapeAttr(p.tagline||'')+'"></label>'+
+   '<label>Description<textarea name="description" maxlength="2000" rows="4">'+escapeHtml(p.description||'')+'</textarea></label>'+
+   '<div class="plan-fields"><label>Link label<input name="button_label" maxlength="80" value="'+escapeAttr(p.button_label||'')+'"></label><label>Link destination<input name="button_url" maxlength="500" value="'+escapeAttr(p.button_url||'')+'" placeholder="https://… or /studioflow"></label></div>'+
+   '<div class="plan-editor-foot"><span class="plan-status" aria-live="polite"></span><button class="table-action" type="submit">Save '+escapeHtml(p.product_name)+' page</button></div></form>').join('');
+  host.querySelectorAll('.product-page-editor').forEach(form=>form.onsubmit=saveProductPage);
+ }catch(e){error.textContent=e.message||String(e);host.innerHTML='<p class="muted">Unable to load product pages. The product-page database migration may not have been applied yet.</p>'}
+}
+async function saveProductPage(e){
+ e.preventDefault();const form=e.currentTarget,status=form.querySelector('.plan-status'),button=form.querySelector('button[type="submit"]'),data=new FormData(form);
+ const slug=form.dataset.productSlug;
+ const payload={p_slug:slug,p_product_name:String(data.get('product_name')||''),p_status:String(data.get('status')||'coming_soon'),p_headline:String(data.get('headline')||''),p_tagline:String(data.get('tagline')||''),p_description:String(data.get('description')||''),p_button_label:String(data.get('button_label')||''),p_button_url:String(data.get('button_url')||'')};
+ button.disabled=true;status.textContent='Saving…';
+ try{await request('/rest/v1/rpc/platform_owner_update_product_page',{method:'POST',body:JSON.stringify(payload)});status.textContent='Saved. Public page content will update on refresh.';await loadProductPages()}
+ catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
 function planPrice(value,currency='GBP'){if(value===null||value===undefined||value==='')return'';try{return new Intl.NumberFormat('en-GB',{style:'currency',currency}).format(Number(value))}catch{return String(value)}}
 function renderPlanAdmin(plans){
  const host=$('plan-admin-list');if(!host)return;
@@ -349,12 +376,12 @@ async function createComplimentarySubscriber(event){
 }
 
 $('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
-$('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;
+$('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages()])}
   catch(e){showAuth('')}
 })();

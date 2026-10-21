@@ -2065,3 +2065,13 @@ The TEST project currently has no published-site records, so only negative-path 
 The current Supabase advisors still report password protection disabled and other function/RLS/index review items. These do not mean all reported objects are unsafe; they are being checked individually to avoid breaking public websites, customer purchases or tenant access. The Auth setting requires the owner to enable leaked-password protection in the TEST Supabase Dashboard under Authentication → Attack Protection/password security, then verify login, password change and recovery. LIVE should follow only after TEST passes.
 
 The complimentary-subscriber release PR #157 remains a draft and is not live. Paid Stripe checkout must remain unchanged. Do not treat this checkpoint as final security approval.
+
+
+## ADDITIONAL TEST PERFORMANCE FIX — 21 OCTOBER 2026
+
+A second TEST-only migration was applied: `supabase/migrations/20261021203931_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
+- Removed `customer_credit_accounts_tenant_customer_uidx`; retained the identical constraint-backed `customer_credit_accounts_tenant_id_customer_id_key` index.
+- Removed `payment_records_tenant_idempotency_idx`; retained `payment_records_tenant_id_idempotency_key_uidx` with the same partial unique predicate.
+- Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.
+
+Post-migration SQL verified the retained payment idempotency and tenant-primary indexes. The Supabase performance advisor's `duplicate_index` finding fell from 3 to 0; other performance warnings remain. No workload benchmark is claimed because TEST is newly created and has only one active tenant. Rollback, only if required, is to recreate the three removed indexes using their exact original definitions; this restores the previous redundant state and is not the preferred outcome.

@@ -30,7 +30,7 @@ window.addEventListener('DOMContentLoaded',()=>{
  const h=location.hostname,isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';
  const url=isTest?'https://nnsshnfkjcflucjrftzi.supabase.co':'https://gxsrajtqzdjvmceqcpgv.supabase.co';
  const key=isTest?'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ':'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
- if(!token || (type && type!=='invite')){msg.className='error';msg.textContent='This invitation link is missing or invalid. Please open the latest invitation email or ask the platform owner to resend it.';return;}
+ if(!token || (type && !['invite','recovery'].includes(type))){msg.className='error';msg.textContent='This invitation link is missing or invalid. Please open the latest invitation email or ask the platform owner to resend it.';return;}
  document.getElementById('accept-form').addEventListener('submit',async ev=>{
   ev.preventDefault();
   const password=document.getElementById('password').value, confirm=document.getElementById('confirm-password').value, email=document.getElementById('email').value.trim(), button=document.getElementById('submit');

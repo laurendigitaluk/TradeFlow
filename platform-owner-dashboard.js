@@ -323,7 +323,7 @@ function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-async async function createComplimentarySubscriber(event){
+async function createComplimentarySubscriber(event){
  event.preventDefault();
  const form=event.currentTarget,button=$('complimentary-submit'),status=$('complimentary-status');
  button.disabled=true;status.textContent='Creating invitation and complimentary workspace…';

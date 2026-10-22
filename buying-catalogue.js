@@ -51,7 +51,6 @@ async function loadCatalogue(){
  msg("Loading catalogue filters…");
  await loadFacets();
  await loadPage();await loadStatusCounts();
- await loadStatusCounts();
  msg(catalogueView==="my"?"Your Buying Catalogue is ready.":"Master catalogue ready. Select products to add them to your Buying Catalogue.","success");
 }
 async function loadFacets(){

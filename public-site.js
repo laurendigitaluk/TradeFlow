@@ -630,8 +630,8 @@ async function loadByBusinessSlug(){
 async function loadByTenant(){
  if(!tenantId)throw new Error('No subscriber tenant was supplied. Open the public site with its tenant_id or active domain.');
  if(preview)return loadDraftPreview();
- const rows=await api('/rest/v1/rpc/get_published_sites');
- const selected=Array.isArray(rows)?rows.find(r=>r.tenant_id===tenantId):null;
+ const rows=await api('/rest/v1/published_site_index?select=tenant_id,revision_number,content,published_at&tenant_id=eq.'+encodeURIComponent(tenantId)+'&limit=1');
+ const selected=Array.isArray(rows)&&rows.length===1?rows[0]:null;
  if(!selected)throw new Error('No published website was found for this subscriber.');
  try{window.__tradeflowBuyingCatalogue=await loadBuyingCatalogue(tenantId)}catch(e){console.warn('TradeFlow buying catalogue unavailable:',e);window.__tradeflowBuyingCatalogue={categories:[],products:[]};}
  await loadListings(tenantId);
@@ -643,13 +643,8 @@ async function loadByHostname(){
   if(tenantId)return loadByTenant();
   if(!hostname||hostname==='localhost'||hostname==='127.0.0.1')return loadByTenant();
   let rows=await api('/rest/v1/published_site_index?select=tenant_id,hostname,revision_number,content,published_at&hostname=eq.'+encodeURIComponent(hostname)+'&limit=1');
-  if((!Array.isArray(rows)||rows.length!==1)&&hostname==='tradeflow-test.leannelaurenlowe.workers.dev'){
-    const published=await api('/rest/v1/rpc/get_published_sites');
-    if(Array.isArray(published)&&published.length===1){
-      const selected=published[0];
-      rows=[{tenant_id:selected.tenant_id,hostname:hostname,revision_number:selected.revision_number,content:selected.content,published_at:selected.published_at}];
-    }
-  }
+  // Do not fall back to downloading every published subscriber site for a legacy hostname.
+  // Domains must resolve through the published-site index or an explicit tenant/slug route.
   if(!Array.isArray(rows)||rows.length!==1)throw new Error('This domain is not connected to a published TradeFlow subscriber website.');
   const siteTenantId=rows[0].tenant_id;
   activeTenantId=siteTenantId;

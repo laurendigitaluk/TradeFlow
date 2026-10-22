@@ -72,7 +72,7 @@ export default {
       ) {
         cleanRoutes[url.pathname] = "/public-site.html";
       }
-    } else if (url.pathname === "/") {
+    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk" && hostname !== "laurendigital.co.uk" && hostname !== "www.laurendigital.co.uk") {
       // With html_handling disabled, the Worker must explicitly resolve the
       // platform root to index.html instead of relying on static index fallback.
       cleanRoutes["/"] = "/index.html";

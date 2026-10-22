@@ -2201,7 +2201,7 @@ Do not mark untested functionality complete. Update this note only when supporte
 
 ## Production/TEST release boundary update — 22 October 2026
 
-The latest GitHub comparison confirms that `production` and `test/stripe-connect-test-mode-repair-20261020` have diverged (TEST 114 commits ahead, 26 behind). Do not merge the entire TEST branch into LIVE. It includes TEST-specific Stripe Connect, invite acceptance and resend code. LIVE is the production baseline; TEST project is `nnsshnfkjcflucjrftzi`; LIVE project is `gxsrajtqzdjvmceqcpgv`.
+The latest GitHub comparison confirms that `production` and `test/stripe-connect-test-mode-repair-20261020` have diverged (TEST 114 commits ahead, 33 behind). Do not merge the entire TEST branch into LIVE. It includes TEST-specific Stripe Connect, invite acceptance and resend code. LIVE is the production baseline; TEST project is `nnsshnfkjcflucjrftzi`; LIVE project is `gxsrajtqzdjvmceqcpgv`.
 
 TEST browser verification: the owner dashboard displays TradeFlow (Published), StudioFlow (Coming soon) and BusinessFlow (Coming soon). The complimentary test subscriber successfully reached the subscriber dashboard and could sign out/in again when using the subscriber login page. The platform-owner sign-in error was a wrong-login-page test, not evidence of a broken subscriber password.
 

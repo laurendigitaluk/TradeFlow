@@ -2640,3 +2640,32 @@ Commits: RPC migration `29f43a9d882a35a625b57ef242f8a0ecf51823a0`; dashboard HTM
 - No LIVE schema, user, subscription, Stripe, or tenant changes were made during this verification. LIVE browser state must remain untouched unless a separately scoped LIVE change is approved.
 - No bulk legacy-code deletion is approved by this audit. Before removing files, map entry points, script references, Worker routes, migrations, deployed Edge Functions and rollback dependencies. Archived migrations/checkpoints are historical records, not dead runtime code, and must not be deleted as cleanup.
 - Remaining checks: verify the latest relevant TEST Cloudflare deployment is Ready; compare only reviewed, environment-neutral fixes against LIVE; run syntax/link checks and relevant tests; then record each production-safe change separately. Manual browser confirmation is required for save-and-refresh persistence and for resend behavior.
+
+
+## PRE-LAUNCH SECURITY REVIEW — 22 OCTOBER 2026 (LATEST SNAPSHOT)
+
+### Environment and change boundary
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv` (connected TRADEFLOW LIVE account). TEST reviewed in this audit: `nnsshnfkjcflucjrftzi` (connected TEST project). Do not confuse these with the older TEST reference `twfbmjwwqzxdxvclxbun` recorded in historical notes.
+- GitHub production tree inspected recursively: 511 tracked entries; no `.php` files or PHP Composer manifest found. This lowers concern about the reported PHP vulnerability in the application repository, but does not verify Cloudflare, registrar, external hosting, or any third-party runtime.
+- No runtime code, SQL grants, database rows, auth settings, secrets, Edge Functions, DNS, Cloudflare routing, or published content changed during this review. This is an isolated documentation/audit branch only.
+
+### Database checks
+- TEST has 99 tables in the `public` schema; read-only catalog query confirms RLS enabled on all 99 and at least one policy on every table. This is a structural check only, not proof that each policy enforces correct tenant isolation.
+- Supabase advisors flag 8 anon-callable `SECURITY DEFINER` functions and 164 authenticated-callable `SECURITY DEFINER` functions on TEST; LIVE advisor output flags 8 and 165 respectively. These counts are review signals, not counts of confirmed vulnerabilities.
+- The anon-callable functions inspected are published/public-read APIs (public buying catalogue, published site/site list, published store listings/media, public plans and published-media predicate). Their SQL bodies select active/published or customer-visible content. Do not indiscriminately revoke these grants; doing so can break public subscriber sites and catalogues. Verify every public function against its intended data contract before changing grants.
+- The inspected TEST catalogue mutation wrappers delegate to functions that check `private.has_tenant_permission(..., auth.uid(), ...)` or `private.can_tenant(...)`; no evidence from these inspected wrappers alone justifies a blanket grant change. Continue a function-by-function review for authorization, tenant scoping and side effects, especially finance, payments, membership, platform-owner and registration functions.
+- TEST security advisors also flag `pg_net` in `public`, disabled leaked-password protection, and other policy/function advisories. Do not move the extension without checking dependent functions/triggers. Leaked-password protection is an Auth configuration setting and was not changed by SQL; enable it through the Supabase Auth dashboard/configuration and verify the resulting setting before launch.
+- Performance advisors report approximately 65 foreign keys without covering indexes, multiple-permissive-policy findings, unused indexes and duplicate-index findings. These are not authorization vulnerabilities by themselves. Do not bulk-add/drop indexes or rewrite RLS policies without reviewing query plans, constraints, current policy intent and regression behaviour.
+
+### Domain/hosting follow-up
+- LIVE `tenant_domains` has an active primary record for `www.scenesource.co.uk`, but its metadata includes Cloudflare hostname status `pending` and SSL validation records marked `pending`, alongside older flags such as `ssl_verified: true`. This is internally inconsistent metadata; it does not prove the current external endpoint is broken or secure. Verify current DNS, Cloudflare custom-hostname state and HTTPS from the provider/dashboard before launch. Do not change DNS, SSL, routing or the published site as part of this audit without a separate controlled plan.
+
+### Safe next steps / current decision
+1. Keep LIVE untouched until the TEST review is complete and regression-tested, consistent with the established release boundary.
+2. Verify Supabase Auth leaked-password protection in TEST via supported Auth settings; then run registration/login/password-reset tests.
+3. Continue targeted source review of privileged SECURITY DEFINER functions and public APIs; only make minimal changes where a concrete authorization defect is demonstrated.
+4. Review indexes/policies separately and validate each change with advisors and application regression tests.
+5. Verify SceneSource DNS/Cloudflare/HTTPS status without altering configuration, and record evidence.
+6. After fixes are tested on TEST, prepare a controlled release/PR for LIVE; do not merge or deploy merely to clear advisory counts.
+
+This snapshot supersedes older counts only where explicitly stated above. Advisory counts can change as schema/code evolves. No final security clearance is claimed.

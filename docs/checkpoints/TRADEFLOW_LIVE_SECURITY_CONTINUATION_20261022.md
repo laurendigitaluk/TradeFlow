@@ -26,7 +26,7 @@
 - No browser-level signed-in subscriber domain request/status smoke test was run.
 - No controlled owner-portal complimentary subscriber invitation/provisioning test was run.
 - Full tenant-isolation and payment/Stripe end-to-end tests remain outstanding.
-- Continue reviewing remaining authenticated SECURITY DEFINER functions, leaked-password protection, and `pg_net` placement/exposure.
+- Continue reviewing remaining authenticated SECURITY DEFINER functions and enable leaked-password protection through supported Auth configuration. LIVE has an active `tradeflow-notification-queue` cron job running every minute via `net.http_post`, using Vault secrets named `tradeflow_project_url` and `tradeflow_notification_processor_secret` and the `x-tradeflow-cron-secret` header. `process-notification-queue` is version 10 with JWT verification disabled but checks that secret. Do not move `pg_net` or alter the cron job until the queue path is regression-tested.
 - Do not bulk-merge TEST into LIVE; branches previously diverged substantially.
 - Do not change catalogue, pricing, or evidence ingestion in this workstream.
 

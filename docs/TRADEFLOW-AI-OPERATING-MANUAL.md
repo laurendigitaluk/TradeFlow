@@ -2633,7 +2633,7 @@ Commits: RPC migration `29f43a9d882a35a625b57ef242f8a0ecf51823a0`; dashboard HTM
 
 ## Production / TEST parity audit — 22 October 2026
 
-- Current branch comparison: `production` and `test/stripe-connect-test-mode-repair-20261020` are divergent (TEST is 114 commits ahead and 26 behind in GitHub's compare view). Do not merge the TEST branch wholesale into production. It contains TEST-only Stripe Connect and invitation/recovery work alongside unrelated changes.
+- Current branch comparison: `production` and `test/stripe-connect-test-mode-repair-20261020` are divergent (TEST is 114 commits ahead and 33 behind in GitHub's compare view). Do not merge the TEST branch wholesale into production. It contains TEST-only Stripe Connect and invitation/recovery work alongside unrelated changes.
 - LIVE remains the protected baseline. LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (link `link_6ad13c4afe848191899041a0a95b487d`). TEST Supabase project: `nnsshnfkjcflucjrftzi` (link `link_6a8b3c7f2f208191851663ebc14853ab`). Keep Stripe identifiers/secrets and database records environment-specific.
 - Latest browser evidence: TEST owner dashboard shows the product-page editor for TradeFlow, StudioFlow and BusinessFlow; statuses are Published, Coming soon and Coming soon respectively. User confirmed the complimentary TEST subscriber could set a password, sign in to the correct subscriber dashboard, sign out and sign back in. The earlier owner-login error was caused by trying the subscriber account on the platform-owner login page.
 - The resend-account-setup flow has not been confirmed end-to-end. Do not click its button again until specifically asked; do not claim resend verification is complete.

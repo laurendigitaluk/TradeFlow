@@ -1,4 +1,4 @@
-const SUPABASE_URL="https://twfbmjwwqzxdxvclxbun.supabase.co";
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||"https://gxsrajtqzdjvmceqcpgv.supabase.co";
 const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null,userId=null,categories=[],branches=[],manufacturers=[],products=[],research=[];
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}

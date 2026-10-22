@@ -64,3 +64,13 @@ Checkpoint date: 2026-10-20
 - Performance advisor snapshot: both environments report 65 unindexed foreign keys, 166 RLS init-plan warnings, and 14 multiple-permissive-policy warnings. LIVE reports 64 unused-index notices and 3 duplicate-index notices; TEST reports 112 unused-index notices. Do not drop indexes based only on a fresh/low-traffic usage snapshot. Review duplicate indexes against constraints and migrations before any change.
 - Sensitive-table policy inspection showed tenant-membership/permission checks on customers, payment records, payment-provider connections, payment-provider customers and tenant subscriptions in both environments. This was a targeted inspection, not a complete cross-tenant penetration test.
 - Outstanding: inspect all advisor-listed anon-callable SECURITY DEFINER functions and their grants/body authorization; audit full tenant isolation and payment/ledger writes; compare deployed LIVE/TEST checkout and payment-webhook source; verify the complimentary setup resend flow only under a deliberate test plan; run manual browser checks where specified. No SQL permissions, schemas, Stripe settings, data or Edge Function deployments were changed in this audit.
+
+## 2026-10-22 Follow-up checkpoint — public website access hardening
+
+- LIVE migration `public_published_content_active_tenant_guard_20261022` applied, remote version `20261022143445`; source migration committed at `supabase/migrations/20261022160000_public_published_content_active_tenant_guard.sql`.
+- Added active-tenant filters to `get_published_site_preview`, `get_published_sites`, `get_published_store_listing_media`, `get_published_store_listings`, and `is_published_tradeflow_media`; these functions now use `search_path=''`.
+- Updated public RLS policies for `tenant_public_profiles` and `published_site_index` to check active tenant. Granted `anon` EXECUTE on `private.is_active_tenant(uuid)` for RLS evaluation; `private` schema usage remains denied to `anon`.
+- Deployed LIVE `public-listing-media` Edge Function version 11; it verifies the tenant is active before creating signed URLs.
+- Verification under SQL role `anon`: current public profile, published-site index, and published-site RPC each returned one row; direct access to schema `private` remains denied. Snapshot had one active tenant/site and no inactive-tenant index rows.
+- No product catalogue, pricing, or evidence-ingestion changes. No browser/API end-to-end test or full tenant-isolation/payment test was performed; these remain open items.
+- Do not blanket-revoke the eight advisor-flagged public SECURITY DEFINER RPCs; review each intended public route and returned fields separately.

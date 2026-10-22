@@ -2235,3 +2235,9 @@ The resend setup-link button is still unverified and must not be pressed again u
 6. After fixes are tested on TEST, prepare a controlled release/PR for LIVE; do not merge or deploy merely to clear advisory counts.
 
 This snapshot supersedes older counts only where explicitly stated above. Advisory counts can change as schema/code evolves. No final security clearance is claimed.
+
+
+### External domain spot-check (22 October 2026)
+- A web fetch of `https://www.scenesource.co.uk` was not accessible to the inspection tool.
+- A fetch of the bare `https://scenesource.co.uk` returned indexed content that redirects to `scenesource.mysharetribe.com`, but the result was marked as crawled three months ago and is not reliable proof of current routing.
+- This conflicts with the LIVE database's recorded active `www.scenesource.co.uk` custom-domain entry and pending Cloudflare/SSL metadata. Treat domain routing as **unverified**, not as a confirmed outage. Check current registrar DNS and Cloudflare Custom Hostnames/SSL directly before changing anything. Do not modify DNS, SSL, custom hostname, or published-site routing based on a stale crawl.

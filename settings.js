@@ -1,4 +1,4 @@
-const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||'https://gxsrajtqzdjvmceqcpgv.supabase.co';
 let key,token,tenantId,businessPostcode='';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));

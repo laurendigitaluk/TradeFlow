@@ -28,6 +28,7 @@ async function api(path,options={}){
 window.buyingSelected=new Set();
 async function init(){
  try{
+  if(!SUPABASE_URL)throw Error("TradeFlow environment configuration is missing. No catalogue changes were made.");
   const auth=await window.tradeflowSubscriberAuthReady;
   if(!auth?.session?.access_token||!auth.tenantId)throw Error("Subscriber sign-in required.");
   key=auth.key;token=auth.session.access_token;tenantId=auth.tenantId;

@@ -136,3 +136,23 @@ Post-change verification as role `anon`: `tenant_public_profiles`, `published_si
 - Read-only review of the four test-registration RPCs confirms admin/staff/customer registration and customer status all require an active tenant with `settings.test_lab=true`; all are non-executable by `anon`, executable by `authenticated`. LIVE has no active reserved test tenants or active test-lab tenants at this snapshot.
 - Read-only review of platform-owner helpers confirms `private.is_platform_owner` is defined by active membership in `platform_memberships`, and all current active memberships pass that guard (1 active, 1 passes, 0 mismatches). Four platform settings/product-page RPCs use the equivalent active-membership check directly; no present-state privilege mismatch was found.
 - Public `SECURITY DEFINER` endpoints reviewed at a high level return active published site revisions, published store listings/media, published catalogue entries, or website-visible active plan rows. The catalogue and plan endpoints are intentionally left out of deeper review to avoid overlap with the separate pricing/evidence agent.
+
+
+## LIVE security audit continuation — 22 October 2026 (second pass)
+
+### Read-only checks
+- Refreshed LIVE Supabase security/performance advisor snapshot (observed 2026-10-22 15:00 UTC). Existing advisor totals remain: 8 anonymous-executable SECURITY DEFINER endpoints, 167 authenticated-executable SECURITY DEFINER functions, 65 unindexed foreign keys, 166 RLS init-plan notices, 64 unused-index notices, 14 multiple-permissive-policy notices, 3 duplicate-index notices, pg_net in public, leaked-password protection disabled, and informational Auth connection allocation notice. These are audit leads, not proof that every flagged item is exploitable.
+- Reviewed RLS flags on high-value tenant and transaction tables: `tenants`, `tenant_memberships`, `tenant_subscriptions`, `customers`, `customer_bank_details`, `buying_requests`, `buying_items`, `offers`, `acquisitions`, `payment_records`, `retail_orders`, `customer_credit_accounts`, `customer_credit_holds`, `tenant_domains`, `platform_owner_domain_actions`, `media_assets`, `listings`, and `inventory_assets` all have RLS enabled.
+- `customer_bank_details`, `customer_credit_accounts`, `customer_credit_holds`, and `platform_owner_domain_actions` each have explicit deny-all direct client policies for `anon` and `authenticated`. Payment-record policies are permission-gated by tenant finance permissions.
+- Reviewed platform-admin private helper definitions. The create-tenant helper calls `private.has_platform_owner_access()`; user lookup, tenant listing, subscriber listing and subscription management helpers call `private.require_platform_owner()`. Private schema helpers were not executable by anon; service-role-only helpers remained service-role-only.
+- Reviewed notification processor DB RPC privileges: `notification_processor_auth_secret`, `claim_notification_queue_batch`, `mark_notification_sent`, and `mark_notification_failed` are SECURITY DEFINER with pinned empty search path, not executable by anon/authenticated, and executable by service_role only. The secret-returning RPC explicitly checks `current_user = 'service_role'`. The deployed processor compares the request's `x-tradeflow-cron-secret` header with that secret before claiming work. No queue data or secret values were read.
+- Public published-site/store RPCs reviewed at high level are scoped to active tenants and published revisions/listings. No confirmed new tenant-isolation vulnerability was established by this pass.
+
+### No changes made
+- This pass was read-only: no SQL writes, migrations, Edge Function deployments, customer-data changes, or payment/invitation tests.
+- Pricing/evidence/catalogue surfaces remain excluded pending the other agent's scope confirmation.
+
+### Outstanding
+- Leaked-password protection remains disabled; no supported Auth configuration control was available through the connected Supabase actions in this pass, so it was not changed.
+- Browser-level smoke tests for tenant-scoped custom domains and complimentary subscriber creation remain outstanding.
+- Review the 65 unindexed foreign keys and duplicate-index notices individually before changing indexes. Do not blindly drop unused indexes, merge branches, or move pg_net while the live cron path lacks regression coverage.

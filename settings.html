@@ -39,6 +39,14 @@
 <p><button type="submit">Save business details</button></p></form>
 </section>
 
+<section class="panel" id="shared-evidence-settings-panel">
+<div class="panel-heading"><div><div class="eyebrow">Buying research</div><h2>Shared market evidence</h2></div><span class="status-pill">Subscriber preference</span></div>
+<p>When enabled, TradeFlow can use platform-managed market evidence alongside your own private research in the Buying Catalogue. Your private research remains private. UK Used prices are reference-only; automatic buying prices continue to use UK New evidence only.</p>
+<label style="display:flex;align-items:flex-start;gap:10px;margin:14px 0;font-weight:600"><input id="use-shared-evidence" type="checkbox" checked style="margin-top:4px"><span>Use shared market evidence</span></label>
+<p class="small">Enabled by default. Turning this off affects only this subscriber’s catalogue view and does not delete shared evidence or change other subscribers’ settings.</p>
+<div id="shared-evidence-message" class="small" aria-live="polite"></div>
+</section>
+
 <section class="panel" id="email-settings-panel"><div class="panel-heading"><div><div class="eyebrow">Email</div><h2>Your business email</h2></div><span id="email-status-pill" class="status-pill">Not set</span></div>
 <p><strong>Just enter the email address your business uses.</strong> TradeFlow will use it for important business notifications and as the reply address for customer emails.</p>
 <p class="small">You do not need to configure SMTP, mail servers or individual notification switches. TradeFlow handles the technical email setup for you.</p>
@@ -76,5 +84,5 @@
 
 <section class="panel"><div class="panel-heading"><div><div class="eyebrow">Account</div><h2>Subscriber account</h2></div></div><p id="account-summary">Loading account…</p></section>
 </section></main>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=19"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="settings.js?v=20"></script><script src="shared-evidence-settings.js?v=2"></script>
 </body></html>

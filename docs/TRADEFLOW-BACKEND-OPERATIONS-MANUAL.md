@@ -158,3 +158,12 @@ Post-change verification as role `anon`: `tenant_public_profiles`, `published_si
 - Review the 65 unindexed foreign keys and duplicate-index notices individually before changing indexes. Do not blindly drop unused indexes, merge branches, or move pg_net while the live cron path lacks regression coverage.
 
 - Follow-up validation of the advisor's multiple-permissive-policy notices confirmed that the relevant buying/inventory/acquisition policies pair broad membership policies with RESTRICTIVE subscription/permission policies. PostgreSQL applies restrictive policies as additional AND conditions, so the membership policies do not by themselves bypass the relevant permission/feature checks. This pass did not establish an exploitable RLS bypass from those policy pairs.
+
+
+## Notification queue service-role guard correction — 22 October 2026
+
+The LIVE notification worker was returning HTTP 500 responses at its scheduled minute interval. Logs showed the database exception Not authorised from notification_processor_auth_secret(). The function was SECURITY DEFINER, owned by postgres, and incorrectly compared current_user to service_role; inside SECURITY DEFINER, current_user is the function owner. The same defect existed in shipping_provider_credentials_for_service(uuid).
+
+LIVE migration 20261022151000_fix_service_role_jwt_guards_20261022 replaces these checks with auth.role(), while keeping EXECUTE restricted to service_role. LIVE privilege checks after the migration confirm anon=false, authenticated=false, service_role=true for both functions. Migration source: supabase/migrations/20261022151000_fix_service_role_jwt_guards_20261022.sql, production commit b87b8257be16edcfade2f059b3b157cf55c9096a.
+
+Do not retrieve the secret directly or invoke the secret-returning RPC manually. Check the next scheduled worker request for HTTP success and absence of Not authorised before declaring queue recovery. As of this note, post-migration successful processing has not yet been confirmed. No TEST changes or Edge Function redeployment was made.

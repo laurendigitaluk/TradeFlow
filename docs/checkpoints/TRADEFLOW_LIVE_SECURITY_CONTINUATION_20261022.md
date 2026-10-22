@@ -80,3 +80,11 @@
 - Both guards now validate the verified request role with auth.role(). Grants remain service-role-only: LIVE privilege checks confirm anon and authenticated cannot execute either function, while service_role can. Secret values were not retrieved and no queue rows were read or modified by the audit.
 - Verification caveat: worker logs through 15:07 UTC showed the pre-fix Not authorised errors. A successful scheduled run after the migration has not yet been confirmed. Recheck the next cron invocation and verify HTTP success / absence of the authorization error before considering notification delivery restored. Do not invoke the secret-returning RPC manually or send test notifications just to prove it.
 - No TEST changes, no payment tests, no catalogue/pricing/evidence changes, and no Edge Function deployment were made for this fix.
+
+
+### Queue follow-up — 22 October 2026, 15:13 UTC
+
+- LIVE migration history confirms the service-role guard fix is applied (remote migration version 20261022150739; source migration filename 20261022151000_fix_service_role_jwt_guards_20261022.sql).
+- Post-fix function-edge logs no longer show the earlier repeated database Not authorised errors. The scheduled worker is now returning HTTP 503 instead. Inspection of the currently deployed process-notification-queue v10 source shows this specific 503 is returned when the RESEND_API_KEY Edge Function secret is absent; the function returns before claiming notification queue work. This means the auth guard issue appears resolved, but email delivery is still not configured and the queue is not yet processing messages.
+- No secret values were read. The supported connected tools do not expose a safe secret-presence listing or Edge Function secret-management action, so no secret was added or changed. To restore email delivery, an authorised operator must add the LIVE Resend API key as the Edge Function secret RESEND_API_KEY in Supabase Edge Function secrets, then verify a subsequent scheduled request returns HTTP 200. Do not put the key in source control or logs.
+- This follow-up is based on deployed function source and observed 503 responses; no queue rows or customer messages were read or changed.

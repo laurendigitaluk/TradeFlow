@@ -8,7 +8,7 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="index.html">Lauren Digital</a>
+  <a class="brand" href="/">Lauren Digital</a>
   <div class="top-actions"><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-HUMAN-USER-MANUAL.md" target="_blank" rel="noopener">Human Manual</a><a href="subscriber-website-manual.html" target="_blank" rel="noopener">Subscriber Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-BACKEND-USER-MANUAL.md" target="_blank" rel="noopener">Backend Manual</a><a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-AI-OPERATING-MANUAL.md" target="_blank" rel="noopener">AI Manual</a><span id="owner-email">Platform Owner</span><button id="sign-out" type="button">Sign out</button></div>
 </header>
 <main class="shell">
@@ -30,7 +30,7 @@
   <section class="content">
     <div class="eyebrow">Lauren Digital platform</div>
     <h1>Owner Dashboard</h1>
-    <p class="intro">Manage the TradeFlow platform and its subscriber businesses. Subscriber operational data remains inside each business tenant.</p>
+    <p class="intro">Manage Lauren Digital's product pages and the TradeFlow platform. Subscriber operational data remains inside each business tenant.</p>
 
     <section id="product-pages" class="panel">
       <div class="panel-head"><div><div class="eyebrow">Parent brand</div><h2>Lauren Digital product pages</h2></div><button id="refresh-product-pages" type="button">Refresh pages</button></div>
@@ -69,15 +69,6 @@
       <div id="complimentary-status" class="action-message" role="status" aria-live="polite"></div>
     </section>
 
-    <section id="complimentary-resend" class="panel">
-      <div class="panel-head"><div><div class="eyebrow">Account recovery</div><h2>Resend account setup link</h2></div></div>
-      <p class="muted">Use this when a complimentary invitation was already sent or the subscriber has an existing TradeFlow login. This sends a password-setup link to the existing account; it does not create another account or workspace.</p>
-      <form id="complimentary-resend-form" style="max-width:680px">
-        <label>Existing subscriber email<input id="complimentary-resend-email" name="email" type="email" required autocomplete="email" placeholder="subscriber@example.com"></label>
-        <p><button id="complimentary-resend-submit" type="submit">Send account setup link</button></p>
-      </form>
-      <div id="complimentary-resend-status" class="action-message" role="status" aria-live="polite"></div>
-    </section>
     <section id="domain-connections" class="panel">
 <div class="panel-head"><div><div class="eyebrow">Subscriber domains</div><h2>Domain connection requests</h2></div><button id="refresh-domain-actions" type="button">Refresh</button></div>
 <p class="muted">Work through each request in order. TradeFlow guides the Platform Owner through review, connection preparation, customer DNS instructions, DNS verification, SSL verification and tenant-routing verification before activation.</p>
@@ -90,7 +81,7 @@
       <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
       <div id="plans-error" class="error" role="alert"></div><div id="stripe-setup-status" class="action-message" role="status"></div>
       <div id="plan-admin-list" class="plan-admin-list"><p class="muted">Loading plans…</p></div>
-      <p class="note">Stripe Product and Price IDs belong to the environment you are currently using. Confirm the TEST or LIVE environment before creating billing products; Stripe secret keys are never stored here.</p>
+      <p class="note">Stripe Product and Price IDs are already configured for LIVE subscriber billing. This dashboard only manages the saved TradeFlow plan details; Stripe secret keys are never stored here.</p>
     </section>
 
     <section id="email-settings" class="panel">
@@ -107,6 +98,6 @@
 </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=18" defer></script>
+<script src="platform-owner-dashboard.js?v=15" defer></script>
 </body>
 </html>

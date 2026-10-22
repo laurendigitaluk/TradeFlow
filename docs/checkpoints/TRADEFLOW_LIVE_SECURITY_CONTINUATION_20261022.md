@@ -70,3 +70,13 @@
 - Review the 65 unindexed foreign keys and duplicate-index notices individually before changing indexes. Do not blindly drop unused indexes, merge branches, or move pg_net while the live cron path lacks regression coverage.
 
 - Follow-up validation of the advisor's multiple-permissive-policy notices confirmed that the relevant buying/inventory/acquisition policies pair broad membership policies with RESTRICTIVE subscription/permission policies. PostgreSQL applies restrictive policies as additional AND conditions, so the membership policies do not by themselves bypass the relevant permission/feature checks. This pass did not establish an exploitable RLS bypass from those policy pairs.
+
+
+## Follow-up — service-role JWT guard correction (22 October 2026, LIVE)
+
+- Read-only function/log review found repeated HTTP 500 responses from the LIVE process-notification-queue cron worker at approximately one-minute intervals. Worker logs contained the database error Not authorised.
+- Root cause: notification_processor_auth_secret() and shipping_provider_credentials_for_service(uuid) are SECURITY DEFINER functions owned by postgres, but their authorization guards compared current_user with service_role. Inside SECURITY DEFINER execution, current_user is the function owner, so the guard rejected the legitimate service call. This was a service-function availability defect, not evidence of secret disclosure.
+- Applied LIVE migration 20261022151000_fix_service_role_jwt_guards_20261022. Source committed to production at supabase/migrations/20261022151000_fix_service_role_jwt_guards_20261022.sql (commit b87b8257be16edcfade2f059b3b157cf55c9096a).
+- Both guards now validate the verified request role with auth.role(). Grants remain service-role-only: LIVE privilege checks confirm anon and authenticated cannot execute either function, while service_role can. Secret values were not retrieved and no queue rows were read or modified by the audit.
+- Verification caveat: worker logs through 15:07 UTC showed the pre-fix Not authorised errors. A successful scheduled run after the migration has not yet been confirmed. Recheck the next cron invocation and verify HTTP success / absence of the authorization error before considering notification delivery restored. Do not invoke the secret-returning RPC manually or send test notifications just to prove it.
+- No TEST changes, no payment tests, no catalogue/pricing/evidence changes, and no Edge Function deployment were made for this fix.

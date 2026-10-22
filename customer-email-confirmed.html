@@ -18,13 +18,17 @@ a{display:inline-block;margin-top:18px;padding:11px 16px;border-radius:7px;backg
 <div id="badge" class="badge">Email confirmed</div>
 <h1 id="heading">Your email address is confirmed</h1>
 <p id="message" class="message">Your TradeFlow customer account email has been confirmed. You can now return to the Customer Portal and sign in.</p>
-<a id="continue" href="customer-dashboard.html">Continue to Customer Portal</a>
+<a id="continue" href="/login">Continue to SceneSource customer login</a>
 </main>
 <script>
 (()=>{
 
  const hash=new URLSearchParams(location.hash.replace(/^#/,''));
  const error=hash.get('error_description')||hash.get('error');
+ if(!error){
+   document.getElementById('message').textContent='Your email confirmation link has been processed. You can now return to the customer login.';
+   window.setTimeout(()=>{location.replace('/login');},1800);
+ }
  if(error){
    document.getElementById('badge').textContent='Confirmation problem';
    document.getElementById('badge').className='badge error';

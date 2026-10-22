@@ -83,3 +83,5 @@ Goal: simplify TradeFlow subscriber pricing and evidence capture while enforcing
 - Documentation updated on production: AI operating manual, system handbook, human user manual, backend user manual, backend operations manual, LIVE launch runbook, master roadmap, and LIVE multitenant audit checkpoint.
 - Still open: request-level/browser smoke tests, full tenant-isolation verification, and Stripe/payment end-to-end verification. Do not blanket-revoke the eight advisor-flagged public SECURITY DEFINER RPCs; review intended public access individually.
 
+- Additional finding: the existing public-read policy on `tenant_public_profiles` referenced `private.is_active_tenant(uuid)`, but the earlier hardening migration had revoked `anon` EXECUTE on that helper. A role-`anon` SQL test reproduced `permission denied for function is_active_tenant`, which could suppress public business contact/profile data. The new migration restores EXECUTE for policy evaluation while leaving `USAGE` on schema `private` denied; the role-`anon` profile read now succeeds. This is a confirmed access regression fixed by the migration, separate from the preventive inactive-tenant filtering.
+

@@ -1,4 +1,5 @@
-const SUPABASE_URL="https://twfbmjwwqzxdxvclxbun.supabase.co";
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl;
+if(!SUPABASE_URL)throw Error("TradeFlow Supabase runtime configuration is missing.");
 const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null;
 let master=[],facets={categories:[],branches:[],manufacturers:[]};
@@ -14,7 +15,7 @@ function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&l
 function money(v,c="GBP"){if(v===null||v===undefined||v==="")return"—";try{return new Intl.NumberFormat("en-GB",{style:"currency",currency:c||"GBP"}).format(Number(v))}catch{return(c||"")+" "+v}}
 function msg(t,type=""){const e=$("message");if(e){e.textContent=t||"";e.className="message "+type}}
 async function api(path,options={}){
- const h=new Headers(options.headers||{});h.set("apikey",key);h.set("Authorization","Bearer "+token);
+ const h=new Headers(options.headers||{});if(!key)throw Error("TradeFlow Supabase publishable key is missing.");h.set("apikey",key);h.set("Authorization","Bearer "+token);
  if(options.body)h.set("Content-Type","application/json");
  const timeoutMs=Number(options.timeoutMs)||30000,controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
  try{

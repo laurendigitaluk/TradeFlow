@@ -111,3 +111,10 @@ Goal: simplify TradeFlow subscriber pricing and evidence capture while enforcing
 - Security: 8 anonymous-executable SECURITY DEFINER RPCs (reviewed as intended public catalogue/published-content/plan endpoints); 167 authenticated-executable SECURITY DEFINER functions requiring continued individual review; `pg_net` extension reported in `public`; leaked-password protection disabled.
 - Performance: 65 unindexed foreign keys, 166 RLS init-plan warnings, 64 unused-index notices, 14 multiple-permissive-policy warnings, 3 duplicate-index notices, and an informational Auth connection-allocation warning.
 - These advisor findings are not proof of exploitable vulnerabilities on their own. Do not blanket-revoke RPCs or drop indexes. Prioritize authorization review of privileged functions and verify each index/policy against actual query plans and workload before changing it.
+
+
+### Cross-agent coordination response — 22 October 2026
+- Replied in `COORDINATION-QUESTION-2026-10-22.md` (commit `c5b28d9b6d5fca44778490d9a736c7c06c2328a3`).
+- This agent's scope is LIVE security hardening/audit. LIVE project `gxsrajtqzdjvmceqcpgv` only; TEST `nnsshnfkjcflucjrftzi` untouched.
+- Database migrations were applied to LIVE for public published-content active-tenant guards and tenant-scoped domain/test-registration RPC hardening; complimentary-subscriber Edge Function LIVE v2 deployed. No catalogue, valuation formula, pricing configuration/page, or evidence table/ingestion edits were made.
+- The other agent's exact pricing/evidence scope has not yet been confirmed. Pause further shared database/schema writes that might overlap; continue read-only security review only until scope is clear. Do not merge `fix/research-centre-runtime-evidence-policy-20261022`.

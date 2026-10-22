@@ -111,15 +111,30 @@ function researchText(p,type){
  const source=isNew?p.uk_new_research_source:p.uk_used_research_source;
  const url=isNew?p.uk_new_research_url:p.uk_used_research_url;
  const checked=isNew?p.uk_new_research_checked_at:p.uk_used_research_checked_at;
- if(price===null||price===undefined||price==="")return "No research";
- const label=isNew?"UK New":"UK Used";
- const when=checked?" · "+new Date(checked).toLocaleDateString("en-GB"):"";
- const sourceLink=source?(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(source)+'</a>':esc(source)):"Research source";
- return label+" "+money(price)+when+" · "+sourceLink;
+ if(price===null||price===undefined||price==="")return '<span class="research-no-data">No research available</span>';
+ const when=checked?'<span class="research-date">Observed '+esc(new Date(checked).toLocaleDateString("en-GB"))+'</span>':"";
+ const sourceLink=source?(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">'+esc(source)+'</a>':esc(source)):"Source not recorded";
+ return '<strong class="research-price">'+money(price)+'</strong>'+when+'<span class="research-source">Source: '+sourceLink+'</span>';
+}
+function productNotesHtml(p){
+ const raw=String(p?.notes||"")
+  .replace(/Imported from the existing gear product database\.?/ig,"")
+  .replace(/Pricing and package variants still require staff configuration\.?/ig,"")
+  .replace(/\s{2,}/g," ").trim();
+ if(!raw)return "";
+ const parts=raw.split(/(?=Online comparison\s*:)/i);
+ return '<div class="product-notes">'+parts.map(part=>{
+  const t=part.trim();if(!t)return "";
+  if(/^Online comparison\s*:/i.test(t)){
+   const text=t.replace(/^Online comparison\s*:\s*/i,"").trim();
+   return '<div class="comparison-note"><strong>Online comparison</strong><span>'+esc(text)+'</span></div>';
+  }
+  return '<div class="product-note">'+esc(t)+'</div>';
+ }).join("")+'</div>';
 }
 function researchOption(ref){return ref==="uk_used"?"UK Used":"UK New"}
 function researchInlineHtml(p){
- return '<div class="research-inline"><strong>Research:</strong> <span>UK New: '+researchText(p,"uk_new")+'</span> <span>UK Used: '+researchText(p,"uk_used")+'</span></div>';
+ return '<div class="research-inline"><strong class="research-heading">Research</strong><div class="research-row"><span class="research-label">UK New</span><div class="research-detail">'+researchText(p,"uk_new")+'</div></div><div class="research-row"><span class="research-label">UK Used</span><div class="research-detail">'+researchText(p,"uk_used")+'</div></div></div>';
 }
 function conditionAutoAmount(p,ref,pct){
  const base=ref==="uk_new"?p.uk_new_research_price:p.uk_used_research_price;
@@ -184,7 +199,7 @@ function renderMaster(){
   const mode=displayState.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(displayState.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
   return '<tr class="status-'+(editingAuto?"auto-pending":s.key)+'">'+
    '<td class="select-cell">'+((isMy||s.key==="available")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+productNotesHtml(p)+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(isMy?'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':""):"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";

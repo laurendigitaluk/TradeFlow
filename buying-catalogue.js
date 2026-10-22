@@ -1,4 +1,4 @@
-const SUPABASE_URL="https://gxsrajtqzdjvmceqcpgv.supabase.co";
+const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl||"https://gxsrajtqzdjvmceqcpgv.supabase.co";
 const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null;
 let master=[],facets={categories:[],branches:[],manufacturers:[]};

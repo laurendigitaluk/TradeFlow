@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS shared_market_evidence_client_write_deny ON public.shared_market_evidence;

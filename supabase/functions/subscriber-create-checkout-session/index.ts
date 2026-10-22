@@ -1,13 +1,15 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL=Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-const STRIPE_SECRET_KEY=Deno.env.get('STRIPE_SECRET_KEY');
+const STRIPE_SECRET_KEY=Deno.env.get('STRIPE_SECRET_KEY')||'';
+const STRIPE_MODE=Deno.env.get('TRADEFLOW_STRIPE_MODE')||'test';
+const STRIPE_KEY_MODE=/^(sk|rk)_test_/.test(STRIPE_SECRET_KEY)?'test':/^(sk|rk)_live_/.test(STRIPE_SECRET_KEY)?'live':'invalid';
 const headers={'Content-Type':'application/json','Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization, x-client-info, apikey, content-type'};
 const json=(b:unknown,s=200)=>new Response(JSON.stringify(b),{status:s,headers});
 Deno.serve(async req=>{
  if(req.method==='OPTIONS')return new Response('ok',{headers});
  if(req.method!=='POST')return json({error:'Method not allowed'},405);
- if(!STRIPE_SECRET_KEY)return json({error:'Stripe is not configured on the LIVE TradeFlow environment.'},503);
+ if(!STRIPE_SECRET_KEY|| (STRIPE_MODE!=='test'&&STRIPE_MODE!=='live') || STRIPE_KEY_MODE!==STRIPE_MODE)return json({error:'Stripe mode does not match this TradeFlow environment. Check STRIPE_SECRET_KEY and TRADEFLOW_STRIPE_MODE.'},503);
  const auth=req.headers.get('Authorization'); if(!auth)return json({error:'Authentication required'},401);
  try{
   const userRes=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SERVICE_ROLE_KEY,Authorization:auth}});

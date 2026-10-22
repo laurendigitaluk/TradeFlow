@@ -30,3 +30,9 @@ Read-only review of the production GitHub tree, LIVE Supabase, and current TEST 
 3. Verify SceneSource DNS, Cloudflare custom hostname and HTTPS state without changing configuration.
 4. Fix only demonstrated defects on TEST; rerun advisors and functional regression tests.
 5. Prepare a controlled release to LIVE only after successful TEST verification and explicit review of the diff.
+
+
+### External domain spot-check (22 October 2026)
+- A web fetch of `https://www.scenesource.co.uk` was not accessible to the inspection tool.
+- A fetch of the bare `https://scenesource.co.uk` returned indexed content that redirects to `scenesource.mysharetribe.com`, but the result was marked as crawled three months ago and is not reliable proof of current routing.
+- This conflicts with the LIVE database's recorded active `www.scenesource.co.uk` custom-domain entry and pending Cloudflare/SSL metadata. Treat domain routing as **unverified**, not as a confirmed outage. Check current registrar DNS and Cloudflare Custom Hostnames/SSL directly before changing anything. Do not modify DNS, SSL, custom hostname, or published-site routing based on a stale crawl.

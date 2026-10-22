@@ -869,7 +869,7 @@ The customer dashboard API helper now detects an HTTP 401, refreshes the existin
 
 ## Release gate update — 22 October 2026
 
-- Do not merge the TEST branch wholesale into production; branches have diverged (TEST 114 commits ahead and 33 behind).
+- Do not merge the TEST branch wholesale into production; branches have diverged (TEST 114 commits ahead and 38 behind).
 - Keep TEST and LIVE Supabase/Stripe configuration separate. TEST project: `nnsshnfkjcflucjrftzi`; LIVE project: `gxsrajtqzdjvmceqcpgv`.
 - Browser-confirmed in TEST: owner product-page editor displays TradeFlow Published, StudioFlow Coming soon and BusinessFlow Coming soon; complimentary subscriber can set password, sign in, sign out and sign in again using the subscriber portal.
 - Not yet verified: resend setup email end-to-end, product setting save/refresh persistence, and full browser regression after deployment.

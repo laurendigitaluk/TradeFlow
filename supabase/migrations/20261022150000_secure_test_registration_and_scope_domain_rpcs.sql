@@ -26,7 +26,7 @@ BEGIN
   FROM public.tenants
   WHERE slug=p_tenant_slug
     AND status='active'
-    AND coalesce((settings->>'test_lab')::boolean,false)=true;
+    AND lower(coalesce(settings->>'test_lab','false'))='true';
   IF v_tenant_id IS NULL THEN RAISE EXCEPTION 'Test tenant not found'; END IF;
   IF EXISTS (SELECT 1 FROM public.customers WHERE auth_user_id=v_uid) THEN
     RAISE EXCEPTION 'Auth account is already linked to a customer';
@@ -66,7 +66,7 @@ BEGIN
   FROM public.tenants
   WHERE slug=p_tenant_slug
     AND status='active'
-    AND coalesce((settings->>'test_lab')::boolean,false)=true;
+    AND lower(coalesce(settings->>'test_lab','false'))='true';
   IF v_tenant_id IS NULL THEN RAISE EXCEPTION 'Test tenant not found'; END IF;
   IF EXISTS (SELECT 1 FROM public.customers WHERE auth_user_id=v_uid) THEN
     RAISE EXCEPTION 'This Auth account is already registered as a customer';
@@ -281,6 +281,8 @@ BEGIN
 END;
 $function$;
 
+REVOKE EXECUTE ON FUNCTION public.subscriber_get_custom_domain_status(uuid) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.subscriber_request_custom_domain(uuid,text) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.subscriber_get_custom_domain_status(uuid) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.subscriber_request_custom_domain(uuid,text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.subscriber_get_custom_domain_status() TO authenticated;

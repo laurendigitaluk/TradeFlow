@@ -150,3 +150,5 @@ Goal: simplify TradeFlow subscriber pricing and evidence capture while enforcing
 - Leaked-password protection remains disabled; no supported Auth configuration control was available through the connected Supabase actions in this pass, so it was not changed.
 - Browser-level smoke tests for tenant-scoped custom domains and complimentary subscriber creation remain outstanding.
 - Review the 65 unindexed foreign keys and duplicate-index notices individually before changing indexes. Do not blindly drop unused indexes, merge branches, or move pg_net while the live cron path lacks regression coverage.
+
+- Follow-up validation of the advisor's multiple-permissive-policy notices confirmed that the relevant buying/inventory/acquisition policies pair broad membership policies with RESTRICTIVE subscription/permission policies. PostgreSQL applies restrictive policies as additional AND conditions, so the membership policies do not by themselves bypass the relevant permission/feature checks. This pass did not establish an exploitable RLS bypass from those policy pairs.

@@ -1,5 +1,4 @@
 (()=> {
-  const DEFAULT_SUPABASE_URL = "https://gxsrajtqzdjvmceqcpgv.supabase.co";
   const checkbox = () => document.getElementById("use-shared-evidence");
   const message = () => document.getElementById("shared-evidence-message");
   function show(text, type = "") {
@@ -12,7 +11,9 @@
     input.disabled = true;
     try {
       const auth = await window.tradeflowSubscriberAuthReady;
-      const supabaseUrl = window.TRADEFLOW_CONFIG?.supabaseUrl || DEFAULT_SUPABASE_URL;
+      // Fail closed: never fall back to the LIVE Supabase project on a misconfigured page.
+      const supabaseUrl = window.TRADEFLOW_CONFIG?.supabaseUrl;
+      if (!supabaseUrl) throw new Error("TradeFlow environment configuration is missing. No settings were changed.");
       if (!auth?.session?.access_token || !auth?.tenantId || !auth?.key) {
         throw new Error("Subscriber sign-in required to load this preference.");
       }

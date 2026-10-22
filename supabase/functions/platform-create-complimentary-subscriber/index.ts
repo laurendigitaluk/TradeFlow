@@ -5,6 +5,7 @@ const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "https://tradeflow-test.leannelaurenlowe.workers.dev",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Vary": "Origin",
 };
@@ -63,7 +64,8 @@ Deno.serve(async (req: Request) => {
       if (/already registered|already been registered|user already exists|already exists/i.test(raw)) {
         return json({ error: "That email already has a TradeFlow authentication account. For safety, this form will not attach an existing account automatically." }, 409);
       }
-      return json({ error: raw || "Unable to send the subscriber invitation." }, inviteResponse.status);
+      console.error("Subscriber invitation request failed", { status: inviteResponse.status });
+      return json({ error: "Unable to send the subscriber invitation. Check the email address and TEST owner logs before retrying." }, inviteResponse.status);
     }
     const userId = invited?.id || invited?.user?.id;
     if (!userId) return json({ error: "The invitation was sent but did not return a user ID. Check TEST Authentication users before retrying." }, 502);
@@ -82,14 +84,12 @@ Deno.serve(async (req: Request) => {
     let tenantId: string | null = null;
     try { tenantId = rpcText ? JSON.parse(rpcText) : null; } catch {}
     if (!rpcResponse.ok) {
-      return json({
-        error: "The invitation was sent, but workspace provisioning did not finish. Do not resend the invitation. Platform owner follow-up is required.",
-        detail: rpcText,
-        user_id: userId,
-      }, 500);
+      console.error("Complimentary subscriber workspace provisioning failed after invitation", { status: rpcResponse.status });
+      return json({ error: "The invitation was sent, but workspace provisioning did not finish. Do not resend the invitation. Platform owner follow-up is required." }, 500);
     }
     return json({ success: true, email, business_name: businessName, tenant_id: tenantId, message: "Complimentary subscriber workspace created. The owner has been invited to set up access by email." });
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : "Unexpected provisioning error." }, 500);
+  } catch {
+    console.error("Unexpected provisioning error in TEST platform-create-complimentary-subscriber");
+    return json({ error: "Unexpected provisioning error. Check the TEST Edge Function logs." }, 500);
   }
 });

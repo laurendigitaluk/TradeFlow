@@ -118,3 +118,13 @@ Goal: simplify TradeFlow subscriber pricing and evidence capture while enforcing
 - This agent's scope is LIVE security hardening/audit. LIVE project `gxsrajtqzdjvmceqcpgv` only; TEST `nnsshnfkjcflucjrftzi` untouched.
 - Database migrations were applied to LIVE for public published-content active-tenant guards and tenant-scoped domain/test-registration RPC hardening; complimentary-subscriber Edge Function LIVE v2 deployed. No catalogue, valuation formula, pricing configuration/page, or evidence table/ingestion edits were made.
 - The other agent's exact pricing/evidence scope has not yet been confirmed. Pause further shared database/schema writes that might overlap; continue read-only security review only until scope is clear. Do not merge `fix/research-centre-runtime-evidence-policy-20261022`.
+
+
+## Cross-agent coordination and follow-up — 22 October 2026
+
+- Read `COORDINATION-QUESTION-2026-10-22.md` and replied with this agent's scope, database/deployment status, and boundaries (coordination branch commit `c5b28d9b6d5fca44778490d9a736c7c06c2328a3`). Shared memory was updated at commit `af8111e43213ebcb4bdc08669b0c81e33d706ecd`.
+- Scope remains LIVE security review/hardening. No pricing formulas, pricing UI, evidence tables/policies, catalogue ingestion, or evidence research code was edited. The other agent's exact branch/files/database scope is still awaiting confirmation.
+- To avoid conflict, no further schema/migration writes should be made on shared pricing/evidence surfaces until coordination confirms scope. Continue read-only review meanwhile.
+- Read-only review of the four test-registration RPCs confirms admin/staff/customer registration and customer status all require an active tenant with `settings.test_lab=true`; all are non-executable by `anon`, executable by `authenticated`. LIVE has no active reserved test tenants or active test-lab tenants at this snapshot.
+- Read-only review of platform-owner helpers confirms `private.is_platform_owner` is defined by active membership in `platform_memberships`, and all current active memberships pass that guard (1 active, 1 passes, 0 mismatches). Four platform settings/product-page RPCs use the equivalent active-membership check directly; no present-state privilege mismatch was found.
+- Public `SECURITY DEFINER` endpoints reviewed at a high level return active published site revisions, published store listings/media, published catalogue entries, or website-visible active plan rows. The catalogue and plan endpoints are intentionally left out of deeper review to avoid overlap with the separate pricing/evidence agent.

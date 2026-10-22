@@ -1,5 +1,5 @@
 (()=> {
-  const SUPABASE_URL = "https://gxsrajtqzdjvmceqcpgv.supabase.co";
+  const DEFAULT_SUPABASE_URL = "https://gxsrajtqzdjvmceqcpgv.supabase.co";
   const checkbox = () => document.getElementById("use-shared-evidence");
   const message = () => document.getElementById("shared-evidence-message");
   function show(text, type = "") {
@@ -12,6 +12,7 @@
     input.disabled = true;
     try {
       const auth = await window.tradeflowSubscriberAuthReady;
+      const supabaseUrl = window.TRADEFLOW_CONFIG?.supabaseUrl || DEFAULT_SUPABASE_URL;
       if (!auth?.session?.access_token || !auth?.tenantId || !auth?.key) {
         throw new Error("Subscriber sign-in required to load this preference.");
       }
@@ -21,7 +22,7 @@
         Authorization: "Bearer " + auth.session.access_token
       };
       const response = await fetch(
-        SUPABASE_URL + "/rest/v1/tenants?select=id,settings&id=eq." + encodeURIComponent(tenantId),
+        supabaseUrl + "/rest/v1/tenants?select=id,settings&id=eq." + encodeURIComponent(tenantId),
         { headers }
       );
       const raw = await response.text();
@@ -39,7 +40,7 @@
         input.disabled = true;
         show("Saving shared evidence preference…");
         try {
-          const save = await fetch(SUPABASE_URL + "/rest/v1/rpc/subscriber_set_shared_evidence_preference", {
+          const save = await fetch(supabaseUrl + "/rest/v1/rpc/subscriber_set_shared_evidence_preference", {
             method: "POST",
             headers: { ...headers, "Content-Type": "application/json" },
             body: JSON.stringify({ p_tenant_id: tenantId, p_enabled: requested })

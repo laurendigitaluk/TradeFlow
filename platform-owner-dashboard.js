@@ -1,6 +1,5 @@
-const IS_TEST_HOST=location.hostname==='tradeflow-test.leannelaurenlowe.workers.dev'||location.hostname==='localhost'||location.hostname==='127.0.0.1'||location.hostname.endsWith('.github.io');
-const SUPABASE_URL=IS_TEST_HOST?'https://nnsshnfkjcflucjrftzi.supabase.co':'https://gxsrajtqzdjvmceqcpgv.supabase.co';
-const KEY=IS_TEST_HOST?'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ':'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
+const SUPABASE_URL='https://gxsrajtqzdjvmceqcpgv.supabase.co';
+const KEY='sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
 const SESSION_KEY='tradeflow_platform_owner_session';
 let session=null;
 
@@ -88,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages()]);
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await loadDomainActions();await loadProductPages();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -309,7 +308,7 @@ function renderPlanAdmin(plans){
  '<label>Annual price<input name="annual_price" type="number" min="0" step="0.01" value="'+(p.annual_price??'')+'" placeholder="Optional"></label>'+
  '<label>Currency<input name="currency" maxlength="3" value="'+escapeAttr(p.currency||'GBP')+'"></label>'+
  '<label>Free trial (days)<input name="trial_days" type="number" min="0" max="3650" step="1" value="'+(p.trial_days??30)+'"></label></div>'+
- '<div class="stripe-box"><strong>Stripe</strong><span class="muted">current environment’s Stripe billing identifiers.</span>'+
+ '<div class="stripe-box"><strong>Stripe</strong><span class="muted">LIVE subscriber billing identifiers.</span>'+
  '<label>Stripe Product ID<input name="stripe_product_id" value="'+escapeAttr(p.stripe_product_id||'')+'" placeholder="Created by TradeFlow"></label>'+
  '<label>Stripe monthly Price ID<input name="stripe_monthly_price_id" value="'+escapeAttr(p.stripe_monthly_price_id||'')+'" placeholder="Created by TradeFlow"></label>'+
  '<label>Stripe annual Price ID<input name="stripe_annual_price_id" value="'+escapeAttr(p.stripe_annual_price_id||'')+'" placeholder="Optional"></label></div>'+
@@ -331,7 +330,7 @@ async function setupStripeBilling(){
  }catch(e){status.textContent=e.message||String(e)}
  finally{button.disabled=false}
 }
-async function createStripeBilling(form){const status=form.querySelector('.plan-status'),button=form.querySelector('[data-create-stripe]');button.disabled=true;status.textContent='Creating Stripe Product and monthly Price for this environment…';try{await request('/auth/v1/user');const r=await fetch(SUPABASE_URL+'/functions/v1/platform-create-stripe-product',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:'{}'});const t=await r.text();let d=null;try{d=t?JSON.parse(t):null}catch{}if(!r.ok)throw Error(d?.error||d?.message||t||'Stripe billing setup failed.');status.textContent='Stripe billing created: '+d.product_id+' / '+d.price_id;await loadPlans()}catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}}
+async function createStripeBilling(form){const status=form.querySelector('.plan-status'),button=form.querySelector('[data-create-stripe]');button.disabled=true;status.textContent='Creating LIVE Stripe Product and monthly Price…';try{await request('/auth/v1/user');const r=await fetch(SUPABASE_URL+'/functions/v1/platform-create-stripe-product',{method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:'{}'});const t=await r.text();let d=null;try{d=t?JSON.parse(t):null}catch{}if(!r.ok)throw Error(d?.error||d?.message||t||'Stripe billing setup failed.');status.textContent='Stripe billing created: '+d.product_id+' / '+d.price_id;await loadPlans()}catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}}
 async function loadPlans(){
  const error=$('plans-error'),host=$('plan-admin-list');if(!host)return;
  error.textContent='';host.innerHTML='<p class="muted">Loading plans…</p>';
@@ -375,26 +374,8 @@ async function createComplimentarySubscriber(event){
  finally{button.disabled=false}
 }
 
-async function resendComplimentarySetupLink(event){
- event.preventDefault();
- const button=$('complimentary-resend-submit'),status=$('complimentary-resend-status');
- button.disabled=true;status.textContent='Sending account setup link…';
- try{
-  if(!session?.access_token)throw Error('Your platform-owner session has expired. Sign in again and retry.');
-  await request('/auth/v1/user');
-  const email=$('complimentary-resend-email').value.trim().toLowerCase();
-  const response=await fetch(SUPABASE_URL+'/functions/v1/platform-resend-complimentary-setup',{
-   method:'POST',headers:{apikey:KEY,Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},
-   body:JSON.stringify({email})
-  });
-  const raw=await response.text();let data={};try{data=raw?JSON.parse(raw):{}}catch{}
-  if(!response.ok)throw Error(data?.error||data?.message||raw||'Unable to send account setup link.');
-  status.textContent=data?.message||'Account setup link sent.';
- }catch(e){status.textContent=e.message||String(e)}
- finally{button.disabled=false}
-}
 $('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
-$('complimentary-resend-form')?.addEventListener('submit',resendComplimentarySetupLink);
+
 $('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;

@@ -8,6 +8,8 @@ let searchTimer=null;
 let buyingSelectionAllMatching=false;
 let catalogueView="my";
 const collapsedPricing=new Set();
+const expandedEvidence=new Set();
+const evidenceCache=new Map();
 const pendingAutomatic=new Set();
 
 function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]||c))}
@@ -119,6 +121,27 @@ function researchText(p,type){
  return label+" "+money(price)+when+" · "+sourceLink;
 }
 function researchOption(ref){return ref==="uk_used"?"UK Used":"UK New"}
+
+function evidencePanelHtml(productId){
+ const id=String(productId);
+ if(!expandedEvidence.has(id))return "";
+ const rows=evidenceCache.get(id);
+ if(rows===undefined)return '<tr class="evidence-detail-row"><td colspan="6"><div class="evidence-panel">Loading UK market evidence…</div></td></tr>';
+ if(!rows.length)return '<tr class="evidence-detail-row"><td colspan="6"><div class="evidence-panel">No UK market evidence records are linked to this exact product/package yet.</div></td></tr>';
+ return '<tr class="evidence-detail-row"><td colspan="6"><div class="evidence-panel">'+[["uk_new","UK New"],["uk_used","UK Used"]].map(([type,label])=>{const items=rows.filter(x=>x.evidence_type===type);return '<section class="evidence-group"><h4>'+label+' ('+items.length+')</h4>'+(items.length?'<div class="evidence-records">'+items.map(x=>'<article class="evidence-record"><strong>'+money(x.observed_price,x.price_currency)+'</strong><span>'+esc(x.source_name||"Source not recorded")+'</span><span>Condition: '+esc(x.item_condition||"Not recorded")+'</span><span>Availability: '+esc(x.availability||"Not recorded")+'</span><span>Observed: '+esc(x.observed_at?new Date(x.observed_at).toLocaleDateString("en-GB"):"Date not recorded")+'</span>'+(x.source_url?'<a href="'+esc(x.source_url)+'" target="_blank" rel="noopener noreferrer">Open original listing</a>':"")+(x.notes?'<p>'+esc(x.notes)+'</p>':"")+'</article>').join("")+'</div>':'<p class="muted">No records.</p>')+'</section>'}).join("")+'</div></td></tr>';
+}
+async function toggleEvidence(productId){
+ const id=String(productId);
+ if(expandedEvidence.has(id)){expandedEvidence.delete(id);renderMaster();return}
+ expandedEvidence.add(id);
+ if(!evidenceCache.has(id)){
+  evidenceCache.set(id,undefined);renderMaster();
+  try{const rows=await api('/rest/v1/shared_market_evidence?select=evidence_type,source_name,source_url,observed_price,price_currency,item_condition,sales_channel,availability,observed_at,notes&master_product_id=eq.'+encodeURIComponent(id)+'&is_active=eq.true&order=observed_at.desc.nullslast');evidenceCache.set(id,(Array.isArray(rows)?rows:[]).filter(x=>x.evidence_type==="uk_new"||x.evidence_type==="uk_used"))}
+  catch(e){evidenceCache.set(id,[]);msg("Could not load evidence: "+(e.message||String(e)),"error")}
+ }
+ renderMaster();
+}
+
 function researchInlineHtml(p){
  return '<div class="research-inline"><strong>Research:</strong> <span>UK New: '+researchText(p,"uk_new")+'</span> <span>UK Used: '+researchText(p,"uk_used")+'</span></div>';
 }
@@ -185,9 +208,9 @@ function renderMaster(){
   const mode=displayState.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(displayState.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
   return '<tr class="status-'+(editingAuto?"auto-pending":s.key)+'">'+
    '<td class="select-cell">'+((isMy||s.key==="available")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes.replace(/Imported from the existing gear product database\\.?/ig,"").trim()):"")+'</small>'+researchInlineHtml(p)+'<button type="button" class="evidence-toggle" data-evidence-product="'+p.product_id+'">'+(expandedEvidence.has(String(p.product_id))?"Hide UK evidence":"View UK evidence")+'</button>'+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
-   '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(isMy?'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':""):"")+'</td></tr>';
+   '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(isMy?'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':""):"")+'</td></tr>'+evidencePanelHtml(p.product_id);
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";
  document.querySelectorAll("[data-mode-product]").forEach(e=>e.addEventListener("click",()=>{
  const id=e.dataset.modeProduct;
@@ -195,6 +218,7 @@ function renderMaster(){
  changeMode(id,e.dataset.modeValue);
 }));
  document.querySelectorAll("[data-collapse-product]").forEach(e=>e.addEventListener("click",()=>{const id=e.dataset.collapseProduct;if(collapsedPricing.has(id))collapsedPricing.delete(id);else collapsedPricing.add(id);renderMaster();}));
+ document.querySelectorAll("[data-evidence-product]").forEach(e=>e.addEventListener("click",()=>toggleEvidence(e.dataset.evidenceProduct)));
  document.querySelectorAll("[data-add-product]").forEach(e=>e.addEventListener("click",()=>addProduct(e.dataset.addProduct,e)));
  document.querySelectorAll("[data-save-manual]").forEach(e=>e.addEventListener("click",()=>saveManual(e.dataset.saveManual,e)));
  document.querySelectorAll("[data-save-auto]").forEach(e=>e.addEventListener("click",()=>saveAuto(e.dataset.saveAuto,e)));

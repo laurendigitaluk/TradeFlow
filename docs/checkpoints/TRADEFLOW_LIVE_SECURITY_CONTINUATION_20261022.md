@@ -29,3 +29,10 @@
 - Continue reviewing remaining authenticated SECURITY DEFINER functions, leaked-password protection, and `pg_net` placement/exposure.
 - Do not bulk-merge TEST into LIVE; branches previously diverged substantially.
 - Do not change catalogue, pricing, or evidence ingestion in this workstream.
+
+
+### Post-change Supabase advisor snapshot — 22 October 2026, 14:50 UTC
+
+- Security: 8 anonymous-executable SECURITY DEFINER RPCs (reviewed as intended public catalogue/published-content/plan endpoints); 167 authenticated-executable SECURITY DEFINER functions requiring continued individual review; `pg_net` extension reported in `public`; leaked-password protection disabled.
+- Performance: 65 unindexed foreign keys, 166 RLS init-plan warnings, 64 unused-index notices, 14 multiple-permissive-policy warnings, 3 duplicate-index notices, and an informational Auth connection-allocation warning.
+- These advisor findings are not proof of exploitable vulnerabilities on their own. Do not blanket-revoke RPCs or drop indexes. Prioritize authorization review of privileged functions and verify each index/policy against actual query plans and workload before changing it.

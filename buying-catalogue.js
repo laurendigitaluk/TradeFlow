@@ -120,13 +120,16 @@ function researchText(p,type){
  return '<strong class="research-price">'+money(price)+'</strong>'+when+'<span class="research-source">Source: '+sourceLink+'</span>';
 }
 function productNotesHtml(p){
- const raw=String(p?.notes||"").replace(/Imported from the existing gear product database\\.?/ig,"").replace(/Pricing and package variants still require staff configuration\\.?/ig,"").replace(/\\s{2,}/g," ").trim();
+ const raw=String(p?.notes||"")
+  .replace(/Imported from the existing gear product database\.?/ig,"")
+  .replace(/Pricing and package variants still require staff configuration\.?/ig,"")
+  .replace(/\s{2,}/g," ").trim();
  if(!raw)return "";
- const parts=raw.split(/(?=Online comparison\\s*:)/i);
+ const parts=raw.split(/(?=Online comparison\s*:)/i);
  return '<div class="product-notes">'+parts.map(part=>{
   const s=part.trim();if(!s)return "";
-  if(/^Online comparison\\s*:/i.test(s)){
-   const text=s.replace(/^Online comparison\\s*:\\s*/i,"").trim();
+  if(/^Online comparison\s*:/i.test(s)){
+   const text=s.replace(/^Online comparison\s*:\s*/i,"").trim();
    return '<div class="comparison-note"><strong>Online comparison</strong><span>'+esc(text)+'</span></div>';
   }
   return '<div class="product-note">'+esc(s)+'</div>';

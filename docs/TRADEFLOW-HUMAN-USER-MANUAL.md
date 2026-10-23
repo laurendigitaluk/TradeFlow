@@ -2007,3 +2007,15 @@ Phone catalogue batch 19 (23 Oct 2026): Added and promoted three UK sold records
 Current snapshot: TEST 124 products (123 active), 104 evidence rows (101 active, 3 inactive), 23 visible variants without active evidence. LIVE 98 active visible products, 99 active evidence rows including 57 used-sale rows. Recheck integrity at next batch close.
 
 Batch 20 phone catalogue: OPPO A6 Pro 5G 256 GB, £180.00, completed sale 19 July 2026, certified refurbished. Source https://www.ebay.co.uk/itm/287441531751. See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md. Keep refurbished condition separate from ordinary used and new/RRP evidence. LIVE now has 99 active visible variants; integrity failures 0; missing-evidence visible variants 0.
+
+## Mobile phone catalogue research status — 23 October 2026
+
+The phone catalogue is being expanded with verified UK price evidence and completed-sale comparables. After Batch 21:
+- TEST has 126 active customer-visible phone variants, 112 evidence rows (109 active and 3 inactive retained for audit), and 15 visible variants still missing active evidence.
+- LIVE has 107 active customer-visible variants and 107 active evidence rows, including 58 used completed-sale records. No active visible variant lacks evidence, and the latest integrity check found zero failures.
+- Batch 21 added seven new-price/listing records for HONOR 600 256 GB, HONOR 600 Smart 128 GB, Xiaomi 17T 256 GB, Xiaomi 17T Pro 512 GB, HONOR Magic8 Lite 256 GB, Samsung Galaxy S26+ 256 GB and Samsung Galaxy A27 5G 256 GB.
+- Some prices are promotional or after-coupon offers. Xiaomi 17T/17T Pro campaign pricing is due to expire on 27 October 2026 or earlier if stock runs out. These values are not permanent RRPs.
+- An active eBay new listing is an asking price, not a completed-sale price. Do not combine new listings, promotional prices, refurbished items and ordinary used sales into one evidence type.
+- Current detailed checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md`. Project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`.
+
+The latest TEST count differs from the previous checkpoint (126 active variants now versus 123 previously). The current database query takes precedence; the remaining 15 missing-evidence variants must be checked against current records before new inserts to avoid duplicates. Continue using TEST first, promote validated batches to LIVE promptly, and verify LIVE integrity after each promotion.

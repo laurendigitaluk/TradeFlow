@@ -152,3 +152,12 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-30.md` and `CHECKPOI
 - Current distinct active visible variants: TEST 128; LIVE 126. TEST evidence 140 total / 135 active / 5 inactive. LIVE evidence 135 total / 133 active / 2 inactive.
 - LIVE active UK used completed-sale rows: 62; used/listed rows: 3. Zero visible variants missing active evidence; zero active evidence integrity failures.
 - Recheck Xiaomi 17T / 17T Pro campaign after 27 October 2026 and EE Pixel voucher after 31 October 2026.
+
+
+## Latest batch 31 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-31.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-31.md`.
+- Added Nothing Phone (4b) 8GB/128GB at £299 from the official Nothing UK page, promoted to TEST and LIVE.
+- Added/verified a OnePlus 15 12GB/256GB UK new-price reference at £849 from MyMobiles’ October 2026 page. Availability remains `listed`, not in stock, because direct official checkout was not confirmed.
+- Official Xiaomi 17T £549 and 17T Pro 512GB £699 campaign evidence remains primary through 27 October 2026 or while stock lasts. Weaker secondary Xiaomi rows were made inactive and retained for audit.
+- Duplicate iPhone Duo official price rows were made inactive; Batch 27’s original official price rows remain active. Rejected OnePlus 15 listing 257792354372 because its item specifics identify OnePlus 10 Pro.
+- Current database snapshot: TEST 130 active visible variants, 147 evidence rows (138 active, 9 inactive); LIVE 128 active visible variants, 142 evidence rows (136 active, 6 inactive), 62 active UK used completed-sale rows and 3 used/listed rows. No visible active variant is missing active evidence; LIVE integrity failures 0.

@@ -73,6 +73,24 @@ jobs:
           print("BusinessFlow Storage RLS correction contains all four owner-scoped policies.")
           PY
 
+      - name: Check account isolation and custom-page IDs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          checks = {
+              "sign-out reloads to clear unsaved account state": "if(error){authMessage('Sign-out failed: '+error.message);return;}location.reload();" in html,
+              "account switches reload the editor": "if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}" in html,
+              "custom page IDs use UUIDs": "const id='page-'+crypto.randomUUID()" in html,
+              "custom page paths retain the complete identifier": "replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom'" in html,
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("PASS: " if ok else "FAIL: ") + name)
+          if failed:
+              raise SystemExit("BusinessFlow isolation checks failed: " + ", ".join(failed))
+          PY
+
       - name: Confirm browser code contains no service-role key
         run: |
           ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

@@ -1,0 +1,55 @@
+name: BusinessFlow Standalone Validation
+
+on:
+  push:
+    branches:
+      - businessflow-standalone-bootstrap-20261023
+    paths:
+      - 'businessflow-standalone/**'
+      - 'wrangler.businessflow-test.jsonc'
+      - 'wrangler.businessflow-live.jsonc'
+      - '.github/workflows/businessflow-standalone-validation.yml'
+  pull_request:
+    paths:
+      - 'businessflow-standalone/**'
+      - 'wrangler.businessflow-test.jsonc'
+      - 'wrangler.businessflow-live.jsonc'
+      - '.github/workflows/businessflow-standalone-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate inline JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script\\s*>", html, flags=re.I | re.S)
+          if not scripts:
+              raise SystemExit("No inline JavaScript found")
+          Path("/tmp/businessflow-inline.js").write_text("\\n".join(scripts), encoding="utf-8")
+          PY
+          node --check /tmp/businessflow-inline.js
+
+      - name: Verify isolated environment configuration
+        run: |
+          test -f wrangler.businessflow-test.jsonc
+          test -f wrangler.businessflow-live.jsonc
+          grep -q '"name": "businessflow-test"' wrangler.businessflow-test.jsonc
+          grep -q '"name": "businessflow-live"' wrangler.businessflow-live.jsonc
+          ! grep -Eiq 'tradeflow-test|production' wrangler.businessflow-test.jsonc
+          ! grep -Eiq 'tradeflow-test|production' wrangler.businessflow-live.jsonc
+
+      - name: Confirm browser code contains no service-role key
+        run: |
+          ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

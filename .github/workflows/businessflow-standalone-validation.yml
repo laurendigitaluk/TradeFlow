@@ -95,6 +95,36 @@ jobs:
               raise SystemExit("BusinessFlow isolation checks failed: " + ", ".join(failed))
           PY
 
+      - name: Check draft persistence, upload limits and Worker security
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          worker = Path("businessflow-standalone/src/worker.js").read_text(encoding="utf-8")
+          checks = {
+              "new sites are owned by the authenticated user": "owner_id:currentUser.id" in html,
+              "site updates are scoped to site and owner": ".eq('id',siteId).eq('owner_id',currentUser.id)" in html,
+              "site loading is scoped to the current owner": ".eq('owner_id',currentUser.id).order('updated_at'" in html,
+              "site settings are persisted": "settings:state" in html,
+              "page records are upserted on site and path": "upsert(pageRows,{onConflict:'site_id,path'})" in html,
+              "stale pages are identified and deleted": "filter(p=>!activePaths.has(p.path)).map(p=>p.id)" in html and ".delete().in('id',staleIds)" in html,
+              "logo upload enforces 10 MB limit": "if(file.size>10*1024*1024)" in html,
+              "homepage upload enforces 10 MB limit": "if(file.size>10*1024*1024)" in html,
+              "private image previews use expiring signed URLs": "createSignedUrl(objectPath,3600)" in html,
+              "worker rejects methods other than GET and HEAD": 'request.method !== "GET" && request.method !== "HEAD"' in worker,
+              "worker sets content-type sniffing protection": '"X-Content-Type-Options": "nosniff"' in worker,
+              "worker prevents framing": '"X-Frame-Options": "DENY"' in worker,
+              "worker disables camera microphone and geolocation": '"Permissions-Policy": "camera=(), microphone=(), geolocation=()"' in worker,
+              "editor HTML is not cached and is not indexed": 'headers.set("Cache-Control", "no-store")' in worker and 'headers.set("X-Robots-Tag", "noindex, nofollow, noarchive")' in worker,
+          }
+          failed = [name for name, ok in checks.items() if not ok]
+          for name, ok in checks.items():
+              print(("PASS: " if ok else "FAIL: ") + name)
+          if failed:
+              raise SystemExit("BusinessFlow runtime-contract checks failed: " + ", ".join(failed))
+          PY
+
       - name: Confirm browser code contains no service-role key
         run: |
           ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

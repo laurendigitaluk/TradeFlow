@@ -1,19 +1,20 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 11
+Updated: 2026-10-23 after batch 12
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 11
-See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-11.md.
+## Current verified position after batch 12
+See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-12.md.
 
-- TEST: 124 total phone products (123 active); 72 evidence rows total (69 active, 3 inactive retained for audit). 55 visible variants still have no active evidence.
-- LIVE: 66 active/customer-visible phone variants and 67 active evidence rows, including 25 active sold rows. No active visible LIVE variants were found without active evidence.
+- TEST: 124 total phone products (123 active); 77 evidence rows total (74 active, 3 inactive retained for audit). 50 visible variants still have no active evidence.
+- LIVE: 71 active/customer-visible phone variants and 72 active evidence rows, including 30 active sold rows. No active visible LIVE variants were found without active evidence.
 - Integrity at final query: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
 - Batch 08: six completed-sale records for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
 - Batch 09: eleven completed-sale records for iPhone 13 128 GB, iPhone 14 128 GB, iPhone 15 128 GB, iPhone 15 Pro 128 GB, iPhone 16 128 GB, Pixel 8 128 GB, Pixel 9 128 GB, Motorola Edge 50 Neo 256 GB, Nothing Phone (3a) 128 GB, Galaxy S22 128 GB, and Galaxy S24 128 GB.
 - Batch 10: four completed-sale records for iPhone 13 256 GB, iPhone 15 Plus 128 GB, iPhone 15 Pro Max 256 GB, and iPhone 16 256 GB.
 - Batch 11: four completed-sale records for iPhone 15 512 GB, iPhone 16 Plus 128 GB, iPhone 16 Pro 256 GB, and iPhone 16 Pro Max 256 GB.
+- Batch 12: five completed-sale records for Galaxy S25 128 GB, Galaxy S25 256 GB, Galaxy S25 Ultra 256 GB, Nothing Phone (3) 256 GB, and Xiaomi 14T 256 GB.
 - Buyer protection fees are noted where included in displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
 - Keep UK new/RRP evidence separate from completed-sale evidence.
 
@@ -77,6 +78,14 @@ See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-11.md.
 - LIVE: 66 active phone variants, 67 active evidence rows, 25 active sold rows; zero visible active variants missing evidence.
 - Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
 - eBay totals include buyer protection fees; do not interpret as seller proceeds or guaranteed buy-in values.
+
+## Latest batch 12
+See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-12.md.
+- Added five UK completed/sold eBay records for Galaxy S25 128 GB (£359.99), Galaxy S25 256 GB (£419.99), Galaxy S25 Ultra 256 GB (£513.92), Nothing Phone (3) 256 GB (£397.60), and Xiaomi 14T 256 GB (£320.75).
+- TEST: 124 phone product rows (123 active), 77 evidence rows (74 active); 50 visible variants still lack active evidence.
+- LIVE: 71 active phone variants, 72 active evidence rows, 30 active sold rows; zero visible active variants missing evidence.
+- Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
+- Buyer Protection is noted where included; observed totals are not seller proceeds or guaranteed buy-in values.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

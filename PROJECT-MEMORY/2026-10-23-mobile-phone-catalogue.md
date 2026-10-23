@@ -1,21 +1,22 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 12
+Updated: 2026-10-23 after batch 13
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 12
-See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-12.md.
+## Current verified position after batch 13
+See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-13.md.
 
-- TEST: 124 total phone products (123 active); 77 evidence rows total (74 active, 3 inactive retained for audit). 50 visible variants still have no active evidence.
-- LIVE: 71 active/customer-visible phone variants and 72 active evidence rows, including 30 active sold rows. No active visible LIVE variants were found without active evidence.
+- TEST: 124 total phone products (123 active); 81 evidence rows total (78 active, 3 inactive retained for audit). 46 visible variants still have no active evidence.
+- LIVE: 75 active/customer-visible phone variants and 76 active evidence rows, including 34 active sold rows. No active visible LIVE variants were found without active evidence.
 - Integrity at final query: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
 - Batch 08: six completed-sale records for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
 - Batch 09: eleven completed-sale records for iPhone 13 128 GB, iPhone 14 128 GB, iPhone 15 128 GB, iPhone 15 Pro 128 GB, iPhone 16 128 GB, Pixel 8 128 GB, Pixel 9 128 GB, Motorola Edge 50 Neo 256 GB, Nothing Phone (3a) 128 GB, Galaxy S22 128 GB, and Galaxy S24 128 GB.
 - Batch 10: four completed-sale records for iPhone 13 256 GB, iPhone 15 Plus 128 GB, iPhone 15 Pro Max 256 GB, and iPhone 16 256 GB.
 - Batch 11: four completed-sale records for iPhone 15 512 GB, iPhone 16 Plus 128 GB, iPhone 16 Pro 256 GB, and iPhone 16 Pro Max 256 GB.
 - Batch 12: five completed-sale records for Galaxy S25 128 GB, Galaxy S25 256 GB, Galaxy S25 Ultra 256 GB, Nothing Phone (3) 256 GB, and Xiaomi 14T 256 GB.
-- Buyer protection fees are noted where included in displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
+- Batch 13: four completed-sale records for HONOR 200 256 GB, HONOR 400 256 GB, Motorola Razr 50 Ultra 512 GB, and OPPO Find X9 Pro 512 GB.
+- Buyer Protection fees are noted where included in displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
 - Keep UK new/RRP evidence separate from completed-sale evidence.
 
 ## Latest batch 04
@@ -84,6 +85,14 @@ See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-12.md.
 - Added five UK completed/sold eBay records for Galaxy S25 128 GB (£359.99), Galaxy S25 256 GB (£419.99), Galaxy S25 Ultra 256 GB (£513.92), Nothing Phone (3) 256 GB (£397.60), and Xiaomi 14T 256 GB (£320.75).
 - TEST: 124 phone product rows (123 active), 77 evidence rows (74 active); 50 visible variants still lack active evidence.
 - LIVE: 71 active phone variants, 72 active evidence rows, 30 active sold rows; zero visible active variants missing evidence.
+- Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
+- Buyer Protection is noted where included; observed totals are not seller proceeds or guaranteed buy-in values.
+
+## Latest batch 13
+See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-13.md.
+- Added four UK completed/sold eBay records for HONOR 200 256 GB (£172.03), HONOR 400 256 GB (£186.58), Motorola Razr 50 Ultra 512 GB (£229.58), and OPPO Find X9 Pro 512 GB (£690.00).
+- TEST: 124 phone product rows (123 active), 81 evidence rows (78 active); 46 visible variants still lack active evidence.
+- LIVE: 75 active phone variants, 76 active evidence rows, 34 active sold rows; zero visible active variants missing evidence.
 - Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
 - Buyer Protection is noted where included; observed totals are not seller proceeds or guaranteed buy-in values.
 

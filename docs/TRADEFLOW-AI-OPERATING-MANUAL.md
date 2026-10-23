@@ -2217,7 +2217,7 @@ Promoted 11 existing TEST phone variants and their linked UK used-market complet
 - No duplicate active phone variants were found in the LIVE duplicate check.
 
 
-## 2026-10-23 — Mobile phone catalogue batch 09 (four more completed-sale variants)
+## 2026-10-23 — Mobile phone catalogue batch 10 (four more completed-sale variants)
 
 Added and promoted exact-storage UK completed/sold eBay evidence for four older iPhone variants:
 
@@ -2230,7 +2230,7 @@ Added and promoted exact-storage UK completed/sold eBay evidence for four older 
 
 Records are marked as UK used evidence with sold availability, condition “Used”, GBP, exact storage, stable source keys and direct completed-listing URLs. All four displayed totals include buyer protection fees; notes state these are buyer-facing totals, not seller proceeds or guaranteed trade-in/buy-in values.
 
-### Verification snapshot after batch 09
+### Verification snapshot after batch 10
 - TEST: 124 total phone products, 123 active; 68 evidence rows total, 65 active, including 23 active sold rows. There are 59 visible variants without active evidence still awaiting verification.
 - LIVE: 62 active/customer-visible phone variants and 63 active evidence rows, including 21 active sold rows. No active visible LIVE variants were found without active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.

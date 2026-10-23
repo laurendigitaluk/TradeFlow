@@ -178,7 +178,7 @@ $('signUp').onclick=async()=>{
  authMessage('Creating account…');
  const {data,error}=await sb.auth.signUp({email,password});
  if(error){authMessage('Sign-up failed: '+error.message);return}
- currentUser=data.user||null;
+ currentUser=data.session?data.user:null;
  authMessage(data.session?'Account created and signed in.':'Account created. Check your email to confirm it, then sign in.');
 };
 $('signIn').onclick=async()=>{

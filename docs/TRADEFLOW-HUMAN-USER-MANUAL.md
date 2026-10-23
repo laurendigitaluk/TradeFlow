@@ -1872,7 +1872,7 @@ All rows are marked `uk_used`, condition- and storage-specific, with `availabili
 Continue substantial batches of exact-model/storage completed-sale evidence, then fill verified UK new-price gaps for current models. Audit legacy seeds before promotion; preserve unsupported or incorrect seeds as inactive audit history rather than deleting them.
 
 
-## 2026-10-23 — Mobile phone catalogue batch 08 (UK completed-sale evidence)
+## 2026-10-23 — Mobile phone catalogue batch 09 (UK completed-sale evidence)
 
 Promoted 11 existing TEST phone variants and their linked UK used-market completed-sale evidence to LIVE. These are used-sale observations, not current new prices or guaranteed valuations. Several displayed prices include eBay Buyer Protection fees; listings with Best Offer may not disclose the accepted seller proceeds.
 

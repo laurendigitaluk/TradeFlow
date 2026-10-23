@@ -24,3 +24,18 @@ A fresh distinct-product count supersedes the initial snapshot in this file:
 - LIVE: 126 active customer-visible variants; 129 evidence rows (127 active, 2 inactive); zero visible variants missing active evidence.
 - LIVE has 59 active UK used completed-sale rows, 3 active UK used/listed rows, and 0 active evidence integrity failures.
 - Two lower-quality Xiaomi corroboration rows are inactive in both environments; exact-variant official campaign evidence remains active. Xiaomi 17T £549 and 17T Pro 512GB £699 promotional prices expire 27 Oct 2026 or while stocks last; recheck before retaining as current price evidence.
+
+
+## Batch 26 continued — 23 Oct 2026
+Added in both TEST and LIVE:
+- iPhone 18 Pro 256GB: £1,199 EE SIM-free, in stock; https://ee.co.uk/products/iphone-18-pro-sim-free. Stable key `mobile-new-iphone18pro-256gb-ee-simfree-20261023`.
+- Google Pixel 11 256GB / 12GB RAM: £879 EE SIM-free, in stock; https://ee.co.uk/products/google-pixel-11-sim-free. The EE tech voucher offer runs through 31 Oct 2026; recorded price excludes voucher value. Stable key `mobile-new-pixel11-256gb-ee-simfree-20261023`.
+
+Rejected eBay listing https://www.ebay.co.uk/itm/257792354372 as OnePlus 15 evidence: the title is misleading and item specifics identify OnePlus 10 Pro (Snapdragon 8 Gen 1; MPN 5011101954).
+
+Authoritative distinct-product snapshot after this batch:
+- TEST: 128 active visible variants; 139 evidence rows total, 134 active.
+- LIVE: 126 active visible variants; 134 evidence rows total, 132 active.
+- LIVE visible variants missing evidence: 0.
+- LIVE active evidence integrity failures: 0.
+- LIVE active UK used completed-sale rows: 59; active UK used/listed rows: 3.

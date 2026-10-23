@@ -177,3 +177,11 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-33.md` and `CHECKPOI
 - TEST snapshot: 130 active customer-visible variants; 156 evidence rows (145 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
 - LIVE snapshot: 128 active customer-visible variants; 151 evidence rows (143 active, 8 inactive); 62 active UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
 - Recheck Xiaomi 17T / 17T Pro official campaign prices (£549 / £699) after 27 October 2026. OnePlus 15 £849 remains a price reference with availability unconfirmed.
+
+
+## Latest batch 34 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-34.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-34.md`.
+- Added official Apple UK price evidence for iPhone 18 Pro 512GB (£1,399), iPhone 18 Pro Max 512GB (£1,499), and iPhone Duo 512GB (£2,199), to TEST and LIVE.
+- TEST: 130 active customer-visible variants; 159 evidence rows (148 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
+- LIVE: 128 active customer-visible variants; 154 evidence rows (146 active, 8 inactive); 62 UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
+- OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden pending exact storage evidence. Recheck Xiaomi 17T / 17T Pro campaign after 27 October 2026; OnePlus 15 £849 remains listed/uncertain for availability.

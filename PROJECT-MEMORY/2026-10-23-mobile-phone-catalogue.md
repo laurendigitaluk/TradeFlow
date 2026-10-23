@@ -125,3 +125,11 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-16.md`.
 5. Keep discontinued models in the catalogue for used valuation, but mark lifecycle and do not treat old launch prices as current new prices.
 6. Promote each validated batch to LIVE rather than accumulating a large backlog; verify LIVE counts and links after every promotion.
 7. Do not bulk-copy the 95 legacy TEST phone seeds without verifying them and their evidence first.
+
+
+## Latest batch 26 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`.
+- Added OnePlus 15 5G 12GB/256GB Black SIM-free UK new-price reference at £849 from MyMobiles, which lists OnePlus as the seller. Source https://www.mymobiles.com/phones/oneplus/15-deals. Availability recorded as listed, not in stock, because direct checkout was not confirmed.
+- Official Xiaomi autumn campaign evidence lists 17T 12GB/256GB at £549 and 17T Pro 12GB/512GB at £699 until 27 Oct 2026 or while stock lasts. Recheck after expiry; do not treat these as evergreen RRPs.
+- Weaker duplicate Xiaomi corroboration rows are inactive and retained for audit.
+- Verified unique active visible product IDs: TEST 128; LIVE 126. TEST evidence: 134 total / 129 active / 5 inactive. LIVE evidence: 129 total / 127 active / 2 inactive. Zero active visible variants missing active evidence; LIVE integrity failures 0.

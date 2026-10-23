@@ -166,7 +166,7 @@ $('signIn').onclick=async()=>{
  currentUser=data.user;authMessage('Signed in as '+currentUser.email+'.');
 };
 $('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();currentUser=null;savedSiteId=null;authMessage(error?'Sign-out failed: '+error.message:'Signed out.');};
-sb.auth.onAuthStateChange((_event,session)=>{currentUser=session?.user||null;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
+sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser?.id!==nextUser?.id){savedSiteId=null;logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
 function slugify(value){return (value||'my-business').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'my-business'}
 async function saveWebsite(){
  if(!currentUser){saveMessage('Sign in before saving.');return}

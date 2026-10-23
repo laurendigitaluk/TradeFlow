@@ -2210,3 +2210,22 @@ Records are marked as UK used evidence with sold availability, condition “Used
 - LIVE: 62 active/customer-visible phone variants and 63 active evidence rows, including 21 active sold rows. No active visible LIVE variants were found without active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
 - Continue separating completed-sale evidence from new-price, promotional-price, and RRP evidence.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 11 (four further completed-sale variants)
+
+Added and promoted exact-storage UK completed/sold eBay evidence for four iPhone variants:
+
+| Product variant | Observed buyer-facing sold total | Sale date | Source |
+|---|---:|---|---|
+| Apple iPhone 15 512 GB | £391.92 | 16 Sep 2026 | [eBay UK item 820135278514](https://www.ebay.co.uk/itm/820135278514) |
+| Apple iPhone 16 Plus 128 GB | £417.54 | 22 Oct 2026 | [eBay UK item 377587247150](https://www.ebay.co.uk/itm/377587247150) |
+| Apple iPhone 16 Pro 256 GB | £447.44 | 12 Oct 2026 | [eBay UK item 137835281735](https://www.ebay.co.uk/itm/137835281735) |
+| Apple iPhone 16 Pro Max 256 GB | £600.33 | 8 Oct 2026 | [eBay UK item 336826938879](https://www.ebay.co.uk/itm/336826938879) |
+
+All records are UK used, sold availability, condition Used, GBP, exact storage, direct listing URLs and stable source keys. Displayed totals include Buyer Protection fees; they are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
+
+### Verification snapshot after batch 11
+- TEST: 124 total phone products (123 active); 72 evidence rows total (69 active), including 27 active sold rows. 55 visible variants remain without active evidence.
+- LIVE: 66 active/customer-visible phone variants and 67 active evidence rows, including 25 active sold rows. No active visible LIVE variants lack active evidence.
+- Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.

@@ -1930,3 +1930,22 @@ All records are UK used, sold availability, condition Used, GBP, exact storage, 
 - TEST: 124 total phone products (123 active); 77 evidence rows total (74 active), including 32 active sold rows. 50 visible variants remain without active evidence.
 - LIVE: 71 active/customer-visible phone variants and 72 active evidence rows, including 30 active sold rows. No active visible LIVE variants lack active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 13 (four further Android completed-sale variants)
+
+Added and promoted exact-storage UK completed/sold evidence for four Android variants:
+
+| Product variant | Observed sold total | Sale date | Source |
+|---|---:|---|---|
+| HONOR 200 256 GB | £172.03 | 21 May 2026 | [eBay UK item 187670881934](https://www.ebay.co.uk/itm/187670881934) |
+| HONOR 400 256 GB | £186.58 | 18 Sep 2026 | [eBay UK item 366670331900](https://www.ebay.co.uk/itm/366670331900) |
+| Motorola Razr 50 Ultra 512 GB | £229.58 | 21 Sep 2026 | [eBay UK item 278393659598](https://www.ebay.co.uk/itm/278393659598) |
+| OPPO Find X9 Pro 512 GB | £690.00 | 7 Jul 2026 | [eBay UK item 366518048620](https://www.ebay.co.uk/itm/366518048620) |
+
+All records are UK used completed sales, exact storage, sold availability, condition Used, GBP, direct listing URLs and stable source keys. Buyer Protection is noted where shown in the listing; the displayed total is not seller proceeds or a guaranteed buy-in value.
+
+### Verification snapshot after batch 13
+- TEST: 124 total phone products (123 active); 81 evidence rows total (78 active), including 36 active sold rows. 46 visible variants remain without active evidence.
+- LIVE: 75 active/customer-visible phone variants and 76 active evidence rows, including 34 active sold rows. No active visible LIVE variants lack active evidence.
+- Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.

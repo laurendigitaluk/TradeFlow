@@ -9,7 +9,7 @@ See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-08.md`.
 
 - TEST: 124 total phone product rows (123 active); 64 evidence rows total (61 active; inactive rows retained for audit).
 - LIVE at the latest query: 58 active phone product rows and 59 active evidence rows. LIVE changed during this work window; some additional legacy variants/evidence appeared concurrently, so use fresh live queries before the next promotion and do not attribute all concurrent rows to batch 08.
-- Batch 08 explicitly added completed/sold eBay UK evidence for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
+- Batch 08 added completed/sold eBay UK evidence for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB. Batch 09 promoted 11 additional used-sale variants and retired the invalid TEST Galaxy S26 evidence row.
 - The evidence is marked `uk_used` with `availability=sold`. Buyer protection fees included in displayed totals are documented in notes; those totals are not seller proceeds or guaranteed buy-in values.
 - Integrity query at the latest check: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
 - UK new/RRP evidence remains separate from used completed-sale evidence.
@@ -50,11 +50,12 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-07.md`.
 - LIVE evidence integrity returned zero missing URLs, keys, product links, non-positive prices, non-GBP values or inactive rows.
 - No used-market evidence added in batch 07.
 
-## Latest batch 08
-See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-08.md`.
-- Promoted iPhone 13 128 GB (£150.00), iPhone 14 128 GB (£171.08), iPhone 15 128 GB (£310.58), iPhone 15 Pro 128 GB (£371.58), iPhone 16 128 GB (£366.50), Pixel 8 128 GB (£155.58), Pixel 9 128 GB (£279.58), Motorola Edge 50 Neo 256 GB (£199.00), Nothing Phone (3a) 128 GB (£208.70), Galaxy S22 128 GB (£139.99), and Galaxy S24 128 GB (£243.31) with UK completed-sale evidence.
-- Values are used-sale observations; some displayed prices include Buyer Protection fees or Best Offer caveats. Do not treat them as current new prices or exact seller proceeds.
-- TEST Galaxy S26 256 GB generic giffgaff evidence retired; kept inactive for audit.
+## Latest batch 09
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-09.md`.
+- Promoted 11 additional UK completed-sale variants: iPhone 13 128 GB (£150.00), iPhone 14 128 GB (£171.08), iPhone 15 128 GB (£310.58), iPhone 15 Pro 128 GB (£371.58), iPhone 16 128 GB (£366.50), Pixel 8 128 GB (£155.58), Pixel 9 128 GB (£279.58), Motorola Edge 50 Neo 256 GB (£199.00), Nothing Phone (3a) 128 GB (£208.70), Galaxy S22 128 GB (£139.99), and Galaxy S24 128 GB (£243.31).
+- These are UK eBay completed-sale observations; buyer protection fees, Best Offer, battery, lock status and condition caveats are retained in evidence notes.
+- Retired the TEST Galaxy S26 256 GB £749 observation because its giffgaff URL is a generic error page; row remains inactive for audit.
+- Current database integrity and duplicate checks passed after promotion.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

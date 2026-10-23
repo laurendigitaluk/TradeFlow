@@ -1,10 +1,10 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 28
+Updated: 2026-10-23 after batch 37
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 28
+## Historical snapshot after batch 28 (superseded by the Batch 37 verification)
 See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-28.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-28.md`.
 
 - TEST: 131 active customer-visible variants; 132 evidence rows total (129 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.

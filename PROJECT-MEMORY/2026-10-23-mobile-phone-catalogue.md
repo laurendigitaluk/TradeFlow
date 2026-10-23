@@ -59,6 +59,13 @@ See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-09.md.
 - eBay totals include buyer protection fees; do not interpret as seller proceeds or guaranteed buy-in values.
 
 
+## Latest batch 10
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-10.md`.
+- Added iPhone 13 256 GB (£238.25), iPhone 15 Plus 128 GB (£300.25), iPhone 15 Pro Max 256 GB (£447.44), and iPhone 16 256 GB (£483.41) from UK completed eBay sales.
+- Each displayed total includes Buyer Protection; notes record these as buyer-facing totals, not seller proceeds or guaranteed buy-in prices.
+- Current database after this batch: TEST 124 products (123 active), 68 evidence rows (65 active); LIVE 62 active visible variants, 63 active evidence rows including 21 used-sale rows.
+- No LIVE visible phone variant lacks active evidence; integrity check returned zero failures.
+
 ## Operating rules
 1. Add products and evidence to TEST first.
 2. Evidence must link to the exact product/storage variant and have a meaningful source URL and stable unique key.

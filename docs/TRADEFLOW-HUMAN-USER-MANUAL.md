@@ -1910,3 +1910,23 @@ All records are UK used, sold availability, condition Used, GBP, exact storage, 
 - TEST: 124 total phone products (123 active); 72 evidence rows total (69 active), including 27 active sold rows. 55 visible variants remain without active evidence.
 - LIVE: 66 active/customer-visible phone variants and 67 active evidence rows, including 25 active sold rows. No active visible LIVE variants lack active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 12 (five Samsung/Android completed-sale variants)
+
+Added and promoted exact-storage UK completed/sold evidence for five variants:
+
+| Product variant | Observed buyer-facing sold total | Sale date | Source |
+|---|---:|---|---|
+| Samsung Galaxy S25 128 GB | £359.99 | 15 Aug 2026 | [eBay UK item 188756779985](https://www.ebay.co.uk/itm/188756779985) |
+| Samsung Galaxy S25 256 GB | £419.99 | 17 Jun 2026 | [eBay UK item 157995784914](https://www.ebay.co.uk/itm/157995784914) |
+| Samsung Galaxy S25 Ultra 256 GB | £513.92 | 6 Oct 2026 | [eBay UK item 800756844624](https://www.ebay.co.uk/itm/800756844624) |
+| Nothing Phone (3) 256 GB | £397.60 | 17 Sep 2026 | [eBay UK item 377499796395](https://www.ebay.co.uk/itm/377499796395) |
+| Xiaomi 14T 256 GB | £320.75 | 11 Jul 2026 | [eBay UK item 397370297752](https://www.ebay.co.uk/itm/397370297752) |
+
+All records are UK used, sold availability, condition Used, GBP, exact storage, direct listing URLs and stable source keys. Buyer Protection is explicitly recorded where the listing showed it; the displayed prices are not seller proceeds or guaranteed buy-in values.
+
+### Verification snapshot after batch 12
+- TEST: 124 total phone products (123 active); 77 evidence rows total (74 active), including 32 active sold rows. 50 visible variants remain without active evidence.
+- LIVE: 71 active/customer-visible phone variants and 72 active evidence rows, including 30 active sold rows. No active visible LIVE variants lack active evidence.
+- Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.

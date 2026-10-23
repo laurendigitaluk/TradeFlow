@@ -2061,3 +2061,17 @@ Current state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-24.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-24.md`.
 
 Continue with these two remaining gaps only where exact UK evidence can be verified. Keep listing prices distinct from completed-sale prices and preserve all condition, stock and Buyer Protection caveats.
+
+
+## Mobile phone catalogue research status — batch 25 (23 October 2026)
+
+One realme GT 7 Pro 5G 12GB/512GB UK eBay listing was added at £986.25, condition “Opened – never used”, seller in London. The listing showed 2 available and 1 sold. Seller feedback is 83.3% positive and the price is unusually high, so treat this only as an asking-price observation—not a completed sale or representative market value.
+
+Only one visible TEST variant remains without active evidence: OnePlus 15 256GB. The official OnePlus UK page currently says “Coming soon”; old early-bird terms and a dated community price do not establish a current checkout price.
+
+Current state:
+- TEST: 123 active visible variants; 123 evidence rows (120 active, 3 inactive); one visible variant missing evidence.
+- LIVE: 118 active visible variants and 118 active evidence rows. There are 59 completed-sale rows, 3 secondary-market listed rows and one separately classified out-of-stock refurbished listing. No active visible variant lacks evidence; integrity check has zero failures.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-25.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-25.md`.
+
+Continue with the OnePlus 15 gap only if a current exact-variant UK source provides verifiable price/availability. Do not invent or infer a price from stale launch material.

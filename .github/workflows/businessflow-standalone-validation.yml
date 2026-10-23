@@ -50,6 +50,29 @@ jobs:
           ! grep -Eiq 'tradeflow-test|production' wrangler.businessflow-test.jsonc
           ! grep -Eiq 'tradeflow-test|production' wrangler.businessflow-live.jsonc
 
+      - name: Check BusinessFlow storage policy correction
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          sql = Path("businessflow-standalone/supabase/2026-10-23-storage-rls-correction.sql").read_text(encoding="utf-8")
+          required = [
+              "storage.foldername(objects.name)",
+              "s.owner_id = (select auth.uid())",
+              "bucket_id = 'businessflow-assets'",
+              "for select to authenticated",
+              "for insert to authenticated",
+              "for update to authenticated",
+              "for delete to authenticated",
+          ]
+          missing = [item for item in required if item not in sql.lower()]
+          if missing:
+              raise SystemExit("Missing storage-policy protections: " + ", ".join(missing))
+          if "storage.foldername(s.name)" in sql.lower():
+              raise SystemExit("Incorrect policy: checks the site's name rather than the Storage object path")
+          print("BusinessFlow Storage RLS correction contains all four owner-scoped policies.")
+          PY
+
       - name: Confirm browser code contains no service-role key
         run: |
           ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

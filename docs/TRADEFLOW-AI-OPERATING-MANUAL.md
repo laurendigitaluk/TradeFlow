@@ -2434,3 +2434,17 @@ Latest snapshot:
 - LIVE: 125 active visible variants; 125 active evidence rows; 59 UK completed-sale rows. LIVE integrity failures: 0; visible variants missing active evidence: 0.
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: continue adding newly released UK models and exact storage variants. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.
+
+
+## Mobile phone catalogue continuity — batch 28 (23 October 2026)
+
+Added three exact UK variants to TEST and LIVE:
+- Motorola Edge 70 Plus 8GB/256GB £499 from Currys: https://www.currys.co.uk/products/motorola-edge-70-plus-256-gb-pantone-mountain-view-10310979.html.
+- OPPO Find X10 12GB/256GB £1,099 from EE: https://ee.co.uk/products/oppo-find-x10-sim-free. Pre-order; launch expected 28 Oct 2026; availability `coming_soon`.
+- OPPO Find X10 Pro Max 12GB/512GB £1,499 from EE: https://ee.co.uk/products/oppo-find-x10-pro-max-sim-free. Pre-order; launch expected 28 Oct 2026; availability `coming_soon`.
+
+Latest snapshot:
+- TEST: 131 active visible variants; 132 evidence rows (129 active, 3 inactive); zero visible variants missing active evidence.
+- LIVE: 127 active visible variants; 127 active evidence rows; 59 UK completed-sale rows. LIVE integrity failures: 0; visible variants missing active evidence: 0.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-28.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-28.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: continue adding exact UK smartphone models and variants; recheck OPPO pre-orders after 28 Oct and Xiaomi 17T/17T Pro campaign after 27 Oct 2026.

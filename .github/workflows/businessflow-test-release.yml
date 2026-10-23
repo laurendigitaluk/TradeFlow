@@ -2,6 +2,14 @@ name: BusinessFlow TEST Release
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - businessflow-standalone-bootstrap-20261023
+    paths:
+      - 'businessflow-standalone/public/index.html'
+      - 'businessflow-standalone/src/worker.js'
+      - 'wrangler.businessflow-test.jsonc'
+      - '.github/workflows/businessflow-test-release.yml'
 
 permissions:
   contents: read
@@ -34,6 +42,18 @@ jobs:
           Path("/tmp/businessflow-inline.js").write_text("\\n".join(scripts), encoding="utf-8")
           PY
           node --check /tmp/businessflow-inline.js
+
+      - name: Verify Supabase JS client is loaded before editor code
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          library = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>'
+          if library not in html:
+              raise SystemExit("Supabase JS client library is missing from the page")
+          if html.index(library) > html.index("<script>"):
+              raise SystemExit("Supabase JS client must load before inline editor code")
+          PY
 
       - name: Verify isolated Cloudflare credentials are configured
         env:

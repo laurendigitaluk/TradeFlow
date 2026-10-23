@@ -4,6 +4,8 @@
 
 - Rename consistency fix: when a custom page uses its default heading, renaming the page now updates that heading as well; a separately edited heading is preserved. Duplicate-name rejection remains in place.
 
+- Accessibility refinement: added a clearly visible keyboard focus outline for buttons, links, inputs, textareas, and selects to make keyboard navigation easier to follow.
+
 ## Decision
 BusinessFlow's intended customer-facing platform domain is **`businessflow.laurendigital.co.uk`**, alongside the existing `tradeflow.laurendigital.co.uk`. BusinessFlow must use a separate Cloudflare Worker deployment and must not be routed through the existing TradeFlow Worker.
 

@@ -2482,3 +2482,11 @@ Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-34.md`; project
 Added exact official Apple UK prices to TEST and LIVE: iPhone 18 Pro 512GB (£1,399), iPhone 18 Pro Max 512GB (£1,499), and iPhone Duo 512GB (£2,199). Preserve each as a new-price reference, not a used value or buying offer.
 
 Verified position: TEST 130 active customer-visible variants and 159 evidence rows (148 active, 11 inactive). LIVE 128 active customer-visible variants and 154 evidence rows (146 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero active visible variants missing active evidence; LIVE active evidence integrity failures are zero. Keep OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB hidden pending exact-capacity evidence; recheck Xiaomi 17T/17T Pro after 27 October; OnePlus 15 stock remains unconfirmed.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 35)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-35.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-35.md`.
+
+Added exact official Apple UK new prices in TEST and LIVE for iPhone 18 Pro 1TB (£1,799) and 2TB (£2,399), iPhone 18 Pro Max 1TB (£1,899) and 2TB (£2,499), and iPhone Duo 1TB (£2,599) and 2TB (£3,199). Keep these classified as new list-price evidence, not used-market values or buy offers.
+
+Current verified position: TEST has 130 active customer-visible variants and 165 evidence rows (154 active, 11 inactive). LIVE has 128 active customer-visible variants and 160 evidence rows (152 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero visible active variants missing active evidence; LIVE active evidence integrity failures are zero. Continue hiding OPPO Find X10 256GB and Galaxy A18 4G 128GB until exact storage is verified; recheck Xiaomi promotion after 27 October; OnePlus 15 availability is still unconfirmed.

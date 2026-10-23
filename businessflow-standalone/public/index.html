@@ -21,7 +21,7 @@
 <div class="field"><label for="ctaText">Main button text</label><input id="ctaText" value="Request a free quote"></div>
 <div class="field"><label for="ctaLink">Button destination (preview only)</label><input id="ctaLink" value="/contact"></div>
 <div class="field"><label for="accent">Brand accent colour</label><input id="accent" type="color" value="#c46a2b"></div>
-<div class="field"><label for="logoText">Logo / wordmark text</label><input id="logoText" value="Oak & Stone Roofing"></div>\n<div class="field"><label for="assetFile">Upload a logo or website image</label><input id="assetFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,image/svg+xml"><button type="button" class="btn" id="uploadAsset">Upload selected image</button><small class="muted">Save the website first. Images are private and limited to 10 MB. Uploading stores the image; it does not publish the site.</small><div id="assetStatus" class="muted" role="status" aria-live="polite"></div></div>
+<div class="field"><label for="logoText">Logo / wordmark text</label><input id="logoText" value="Oak & Stone Roofing"></div>\n<div class="field"><label for="assetFile">Upload a logo or website image</label><input id="assetFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"><button type="button" class="btn" id="uploadAsset">Upload selected image</button><small class="muted">Save the website first. Images are private and limited to 10 MB. Uploading stores the image; it does not publish the site.</small><div id="assetStatus" class="muted" role="status" aria-live="polite"></div></div>
 <div class="field"><label for="heroImageFile">Homepage image</label><input id="heroImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"><small class="muted">Images only, up to 10 MB. Stored privately in your BusinessFlow account.</small><div class="btnrow"><button class="btn" type="button" id="uploadHeroImage">Upload image</button><button class="btn" type="button" id="clearHeroImage">Remove image</button></div><div id="heroImageStatus" class="muted" role="status" aria-live="polite">No image uploaded.</div></div>
 <div class="field"><label for="servicesHeading">Services heading</label><input id="servicesHeading" value="Roofing services"></div>
 <div class="field"><label for="servicesText">Services introduction</label><textarea id="servicesText">Practical roofing solutions for homes and businesses, from small repairs to full replacements.</textarea></div>
@@ -93,6 +93,30 @@ function saveMessage(message){$('saveStatus').textContent=message}
 
 let heroImagePath=null,heroObjectUrl=null,pendingDeleteHeroImagePaths=[];
 function heroStatus(message){$('heroImageStatus').textContent=message}
+function assetStatus(message){$('assetStatus').textContent=message}
+async function refreshLogoImage(){
+ if(!logoAssetPath||!savedSiteId){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');return}
+ const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(logoAssetPath,3600);
+ if(error||!data?.signedUrl){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');assetStatus('Saved logo could not be loaded.');return}
+ logoSignedUrl=data.signedUrl;$('previewLogoImage').src=logoSignedUrl;$('previewLogoImage').classList.remove('hide');$('previewLogo').classList.add('hide');assetStatus('Logo loaded from your private assets.');
+}
+$('uploadAsset').onclick=async()=>{
+ if(!currentUser){assetStatus('Sign in before uploading a logo.');return}
+ const file=$('assetFile').files?.[0];
+ if(!file){assetStatus('Choose an image first.');return}
+ const allowed=['image/jpeg','image/png','image/webp','image/gif','image/avif'];
+ if(!allowed.includes(file.type)){assetStatus('Unsupported image format. Choose JPG, PNG, WebP, GIF or AVIF.');return}
+ if(file.size>10*1024*1024){assetStatus('The image exceeds the 10 MB limit.');return}
+ assetStatus('Preparing logo upload…');
+ if(!savedSiteId){await saveWebsite();if(!savedSiteId){assetStatus('Save a draft first, then upload the logo.');return}}
+ const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-80)||'business-logo';
+ const objectPath=savedSiteId+'/'+crypto.randomUUID()+'-'+safeName;
+ const {error}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
+ if(error){assetStatus('Upload failed: '+error.message);return}
+ if(logoAssetPath&&!pendingDeleteHeroImagePaths.includes(logoAssetPath))pendingDeleteHeroImagePaths.push(logoAssetPath);
+ logoAssetPath=objectPath;await refreshLogoImage();
+ assetStatus('Logo uploaded. Save website to keep it attached to this draft.');
+};
 function showHeroImage(url){
  const site=$('site');
  if(url){site.style.setProperty('--hero-image','url("'+url.replace(/["\\\\]/g,'')+'")');site.classList.add('has-hero-image');}
@@ -133,7 +157,7 @@ function applyEditorState(values){
  fields.forEach(id=>{const el=$(id);if(el&&typeof values[id]==='string')el.value=values[id]});
  if(typeof values.pageHeading==='string')$('pageHeading').value=values.pageHeading;
  if(typeof values.pageBody==='string')$('pageBody').value=values.pageBody;
- if(typeof values.logoAssetPath==='string'&&values.logoAssetPath){logoAssetPath=values.logoAssetPath;refreshLogoImage();}else{logoAssetPath=null;logoSignedUrl=null;$('previewLogoImage').classList.add('hide');}
+ if(typeof values.logoAssetPath==='string'&&values.logoAssetPath){logoAssetPath=values.logoAssetPath;refreshLogoImage();}else{logoAssetPath=null;logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');$('previewLogo').classList.remove('hide');}
  if(Array.isArray(values.pages)&&values.pages.length){pages=values.pages.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').slice(0,40);}
  active=pages.some(p=>p.id===values.active)?values.active:'home';
  document.querySelectorAll('input[type=checkbox][data-section]').forEach(el=>{if(values.sections&&typeof values.sections[el.dataset.section]==='boolean')el.checked=values.sections[el.dataset.section]});
@@ -164,7 +188,7 @@ $('signIn').onclick=async()=>{
  currentUser=data.user;authMessage('Signed in as '+currentUser.email+'.');
 };
 $('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();if(error){authMessage('Sign-out failed: '+error.message);return;}location.reload();};
-sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}if(currentUser?.id!==nextUser?.id){savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
+sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}if(currentUser?.id!==nextUser?.id){savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');$('previewLogo').classList.remove('hide');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
 function slugify(value){return (value||'my-business').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'my-business'}
 function pagePath(page){const fixed={home:'/',services:'/services',projects:'/recent-projects',about:'/about',contact:'/contact'};if(fixed[page.id])return fixed[page.id];const suffix=String(page.id||'custom').replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom';return '/'+slugify(page.name)+'-'+suffix}
 async function saveWebsite(){

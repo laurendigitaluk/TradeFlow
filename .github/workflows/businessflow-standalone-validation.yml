@@ -15,6 +15,8 @@ on:
       - 'wrangler.businessflow-test.jsonc'
       - 'wrangler.businessflow-live.jsonc'
       - '.github/workflows/businessflow-standalone-validation.yml'
+      - 'businessflow-standalone/README.md'
+      - 'docs/BUSINESSFLOW_*.md'
   workflow_dispatch:
 
 permissions:

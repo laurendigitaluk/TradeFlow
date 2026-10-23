@@ -1,5 +1,7 @@
 # BusinessFlow Dedicated Cloudflare Preview — 2026-10-23
 
+- Custom-page naming hardened: new pages start with their own heading/body values; adding or renaming a page rejects case-insensitive duplicate names, including collisions with built-in navigation labels.
+
 ## Decision
 BusinessFlow's intended customer-facing platform domain is **`businessflow.laurendigital.co.uk`**, alongside the existing `tradeflow.laurendigital.co.uk`. BusinessFlow must use a separate Cloudflare Worker deployment and must not be routed through the existing TradeFlow Worker.
 

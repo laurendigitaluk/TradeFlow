@@ -7,7 +7,7 @@ The phone catalogue is being expanded in TradeFlow using a controlled TEST → L
 ## Current verified position after batch 20
 See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md`.
 
-- TEST: 124 total phone products (123 active); 104 evidence rows total (101 active, 3 inactive retained for audit). 23 active customer-visible variants remain without active evidence.
+- TEST: 124 total phone products (123 active); 105 evidence rows total (102 active, 3 inactive retained for audit). 22 active customer-visible variants remain without active evidence.
 - LIVE: 99 active customer-visible phone variants and 100 active evidence rows, including 58 active UK used completed-sale rows.
 - LIVE integrity check after Batch 20: zero evidence integrity failures and zero active customer-visible variants missing evidence.
 - Batch 14 added five sold records: Pixel 10, Pixel 10 Pro, Galaxy S26, OnePlus 13 and HONOR Magic8 Pro.

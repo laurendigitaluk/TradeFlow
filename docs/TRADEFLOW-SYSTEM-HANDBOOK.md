@@ -2324,3 +2324,8 @@ Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual,
 - The latest platform-owner dashboard screenshot confirms both `test test` (`scenesource1@gmail.com`) and `TradeFlow Complimentary Test` (`leannelauren07@gmail.com`) are visible in the Subscriber businesses list, each with Enhanced plan, subscription `active`, and workspace status `active`.
 - This verifies subscriber password recovery/sign-in persistence and owner-list visibility for the repaired TEST workspace. The screenshot does not independently prove resend does not create duplicates; that remains untested. Do not send additional recovery links unless needed.
 - TEST only. LIVE remains untouched. Continue with a read-only database duplicate check and confirm complimentary/manual billing markers for the repaired workspace; do not create or close another subscriber to test this.
+
+
+## BusinessFlow isolated builder prototype — 2026-10-23
+
+A separate review-only prototype exists at `businessflow-builder-review.html` on branch `feature/businessflow-isolated-builder-review-20261023`. It is intentionally standalone: no TradeFlow builder imports, no Supabase/API calls, no authentication, no data persistence, and no writes to TradeFlow tables. The page demonstrates editable service-business branding/copy, optional homepage sections, preview width toggle, and add/rename page controls. This is not a customer-ready builder: persistence, per-page content, contact submission, real preview and publishing remain unimplemented. Do not merge to production or expose to customers. See `docs/checkpoints/BUSINESSFLOW_ISOLATED_BUILDER_REVIEW_20261023.md`. Existing TEST and production branches are substantially diverged; do not merge blindly.

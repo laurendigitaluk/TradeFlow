@@ -2334,3 +2334,15 @@ Phone catalogue batch 19 (23 Oct 2026): Added and promoted three UK sold records
 Current snapshot: TEST 124 products (123 active), 104 evidence rows (101 active, 3 inactive), 23 visible variants without active evidence. LIVE 98 active visible products, 99 active evidence rows including 57 used-sale rows. Recheck integrity at next batch close.
 
 Batch 20 phone catalogue: OPPO A6 Pro 5G 256 GB, £180.00, completed sale 19 July 2026, certified refurbished. Source https://www.ebay.co.uk/itm/287441531751. See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md. Keep refurbished condition separate from ordinary used and new/RRP evidence. LIVE now has 99 active visible variants; integrity failures 0; missing-evidence visible variants 0.
+
+## Mobile phone catalogue continuity — batch 21 (23 October 2026)
+
+TradeFlow mobile-phone market evidence work is continuing in Supabase TEST first, then promptly promoting validated batches to LIVE. Current state after Batch 21:
+- TEST: 126 active customer-visible phone variants; 112 evidence rows total, 109 active and 3 inactive retained for audit; 15 active visible variants lack active evidence.
+- LIVE: 107 active customer-visible phone variants; 107 active evidence rows including 58 UK used completed-sale rows; zero active visible variants missing active evidence and zero integrity failures.
+- Batch 21 added seven UK new-price/listing evidence rows: HONOR 600 256 GB £599.99 manufacturer-store list price; HONOR 600 Smart 128 GB £249.99 Argos; Xiaomi 17T 256 GB £549 promotional price vs £649 original; Xiaomi 17T Pro 512 GB £699 promotional price vs £849 original; HONOR Magic8 Lite 256 GB £349.99 after-coupon price; Samsung Galaxy S26+ 256 GB £1,179 Samsung UK in-stock listing; Samsung Galaxy A27 5G 256 GB £209.99 active new eBay listing (not completed-sale evidence).
+- Xiaomi 17T/17T Pro campaign prices expire 27 October 2026 or earlier if stock runs out. Recheck/retire promotional evidence after expiry; never silently treat a promo price as evergreen RRP.
+- TEST has 126 active visible variants in the current query, up from 123 in the Batch 20 checkpoint. Use current database results as authoritative and identify the additional rows while working through remaining gaps.
+- Continue exact model/storage validation, direct source URLs, GBP positive prices, stable source keys, conservative availability and separation of new offers from completed-sale evidence. Do not use the OnePlus 15 listing that item specifics identify as OnePlus 10 Pro, or any search result that redirects to unrelated products.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next action: resolve the 15 remaining TEST variants without active evidence, then re-query and promote each validated batch to LIVE.

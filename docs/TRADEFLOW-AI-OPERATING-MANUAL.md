@@ -2490,3 +2490,11 @@ Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-35.md`; project
 Added exact official Apple UK new prices in TEST and LIVE for iPhone 18 Pro 1TB (£1,799) and 2TB (£2,399), iPhone 18 Pro Max 1TB (£1,899) and 2TB (£2,499), and iPhone Duo 1TB (£2,599) and 2TB (£3,199). Keep these classified as new list-price evidence, not used-market values or buy offers.
 
 Current verified position: TEST has 130 active customer-visible variants and 165 evidence rows (154 active, 11 inactive). LIVE has 128 active customer-visible variants and 160 evidence rows (152 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero visible active variants missing active evidence; LIVE active evidence integrity failures are zero. Continue hiding OPPO Find X10 256GB and Galaxy A18 4G 128GB until exact storage is verified; recheck Xiaomi promotion after 27 October; OnePlus 15 availability is still unconfirmed.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 36)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-36.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-36.md`.
+
+Added exact official Google Store UK new-price evidence to TEST and LIVE: Pixel 11 256GB / 12GB RAM (£879), Pixel 11 512GB / 12GB RAM (£999), and Pixel 11 Pro 512GB / 16GB RAM (£1,199). Keep trade-in bonuses separate from device price and treat current offers as checkout-dependent where noted.
+
+Current verified position: TEST 130 active customer-visible variants and 168 evidence rows (157 active, 11 inactive). LIVE 128 active customer-visible variants and 163 evidence rows (155 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. No active visible variants are missing evidence; LIVE integrity failures are zero. Continue hiding OPPO Find X10 256GB and Galaxy A18 4G 128GB pending exact capacity evidence, recheck Xiaomi campaign after 27 October, and do not mark OnePlus 15 in stock without checkout proof.

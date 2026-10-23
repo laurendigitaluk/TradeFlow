@@ -133,3 +133,11 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md` and `CHECKPOI
 - Official Xiaomi autumn campaign evidence lists 17T 12GB/256GB at £549 and 17T Pro 12GB/512GB at £699 until 27 Oct 2026 or while stock lasts. Recheck after expiry; do not treat these as evergreen RRPs.
 - Weaker duplicate Xiaomi corroboration rows are inactive and retained for audit.
 - Verified unique active visible product IDs: TEST 128; LIVE 126. TEST evidence: 134 total / 129 active / 5 inactive. LIVE evidence: 129 total / 127 active / 2 inactive. Zero active visible variants missing active evidence; LIVE integrity failures 0.
+
+
+## Latest batch 29 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-29.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-29.md`.
+- Added completed-sale evidence to TEST and LIVE for HONOR 600 256GB (£379.35 buyer total, new/sealed), Samsung Galaxy Z Flip8 256GB (£749.99 buyer total, opened–never used), and iPhone 17e 256GB (£450.87 buyer total, used auction).
+- All sources confirm UK seller location and exact storage variant. Buyer Protection fees are included in displayed totals where indicated; these are not seller proceeds.
+- Fresh database snapshot after batch 29: TEST 128 active visible variants, 137 evidence rows (132 active, 5 inactive), 64 active UK used completed-sale rows; LIVE 126 active visible variants, 132 evidence rows (130 active, 2 inactive), 62 active UK used completed-sale rows and 3 active UK used/listed rows. Zero visible variants missing active evidence; LIVE integrity failures 0.
+- These fresh distinct-product counts supersede earlier snapshots; always re-query because visibility can change between batches.

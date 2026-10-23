@@ -82,3 +82,9 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - It deploys only `wrangler.businessflow.jsonc` using Wrangler v4, with Cloudflare credentials read from GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
 - The workflow has not been run. It cannot deploy until both repository secrets are configured and a user with GitHub Actions access manually runs it. No secrets were created, requested in chat, or exposed.
 - The worker config remains Workers.dev-only; this workflow does not attach `businessflow.laurendigital.co.uk` or change TradeFlow deployment/DNS.
+
+
+## CTA destination hardening — 2026-10-23
+- Tightened the CTA allow-list so protocol-relative destinations beginning `//` are rejected rather than treated as root-relative paths. Supported explicit schemes remain `https://`, `http://`, `mailto:`, and `tel:`, plus same-site root-relative paths beginning with a single `/` and fragment links beginning `#`.
+- Updated `businessflow-builder-review.html` and `businessflow-preview/index.html` sequentially; both are byte-identical (blob SHA `675643aa1e47c927c15ba808e325c3f7fabaa6c3`).
+- Source-level confirmation only. No browser interaction test or Cloudflare deployment has been completed; no TradeFlow resources or DNS were changed.

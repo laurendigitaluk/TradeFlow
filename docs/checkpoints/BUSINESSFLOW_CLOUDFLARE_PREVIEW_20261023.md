@@ -31,6 +31,8 @@ This requires an authorised Cloudflare login and the Wrangler CLI. Confirm the C
 - Added editable heading/body fields for each non-home page.
 - Selecting a non-home page shows its own content in the shared page shell; editing those fields updates the preview immediately.
 - The standalone source and Cloudflare static asset were updated together and verified to have identical content hashes.
+- CTA destination input now permits common safe destinations (`https://`, `http://`, `mailto:`, `tel:`, `/`, and `#`) and falls back to `#` for unsupported schemes such as `javascript:` or `data:`.
+- Static review confirms no externally loaded JavaScript or CSS. Browser interaction testing and Cloudflare deployment remain pending.
 - This is static/source-level validation only; interactive browser testing and Cloudflare deployment are still pending.
 
 ## Git / safety

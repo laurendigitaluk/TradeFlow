@@ -101,3 +101,10 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Rebuilt card elements with DOM APIs and `textContent` to preserve the text-only rendering approach.
 - Updated source and static preview sequentially and confirmed matching blob SHA `d7b7298918c82e0e12b3b4483e2fe524d4a28e1c`.
 - Source-level change only. Browser interaction testing and Cloudflare deployment remain pending; no TradeFlow LIVE/TEST resources or DNS were changed.
+
+
+## Custom page removal control — 2026-10-23
+- Added a Remove custom page control to the temporary page editor. It only removes user-added pages; Home, Services, Recent Projects, About Us, and Contact are protected from removal.
+- Removal asks for confirmation, returns the preview to Home, and refreshes navigation. The editor remains memory-only, so this does not delete persisted data or affect a published site.
+- Updated source and preview sequentially and verified matching blob SHA `6f1ba1eecf6b3d8b213594ff2dfa23848f317a4a`.
+- Source-level change only. Browser testing and Cloudflare deployment are still pending; TradeFlow LIVE/TEST and DNS remain untouched.

@@ -2498,3 +2498,11 @@ Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-36.md`; project
 Added exact official Google Store UK new-price evidence to TEST and LIVE: Pixel 11 256GB / 12GB RAM (£879), Pixel 11 512GB / 12GB RAM (£999), and Pixel 11 Pro 512GB / 16GB RAM (£1,199). Keep trade-in bonuses separate from device price and treat current offers as checkout-dependent where noted.
 
 Current verified position: TEST 130 active customer-visible variants and 168 evidence rows (157 active, 11 inactive). LIVE 128 active customer-visible variants and 163 evidence rows (155 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. No active visible variants are missing evidence; LIVE integrity failures are zero. Continue hiding OPPO Find X10 256GB and Galaxy A18 4G 128GB pending exact capacity evidence, recheck Xiaomi campaign after 27 October, and do not mark OnePlus 15 in stock without checkout proof.
+
+
+## Mobile phone catalogue evidence update — Batch 37 (23 October 2026)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-37.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-37.md`.
+
+Added in TEST and promoted to LIVE: Samsung Galaxy S25 128GB UK used completed sale at £339.99 (eBay UK, sold 19 October 2026; displayed total includes Buyer Protection) and Samsung Galaxy A37 5G 128GB / 6GB RAM UK new listing at £399 (Argos; postcode-dependent stock, recorded as listed rather than in stock).
+
+Verified snapshot: TEST 130 active customer-visible variants, 170 evidence rows (159 active, 11 inactive), 65 active UK used completed-sale rows; LIVE 128 active customer-visible variants, 165 evidence rows (157 active, 8 inactive), 63 active UK used completed-sale rows. Both have zero active visible variants missing active evidence, zero active evidence integrity failures, and zero duplicate active source keys. Maintain TEST-first validation, prompt LIVE promotion, and the distinction between completed sales, asking prices and buyer-facing totals including fees. Recheck Xiaomi 17T / 17T Pro after 27 October and OPPO Find X10 after 28 October 2026.

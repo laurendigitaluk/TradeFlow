@@ -2137,3 +2137,11 @@ Do not use eBay item 257792354372 as OnePlus 15 evidence: the item specifics ide
 
 Current snapshot: TEST 128 active visible variants, 140 evidence rows (135 active, 5 inactive). LIVE 126 active visible variants, 135 evidence rows (133 active, 2 inactive), 62 UK used completed-sale rows and 3 UK used/listed rows. LIVE has zero visible variants missing active evidence and zero active evidence integrity failures.
 Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-30.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-30.md`.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 31)
+The current phone-catalogue checkpoint is `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-31.md`; aggregate research notes are in `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+
+Current verified position: TEST has 130 active customer-visible phone variants and 147 evidence rows (138 active, 9 inactive retained for audit). LIVE has 128 active customer-visible variants and 142 evidence rows (136 active, 6 inactive retained for audit). LIVE has 62 active UK used completed-sale rows, 3 UK used/listed rows, zero active visible variants missing evidence, and zero active evidence integrity failures.
+
+Recent updates include Nothing Phone (4b) 8GB/128GB official UK price £299 and OnePlus 15 12GB/256GB UK price reference £849. The OnePlus 15 source is a price reference only; availability is listed, not confirmed in stock. Xiaomi 17T/17T Pro campaign prices (£549/£699) must be rechecked after 27 October 2026. Keep TEST → LIVE promotion regular, and preserve exact variant, source, price-type, availability and condition caveats. Do not use eBay item 257792354372 as OnePlus 15 evidence because its item specifics identify OnePlus 10 Pro.

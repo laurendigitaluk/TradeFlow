@@ -16,3 +16,11 @@ Current verified counts:
 
 Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`.
 Next: expand with additional exact-variant UK phone models, not just patch evidence gaps. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.
+
+
+## Batch 26 follow-up correction — 23 Oct 2026
+A fresh distinct-product count supersedes the initial snapshot in this file:
+- TEST: 128 active customer-visible variants; 134 evidence rows (129 active, 5 inactive); zero visible variants missing active evidence.
+- LIVE: 126 active customer-visible variants; 129 evidence rows (127 active, 2 inactive); zero visible variants missing active evidence.
+- LIVE has 59 active UK used completed-sale rows, 3 active UK used/listed rows, and 0 active evidence integrity failures.
+- Two lower-quality Xiaomi corroboration rows are inactive in both environments; exact-variant official campaign evidence remains active. Xiaomi 17T £549 and 17T Pro 512GB £699 promotional prices expire 27 Oct 2026 or while stocks last; recheck before retaining as current price evidence.

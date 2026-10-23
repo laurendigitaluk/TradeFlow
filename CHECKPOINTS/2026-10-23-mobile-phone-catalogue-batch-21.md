@@ -13,7 +13,7 @@ Added seven UK new-price/listing evidence records, keeping new-price evidence se
 | Xiaomi 17T Pro 512 GB | £699.00 | Xiaomi UK | Temporary autumn campaign price vs £849 original price; terms run 11–27 Oct 2026 or while stock lasts. |
 | HONOR Magic8 Lite 256 GB | £349.99 | HONOR UK | After-coupon shop price; HONOR buying guide lists £399.99 standard price. Coupon eligibility may apply. |
 | Samsung Galaxy S26+ 256 GB | £1,179.00 | Samsung UK | Official UK buy page displayed 256 GB/12 GB as in stock. |
-| Samsung Galaxy A27 5G 256 GB | £209.99 | eBay UK business seller | Current new listing with 20 available at observation. This is an asking/listing price, not completed-sale evidence. |
+| Samsung Galaxy A27 5G 256 GB | £209.99 | eBay UK business seller | Current listing condition is “Opened – never used”; 19 available at direct-page verification. Secondary-market listing evidence, not sealed-new or completed-sale evidence. |
 
 ## Source URLs
 - HONOR 600 official store: https://www.honor.com/uk/shop/
@@ -40,7 +40,7 @@ Added seven UK new-price/listing evidence records, keeping new-price evidence se
 
 ## Validation and exclusions
 - The seven evidence rows use exact product/storage variants and stable source keys.
-- New listing prices and promotional prices are not completed-sale comparables and must not be used as such.
+- New listing prices and promotional prices are not completed-sale comparables and must not be used as such. The direct Samsung Galaxy A27 page explicitly shows “Opened – never used”; the evidence was corrected to secondary-market (`uk_used`) with availability `listed`.
 - Xiaomi 17T/17T Pro promotion expires 27 October 2026 or earlier if stock runs out; recheck and update/retire the promotional evidence after expiry rather than treating it as permanent RRP.
 - Do not use the misleading OnePlus 15 eBay listing whose item specifics identify OnePlus 10 Pro.
 - A search result purporting to be Nothing Phone (4b) redirected to earbud content; it was rejected as invalid phone evidence.

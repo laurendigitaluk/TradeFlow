@@ -141,3 +141,14 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-29.md` and `CHECKPOI
 - All sources confirm UK seller location and exact storage variant. Buyer Protection fees are included in displayed totals where indicated; these are not seller proceeds.
 - Fresh database snapshot after batch 29: TEST 128 active visible variants, 137 evidence rows (132 active, 5 inactive), 64 active UK used completed-sale rows; LIVE 126 active visible variants, 132 evidence rows (130 active, 2 inactive), 62 active UK used completed-sale rows and 3 active UK used/listed rows. Zero visible variants missing active evidence; LIVE integrity failures 0.
 - These fresh distinct-product counts supersede earlier snapshots; always re-query because visibility can change between batches.
+
+
+## Latest batch 30 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-30.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-30.md`.
+- Added current UK new-price evidence in TEST and LIVE for iPhone 18 Pro 256GB (£1,199, EE in stock), Google Pixel 11 256GB/12GB RAM (£879, EE in stock), and Pixel 11 Pro 256GB/12GB RAM (£1,079, EE in stock).
+- EE Pixel voucher offers are time-limited through 31 October 2026; prices recorded before voucher value.
+- Rejected eBay listing `257792354372` as OnePlus 15 evidence because its item specifics identify OnePlus 10 Pro.
+- OnePlus 15 256GB remains supported by a £849 MyMobiles price reference with availability listed, not confirmed in stock.
+- Current distinct active visible variants: TEST 128; LIVE 126. TEST evidence 140 total / 135 active / 5 inactive. LIVE evidence 135 total / 133 active / 2 inactive.
+- LIVE active UK used completed-sale rows: 62; used/listed rows: 3. Zero visible variants missing active evidence; zero active evidence integrity failures.
+- Recheck Xiaomi 17T / 17T Pro campaign after 27 October 2026 and EE Pixel voucher after 31 October 2026.

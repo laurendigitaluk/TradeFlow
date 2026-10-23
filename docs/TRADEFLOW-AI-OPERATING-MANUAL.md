@@ -1986,3 +1986,35 @@ Production had two faults: an incomplete Supabase endpoint in buying-catalogue.j
 Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
 
 Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 01 (Samsung Galaxy A37/A57)
+
+A controlled mobile-phone catalogue batch was added to TEST and then promoted to LIVE after checking the official Samsung UK product pages.
+
+### Database result
+
+- TEST category: `Mobile Phones`, category ID `f10be666-dd02-43f6-ba38-fac09b4008f2`; branch ID `a622bd9f-da55-437a-b4c0-a4dbd448a7d6`.
+- TEST now has 100 mobile-phone product variants and 21 linked evidence rows (baseline before this batch: 95 products / 16 evidence rows).
+- LIVE did not previously have a `mobile-phones` category, branch, or exact-name phone manufacturers. LIVE now has category ID `90fda02e-ec5e-4e2c-bc30-11dab560781d`, branch ID `0369d691-4950-4dfc-9f8e-9d8cd5f80ab0`, and the 11 phone manufacturer records required by the current TEST phone catalogue.
+- LIVE now has 5 mobile-phone product variants and 5 linked evidence rows for this batch. No other TEST products were copied to LIVE as part of this batch.
+
+### Variants and UK new-price evidence
+
+| Product variant | Official Samsung UK list price | Evidence availability |
+|---|---:|---|
+| Galaxy A37 5G 128 GB | £419 | Listed; stock not explicitly confirmed |
+| Galaxy A37 5G 256 GB | £519 | In stock |
+| Galaxy A57 5G 128 GB | £479 | Listed; stock not explicitly confirmed |
+| Galaxy A57 5G 256 GB | £549 | In stock |
+| Galaxy A57 5G 512 GB | £769 | Listed; stock not explicitly confirmed |
+
+Sources: [Samsung UK Galaxy A37 5G buy page](https://www.samsung.com/uk/smartphones/galaxy-a/galaxy-a37-5g/buy/) and [Samsung UK Galaxy A57 5G product page](https://www.samsung.com/uk/smartphones/galaxy-a/galaxy-a57-5g-awesome-gray-256gb-sm-a576bzadeub/buy/). Prices recorded are the page's list prices, not code-based promotional prices. Availability is recorded conservatively where the page did not explicitly confirm stock.
+
+### Validation and next action
+
+- TEST and LIVE were queried independently after insertion.
+- All five LIVE evidence rows link to the intended product variants, use GBP, have positive prices, non-empty official UK source URLs, unique source keys, and active status.
+- This batch contains new-price evidence only; no used-market evidence or valuation recommendation was inferred from it.
+- Continue in substantial but controlled batches: add/verify variants and UK used/new evidence in TEST, then promote each checked batch to LIVE without waiting for the whole mobile catalogue. Do not promote unevidenced catalogue seeds as if their prices were verified.
+- Do not replace or deactivate existing phone records as part of this work. Preserve discontinued models for used-device valuation and distinguish historical launch prices from current new prices.

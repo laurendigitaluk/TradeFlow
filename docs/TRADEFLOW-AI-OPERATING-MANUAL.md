@@ -2107,3 +2107,24 @@ A pre-existing TEST evidence row for iPhone 17 256 GB pointed to a generic giffg
 - LIVE: 30 Mobile Phones product variants and 31 active evidence rows.
 - LIVE-wide integrity check: zero missing URLs, missing source keys, non-positive prices, non-GBP values, inactive evidence rows or broken product links.
 - No used-market evidence added in this batch. New prices are not valuation recommendations.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 06 (Google Pixel 11 family base variants)
+
+Added and promoted base-storage variants with current UK new-price evidence:
+
+| Product variant | UK new price / RRP | Evidence source |
+|---|---:|---|
+| Google Pixel 11 256 GB | £879 | [Google Store UK](https://store.google.com/gb/product/pixel_11?hl=en-GB) |
+| Google Pixel 11 Pro 256 GB | £1,079 | [Google Store UK](https://store.google.com/gb/product/pixel_11_pro?hl=en-GB) |
+| Google Pixel 11 Pro XL 256 GB | £1,279 | [TechInOut UK price comparison](https://techinout.com/pixel-11-uk-price-comparison/) — secondary RRP source, article updated 14 Oct 2026 |
+| Google Pixel 11 Pro Fold 256 GB | £1,799 | [Google Store UK](https://store.google.com/gb/product/pixel_11_pro_fold?hl=en-GB) |
+
+### Evidence-quality correction
+A TEST Pixel 11 128 GB seed was invalid: Google Store UK confirms the Pixel 11 starts at 256 GB. Its active giffgaff evidence also pointed to a generic catalogue error URL. The 128 GB product was marked inactive and hidden from customers, and the bad evidence row was marked inactive. Both remain in TEST for audit history; do not promote or use them for valuation.
+
+### Verification
+- TEST: 117 total Mobile Phones product rows; 116 active/customer-visible. 51 evidence rows total, 49 active and 2 retired bad-source rows.
+- LIVE: 34 active/customer-visible Mobile Phones products and 35 active evidence rows.
+- LIVE-wide evidence integrity: zero missing URLs, missing source keys, non-positive prices, non-GBP values or broken product links; all 35 evidence rows are active.
+- This batch adds new-price evidence only; used-market evidence remains a separate workstream.

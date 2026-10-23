@@ -136,7 +136,8 @@ function applyEditorState(values){
  fields.forEach(id=>{const el=$(id);if(el&&typeof values[id]==='string')el.value=values[id]});
  if(typeof values.pageHeading==='string')$('pageHeading').value=values.pageHeading;
  if(typeof values.pageBody==='string')$('pageBody').value=values.pageBody;
- if(typeof values.logoAssetPath==='string'&&values.logoAssetPath){logoAssetPath=values.logoAssetPath;refreshLogoImage();}else{logoAssetPath=null;logoSignedUrl=null;$('previewLogoImage').classList.add('hide');}\n if(Array.isArray(values.pages)&&values.pages.length){pages=values.pages.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').slice(0,40);}
+ if(typeof values.logoAssetPath==='string'&&values.logoAssetPath){logoAssetPath=values.logoAssetPath;refreshLogoImage();}else{logoAssetPath=null;logoSignedUrl=null;$('previewLogoImage').classList.add('hide');}
+ if(Array.isArray(values.pages)&&values.pages.length){pages=values.pages.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').slice(0,40);}
  active=pages.some(p=>p.id===values.active)?values.active:'home';
  document.querySelectorAll('input[type=checkbox][data-section]').forEach(el=>{if(values.sections&&typeof values.sections[el.dataset.section]==='boolean')el.checked=values.sections[el.dataset.section]});
  setCardCount('service',Number(values.serviceCount)||3);setCardCount('project',Number(values.projectCount)||3);

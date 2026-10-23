@@ -2128,3 +2128,26 @@ A TEST Pixel 11 128 GB seed was invalid: Google Store UK confirms the Pixel 11 s
 - LIVE: 34 active/customer-visible Mobile Phones products and 35 active evidence rows.
 - LIVE-wide evidence integrity: zero missing URLs, missing source keys, non-positive prices, non-GBP values or broken product links; all 35 evidence rows are active.
 - This batch adds new-price evidence only; used-market evidence remains a separate workstream.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 07 (Google Pixel 11 higher storage tiers)
+
+Added and promoted seven higher-storage variants with UK RRP evidence from Mobile Phones UK’s Pixel 11 series price table (published Aug 2026). These are launch RRP references, not live retailer offers; retailer prices and stock can vary.
+
+| Product variant | UK RRP |
+|---|---:|
+| Pixel 11 512 GB | £999 |
+| Pixel 11 Pro 512 GB | £1,199 |
+| Pixel 11 Pro 1 TB | £1,429 |
+| Pixel 11 Pro XL 512 GB | £1,399 |
+| Pixel 11 Pro XL 1 TB | £1,629 |
+| Pixel 11 Pro Fold 512 GB | £1,919 |
+| Pixel 11 Pro Fold 1 TB | £2,149 |
+
+Source: [Mobile Phones UK — Pixel 11 series UK prices](https://www.mobile-phones.co.uk/news/made-by-google-2026-pixel-11-series). The previously promoted base-storage Pixel 11 family variants remain separately evidenced against current Google Store pages (except Pro XL 256 GB, which uses a secondary UK RRP reference).
+
+### Verification
+- TEST: 124 total product rows, 123 active; 58 evidence rows total, 56 active (two retired bad-source/invalid-seed rows retained for audit).
+- LIVE: 41 active product variants and 42 evidence rows.
+- LIVE-wide integrity: zero missing source URLs, source keys, non-positive prices, non-GBP values, inactive evidence rows or broken product links.
+- No used-market evidence added. Research completed/sold UK used prices separately from new-price/RRP evidence.

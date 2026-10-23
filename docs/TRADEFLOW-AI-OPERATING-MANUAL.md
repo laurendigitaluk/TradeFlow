@@ -2372,3 +2372,24 @@ Latest snapshot:
 - Reject the OPPO Reno13 URL that redirects to an OPPO Reno4 Pro product page. Do not reuse Motorola 512 GB pricing for 256 GB variants. OnePlus 15 is officially “Coming soon”; no UK price verified. Recheck Xiaomi 17T/17T Pro promo prices after 27 Oct 2026.
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-23.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-23.md`; aggregate memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: resolve the remaining 10 visible TEST variants without active evidence, promote validated batches promptly and rerun LIVE integrity checks.
+
+
+## Mobile phone catalogue continuity — batch 24 (23 October 2026)
+
+Batch 24 added seven exact-variant UK evidence rows to TEST and LIVE:
+- HMD Skyline 8GB/256GB £334.69 PriceSpy UK offer shown in stock (lowest-price indicator £229 had no direct offer link).
+- Motorola Edge 70 Pro 8GB/256GB £499 from GSMSpecs' Amazon UK price reference dated 11 Oct; secondary source, recheck checkout.
+- Motorola moto g37 5G 128GB £189.99 Argos, stock postcode-dependent.
+- Nothing Phone (3a) Pro 256GB £342.99 excellent-refurbished UK eBay listing, seller Stockport; asking price only.
+- OPPO Reno13 5G 256GB £254.27 Currys Clearance excellent-refurbished listing, currently out of stock with 21 sold historically; not an individual verified sale.
+- realme 14 Pro+ 5G 12GB/512GB £745 new UK eBay listing from KICKmobiles in Kensington; long dispatch/import-fee caveats.
+- REDMI Note 15 Pro+ 5G 12GB/512GB sold UK listing displayed £179.56 on 23 Sep; includes £6.36 Buyer Protection and Best Offer caveat.
+
+Motorola Edge 70 256GB was hidden from TEST customer visibility because exact UK 256GB SKU was not verified; UK retailer listings found were 512GB. It remains active, not discontinued.
+
+Latest snapshot:
+- TEST: 123 active visible variants; 122 evidence rows (119 active, 3 inactive); 2 active visible variants without evidence.
+- LIVE: 117 active visible variants; 117 active evidence rows; 59 UK completed-sale rows and 2 secondary-market listed rows. LIVE integrity failures: 0; active visible variants missing active evidence: 0.
+- Remaining visible gaps: OnePlus 15 256GB (current official UK checkout price not verified; do not use false listing identifying OnePlus 10 Pro) and realme GT 7 Pro 512GB (Germany/China seller evidence rejected as non-UK-local).
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-24.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-24.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: research only these two remaining gaps with exact-variant UK sources. Recheck Xiaomi 17T/17T Pro promotion after 27 Oct 2026.

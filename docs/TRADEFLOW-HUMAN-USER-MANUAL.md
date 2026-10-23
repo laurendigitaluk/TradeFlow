@@ -1949,3 +1949,28 @@ All records are UK used completed sales, exact storage, sold availability, condi
 - TEST: 124 total phone products (123 active); 81 evidence rows total (78 active), including 36 active sold rows. 46 visible variants remain without active evidence.
 - LIVE: 75 active/customer-visible phone variants and 76 active evidence rows, including 34 active sold rows. No active visible LIVE variants lack active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+
+
+## 2026-10-23 — Mobile phone catalogue batches 14 and 15
+
+### Batch 14 — five UK completed-sale records
+- Google Pixel 10 256 GB — £449.99, sold 7 Oct 2026: https://www.ebay.co.uk/itm/407267301332
+- Google Pixel 10 Pro 256 GB — £609.95, sold 5 Aug 2026: https://www.ebay.co.uk/itm/307091345876
+- Samsung Galaxy S26 256 GB — £494.99, sold 2 Sep 2026: https://www.ebay.co.uk/itm/407150921934
+- OnePlus 13 256 GB — £394.18, sold 3 Aug 2026: https://www.ebay.co.uk/itm/236978715643
+- HONOR Magic8 Pro 512 GB — £600.16, sold 18 Sep 2026: https://www.ebay.co.uk/itm/800677196007
+
+Notes preserve the exact storage, listed condition, Buyer Protection and Best Offer caveats. These are observed buyer-facing totals, not guaranteed buying offers.
+
+### Batch 15 — three UK completed-sale records
+- OPPO Find X9 512 GB — £550.00, sold 26 Sep 2026: https://www.ebay.co.uk/itm/407244892731
+- Nothing Phone (4a) 256 GB — £320.75, sold 17 Aug 2026: https://www.ebay.co.uk/itm/298564725017
+- Samsung Galaxy A27 5G 128 GB — £163.83, sold 12 Oct 2026: https://www.ebay.co.uk/itm/287639692280
+
+Caveats: OPPO listing includes bundle extras and Buyer Protection; Nothing listing includes Buyer Protection and Best Offer was accepted; Galaxy A27 listing condition is “Opened – never used” and must be kept separate from ordinary used comparables.
+
+### Verified position after batch 15
+- TEST: 124 phone products (123 active); 89 evidence rows total (86 active, 3 inactive retained for audit). 38 active visible variants remain without active evidence.
+- LIVE: 83 active customer-visible phone variants and 84 active evidence rows, including 42 UK used completed-sale rows.
+- LIVE integrity check: zero missing source URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.
+- Continue promoting verified batches regularly and keep completed-sale evidence separate from current new/RRP evidence.

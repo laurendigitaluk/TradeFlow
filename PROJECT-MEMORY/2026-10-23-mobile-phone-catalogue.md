@@ -1,24 +1,20 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 20
+Updated: 2026-10-23 after batch 21
 
 ## Catalogue workflow
-The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
+The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 20
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md`.
+## Current verified position after batch 21
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`.
 
-- TEST: 124 total phone products (123 active); 105 evidence rows total (102 active, 3 inactive retained for audit). 22 active customer-visible variants remain without active evidence.
-- LIVE: 99 active customer-visible phone variants and 100 active evidence rows, including 58 active UK used completed-sale rows.
-- LIVE integrity check after Batch 20: zero evidence integrity failures and zero active customer-visible variants missing evidence.
-- Batch 14 added five sold records: Pixel 10, Pixel 10 Pro, Galaxy S26, OnePlus 13 and HONOR Magic8 Pro.
-- Batch 15 added three sold records: OPPO Find X9, Nothing Phone (4a), and Galaxy A27 5G.
-- Batch 16 added four sold records: Pixel 10 Pro XL, OnePlus 12, Xiaomi 14T Pro and Motorola Razr 70 Ultra.
-- Batch 17 added six sold records: iPhone 16e, iPhone 17 Pro 256/512 GB, iPhone 17 Pro Max 256 GB, and Galaxy S26 Ultra 256/512 GB.
-- Batch 18 added iPhone 17 Pro Max 512 GB and OnePlus 15R 256 GB.
-- Batch 19 added HONOR 600 Pro 512 GB, HONOR Magic V6 512 GB and Nothing Phone (4a) Pro 256 GB.
-- Batch 20 added OPPO A6 Pro 5G 256 GB (£180.00), certified refurbished, sold in the UK.
-- Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition must not be treated as ordinary used comparables.
-- Current database counts supersede earlier checkpoints. Keep UK new/RRP evidence separate from completed-sale evidence.
+- TEST: 126 active customer-visible phone variants; 112 evidence rows total (109 active, 3 inactive retained for audit). 15 active customer-visible variants remain without active evidence.
+- LIVE: 107 active customer-visible phone variants and 107 active evidence rows, including 58 active UK used completed-sale rows.
+- LIVE integrity check after Batch 21: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- Batch 21 added seven UK new-price/listing records: HONOR 600 256 GB (£599.99 HONOR UK store list price); HONOR 600 Smart 128 GB (£249.99 Argos); Xiaomi 17T 256 GB (£549 campaign price vs £649 original); Xiaomi 17T Pro 512 GB (£699 campaign price vs £849 original); HONOR Magic8 Lite 256 GB (£349.99 after-coupon); Samsung Galaxy S26+ 256 GB (£1,179 Samsung UK in-stock listing); and Samsung Galaxy A27 5G 256 GB (£209.99 active new eBay listing, not a completed sale).
+- Xiaomi 17T/17T Pro campaign prices are temporary and expire 27 Oct 2026 or earlier if stock runs out. Recheck after expiry.
+- TEST product count has changed from 123 active variants in Batch 20 to 126 active variants in the latest query. The fresh query is authoritative; identify the additional rows while reviewing the remaining gaps.
+- Earlier batches 14–20 are recorded below and in their individual checkpoint files.
+- Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition must not be treated as ordinary used comparables. Keep UK new/RRP evidence separate from completed-sale evidence.
 
 ## Latest batch 04
 See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-04.md`.

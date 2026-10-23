@@ -2089,3 +2089,20 @@ Current state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`.
 
 Continue expanding with additional verified UK phone models/variants. Keep exact storage, source, price type, stock, and condition caveats. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.
+
+
+## Mobile phone catalogue research status — batch 27 (23 October 2026)
+
+Six exact UK phone variants were added and promoted to LIVE:
+- Apple iPhone Duo: 256GB £1,999; 512GB £2,199; 1TB £2,599; 2TB £3,199, from Apple UK.
+- Samsung Galaxy A18 4G 128GB: £249, Currys.
+- Motorola Edge 70 Plus 8GB/256GB: £499, Currys.
+
+The iPhone Duo official page still uses pre-order / available starting 23 October wording, so its evidence is marked listed, not confirmed in stock. Currys delivery and stock can depend on postcode.
+
+Current state:
+- TEST: 129 active visible variants; 130 evidence rows (127 active, 3 inactive); no active visible variant missing evidence.
+- LIVE: 125 active visible variants and 125 active evidence rows; 59 completed-sale rows. No active visible variant lacks evidence; integrity check has zero failures.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`.
+
+Continue with further newly released UK phone models, validating exact storage and price before insertion.

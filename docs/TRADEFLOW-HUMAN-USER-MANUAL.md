@@ -1834,7 +1834,20 @@ Source: [Mobile Phones UK — Pixel 11 series UK prices](https://www.mobile-phon
 - No used-market evidence added. Research completed/sold UK used prices separately from new-price/RRP evidence.
 
 
-## 2026-10-23 — Mobile phone catalogue batch 08 (UK completed-sale evidence)
+
+## 2026-10-23 — Mobile phone catalogue batch 08 (additional storage-specific completed-sale evidence)
+
+Added/promoted six UK completed-sale records for exact storage variants:
+- Apple iPhone 15 256 GB — £238.35, sold 7 Oct 2026: https://www.ebay.co.uk/itm/377548449194
+- Samsung Galaxy S23 256 GB — £197.61, sold 8 Sep 2026: https://www.ebay.co.uk/itm/298615747269
+- Apple iPhone 14 256 GB — £344.99, sold 1 Oct 2026: https://www.ebay.co.uk/itm/178542006119 (condition “Opened – never used”; not a normal used-condition comparable)
+- Apple iPhone 15 Pro 256 GB — £386.83, sold 4 Oct 2026: https://www.ebay.co.uk/itm/366701964664
+- Samsung Galaxy S24 256 GB — £268.15, sold 4 Aug 2026: https://www.ebay.co.uk/itm/128000546242
+- Google Pixel 9 256 GB — £292.20, sold 20 Jul 2026: https://www.ebay.co.uk/itm/298511562847
+
+All are `uk_used` and `availability=sold`, with exact storage matching and source keys. Some displayed totals include buyer-protection fees and should not be treated as seller proceeds or guaranteed buy-in values. Keep the iPhone 14 “Opened – never used” condition distinct from ordinary used condition.
+
+## 2026-10-23 — Mobile phone catalogue batch 09 (additional UK completed-sale evidence)
 
 Added exact-variant UK completed/sold eBay evidence for six used-market variants in TEST and LIVE where the product existed or was added by natural-key match:
 
@@ -1877,7 +1890,7 @@ Promoted 11 existing TEST phone variants and their linked UK used-market complet
 | Samsung Galaxy S22 128 GB | £139.99 | Used, unlocked, described as Good |
 | Samsung Galaxy S24 128 GB | £243.31 | Used, excellent condition, boxed; includes £8.41 Buyer Protection |
 
-### Batch 08 verification and data-quality correction
+### Batch 09 verification and data-quality correction
 - TEST: 124 product rows (123 active); 64 phone evidence rows (61 active, 3 inactive retained for audit).
 - LIVE: 58 active/customer-visible phone variants and 59 active phone evidence rows (42 UK new-price/RRP and 17 UK used-sale rows).
 - LIVE phone evidence integrity check: 0 missing source URLs, missing source keys, non-positive prices, non-GBP prices, inactive evidence rows or orphaned evidence.

@@ -2324,3 +2324,7 @@ Evidence notes retain Buyer Protection and Best Offer caveats. Pixel 10 Pro XL i
 
 
 Batch 17 phone catalogue update, 23 Oct 2026. Six UK sold records added and promoted: iPhone 16e 128GB £361.42; iPhone 17 Pro 256GB £873.70; iPhone 17 Pro 512GB £861.08; iPhone 17 Pro Max 256GB £875.04; Galaxy S26 Ultra 256GB £666.42; Galaxy S26 Ultra 512GB £742.67. See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-17.md. TEST: 124 products (123 active), 99 evidence (96 active), 28 visible variants without evidence. LIVE: 93 visible active variants, 94 evidence rows including 52 used-sale rows. Integrity passed; zero visible variants without evidence. Sale totals include buyer protection where stated and are not guaranteed buying offers.
+
+Mobile phone catalogue batch 18 (23 Oct 2026): Two UK completed-sale records added and promoted: iPhone 17 Pro Max 512 GB £949.99 (sold 12 Sep; excellent, 100% battery health, 133 cycles) and OnePlus 15R 256 GB £459.00 (sold 10 Jul; UK version, unlocked, mint, 100% battery health). Source URLs and notes are in CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-18.md.
+
+After batch 18: TEST has 124 products (123 active), 101 evidence rows (98 active, 3 inactive for audit), and 26 active visible variants without evidence. LIVE has 95 active customer-visible variants and 96 active evidence rows, including 54 UK used completed-sale rows. LIVE integrity check passed; no active visible variant lacks evidence.

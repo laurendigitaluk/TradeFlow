@@ -2046,3 +2046,18 @@ Current counts:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-23.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-23.md`.
 
 Continue with the remaining 10 visible variants. Do not infer UK availability from another storage size, treat coming-soon prices as in stock, or mark unverified products discontinued without stronger evidence.
+
+
+## Mobile phone catalogue research status — batch 24 (23 October 2026)
+
+Seven exact-variant UK price/listing records were added and promoted to LIVE: HMD Skyline 256GB £334.69 PriceSpy offer; Motorola Edge 70 Pro 256GB £499 secondary price reference; moto g37 128GB £189.99 Argos; Nothing Phone (3a) Pro 256GB £342.99 excellent-refurbished listing; OPPO Reno13 5G 256GB £254.27 refurbished listing (out of stock, 21 historical sales); realme 14 Pro+ 5G 512GB £745 new listing with delivery/import caveats; and REDMI Note 15 Pro+ 5G 512GB used sale listing displayed at £179.56 with Buyer Protection/Best Offer caveats.
+
+The Motorola Edge 70 256GB seed was hidden from customer visibility because the UK retailer listings found were for 512GB, and the exact 256GB UK SKU could not be verified. It remains active and is not marked discontinued.
+
+Current state:
+- TEST: 123 active visible variants; 122 evidence rows (119 active, 3 inactive); 2 visible variants still lack active evidence.
+- LIVE: 117 active visible variants and 117 active evidence rows. There are 59 UK completed-sale rows plus 2 secondary-market listed rows. No visible variant lacks evidence and the integrity check has zero failures.
+- Remaining gaps: OnePlus 15 256GB (current UK checkout price not verified) and realme GT 7 Pro 512GB (no accepted UK-local source).
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-24.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-24.md`.
+
+Continue with these two remaining gaps only where exact UK evidence can be verified. Keep listing prices distinct from completed-sale prices and preserve all condition, stock and Buyer Protection caveats.

@@ -22,10 +22,16 @@ This requires an authorised Cloudflare login and the Wrangler CLI. Confirm the C
 - Dedicated worker name and config; does not edit `wrangler.jsonc` used by TradeFlow.
 - No LIVE/TEST Supabase URL, key, bindings, or database requests in the dedicated worker/config.
 - Prototype has no external script or stylesheet imports and is marked `noindex,nofollow`.
-- Navigation now scrolls to the Home, Services, Recent Projects, and Contact sections. About Us and newly added pages remain navigation-only placeholders; independent page layouts, page-specific content editing, and persistence are not implemented yet.
+- Navigation supports Home, Services, Recent Projects, Contact, About Us, and added pages. Non-home pages now use a shared page layout with editable page heading and body content in the browser-only prototype. This is still not server-persisted, and advanced per-page sections, image uploads, form handling, and publishing are not implemented.
 - `businessflow.laurendigital.co.uk` is the target domain, but it is **not configured or attached yet**.
 - No Cloudflare deployment was performed as part of this checkpoint. GitHub commits are not proof of Cloudflare deployment.
 - Do not connect persistence until an isolated data/access design is approved.
+
+## Latest prototype change
+- Added editable heading/body fields for each non-home page.
+- Selecting a non-home page shows its own content in the shared page shell; editing those fields updates the preview immediately.
+- The standalone source and Cloudflare static asset were updated together and verified to have identical content hashes.
+- This is static/source-level validation only; interactive browser testing and Cloudflare deployment are still pending.
 
 ## Git / safety
 Branch: `feature/businessflow-isolated-builder-review-20261023`.

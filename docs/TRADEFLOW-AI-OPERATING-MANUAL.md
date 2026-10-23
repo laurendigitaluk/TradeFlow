@@ -2166,32 +2166,7 @@ Added/promoted six UK completed-sale records for exact storage variants:
 
 All are `uk_used` and `availability=sold`, with exact storage matching and source keys. Some displayed totals include buyer-protection fees and should not be treated as seller proceeds or guaranteed buy-in values. Keep the iPhone 14 “Opened – never used” condition distinct from ordinary used condition.
 
-## 2026-10-23 — Mobile phone catalogue batch 09 (additional UK completed-sale evidence)
-
-Added exact-variant UK completed/sold eBay evidence for six used-market variants in TEST and LIVE where the product existed or was added by natural-key match:
-
-| Product variant | Observed buyer-facing sold total | Sale date | Source |
-|---|---:|---|---|
-| Apple iPhone 15 256 GB | £238.35 | 7 Oct 2026 | [eBay UK item 377548449194](https://www.ebay.co.uk/itm/377548449194) |
-| Samsung Galaxy S23 256 GB | £197.61 | 8 Sep 2026 | [eBay UK item 298615747269](https://www.ebay.co.uk/itm/298615747269) |
-| Apple iPhone 14 256 GB | £344.99 | 1 Oct 2026 | [eBay UK item 178542006119](https://www.ebay.co.uk/itm/178542006119) |
-| Apple iPhone 15 Pro 256 GB | £386.83 | 4 Oct 2026 | [eBay UK item 366701964664](https://www.ebay.co.uk/itm/366701964664) |
-| Samsung Galaxy S24 256 GB | £268.15 | 4 Aug 2026 | [eBay UK item 128000546242](https://www.ebay.co.uk/itm/128000546242) |
-| Google Pixel 9 256 GB | £292.20 | 20 Jul 2026 | [eBay UK item 298511562847](https://www.ebay.co.uk/itm/298511562847) |
-
-All rows are marked `uk_used`, condition- and storage-specific, with `availability=sold`. Notes explicitly identify buyer protection fees included in several displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed trade-in values. The iPhone 14 sale was graded “Opened – never used” and must not be treated as a typical used-condition comparable.
-
-### Verification at time of check
-- TEST: 124 total phone products, 123 active; 64 evidence rows, 61 active, including 19 active sold rows. Two retired bad-source/invalid-seed records remain inactive for audit.
-- LIVE: concurrent catalogue work was visible during this pass. At the latest query there were 58 active phone products and 59 active evidence rows, including 17 active sold rows. This includes additional legacy-model rows created during the same window beyond the six variants in this batch; do not attribute those extra rows to batch 08 without checking their creation history.
-- Integrity query: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
-- New-price/RRP evidence remains separate from completed-sale evidence.
-
-### Next
-Continue substantial batches of exact-model/storage completed-sale evidence, then fill verified UK new-price gaps for current models. Audit legacy seeds before promotion; preserve unsupported or incorrect seeds as inactive audit history rather than deleting them.
-
-
-## 2026-10-23 — Mobile phone catalogue batch 09 (UK completed-sale evidence)
+## 2026-10-23 — Mobile phone catalogue batch 09 (11 additional UK completed-sale variants)
 
 Promoted 11 existing TEST phone variants and their linked UK used-market completed-sale evidence to LIVE. These are used-sale observations, not current new prices or guaranteed valuations. Several displayed prices include eBay Buyer Protection fees; listings with Best Offer may not disclose the accepted seller proceeds.
 

@@ -1,17 +1,18 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 07
+Updated: 2026-10-23 after batch 08
 
 ## Current position
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Latest verified batch
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-01.md`.
+## Current verified position after batch 08
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-08.md`.
 
-- Latest TEST position after batch 07: 124 product rows (123 active); 58 evidence rows total (56 active, 2 retired rows retained for audit).
-- Latest LIVE position after batch 07: 41 active Mobile Phones products and 42 linked evidence rows. LIVE contains only batches explicitly promoted; it is not a full copy of TEST.
-- Batch: Samsung Galaxy A37 5G 128/256 GB and Galaxy A57 5G 128/256/512 GB.
-- Evidence is from official Samsung UK product pages; list prices were stored separately from code-based promotional prices.
-- No used-market evidence was included in this batch.
+- TEST: 124 total phone product rows (123 active); 64 evidence rows total (61 active; inactive rows retained for audit).
+- LIVE at the latest query: 58 active phone product rows and 59 active evidence rows. LIVE changed during this work window; some additional legacy variants/evidence appeared concurrently, so use fresh live queries before the next promotion and do not attribute all concurrent rows to batch 08.
+- Batch 08 explicitly added completed/sold eBay UK evidence for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
+- The evidence is marked `uk_used` with `availability=sold`. Buyer protection fees included in displayed totals are documented in notes; those totals are not seller proceeds or guaranteed buy-in values.
+- Integrity query at the latest check: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
+- UK new/RRP evidence remains separate from used completed-sale evidence.
 - LIVE's missing phone category/branch/manufacturer structure was a genuine promotion blocker. Category and branch IDs differ between TEST and LIVE; never assume cross-environment IDs match. Map by natural keys (slug/name and manufacturer name).
 
 ## Latest batch 04
@@ -33,6 +34,14 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-06.md`.
 - Added/promoted Pixel 11 256 GB (£879), Pixel 11 Pro 256 GB (£1,079), Pixel 11 Pro XL 256 GB (£1,279 UK RRP from a secondary source updated 14 Oct), and Pixel 11 Pro Fold 256 GB (£1,799).
 - Retired invalid Pixel 11 128 GB seed and generic giffgaff error-page evidence; both inactive for audit.
 - LIVE-wide evidence integrity returned zero missing URLs, keys, product links, non-positive prices or non-GBP values; all 35 evidence rows active.
+
+## Latest batch 08
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-08.md`.
+- Added six exact-variant UK completed/sold eBay records across iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB in TEST and LIVE.
+- TEST latest verified count: 124 total product rows (123 active), 64 evidence rows (61 active).
+- LIVE changed concurrently during this pass; latest query showed 58 active products and 59 active evidence rows, including 17 active sold rows. Some additional legacy variants appeared concurrently and need a fresh inventory query before the next promotion.
+- Integrity query: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
+- Buyer protection fees are noted where included in displayed sold totals; these values are not seller proceeds or guaranteed buy-in values.
 
 ## Latest batch 07
 See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-07.md`.

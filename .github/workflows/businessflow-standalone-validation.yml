@@ -83,6 +83,9 @@ jobs:
               "account switches reload the editor": "if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}" in html,
               "custom page IDs use UUIDs": "const id='page-'+crypto.randomUUID()" in html,
               "custom page paths retain the complete identifier": "replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom'" in html,
+              "logo upload handler exists": "$('uploadAsset').onclick=async()=>" in html,
+              "private logo URL refresh handler exists": "async function refreshLogoImage()" in html,
+              "logo upload accepts only allowed raster formats": 'accept="image/jpeg,image/png,image/webp,image/gif,image/avif"' in html and "image/svg+xml" not in html,
           }
           failed = [name for name, ok in checks.items() if not ok]
           for name, ok in checks.items():

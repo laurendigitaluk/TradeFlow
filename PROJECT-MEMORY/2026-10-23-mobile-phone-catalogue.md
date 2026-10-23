@@ -1,17 +1,18 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 26
+Updated: 2026-10-23 after batch 27
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 26
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`.
+## Current verified position after batch 27
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`.
 
-- TEST: 123 active customer-visible variants; 124 evidence rows total (121 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.
-- LIVE: 119 active customer-visible variants and 119 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`) and three secondary-market listing rows with availability `listed`.
-- LIVE integrity check after Batch 26: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
-- Batch 26 resolved the final visible TEST gap: OnePlus 15 5G 12GB/256GB Black SIM-free at £849, sourced from MyMobiles' October 2026 deal page which identifies OnePlus as seller. Stable key `mobile-new-oneplus15-256gb-mymobiles-oneplus-20261023`. The official linked page still shows Notify me/early-bird material; availability is recorded as `listed`, not `in_stock`.
-- A purported realme GT 7 Pro 512GB sold listing was rejected because its item specifics identify 256GB/12GB RAM. Another sold 512GB listing from Frankfurt, Germany remains rejected as non-UK-local evidence.
+- TEST: 129 active customer-visible variants; 130 evidence rows total (127 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.
+- LIVE: 125 active customer-visible variants and 125 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`).
+- LIVE integrity check after Batch 27: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- Batch 27 added six exact UK phone variants to TEST and LIVE: Apple iPhone Duo 256GB (£1,999), 512GB (£2,199), 1TB (£2,599), 2TB (£3,199) from the official Apple UK buy page; Samsung Galaxy A18 4G 128GB (£249) from Currys; and Motorola Edge 70 Plus 8GB/256GB (£499) from Currys. Apple iPhone Duo availability is marked `listed`, not `in_stock`, because the official buy page retains pre-order / available starting 23 Oct language. Currys stock/delivery is postcode-dependent.
+- Batch 26 resolved the final visible TEST evidence gap: OnePlus 15 5G 12GB/256GB Black SIM-free at £849, sourced from MyMobiles' October 2026 deal page which identifies OnePlus as seller. The official linked page still shows Notify me/early-bird material; availability is recorded as `listed`, not `in_stock`.
+- A purported realme GT 7 Pro 512GB sold listing was rejected because its item specifics identify 256GB/12GB RAM. Another 512GB listing from a Frankfurt, Germany seller remains rejected as non-UK-local evidence.
 - Batch 25 added realme GT 7 Pro 5G 12GB/512GB, opened – never used, £986.25 from a London-based UK eBay seller. The seller has 83.3% positive feedback and low listing volume; this is an unusually high asking price, not a completed sale or typical market value.
 - Batch 24 added seven exact-variant UK evidence records: HMD Skyline 8/256GB £334.69 PriceSpy UK offer; Motorola Edge 70 Pro 8/256GB £499 GSMSpecs/Amazon UK price reference dated 11 Oct (secondary source, recheck checkout); moto g37 128GB £189.99 Argos; Nothing Phone (3a) Pro 256GB £342.99 excellent-refurbished UK listing; OPPO Reno13 5G 256GB £254.27 excellent-refurbished listing out of stock with 21 historical sales; realme 14 Pro+ 5G 12/512GB £745 new UK seller listing with delivery/import caveats; REDMI Note 15 Pro+ 5G 12/512GB sold UK listing with displayed £179.56 (Buyer Protection and Best Offer caveats).
 - Motorola Edge 70 256GB was hidden from TEST customer visibility because exact UK 256GB SKU was not verified; retailer listings found were 512GB. It remains active and is not marked discontinued.

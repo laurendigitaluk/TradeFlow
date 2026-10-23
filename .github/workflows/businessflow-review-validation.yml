@@ -7,7 +7,11 @@ on:
     paths:
       - 'businessflow-builder-review.html'
       - 'businessflow-preview/**'
+      - 'businessflow-preview-worker.js'
+      - 'wrangler.businessflow.jsonc'
       - '.github/workflows/businessflow-review-validation.yml'
+      - '.github/workflows/businessflow-review-preview.yml'
+      - 'docs/BUSINESSFLOW_REVIEW_PREVIEW_README.md'
   workflow_dispatch:
 
 permissions:

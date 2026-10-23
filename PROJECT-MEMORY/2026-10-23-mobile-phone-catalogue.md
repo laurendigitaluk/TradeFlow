@@ -1,23 +1,19 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 13
+Updated: 2026-10-23 after batch 15
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 13
-See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-13.md.
+## Current verified position after batch 15
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-15.md`.
 
-- TEST: 124 total phone products (123 active); 81 evidence rows total (78 active, 3 inactive retained for audit). 46 visible variants still have no active evidence.
-- LIVE: 75 active/customer-visible phone variants and 76 active evidence rows, including 34 active sold rows. No active visible LIVE variants were found without active evidence.
-- Integrity at final query: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
-- Batch 08: six completed-sale records for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
-- Batch 09: eleven completed-sale records for iPhone 13 128 GB, iPhone 14 128 GB, iPhone 15 128 GB, iPhone 15 Pro 128 GB, iPhone 16 128 GB, Pixel 8 128 GB, Pixel 9 128 GB, Motorola Edge 50 Neo 256 GB, Nothing Phone (3a) 128 GB, Galaxy S22 128 GB, and Galaxy S24 128 GB.
-- Batch 10: four completed-sale records for iPhone 13 256 GB, iPhone 15 Plus 128 GB, iPhone 15 Pro Max 256 GB, and iPhone 16 256 GB.
-- Batch 11: four completed-sale records for iPhone 15 512 GB, iPhone 16 Plus 128 GB, iPhone 16 Pro 256 GB, and iPhone 16 Pro Max 256 GB.
-- Batch 12: five completed-sale records for Galaxy S25 128 GB, Galaxy S25 256 GB, Galaxy S25 Ultra 256 GB, Nothing Phone (3) 256 GB, and Xiaomi 14T 256 GB.
-- Batch 13: four completed-sale records for HONOR 200 256 GB, HONOR 400 256 GB, Motorola Razr 50 Ultra 512 GB, and OPPO Find X9 Pro 512 GB.
-- Buyer Protection fees are noted where included in displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
-- Keep UK new/RRP evidence separate from completed-sale evidence.
+- TEST: 124 total phone products (123 active); 89 evidence rows total (86 active, 3 inactive retained for audit). 38 active customer-visible variants remain without active evidence.
+- LIVE: 83 active customer-visible phone variants and 84 active evidence rows, including 42 active UK used completed-sale rows.
+- Fresh LIVE integrity check: zero missing URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.
+- Batch 14 added UK completed-sale evidence for Pixel 10 256 GB (£449.99), Pixel 10 Pro 256 GB (£609.95), Galaxy S26 256 GB (£494.99), OnePlus 13 256 GB (£394.18), and HONOR Magic8 Pro 512 GB (£600.16).
+- Batch 15 added UK completed-sale evidence for OPPO Find X9 512 GB (£550.00), Nothing Phone (4a) 256 GB (£320.75), and Galaxy A27 5G 128 GB (£163.83).
+- Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition are noted and must not be treated as ordinary used comparables.
+- Current database counts supersede older counts in Batch 10–13 checkpoints. Keep UK new/RRP evidence separate from completed-sale evidence.
 
 ## Latest batch 04
 See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-04.md`.
@@ -95,6 +91,16 @@ See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-13.md.
 - LIVE: 75 active phone variants, 76 active evidence rows, 34 active sold rows; zero visible active variants missing evidence.
 - Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
 - Buyer Protection is noted where included; observed totals are not seller proceeds or guaranteed buy-in values.
+
+## Latest batch 14
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-14.md`.
+- Added five UK completed-sale records for Pixel 10, Pixel 10 Pro, Galaxy S26, OnePlus 13 and HONOR Magic8 Pro.
+- Batch-end snapshot: TEST 86 evidence rows (81 active); LIVE 80 active visible variants and 81 active evidence rows.
+
+## Latest batch 15
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-15.md`.
+- Added OPPO Find X9 512 GB, Nothing Phone (4a) 256 GB, and Galaxy A27 5G 128 GB completed-sale evidence.
+- Current TEST/LIVE counts are in the Current verified position above.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

@@ -62,3 +62,7 @@ Never commit secrets or paste them into chat.
 ## Repository status
 
 This starter is staged on the isolated `businessflow-standalone-bootstrap-20261023` branch in the TradeFlow repository because the connected GitHub tools do not expose a create-new-repository action. It is not yet an independent repository. Transfer only this folder and its two deployment configs to a separate repository named `BusinessFlow`. Do not merge this branch into TradeFlow production or TEST.
+
+## CI verification note
+
+This commit is intended to exercise the isolated BusinessFlow validation workflow. It does not authorize merging or deployment.

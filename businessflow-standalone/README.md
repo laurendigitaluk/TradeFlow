@@ -5,10 +5,11 @@ Standalone starter for a general-purpose website builder for small businesses an
 ## Current implementation
 
 - Responsive service-business website editor and live preview.
+- Worker adds baseline security headers, disallows non-GET/HEAD requests to static assets, and marks editor HTML as no-store/noindex.
 - Built-in pages for Home, Services, Recent Projects, About and Contact, plus temporary custom pages.
 - Subscriber sign-up, sign-in and sign-out through the dedicated BusinessFlow Supabase project.
 - Save and reload website drafts from `public.businessflow_sites` and `public.businessflow_pages`.
-- Private `businessflow-assets` Storage bucket with per-site owner policies, plus a homepage image upload control (JPG, PNG, WebP, GIF, AVIF; max 10 MB).
+- Private `businessflow-assets` Storage bucket with per-site owner policies, plus a homepage image upload control (JPG, PNG, WebP, GIF, AVIF; max 10 MB). SVG uploads are blocked.
 - Row-level security is enabled on the BusinessFlow tables. No service-role key is used in the browser.
 - No TradeFlow catalogue, buying/selling, inventory, customer, shipping or transaction features.
 - No Stripe or subscription billing integration yet.

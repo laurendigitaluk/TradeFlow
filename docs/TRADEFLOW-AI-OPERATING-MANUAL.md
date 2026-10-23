@@ -2064,3 +2064,24 @@ Sources: [Apple UK Business iPhone 18 Pro purchase page](https://www.apple.com/u
 - LIVE integrity check: 0 missing source URLs, 0 missing source keys, 0 non-positive prices, 0 non-GBP values and 0 inactive evidence rows.
 - The four new storage variants were added to TEST; all eight Pro/Pro Max storage variants and their eight new-price evidence rows are now present in LIVE.
 - No used-market evidence was added in this batch. Continue separate used-market research and keep price types distinct.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 04 (iPhone 17e and Pixel 10a)
+
+Added and promoted three evidence-backed phone variants in a controlled TEST → LIVE batch:
+
+| Product variant | Current UK new price observed | Source / caveat |
+|---|---:|---|
+| Apple iPhone 17e 256 GB | £699 | Apple UK purchase page; current price, not the March 2026 launch price |
+| Apple iPhone 17e 512 GB | £899 | Apple UK purchase page; current price, not the March 2026 launch price |
+| Google Pixel 10a 128 GB | £599 | Google Store UK “From £599”; page confirms 128 GB is an available storage option |
+
+Sources: [Apple UK iPhone 17e purchase page](https://www.apple.com/uk/shop/buy-iphone/iphone-17e/6.1-inch-display-256gb-black), [Apple iPhone 17e launch announcement](https://www.apple.com/uk/newsroom/2026/03/apple-introduces-iphone-17e/), and [Google Store UK Pixel 10a](https://store.google.com/gb/product/pixel_10a?hl=en-GB). Google advertised a Pixel Buds 2a bundle ending 3 November; the bundle was not deducted from the handset price.
+
+### Verification
+- TEST now contains 116 Mobile Phones product variants and 44 linked evidence rows.
+- LIVE now contains 27 Mobile Phones product variants and 28 linked evidence rows.
+- The three batch-04 evidence rows are active, GBP-denominated, positive-priced, URL-backed and linked to the intended exact model/storage variants.
+- LIVE-wide integrity check returned zero missing URLs, missing source keys, non-positive prices, non-GBP values, inactive evidence rows or broken product links.
+- Pixel 10a 256 GB is present in TEST as a catalogue variant but was deliberately not promoted and has no price evidence yet: the official Google Store page confirmed that storage option but did not expose a variant-specific price in the page content retrieved. Verify the exact price before promoting it.
+- No used-market evidence was added. Continue separately with completed/sold UK used evidence; new prices are not valuation recommendations.

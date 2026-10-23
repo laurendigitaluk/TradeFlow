@@ -2013,7 +2013,7 @@ Batch 20 phone catalogue: OPPO A6 Pro 5G 256 GB, £180.00, completed sale 19 Jul
 The phone catalogue is being expanded with verified UK price evidence and completed-sale comparables. After Batch 21:
 - TEST has 126 active customer-visible phone variants, 112 evidence rows (109 active and 3 inactive retained for audit), and 15 visible variants still missing active evidence.
 - LIVE has 107 active customer-visible variants and 107 active evidence rows, including 58 used completed-sale records. No active visible variant lacks evidence, and the latest integrity check found zero failures.
-- Batch 21 added seven new-price/listing records for HONOR 600 256 GB, HONOR 600 Smart 128 GB, Xiaomi 17T 256 GB, Xiaomi 17T Pro 512 GB, HONOR Magic8 Lite 256 GB, Samsung Galaxy S26+ 256 GB and Samsung Galaxy A27 5G 256 GB.
+- Batch 21 added seven price/listing records for HONOR 600 256 GB, HONOR 600 Smart 128 GB, Xiaomi 17T 256 GB, Xiaomi 17T Pro 512 GB, HONOR Magic8 Lite 256 GB, Samsung Galaxy S26+ 256 GB and Samsung Galaxy A27 5G 256 GB. The Galaxy A27 listing is explicitly “Opened – never used”, not sealed new; its evidence type was corrected to secondary-market listing.
 - Some prices are promotional or after-coupon offers. Xiaomi 17T/17T Pro campaign pricing is due to expire on 27 October 2026 or earlier if stock runs out. These values are not permanent RRPs.
 - An active eBay new listing is an asking price, not a completed-sale price. Do not combine new listings, promotional prices, refurbished items and ordinary used sales into one evidence type.
 - Current detailed checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md`. Project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`.

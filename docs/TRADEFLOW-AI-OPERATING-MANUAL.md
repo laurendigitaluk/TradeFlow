@@ -2018,3 +2018,30 @@ Sources: [Samsung UK Galaxy A37 5G buy page](https://www.samsung.com/uk/smartpho
 - This batch contains new-price evidence only; no used-market evidence or valuation recommendation was inferred from it.
 - Continue in substantial but controlled batches: add/verify variants and UK used/new evidence in TEST, then promote each checked batch to LIVE without waiting for the whole mobile catalogue. Do not promote unevidenced catalogue seeds as if their prices were verified.
 - Do not replace or deactivate existing phone records as part of this work. Preserve discontinued models for used-device valuation and distinguish historical launch prices from current new prices.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 02 (Galaxy S26 FE and Z foldables)
+
+A second official-price batch was added to TEST and promoted to LIVE after variant-level source checks.
+
+### Products and evidence
+
+| Product variant | UK new list price | Availability recorded |
+|---|---:|---|
+| Galaxy S26 FE 128 GB | £699 | In stock |
+| Galaxy S26 FE 256 GB | £799 | In stock |
+| Galaxy S26 FE 512 GB | £949 | Listed; stock not explicitly confirmed |
+| Galaxy Z Fold8 256 GB | £1,699 | In stock |
+| Galaxy Z Fold8 512 GB | £1,869 | Listed; stock not explicitly confirmed |
+| Galaxy Z Fold8 1 TB | £2,209 | Listed; stock not explicitly confirmed |
+| Galaxy Z Flip8 256 GB | £1,149 | Listed; stock not explicitly confirmed |
+
+Sources: [Samsung UK Galaxy S26 family buy page](https://www.samsung.com/uk/smartphones/galaxy-s26/buy/), [Samsung UK Galaxy Z Fold8 buy page](https://www.samsung.com/uk/smartphones/galaxy-z-fold8/buy/), and [Samsung Business UK Galaxy Z Flip8 buy page](https://www.samsung.com/uk/business/smartphones/galaxy-z/galaxy-z-flip8-mint-256gb-sm-f776blggeub/buy/). Prices are the displayed variant prices; separately advertised cashback or checkout promotions are not mixed into the recorded list prices.
+
+### Verification
+
+- TEST now contains 106 mobile-phone variants and 28 linked evidence rows.
+- LIVE now contains 12 mobile-phone variants and 12 linked evidence rows, including both completed batches.
+- LIVE evidence integrity check: zero missing URLs, source keys, product links, non-positive prices, or non-GBP values.
+- Batch 02 includes seven new-price evidence rows. It does not include used-market evidence and must not be treated as a complete valuation dataset.
+- Continue validating in TEST and promoting verified batches promptly to LIVE. Do not bulk-promote unevidenced legacy seed rows.

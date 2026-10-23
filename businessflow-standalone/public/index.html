@@ -91,7 +91,7 @@ let currentUser=null,savedSiteId=null,logoAssetPath=null,logoSignedUrl=null;
 function authMessage(message){$('authStatus').textContent=message}
 function saveMessage(message){$('saveStatus').textContent=message}
 
-let heroImagePath=null,heroObjectUrl=null;
+let heroImagePath=null,heroObjectUrl=null,pendingDeleteHeroImagePaths=[];
 function heroStatus(message){$('heroImageStatus').textContent=message}
 function showHeroImage(url){
  const site=$('site');
@@ -111,18 +111,15 @@ $('uploadHeroImage').onclick=async()=>{
  const objectPath=savedSiteId+'/'+crypto.randomUUID()+'-'+safeName;
  const {error}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
  if(error){heroStatus('Upload failed: '+error.message);return}
- if(heroImagePath){await sb.storage.from('businessflow-assets').remove([heroImagePath]);}
+ if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
  heroImagePath=objectPath;
  const {data:signed,error:signedError}=await sb.storage.from('businessflow-assets').createSignedUrl(objectPath,3600);
  if(signedError){heroStatus('Image uploaded; preview link could not be created: '+signedError.message);return}
  showHeroImage(signed.signedUrl);heroStatus('Image uploaded. Save website to keep the image attached to this draft.');
 };
 $('clearHeroImage').onclick=async()=>{
- if(heroImagePath&&currentUser&&savedSiteId){
-  const {error}=await sb.storage.from('businessflow-assets').remove([heroImagePath]);
-  if(error){heroStatus('Could not remove image: '+error.message);return}
- }
- heroImagePath=null;showHeroImage(null);heroStatus('Image removed. Save website to update the draft.');
+ if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
+ heroImagePath=null;showHeroImage(null);heroStatus('Image removed from this draft preview. Save website to apply the change.');
 };
 function readEditorState(){
  const values={}; fields.forEach(id=>{const el=$(id);if(el)values[id]=el.value});
@@ -192,6 +189,7 @@ async function saveWebsite(){
  const activePaths=new Set(pageRows.map(p=>p.path));
  const staleIds=(existingPages||[]).filter(p=>!activePaths.has(p.path)).map(p=>p.id);
  if(staleIds.length){const {error:cleanupError}=await sb.from('businessflow_pages').delete().in('id',staleIds);if(cleanupError){saveMessage('Website saved, but a removed page could not be cleaned up: '+cleanupError.message);return}}
+ if(pendingDeleteHeroImagePaths.length){const pathsToDelete=[...pendingDeleteHeroImagePaths];const {error:storageDeleteError}=await sb.storage.from('businessflow-assets').remove(pathsToDelete);if(storageDeleteError){saveMessage('Draft saved, but an old image could not be cleaned up. You can retry saving later.');return}pendingDeleteHeroImagePaths=[];}
  saveMessage('Saved securely as a draft. Public publishing is not enabled yet.');
 }
 $('saveSite').onclick=saveWebsite;

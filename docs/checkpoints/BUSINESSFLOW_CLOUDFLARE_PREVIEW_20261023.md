@@ -2,6 +2,8 @@
 
 - Custom-page naming hardened: new pages start with their own heading/body values; adding or renaming a page rejects case-insensitive duplicate names, including collisions with built-in navigation labels.
 
+- Rename consistency fix: when a custom page uses its default heading, renaming the page now updates that heading as well; a separately edited heading is preserved. Duplicate-name rejection remains in place.
+
 ## Decision
 BusinessFlow's intended customer-facing platform domain is **`businessflow.laurendigital.co.uk`**, alongside the existing `tradeflow.laurendigital.co.uk`. BusinessFlow must use a separate Cloudflare Worker deployment and must not be routed through the existing TradeFlow Worker.
 

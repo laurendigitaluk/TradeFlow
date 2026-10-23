@@ -126,6 +126,29 @@ jobs:
               raise SystemExit("BusinessFlow runtime-contract checks failed: " + ", ".join(failed))
           PY
 
+      - name: Check BusinessFlow connection messaging and environment isolation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          test_config = Path("wrangler.businessflow-test.jsonc").read_text(encoding="utf-8")
+          live_config = Path("wrangler.businessflow-live.jsonc").read_text(encoding="utf-8")
+          checks = {
+              "editor points to dedicated BusinessFlow Supabase project": "https://ktvvtdrdwlazfsgkfedo.supabase.co" in html,
+              "editor uses publishable key format": "sb_publishable_" in html,
+              "editor does not show obsolete disconnected warning": "Not connected to TradeFlow authentication" not in html,
+              "draft messaging distinguishes saved and unsaved changes": "Save website to store it in your BusinessFlow draft" in html and "Saved securely as a draft" in html,
+              "TEST worker has isolated name": '"name": "businessflow-test"' in test_config,
+              "LIVE worker has separate name": '"name": "businessflow-live"' in live_config,
+              "public publishing remains disabled": "Public publishing is not implemented yet" in html,
+          }
+          for name, ok in checks.items():
+              print(("PASS: " if ok else "FAIL: ") + name)
+          failed = [name for name, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit("BusinessFlow connection checks failed: " + ", ".join(failed))
+          PY
+
       - name: Confirm browser code contains no service-role key
         run: |
           ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

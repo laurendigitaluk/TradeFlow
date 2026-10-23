@@ -168,3 +168,12 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-32.md` and `CHECKPOI
 - Added OPPO Reno16 F 5G 8GB/256GB £479 and OPPO Reno16 5G 8GB/512GB £699 using official OPPO UK pricing guidance. The current OPPO UK catalogue marks both out of stock, so evidence availability is `out_of_stock`.
 - Current snapshot: TEST 132 active visible variants, 149 evidence rows (140 active, 9 inactive); LIVE 130 active visible variants, 144 evidence rows (138 active, 6 inactive), 62 active UK used completed-sale rows and 3 used/listed rows. No active visible variant lacks active evidence; LIVE integrity failures 0.
 - Recheck OPPO Reno16 stock before changing availability and recheck Xiaomi 17T/17T Pro campaign after 27 October 2026.
+
+
+## Latest batch 33 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-33.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-33.md`.
+- Added UK new-price evidence for iPhone 18 Pro 256GB (£1,199), iPhone 18 Pro Max 256GB (£1,299), iPhone Duo 256GB (£1,999), Google Pixel 11 Pro 256GB (£1,079), and Motorola Edge 70 Plus 256GB (£497 comparison price, code/checkout caveat).
+- OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB price rows were made inactive because exact storage was not explicit in the summary source; both variants are hidden from customer visibility until exact-capacity evidence is found.
+- TEST snapshot: 130 active customer-visible variants; 156 evidence rows (145 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
+- LIVE snapshot: 128 active customer-visible variants; 151 evidence rows (143 active, 8 inactive); 62 active UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
+- Recheck Xiaomi 17T / 17T Pro official campaign prices (£549 / £699) after 27 October 2026. OnePlus 15 £849 remains a price reference with availability unconfirmed.

@@ -2358,3 +2358,17 @@ Latest snapshot:
 - A purported OPPO Reno13 5G 256 GB sale URL redirected to an OPPO Reno4 Pro 5G product page with mismatched identifiers; rejected. The official OnePlus UK page labels OnePlus 15 “Coming soon”; the misleading eBay listing identifying OnePlus 10 Pro remains rejected.
 - Batch 22 checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-22.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-22.md`; aggregate memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: resolve 14 remaining TEST variants without active evidence. Continue exact-variant UK source validation, promote checked batches promptly, and recheck Xiaomi 17T/17T Pro promotional prices after 27 Oct 2026.
+
+
+## Mobile phone catalogue continuity — batch 23 (23 October 2026)
+
+Batch 23 added official Xiaomi UK listed prices with availability explicitly set to `coming_soon`: REDMI Note 15 6 GB/128 GB £179 and REDMI Note 15 Pro 5G 8 GB/256 GB £349. Source: https://www.mi.com/uk/event/redmi-note-15-series/. Do not treat these as in-stock prices.
+
+Two unverified TEST product seeds were hidden from customer visibility pending official identity/release confirmation: Apple iPhone 18 256 GB and Nothing Phone (4b) 128 GB. Both remain active and neither is marked discontinued or deleted. Notes were updated for HMD Skyline, Motorola Edge 70/Edge 70 Pro 256 GB, moto g37, OnePlus 15, Redmi Note 15 and realme variants to record unresolved exact SKU/UK availability.
+
+Latest snapshot:
+- TEST: 124 active visible variants; 115 evidence rows (112 active, 3 inactive for audit); 10 active visible variants without evidence.
+- LIVE: 110 active visible variants; 110 active evidence rows; 58 UK completed-sale rows where availability=sold, plus one secondary-market listing row with availability=listed and condition “Opened – never used”. LIVE integrity failures: 0; active visible variants missing active evidence: 0.
+- Reject the OPPO Reno13 URL that redirects to an OPPO Reno4 Pro product page. Do not reuse Motorola 512 GB pricing for 256 GB variants. OnePlus 15 is officially “Coming soon”; no UK price verified. Recheck Xiaomi 17T/17T Pro promo prices after 27 Oct 2026.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-23.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-23.md`; aggregate memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: resolve the remaining 10 visible TEST variants without active evidence, promote validated batches promptly and rerun LIVE integrity checks.

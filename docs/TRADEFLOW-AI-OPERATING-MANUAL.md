@@ -2346,3 +2346,15 @@ TradeFlow mobile-phone market evidence work is continuing in Supabase TEST first
 - Continue exact model/storage validation, direct source URLs, GBP positive prices, stable source keys, conservative availability and separation of new offers from completed-sale evidence. Do not use the OnePlus 15 listing that item specifics identify as OnePlus 10 Pro, or any search result that redirects to unrelated products.
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next action: resolve the 15 remaining TEST variants without active evidence, then re-query and promote each validated batch to LIVE.
+
+## Mobile phone catalogue continuity — batch 22 (23 October 2026)
+
+Batch 22 added and promoted Samsung Galaxy S25+ 256 GB at £770.00 from a current sealed/boxed UK eBay business-seller listing (Kent, more than 10 available at observation). Source: https://www.ebay.co.uk/itm/168750596099. This is a listing price, not completed-sale evidence.
+
+Latest snapshot:
+- TEST: 126 active visible variants; 113 evidence rows (110 active, 3 inactive for audit); 14 active visible variants without active evidence.
+- LIVE: 108 active visible variants; 108 active evidence rows; 58 UK completed-sale rows with availability=sold, plus one secondary-market listing row with availability=listed and condition “Opened – never used”. LIVE integrity failures: 0; active visible variants missing active evidence: 0.
+- Samsung Galaxy A27 5G 256 GB direct listing https://www.ebay.co.uk/itm/287456740841 was checked after insertion and explicitly says “Opened – never used”; its evidence was corrected to `uk_used`, condition “Opened – never used”, availability `listed`. Do not treat it as sealed new or a completed sale.
+- A purported OPPO Reno13 5G 256 GB sale URL redirected to an OPPO Reno4 Pro 5G product page with mismatched identifiers; rejected. The official OnePlus UK page labels OnePlus 15 “Coming soon”; the misleading eBay listing identifying OnePlus 10 Pro remains rejected.
+- Batch 22 checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-22.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-22.md`; aggregate memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: resolve 14 remaining TEST variants without active evidence. Continue exact-variant UK source validation, promote checked batches promptly, and recheck Xiaomi 17T/17T Pro promotional prices after 27 Oct 2026.

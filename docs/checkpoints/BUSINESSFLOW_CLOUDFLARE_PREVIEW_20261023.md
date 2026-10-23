@@ -94,3 +94,10 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Updated the navigation link click handler to prevent the browser's default hash jump before switching to the selected page in the preview. This avoids competing scroll behaviour between the URL fragment and the editor's shared page shell.
 - Updated source and static preview sequentially and confirmed matching blob SHA `c83a5a6cc49d5c6fc0995fdd32787a8e816ad3e1`.
 - This is a source-level fix only; it has not been exercised in a real browser. The preview remains undeployed and isolated from TradeFlow.
+
+
+## Dedicated-page card refresh fix — 2026-10-23
+- Fixed the Services and Recent Projects page preview so adding or removing cards immediately rebuilds the visible card grid on the currently selected page, rather than leaving stale cards until navigation changes.
+- Rebuilt card elements with DOM APIs and `textContent` to preserve the text-only rendering approach.
+- Updated source and static preview sequentially and confirmed matching blob SHA `d7b7298918c82e0e12b3b4483e2fe524d4a28e1c`.
+- Source-level change only. Browser interaction testing and Cloudflare deployment remain pending; no TradeFlow LIVE/TEST resources or DNS were changed.

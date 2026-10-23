@@ -161,3 +161,10 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-31.md` and `CHECKPOI
 - Official Xiaomi 17T £549 and 17T Pro 512GB £699 campaign evidence remains primary through 27 October 2026 or while stock lasts. Weaker secondary Xiaomi rows were made inactive and retained for audit.
 - Duplicate iPhone Duo official price rows were made inactive; Batch 27’s original official price rows remain active. Rejected OnePlus 15 listing 257792354372 because its item specifics identify OnePlus 10 Pro.
 - Current database snapshot: TEST 130 active visible variants, 147 evidence rows (138 active, 9 inactive); LIVE 128 active visible variants, 142 evidence rows (136 active, 6 inactive), 62 active UK used completed-sale rows and 3 used/listed rows. No visible active variant is missing active evidence; LIVE integrity failures 0.
+
+
+## Latest batch 32 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-32.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-32.md`.
+- Added OPPO Reno16 F 5G 8GB/256GB £479 and OPPO Reno16 5G 8GB/512GB £699 using official OPPO UK pricing guidance. The current OPPO UK catalogue marks both out of stock, so evidence availability is `out_of_stock`.
+- Current snapshot: TEST 132 active visible variants, 149 evidence rows (140 active, 9 inactive); LIVE 130 active visible variants, 144 evidence rows (138 active, 6 inactive), 62 active UK used completed-sale rows and 3 used/listed rows. No active visible variant lacks active evidence; LIVE integrity failures 0.
+- Recheck OPPO Reno16 stock before changing availability and recheck Xiaomi 17T/17T Pro campaign after 27 October 2026.

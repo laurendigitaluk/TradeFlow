@@ -2332,3 +2332,5 @@ After batch 18: TEST has 124 products (123 active), 101 evidence rows (98 active
 Phone catalogue batch 19 (23 Oct 2026): Added and promoted three UK sold records for HONOR 600 Pro 512 GB (£595.25), HONOR Magic V6 512 GB (£1,125.21), and Nothing Phone (4a) Pro 256 GB (£371.58). See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-19.md. Condition, Best Offer and Buyer Protection notes are retained.
 
 Current snapshot: TEST 124 products (123 active), 104 evidence rows (101 active, 3 inactive), 23 visible variants without active evidence. LIVE 98 active visible products, 99 active evidence rows including 57 used-sale rows. Recheck integrity at next batch close.
+
+Batch 20 phone catalogue: OPPO A6 Pro 5G 256 GB, £180.00, completed sale 19 July 2026, certified refurbished. Source https://www.ebay.co.uk/itm/287441531751. See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md. Keep refurbished condition separate from ordinary used and new/RRP evidence. LIVE now has 99 active visible variants; integrity failures 0; missing-evidence visible variants 0.

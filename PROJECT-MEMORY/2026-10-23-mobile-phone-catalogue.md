@@ -1,16 +1,17 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 27
+Updated: 2026-10-23 after batch 28
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 27
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`.
+## Current verified position after batch 28
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-28.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-28.md`.
 
-- TEST: 129 active customer-visible variants; 130 evidence rows total (127 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.
-- LIVE: 125 active customer-visible variants and 125 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`).
-- LIVE integrity check after Batch 27: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
-- Batch 27 added six exact UK phone variants to TEST and LIVE: Apple iPhone Duo 256GB (£1,999), 512GB (£2,199), 1TB (£2,599), 2TB (£3,199) from the official Apple UK buy page; Samsung Galaxy A18 4G 128GB (£249) from Currys; and Motorola Edge 70 Plus 8GB/256GB (£499) from Currys. Apple iPhone Duo availability is marked `listed`, not `in_stock`, because the official buy page retains pre-order / available starting 23 Oct language. Currys stock/delivery is postcode-dependent.
+- TEST: 131 active customer-visible variants; 132 evidence rows total (129 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.
+- LIVE: 127 active customer-visible variants and 127 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`).
+- LIVE integrity check after Batch 28: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- Batch 28 added Motorola Edge 70 Plus 8GB/256GB (£499 Currys); OPPO Find X10 12GB/256GB (£1,099 EE pre-order, launch expected 28 Oct); and OPPO Find X10 Pro Max 12GB/512GB (£1,499 EE pre-order, launch expected 28 Oct). The OPPO rows use `coming_soon` availability, not in-stock.
+- Batch 27 added Apple iPhone Duo 256GB (£1,999), 512GB (£2,199), 1TB (£2,599), 2TB (£3,199) from the official Apple UK buy page; Samsung Galaxy A18 4G 128GB (£249) from Currys; and Motorola Edge 70 Plus 8GB/256GB (£499) from Currys. Note: the Motorola Edge 70 Plus was added in Batch 27, then batch 28 confirmed the current listing; check stable source keys to avoid duplicate evidence.
 - Batch 26 resolved the final visible TEST evidence gap: OnePlus 15 5G 12GB/256GB Black SIM-free at £849, sourced from MyMobiles' October 2026 deal page which identifies OnePlus as seller. The official linked page still shows Notify me/early-bird material; availability is recorded as `listed`, not `in_stock`.
 - A purported realme GT 7 Pro 512GB sold listing was rejected because its item specifics identify 256GB/12GB RAM. Another 512GB listing from a Frankfurt, Germany seller remains rejected as non-UK-local evidence.
 - Batch 25 added realme GT 7 Pro 5G 12GB/512GB, opened – never used, £986.25 from a London-based UK eBay seller. The seller has 83.3% positive feedback and low listing volume; this is an unusually high asking price, not a completed sale or typical market value.

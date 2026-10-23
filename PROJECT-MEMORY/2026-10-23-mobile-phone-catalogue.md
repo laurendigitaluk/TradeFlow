@@ -1,17 +1,18 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 09
+Updated: 2026-10-23 after batch 10
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 09
-See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-09.md.
+## Current verified position after batch 10
+See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-10.md.
 
-- TEST: 124 total phone products (123 active); 68 evidence rows total (65 active; inactive rows retained for audit). 59 visible variants currently have no active evidence.
+- TEST: 124 total phone products (123 active); 68 evidence rows total (65 active, 3 inactive retained for audit). 59 visible variants still have no active evidence.
 - LIVE: 62 active/customer-visible phone variants and 63 active evidence rows, including 21 active sold rows. No active visible LIVE variants were found without active evidence.
 - Integrity at final query: zero missing source URLs/keys, non-positive prices, non-GBP evidence, or broken product links.
-- Batch 08 added sold evidence for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
-- Batch 09 added sold evidence for iPhone 13 256 GB, iPhone 15 Plus 128 GB, iPhone 15 Pro Max 256 GB, and iPhone 16 256 GB.
+- Batch 08 added six storage-specific completed-sale records for iPhone 15 256 GB, Galaxy S23 256 GB, iPhone 14 256 GB, iPhone 15 Pro 256 GB, Galaxy S24 256 GB, and Pixel 9 256 GB.
+- Batch 09 added 11 completed-sale records for iPhone 13 128 GB, iPhone 14 128 GB, iPhone 15 128 GB, iPhone 15 Pro 128 GB, iPhone 16 128 GB, Pixel 8 128 GB, Pixel 9 128 GB, Motorola Edge 50 Neo 256 GB, Nothing Phone (3a) 128 GB, Galaxy S22 128 GB, and Galaxy S24 128 GB.
+- Batch 10 added four completed-sale records for iPhone 13 256 GB, iPhone 15 Plus 128 GB, iPhone 15 Pro Max 256 GB, and iPhone 16 256 GB.
 - Buyer protection fees are noted where included in displayed totals; these are buyer-facing totals, not seller proceeds or guaranteed buy-in values.
 - Keep UK new/RRP evidence separate from completed-sale evidence.
 
@@ -52,19 +53,21 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-07.md`.
 
 ## Latest batch 09
 See PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-09.md.
-- Added four exact-variant completed/sold eBay records for iPhone 13 256 GB (£238.25), iPhone 15 Plus 128 GB (£300.25), iPhone 15 Pro Max 256 GB (£447.44), and iPhone 16 256 GB (£483.41).
-- TEST: 124 phone product rows (123 active), 68 evidence rows (65 active); 59 visible variants still lack active evidence.
-- LIVE: 62 active phone variants, 63 active evidence rows, 21 active sold rows; zero visible active variants missing evidence.
-- Integrity: zero missing URLs/keys, non-positive prices, non-GBP values, or broken product links.
-- eBay totals include buyer protection fees; do not interpret as seller proceeds or guaranteed buy-in values.
+- Added 11 UK completed/sold evidence records for older phone variants, promoted from TEST to LIVE.
+- Snapshot at that batch: TEST 124 product rows (123 active), 64 evidence rows (61 active); LIVE 58 active variants and 59 evidence rows (42 UK new/RRP, 17 UK used sold).
+- Retired the invalid TEST Samsung Galaxy S26 256 GB evidence record sourced from a generic giffgaff error URL; retained inactive for audit.
+- LIVE integrity returned zero missing URLs/keys, invalid prices/currencies, inactive evidence rows, or orphaned evidence.
+
 
 
 ## Latest batch 10
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-10.md`.
-- Added iPhone 13 256 GB (£238.25), iPhone 15 Plus 128 GB (£300.25), iPhone 15 Pro Max 256 GB (£447.44), and iPhone 16 256 GB (£483.41) from UK completed eBay sales.
+See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-10.md.
+- Added four UK completed/sold eBay records for iPhone 13 256 GB (£238.25), iPhone 15 Plus 128 GB (£300.25), iPhone 15 Pro Max 256 GB (£447.44), and iPhone 16 256 GB (£483.41).
 - Each displayed total includes Buyer Protection; notes record these as buyer-facing totals, not seller proceeds or guaranteed buy-in prices.
 - Current database after this batch: TEST 124 products (123 active), 68 evidence rows (65 active); LIVE 62 active visible variants, 63 active evidence rows including 21 used-sale rows.
-- No LIVE visible phone variant lacks active evidence; integrity check returned zero failures.
+- TEST has 59 visible variants without active evidence; LIVE has zero active visible variants missing active evidence.
+- Integrity check returned zero failures.
+
 
 ## Operating rules
 1. Add products and evidence to TEST first.

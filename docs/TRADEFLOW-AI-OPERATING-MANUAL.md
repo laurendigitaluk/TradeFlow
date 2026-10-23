@@ -2328,3 +2328,7 @@ Batch 17 phone catalogue update, 23 Oct 2026. Six UK sold records added and prom
 Mobile phone catalogue batch 18 (23 Oct 2026): Two UK completed-sale records added and promoted: iPhone 17 Pro Max 512 GB £949.99 (sold 12 Sep; excellent, 100% battery health, 133 cycles) and OnePlus 15R 256 GB £459.00 (sold 10 Jul; UK version, unlocked, mint, 100% battery health). Source URLs and notes are in CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-18.md.
 
 After batch 18: TEST has 124 products (123 active), 101 evidence rows (98 active, 3 inactive for audit), and 26 active visible variants without evidence. LIVE has 95 active customer-visible variants and 96 active evidence rows, including 54 UK used completed-sale rows. LIVE integrity check passed; no active visible variant lacks evidence.
+
+Phone catalogue batch 19 (23 Oct 2026): Added and promoted three UK sold records for HONOR 600 Pro 512 GB (£595.25), HONOR Magic V6 512 GB (£1,125.21), and Nothing Phone (4a) Pro 256 GB (£371.58). See CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-19.md. Condition, Best Offer and Buyer Protection notes are retained.
+
+Current snapshot: TEST 124 products (123 active), 104 evidence rows (101 active, 3 inactive), 23 visible variants without active evidence. LIVE 98 active visible products, 99 active evidence rows including 57 used-sale rows. Recheck integrity at next batch close.

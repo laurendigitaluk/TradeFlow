@@ -67,3 +67,10 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Card labels and descriptions are inserted using DOM `textContent`, not interpreted as HTML.
 - Changes remain temporary in browser memory only; no persistence, publishing, upload or form submission was added.
 - Source and static preview are synced together. Browser-based interaction testing and Cloudflare deployment remain pending.
+
+
+## Editable card counts — 2026-10-23
+- Added Add/Remove controls for service and project cards, with a minimum of one and maximum of eight cards of each type.
+- The editor hides fields for removed cards and uses the active counts for homepage, Services and Recent Projects preview layouts.
+- Card text remains inserted via DOM `textContent`. Card count/content remains temporary browser state; refresh discards edits.
+- JavaScript syntax validation passed for the source file. This is not a browser interaction test. The preview is still not deployed; Cloudflare deployment and real browser testing remain pending.

@@ -2032,3 +2032,17 @@ Latest database state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-22.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-22.md`.
 
 Continue with the remaining 14 variants, keep current offers/promotions separate from completed-sale evidence, and recheck Xiaomi campaign prices after 27 October 2026.
+
+
+## Mobile phone catalogue research status — batch 23 (23 October 2026)
+
+Two official Xiaomi UK price records were added: REDMI Note 15 6 GB/128 GB at £179 and REDMI Note 15 Pro 5G 8 GB/256 GB at £349. The official page labels both “Coming soon”, so the database availability is set to coming soon, not in stock.
+
+Two unverified product seeds—Apple iPhone 18 256 GB and Nothing Phone (4b) 128 GB—were hidden from customer visibility pending official identity/release confirmation. They remain active and are not marked discontinued or deleted. Other remaining product notes now record unverified UK SKUs or stock status, including HMD Skyline, Motorola Edge 70/Edge 70 Pro 256 GB, moto g37, OnePlus 15 and realme variants.
+
+Current counts:
+- TEST: 124 active visible variants; 115 evidence rows (112 active, 3 inactive retained for audit); 10 visible variants still lack active evidence.
+- LIVE: 110 active visible variants and 110 active evidence rows, including 58 completed-sale rows and one separate secondary-market listing with condition “Opened – never used”. No active visible variant lacks evidence; integrity check has zero failures.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-23.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-23.md`.
+
+Continue with the remaining 10 visible variants. Do not infer UK availability from another storage size, treat coming-soon prices as in stock, or mark unverified products discontinued without stronger evidence.

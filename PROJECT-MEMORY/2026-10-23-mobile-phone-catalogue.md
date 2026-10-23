@@ -1,20 +1,20 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 25
+Updated: 2026-10-23 after batch 26
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 25
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-25.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-25.md`.
+## Current verified position after batch 26
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`.
 
-- TEST: 123 active customer-visible variants; 123 evidence rows total (120 active, 3 inactive retained for audit). One active customer-visible variant remains without active evidence: OnePlus 15 256 GB.
-- LIVE: 118 active customer-visible variants and 118 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`), three secondary-market listing rows with availability `listed`, and one separately classified out-of-stock refurbished listing.
-- LIVE integrity check after Batch 25: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- TEST: 123 active customer-visible variants; 124 evidence rows total (121 active, 3 inactive retained for audit). Zero active customer-visible variants are missing active evidence.
+- LIVE: 119 active customer-visible variants and 119 active evidence rows, all active. This includes 59 active UK completed-sale rows (`uk_used` with availability `sold`) and three secondary-market listing rows with availability `listed`.
+- LIVE integrity check after Batch 26: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- Batch 26 resolved the final visible TEST gap: OnePlus 15 5G 12GB/256GB Black SIM-free at £849, sourced from MyMobiles' October 2026 deal page which identifies OnePlus as seller. Stable key `mobile-new-oneplus15-256gb-mymobiles-oneplus-20261023`. The official linked page still shows Notify me/early-bird material; availability is recorded as `listed`, not `in_stock`.
+- A purported realme GT 7 Pro 512GB sold listing was rejected because its item specifics identify 256GB/12GB RAM. Another sold 512GB listing from Frankfurt, Germany remains rejected as non-UK-local evidence.
 - Batch 25 added realme GT 7 Pro 5G 12GB/512GB, opened – never used, £986.25 from a London-based UK eBay seller. The seller has 83.3% positive feedback and low listing volume; this is an unusually high asking price, not a completed sale or typical market value.
-- The official OnePlus UK page currently says “Coming soon” and invites users to be notified. Early-bird terms refer to a 2025 campaign, so the £849 figure found in a dated community post was not treated as a current 2026 UK checkout price.
 - Batch 24 added seven exact-variant UK evidence records: HMD Skyline 8/256GB £334.69 PriceSpy UK offer; Motorola Edge 70 Pro 8/256GB £499 GSMSpecs/Amazon UK price reference dated 11 Oct (secondary source, recheck checkout); moto g37 128GB £189.99 Argos; Nothing Phone (3a) Pro 256GB £342.99 excellent-refurbished UK listing; OPPO Reno13 5G 256GB £254.27 excellent-refurbished listing out of stock with 21 historical sales; realme 14 Pro+ 5G 12/512GB £745 new UK seller listing with delivery/import caveats; REDMI Note 15 Pro+ 5G 12/512GB sold UK listing with displayed £179.56 (Buyer Protection and Best Offer caveats).
 - Motorola Edge 70 256GB was hidden from TEST customer visibility because exact UK 256GB SKU was not verified; retailer listings found were 512GB. It remains active and is not marked discontinued.
-- Two remaining visible TEST gaps after Batch 24 were OnePlus 15 256GB and realme GT 7 Pro 512GB. Batch 25 added the latter as a current UK secondary-market listing, leaving only OnePlus 15 256GB without active evidence.
 - Batch 21 added seven UK new-price/listing records: HONOR 600 256 GB (£599.99 HONOR UK store list price); HONOR 600 Smart 128 GB (£249.99 Argos); Xiaomi 17T 256 GB (£549 campaign price vs £649 original); Xiaomi 17T Pro 512 GB (£699 campaign price vs £849 original); HONOR Magic8 Lite 256 GB (£349.99 after-coupon); Samsung Galaxy S26+ 256 GB (£1,179 Samsung UK in-stock listing); and Samsung Galaxy A27 5G 256 GB (£209.99 current eBay listing, condition “Opened – never used”; not sealed-new or completed-sale evidence).
 - Batch 22 added Samsung Galaxy S25+ 256 GB at £770 from an active sealed/boxed UK eBay business-seller listing. It is an asking price, not completed-sale evidence.
 - Batch 23 added official Xiaomi UK listed prices: REDMI Note 15 6 GB/128 GB £179 and REDMI Note 15 Pro 5G 8 GB/256 GB £349. Both official product entries are marked “Coming soon”; the evidence availability is `coming_soon`, not in stock.

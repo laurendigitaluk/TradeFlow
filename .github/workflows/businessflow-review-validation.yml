@@ -1,0 +1,46 @@
+name: BusinessFlow Review Validation
+
+on:
+  push:
+    branches:
+      - feature/businessflow-isolated-builder-review-20261023
+    paths:
+      - 'businessflow-builder-review.html'
+      - 'businessflow-preview/**'
+      - '.github/workflows/businessflow-review-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-preview:
+    if: github.ref == 'refs/heads/feature/businessflow-isolated-builder-review-20261023'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out isolated BusinessFlow branch
+        uses: actions/checkout@v4
+
+      - name: Verify source and preview are identical
+        run: cmp --silent businessflow-builder-review.html businessflow-preview/index.html
+
+      - name: Validate embedded JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          html = Path("businessflow-preview/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script(?:\\s[^>]*)?>(.*?)</script\\s*>", html, flags=re.I | re.S)
+          if not scripts:
+              raise SystemExit("No inline script block found to validate")
+          Path("/tmp/businessflow-preview-inline.js").write_text("\\n".join(scripts), encoding="utf-8")
+          PY
+          node --check /tmp/businessflow-preview-inline.js
+
+      - name: Confirm isolated Worker configuration exists
+        run: |
+          test -f wrangler.businessflow.jsonc
+          test -f businessflow-preview-worker.js
+          grep -q '"name": "businessflow-review"' wrangler.businessflow.jsonc
+          ! grep -Eiq 'supabase|tradeflow-test|production' wrangler.businessflow.jsonc

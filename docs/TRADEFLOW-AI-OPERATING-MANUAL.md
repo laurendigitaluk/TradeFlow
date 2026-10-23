@@ -2464,3 +2464,13 @@ The current phone catalogue checkpoint is `CHECKPOINTS/2026-10-23-mobile-phone-c
 Two OPPO variants were added and promoted from TEST to LIVE: Reno16 F 5G 8GB/256GB at £479 and Reno16 5G 8GB/512GB at £699, sourced from official OPPO UK pricing guidance. The current OPPO UK smartphone catalogue labels both out of stock; keep evidence availability as `out_of_stock` until current stock is verified.
 
 Current verified position: TEST has 132 active customer-visible variants and 149 evidence rows (140 active, 9 inactive retained for audit). LIVE has 130 active customer-visible variants and 144 evidence rows (138 active, 6 inactive retained for audit), including 62 UK used completed-sale rows and 3 UK used/listed rows. LIVE has no visible variants missing active evidence and zero active evidence integrity failures. Recheck Xiaomi 17T/17T Pro promotional prices after 27 October 2026.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 33)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-33.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-33.md`.
+
+Added and promoted official UK new-price evidence for iPhone 18 Pro 256GB (£1,199), iPhone 18 Pro Max 256GB (£1,299), iPhone Duo 256GB (£1,999), and Google Pixel 11 Pro 256GB (£1,079). Added a £497 UK comparison price for Motorola Edge 70 Plus 256GB; confirm the Mobiles.co.uk code and checkout total before treating it as a final price.
+
+Exact-variant controls: the OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB comparison rows were made inactive because the summary source did not explicitly confirm storage capacity. Both products are hidden from customer visibility in TEST and LIVE pending exact-variant evidence. Do not reactivate based only on model-level price results.
+
+Current verified position: TEST has 130 active customer-visible variants and 156 evidence rows (145 active, 11 inactive). LIVE has 128 active customer-visible variants and 151 evidence rows (143 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero active visible variants missing active evidence; LIVE active evidence integrity failures are zero. Recheck Xiaomi 17T / 17T Pro campaign prices after 27 October 2026 and keep OnePlus 15 availability unconfirmed until direct checkout is verified.

@@ -2419,3 +2419,18 @@ Latest snapshot:
 - LIVE: 119 active visible variants; 119 active evidence rows; 59 UK completed-sale rows and 3 secondary-market listed rows. LIVE integrity failures: 0; visible variants missing active evidence: 0.
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: continue expanding the catalogue with additional exact-variant UK phone models and evidence. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.
+
+
+## Mobile phone catalogue continuity — batch 27 (23 October 2026)
+
+Added six exact UK variants and matching evidence in TEST and LIVE:
+- Apple iPhone Duo 256GB £1,999; 512GB £2,199; 1TB £2,599; 2TB £3,199. Official Apple UK buy page. Apple availability begins 23 Oct 2026, but the buy page still says pre-order / available starting 10.23; evidence is `listed`, not `in_stock`.
+- Samsung Galaxy A18 4G 128GB £249 from Currys: https://www.currys.co.uk/products/samsung-galaxy-a18-128-gb-light-blue-10311352.html.
+- Motorola Edge 70 Plus 8GB/256GB £499 from Currys: https://www.currys.co.uk/products/motorola-edge-70-plus-256-gb-pantone-mountain-view-10310979.html.
+- Check postcode-dependent stock/delivery before representing either Currys listing as available for a particular customer.
+
+Latest snapshot:
+- TEST: 129 active visible variants; 130 evidence rows (127 active, 3 inactive); zero visible variants missing active evidence.
+- LIVE: 125 active visible variants; 125 active evidence rows; 59 UK completed-sale rows. LIVE integrity failures: 0; visible variants missing active evidence: 0.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: continue adding newly released UK models and exact storage variants. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.

@@ -38,3 +38,20 @@ The live database count was re-run using distinct product IDs rather than joined
 - LIVE has 59 active UK used completed-sale rows and 3 active UK used/listed rows; 0 active evidence integrity failures.
 - Two weaker Xiaomi corroboration rows were added and then marked inactive in both environments because the precise official Xiaomi autumn campaign evidence was already present. These are audit-only and must not be treated as active evidence.
 - The Xiaomi autumn campaign price evidence for 17T 12GB/256GB (£549 vs £649) and 17T Pro 12GB/512GB (£699 vs £849) is valid only until 27 Oct 2026 or while stock lasts. Source: https://www.mi.com/uk/support/terms/xiaomi-autumn-sales-campaign-tc
+
+
+## Batch 26 continued — new-price evidence added
+Added exact-variant UK new-price records in TEST and LIVE:
+- Apple iPhone 18 Pro 256GB: £1,199, EE SIM-free product page; page explicitly specifies 256GB, says in stock, and offers free standard delivery in 1–3 working days. URL https://ee.co.uk/products/iphone-18-pro-sim-free. Stable key `mobile-new-iphone18pro-256gb-ee-simfree-20261023`.
+- Google Pixel 11 256GB / 12GB RAM: £879, EE SIM-free product page; page explicitly specifies 256GB / 12GB RAM, says in stock, and offers free standard delivery in 1–3 working days. The page advertises a tech voucher through 31 Oct 2026, but the recorded price is before voucher value. URL https://ee.co.uk/products/google-pixel-11-sim-free. Stable key `mobile-new-pixel11-256gb-ee-simfree-20261023`.
+
+The eBay listing https://www.ebay.co.uk/itm/257792354372 was rechecked because its title claims OnePlus 15. Item specifics identify it as OnePlus 10 Pro (Snapdragon 8 Gen 1; MPN 5011101954); it remains rejected.
+
+## Authoritative post-insert snapshot (distinct product IDs)
+- TEST: 128 active customer-visible variants; 139 evidence rows total; 134 active evidence rows.
+- LIVE: 126 active customer-visible variants; 134 evidence rows total; 132 active evidence rows.
+- LIVE visible variants missing active evidence: 0.
+- LIVE active evidence integrity failures: 0.
+- LIVE active UK used completed-sale evidence: 59; active UK used listing evidence: 3.
+
+The counts above supersede all earlier counts in this checkpoint. The extra Xiaomi corroboration records remain inactive audit-only rows; official Xiaomi campaign evidence remains the active source for those exact variants.

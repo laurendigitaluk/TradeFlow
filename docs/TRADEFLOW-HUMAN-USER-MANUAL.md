@@ -2075,3 +2075,17 @@ Current state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-25.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-25.md`.
 
 Continue with the OnePlus 15 gap only if a current exact-variant UK source provides verifiable price/availability. Do not invent or infer a price from stale launch material.
+
+
+## Mobile phone catalogue research status — batch 26 (23 October 2026)
+
+The final active visible TEST gap was resolved with a OnePlus 15 5G 12GB/256GB Black SIM-free price reference at £849 from MyMobiles' October 2026 deal page, which identifies OnePlus as seller. The official linked OnePlus page still shows Notify me/early-bird material, so availability is marked listed rather than in stock. Source: https://www.mymobiles.com/phones/oneplus/15-deals.
+
+A purported realme GT 7 Pro 512GB sold listing was rejected because its item specifics identify the 256GB variant; a separate 512GB listing from a Germany-based seller was also rejected as non-UK-local.
+
+Current state:
+- TEST: 123 active visible variants; 124 evidence rows (121 active, 3 inactive); no active visible variant missing evidence.
+- LIVE: 119 active visible variants and 119 active evidence rows. There are 59 completed-sale rows and 3 secondary-market listed rows. No active visible variant lacks evidence; integrity check has zero failures.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`.
+
+Continue expanding with additional verified UK phone models/variants. Keep exact storage, source, price type, stock, and condition caveats. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.

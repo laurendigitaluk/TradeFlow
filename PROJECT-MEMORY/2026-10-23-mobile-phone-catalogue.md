@@ -1,7 +1,7 @@
 # Project Memory — Mobile Phone Catalogue
 Updated: 2026-10-23 after batch 08
 
-## Current position
+## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
 ## Current verified position after batch 08
@@ -49,6 +49,12 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-07.md`.
 - TEST: 124 product rows (123 active), 58 evidence rows (56 active). LIVE: 41 active products, 42 evidence rows.
 - LIVE evidence integrity returned zero missing URLs, keys, product links, non-positive prices, non-GBP values or inactive rows.
 - No used-market evidence added in batch 07.
+
+## Latest batch 08
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-08.md`.
+- Promoted iPhone 13 128 GB (£150.00), iPhone 14 128 GB (£171.08), iPhone 15 128 GB (£310.58), iPhone 15 Pro 128 GB (£371.58), iPhone 16 128 GB (£366.50), Pixel 8 128 GB (£155.58), Pixel 9 128 GB (£279.58), Motorola Edge 50 Neo 256 GB (£199.00), Nothing Phone (3a) 128 GB (£208.70), Galaxy S22 128 GB (£139.99), and Galaxy S24 128 GB (£243.31) with UK completed-sale evidence.
+- Values are used-sale observations; some displayed prices include Buyer Protection fees or Best Offer caveats. Do not treat them as current new prices or exact seller proceeds.
+- TEST Galaxy S26 256 GB generic giffgaff evidence retired; kept inactive for audit.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

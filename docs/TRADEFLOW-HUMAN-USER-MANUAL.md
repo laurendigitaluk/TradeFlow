@@ -2163,3 +2163,11 @@ UK new-price evidence was added for iPhone 18 Pro 256GB (£1,199), iPhone 18 Pro
 OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB are hidden from customer visibility until the exact storage capacity is confirmed by a UK source. Their weaker comparison evidence is retained as inactive audit history.
 
 Verified snapshot: TEST 130 active customer-visible variants, 156 evidence rows (145 active, 11 inactive); LIVE 128 active customer-visible variants, 151 evidence rows (143 active, 8 inactive), 62 UK used completed-sale rows and 3 used/listed rows. No active visible variants are missing active evidence; LIVE integrity failures are zero. Recheck Xiaomi 17T / 17T Pro campaign prices after 27 October 2026.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 34)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-34.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-34.md`.
+
+Official UK new prices added for iPhone 18 Pro 512GB (£1,399), iPhone 18 Pro Max 512GB (£1,499), and iPhone Duo 512GB (£2,199). These are list prices, not used-market values or purchase offers.
+
+Verified snapshot: TEST 130 active customer-visible variants, 159 evidence rows (148 active, 11 inactive); LIVE 128 active customer-visible variants, 154 evidence rows (146 active, 8 inactive), 62 UK used completed-sale rows and 3 used/listed rows. No active visible variant is missing evidence; LIVE integrity failures are zero. OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden until exact storage is confirmed. Recheck Xiaomi 17T / 17T Pro after 27 October 2026.

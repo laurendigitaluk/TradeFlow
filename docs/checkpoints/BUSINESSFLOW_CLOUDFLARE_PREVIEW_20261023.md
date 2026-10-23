@@ -45,3 +45,10 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Removed a redundant page-filter expression; the navigation list now iterates directly over the page list.
 - Updated `businessflow-builder-review.html` and `businessflow-preview/index.html`; both now have the same content/blob SHA (`6af1059b42f578e11cb5a691cfdf5f5a9c598a22`).
 - Source-level checks only. A real browser interaction test and Cloudflare deployment remain outstanding; no deployment or production-domain change was performed.
+
+
+## Follow-up preview clarity fix — 2026-10-23
+- Updated the editor's introductory note to state plainly that changes exist only in memory and will be lost on refresh or close; no data is saved or published.
+- Updated the bottom notice to clarify that Save/Publish are not implemented and persistent storage/publishing require a separately approved isolated data model and access rules.
+- Source and preview HTML are byte-identical after the change (blob SHA `541f6f8d5d8efbc62857f64689209c4695845514`).
+- Source-level validation only; no browser-based interaction test or deployment has been performed.

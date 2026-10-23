@@ -74,3 +74,5 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - The editor hides fields for removed cards and uses the active counts for homepage, Services and Recent Projects preview layouts.
 - Card text remains inserted via DOM `textContent`. Card count/content remains temporary browser state; refresh discards edits.
 - JavaScript syntax validation passed for the source file. This is not a browser interaction test. The preview is still not deployed; Cloudflare deployment and real browser testing remain pending.
+
+- Follow-up correctness check: added the hidden editor fields for cards 4–8 and wired their input events, so increasing the count reveals usable fields instead of referencing missing elements. JavaScript syntax validation passed; no real browser interaction test or deployment has occurred.

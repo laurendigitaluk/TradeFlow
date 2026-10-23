@@ -193,3 +193,11 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-35.md` and `CHECKPOI
 - TEST: 130 active customer-visible variants; 165 evidence rows (154 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
 - LIVE: 128 active customer-visible variants; 160 evidence rows (152 active, 8 inactive); 62 UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
 - OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden pending exact capacity verification. Recheck Xiaomi 17T / 17T Pro after 27 October 2026; OnePlus 15 availability remains unconfirmed.
+
+
+## Latest batch 36 — 23 October 2026
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-36.md` and `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-36.md`.
+- Added official Google Store UK prices for Pixel 11 256GB (£879), Pixel 11 512GB (£999), and Pixel 11 Pro 512GB (£1,199), all exact storage/RAM variants, to TEST and LIVE.
+- TEST: 130 active customer-visible variants; 168 evidence rows (157 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
+- LIVE: 128 active customer-visible variants; 163 evidence rows (155 active, 8 inactive); 62 UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
+- OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden pending exact-capacity evidence. Recheck Xiaomi 17T / 17T Pro campaign after 27 October; OnePlus 15 stock remains unconfirmed.

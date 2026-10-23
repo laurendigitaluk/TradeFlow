@@ -1,21 +1,23 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 22
+Updated: 2026-10-23 after batch 23
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and stable source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 22
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-22.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-22.md`.
+## Current verified position after batch 23
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-23.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-23.md`.
 
-- TEST: 126 active customer-visible phone variants; 113 evidence rows total (110 active, 3 inactive retained for audit). 14 active customer-visible variants remain without active evidence.
-- LIVE: 108 active customer-visible phone variants and 108 active evidence rows, all active. This includes 58 active UK completed-sale rows (`uk_used` with availability `sold`) and one secondary-market listing row (`uk_used`, availability `listed`, condition “Opened – never used”).
-- LIVE integrity check after Batch 22: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
+- TEST: 124 active customer-visible phone variants; 115 evidence rows total (112 active, 3 inactive retained for audit). 10 active customer-visible variants remain without active evidence.
+- LIVE: 110 active customer-visible phone variants and 110 active evidence rows, all active. This includes 58 active UK completed-sale rows (`uk_used` with availability `sold`) and one secondary-market listing row (`uk_used`, availability `listed`, condition “Opened – never used”).
+- LIVE integrity check after Batch 23: zero evidence integrity failures and zero active customer-visible variants missing active evidence.
 - Batch 21 added seven UK new-price/listing records: HONOR 600 256 GB (£599.99 HONOR UK store list price); HONOR 600 Smart 128 GB (£249.99 Argos); Xiaomi 17T 256 GB (£549 campaign price vs £649 original); Xiaomi 17T Pro 512 GB (£699 campaign price vs £849 original); HONOR Magic8 Lite 256 GB (£349.99 after-coupon); Samsung Galaxy S26+ 256 GB (£1,179 Samsung UK in-stock listing); and Samsung Galaxy A27 5G 256 GB (£209.99 current eBay listing, condition “Opened – never used”; not sealed-new or completed-sale evidence).
 - Batch 22 added Samsung Galaxy S25+ 256 GB at £770 from an active sealed/boxed UK eBay business-seller listing. It is an asking price, not completed-sale evidence.
-- Xiaomi 17T/17T Pro campaign prices are temporary and expire 27 Oct 2026 or earlier if stock runs out. Recheck after expiry.
-- TEST product count has changed from 123 active variants in Batch 20 to 126 active variants in the latest query. The fresh query is authoritative; identify the additional rows while reviewing the remaining gaps.
+- Batch 23 added official Xiaomi UK listed prices: REDMI Note 15 6 GB/128 GB £179 and REDMI Note 15 Pro 5G 8 GB/256 GB £349. Both official product entries are marked “Coming soon”; the evidence availability is `coming_soon`, not in stock.
+- Two unverified TEST seeds—Apple iPhone 18 256 GB and Nothing Phone (4b) 128 GB—were hidden from customer visibility pending official model/release confirmation. They remain active and were not marked discontinued or deleted.
+- Exact UK 256 GB SKUs for Motorola Edge 70 and Edge 70 Pro remain unverified; retailer prices found were for 512 GB variants and must not be reused. HMD Skyline and moto g37 exact UK SKU/availability remain unverified. OnePlus 15 is officially “Coming soon”; no verified UK price captured. realme GT 7 Pro seller in Germany was rejected as UK-local evidence.
 - A purported OPPO Reno13 5G 256 GB sold listing redirected to an OPPO Reno4 Pro 5G product page with incompatible identifiers and was rejected.
-- The official OnePlus UK launch page currently labels OnePlus 15 “Coming soon”; no verified UK price was captured. Do not use the misleading eBay listing whose item specifics identify OnePlus 10 Pro.
+- Xiaomi 17T/17T Pro campaign prices are temporary and expire 27 Oct 2026 or earlier if stock runs out. Recheck after expiry.
+- The TEST product count changed from 123 active variants in Batch 20 to 126, then 124 customer-visible after two unverified seeds were hidden. Fresh database queries are authoritative.
 - Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition must not be treated as ordinary used comparables. Keep UK new/RRP evidence separate from completed-sale evidence.
 
 ## Latest batch 04

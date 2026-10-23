@@ -8,11 +8,12 @@ permissions:
 
 jobs:
   deploy-test:
-    if: github.ref == 'refs/heads/businessflow-standalone-bootstrap-20261023'
     runs-on: ubuntu-latest
     steps:
       - name: Check out isolated BusinessFlow branch
         uses: actions/checkout@v4
+        with:
+          ref: businessflow-standalone-bootstrap-20261023
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

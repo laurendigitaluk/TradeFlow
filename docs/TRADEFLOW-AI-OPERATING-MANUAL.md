@@ -2393,3 +2393,16 @@ Latest snapshot:
 - Remaining visible gaps: OnePlus 15 256GB (current official UK checkout price not verified; do not use false listing identifying OnePlus 10 Pro) and realme GT 7 Pro 512GB (Germany/China seller evidence rejected as non-UK-local).
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-24.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-24.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: research only these two remaining gaps with exact-variant UK sources. Recheck Xiaomi 17T/17T Pro promotion after 27 Oct 2026.
+
+
+## Mobile phone catalogue continuity — batch 25 (23 October 2026)
+
+Batch 25 added a realme GT 7 Pro 5G 12GB/512GB Orange global-version UK eBay listing at £986.25. The seller is located in London; condition is “Opened – never used”; page showed 2 available and 1 sold. Seller feedback is only 83.3% positive with low listing volume and the price is unusually high. This is a `uk_used` listing observation, not a completed sale or typical market value. Source: https://www.ebay.co.uk/itm/226935746106.
+
+Only one visible TEST gap remains: OnePlus 15 256GB. Official UK page https://www.oneplus.com/uk/launch/oneplus-15 currently says “Coming soon”. The early-bird terms refer to a 2025 campaign; do not treat the £849 figure from a dated community post as a current UK checkout price.
+
+Latest snapshot:
+- TEST: 123 active visible variants; 123 evidence rows (120 active, 3 inactive); one visible variant without active evidence.
+- LIVE: 118 active visible variants; 118 active evidence rows; 59 UK completed-sale rows, 3 secondary-market listed rows, and one separately classified out-of-stock refurbished listing. LIVE integrity failures: 0; visible variants missing active evidence: 0.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-25.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-25.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: resolve OnePlus 15 only when a current exact-variant UK source provides verifiable price/availability. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.

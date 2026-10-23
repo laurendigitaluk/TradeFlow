@@ -2,56 +2,24 @@
 Date: 2026-10-23
 
 ## Scope
-Resolved the final visible TEST evidence gap for OnePlus 15 256 GB using a current UK price-comparison page that identifies OnePlus as the seller. Added the same evidence to TEST and LIVE and created the missing LIVE product variant.
+Resolved OnePlus 15 256GB UK price-reference gap and added current exact-variant UK evidence for Nothing Phone (4b) and Motorola Edge 70 256GB. TEST and LIVE were updated promptly.
 
 ## Evidence added
-- Product: OnePlus 15 5G, 12 GB RAM / 256 GB storage, Black, SIM-free.
-- Observed price: £849.00.
-- Evidence type: `uk_new`.
-- Availability: `listed` (not `in_stock`).
-- Source: https://www.mymobiles.com/phones/oneplus/15-deals
-- Source notes: MyMobiles page labelled October 2026 lists the exact 256 GB Black SIM-free variant at £849 and identifies OnePlus as the seller. The linked official OnePlus page currently displays a “Notify me” / early-bird page rather than a clear in-stock checkout button, so direct availability is unresolved. Do not promote this record as in-stock until checkout is confirmed.
-- Stable source key: `mobile-new-oneplus15-256gb-mymobiles-oneplus-20261023`
-- TEST evidence row ID: `491ad359-8ab8-4039-a0c0-a32b8d6bf062`
-- LIVE product ID: `476ae104-af53-4e69-8289-bab40e7be39b`
-- LIVE evidence row ID: `ec83ec72-3677-4794-b398-3aba7a125ccb`
+- OnePlus 15 5G 256GB: £849 MyMobiles page identifying OnePlus as seller; source https://www.mymobiles.com/phones/oneplus/15-deals. Recorded as UK new-price reference, availability listed rather than in_stock because direct official checkout availability remains unclear. Key: mobile-new-oneplus15-256gb-mymobiles-oneplus-20261023.
+- Nothing Phone (4b), 8GB RAM / 128GB: £299, official Nothing UK checkout https://checkout.nothing.tech/products/phone-4b, with Add to bag. TEST product d31d491b-a5ab-440f-880a-fc84a185000c; LIVE product 9ea16e96-f9da-49fc-baa6-8c498af007f9. Key: mobile-new-nothing-phone4b-128gb-nothinguk-20261023.
+- Motorola Edge 70 256GB: £359.99 on MoneySavingExpert UK SIM-free comparison https://www.moneysavingexpert.com/cheap-mobile-finder/sim-free/motorola/edge-70/. TEST product cb1d3ee8-3cd2-4cbc-afdc-55a4762b1a09; LIVE product 69b5eb58-17ef-40ac-ad67-0ced87edfb9a. Key: mobile-new-motorola-edge70-256gb-mse-20261023. Secondary comparison evidence; recheck final checkout and stock before treating as confirmed purchase offer.
+- Both Nothing Phone (4b) and Motorola Edge 70 were made customer-visible in TEST after exact-variant evidence was added. LIVE product rows were created customer-visible with active evidence.
 
-## Exact-variant safeguards
-- A realme GT 7 Pro sold listing at https://www.ebay.co.uk/itm/267681249311 was inspected but rejected for the 512 GB product because its item specifics explicitly say 256 GB / 12 GB RAM. It is not used as 512 GB evidence.
-- Another sold realme GT 7 Pro 512 GB listing showed a seller located in Frankfurt, Germany; it remains rejected as UK-local evidence.
-- The official OnePlus UK page https://www.oneplus.com/uk/launch/oneplus-15 continues to show Notify me / early-bird material. The £849 price is therefore recorded as a UK new-price reference from MyMobiles identifying OnePlus as seller, but availability is only listed/uncertain.
+## Xiaomi campaign record handling
+- Xiaomi 17T 12GB/256GB: official UK autumn campaign £549 (was £649).
+- Xiaomi 17T Pro 12GB/512GB: official UK autumn campaign £699 (was £849).
+- Both campaign prices run 11–27 October 2026 or while stock lasts. Redundant/less precise Which? and secondary Xiaomi listing evidence rows were marked inactive in both TEST and LIVE; official campaign evidence remains active.
+- Recheck and deactivate expired promotional evidence after 27 October if no longer valid.
 
-## Verified database snapshot after Batch 26
-- TEST: 123 active customer-visible variants; 124 evidence rows total (121 active, 3 inactive retained for audit); zero active customer-visible variants missing active evidence.
-- LIVE: 119 active customer-visible variants; 119 evidence rows, all active. This includes 59 UK used completed-sale rows (`uk_used` + availability `sold`) and 3 UK secondary-market listing rows with availability `listed`.
-- LIVE missing-evidence check: 0.
-- LIVE integrity check: 0 active evidence rows with missing URL/key, non-positive price, or non-GBP currency.
+## Current database snapshot after latest additions
+- TEST: 130 active customer-visible variants; 142 evidence rows total; 137 active; zero visible variants missing active evidence.
+- LIVE: 128 active customer-visible variants; 137 evidence rows total; 135 active; 62 active UK used completed-sale rows; 3 active UK used listing rows; zero visible variants missing active evidence.
+- Last completed LIVE evidence integrity check before the most recent writes returned zero failures. Rerun at the next verification.
 
-## Next action
-The current active customer-visible phone variants in both TEST and LIVE now all have active evidence. Continue catalogue expansion by researching additional exact UK phone models/variants and validating model identity, storage, price type, stock, and source before insertion. Recheck Xiaomi 17T/17T Pro promotion after 27 Oct 2026.
-
-
-## Batch 26 follow-up correction — 23 Oct 2026
-The live database count was re-run using distinct product IDs rather than joined evidence rows. This is the authoritative current count; it supersedes the older snapshot above.
-- TEST: 128 active customer-visible phone variants; 134 evidence rows total, 129 active and 5 inactive; zero visible variants missing active evidence.
-- LIVE: 126 active customer-visible phone variants; 129 evidence rows total, 127 active and 2 inactive; zero visible variants missing active evidence.
-- LIVE has 59 active UK used completed-sale rows and 3 active UK used/listed rows; 0 active evidence integrity failures.
-- Two weaker Xiaomi corroboration rows were added and then marked inactive in both environments because the precise official Xiaomi autumn campaign evidence was already present. These are audit-only and must not be treated as active evidence.
-- The Xiaomi autumn campaign price evidence for 17T 12GB/256GB (£549 vs £649) and 17T Pro 12GB/512GB (£699 vs £849) is valid only until 27 Oct 2026 or while stock lasts. Source: https://www.mi.com/uk/support/terms/xiaomi-autumn-sales-campaign-tc
-
-
-## Batch 26 continued — new-price evidence added
-Added exact-variant UK new-price records in TEST and LIVE:
-- Apple iPhone 18 Pro 256GB: £1,199, EE SIM-free product page; page explicitly specifies 256GB, says in stock, and offers free standard delivery in 1–3 working days. URL https://ee.co.uk/products/iphone-18-pro-sim-free. Stable key `mobile-new-iphone18pro-256gb-ee-simfree-20261023`.
-- Google Pixel 11 256GB / 12GB RAM: £879, EE SIM-free product page; page explicitly specifies 256GB / 12GB RAM, says in stock, and offers free standard delivery in 1–3 working days. The page advertises a tech voucher through 31 Oct 2026, but the recorded price is before voucher value. URL https://ee.co.uk/products/google-pixel-11-sim-free. Stable key `mobile-new-pixel11-256gb-ee-simfree-20261023`.
-
-The eBay listing https://www.ebay.co.uk/itm/257792354372 was rechecked because its title claims OnePlus 15. Item specifics identify it as OnePlus 10 Pro (Snapdragon 8 Gen 1; MPN 5011101954); it remains rejected.
-
-## Authoritative post-insert snapshot (distinct product IDs)
-- TEST: 128 active customer-visible variants; 139 evidence rows total; 134 active evidence rows.
-- LIVE: 126 active customer-visible variants; 134 evidence rows total; 132 active evidence rows.
-- LIVE visible variants missing active evidence: 0.
-- LIVE active evidence integrity failures: 0.
-- LIVE active UK used completed-sale evidence: 59; active UK used listing evidence: 3.
-
-The counts above supersede all earlier counts in this checkpoint. The extra Xiaomi corroboration records remain inactive audit-only rows; official Xiaomi campaign evidence remains the active source for those exact variants.
+## Operating rules
+Continue adding phones in large evidence-led batches. Add to TEST first, validate exact model/storage/condition/price type/source, then promote to LIVE without accumulating a backlog. Keep new prices, promotional prices, used asking prices, completed sales and refurbished listings distinct. Never infer exact storage, stock, price or lifecycle from a nearby variant.

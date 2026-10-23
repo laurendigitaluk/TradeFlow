@@ -1992,3 +1992,8 @@ Evidence notes retain Buyer Protection and Best Offer caveats. Pixel 10 Pro XL i
 - TEST: 124 phone products (123 active); 93 evidence rows total, 90 active and 3 inactive retained for audit. 34 active visible variants remain without active evidence.
 - LIVE: 87 active customer-visible phone variants and 88 active evidence rows, including 46 UK used completed-sale rows.
 - LIVE integrity check: zero missing URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.
+
+
+Mobile phone catalogue batch 17 (23 Oct 2026): Added and promoted six UK eBay completed-sale records: iPhone 16e 128 GB £361.42 (26 Aug); iPhone 17 Pro 256 GB £873.70 (12 Oct); iPhone 17 Pro 512 GB £861.08 (20 Oct); iPhone 17 Pro Max 256 GB £875.04 (10 Oct); Galaxy S26 Ultra 256 GB £666.42 (10 Oct); Galaxy S26 Ultra 512 GB £742.67 (3 Oct). Source URLs and caveats are in CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-17.md. Buyer Protection fees and conditions are recorded. Displayed sale totals are not seller proceeds or guaranteed buying offers.
+
+After batch 17, TEST has 124 products (123 active), 99 evidence rows (96 active, 3 inactive for audit), and 28 active visible variants without evidence. LIVE has 93 active customer-visible variants and 94 active evidence rows, including 52 used completed-sale rows. LIVE integrity check passed; no visible active variant lacks evidence.

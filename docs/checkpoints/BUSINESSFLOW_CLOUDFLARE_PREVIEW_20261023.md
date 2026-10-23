@@ -38,3 +38,10 @@ This requires an authorised Cloudflare login and the Wrangler CLI. Confirm the C
 ## Git / safety
 Branch: `feature/businessflow-isolated-builder-review-20261023`.
 Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE resources, routing, database, DNS, or secrets were changed.
+
+
+## Follow-up navigation fix — 2026-10-23
+- Corrected preview navigation so Home scrolls to the home page, while Services, Recent Projects, Contact, About Us, and custom pages scroll to the shared custom-page view rather than trying to find a DOM element whose ID is the selected page ID.
+- Removed a redundant page-filter expression; the navigation list now iterates directly over the page list.
+- Updated `businessflow-builder-review.html` and `businessflow-preview/index.html`; both now have the same content/blob SHA (`6af1059b42f578e11cb5a691cfdf5f5a9c598a22`).
+- Source-level checks only. A real browser interaction test and Cloudflare deployment remain outstanding; no deployment or production-domain change was performed.

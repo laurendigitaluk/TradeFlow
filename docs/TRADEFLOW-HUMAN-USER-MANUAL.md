@@ -2123,3 +2123,17 @@ Current state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-28.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-28.md`.
 
 Continue adding further exact UK smartphone models, and recheck OPPO pre-orders after 28 October.
+
+
+## Phone catalogue evidence update — 23 October 2026 (Batch 30)
+New UK retail price references added to TEST and LIVE:
+- iPhone 18 Pro 256GB — £1,199 from EE SIM-free, in stock.
+- Google Pixel 11 256GB / 12GB RAM — £879 from EE SIM-free, in stock.
+- Google Pixel 11 Pro 256GB / 12GB RAM — £1,079 from EE SIM-free, in stock.
+Sources: https://ee.co.uk/products/iphone-18-pro-sim-free ; https://ee.co.uk/products/google-pixel-11-sim-free ; https://ee.co.uk/products/google-pixel-11-pro-sim-free
+Pixel voucher offers are temporary and end 31 October 2026; stored prices exclude voucher value.
+
+Do not use eBay item 257792354372 as OnePlus 15 evidence: the item specifics identify OnePlus 10 Pro. OnePlus 15 £849 is a MyMobiles price reference only, with availability listed rather than confirmed in stock. Xiaomi 17T (£549) and 17T Pro 512GB (£699) promotional prices require rechecking after 27 October 2026.
+
+Current snapshot: TEST 128 active visible variants, 140 evidence rows (135 active, 5 inactive). LIVE 126 active visible variants, 135 evidence rows (133 active, 2 inactive), 62 UK used completed-sale rows and 3 UK used/listed rows. LIVE has zero visible variants missing active evidence and zero active evidence integrity failures.
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-30.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-30.md`.

@@ -163,8 +163,8 @@ $('signIn').onclick=async()=>{
  if(error){authMessage('Sign-in failed: '+error.message);return}
  currentUser=data.user;authMessage('Signed in as '+currentUser.email+'.');
 };
-$('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();currentUser=null;savedSiteId=null;authMessage(error?'Sign-out failed: '+error.message:'Signed out.');};
-sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser?.id!==nextUser?.id){savedSiteId=null;logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
+$('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();currentUser=null;savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');}authMessage(error?'Sign-out failed: '+error.message:'Signed out.');};
+sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser?.id!==nextUser?.id){savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
 function slugify(value){return (value||'my-business').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'my-business'}
 function pagePath(page){const fixed={home:'/',services:'/services',projects:'/recent-projects',about:'/about',contact:'/contact'};if(fixed[page.id])return fixed[page.id];const suffix=String(page.id||'custom').replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom';return '/'+slugify(page.name)+'-'+suffix}
 async function saveWebsite(){

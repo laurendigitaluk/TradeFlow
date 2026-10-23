@@ -2474,3 +2474,11 @@ Added and promoted official UK new-price evidence for iPhone 18 Pro 256GB (£1,1
 Exact-variant controls: the OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB comparison rows were made inactive because the summary source did not explicitly confirm storage capacity. Both products are hidden from customer visibility in TEST and LIVE pending exact-variant evidence. Do not reactivate based only on model-level price results.
 
 Current verified position: TEST has 130 active customer-visible variants and 156 evidence rows (145 active, 11 inactive). LIVE has 128 active customer-visible variants and 151 evidence rows (143 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero active visible variants missing active evidence; LIVE active evidence integrity failures are zero. Recheck Xiaomi 17T / 17T Pro campaign prices after 27 October 2026 and keep OnePlus 15 availability unconfirmed until direct checkout is verified.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 34)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-34.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-34.md`.
+
+Added exact official Apple UK prices to TEST and LIVE: iPhone 18 Pro 512GB (£1,399), iPhone 18 Pro Max 512GB (£1,499), and iPhone Duo 512GB (£2,199). Preserve each as a new-price reference, not a used value or buying offer.
+
+Verified position: TEST 130 active customer-visible variants and 159 evidence rows (148 active, 11 inactive). LIVE 128 active customer-visible variants and 154 evidence rows (146 active, 8 inactive), including 62 UK used completed-sale rows and 3 used/listed rows. Both environments have zero active visible variants missing active evidence; LIVE active evidence integrity failures are zero. Keep OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB hidden pending exact-capacity evidence; recheck Xiaomi 17T/17T Pro after 27 October; OnePlus 15 stock remains unconfirmed.

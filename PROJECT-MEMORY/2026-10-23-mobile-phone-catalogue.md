@@ -1,19 +1,20 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 15
+Updated: 2026-10-23 after batch 16
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 15
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-15.md`.
+## Current verified position after batch 16
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-16.md`.
 
-- TEST: 124 total phone products (123 active); 89 evidence rows total (86 active, 3 inactive retained for audit). 38 active customer-visible variants remain without active evidence.
-- LIVE: 83 active customer-visible phone variants and 84 active evidence rows, including 42 active UK used completed-sale rows.
+- TEST: 124 total phone products (123 active); 93 evidence rows total (90 active, 3 inactive retained for audit). 34 active customer-visible variants remain without active evidence.
+- LIVE: 87 active customer-visible phone variants and 88 active evidence rows, including 46 active UK used completed-sale rows.
 - Fresh LIVE integrity check: zero missing URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.
-- Batch 14 added UK completed-sale evidence for Pixel 10 256 GB (£449.99), Pixel 10 Pro 256 GB (£609.95), Galaxy S26 256 GB (£494.99), OnePlus 13 256 GB (£394.18), and HONOR Magic8 Pro 512 GB (£600.16).
-- Batch 15 added UK completed-sale evidence for OPPO Find X9 512 GB (£550.00), Nothing Phone (4a) 256 GB (£320.75), and Galaxy A27 5G 128 GB (£163.83).
-- Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition are noted and must not be treated as ordinary used comparables.
-- Current database counts supersede older counts in Batch 10–13 checkpoints. Keep UK new/RRP evidence separate from completed-sale evidence.
+- Batch 14 added five sold records: Pixel 10, Pixel 10 Pro, Galaxy S26, OnePlus 13 and HONOR Magic8 Pro.
+- Batch 15 added three sold records: OPPO Find X9, Nothing Phone (4a), and Galaxy A27 5G.
+- Batch 16 added four sold records: Pixel 10 Pro XL, OnePlus 12, Xiaomi 14T Pro and Motorola Razr 70 Ultra.
+- Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition must not be treated as ordinary used comparables.
+- Current database counts supersede earlier checkpoints. Keep UK new/RRP evidence separate from completed-sale evidence.
 
 ## Latest batch 04
 See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-04.md`.
@@ -101,6 +102,12 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-14.md`.
 See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-15.md`.
 - Added OPPO Find X9 512 GB, Nothing Phone (4a) 256 GB, and Galaxy A27 5G 128 GB completed-sale evidence.
 - Current TEST/LIVE counts are in the Current verified position above.
+
+## Latest batch 16
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-16.md`.
+- Added UK completed-sale evidence for Pixel 10 Pro XL 256 GB (£567.70), OnePlus 12 256 GB (£336.00), Xiaomi 14T Pro 512 GB (£330.92), and Motorola Razr 70 Ultra 512 GB (£732.50).
+- TEST: 93 evidence rows (90 active, 3 inactive); 34 visible variants without active evidence.
+- LIVE: 87 active visible variants, 88 active evidence rows, including 46 UK used-sale rows. Integrity passed.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

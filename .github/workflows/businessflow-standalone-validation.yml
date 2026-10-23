@@ -41,6 +41,21 @@ jobs:
           PY
           node --check /tmp/businessflow-inline.js
 
+      - name: Verify Supabase client library is loaded before editor code
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          library = '<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>'
+          if library not in html:
+              raise SystemExit("Supabase JS client library is missing from the page")
+          if html.index(library) > html.index("<script>"):
+              raise SystemExit("Supabase JS client must load before the inline editor code")
+          if "window.supabase.createClient" not in html:
+              raise SystemExit("Supabase client initialization was not found")
+          print("Supabase JS client is loaded before the editor initializes it.")
+          PY
+
       - name: Verify isolated environment configuration
         run: |
           test -f wrangler.businessflow-test.jsonc

@@ -2767,3 +2767,8 @@ TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and 
 - The latest platform-owner dashboard screenshot confirms both `test test` (`scenesource1@gmail.com`) and `TradeFlow Complimentary Test` (`leannelauren07@gmail.com`) are visible in the Subscriber businesses list, each with Enhanced plan, subscription `active`, and workspace status `active`.
 - This verifies subscriber password recovery/sign-in persistence and owner-list visibility for the repaired TEST workspace. The screenshot does not independently prove resend does not create duplicates; that remains untested. Do not send additional recovery links unless needed.
 - TEST only. LIVE remains untouched. Continue with a read-only database duplicate check and confirm complimentary/manual billing markers for the repaired workspace; do not create or close another subscriber to test this.
+
+
+## BusinessFlow continuity — 2026-10-23
+
+Started BusinessFlow on isolated branch `feature/businessflow-isolated-builder-review-20261023`, based on the current designated TEST branch `test/stripe-connect-test-mode-repair-20261020`. Added standalone `businessflow-builder-review.html` as a front-end review prototype only. It has no Supabase integration, no TradeFlow runtime imports, no persistence and no publishing. Do not claim it is deployed or fully testable in browser yet. Next: validate the HTML/JS in a browser/deployment preview; then design a separately permissioned BusinessFlow persistence/publishing path only after reviewing current TEST schema, RLS, public renderer and hosting/deployment. No new paid Supabase project authorised. Do not merge or promote to LIVE. Checkpoint: `docs/checkpoints/BUSINESSFLOW_ISOLATED_BUILDER_REVIEW_20261023.md`.

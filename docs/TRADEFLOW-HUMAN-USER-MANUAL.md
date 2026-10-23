@@ -2019,3 +2019,16 @@ The phone catalogue is being expanded with verified UK price evidence and comple
 - Current detailed checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-21.md`. Project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-21.md`.
 
 The latest TEST count differs from the previous checkpoint (126 active variants now versus 123 previously). The current database query takes precedence; the remaining 15 missing-evidence variants must be checked against current records before new inserts to avoid duplicates. Continue using TEST first, promote validated batches to LIVE promptly, and verify LIVE integrity after each promotion.
+
+## Mobile phone catalogue research status — batch 22 (23 October 2026)
+
+A further exact-variant price record has been promoted: Samsung Galaxy S25+ 256 GB, £770.00 from a current sealed/boxed eBay UK business-seller listing in Kent. It is an asking price, not a completed sale.
+
+Latest database state:
+- TEST: 126 active visible phone variants; 113 evidence rows (110 active, 3 inactive retained for audit); 14 active visible variants still need evidence.
+- LIVE: 108 active visible variants and 108 active evidence rows. There are 58 UK completed-sale rows and one separate secondary-market listing with condition “Opened – never used”. No active visible variant lacks evidence; integrity check has zero failures.
+- A direct listing check corrected Samsung Galaxy A27 5G 256 GB: its current eBay listing is “Opened – never used”, not sealed new. This has been classified as secondary-market listing evidence and not as a completed sale.
+- A purported OPPO Reno13 sale listing redirected to a different OPPO Reno4 Pro product page and was rejected.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-22.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-22.md`.
+
+Continue with the remaining 14 variants, keep current offers/promotions separate from completed-sale evidence, and recheck Xiaomi campaign prices after 27 October 2026.

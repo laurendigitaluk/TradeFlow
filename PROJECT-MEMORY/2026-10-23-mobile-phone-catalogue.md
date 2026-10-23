@@ -4,18 +4,19 @@ Updated: 2026-10-23 after batch 20
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
 
-## Current verified position after batch 19
-See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-19.md`.
+## Current verified position after batch 20
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-20.md`.
 
 - TEST: 124 total phone products (123 active); 104 evidence rows total (101 active, 3 inactive retained for audit). 23 active customer-visible variants remain without active evidence.
-- LIVE: 98 active customer-visible phone variants and 99 active evidence rows, including 57 active UK used completed-sale rows.
-- LIVE integrity check at Batch 18 close passed; Batch 19 added three exact-variant records. Re-run full integrity and missing-variant checks at the next batch close.
+- LIVE: 99 active customer-visible phone variants and 100 active evidence rows, including 58 active UK used completed-sale rows.
+- LIVE integrity check after Batch 20: zero evidence integrity failures and zero active customer-visible variants missing evidence.
 - Batch 14 added five sold records: Pixel 10, Pixel 10 Pro, Galaxy S26, OnePlus 13 and HONOR Magic8 Pro.
 - Batch 15 added three sold records: OPPO Find X9, Nothing Phone (4a), and Galaxy A27 5G.
 - Batch 16 added four sold records: Pixel 10 Pro XL, OnePlus 12, Xiaomi 14T Pro and Motorola Razr 70 Ultra.
 - Batch 17 added six sold records: iPhone 16e, iPhone 17 Pro 256/512 GB, iPhone 17 Pro Max 256 GB, and Galaxy S26 Ultra 256/512 GB.
 - Batch 18 added iPhone 17 Pro Max 512 GB and OnePlus 15R 256 GB.
 - Batch 19 added HONOR 600 Pro 512 GB, HONOR Magic V6 512 GB and Nothing Phone (4a) Pro 256 GB.
+- Batch 20 added OPPO A6 Pro 5G 256 GB (£180.00), certified refurbished, sold in the UK.
 - Buyer Protection fees and Best Offer caveats are retained. Bundle extras and “opened – never used” condition must not be treated as ordinary used comparables.
 - Current database counts supersede earlier checkpoints. Keep UK new/RRP evidence separate from completed-sale evidence.
 

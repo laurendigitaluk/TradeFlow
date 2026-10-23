@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - businessflow-standalone-bootstrap-20261023
+      - businessflow-validation-trigger-20261023
     paths:
       - 'businessflow-standalone/**'
       - 'wrangler.businessflow-test.jsonc'

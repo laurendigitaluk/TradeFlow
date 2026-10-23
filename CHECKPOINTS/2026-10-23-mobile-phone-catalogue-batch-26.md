@@ -29,3 +29,12 @@ Resolved the final visible TEST evidence gap for OnePlus 15 256 GB using a curre
 
 ## Next action
 The current active customer-visible phone variants in both TEST and LIVE now all have active evidence. Continue catalogue expansion by researching additional exact UK phone models/variants and validating model identity, storage, price type, stock, and source before insertion. Recheck Xiaomi 17T/17T Pro promotion after 27 Oct 2026.
+
+
+## Batch 26 follow-up correction — 23 Oct 2026
+The live database count was re-run using distinct product IDs rather than joined evidence rows. This is the authoritative current count; it supersedes the older snapshot above.
+- TEST: 128 active customer-visible phone variants; 134 evidence rows total, 129 active and 5 inactive; zero visible variants missing active evidence.
+- LIVE: 126 active customer-visible phone variants; 129 evidence rows total, 127 active and 2 inactive; zero visible variants missing active evidence.
+- LIVE has 59 active UK used completed-sale rows and 3 active UK used/listed rows; 0 active evidence integrity failures.
+- Two weaker Xiaomi corroboration rows were added and then marked inactive in both environments because the precise official Xiaomi autumn campaign evidence was already present. These are audit-only and must not be treated as active evidence.
+- The Xiaomi autumn campaign price evidence for 17T 12GB/256GB (£549 vs £649) and 17T Pro 12GB/512GB (£699 vs £849) is valid only until 27 Oct 2026 or while stock lasts. Source: https://www.mi.com/uk/support/terms/xiaomi-autumn-sales-campaign-tc

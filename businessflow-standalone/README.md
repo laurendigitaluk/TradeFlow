@@ -8,7 +8,7 @@ Standalone starter for a general-purpose website builder for small businesses an
 - Built-in pages for Home, Services, Recent Projects, About and Contact, plus temporary custom pages.
 - Subscriber sign-up, sign-in and sign-out through the dedicated BusinessFlow Supabase project.
 - Save and reload website drafts from `public.businessflow_sites` and `public.businessflow_pages`.
-- Private `businessflow-assets` Storage bucket with per-site owner policies; browser upload UI is not implemented yet.
+- Private `businessflow-assets` Storage bucket with per-site owner policies, plus a homepage image upload control (JPG, PNG, WebP, GIF, AVIF; max 10 MB).
 - Row-level security is enabled on the BusinessFlow tables. No service-role key is used in the browser.
 - No TradeFlow catalogue, buying/selling, inventory, customer, shipping or transaction features.
 - No Stripe or subscription billing integration yet.
@@ -32,7 +32,7 @@ The HTML currently points at this project for development and TEST only. Before 
 
 - Sign-up may require email confirmation according to the Supabase Auth settings.
 - Save creates or updates a draft and replaces its page records; Load restores the latest draft for the signed-in subscriber.
-- Image upload, custom domain mapping, public page rendering, real contact form submission, subscriptions and publishing remain unfinished.
+- Image upload UI is implemented but still needs an authenticated end-to-end browser test. Custom domain mapping, public page rendering, real contact form submission, subscriptions and publishing remain unfinished.
 - No custom domains are configured. Use Workers.dev URLs until deployment and access settings are verified.
 - Do not reuse TradeFlow secrets, projects, Workers, DNS, or data.
 

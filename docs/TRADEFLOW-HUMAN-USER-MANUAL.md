@@ -1974,3 +1974,21 @@ Caveats: OPPO listing includes bundle extras and Buyer Protection; Nothing listi
 - LIVE: 83 active customer-visible phone variants and 84 active evidence rows, including 42 UK used completed-sale rows.
 - LIVE integrity check: zero missing source URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.
 - Continue promoting verified batches regularly and keep completed-sale evidence separate from current new/RRP evidence.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 16 (four completed-sale records)
+
+Added exact-variant UK completed-sale evidence:
+| Product variant | Displayed sold total | Sale date | Source |
+|---|---:|---|---|
+| Google Pixel 10 Pro XL 256 GB | £567.70 | 1 Oct 2026 | https://www.ebay.co.uk/itm/189020010405 |
+| OnePlus 12 256 GB | £336.00 | 29 Jun 2026 | https://www.ebay.co.uk/itm/178216794034 |
+| Xiaomi 14T Pro 512 GB | £330.92 | 3 Oct 2026 | https://www.ebay.co.uk/itm/168756250622 |
+| Motorola Razr 70 Ultra 512 GB | £732.50 | 6 Oct 2026 | https://www.ebay.co.uk/itm/178541991583 |
+
+Evidence notes retain Buyer Protection and Best Offer caveats. Pixel 10 Pro XL is listed as excellent; OnePlus 12 as Used; Xiaomi 14T Pro as Used with Best Offer accepted; Motorola Razr 70 Ultra as “Opened – never used” with Best Offer accepted. Do not treat buyer-facing totals as seller proceeds or guaranteed buying offers; keep opened-never-used separate from ordinary used comparables.
+
+### Verification snapshot after batch 16
+- TEST: 124 phone products (123 active); 93 evidence rows total, 90 active and 3 inactive retained for audit. 34 active visible variants remain without active evidence.
+- LIVE: 87 active customer-visible phone variants and 88 active evidence rows, including 46 UK used completed-sale rows.
+- LIVE integrity check: zero missing URLs/keys, non-positive prices, non-GBP evidence or broken product links. No active visible LIVE variants lack active evidence.

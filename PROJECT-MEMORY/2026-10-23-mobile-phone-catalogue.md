@@ -201,3 +201,13 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-36.md` and `CHECKPOI
 - TEST: 130 active customer-visible variants; 168 evidence rows (157 active, 11 inactive); zero visible variants missing active evidence; zero integrity failures.
 - LIVE: 128 active customer-visible variants; 163 evidence rows (155 active, 8 inactive); 62 UK used completed-sale rows and 3 used/listed rows; zero visible variants missing active evidence; zero integrity failures.
 - OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden pending exact-capacity evidence. Recheck Xiaomi 17T / 17T Pro campaign after 27 October; OnePlus 15 stock remains unconfirmed.
+
+
+## Latest verified position — Batch 37 (23 October 2026)
+See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-37.md` and `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-37.md`.
+
+Batch 37 added and verified in TEST then LIVE:
+- Samsung Galaxy S25 128GB UK used completed sale, £339.99 displayed on eBay UK, sold 19 Oct 2026. The displayed amount includes Buyer Protection and is not seller proceeds.
+- Samsung Galaxy A37 5G 128GB / 6GB RAM UK new listing, £399 at Argos. Availability is listed, not confirmed in stock; postcode-dependent. This corroborates Samsung UK's £419 list-price reference.
+
+Current verified database snapshot after Batch 37: TEST 130 active customer-visible variants, 170 evidence rows (159 active, 11 inactive), 65 active UK used completed-sale rows; LIVE 128 active customer-visible variants, 165 evidence rows (157 active, 8 inactive), 63 active UK used completed-sale rows. Both environments have zero visible active variants missing active evidence, zero active evidence integrity failures, and zero duplicate active source keys. Continue TEST-first validation and regular LIVE promotion. Recheck Xiaomi 17T/17T Pro promotion after 27 Oct and OPPO Find X10 pre-order after 28 Oct 2026.

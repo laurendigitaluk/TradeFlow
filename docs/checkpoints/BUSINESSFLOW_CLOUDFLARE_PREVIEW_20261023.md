@@ -52,3 +52,10 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Updated the bottom notice to clarify that Save/Publish are not implemented and persistent storage/publishing require a separately approved isolated data model and access rules.
 - Source and preview HTML are byte-identical after the change (blob SHA `541f6f8d5d8efbc62857f64689209c4695845514`).
 - Source-level validation only; no browser-based interaction test or deployment has been performed.
+
+
+## Built-in page layout improvement — 2026-10-23
+- Built distinct preview layouts for the Services and Recent Projects pages, using service/project cards rather than displaying only a generic text shell.
+- The Contact page now shows the configured contact details and a clear notice that enquiry submission is not yet implemented.
+- Page-specific card content is created with DOM APIs and `textContent`; custom page heading/body content remains text-only to avoid treating user-entered text as HTML.
+- Updated source and dedicated static preview together. Source-level checks only; browser interaction testing and Cloudflare deployment remain pending.

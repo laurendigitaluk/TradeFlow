@@ -1,5 +1,5 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 06
+Updated: 2026-10-23 after batch 07
 
 ## Current position
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.
@@ -7,8 +7,8 @@ The phone catalogue is being expanded in TradeFlow using a controlled TEST → L
 ## Latest verified batch
 See `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-01.md`.
 
-- Latest TEST position after batch 06: 117 product rows (116 active/customer-visible); 51 evidence rows total (49 active, 2 retired bad-source rows retained for audit).
-- Latest LIVE position after batch 06: 34 active/customer-visible Mobile Phones products and 35 active linked evidence rows. LIVE contains only batches explicitly promoted; it is not a full copy of TEST.
+- Latest TEST position after batch 07: 124 product rows (123 active); 58 evidence rows total (56 active, 2 retired rows retained for audit).
+- Latest LIVE position after batch 07: 41 active Mobile Phones products and 42 linked evidence rows. LIVE contains only batches explicitly promoted; it is not a full copy of TEST.
 - Batch: Samsung Galaxy A37 5G 128/256 GB and Galaxy A57 5G 128/256/512 GB.
 - Evidence is from official Samsung UK product pages; list prices were stored separately from code-based promotional prices.
 - No used-market evidence was included in this batch.
@@ -33,6 +33,13 @@ See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-06.md`.
 - Added/promoted Pixel 11 256 GB (£879), Pixel 11 Pro 256 GB (£1,079), Pixel 11 Pro XL 256 GB (£1,279 UK RRP from a secondary source updated 14 Oct), and Pixel 11 Pro Fold 256 GB (£1,799).
 - Retired invalid Pixel 11 128 GB seed and generic giffgaff error-page evidence; both inactive for audit.
 - LIVE-wide evidence integrity returned zero missing URLs, keys, product links, non-positive prices or non-GBP values; all 35 evidence rows active.
+
+## Latest batch 07
+See `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-07.md`.
+- Added/promoted seven higher-storage Pixel 11 family variants with UK RRP references from Mobile Phones UK's Aug 2026 price table.
+- TEST: 124 product rows (123 active), 58 evidence rows (56 active). LIVE: 41 active products, 42 evidence rows.
+- LIVE evidence integrity returned zero missing URLs, keys, product links, non-positive prices, non-GBP values or inactive rows.
+- No used-market evidence added in batch 07.
 
 ## Operating rules
 1. Add products and evidence to TEST first.

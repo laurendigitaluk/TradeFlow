@@ -1,21 +1,32 @@
 # Mobile Phone Catalogue — Batch 09
 Date: 2026-10-23
-Status: Completed-sale evidence added to TEST and LIVE; integrity checked
+Status: Completed-sale evidence promoted from TEST to LIVE; integrity checked
 
-## Evidence added
-- Apple iPhone 13 256 GB — £238.25, sold 25 Jun 2026, [eBay UK](https://www.ebay.co.uk/itm/137310801288)
-- Apple iPhone 15 Plus 128 GB — £300.25, sold 17 Sep 2026, [eBay UK](https://www.ebay.co.uk/itm/800655157429)
-- Apple iPhone 15 Pro Max 256 GB — £447.44, sold 8 Oct 2026, [eBay UK](https://www.ebay.co.uk/itm/860018814903)
-- Apple iPhone 16 256 GB — £483.41, sold 12 Oct 2026, [eBay UK](https://www.ebay.co.uk/itm/336839783241)
+## Evidence promoted
+| Product variant | Observed UK completed-sale total | Notes |
+|---|---:|---|
+| Apple iPhone 13 128 GB | £150.00 | Condition, battery health and lock status not fully confirmed |
+| Apple iPhone 14 128 GB | £171.08 | Includes £6.08 Buyer Protection |
+| Apple iPhone 15 128 GB | £310.58 | Listing described pristine condition and 90% battery health; includes £10.58 Buyer Protection |
+| Apple iPhone 15 Pro 128 GB | £371.58 | Used; includes £11.58 Buyer Protection |
+| Apple iPhone 16 128 GB | £366.50 | Best Offer available; includes £11.50 Buyer Protection |
+| Google Pixel 8 128 GB | £155.58 | Unlocked used phone; grade and battery not fully confirmed; includes £5.58 Buyer Protection |
+| Google Pixel 9 128 GB | £279.58 | Used; Best Offer available; includes £9.58 Buyer Protection |
+| Motorola Edge 50 Neo 256 GB | £199.00 | SIM-free listing mentioned warranty; fine-grained condition not confirmed |
+| Nothing Phone (3a) 128 GB | £208.70 | Used, unlocked UK version; Best Offer available; includes £8.70 Buyer Protection |
+| Samsung Galaxy S22 128 GB | £139.99 | Used, unlocked, described as Good |
+| Samsung Galaxy S24 128 GB | £243.31 | Used, excellent condition, boxed; includes £8.41 Buyer Protection |
 
-All evidence rows use the type uk_used, sold availability, condition Used, GBP, exact storage variant, direct listing URL, and a stable source key. The displayed totals include buyer protection fees; notes identify these as buyer-facing totals rather than seller proceeds or guaranteed trade-in/buy-in values.
+Source URLs, observed dates, stable source keys and condition notes are stored on each linked evidence row in Supabase. Buyer-facing totals that include Buyer Protection are not seller proceeds or guaranteed valuation amounts.
 
-## Verification snapshot
-- TEST: 124 total phone product rows, 123 active; 68 evidence rows total, 65 active, including 23 active sold rows.
-- TEST currently has 59 visible variants without active evidence; these remain research tasks and must not be assumed to have valid pricing.
-- LIVE: 62 active/customer-visible phone variants and 63 active evidence rows, including 21 active sold rows.
-- No active visible LIVE variants were found without active evidence.
-- Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+## Data-quality correction
+Retired TEST Samsung Galaxy S26 256 GB evidence for £749 because its giffgaff URL resolved to a generic error page, not a product-specific listing. The product remains in TEST; the invalid evidence is inactive and retained for audit.
+
+## Verification snapshot at batch 09
+- TEST: 124 phone product rows, 123 active; 64 evidence rows, 61 active, 3 inactive retained for audit.
+- LIVE: 58 active/customer-visible phone variants; 59 active phone evidence rows (42 UK new-price/RRP and 17 UK used completed-sale).
+- LIVE integrity: zero missing phone source URLs/keys, non-positive prices, non-GBP values, inactive phone evidence rows or orphaned evidence.
+- Duplicate active phone-variant check: no duplicates.
 
 ## Next
-Continue in substantial batches through remaining TEST variants without active evidence. Prioritise UK completed/sold evidence for older models and current new-price evidence for current models, keeping price types distinct. Re-query LIVE before each promotion and update manuals/memory/checkpoint after each material batch.
+Continue large batches of UK completed/sold evidence for remaining storage variants. Keep condition differences explicit, fill new-price gaps only from product-specific UK manufacturer or authorised-retailer sources, and re-query both environments before each promotion.

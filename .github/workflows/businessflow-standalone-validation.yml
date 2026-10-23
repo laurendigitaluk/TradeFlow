@@ -80,7 +80,8 @@ jobs:
           html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
           checks = {
               "sign-out reloads to clear unsaved account state": "if(error){authMessage('Sign-out failed: '+error.message);return;}location.reload();" in html,
-              "account switches reload the editor": "if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}" in html,
+              "successful sign-in reloads the editor": "if(_event==='SIGNED_IN'){location.reload();return;}" in html,
+              "direct account switches reload the editor": "if(currentUser&&nextUser&&currentUser.id!==nextUser.id){location.reload();return;}" in html,
               "custom page IDs use UUIDs": "const id='page-'+crypto.randomUUID()" in html,
               "custom page paths retain the complete identifier": "replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom'" in html,
               "logo upload handler exists": "$('uploadAsset').onclick=async()=>" in html,

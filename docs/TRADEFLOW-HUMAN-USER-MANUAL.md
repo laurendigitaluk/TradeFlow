@@ -2106,3 +2106,20 @@ Current state:
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-27.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-27.md`.
 
 Continue with further newly released UK phone models, validating exact storage and price before insertion.
+
+
+## Mobile phone catalogue research status — batch 28 (23 October 2026)
+
+Three exact UK variants were added and promoted to LIVE:
+- Motorola Edge 70 Plus 8GB/256GB £499 from Currys.
+- OPPO Find X10 12GB/256GB £1,099 from EE, pre-order with launch expected 28 October 2026.
+- OPPO Find X10 Pro Max 12GB/512GB £1,499 from EE, pre-order with launch expected 28 October 2026.
+
+The two OPPO evidence rows are marked coming soon, not in stock. Currys stock/delivery is postcode-dependent.
+
+Current state:
+- TEST: 131 active visible variants; 132 evidence rows (129 active, 3 inactive); no active visible variant missing evidence.
+- LIVE: 127 active visible variants and 127 active evidence rows; 59 completed-sale rows. No active visible variant lacks evidence; integrity check has zero failures.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-28.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-28.md`.
+
+Continue adding further exact UK smartphone models, and recheck OPPO pre-orders after 28 October.

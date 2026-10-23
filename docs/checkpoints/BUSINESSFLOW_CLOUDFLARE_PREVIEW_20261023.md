@@ -76,3 +76,9 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - JavaScript syntax validation passed for the source file. This is not a browser interaction test. The preview is still not deployed; Cloudflare deployment and real browser testing remain pending.
 
 - Follow-up correctness check: added the hidden editor fields for cards 4–8 and wired their input events, so increasing the count reveals usable fields instead of referencing missing elements. JavaScript syntax validation passed; no real browser interaction test or deployment has occurred.
+
+## Manual deployment workflow prepared — 2026-10-23
+- Added `.github/workflows/businessflow-review-preview.yml` on the isolated feature branch. It is manual-only (`workflow_dispatch`) and refuses to deploy unless the selected ref is `feature/businessflow-isolated-builder-review-20261023`.
+- It deploys only `wrangler.businessflow.jsonc` using Wrangler v4, with Cloudflare credentials read from GitHub Actions secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`.
+- The workflow has not been run. It cannot deploy until both repository secrets are configured and a user with GitHub Actions access manually runs it. No secrets were created, requested in chat, or exposed.
+- The worker config remains Workers.dev-only; this workflow does not attach `businessflow.laurendigital.co.uk` or change TradeFlow deployment/DNS.

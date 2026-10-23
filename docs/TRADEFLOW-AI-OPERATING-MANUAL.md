@@ -2045,3 +2045,22 @@ Sources: [Samsung UK Galaxy S26 family buy page](https://www.samsung.com/uk/smar
 - LIVE evidence integrity check: zero missing URLs, source keys, product links, non-positive prices, or non-GBP values.
 - Batch 02 includes seven new-price evidence rows. It does not include used-market evidence and must not be treated as a complete valuation dataset.
 - Continue validating in TEST and promoting verified batches promptly to LIVE. Do not bulk-promote unevidenced legacy seed rows.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 03 (iPhone 18 Pro storage variants)
+
+Apple UK pricing evidence was added for the full 256GB, 512GB, 1TB and 2TB storage tiers of both iPhone 18 Pro and iPhone 18 Pro Max.
+
+| Model | 256 GB | 512 GB | 1 TB | 2 TB |
+|---|---:|---:|---:|---:|
+| iPhone 18 Pro | £1,199 | £1,399 | £1,799 | £2,399 |
+| iPhone 18 Pro Max | £1,299 | £1,499 | £1,899 | £2,499 |
+
+Sources: [Apple UK Business iPhone 18 Pro purchase page](https://www.apple.com/uk-business/shop/buy-iphone/iphone-18-pro) and [Apple UK iPhone 18 Pro Max purchase page](https://www.apple.com/uk-edu/shop/buy-iphone/iphone-18-pro/6.9-inch-display-512gb-silver). These are page-listed storage prices, excluding trade-in and financing. The Apple pages can show colour-specific price differences, so the evidence notes retain that caveat.
+
+### Verification
+- TEST now has 110 Mobile Phones product variants and 36 linked evidence records.
+- LIVE now has 20 Mobile Phones product variants and 20 linked evidence records, including the three completed batches.
+- LIVE integrity check: 0 missing source URLs, 0 missing source keys, 0 non-positive prices, 0 non-GBP values and 0 inactive evidence rows.
+- The four new storage variants were added to TEST; all eight Pro/Pro Max storage variants and their eight new-price evidence rows are now present in LIVE.
+- No used-market evidence was added in this batch. Continue separate used-market research and keep price types distinct.

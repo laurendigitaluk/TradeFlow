@@ -2179,3 +2179,11 @@ Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-35.md`; project
 Official UK new-price evidence added for iPhone 18 Pro 1TB (£1,799) and 2TB (£2,399), iPhone 18 Pro Max 1TB (£1,899) and 2TB (£2,499), and iPhone Duo 1TB (£2,599) and 2TB (£3,199). All are exact Apple UK variant pages.
 
 Verified snapshot: TEST 130 active customer-visible variants, 165 evidence rows (154 active, 11 inactive); LIVE 128 active customer-visible variants, 160 evidence rows (152 active, 8 inactive), 62 UK used completed-sale rows and 3 used/listed rows. No visible active variant is missing evidence; LIVE integrity failures are zero. Keep OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB hidden until exact capacity is verified. Recheck Xiaomi 17T / 17T Pro after 27 October 2026.
+
+
+## Mobile phone catalogue evidence continuity — 23 October 2026 (Batch 36)
+Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-36.md`; project memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-36.md`.
+
+Official UK Google Store prices added for Pixel 11 256GB / 12GB RAM (£879), Pixel 11 512GB / 12GB RAM (£999), and Pixel 11 Pro 512GB / 16GB RAM (£1,199). These are device prices, separate from trade-in offers.
+
+Verified snapshot: TEST 130 active customer-visible variants, 168 evidence rows (157 active, 11 inactive); LIVE 128 active customer-visible variants, 163 evidence rows (155 active, 8 inactive), 62 UK used completed-sale rows and 3 used/listed rows. No active visible variant is missing evidence; LIVE integrity failures are zero. OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB remain hidden until exact capacity is verified. Recheck Xiaomi 17T / 17T Pro after 27 October 2026.

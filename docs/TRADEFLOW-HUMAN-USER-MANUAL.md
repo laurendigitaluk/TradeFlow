@@ -1857,3 +1857,29 @@ All rows are marked `uk_used`, condition- and storage-specific, with `availabili
 
 ### Next
 Continue substantial batches of exact-model/storage completed-sale evidence, then fill verified UK new-price gaps for current models. Audit legacy seeds before promotion; preserve unsupported or incorrect seeds as inactive audit history rather than deleting them.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 08 (UK completed-sale evidence)
+
+Promoted 11 existing TEST phone variants and their linked UK used-market completed-sale evidence to LIVE. These are used-sale observations, not current new prices or guaranteed valuations. Several displayed prices include eBay Buyer Protection fees; listings with Best Offer may not disclose the accepted seller proceeds.
+
+| Product variant | Observed UK completed-sale price | Evidence note |
+|---|---:|---|
+| Apple iPhone 13 128 GB | £150.00 | Completed eBay sale; battery health, lock status and grade not confirmed |
+| Apple iPhone 14 128 GB | £171.08 | Displayed price includes £6.08 Buyer Protection |
+| Apple iPhone 15 128 GB | £310.58 | Pristine condition; listing stated 90% battery health; includes £10.58 Buyer Protection |
+| Apple iPhone 15 Pro 128 GB | £371.58 | Used condition; includes £11.58 Buyer Protection |
+| Apple iPhone 16 128 GB | £366.50 | Best Offer was available; includes £11.50 Buyer Protection |
+| Google Pixel 8 128 GB | £155.58 | Unlocked used phone; includes £5.58 Buyer Protection; grade/battery not fully confirmed |
+| Google Pixel 9 128 GB | £279.58 | Used; Best Offer available; includes £9.58 Buyer Protection |
+| Motorola Edge 50 Neo 256 GB | £199.00 | SIM-free sale; listing mentioned warranty; fine-grained condition not confirmed |
+| Nothing Phone (3a) 128 GB | £208.70 | Used, unlocked UK version; Best Offer available; includes £8.70 Buyer Protection |
+| Samsung Galaxy S22 128 GB | £139.99 | Used, unlocked, described as Good |
+| Samsung Galaxy S24 128 GB | £243.31 | Used, excellent condition, boxed; includes £8.41 Buyer Protection |
+
+### Batch 08 verification and data-quality correction
+- TEST: 124 product rows (123 active); 64 phone evidence rows (61 active, 3 inactive retained for audit).
+- LIVE: 58 active/customer-visible phone variants and 59 active phone evidence rows (42 UK new-price/RRP and 17 UK used-sale rows).
+- LIVE phone evidence integrity check: 0 missing source URLs, missing source keys, non-positive prices, non-GBP prices, inactive evidence rows or orphaned evidence.
+- Retired the TEST Samsung Galaxy S26 256 GB evidence row sourced from a generic giffgaff error URL. The product remains in TEST, but the £749 observation is inactive and must not be used until a product-specific source is verified.
+- No duplicate active phone variants were found in the LIVE duplicate check.

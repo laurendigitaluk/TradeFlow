@@ -59,3 +59,11 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - The Contact page now shows the configured contact details and a clear notice that enquiry submission is not yet implemented.
 - Page-specific card content is created with DOM APIs and `textContent`; custom page heading/body content remains text-only to avoid treating user-entered text as HTML.
 - Updated source and dedicated static preview together. Source-level checks only; browser interaction testing and Cloudflare deployment remain pending.
+
+
+## Editable service and project cards — 2026-10-23
+- Added editor fields for three service cards and three project cards (each title and description).
+- The homepage cards and the dedicated Services/Recent Projects page cards now use the same editor values and update as fields change.
+- Card labels and descriptions are inserted using DOM `textContent`, not interpreted as HTML.
+- Changes remain temporary in browser memory only; no persistence, publishing, upload or form submission was added.
+- Source and static preview are synced together. Browser-based interaction testing and Cloudflare deployment remain pending.

@@ -2085,3 +2085,25 @@ Sources: [Apple UK iPhone 17e purchase page](https://www.apple.com/uk/shop/buy-i
 - LIVE-wide integrity check returned zero missing URLs, missing source keys, non-positive prices, non-GBP values, inactive evidence rows or broken product links.
 - Pixel 10a 256 GB is present in TEST as a catalogue variant but was deliberately not promoted and has no price evidence yet: the official Google Store page confirmed that storage option but did not expose a variant-specific price in the page content retrieved. Verify the exact price before promoting it.
 - No used-market evidence was added. Continue separately with completed/sold UK used evidence; new prices are not valuation recommendations.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 05 (iPhone 17 and Pixel 10a 256 GB)
+
+Added and promoted three evidence-backed variants:
+
+| Product variant | UK new price observed | Source |
+|---|---:|---|
+| Apple iPhone 17 256 GB | £899 | [Apple UK purchase page](https://www.apple.com/uk/shop/buy-iphone/iphone-17/6.3-inch-display-256gb-white) |
+| Apple iPhone 17 512 GB | £1,099 | [Apple UK purchase page](https://www.apple.com/uk/shop/buy-iphone/iphone-17/6.3-inch-display-256gb-white) |
+| Google Pixel 10a 256 GB | £599 | [Argos product page](https://www.argos.co.uk/product/7939318) |
+
+Prices observed 23 Oct 2026. Apple lists both iPhone 17 storage tiers across multiple colours. Argos identifies the Pixel 10a 256 GB variant and displays £599; stock/delivery needs a postcode check, so evidence is marked listed rather than confirmed in stock.
+
+### Evidence-quality correction
+A pre-existing TEST evidence row for iPhone 17 256 GB pointed to a generic giffgaff catalogue error URL and did not substantiate its £959 price. That row has been marked inactive and retained for audit history. It was replaced by product-specific Apple UK evidence at £899. Do not use the retired row for pricing or valuation.
+
+### Verification
+- TEST: 116 Mobile Phones product variants; 47 total evidence rows, of which 46 are active (one retired bad-source row retained for audit).
+- LIVE: 30 Mobile Phones product variants and 31 active evidence rows.
+- LIVE-wide integrity check: zero missing URLs, missing source keys, non-positive prices, non-GBP values, inactive evidence rows or broken product links.
+- No used-market evidence added in this batch. New prices are not valuation recommendations.

@@ -2406,3 +2406,16 @@ Latest snapshot:
 - LIVE: 118 active visible variants; 118 active evidence rows; 59 UK completed-sale rows, 3 secondary-market listed rows, and one separately classified out-of-stock refurbished listing. LIVE integrity failures: 0; visible variants missing active evidence: 0.
 - Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-25.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-25.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
 - Next: resolve OnePlus 15 only when a current exact-variant UK source provides verifiable price/availability. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.
+
+
+## Mobile phone catalogue continuity — batch 26 (23 October 2026)
+
+Resolved the final active visible TEST evidence gap: OnePlus 15 5G 12GB/256GB Black SIM-free, £849 new-price reference from MyMobiles' October 2026 deal page, which identifies OnePlus as seller. Source: https://www.mymobiles.com/phones/oneplus/15-deals. The linked official OnePlus page currently shows Notify me/early-bird material, so evidence availability is `listed`, not `in_stock`. Stable key: `mobile-new-oneplus15-256gb-mymobiles-oneplus-20261023`.
+
+The purported realme GT 7 Pro 512GB sold listing at https://www.ebay.co.uk/itm/267681249311 was rejected for the 512GB product because item specifics say 256GB/12GB RAM. Another 512GB sale from a Frankfurt, Germany seller remains rejected as non-UK-local evidence.
+
+Latest snapshot:
+- TEST: 123 active visible variants; 124 evidence rows (121 active, 3 inactive); zero visible variants missing active evidence.
+- LIVE: 119 active visible variants; 119 active evidence rows; 59 UK completed-sale rows and 3 secondary-market listed rows. LIVE integrity failures: 0; visible variants missing active evidence: 0.
+- Checkpoint: `CHECKPOINTS/2026-10-23-mobile-phone-catalogue-batch-26.md`; batch memory: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue-batch-26.md`; aggregate: `PROJECT-MEMORY/2026-10-23-mobile-phone-catalogue.md`.
+- Next: continue expanding the catalogue with additional exact-variant UK phone models and evidence. Recheck Xiaomi 17T/17T Pro campaign after 27 Oct 2026.

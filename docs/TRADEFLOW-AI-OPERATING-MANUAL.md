@@ -2268,3 +2268,37 @@ All records are UK used completed sales, exact storage, sold availability, condi
 - TEST: 124 total phone products (123 active); 81 evidence rows total (78 active), including 36 active sold rows. 46 visible variants remain without active evidence.
 - LIVE: 75 active/customer-visible phone variants and 76 active evidence rows, including 34 active sold rows. No active visible LIVE variants lack active evidence.
 - Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 14 (five completed-sale records)
+
+Added exact-variant UK completed-sale evidence for:
+| Product variant | Observed sold total | Date | Source |
+|---|---:|---|---|
+| Google Pixel 10 256 GB | £449.99 | 7 Oct 2026 | [eBay UK](https://www.ebay.co.uk/itm/407267301332) |
+| Google Pixel 10 Pro 256 GB | £609.95 | 5 Aug 2026 | [eBay UK](https://www.ebay.co.uk/itm/307091345876) |
+| Samsung Galaxy S26 256 GB | £494.99 | 2 Sep 2026 | [eBay UK](https://www.ebay.co.uk/itm/407150921934) |
+| OnePlus 13 256 GB | £394.18 | 3 Aug 2026 | [eBay UK](https://www.ebay.co.uk/itm/236978715643) |
+| HONOR Magic8 Pro 512 GB | £600.16 | 18 Sep 2026 | [eBay UK](https://www.ebay.co.uk/itm/800677196007) |
+
+Evidence notes preserve condition, Buyer Protection and Best Offer caveats. Galaxy S26 listing title states 100% battery health and 0 cycle count but condition is still listed Used; Pixel 10 Pro is described as excellent; HONOR Magic8 Pro as mint with 100% battery and 99 cycles. These totals are buyer-facing observations, not guaranteed buying offers.
+
+
+
+## 2026-10-23 — Mobile phone catalogue batch 15 (three completed-sale records)
+
+Added exact-variant UK completed-sale evidence for:
+| Product variant | Observed sold total | Date | Source |
+|---|---:|---|---|
+| OPPO Find X9 512 GB | £550.00 | 26 Sep 2026 | [eBay UK](https://www.ebay.co.uk/itm/407244892731) |
+| Nothing Phone (4a) 256 GB | £320.75 | 17 Aug 2026 | [eBay UK](https://www.ebay.co.uk/itm/298564725017) |
+| Samsung Galaxy A27 5G 128 GB | £163.83 | 12 Oct 2026 | [eBay UK](https://www.ebay.co.uk/itm/287639692280) |
+
+Caveats are explicit: OPPO Find X9 listing includes bundle extras and Buyer Protection; Nothing Phone (4a) displayed total includes £10.75 Buyer Protection and Best Offer was accepted; Galaxy A27 5G condition is “Opened – never used” and includes £5.85 Buyer Protection. Keep opened-never-used condition separate from ordinary used comparables.
+
+### Verification snapshot after batch 15
+- TEST: 124 phone products (123 active); 89 evidence rows total, 86 active and 3 inactive retained for audit. 38 active customer-visible variants remain without active evidence.
+- LIVE: 83 active customer-visible phone variants; 84 active evidence rows, including 42 UK used completed-sale rows.
+- LIVE: zero active visible variants without active evidence; zero missing source URLs/keys, non-positive prices, non-GBP evidence or broken product links.
+- Continue promoting verified batches regularly; do not let checked TEST evidence accumulate in a backlog.
+

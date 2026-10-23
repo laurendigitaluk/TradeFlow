@@ -1896,3 +1896,23 @@ Promoted 11 existing TEST phone variants and their linked UK used-market complet
 - LIVE phone evidence integrity check: 0 missing source URLs, missing source keys, non-positive prices, non-GBP prices, inactive evidence rows or orphaned evidence.
 - Retired the TEST Samsung Galaxy S26 256 GB evidence row sourced from a generic giffgaff error URL. The product remains in TEST, but the £749 observation is inactive and must not be used until a product-specific source is verified.
 - No duplicate active phone variants were found in the LIVE duplicate check.
+
+
+## 2026-10-23 — Mobile phone catalogue batch 09 (four more completed-sale variants)
+
+Added and promoted exact-storage UK completed/sold eBay evidence for four older iPhone variants:
+
+| Product variant | Observed buyer-facing sold total | Sale date | Source |
+|---|---:|---|---|
+| Apple iPhone 13 256 GB | £238.25 | 25 Jun 2026 | [eBay UK item 137310801288](https://www.ebay.co.uk/itm/137310801288) |
+| Apple iPhone 15 Plus 128 GB | £300.25 | 17 Sep 2026 | [eBay UK item 800655157429](https://www.ebay.co.uk/itm/800655157429) |
+| Apple iPhone 15 Pro Max 256 GB | £447.44 | 8 Oct 2026 | [eBay UK item 860018814903](https://www.ebay.co.uk/itm/860018814903) |
+| Apple iPhone 16 256 GB | £483.41 | 12 Oct 2026 | [eBay UK item 336839783241](https://www.ebay.co.uk/itm/336839783241) |
+
+Records are marked as UK used evidence with sold availability, condition “Used”, GBP, exact storage, stable source keys and direct completed-listing URLs. All four displayed totals include buyer protection fees; notes state these are buyer-facing totals, not seller proceeds or guaranteed trade-in/buy-in values.
+
+### Verification snapshot after batch 09
+- TEST: 124 total phone products, 123 active; 68 evidence rows total, 65 active, including 23 active sold rows. There are 59 visible variants without active evidence still awaiting verification.
+- LIVE: 62 active/customer-visible phone variants and 63 active evidence rows, including 21 active sold rows. No active visible LIVE variants were found without active evidence.
+- Integrity: zero missing source URLs/keys, non-positive prices, non-GBP values, or broken product links.
+- Continue separating completed-sale evidence from new-price, promotional-price, and RRP evidence.

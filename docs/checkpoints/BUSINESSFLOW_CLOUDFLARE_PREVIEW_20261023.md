@@ -88,3 +88,9 @@ Do not merge into `production` or the shared TEST branch. No TradeFlow LIVE reso
 - Tightened the CTA allow-list so protocol-relative destinations beginning `//` are rejected rather than treated as root-relative paths. Supported explicit schemes remain `https://`, `http://`, `mailto:`, and `tel:`, plus same-site root-relative paths beginning with a single `/` and fragment links beginning `#`.
 - Updated `businessflow-builder-review.html` and `businessflow-preview/index.html` sequentially; both are byte-identical (blob SHA `675643aa1e47c927c15ba808e325c3f7fabaa6c3`).
 - Source-level confirmation only. No browser interaction test or Cloudflare deployment has been completed; no TradeFlow resources or DNS were changed.
+
+
+## Navigation interaction refinement — 2026-10-23
+- Updated the navigation link click handler to prevent the browser's default hash jump before switching to the selected page in the preview. This avoids competing scroll behaviour between the URL fragment and the editor's shared page shell.
+- Updated source and static preview sequentially and confirmed matching blob SHA `c83a5a6cc49d5c6fc0995fdd32787a8e816ad3e1`.
+- This is a source-level fix only; it has not been exercised in a real browser. The preview remains undeployed and isolated from TradeFlow.

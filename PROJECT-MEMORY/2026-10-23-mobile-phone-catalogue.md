@@ -1,5 +1,5 @@
 # Project Memory — Mobile Phone Catalogue
-Updated: 2026-10-23 after batch 19
+Updated: 2026-10-23 after batch 20
 
 ## Catalogue workflow
 The phone catalogue is being expanded in TradeFlow using a controlled TEST → LIVE process. Validate product identity, exact storage variant, source URL, price type, observed date, availability, currency, and unique source key before promotion. Do not import unvalidated GearCashOut/Action Buyer UK evidence.

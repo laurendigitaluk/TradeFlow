@@ -70,7 +70,8 @@ jobs:
           missing = [item for item in required if item not in sql.lower()]
           if missing:
               raise SystemExit("Missing storage-policy protections: " + ", ".join(missing))
-          if "storage.foldername(s.name)" in sql.lower().replace("objects.name", "objects_name"):
+          sql_code = "\n".join(line.split("--", 1)[0] for line in sql.splitlines())
+          if "storage.foldername(s.name)" in sql_code.lower():
               raise SystemExit("Incorrect policy: checks the site's name rather than the Storage object path")
           print("BusinessFlow Storage RLS correction contains all four owner-scoped policies.")
           PY

@@ -322,3 +322,10 @@ Post-batch checks using each environment's own phone-category ID:
 - LIVE: 198 active phone evidence rows; 104 active UK used completed-sale rows; zero basic phone-scoped URL/key/positive GBP price/currency failures; zero duplicate active source-key groups; all three Batch 50 keys active.
 
 Buyer Protection totals are buyer-facing totals, not seller proceeds. Keep “Read Description”, relisting and non-working caveats explicit. Continue TEST-first, promote validated evidence promptly, and avoid overwriting historical listing observations.
+
+
+## Mobile phone catalogue — Batch 51 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-51.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-51.md`.
+- Added two UK eBay iPhone 15 128GB completed-sale observations in TEST, then LIVE: unlocked Black sold 15 Aug (£281.50 displayed total incl. £11.50 Buyer Protection; Best Offer accepted; grade/battery health unconfirmed); Black parts-only sold 5 Oct (£49.56 displayed total incl. £2.16 Buyer Protection; explicitly non-working, exclude from typical working benchmarks).
+- TEST: 202 active phone evidence rows / 108 active UK used completed-sale rows. LIVE: 200 / 106. Both environments have zero basic phone-scoped URL/key/positive GBP price/currency failures and zero duplicate active source-key groups; both Batch 51 keys are active.
+- Buyer Protection totals are buyer-facing, not seller proceeds. Keep condition and Best Offer caveats; continue TEST-first promotion to LIVE promptly.

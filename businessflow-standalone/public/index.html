@@ -86,8 +86,9 @@
 </section>
 <section id="visualBuilder" style="grid-column:1/-1;margin-top:18px;background:#fff;border:1px solid #dce4eb;border-radius:14px;padding:16px">
  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0;font-size:19px">Visual homepage editor</h2><p style="margin:4px 0;color:#637282;font-size:13px">Select any box, drag it to move, or use its corner to resize. Images keep their proportions while resizing.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" id="vbAddText">Add text</button><button type="button" id="vbAddImage">Add image box</button><button type="button" id="vbAddButton">Add button</button><button type="button" id="vbDelete">Delete selected</button></div><div id="vbControls" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;padding:10px;border:1px solid #dce4eb;border-radius:8px;background:#fff"><span style="color:#637282;font-size:12px">Select an element to edit its content and appearance.</span></div></div>
- <div id="vbCanvas" tabindex="0" aria-label="Visual homepage canvas" style="position:relative;isolation:isolate;margin-top:12px;width:100%;height:560px;overflow:hidden;border:1px solid #ccd6df;border-radius:8px;background:linear-gradient(135deg,#f8fafc,#eaf0f5)">
+ <div id="vbCanvas" tabindex="0" aria-label="Visual homepage canvas" style="position:relative;isolation:isolate;margin-top:12px;width:100%;height:560px;min-height:320px;overflow:hidden;border:1px solid #ccd6df;border-radius:8px;background:linear-gradient(135deg,#f8fafc,#eaf0f5)">
  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8391a0;pointer-events:none">Homepage design canvas — add or select elements</div>
+ <button type="button" id="vbCanvasHeightHandle" aria-label="Resize canvas height" title="Drag to change canvas height" style="position:absolute;z-index:100;left:50%;bottom:0;transform:translateX(-50%);width:72px;height:12px;border:1px solid #ccd6df;border-bottom:0;border-radius:7px 7px 0 0;background:#fff;cursor:ns-resize;touch-action:none">⋯</button>
  </div>
  <p id="vbStatus" role="status" style="font-size:12px;color:#637282;margin:8px 0 0">Canvas changes are included when you save the website draft.</p>
 </section>
@@ -281,6 +282,15 @@ $('loadSite').onclick=async()=>{
 
 function initVisualBuilder(){
  const canvas=$('vbCanvas');if(!canvas)return;
+ let canvasHeight=Number(window.__businessFlowCanvasHeight)||560;
+ canvas.style.height=canvasHeight+'px';
+ const heightHandle=$('vbCanvasHeightHandle');
+ if(heightHandle)heightHandle.addEventListener('pointerdown',ev=>{
+  ev.preventDefault();ev.stopPropagation();const startY=ev.clientY,startHeight=canvas.clientHeight;
+  function move(m){canvasHeight=Math.max(320,Math.min(1400,startHeight+(m.clientY-startY)));canvas.style.height=canvasHeight+'px';window.__businessFlowCanvasHeight=canvasHeight}
+  function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);$('vbStatus').textContent='Canvas height updated. Save the website draft to keep the change.'}
+  window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+ });
  // Canvas images have their own upload path: do not reuse the homepage hero uploader.
  const canvasImageInput=document.createElement('input');
  canvasImageInput.type='file';canvasImageInput.accept='image/jpeg,image/png,image/webp,image/gif,image/avif';
@@ -313,9 +323,9 @@ function initVisualBuilder(){
  function add(type){const e=normalise({id:'vb-'+crypto.randomUUID(),type,x:8+Math.random()*10,y:15+Math.random()*25,w:type==='image'?30:type==='button'?23:32,h:type==='image'?35:type==='button'?10:18,text:type==='button'?'Contact us':'Double-click to edit',src:'',aspect:type==='image'?1.25:type==='button'?3:1.8,fontSize:18,color:'#172533',backgroundColor:type==='button'?'#c46a2b':'#ffffff',borderColor:'#dce4eb',borderWidth:1,borderRadius:4,font:'inherit',lineHeight:1.2,letterSpacing:0});elements.push(e);selectedId=e.id;render();updateControls();$('vbStatus').textContent='New '+type+' added. Drag to position; use the controls to edit appearance.'}
  $('vbAddText').onclick=()=>add('text');$('vbAddImage').onclick=()=>add('image');$('vbAddButton').onclick=()=>add('button');$('vbDelete').onclick=()=>{if(!selectedId){$('vbStatus').textContent='Select an element first.';return}const removed=elements.find(e=>e.id===selectedId);if(removed?.assetPath&&!pendingDeleteHeroImagePaths.includes(removed.assetPath))pendingDeleteHeroImagePaths.push(removed.assetPath);elements=elements.filter(e=>e.id!==selectedId);selectedId=null;render();updateControls();$('vbStatus').textContent='Element removed. Save the website draft to keep the change.'};
  const originalReadEditorState=readEditorState;
- readEditorState=function(){const state=originalReadEditorState();state.visualCanvasElements=elements.map(e=>({...e}));return state};
+ readEditorState=function(){const state=originalReadEditorState();state.visualCanvasElements=elements.map(e=>({...e}));state.visualCanvasHeight=canvasHeight;return state};
  const originalApplyEditorState=applyEditorState;
- applyEditorState=function(values){originalApplyEditorState(values);if(Array.isArray(values?.visualCanvasElements)){elements=values.visualCanvasElements.map(normalise);selectedId=null;render();elements.filter(e=>e.type==='image'&&e.assetPath).forEach(async e=>{const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(e.assetPath,3600);if(!error&&data?.signedUrl){e.src=data.signedUrl;render()}})}};
+ applyEditorState=function(values){originalApplyEditorState(values);if(Number.isFinite(Number(values?.visualCanvasHeight))){canvasHeight=Math.max(320,Math.min(1400,Number(values.visualCanvasHeight)));canvas.style.height=canvasHeight+'px';window.__businessFlowCanvasHeight=canvasHeight;}if(Array.isArray(values?.visualCanvasElements)){elements=values.visualCanvasElements.map(normalise);selectedId=null;render();elements.filter(e=>e.type==='image'&&e.assetPath).forEach(async e=>{const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(e.assetPath,3600);if(!error&&data?.signedUrl){e.src=data.signedUrl;render()}})}};
  // Upload directly to the selected canvas element, independently of the homepage hero image.
  canvasImageInput.addEventListener('change',async()=>{
   const file=canvasImageInput.files?.[0];canvasImageInput.value='';

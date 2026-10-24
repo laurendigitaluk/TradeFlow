@@ -435,3 +435,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-65.md` and `PROJECT-MEM
 - Added iPhone 15 128GB Black parts/repair, item 267734454669, displayed £192.00 incl Buyer Protection, sold 26 July 2026; and iPhone 15 128GB Blue parts/repair, item 267749501196, displayed £157.00 incl Buyer Protection, sold 11 August 2026. Both explicitly classified For parts or not working. TEST-first then LIVE; both read-back verified active in both environments.
 - Samsung Galaxy S24 128GB Onyx Black item 257702271643 was already present in both and not duplicated.
 - Counts: TEST 230 active phone evidence / 136 active uk_used + sold; LIVE 228 / 134. Three intervening Pixel 9 rows plus these two new rows explain the five-row increase per environment since Batch 61. Two-row environment difference remains.
+
+
+## Mobile phone catalogue — Batch 66 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-66.md`.
+- Added iPhone 15 Pro 128GB Blue Titanium, eBay item 298501695479, sold 23 July 2026. Displayed £360.72 includes £11.41 Buyer Protection; listing says fully working, factory reset, original box included but accessories missing, seven bids. Seller net proceeds unconfirmed.
+- Exact URL/key preflight was clear; TEST-first then LIVE; both active rows read-back verified.
+- Counts: TEST 231 active phone evidence / 137 active uk_used + sold; LIVE 229 / 135. Used/sold includes parts/repair rows. Two-row environment difference persists.

@@ -229,3 +229,11 @@ Three used completed-sale records were added TEST-first then promoted to LIVE: G
 Current phone-category snapshot: TEST 130 active visible variants, 178 evidence rows (167 active, 11 inactive), 73 active UK used completed-sale rows. LIVE 128 active visible variants, 173 evidence rows (165 active, 8 inactive), 71 active UK used completed-sale rows. Both: zero active visible variants missing active evidence; zero active evidence missing URLs/keys, non-positive prices, non-GBP currency, or duplicate active source keys.
 
 Preserve Batch 37 historical observations for eBay items 377500378163 and 800749991087; current page totals differ and require investigation rather than silent overwrite. Keep OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB hidden pending exact-capacity evidence. Recheck Xiaomi campaign prices after 27 Oct and OPPO launch after 28 Oct.
+
+
+## Mobile phone catalogue evidence continuity — Batch 40 (24 October 2026)
+Checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-40.md`; batch memory: `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-40.md`.
+
+Three more completed-sale rows were added and verified in TEST and LIVE: Galaxy S24 128GB £237.75 (includes £8.23 Buyer Protection), iPhone 16 128GB White £432.48 (includes £12.58 Buyer Protection; Best Offer accepted), and Pixel 9 256GB Porcelain £292.20 (includes £9.99 Buyer Protection). Exact product variants and active status were read back from both databases.
+
+Current phone-category snapshot: TEST 130 active visible variants, 181 evidence rows (170 active, 11 inactive), 76 active UK used completed-sale rows. LIVE 128 active visible variants, 176 evidence rows (168 active, 8 inactive), 74 active UK used completed-sale rows. Both environments have zero visible active variants missing active evidence; zero active rows missing URLs/keys, non-positive prices, non-GBP currency, or duplicate active source keys. All fee-inclusive prices are buyer-facing totals, not seller proceeds. Preserve older observations if listing totals later change.

@@ -9,3 +9,5 @@ Added two iPhone 15 Pro 128GB Black Titanium UK eBay sale observations to TEST t
 Counts after Batch 60: TEST 224 active phone evidence, LIVE 222. Last confirmed UK used/sold subtotals remain TEST 126 / LIVE 124; not refreshed. Full duplicate-key aggregate audit remains outstanding; two-row environment difference persists. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md`.
 
 Count refresh on 24 October 2026: TEST 224 active phone evidence / 130 active rows where evidence_type is `uk_used` and availability is `sold`; LIVE 222 / 128. The used/sold filter includes the separate parts/repair record, so it is not a working-only subtotal. Two-row difference persists; full duplicate-key aggregate audit remains outstanding.
+
+Stable-key audit refreshed 24 October 2026: zero duplicate active non-null `source_record_key` groups in both TEST and LIVE across shared evidence. This does not mean source URLs are unique; generic catalogue URLs can legitimately be reused.

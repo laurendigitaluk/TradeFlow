@@ -2293,3 +2293,7 @@ Two iPhone 15 128GB eBay UK completed-sale observations were added to TEST and p
 
 ## Mobile phone catalogue — Batch 52 (24 October 2026)
 Two eBay UK completed-sale observations were added to TEST and promoted to LIVE: an iPhone 15 128GB Pink (£309.99 displayed; listing describes very good condition and 88% battery health) and a Galaxy S24 128GB with a faulty fingerprint sensor (£110 displayed, parts-only/non-working). Do not use the faulty Galaxy S24 as a typical working-phone comparable. TEST has 204 active phone evidence / 110 active UK used sold; LIVE has 202 / 108. Both passed basic integrity and duplicate-key checks. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-52.md`.
+
+
+## Mobile phone catalogue — Batch 53 (24 October 2026)
+Two Google Pixel 9 128GB completed-sale observations were added to TEST and promoted to LIVE. An existing Samsung Galaxy S24 sale was checked and left unchanged rather than duplicated. TEST has 206 active phone evidence / 112 active UK used sold; LIVE has 204 / 110. Both passed basic integrity and duplicate-key checks. Keep Best Offer, battery-health and Buyer Protection caveats; buyer-facing totals are not necessarily seller proceeds. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md`.

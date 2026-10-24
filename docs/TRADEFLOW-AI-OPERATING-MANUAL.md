@@ -2656,3 +2656,7 @@ Batch 61 added iPhone 15 Pro 128GB Black Titanium, eBay item 900018786339, sold 
 
 ## Mobile phone catalogue — Batch 62 (24 October 2026)
 Batch 62 added Google Pixel 9 128GB Obsidian, eBay item 147349812276, sold 28 June 2026, displayed £243.42 including £8.42 Buyer Protection. Listing title describes acceptable condition, 99% battery health and warranty through 27 November 2027. Exact URL/key preflight, TEST-first then LIVE insertion, and read-back verification succeeded. Counts: TEST 226 active phone evidence, LIVE 224; active `uk_used` + `sold` subtotals not refreshed (last confirmed TEST 130 / LIVE 128). See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md`.
+
+
+## Mobile phone catalogue — Batch 63 (24 October 2026)
+Batch 63 added a Google Pixel 9 128GB GrapheneOS UK eBay sold observation (item 267700928563, 15 July 2026, displayed £299.00). The listing describes cosmetic B condition with minor casing marks and small screen scratches. GrapheneOS is custom OS; do not mix with stock-OS price comparisons. URL/key preflight and stable-key read-back confirmed the record active in TEST and LIVE. Counts: TEST 227 active phone evidence / 133 `uk_used` + `sold`; LIVE 225 / 131. This subtotal includes parts/repair evidence. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-63.md`.

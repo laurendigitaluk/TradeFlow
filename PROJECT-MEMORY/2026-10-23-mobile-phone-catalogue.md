@@ -399,3 +399,5 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md` and `PROJECT-MEM
 
 ## Mobile phone catalogue count refresh — 24 October 2026
 After Batch 60, counts were refreshed: TEST 224 active phone evidence and 130 active rows with `evidence_type='uk_used'` and `availability='sold'`; LIVE 222 and 128 respectively. The latter count includes the explicitly labelled parts/repair observation, so it is not working-only. The two-row difference remains. Full aggregate duplicate-key audit is still outstanding.
+
+Stable-key aggregate audit refreshed on 24 October 2026: zero duplicate active non-null source-record-key groups across `shared_market_evidence` in TEST and LIVE. URL uniqueness was not used as a global criterion because category/product pages may validly support multiple products.

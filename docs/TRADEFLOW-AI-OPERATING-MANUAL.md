@@ -2652,3 +2652,7 @@ Stable-key audit refresh (24 October 2026): no duplicate active non-null source-
 
 ## Mobile phone catalogue — Batch 61 (24 October 2026)
 Batch 61 added iPhone 15 Pro 128GB Black Titanium, eBay item 900018786339, sold 19 October 2026 at £404.50 displayed including £14.50 Buyer Protection. Listing title describes mint condition and 100% battery health; no charger included. Seller proceeds are unconfirmed. URL and stable-key preflights were clear; TEST-first then LIVE insertions and read-back were successful. Pixel 9 item 820179580133 was already present in both environments and was not duplicated. Counts: TEST 225 active phone evidence, LIVE 223; last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md`.
+
+
+## Mobile phone catalogue — Batch 62 (24 October 2026)
+Batch 62 added Google Pixel 9 128GB Obsidian, eBay item 147349812276, sold 28 June 2026, displayed £243.42 including £8.42 Buyer Protection. Listing title describes acceptable condition, 99% battery health and warranty through 27 November 2027. Exact URL/key preflight, TEST-first then LIVE insertion, and read-back verification succeeded. Counts: TEST 226 active phone evidence, LIVE 224; active `uk_used` + `sold` subtotals not refreshed (last confirmed TEST 130 / LIVE 128). See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md`.

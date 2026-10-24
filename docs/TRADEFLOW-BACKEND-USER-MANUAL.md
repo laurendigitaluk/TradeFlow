@@ -1018,3 +1018,7 @@ Added and verified in both TEST and LIVE two iPhone 15 128GB parts/repair sales:
 
 ## Catalogue evidence checkpoint — Batch 66 (24 October 2026)
 Added one verified iPhone 15 Pro 128GB Blue Titanium UK eBay completed sale, item 298501695479, displayed £360.72 including £11.41 Buyer Protection. Listing describes a working, factory-reset device with original box and missing accessories. Exact URL/key preflight was clear; TEST then LIVE insertion and read-back were confirmed. TEST active phone evidence: 231; LIVE: 229. Active uk_used + sold counts are 137 and 135 and include parts/repair rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md`.
+
+
+## Catalogue evidence checkpoint — Batch 68 (24 October 2026)
+Added and verified in both TEST and LIVE one iPhone 15 Pro Max 256GB Natural Titanium completed-sale record, item 128012606222, displayed £399.88 including £14.29 Buyer Protection. Three bids. Listing title says Excellent condition while the eBay condition field says Used; preserve the distinction. Counts: TEST 233 active phone evidence / 139 active uk_used + sold; LIVE 231 / 137. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-68.md`.

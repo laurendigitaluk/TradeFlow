@@ -2642,3 +2642,7 @@ Batch 59 added iPhone 15 Pro 128GB Black, eBay item 206515412317, sold 1 Septemb
 
 ## Mobile phone catalogue — Batch 60 (24 October 2026)
 Batch 60 added two iPhone 15 Pro 128GB Black Titanium sold observations after URL/key preflight in both environments. Item 206070231627: £379.99 displayed including Buyer Protection; 90% battery health, fair/acceptable cosmetic condition with obvious wear, seller states fully tested/working, charger included. Separate read-back confirmed active in TEST and LIVE. Item 206112400829: £199.99 displayed including Buyer Protection; shattered rear glass and faulty non-genuine replacement screen, explicitly classified For parts or not working. TEST read-back succeeded; LIVE insert response confirmed the row but separate read-back was blocked. Counts: TEST 224 active phone evidence; LIVE 222. UK used/sold subtotals were not refreshed (last confirmed TEST 126 / LIVE 124). Full aggregate duplicate-key audit remains outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md`.
+
+
+## Mobile phone catalogue count refresh — 24 October 2026
+Post-Batch-60 count refresh: TEST 224 active phone evidence / 130 active `uk_used` + `sold` rows; LIVE 222 / 128. The `uk_used` + `sold` filter includes the explicitly labelled parts/repair observation and must not be described as working-only. Two-row environment difference remains; full duplicate-key aggregate audit is outstanding.

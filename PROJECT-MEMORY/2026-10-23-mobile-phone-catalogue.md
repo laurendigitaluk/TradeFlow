@@ -463,3 +463,11 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-70.md` and `PROJECT-MEM
 - Added iPhone 15 Pro Max 256GB unlocked, eBay item 298539408905, sold 4 Aug 2026, two bids, displayed £463.08 including £13.08 Buyer Protection. Seller proceeds unconfirmed; no further condition details inferred.
 - URL/key preflight clear; TEST-first then LIVE, with read-back verified in both.
 - Counts: TEST 236 active phone evidence / 142 active uk_used + sold; LIVE 234 / 140. Two-row environment difference persists.
+
+
+## Mobile phone catalogue — Batch 71 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-71.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-71.md`.
+- Added Apple iPhone 16 Pro 256GB Desert Titanium unlocked, eBay item 820212891404, sold 8 Oct 2026. Displayed buyer-facing total £567.85 including £17.85 Buyer Protection; Best Offer was enabled and seller proceeds are unconfirmed.
+- TEST evidence 35d17e45-0a47-43d1-b6ed-ce13ed58579a and LIVE evidence c0249903-0bdb-493d-a989-207fa2a6be57; both exact read-backs verified.
+- Counts: TEST 237 active phone evidence / 143 active uk_used + sold; LIVE 235 / 141. Two-row difference persists. Zero duplicate active non-null stable-key groups in both environments.
+- Previously recorded iPhone 16 128GB items and iPhone 16 Pro Black item were not duplicated. Historical price observation was preserved when current page display differed.

@@ -952,3 +952,7 @@ Buyer Protection totals are buyer-facing totals, not seller proceeds. Keep “Re
 
 ## Catalogue evidence checkpoint — Batch 51 (24 October 2026)
 Two new UK eBay iPhone 15 128GB completed-sale evidence rows were inserted into TEST first and then LIVE. Post-write phone-category integrity checks: TEST 202 active phone evidence rows / 108 active UK used sold; LIVE 200 / 106; zero basic URL/key/positive GBP price/currency failures and zero duplicate active source-key groups in both environments. Batch keys active in both. Retain the explicit “For parts or not working” condition and do not use that observation as a typical working-phone comparable. Buyer Protection totals are buyer-facing totals, not seller proceeds. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-51.md`.
+
+
+## Catalogue evidence checkpoint — Batch 52 (24 October 2026)
+Two UK eBay phone-sale evidence rows were inserted TEST first, then LIVE. Post-write phone-category checks: TEST 204 active phone evidence / 110 active UK used sold; LIVE 202 / 108; zero basic URL/key/positive GBP price/currency failures and zero duplicate active source-key groups. Both Batch 52 keys are active in both environments. Preserve the Galaxy S24 “For parts or not working” condition and exclude it from typical working-phone comparables. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-52.md`.

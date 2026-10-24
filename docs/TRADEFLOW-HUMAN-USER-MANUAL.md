@@ -2317,3 +2317,7 @@ On 24 October 2026, two UK eBay sold records were added and verified active in T
 
 ## Mobile phone catalogue — Batch 58 (24 October 2026)
 The catalogue includes a verified UK eBay completed sale for iPhone 15 Pro 128GB Natural Titanium, described as immaculate and supplied with its original box. Item 227530529279 sold on 21 September 2026; the displayed £402.08 includes £12.08 Buyer Protection, so it is a buyer-facing total rather than confirmed seller proceeds. The row was verified active in both TEST and LIVE. An iPhone 15 Plus Blue candidate already existed and was not duplicated. Counts: TEST 221 active phone evidence rows; LIVE 219. The used/sold subtotals and full duplicate-key aggregate audit remain outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-58.md`.
+
+
+## Mobile phone catalogue — Batch 59 (24 October 2026)
+A verified UK eBay completed-sale record was added for iPhone 15 Pro 128GB Black, item 206515412317, sold on 1 September 2026. The displayed £302.94 includes £10.34 Buyer Protection and is not confirmed seller net proceeds. The row was verified active in TEST and LIVE. Counts are TEST 222 active phone evidence rows and LIVE 220. UK used/sold subtotals and the full duplicate-key audit have not been refreshed; a two-row environment difference remains. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-59.md`.

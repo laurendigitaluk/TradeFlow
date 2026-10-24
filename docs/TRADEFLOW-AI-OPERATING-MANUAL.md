@@ -2648,3 +2648,7 @@ Batch 60 added two iPhone 15 Pro 128GB Black Titanium sold observations after UR
 Post-Batch-60 count refresh: TEST 224 active phone evidence / 130 active `uk_used` + `sold` rows; LIVE 222 / 128. The `uk_used` + `sold` filter includes the explicitly labelled parts/repair observation and must not be described as working-only. Two-row environment difference remains; full duplicate-key aggregate audit is outstanding.
 
 Stable-key audit refresh (24 October 2026): no duplicate active non-null source-record-key groups were found across shared evidence in TEST or LIVE. Do not treat repeated generic catalogue URLs as duplicate evidence by themselves.
+
+
+## Mobile phone catalogue — Batch 61 (24 October 2026)
+Batch 61 added iPhone 15 Pro 128GB Black Titanium, eBay item 900018786339, sold 19 October 2026 at £404.50 displayed including £14.50 Buyer Protection. Listing title describes mint condition and 100% battery health; no charger included. Seller proceeds are unconfirmed. URL and stable-key preflights were clear; TEST-first then LIVE insertions and read-back were successful. Pixel 9 item 820179580133 was already present in both environments and was not duplicated. Counts: TEST 225 active phone evidence, LIVE 223; last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md`.

@@ -980,3 +980,7 @@ Two UK eBay sold observations were added and verified active in both TEST and LI
 
 ## Catalogue evidence checkpoint — Batch 58 (24 October 2026)
 Added and verified in both TEST and LIVE the iPhone 15 Pro 128GB Natural Titanium UK eBay sale, item 227530529279, displayed £402.08 including £12.08 Buyer Protection. The listing described the phone as immaculate and included the original box. The iPhone 15 Plus 128GB Blue candidate (item 800655157429) already existed in both environments and was not duplicated. TEST: 221 active phone evidence rows; LIVE: 219. UK used/sold subtotals were not refreshed in Batch 58; last confirmed values remain TEST 126 and LIVE 124. Full duplicate-key aggregate audit remains outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-58.md`.
+
+
+## Catalogue evidence checkpoint — Batch 59 (24 October 2026)
+One UK eBay completed-sale observation was added for iPhone 15 Pro 128GB Black, item 206515412317, displayed £302.94 including £10.34 Buyer Protection. Seller proceeds are not independently confirmed. TEST and LIVE exact URL/key preflights were empty; insertions were performed TEST-first and then LIVE, and exact-URL read-back confirmed one active row in each. TEST active phone evidence: 222; LIVE: 220. UK used/sold subtotals were not refreshed and remain last confirmed at TEST 126 / LIVE 124. Full duplicate-key aggregate audit remains outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-59.md`.

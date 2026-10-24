@@ -1002,3 +1002,7 @@ Added and verified iPhone 15 Pro 128GB Black Titanium eBay sale item 90001878633
 
 ## Catalogue evidence checkpoint — Batch 62 (24 October 2026)
 Added and verified Google Pixel 9 128GB Obsidian eBay sale item 147349812276 in TEST and LIVE. Displayed £243.42 includes £8.42 Buyer Protection; listing title says acceptable condition, 99% battery health and warranty to 27 November 2027. TEST active phone evidence count: 226; LIVE: 224. Active `uk_used` + `sold` subtotals were not refreshed and remain last confirmed at TEST 130 / LIVE 128. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md`.
+
+
+## Catalogue evidence checkpoint — Batch 63 (24 October 2026)
+Added one Google Pixel 9 128GB GrapheneOS sale observation, item 267700928563, displayed £299.00, sold 15 July 2026. Exact URL and stable-key preflight were empty in both environments; insertion and stable-key read-back confirmed active rows in TEST and LIVE. TEST: 227 active phone evidence / 133 active `uk_used` + `sold`; LIVE: 225 / 131. The latter count includes parts/repair rows and is not working-only. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-63.md`.

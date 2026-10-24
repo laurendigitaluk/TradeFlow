@@ -219,3 +219,13 @@ Three used completed-sale records were verified in TEST and promoted to LIVE: Ga
 Current phone-category snapshot: TEST 130 active visible variants, 175 evidence rows (164 active, 11 inactive), 70 active UK used completed-sale rows. LIVE 128 active visible variants, 170 evidence rows (162 active, 8 inactive), 68 active UK used completed-sale rows. Both: zero visible active variants missing active evidence; zero active missing URLs/keys, non-positive prices, non-GBP values, or duplicate active source keys.
 
 The database safety-check blocks observed earlier were intermittent tool-layer blocks, not returned PostgreSQL errors. A separate `ON CONFLICT (source_record_key)` attempt did return a genuine PostgreSQL error because no unique/exclusion constraint exists on that field; subsequent inserts were plain INSERTs after checking keys absent. Preserve the Batch 37 historical observations for eBay items 377500378163 and 800749991087; their pages now show different totals, which requires investigation rather than silent overwriting.
+
+
+## Mobile phone catalogue evidence continuity — Batch 39 (24 October 2026)
+Checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-39.md`; batch memory: `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-39.md`.
+
+Three used completed-sale records were added TEST-first then promoted to LIVE: Galaxy S24 128GB £206.99 displayed total (includes Buyer Protection; fee amount not captured), Pixel 9 128GB £269.25 (listing notes chipped paint; do not call pristine), and iPhone 16 128GB White £412.24 displayed total (includes £12.25 Buyer Protection; Best Offer accepted). Source keys were absent before insertion and exact active rows were read back in both environments.
+
+Current phone-category snapshot: TEST 130 active visible variants, 178 evidence rows (167 active, 11 inactive), 73 active UK used completed-sale rows. LIVE 128 active visible variants, 173 evidence rows (165 active, 8 inactive), 71 active UK used completed-sale rows. Both: zero active visible variants missing active evidence; zero active evidence missing URLs/keys, non-positive prices, non-GBP currency, or duplicate active source keys.
+
+Preserve Batch 37 historical observations for eBay items 377500378163 and 800749991087; current page totals differ and require investigation rather than silent overwrite. Keep OPPO Find X10 256GB and Samsung Galaxy A18 4G 128GB hidden pending exact-capacity evidence. Recheck Xiaomi campaign prices after 27 Oct and OPPO launch after 28 Oct.

@@ -964,3 +964,7 @@ Two Pixel 9 128GB UK eBay sale rows were inserted into TEST and then LIVE. Exist
 
 ## Catalogue evidence checkpoint — Batch 54 (24 October 2026)
 Two Pixel 9 128GB Porcelain eBay sale rows were inserted into TEST and then LIVE. Read-after-write verified both keys active in each environment. Post-write counts: TEST 208 active phone evidence / 114 active UK used sold; LIVE 206 / 112. One record is ordinary Used and one is Opened - never used; keep the latter separate from typical used-phone comparisons. A false-positive phone-case result was not inserted. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md`.
+
+
+## Catalogue evidence checkpoint — Batch 55 (24 October 2026)
+Seven new iPhone 14 128GB and Pixel 8 128GB UK eBay sale rows were inserted into TEST then LIVE and read-after-write verified. TEST: 215 active phone evidence / 121 active UK used sold; LIVE: 213 / 119. Basic integrity failures and duplicate active source-key groups: zero in both. A previously existing iPhone 14 row was reconciled without duplication. Galaxy A15/A16 candidates were not inserted because their master products do not exist. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-55.md`.

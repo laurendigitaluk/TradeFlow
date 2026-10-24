@@ -336,3 +336,11 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-52.md` and `PROJECT-MEM
 - Added two UK eBay completed-sale observations to TEST then LIVE: iPhone 15 128GB Pink unlocked (£309.99 displayed, sold 19 Oct; boxed, very good condition, 88% battery health; Best Offer acceptance unconfirmed); Galaxy S24 128GB with faulty fingerprint sensor (£110 displayed including Buyer Protection, sold 29 Aug; explicitly For parts or not working, exclude from typical working-phone benchmarks).
 - TEST: 204 active phone evidence / 110 active UK used sold. LIVE: 202 / 108. Both have zero basic phone-scoped integrity failures and zero duplicate active source-key groups; both Batch 52 keys active.
 - Preserve condition and offer caveats. Buyer-facing totals are not necessarily seller proceeds. Continue TEST-first promotion to LIVE promptly.
+
+
+## Mobile phone catalogue — Batch 53 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-53.md`.
+- Added two Pixel 9 128GB UK eBay completed-sale records to TEST then LIVE: Obsidian Black unlocked £299.99 (15 Jun; Best Offer acceptance/fee breakdown unconfirmed) and Obsidian unlocked £269.95 (24 Jul; listing title states 99% battery health and very good condition; Best Offer acceptance/fee unconfirmed).
+- Reconciled existing Galaxy S24 128GB Onyx Black sale £237.75 incl £8.23 Buyer Protection (item 257702271643; six bids); it was already active in TEST and LIVE and was not duplicated.
+- TEST: 206 active phone evidence / 112 active UK used sold. LIVE: 204 / 110. Zero basic phone-scoped integrity failures and zero duplicate active source-key groups in both; all three keys active.
+- A LIVE unique-key conflict revealed the Galaxy row already existed. Queried and confirmed it; future preflight must check stable source keys globally, not just URL/category filters.

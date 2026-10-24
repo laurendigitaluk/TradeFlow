@@ -272,3 +272,9 @@ Fresh verified counts after Batch 43: TEST 179 active phone evidence rows and 85
 Added and promoted three completed-sale observations: Pixel 9 128GB Obsidian £347.76 including £11.19 Buyer Protection, Best Offer accepted (eBay 298415131329); iPhone 16 128GB Ultramarine £374.67 including £11.63 Buyer Protection, 90% battery health (eBay 327147326675); Galaxy S24 128GB Marble Grey £368.00 (eBay 376877291140; Buyer Protection fee not separately captured). Full notes and stable keys are in `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-44.md`.
 
 Fresh verified post-batch counts: TEST 182 active phone evidence rows / 88 active UK used completed-sale rows; LIVE 180 / 86. Both environments have zero phone-scoped integrity failures and zero duplicate active source keys. Preserve buyer-facing fee distinctions and historical evidence.
+
+
+## Batch 45 — 24 October 2026
+Added and promoted three UK eBay completed-sale observations: iPhone 15 128GB Light Blue £327.83 including £10.87 Buyer Protection (item 168659039520, 7 bids); iPhone 15 128GB Black unlocked, described as excellent with good battery health, £330.92 including £10.92 Buyer Protection (item 377366853347); Galaxy S24 256GB Black £268.15 including £9.21 Buyer Protection (item 128000546242; Best Offer acceptance not confirmed). See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-45.md` for stable keys.
+
+Fresh verified counts: TEST 185 active phone evidence rows / 91 active UK used completed-sale rows; LIVE 183 / 89. Both have zero phone-scoped integrity failures and zero duplicate active source keys.

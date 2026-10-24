@@ -2213,3 +2213,9 @@ Preserve condition and transaction details. A listing that mentions cosmetic dam
 The latest phone-catalogue checkpoint is `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-40.md`. Three more UK used completed-sale records for the Galaxy S24 128GB, iPhone 16 128GB White and Pixel 9 256GB Porcelain were verified in TEST and LIVE. Phone evidence totals are TEST 181 rows (170 active) and LIVE 176 rows (168 active); both environments have no active visible phone variants missing active evidence.
 
 Where eBay Buyer Protection is included, the recorded total is buyer-facing rather than seller proceeds. Keep accepted Best Offer and condition notes. If a listing's current displayed total differs from a historical observation, investigate before changing the record.
+
+
+### Phone catalogue progress — 24 October 2026, Batch 41
+Three additional completed-sale observations have been added to TEST and then verified in LIVE: Galaxy S24 128GB Marble Grey (£249.99); Pixel 9 128GB Porcelain (£315.67 including £10.67 Buyer Protection; Best Offer accepted); iPhone 16 128GB Ultramarine (£381.75 including £11.75 Buyer Protection; Best Offer accepted). Source URLs and stable keys are preserved in the Batch 41 checkpoint.
+
+Current phone evidence totals: TEST 173 active rows and 79 active UK used completed-sale rows across 130 active visible variants; LIVE 171 active rows and 77 active UK used completed-sale rows across 128 active visible variants. Both environments have no active visible phone variants missing active evidence, no phone integrity failures, and no duplicate active source keys. Buyer Protection is part of the buyer-facing total, not seller proceeds. If a listing's current total changes, investigate before altering a historical observation.

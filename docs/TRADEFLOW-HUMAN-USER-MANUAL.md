@@ -2351,3 +2351,7 @@ One Google Pixel 9 128GB Obsidian sale record was added at £272.00 (eBay item 4
 
 ## Mobile phone catalogue — Batch 65 (24 October 2026)
 Two iPhone 15 128GB parts/repair records were added and verified in TEST and LIVE: Black, £192.00 displayed, and Blue, £157.00 displayed. Both listings state parts/not working; do not compare them with working phones. Buyer Protection is included in the displayed prices, not confirmed seller proceeds. TEST has 230 active phone evidence rows and LIVE has 228; used/sold counts are 136 and 134 and include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-65.md`.
+
+
+## Mobile phone catalogue — Batch 66 (24 October 2026)
+A completed sale was added for iPhone 15 Pro 128GB Blue Titanium at displayed £360.72. The listing described it as working and factory reset, with original box but missing accessories. Buyer Protection (£11.41) is included in the displayed total; seller net proceeds are unconfirmed. The row is active and verified in TEST and LIVE. Active phone evidence counts: TEST 231, LIVE 229; used/sold counts 137 and 135 include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md`.

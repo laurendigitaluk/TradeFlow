@@ -2680,3 +2680,7 @@ Batch 68 added iPhone 15 Pro Max 256GB Natural Titanium, eBay item 128012606222,
 
 ## Mobile phone catalogue — Batch 69 (24 October 2026)
 Batch 69 added two iPhone 15 Pro Max 256GB completed sales: Grey with retail box, item 298621751352, displayed £444.64 including £12.78 Buyer Protection; and Silver, item 327278174330, displayed £439.66 including £12.70 Buyer Protection. The Silver listing says the seller relisted this item or one like it, so do not assume it represents a unique device. Seller proceeds are unconfirmed. URL/key preflight was empty; both rows were inserted TEST-first then LIVE and read-back verified in both. Counts: TEST 235 active phone evidence / 141 active uk_used + sold; LIVE 233 / 139. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-69.md`.
+
+
+## Mobile phone catalogue — Batch 70 (24 October 2026)
+Batch 70 added iPhone 15 Pro Max 256GB unlocked, item 298539408905, sold 4 August 2026. Two bids; displayed £463.08 includes £13.08 Buyer Protection. Listing says Used and unlocked; no additional condition details were confirmed. Seller proceeds are unconfirmed. URL/key preflight was empty in both environments; TEST-first and LIVE insertions were read-back verified. Counts: TEST 236 active phone evidence / 142 active uk_used + sold; LIVE 234 / 140. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-70.md`.

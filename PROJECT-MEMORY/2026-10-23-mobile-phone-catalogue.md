@@ -421,3 +421,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-63.md` and `PROJECT-MEM
 - Added Google Pixel 9 128GB GrapheneOS UK eBay sale item 267700928563, sold 15 July 2026, displayed £299.00. B-condition cosmetic marks/scratches; custom OS must remain distinct from stock Android comparisons. Buyer Protection and seller net proceeds were not confirmed.
 - URL/key preflight, insertion, and stable-key read-back confirmed active in both TEST and LIVE.
 - TEST 227 active phone evidence / 133 active `uk_used` + `sold`; LIVE 225 / 131. Parts/repair observations are included in the latter subtotal. Two-row difference remains.
+
+
+## Mobile phone catalogue — Batch 64 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-64.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-64.md`.
+- Added Google Pixel 9 128GB Obsidian, eBay item 407029495464, sold 29 June 2026 at displayed £272.00. Listing says unlocked and “Great” condition. Seller is London-based, but listing showed international postage, so this is UK eBay seller evidence rather than confirmed UK-destination evidence. Buyer Protection and net proceeds unconfirmed.
+- Exact URL/key preflight, insertion, and stable-key read-back verified active in TEST and LIVE.
+- TEST 228 active phone evidence / 134 active `uk_used` + `sold`; LIVE 226 / 132. Subtotals include parts/repair evidence. Two-row environment difference remains.

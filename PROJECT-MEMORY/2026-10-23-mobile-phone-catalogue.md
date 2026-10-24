@@ -358,3 +358,12 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-55.md` and `PROJECT-MEM
 - Added four iPhone 14 128GB observations (£176.25, £199.99, £207.25 with 77% battery, £181.42 with 78% battery) and three Pixel 8 128GB observations (£165.92 Obsidian, £196.92 Hazel near-mint, £218.48 running GrapheneOS). Buyer Protection included in displayed totals; keep battery/custom-OS caveats.
 - A separate iPhone 14 sale, item 800739946361, was already present in TEST and LIVE and was not duplicated. Galaxy A15/A16 candidates deferred because no corresponding master products exist yet.
 - TEST: 215 active phone evidence / 121 active UK used sold. LIVE: 213 / 119. Zero basic integrity failures and zero duplicate active source-key groups in both. All seven new keys verified active in both.
+
+
+## Mobile phone catalogue — Batch 56 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-56.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-56.md`.
+- Resolved the previously unverified LIVE status for iPhone 14 128GB eBay item 366661027705: £188.66, active in both TEST and LIVE.
+- Added two Pixel 8 128GB UK eBay sales, item 267790609007 at £159.95 (Buyer Protection included; fee detail not captured) and item 188937928681 at £179.99 (Good cosmetic condition, no accessories). Both new Pixel rows were read-after-write verified active in TEST and LIVE.
+- iPhone 16 128GB candidates 366694404412 and 318875321713 were already present in both environments and were not duplicated.
+- TEST: 218 active phone evidence / 124 active UK used sold. LIVE: 216 / 122. Duplicate active source-key groups: zero in both. A two-row difference remains between environments.
+- A further multi-row insert was blocked; those additional candidates were not counted as inserted. Continue global source-key/URL preflight, TEST-first, then LIVE with read-after-write verification.

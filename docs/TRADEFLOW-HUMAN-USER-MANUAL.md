@@ -2201,3 +2201,9 @@ Verified snapshot: TEST 130 active customer-visible variants, 172 evidence rows 
 The phone catalogue's latest verified checkpoint is `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-38.md`. Three more UK completed-sale records for the Galaxy S24 128GB, Pixel 9 128GB and iPhone 16 128GB were verified in both TEST and LIVE. Current phone evidence totals are TEST 175 rows (164 active) and LIVE 170 rows (162 active); both environments have no active visible phone variants missing active evidence.
 
 Prices shown on eBay can include Buyer Protection fees and must not be treated as seller proceeds. If a previously recorded listing later displays a different total, preserve the original observation and investigate the listing history before changing the record. The operating team must distinguish a tool safety block from a database error and verify every insertion by reading the exact row back from both environments.
+
+
+## Mobile catalogue evidence — verification note (24 October 2026, Batch 39)
+The latest verified phone-catalogue checkpoint is `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-39.md`. Three further UK used completed-sale records for the Galaxy S24 128GB, Pixel 9 128GB and iPhone 16 128GB were verified in both TEST and LIVE. Phone evidence totals are TEST 178 rows (167 active) and LIVE 173 rows (165 active); both environments have no active visible phone variants missing active evidence.
+
+Preserve condition and transaction details. A listing that mentions cosmetic damage is not a pristine comparable; accepted Best Offer and Buyer Protection fees must be identified. If a listing's current total differs from an older observation, investigate before modifying historical evidence.

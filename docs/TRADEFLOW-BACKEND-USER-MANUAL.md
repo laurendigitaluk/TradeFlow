@@ -1006,3 +1006,7 @@ Added and verified Google Pixel 9 128GB Obsidian eBay sale item 147349812276 in 
 
 ## Catalogue evidence checkpoint — Batch 63 (24 October 2026)
 Added one Google Pixel 9 128GB GrapheneOS sale observation, item 267700928563, displayed £299.00, sold 15 July 2026. Exact URL and stable-key preflight were empty in both environments; insertion and stable-key read-back confirmed active rows in TEST and LIVE. TEST: 227 active phone evidence / 133 active `uk_used` + `sold`; LIVE: 225 / 131. The latter count includes parts/repair rows and is not working-only. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-63.md`.
+
+
+## Catalogue evidence checkpoint — Batch 64 (24 October 2026)
+Added Google Pixel 9 128GB Obsidian completed-sale evidence from eBay item 407029495464 (£272.00 displayed, sold 29 June 2026). URL/key preflight was empty and stable-key read-back confirmed active records in TEST and LIVE. Listing described the device as unlocked and in “Great” condition; seller was London-based, but international postage options were shown, so UK destination is unconfirmed. Counts: TEST 228 active phone evidence / 134 `uk_used` + `sold`; LIVE 226 / 132. The subtotal includes parts/repair rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-64.md`.

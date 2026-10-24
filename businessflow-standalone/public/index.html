@@ -101,7 +101,11 @@ async function refreshLogoImage(){
  if(!logoAssetPath||!savedSiteId){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');return}
  const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(logoAssetPath,3600);
  if(error||!data?.signedUrl){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');assetStatus('Saved logo could not be loaded.');return}
- logoSignedUrl=data.signedUrl;$('previewLogoImage').src=logoSignedUrl;$('previewLogoImage').classList.remove('hide');$('previewLogo').classList.add('hide');assetStatus('Logo loaded from your private assets.');
+ logoSignedUrl=data.signedUrl;
+ const preview=$('previewLogoImage');
+ preview.onload=()=>{preview.classList.remove('hide');$('previewLogo').classList.add('hide');assetStatus('Logo loaded from your private assets.');};
+ preview.onerror=()=>{preview.classList.add('hide');preview.removeAttribute('src');$('previewLogo').classList.remove('hide');assetStatus('Logo URL was created, but the image could not be displayed. Try uploading the logo again.');};
+ preview.src=logoSignedUrl;
 }
 $('uploadAsset').onclick=async()=>{
  if(!currentUser){assetStatus('Sign in before uploading a logo.');return}
@@ -125,6 +129,14 @@ function showHeroImage(url){
  if(url){site.style.setProperty('--hero-image','url("'+url.replace(/["\\\\]/g,'')+'")');site.classList.add('has-hero-image');}
  else{site.style.removeProperty('--hero-image');site.classList.remove('has-hero-image');}
 }
+function verifyHeroImage(url){
+ return new Promise(resolve=>{
+  const image=new Image();
+  image.onload=()=>resolve(true);
+  image.onerror=()=>resolve(false);
+  image.src=url;
+ });
+}
 $('uploadHeroImage').onclick=async()=>{
  if(!currentUser){heroStatus('Sign in before uploading an image.');return}
  const file=$('heroImageFile').files?.[0];
@@ -141,8 +153,9 @@ $('uploadHeroImage').onclick=async()=>{
  if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
  heroImagePath=objectPath;
  const {data:signed,error:signedError}=await sb.storage.from('businessflow-assets').createSignedUrl(objectPath,3600);
- if(signedError){heroStatus('Image uploaded; preview link could not be created: '+signedError.message);return}
- showHeroImage(signed.signedUrl);heroStatus('Image uploaded. Save website to keep the image attached to this draft.');
+ if(signedError){heroStatus('Image uploaded, but its preview link could not be created: '+signedError.message);return}
+ if(!await verifyHeroImage(signed.signedUrl)){heroStatus('Image uploaded, but the preview could not load it. Check storage access and try again.');return}
+ showHeroImage(signed.signedUrl);heroStatus('Image uploaded and visible in the Home preview. Save website to keep it attached to this draft.');
 };
 $('clearHeroImage').onclick=async()=>{
  if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
@@ -156,7 +169,16 @@ function readEditorState(){
  return values;
 }
 function applyEditorState(values){
- if(!values||typeof values!=='object')return;heroImagePath=typeof values.heroImagePath==='string'?values.heroImagePath:null;if(heroImagePath&&savedSiteId){sb.storage.from('businessflow-assets').createSignedUrl(heroImagePath,3600).then(({data,error})=>{if(!error&&data?.signedUrl)showHeroImage(data.signedUrl);else showHeroImage(null)});}else showHeroImage(null);
+ if(!values||typeof values!=='object')return;
+ heroImagePath=typeof values.heroImagePath==='string'?values.heroImagePath:null;
+ if(heroImagePath&&savedSiteId){
+  heroStatus('Loading saved homepage image…');
+  sb.storage.from('businessflow-assets').createSignedUrl(heroImagePath,3600).then(async({data,error})=>{
+   if(error||!data?.signedUrl){showHeroImage(null);heroStatus('Saved homepage image could not be loaded. Re-upload it and save the draft again.');return}
+   if(!await verifyHeroImage(data.signedUrl)){showHeroImage(null);heroStatus('Saved homepage image URL was created, but the image could not be displayed. Re-upload it and save again.');return}
+   showHeroImage(data.signedUrl);heroStatus('Saved homepage image loaded and displayed.');
+  }).catch(()=>{showHeroImage(null);heroStatus('Could not load the saved homepage image. Re-upload it and save again.')});
+ }else{showHeroImage(null);heroStatus('No saved homepage image.');}
  fields.forEach(id=>{const el=$(id);if(el&&typeof values[id]==='string')el.value=values[id]});
  if(typeof values.pageHeading==='string')$('pageHeading').value=values.pageHeading;
  if(typeof values.pageBody==='string')$('pageBody').value=values.pageBody;

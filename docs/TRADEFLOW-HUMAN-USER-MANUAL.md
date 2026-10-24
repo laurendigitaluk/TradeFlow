@@ -2305,3 +2305,7 @@ Two Google Pixel 9 128GB Porcelain eBay completed-sale observations were added t
 
 ## Mobile phone catalogue — Batch 55 (24 October 2026)
 Seven new UK eBay completed-sale records were added for iPhone 14 128GB and Pixel 8 128GB. Evidence includes iPhone 14 sales with 77% and 78% battery health and a Pixel 8 running GrapheneOS; these caveats must be retained when valuing devices. TEST has 215 active phone evidence / 121 active UK used sold; LIVE has 213 / 119. All seven records verified in both. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-55.md`.
+
+
+## Mobile phone catalogue — Batch 56 (24 October 2026)
+The catalogue now includes two additional verified Google Pixel 8 128GB UK eBay sales (£159.95 and £179.99), and the earlier iPhone 14 128GB record at £188.66 has been confirmed active in LIVE as well as TEST. All three are verified in both environments. TEST has 218 active phone evidence rows / 124 active UK used sold; LIVE has 216 / 122. No duplicate active source keys were found, though the environments still differ by two rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-56.md`.

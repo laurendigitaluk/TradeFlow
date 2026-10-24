@@ -2522,3 +2522,11 @@ Current checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-39.md`;
 Three UK completed-sale records (Galaxy S24 128GB, Pixel 9 128GB, iPhone 16 128GB) were inserted in TEST, promoted to LIVE, and read back in both environments. Phone-category snapshot: TEST 178 evidence rows (167 active, 11 inactive), 73 active used-sale rows; LIVE 173 evidence rows (165 active, 8 inactive), 71 active used-sale rows. Both have zero active visible variants missing active evidence and zero checked integrity failures or duplicate active source keys.
 
 Preserve condition and transaction caveats: Pixel 9 listing notes chipped paint; iPhone 16 Best Offer was accepted; eBay Buyer Protection totals are buyer-facing, not seller proceeds. If old listing totals change, investigate revisions/relisting and preserve observation history rather than silently overwriting. Continue TEST-first validation and prompt LIVE promotion.
+
+
+## Mobile catalogue evidence update — 24 October 2026 (Batch 40)
+Checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-40.md`; project memory: `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-40.md`.
+
+Three UK completed-sale rows (Galaxy S24 128GB, iPhone 16 128GB White, Pixel 9 256GB Porcelain) were inserted in TEST, promoted to LIVE, and read back from both environments. Phone-category snapshot: TEST 181 evidence rows (170 active, 11 inactive), 76 active UK used-sale rows; LIVE 176 evidence rows (168 active, 8 inactive), 74 active UK used-sale rows. Both have zero visible active variants missing evidence and zero checked integrity failures or duplicate active source keys.
+
+Buyer Protection amounts are part of the buyer-facing total, not seller proceeds. Preserve Best Offer and condition notes. When live pages change, do not silently rewrite historical observations. Continue TEST-first and promote validated batches promptly.

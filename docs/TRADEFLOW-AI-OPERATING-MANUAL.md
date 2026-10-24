@@ -2672,3 +2672,7 @@ Batch 65 added two iPhone 15 128GB parts/repair completed-sale records: Black it
 
 ## Mobile phone catalogue — Batch 66 (24 October 2026)
 Batch 66 added iPhone 15 Pro 128GB Blue Titanium UK eBay sale item 298501695479, sold 23 July 2026. Displayed £360.72 includes £11.41 Buyer Protection; listing says fully working, factory reset, original box but missing accessories, seven bids. Seller proceeds are not independently confirmed. URL/key preflight was empty in TEST and LIVE; inserted TEST-first then LIVE, with read-back verification in both. Counts: TEST 231 active phone evidence / 137 active uk_used + sold; LIVE 229 / 135. Used/sold totals include parts/repair rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md`.
+
+
+## Mobile phone catalogue — Batch 68 (24 October 2026)
+Batch 68 added iPhone 15 Pro Max 256GB Natural Titanium, eBay item 128012606222, sold 8 August 2026 with three bids. Displayed £399.88 includes £14.29 Buyer Protection; seller proceeds unconfirmed. Listing title says Excellent condition but eBay condition field says Used. URL/key preflight was empty in both environments; inserted TEST-first then LIVE, with read-back verification in both. Counts: TEST 233 active phone evidence / 139 active uk_used + sold; LIVE 231 / 137. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-68.md`.

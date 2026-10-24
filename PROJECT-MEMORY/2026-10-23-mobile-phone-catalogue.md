@@ -266,3 +266,9 @@ Batch 42's three records were independently verified active in both TEST and LIV
 - Galaxy S24 128GB Purple, eBay 198530912410, £269.25 including £9.25 Buyer Protection; Best Offer accepted. Key `mobile-used-sold-galaxy-s24-128gb-ebay-198530912410-20260801`.
 
 Fresh verified counts after Batch 43: TEST 179 active phone evidence rows and 85 active UK used completed-sale rows; LIVE 177 active phone evidence rows and 83 active UK used completed-sale rows. Both have zero phone-scoped URL/key/positive GBP price/currency integrity failures and zero duplicate active source keys. Continue to treat Buyer Protection amounts as buyer-facing totals, preserve relisting/history, and retain condition contradictions as caveats.
+
+
+## Batch 44 — 24 October 2026
+Added and promoted three completed-sale observations: Pixel 9 128GB Obsidian £347.76 including £11.19 Buyer Protection, Best Offer accepted (eBay 298415131329); iPhone 16 128GB Ultramarine £374.67 including £11.63 Buyer Protection, 90% battery health (eBay 327147326675); Galaxy S24 128GB Marble Grey £368.00 (eBay 376877291140; Buyer Protection fee not separately captured). Full notes and stable keys are in `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-44.md`.
+
+Fresh verified post-batch counts: TEST 182 active phone evidence rows / 88 active UK used completed-sale rows; LIVE 180 / 86. Both environments have zero phone-scoped integrity failures and zero duplicate active source keys. Preserve buyer-facing fee distinctions and historical evidence.

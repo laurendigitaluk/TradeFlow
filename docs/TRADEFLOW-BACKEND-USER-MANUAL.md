@@ -1026,3 +1026,7 @@ Added and verified in both TEST and LIVE one iPhone 15 Pro Max 256GB Natural Tit
 
 ## Catalogue evidence checkpoint — Batch 69 (24 October 2026)
 Added two iPhone 15 Pro Max 256GB UK eBay sold observations, both verified active in TEST and LIVE: Grey with retail box (item 298621751352, £444.64 displayed) and Silver (item 327278174330, £439.66 displayed). Buyer Protection fees are included in both displayed totals; seller proceeds unconfirmed. The Silver listing notes seller relisting this item or one like it, so uniqueness is not established. Counts: TEST 235 active phone evidence / 141 active uk_used + sold; LIVE 233 / 139. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-69.md`.
+
+
+## Catalogue evidence checkpoint — Batch 70 (24 October 2026)
+Added one iPhone 15 Pro Max 256GB unlocked UK eBay sale observation, item 298539408905, displayed £463.08 including £13.08 Buyer Protection. Two bids; listing condition Used. TEST and LIVE rows were inserted and read-back verified after clean URL/key preflight. Counts: TEST 236 active phone evidence / 142 active uk_used + sold; LIVE 234 / 140. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-70.md`.

@@ -994,3 +994,7 @@ Two iPhone 15 Pro 128GB Black Titanium records were inserted TEST-first and then
 After Batch 60, active phone evidence counts are TEST 224 and LIVE 222. Active records with `evidence_type='uk_used'` and `availability='sold'` are TEST 130 and LIVE 128. This query includes the parts/repair row because it uses the same evidence type; it is not a working-only count. Full duplicate-key aggregate audit remains outstanding and the environment difference is two rows.
 
 Stable-key aggregate audit refresh (24 October 2026): zero duplicate active non-null source-record-key groups across shared evidence in TEST and LIVE. This does not establish unique URLs; shared category/catalogue pages can legitimately recur across product evidence.
+
+
+## Catalogue evidence checkpoint — Batch 61 (24 October 2026)
+Added and verified iPhone 15 Pro 128GB Black Titanium eBay sale item 900018786339 in TEST and LIVE. Displayed buyer-facing total £404.50 includes £14.50 Buyer Protection; seller proceeds unconfirmed. Listing title states mint condition, 100% battery health, no charger. TEST active phone evidence count: 225; LIVE: 223. Last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128. Pixel 9 item 820179580133 was already present in both and was not duplicated. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md`.

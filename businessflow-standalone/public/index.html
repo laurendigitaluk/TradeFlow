@@ -310,7 +310,7 @@ function initVisualBuilder(){
  const originalReadEditorState=readEditorState;
  readEditorState=function(){const state=originalReadEditorState();state.visualCanvasElements=elements.map(e=>({...e}));return state};
  const originalApplyEditorState=applyEditorState;
- applyEditorState=function(values){originalApplyEditorState(values);if(Array.isArray(values?.visualCanvasElements)){elements=values.visualCanvasElements.map(normalise);selectedId=null;render()}};
+ applyEditorState=function(values){originalApplyEditorState(values);if(Array.isArray(values?.visualCanvasElements)){elements=values.visualCanvasElements.map(normalise);selectedId=null;render();elements.filter(e=>e.type==='image'&&e.assetPath).forEach(async e=>{const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(e.assetPath,3600);if(!error&&data?.signedUrl){e.src=data.signedUrl;render()}})}};
  // Connect uploaded homepage image to a selected image box without changing other objects.
  const oldUpload=$('uploadHeroImage').onclick;
  $('uploadHeroImage').onclick=async function(){await oldUpload();if(heroImagePath){const target=elements.find(e=>e.id===selectedId&&e.type==='image');if(target){const {data}=await sb.storage.from('businessflow-assets').createSignedUrl(heroImagePath,3600);if(data?.signedUrl){target.src=data.signedUrl;target.assetPath=heroImagePath;render();}}}};

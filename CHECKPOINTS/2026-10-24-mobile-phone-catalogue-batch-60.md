@@ -35,3 +35,5 @@ Two additional iPhone 15 Pro 128GB Black Titanium UK eBay completed-sale observa
 - Active phone evidence: TEST 224; LIVE 222.
 - Active rows matching `evidence_type='uk_used'` and `availability='sold'`: TEST 130; LIVE 128. This query includes the explicitly labelled parts/repair record because it uses the same evidence type; it is not a count of working-only phones.
 - The two-row environment difference persists. Full duplicate-key aggregate audit remains outstanding.
+
+Stable-key audit refreshed on 24 October 2026: no duplicate active non-null `source_record_key` groups were returned in either TEST or LIVE across `shared_market_evidence`. This is a stable-key audit, not a duplicate-URL audit; generic catalogue source URLs may legitimately recur across products.

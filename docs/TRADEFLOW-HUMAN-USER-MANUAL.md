@@ -2347,3 +2347,7 @@ One Google Pixel 9 128GB with GrapheneOS was added from a UK eBay completed sale
 
 ## Mobile phone catalogue — Batch 64 (24 October 2026)
 One Google Pixel 9 128GB Obsidian sale record was added at £272.00 (eBay item 407029495464, sold 29 June 2026). The listing described it as unlocked and in “Great” condition. The seller was based in London, but international postage options were displayed, so the destination of the actual sale is not confirmed as UK. Buyer Protection and seller net proceeds were not confirmed. The record is verified active in TEST and LIVE. Counts: TEST 228 active phone evidence rows, LIVE 226; the `uk_used` + `sold` subtotals include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-64.md`.
+
+
+## Mobile phone catalogue — Batch 65 (24 October 2026)
+Two iPhone 15 128GB parts/repair records were added and verified in TEST and LIVE: Black, £192.00 displayed, and Blue, £157.00 displayed. Both listings state parts/not working; do not compare them with working phones. Buyer Protection is included in the displayed prices, not confirmed seller proceeds. TEST has 230 active phone evidence rows and LIVE has 228; used/sold counts are 136 and 134 and include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-65.md`.

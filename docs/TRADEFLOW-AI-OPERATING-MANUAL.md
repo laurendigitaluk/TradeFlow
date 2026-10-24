@@ -2560,3 +2560,9 @@ Post-batch metrics: TEST 185 active phone evidence rows and 91 active UK used co
 Three UK eBay completed-sale observations were added to TEST and promoted to LIVE: iPhone 15 128GB Black £253.75 including £8.75 Buyer Protection, Best Offer accepted (item 800710234384); iPhone 15 128GB Black £258.92 including £8.92 Buyer Protection, Best Offer accepted (item 377436509526); Galaxy S24 256GB Grey unlocked £309.55 including £10.55 Buyer Protection, Best Offer accepted (item 336549983134). See Batch 46 checkpoint for URLs and stable keys.
 
 Post-batch metrics: TEST 188 active phone evidence rows and 94 active UK used completed-sale rows; LIVE 186 active phone evidence rows and 92 active UK used completed-sale rows. Both have zero phone-scoped evidence integrity failures and zero duplicate active source keys. Keep Buyer Protection-inclusive amounts buyer-facing, preserve Best Offer notes, and do not overwrite historical observations.
+
+
+### Mobile phone catalogue — Batch 47 (24 October 2026)
+Three UK eBay completed-sale observations were added to TEST and promoted to LIVE: iPhone 15 128GB Black, 93% battery health, £322.84 including £10.78 Buyer Protection (item 377552504716; Best Offer acceptance not confirmed); iPhone 15 128GB unlocked, listing title states 100% battery health and excellent condition, £291.90 including £11.90 Buyer Protection (item 366731563762); Galaxy S24 128GB Purple unlocked dual SIM, £258.92 including £8.92 Buyer Protection (item 227389511234). See Batch 47 checkpoint for URLs and stable keys.
+
+Post-batch metrics: TEST 191 active phone evidence rows and 97 active UK used completed-sale rows; LIVE 189 active phone evidence rows and 95 active UK used completed-sale rows. Both have zero phone-scoped evidence integrity failures and zero duplicate active source keys. Preserve caveats, do not infer seller proceeds from buyer-facing totals, and retain historical observations.

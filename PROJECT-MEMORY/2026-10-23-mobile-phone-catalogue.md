@@ -408,3 +408,9 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md` and `PROJECT-MEM
 - Added iPhone 15 Pro 128GB Black Titanium, eBay item 900018786339, sold 19 October 2026, displayed £404.50 including £14.50 Buyer Protection. Listing title says mint, 100% battery health, no charger; seller proceeds not independently confirmed. URL/key preflight clean, TEST-first then LIVE, read-back verified active in both.
 - Pixel 9 128GB Obsidian item 820179580133 was already present in both and was not duplicated.
 - TEST 225 active phone evidence; LIVE 223. Last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128.
+
+
+## Mobile phone catalogue — Batch 62 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-62.md`.
+- Added Google Pixel 9 128GB Obsidian, item 147349812276, sold 28 June 2026, displayed £243.42 including £8.42 Buyer Protection. Listing title describes acceptable condition, 99% battery health and warranty to 27 November 2027. URL/key preflight, TEST-first insert, LIVE insert and read-back verification succeeded.
+- TEST 226 active phone evidence; LIVE 224. Last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128.

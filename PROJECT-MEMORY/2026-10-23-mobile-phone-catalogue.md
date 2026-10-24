@@ -329,3 +329,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-51.md` and `PROJECT-MEM
 - Added two UK eBay iPhone 15 128GB completed-sale observations in TEST, then LIVE: unlocked Black sold 15 Aug (£281.50 displayed total incl. £11.50 Buyer Protection; Best Offer accepted; grade/battery health unconfirmed); Black parts-only sold 5 Oct (£49.56 displayed total incl. £2.16 Buyer Protection; explicitly non-working, exclude from typical working benchmarks).
 - TEST: 202 active phone evidence rows / 108 active UK used completed-sale rows. LIVE: 200 / 106. Both environments have zero basic phone-scoped URL/key/positive GBP price/currency failures and zero duplicate active source-key groups; both Batch 51 keys are active.
 - Buyer Protection totals are buyer-facing, not seller proceeds. Keep condition and Best Offer caveats; continue TEST-first promotion to LIVE promptly.
+
+
+## Mobile phone catalogue — Batch 52 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-52.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-52.md`.
+- Added two UK eBay completed-sale observations to TEST then LIVE: iPhone 15 128GB Pink unlocked (£309.99 displayed, sold 19 Oct; boxed, very good condition, 88% battery health; Best Offer acceptance unconfirmed); Galaxy S24 128GB with faulty fingerprint sensor (£110 displayed including Buyer Protection, sold 29 Aug; explicitly For parts or not working, exclude from typical working-phone benchmarks).
+- TEST: 204 active phone evidence / 110 active UK used sold. LIVE: 202 / 108. Both have zero basic phone-scoped integrity failures and zero duplicate active source-key groups; both Batch 52 keys active.
+- Preserve condition and offer caveats. Buyer-facing totals are not necessarily seller proceeds. Continue TEST-first promotion to LIVE promptly.

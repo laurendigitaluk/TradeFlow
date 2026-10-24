@@ -2339,3 +2339,7 @@ One verified UK eBay sale was added for iPhone 15 Pro 128GB Black Titanium, disp
 
 ## Mobile phone catalogue — Batch 62 (24 October 2026)
 One verified UK eBay sale was added for Google Pixel 9 128GB Obsidian. The listing describes acceptable condition, 99% battery health and warranty through 27 November 2027. The displayed £243.42 includes £8.42 Buyer Protection and is not confirmed seller net proceeds. The record is active in both TEST and LIVE. Counts: TEST 226 active phone evidence rows; LIVE 224. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md`.
+
+
+## Mobile phone catalogue — Batch 63 (24 October 2026)
+One Google Pixel 9 128GB with GrapheneOS was added from a UK eBay completed sale at £299.00 (item 267700928563, 15 July 2026). The listing describes B cosmetic condition. Because it runs a custom/de-Googled operating system, it should not be treated as directly equivalent to an ordinary stock Android Pixel 9. The row is verified active in TEST and LIVE. Counts: TEST 227 active phone evidence rows, LIVE 225; the `uk_used` + `sold` subtotals are 133 and 131 and include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-63.md`.

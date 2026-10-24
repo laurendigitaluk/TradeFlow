@@ -992,3 +992,5 @@ Two iPhone 15 Pro 128GB Black Titanium records were inserted TEST-first and then
 
 ## Catalogue evidence count refresh — 24 October 2026
 After Batch 60, active phone evidence counts are TEST 224 and LIVE 222. Active records with `evidence_type='uk_used'` and `availability='sold'` are TEST 130 and LIVE 128. This query includes the parts/repair row because it uses the same evidence type; it is not a working-only count. Full duplicate-key aggregate audit remains outstanding and the environment difference is two rows.
+
+Stable-key aggregate audit refresh (24 October 2026): zero duplicate active non-null source-record-key groups across shared evidence in TEST and LIVE. This does not establish unique URLs; shared category/catalogue pages can legitimately recur across product evidence.

@@ -367,3 +367,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-56.md` and `PROJECT-MEM
 - iPhone 16 128GB candidates 366694404412 and 318875321713 were already present in both environments and were not duplicated.
 - TEST: 218 active phone evidence / 124 active UK used sold. LIVE: 216 / 122. Duplicate active source-key groups: zero in both. A two-row difference remains between environments.
 - A further multi-row insert was blocked; those additional candidates were not counted as inserted. Continue global source-key/URL preflight, TEST-first, then LIVE with read-after-write verification.
+
+
+## Mobile phone catalogue — Batch 57 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-57.md`.
+- Added iPhone 15 128GB Black with 82% battery health at displayed £238.25 (eBay item 407192517582) and Galaxy S22 128GB at displayed £80.00 (item 398437617494; Best Offer accepted, accepted seller proceeds not independently confirmed). Both were preflighted, inserted TEST-first, and read-back verified active in TEST and LIVE.
+- Several other iPhone 15 candidates were already present in both environments and were not duplicated. Preserve battery and Buyer Protection caveats; treat the low Galaxy S22 observation as a potential outlier pending further details.
+- TEST: 220 active phone evidence / 126 active UK used sold. LIVE: 218 / 124. Full duplicate-key aggregate audit was blocked this run, but new URLs/keys had clean preflight. Two-row environment difference remains.

@@ -2297,3 +2297,7 @@ Two eBay UK completed-sale observations were added to TEST and promoted to LIVE:
 
 ## Mobile phone catalogue — Batch 53 (24 October 2026)
 Two Google Pixel 9 128GB completed-sale observations were added to TEST and promoted to LIVE. An existing Samsung Galaxy S24 sale was checked and left unchanged rather than duplicated. TEST has 206 active phone evidence / 112 active UK used sold; LIVE has 204 / 110. Both passed basic integrity and duplicate-key checks. Keep Best Offer, battery-health and Buyer Protection caveats; buyer-facing totals are not necessarily seller proceeds. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md`.
+
+
+## Mobile phone catalogue — Batch 54 (24 October 2026)
+Two Google Pixel 9 128GB Porcelain eBay completed-sale observations were added to TEST and promoted to LIVE: £291.89 for an ordinary Used phone (includes £11.90 Buyer Protection; Best Offer accepted) and £349.99 for an Opened - never used phone. Keep the second condition separate from ordinary used benchmarks. TEST has 208 active phone evidence / 114 active UK used sold; LIVE has 206 / 112. Both new records were verified active in both environments. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md`.

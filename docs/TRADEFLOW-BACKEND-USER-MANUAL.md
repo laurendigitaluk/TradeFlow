@@ -976,3 +976,7 @@ Confirmed the previously uncertain LIVE row for iPhone 14 128GB item 36666102770
 
 ## Catalogue evidence checkpoint — Batch 57 (24 October 2026)
 Two UK eBay sold observations were added and verified active in both TEST and LIVE: iPhone 15 128GB Black, 82% battery health (£238.25 displayed), and Galaxy S22 128GB (£80.00 displayed, Best Offer accepted; accepted proceeds not confirmed). Existing iPhone 15 candidates were not duplicated. TEST: 220 active phone evidence / 126 active UK used sold; LIVE: 218 / 124. The full duplicate-key aggregate query was blocked in this run; new URLs/keys were preflighted empty in both environments. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md`.
+
+
+## Catalogue evidence checkpoint — Batch 58 (24 October 2026)
+Added and verified in both TEST and LIVE the iPhone 15 Pro 128GB Natural Titanium UK eBay sale, item 227530529279, displayed £402.08 including £12.08 Buyer Protection. The listing described the phone as immaculate and included the original box. The iPhone 15 Plus 128GB Blue candidate (item 800655157429) already existed in both environments and was not duplicated. TEST: 221 active phone evidence rows; LIVE: 219. UK used/sold subtotals were not refreshed in Batch 58; last confirmed values remain TEST 126 and LIVE 124. Full duplicate-key aggregate audit remains outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-58.md`.

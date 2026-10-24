@@ -344,3 +344,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md` and `PROJECT-MEM
 - Reconciled existing Galaxy S24 128GB Onyx Black sale £237.75 incl £8.23 Buyer Protection (item 257702271643; six bids); it was already active in TEST and LIVE and was not duplicated.
 - TEST: 206 active phone evidence / 112 active UK used sold. LIVE: 204 / 110. Zero basic phone-scoped integrity failures and zero duplicate active source-key groups in both; all three keys active.
 - A LIVE unique-key conflict revealed the Galaxy row already existed. Queried and confirmed it; future preflight must check stable source keys globally, not just URL/category filters.
+
+
+## Mobile phone catalogue — Batch 54 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-54.md`.
+- Added two Pixel 9 128GB Porcelain UK eBay completed-sale observations to TEST then LIVE: ordinary Used £291.89 on 24 May (includes £11.90 Buyer Protection; Best Offer accepted; postage separate) and Opened - never used £349.99 on 14 August (Buyer Protection fee not captured; keep separate from used benchmarks).
+- TEST: 208 active phone evidence / 114 active UK used sold. LIVE: 206 / 112. Both new stable keys read back active in both environments.
+- A search result for item 267795640822 was rejected as a phone case and not inserted. Continue global source-key preflight, preserve Buyer Protection distinctions, and keep condition classes separate.

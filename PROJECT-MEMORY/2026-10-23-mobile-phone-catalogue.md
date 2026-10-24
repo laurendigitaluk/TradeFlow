@@ -257,3 +257,12 @@ Added three further completed UK eBay sale observations TEST-first, then promote
 Stable keys: `mobile-used-sold-galaxy-s24-128gb-ebay-800671014611-20260917`, `mobile-used-sold-pixel9-128gb-ebay-128115577878-20261005`, `mobile-used-sold-iphone16-128gb-ebay-318875321713-20260916`.
 Post-batch counts: TEST 130 active visible phone variants, 173 active phone evidence rows, 79 active UK used completed-sale observations. LIVE 128 active visible variants, 171 active phone evidence rows, 77 active UK used completed-sale observations. Both have zero visible active phone variants missing active evidence, zero phone evidence integrity failures, and zero duplicate active source keys. Whole-table integrity scan surfaces unrelated overseas USD evidence (TEST 1 row, LIVE 2 rows); do not conflate that with phone catalogue health or change those records as part of this batch.
 Continue preserving historical observations when current listings show changed prices; buyer-facing totals including Buyer Protection are not seller proceeds. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-41.md`.
+
+
+## Batch 42 and Batch 43 refresh — 24 October 2026
+Batch 42's three records were independently verified active in both TEST and LIVE. Batch 43 then added three further completed-sale observations in TEST and promoted them to LIVE:
+- iPhone 16 128GB Teal, eBay 287579080965, £429.70 including £12.54 Buyer Protection; relisting caveat retained. Key `mobile-used-sold-iphone16-128gb-ebay-287579080965-20260914`.
+- iPhone 16 128GB Ultramarine, eBay 366668186600, £440.00; listing title says “NO FLAWS” while description mentions refurbishment/moderate wear. Fee not separately captured. Key `mobile-used-sold-iphone16-128gb-ebay-366668186600-20260914`.
+- Galaxy S24 128GB Purple, eBay 198530912410, £269.25 including £9.25 Buyer Protection; Best Offer accepted. Key `mobile-used-sold-galaxy-s24-128gb-ebay-198530912410-20260801`.
+
+Fresh verified counts after Batch 43: TEST 179 active phone evidence rows and 85 active UK used completed-sale rows; LIVE 177 active phone evidence rows and 83 active UK used completed-sale rows. Both have zero phone-scoped URL/key/positive GBP price/currency integrity failures and zero duplicate active source keys. Continue to treat Buyer Protection amounts as buyer-facing totals, preserve relisting/history, and retain condition contradictions as caveats.

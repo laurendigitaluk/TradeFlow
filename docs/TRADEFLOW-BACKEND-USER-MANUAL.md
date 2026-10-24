@@ -998,3 +998,7 @@ Stable-key aggregate audit refresh (24 October 2026): zero duplicate active non-
 
 ## Catalogue evidence checkpoint — Batch 61 (24 October 2026)
 Added and verified iPhone 15 Pro 128GB Black Titanium eBay sale item 900018786339 in TEST and LIVE. Displayed buyer-facing total £404.50 includes £14.50 Buyer Protection; seller proceeds unconfirmed. Listing title states mint condition, 100% battery health, no charger. TEST active phone evidence count: 225; LIVE: 223. Last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128. Pixel 9 item 820179580133 was already present in both and was not duplicated. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md`.
+
+
+## Catalogue evidence checkpoint — Batch 62 (24 October 2026)
+Added and verified Google Pixel 9 128GB Obsidian eBay sale item 147349812276 in TEST and LIVE. Displayed £243.42 includes £8.42 Buyer Protection; listing title says acceptable condition, 99% battery health and warranty to 27 November 2027. TEST active phone evidence count: 226; LIVE: 224. Active `uk_used` + `sold` subtotals were not refreshed and remain last confirmed at TEST 130 / LIVE 128. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-62.md`.

@@ -237,3 +237,13 @@ Checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-40.md`; batch m
 Three more completed-sale rows were added and verified in TEST and LIVE: Galaxy S24 128GB £237.75 (includes £8.23 Buyer Protection), iPhone 16 128GB White £432.48 (includes £12.58 Buyer Protection; Best Offer accepted), and Pixel 9 256GB Porcelain £292.20 (includes £9.99 Buyer Protection). Exact product variants and active status were read back from both databases.
 
 Current phone-category snapshot: TEST 130 active visible variants, 181 evidence rows (170 active, 11 inactive), 76 active UK used completed-sale rows. LIVE 128 active visible variants, 176 evidence rows (168 active, 8 inactive), 74 active UK used completed-sale rows. Both environments have zero visible active variants missing active evidence; zero active rows missing URLs/keys, non-positive prices, non-GBP currency, or duplicate active source keys. All fee-inclusive prices are buyer-facing totals, not seller proceeds. Preserve older observations if listing totals later change.
+
+
+## Batch 41 — 24 October 2026
+Added three further completed UK eBay sale observations TEST-first, then promoted and read-back verified in LIVE:
+- Samsung Galaxy S24 128GB Marble Grey, unlocked, dual SIM: £249.99, sold 17 Sep 2026, https://www.ebay.co.uk/itm/800671014611. The source snippet did not separately identify a Buyer Protection fee.
+- Google Pixel 9 128GB Porcelain, unlocked: £315.67 including £10.67 Buyer Protection, sold 5 Oct 2026; Best Offer accepted, https://www.ebay.co.uk/itm/128115577878.
+- Apple iPhone 16 128GB Ultramarine: £381.75 including £11.75 Buyer Protection, sold 16 Sep 2026; Best Offer accepted, https://www.ebay.co.uk/itm/318875321713.
+Stable keys: `mobile-used-sold-galaxy-s24-128gb-ebay-800671014611-20260917`, `mobile-used-sold-pixel9-128gb-ebay-128115577878-20261005`, `mobile-used-sold-iphone16-128gb-ebay-318875321713-20260916`.
+Post-batch counts: TEST 130 active visible phone variants, 173 active phone evidence rows, 79 active UK used completed-sale observations. LIVE 128 active visible variants, 171 active phone evidence rows, 77 active UK used completed-sale observations. Both have zero visible active phone variants missing active evidence, zero phone evidence integrity failures, and zero duplicate active source keys. Whole-table integrity scan surfaces unrelated overseas USD evidence (TEST 1 row, LIVE 2 rows); do not conflate that with phone catalogue health or change those records as part of this batch.
+Continue preserving historical observations when current listings show changed prices; buyer-facing totals including Buyer Protection are not seller proceeds. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-41.md`.

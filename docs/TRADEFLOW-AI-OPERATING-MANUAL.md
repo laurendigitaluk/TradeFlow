@@ -2614,3 +2614,7 @@ Two UK eBay completed-sale records were added to TEST and promoted to LIVE: iPho
 
 ## Mobile phone catalogue — Batch 53 (24 October 2026)
 Two Pixel 9 128GB UK eBay completed-sale observations were added TEST-first then LIVE: £299.99 (15 June) and £269.95 (24 July; listing title states 99% battery health). Best Offer acceptance and fee details are not confirmed in captured sources. An existing Galaxy S24 128GB sale was verified in both environments and not duplicated. TEST: 206 active phone evidence / 112 active UK used sold; LIVE: 204 / 110; zero basic integrity failures and zero duplicate active source keys. Preflight source keys globally before insertion. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md`.
+
+
+## Mobile phone catalogue — Batch 54 (24 October 2026)
+Two Pixel 9 128GB Porcelain UK eBay completed-sale observations were added TEST-first then LIVE: Used £291.89 on 24 May (includes £11.90 Buyer Protection; Best Offer accepted; postage separate) and Opened - never used £349.99 on 14 August (Buyer Protection fee not captured; do not blend with ordinary used benchmarks). Both keys were read-after-write verified active in both environments. TEST: 208 active phone evidence / 114 active UK used sold; LIVE: 206 / 112. A false-positive search result for a phone case was rejected and not inserted. Continue global stable-key preflight and preserve condition/fee caveats. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md`.

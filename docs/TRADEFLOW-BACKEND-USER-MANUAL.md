@@ -1014,3 +1014,7 @@ Added Google Pixel 9 128GB Obsidian completed-sale evidence from eBay item 40702
 
 ## Catalogue evidence checkpoint — Batch 65 (24 October 2026)
 Added and verified in both TEST and LIVE two iPhone 15 128GB parts/repair sales: item 267734454669 (Black, £192.00 displayed) and item 267749501196 (Blue, £157.00 displayed). Both are explicitly classified For parts or not working; displayed prices include Buyer Protection, with seller net proceeds unconfirmed. Exact URL and stable-key preflight was clear before insertions. TEST active phone evidence: 230; LIVE: 228. Active uk_used + sold counts are 136 and 134 respectively and include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-65.md`.
+
+
+## Catalogue evidence checkpoint — Batch 66 (24 October 2026)
+Added one verified iPhone 15 Pro 128GB Blue Titanium UK eBay completed sale, item 298501695479, displayed £360.72 including £11.41 Buyer Protection. Listing describes a working, factory-reset device with original box and missing accessories. Exact URL/key preflight was clear; TEST then LIVE insertion and read-back were confirmed. TEST active phone evidence: 231; LIVE: 229. Active uk_used + sold counts are 137 and 135 and include parts/repair rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md`.

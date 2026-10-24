@@ -2367,3 +2367,7 @@ Two iPhone 15 Pro Max 256GB completed-sale records were added and verified in bo
 
 ## Mobile phone catalogue — Batch 70 (24 October 2026)
 One iPhone 15 Pro Max 256GB unlocked sale was added at displayed £463.08, including £13.08 Buyer Protection. The listing says Used; no further condition details were confirmed. TEST and LIVE records are verified. Active phone evidence counts: TEST 236, LIVE 234; used/sold counts are 142 and 140 and include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-70.md`.
+
+
+## Mobile phone catalogue — Batch 71 (24 October 2026)
+One iPhone 16 Pro 256GB Desert Titanium UK eBay completed-sale observation was added at displayed £567.85, including £17.85 Buyer Protection. Best Offer was enabled; seller net proceeds are unconfirmed. TEST and LIVE records were read-back verified. Active phone evidence counts: TEST 237, LIVE 235; used/sold counts 143 and 141, including parts/repair records. The two-row difference remains. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-71.md`.

@@ -2618,3 +2618,7 @@ Two Pixel 9 128GB UK eBay completed-sale observations were added TEST-first then
 
 ## Mobile phone catalogue — Batch 54 (24 October 2026)
 Two Pixel 9 128GB Porcelain UK eBay completed-sale observations were added TEST-first then LIVE: Used £291.89 on 24 May (includes £11.90 Buyer Protection; Best Offer accepted; postage separate) and Opened - never used £349.99 on 14 August (Buyer Protection fee not captured; do not blend with ordinary used benchmarks). Both keys were read-after-write verified active in both environments. TEST: 208 active phone evidence / 114 active UK used sold; LIVE: 206 / 112. A false-positive search result for a phone case was rejected and not inserted. Continue global stable-key preflight and preserve condition/fee caveats. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md`.
+
+
+## Mobile phone catalogue — Batch 55 (24 October 2026)
+Seven UK eBay completed-sale observations were added TEST-first then LIVE: four iPhone 14 128GB and three Pixel 8 128GB. Preserve the iPhone battery-health notes (77% and 78%) and the Pixel 8 GrapheneOS/custom-OS caveat; Buyer Protection totals are buyer-facing, not seller proceeds. One candidate was already present and was not duplicated. Galaxy A15/A16 candidates were deferred because there are no matching master products. TEST: 215 active phone evidence / 121 active UK used sold; LIVE: 213 / 119; zero basic integrity failures and duplicate active keys in both. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-55.md`.

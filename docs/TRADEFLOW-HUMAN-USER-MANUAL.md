@@ -2331,3 +2331,7 @@ Two iPhone 15 Pro 128GB Black Titanium sale records were added. The £379.99 obs
 Latest refreshed counts: TEST has 224 active phone evidence rows and LIVE has 222. The count of active rows labelled `uk_used` and `sold` is TEST 130 and LIVE 128. This includes the separate parts/repair listing and is not a count of working-only phones. The two-row difference and full duplicate-key audit remain unresolved.
 
 The latest stable-key audit found no duplicate active non-null source-record keys in either TEST or LIVE. Generic catalogue URLs can repeat for different products, so repeated URLs alone are not proof of duplicate evidence.
+
+
+## Mobile phone catalogue — Batch 61 (24 October 2026)
+One verified UK eBay sale was added for iPhone 15 Pro 128GB Black Titanium, displayed £404.50 including Buyer Protection. The listing title describes mint condition and 100% battery health; no charger included. Seller proceeds are not independently confirmed. The row is active in both TEST and LIVE. Counts: TEST 225 active phone evidence rows; LIVE 223. Pixel 9 item 820179580133 was already recorded and not duplicated. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md`.

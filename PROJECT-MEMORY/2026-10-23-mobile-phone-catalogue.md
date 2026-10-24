@@ -442,3 +442,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-66.md` and `PROJECT-MEM
 - Added iPhone 15 Pro 128GB Blue Titanium, eBay item 298501695479, sold 23 July 2026. Displayed £360.72 includes £11.41 Buyer Protection; listing says fully working, factory reset, original box included but accessories missing, seven bids. Seller net proceeds unconfirmed.
 - Exact URL/key preflight was clear; TEST-first then LIVE; both active rows read-back verified.
 - Counts: TEST 231 active phone evidence / 137 active uk_used + sold; LIVE 229 / 135. Used/sold includes parts/repair rows. Two-row environment difference persists.
+
+
+## Mobile phone catalogue — Batch 68 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-68.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-68.md`.
+- Added iPhone 15 Pro Max 256GB Natural Titanium, eBay item 128012606222, sold 8 August 2026, three bids. Displayed £399.88 includes £14.29 Buyer Protection. Listing title says Excellent condition; eBay condition field says Used. Seller proceeds unconfirmed.
+- URL/key preflight clear; inserted TEST-first then LIVE and read-back verified in both.
+- Counts: TEST 233 active phone evidence / 139 active uk_used + sold; LIVE 231 / 137. Used/sold includes parts/repair rows. Two-row environment difference persists.

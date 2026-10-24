@@ -291,7 +291,6 @@ function initVisualBuilder(){
  const normalise=e=>({...e,x:Math.max(0,Math.min(95,Number(e.x)||0)),y:Math.max(0,Math.min(95,Number(e.y)||0)),w:Math.max(8,Math.min(95,Number(e.w)||25)),h:Math.max(6,Math.min(90,Number(e.h)||15)),aspect:Math.max(.25,Math.min(8,Number(e.aspect)||1.5))});
  function persist(){window.__businessFlowCanvasElements=elements.map(e=>({...e}));}
  function render(){
-  elements=elements.map(normalise);
   canvas.querySelectorAll('.vb-el').forEach(n=>n.remove());
   elements.forEach(e=>{const el=document.createElement('div');el.className='vb-el'+(e.id===selectedId?' selected':'');el.dataset.id=e.id;
    Object.assign(el.style,{left:e.x+'%',top:e.y+'%',width:e.w+'%',height:e.h+'%',fontSize:(Number(e.fontSize)||16)+'px'});
@@ -316,6 +315,7 @@ function initVisualBuilder(){
  const oldUpload=$('uploadHeroImage').onclick;
  $('uploadHeroImage').onclick=async function(){await oldUpload();if(heroImagePath){const target=elements.find(e=>e.id===selectedId&&e.type==='image');if(target){const {data}=await sb.storage.from('businessflow-assets').createSignedUrl(heroImagePath,3600);if(data?.signedUrl){target.src=data.signedUrl;target.assetPath=heroImagePath;render();}}}};
  if(!elements.length)elements=defaults();
+ elements=elements.map(normalise);
  render();
 }
 

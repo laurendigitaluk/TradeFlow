@@ -960,3 +960,7 @@ Two UK eBay phone-sale evidence rows were inserted TEST first, then LIVE. Post-w
 
 ## Catalogue evidence checkpoint — Batch 53 (24 October 2026)
 Two Pixel 9 128GB UK eBay sale rows were inserted into TEST and then LIVE. Existing Galaxy S24 evidence was confirmed already active in both environments and not duplicated. Post-write checks: TEST 206 active phone evidence / 112 active UK used sold; LIVE 204 / 110; zero basic URL/key/positive GBP price/currency failures and zero duplicate active source-key groups. Since the source key is globally unique, check it globally before insertion; URL-only/category-only preflight can miss an existing record. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-53.md`.
+
+
+## Catalogue evidence checkpoint — Batch 54 (24 October 2026)
+Two Pixel 9 128GB Porcelain eBay sale rows were inserted into TEST and then LIVE. Read-after-write verified both keys active in each environment. Post-write counts: TEST 208 active phone evidence / 114 active UK used sold; LIVE 206 / 112. One record is ordinary Used and one is Opened - never used; keep the latter separate from typical used-phone comparisons. A false-positive phone-case result was not inserted. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-54.md`.

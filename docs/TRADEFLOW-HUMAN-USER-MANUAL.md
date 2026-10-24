@@ -2321,3 +2321,7 @@ The catalogue includes a verified UK eBay completed sale for iPhone 15 Pro 128GB
 
 ## Mobile phone catalogue — Batch 59 (24 October 2026)
 A verified UK eBay completed-sale record was added for iPhone 15 Pro 128GB Black, item 206515412317, sold on 1 September 2026. The displayed £302.94 includes £10.34 Buyer Protection and is not confirmed seller net proceeds. The row was verified active in TEST and LIVE. Counts are TEST 222 active phone evidence rows and LIVE 220. UK used/sold subtotals and the full duplicate-key audit have not been refreshed; a two-row environment difference remains. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-59.md`.
+
+
+## Mobile phone catalogue — Batch 60 (24 October 2026)
+Two iPhone 15 Pro 128GB Black Titanium sale records were added. The £379.99 observation is a working phone in fair cosmetic condition with 90% battery health and visible wear. The £199.99 observation is explicitly for parts/repair due to shattered rear glass and a faulty non-genuine replacement screen; do not compare it with working devices. Both displayed prices include Buyer Protection and are not confirmed seller net proceeds. TEST has 224 active phone evidence rows and LIVE has 222. The second record's LIVE insert response succeeded, but a separate LIVE read-back was blocked. Full duplicate-key audit and UK used/sold subtotal refresh remain outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md`.

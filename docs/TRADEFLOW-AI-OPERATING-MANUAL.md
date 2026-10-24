@@ -2514,3 +2514,11 @@ Current checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-38.md`;
 Three UK completed-sale records (Galaxy S24 128GB, Pixel 9 128GB, iPhone 16 128GB) were inserted in TEST, promoted to LIVE, and read back in both environments. Phone-category snapshot: TEST 175 evidence rows (164 active, 11 inactive), 70 active used-sale rows; LIVE 170 evidence rows (162 active, 8 inactive), 68 active used-sale rows. Both have 0 visible active variants missing active evidence and 0 checked integrity failures or duplicate active source keys.
 
 Operational note: an intermittent tool safety block is not a database error. Distinguish tool-layer blocks from returned PostgreSQL errors. Do not assume `source_record_key` has a unique constraint: an `ON CONFLICT (source_record_key)` insert returned PostgreSQL 42P10. Check the key is absent first, use a plain insert, then read the row back in TEST and LIVE. Preserve historical observations when a live listing later displays a different fee-inclusive total; investigate rather than silently rewriting history. Buyer Protection totals are not seller proceeds.
+
+
+## Mobile catalogue evidence update — 24 October 2026 (Batch 39)
+Current checkpoint: `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-39.md`; project memory: `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-39.md`.
+
+Three UK completed-sale records (Galaxy S24 128GB, Pixel 9 128GB, iPhone 16 128GB) were inserted in TEST, promoted to LIVE, and read back in both environments. Phone-category snapshot: TEST 178 evidence rows (167 active, 11 inactive), 73 active used-sale rows; LIVE 173 evidence rows (165 active, 8 inactive), 71 active used-sale rows. Both have zero active visible variants missing active evidence and zero checked integrity failures or duplicate active source keys.
+
+Preserve condition and transaction caveats: Pixel 9 listing notes chipped paint; iPhone 16 Best Offer was accepted; eBay Buyer Protection totals are buyer-facing, not seller proceeds. If old listing totals change, investigate revisions/relisting and preserve observation history rather than silently overwriting. Continue TEST-first validation and prompt LIVE promotion.

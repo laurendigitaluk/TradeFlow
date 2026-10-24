@@ -2359,3 +2359,7 @@ A completed sale was added for iPhone 15 Pro 128GB Blue Titanium at displayed £
 
 ## Mobile phone catalogue — Batch 68 (24 October 2026)
 One iPhone 15 Pro Max 256GB Natural Titanium sold listing was added at displayed £399.88, including £14.29 Buyer Protection. It had three bids. The title says Excellent condition, but eBay's condition field says Used. TEST and LIVE records are both verified. Active phone evidence counts: TEST 233, LIVE 231; used/sold counts 139 and 137 include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-68.md`.
+
+
+## Mobile phone catalogue — Batch 69 (24 October 2026)
+Two iPhone 15 Pro Max 256GB completed-sale records were added and verified in both environments: Grey with retail box at £444.64 displayed and Silver at £439.66 displayed. Both displayed totals include Buyer Protection; seller net proceeds are unconfirmed. The Silver listing says the seller relisted this item or one like it, so it may not be a unique device. TEST has 235 active phone evidence rows and LIVE 233; used/sold counts are 141 and 139 and include parts/repair rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-69.md`.

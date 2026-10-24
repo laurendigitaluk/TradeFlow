@@ -2309,3 +2309,7 @@ Seven new UK eBay completed-sale records were added for iPhone 14 128GB and Pixe
 
 ## Mobile phone catalogue — Batch 56 (24 October 2026)
 The catalogue now includes two additional verified Google Pixel 8 128GB UK eBay sales (£159.95 and £179.99), and the earlier iPhone 14 128GB record at £188.66 has been confirmed active in LIVE as well as TEST. All three are verified in both environments. TEST has 218 active phone evidence rows / 124 active UK used sold; LIVE has 216 / 122. No duplicate active source keys were found, though the environments still differ by two rows. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-56.md`.
+
+
+## Mobile phone catalogue — Batch 57
+On 24 October 2026, two UK eBay sold records were added and verified active in TEST and LIVE: iPhone 15 128GB Black, 82% battery health, £238.25 displayed; and Samsung Galaxy S22 128GB, £80.00 displayed, Best Offer accepted. Actual seller proceeds for the Galaxy S22 are unconfirmed, so treat it as a potential outlier. Other candidate iPhone 15 listings were already recorded. Counts: TEST 220 active phone evidence / 126 active UK used sold; LIVE 218 / 124. The full duplicate-key aggregate check was blocked this run. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md`.

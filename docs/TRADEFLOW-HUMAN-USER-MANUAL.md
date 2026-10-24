@@ -2329,3 +2329,5 @@ Two iPhone 15 Pro 128GB Black Titanium sale records were added. The £379.99 obs
 
 ## Mobile phone catalogue count refresh — 24 October 2026
 Latest refreshed counts: TEST has 224 active phone evidence rows and LIVE has 222. The count of active rows labelled `uk_used` and `sold` is TEST 130 and LIVE 128. This includes the separate parts/repair listing and is not a count of working-only phones. The two-row difference and full duplicate-key audit remain unresolved.
+
+The latest stable-key audit found no duplicate active non-null source-record keys in either TEST or LIVE. Generic catalogue URLs can repeat for different products, so repeated URLs alone are not proof of duplicate evidence.

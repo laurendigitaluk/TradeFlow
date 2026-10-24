@@ -388,3 +388,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-59.md` and `PROJECT-MEM
 - Added iPhone 15 Pro 128GB Black, eBay item 206515412317, sold 1 September 2026, displayed £302.94 including £10.34 Buyer Protection. Seller proceeds are not independently confirmed. TEST-first then LIVE; exact URL/key preflight and post-write read-back confirmed active in both.
 - The iPhone 15 Plus Blue item 800655157429 was already present in both environments and was not duplicated.
 - TEST: 222 active phone evidence; LIVE: 220. Last confirmed active UK used/sold counts remain TEST 126 and LIVE 124; not refreshed in this batch. Full duplicate-key aggregate audit remains outstanding and the two-row environment difference persists.
+
+
+## Mobile phone catalogue — Batch 60 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-60.md`.
+- Added working/fair-condition iPhone 15 Pro 128GB Black Titanium, item 206070231627, displayed £379.99 including Buyer Protection; 90% battery health, visible wear/scratches, charger included. Separate read-back confirmed active in both.
+- Added separate parts/repair iPhone 15 Pro 128GB Black Titanium, item 206112400829, displayed £199.99 including Buyer Protection; shattered rear glass and faulty non-genuine replacement screen. TEST read-back succeeded; LIVE insert response confirmed row, but separate LIVE read-back was blocked by a tool safety check.
+- TEST 224 active phone evidence; LIVE 222. Last confirmed UK used/sold subtotals remain TEST 126 and LIVE 124, not refreshed. Full duplicate-key aggregate audit remains outstanding; two-row environment difference persists.

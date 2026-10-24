@@ -2606,3 +2606,7 @@ Buyer Protection totals are buyer-facing totals, not seller proceeds. Keep “Re
 
 ## Mobile phone catalogue — Batch 51 (24 October 2026)
 Two iPhone 15 128GB UK eBay completed-sale records were verified, inserted into TEST, and promoted to LIVE. One unlocked Black sale displayed £281.50 including £11.50 Buyer Protection with Best Offer accepted; one Black “For parts or not working” sale displayed £49.56 including £2.16 Buyer Protection. Keep buyer-facing totals distinct from seller proceeds and exclude the parts-only sale from working-phone benchmarks. Verified counts: TEST 202 active phone evidence / 108 active UK used sold; LIVE 200 / 106. Both environments have zero basic phone evidence integrity failures and zero duplicate active source keys. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-51.md`.
+
+
+## Mobile phone catalogue — Batch 52 (24 October 2026)
+Two UK eBay completed-sale records were added to TEST and promoted to LIVE: iPhone 15 128GB Pink (£309.99 displayed; boxed, very good condition, 88% battery health; Best Offer acceptance unconfirmed) and Galaxy S24 128GB with a faulty fingerprint sensor (£110 displayed including Buyer Protection; explicitly non-working/parts only). Exclude the Galaxy S24 record from working-phone benchmarks. TEST: 204 active phone evidence / 110 active UK used sold. LIVE: 202 / 108. Both environments have zero basic phone evidence integrity failures and zero duplicate active source keys. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-52.md`.

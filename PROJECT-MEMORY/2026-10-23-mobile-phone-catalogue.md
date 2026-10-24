@@ -374,3 +374,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md` and `PROJECT-MEM
 - Added iPhone 15 128GB Black with 82% battery health at displayed £238.25 (eBay item 407192517582) and Galaxy S22 128GB at displayed £80.00 (item 398437617494; Best Offer accepted, accepted seller proceeds not independently confirmed). Both were preflighted, inserted TEST-first, and read-back verified active in TEST and LIVE.
 - Several other iPhone 15 candidates were already present in both environments and were not duplicated. Preserve battery and Buyer Protection caveats; treat the low Galaxy S22 observation as a potential outlier pending further details.
 - TEST: 220 active phone evidence / 126 active UK used sold. LIVE: 218 / 124. Full duplicate-key aggregate audit was blocked this run, but new URLs/keys had clean preflight. Two-row environment difference remains.
+
+
+## Mobile phone catalogue — Batch 58 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-58.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-58.md`.
+- Added iPhone 15 Pro 128GB Natural Titanium, immaculate with original box, eBay item 227530529279, sold 21 September 2026. Displayed buyer-facing price £402.08 includes £12.08 Buyer Protection. Exact URL/key preflighted; inserted TEST-first then LIVE and read-after-write verified active in both.
+- iPhone 15 Plus 128GB Blue item 800655157429 was already active in both and not duplicated.
+- TEST: 221 active phone evidence; LIVE: 219. Last confirmed UK used/sold counts remain TEST 126 and LIVE 124 because recount was blocked. Full duplicate-key aggregate audit was not completed; two-row environment difference remains. Continue global URL/key preflight, TEST-first, then LIVE, with read-after-write verification.

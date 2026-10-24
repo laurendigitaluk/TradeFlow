@@ -972,3 +972,7 @@ Seven new iPhone 14 128GB and Pixel 8 128GB UK eBay sale rows were inserted into
 
 ## Catalogue evidence checkpoint — Batch 56 (24 October 2026)
 Confirmed the previously uncertain LIVE row for iPhone 14 128GB item 366661027705 (£188.66) and added two Pixel 8 128GB eBay sales (£159.95 and £179.99). All three records are active and read-back verified in both environments. TEST: 218 active phone evidence / 124 active UK used sold; LIVE: 216 / 122. Duplicate active source-key groups: zero in both, but a two-row difference remains. Two iPhone 16 candidates were already present. Additional candidates whose insert was blocked are not claimed as written. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-56.md`.
+
+
+## Catalogue evidence checkpoint — Batch 57 (24 October 2026)
+Two UK eBay sold observations were added and verified active in both TEST and LIVE: iPhone 15 128GB Black, 82% battery health (£238.25 displayed), and Galaxy S22 128GB (£80.00 displayed, Best Offer accepted; accepted proceeds not confirmed). Existing iPhone 15 candidates were not duplicated. TEST: 220 active phone evidence / 126 active UK used sold; LIVE: 218 / 124. The full duplicate-key aggregate query was blocked in this run; new URLs/keys were preflighted empty in both environments. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md`.

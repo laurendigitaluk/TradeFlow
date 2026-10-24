@@ -456,3 +456,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-69.md` and `PROJECT-MEM
 - Added iPhone 15 Pro Max 256GB Grey with retail box, item 298621751352, sold 3 Sep at displayed £444.64 including £12.78 Buyer Protection; and Silver item 327278174330, sold 1 Aug at £439.66 including £12.70 Buyer Protection. Silver listing notes the seller relisted this item or one like it, so it may not represent a unique device. Seller proceeds unconfirmed.
 - Both exact URLs/keys were preflighted, inserted TEST-first then LIVE, and read-back verified in both.
 - Counts: TEST 235 active phone evidence / 141 active uk_used + sold; LIVE 233 / 139. Two-row difference persists.
+
+
+## Mobile phone catalogue — Batch 70 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-70.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-70.md`.
+- Added iPhone 15 Pro Max 256GB unlocked, eBay item 298539408905, sold 4 Aug 2026, two bids, displayed £463.08 including £13.08 Buyer Protection. Seller proceeds unconfirmed; no further condition details inferred.
+- URL/key preflight clear; TEST-first then LIVE, with read-back verified in both.
+- Counts: TEST 236 active phone evidence / 142 active uk_used + sold; LIVE 234 / 140. Two-row environment difference persists.

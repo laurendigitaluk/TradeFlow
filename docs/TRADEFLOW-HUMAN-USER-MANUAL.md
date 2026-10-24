@@ -2313,3 +2313,7 @@ The catalogue now includes two additional verified Google Pixel 8 128GB UK eBay 
 
 ## Mobile phone catalogue — Batch 57
 On 24 October 2026, two UK eBay sold records were added and verified active in TEST and LIVE: iPhone 15 128GB Black, 82% battery health, £238.25 displayed; and Samsung Galaxy S22 128GB, £80.00 displayed, Best Offer accepted. Actual seller proceeds for the Galaxy S22 are unconfirmed, so treat it as a potential outlier. Other candidate iPhone 15 listings were already recorded. Counts: TEST 220 active phone evidence / 126 active UK used sold; LIVE 218 / 124. The full duplicate-key aggregate check was blocked this run. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-57.md`.
+
+
+## Mobile phone catalogue — Batch 58 (24 October 2026)
+The catalogue includes a verified UK eBay completed sale for iPhone 15 Pro 128GB Natural Titanium, described as immaculate and supplied with its original box. Item 227530529279 sold on 21 September 2026; the displayed £402.08 includes £12.08 Buyer Protection, so it is a buyer-facing total rather than confirmed seller proceeds. The row was verified active in both TEST and LIVE. An iPhone 15 Plus Blue candidate already existed and was not duplicated. Counts: TEST 221 active phone evidence rows; LIVE 219. The used/sold subtotals and full duplicate-key aggregate audit remain outstanding. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-58.md`.

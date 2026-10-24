@@ -395,3 +395,7 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md` and `PROJECT-MEM
 - Added working/fair-condition iPhone 15 Pro 128GB Black Titanium, item 206070231627, displayed £379.99 including Buyer Protection; 90% battery health, visible wear/scratches, charger included. Separate read-back confirmed active in both.
 - Added separate parts/repair iPhone 15 Pro 128GB Black Titanium, item 206112400829, displayed £199.99 including Buyer Protection; shattered rear glass and faulty non-genuine replacement screen. TEST read-back succeeded; LIVE insert response confirmed row, but separate LIVE read-back was blocked by a tool safety check.
 - TEST 224 active phone evidence; LIVE 222. Last confirmed UK used/sold subtotals remain TEST 126 and LIVE 124, not refreshed. Full duplicate-key aggregate audit remains outstanding; two-row environment difference persists.
+
+
+## Mobile phone catalogue count refresh — 24 October 2026
+After Batch 60, counts were refreshed: TEST 224 active phone evidence and 130 active rows with `evidence_type='uk_used'` and `availability='sold'`; LIVE 222 and 128 respectively. The latter count includes the explicitly labelled parts/repair observation, so it is not working-only. The two-row difference remains. Full aggregate duplicate-key audit is still outstanding.

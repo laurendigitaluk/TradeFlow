@@ -278,3 +278,9 @@ Fresh verified post-batch counts: TEST 182 active phone evidence rows / 88 activ
 Added and promoted three UK eBay completed-sale observations: iPhone 15 128GB Light Blue £327.83 including £10.87 Buyer Protection (item 168659039520, 7 bids); iPhone 15 128GB Black unlocked, described as excellent with good battery health, £330.92 including £10.92 Buyer Protection (item 377366853347); Galaxy S24 256GB Black £268.15 including £9.21 Buyer Protection (item 128000546242; Best Offer acceptance not confirmed). See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-45.md` for stable keys.
 
 Fresh verified counts: TEST 185 active phone evidence rows / 91 active UK used completed-sale rows; LIVE 183 / 89. Both have zero phone-scoped integrity failures and zero duplicate active source keys.
+
+
+## Batch 46 — 24 October 2026
+Added and promoted three completed-sale observations: iPhone 15 128GB Black £253.75 including £8.75 Buyer Protection, Best Offer accepted (item 800710234384); iPhone 15 128GB Black £258.92 including £8.92 Buyer Protection, Best Offer accepted (item 377436509526); Galaxy S24 256GB Grey unlocked £309.55 including £10.55 Buyer Protection, Best Offer accepted (item 336549983134). See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-46.md` for stable keys.
+
+Fresh verified counts: TEST 188 active phone evidence rows / 94 active UK used completed-sale rows; LIVE 186 / 92. Both have zero phone-scoped integrity failures and zero duplicate active source keys.

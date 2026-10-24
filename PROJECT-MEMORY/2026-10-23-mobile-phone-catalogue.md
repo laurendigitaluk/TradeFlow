@@ -401,3 +401,10 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-60.md` and `PROJECT-MEM
 After Batch 60, counts were refreshed: TEST 224 active phone evidence and 130 active rows with `evidence_type='uk_used'` and `availability='sold'`; LIVE 222 and 128 respectively. The latter count includes the explicitly labelled parts/repair observation, so it is not working-only. The two-row difference remains. Full aggregate duplicate-key audit is still outstanding.
 
 Stable-key aggregate audit refreshed on 24 October 2026: zero duplicate active non-null source-record-key groups across `shared_market_evidence` in TEST and LIVE. URL uniqueness was not used as a global criterion because category/product pages may validly support multiple products.
+
+
+## Mobile phone catalogue — Batch 61 (24 October 2026)
+See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-61.md` and `PROJECT-MEMORY/2026-10-24-mobile-phone-catalogue-batch-61.md`.
+- Added iPhone 15 Pro 128GB Black Titanium, eBay item 900018786339, sold 19 October 2026, displayed £404.50 including £14.50 Buyer Protection. Listing title says mint, 100% battery health, no charger; seller proceeds not independently confirmed. URL/key preflight clean, TEST-first then LIVE, read-back verified active in both.
+- Pixel 9 128GB Obsidian item 820179580133 was already present in both and was not duplicated.
+- TEST 225 active phone evidence; LIVE 223. Last refreshed active `uk_used` + `sold` counts remain TEST 130 / LIVE 128.

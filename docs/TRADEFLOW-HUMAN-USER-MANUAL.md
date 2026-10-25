@@ -2452,3 +2452,6 @@ The latest 20-variant research batch added three UK new-condition completed-sale
 
 ### Mobile phone market evidence update — Batch 91, 25 October 2026
 Three new-condition UK completed-sale observations were added for existing Galaxy S26 Ultra 256GB, iPhone 17 Pro Max 512GB, and iPhone 17 Pro 256GB products. Buyer Protection fees are included in one displayed total and separately unshown in the other two; do not interpret buyer-facing totals as seller proceeds or guaranteed buying offers. No master products were created. TEST/LIVE master-count mismatch, duplicate-key audit, and the older iPhone 15 Pink price discrepancy remain unresolved. Do not overwrite historic evidence.
+
+### Mobile phone market evidence update — Batch 92, 25 October 2026
+Twenty variants were reviewed; zero observations were added because candidate listings failed price consistency, stable completed-sale status, or condition comparability. No master products were created or changed. Batch 91 remains the latest successful ingestion. Existing TEST/LIVE master-count mismatch, duplicate-key audit, and historic iPhone 15 Pink price discrepancy remain unresolved. Do not overwrite historic evidence.

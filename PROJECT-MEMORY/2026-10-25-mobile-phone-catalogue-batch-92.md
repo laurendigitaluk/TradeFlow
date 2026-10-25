@@ -1,0 +1,8 @@
+# Mobile Phone Catalogue — Batch 92 Memory
+Date: 25 October 2026
+
+Batch 92 reviewed 20 mobile-phone variants for UK new-condition completed-sale evidence and screened used candidates where suitable new evidence was not clean. No observations were ingested because surfaced candidates failed price consistency, stable completed-sale status, or condition comparability. No master rows or valuation logic were changed. No TEST/LIVE writes occurred. Full checkpoint: `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-92.md`.
+
+Exclusions: Galaxy S26 Ultra 512GB item 366668980137 had conflicting original-page/search totals (£776.36 incl. £18.22 Buyer Protection vs £780.37 incl. £22.23); iPhone 17e 256GB Black item 800339607149 was surfaced as sold but original page currently shows an active listing; iPhone 17e item 188802102477 had conflicting totals (£448.43 incl. £12.84 vs £450.87 incl. £15.28); Pixel 10 Pro 256GB item 377061374527 was surfaced as sold but original page currently shows active and seller feedback was only three entries; iPhone 16 Pro items 358236074965 and 398298836997 were damaged units.
+
+Continue Batch 93 with the existing safeguards: exact existing master and variant, URL/stable-key duplicate checks, TEST preflight and read-back before any LIVE write, and no master creation to fill evidence gaps. Buyer Protection totals are buyer-facing, not seller proceeds. Do not overwrite historic evidence to resolve price discrepancies. Open issues: TEST/LIVE master count mismatch (last snapshot 130 LIVE vs 133 TEST), global active duplicate-key audit, and historic iPhone 15 Pink discrepancy item 307244687330.

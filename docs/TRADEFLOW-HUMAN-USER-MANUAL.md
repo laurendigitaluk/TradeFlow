@@ -2445,3 +2445,7 @@ Lifecycle notes were added to active older variants that lack new-price evidence
 
 ## Catalogue research checkpoint — 25 October 2026, Batch 89
 Two new-condition UK eBay completed-sale observations were added for iPhone 16 Pro Max 256GB: Black Titanium item 176644847651, sold 24 July 2026 for displayed £999; Natural Titanium item 256779530734, sold 10 July 2026 for displayed £1,149. Separate Buyer Protection fee breakdowns were not shown on the original pages. Both TEST and LIVE evidence rows were verified; no masters were created. Current counts: LIVE 130 active phone products, 73 with new evidence and 66 with second-hand evidence; TEST 133 active, 73 with new and 68 with second-hand evidence, with one product missing both. Continue new-price research for active variants without evidence, then focus on second-hand evidence where current manufacturer new-line-up status is verified.
+
+
+### Mobile phone market evidence update — 25 October 2026
+The latest 20-variant research batch added three UK new-condition completed-sale observations to existing products. Prices shown include Buyer Protection where indicated and represent buyer-facing totals, not seller proceeds or guaranteed buying offers. One iPhone 17 listing had a Best Offer option without a visible accepted-offer notice, so its evidence remains explicitly caveated. No master products were created. The TEST/LIVE catalogue count difference and an older iPhone 15 Pink price discrepancy remain under review; do not manually overwrite historic evidence.

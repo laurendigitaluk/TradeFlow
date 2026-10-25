@@ -1,0 +1,16 @@
+Mobile Phone Catalogue Research — Batch 95 Interim
+Date: 25 October 2026
+Status: Research in progress; not a completed 20-variant batch.
+
+Confirmed TEST-first then LIVE writes:
+1. OnePlus 15R 256GB new-condition eBay sale, item 127992989332, £499.99 excluding £4.99 delivery, sold 30 July 2026. Global version, origin India; UK-market listing but not verified as UK retail stock. Seller oiflipnscope, 100% positive, 225 feedback. TEST evidence a75e543d-23fa-4922-afc0-59d931dd3bef; LIVE evidence 83864f88-b14f-4c49-ab84-39f12cf353b6. Stable key mobile-new-sold-oneplus15r-256gb-global-ebay-127992989332-20260730.
+2. Samsung Galaxy S23 256GB Black, used Grade B, item 366520134252, £229.90 including Buyer Protection, sold 7 Aug 2026. UK business seller Little Lives UK Shop, 99.8% positive, 14,545 feedback. TEST evidence 488132d0-a226-43c4-a9a5-6d4742235657; LIVE evidence fc241ab3-d9d6-4360-97c5-53fe6ef93f11. Stable key mobile-used-sold-galaxys23-256gb-black-ebay-366520134252-20260807.
+3. Samsung Galaxy S22 128GB Black, used/unboxed, item 366532451111, £130 including Buyer Protection, sold 3 Aug 2026 at 16:52 BST; delivery £3.49 separate. UK business seller thecashisking, 99.2% positive, 6,965 feedback at direct capture, about 9.1K items sold. TEST evidence b24975ec-feae-4d02-a794-dc145f1ddb51; LIVE evidence b17a5164-c2d0-4ff5-bdaa-f19e92cfbf3a. Stable key mobile-used-sold-galaxys22-128gb-black-ebay-366532451111-20260803. Notes corrected in both environments after direct-page review.
+
+Readbacks confirmed OnePlus 15R and Galaxy S23 in both environments. S22 insert returned a row; notes update returned a matching row in both environments.
+
+Fresh counts after writes: TEST 134 mobile masters, 277 active mobile evidence rows, 80 masters with active uk_new evidence, 68 with active uk_used evidence. LIVE 130 mobile masters, 275 active mobile evidence rows, 80 masters with active uk_new evidence, 66 with active uk_used evidence.
+
+Excluded/held: Pixel 10 new sale item 157437867418 has zero matching source URL but master already has active new evidence; don't duplicate. Pixel 10 used item 407267301332 is accepted Best Offer with hidden price. OnePlus 15R used item 407056333655 already exists in evidence. Samsung S23 item 298615747269 accepted Best Offer with hidden price. Samsung S23 128GB item 405745009408 is GSP/multi-quantity and targeted to Spain; not accepted. Samsung S23 item 157969263646 had only 7 seller feedback entries at direct capture; excluded. Samsung S24 item 128000546242 had only 73 seller feedback and accepted Best Offer; excluded. Samsung S25 Ultra item 286955204031 returned 404 on direct open; not accepted.
+
+Next: continue the remaining 20-variant Batch 95 review; rerun aggregate counts at the end; do not claim completion until 20 variants have been reviewed. No master product rows or valuation logic changed. Do not mark discontinued by editing master rows during evidence research; lifecycle status needs a separate approved workflow. Open issues carried forward: global active duplicate-key audit, TEST/LIVE count differences, and iPhone 15 Pink historical price discrepancy.

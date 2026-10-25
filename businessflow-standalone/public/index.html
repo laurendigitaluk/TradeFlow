@@ -241,6 +241,32 @@ $('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();if(error){a
 sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser?.id!==nextUser?.id){savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');$('previewLogo').classList.remove('hide');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
 function slugify(value){return (value||'my-business').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'my-business'}
 function pagePath(page){const fixed={home:'/',services:'/services',projects:'/recent-projects',about:'/about',contact:'/contact'};if(fixed[page.id])return fixed[page.id];const suffix=String(page.id||'custom').replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom';return '/'+slugify(page.name)+'-'+suffix}
+function collectReferencedSiteAssets(value,siteId,found=new Set(),seen=new Set()){
+ if(!value||typeof value!=='object'){if(typeof value==='string'&&value.startsWith(siteId+'/'))found.add(value);return found}
+ if(seen.has(value))return found;seen.add(value);
+ if(Array.isArray(value)){value.forEach(item=>collectReferencedSiteAssets(item,siteId,found,seen));return found}
+ Object.values(value).forEach(item=>collectReferencedSiteAssets(item,siteId,found,seen));
+ return found;
+}
+async function cleanupUnusedSiteAssets(siteId,state){
+ // Only remove files in this site's own storage folder, and only after the
+ // latest settings and page records have been saved successfully.
+ const referenced=collectReferencedSiteAssets(state,siteId);
+ let offset=0,unused=[];
+ while(true){
+  const {data,error}=await sb.storage.from('businessflow-assets').list(siteId,{limit:100,offset,sortBy:{column:'name',order:'asc'}});
+  if(error)return {error};
+  const files=data||[];
+  unused.push(...files.filter(file=>file.name&&!file.id?false:!!file.name).map(file=>siteId+'/'+file.name).filter(path=>!referenced.has(path)));
+  if(files.length<100)break;
+  offset+=files.length;
+ }
+ for(let i=0;i<unused.length;i+=100){
+  const {error}=await sb.storage.from('businessflow-assets').remove(unused.slice(i,i+100));
+  if(error)return {error};
+ }
+ return {removed:unused.length};
+}
 async function saveWebsite(){
  if(!currentUser){saveMessage('Sign in before saving.');return}
  saveMessage('Saving website…');
@@ -263,8 +289,10 @@ async function saveWebsite(){
  const activePaths=new Set(pageRows.map(p=>p.path));
  const staleIds=(existingPages||[]).filter(p=>!activePaths.has(p.path)).map(p=>p.id);
  if(staleIds.length){const {error:cleanupError}=await sb.from('businessflow_pages').delete().in('id',staleIds);if(cleanupError){saveMessage('Website saved, but a removed page could not be cleaned up: '+cleanupError.message);return}}
- if(pendingDeleteHeroImagePaths.length){const pathsToDelete=[...pendingDeleteHeroImagePaths];const {error:storageDeleteError}=await sb.storage.from('businessflow-assets').remove(pathsToDelete);if(storageDeleteError){saveMessage('Draft saved, but an old image could not be cleaned up. You can retry saving later.');return}pendingDeleteHeroImagePaths=[];}
- saveMessage('Saved securely as a draft. Public publishing is not enabled yet.');
+ const cleanup=await cleanupUnusedSiteAssets(siteId,state);
+ if(cleanup.error){saveMessage('Draft saved, but unused image cleanup could not be completed: '+cleanup.error.message);return}
+ pendingDeleteHeroImagePaths=[];
+ saveMessage('Saved securely as a draft. Removed '+cleanup.removed+' unused image file(s). Public publishing is not enabled yet.');
 }
 $('saveSite').onclick=saveWebsite;
 $('loadSite').onclick=async()=>{

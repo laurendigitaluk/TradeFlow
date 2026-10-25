@@ -1083,3 +1083,7 @@ A UK eBay completed-sale observation for Google Pixel 10 Pro XL 256GB Porcelain/
 
 ## Mobile phone catalogue evidence ingestion — Batch 83 (25 October 2026)
 A UK eBay new-condition completed-sale observation for Google Pixel 10 Pro XL 256GB Black was added to the existing active master in TEST and LIVE. Stable key: `mobile-new-sold-pixel10proxl-256gb-black-ebay-178516971817-20260922`. Source page displayed £656.73 including £16.26 Buyer Protection; seller location Luton, UK. Seller proceeds are not confirmed. Verified counts: TEST 255 active Mobile Phones evidence / 158 used-sold / 3 new-sold; LIVE 253 / 156 / 3. Buyer-facing totals must not be treated as seller proceeds or guaranteed acquisition offers. Global duplicate-key audit and the two-row TEST/LIVE difference remain outstanding.
+
+
+## Mobile phone catalogue evidence ingestion — Batch 84 (25 October 2026)
+A UK eBay new-condition completed-sale observation for Google Pixel 10 Pro XL 256GB Obsidian was added to the existing active master in TEST and LIVE. Stable key: `mobile-new-sold-pixel10proxl-256gb-obsidian-ebay-278210429467-20260724`. Listing displayed £674.99 and indicated two sold; no separate Buyer Protection fee was displayed. Seller is a London UK business; seller proceeds are not confirmed. Verified counts: TEST 256 active Mobile Phones evidence / 158 used-sold / 4 new-sold; LIVE 254 / 156 / 4. Buyer-facing/listing prices must not be treated as seller proceeds or guaranteed acquisition offers. Global duplicate-key audit and the two-row TEST/LIVE difference remain outstanding.

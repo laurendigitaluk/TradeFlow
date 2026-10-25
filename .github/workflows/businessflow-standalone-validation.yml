@@ -9,6 +9,8 @@ on:
       - 'wrangler.businessflow-test.jsonc'
       - 'wrangler.businessflow-live.jsonc'
       - '.github/workflows/businessflow-standalone-validation.yml'
+      - '.github/workflows/businessflow-feature-test-preview.yml'
+      - '.github/workflows/businessflow-feature-test-preview.yml'
   pull_request:
     paths:
       - 'businessflow-standalone/**'
@@ -186,6 +188,26 @@ jobs:
           failed = [name for name, ok in checks.items() if not ok]
           if failed:
               raise SystemExit("BusinessFlow canvas checks failed: " + ", ".join(failed))
+          PY
+
+      - name: Check isolated feature preview workflow is TEST-only and manually triggered
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          workflow = Path(".github/workflows/businessflow-feature-test-preview.yml").read_text(encoding="utf-8")
+          checks = {
+              "preview is manual-only": "workflow_dispatch:" in workflow and "\\n  push:" not in workflow and "\\n  pull_request:" not in workflow,
+              "preview is restricted to the dedicated feature branch": "refs/heads/feature/businessflow-visual-canvas-port" in workflow,
+              "preview deploys only with the BusinessFlow TEST config": "wrangler.businessflow-test.jsonc" in workflow and "wrangler.businessflow-live.jsonc" not in workflow,
+              "preview performs a Wrangler dry-run before deployment": "deploy --dry-run --config wrangler.businessflow-test.jsonc" in workflow,
+              "preview requires Cloudflare credentials": "CLOUDFLARE_API_TOKEN" in workflow and "CLOUDFLARE_ACCOUNT_ID" in workflow,
+              "preview validates frontend syntax before deployment": "node --check /tmp/businessflow-inline.js" in workflow,
+          }
+          for name, ok in checks.items():
+              print(("PASS: " if ok else "FAIL: ") + name)
+          failed = [name for name, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit("Feature preview workflow checks failed: " + ", ".join(failed))
           PY
 
       - name: Confirm browser code contains no service-role key

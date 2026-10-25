@@ -2431,3 +2431,9 @@ Batch 85 added Google Pixel 10 Pro XL 256GB Green, listed as used, from eBay ite
 
 ## Catalogue research checkpoint — 25 October 2026, Batch 86
 Batch 86 added Samsung Galaxy S25 256GB Silver, new/sealed, from eBay item 286331524320. The listing displayed £629 including Buyer Protection and stated no charger was included. LIVE has 130 active phone products: 70 with new-price evidence, 66 with second-hand evidence, 60 missing new evidence and 64 missing second-hand evidence. TEST has 134 phone products (133 active), including two with neither evidence type. The two environments need reconciliation; do not remove or copy master records without checking their identities and valuation effects.
+
+
+## Catalogue research checkpoint — 25 October 2026, Batch 87
+Added two new-condition UK eBay completed-sale observations: iPhone 17 Pro 256GB Orange, item 820214209970, displayed £890 including Buyer Protection; and iPhone 17 Pro Max 512GB Orange, item 407282798006, displayed £1,006.52 including £26.52 Buyer Protection. TEST and LIVE evidence rows were verified; no master products were created. These prices are buyer-facing totals, not seller proceeds. LIVE has 130 active phone products, 72 with new evidence and 66 with second-hand evidence. TEST has 133 active products, 72 with new evidence and 68 with second-hand evidence; one product has neither type. Environment reconciliation and duplicate-key/source-price audits remain open.
+
+Lifecycle guidance: if current new-price evidence cannot be found, check official manufacturer sources to determine whether the model has actually been discontinued. Do not infer discontinuation from a missing listing. Where confirmed, record the source and date; keep the product available for valuation and focus research on UK second-hand completed sales. Historical launch prices must not be presented as current new prices.

@@ -28,3 +28,8 @@ Added two Google Pixel 10 Pro 256GB Obsidian UK eBay new/sealed completed-sale o
 
 ## Batch 78 — 25 October 2026
 Added Samsung Galaxy S25 Ultra 256GB Black used-sale evidence from eBay item 128026023099. Sold 17 Aug 2026 at 08:44 BST; displayed £399.99 with Buyer Protection included. Listing title disclosed chipped corner and visible scratches; seller proceeds not confirmed. Exact active master and URL/key preflight clear; TEST insert/read-back preceded LIVE insert/read-back. Counts: TEST 250 active phone evidence / 154 uk_used+sold / 2 uk_new+sold; LIVE 248 / 152 / 2. Two-row TEST/LIVE difference and global duplicate-key aggregation remain outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-78.md`.
+
+## Batch 79 — 25 October 2026
+Added Google Pixel 10 Pro XL 256GB used-sale evidence from eBay item 227413880546. Sold 8 Jul 2026 at 19:00 BST; buyer-facing total £507.44 incl £13.81 Buyer Protection; no charger included. TEST evidence 753183e6-5091-4186-90ca-a85e3c188488; LIVE evidence 53d8d266-7ce4-40d4-ab8a-7be66131a644. Counts TEST 251/155 used-sold/2 new-sold; LIVE 249/153/2. Two-row difference and global duplicate-key aggregation remain outstanding.
+
+Critical source audit flag: Batch 78 item 128026023099 is recorded as £399.99 but a later search result now shows £479.99 incl Buyer Protection. Preserve history; investigate potential relisting/current price drift or capture discrepancy before correction. Pixel 10 Pro Fold 256GB candidates were deferred because no active exact master exists in either environment; do not create masters during evidence ingestion.

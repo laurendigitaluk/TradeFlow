@@ -248,24 +248,32 @@ function collectReferencedSiteAssets(value,siteId,found=new Set(),seen=new Set()
  Object.values(value).forEach(item=>collectReferencedSiteAssets(item,siteId,found,seen));
  return found;
 }
-async function cleanupUnusedSiteAssets(siteId,state){
+async function cleanupUnusedSiteAssets(siteId,state,pageRows=[]){
  // Only remove files in this site's own storage folder, and only after the
- // latest settings and page records have been saved successfully.
+ // latest settings and all active page records have been saved successfully.
+ // Include page payloads as well as site settings so an asset referenced by
+ // any persisted active page is retained.
  const referenced=collectReferencedSiteAssets(state,siteId);
+ pageRows.forEach(row=>collectReferencedSiteAssets(row?.content,siteId,referenced));
  let offset=0,unused=[];
  while(true){
   const {data,error}=await sb.storage.from('businessflow-assets').list(siteId,{limit:100,offset,sortBy:{column:'name',order:'asc'}});
-  if(error)return {error};
+  if(error)return {error,removed:0};
   const files=data||[];
+  // Supabase Storage returns folder entries without an object id. Only object
+  // entries with an id can be considered for deletion.
   unused.push(...files.filter(file=>file.name&&file.id).map(file=>siteId+'/'+file.name).filter(path=>!referenced.has(path)));
   if(files.length<100)break;
   offset+=files.length;
  }
+ let removed=0;
  for(let i=0;i<unused.length;i+=100){
-  const {error}=await sb.storage.from('businessflow-assets').remove(unused.slice(i,i+100));
-  if(error)return {error};
+  const batch=unused.slice(i,i+100);
+  const {error}=await sb.storage.from('businessflow-assets').remove(batch);
+  if(error)return {error,removed,remaining:unused.length-removed};
+  removed+=batch.length;
  }
- return {removed:unused.length};
+ return {removed,remaining:0};
 }
 async function saveWebsite(){
  if(!currentUser){saveMessage('Sign in before saving.');return}
@@ -289,8 +297,8 @@ async function saveWebsite(){
  const activePaths=new Set(pageRows.map(p=>p.path));
  const staleIds=(existingPages||[]).filter(p=>!activePaths.has(p.path)).map(p=>p.id);
  if(staleIds.length){const {error:cleanupError}=await sb.from('businessflow_pages').delete().in('id',staleIds);if(cleanupError){saveMessage('Website saved, but a removed page could not be cleaned up: '+cleanupError.message);return}}
- const cleanup=await cleanupUnusedSiteAssets(siteId,state);
- if(cleanup.error){saveMessage('Draft saved, but unused image cleanup could not be completed: '+cleanup.error.message);return}
+ const cleanup=await cleanupUnusedSiteAssets(siteId,state,pageRows);
+ if(cleanup.error){const partial=cleanup.removed?(' '+cleanup.removed+' file(s) were removed before the error; '):' ';saveMessage('Draft saved, but unused image cleanup is incomplete.'+partial+'Please save again to retry. Details: '+cleanup.error.message);return}
  pendingDeleteHeroImagePaths=[];
  saveMessage('Saved securely as a draft. Removed '+cleanup.removed+' unused image file(s). Public publishing is not enabled yet.');
 }

@@ -1,0 +1,9 @@
+# Project Memory — Mobile Phone Catalogue Batch 88
+Date: 25 October 2026
+
+Lifecycle review: official/current UK line-up pages were checked for active variants lacking new-price evidence. Apple iPhone 13/14/15 families are absent from the current Apple UK buy line-up; Google Pixel 8/9 families are absent from the current Google Store UK phone line-up; Samsung Galaxy S22/S23/S24 are prior-generation ranges and Samsung notes older models may no longer be available to buy from Samsung as new models. Lifecycle notes were appended to active affected variants in TEST and LIVE with source URLs/date. This does not independently prove manufacturing cessation; no master was deactivated and no schema changed.
+
+Batch 88 added Apple iPhone 15 128GB Pink used/sold evidence from eBay item 307244687330. Sold 23 Oct 2026 at 11:07 BST; displayed £292 including £12 Buyer Protection. Private seller in Ipswich, UK. Best Offer option was present but no explicit accepted notice appeared, so accepted-price uncertainty is documented. Stable key `mobile-used-sold-iphone15-128gb-pink-ebay-307244687330-20261023`. TEST evidence `49c7213e-c63b-43a8-99d7-aa14d371983e`; LIVE evidence `ed16e210-e9fb-416b-b7c0-b450d4c36c1a`. This is a buyer-facing total, not seller proceeds. URL/key preflight was clear; TEST-first then LIVE; no master created.
+
+Coverage after batch: LIVE 130 active products / 72 with new / 66 with used / 0 missing both / 259 active evidence rows / 158 used-sold / 18 lifecycle-review notes. TEST 133 active products / 72 with new / 68 with used / 1 missing both / 261 active evidence rows / 160 used-sold / 19 lifecycle-review notes. TEST/LIVE master discrepancy, global duplicate-key audit and historic source-price audit remain open.
+See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-88.md`.

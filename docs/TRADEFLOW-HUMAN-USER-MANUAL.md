@@ -2414,4 +2414,4 @@ One Google Pixel 10 Pro XL 256GB Obsidian used-sale observation was added and ve
 
 
 ## Catalogue research checkpoint — 25 October 2026
-Batch 82 added one Google Pixel 10 Pro XL 256GB Porcelain/white sale observation. The eBay original page showed £649.14 including Buyer Protection; the search index differed at £646.08. The discrepancy is recorded rather than silently corrected. Opened–never-used condition is retained explicitly. TEST has 254 active Mobile Phones evidence rows and LIVE 252; the two-row difference remains under review. Global active duplicate-key aggregation is still outstanding.
+Batch 82 added one Google Pixel 10 Pro XL 256GB Porcelain/white sale observation (eBay item 178468385751). The eBay original page showed £649.14 including Buyer Protection; the search index differed at £646.08. The discrepancy is recorded rather than silently corrected. Opened–never-used condition is retained explicitly. TEST has 254 active Mobile Phones evidence rows and LIVE 252; the two-row difference remains under review. Global active duplicate-key aggregation is still outstanding.

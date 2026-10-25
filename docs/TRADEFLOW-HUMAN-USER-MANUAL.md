@@ -2408,3 +2408,6 @@ A source-price discrepancy needs review: item 128026023099 is recorded at £399.
 
 ## Mobile phone catalogue — Batch 80 (25 October 2026)
 One Google Pixel 10 Pro XL 256GB Moonstone used-sale observation was added and verified in TEST and LIVE. eBay item 278176799541 sold 18 July 2026; search result showed £620 including Buyer Protection, but the fee amount was not displayed. The listing says no charger is included; a Best Offer option was present, without a clear accepted-offer notice. Active phone evidence: TEST 252, LIVE 250; used/sold: TEST 156, LIVE 154; new/sold: 2 each. The two-row difference persists. A separate source-price discrepancy on item 128026023099 remains under audit. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-80.md`.
+
+## Mobile phone catalogue — Batch 81 (25 October 2026)
+One Google Pixel 10 Pro XL 256GB Obsidian used-sale observation was added and verified in TEST and LIVE. eBay item 257522963688 sold 20 July 2026; the original item page showed £578.85 including a £17.77 Buyer Protection fee, while the search index showed £576.01 including £14.93. The original page value was retained and the discrepancy documented. Active phone evidence: TEST 253, LIVE 251; used/sold: TEST 157, LIVE 155; new/sold: 2 each. The two-row difference persists. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-81.md`.

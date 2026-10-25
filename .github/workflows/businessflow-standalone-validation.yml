@@ -164,6 +164,30 @@ jobs:
               raise SystemExit("BusinessFlow connection checks failed: " + ", ".join(failed))
           PY
 
+      - name: Check visual canvas controls and safe unused-asset cleanup
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
+          checks = {
+              "visual canvas and accessible height handle exist": 'id="vbCanvas"' in html and 'id="vbCanvasHeightHandle"' in html,
+              "add text, image, button and delete controls exist": all(f'id="{name}"' in html for name in ("vbAddText", "vbAddImage", "vbAddButton", "vbDelete")),
+              "canvas element content and layout persist in draft settings": "state.visualCanvasElements=elements.map" in html and "state.visualCanvasHeight=canvasHeight" in html,
+              "loaded canvas image assets receive fresh signed URLs": "values?.visualCanvasElements" in html and "createSignedUrl(e.assetPath,3600)" in html,
+              "image resize uses natural image aspect ratio": "e.aspect=im.naturalWidth/im.naturalHeight" in html and "Image resized with its aspect ratio preserved" in html,
+              "canvas upload has format and 10 MB limits": "const allowed=['image/jpeg','image/png','image/webp','image/gif','image/avif']" in html and "if(file.size>10*1024*1024)" in html,
+              "unused-asset cleanup includes persisted page payloads": "pageRows.forEach(row=>collectReferencedSiteAssets(row?.content,siteId,referenced))" in html,
+              "cleanup only considers actual storage objects": "files.filter(file=>file.name&&file.id)" in html,
+              "cleanup only runs after page save and stale-page cleanup": html.index("const cleanup=await cleanupUnusedSiteAssets(siteId,state,pageRows)") > html.index("if(staleIds.length)"),
+              "cleanup reports partial failures instead of claiming success": "file(s) were removed before the error" in html and "unused image cleanup is incomplete" in html,
+          }
+          for name, ok in checks.items():
+              print(("PASS: " if ok else "FAIL: ") + name)
+          failed = [name for name, ok in checks.items() if not ok]
+          if failed:
+              raise SystemExit("BusinessFlow canvas checks failed: " + ", ".join(failed))
+          PY
+
       - name: Confirm browser code contains no service-role key
         run: |
           ! grep -Eiq 'service_role|SUPABASE_SERVICE_ROLE_KEY' businessflow-standalone/public/index.html

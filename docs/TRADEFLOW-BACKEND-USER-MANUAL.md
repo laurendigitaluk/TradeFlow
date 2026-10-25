@@ -1034,3 +1034,7 @@ Added one iPhone 15 Pro Max 256GB unlocked UK eBay sale observation, item 298539
 
 ## Catalogue evidence checkpoint — Batch 71 (24 October 2026)
 Added one iPhone 16 Pro 256GB Desert Titanium UK eBay sale observation, item 820212891404, displayed £567.85 including £17.85 Buyer Protection. Best Offer was enabled and seller proceeds are unconfirmed. TEST and LIVE rows were inserted and exact read-back verified after URL/key preflight. Counts: TEST 237 active phone evidence / 143 active uk_used + sold; LIVE 235 / 141. Used/sold counts include parts/repair records. See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-71.md`.
+
+
+## Catalogue evidence checkpoint — Batch 72 (25 October 2026)
+Added one iPhone 16 Pro Max 256GB Black UK eBay sale observation, item 128132786202, displayed £527.16 including £14.13 Buyer Protection. Listing disclosed the back was replaced. TEST and LIVE insertions and read-backs were verified after clean URL/key preflight. Derived active phone evidence totals are TEST 238 and LIVE 236; derived active uk_used + sold totals are 144 and 142, pending full recount. Full duplicate-key audit remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-72.md`.

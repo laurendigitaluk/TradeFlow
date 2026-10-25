@@ -10,7 +10,7 @@ Reviewed 20 exact phone model/storage variants, prioritising UK new-condition co
 - Sale: 14 July 2026 at 13:43 BST.
 - Displayed buyer-facing price: £989.00; Buyer Protection indicated, separate fee not shown.
 - Seller: MrPhonesLtd, UK business seller, 99.7% positive feedback, 2,380 feedback at capture. Original page showed new condition, 512GB storage, unlocked UK version, out of stock and 10 sold.
-- TEST master: abeb9f3f-... is LIVE master; TEST master is d3b3798d-a06a-408f-ac26-fc29d91a67e4.
+- TEST master: d3b3798d-a06a-408f-ac26-fc29d91a67e4.
 - TEST evidence: 65eb70b3-5d85-4f88-b9dd-54f936618c09.
 - LIVE master: abeb9f3f-b716-44d6-b711-e2b92f234c1f.
 - LIVE evidence: d813d211-b43e-4995-a38e-3a4f33b1e06a.

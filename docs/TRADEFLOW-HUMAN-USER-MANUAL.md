@@ -2379,3 +2379,7 @@ One iPhone 16 Pro Max 256GB Black UK eBay completed-sale observation was added a
 
 ## Mobile phone catalogue — Batch 73 (25 October 2026)
 Three Samsung Galaxy S25 UK eBay completed-sale observations were added and verified in TEST and LIVE. Items 158245363724 (128GB Grey, £345 displayed including Buyer Protection), 206384194701 (256GB, £389.99 displayed; Best Offer accepted), and 128101722692 (128GB, £347.18 including £11.18 Buyer Protection; Best Offer accepted). All TEST rows were read back before LIVE insertion and all LIVE rows were also verified. Direct category counts: TEST 241 active phone evidence / 147 used-sold; LIVE 239 / 145. The two-row difference remains, and a full global duplicate-key audit is still outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-73.md`.
+
+
+## Mobile phone catalogue — Batch 74 (25 October 2026)
+One Google Pixel 10 Pro 256GB Porcelain UK eBay completed-sale observation was added and verified in TEST and LIVE. Displayed £498.67 includes £13.67 Buyer Protection; seller proceeds unconfirmed. Direct category counts: TEST 242 active phone evidence / 148 used-sold; LIVE 240 / 146. The two-row difference persists and global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-74.md`.

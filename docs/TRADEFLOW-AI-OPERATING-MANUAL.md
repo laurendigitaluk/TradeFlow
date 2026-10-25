@@ -2692,3 +2692,7 @@ Batch 71 added iPhone 16 Pro 256GB Desert Titanium, eBay item 820212891404, sold
 
 ## Mobile phone catalogue — Batch 72 (25 October 2026)
 Batch 72 added iPhone 16 Pro Max 256GB Black eBay item 128132786202, sold 19 October 2026, displayed £527.16 including £14.13 Buyer Protection. The listing disclosed a replaced back; seller proceeds are unconfirmed. Exact URL/key preflight was clear, TEST insert/read-back succeeded, then LIVE insert/read-back succeeded. Derived counts from Batch 71 baseline: TEST 238 active phone evidence / 144 active uk_used + sold; LIVE 236 / 142. Full aggregate recount and broad duplicate-key audit remain outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-72.md`.
+
+
+## Mobile phone catalogue — Batch 73 (25 October 2026)
+Added three Samsung Galaxy S25 UK used/sold observations to TEST and LIVE: item 158245363724 (128GB Grey, £345 displayed including Buyer Protection), 206384194701 (256GB, £389.99 displayed, Best Offer accepted), and 128101722692 (128GB, £347.18 including £11.18 Buyer Protection, Best Offer accepted). Exact URL/key preflight was clear; TEST insert/read-back preceded LIVE, and all six records were verified. Direct Mobile Phones category counts: TEST 241 active evidence / 147 active uk_used+sold; LIVE 239 / 145. The two-row difference remains. Global duplicate-key aggregation is still outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-73.md`.

@@ -2395,3 +2395,6 @@ Added Galaxy S25 Ultra 256GB Titanium Silverblue, eBay item 227413483025, sold 4
 
 ## Mobile phone catalogue — Batch 77 (25 October 2026)
 Two Google Pixel 10 Pro 256GB Obsidian new/sealed UK eBay completed-sale observations were added and verified in TEST and LIVE. Item 117212924862 displayed £691.83 including £16.83 Buyer Protection; item 236875676375 displayed £605.42 including £15.42 Buyer Protection. Seller proceeds are unconfirmed. Active phone evidence counts: TEST 249, LIVE 247; used/sold counts: TEST 153, LIVE 151; new/sold counts: 2 in each environment. The two-row difference persists; global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-77.md`.
+
+## Mobile phone catalogue — Batch 78 (25 October 2026)
+One Samsung Galaxy S25 Ultra 256GB Black used-sale observation was added and verified in TEST and LIVE. The eBay listing sold for a displayed £399.99 including Buyer Protection and disclosed a chipped corner and visible scratches. Seller proceeds were not independently confirmed. Active phone evidence counts: TEST 250, LIVE 248; used/sold: TEST 154, LIVE 152; new/sold: 2 in each environment. The two-row difference persists; global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-78.md`.

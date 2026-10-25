@@ -1038,3 +1038,7 @@ Added one iPhone 16 Pro 256GB Desert Titanium UK eBay sale observation, item 820
 
 ## Catalogue evidence checkpoint — Batch 72 (25 October 2026)
 Added one iPhone 16 Pro Max 256GB Black UK eBay sale observation, item 128132786202, displayed £527.16 including £14.13 Buyer Protection. Listing disclosed the back was replaced. TEST and LIVE insertions and read-backs were verified after clean URL/key preflight. Derived active phone evidence totals are TEST 238 and LIVE 236; derived active uk_used + sold totals are 144 and 142, pending full recount. Full duplicate-key audit remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-72.md`.
+
+
+## Catalogue evidence checkpoint — Batch 73 (25 October 2026)
+Three Samsung Galaxy S25 UK eBay used/sold observations were added and verified in TEST and LIVE after exact URL/key preflight: item 158245363724 (£345 displayed, 128GB Grey); item 206384194701 (£389.99 displayed, 256GB, Best Offer accepted); item 128101722692 (£347.18 including £11.18 Buyer Protection, 128GB, Best Offer accepted). TEST read-backs were completed before LIVE inserts, followed by LIVE read-backs. Direct Mobile Phones category counts are TEST 241 active / 147 used-sold and LIVE 239 / 145. Full global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-73.md`.

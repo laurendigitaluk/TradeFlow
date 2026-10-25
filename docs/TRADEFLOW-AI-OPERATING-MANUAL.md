@@ -2700,3 +2700,6 @@ Added three Samsung Galaxy S25 UK used/sold observations to TEST and LIVE: item 
 
 ## Mobile phone catalogue — Batch 74 (25 October 2026)
 Added Google Pixel 10 Pro 256GB Porcelain, eBay item 336731607825, sold 19 Aug 2026 at displayed £498.67 including £13.67 Buyer Protection. TEST and LIVE inserts/read-backs verified after clean URL/key preflight. Direct Mobile Phones counts: TEST 242 active evidence / 148 active uk_used+sold; LIVE 240 / 146. The two-row difference persists; global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-74.md`.
+
+## Batch 94 — 25 October 2026
+One verified new-condition UK completed-sale observation added to the existing HONOR 600 Pro 512GB master in TEST and LIVE. The Batch 94 checkpoint and project-memory file contain the source, evidence IDs, exclusions and verification notes. No master products, valuation logic or schema changed. Re-run aggregate SQL counts before starting the next batch.

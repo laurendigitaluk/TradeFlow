@@ -2398,3 +2398,5 @@ Two Google Pixel 10 Pro 256GB Obsidian new/sealed UK eBay completed-sale observa
 
 ## Mobile phone catalogue — Batch 78 (25 October 2026)
 One Samsung Galaxy S25 Ultra 256GB Black used-sale observation was added and verified in TEST and LIVE. The eBay listing sold for a displayed £399.99 including Buyer Protection and disclosed a chipped corner and visible scratches. Seller proceeds were not independently confirmed. Active phone evidence counts: TEST 250, LIVE 248; used/sold: TEST 154, LIVE 152; new/sold: 2 in each environment. The two-row difference persists; global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-78.md`.
+
+Batch 78 source listing: https://www.ebay.co.uk/itm/128026023099 (eBay item 128026023099).

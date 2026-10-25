@@ -99,7 +99,7 @@
 #vbCanvas .vb-el img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
 #vbCanvas .vb-handle{position:absolute;width:13px;height:13px;right:0;bottom:0;background:#f47721;border:2px solid white;border-radius:2px;cursor:nwse-resize;touch-action:none}
 #vbCanvas .vb-empty{font-size:12px;color:#637282;text-align:center;padding:8px}
-@media(max-width:760px){#visualBuilder{grid-column:1!important}#vbCanvas{height:440px!important}}
+@media(max-width:760px){#visualBuilder{grid-column:1!important}}
 </style>
 </main>
 <script>
@@ -343,7 +343,7 @@ function initVisualBuilder(){
   const {error:uploadError}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
   if(uploadError){$('vbStatus').textContent='Canvas image upload failed: '+uploadError.message;return}
   const {data,error:signedError}=await sb.storage.from('businessflow-assets').createSignedUrl(objectPath,3600);
-  if(signedError||!data?.signedUrl){$('vbStatus').textContent='Image uploaded, but its private preview link could not be created.';return}
+  if(signedError||!data?.signedUrl){const {error:cleanupError}=await sb.storage.from('businessflow-assets').remove([objectPath]);$('vbStatus').textContent='Image uploaded, but its private preview link could not be created.'+(cleanupError?' The unused upload could not be removed automatically.':' The unused upload was cleaned up.');return}
   const probe=new Image();
   probe.onload=()=>{
    if(target.assetPath&&target.assetPath!==objectPath&&!pendingDeleteHeroImagePaths.includes(target.assetPath))pendingDeleteHeroImagePaths.push(target.assetPath);
@@ -351,7 +351,7 @@ function initVisualBuilder(){
    if(probe.naturalWidth&&probe.naturalHeight){target.aspect=probe.naturalWidth/probe.naturalHeight;target.w=Math.min(target.w,95-target.x);target.h=Math.min(90-target.y,target.w/target.aspect*canvas.clientWidth/Math.max(1,canvas.clientHeight))}
    persist();render();updateControls();$('vbStatus').textContent='Canvas image uploaded. Save the website draft to keep the change.';
   };
-  probe.onerror=()=>{$('vbStatus').textContent='Image uploaded, but the browser could not display it. Save or retry after checking the file.'};
+  probe.onerror=async()=>{const {error:cleanupError}=await sb.storage.from('businessflow-assets').remove([objectPath]);$('vbStatus').textContent='The uploaded image could not be displayed.'+(cleanupError?' The unused upload could not be removed automatically.':' The unused upload was cleaned up.');};
   probe.src=data.signedUrl;
  });
  if(!elements.length)elements=defaults();

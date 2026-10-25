@@ -32,3 +32,7 @@ Added two distinct UK eBay new-condition completed-sale observations for the exi
 
 ## Next
 Continue researching current new-price evidence for active models/variants without it. Verify exact model and storage, preflight source URL and stable key in both environments, insert/read back TEST before LIVE, and do not create masters during evidence ingestion. For variants absent from current manufacturer UK new line-ups, continue second-hand completed-sale research with condition and Buyer Protection/Best Offer caveats.
+
+
+## Additional audit flag discovered during continued research
+A fresh eBay capture for prior Batch 88 item 307244687330 (iPhone 15 128GB Pink) now displays £289.92 including £9.92 Buyer Protection, whereas the Batch 88 evidence row records £292.00 including £12.00. Do not overwrite the historic row in this batch. Add this item to the open historical source-price discrepancy audit and determine which original page capture/price was valid at sale time before using it for valuation. The current eBay page is https://www.ebay.co.uk/itm/307244687330. Another candidate, iPhone 16e item 178318053825, was excluded from ingestion because the seller feedback is poor and the page/search capture showed a price discrepancy (£258.92 vs £260.61).

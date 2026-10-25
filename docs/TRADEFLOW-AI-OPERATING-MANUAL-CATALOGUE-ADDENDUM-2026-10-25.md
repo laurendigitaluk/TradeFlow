@@ -47,3 +47,7 @@ Added Google Pixel 10 Pro XL 256GB Porcelain/white “Opened – never used” c
 
 ## Batch 83 — 25 October 2026
 Added Google Pixel 10 Pro XL 256GB Black, condition New, from eBay item 178516971817. Sold 22 Sep 2026 at 20:43 BST. Original eBay page displayed £656.73 including £16.26 Buyer Protection; seller located in Luton, UK. No Best Offer option or accepted-offer notice appeared on captured page; seller proceeds unconfirmed. TEST evidence 4e0f3332-7bc3-467a-9dc6-18a2845da52a; LIVE evidence a32bb8b5-0b1f-45da-be8d-b8c48571a242. Counts TEST 255/158 used-sold/3 new-sold; LIVE 253/156/3. The two-row difference and global active duplicate-key audit remain outstanding. Source-price audit flags from Batches 78, 81 and 82 remain open. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-83.md`.
+
+
+## Batch 84 — 25 October 2026
+Added Google Pixel 10 Pro XL 256GB Obsidian, condition New, from eBay item 278210429467. Sold 24 Jul 2026 at 14:36 BST. Listing displayed £674.99 and indicated two sold; no separate Buyer Protection fee or Best Offer option appeared. Factory unlocked, 2-year manufacturer warranty, no charger included; seller is a London UK business. Seller proceeds unconfirmed. TEST evidence 2cdf6b7f-fd39-4553-953f-812c44ccef5e; LIVE evidence 47292b1b-a783-47c1-bfdb-d6ecd59bd2e1. Counts TEST 256/158 used-sold/4 new-sold; LIVE 254/156/4. The two-row difference and global active duplicate-key audit remain outstanding. Source-price audit flags from Batches 78, 81 and 82 remain open. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-84.md`.

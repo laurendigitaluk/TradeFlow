@@ -2449,3 +2449,6 @@ Two new-condition UK eBay completed-sale observations were added for iPhone 16 P
 
 ### Mobile phone market evidence update — 25 October 2026
 The latest 20-variant research batch added three UK new-condition completed-sale observations to existing products. Prices shown include Buyer Protection where indicated and represent buyer-facing totals, not seller proceeds or guaranteed buying offers. One iPhone 17 listing had a Best Offer option without a visible accepted-offer notice, so its evidence remains explicitly caveated. No master products were created. The TEST/LIVE catalogue count difference and an older iPhone 15 Pink price discrepancy remain under review; do not manually overwrite historic evidence.
+
+### Mobile phone market evidence update — Batch 91, 25 October 2026
+Three new-condition UK completed-sale observations were added for existing Galaxy S26 Ultra 256GB, iPhone 17 Pro Max 512GB, and iPhone 17 Pro 256GB products. Buyer Protection fees are included in one displayed total and separately unshown in the other two; do not interpret buyer-facing totals as seller proceeds or guaranteed buying offers. No master products were created. TEST/LIVE master-count mismatch, duplicate-key audit, and the older iPhone 15 Pink price discrepancy remain unresolved. Do not overwrite historic evidence.

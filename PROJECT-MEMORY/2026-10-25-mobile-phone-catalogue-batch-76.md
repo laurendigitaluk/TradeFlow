@@ -11,3 +11,6 @@ Verified Mobile Phones category counts after Batch 76: TEST 246 active evidence 
 Other candidate safeguards: item 800756844624 was already active in both environments; item 137433982809 was opened-never-used and not added as ordinary used; item 168204541224 had conflicting price context and was excluded. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-76.md`.
 
 Continue TEST-first with exact master/URL/key preflight and read-back. Do not create master products as part of evidence ingestion. Keep Buyer Protection and Best Offer uncertainty explicit.
+
+## Batch 76 follow-up — third observation
+Added Samsung Galaxy S25 Ultra 256GB Titanium Silverblue, eBay item 227413483025, sold 4 July 2026 at 15:40 BST. The original listing page displays £589.15 including £18.27 Buyer Protection; Best Offer was enabled, so accepted sale amount and seller proceeds are unconfirmed. Seller located in Blackburn, UK. Search-index amount differed from the original page; the original page display was recorded and the discrepancy noted. TEST evidence 55282454-4563-46ca-a53e-112078ff121f; LIVE evidence 670a4c5b-8bb0-4e87-8ec2-7948cf65e028. Verified counts after this addition: TEST 247 active phone evidence / 153 active uk_used+sold; LIVE 245 / 151. Global duplicate-key aggregation remains outstanding.

@@ -471,3 +471,7 @@ See `CHECKPOINTS/2026-10-24-mobile-phone-catalogue-batch-71.md` and `PROJECT-MEM
 - TEST evidence 35d17e45-0a47-43d1-b6ed-ce13ed58579a and LIVE evidence c0249903-0bdb-493d-a989-207fa2a6be57; both exact read-backs verified.
 - Counts: TEST 237 active phone evidence / 143 active uk_used + sold; LIVE 235 / 141. Two-row difference persists. Zero duplicate active non-null stable-key groups in both environments.
 - Previously recorded iPhone 16 128GB items and iPhone 16 Pro Black item were not duplicated. Historical price observation was preserved when current page display differed.
+
+
+## Mobile phone catalogue — Batch 72 (25 October 2026)
+Added iPhone 16 Pro Max 256GB Black UK eBay completed sale, item 128132786202, sold 19 October 2026. Displayed buyer-facing total £527.16 including £14.13 Buyer Protection; listing disclosed that the back had been replaced, and seller proceeds are unconfirmed. TEST evidence c58bffec-0820-4548-869c-93356aa261d2 and LIVE evidence 5df1e96b-f62f-410d-9bdd-5ad82e3bc4aa were inserted TEST-first and both read-backs verified. Exact URL/key preflight was clear in both environments. Prior baseline was TEST 237/143 and LIVE 235/141 (active phone evidence / active uk_used + sold); derived post-insert totals are TEST 238/144 and LIVE 236/142, pending full aggregate recheck. Broad duplicate-key audit remains outstanding because the query was blocked. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-72.md`.

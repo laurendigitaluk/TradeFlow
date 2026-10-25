@@ -2427,3 +2427,7 @@ Batch 84 added Google Pixel 10 Pro XL 256GB Obsidian, listed as new and factory 
 
 ## Catalogue research checkpoint — 25 October 2026, Batch 85
 Batch 85 added Google Pixel 10 Pro XL 256GB Green, listed as used, from eBay item 178236367409. The listing displayed £589.99 and £9.99 postage separately. TEST has 257 active Mobile Phones evidence rows and LIVE 255; the two-row difference remains under review. Global active duplicate-key aggregation is still outstanding.
+
+
+## Catalogue research checkpoint — 25 October 2026, Batch 86
+Batch 86 added Samsung Galaxy S25 256GB Silver, new/sealed, from eBay item 286331524320. The listing displayed £629 including Buyer Protection and stated no charger was included. LIVE has 130 active phone products: 70 with new-price evidence, 66 with second-hand evidence, 60 missing new evidence and 64 missing second-hand evidence. TEST has 134 phone products (133 active), including two with neither evidence type. The two environments need reconciliation; do not remove or copy master records without checking their identities and valuation effects.

@@ -2383,3 +2383,6 @@ Three Samsung Galaxy S25 UK eBay completed-sale observations were added and veri
 
 ## Mobile phone catalogue — Batch 74 (25 October 2026)
 One Google Pixel 10 Pro 256GB Porcelain UK eBay completed-sale observation was added and verified in TEST and LIVE. Displayed £498.67 includes £13.67 Buyer Protection; seller proceeds unconfirmed. Direct category counts: TEST 242 active phone evidence / 148 used-sold; LIVE 240 / 146. The two-row difference persists and global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-74.md`.
+
+## Mobile phone catalogue — Batch 75 (25 October 2026)
+Two Samsung Galaxy S25 Ultra 256GB UK eBay completed-sale observations were added and read-back verified in TEST and LIVE. Titanium Black item 137643944477 displayed £572.95 including £17.95 Buyer Protection; Titanium White item 168615919758 displayed £516.84 including £16.84 Buyer Protection and had no charger included. Seller proceeds are unconfirmed. Active phone evidence counts: TEST 244, LIVE 242; active used/sold counts: TEST 150, LIVE 148. The two-row difference persists; global duplicate-key aggregation remains outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-75.md`.

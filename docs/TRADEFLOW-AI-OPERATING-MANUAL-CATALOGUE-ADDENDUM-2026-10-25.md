@@ -36,3 +36,6 @@ Critical source audit flag: Batch 78 item 128026023099 is recorded as £399.99 b
 
 ## Batch 80 — 25 October 2026
 Added Google Pixel 10 Pro XL 256GB Moonstone used-sale evidence, eBay item 278176799541. Sold 18 Jul 2026 at 17:50 BST; search result £620 incl Buyer Protection (fee amount not displayed), used, no charger included. Best Offer option appeared but no explicit accepted-offer notice; price uncertainty recorded. TEST evidence abe2acc1-68f1-4a92-a471-30999fdf7710; LIVE evidence 2de6f8ea-8266-4950-a824-0ca342999cb6. Counts TEST 252/156 used-sold/2 new-sold; LIVE 250/154/2. Two-row difference and global duplicate-key audit remain outstanding. Batch 78 source-price discrepancy remains unresolved. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-80.md`.
+
+## Batch 81 — 25 October 2026
+Added Google Pixel 10 Pro XL 256GB Obsidian used-sale evidence from eBay item 257522963688. Sold 20 Jul 2026 at 15:55 BST; original item page £578.85 incl £17.77 Buyer Protection; search index £576.01 incl £14.93. Original page used as source-of-record capture and discrepancy documented. TEST evidence 743ca969-f948-4f4a-b7eb-345c4ba8fb4a; LIVE evidence cb456f2b-635b-44e2-882f-fb7a1623ea1c. Counts TEST 253/157 used-sold/2 new-sold; LIVE 251/155/2. Two-row difference and global duplicate-key audit remain outstanding; Batch 78 source discrepancy also remains pending.

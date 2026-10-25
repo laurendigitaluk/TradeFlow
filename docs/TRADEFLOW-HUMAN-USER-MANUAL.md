@@ -2419,3 +2419,7 @@ Batch 82 added one Google Pixel 10 Pro XL 256GB Porcelain/white sale observation
 
 ## Catalogue research checkpoint — 25 October 2026, Batch 83
 Batch 83 added Google Pixel 10 Pro XL 256GB Black, listed as new and unlocked, from eBay item 178516971817. The displayed total was £656.73 including £16.26 Buyer Protection. TEST has 255 active Mobile Phones evidence rows and LIVE 253; the two-row difference remains under review. Global active duplicate-key aggregation is still outstanding.
+
+
+## Catalogue research checkpoint — 25 October 2026, Batch 84
+Batch 84 added Google Pixel 10 Pro XL 256GB Obsidian, listed as new and factory unlocked, from eBay item 278210429467. The listing displayed £674.99 and indicated two sold; no separate Buyer Protection fee was shown. TEST has 256 active Mobile Phones evidence rows and LIVE 254; the two-row difference remains under review. Global active duplicate-key aggregation is still outstanding.

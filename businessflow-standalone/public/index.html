@@ -1,2 +1,396 @@
 <!doctype html>
-PLACEHOLDER
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>BusinessFlow — Website Builder</title>
+<style>
+:root{--navy:#10283f;--orange:#f47721;--ink:#172533;--muted:#637282;--line:#dce4eb;--paper:#f5f7f9;--brand:#c46a2b}
+*{box-sizing:border-box}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #165dba;outline-offset:3px}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.top{background:#fff;border-bottom:1px solid var(--line);padding:13px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:5}.brand{font-weight:850;color:var(--navy)}.brand small{display:block;color:var(--muted);font-size:11px;font-weight:600}.pill{font-size:12px;background:#fff1e6;color:#9b4c17;padding:5px 9px;border-radius:99px;font-weight:800}.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:18px;padding:18px;max-width:1600px;margin:auto}.panel,.canvas{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}.panel{padding:18px;align-self:start}.panel h1{font-size:20px;margin:0 0 4px}.muted{color:var(--muted);font-size:13px}.field{display:grid;gap:5px;margin:14px 0}.field label{font-size:12px;font-weight:800;color:#425164}.field input,.field textarea,.field select{width:100%;border:1px solid #cbd5df;border-radius:8px;padding:9px;background:white;color:var(--ink)}.field textarea{min-height:72px;resize:vertical}.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 12px;font-weight:750;color:var(--ink)}.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.pages{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.pages button.active{background:var(--navy);color:#fff;border-color:var(--navy)}.section-toggle{display:flex;align-items:center;gap:8px;margin:9px 0;font-size:13px}.section-toggle input{accent-color:var(--orange)}.previewbar{padding:12px 16px;background:#fff;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.previewbar strong{font-size:13px}.viewport{padding:18px;background:#e9edf1;min-height:700px}.site{max-width:1050px;margin:auto;background:#fff;box-shadow:0 10px 36px #0d243912;min-height:700px;--accent:var(--brand)}.site.has-hero-image .hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;padding:0;background:#10283f;align-items:stretch}.site.has-hero-image .hero-copy{padding:64px 10%;min-width:0;align-self:center}.site.has-hero-image .hero-photo{display:block;min-height:300px;width:100%;height:100%;object-fit:cover;object-position:center}.site.has-hero-image .hero-copy h2{max-width:100%;overflow-wrap:anywhere}.site-logo-image{max-width:180px;max-height:64px;object-fit:contain;display:block;margin-bottom:5px}@media(max-width:600px){.site.has-hero-image .hero{grid-template-columns:minmax(0,1fr)}.site.has-hero-image .hero-copy{padding:40px 7%}.site.has-hero-image .hero-photo{min-height:200px;max-height:260px}}.site-header{padding:18px 5%;display:flex;align-items:center;justify-content:space-between;gap:15px;border-bottom:1px solid #edf0f2}.site-logo{font-size:19px;font-weight:900;color:var(--navy)}.site-logo-image{max-width:180px;max-height:64px;object-fit:contain;display:block;margin-bottom:5px}.site-nav{display:flex;gap:15px;flex-wrap:wrap}.site-nav a{font-size:12px;text-decoration:none;color:#475569}.hero{padding:74px 7%;background:linear-gradient(120deg,#10283f,#254b67);color:#fff}.hero .eyebrow{color:#ffb17b;font-weight:800;text-transform:uppercase;letter-spacing:.13em;font-size:11px}.hero h2{font-size:clamp(30px,4vw,54px);line-height:1.06;letter-spacing:-.045em;max-width:700px;margin:13px 0}.hero p{max-width:630px;color:#e1e8ee}.cta{display:inline-block;background:var(--accent);padding:12px 17px;border-radius:7px;color:#fff;text-decoration:none;font-weight:800;margin-top:10px}.site-section{padding:44px 7%}.site-section h3{font-size:25px;margin:0 0 8px;letter-spacing:-.03em}.site-section p{color:#667586;max-width:720px}.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}.card{border:1px solid #e0e6ec;border-radius:10px;padding:17px}.card b{display:block}.contact{background:#f4f6f8}.footer{background:#0a1d2d;color:#e2e8ef;padding:25px 7%;font-size:12px}.hide{display:none!important}.hint{padding:12px;background:#f6f8fa;border-radius:8px;font-size:12px;color:#586778;margin-top:12px}.status{font-size:12px;color:#267047;min-height:18px}@media(max-width:900px){.layout{grid-template-columns:1fr;padding:10px}.panel{order:1}.canvas{order:2}.viewport{padding:8px}.hero{padding:50px 6%}.cards{grid-template-columns:1fr}.site-header{align-items:flex-start;flex-direction:column}.site-nav{gap:10px}} 
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+<header class="top"><div class="brand">BusinessFlow <small>Lauren Digital · standalone website builder</small></div><span class="pill">TEST REVIEW ONLY</span></header>
+<main class="layout">
+<aside class="panel">
+<h1>Website editor</h1><div class="muted">Create and save a draft website for your business. Your draft and pages are saved to your private BusinessFlow account. Public publishing is not implemented yet.</div>
+<div class="field"><label for="businessName">Business name</label><input id="businessName" value="Oak & Stone Roofing"></div>
+<div class="field"><label for="headline">Homepage headline</label><textarea id="headline">Reliable roofing, built to last.</textarea></div>
+<div class="field"><label for="intro">Supporting text</label><textarea id="intro">Roof repairs, flat roofing and complete roof replacements from a local team you can trust.</textarea></div>
+<div class="field"><label for="ctaText">Main button text</label><input id="ctaText" value="Request a free quote"></div>
+<div class="field"><label for="ctaLink">Button destination (preview only)</label><input id="ctaLink" value="/contact"></div>
+<div class="field"><label for="accent">Brand accent colour</label><input id="accent" type="color" value="#c46a2b"></div>
+<div class="field"><label for="logoText">Logo / wordmark text</label><input id="logoText" value="Oak & Stone Roofing"></div>
+<div class="field"><label for="assetFile">Upload a logo</label><input id="assetFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"><button type="button" class="btn" id="uploadAsset">Upload selected image</button><small class="muted">Save the website first. Images are private and limited to 10 MB. Uploading stores the image; it does not publish the site.</small><div id="assetStatus" class="muted" role="status" aria-live="polite"></div></div>
+<div class="field"><label for="heroImageFile">Homepage image</label><input id="heroImageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif"><small class="muted">Images only, up to 10 MB. Stored privately in your BusinessFlow account.</small><div class="btnrow"><button class="btn" type="button" id="uploadHeroImage">Upload image</button><button class="btn" type="button" id="clearHeroImage">Remove image</button></div><div id="heroImageStatus" class="muted" role="status" aria-live="polite">No image uploaded.</div></div>
+<div class="field"><label for="servicesHeading">Services heading</label><input id="servicesHeading" value="Roofing services"></div>
+<div class="field"><label for="servicesText">Services introduction</label><textarea id="servicesText">Practical roofing solutions for homes and businesses, from small repairs to full replacements.</textarea></div>
+<strong style="font-size:13px">Service cards (preview)</strong><div class="field"><button type="button" class="btn" id="addServiceCard">Add service card</button> <button type="button" class="btn" id="removeServiceCard">Remove last</button><small class="muted">Up to 8 service cards.</small></div>
+<div class="field"><label for="service1Title">Service 1 title</label><input id="service1Title" value="Roof repairs"></div><div class="field"><label for="service1Body">Service 1 description</label><textarea id="service1Body">Leaks, damaged tiles and storm repairs.</textarea></div>
+<div class="field"><label for="service2Title">Service 2 title</label><input id="service2Title" value="Flat roofing"></div><div class="field"><label for="service2Body">Service 2 description</label><textarea id="service2Body">Durable modern flat-roof systems.</textarea></div>
+<div class="field"><label for="service3Title">Service 3 title</label><input id="service3Title" value="Full replacements"></div><div class="field"><label for="service3Body">Service 3 description</label><textarea id="service3Body">Complete roof renewals and upgrades.</textarea></div>
+<div class="field" style="display:none"><label for="service4Title">Service 4 title</label><input id="service4Title" value="Service 4"></div><div class="field" style="display:none"><label for="service4Body">Service 4 description</label><textarea id="service4Body">Describe this service.</textarea></div>
+<div class="field" style="display:none"><label for="service5Title">Service 5 title</label><input id="service5Title" value="Service 5"></div><div class="field" style="display:none"><label for="service5Body">Service 5 description</label><textarea id="service5Body">Describe this service.</textarea></div>
+<div class="field" style="display:none"><label for="service6Title">Service 6 title</label><input id="service6Title" value="Service 6"></div><div class="field" style="display:none"><label for="service6Body">Service 6 description</label><textarea id="service6Body">Describe this service.</textarea></div>
+<div class="field" style="display:none"><label for="service7Title">Service 7 title</label><input id="service7Title" value="Service 7"></div><div class="field" style="display:none"><label for="service7Body">Service 7 description</label><textarea id="service7Body">Describe this service.</textarea></div>
+<div class="field" style="display:none"><label for="service8Title">Service 8 title</label><input id="service8Title" value="Service 8"></div><div class="field" style="display:none"><label for="service8Body">Service 8 description</label><textarea id="service8Body">Describe this service.</textarea></div>
+<strong style="font-size:13px">Project cards (preview)</strong><div class="field"><button type="button" class="btn" id="addProjectCard">Add project card</button> <button type="button" class="btn" id="removeProjectCard">Remove last</button><small class="muted">Up to 8 project cards.</small></div>
+<div class="field"><label for="project1Title">Project 1 title</label><input id="project1Title" value="Roof renewal"></div><div class="field"><label for="project1Body">Project 1 description</label><textarea id="project1Body">Describe the roof renewal and result.</textarea></div>
+<div class="field"><label for="project2Title">Project 2 title</label><input id="project2Title" value="Flat roof installation"></div><div class="field"><label for="project2Body">Project 2 description</label><textarea id="project2Body">Describe the installation and materials.</textarea></div>
+<div class="field"><label for="project3Title">Project 3 title</label><input id="project3Title" value="Roof repair"></div><div class="field"><label for="project3Body">Project 3 description</label><textarea id="project3Body">Describe the repair and issue resolved.</textarea></div>
+<div class="field" style="display:none"><label for="project4Title">Project 4 title</label><input id="project4Title" value="Project 4"></div><div class="field" style="display:none"><label for="project4Body">Project 4 description</label><textarea id="project4Body">Describe this project.</textarea></div>
+<div class="field" style="display:none"><label for="project5Title">Project 5 title</label><input id="project5Title" value="Project 5"></div><div class="field" style="display:none"><label for="project5Body">Project 5 description</label><textarea id="project5Body">Describe this project.</textarea></div>
+<div class="field" style="display:none"><label for="project6Title">Project 6 title</label><input id="project6Title" value="Project 6"></div><div class="field" style="display:none"><label for="project6Body">Project 6 description</label><textarea id="project6Body">Describe this project.</textarea></div>
+<div class="field" style="display:none"><label for="project7Title">Project 7 title</label><input id="project7Title" value="Project 7"></div><div class="field" style="display:none"><label for="project7Body">Project 7 description</label><textarea id="project7Body">Describe this project.</textarea></div>
+<div class="field" style="display:none"><label for="project8Title">Project 8 title</label><input id="project8Title" value="Project 8"></div><div class="field" style="display:none"><label for="project8Body">Project 8 description</label><textarea id="project8Body">Describe this project.</textarea></div>
+<div class="field"><label for="contactText">Contact details</label><textarea id="contactText">Call 0121 555 0148 · hello@example.co.uk</textarea></div>
+<strong style="font-size:13px">Optional homepage sections</strong>
+<label class="section-toggle"><input type="checkbox" data-section="why" checked> Why choose us</label>
+<label class="section-toggle"><input type="checkbox" data-section="projects" checked> Recent projects</label>
+<label class="section-toggle"><input type="checkbox" data-section="testimonials" checked> Customer testimonials</label>
+<label class="section-toggle"><input type="checkbox" data-section="contact" checked> Contact / enquiry</label>
+<div class="field"><label for="pageHeading">Selected page heading</label><input id="pageHeading" value="About Us"></div>
+<div class="field"><label for="pageBody">Selected page content</label><textarea id="pageBody">Tell visitors about your business, your experience and what makes your service different.</textarea></div>
+<div class="field"><label>Pages and navigation</label><div id="pages" class="pages"></div><div class="btnrow"><button class="btn" id="addPage">+ Add page</button><button class="btn" id="renamePage">Rename</button><button class="btn" id="removePage">Remove custom page</button></div><small class="muted">Built-in pages cannot be removed.</small></div>
+
+<hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+<h2 style="font-size:16px;margin:0 0 4px">Subscriber account</h2>
+<div class="muted">Sign in or create an account to save this website to BusinessFlow.</div>
+<div class="field"><label for="accountEmail">Email address</label><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com"></div>
+<div class="field"><label for="accountPassword">Password</label><input id="accountPassword" type="password" autocomplete="current-password" minlength="8" placeholder="At least 8 characters"></div>
+<div class="btnrow"><button class="btn" id="signUp">Create account</button><button class="btn" id="signIn">Sign in</button><button class="btn" id="signOut">Sign out</button></div>
+<div class="muted" id="authStatus" role="status" aria-live="polite">Not signed in.</div>
+<div class="btnrow"><button class="btn primary" id="saveSite">Save website</button><button class="btn" id="loadSite">Load my saved website</button></div>
+<div class="muted" id="saveStatus" role="status" aria-live="polite">Your changes are not saved until you choose Save website.</div>
+<div class="hint">BusinessFlow uses its own Supabase project for subscriber accounts, private draft saving and image uploads. No service-role key is used in the browser. Public publishing is not implemented yet.</div>
+
+<div class="btnrow"><button class="btn" id="reset">Reset example</button></div>
+<div class="status" id="status"></div>
+<div class="hint">BusinessFlow uses its own Supabase project for subscriber authentication, draft saving and private image storage. It is separate from TradeFlow. Public publishing is not implemented yet; saved websites remain private drafts.</div>
+</aside>
+<section class="canvas">
+<div class="previewbar"><strong>Live website preview</strong><div class="btnrow" style="margin:0"><button class="btn" id="desktop">Desktop</button><button class="btn" id="mobile">Mobile</button></div></div>
+<div class="viewport"><div class="site" id="site">
+<header class="site-header"><div><img id="previewLogoImage" class="site-logo-image hide" alt="Business logo"><div class="site-logo" id="previewLogo">Oak & Stone Roofing</div></div><nav class="site-nav" id="nav"></nav></header>
+<section class="hero" id="home"><div class="hero-copy"><div class="eyebrow">Local roofing specialists</div><h2 id="previewHeadline">Reliable roofing, built to last.</h2><p id="previewIntro">Roof repairs, flat roofing and complete roof replacements from a local team you can trust.</p><a class="cta" id="previewCta" href="/contact">Request a free quote</a></div></section>
+<section class="site-section" id="services"><h3 id="previewServicesHeading">Roofing services</h3><p id="previewServicesText">Practical roofing solutions for homes and businesses, from small repairs to full replacements.</p><div class="cards" id="homeServiceCards"></div></section>
+<section class="site-section" id="customPage" style="display:none"><h3 id="customPageHeading">About Us</h3><p id="customPageBody">Tell visitors about your business, your experience and what makes your service different.</p><div id="customPageExtra"></div></section>
+<section class="site-section optional" data-section="why"><h3>Why choose us</h3><p>Clear quotes, tidy workmanship and straightforward communication from start to finish.</p></section>
+<section class="site-section optional" id="projects" data-section="projects"><h3>Recent projects</h3><div class="cards" id="homeProjectCards"></div></section>
+<section class="site-section optional" data-section="testimonials"><h3>What customers say</h3><p>“Helpful from the first call, the work was completed on time and the site was left clean.”</p></section>
+<section class="site-section contact optional" id="contact" data-section="contact"><h3>Talk to our team</h3><p id="previewContact">Call 0121 555 0148 · hello@example.co.uk</p><a class="cta" href="/contact">Contact us</a></section>
+<footer class="footer"><span id="footerName">Oak & Stone Roofing</span> · Website concept built with BusinessFlow</footer>
+</div></div>
+</section>
+<section id="visualBuilder" style="grid-column:1/-1;margin-top:18px;background:#fff;border:1px solid #dce4eb;border-radius:14px;padding:16px">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><div><h2 style="margin:0;font-size:19px">Visual homepage editor</h2><p style="margin:4px 0;color:#637282;font-size:13px">Select any box, drag it to move, or use its corner to resize. Images keep their proportions while resizing.</p></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" id="vbAddText">Add text</button><button type="button" id="vbAddImage">Add image box</button><button type="button" id="vbAddButton">Add button</button><button type="button" id="vbDelete">Delete selected</button></div><div id="vbControls" style="display:flex;gap:8px;flex-wrap:wrap;align-items:end;margin-top:10px;padding:10px;border:1px solid #dce4eb;border-radius:8px;background:#fff"><span style="color:#637282;font-size:12px">Select an element to edit its content and appearance.</span></div></div>
+ <div id="vbCanvas" tabindex="0" aria-label="Visual homepage canvas" style="position:relative;isolation:isolate;margin-top:12px;width:100%;height:560px;min-height:320px;overflow:hidden;border:1px solid #ccd6df;border-radius:8px;background:linear-gradient(135deg,#f8fafc,#eaf0f5)">
+ <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#8391a0;pointer-events:none">Homepage design canvas — add or select elements</div>
+ <button type="button" id="vbCanvasHeightHandle" aria-label="Resize canvas height" title="Drag to change canvas height" style="position:absolute;z-index:100;left:50%;bottom:0;transform:translateX(-50%);width:72px;height:12px;border:1px solid #ccd6df;border-bottom:0;border-radius:7px 7px 0 0;background:#fff;cursor:ns-resize;touch-action:none">⋯</button>
+ </div>
+ <p id="vbStatus" role="status" style="font-size:12px;color:#637282;margin:8px 0 0">Canvas changes are included when you save the website draft.</p>
+</section>
+<style>
+#vbCanvas .vb-el{position:absolute;min-width:48px;min-height:30px;display:flex;align-items:center;justify-content:center;overflow:hidden;cursor:move;touch-action:none;border:1px dashed transparent;user-select:none;background:rgba(255,255,255,.82);color:#172533;padding:4px}
+#vbCanvas .vb-el.selected{border:2px solid #f47721;box-shadow:0 0 0 2px #fff}
+#vbCanvas .vb-el .vb-content{width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;white-space:pre-wrap;overflow-wrap:anywhere;text-align:center;pointer-events:none}
+#vbCanvas .vb-el img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none}
+#vbCanvas .vb-handle{position:absolute;width:13px;height:13px;right:0;bottom:0;background:#f47721;border:2px solid white;border-radius:2px;cursor:nwse-resize;touch-action:none}
+#vbCanvas .vb-empty{font-size:12px;color:#637282;text-align:center;padding:8px}
+@media(max-width:760px){#visualBuilder{grid-column:1!important}}
+</style>
+</main>
+<script>
+(()=>{const $=id=>document.getElementById(id);let serviceCount=3,projectCount=3;let pages=[{id:'home',name:'Home',heading:'',body:''},{id:'services',name:'Services',heading:'Our Services',body:'Describe the services your business provides, who you help, and what customers can expect.'},{id:'projects',name:'Recent Projects',heading:'Recent Projects',body:'Showcase recent work, explain the project brief, and describe the result for your customer.'},{id:'about',name:'About Us',heading:'About Us',body:'Tell visitors about your business, your experience and what makes your service different.'},{id:'contact',name:'Contact',heading:'Contact Us',body:'Tell visitors how to reach you, when you are available, and what information to include in an enquiry.'}],active='home';const fields=['businessName','headline','intro','ctaText','ctaLink','accent','logoText','servicesHeading','servicesText','contactText','service1Title','service1Body','service2Title','service2Body','service3Title','service3Body','project1Title','project1Body','project2Title','project2Body','project3Title','project3Body'];function renderPages(){const current=pages.find(p=>p.id===active);if(current&&current.id!=='home'){$('pageHeading').value=current.heading||current.name;$('pageBody').value=current.body||'';}const custom=$('customPage');const homeMode=active==='home';['home','services','projects'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=homeMode?'':'none'});document.querySelectorAll('.optional').forEach(el=>el.style.display=homeMode?'':'none');custom.style.display=homeMode?'none':'';if(!homeMode){$('customPageHeading').textContent=current.heading||current.name;$('customPageBody').textContent=current.body||'';const extra=$('customPageExtra');extra.innerHTML='';if(current.id==='services'||current.id==='projects'){const prefix=current.id==='services'?'service':'project';const grid=document.createElement('div');grid.className='cards';for(let i=1;i<=(current.id==='services'?serviceCount:projectCount);i++){const card=document.createElement('div');card.className='card';const b=document.createElement('b');b.textContent=$(`${prefix}${i}Title`).value;const span=document.createElement('span');span.className='muted';span.textContent=$(`${prefix}${i}Body`).value;card.append(b,span);grid.appendChild(card)}extra.appendChild(grid);}else if(current.id==='contact'){const contact=document.createElement('p');contact.textContent=$('contactText').value;extra.appendChild(contact);const note=document.createElement('p');note.className='muted';note.textContent='This preview does not submit enquiries. Contact-form handling will be added only after the separate publishing and data design is approved.';extra.appendChild(note);}}const el=$('pages');el.innerHTML='';pages.forEach(p=>{const b=document.createElement('button');b.className='btn'+(p.id===active?' active':'');b.textContent=p.name;b.onclick=()=>{active=p.id;renderPages();const target=document.getElementById(active==='home'?'home':'customPage');if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('status').textContent='Previewing '+p.name+'. Changes are not saved to a server.';}else{$('status').textContent='“'+p.name+'” is listed in navigation, but its separate page layout is not built yet.';}};el.appendChild(b)});$('nav').innerHTML='';pages.forEach(p=>{const a=document.createElement('a');a.href='#'+p.id;a.textContent=p.name;a.onclick=(event)=>{event.preventDefault();active=p.id;renderPages();const target=document.getElementById(active==='home'?'home':'customPage');if(target){$('status').textContent='Navigation preview: '+p.name;target.scrollIntoView({behavior:'smooth',block:'start'});}else{$('status').textContent='“'+p.name+'” is listed in navigation, but its separate page layout is not built yet.';}};$('nav').appendChild(a)})}function update(){const name=$('businessName').value||'Your Business';$('previewLogo').textContent=$('logoText').value||name;$('footerName').textContent=name;$('previewHeadline').textContent=$('headline').value;$('previewIntro').textContent=$('intro').value;$('previewCta').textContent=$('ctaText').value;const rawCta=$('ctaLink').value.trim();const safeCta=/^(https:\/\/|http:\/\/|mailto:|tel:|#)/i.test(rawCta)||(/^\/(?!\/)/.test(rawCta));$('previewCta').href=safeCta&&rawCta?rawCta:'#';$('previewServicesHeading').textContent=$('servicesHeading').value;$('previewServicesText').textContent=$('servicesText').value;$('previewContact').textContent=$('contactText').value;function renderCards(containerId,prefix,count){const container=$(containerId);container.innerHTML='';for(let i=1;i<=count;i++){const card=document.createElement('div');card.className='card';const title=document.createElement('b');title.textContent=$(`${prefix}${i}Title`).value;const body=document.createElement('span');body.className='muted';body.textContent=$(`${prefix}${i}Body`).value;card.append(title,body);container.appendChild(card)}}renderCards('homeServiceCards','service',serviceCount);renderCards('homeProjectCards','project',projectCount);const current=pages.find(p=>p.id===active);if(current&&current.id!=='home'){$('customPageHeading').textContent=current.heading||current.name;$('customPageBody').textContent=current.body||'';if(current.id==='contact'){const contact=$('customPageExtra').querySelector('p');if(contact)contact.textContent=$('contactText').value;}if(current.id==='services'||current.id==='projects'){const prefix=current.id==='services'?'service':'project';const count=current.id==='services'?serviceCount:projectCount;const extra=$('customPageExtra');extra.innerHTML='';const grid=document.createElement('div');grid.className='cards';for(let i=1;i<=count;i++){const card=document.createElement('div');card.className='card';const title=document.createElement('b');title.textContent=$(`${prefix}${i}Title`).value;const body=document.createElement('span');body.className='muted';body.textContent=$(`${prefix}${i}Body`).value;card.append(title,body);grid.appendChild(card);}extra.appendChild(grid);}}else{$('customPageHeading').textContent=$('pageHeading').value;$('customPageBody').textContent=$('pageBody').value;}$('site').style.setProperty('--accent',$('accent').value);document.querySelectorAll('[data-section]').forEach(el=>{if(el.type==='checkbox'){const target=document.querySelector('.optional[data-section="'+el.dataset.section+'"]');if(target)target.classList.toggle('hide',!el.checked)}else{const checkbox=document.querySelector('input[data-section="'+el.dataset.section+'"]');if(checkbox)el.classList.toggle('hide',!checkbox.checked)}})}function setCardCount(kind,next){const max=8;const count=Math.max(1,Math.min(max,next));if(kind==='service')serviceCount=count;else projectCount=count;for(let i=1;i<=max;i++){const title=$(kind+i+'Title'),body=$(kind+i+'Body');if(title&&body){title.closest('.field').style.display=i<=count?'':'none';body.closest('.field').style.display=i<=count?'':'none';}}update();$('status').textContent=(kind==='service'?'Service':'Project')+' cards: '+count+'. Changes are not saved until you choose Save website.';}$('addServiceCard').onclick=()=>setCardCount('service',serviceCount+1);$('removeServiceCard').onclick=()=>setCardCount('service',serviceCount-1);$('addProjectCard').onclick=()=>setCardCount('project',projectCount+1);$('removeProjectCard').onclick=()=>setCardCount('project',projectCount-1);setCardCount('service',serviceCount);setCardCount('project',projectCount);for(let i=4;i<=8;i++){fields.push('service'+i+'Title','service'+i+'Body','project'+i+'Title','project'+i+'Body');}fields.forEach(id=>$(id).addEventListener('input',update));$('pageHeading').addEventListener('input',()=>{const p=pages.find(x=>x.id===active);if(p&&p.id!=='home'){p.heading=$('pageHeading').value;update();}});$('pageBody').addEventListener('input',()=>{const p=pages.find(x=>x.id===active);if(p&&p.id!=='home'){p.body=$('pageBody').value;update();}});document.querySelectorAll('input[type=checkbox][data-section]').forEach(el=>el.addEventListener('change',update));$('addPage').onclick=()=>{const name=prompt('New page name (for example, Roof Repairs):');if(!name||!name.trim())return;const cleanName=name.trim();if(pages.some(p=>p.name.trim().toLocaleLowerCase()===cleanName.toLocaleLowerCase())){$('status').textContent='A page with that name already exists. Choose a different name.';return;}const id='page-'+crypto.randomUUID();pages.push({id,name:cleanName,heading:cleanName,body:''});active=id;renderPages();$('status').textContent='Added page “'+cleanName+'”. Choose Save website to store it in your BusinessFlow draft.'};$('renamePage').onclick=()=>{const p=pages.find(x=>x.id===active);if(!p)return;const name=prompt('Rename page:',p.name);if(!name||!name.trim())return;const cleanName=name.trim();if(pages.some(other=>other.id!==p.id&&other.name.trim().toLocaleLowerCase()===cleanName.toLocaleLowerCase())){$('status').textContent='A page with that name already exists. Choose a different name.';return;}const oldName=p.name;p.name=cleanName;if(p.id!=='home'&&(!p.heading||p.heading===oldName))p.heading=cleanName;renderPages();$('status').textContent='Page renamed. Choose Save website to store the change.'};$('removePage').onclick=()=>{const index=pages.findIndex(p=>p.id===active);if(index<0)return;const p=pages[index];if(['home','services','projects','about','contact'].includes(p.id)){$('status').textContent='Built-in pages cannot be removed. Select a custom page to remove it.';return;}if(!confirm('Remove the custom page “'+p.name+'” from this temporary preview?'))return;pages.splice(index,1);active='home';renderPages();update();$('status').textContent='Custom page removed from the draft preview. Choose Save website to store the change.'};$('reset').onclick=()=>{if(!confirm('Reset this browser preview to the example?'))return;location.reload()};$('desktop').onclick=()=>{$('site').style.maxWidth='1050px';$('desktop').classList.add('primary');$('mobile').classList.remove('primary')};$('mobile').onclick=()=>{$('site').style.maxWidth='390px';$('mobile').classList.add('primary');$('desktop').classList.remove('primary')};
+const SUPABASE_URL='https://ktvvtdrdwlazfsgkfedo.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_3OH8ks5cl42nE2r101KZ-Q_nLeMo_lG';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let currentUser=null,savedSiteId=null,logoAssetPath=null,logoSignedUrl=null;
+function authMessage(message){$('authStatus').textContent=message}
+function saveMessage(message){$('saveStatus').textContent=message}
+
+let heroImagePath=null,heroObjectUrl=null,pendingDeleteHeroImagePaths=[];
+function heroStatus(message){$('heroImageStatus').textContent=message}
+function assetStatus(message){$('assetStatus').textContent=message}
+async function refreshLogoImage(){
+ if(!logoAssetPath||!savedSiteId){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');return}
+ const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(logoAssetPath,3600);
+ if(error||!data?.signedUrl){logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');assetStatus('Saved logo could not be loaded.');return}
+ logoSignedUrl=data.signedUrl;
+ const preview=$('previewLogoImage');
+ preview.onload=()=>{preview.classList.remove('hide');$('previewLogo').classList.add('hide');assetStatus('Logo loaded from your private assets.');};
+ preview.onerror=()=>{preview.classList.add('hide');preview.removeAttribute('src');$('previewLogo').classList.remove('hide');assetStatus('Logo URL was created, but the image could not be displayed. Try uploading the logo again.');};
+ preview.src=logoSignedUrl;
+}
+$('uploadAsset').onclick=async()=>{
+ if(!currentUser){assetStatus('Sign in before uploading a logo.');return}
+ const file=$('assetFile').files?.[0];
+ if(!file){assetStatus('Choose an image first.');return}
+ const allowed=['image/jpeg','image/png','image/webp','image/gif','image/avif'];
+ if(!allowed.includes(file.type)){assetStatus('Unsupported image format. Choose JPG, PNG, WebP, GIF or AVIF.');return}
+ if(file.size>10*1024*1024){assetStatus('The image exceeds the 10 MB limit.');return}
+ assetStatus('Preparing logo upload…');
+ if(!savedSiteId){await saveWebsite();if(!savedSiteId){assetStatus('Save a draft first, then upload the logo.');return}}
+ const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-80)||'business-logo';
+ const objectPath=savedSiteId+'/'+crypto.randomUUID()+'-'+safeName;
+ const {error}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
+ if(error){assetStatus('Upload failed: '+error.message);return}
+ if(logoAssetPath&&!pendingDeleteHeroImagePaths.includes(logoAssetPath))pendingDeleteHeroImagePaths.push(logoAssetPath);
+ logoAssetPath=objectPath;await refreshLogoImage();
+ assetStatus('Logo uploaded. Save website to keep it attached to this draft.');
+};
+function showHeroImage(url){
+ const site=$('site');
+ const hero=$('home');
+ if(url){
+  site.classList.add('has-hero-image');
+  let photo=$('heroPhoto');
+  if(!photo){photo=document.createElement('img');photo.id='heroPhoto';photo.className='hero-photo';photo.alt='Homepage banner image';hero.appendChild(photo);}
+  photo.src=url;
+ }else{
+  site.classList.remove('has-hero-image');
+  const photo=$('heroPhoto');if(photo)photo.remove();
+ }
+}
+function verifyHeroImage(url){
+ return new Promise(resolve=>{
+  const image=new Image();
+  image.onload=()=>resolve(true);
+  image.onerror=()=>resolve(false);
+  image.src=url;
+ });
+}
+$('uploadHeroImage').onclick=async()=>{
+ if(!currentUser){heroStatus('Sign in before uploading an image.');return}
+ const file=$('heroImageFile').files?.[0];
+ if(!file){heroStatus('Choose an image first.');return}
+ const allowed=['image/jpeg','image/png','image/webp','image/gif','image/avif'];
+ if(!allowed.includes(file.type)){heroStatus('This image format is not supported. Choose JPG, PNG, WebP, GIF or AVIF.');return}
+ if(file.size>10*1024*1024){heroStatus('The image exceeds the 10 MB limit.');return}
+ heroStatus('Preparing image upload…');
+ if(!savedSiteId){await saveWebsite();if(!savedSiteId){heroStatus('Save a draft first, then upload the image.');return}}
+ const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-80)||'homepage-image';
+ const objectPath=savedSiteId+'/'+crypto.randomUUID()+'-'+safeName;
+ const {error}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
+ if(error){heroStatus('Upload failed: '+error.message);return}
+ if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
+ heroImagePath=objectPath;
+ const {data:signed,error:signedError}=await sb.storage.from('businessflow-assets').createSignedUrl(objectPath,3600);
+ if(signedError){heroStatus('Image uploaded, but its preview link could not be created: '+signedError.message);return}
+ if(!await verifyHeroImage(signed.signedUrl)){heroStatus('Image uploaded, but the preview could not load it. Check storage access and try again.');return}
+ showHeroImage(signed.signedUrl);heroStatus('Image uploaded and visible in the Home preview. Save website to keep it attached to this draft.');
+};
+$('clearHeroImage').onclick=async()=>{
+ if(heroImagePath&&!pendingDeleteHeroImagePaths.includes(heroImagePath))pendingDeleteHeroImagePaths.push(heroImagePath);
+ heroImagePath=null;showHeroImage(null);heroStatus('Image removed from this draft preview. Save website to apply the change.');
+};
+function readEditorState(){
+ const values={}; fields.forEach(id=>{const el=$(id);if(el)values[id]=el.value});
+ values.pageHeading=$('pageHeading').value;values.pageBody=$('pageBody').value;values.logoAssetPath=logoAssetPath;values.heroImagePath=heroImagePath;
+ values.serviceCount=serviceCount;values.projectCount=projectCount;values.pages=pages;values.active=active;
+ values.sections={};document.querySelectorAll('input[type=checkbox][data-section]').forEach(el=>values.sections[el.dataset.section]=el.checked);
+ return values;
+}
+function applyEditorState(values){
+ if(!values||typeof values!=='object')return;
+ heroImagePath=typeof values.heroImagePath==='string'?values.heroImagePath:null;
+ if(heroImagePath&&savedSiteId){
+  heroStatus('Loading saved homepage image…');
+  sb.storage.from('businessflow-assets').createSignedUrl(heroImagePath,3600).then(async({data,error})=>{
+   if(error||!data?.signedUrl){showHeroImage(null);heroStatus('Saved homepage image could not be loaded. Re-upload it and save the draft again.');return}
+   if(!await verifyHeroImage(data.signedUrl)){showHeroImage(null);heroStatus('Saved homepage image URL was created, but the image could not be displayed. Re-upload it and save again.');return}
+   showHeroImage(data.signedUrl);heroStatus('Saved homepage image loaded and displayed.');
+  }).catch(()=>{showHeroImage(null);heroStatus('Could not load the saved homepage image. Re-upload it and save again.')});
+ }else{showHeroImage(null);heroStatus('No saved homepage image.');}
+ fields.forEach(id=>{const el=$(id);if(el&&typeof values[id]==='string')el.value=values[id]});
+ if(typeof values.pageHeading==='string')$('pageHeading').value=values.pageHeading;
+ if(typeof values.pageBody==='string')$('pageBody').value=values.pageBody;
+ if(typeof values.logoAssetPath==='string'&&values.logoAssetPath){logoAssetPath=values.logoAssetPath;refreshLogoImage();}else{logoAssetPath=null;logoSignedUrl=null;$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');$('previewLogo').classList.remove('hide');}
+ if(Array.isArray(values.pages)&&values.pages.length){pages=values.pages.filter(p=>p&&typeof p.id==='string'&&typeof p.name==='string').slice(0,40);}
+ active=pages.some(p=>p.id===values.active)?values.active:'home';
+ document.querySelectorAll('input[type=checkbox][data-section]').forEach(el=>{if(values.sections&&typeof values.sections[el.dataset.section]==='boolean')el.checked=values.sections[el.dataset.section]});
+ setCardCount('service',Number(values.serviceCount)||3);setCardCount('project',Number(values.projectCount)||3);
+ renderPages();update();
+}
+async function refreshAuth(){
+ const {data,error}=await sb.auth.getSession();
+ if(error){authMessage('Could not check sign-in: '+error.message);return}
+ const session=data.session;currentUser=session?.user||null;
+ authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.');
+}
+$('signUp').onclick=async()=>{
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value;
+ if(!email||password.length<8){authMessage('Enter a valid email and a password of at least 8 characters.');return}
+ authMessage('Creating account…');
+ const {data,error}=await sb.auth.signUp({email,password});
+ if(error){authMessage('Sign-up failed: '+error.message);return}
+ currentUser=data.session?data.user:null;
+ authMessage(data.session?'Account created and signed in.':'Account created. Check your email to confirm it, then sign in.');
+};
+$('signIn').onclick=async()=>{
+ const email=$('accountEmail').value.trim(),password=$('accountPassword').value;
+ if(!email||!password){authMessage('Enter your email and password.');return}
+ authMessage('Signing in…');
+ const {data,error}=await sb.auth.signInWithPassword({email,password});
+ if(error){authMessage('Sign-in failed: '+error.message);return}
+ currentUser=data.user;authMessage('Signed in as '+currentUser.email+'.');
+};
+$('signOut').onclick=async()=>{const {error}=await sb.auth.signOut();if(error){authMessage('Sign-out failed: '+error.message);return;}location.reload();};
+sb.auth.onAuthStateChange((_event,session)=>{const nextUser=session?.user||null;if(currentUser?.id!==nextUser?.id){savedSiteId=null;heroImagePath=null;pendingDeleteHeroImagePaths=[];showHeroImage(null);heroStatus('No image uploaded.');logoAssetPath=null;logoSignedUrl=null;if($('previewLogoImage')){$('previewLogoImage').classList.add('hide');$('previewLogoImage').removeAttribute('src');$('previewLogo').classList.remove('hide');}}currentUser=nextUser;authMessage(currentUser?'Signed in as '+currentUser.email+'.':'Not signed in.')});
+function slugify(value){return (value||'my-business').normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,55)||'my-business'}
+function pagePath(page){const fixed={home:'/',services:'/services',projects:'/recent-projects',about:'/about',contact:'/contact'};if(fixed[page.id])return fixed[page.id];const suffix=String(page.id||'custom').replace(/[^a-z0-9]/gi,'').toLowerCase()||'custom';return '/'+slugify(page.name)+'-'+suffix}
+function collectReferencedSiteAssets(value,siteId,found=new Set(),seen=new Set()){
+ if(!value||typeof value!=='object'){if(typeof value==='string'&&value.startsWith(siteId+'/'))found.add(value);return found}
+ if(seen.has(value))return found;seen.add(value);
+ if(Array.isArray(value)){value.forEach(item=>collectReferencedSiteAssets(item,siteId,found,seen));return found}
+ Object.values(value).forEach(item=>collectReferencedSiteAssets(item,siteId,found,seen));
+ return found;
+}
+async function cleanupUnusedSiteAssets(siteId,state){
+ // Only remove files in this site's own storage folder, and only after the
+ // latest settings and page records have been saved successfully.
+ const referenced=collectReferencedSiteAssets(state,siteId);
+ let offset=0,unused=[];
+ while(true){
+  const {data,error}=await sb.storage.from('businessflow-assets').list(siteId,{limit:100,offset,sortBy:{column:'name',order:'asc'}});
+  if(error)return {error};
+  const files=data||[];
+  unused.push(...files.filter(file=>file.name&&file.id).map(file=>siteId+'/'+file.name).filter(path=>!referenced.has(path)));
+  if(files.length<100)break;
+  offset+=files.length;
+ }
+ for(let i=0;i<unused.length;i+=100){
+  const {error}=await sb.storage.from('businessflow-assets').remove(unused.slice(i,i+100));
+  if(error)return {error};
+ }
+ return {removed:unused.length};
+}
+async function saveWebsite(){
+ if(!currentUser){saveMessage('Sign in before saving.');return}
+ saveMessage('Saving website…');
+ const state=readEditorState(),name=$('businessName').value.trim()||'My Business Website';
+ let siteId=savedSiteId;
+ if(!siteId){
+  const slug=slugify(name)+'-'+crypto.randomUUID().slice(0,8);
+  const {data,error}=await sb.from('businessflow_sites').insert({owner_id:currentUser.id,name,slug,status:'draft',theme:{accent:$('accent').value},settings:state}).select('id').single();
+  if(error){saveMessage('Save failed: '+error.message);return}
+  siteId=data.id;savedSiteId=siteId;
+ }else{
+  const {error}=await sb.from('businessflow_sites').update({name,theme:{accent:$('accent').value},settings:state,updated_at:new Date().toISOString()}).eq('id',siteId).eq('owner_id',currentUser.id);
+  if(error){saveMessage('Save failed: '+error.message);return}
+ }
+ const pageRows=pages.map((p,i)=>({site_id:siteId,title:p.name,path:pagePath(p),content:{heading:p.heading||p.name,body:p.body||'',editor_state:state},sort_order:i,is_published:false}));
+ const {error:pageError}=await sb.from('businessflow_pages').upsert(pageRows,{onConflict:'site_id,path'});
+ if(pageError){saveMessage('Website settings saved, but page records did not update: '+pageError.message);return}
+ const {data:existingPages,error:listError}=await sb.from('businessflow_pages').select('id,path').eq('site_id',siteId);
+ if(listError){saveMessage('Website saved, but old page cleanup could not be checked: '+listError.message);return}
+ const activePaths=new Set(pageRows.map(p=>p.path));
+ const staleIds=(existingPages||[]).filter(p=>!activePaths.has(p.path)).map(p=>p.id);
+ if(staleIds.length){const {error:cleanupError}=await sb.from('businessflow_pages').delete().in('id',staleIds);if(cleanupError){saveMessage('Website saved, but a removed page could not be cleaned up: '+cleanupError.message);return}}
+ const cleanup=await cleanupUnusedSiteAssets(siteId,state);
+ if(cleanup.error){saveMessage('Draft saved, but unused image cleanup could not be completed: '+cleanup.error.message);return}
+ pendingDeleteHeroImagePaths=[];
+ saveMessage('Saved securely as a draft. Removed '+cleanup.removed+' unused image file(s). Public publishing is not enabled yet.');
+}
+$('saveSite').onclick=saveWebsite;
+$('loadSite').onclick=async()=>{
+ if(!currentUser){saveMessage('Sign in before loading a saved website.');return}
+ saveMessage('Loading your saved website…');
+ const {data,error}=await sb.from('businessflow_sites').select('id,name,theme,settings,updated_at').eq('owner_id',currentUser.id).order('updated_at',{ascending:false}).limit(1).maybeSingle();
+ if(error){saveMessage('Load failed: '+error.message);return}
+ if(!data){savedSiteId=null;saveMessage('No saved website found for this account yet.');return}
+ savedSiteId=data.id;
+ if(data.settings&&typeof data.settings==='object')applyEditorState(data.settings);
+ if(data.name)$('businessName').value=data.name;
+ if(data.theme?.accent)$('accent').value=data.theme.accent;
+ update();saveMessage('Loaded saved draft. Last saved: '+new Date(data.updated_at).toLocaleString()+'.');
+};
+
+function initVisualBuilder(){
+ const canvas=$('vbCanvas');if(!canvas)return;
+ let canvasHeight=Number(window.__businessFlowCanvasHeight)||560;
+ canvas.style.height=canvasHeight+'px';
+ const heightHandle=$('vbCanvasHeightHandle');
+ if(heightHandle)heightHandle.addEventListener('pointerdown',ev=>{
+  ev.preventDefault();ev.stopPropagation();const startY=ev.clientY,startHeight=canvas.clientHeight;
+  function move(m){canvasHeight=Math.max(320,Math.min(1400,startHeight+(m.clientY-startY)));canvas.style.height=canvasHeight+'px';window.__businessFlowCanvasHeight=canvasHeight}
+  function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);$('vbStatus').textContent='Canvas height updated. Save the website draft to keep the change.'}
+  window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);
+ });
+ // Canvas images have their own upload path: do not reuse the homepage hero uploader.
+ const canvasImageInput=document.createElement('input');
+ canvasImageInput.type='file';canvasImageInput.accept='image/jpeg,image/png,image/webp,image/gif,image/avif';
+ canvasImageInput.hidden=true;canvasImageInput.id='vbImageFile';$('visualBuilder').appendChild(canvasImageInput);
+ let elements=Array.isArray(window.__businessFlowCanvasElements)?window.__businessFlowCanvasElements:[];
+ let selectedId=null;
+ const defaults=()=>[
+  {id:'vb-headline',type:'text',x:5,y:10,w:44,h:23,text:$('headline')?.value||'Your headline',fontSize:28,aspect:1.9},
+  {id:'vb-image',type:'image',x:57,y:10,w:36,h:54,text:'',src:'',aspect:1.25},
+  {id:'vb-cta',type:'button',x:7,y:40,w:24,h:10,text:$('ctaText')?.value||'Contact us',fontSize:15,aspect:3}
+ ];
+ const normalise=e=>({...e,x:Math.max(0,Math.min(95,Number(e.x)||0)),y:Math.max(0,Math.min(95,Number(e.y)||0)),w:Math.max(8,Math.min(95,Number(e.w)||25)),h:Math.max(6,Math.min(90,Number(e.h)||15)),aspect:Math.max(.25,Math.min(8,Number(e.aspect)||1.5))});
+ function persist(){window.__businessFlowCanvasElements=elements.map(e=>({...e}));}
+ function render(){
+  canvas.querySelectorAll('.vb-el').forEach(n=>n.remove());
+  elements.forEach(e=>{const el=document.createElement('div');el.className='vb-el'+(e.id===selectedId?' selected':'');el.dataset.id=e.id;
+   Object.assign(el.style,{left:e.x+'%',top:e.y+'%',width:e.w+'%',height:e.h+'%',fontSize:(Number(e.fontSize)||16)+'px',fontFamily:e.font||'inherit',color:e.color||'#172533',background:e.type==='button'?(e.backgroundColor||'#c46a2b'):(e.backgroundColor||'rgba(255,255,255,.82)'),textAlign:e.align||'center',borderStyle:e.borderStyle||'dashed',borderWidth:(Number(e.borderWidth)||1)+'px',borderColor:e.borderColor||'#dce4eb',borderRadius:(Number(e.borderRadius)||0)+'px'});
+   const content=document.createElement('div');content.className='vb-content';
+   if(e.type==='image'){if(e.src){const im=document.createElement('img');im.src=e.src;im.alt='Homepage image';im.addEventListener('load',()=>{if(im.naturalWidth&&im.naturalHeight){e.aspect=im.naturalWidth/im.naturalHeight;persist()}});content.append(im)}else{content.className+=' vb-empty';content.textContent='Image box — upload a homepage image using the panel above';}}
+   else content.textContent=e.text|| (e.type==='button'?'Button text':'Text box');content.style.display='flex';content.style.flexDirection='column';content.style.alignItems=e.align==='left'?'flex-start':e.align==='right'?'flex-end':'center';content.style.justifyContent=e.vAlign==='top'?'flex-start':e.vAlign==='bottom'?'flex-end':'center';content.style.whiteSpace='pre-wrap';content.style.lineHeight=e.lineHeight||'1.2';content.style.letterSpacing=(Number(e.letterSpacing)||0)+'px';
+   if(e.type==='button'){el.style.color=e.color||'#fff';}
+   el.append(content);const handle=document.createElement('span');handle.className='vb-handle';handle.setAttribute('aria-label','Resize element');el.append(handle);canvas.append(el);
+   el.addEventListener('pointerdown',ev=>{if(ev.target===handle)return;selectedId=e.id;canvas.querySelectorAll('.vb-el').forEach(node=>node.classList.toggle('selected',node.dataset.id===selectedId));updateControls();const target=el;const rect=canvas.getBoundingClientRect(),startX=ev.clientX,startY=ev.clientY,x=e.x,y=e.y;target.setPointerCapture?.(ev.pointerId);function move(m){e.x=Math.max(0,Math.min(100-e.w,x+(m.clientX-startX)/rect.width*100));e.y=Math.max(0,Math.min(100-e.h,y+(m.clientY-startY)/rect.height*100));target.style.left=e.x+'%';target.style.top=e.y+'%';persist()}function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);$('vbStatus').textContent='Position updated. Save the website draft to keep it.'}window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);});
+   handle.addEventListener('pointerdown',ev=>{ev.stopPropagation();ev.preventDefault();selectedId=e.id;updateControls();const rect=canvas.getBoundingClientRect(),sx=ev.clientX,sy=ev.clientY,sw=e.w,sh=e.h,ratio=(e.type==='image'?(Number(e.aspect)||sw/sh):sw/sh);function move(m){const dw=(m.clientX-sx)/rect.width*100;let nw,nh;if(e.type==='image'){const maxW=Math.max(1,Math.min(95-e.x,(90-e.y)*Math.max(.25,ratio)*rect.height/rect.width));nw=Math.max(Math.min(8,maxW),Math.min(maxW,sw+dw));nh=nw/Math.max(.25,ratio)*rect.width/rect.height*100;}else{nw=Math.max(8,Math.min(95-e.x,sw+dw));nh=Math.max(6,Math.min(90-e.y,sh+(m.clientY-sy)/rect.height*100));}e.w=nw;e.h=nh;el.style.width=nw+'%';el.style.height=nh+'%';persist()}function up(){window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);render();$('vbStatus').textContent=e.type==='image'?'Image resized with its aspect ratio preserved. Save the website draft to keep it.':'Element resized. Save the website draft to keep it.'}window.addEventListener('pointermove',move);window.addEventListener('pointerup',up);});
+   el.addEventListener('dblclick',()=>{if(e.type==='image')return;const value=prompt(e.type==='button'?'Button text':'Text content',e.text||'');if(value!==null){e.text=value;render();persist()}});
+  });
+  persist();
+ }
+ function updateControls(){const panel=$('vbControls');if(!panel)return;const e=elements.find(x=>x.id===selectedId);if(!e){panel.innerHTML='<span style="color:#637282;font-size:12px">Select an element to edit its content and appearance.</span>';return;}const field=(label,key,type='text',value=e[key]??'')=>'<label style="display:grid;gap:3px;font-size:11px;color:#637282">'+label+'<input data-vb-field="'+key+'" type="'+type+'" value="'+String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'" style="width:130px;max-width:100%;padding:6px;border:1px solid #cbd5df;border-radius:5px"></label>';let html='';if(e.type!=='image')html+=field(e.type==='button'?'Button text':'Text','text');if(e.type==='button'){html+='<label style="display:grid;gap:3px;font-size:11px;color:#637282">Button destination type<select data-vb-field="button_link_type" style="width:160px;padding:6px;border:1px solid #cbd5df;border-radius:5px"><option value="internal"'+((e.button_link_type||'internal')==='internal'?' selected':'')+'>BusinessFlow page</option><option value="custom"'+(e.button_link_type==='custom'?' selected':'')+'>Custom URL / email / phone</option></select></label>'+field('Destination','button_link','text',e.button_link||'home')+'<span style="font-size:11px;color:#637282">Saved with the draft. Links are not active in the editor canvas.</span>';}html+='<label style="display:grid;gap:3px;font-size:11px;color:#637282">Font size<select data-vb-field="fontSize" style="width:130px;padding:6px;border:1px solid #cbd5df;border-radius:5px">'+[12,14,16,18,20,24,28,32,36,42,48,56,64,72,84,96].map(n=>'<option value="'+n+'"'+(Number(e.fontSize||18)===n?' selected':'')+'>'+n+' px</option>').join('')+'</select></label>'+field('Text colour','color','color',e.color||'#172533')+field('Background','backgroundColor','color',e.backgroundColor||(e.type==='button'?'#c46a2b':'#ffffff'))+field('Border colour','borderColor','color',e.borderColor||'#dce4eb')+field('Border width','borderWidth','number',e.borderWidth||1)+field('Corner radius','borderRadius','number',e.borderRadius||0)+'<label style="display:grid;gap:3px;font-size:11px;color:#637282">Font<select data-vb-field="font" style="width:145px;padding:6px;border:1px solid #cbd5df;border-radius:5px">'+[['inherit','Site default'],['Arial','Arial'],['Arial Black','Arial Black'],['Calibri','Calibri'],['Cambria','Cambria'],['Comic Sans MS','Comic Sans MS'],['Courier New','Courier New'],['Georgia','Georgia'],['Garamond','Garamond'],['Impact','Impact'],['Tahoma','Tahoma'],['Times New Roman','Times New Roman'],['Trebuchet MS','Trebuchet MS'],['Verdana','Verdana'],['Segoe UI','Segoe UI'],['Helvetica','Helvetica']].map(o=>'<option value="'+o[0]+'"'+((e.font||'inherit')===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select></label>'+'<label style="display:grid;gap:3px;font-size:11px;color:#637282">Vertical alignment<select data-vb-field="vAlign" style="width:145px;padding:6px;border:1px solid #cbd5df;border-radius:5px"><option value="top"'+(e.vAlign==='top'?' selected':'')+'>Top</option><option value="center"'+((e.vAlign||'center')==='center'?' selected':'')+'>Middle</option><option value="bottom"'+(e.vAlign==='bottom'?' selected':'')+'>Bottom</option></select></label>'+field('Line spacing','lineHeight','number',e.lineHeight||1.2)+field('Letter spacing','letterSpacing','number',e.letterSpacing||0);if(e.type==='image')html+='<button type="button" id="vbRemoveImage" style="padding:7px 10px;border:1px solid #cbd5df;border-radius:5px;background:#fff">Remove image</button><button type="button" id="vbChooseImage" style="padding:7px 10px;border:1px solid #cbd5df;border-radius:5px;background:#fff">Upload / replace image</button><span style="font-size:11px;color:#637282">Image ratio is locked during resize. Select this box before uploading.</span>';html+='<label style="display:grid;gap:3px;font-size:11px;color:#637282">Text alignment<select data-vb-field="align" style="width:130px;padding:6px;border:1px solid #cbd5df;border-radius:5px"><option value="left"'+(e.align==='left'?' selected':'')+'>Left</option><option value="center"'+((e.align||'center')==='center'?' selected':'')+'>Centre</option><option value="right"'+(e.align==='right'?' selected':'')+'>Right</option></select></label><label style="display:grid;gap:3px;font-size:11px;color:#637282">Border style<select data-vb-field="borderStyle" style="width:130px;padding:6px;border:1px solid #cbd5df;border-radius:5px"><option value="none"'+(e.borderStyle==='none'?' selected':'')+'>None</option><option value="solid"'+((e.borderStyle||'dashed')==='solid'?' selected':'')+'>Solid</option><option value="dashed"'+(e.borderStyle==='dashed'?' selected':'')+'>Dashed</option><option value="dotted"'+(e.borderStyle==='dotted'?' selected':'')+'>Dotted</option><option value="double"'+(e.borderStyle==='double'?' selected':'')+'>Double</option></select></label>';panel.innerHTML=html;const removeImage=$('vbRemoveImage');if(removeImage)removeImage.addEventListener('click',()=>{const target=elements.find(x=>x.id===selectedId);if(!target)return;if(target.assetPath&&!pendingDeleteHeroImagePaths.includes(target.assetPath))pendingDeleteHeroImagePaths.push(target.assetPath);target.src='';target.assetPath='';render();updateControls();$('vbStatus').textContent='Image removed from canvas. Save the website draft to keep the change.'});const chooseImage=$('vbChooseImage');if(chooseImage)chooseImage.addEventListener('click',()=>{if(!currentUser){$('vbStatus').textContent='Sign in before uploading a canvas image.';return}canvasImageInput.click()});panel.querySelectorAll('[data-vb-field]').forEach(input=>input.addEventListener('input',()=>{const target=elements.find(x=>x.id===selectedId);if(!target)return;const key=input.dataset.vbField;target[key]=input.type==='number'?Number(input.value):input.value;if(key==='text')target.text=input.value;const node=canvas.querySelector('[data-id="'+CSS.escape(target.id)+'"]');if(node){if(key==='text')node.querySelector('.vb-content').textContent=input.value;else if(key==='fontSize')node.style.fontSize=Math.max(8,Number(input.value)||16)+'px';else if(key==='color')node.style.color=input.value;else if(key==='backgroundColor')node.style.background=input.value;else if(key==='borderColor')node.style.borderColor=input.value;else if(key==='borderWidth')node.style.borderWidth=Math.max(0,Number(input.value)||0)+'px';else if(key==='borderRadius')node.style.borderRadius=Math.max(0,Number(input.value)||0)+'px';else if(key==='font')node.style.fontFamily=input.value;else if(key==='lineHeight')node.querySelector('.vb-content').style.lineHeight=input.value;else if(key==='letterSpacing')node.querySelector('.vb-content').style.letterSpacing=(Number(input.value)||0)+'px';else if(key==='align'){node.querySelector('.vb-content').style.alignItems=input.value==='left'?'flex-start':input.value==='right'?'flex-end':'center';node.querySelector('.vb-content').style.textAlign=input.value;}else if(key==='vAlign')node.querySelector('.vb-content').style.justifyContent=input.value==='top'?'flex-start':input.value==='bottom'?'flex-end':'center';else if(key==='borderStyle')node.style.borderStyle=input.value;}persist();$('vbStatus').textContent='Appearance updated. Save the website draft to keep the change.';}));}
+ function add(type){const e=normalise({id:'vb-'+crypto.randomUUID(),type,x:8+Math.random()*10,y:15+Math.random()*25,w:type==='image'?30:type==='button'?23:32,h:type==='image'?35:type==='button'?10:18,text:type==='button'?'Contact us':'Double-click to edit',src:'',aspect:type==='image'?1.25:type==='button'?3:1.8,fontSize:18,color:'#172533',backgroundColor:type==='button'?'#c46a2b':'#ffffff',borderColor:'#dce4eb',borderWidth:1,borderRadius:4,font:'inherit',lineHeight:1.2,letterSpacing:0});elements.push(e);selectedId=e.id;render();updateControls();$('vbStatus').textContent='New '+type+' added. Drag to position; use the controls to edit appearance.'}
+ $('vbAddText').onclick=()=>add('text');$('vbAddImage').onclick=()=>add('image');$('vbAddButton').onclick=()=>add('button');$('vbDelete').onclick=()=>{if(!selectedId){$('vbStatus').textContent='Select an element first.';return}const removed=elements.find(e=>e.id===selectedId);if(removed?.assetPath&&!pendingDeleteHeroImagePaths.includes(removed.assetPath))pendingDeleteHeroImagePaths.push(removed.assetPath);elements=elements.filter(e=>e.id!==selectedId);selectedId=null;render();updateControls();$('vbStatus').textContent='Element removed. Save the website draft to keep the change.'};
+ const originalReadEditorState=readEditorState;
+ readEditorState=function(){const state=originalReadEditorState();state.visualCanvasElements=elements.map(e=>({...e}));state.visualCanvasHeight=canvasHeight;return state};
+ const originalApplyEditorState=applyEditorState;
+ applyEditorState=function(values){originalApplyEditorState(values);if(Number.isFinite(Number(values?.visualCanvasHeight))){canvasHeight=Math.max(320,Math.min(1400,Number(values.visualCanvasHeight)));canvas.style.height=canvasHeight+'px';window.__businessFlowCanvasHeight=canvasHeight;}if(Array.isArray(values?.visualCanvasElements)){elements=values.visualCanvasElements.map(normalise);selectedId=null;render();elements.filter(e=>e.type==='image'&&e.assetPath).forEach(async e=>{const {data,error}=await sb.storage.from('businessflow-assets').createSignedUrl(e.assetPath,3600);if(!error&&data?.signedUrl){e.src=data.signedUrl;render()}})}};
+ // Upload directly to the selected canvas element, independently of the homepage hero image.
+ canvasImageInput.addEventListener('change',async()=>{
+  const file=canvasImageInput.files?.[0];canvasImageInput.value='';
+  if(!file)return;
+  const target=elements.find(e=>e.id===selectedId&&e.type==='image');
+  if(!target){$('vbStatus').textContent='Select an image box before uploading.';return}
+  const allowed=['image/jpeg','image/png','image/webp','image/gif','image/avif'];
+  if(!allowed.includes(file.type)){$('vbStatus').textContent='Unsupported image format. Choose JPG, PNG, WebP, GIF or AVIF.';return}
+  if(file.size>10*1024*1024){$('vbStatus').textContent='The image exceeds the 10 MB limit.';return}
+  if(!currentUser){$('vbStatus').textContent='Sign in before uploading a canvas image.';return}
+  if(!savedSiteId){await saveWebsite();if(!savedSiteId){$('vbStatus').textContent='Save the website draft first, then upload the canvas image.';return}}
+  $('vbStatus').textContent='Uploading image to the selected canvas box…';
+  const safeName=file.name.toLowerCase().replace(/[^a-z0-9._-]+/g,'-').slice(-80)||'canvas-image';
+  const objectPath=savedSiteId+'/'+crypto.randomUUID()+'-'+safeName;
+  const {error:uploadError}=await sb.storage.from('businessflow-assets').upload(objectPath,file,{contentType:file.type,upsert:false});
+  if(uploadError){$('vbStatus').textContent='Canvas image upload failed: '+uploadError.message;return}
+  const {data,error:signedError}=await sb.storage.from('businessflow-assets').createSignedUrl(objectPath,3600);
+  if(signedError||!data?.signedUrl){const {error:cleanupError}=await sb.storage.from('businessflow-assets').remove([objectPath]);$('vbStatus').textContent='Image uploaded, but its private preview link could not be created.'+(cleanupError?' The unused upload could not be removed automatically.':' The unused upload was cleaned up.');return}
+  const probe=new Image();
+  probe.onload=()=>{
+   if(target.assetPath&&target.assetPath!==objectPath&&!pendingDeleteHeroImagePaths.includes(target.assetPath))pendingDeleteHeroImagePaths.push(target.assetPath);
+   target.src=data.signedUrl;target.assetPath=objectPath;
+   if(probe.naturalWidth&&probe.naturalHeight){target.aspect=probe.naturalWidth/probe.naturalHeight;target.w=Math.min(target.w,95-target.x);target.h=Math.min(90-target.y,target.w/target.aspect*canvas.clientWidth/Math.max(1,canvas.clientHeight))}
+   persist();render();updateControls();$('vbStatus').textContent='Canvas image uploaded. Save the website draft to keep the change.';
+  };
+  probe.onerror=async()=>{const {error:cleanupError}=await sb.storage.from('businessflow-assets').remove([objectPath]);$('vbStatus').textContent='The uploaded image could not be displayed.'+(cleanupError?' The unused upload could not be removed automatically.':' The unused upload was cleaned up.');};
+  probe.src=data.signedUrl;
+ });
+ if(!elements.length)elements=defaults();
+ elements=elements.map(normalise);
+ render();updateControls();
+}
+
+refreshAuth();
+renderPages();update();initVisualBuilder()})();
+</script>
+
+
+</body>
+</html>

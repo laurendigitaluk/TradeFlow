@@ -1064,3 +1064,8 @@ Two Google Pixel 10 Pro 256GB Obsidian UK eBay new/sealed completed-sale observa
 
 ## Catalogue evidence checkpoint — Batch 78 (25 October 2026)
 One Samsung Galaxy S25 Ultra 256GB Black used-sale observation was added to TEST and LIVE. eBay item 128026023099 sold 17 Aug 2026; displayed buyer-facing total £399.99 with Buyer Protection included. Listing title disclosed a chipped corner and visible scratches. Separate fee and seller proceeds were not confirmed. Counts: TEST 250 active phone evidence / 154 used-sold / 2 new-sold; LIVE 248 / 152 / 2. Two-row TEST/LIVE difference and global duplicate-key aggregation audit remain outstanding. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-78.md`.
+
+## Catalogue evidence checkpoint — Batch 79 (25 October 2026)
+Added Google Pixel 10 Pro XL 256GB used-sale observation from eBay item 227413880546, sold 8 July 2026 at 19:00 BST. Displayed buyer-facing total £507.44 including £13.81 Buyer Protection; listing says no charger included. TEST 251 active phone evidence / 155 used-sold / 2 new-sold; LIVE 249 / 153 / 2. Two-row environment difference and global duplicate-key audit remain outstanding.
+
+Source discrepancy for audit: Batch 78 item 128026023099 was captured at £399.99, but a later search result displays £479.99 incl Buyer Protection. Do not overwrite historical observation without a documented source audit. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-79.md`.

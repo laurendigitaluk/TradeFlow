@@ -257,7 +257,7 @@ async function cleanupUnusedSiteAssets(siteId,state){
   const {data,error}=await sb.storage.from('businessflow-assets').list(siteId,{limit:100,offset,sortBy:{column:'name',order:'asc'}});
   if(error)return {error};
   const files=data||[];
-  unused.push(...files.filter(file=>file.name&&!file.id?false:!!file.name).map(file=>siteId+'/'+file.name).filter(path=>!referenced.has(path)));
+  unused.push(...files.filter(file=>file.name&&file.id).map(file=>siteId+'/'+file.name).filter(path=>!referenced.has(path)));
   if(files.length<100)break;
   offset+=files.length;
  }

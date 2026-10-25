@@ -8,35 +8,45 @@ permissions:
 
 jobs:
   deploy-test:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out isolated BusinessFlow branch
+      - name: Check out visual editor feature branch
         uses: actions/checkout@v4
         with:
-          ref: businessflow-standalone-bootstrap-20261023
+          ref: feature/businessflow-visual-canvas-port
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
 
-      - name: Validate TEST target and frontend syntax
+      - name: Validate TEST target, isolation, and frontend syntax
         run: |
           test -f wrangler.businessflow-test.jsonc
           grep -q '"name": "businessflow-test"' wrangler.businessflow-test.jsonc
-          ! grep -Eiq 'tradeflow-test|production' wrangler.businessflow-test.jsonc
+          ! grep -Eiq 'tradeflow-test|businessflow-live|production' wrangler.businessflow-test.jsonc
+          test -f businessflow-standalone/src/worker.js
+          test -f businessflow-standalone/public/index.html
           python3 - <<'PY'
           from pathlib import Path
           import re
           html = Path("businessflow-standalone/public/index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script[^>]*>(.*?)</script[^>]*>", html, flags=re.I | re.S)
+          scripts = re.findall(r"<script(?:\s[^>]*)?>(.*?)</script\s*>", html, flags=re.I | re.S)
           if not scripts:
               raise SystemExit("No inline JavaScript found")
+          if "service_role" in html.lower() or "supabase_service_role_key" in html.lower():
+              raise SystemExit("Refusing deployment: service-role material found in browser source")
+          if "https://ktvvtdrdwlazfsgkfedo.supabase.co" not in html:
+              raise SystemExit("Refusing deployment: expected isolated BusinessFlow Supabase project is missing")
           Path("/tmp/businessflow-inline.js").write_text("\n".join(scripts), encoding="utf-8")
           PY
           node --check /tmp/businessflow-inline.js
 
-      - name: Verify isolated Cloudflare credentials are configured
+      - name: Dry-run the TEST deployment
+        run: npx --yes wrangler@4 deploy --dry-run --config wrangler.businessflow-test.jsonc
+
+      - name: Verify Cloudflare credentials are configured
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

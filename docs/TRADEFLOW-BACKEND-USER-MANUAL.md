@@ -1075,3 +1075,7 @@ Added Google Pixel 10 Pro XL 256GB Moonstone used-sale observation from eBay ite
 
 ## Catalogue evidence checkpoint — Batch 81 (25 October 2026)
 Added Google Pixel 10 Pro XL 256GB Obsidian used-sale observation from eBay item 257522963688, sold 20 July 2026 at 15:55 BST. Original item page displayed £578.85 including £17.77 Buyer Protection; search index displayed £576.01 including £14.93 fee. Original page used as source-of-record capture; discrepancy recorded. Counts: TEST 253 active phone evidence / 157 used-sold / 2 new-sold; LIVE 251 / 155 / 2. Two-row difference and global duplicate-key audit remain outstanding. Batch 78 item 128026023099 discrepancy remains pending. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-81.md`.
+
+
+## Mobile phone catalogue evidence ingestion — Batch 82 (25 October 2026)
+A UK eBay completed-sale observation for Google Pixel 10 Pro XL 256GB Porcelain/white, “Opened – never used”, was added to the existing active master in TEST and LIVE. Stable key: `mobile-opened-sold-pixel10proxl-256gb-white-ebay-178468385751-20260911`. Source page displayed £649.14 incl £19.14 Buyer Protection; search index displayed £646.08 incl £16.08. The discrepancy is documented; seller proceeds are not confirmed and Best Offer acceptance is not explicit. Verified counts: TEST 254 active Mobile Phones evidence / 158 used-sold / 2 new-sold; LIVE 252 / 156 / 2. Do not treat buyer-facing totals as seller proceeds or guaranteed acquisition offers. Global duplicate-key audit and the two-row TEST/LIVE difference remain outstanding.

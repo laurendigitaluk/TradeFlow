@@ -1650,3 +1650,6 @@ Production had two faults: an incomplete Supabase endpoint in buying-catalogue.j
 Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
 
 Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.
+
+## Mobile Phone Catalogue — Batch 94 (25 October 2026)
+One verified new-condition UK completed-sale observation was inserted TEST-first then LIVE into the existing HONOR 600 Pro 512GB master (eBay item 267769398258; £589.99; sold 11 Sep 2026). TEST evidence `8ffd75f3-e38f-4284-b129-1fe781f22d15`; LIVE evidence `7ccead9c-95b9-4da0-9ddc-f82afb7d668e`. No master products, valuation logic or schema changed. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-94.md` and `PROJECT-MEMORY/2026-10-25-mobile-phone-catalogue-batch-94.md`. Re-run aggregate SQL counts in the next batch; post-batch counts are arithmetic estimates.

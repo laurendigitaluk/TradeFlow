@@ -25,7 +25,7 @@ Continue the existing TradeFlow collector-focused Pokémon TCG identification ca
 
 - Every TEST card key is present in LIVE.
 - Every TEST variant key pair (`card_key + variant_key`) is present in LIVE.
-- LIVE retains 58 cards not present in TEST, all attached to `asia:BW:path:BW8a`; retain these pending investigation because they may be a distinct source-family path or overlapping set data.
+- LIVE retains 58 cards not present in TEST, all attached to `asia:BW:path:BW8a`. A direct comparison confirmed that all 58 exactly duplicate cards under `asia:BW:BW8a` (same collector number, name, language, source path and blob SHA). They were deliberately retained; do not delete or merge until a separately approved, reversible cleanup is planned.
 - LIVE has a master category `Pokémon Trading Cards` with 327 master product rows; all are hidden from customer visibility and package keys are unique. Do not bulk-create all collector cards in `catalogue_master_products` or expose collector-only records to ordinary buying/valuation. Dedicated `pokemon_tcg_*` tables are the source of truth for collector data.
 
 ## Outstanding data quality

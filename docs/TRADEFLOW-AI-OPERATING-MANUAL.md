@@ -2725,3 +2725,10 @@ A read-only LIVE audit found 23,604 English-language card rows with null `card_c
 A reproducible standalone batch script was added on `main`: `scripts/pokemon-tcg-enrich-details.mjs` (commit `78f3f811b127b0974e499a0b5b787ee808a41579`). It uses the existing `source_payload.summary.id` to retrieve the full TCGdex card record and accepts only the documented categories `Pokemon`, `Trainer`, or `Energy`. On write, it updates only rows whose `card_category` is still null and merges the retrieved detail into `source_payload`; it does not touch the ordinary product catalogue, valuation logic, variants, tenants, or customer data.
 
 **Safety and current status:** dry-run is the default; `--write` is required to update rows. The script has not yet been executed or runtime-verified. Run a small dry-run and then a small TEST write first, verify category values and preserved source payload, then scale in batches. Do not run against LIVE until TEST batch results have been verified. Supply `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` through the secure runtime environment; never commit credentials. The batch size is limited to 250 per run.
+
+
+## LIVE category reconciliation batch — 26 October 2026
+
+A small, TEST-first reconciliation was completed for 57 English card rows whose LIVE category was blank. Their exact `card_key` and card name matched TEST records already marked `source_parsed`; the category `Pokemon` was copied only for these matching records. This comprised 12 cards from key family `2011bw`, 20 from `2012bw` / `2014xy`, and 25 from `2014xy` / `2015xy` / `2016xy`. All 57 LIVE updates returned the expected card keys and `Pokemon` category. A separate read-back confirmed representative records from each group.
+
+LIVE English unclassified count decreased from 23,604 to 23,547. No source payload details were added in this batch; the standalone API enrichment script has still not been runtime-tested. Continue with exact TEST-to-LIVE key/name/category reconciliation in bounded batches, and separately complete full-detail payload enrichment when a secure runtime is available. Do not infer categories from names.

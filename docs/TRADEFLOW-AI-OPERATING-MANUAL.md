@@ -2703,3 +2703,16 @@ Added Google Pixel 10 Pro 256GB Porcelain, eBay item 336731607825, sold 19 Aug 2
 
 ## Batch 94 — 25 October 2026
 One verified new-condition UK completed-sale observation added to the existing HONOR 600 Pro 512GB master in TEST and LIVE. The Batch 94 checkpoint and project-memory file contain the source, evidence IDs, exclusions and verification notes. No master products, valuation logic or schema changed. Re-run aggregate SQL counts before starting the next batch.
+
+
+## Pokémon TCG collector catalogue — 2026-10-26 checkpoint
+
+The collector catalogue has been started as an isolated dataset, not as ordinary customer-buying products. No changes were made to `calculate_buying_item_valuation(...)` or to the existing catalogue query functions.
+
+Verified source baseline: `tcgdex/cards-database`, branch `master`, commit `cbddf7e54033b1b58e44af1049c88832e55b94d0`. The recursive Git tree returned 43,681 entries (43,199 blobs) and was not truncated. Its inventory contains 40,658 individual numbered card-file paths across international and Asian-language data directories; this is a file count, not a count of unique cards or printings.
+
+The first set, Base Set (`base1`), has been loaded into both TradeFlow TEST (Supabase project `nnsshnfkjcflucjrftzi`) and LIVE (project `gxsrajtqzdjvmceqcpgv`). Verification on both environments: official expected count 102; imported records 102; unique collector numbers 102; missing English names 0. Set status is `reconciled`. Card rows retain source paths, blob SHAs, source commit, and original source record text in `source_payload`. No card prices were researched or imported.
+
+Collector-specific tables created in both environments: `pokemon_tcg_categories`, `pokemon_tcg_sets`, `pokemon_tcg_cards`, and `pokemon_tcg_card_variants`. RLS is enabled on all four tables and no end-user policies have been added, so these records are not exposed through the ordinary customer catalogue. The current seed is only one category, one set and 102 cards; it is not the full Pokémon catalogue. Do not claim overall completion or import other sets until they are retrieved and reconciled.
+
+Next: implement a reproducible bulk importer for the remaining source families and set metadata; preserve language and distinct printing/variant identity; reconcile set-level expected counts and duplicates; validate RLS and ensure the standard buying catalogue and valuation flow cannot return collector-only rows. Use TEST for verification before subsequent LIVE additions. Keep the TCGdex attribution/licence notice with any distributed dataset and do not submit AI-generated data to the source project.

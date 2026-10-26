@@ -105,6 +105,14 @@ function stateFor(p){
  if(p?.website_visible===false)return {...s,websiteHidden:true,label:"Hidden from website"};
  return s;
 }
+function cardDisplayDetails(p){
+ const isPokemon=String(p.category_name||"").toLowerCase().includes("pokémon trading cards")||String(p.category_name||"").toLowerCase().includes("pokemon trading cards");
+ if(!isPokemon)return esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"");
+ const note=String(p.notes||"");
+ const language=note.match(/language:\s*([a-z-]+)/i)?.[1];
+ const rarity=note.match(/rarity:\s*([^.;]+)/i)?.[1]?.trim();
+ return [p.product_type,language?"Language: "+language.toUpperCase():"",rarity?"Rarity: "+rarity:""].filter(Boolean).map(esc).join(" · ");
+}
 function researchText(p,type){
  const isNew=type==="uk_new";
  const price=isNew?p.uk_new_research_price:p.uk_used_research_price;
@@ -184,7 +192,7 @@ function renderMaster(){
   const mode=displayState.key==="inactive"?"":'<div class="mode-actions" role="group" aria-label="Pricing mode"><button type="button" class="mode-btn '+(s.key==="manual"||s.key==="valuation"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="manual">Manual</button><button type="button" class="mode-btn '+(s.key==="auto"?"selected":"")+'" data-mode-product="'+p.product_id+'" data-mode-value="automatic">Automatic</button>'+(displayState.key==="auto"?'<button type="button" class="collapse-btn" data-collapse-product="'+p.product_id+'">'+(collapsedPricing.has(p.product_id)?"Show pricing":"Collapse pricing")+'</button>':"")+'</div>';
   return '<tr class="status-'+(editingAuto?"auto-pending":s.key)+'">'+
    '<td class="select-cell">'+((isMy||s.key==="available")?'<input type="checkbox" class="product-select" data-product-id="'+p.product_id+'" '+(selectedIds.has(p.product_id)?"checked":"")+' aria-label="Select '+esc(p.manufacturer_name+" "+p.model+" "+(p.package_name||""))+'">':'<input type="checkbox" class="product-select added-checkbox" checked disabled aria-label="Already added">')+'</td>'+
-   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"")+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
+   '<td class="product-name"><strong>'+esc(p.model)+'</strong><span class="package-name">'+esc(p.package_name||"Standard / base configuration")+'</span><small>'+cardDisplayDetails(p)+'</small>'+researchInlineHtml(p)+(s.key==="available"?"":'<span class="added-badge">Already added</span>')+'</td>'+
    '<td>'+esc(p.category_name)+'</td><td>'+esc(p.branch_name||"—")+'</td><td>'+esc(p.manufacturer_name)+'</td>'+
    '<td><div class="state '+(editingAuto?"auto-pending":(s.websiteHidden?"inactive":displayState.key))+'">'+esc(displayState.label)+'</div>'+mode+((displayState.key==="auto"&&collapsedPricing.has(p.product_id))?'<div class="collapsed-pricing-note">Automatic pricing configured · click <strong>Show pricing</strong> to edit</div>':editorHtml(p,displayState))+(isMy?'<div class="visibility-actions"><button type="button" class="visibility-btn '+(s.websiteHidden?"show":"hide")+'" data-visibility-product="'+p.product_id+'" data-visibility="'+(s.websiteHidden?"true":"false")+'">'+(s.websiteHidden?"Show on website":"Hide from website")+'</button></div>'+((s.key!=="inactive")?'<button class="reset-link" data-reset="'+p.product_id+'">Reset / turn off</button>':""):"")+'</td></tr>';
  }).join(""):'<tr><td colspan="6" class="empty">'+(isMy?"No products have been added to your Buying Catalogue yet. Open Master Catalogue to add products.":"No master catalogue products match these filters.")+"</td></tr>";

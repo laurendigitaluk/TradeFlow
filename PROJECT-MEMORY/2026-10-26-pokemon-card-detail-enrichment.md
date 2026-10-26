@@ -14,3 +14,8 @@ Next: run a small TEST dry-run, then a small TEST write and read-back verificati
 A small, TEST-first reconciliation was completed for 57 English card rows whose LIVE category was blank. Their exact `card_key` and card name matched TEST records already marked `source_parsed`; the category `Pokemon` was copied only for these matching records. This comprised 12 cards from key family `2011bw`, 20 from `2012bw` / `2014xy`, and 25 from `2014xy` / `2015xy` / `2016xy`. All 57 LIVE updates returned the expected card keys and `Pokemon` category. A separate read-back confirmed representative records from each group.
 
 LIVE English unclassified count decreased from 23,604 to 23,547. No source payload details were added in this batch; the standalone API enrichment script has still not been runtime-tested. Continue with exact TEST-to-LIVE key/name/category reconciliation in bounded batches, and separately complete full-detail payload enrichment when a secure runtime is available. Do not infer categories from names.
+
+
+## LIVE category reconciliation progress — 26 October 2026
+
+A further 20 English cards were assigned `Pokemon` after exact card-key/name matches against TEST records already marked with that category: `2017sm:8–12`, `2018sm:1–12`, and `2019sm:1`, `2019sm:10–11`. All 20 updates returned successfully, restricted to English rows with null categories. LIVE's remaining English unclassified count is now 23,517 (down from 23,537 before this batch). Full-detail payload enrichment remains outstanding; this batch changed categories only.

@@ -2716,3 +2716,12 @@ The first set, Base Set (`base1`), has been loaded into both TradeFlow TEST (Sup
 Collector-specific tables created in both environments: `pokemon_tcg_categories`, `pokemon_tcg_sets`, `pokemon_tcg_cards`, and `pokemon_tcg_card_variants`. RLS is enabled on all four tables and no end-user policies have been added, so these records are not exposed through the ordinary customer catalogue. The current seed is only one category, one set and 102 cards; it is not the full Pokémon catalogue. Do not claim overall completion or import other sets until they are retrieved and reconciled.
 
 Next: implement a reproducible bulk importer for the remaining source families and set metadata; preserve language and distinct printing/variant identity; reconcile set-level expected counts and duplicates; validate RLS and ensure the standard buying catalogue and valuation flow cannot return collector-only rows. Use TEST for verification before subsequent LIVE additions. Keep the TCGdex attribution/licence notice with any distributed dataset and do not submit AI-generated data to the source project.
+
+
+## Pokémon TCG full-detail enrichment — 26 October 2026
+
+A read-only LIVE audit found 23,604 English-language card rows with null `card_category`. Their `source_payload` identifies them as TCGdex set-summary records; it does not contain a category. Do not infer category from a card name.
+
+A reproducible standalone batch script was added on `main`: `scripts/pokemon-tcg-enrich-details.mjs` (commit `78f3f811b127b0974e499a0b5b787ee808a41579`). It uses the existing `source_payload.summary.id` to retrieve the full TCGdex card record and accepts only the documented categories `Pokemon`, `Trainer`, or `Energy`. On write, it updates only rows whose `card_category` is still null and merges the retrieved detail into `source_payload`; it does not touch the ordinary product catalogue, valuation logic, variants, tenants, or customer data.
+
+**Safety and current status:** dry-run is the default; `--write` is required to update rows. The script has not yet been executed or runtime-verified. Run a small dry-run and then a small TEST write first, verify category values and preserved source payload, then scale in batches. Do not run against LIVE until TEST batch results have been verified. Supply `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` through the secure runtime environment; never commit credentials. The batch size is limited to 250 per run.

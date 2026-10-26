@@ -2475,3 +2475,10 @@ The first set, Base Set (`base1`), has been loaded into both TradeFlow TEST (Sup
 Collector-specific tables created in both environments: `pokemon_tcg_categories`, `pokemon_tcg_sets`, `pokemon_tcg_cards`, and `pokemon_tcg_card_variants`. RLS is enabled on all four tables and no end-user policies have been added, so these records are not exposed through the ordinary customer catalogue. The current seed is only one category, one set and 102 cards; it is not the full Pokémon catalogue. Do not claim overall completion or import other sets until they are retrieved and reconciled.
 
 Next: implement a reproducible bulk importer for the remaining source families and set metadata; preserve language and distinct printing/variant identity; reconcile set-level expected counts and duplicates; validate RLS and ensure the standard buying catalogue and valuation flow cannot return collector-only rows. Use TEST for verification before subsequent LIVE additions. Keep the TCGdex attribution/licence notice with any distributed dataset and do not submit AI-generated data to the source project.
+
+
+## Pokémon card catalogue data quality — 26 October 2026
+
+The collector database is separate from TradeFlow's ordinary buying catalogue and valuation flow. A number of English card records currently contain only a set-summary record, so their card type/category is not yet known. Categories must not be guessed from card names.
+
+A batch enrichment script is available on the TEST `main` branch at `scripts/pokemon-tcg-enrich-details.mjs`. It retrieves the full card details from TCGdex and updates only records whose category is still blank. It starts in dry-run mode. The technical operator must test a small batch in TEST, verify the result, and only then scale up. Do not run the script against LIVE before the TEST batch is verified. No customer-facing product visibility or valuation settings should be changed as part of this enrichment.

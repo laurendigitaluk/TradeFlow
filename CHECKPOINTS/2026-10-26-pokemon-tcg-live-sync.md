@@ -21,7 +21,7 @@ A reconciliation batch was completed against the current LIVE and TEST Supabase 
 - Used idempotent inserts and remapped set/card foreign keys by stable source keys. Existing LIVE records were not overwritten or deleted.
 
 ## Preserve and investigate
-- 58 LIVE-only cards remain in `asia:BW:path:BW8a`; the TEST database does not contain that set key. Do not delete or merge until the path-based and non-path set records are compared.
+- 58 LIVE-only cards remain in `asia:BW:path:BW8a`; all 58 exactly duplicate records in `asia:BW:BW8a` by collector number, name, language, source path and blob SHA. They were retained. Do not delete or merge without a separately approved, reversible cleanup.
 - The LIVE master catalogue has 327 products under `Pokémon Trading Cards`, all `customer_visible=false`, with no duplicate package keys. Keep the collector database separate from ordinary buying/valuation and do not bulk-create 42k master products.
 - 23,604 LIVE cards have null `card_category`; source payloads often contain only set-summary information. Treat them as incomplete for card-type classification and do not guess.
 - No prices or market evidence were imported. No valuation logic or tenant/customer data was changed.

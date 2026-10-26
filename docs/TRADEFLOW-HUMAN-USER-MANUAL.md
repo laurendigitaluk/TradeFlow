@@ -2482,3 +2482,8 @@ Next: implement a reproducible bulk importer for the remaining source families a
 The collector database is separate from TradeFlow's ordinary buying catalogue and valuation flow. A number of English card records currently contain only a set-summary record, so their card type/category is not yet known. Categories must not be guessed from card names.
 
 A batch enrichment script is available on the TEST `main` branch at `scripts/pokemon-tcg-enrich-details.mjs`. It retrieves the full card details from TCGdex and updates only records whose category is still blank. It starts in dry-run mode. The technical operator must test a small batch in TEST, verify the result, and only then scale up. Do not run the script against LIVE before the TEST batch is verified. No customer-facing product visibility or valuation settings should be changed as part of this enrichment.
+
+
+## Pokémon category reconciliation progress — 26 October 2026
+
+The first 57 missing English card categories have been filled in LIVE using matching card keys, names, and already source-parsed categories from TEST. The remaining blank-category count was verified at 23,547. The full card-detail payload enrichment is still outstanding. Continue only with exact, evidence-backed category matches; do not classify by guessing from card names.

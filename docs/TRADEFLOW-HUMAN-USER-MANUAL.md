@@ -2029,3 +2029,14 @@ Do not use the resend setup-link button until guided to do so; its full end-to-e
 ## 2026-10-22 Follow-up — public website availability
 
 Public websites and published shop listings now require the owning TradeFlow tenant to be active. Existing active websites should continue to work as before. This is an availability/security guard; it does not change subscriber editing steps or buying, valuation, pricing, and evidence workflows. LIVE public listing media was updated to check tenant status before serving temporary image links. Database checks confirmed the current active website still appears through the public read routes. A full browser-level smoke test remains outstanding.
+
+
+
+## Pokémon TCG catalogue — LIVE sync, 26 October 2026
+
+- Target: LIVE Supabase project `gxsrajtqzdjvmceqcpgv`; TEST source: `nnsshnfkjcflucjrftzi`. This is a collector-focused card-identification catalogue, not a valuation source. Do not import Pokémon card prices or let collector records enter ordinary buying/valuation flows without a separately approved design.
+- LIVE was reconciled against TEST by stable `card_key`, not by row counts alone. Added 5 set metadata records and 10,583 card records missing from LIVE, preserving existing LIVE-only records. LIVE now has 39 source-family categories, 574 sets, 42,453 cards and 1,895 printing/variant records. TEST has 39 categories, 569 sets, 42,395 cards and 1,071 variants.
+- Verification: every TEST card key is now present in LIVE; every TEST variant composite key (`card_key + variant_key`) is present in LIVE; all LIVE sets have a category assignment. The 58 LIVE-only cards are retained and belong to the separate path-based set key `asia:BW:path:BW8a`; do not delete them automatically. Investigate possible overlap with `asia:BW:BW8a` before any cleanup.
+- The LIVE master catalogue already has a `Pokémon Trading Cards` category and 327 related product rows. They are all `customer_visible=false` and have no duplicate `package_key` values. Do not bulk-create 42k master catalogue products or expose collector-only cards to customer buying flows; the dedicated `pokemon_tcg_*` tables remain the authoritative collector catalogue.
+- Data-quality follow-up: 23,604 LIVE cards have null `card_category`, often because the retained source payload is a set-summary record rather than full card detail. Do not guess card type. Retrieve and validate full card details, then assign `Pokemon`, `Trainer` or `Energy` where source evidence supports it. Some set metadata is still `source_retrieved` or `needs_review`; counts alone do not prove source completeness.
+- No card prices, market evidence, tenant data or valuation logic were changed. No existing records were deleted or overwritten. Import batches used `ON CONFLICT DO NOTHING` and preserved existing LIVE IDs/relationships.

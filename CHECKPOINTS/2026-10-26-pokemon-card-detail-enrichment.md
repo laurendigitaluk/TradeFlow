@@ -35,3 +35,10 @@ Prepare a reproducible, evidence-backed way to fill missing card categories with
 4. If successful, process the remaining English rows in bounded batches with retry/error logging and reconcile counts after each batch.
 5. Only after TEST validation, repeat against LIVE in bounded batches.
 6. Record actual results and update this checkpoint and manuals. Do not delete the 58 LIVE-only path-based duplicate records as part of this task.
+
+
+## LIVE category reconciliation batch — 26 October 2026
+
+A small, TEST-first reconciliation was completed for 57 English card rows whose LIVE category was blank. Their exact `card_key` and card name matched TEST records already marked `source_parsed`; the category `Pokemon` was copied only for these matching records. This comprised 12 cards from key family `2011bw`, 20 from `2012bw` / `2014xy`, and 25 from `2014xy` / `2015xy` / `2016xy`. All 57 LIVE updates returned the expected card keys and `Pokemon` category. A separate read-back confirmed representative records from each group.
+
+LIVE English unclassified count decreased from 23,604 to 23,547. No source payload details were added in this batch; the standalone API enrichment script has still not been runtime-tested. Continue with exact TEST-to-LIVE key/name/category reconciliation in bounded batches, and separately complete full-detail payload enrichment when a secure runtime is available. Do not infer categories from names.

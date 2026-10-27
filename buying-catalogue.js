@@ -1,7 +1,7 @@
 const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl;
 const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null;
-let master=[],facets={categories:[],branches:[],manufacturers:[]};
+let master=[],facets={categories:[],branches:[],manufacturers:[],sets:[]};
 let masterPage=1,totalProducts=0;
 const pageSize=50;
 let searchTimer=null;
@@ -58,21 +58,22 @@ async function loadCatalogue(){
 async function loadFacets(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null;
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_facets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
- facets=data||{categories:[],branches:[],manufacturers:[]};
+ const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
+ facets={...(data||{categories:[],branches:[],manufacturers:[]}),sets:Array.isArray(sets)?sets:[]};
  populateFilters();
 }
 async function loadPage(){
- const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
+ const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
  const hideAdded=catalogueView==="master" ? ($("master-hide-added")?.checked!==false) : false;
- if(catalogueView==="master"&&!man&&!q&&!cat&&!branch){
+ if(catalogueView==="master"&&!man&&!q&&!cat&&!branch&&!setName){
   master=[];totalProducts=0;
   $("catalogue-status").textContent="Choose a manufacturer or search";
   $("catalogue-status").classList.remove("live");
   $("catalogue-help").textContent="Choose a category, branch or manufacturer, or enter a product search to load matching master products.";
   renderMaster();return;
  }
- const rpc=catalogueView==="my"?"/rest/v1/rpc/get_tenant_buying_catalogue_page":"/rest/v1/rpc/get_master_buying_catalogue_page_filtered";
- const data=await api(rpc,{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_page:masterPage,p_page_size:pageSize,...(catalogueView==="master"?{p_hide_added:hideAdded}:{} )}),timeoutMs:45000});
+ const rpc=catalogueView==="my"?"/rest/v1/rpc/get_tenant_buying_catalogue_page":"/rest/v1/rpc/get_master_buying_catalogue_page_filtered_by_set";
+ const data=await api(rpc,{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,...(catalogueView==="master"?{p_set_name:setName,p_hide_added:hideAdded}:{}),p_page:masterPage,p_page_size:pageSize}),timeoutMs:45000});
  master=Array.isArray(data?.products)?data.products:[];
  totalProducts=Number(data?.total||0);
  const pages=Math.max(1,Math.ceil(totalProducts/pageSize));if(masterPage>pages){masterPage=pages;return loadPage()}
@@ -88,11 +89,17 @@ function fillSelect(id,items,placeholder,old){
  const e=$(id);e.innerHTML='<option value="">'+placeholder+"</option>"+(items||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+" ("+x.count+")</option>").join("");
  if((items||[]).some(x=>String(x.id)===String(old)))e.value=old;
 }
+function fillSetSelect(id,items,placeholder,old=""){
+ const e=$(id);if(!e)return;
+ e.innerHTML='<option value="">'+esc(placeholder)+'</option>'+(items||[]).map(x=>'<option value="'+esc(x.name)+'">'+esc(x.name)+" ("+Number(x.count||0)+")</option>").join("");
+ if((items||[]).some(x=>String(x.name)===String(old)))e.value=old;
+}
 function populateFilters(){
- const cat=$("master-category").value||"",branch=$("master-branch").value||"",man=$("master-manufacturer").value||"";
+ const cat=$("master-category").value||"",branch=$("master-branch").value||"",man=$("master-manufacturer").value||"",setName=$("master-set")?.value||"";
  fillSelect("master-category",facets.categories,"All categories",cat);
  fillSelect("master-branch",facets.branches,"All branches",branch);
  fillSelect("master-manufacturer",facets.manufacturers,"All manufacturers",man);
+ fillSetSelect("master-set",facets.sets,"All sets / expansions",setName);
 }
 function stateFor(p){
  let s;
@@ -398,6 +405,7 @@ async function refreshForCategory(){
  masterPage=1;
  $("master-branch").value="";
  $("master-manufacturer").value="";
+ if($("master-set"))$("master-set").value="";
  await loadFacets();
  await loadPage();await loadStatusCounts();
 }
@@ -408,8 +416,9 @@ $("bulk-add").addEventListener("click",()=>catalogueView==="my"?applySelectedBuy
 $("bulk-mode").addEventListener("change",()=>{toggleBulkMode();if($("bulk-mode").value==="automatic")applyBulkPreset()});
 $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
-$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";await loadFacets();await loadPage()});
+$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-set")?.addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
 $("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});

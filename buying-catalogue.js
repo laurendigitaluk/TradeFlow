@@ -58,9 +58,10 @@ async function loadCatalogue(){
 function isPokemonCatalogue(){return ($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokémon trading cards")||($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokemon trading cards")}
 function applyCategoryFilterLayout(){
  const pokemon=isPokemonCatalogue();
- const branchField=$("master-branch")?.closest(".field"),manufacturerField=$("master-manufacturer")?.closest(".field");
+ const branchField=$("master-branch")?.closest(".field"),manufacturerField=$("master-manufacturer")?.closest(".field"),visibilityField=$("master-hide-added")?.closest(".master-visibility-filter");
  if(branchField)branchField.hidden=pokemon;
  if(manufacturerField)manufacturerField.hidden=pokemon;
+ if(visibilityField)visibilityField.hidden=pokemon;
  const setField=$("master-set")?.closest(".field"),searchField=$("master-search")?.closest(".field"),filters=$("master-category")?.closest(".filters");
  if(filters&&setField&&searchField){filters.insertBefore(setField,branchField||searchField);filters.insertBefore(searchField,branchField||manufacturerField||filters.querySelector(".master-visibility-filter"));}
 }
@@ -73,7 +74,7 @@ async function loadFacets(){
 }
 async function loadPage(){
  const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null),setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
- const hideAdded=catalogueView==="master" ? ($("master-hide-added")?.checked!==false) : false;
+ const hideAdded=catalogueView==="master" && !isPokemonCatalogue() ? ($("master-hide-added")?.checked!==false) : false;
  if(catalogueView==="master"&&!man&&!q&&!cat&&!branch&&!setName){
   master=[];totalProducts=0;
   $("catalogue-status").textContent="Choose a manufacturer or search";

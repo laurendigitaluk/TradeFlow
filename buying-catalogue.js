@@ -139,6 +139,8 @@ function productNotesHtml(p){
  const raw=String(p?.notes||"")
   .replace(/Imported from the existing gear product database\.?/ig,"")
   .replace(/Pricing and package variants still require staff configuration\.?/ig,"")
+  // Pokémon collector import keys/language/rarity are internal research metadata, not useful buying-page copy.
+  .replace(/Imported from Pokémon TCG collector database\.\s*Card key:\s*[^;]+;\s*language:\s*[^;]+;\s*rarity:\s*[^.]+\.\s*Collector\/research record;\s*not enabled for customer-facing catalogue by default\.?/ig,"")
   .replace(/\s{2,}/g," ").trim();
  if(!raw)return "";
  const parts=raw.split(/(?=Online comparison\s*:)/i);
@@ -453,9 +455,20 @@ function toggleAllMatching(){
 }
 function setCatalogueView(view){
  catalogueView=view;masterPage=1;window.buyingSelected=new Set();buyingSelectionAllMatching=false;
- document.querySelectorAll(".catalogue-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
- $("catalogue-title").textContent=view==="my"?"My Buying Catalogue":"Master Catalogue";
- $("catalogue-subtitle").textContent=view==="my"?"Products currently selected for this subscriber.":"Browse the independent TradeFlow master catalogue and add products you actually buy.";
+ document.querySelectorAll(".catalogue-tab").forEach(b=>{
+  const active=b.dataset.view===view;
+  b.classList.toggle("active",active);
+  b.setAttribute("aria-pressed",active?"true":"false");
+ });
+ $("catalogue-title").textContent=view==="my"?"My Buying Catalogue — Your Selected Products":"Master Catalogue — Browse & Add Products";
+ $("catalogue-subtitle").textContent=view==="my"?"This is your subscriber-specific list of products and their buying/pricing settings.":"This is the shared master product catalogue. Browse by category and filters, then add only the products you want to buy.";
+ const banner=$("catalogue-mode-banner");
+ if(banner){
+  banner.className="catalogue-mode-banner "+(view==="my"?"mode-my":"mode-master");
+  banner.innerHTML=view==="my"
+   ?'<strong>VIEWING: MY BUYING CATALOGUE</strong><span>Only products already selected for your business. Switch to Master Catalogue — Browse & Add Products to find more.</span>'
+   :'<strong>VIEWING: MASTER CATALOGUE</strong><span>Browse the shared product library. Selecting a product here lets you add it to your Buying Catalogue.</span>';
+ }
  loadPage().catch(e=>msg(e.message||String(e),"error"));
 }
 function toggleBulkMode(){

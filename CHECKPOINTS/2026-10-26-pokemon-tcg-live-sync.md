@@ -57,14 +57,14 @@ Branch: `fix/automatic-tradein-pokemon-condition-20261027`.
 - Documented the intended dual-price contract next to the initial-offer creation code in `buying-dashboard.js`.
 - Customer dashboard now prefers a current published/accepted offer over a stale offer row for the same buying item. Its script cache advanced from v152 to v153.
 - Buying dashboard script cache advanced from v78 to v79.
-- Buying Catalogue script cache advanced from v58 to v59.
+- Buying Catalogue script cache advanced from v58 to v59 initially, then to v60 for Pokémon grade-specific pricing labels.
 - These remain branch-only until the PR is reviewed, merged, and Cloudflare deployment is confirmed.
 
 ### Still unverified
 - Fresh browser submission and acceptance of both cash and trade-in using a safe TEST-only item.
 - Separate trade-in values surviving pricing save/reload through an authorized browser session on both environments.
 - A bounded, specific Pokémon card being added to the correct TEST tenant and appearing in My Buying Catalogue.
-- Pokémon-specific condition choices carried through valuation → inspection → inventory → sales. No card condition labels were changed in this pass.
+- Pokémon-specific condition choices and valuation-slot mapping are implemented in the branch and TEST. A signed-in TEST flow is still required to verify persistence through inspection → inventory → sales; standard electronics conditions must remain unchanged.
 - Current Cloudflare deployment of latest production and TEST builds.
 
 ### Follow-on work completed in TEST (2026-10-27)

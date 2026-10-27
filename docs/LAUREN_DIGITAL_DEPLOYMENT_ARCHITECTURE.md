@@ -257,3 +257,23 @@ Observations from screenshots and source files; they do not prove every live use
 ## Change log
 
 - **2026-10-27:** Initial architecture and release policy created from Cloudflare screenshots, GitHub branch/config inspection and known project boundaries. No Worker routes, deployment settings, Supabase records or Stripe settings were changed to create this document.
+
+
+## 12. Follow-up source inspection (27 October 2026)
+
+- TradeFlow TEST's `wrangler.jsonc` names the Worker `tradeflow-test` and sets `TRADEFLOW_ENV: "test"`. Its configured TEST Supabase URL/key point to project `nnsshnfkjcflucjrftzi`; the LIVE variables are also present for the Worker-side transformation mechanism.
+- TradeFlow LIVE's `main/wrangler.jsonc` names the Worker `tradeflow` and sets `TRADEFLOW_ENV: "production"`. Both environment configurations must remain paired with the correct Worker and branch.
+- TradeFlow TEST and `production` currently have identical dashboard HTML, CSS and JavaScript blob SHAs in the inspected files. The dashboard JavaScript source itself contains LIVE Supabase constants. The TEST Worker source includes JavaScript asset rewriting based on `TRADEFLOW_ENV`, intended to replace the embedded LIVE URL/key with TEST values when serving JavaScript assets. This is safety-critical and must be verified in the deployed TEST response and browser network requests before using owner controls in TEST.
+- The inspected TradeFlow TEST Worker source has route handling and subscriber-domain behaviour that are not identical to `main`. Do not replace the TEST Worker entry point with `main` wholesale; preserve and review TEST-specific behaviour first.
+- The BusinessFlow repository contains two Wrangler configurations: `wrangler.jsonc` names `businessflow-test`, while `wrangler.pageflow.jsonc` names `pageflow`. This appears to be the intended separation. Cloudflare build configuration must explicitly select the correct config for each Worker.
+- The BusinessFlow `pageflow/deployment-config` worker entry point currently connects to Supabase project `ktvvtdrdwlazfsgkfedo`. Its TEST/LIVE role must be confirmed before using this source for both environments.
+
+### Immediate verification sequence
+
+1. In Cloudflare, open the `tradeflow-test` Worker and confirm its active deployment is built from `test/stripe-connect-test-mode-repair-20261020` and uses `worker/index.js`.
+2. Visit the TEST dashboard URL and inspect browser Network requests. Dashboard requests must go to `nnsshnfkjcflucjrftzi.supabase.co`, not `gxsrajtqzdjvmceqcpgv.supabase.co`. Do not submit administrative forms until this passes.
+3. Confirm the active TEST Worker has `TRADEFLOW_ENV=test` and the TEST Supabase URL/key variables. Do not expose or share secret values.
+4. For PageFlow, verify Cloudflare selects `wrangler.pageflow.jsonc` for the `pageflow` Worker and `wrangler.jsonc` for `businessflow-test`. Confirm actual database bindings before testing writes.
+5. Only after these checks pass should a narrow TEST release branch be prepared. Review changed files and preserve TEST-specific routes and environment boundaries; no wholesale branch merge.
+
+No Cloudflare routes, deployment settings, Supabase data, or Stripe settings were changed during this follow-up inspection.

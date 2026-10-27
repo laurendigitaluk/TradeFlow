@@ -44,7 +44,9 @@ export default {
       "/platform-owner-login": "/platform-owner-login.html",
       "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
-    if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {\n      cleanRoutes["/"] = "/lauren-digital-home.html";\n    }\n    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
+    if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {
+      cleanRoutes["/"] = "/lauren-digital-home.html";
+    }\n    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/platform-owner-login.html";
     }
     if (isSubscriberDomain) {

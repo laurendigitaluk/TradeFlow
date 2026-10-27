@@ -114,8 +114,10 @@ function cardDisplayDetails(p){
  const note=String(p.notes||"");
  const language=p.source_language||p.card_language||note.match(/language:\s*([a-z-]+)/i)?.[1];
  const rarity=p.rarity||note.match(/rarity:\s*([^.;]+)/i)?.[1]?.trim();
- const setName=p.set_name||p.card_set_name||p.set||"";
- const collector=p.collector_number||p.card_number||"";
+ const packageLabel=String(p.package_name||"");
+ const parsedPackage=packageLabel.match(/^(.+?)\\s+#([^\\s—-]+)\\s*[—-]/);
+ const setName=p.set_name||p.card_set_name||p.set||parsedPackage?.[1]||"";
+ const collector=p.collector_number||p.card_number||parsedPackage?.[2]||"";
  const details=[];
  if(setName)details.push("Set: "+setName);
  if(collector)details.push("No. "+collector);

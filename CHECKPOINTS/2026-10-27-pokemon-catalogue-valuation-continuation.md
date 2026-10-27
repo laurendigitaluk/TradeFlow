@@ -46,3 +46,27 @@ Finish the Pokémon Trading Card database and customer-facing workflow. Stop rep
 
 ## User preference
 Professional, English only, no emojis. Concise progress reports, no endless audit loops. Clearly distinguish changes actually made from steps not yet tested. The user's main concern is that Pokémon must work end-to-end through valuation without breaking the existing valuation system.
+
+
+## Continuation update — 2026-10-27 (follow-up work)
+### Code changes actually committed
+- Commit `fd978aa90802986e0b84f0c3ecbb5e78f9870ca1`: improved `cardDisplayDetails(p)` in `buying-catalogue.js`. Pokémon rows now prefer structured set, collector-number, language and rarity properties when present, and do not render the raw `notes` provenance string. Non-Pokémon display path is unchanged.
+- Commit `c1a079e43506b8a14fa35e6a780d4f390bcd5a23`: changed the script cache-buster in `buying-catalogue.html` from `v=45` to `v=46`.
+- Commit `4af95e8c50331916c71e26d69ddd2dcb6332b6c5`: add fallback parsing for set and collector number from existing package labels such as `Evolutions #42 — Zapdos`, because current master rows do not expose the source card table's fields as direct columns. Language and rarity still fall back to parsing notes, but notes themselves are not displayed.
+- All three code commits are on `main`. No production/LIVE code deployment was performed. Browser testing has not been performed.
+
+### Fresh read-only database observations
+- TEST `pokemon_tcg_cards`: 42,395 rows and 42,395 unique `card_key`; 569 sets; 1,071 variants; 10,394 distinct normalized card names.
+- LIVE `pokemon_tcg_cards`: 42,453 rows and 42,453 unique `card_key`; 574 sets; 1,895 variants; 10,394 distinct normalized card names.
+- TEST master products in Pokémon Trading Cards category: 42,395. LIVE: 42,780.
+- These are counts of source records/keys, not a verified count of genuinely distinct physical cards. Matching distinct-name counts do not establish equivalence of sets, languages, printings or variants.
+- Sample master records show `model` is the card name, `package_name` follows a pattern such as `Evolutions #42 — Zapdos`, and `notes` contains import provenance plus language and rarity. This supports the package-label fallback but also confirms that structured set/number data is not currently exposed by the master product row.
+- A first read-only query attempted a nonexistent `catalogue_master_products.category_name` column and failed; schema inspection confirmed category names are obtained by joining `category_id` to `catalogue_master_categories`. No database changes resulted from the failed query.
+
+### Still outstanding — do not mark complete
+- Browser-test the updated Buying Catalogue and verify Pokémon, Trainer Cards and Energy Cards rows display correctly, with no technical import message.
+- Inspect RPC return shapes and add explicit set/collector fields to the master catalogue query if safely supported by the existing schema; do not assume those fields are already returned.
+- Compare TEST/LIVE card keys, set keys and variant identities, explain differences by missing/extra stable keys, and safely investigate the known 327 LIVE master products with no exact matching card key. Do not delete alias-like rows without reference checks and backup.
+- Exercise `configure_master_catalogue_buying_product` in an isolated TEST tenant and verify category/branch plus tenant selection/product records. Then test customer valuation request, staff inspection and acquisition lifecycle end-to-end. Existing valuation formulas must remain untouched.
+- Only after TEST passes, port verified equivalent code/schema/RPC changes to LIVE; configure tenant-specific website selection separately. Do not copy tenant/customer/order/payment/domain/ownership data.
+- Update the system handbook and AI operating manual at their actual repository paths after locating them; their attempted fetch in this continuation returned 404, so no manual was changed.

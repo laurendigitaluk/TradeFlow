@@ -58,10 +58,12 @@ async function loadCatalogue(){
 function isPokemonCatalogue(){return ($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokémon trading cards")||($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokemon trading cards")}
 function applyCategoryFilterLayout(){
  const pokemon=isPokemonCatalogue();
- const branchField=$("master-branch")?.closest(".field"),manufacturerField=$("master-manufacturer")?.closest(".field"),visibilityField=$("master-hide-added")?.closest(".master-visibility-filter");
+ const branchField=$("master-branch")?.closest(".field"),manufacturerField=$("master-manufacturer")?.closest(".field"),modelField=$("master-model")?.closest(".field"),visibilityField=$("master-hide-added")?.closest(".master-visibility-filter");
  if(branchField)branchField.hidden=pokemon;
  if(manufacturerField)manufacturerField.hidden=pokemon;
+ if(modelField)modelField.hidden=pokemon;
  if(visibilityField)visibilityField.hidden=pokemon;
+ const packageLabel=$("master-set")?.closest(".field")?.querySelector("label");if(packageLabel)packageLabel.textContent=pokemon?"Set / expansion":"Package / variant";
  // Preserve the original DOM order for all categories. Hiding branch/manufacturer
  // naturally leaves Category → Set → Search for Pokémon without reordering other categories.
 }
@@ -420,6 +422,7 @@ async function refreshForCategory(){
  masterPage=1;
  $("master-branch").value="";
  $("master-manufacturer").value="";
+ if($("master-model"))$("master-model").value="";
  if($("master-set"))$("master-set").value="";
  applyCategoryFilterLayout();
  await loadFacets();

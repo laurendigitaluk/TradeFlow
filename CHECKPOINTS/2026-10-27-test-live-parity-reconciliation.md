@@ -51,3 +51,27 @@ Previous checkpoint records that LIVE English Pokémon source categories are mis
 
 ## Current status
 This pass performed read-only comparison only. No database rows, schema, migration history, tenant configuration, Stripe settings or customer data were changed. Do not claim TEST/LIVE parity until the sequence above has been executed and verified.
+
+
+## Follow-up update — 2026-10-27 11:25 UTC
+
+### Worker configuration correction committed
+The Test Worker configuration drift was confirmed: `cloudflare-test`, `production`, and `main` referenced retired Supabase project `twfbmjwwqzxdxvclxbun` for `TEST_SUPABASE_URL`, while the intended active TEST project is `nnsshnfkjcflucjrftzi`.
+
+The reference and corresponding TEST publishable key were corrected in `wrangler.jsonc` and merged:
+- `cloudflare-test`: PR #170, merge commit `bf18d8afb3521e45b281ccaa682ba329b1f818dc`
+- `production`: PR #171, merge commit `854201fa5907618fd83a3e86719875a2b074783f`
+- `main`: PR #172, merge commit `a5dd8e8f3330c91649004085708befacc56336bc`
+
+The LIVE Supabase URL/key, worker names, and environment flags were preserved. This only fixes repository config; no Cloudflare deployment or runtime binding has been confirmed. Do not treat the Test Worker as fixed until the deployed Worker settings are checked in Cloudflare.
+
+### Additional read-only catalogue findings
+- Product counts and active/visible counts remain different: TEST has 46,590 total products, 27,966 active, 27,940 active and customer-visible; LIVE has 46,953 total, 28,272 active, 28,247 active and customer-visible.
+- Shared evidence: TEST 4,225 total / 4,204 active; LIVE 3,807 total / 3,789 active.
+- Category slugs present in TEST but absent in LIVE include `3d-printers-equipment` and `laptops`.
+- Candidate product business key (manufacturer name + model + package key + category slug + branch slug) is not unique: 15 duplicate rows in TEST and 17 in LIVE. Do not use this key alone for automatic upserts until the duplicate groups are inspected and a stronger matching strategy is established.
+- Current database tool access does not expose Cloudflare deployment controls; deployment verification remains outstanding.
+- No database rows or schema were modified in this follow-up. No catalogue sync has been run.
+
+### Next required action
+Build an export/dry-run reconciliation manifest using canonical product identifiers and source-record keys, explicitly listing missing records, conflicts, duplicate groups and foreign-key remaps. Reconcile in TEST first and then LIVE, with a backup/restore point and post-sync parity checks. Keep tenant/customer/order/payment/domain/site and LIVE Stripe records isolated.

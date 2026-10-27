@@ -430,7 +430,7 @@ $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
-$("master-set")?.addEventListener("change",()=>{masterPage=1;if(isPokemonCatalogue()){buyingSelectionAllMatching=false;window.buyingSelected=new Set()}loadPage().catch(e=>msg(e.message||String(e),"error"))});
+$("master-set")?.addEventListener("change",()=>{masterPage=1;if(isPokemonCatalogue()){buyingSelectionAllMatching=false;window.buyingSelected=new Set();if($("master-set").value&&catalogueView!=="master"){setCatalogueView("master");return}}loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;if(isPokemonCatalogue()){buyingSelectionAllMatching=false;window.buyingSelected=new Set()}loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
 $("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});

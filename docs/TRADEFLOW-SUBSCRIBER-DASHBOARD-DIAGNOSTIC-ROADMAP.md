@@ -1623,5 +1623,5 @@ Branch `fix/automatic-tradein-pokemon-condition-20261027` contains the dual-pric
 - End-to-end browser acceptance of both prices with a fresh TEST-only item remains outstanding.
 - Actual save/refresh verification of separate percentages remains outstanding.
 - Specific-card add and My Buying Catalogue confirmation remains outstanding.
-- Pokémon-specific condition vocabulary and persistence across valuation → inspection → inventory → sales is **not implemented** in this change; it requires a category-aware rule/condition mapping that cannot affect normal electronics.
+- Pokémon-specific condition choices and valuation-slot mapping are implemented in the branch and TEST. End-to-end persistence through inspection, inventory and sales still requires a signed-in TEST flow; standard electronics condition labels remain unchanged.
 - Current Cloudflare deployments for latest production and TEST must be verified before saying this branch is live.

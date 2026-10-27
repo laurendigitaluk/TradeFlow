@@ -1,7 +1,7 @@
 const SUPABASE_URL=window.TRADEFLOW_CONFIG?.supabaseUrl;
 const $=id=>document.getElementById(id);
 let key=null,token=null,tenantId=null;
-let master=[],facets={categories:[],branches:[],manufacturers:[],sets:[]};
+let master=[],facets={categories:[],branches:[],manufacturers:[],models:[],sets:[]};
 let masterPage=1,totalProducts=0;
 const pageSize=50;
 let searchTimer=null;
@@ -68,12 +68,13 @@ function applyCategoryFilterLayout(){
 async function loadFacets(){
  const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null);
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_facets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
+ const models=isPokemonCatalogue()?[]:await api("/rest/v1/rpc/get_master_buying_catalogue_models",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man})});
  const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man})});
- facets={...(data||{categories:[],branches:[],manufacturers:[]}),sets:Array.isArray(sets)?sets:[]};
+ facets={...(data||{categories:[],branches:[],manufacturers:[]}),models:Array.isArray(models)?models:[],sets:Array.isArray(sets)?sets:[]};
  populateFilters();
 }
 async function loadPage(){
- const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null),setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
+ const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null),modelName=isPokemonCatalogue()?null:($("master-model")?.value||null),setName=$("master-set")?.value||null,q=modelName||(($("master-search").value||"").trim()||null);
  const hideAdded=catalogueView==="master" && !isPokemonCatalogue() ? ($("master-hide-added")?.checked!==false) : false;
  if(catalogueView==="master"&&!man&&!q&&!cat&&!branch&&!setName){
   master=[];totalProducts=0;
@@ -105,11 +106,12 @@ function fillSetSelect(id,items,placeholder,old=""){
  if((items||[]).some(x=>String(x.name)===String(old)))e.value=old;
 }
 function populateFilters(){
- const cat=$("master-category").value||"",branch=$("master-branch").value||"",man=$("master-manufacturer").value||"",setName=$("master-set")?.value||"";
+ const cat=$("master-category").value||"",branch=$("master-branch").value||"",man=$("master-manufacturer").value||"",modelName=$("master-model")?.value||"",setName=$("master-set")?.value||"";
  fillSelect("master-category",facets.categories,"All categories",cat);
  fillSelect("master-branch",facets.branches,"All branches",branch);
  fillSelect("master-manufacturer",facets.manufacturers,"All manufacturers",man);
- fillSetSelect("master-set",facets.sets,"All sets / expansions",setName);
+ fillSetSelect("master-model",facets.models,"All models",modelName);
+ fillSetSelect("master-set",facets.sets,"All packages / variants",setName);
  applyCategoryFilterLayout();
 }
 function stateFor(p){
@@ -430,8 +432,9 @@ $("bulk-add").addEventListener("click",()=>catalogueView==="my"?applySelectedBuy
 $("bulk-mode").addEventListener("change",()=>{toggleBulkMode();if($("bulk-mode").value==="automatic")applyBulkPreset()});
 $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
-$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
-$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
+$("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-model"))$("master-model").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
+$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;if($("master-model"))$("master-model").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
+$("master-model")?.addEventListener("change",async()=>{masterPage=1;if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
 $("master-set")?.addEventListener("change",()=>{masterPage=1;if(isPokemonCatalogue()){buyingSelectionAllMatching=false;window.buyingSelected=new Set();if($("master-set").value&&catalogueView!=="master"){setCatalogueView("master");return}}loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;if(isPokemonCatalogue()){buyingSelectionAllMatching=false;window.buyingSelected=new Set()}loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});

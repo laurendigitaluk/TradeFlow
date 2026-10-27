@@ -2245,3 +2245,27 @@ Verified as SQL role `anon`: current public profile, published-site index, and p
 - Security: 8 anonymous-executable SECURITY DEFINER RPCs (reviewed as intended public catalogue/published-content/plan endpoints); 167 authenticated-executable SECURITY DEFINER functions requiring continued individual review; `pg_net` extension reported in `public`; leaked-password protection disabled.
 - Performance: 65 unindexed foreign keys, 166 RLS init-plan warnings, 64 unused-index notices, 14 multiple-permissive-policy warnings, 3 duplicate-index notices, and an informational Auth connection-allocation warning.
 - These advisor findings are not proof of exploitable vulnerabilities on their own. Do not blanket-revoke RPCs or drop indexes. Prioritize authorization review of privileged functions and verify each index/policy against actual query plans and workload before changing it.
+
+
+## 27 October 2026 — Separate automatic cash/trade-in and catalogue verification
+
+The merged PR #186 at `ff68b656c1e523d1144ff6c02fcef8fd3239d178` adds per-condition trade-in percentage controls in the Buying Catalogue. The current `production` head inspected for this continuation was `3cbba7add8a406c7c03cd0660ba3a3c80ea50742`. The database has corresponding pricing RPC parameters in both LIVE (`gxsrajtqzdjvmceqcpgv`) and TEST (`nnsshnfkjcflucjrftzi`).
+
+### Verified contract
+- `configure_master_catalogue_buying_product_pricing` persists five cash percentages, five trade-in percentages, and the separate manual override columns.
+- `get_tenant_buying_catalogue_page` exposes the saved trade-in percentage fields so the editor can reload them; `get_tenant_buying_catalogue_facets` filters My Buying Catalogue to configured products.
+- `calculate_buying_item_valuation` uses UK-new GBP evidence for both calculations. Cash amount is based on its cash percentage and trade-in amount on its separate trade-in percentage. Missing evidence returns the existing manual valuation path.
+- `customer_get_offers_v2` returns cash and trade-in prices, and `customer_accept_offer_choice` checks and records the customer's chosen mode and value.
+- `subscriber_credit_trade_in` retains the accepted trade-in plus post-inspection `final_offer_required` checks. Do not loosen these gates.
+- Pokémon master product counts are 23,780 in both environments. No all-products add/configuration should be run; selected cards require an explicit narrow product selection and verified tenant context.
+- TEST has two tenants/52 tenant buying products and LIVE one tenant/243 buying products; these are environment-specific business records and must not be synced.
+
+### Work performed on branch
+Branch `fix/automatic-tradein-pokemon-condition-20261027` contains small source/cache changes to clarify the initial-offer source-of-truth, prevent a stale offer record from overriding the latest published/accepted customer-facing offer, and bump scripts to Buying v79, Customer v153, Catalogue v59. See checkpoint `CHECKPOINTS/2026-10-26-pokemon-tcg-live-sync.md` for exact scope and remaining verification.
+
+### Open verification / not yet complete
+- End-to-end browser acceptance of both prices with a fresh TEST-only item remains outstanding.
+- Actual save/refresh verification of separate percentages remains outstanding.
+- Specific-card add and My Buying Catalogue confirmation remains outstanding.
+- Pokémon-specific condition vocabulary and persistence across valuation → inspection → inventory → sales is **not implemented** in this change; it requires a category-aware rule/condition mapping that cannot affect normal electronics.
+- Current Cloudflare deployments for latest production and TEST must be verified before saying this branch is live.

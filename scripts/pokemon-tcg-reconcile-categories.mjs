@@ -76,7 +76,7 @@ async function main() {
   selectUrl.searchParams.set("order", "card_key.asc");
   selectUrl.searchParams.set("limit", String(batchLimit));
   if (afterKey) selectUrl.searchParams.set("card_key", `gt.${afterKey}`);
-  if (!repairExisting) selectUrl.searchParams.set("card_category", "is.null");
+  // Dry-runs inspect existing values too; writes are separately guarded by --repair-existing.
 
   const rows = await requestJson(selectUrl, { headers });
   let checked = 0;

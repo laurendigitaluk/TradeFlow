@@ -106,12 +106,22 @@ function stateFor(p){
  return s;
 }
 function cardDisplayDetails(p){
- const isPokemon=String(p.category_name||"").toLowerCase().includes("pokémon trading cards")||String(p.category_name||"").toLowerCase().includes("pokemon trading cards");
+ const category=String(p.category_name||"").toLowerCase();
+ const isPokemon=category.includes("pokémon trading cards")||category.includes("pokemon trading cards")||category==="pokémon cards"||category==="pokemon cards";
  if(!isPokemon)return esc(p.product_type||"")+(p.notes?"<br>"+esc(p.notes):"");
+ // Keep source/import provenance out of subscriber-facing rows. Prefer structured RPC fields;
+ // only parse human-readable card attributes from notes as a backwards-compatible fallback.
  const note=String(p.notes||"");
- const language=note.match(/language:\s*([a-z-]+)/i)?.[1];
- const rarity=note.match(/rarity:\s*([^.;]+)/i)?.[1]?.trim();
- return [p.product_type,language?"Language: "+language.toUpperCase():"",rarity?"Rarity: "+rarity:""].filter(Boolean).map(esc).join(" · ");
+ const language=p.source_language||p.card_language||note.match(/language:\s*([a-z-]+)/i)?.[1];
+ const rarity=p.rarity||note.match(/rarity:\s*([^.;]+)/i)?.[1]?.trim();
+ const setName=p.set_name||p.card_set_name||p.set||"";
+ const collector=p.collector_number||p.card_number||"";
+ const details=[];
+ if(setName)details.push("Set: "+setName);
+ if(collector)details.push("No. "+collector);
+ if(language)details.push("Language: "+String(language).toUpperCase());
+ if(rarity)details.push("Rarity: "+rarity);
+ return [p.product_type,...details].filter(Boolean).map(esc).join(" · ");
 }
 function researchText(p,type){
  const isNew=type==="uk_new";

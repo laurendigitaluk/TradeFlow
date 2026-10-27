@@ -65,7 +65,7 @@ async function loadFacets(){
 async function loadPage(){
  const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
  const hideAdded=catalogueView==="master" ? ($("master-hide-added")?.checked!==false) : false;
- if(catalogueView==="master"&&!man&&!q&&!cat&&!branch){
+ if(catalogueView==="master"&&!man&&!q&&!cat&&!branch&&!setName){
   master=[];totalProducts=0;
   $("catalogue-status").textContent="Choose a manufacturer or search";
   $("catalogue-status").classList.remove("live");
@@ -418,6 +418,7 @@ $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
 $("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-set")?.addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});
 $("prev-page").addEventListener("click",async()=>{if(masterPage>1){masterPage--;await loadPage()}});

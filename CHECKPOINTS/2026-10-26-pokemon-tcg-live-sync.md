@@ -66,3 +66,16 @@ Branch: `fix/automatic-tradein-pokemon-condition-20261027`.
 - A bounded, specific Pokémon card being added to the correct TEST tenant and appearing in My Buying Catalogue.
 - Pokémon-specific condition choices carried through valuation → inspection → inventory → sales. No card condition labels were changed in this pass.
 - Current Cloudflare deployment of latest production and TEST builds.
+
+### Follow-on work completed in TEST (2026-10-27)
+- Updated the Buying Catalogue pricing editor to label the five existing per-product rule slots as **Near Mint, Lightly Played, Moderately Played, Heavily Played, Damaged** for Pokémon Trading Cards only. Standard categories retain Sealed, Opened, Excellent, Good and Poor. The Catalogue script cache is now v60.
+- Added `supabase/migrations/20261027140000_pokemon_grade_valuation_mapping.sql`. Applied to TEST. Canonical submitted values `near_mint`, `lightly_played`, `moderately_played`, and `heavily_played` map to the five per-product pricing slots; `damaged` uses the final slot. The original canonical item condition remains on the buying item/inspection record; only the pricing lookup uses the mapped slot.
+- Added `supabase/migrations/20261027143000_subscriber_catalogue_independent_of_storefront_visibility.sql`. Applied to TEST. Internal master-product configure/add and My Buying Catalogue page/facets no longer reject products solely because `customer_visible=false`. Public storefront visibility checks were not changed.
+- Read-only TEST verification confirms the valuation function contains the Pokémon grade mapping and the four internal configure/add/My Buying Catalogue functions no longer contain the `p.active and p.customer_visible` predicate.
+- Important migration bookkeeping: these changes were applied through the Supabase migration tool under names `pokemon_grade_valuation_mapping` and `subscriber_catalogue_independent_of_storefront_visibility`; the GitHub files use timestamped migration filenames. Reconcile the migration ledger before any later CLI deployment to avoid duplicate migration application.
+
+### Remaining before promotion
+- Run a signed-in TEST browser flow for one bounded Pokémon card: select/add it to the correct TEST tenant, verify it appears in My Buying Catalogue, save/reload cash and trade-in percentages, submit a valuation, inspect, and confirm the grade remains visible through inventory.
+- Verify standard electronics still price exactly as before and customer offer-choice/credit guards remain unchanged.
+- Confirm the migration ledger and actual TEST/Cloudflare runtime deployment. Do not merge or touch LIVE until these checks pass.
+- Never use bulk select-all across the entire Pokémon category; the master catalogue contains 23,780 active Pokémon products.

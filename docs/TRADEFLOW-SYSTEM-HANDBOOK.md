@@ -2261,7 +2261,7 @@ The merged PR #186 at `ff68b656c1e523d1144ff6c02fcef8fd3239d178` adds per-condit
 - TEST has two tenants/52 tenant buying products and LIVE one tenant/243 buying products; these are environment-specific business records and must not be synced.
 
 ### Work performed on branch
-Branch `fix/automatic-tradein-pokemon-condition-20261027` contains small source/cache changes to clarify the initial-offer source-of-truth, prevent a stale offer record from overriding the latest published/accepted customer-facing offer, and bump scripts to Buying v79, Customer v153, Catalogue v59. See checkpoint `CHECKPOINTS/2026-10-26-pokemon-tcg-live-sync.md` for exact scope and remaining verification.
+Branch `fix/automatic-tradein-pokemon-condition-20261027` contains the dual-price/customer-offer fixes plus Pokémon-specific grade labels in the pricing editor (Buying Catalogue script v60; customer dashboard v153; buying dashboard v79). The five per-product condition rule slots are presented as Near Mint, Lightly Played, Moderately Played, Heavily Played and Damaged for Pokémon cards only. A TEST-applied migration maps canonical Pokémon grades to those five slots for valuation while retaining the submitted grade on the buying item. A second TEST-applied migration removes storefront visibility as a gate from subscriber configure/add and My Buying Catalogue queries; public storefront visibility remains a separate setting. Migration files are committed on this branch. See checkpoint `CHECKPOINTS/2026-10-26-pokemon-tcg-live-sync.md`.
 
 ### Open verification / not yet complete
 - End-to-end browser acceptance of both prices with a fresh TEST-only item remains outstanding.

@@ -31,6 +31,7 @@ export default {
       "www.laurendigital.co.uk",
       "owner.laurendigital.co.uk",
       "studioflow.laurendigital.co.uk",
+      "pageflow.laurendigital.co.uk",
       "businessflow.laurendigital.co.uk",
       "localhost",
       "127.0.0.1",
@@ -46,16 +47,20 @@ export default {
       "/platform-owner-login": "/platform-owner-login.html",
       "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
-    if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {
+    if (((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") || (env.TRADEFLOW_ENV === "test" && hostname === "tradeflow-test.leannelaurenlowe.workers.dev")) && url.pathname === "/") {
       cleanRoutes["/"] = "/lauren-digital-home.html";
     }
     if (hostname === "studioflow.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/studioflow.html";
     }
+    if (hostname === "pageflow.laurendigital.co.uk" && url.pathname === "/") {
+      cleanRoutes["/"] = "/pageflow.html";
+    }
     if (hostname === "businessflow.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/businessflow.html";
     }
     if (url.pathname === "/studioflow") cleanRoutes["/studioflow"] = "/studioflow.html";
+    if (url.pathname === "/pageflow") cleanRoutes["/pageflow"] = "/pageflow.html";
     if (url.pathname === "/businessflow") cleanRoutes["/businessflow"] = "/businessflow.html";
     if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/platform-owner-login.html";

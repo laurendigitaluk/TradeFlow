@@ -66,9 +66,9 @@ function applyCategoryFilterLayout(){
  // naturally leaves Category → Set → Search for Pokémon without reordering other categories.
 }
 async function loadFacets(){
- const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null);
+ const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null);
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_facets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
- const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
+ const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man})});
  facets={...(data||{categories:[],branches:[],manufacturers:[]}),sets:Array.isArray(sets)?sets:[]};
  populateFilters();
 }
@@ -429,7 +429,7 @@ $("bulk-mode").addEventListener("change",()=>{toggleBulkMode();if($("bulk-mode")
 $("bulk-pricing-profile").addEventListener("change",applyBulkPreset);
 $("master-category").addEventListener("change",refreshForCategory);
 $("master-branch").addEventListener("change",async()=>{masterPage=1;$("master-manufacturer").value="";if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
-$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;await loadPage()});
+$("master-manufacturer").addEventListener("change",async()=>{masterPage=1;if($("master-set"))$("master-set").value="";await loadFacets();await loadPage()});
 $("master-set")?.addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-hide-added").addEventListener("change",()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))});
 $("master-search").addEventListener("input",()=>{clearTimeout(searchTimer);searchTimer=setTimeout(()=>{masterPage=1;loadPage().catch(e=>msg(e.message||String(e),"error"))},350)});

@@ -47,7 +47,8 @@ export default {
       "/platform-owner-dashboard": "/platform-owner-dashboard.html",
     };
     if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {
-      cleanRoutes["/"] = "/lauren-digital-home.html";
+      // The primary Lauren Digital domain is the public TradeFlow homepage.
+      cleanRoutes["/"] = "/index.html";
     }
     if (hostname === "studioflow.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/studioflow.html";

@@ -70,3 +70,13 @@ Professional, English only, no emojis. Concise progress reports, no endless audi
 - Exercise `configure_master_catalogue_buying_product` in an isolated TEST tenant and verify category/branch plus tenant selection/product records. Then test customer valuation request, staff inspection and acquisition lifecycle end-to-end. Existing valuation formulas must remain untouched.
 - Only after TEST passes, port verified equivalent code/schema/RPC changes to LIVE; configure tenant-specific website selection separately. Do not copy tenant/customer/order/payment/domain/ownership data.
 - Update the system handbook and AI operating manual at their actual repository paths after locating them; their attempted fetch in this continuation returned 404, so no manual was changed.
+
+
+## Continuation update — 2026-10-27 (branch reconciliation read-only pass)
+- Read-only schema inspection confirmed both environments have the same key tables for the Pokémon catalogue and buying flow: `pokemon_tcg_cards`, `pokemon_tcg_sets`, `pokemon_tcg_card_variants`, `catalogue_master_products`, `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_product_identifiers`, and `tenant_buying_products`.
+- Pokémon category/branch product counts differ substantially:
+  - TEST: Pokémon 34,987; Trainer Cards 6,311; Energy Cards 1,097 (total 42,395).
+  - LIVE: Pokémon 38,915; Trainer Cards 3,325; Energy Cards 540 (total 42,780).
+- This indicates the total difference conceals major classification differences, not just the 385-row overall surplus in LIVE. Do not bulk-sync category assignment or overwrite either environment until stable card keys are mapped to master product identifiers and tenant references checked.
+- Existing master product schema has no dedicated card set/collector/language/rarity columns. The UI currently derives set and collector number from package labels and language/rarity from notes. A future schema/RPC improvement should expose these attributes as structured return fields rather than persisting technical provenance in subscriber-facing notes.
+- No writes were made to either database in this pass. No customer valuation RPC was invoked; no customer/tenant/order/payment data was changed.

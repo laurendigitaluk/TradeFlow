@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Lauren Digital Owner Dashboard</title>
+<style>
+:root{--navy:#10283f;--orange:#f47721;--ink:#172533;--muted:#657586;--line:#dce4eb;--paper:#f4f7f9;--white:#fff;--green:#16744a}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--paper);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.top{height:70px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px}.brand{font-weight:850;color:var(--navy);font-size:18px}.brand b{color:var(--orange)}.top small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;text-transform:uppercase}.shell{display:grid;grid-template-columns:245px 1fr;min-height:calc(100vh - 70px)}aside{background:var(--navy);padding:25px 15px;color:#fff}.side-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#a9bdcc;margin:12px 12px}.navitem{width:100%;text-align:left;border:0;border-radius:8px;background:transparent;color:#dce6ed;padding:12px;display:flex;gap:10px;align-items:center;margin:3px 0}.navitem.active,.navitem:hover{background:#ffffff18;color:#fff}.navitem .ico{width:23px;text-align:center;color:#ffb17b}.side-note{font-size:11px;color:#b9c9d5;line-height:1.5;padding:18px 12px;border-top:1px solid #ffffff20;margin-top:24px}main{padding:32px;min-width:0;max-width:1300px;width:100%;margin:auto}.eyebrow{font-size:11px;letter-spacing:.13em;text-transform:uppercase;color:#a64c13;font-weight:800}.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:25px}.heading h1{font-size:30px;line-height:1.15;letter-spacing:-.04em;color:var(--navy);margin:6px 0}.muted{color:var(--muted)}.badge{font-size:11px;font-weight:800;border-radius:99px;padding:5px 9px;background:#e7f5ed;color:var(--green);white-space:nowrap}.badge.soon{background:#fff0e5;color:#9d4b13}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:22px 0}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:13px;padding:21px;min-width:0}.card h2,.panel h2{font-size:16px;color:var(--navy);margin:8px 0}.card p{color:var(--muted);font-size:12px}.product-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.product-icon{display:grid;place-items:center;width:39px;height:39px;border-radius:11px;background:#fff0e5;color:#9e4a12;font-weight:900}.btn{border:1px solid var(--line);border-radius:8px;padding:9px 13px;background:#fff;color:var(--navy);font-weight:750}.btn.primary{background:var(--orange);border-color:var(--orange);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.panel{margin:18px 0}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:15px;margin-bottom:18px}.panel-head h2{margin:0}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;font-weight:750;color:#394b5d}.field input,.field select,.field textarea{width:100%;border:1px solid #cbd6df;border-radius:8px;padding:10px;background:#fff;color:var(--ink)}.field textarea{min-height:80px;resize:vertical}.help{font-size:11px;color:var(--muted)}.callout{border:1px solid #f1d4bd;background:#fff8f2;border-radius:9px;padding:13px;color:#774019;font-size:12px;margin:16px 0}.status{padding:12px 14px;border-radius:9px;background:#eef3f6;color:#4b6071;font-size:12px}.hidden{display:none!important}.list{display:grid;gap:12px}.rowcard{border:1px solid var(--line);border-radius:10px;padding:15px;display:flex;justify-content:space-between;gap:14px;align-items:center}.rowcard strong{display:block;color:var(--navy)}.rowcard span{font-size:12px;color:var(--muted)}@media(max-width:850px){.shell{grid-template-columns:1fr}aside{padding:10px;display:flex;gap:5px;overflow:auto}.side-label,.side-note{display:none}.navitem{white-space:nowrap;width:auto}.grid{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}main{padding:20px}.top{padding:0 18px}.heading{flex-direction:column}}
+</style>
+</head>
+<body>
+<header class="top"><div class="brand">Lauren <b>Digital</b><small>Platform administration</small></div><span class="muted">Owner workspace · internal preview</span></header>
+<div class="shell">
+<aside>
+<div class="side-label">Workspace</div>
+<button class="navitem active" data-view="overview"><span class="ico">⌂</span> Overview</button>
+<div class="side-label">Product settings</div>
+<button class="navitem" data-view="tradeflow"><span class="ico">TF</span> TradeFlow</button>
+<button class="navitem" data-view="pageflow"><span class="ico">PF</span> PageFlow</button>
+<button class="navitem" data-view="studioflow"><span class="ico">SF</span> StudioFlow</button>
+<div class="side-note">Product settings are kept separate. Changes must be saved through authenticated server-side actions; this preview does not write billing or product settings.</div>
+</aside>
+<main>
+<section id="view-overview">
+<div class="heading"><div><div class="eyebrow">Lauren Digital · Owner workspace</div><h1>Platform overview</h1><div class="muted">Manage your product family from one central place.</div></div><span class="badge">3 product areas</span></div>
+<div class="grid">
+<article class="card"><div class="product-head"><div class="product-icon">TF</div><span class="badge">Existing platform</span></div><h2>TradeFlow</h2><p>Buying, inventory, selling, customer workflows and subscription settings.</p><div class="actions"><button class="btn primary" data-open="tradeflow">TradeFlow settings</button></div></article>
+<article class="card"><div class="product-head"><div class="product-icon">PF</div><span class="badge soon">In setup</span></div><h2>PageFlow</h2><p>Landing page, subscription plans, trial settings, Stripe IDs and publishing controls.</p><div class="actions"><button class="btn primary" data-open="pageflow">PageFlow settings</button></div></article>
+<article class="card"><div class="product-head"><div class="product-icon">SF</div><span class="badge soon">Coming soon</span></div><h2>StudioFlow</h2><p>Product details and launch status now; billing controls when the platform is ready.</p><div class="actions"><button class="btn primary" data-open="studioflow">StudioFlow settings</button></div></article>
+</div>
+<div class="panel"><h2>Release and environment rules</h2><div class="list"><div class="rowcard"><div><strong>TEST first</strong><span>Build and verify each change before release.</span></div><span class="badge soon">Required</span></div><div class="rowcard"><div><strong>Carry approved changes to LIVE</strong><span>Deploy matching code/configuration while keeping customer data and secrets separate.</span></div><span class="badge soon">Required</span></div><div class="rowcard"><div><strong>Keep product boundaries</strong><span>Each product keeps its own subscription records, Stripe IDs and access rules.</span></div><span class="badge">Required</span></div></div></div>
+</section>
+<section id="view-tradeflow" class="hidden">
+<div class="heading"><div><div class="eyebrow">Product settings</div><h1>TradeFlow</h1><div class="muted">Existing TradeFlow owner settings remain authoritative until the central dashboard is connected to them.</div></div><span class="badge">Existing platform</span></div>
+<div class="callout">This central workspace must not create a second source of truth for TradeFlow. Existing settings and Stripe configuration should be integrated here through the existing owner APIs, not copied or overwritten.</div>
+<div class="panel"><h2>TradeFlow administration</h2><p class="muted">The current TradeFlow owner dashboard and settings need to be mounted here or exposed through authenticated product-specific routes.</p><div class="actions"><a class="btn primary" href="https://tradeflow.laurendigital.co.uk/">Open TradeFlow website</a><a class="btn" href="https://owner.laurendigital.co.uk/">Open current owner portal</a></div></div>
+<div class="panel"><h2>Subscription and Stripe</h2><p class="muted">Preserve the existing TradeFlow monthly/annual pricing, Stripe product and price IDs, trial configuration, and subscription controls. Do not write to TradeFlow until its existing settings API is identified and integrated.</p></div>
+</section>
+<section id="view-pageflow" class="hidden">
+<div class="heading"><div><div class="eyebrow">Product settings</div><h1>PageFlow settings</h1><div class="muted">Configure the offer shown on the PageFlow landing page.</div></div><span class="badge soon">Backend connection pending</span></div>
+<div class="callout">These controls are a UI draft. Saving is intentionally disabled until the owner-only API is implemented and authenticated. Stripe secret keys must never be entered into browser-visible fields.</div>
+<div class="panel"><div class="panel-head"><div><h2>Subscription plan</h2><div class="help">Amounts are entered in pounds and stored in pence.</div></div></div>
+<div class="formgrid">
+<div class="field"><label for="pf-name">Plan display name</label><input id="pf-name" value="PageFlow"></div>
+<div class="field"><label for="pf-currency">Currency</label><select id="pf-currency"><option value="GBP">GBP — Pound sterling</option></select></div>
+<div class="field"><label for="pf-monthly">Monthly price (£)</label><input id="pf-monthly" type="number" min="0" step="0.01" placeholder="e.g. 19.99"></div>
+<div class="field"><label for="pf-annual">Annual price (£)</label><input id="pf-annual" type="number" min="0" step="0.01" placeholder="e.g. 199.99"></div>
+<div class="field"><label for="pf-trial">Free trial (days)</label><input id="pf-trial" type="number" min="0" max="365" value="0"></div>
+<div class="field"><label for="pf-mode">Stripe mode</label><select id="pf-mode"><option value="test">Test mode</option><option value="live">Live mode (keep disabled until release)</option></select></div>
+<div class="field"><label for="pf-monthly-id">Stripe monthly Price ID</label><input id="pf-monthly-id" placeholder="price_…"><span class="help">Price ID only — never a secret key.</span></div>
+<div class="field"><label for="pf-annual-id">Stripe annual Price ID</label><input id="pf-annual-id" placeholder="price_…"><span class="help">Price ID only — never a secret key.</span></div>
+<div class="field"><label for="pf-status">Landing page status</label><select id="pf-status"><option value="draft">Draft</option><option value="published">Published</option><option value="hidden">Hidden</option></select></div>
+<div class="field"><label for="pf-enabled">Accept subscriptions</label><select id="pf-enabled"><option value="false">Disabled</option><option value="true">Enabled — only after checkout tests</option></select></div>
+<div class="field full"><label for="pf-features">Plan features (one per line)</label><textarea id="pf-features" placeholder="Visual website editor&#10;Mobile-friendly pages&#10;Subscriber workspace"></textarea></div>
+</div><div class="actions"><button class="btn primary" disabled>Save PageFlow settings</button><button class="btn" disabled>Preview public plan</button></div><p class="help">Save actions become available once the secure owner-only settings endpoint is connected.</p></div>
+<div class="panel"><h2>Stripe connection</h2><p class="muted">Stripe secret key, webhook secret, checkout session creation and webhook verification must be configured server-side. This page intentionally contains no secret-key input.</p><div class="status">Checkout status: not connected · Subscription activation: disabled</div></div>
+</section>
+<section id="view-studioflow" class="hidden">
+<div class="heading"><div><div class="eyebrow">Product settings</div><h1>StudioFlow</h1><div class="muted">Prepare product information and control its launch visibility.</div></div><span class="badge soon">Coming soon</span></div>
+<div class="panel"><div class="formgrid"><div class="field"><label for="sf-name">Product name</label><input id="sf-name" value="StudioFlow"></div><div class="field"><label for="sf-status">Availability</label><select id="sf-status"><option>Coming soon</option><option>Draft</option><option>Published</option><option>Hidden</option></select></div><div class="field full"><label for="sf-description">Product description</label><textarea id="sf-description">A planned platform for studio and creative-business workflows.</textarea></div><div class="field"><label for="sf-monthly">Planned monthly price (£)</label><input id="sf-monthly" type="number" min="0" step="0.01" placeholder="Not set"></div><div class="field"><label for="sf-annual">Planned annual price (£)</label><input id="sf-annual" type="number" min="0" step="0.01" placeholder="Not set"></div></div><div class="callout">StudioFlow controls are planning-only until its own backend, authentication and subscription workflow exist. No billing is enabled from this page.</div><div class="actions"><button class="btn primary" disabled>Save StudioFlow settings</button></div></div>
+</section>
+</main>
+</div>
+<script>
+const views=['overview','tradeflow','pageflow','studioflow'];
+function showView(view){views.forEach(v=>{document.getElementById('view-'+v).classList.toggle('hidden',v!==view)});document.querySelectorAll('[data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===view));window.scrollTo({top:0,behavior:'smooth'})}
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.view)));
+document.querySelectorAll('[data-open]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.open)));
+</script>
+</body></html>

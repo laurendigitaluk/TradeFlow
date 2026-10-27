@@ -65,7 +65,11 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 .catalogue-tab{appearance:none;padding:11px 18px;border:1px solid #2f6f9f;border-radius:9px;background:#2f6f9f;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 4px 10px rgba(47,111,159,.16);transition:transform .18s ease,box-shadow .18s ease,background-color .18s ease,border-color .18s ease}
 .catalogue-tab:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 7px 16px rgba(47,111,159,.22);background:#285f88}
 .catalogue-tab:focus-visible{outline:3px solid rgba(82,143,190,.25);outline-offset:2px}
-.catalogue-tab.active{background:linear-gradient(135deg,#c46a2b,#d47a37);border-color:#c46a2b;color:#fff;box-shadow:0 5px 14px rgba(196,106,43,.22)}
+.catalogue-tab.active{background:linear-gradient(135deg,#245f91,#347caf);border-color:#245f91;color:#fff;box-shadow:0 5px 14px rgba(36,95,145,.22)}
+.catalogue-mode-banner{display:flex;flex-direction:column;gap:4px;margin-top:10px;padding:12px 14px;border:1px solid #b9d2e5;border-left:5px solid #245f91;border-radius:9px;background:#eef6fc;color:#25465f;font-size:12px;line-height:1.45}
+.catalogue-mode-banner strong{font-size:11px;letter-spacing:.04em}
+.catalogue-mode-banner.mode-master{border-color:#e5c39e;border-left-color:#c46a2b;background:#fff5eb;color:#70421e}
+.catalogue-tab.active:hover:not(:disabled){background:linear-gradient(135deg,#1e527e,#2b6d9d)}
 .catalogue-tab.active:hover:not(:disabled){background:linear-gradient(135deg,#b85f24,#c96d2e)}
 </style>
 </head>
@@ -88,7 +92,8 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 <li>Research is kept separate and is read-only here. Available research can be used by your automatic pricing rules.</li>
 </ol>
 </div>
-<div class="catalogue-tabs"><button class="catalogue-tab active" data-view="my" type="button">My Buying Catalogue</button><button class="catalogue-tab" data-view="master" type="button">Master Catalogue — Add Products</button></div>
+<div class="catalogue-tabs"><button class="catalogue-tab active" data-view="my" aria-pressed="true" type="button">My Buying Catalogue — Selected Products</button><button class="catalogue-tab" data-view="master" aria-pressed="false" type="button">Master Catalogue — Browse &amp; Add</button></div>
+<div id="catalogue-mode-banner" class="catalogue-mode-banner mode-my"><strong>VIEWING: MY BUYING CATALOGUE</strong><span>Only products already selected for your business. Switch to Master Catalogue — Browse &amp; Add to find more.</span></div>
 <div class="filters" aria-label="Find products">
 <div class="field"><label>Category</label><select id="master-category"><option value="">All categories</option></select></div>
 <div class="field"><label>Branch</label><select id="master-branch"><option value="">All branches</option></select></div>
@@ -107,5 +112,5 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing page error: '+(e.message||'Unknown browser error')});
 window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});
 </script>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=53"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=54"></script>
 </body></html>

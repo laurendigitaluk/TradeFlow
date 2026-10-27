@@ -71,7 +71,8 @@ async function loadFacets(){
  const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null);
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_facets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
  const models=isPokemonCatalogue()?[]:await api("/rest/v1/rpc/get_master_buying_catalogue_models",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man})});
- const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man})});
+ const modelName=isPokemonCatalogue()?null:($("master-model")?.value||null);
+ const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_model_name:modelName})});
  facets={...(data||{categories:[],branches:[],manufacturers:[]}),models:Array.isArray(models)?models:[],sets:Array.isArray(sets)?sets:[]};
  populateFilters();
 }

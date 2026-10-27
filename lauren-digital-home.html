@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Lauren Digital builds practical digital platforms for businesses. Explore TradeFlow and discover the next products in our growing platform family.">
+<meta name="description" content="Lauren Digital builds practical digital platforms for businesses. Explore TradeFlow and PageFlow, with StudioFlow planned for a future release.">
 <meta name="theme-color" content="#10283f">
 <title>Lauren Digital — Digital platforms built for business</title>
 <style>
@@ -52,11 +52,11 @@ footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-
     <article class="product featured" data-product-card="tradeflow">
      <div class="product-icon">TF</div><span class="tag">Available</span><h3>TradeFlow</h3><p>A platform for buy-and-sell businesses, bringing buying workflows, valuations, inventory, sales and customer-facing websites together.</p><a class="product-link" href="https://tradeflow.laurendigital.co.uk/">Visit TradeFlow <span aria-hidden="true">→</span></a>
     </article>
-    <article class="product" data-product-card="studioflow">
-     <div class="product-icon">SF</div><span class="tag soon">Planned</span><h3>StudioFlow</h3><p>A future platform concept for studio and creative-business workflows. Product scope and launch details will be announced when development is ready.</p><a class="product-link" href="/studioflow">Register interest <span aria-hidden="true">→</span></a>
+    <article class="product featured" data-product-card="pageflow">
+     <div class="product-icon">PF</div><span class="tag">Available</span><h3>PageFlow</h3><p>A standalone website builder for creating and managing professional business websites, with its own platform and service.</p><a class="product-link" href="https://pageflow.laurendigital.co.uk/">Visit PageFlow <span aria-hidden="true">→</span></a>
     </article>
-    <article class="product" data-product-card="businessflow">
-     <div class="product-icon">BF</div><span class="tag soon">Concept</span><h3>BusinessFlow</h3><p>A placeholder for a potential broader business-management platform. The name and scope are provisional and may change as the product family develops.</p><a class="product-link" href="/businessflow">Suggest a platform <span aria-hidden="true">→</span></a>
+    <article class="product" data-product-card="studioflow">
+     <div class="product-icon">SF</div><span class="tag soon">Planned</span><h3>StudioFlow</h3><p>A planned platform for studios and creative businesses. It is not built yet; details will be published when development is ready.</p><a class="product-link" href="https://studioflow.laurendigital.co.uk/">StudioFlow — coming soon <span aria-hidden="true">→</span></a>
     </article>
    </div>
   </div>
@@ -75,11 +75,11 @@ footer{background:#0a1d2d;color:#dce5ec;padding:34px 0}.foot{display:flex;align-
 
 <script>
 (async()=>{
- const API='https://gxsrajtqzdjvmceqcpgv.supabase.co/rest/v1/platform_product_pages?select=slug,product_name,status,headline,tagline,description,button_label,button_url';
- const KEY='sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz';
- const urls={tradeflow:'https://tradeflow.laurendigital.co.uk/',studioflow:'/studioflow',businessflow:'/businessflow'};
+ const API='/rest/v1/platform_product_pages?select=slug,product_name,status,headline,tagline,description,button_label,button_url';
+ const KEY='';
+ const urls={tradeflow:'https://tradeflow.laurendigital.co.uk/',pageflow:'https://pageflow.laurendigital.co.uk/',studioflow:'https://studioflow.laurendigital.co.uk/'};
  try{
-  const res=await fetch(API,{headers:{apikey:KEY}});if(!res.ok)return;
+  const res=await fetch(API,{headers:KEY?{apikey:KEY}:{}});if(!res.ok)return;
   const pages=await res.json();
   for(const p of pages){
    const card=document.querySelector('[data-product-card="'+p.slug+'"]');if(!card)continue;

@@ -62,8 +62,8 @@ function applyCategoryFilterLayout(){
  if(branchField)branchField.hidden=pokemon;
  if(manufacturerField)manufacturerField.hidden=pokemon;
  if(visibilityField)visibilityField.hidden=pokemon;
- const setField=$("master-set")?.closest(".field"),searchField=$("master-search")?.closest(".field"),filters=$("master-category")?.closest(".filters");
- if(filters&&setField&&searchField){filters.insertBefore(setField,branchField||searchField);filters.insertBefore(searchField,branchField||manufacturerField||filters.querySelector(".master-visibility-filter"));}
+ // Preserve the original DOM order for all categories. Hiding branch/manufacturer
+ // naturally leaves Category → Set → Search for Pokémon without reordering other categories.
 }
 async function loadFacets(){
  const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null);

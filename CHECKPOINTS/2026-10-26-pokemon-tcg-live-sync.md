@@ -31,3 +31,38 @@ A reconciliation batch was completed against the current LIVE and TEST Supabase 
 2. Investigate the 58 path-based LIVE-only cards for overlap with `asia:BW:BW8a`.
 3. Continue set-level source count reconciliation and record unresolved gaps.
 4. Re-run key coverage and duplicate checks after each future import.
+
+
+## 2026-10-27 continuation — Buying Catalogue and automatic cash/trade-in pricing
+
+Current production source HEAD at the start of this work was `3cbba7add8a406c7c03cd0660ba3a3c80ea50742`; PR #186 was merged at `ff68b656c1e523d1144ff6c02fcef8fd3239d178`. LIVE project `gxsrajtqzdjvmceqcpgv` and TEST project `nnsshnfkjcflucjrftzi` are both ACTIVE_HEALTHY.
+
+### Confirmed current database state
+- Both LIVE and TEST expose `configure_master_catalogue_buying_product_pricing` with five trade-in percentage and five trade-in manual-price parameters.
+- Both expose `calculate_buying_item_valuation`, which selects UK-new GBP evidence, uses cash percentages and separate trade-in percentages, returns `amount` and `trade_in_amount`, and returns the manual workflow reason `no_research_for_uk_new` when suitable evidence is absent.
+- Both expose `get_tenant_buying_catalogue_facets`; that subscriber-specific path filters to active, buying-enabled selections that map to an active tenant buying product.
+- Both expose `customer_get_offers_v2` with cash/trade-in price columns and `customer_accept_offer_choice`, which records the selected offer mode and corresponding price.
+- Bulk add RPCs take the existing five common condition cash percentages only. Do not silently use those percentages for trade-in; separate trade-in settings are per-product pricing-editor inputs.
+- Shared Pokémon master catalogue has 23,780 active products in both projects. Do not run select-all-matching against this entire category or automatically configure all cards.
+- TEST currently has 2 tenants and 52 tenant buying products; LIVE has 1 tenant and 243 tenant buying products. This environment-specific tenant data must not be copied between projects.
+
+### Guardrails and previous fixes
+- `CHECKPOINTS/2026-09-30-customer-automatic-valuation-linkage.md` remains authoritative: valuation must use the exact tenant-owned `buying_product_id`; no matching evidence means manual workflow; never use another tenant's research.
+- `subscriber_credit_trade_in` must continue to require an accepted trade-in initial offer and `purchase_stage='final_offer_required'`. Do not weaken it.
+- Inspection stores inspected condition in `buying_item_inspections.condition_grade`; inventory creation reads that field. Pokémon-specific condition work requires an explicit category-aware vocabulary and mapping, without changing other categories.
+- Current catalogue code already uses `get_tenant_buying_catalogue_facets` for My Buying Catalogue and `get_master_buying_catalogue_facets` for shared browsing. Pokémon filter isolation uses `isPokemonCatalogue()`, hides regular branch/manufacturer/model filters, and maps the card expansion filter to `p_set_name` for master browsing.
+
+### Source branch changes started
+Branch: `fix/automatic-tradein-pokemon-condition-20261027`.
+- Documented the intended dual-price contract next to the initial-offer creation code in `buying-dashboard.js`.
+- Customer dashboard now prefers a current published/accepted offer over a stale offer row for the same buying item. Its script cache advanced from v152 to v153.
+- Buying dashboard script cache advanced from v78 to v79.
+- Buying Catalogue script cache advanced from v58 to v59.
+- These remain branch-only until the PR is reviewed, merged, and Cloudflare deployment is confirmed.
+
+### Still unverified
+- Fresh browser submission and acceptance of both cash and trade-in using a safe TEST-only item.
+- Separate trade-in values surviving pricing save/reload through an authorized browser session on both environments.
+- A bounded, specific Pokémon card being added to the correct TEST tenant and appearing in My Buying Catalogue.
+- Pokémon-specific condition choices carried through valuation → inspection → inventory → sales. No card condition labels were changed in this pass.
+- Current Cloudflare deployment of latest production and TEST builds.

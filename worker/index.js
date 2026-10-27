@@ -46,7 +46,8 @@ export default {
     };
     if ((hostname === "laurendigital.co.uk" || hostname === "www.laurendigital.co.uk") && url.pathname === "/") {
       cleanRoutes["/"] = "/lauren-digital-home.html";
-    }\n    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
+    }
+    if (hostname === "owner.laurendigital.co.uk" && url.pathname === "/") {
       cleanRoutes["/"] = "/platform-owner-login.html";
     }
     if (isSubscriberDomain) {

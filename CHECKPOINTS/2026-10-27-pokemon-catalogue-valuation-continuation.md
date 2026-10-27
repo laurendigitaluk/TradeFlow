@@ -90,3 +90,14 @@ Professional, English only, no emojis. Concise progress reports, no endless audi
 - LIVE: 18,673 foreign-language master products disabled and hidden. Verification: 23,780 English products remain active and customer-visible; 0 foreign-language products remain active or customer-visible; 0 imported card rows had unknown language suffixes.
 - This was a targeted master-catalogue update only. No valuation formulas, pricing rules, tenant/customer/order/payment/site/domain/ownership data, or source card records were changed. The change has not yet been browser-tested through the Buying Catalogue or customer valuation journey.
 - Important: the catalogue currently contains all 23,780 English master records in both environments, but their category/branch allocation still differs between TEST and LIVE. Continue key-based branch reconciliation separately; do not re-enable foreign-language cards as part of that work.
+
+
+## Continuation update — 2026-10-27 (TEST/LIVE category reconciliation)
+- Read-only comparison found the main remaining discrepancy is category assignment, not just the 385-row total difference:
+  - TEST `pokemon_tcg_cards`: 42,395 rows — Pokémon 34,987; Trainer 6,311; Energy 1,097.
+  - LIVE `pokemon_tcg_cards`: 42,453 rows — Pokémon 38,642; Trainer 3,282; Energy 529.
+  - Both contain 23,780 English-language source rows.
+- Exact stable-key joins from each environment to its own master catalogue show the LIVE English records are assigned overwhelmingly to Pokémon: 23,745 Pokémon, 28 Trainer, 7 Energy. TEST English records are distributed as 20,141 Pokémon, 3,063 Trainer, 576 Energy. This points to a genuine LIVE source-category classification discrepancy for English records and explains why master branch totals diverge.
+- Verified examples in TEST correctly classify named Energy and Trainer cards (e.g. Water Energy as Energy; Item Finder as Trainer). LIVE examples include those same kinds of cards, but the overall English category distribution is not consistent with TEST.
+- No category/branch correction was applied in this pass. A bulk update requires a complete stable-key-to-category mapping from TEST; partial or name-heuristic changes could misclassify cards and affect customer valuation. Foreign-language catalogue entries remain disabled/hidden as previously recorded.
+- Next reconciliation action: transfer TEST's English card_key→card_category mapping in controlled batches to LIVE, update LIVE source categories only where exact keys match, then update corresponding master branch_id values from the corrected source categories. Preserve all source rows and do not touch valuation rules or tenant/order/payment data. Recheck unmatched 327 LIVE master products separately.

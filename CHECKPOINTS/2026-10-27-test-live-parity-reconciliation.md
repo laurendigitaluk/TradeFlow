@@ -75,3 +75,21 @@ The LIVE Supabase URL/key, worker names, and environment flags were preserved. T
 
 ### Next required action
 Build an export/dry-run reconciliation manifest using canonical product identifiers and source-record keys, explicitly listing missing records, conflicts, duplicate groups and foreign-key remaps. Reconcile in TEST first and then LIVE, with a backup/restore point and post-sync parity checks. Keep tenant/customer/order/payment/domain/site and LIVE Stripe records isolated.
+
+
+## Follow-up — identifier and deployment pipeline check — 2026-10-27
+
+### Identifier drift confirmed
+Read-only comparison of `catalogue_master_product_identifiers` shows:
+- TEST: 108 rows, all `identifier_type='other'`
+- LIVE: 419 rows: 108 `other` plus 311 `tcgdex_card_id` records
+
+This is a meaningful shared-catalogue difference. Those 311 LIVE identifiers must not be discarded. Their product references need to be mapped against canonical Pokémon source keys and reconciled into TEST; however, they should not be bulk copied using the source environment's product UUIDs unless those UUIDs are proven to refer to the same product in TEST.
+
+### Deployment check
+- GitHub Actions has a successful `pages build and deployment` run on `main` for checkpoint commit `65a244d96de7cb8b21a2138b7d2187f916c07d73`.
+- The GitHub Actions runs endpoint returned zero workflow runs for branch `cloudflare-test`.
+- This does not confirm Cloudflare Workers deployment. A successful GitHub Pages build is not evidence that the Cloudflare Test Worker has been updated. Deployment/runtime verification remains open.
+
+### Safety status
+No database rows were changed. Do not run a cross-environment insert/upsert until a row-level reconciliation manifest maps category, branch, manufacturer, product, identifier, and evidence references by stable keys. The 311 LIVE TCGdex identifiers are a high-priority reconciliation set, alongside the previously recorded Pokémon card/category classification defect.

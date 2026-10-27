@@ -64,7 +64,6 @@ BEGIN
    when 'lightly_played' then 'opened_never_used'
    when 'moderately_played' then 'excellent'
    when 'heavily_played' then 'good'
-   when 'pokemon-damaged' then 'poor'
    else v_item.item_condition
  end;
 

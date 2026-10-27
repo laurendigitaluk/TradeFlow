@@ -55,15 +55,24 @@ async function loadCatalogue(){
  await loadStatusCounts();
  msg(catalogueView==="my"?"Your Buying Catalogue is ready.":"Master catalogue ready. Select products to add them to your Buying Catalogue.","success");
 }
+function isPokemonCatalogue(){return ($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokémon trading cards")||($("master-category").selectedOptions[0]?.textContent||"").toLowerCase().includes("pokemon trading cards")}
+function applyCategoryFilterLayout(){
+ const pokemon=isPokemonCatalogue();
+ const branchField=$("master-branch")?.closest(".field"),manufacturerField=$("master-manufacturer")?.closest(".field");
+ if(branchField)branchField.hidden=pokemon;
+ if(manufacturerField)manufacturerField.hidden=pokemon;
+ const setField=$("master-set")?.closest(".field"),searchField=$("master-search")?.closest(".field"),filters=$("master-category")?.closest(".filters");
+ if(filters&&setField&&searchField){filters.insertBefore(setField,branchField||searchField);filters.insertBefore(searchField,branchField||manufacturerField||filters.querySelector(".master-visibility-filter"));}
+}
 async function loadFacets(){
- const cat=$("master-category").value||null,branch=$("master-branch").value||null;
+ const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null);
  const data=await api("/rest/v1/rpc/get_master_buying_catalogue_facets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
  const sets=await api("/rest/v1/rpc/get_master_buying_catalogue_sets",{method:"POST",body:JSON.stringify({p_tenant_id:tenantId,p_category_id:cat,p_branch_id:branch})});
  facets={...(data||{categories:[],branches:[],manufacturers:[]}),sets:Array.isArray(sets)?sets:[]};
  populateFilters();
 }
 async function loadPage(){
- const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
+ const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null),setName=$("master-set")?.value||null,q=($("master-search").value||"").trim()||null;
  const hideAdded=catalogueView==="master" ? ($("master-hide-added")?.checked!==false) : false;
  if(catalogueView==="master"&&!man&&!q&&!cat&&!branch&&!setName){
   master=[];totalProducts=0;
@@ -100,6 +109,7 @@ function populateFilters(){
  fillSelect("master-branch",facets.branches,"All branches",branch);
  fillSelect("master-manufacturer",facets.manufacturers,"All manufacturers",man);
  fillSetSelect("master-set",facets.sets,"All sets / expansions",setName);
+ applyCategoryFilterLayout();
 }
 function stateFor(p){
  let s;
@@ -318,7 +328,7 @@ async function addSelectedProducts(){
  try{
   let result;
   if(buyingSelectionAllMatching){
-   const cat=$("master-category").value||null,branch=$("master-branch").value||null,man=$("master-manufacturer").value||null,q=($("master-search").value||"").trim()||null;
+   const cat=$("master-category").value||null,branch=isPokemonCatalogue()?null:($("master-branch").value||null),man=isPokemonCatalogue()?null:($("master-manufacturer").value||null),q=($("master-search").value||"").trim()||null;
    result=await api("/rest/v1/rpc/add_master_buying_products_filtered",{method:"POST",body:JSON.stringify({...payload,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q}),timeoutMs:45000});
   }else{
    result=await api("/rest/v1/rpc/add_master_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
@@ -406,6 +416,7 @@ async function refreshForCategory(){
  $("master-branch").value="";
  $("master-manufacturer").value="";
  if($("master-set"))$("master-set").value="";
+ applyCategoryFilterLayout();
  await loadFacets();
  await loadPage();await loadStatusCounts();
 }

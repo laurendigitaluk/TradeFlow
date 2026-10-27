@@ -135,6 +135,8 @@ async function createInitialOffer(id,value,valuationOverride){
  }
  const tvCash=asAmount(tv.cash_price)??cashPrice;
  const tvTrade=asAmount(tv.trade_in_price)??tradePrice;
+ // Both amounts remain attached to this trading_value row. The customer portal displays both choices,
+ // and customer_accept_offer_choice records the customer's chosen mode and amount.
  const amount=tvCash!==null?tvCash:tvTrade;
  const mode=tvCash!==null?'cash':'trade_in';
  if(amount===null)throw Error('The saved valuation has no available offer amount.');

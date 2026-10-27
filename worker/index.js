@@ -77,7 +77,7 @@ export default {
       ) {
         cleanRoutes[url.pathname] = "/public-site.html";
       }
-    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk" && hostname !== "laurendigital.co.uk" && hostname !== "www.laurendigital.co.uk") {
+    } else if (url.pathname === "/" && hostname !== "owner.laurendigital.co.uk" && hostname !== "laurendigital.co.uk" && hostname !== "www.laurendigital.co.uk" && !(env.TRADEFLOW_ENV === "test" && hostname === "tradeflow-test.leannelaurenlowe.workers.dev")) {
       // With html_handling disabled, the Worker must explicitly resolve the
       // platform root to index.html instead of relying on static index fallback.
       cleanRoutes["/"] = "/index.html";

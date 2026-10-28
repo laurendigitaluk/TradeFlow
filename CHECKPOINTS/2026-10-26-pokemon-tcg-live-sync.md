@@ -79,3 +79,11 @@ Branch: `fix/automatic-tradein-pokemon-condition-20261027`.
 - Verify standard electronics still price exactly as before and customer offer-choice/credit guards remain unchanged.
 - Confirm the migration ledger and actual TEST/Cloudflare runtime deployment. Do not merge or touch LIVE until these checks pass.
 - Never use bulk select-all across the entire Pokémon category; the master catalogue contains 23,780 active Pokémon products.
+
+
+### Independent cash/trade-in calculation fix (2026-10-27)
+- TEST migration ledger includes `20261027235942_independent_cash_tradein_condition_overrides`; matching migration file is `supabase/migrations/20261027235942_independent_cash_tradein_condition_overrides.sql`.
+- Fixed the early-return bug where a per-condition cash manual override prevented the separately configured trade-in percentage from being calculated. With UK New GBP evidence, each side is now calculated independently: a cash override wins for cash while trade-in uses its own percentage (or its own manual override); conversely a trade-in manual override does not erase an available cash percentage calculation.
+- If UK New evidence is unavailable, configured manual prices remain usable and any percentage-based side without a research basis stays manual. Existing no-research fallback remains in place.
+- Read-only TEST function verification confirms original Pokémon grade preservation, independent cash calculation, independent trade-in calculation and manual fallback are present.
+- End-to-end signed-in TEST browser workflow, standard electronics regression and Cloudflare runtime deployment are still unverified. LIVE has not been changed.

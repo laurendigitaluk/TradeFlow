@@ -87,3 +87,5 @@ Branch: `fix/automatic-tradein-pokemon-condition-20261027`.
 - If UK New evidence is unavailable, configured manual prices remain usable and any percentage-based side without a research basis stays manual. Existing no-research fallback remains in place.
 - Read-only TEST function verification confirms original Pokémon grade preservation, independent cash calculation, independent trade-in calculation and manual fallback are present.
 - End-to-end signed-in TEST browser workflow, standard electronics regression and Cloudflare runtime deployment are still unverified. LIVE has not been changed.
+
+- TEST evidence check: the active English Pokémon master catalogue has 23,780 cards, but there are currently zero active shared-market-evidence rows for Pokémon and zero Pokémon buying products configured for the selected TEST tenant. Therefore, percentage-based Pokémon valuation will correctly remain on manual fallback until valid UK New GBP evidence exists; do not insert guessed prices or treat collector metadata as pricing evidence.

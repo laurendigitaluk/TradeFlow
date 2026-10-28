@@ -201,7 +201,7 @@ function renderMaster(){
   selectAll.checked=bulkAll||(selectableCount>0&&selectedCount===selectableCount);
   selectAll.indeterminate=!bulkAll&&selectedCount>0&&selectedCount<selectableCount;
  }
- $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
+ $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedIds.size?selectedIds.size+" product(s) selected across pages":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
  const allMatching=$("select-all-matching");
  if(allMatching){allMatching.textContent=bulkAll?"Clear all matching selections":"Select all "+totalProducts+" matching across pages ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";allMatching.disabled=totalProducts===0;}
@@ -258,7 +258,7 @@ function updateBulkControls(isMy){
  const allowed=isMy?["automatic","manual","off"]:["manual","automatic"];
  if(allowed.includes(previous))mode.value=previous;
  action.textContent=isMy?"Apply to selected":"Add selected to Buying Catalogue";
- if(label)label.textContent="Select all shown";
+ if(label)label.textContent="Select products on this page";
  if(profile)profile.hidden=mode.value!=="automatic";
  toggleBulkMode();
 }

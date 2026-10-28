@@ -27,13 +27,15 @@ Branch: `feature/multi-item-customer-valuation-20261028`, based on `production`.
 - Verify photographs are attached to their corresponding items and failed upload behaviour is not reported as success.
 - Verify customer portal and staff Buying dashboard show grouped request with separate item workflows.
 - Verify automatic/manual valuations, offers and downstream acquisition/sales transitions.
-- Verify basket and File objects survive login/reload. Current staged basket is in memory; File objects do not survive navigation/reload, and the unauthenticated handoff currently only serializes payload metadata. This must be resolved or explicitly gated before claiming full acceptance.
+- IndexedDB draft persistence has now been added on the feature branch, scoped by tenant ID and hostname, storing the basket, current item and photo File objects across reloads. It has not yet been browser-tested.
+- The unauthenticated handoff still requires an end-to-end check: the draft survives, but the login page's return-to-selling-page behaviour has not been verified. Current UI asks the customer to return to the selling page after signing in; do not claim automatic login round-trip is complete.
 - Verify edit/remove edge cases and mobile layout.
 - Reconcile branch/deployment routing and TEST runtime config before publishing. Do not deploy to LIVE directly.
 
 ## Next actions
-1. Complete persistence and unauthenticated handoff behaviour, including photo persistence if required.
-2. Run syntax/static checks on both changed files and inspect final diffs.
-3. Deploy only to TEST after safe deployment route is confirmed.
-4. Run end-to-end tests against TEST database records.
-5. Update this checkpoint with results, then promote through the approved process only after passing tests.
+1. Verify the IndexedDB draft and photos in a real browser, including refresh and tenant separation.
+2. Confirm login return routing and the actual TEST hostname/project configuration. Current `public-site.js` maps localhost and `.github.io` to legacy project `twfbmjwwqzxdxvclxbun`, while current TEST project is `nnsshnfkjcflucjrftzi`; do not deploy/test until this is reconciled.
+3. Run syntax/static checks on both changed files and inspect final diffs.
+4. Deploy only to the confirmed TEST environment.
+5. Run end-to-end tests against TEST database records and customer/staff views.
+6. Update this checkpoint with results, then promote through the approved process only after passing tests.

@@ -324,7 +324,7 @@ async function addSelectedProducts(){
  if(mode==="automatic"){
   const fields=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"];
   for(const field of fields){const raw=$("bulk-"+field)?.value||"";const value=Number(raw);if(raw===""||!Number.isFinite(value)||value<0||value>100){button.disabled=false;return msg("Enter all five automatic percentages between 0 and 100 before adding products automatically.","error")}payload["p_"+field]=value}
-  for(const field of ["sealed_manual_price","opened_never_used_manual_price","excellent_manual_price","good_manual_price","poor_manual_price"]){const raw=$("bulk-"+field)?.value||"";const value=raw===""?null:Number(raw);if(value!==null&&(!Number.isFinite(value)||value<0)){button.disabled=false;return msg("Automatic condition overrides must be valid non-negative prices.","error")}payload["p_"+field]=value}
+  for(const field of ["sealed_trade_in_percentage","opened_never_used_trade_in_percentage","excellent_trade_in_percentage","good_trade_in_percentage","poor_trade_in_percentage"]){const raw=$("bulk-"+field)?.value||"";const value=raw===""?null:Number(raw);if(value!==null&&(!Number.isFinite(value)||value<0||value>100)){button.disabled=false;return msg("Trade-in percentages must be blank or between 0 and 100.","error")}payload["p_"+field]=value}
  }
  try{
   let result;

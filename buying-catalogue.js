@@ -308,7 +308,7 @@ async function applySelectedBuyingCatalogue(){
    });
    await Promise.all(calls); result={updated:ids.length};
   }else{
-   result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
+   result=await api("/rest/v1/rpc/apply_buying_catalogue_bulk_with_tradein",{method:"POST",body:JSON.stringify(payload),timeoutMs:45000});
   }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
   await loadPage();await loadStatusCounts();

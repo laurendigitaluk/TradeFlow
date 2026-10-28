@@ -45,3 +45,16 @@ Post-migration read-only checks confirmed the same three statuses in TEST and LI
 - Confirm Cloudflare's Test and LIVE Git integration/deployed commits.
 - Verify the public TradeFlow homepage and platform-owner product-page UI in a browser after deployment.
 - Continue multi-item valuation acceptance tests in TEST only.
+
+
+## Static site scan — 28 October 2026
+Reviewed the current `cloudflare-test` versions of:
+- `index.html`: TradeFlow marketing homepage, TradeFlow-only title/copy/navigation, no PageFlow or BusinessFlow link in the inspected content.
+- `public-site.html`: subscriber public-site shell loads `public-site.css?v=68` and `public-site.js?v=87`; no cross-product links in the shell.
+- `public-site.js`: subscriber website rendering and customer selling/valuation flow. Its explicit runtime Supabase defaults include LIVE and a legacy Test project; the Worker is expected to rewrite these in served JavaScript according to `TRADEFLOW_ENV`. This is a dependency that must be confirmed in the deployed Test Worker. The file inspection did not show a PageFlow/BusinessFlow integration in the reviewed excerpts.
+- `worker/index.js`: environment-specific Supabase URL/key replacement is performed on JavaScript assets, while HTML route aliases are returned directly with no-store headers.
+
+This is a targeted static review, not a complete repository-wide or deployed-asset scan. The GitHub search connector did not return source matches for PageFlow/BusinessFlow terms, so absence from all files is not established.
+
+## Risk to resolve before acceptance
+The Worker must be verified serving the current `cloudflare-test` commit, and the browser Network panel must show all Test API calls going to `nnsshnfkjcflucjrftzi.supabase.co`, never `gxsrajtqzdjvmceqcpgv.supabase.co`. Verify the LIVE Worker uses LIVE Supabase. The production site remains unmodified by branch promotion.

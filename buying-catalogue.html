@@ -95,6 +95,31 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
  .condition-row>strong{grid-column:auto;}
  #bulk-automatic-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
 }
+
+/* Two aligned rows per condition: cash first, trade-in directly below. */
+.condition-row{display:grid;grid-template-columns:90px minmax(0,1fr);grid-template-rows:auto auto;column-gap:12px;row-gap:8px;align-items:stretch;padding:10px 8px;}
+.condition-row>strong{grid-column:1;grid-row:1/3;align-self:start;padding-top:10px;font-size:11px;}
+.condition-line{display:grid;grid-template-columns:minmax(150px,1fr) minmax(100px,.65fr) minmax(150px,1fr);gap:12px;align-items:end;min-width:0;}
+.condition-line label{display:block;min-width:0;font-size:10px;font-weight:800;color:#52616b;}
+.condition-line input{display:block;width:100%;box-sizing:border-box;margin-top:4px;padding:8px;border:1px solid #bfcbd3;border-radius:6px;font-size:12px;}
+.condition-line .calculated-price{align-self:center;white-space:normal;overflow-wrap:anywhere;padding:7px 8px;}
+.condition-line.trade-line{border-top:1px dashed #d6dfe5;padding-top:8px;}
+.condition-line.trade-line label{color:#8a4d20;}
+.condition-line.trade-line input{border-color:#dec6b4;}
+#bulk-automatic-fields{flex-basis:100%;display:flex;flex-wrap:wrap;gap:10px;padding:12px;border:1px solid #cbddea;border-radius:8px;background:#f4f8fb;}
+#bulk-automatic-fields.hidden{display:none!important;}
+#bulk-automatic-fields label{display:block;min-width:120px;font-size:11px;}
+#bulk-automatic-fields input{display:block;width:110px;max-width:100%;margin-top:4px;padding:8px;}
+#bulk-profile-wrap{display:inline-flex;align-items:center;gap:7px;}
+@media(max-width:1050px){
+ .condition-row{grid-template-columns:1fr;grid-template-rows:auto auto;}
+ .condition-row>strong{grid-column:1;grid-row:auto;padding-top:0;}
+ .condition-line{grid-template-columns:minmax(120px,1fr) minmax(90px,.65fr) minmax(120px,1fr);gap:8px;}
+}
+@media(max-width:650px){
+ .condition-line{grid-template-columns:1fr;}
+ .condition-line .calculated-price{align-self:stretch;}
+}
 </style>
 </head>
 <body>
@@ -137,5 +162,5 @@ body{background:linear-gradient(180deg,#eef6ff 0%,#f6f9fc 48%,#f8fafc 100%);colo
 window.addEventListener('error',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing page error: '+(e.message||'Unknown browser error')});
 window.addEventListener('unhandledrejection',e=>{const m=document.getElementById('message');if(m)m.textContent='Buying pricing promise error: '+(e.reason?.message||e.reason||'Unknown promise error')});
 </script>
-<script src="subscriber-auth.js?v=9"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=64"></script>
+<script src="subscriber-auth.js?v=9"></script><script src="subscriber-auth-controls.js?v=2"></script><script src="subscriber-tenant-context.js?v=5"></script><script src="buying-catalogue.js?v=65"></script>
 </body></html>

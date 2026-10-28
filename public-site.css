@@ -175,3 +175,7 @@ body[data-background-mode="custom"] .tpl-hero::before,body[data-background-mode=
 @media(max-width:700px){
  .public-editable-hero,.public-editable-hero-stage{min-height:520px;height:520px}
 }
+
+
+.sell-basket-summary{display:grid;gap:10px;margin:0 0 18px}.sell-basket-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;padding:12px;border:1px solid #d9dee3;border-radius:10px;background:#fff}.sell-basket-row span{font-size:13px;color:#596570}.sell-basket-row button{border:1px solid #c9d1d8;border-radius:7px;padding:7px 10px;background:#fff;color:#17202a;cursor:pointer}.sell-basket-row button:hover{border-color:var(--accent)}#sell-add-another{border:1px solid var(--accent);border-radius:8px;padding:10px 14px;background:#fff;color:var(--text-color);cursor:pointer}@media(max-width:600px){.sell-basket-row{grid-template-columns:1fr auto}.sell-basket-row span{grid-column:1/-1}.sell-basket-row button{grid-row:1}}
+

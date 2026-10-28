@@ -327,7 +327,8 @@ async function submitCustomerSellingRequest(payload,session,files=[]){
   const formData=new FormData();
   formData.append('tenant_id',activeTenantId);
   formData.append('payload',JSON.stringify(payload));
-  files.forEach(file=>formData.append('files',file,file.name));
+  if(Array.isArray(payload.items)){files.forEach((itemFiles,index)=>{(Array.isArray(itemFiles)?itemFiles:[]).forEach(file=>formData.append('files_'+index,file,file.name));});}
+  else files.forEach(file=>formData.append('files',file,file.name));
   return formData;
  };
  let current=session;

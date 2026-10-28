@@ -58,7 +58,7 @@ begin
      and (v_search is null or lower(coalesce(p.model,'')) like '%'||lower(v_search)||'%'
       or lower(coalesce(p.package_name,'')) like '%'||lower(v_search)||'%'
       or lower(coalesce(p.product_type,'')) like '%'||lower(v_search)||'%'
-      or lower(coalesce(p.notes,'')) like '%'||lower(v_search)||'%'));
+      or lower(coalesce(p.notes,'')) like '%'||lower(v_search)||'%')));
  end if;
  return v_result;
 end; $$;

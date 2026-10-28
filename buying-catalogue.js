@@ -304,7 +304,7 @@ async function applySelectedBuyingCatalogue(){
      body.p_sealed_trade_in_percentage=payload.p_sealed_trade_in_percentage;body.p_opened_never_used_trade_in_percentage=payload.p_opened_never_used_trade_in_percentage;body.p_excellent_trade_in_percentage=payload.p_excellent_trade_in_percentage;body.p_good_trade_in_percentage=payload.p_good_trade_in_percentage;body.p_poor_trade_in_percentage=payload.p_poor_trade_in_percentage;
     }
     if(mode==="manual") body.p_manual_price=null;
-    return api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify(body),timeoutMs:45000});
+    return api("/rest/v1/rpc/configure_master_catalogue_buying_product_pricing",{method:"POST",body:JSON.stringify(body),timeoutMs:45000});
    });
    await Promise.all(calls); result={updated:ids.length};
   }else{

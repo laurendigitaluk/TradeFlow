@@ -332,7 +332,7 @@ async function addSelectedProducts(){
    const pokemon=isPokemonCatalogue(),cat=$("master-category").value||null,branch=pokemon?null:($("master-branch").value||null),man=pokemon?null:($("master-manufacturer").value||null),modelName=pokemon?null:($("master-model")?.value||null),packageName=pokemon?null:($("master-set")?.value||null),setName=pokemon?($("master-set")?.value||null):null,q=($("master-search").value||"").trim()||null;
    result=await api("/rest/v1/rpc/add_master_buying_products_filtered_v2",{method:"POST",body:JSON.stringify({...payload,p_category_id:cat,p_branch_id:branch,p_manufacturer_id:man,p_search:q,p_model_name:modelName,p_package_name:packageName,p_set_name:setName}),timeoutMs:45000});
   }else{
-   result=await api("/rest/v1/rpc/add_master_buying_products_bulk",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
+   result=await api("/rest/v1/rpc/add_master_buying_products_bulk_with_tradein",{method:"POST",body:JSON.stringify({...payload,p_master_product_ids:ids}),timeoutMs:45000});
   }
   window.buyingSelected=new Set();buyingSelectionAllMatching=false;
   await loadPage();await loadStatusCounts();

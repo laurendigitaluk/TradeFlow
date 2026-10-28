@@ -204,7 +204,7 @@ function renderMaster(){
  $("selected-count").textContent=bulkAll?"All "+totalProducts+" matching products selected":(selectedCount?selectedCount+" selected":"");
  $("bulk-add").disabled=!(bulkAll||selectedCount>0);
  const allMatching=$("select-all-matching");
- if(allMatching){allMatching.textContent=bulkAll?"Clear all matching":"Select all "+totalProducts+" matching ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";allMatching.disabled=totalProducts===0;}
+ if(allMatching){allMatching.textContent=bulkAll?"Clear all matching selections":"Select all "+totalProducts+" matching across pages ("+Math.max(1,Math.ceil(totalProducts/pageSize))+" pages)";allMatching.disabled=totalProducts===0;}
 
  $("master-count").textContent=totalProducts+(isMy?" products in your Buying Catalogue":" matching products");
  const start=(masterPage-1)*pageSize;

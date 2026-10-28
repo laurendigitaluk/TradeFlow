@@ -58,3 +58,7 @@ This is a targeted static review, not a complete repository-wide or deployed-ass
 
 ## Risk to resolve before acceptance
 The Worker must be verified serving the current `cloudflare-test` commit, and the browser Network panel must show all Test API calls going to `nnsshnfkjcflucjrftzi.supabase.co`, never `gxsrajtqzdjvmceqcpgv.supabase.co`. Verify the LIVE Worker uses LIVE Supabase. The production site remains unmodified by branch promotion.
+
+
+## Prior-day removal decision recovered from conversation context
+The 27 October decision is explicit: remove PageFlow/BusinessFlow from the TradeFlow site and restore the last working TradeFlow-only state; TradeFlow must be the only product option. Future PageFlow, if revived, must have a separate GitHub repository/account/environment and may be linked only by a plain hyperlink if requested. Keep the BusinessFlow repository/history rather than deleting it. Cloudflare should retain only the `tradeflow` and `tradeflow-test` Workers for this application; do not reintroduce a BusinessFlow Worker or product runtime here. The intended public parent address is `LaurenDigital.co.uk`, while the TradeFlow product remains on its own site; TEST and LIVE should stay near-identical except for environment-specific settings and data.

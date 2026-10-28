@@ -11,3 +11,11 @@
 <div class="card"><h2>Customer Assistant</h2><p>The Customer Assistant is separate from the subscriber assistant. It can help with the customer's own TradeFlow journey and can provide a route to contact the business where supported.</p></div>
 <div class="card"><h2>Business-specific information</h2><p>The subscriber business can maintain customer-facing guidance for its own services, policies and contact details. Internal TradeFlow administration, backend systems and platform-owner documentation are not customer documentation.</p></div>
 <p><a href="subscriber-website-manual.html">Subscriber Website Manual</a></p></main></body></html>
+
+## Multi-item valuation update — 28 October 2026
+
+TradeFlow supports multiple products under one buying request while preserving a separate item record and lifecycle for each product. The customer portal groups published initial/revised offers for a request into one quote, shows item-level cash/trade-in values and combined totals, and supports item-by-item accept/refuse decisions plus whole-quote actions. Final offers after inspection remain item-specific.
+
+The subscriber Buying workspace groups items from the same request, stacks the item valuation panels before evidence/photos, and provides one “Submit total valuations” action. Each item's values remain separate. **Current limitation:** the submit action calls the manual valuation RPC sequentially per item; it is not an atomic batch. If a later item fails, earlier offers may already have been created.
+
+UI was reviewed in screenshots and JavaScript syntax checks passed. Mixed accept/refuse and the full shipping-to-inventory lifecycle have not yet passed end-to-end verification. See `CHECKPOINTS/2026-10-28-multi-item-valuation.md` for the full test checklist and safeguards. Do not mark this workflow fully verified until those tests pass.

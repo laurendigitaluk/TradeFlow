@@ -19,7 +19,7 @@ Branch: `feature/multi-item-customer-valuation-20261028`, based on `production`.
 ## Safety decisions
 - No schema/table/RPC duplication and no changes to the valuation engine or downstream acquisition/sales flow.
 - The RPC remains the authoritative validation and valuation boundary.
-- The feature branch has not been merged or deployed. LIVE remains untouched.
+- The website changes remain on the feature branch and have not been deployed. The backward-compatible `customer-selling-submit` Edge Function has been deployed to current TEST project `nnsshnfkjcflucjrftzi` as version 10. LIVE remains untouched.
 - Public wizard JavaScript passed a syntax compilation check. This is not an end-to-end test.
 
 ## Known gaps before acceptance
@@ -35,7 +35,7 @@ Branch: `feature/multi-item-customer-valuation-20261028`, based on `production`.
 ## Next actions
 1. Verify the IndexedDB draft and photos in a real browser, including refresh and tenant separation.
 2. Confirm login return routing and the actual TEST hostname/project configuration. The feature branch now explicitly maps `tradeflow-test.leannelaurenlowe.workers.dev` to current TEST project `nnsshnfkjcflucjrftzi` in both public-site and customer-auth runtime config. Localhost and `.github.io` remain mapped to the legacy test project `twfbmjwwqzxdxvclxbun`; verify the actual test hostname before browser tests.
-3. Run syntax/static checks on both changed files and inspect final diffs.
-4. Deploy only to the confirmed TEST environment.
-5. Run end-to-end tests against TEST database records and customer/staff views.
+3. Run syntax/static checks on the website and Edge Function, then inspect final diffs.
+4. Publish the website feature branch to the confirmed TEST hostname only after confirming the Cloudflare deployment target.
+5. Run end-to-end tests against TEST database records and customer/staff views; Edge Function version 10 is already active in TEST.
 6. Update this checkpoint with results, then promote through the approved process only after passing tests.

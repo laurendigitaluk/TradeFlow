@@ -34,7 +34,7 @@ Branch: `feature/multi-item-customer-valuation-20261028`, based on `production`.
 
 ## Next actions
 1. Verify the IndexedDB draft and photos in a real browser, including refresh and tenant separation.
-2. Confirm login return routing and the actual TEST hostname/project configuration. Current `public-site.js` maps localhost and `.github.io` to legacy project `twfbmjwwqzxdxvclxbun`, while current TEST project is `nnsshnfkjcflucjrftzi`; do not deploy/test until this is reconciled.
+2. Confirm login return routing and the actual TEST hostname/project configuration. The feature branch now explicitly maps `tradeflow-test.leannelaurenlowe.workers.dev` to current TEST project `nnsshnfkjcflucjrftzi` in both public-site and customer-auth runtime config. Localhost and `.github.io` remain mapped to the legacy test project `twfbmjwwqzxdxvclxbun`; verify the actual test hostname before browser tests.
 3. Run syntax/static checks on both changed files and inspect final diffs.
 4. Deploy only to the confirmed TEST environment.
 5. Run end-to-end tests against TEST database records and customer/staff views.

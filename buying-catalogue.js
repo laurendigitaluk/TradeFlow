@@ -287,9 +287,9 @@ async function applySelectedBuyingCatalogue(){
    if(raw===""||!Number.isFinite(value)||value<0||value>100){button.disabled=false;return msg("Enter all five automatic percentages between 0 and 100.","error")}
    payload["p_"+field]=value;
   }
-  for(const field of ["sealed_manual_price","opened_never_used_manual_price","excellent_manual_price","good_manual_price","poor_manual_price"]){
+  for(const field of ["sealed_trade_in_percentage","opened_never_used_trade_in_percentage","excellent_trade_in_percentage","good_trade_in_percentage","poor_trade_in_percentage"]){
    const raw=$("bulk-"+field)?.value||"";const value=raw===""?null:Number(raw);
-   if(value!==null&&(!Number.isFinite(value)||value<0)){button.disabled=false;return msg("Automatic condition overrides must be valid non-negative prices.","error")}
+   if(value!==null&&(!Number.isFinite(value)||value<0||value>100)){button.disabled=false;return msg("Trade-in percentages must be blank or between 0 and 100.","error")}
    payload["p_"+field]=value;
   }
  }
@@ -301,6 +301,7 @@ async function applySelectedBuyingCatalogue(){
     if(mode==="automatic"){
      body.p_sealed_percentage=payload.p_sealed_percentage;body.p_opened_never_used_percentage=payload.p_opened_never_used_percentage;body.p_excellent_percentage=payload.p_excellent_percentage;body.p_good_percentage=payload.p_good_percentage;body.p_poor_percentage=payload.p_poor_percentage;
      body.p_manual_price=null;
+     body.p_sealed_trade_in_percentage=payload.p_sealed_trade_in_percentage;body.p_opened_never_used_trade_in_percentage=payload.p_opened_never_used_trade_in_percentage;body.p_excellent_trade_in_percentage=payload.p_excellent_trade_in_percentage;body.p_good_trade_in_percentage=payload.p_good_trade_in_percentage;body.p_poor_trade_in_percentage=payload.p_poor_trade_in_percentage;
     }
     if(mode==="manual") body.p_manual_price=null;
     return api("/rest/v1/rpc/configure_master_catalogue_buying_product",{method:"POST",body:JSON.stringify(body),timeoutMs:45000});

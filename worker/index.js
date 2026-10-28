@@ -18,9 +18,11 @@ function replaceAll(source, from, to) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    const isTestPlatformHost = env.TRADEFLOW_ENV === "test" &&
+      url.hostname.toLowerCase() === "tradeflow-test.leannelaurenlowe.workers.dev";
     const cleanRoutes = env.TRADEFLOW_ENV === "test"
       ? {
-          "/": "/public-site.html",
+          "/": isTestPlatformHost ? "/index.html" : "/public-site.html",
           "/login": "/customer-dashboard.html",
           "/basket": "/customer-basket.html",
           "/assistant": "/customer-assistant.html",

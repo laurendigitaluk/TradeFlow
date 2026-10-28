@@ -29,3 +29,19 @@ The user confirmed on 27 October 2026:
 - Cloudflare deployment source and deployed commit are not yet verified in this workflow.
 - Multi-item customer valuation still requires real-browser end-to-end acceptance in TEST.
 - No PageFlow/BusinessFlow data should be migrated into TradeFlow. Legacy product data may remain in its separate resources, but must be disconnected from TradeFlow.
+
+
+## Database changes completed — 28 October 2026
+A versioned migration was committed at `supabase/migrations/20261028170000_tradeflow_only_product_pages.sql` (commit `a78e116a1c20ffacd9a5d9014f062a9f5b0a9b05`) and applied successfully to both current TradeFlow Supabase projects:
+- TEST: `nnsshnfkjcflucjrftzi`
+- LIVE: `gxsrajtqzdjvmceqcpgv`
+
+The existing `platform_product_pages` rows for `businessflow` and `studioflow` are retained for historical traceability but now have status `hidden` in both environments. The TradeFlow row remains `published`. The platform-owner read RPC now returns only the TradeFlow product page, and the platform-owner update RPC rejects any slug except `tradeflow`. No PageFlow/BusinessFlow records were copied into TradeFlow and no tables or historical rows were deleted.
+
+Post-migration read-only checks confirmed the same three statuses in TEST and LIVE. The RPC source was verified to filter to `slug = 'tradeflow'`.
+
+## Still outstanding
+- Full scan of all deployed site assets/routes for stale PageFlow/BusinessFlow links and code references.
+- Confirm Cloudflare's Test and LIVE Git integration/deployed commits.
+- Verify the public TradeFlow homepage and platform-owner product-page UI in a browser after deployment.
+- Continue multi-item valuation acceptance tests in TEST only.

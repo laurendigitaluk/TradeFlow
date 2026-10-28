@@ -2690,3 +2690,35 @@ Verification: with SQL role `anon`, reads of the current public profile, publish
 - The LIVE master catalogue already has a `Pokémon Trading Cards` category and 327 related product rows. They are all `customer_visible=false` and have no duplicate `package_key` values. Do not bulk-create 42k master catalogue products or expose collector-only cards to customer buying flows; the dedicated `pokemon_tcg_*` tables remain the authoritative collector catalogue.
 - Data-quality follow-up: 23,604 LIVE cards have null `card_category`, often because the retained source payload is a set-summary record rather than full card detail. Do not guess card type. Retrieve and validate full card details, then assign `Pokemon`, `Trainer` or `Energy` where source evidence supports it. Some set metadata is still `source_retrieved` or `needs_review`; counts alone do not prove source completeness.
 - No card prices, market evidence, tenant data or valuation logic were changed. No existing records were deleted or overwritten. Import batches used `ON CONFLICT DO NOTHING` and preserved existing LIVE IDs/relationships.
+
+
+## 27 October 2026 — Separate automatic cash/trade-in and catalogue verification
+
+The merged PR #186 at `ff68b656c1e523d1144ff6c02fcef8fd3239d178` adds per-condition trade-in percentage controls in the Buying Catalogue. The current `production` head inspected for this continuation was `3cbba7add8a406c7c03cd0660ba3a3c80ea50742`. The database has corresponding pricing RPC parameters in both LIVE (`gxsrajtqzdjvmceqcpgv`) and TEST (`nnsshnfkjcflucjrftzi`).
+
+### Verified contract
+- `configure_master_catalogue_buying_product_pricing` persists five cash percentages, five trade-in percentages, and the separate manual override columns.
+- `get_tenant_buying_catalogue_page` exposes the saved trade-in percentage fields so the editor can reload them; `get_tenant_buying_catalogue_facets` filters My Buying Catalogue to configured products.
+- `calculate_buying_item_valuation` uses UK-new GBP evidence for both calculations. Cash amount is based on its cash percentage and trade-in amount on its separate trade-in percentage. Missing evidence returns the existing manual valuation path.
+- `customer_get_offers_v2` returns cash and trade-in prices, and `customer_accept_offer_choice` checks and records the customer's chosen mode and value.
+- `subscriber_credit_trade_in` retains the accepted trade-in plus post-inspection `final_offer_required` checks. Do not loosen these gates.
+- Pokémon master product counts are 23,780 in both environments. No all-products add/configuration should be run; selected cards require an explicit narrow product selection and verified tenant context.
+- TEST has two tenants/52 tenant buying products and LIVE one tenant/243 buying products; these are environment-specific business records and must not be synced.
+
+### Work performed on branch
+Branch `fix/automatic-tradein-pokemon-condition-20261027` contains the dual-price/customer-offer fixes plus Pokémon-specific grade labels in the pricing editor (Buying Catalogue script v60; customer dashboard v153; buying dashboard v79). Pokémon cards use the five existing per-product condition slots with grade-specific labels and valuation mapping; standard electronics condition labels are unchanged. TEST has the Pokémon grade-mapping, original-grade preservation, and subscriber catalogue visibility migrations applied. Those fixes do not make products publicly visible. Migration files are committed on the branch. See checkpoint `CHECKPOINTS/2026-10-26-pokemon-tcg-live-sync.md`.
+
+### Open verification / not yet complete
+- End-to-end browser acceptance of both prices with a fresh TEST-only item remains outstanding.
+- Actual save/refresh verification of separate percentages remains outstanding.
+- Specific-card add and My Buying Catalogue confirmation remains outstanding.
+- Pokémon-specific condition choices and valuation-slot mapping are implemented in the branch and TEST. End-to-end persistence through inspection, inventory and sales still requires a signed-in TEST flow; standard electronics condition labels remain unchanged.
+- Current Cloudflare deployments for latest production and TEST must be verified before saying this branch is live.
+
+
+### Independent cash and trade-in calculation follow-up (2026-10-27)
+TEST migration `20261027235942_independent_cash_tradein_condition_overrides` fixes the valuation early-return path: a per-condition cash manual override no longer suppresses a separately configured trade-in percentage when UK New GBP evidence exists. Cash and trade-in values are resolved independently, each using its own manual override when present; missing research still falls back to manual handling. Read-only TEST function checks passed for original Pokémon grade preservation, independent cash/trade-in calculations and manual fallback. Signed-in end-to-end TEST and Cloudflare runtime verification remain outstanding; do not promote to LIVE until those checks pass.
+
+### Pokémon research prerequisite
+
+- TEST evidence check: the active English Pokémon master catalogue has 23,780 cards, but there are currently zero active shared-market-evidence rows for Pokémon and zero Pokémon buying products configured for the selected TEST tenant. Therefore, percentage-based Pokémon valuation will correctly remain on manual fallback until valid UK New GBP evidence exists; do not insert guessed prices or treat collector metadata as pricing evidence.

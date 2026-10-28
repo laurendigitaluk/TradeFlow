@@ -98,6 +98,18 @@ export default {
     }
 
     if (!assetPath && (!url.pathname.endsWith(".js") || !asset.ok)) {
+      // HTML documents must not remain cached after a deployment. Otherwise a
+      // fresh page may briefly show the updated UI before an older cached document
+      // restores stale script URLs and UI on reload.
+      if (asset.ok && url.pathname.endsWith(".html")) {
+        const headers = new Headers(asset.headers);
+        headers.set("cache-control", "no-store");
+        return new Response(asset.body, {
+          status: asset.status,
+          statusText: asset.statusText,
+          headers,
+        });
+      }
       return asset;
     }
 

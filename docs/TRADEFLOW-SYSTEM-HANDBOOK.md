@@ -1,3 +1,16 @@
+# CURRENT PRODUCT SCOPE OVERRIDE — 28 OCTOBER 2026
+
+**TradeFlow only. PageFlow (previously BusinessFlow) is removed from the TradeFlow site and must not be restored or integrated.** Any older sections below that mention BusinessFlow/PageFlow, old product plans, site integration or earlier environments are historical context only and must not override this scope.
+
+- Do not include PageFlow/BusinessFlow pages, navigation, scripts, UI, routes, APIs, deployment assets, configuration, tenant/customer/domain records, Stripe configuration, database flows, Edge Functions or product data in TradeFlow.
+- Legacy PageFlow/BusinessFlow code and data may remain in their separate GitHub/Supabase resources, but must stay disconnected from TradeFlow. Do not drop/delete legacy resources as part of this task.
+- TradeFlow LIVE and TEST remain separate environments. Current Test Worker is `tradeflow-test.leannelaurenlowe.workers.dev`; current LIVE Worker is `tradeflow.leannelaurenlowe.workers.dev`. Current Test Supabase project is `nnsshnfkjcflucjrftzi`; LIVE is `gxsrajtqzdjvmceqcpgv`.
+- `cloudflare-test` is the intended single Test branch. Confirm the actual Cloudflare Git integration and deployed commit; a commit alone is not proof of deployment.
+- Test must write only to Test Supabase. LIVE must not receive test data. Promote only tested TradeFlow-only changes to the verified LIVE deployment source.
+- See `CHECKPOINTS/2026-10-28-tradeflow-only-pageflow-exclusion.md` for the binding removal checklist and current verification gaps.
+
+---
+
 # TradeFlow Human / Developer System Handbook
 
 

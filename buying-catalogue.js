@@ -389,13 +389,15 @@ async function saveAuto(masterId,button){
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Cash percentages must be between 0 and 100.","error");
  for(const v of Object.values(tradeIn))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Trade-in percentages must be between 0 and 100.","error");
  for(const v of Object.values(overrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Cash overrides must be valid non-negative prices.","error");
+ for(const v of Object.values(tradeOverrides))if(v!==null&&(!Number.isFinite(v)||v<0))return msg("Trade-in overrides must be valid non-negative prices.","error");
  button.disabled=true;try{
   await api("/rest/v1/rpc/configure_master_catalogue_buying_product_pricing",{method:"POST",body:JSON.stringify({
    p_tenant_id:tenantId,p_master_product_id:masterId,p_mode:"automatic",
    p_sealed_percentage:values.sealed_percentage,p_opened_never_used_percentage:values.opened_never_used_percentage,p_excellent_percentage:values.excellent_percentage,p_good_percentage:values.good_percentage,p_poor_percentage:values.poor_percentage,p_manual_price:null,
    p_sealed_manual_price:overrides.sealed_manual_price,p_opened_never_used_manual_price:overrides.opened_never_used_manual_price,p_excellent_manual_price:overrides.excellent_manual_price,p_good_manual_price:overrides.good_manual_price,p_poor_manual_price:overrides.poor_manual_price,
    p_sealed_reference_type:"uk_new",p_opened_never_used_reference_type:"uk_new",p_excellent_reference_type:"uk_new",p_good_reference_type:"uk_new",p_poor_reference_type:"uk_new",
-   p_sealed_trade_in_percentage:tradeIn.sealed_trade_in_percentage,p_opened_never_used_trade_in_percentage:tradeIn.opened_never_used_trade_in_percentage,p_excellent_trade_in_percentage:tradeIn.excellent_trade_in_percentage,p_good_trade_in_percentage:tradeIn.good_trade_in_percentage,p_poor_trade_in_percentage:tradeIn.poor_trade_in_percentage
+   p_sealed_trade_in_percentage:tradeIn.sealed_trade_in_percentage,p_opened_never_used_trade_in_percentage:tradeIn.opened_never_used_trade_in_percentage,p_excellent_trade_in_percentage:tradeIn.excellent_trade_in_percentage,p_good_trade_in_percentage:tradeIn.good_trade_in_percentage,p_poor_trade_in_percentage:tradeIn.poor_trade_in_percentage,
+   p_sealed_trade_in_manual_price:tradeOverrides.sealed_trade_in_manual_price,p_opened_never_used_trade_in_manual_price:tradeOverrides.opened_never_used_trade_in_manual_price,p_excellent_trade_in_manual_price:tradeOverrides.excellent_trade_in_manual_price,p_good_trade_in_manual_price:tradeOverrides.good_trade_in_manual_price,p_poor_trade_in_manual_price:tradeOverrides.poor_trade_in_manual_price
   })});
   await loadPage();await loadStatusCounts();msg("Automatic cash and trade-in rules saved separately for each condition.","success");
  }catch(e){msg(e.message||String(e),"error")}finally{button.disabled=false}

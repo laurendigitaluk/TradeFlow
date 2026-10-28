@@ -167,3 +167,12 @@ The LIVE notification worker was returning HTTP 500 responses at its scheduled m
 LIVE migration 20261022151000_fix_service_role_jwt_guards_20261022 replaces these checks with auth.role(), while keeping EXECUTE restricted to service_role. LIVE privilege checks after the migration confirm anon=false, authenticated=false, service_role=true for both functions. Migration source: supabase/migrations/20261022151000_fix_service_role_jwt_guards_20261022.sql, production commit b87b8257be16edcfade2f059b3b157cf55c9096a.
 
 Do not retrieve the secret directly or invoke the secret-returning RPC manually. Check the next scheduled worker request for HTTP success and absence of Not authorised before declaring queue recovery. As of this note, post-migration successful processing has not yet been confirmed. No TEST changes or Edge Function redeployment was made.
+
+
+## Multi-item valuation update — 28 October 2026
+
+TradeFlow supports multiple products under one buying request while preserving a separate item record and lifecycle for each product. The customer portal groups published initial/revised offers for a request into one quote, shows item-level cash/trade-in values and combined totals, and supports item-by-item accept/refuse decisions plus whole-quote actions. Final offers after inspection remain item-specific.
+
+The subscriber Buying workspace groups items from the same request, stacks the item valuation panels before evidence/photos, and provides one “Submit total valuations” action. Each item's values remain separate. **Current limitation:** the submit action calls the manual valuation RPC sequentially per item; it is not an atomic batch. If a later item fails, earlier offers may already have been created.
+
+UI was reviewed in screenshots and JavaScript syntax checks passed. Mixed accept/refuse and the full shipping-to-inventory lifecycle have not yet passed end-to-end verification. See `CHECKPOINTS/2026-10-28-multi-item-valuation.md` for the full test checklist and safeguards. Do not mark this workflow fully verified until those tests pass.

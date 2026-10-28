@@ -2722,3 +2722,7 @@ TEST migration `20261027235942_independent_cash_tradein_condition_overrides` fix
 ### Pokémon research prerequisite
 
 - TEST evidence check: the active English Pokémon master catalogue has 23,780 cards, but there are currently zero active shared-market-evidence rows for Pokémon and zero Pokémon buying products configured for the selected TEST tenant. Therefore, percentage-based Pokémon valuation will correctly remain on manual fallback until valid UK New GBP evidence exists; do not insert guessed prices or treat collector metadata as pricing evidence.
+
+
+## Multi-item customer valuation operating note (2026-10-28)
+When implementing multi-item customer valuations, inspect the existing `customer_submit_buying_request` RPC before changing schema. Its `p_items` JSON array is the intended transaction boundary. Preserve exact `buying_product_id` linkage and category/tenant validation. The customer submit Edge Function must map each item to the existing RPC contract and route each item's photographs to that item's `buying_item_id`. Do not mark the feature complete based only on UI or syntax checks. The staged feature branch is not deployed; verify login/reload persistence, per-item media, TEST database records, customer/staff views, automatic/manual valuation, offers and acquisition/sales transitions before any LIVE promotion. See `CHECKPOINTS/2026-10-28-multi-item-customer-valuation.md`.

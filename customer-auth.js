@@ -1,5 +1,5 @@
 (()=>{
-const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io')||h==='tradeflow-test.leannelaurenlowe.workers.dev';return isTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
+const TRADEFLOW_RUNTIME=(()=>{const h=location.hostname;const isCurrentTest=h==='tradeflow-test.leannelaurenlowe.workers.dev';const isLegacyTest=h==='localhost'||h==='127.0.0.1'||h.endsWith('.github.io';if(isCurrentTest)return{environment:'test',supabaseUrl:'https://nnsshnfkjcflucjrftzi.supabase.co',supabasePublishableKey:'sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ'};return isLegacyTest?{environment:'test',supabaseUrl:'https://twfbmjwwqzxdxvclxbun.supabase.co',supabasePublishableKey:'sb_publishable_AvcMgtKV0O5k8H6k94mZQ_qH4pEIS9'}:{environment:'production',supabaseUrl:'https://gxsrajtqzdjvmceqcpgv.supabase.co',supabasePublishableKey:'sb_publishable_Y8NRuGXqHNTu9oaolrpprw_wysMNLuz'};})();
 window.TRADEFLOW_CONFIG=TRADEFLOW_RUNTIME;
 const SUPABASE_URL=TRADEFLOW_RUNTIME.supabaseUrl;
 const SUPABASE_KEY=TRADEFLOW_RUNTIME.supabasePublishableKey;

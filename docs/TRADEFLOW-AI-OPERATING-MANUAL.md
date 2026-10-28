@@ -2714,3 +2714,7 @@ Branch `fix/automatic-tradein-pokemon-condition-20261027` contains the dual-pric
 - Specific-card add and My Buying Catalogue confirmation remains outstanding.
 - Pokémon-specific condition choices and valuation-slot mapping are implemented in the branch and TEST. End-to-end persistence through inspection, inventory and sales still requires a signed-in TEST flow; standard electronics condition labels remain unchanged.
 - Current Cloudflare deployments for latest production and TEST must be verified before saying this branch is live.
+
+
+### Independent cash and trade-in calculation follow-up (2026-10-27)
+TEST migration `20261027235942_independent_cash_tradein_condition_overrides` fixes the valuation early-return path: a per-condition cash manual override no longer suppresses a separately configured trade-in percentage when UK New GBP evidence exists. Cash and trade-in values are resolved independently, each using its own manual override when present; missing research still falls back to manual handling. Read-only TEST function checks passed for original Pokémon grade preservation, independent cash/trade-in calculations and manual fallback. Signed-in end-to-end TEST and Cloudflare runtime verification remain outstanding; do not promote to LIVE until those checks pass.

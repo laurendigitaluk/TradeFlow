@@ -1,43 +1,35 @@
 # TradeFlow Test checkpoint — multi-item customer valuation — 28 October 2026
 
-## Target and safety boundary
-- Target deployment branch: `cloudflare-test` (changes are staged in `feature/test-multi-item-valuation-port-20261028` pending review/merge).
-- Test Worker: `tradeflow-test.leannelaurenlowe.workers.dev`.
+## Environment boundaries
+- Canonical intended Test branch: `cloudflare-test`.
+- Test Worker: `https://tradeflow-test.leannelaurenlowe.workers.dev`.
 - Test Supabase project: `nnsshnfkjcflucjrftzi`.
-- Live project and production branch have not been changed by this work. Do not merge this branch into `production` or deploy to Live before Test acceptance.
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`.
+- LIVE Worker: `https://tradeflow.leannelaurenlowe.workers.dev`.
+- Do not use LIVE for test submissions or copy Test customers/tenant/domain/ownership data into LIVE. Do not alter LIVE Stripe configuration.
 
-## Changes ported while preserving the current Test website
-- Ported the multi-item selling page and wizard into the current Test branch's `public-site.js), retaining the surrounding current Test website implementation.
-- Added responsive basket CSS to current Test `public-site.css).
-- Bumped public-site cache versions to `public-site.css?v=68` and `public-site.js?v=87`.
-- Corrected customer auth runtime selection so the current Test hostname uses the current Test Supabase project, while localhost and GitHub Pages keep their legacy test configuration.
-- Bumped `customer-auth.js` to v21 in the customer dashboard.
-- Added the item-indexed multipart fields: item 0 photos are sent as `files_0`, item 1 as `files_1`, etc. Legacy single-item payloads still send `files`.
-- Updated the AI operating manual, human user manual and system handbook to make clear that earlier single-item limitations are historical and that this new flow is not accepted until end-to-end tests pass.
+## Current implementation on cloudflare-test
+- Multi-item customer valuation flow is committed to this branch; the earlier statement that it was still waiting to be merged is stale.
+- Public selling UI and basket styles use `public-site.css?v=68` and `public-site.js?v=87`.
+- Customer auth uses the Test runtime config on the current Test hostname; dashboard auth asset is versioned at v21.
+- Item-indexed multipart photo fields are supported (`files_0`, `files_1`, etc.), with legacy single-item `files` retained.
+- Test Worker config has been aligned with the production asset-routing shape while retaining `name: tradeflow-test`, `TRADEFLOW_ENV: test`, and the current Test Supabase project.
+- The Worker must retain its environment-specific URL/key rewrite logic. Do not copy production Worker config or credentials into the Test environment.
 
-## Verification already performed
-- JavaScript parse check passed for the ported `public-site.js).
-- JavaScript parse check passed for `customer-auth.js).
-- Static checks confirm the basket UI, basket CSS, cache versions and item-indexed photo field names are present.
-- Existing Test branch website/template and Worker routing files were not replaced wholesale.
+## Verification state
+- Prior static JavaScript parse checks passed for the multi-item public site and customer auth scripts.
+- The Test customers page was observed requesting the LIVE Supabase hostname and failing. The browser loaded `customers.js?v=3` while the corrected asset uses `v=4`; this is evidence the Test Worker was serving stale assets at that time.
+- The current branch commits do not prove the Worker has deployed them. Deployment source and deployed commit are not yet verified because no Cloudflare deployment control/status is available in this workflow.
+- No browser end-to-end acceptance is complete. Do not describe the feature as accepted or ready for LIVE.
 
-## Not yet verified
-- The feature branch has not yet been merged into `cloudflare-test` or confirmed deployed by Cloudflare.
-- No real-browser end-to-end submission has been performed.
-- Test one-item, two-item, 3+ item and mixed-category requests.
-- Verify each item has the correct `buying_product_id`, valuation and offer.
-- Verify photos are linked to the correct `buying_item_id`; exercise invalid file and upload failure handling.
-- Verify basket edit/remove, reload persistence and tenant isolation.
-- Verify customer authentication return journey. The current UI asks the customer to sign in and return to the selling page; automatic round-trip is not confirmed.
-- Verify customer portal and staff Buying dashboard show one request with separate item workflows, and no premature acquisition/inventory movement.
-- Verify downstream accepted-offer, acquisition, inspection, inventory and sales behaviour.
+## Acceptance checklist — TEST only
+1. Confirm Test Worker serves the expected current assets and all Test customer requests target `nnsshnfkjcflucjrftzi.supabase.co`, never LIVE.
+2. Submit one item, two items, three or more items, and mixed categories.
+3. Verify each item retains its own model/category/condition, valuation, offer, photos, and `buying_item_id`/product linkage.
+4. Exercise add/edit/remove, refresh/reload, customer authentication return, invalid files and upload failures.
+5. Confirm one request contains separate item workflows in the customer portal and subscriber Buying dashboard.
+6. Confirm acceptance, acquisition, inspection, inventory and sales transitions work without premature movement or cross-item/photo mix-ups.
+7. Record results and fix failures on `cloudflare-test` before promotion.
 
-## Important integration note
-The existing Test Worker uses `worker/index.js` to rewrite environment URLs and keys. Keep its environment boundary intact. Do not copy the production worker wholesale into Test. The current Test Edge Function in the remote Test project was previously reported as version 10 active, but the repository copy in `cloudflare-test` is older; verify the deployed function directly before assuming branch code matches remote deployment.
-
-## Next actions
-1. Review this branch diff against `cloudflare-test`.
-2. Merge only after confirming no unexpected files are included.
-3. Confirm the Test Worker deploy and live asset responses.
-4. Run the browser/database acceptance tests listed above and record actual results.
-5. Only after Test acceptance consider a controlled promotion; Live remains untouched until explicitly approved.
+## Promotion rule
+Promote only the accepted code to the verified LIVE deployment source after Test deployment and browser/database acceptance pass. Branch names and commits alone do not establish what Cloudflare currently deploys. Keep LIVE untouched until its actual deployment source is confirmed and the Test build is accepted.

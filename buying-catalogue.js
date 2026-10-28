@@ -383,6 +383,7 @@ async function saveAuto(masterId,button){
  const values={};document.querySelectorAll('.auto-input[data-master="'+masterId+'"]').forEach(i=>values[i.dataset.field]=i.value===""?null:Number(i.value));
  const overrides={};document.querySelectorAll('.condition-override-input[data-master="'+masterId+'"]').forEach(i=>overrides[i.dataset.field]=i.value===""?null:Number(i.value));
  const tradeIn={};document.querySelectorAll('.trade-in-input[data-master="'+masterId+'"]').forEach(i=>tradeIn[i.dataset.field]=i.value===""?null:Number(i.value));
+ const tradeOverrides={};document.querySelectorAll('.trade-in-override-input[data-master="'+masterId+'"]').forEach(i=>tradeOverrides[i.dataset.field]=i.value===""?null:Number(i.value));
  const missing=["sealed_percentage","opened_never_used_percentage","excellent_percentage","good_percentage","poor_percentage"].filter(k=>values[k]===null||values[k]===undefined||values[k]==="");
  if(missing.length)return msg("Automatic cash pricing needs all five condition percentages.","error");
  for(const v of Object.values(values))if(v!==null&&(!Number.isFinite(v)||v<0||v>100))return msg("Cash percentages must be between 0 and 100.","error");

@@ -998,7 +998,7 @@ The hierarchy is generated from the subscriber's connected buying catalogue rath
 The TradeFlow `category_fields` system remains the intended extension point for category-specific questions beyond the common selling questions. Those fields can later be surfaced dynamically in this journey without creating a separate page for each category.
 
 ### Current scope limitation
-Photos are not falsely represented as uploaded by this public wizard. The current journey captures the structured information and hands it into the authenticated customer portal. Photo upload should be added as an authenticated evidence step when the existing media/storage workflow is connected to customer buying requests.
+Historical single-item limitation (20 September 2026): this note is superseded by the multi-item customer valuation implementation staged for the current Test Worker. The Test wizard now supports a basket of items, edit/remove, tenant-scoped IndexedDB draft persistence and item-indexed photo upload fields. Each item is still submitted through the existing customer_submit_buying_request RPC and existing valuation/offer pipeline; no parallel valuation model is introduced. Treat the feature as unaccepted until browser tests verify multi-item and mixed-category requests, correct photo-to-item links, customer/staff views, login return behaviour and downstream workflow. Do not claim production availability before verification.
 
 
 ## Subscriber Business + Customer Portal Completion — 20 September 2026

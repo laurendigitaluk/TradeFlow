@@ -1747,3 +1747,44 @@ TradeFlow has two read-only assistant audiences: subscriber and customer. Subscr
 
 ## Launch sequence
 Complete the customer assistant boundary in TEST → purchase/configure the genuine production domain → create the LIVE subscriber → configure the LIVE subscriber website → create LIVE customer account(s) → run final real-domain acceptance. The Porkbun sandbox registration of `camerashack.co.uk` is not a substitute for a genuine public DNS/Cloudflare test.
+
+
+## Multi-item valuation consolidation — 28 October 2026
+
+### Product and workflow decision
+A customer may submit multiple products within one buying request. The request is the grouping boundary; each product remains a separate `buying_items` record with its own item reference, valuation amounts, offer, stage, shipping/receipt/inspection lifecycle, and downstream acquisition/inventory record. Do not merge item records or infer that two items belong together solely because they share a customer.
+
+### Customer portal
+- Initial/revised offers for all items in a request are presented in one combined quote when every item in that request has a current published initial/revised offer.
+- The quote displays item-level cash and trade-in values plus combined totals.
+- Customers can accept cash or trade-in for an individual item, refuse an individual item, or use the whole-quote actions to accept all for cash, accept all for trade-in, or refuse the complete quote.
+- Individual actions use the existing per-offer RPCs (`customer_accept_offer_choice` / `customer_refuse_offer`). Whole-quote actions use `customer_respond_to_combined_offer`.
+- Final offers after inspection remain item-specific. Separate buying requests remain separate quotes. A mixed response may result in some items proceeding while others are refused; downstream state must be checked per item.
+
+### Subscriber Buying workspace
+- Items sharing a request are grouped under a combined valuation heading while retaining individual item cards and item workspaces.
+- In a multi-item request, the item valuation panels are stacked before research evidence and photographs.
+- One “Submit total valuations” action is shown for eligible multi-item requests. It collects each item's cash/trade-in inputs and submits each item through the existing manual-valuation RPC sequentially, preserving per-item values.
+- **Important implementation limitation:** this subscriber-side multi-item submission is a sequence of per-item RPC calls, not one atomic database transaction. If a later call fails, an earlier item's offer may already have been created. Treat this as a known hardening item until an atomic batch RPC is implemented and tested.
+
+### Database and separation rules
+- The request-level RPC `customer_respond_to_combined_offer(p_tenant_id, p_buying_request_id, p_decision, p_offer_mode, p_response_notes)` is installed on TEST and LIVE. It validates ownership and offer eligibility and applies whole-request decisions in one database transaction.
+- The per-item RPCs remain in use for mixed decisions. Do not change them to request-wide decisions.
+- Keep TEST and LIVE tenant/customer/request data separate. Only promote code and documentation; do not copy test records into LIVE.
+- Keep item-level workflow transitions and event logging. Receiving, inspection, final offers, payments and inventory remain per item.
+
+### Changes and verification record
+- Updated `customer-dashboard.js` and `buying-dashboard.js` on `cloudflare-test` and `production`.
+- Syntax checks passed for the four dashboard JavaScript files after the latest changes.
+- Screenshot/browser review confirmed the combined customer quote, item-level decision buttons, whole-quote buttons, grouped subscriber request, stacked item valuation panels and single submit control.
+- Not yet verified end-to-end: accepting one item while refusing another through all downstream stages; whole-quote response under a real authenticated TEST session; shipping through payment for every mixed-state case; atomic rollback for multi-item manual valuation submission.
+- Therefore status is **implemented and UI-reviewed; partial verification only**. Do not describe the entire workflow as fully end-to-end tested or launch-certified.
+
+### Test checklist before closing the work
+1. In TEST, submit a request with two items and enter different cash/trade-in values for each.
+2. Confirm one subscriber submission creates an offer for each item and the customer sees correct per-item values and totals.
+3. Accept one item and refuse the other; verify each item independently in customer and subscriber dashboards.
+4. Test accept-all cash, accept-all trade-in and refuse-all on separate safe TEST requests.
+5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
+6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
+7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.

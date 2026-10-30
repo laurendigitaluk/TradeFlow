@@ -30,3 +30,7 @@ Per-page SEO keys existed in defaults and normalization, but were not exposed in
 
 ## Verification
 Save/reload Home and internal-page SEO in TEST; publish; inspect title, description and Open Graph tags; navigate between pages to check stale metadata; confirm empty descriptions remove the tag; syntax-check both runtimes on both branches; confirm LIVE deployment separately.
+
+
+### TEST/LIVE runtime endpoint correction — 30 October 2026
+The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.

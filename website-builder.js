@@ -386,7 +386,7 @@ function renderCarouselEditor(c,scope,isHome){
   const text=mode==='image'?'':'<div class="tf-carousel-editor-copy"><h2 contenteditable="true" data-carousel-field="heading" data-carousel-scope="'+esc(scope)+'" data-carousel-slide="'+esc(s.id)+'">'+esc(s.heading)+'</h2><p contenteditable="true" data-carousel-field="body" data-carousel-scope="'+esc(scope)+'" data-carousel-slide="'+esc(s.id)+'">'+esc(s.body)+'</p><div class="tf-carousel-editor-cta" contenteditable="true" data-carousel-field="cta" data-carousel-scope="'+esc(scope)+'" data-carousel-slide="'+esc(s.id)+'">'+esc(s.cta)+'</div></div>';
   return '<article class="tf-carousel-editor-slide"><div class="tf-carousel-editor-image">'+image+'</div>'+text+'<small>Slide '+(i+1)+'</small></article>';
  }).join('');
- return '<section class="tf-carousel-editor tf-carousel-editor-'+mode+'" '+(isHome?'draggable="true" data-home-block="carousel"':'')+'><div class="tf-carousel-editor-heading"><strong>Carousel / Slider</strong><span>'+slides.length+' slides · '+(mode==='image'?'Image gallery':mode==='cards'?'Sliding cards':'Full content')+'</span></div><div class="tf-carousel-editor-track">'+slides+'</div></section>';
+ return '<section class="tf-carousel-editor tf-carousel-editor-'+(mode==='image'?'image-only':mode)+'" '+(isHome?'draggable="true" data-home-block="carousel"':'')+'><div class="tf-carousel-editor-heading"><strong>Carousel / Slider</strong><span>'+slides.length+' slides · '+(mode==='image'?'Image gallery':mode==='cards'?'Sliding cards':'Full content')+'</span></div><div class="tf-carousel-editor-track">'+slides+'</div></section>';
 }
 
 function renderPageTilesEditor(p){
@@ -1126,7 +1126,7 @@ function collectBuilderImageUrls(){
    else if(Array.isArray(v))v.forEach(walk);
    else if(v&&typeof v==='object')Object.values(v).forEach(walk);
  };
- try{walk(globalHeaderElements);walk(editableHeroElements);walk(homepageTiles);walk(pages);walk(layoutBlocks);}catch{}
+ try{walk(globalHeaderElements);walk(editableHeroElements);walk(homepageTiles);walk(homepageCarousel);walk(pages);walk(layoutBlocks);}catch{}
  return urls;
 }
 async function deleteStoredImageIfUnused(url){

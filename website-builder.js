@@ -4,7 +4,7 @@ let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=nu
 let selectedPage='home',dirty=false;
 let selectedSiteText=null;
 let homepageTextStyles={buyHeading:{},buyIntro:{},sellHeading:{},sellIntro:{}};
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true,bannerPosition='center';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',homeSeoTitle='',homeSeoDescription='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='',useBanner=true,bannerPosition='center';
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
@@ -388,7 +388,17 @@ function renderHeaderFooterControls(){
 }
 function renderPageManager(){
  const box=$('page-manager');if(!box)return;
- box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>';
+ const isHome=selectedPage==='home';
+ const selected=pages.find(p=>p.slug===selectedPage)||{};
+ const seoTitle=isHome?homeSeoTitle:(selected.seo_title||'');
+ const seoDescription=isHome?homeSeoDescription:(selected.seo_description||'');
+ box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>'+
+ '<div class="seo-settings"><div class="control-title">SEO settings · '+(isHome?'Home page':esc(selected.title||selectedPage))+'</div><small>Set the search-result title and description for this page. Leave blank to use the website defaults.</small><label class="seo-field"><span>SEO page title</span><input type="text" data-seo-field="title" maxlength="70" value="'+esc(seoTitle)+'" placeholder="'+esc((isHome?siteName:(selected.title||siteName))+' | '+siteName)+'"></label><small class="seo-hint">Recommended: around 50–60 characters.</small><label class="seo-field"><span>Meta description</span><textarea data-seo-field="description" rows="4" maxlength="320" placeholder="Briefly describe this page for people searching online.">'+esc(seoDescription)+'</textarea></label><small class="seo-hint">Recommended: around 150–160 characters. Search engines may choose a different snippet.</small></div>';
+ box.querySelectorAll('[data-seo-field]').forEach(el=>el.addEventListener('input',()=>{
+   if(isHome){if(el.dataset.seoField==='title')homeSeoTitle=el.value;else homeSeoDescription=el.value;}
+   else {const target=pages.find(p=>p.slug===selectedPage);if(!target)return;if(el.dataset.seoField==='title')target.seo_title=el.value;else target.seo_description=el.value;}
+   markDirty();
+ }));
  const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',title_style:{},body_style:{},image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:0,tile_columns:3,tiles:[],seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
 }
 function renderBrandingControls(){
@@ -804,7 +814,7 @@ function selectPage(slug){
  const next=new URL(location.href);
  next.searchParams.set('page',slug);
  history.replaceState(null,'',next.toString());
- renderPageList();renderHomepageControls();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
+ renderPageList();renderPageManager();renderHomepageControls();renderEditor();window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function applyTemplate(template){
@@ -828,7 +838,7 @@ function buildContent(){
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
    global_header_elements:globalHeaderElements,
-   homepage:{hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:4,text_format_version:2,tile_format_version:2,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
+   homepage:{seo_title:homeSeoTitle||'',seo_description:homeSeoDescription||'',hero_canvas_height:heroCanvasHeight,banner_position:bannerPosition,block_order:homepageOrder,editable_elements_version:4,text_format_version:2,tile_format_version:2,headline:headline.trim()||null,intro:intro.trim()||null,layout_blocks:layoutBlocks,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',use_banner:!!useBanner,sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,text_styles:homepageTextStyles,tiles:homepageTiles,editable_elements:editableHeroElements},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -874,6 +884,7 @@ function loadContent(content){
  siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
  headline=s.homepage?.headline||'';
  intro=s.homepage?.intro||'';
+ homeSeoTitle=s.homepage?.seo_title||'';homeSeoDescription=s.homepage?.seo_description||'';
  accent=s.theme?.accent||'#c46a2b';
  typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
  themeColors={accent:accent,button_bg:s.theme?.button_bg||s.theme?.accent||accent||'#c46a2b',button_text:s.theme?.button_text||'#ffffff',page_bg:s.theme?.page_bg||'#ffffff',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_style:['none','stripes','dots','gradient'].includes(s.theme?.background_style)?s.theme.background_style:(s.theme?.background_mode==='custom'?'none':'gradient'),background_category:['none','instruments','phones','drones','cameras','detectors'].includes(s.theme?.background_category)?s.theme.background_category:'none',background_color:s.theme?.background_color||s.theme?.page_bg||'#f5f6f8',background_color2:s.theme?.background_color2||'#ffffff'};
@@ -1150,7 +1161,7 @@ async function clearFreshStartMedia(){
  }catch(e){console.warn('Fresh website media cleanup skipped:',e)}
 }
 function resetToFreshWebsite(){
- siteName='';headerTagline='';footerText='';headline='';intro='';accent='#a84f2d';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
+ siteName='';headerTagline='';footerText='';headline='';intro='';homeSeoTitle='';homeSeoDescription='';accent='#a84f2d';homeImageUrl='';homeImageUrl2='';homeBuyImageUrl='';homeSellImageUrl='';
  templateCopy={};
  homepageTileCount=8;homepageTileColumns=4;homeBuyHeading='What We Buy';homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.';
  homeSellHeading='What We Sell';homeSellIntro='Showcase the products and collections customers can browse and buy.';
@@ -1186,8 +1197,8 @@ async function loadDraft(){
  }
  try{await loadBuyingCatalogue();}catch(e){console.warn('TradeFlow buying catalogue did not load in the builder:',e);buyingCatalogue={categories:[],products:[]};}
  retailListings=await loadRetailListings(tenantId);
- renderEditor();
- if(validPageSlug(requestedPage))selectedPage=requestedPage;
+ renderPageManager();renderEditor();
+ if(validPageSlug(requestedPage)){selectedPage=requestedPage;renderPageManager();renderEditor();}
  if(requestedTemplate)applyTemplate(requestedTemplate);
  setStatus('Website loaded. Click the page and edit directly on the preview.','success'); if(requestedFocus==='branding'){const box=$('branding-controls');if(box){box.scrollIntoView({behavior:'smooth',block:'center'});}}
 }

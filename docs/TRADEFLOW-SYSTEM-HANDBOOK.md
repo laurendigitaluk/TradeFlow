@@ -1653,3 +1653,18 @@ Database restoration is VERIFIED. LIVE browser verification remains pending unti
 
 ## Mobile Phone Catalogue — Batch 94 (25 October 2026)
 One verified new-condition UK completed-sale observation was inserted TEST-first then LIVE into the existing HONOR 600 Pro 512GB master (eBay item 267769398258; £589.99; sold 11 Sep 2026). TEST evidence `8ffd75f3-e38f-4284-b129-1fe781f22d15`; LIVE evidence `7ccead9c-95b9-4da0-9ddc-f82afb7d668e`. No master products, valuation logic or schema changed. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-94.md` and `PROJECT-MEMORY/2026-10-25-mobile-phone-catalogue-batch-94.md`. Re-run aggregate SQL counts in the next batch; post-batch counts are arithmetic estimates.
+
+
+## Mobile-phone catalogue evidence controls — 30 October 2026
+
+The catalogue evidence workflow is a data-quality process, not a count-filling exercise. For each target, match the exact manufacturer, model and package/storage key against the current master product in each environment. Use TEST and LIVE product IDs independently; never copy IDs or customer/tenant data between environments.
+
+For `uk_used` evidence:
+- Require a genuine UK-market used/refurbished listing, GBP price, exact storage variant, working source URL, condition, sales channel and a stable source record key.
+- Use `availability='listed'` for a current asking-price listing. Use `availability='sold'` only for a genuinely completed sale. Keep sold evidence separate from asking-price evidence.
+- Never classify trade-in, buyback, recycling or cash-offer quotes as resale evidence. Do not use new/sealed retail prices, overseas offers, wrong storage variants, future/unreleased products or out-of-stock pages as current listed used prices.
+- Check the direct listing and seller/marketplace context where possible. A search snippet or comparison-page summary is not enough when the underlying seller, condition, location or exact variant is uncertain. Record material caveats; exclude questionable or above-new-price outliers rather than treating them as typical used-market evidence.
+- Use the unique constraint `(source_name, source_record_key)` for duplicate protection. Preflight source keys and exact product IDs before inserting. Insert/read back TEST first, then insert/read back LIVE with its own master product ID.
+- Do not create or edit catalogue master products, lifecycle/discontinued flags, valuation rules or customer visibility as part of evidence ingestion. Handle those as separate approved changes.
+
+Latest verified position after Batch 96 (30 October 2026): TEST has 160 mobile master rows (159 active; 156 customer-visible), 543 active mobile evidence rows and 276 active `uk_used` rows. LIVE has 156 mobile master rows (156 active; 154 customer-visible), 537 active mobile evidence rows and 274 active `uk_used` rows. Active products with at least one active `uk_used` record: TEST 154/159; LIVE 152/156. Remaining active-product gaps are TEST 5 and LIVE 4; of these, customer-visible gaps are TEST 4 and LIVE 3. These live database counts supersede older checkpoint counts and must be re-queried before each batch.

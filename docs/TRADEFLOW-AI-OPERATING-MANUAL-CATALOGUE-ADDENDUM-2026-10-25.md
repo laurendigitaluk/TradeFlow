@@ -138,3 +138,17 @@ The existing £800 SellMyMobile UK iPhone Duo 256GB row was a buyback/trade-in q
 The 134/130 product and 15/13 gap figures in the previous user continuation note are stale; current Supabase reads supersede them. Remaining active-product gaps: TEST — Apple iPhone 18 256GB (hidden), Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB (hidden), OPPO Find X10 Pro Max 512GB, OPPO Reno16 F 5G 256GB. LIVE — Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB (hidden), OPPO Find X10 Pro Max 512GB, OPPO Reno16 F 5G 256GB.
 
 No matching Supabase tables for structured project-memory/checkpoint records were found in either supplied project; the dated GitHub checkpoint and project-memory files remain the available structured project record. No schema, RPC, Edge Function or valuation changes were made in this batch.
+
+## Mobile-phone catalogue — Batch 97 exception sweep, 30 October 2026
+
+Rechecked all currently active missing-UK-used-evidence products in TEST and LIVE. This is a nine-environment-record sweep (five TEST gaps, four LIVE gaps; four shared products), rather than a full ten because only nine active environment gaps remain. No evidence inserts were made: every candidate failed at least one acceptance criterion.
+
+- Apple iPhone 18 256GB (TEST only, hidden): the base iPhone 18 is not released; current reporting says spring 2027. No used-market listing exists to accept.
+- Motorola Edge 70 Plus 256GB (TEST + LIVE): surfaced exact-variant offers were new/sealed, including a UK version; not used/refurbished.
+- OPPO Find X10 256GB (TEST + LIVE, hidden): surfaced exact-variant UK listings were new; no qualifying used listing.
+- OPPO Find X10 Pro Max 512GB (TEST + LIVE): eBay UK search surfaced seller newdays4u at £1,047.67/£1,073.08, but the direct search detail labels the listing “Opened – never used”; seller had 100% positive feedback from 15 feedback entries. Excluded because the requested evidence requires used/refurbished condition. Other offers were new/sealed or seller/location/condition could not be independently established.
+- OPPO Reno16 F 5G 256GB (TEST + LIVE): eBay UK exact-variant offers were explicitly new/sealed (e.g. £439.99); excluded.
+
+No database changes were made. Fresh current totals: TEST 160 mobile masters, 159 active, 156 visible, 541 active evidence rows, 274 active uk_used rows, 79 listed uk_used; LIVE 156, 156, 154, 535, 272, 79 respectively. Products with active uk_used evidence: TEST 154/159; LIVE 152/156. Remaining active gaps: TEST 5 (4 visible), LIVE 4 (3 visible). Evidence row totals decreased by two in each environment since the Batch 96 snapshot, but coverage counts and listed-used totals did not change; this appears to be concurrent evidence maintenance, not an action in Batch 97.
+
+Source references checked: eBay UK search/listing pages for Motorola Edge 70 Plus, OPPO Find X10, OPPO Find X10 Pro Max and OPPO Reno16 F; official OPPO UK series hub and model details; Tech Advisor iPhone 18 release timeline. No source was promoted into Supabase because none met all evidence criteria.

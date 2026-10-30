@@ -2334,3 +2334,10 @@ Do not promote to LIVE until TEST deployment and the complete editor → save/re
 ### Carousel TEST hardening follow-up — 30 October 2026
 
 Image cleanup now traverses homepage carousel data as well as page carousel data. Public dots are rebuilt after viewport changes; image mode class names align with the CSS; horizontal swipe supports vertical page scrolling; autoplay pauses when the tab is hidden and respects reduced-motion. The TEST subscriber-auth source now uses only the current TEST Supabase project for TEST/local hosts and contains no retired project reference. Re-run the documented TEST browser acceptance list before promotion.
+
+
+## Xbox evidence continuation — 30 October 2026
+
+- Added and read back UK used sold evidence for Xbox Series X Digital Edition 1TB in both TEST and LIVE: eBay item 318636321021, sold 27 July 2026. Item specifics confirm Xbox Series X, white colour and 1TB storage; condition is Used. The listing displays £312.59 including a separate £12.59 Buyer Protection fee, so the evidence price stored is the underlying listing price of £300.00 GBP. Source key: `ebayuk-318636321021-xboxseriesx-digital-1tb-20260727`. TEST product: `5fc70dc3-5bf9-4e26-b888-abae5b12c8c8`; LIVE product: `bd71b9e9-50fb-4e2a-9226-92dc38fd21eb`. Both writes returned and read-after-write queries confirmed matching active rows and three active evidence rows per environment for this product.
+- A second Xbox One 1TB candidate (eBay item 327264154460, £59.49, sold 1 August 2026) was already present in both databases under source key `ebayuk-327264154460-xboxone-1tb-20260801`; do not insert it again. TEST/LIVE readback confirmed two active Xbox One 1TB rows per environment: £52.54 (item 188496733818) and £59.49 (item 327264154460).
+- No application code, valuation rules, tenant data or Worker deployments were changed. Shared market evidence only was updated. TEST/LIVE product UUIDs remain environment-specific.

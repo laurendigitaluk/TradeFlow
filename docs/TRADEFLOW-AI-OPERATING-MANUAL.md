@@ -2320,3 +2320,12 @@ Minimal repair on `cloudflare-test`:
 No Supabase schema, rows, tenant content, SEO values, LIVE code, Stripe settings or Cloudflare configuration were changed. TEST project `nnsshnfkjcflucjrftzi` remains the only database target. The TEST project has no structured memory/checkpoint table; this record is maintained in GitHub project documentation.
 
 **Verification remains pending:** no GitHub deployment workflow is configured in this branch and a GitHub commit does not prove the Cloudflare Worker has updated. After the TEST Worker is deployed, confirm the builder serves v69, the browser console has no parse/runtime error, the first `tenant_site_state` request targets TEST, and Save Draft / SEO reload / Preview / Publish work. Do not change LIVE or copy tenant data.
+
+
+## Carousel / Slider component — TEST build — 30 October 2026
+
+Operate against cloudflare-test and TEST Supabase nnsshnfkjcflucjrftzi only. Preserve the single Fully Editable template and existing drag-and-drop boxes. The optional carousel is persisted in the existing site_revisions.content JSON (site.homepage.carousel or site.pages[].carousel); do not create schema migrations or new tables for it.
+
+When debugging, inspect website-builder.js functions renderCarouselControls, renderCarouselEditor, buildContent, loadContent, uploadImage, and removeImage; inspect public-site.js functions renderPublicCarousel, bindPublicCarousels, renderHome, renderBuyingPage, renderShopPage, renderContentPage, and applyContent. Images use the existing tradeflow-site-media bucket and media_assets. Confirm the browser's active Supabase URL from the TEST Worker and subscriber auth context; never use retired project twfbmjwwqzxdxvclxbun.
+
+Do not promote to LIVE until TEST deployment and the complete editor → save/reload → preview → publish → public interaction regression pass succeeds. Include slide image upload/remove, links, reordering, all three modes, arrow/dot/swipe/keyboard navigation, autoplay pause, mobile layout, and reduced-motion checks. Git commit does not prove Cloudflare deployment.

@@ -2732,3 +2732,16 @@ A reproducible standalone batch script was added on `main`: `scripts/pokemon-tcg
 A small, TEST-first reconciliation was completed for 57 English card rows whose LIVE category was blank. Their exact `card_key` and card name matched TEST records already marked `source_parsed`; the category `Pokemon` was copied only for these matching records. This comprised 12 cards from key family `2011bw`, 20 from `2012bw` / `2014xy`, and 25 from `2014xy` / `2015xy` / `2016xy`. All 57 LIVE updates returned the expected card keys and `Pokemon` category. A separate read-back confirmed representative records from each group.
 
 LIVE English unclassified count decreased from 23,604 to 23,547. No source payload details were added in this batch; the standalone API enrichment script has still not been runtime-tested. Continue with exact TEST-to-LIVE key/name/category reconciliation in bounded batches, and separately complete full-detail payload enrichment when a secure runtime is available. Do not infer categories from names.
+
+
+## Mobile-phone catalogue evidence operating rules — 30 October 2026
+
+The product catalogue evidence stream is separate from product-master creation and valuation logic. Use the dedicated catalogue addendum and dated batch checkpoints for the current per-product evidence state.
+
+**Evidence acceptance:** match manufacturer + exact model + exact storage/package variant; require a UK source, GBP price, working listing URL, explicit condition, sales channel and unique source record key. Store resale asking prices as `evidence_type='uk_used'` with `availability='listed'`. Store completed sales separately with `availability='sold'` only when the listing is genuinely confirmed sold. Do not convert trade-in/buyback/recycling quotes into used-market prices. Do not mix new prices, overseas listings, wrong storage variants, out-of-stock pages or future/unverified models into current used asking-price evidence.
+
+**TEST/LIVE sequence:** re-query both databases before every batch. Resolve the correct local `catalogue_master_products.id` in TEST and LIVE independently. Preflight `(source_name, source_record_key)`, insert and read back TEST, then insert and read back LIVE. Never reuse a TEST product ID in LIVE. Do not alter customer, tenant, ownership or transaction data. Do not create master products or change lifecycle/visibility/valuation settings as part of evidence ingestion.
+
+**Quality control:** direct-source checks take priority over snippets. Record source, condition and delivery/Buyer Protection caveats. Reject questionable seller/location/variant matches and anomalous used prices above the new retail price rather than using them to reduce missing counts. An out-of-stock refurb page is historical context, not an active listed asking price. A database insert is not complete until its returned row and subsequent read-back are verified in both environments.
+
+Latest verified Batch 96 database position (30 October 2026): TEST 160 mobile masters / 159 active / 156 visible / 276 active UK-used rows; LIVE 156 mobile masters / 156 active / 154 visible / 274 active UK-used rows. Active products with any active UK-used evidence: TEST 154/159; LIVE 152/156. Re-query before the next batch; these values replace earlier mobile-catalogue snapshots.

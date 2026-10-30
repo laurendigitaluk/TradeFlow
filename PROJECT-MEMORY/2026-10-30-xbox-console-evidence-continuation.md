@@ -72,3 +72,26 @@ The following four product variants were rechecked after the additional inserts.
 The four manual files have been updated on both `cloudflare-test` and `production` with the same authoritative environment correction block. The TEST documentation and GitHub project-memory/checkpoint files were read back after commits. LIVE AI manual readback also confirms the new block. These are documentation commits only; no Worker deployment or code deployment was made.
 
 No exact additional standard Xbox 360 500GB completed sale was found in the latest search. Current candidate listings were active/unsold, ended in error, or special-edition/game bundles, so they were excluded.
+
+
+## Reconciliation update — 30 October 2026, latest TEST/LIVE database readback
+The previous count summary above contained stale counts for Xbox One 1TB and Xbox Series X Digital Edition 1TB. A fresh grouped query of all 13 mapped product IDs in both authoritative databases confirms the same current counts in TEST and LIVE:
+- Xbox 360 4GB: 2; 250GB: 2; 500GB: 1.
+- Xbox One 500GB: 2; 1TB: 2.
+- Xbox One S 500GB: 2; 1TB: 2; All-Digital 1TB: 2.
+- Xbox One X 1TB: 2.
+- Xbox Series S 512GB: 3; 1TB Carbon Black: 2.
+- Xbox Series X 1TB Disc: 2; Digital Edition 1TB: 2.
+Total: 26 active evidence rows per environment. All 13 mapped products have matching TEST/LIVE counts. The earlier 1-count statements are superseded by this readback.
+
+The Xbox 360 500GB gap was rechecked directly in both databases. Each environment has exactly one active record: item 147564021425, £64.46, sold 12 September 2026. New search results were reviewed:
+- Item 398177369875 (£207.25) and item 298730185866 (£155.58) are blue special-edition consoles; excluded from standard black-console evidence.
+- Item 318411489205 (£199.99) is a blue limited-edition bundle with 2 controllers and 25 games; excluded.
+- Item 137465583667 (£196.91) is a blue special-edition bundle; excluded.
+- Item 398220373589 (£83.24) is a 250GB console with six games, not a 500GB match; excluded.
+- Item 377594714464 (£72.92) has no explicit storage capacity in the surfaced item specifics and indicates a best-offer sale; excluded as capacity-ambiguous.
+- Item 840049098248 (£83.25) is a 20-game bundle; excluded.
+- Item 137360485686 (£60) was ended by the seller due to a listing error, not sold; excluded.
+No second clean standard Xbox 360 500GB completed sale was found. Do not insert any of these candidates.
+
+Latest GitHub branch heads checked before this update: TEST `cloudflare-test` at `38c91b9ae7549f030bb73ea209eb308bea58ec28`; LIVE `production` at `1e094ea2b6f8783b1d4b319e2e58448bad1756ad`. No database rows were written and no application code or Worker was deployed during this continuation.

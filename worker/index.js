@@ -14,6 +14,73 @@ function replaceAll(source, from, to) {
   return source.split(from).join(to);
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[character]);
+}
+
+function replaceHeadTag(html, expression, replacement) {
+  if (!replacement) return html;
+  if (expression.test(html)) return html.replace(expression, replacement);
+  return html.replace(/<head\b[^>]*>/i, (head) => head + replacement);
+}
+
+async function injectSubscriberSeo(response, env, hostname, pathname) {
+  if (!response.ok || !response.headers.get("content-type")?.includes("text/html")) return response;
+  const isTest = env.TRADEFLOW_ENV === "test";
+  const supabaseUrl = isTest ? env.TEST_SUPABASE_URL : env.LIVE_SUPABASE_URL;
+  const supabaseKey = isTest ? env.TEST_SUPABASE_KEY : env.LIVE_SUPABASE_KEY;
+  if (!supabaseUrl || !supabaseKey) return response;
+
+  try {
+    const endpoint = new URL("/rest/v1/published_site_index", supabaseUrl);
+    endpoint.searchParams.set("select", "content");
+    endpoint.searchParams.set("hostname", "eq." + hostname);
+    endpoint.searchParams.set("limit", "1");
+    const lookup = await fetch(endpoint.toString(), {
+      headers: { apikey: supabaseKey, Authorization: "Bearer " + supabaseKey },
+    });
+    if (!lookup.ok) return response;
+    const rows = await lookup.json();
+    if (!Array.isArray(rows) || rows.length !== 1 || !rows[0]?.content) return response;
+
+    const site = rows[0].content?.site || {};
+    const route = (pathname.replace(/\/+$/, "") || "/").toLowerCase();
+    const routeToPage = {
+      "/": "home", "/buying": "buying", "/sell": "sell", "/shop": "shop",
+      "/product": "product", "/about": "about", "/contact": "contact",
+    };
+    const pageSlug = routeToPage[route] || route.slice(1);
+    const page = pageSlug === "home" ? null : (Array.isArray(site.pages) ? site.pages : [])
+      .find((entry) => entry.slug === pageSlug && entry.enabled !== false);
+    const businessName = String(site.name || "Your business").trim();
+    const defaultTitle = pageSlug === "home" ? businessName
+      : page ? String(page.title || pageSlug) + " | " + businessName : businessName;
+    const title = String((pageSlug === "home"
+      ? site.homepage?.seo_title : page?.seo_title) || "").trim() || defaultTitle;
+    const description = String((pageSlug === "home"
+      ? site.homepage?.seo_description : page?.seo_description) || "").trim();
+
+    let html = await response.text();
+    html = replaceHeadTag(html, /<title\b[^>]*>[\s\S]*?<\/title>/i,
+      "<title>" + escapeHtml(title) + "</title>");
+    html = replaceHeadTag(html, /<meta\s+name=["']description["'][^>]*>/i,
+      description ? '<meta name="description" content="' + escapeHtml(description) + '">' : null);
+    html = replaceHeadTag(html, /<meta\s+property=["']og:title["'][^>]*>/i,
+      '<meta property="og:title" content="' + escapeHtml(title) + '">');
+    html = replaceHeadTag(html, /<meta\s+property=["']og:description["'][^>]*>/i,
+      description ? '<meta property="og:description" content="' + escapeHtml(description) + '">' : null);
+
+    const headers = new Headers(response.headers);
+    headers.set("cache-control", "no-store");
+    return new Response(html, { status: response.status, statusText: response.statusText, headers });
+  } catch (error) {
+    console.warn("Subscriber SEO metadata lookup failed:", error);
+    return response;
+  }
+}
+
 // TEST customer API boundary repair
 export default {
   async fetch(request, env) {
@@ -114,6 +181,9 @@ export default {
     }
 
     if (assetPath) {
+      if (isSubscriberDomain && assetPath === "/public-site.html") {
+        return injectSubscriberSeo(asset, env, hostname, url.pathname);
+      }
       const headers = new Headers(asset.headers);
       headers.set("cache-control", "no-store");
       return new Response(asset.body, {

@@ -535,8 +535,8 @@ function bindEditor(){
 
 function selectPage(slug){
  if(!validPageSlug(slug))return;
- renderPageManager();
  selectedPage=slug;
+ renderPageManager();
  const next=new URL(location.href);
  next.searchParams.set('page',slug);
  history.replaceState(null,'',next.toString());

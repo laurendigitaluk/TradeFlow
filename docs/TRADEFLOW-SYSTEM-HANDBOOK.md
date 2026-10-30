@@ -2327,3 +2327,7 @@ The subscriber Website Builder provides page-specific SEO settings in the Pages 
 The builder saves SEO values through the existing Save Draft and Publish lifecycle. The public website reads the active route's values and updates the document title, meta description, Open Graph title and Open Graph description. Empty SEO fields fall back to a sensible page title and omit an empty description rather than emitting stale metadata. Search engines may rewrite snippets; the description is a hint, not a guarantee.
 
 Keep tenant website revisions isolated between LIVE and TEST. Do not copy subscriber content or SEO values between environments. Code and documentation are aligned across the two environment branches; subscriber data remains environment-specific.
+
+
+### TEST/LIVE runtime endpoint correction — 30 October 2026
+The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.

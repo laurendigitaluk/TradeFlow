@@ -2546,86 +2546,41 @@ Expected behavior: publishing an inventory item carries the existing `category_i
 - After the controlled purchase, verify the order appears consistently in the customer portal, subscriber order/sales view, and finance/ledger records; check stock/inventory transitions to sold/reserved according to the intended workflow; and confirm the public listing is no longer purchasable if sold. Check shipping choice/tracking expectations separately and do not let TradeFlow collect postage fees.
 - Do not reuse the earlier simulated purchase as proof of a real transaction. Keep LIVE/TEST clearly separated, record each observed status/reference, and stop at the first failure for diagnosis rather than repeatedly retrying checkout.
 
+---
+
+## Environment audit and handover — 21 October 2026 (LIVE / production)
+
+This is an environment-specific status note. It records observed results and outstanding checks, not a claim that every feature has passed end-to-end testing.
+
+### Verified / recorded
+- The stray catalogue-tab CSS text was corrected in `buying-catalogue.html`; the user confirmed the LIVE Buying & Pricing page displays cleanly after the correction.
+- The production catalogue page source was compared with TEST and `buying-catalogue.js` matched at the time of review. This does not prove the filtered product query returns results.
+- Do not apply the TEST-only `site_revisions` privilege migration to LIVE without checking current grants and the RLS policy first. No LIVE database grant was made during this review.
+- LIVE Stripe flows are reported by the owner as working; this audit did not run a live payment or alter Stripe configuration.
+- Catalogue product-row verification remains open: a prior screenshot showed category filters populated but zero product rows. Test a known product and inspect the RPC response before declaring the catalogue fully verified.
+
+### Quick audit results
+- Supabase table listing reported row-level security enabled on the inspected public tables in both environments. This is a baseline check, not a proof that every RLS policy is correct.
+- Supabase advisors showed matching categories of existing warnings in TEST and LIVE at review time: SECURITY DEFINER functions executable by anon/authenticated roles, `pg_net` in the public schema, and unindexed foreign keys. Review each finding in context; do not blanket-revoke access or move extensions without checking dependencies.
+- Matching advisor counts and frontend source do not establish full schema, migration, function, data, or deployment parity between TEST and LIVE.
+- TEST and LIVE intentionally contain separate business/customer/payment records. Shared catalogue behaviour must be verified at the product-data and query level; do not assume database rows are physically shared merely because the interface is the same.
+
+### Release guardrails
+- Keep LIVE production branch/project separate from TEST repair branch/project.
+- No LIVE schema change, Stripe change, migration, or deployment was made as part of the TEST `site_revisions` grant.
+- Do not merge or deploy the complimentary-subscriber release candidate until its LIVE origin/redirect configuration, migration compatibility, owner-only authorization, invitation flow, and paid Stripe signup regression checks are verified.
+- The immediate remaining technical checks are: (1) verify product rows/search in both master catalogues; (2) verify TEST Website Builder Save draft; (3) finish TEST Stripe Sandbox monthly checkout and webhook/status confirmation; (4) review and prioritize the existing Supabase advisor findings.
+
+### Update rule
+Replace any item above only when a new browser observation, query result, webhook delivery, or controlled end-to-end test supports the change. Do not mark untested functionality as complete.
 
 ---
 
-# Environment Status Addendum — 21 October 2026
-
-This addendum supersedes any earlier environment references in this document where they conflict. It records the currently verified environment split and the remaining Stripe TEST verification work. It does not claim end-to-end payment success.
-
-## Authoritative Supabase environments
-
-| Purpose | Project | Project ID | URL | Current state |
-|---|---|---|---|---|
-| LIVE / production | TradeFlow Live | `gxsrajtqzdjvmceqcpgv` | `https://gxsrajtqzdjvmceqcpgv.supabase.co` | Active; production must be protected |
-| Current TEST / staging | TradeFlow TEST | `nnsshnfkjcflucjrftzi` | `https://nnsshnfkjcflucjrftzi.supabase.co` | Active; intended for isolated validation |
-| Legacy TEST | Previous TradeFlow TEST | `twfbmjwwqzxdxvclxbun` | `https://twfbmjwwqzxdxvclxbun.supabase.co` | Legacy/reference only; not approved for deletion yet |
-
-LIVE and current TEST are in the TradeFlow Pro organization. The current TEST project was created on 20 October 2026. The old TEST project must not be confused with the new TEST project.
-
-## Mandatory safety boundary
-
-- Make development, deployment, Stripe test-key changes, webhook testing, and purchase-flow tests against current TEST only unless a separately approved LIVE change is explicitly required.
-- Do not change LIVE secrets, production functions, production configuration, or production data as part of this TEST repair.
-- Never paste Stripe secret keys or webhook signing secrets into chat, issues, manuals, commits, or logs. Enter them only in the intended Supabase project's Edge Function Secrets interface.
-- Treat Stripe test mode and Stripe live mode as separate systems. A TEST connected account must never be reused as a LIVE connected account, or vice versa.
-- The repository's production branch and `wrangler.jsonc` are not to be repointed as part of TEST work. The isolated TEST configuration is `wrangler.test.jsonc`.
-
-## Stripe Connect TEST repair — status
-
-The following functions are deployed and reported ACTIVE in the new TEST project:
-
-- `stripe-connect-onboarding` — JWT verification enabled.
-- `create-stripe-checkout-session` — JWT verification enabled.
-- `stripe-payment-webhook` — JWT verification disabled; requests must be verified with the Stripe webhook signature.
-- `stripe-connect-webhook` — JWT verification disabled; requests must be verified with the Stripe webhook signature.
-
-The code branch for the repair is `test/stripe-connect-test-mode-repair-20261020`. Source-level mode guards were added to reject test/live key, account, and event mismatches. Static source assertions passed, but these checks are not a substitute for runtime tests.
-
-Stripe Sandbox has two active TEST event destinations configured to the new TEST project's function endpoints:
-
-- Platform payments → `/functions/v1/stripe-payment-webhook`
-- Connected accounts → `/functions/v1/stripe-connect-webhook`
-
-The platform destination is configured for checkout-session and payment-intent success/failure events. The Connect destination is configured for `account.updated`, `account.application.authorized`, and `account.application.deauthorized`. No successful delivery has yet been demonstrated in the recorded evidence.
-
-## Secrets and verification
-
-The operator reported entering the three Stripe secrets in the new TEST project's Edge Function Secrets. Their values cannot be read back through the available inspection, so their correctness is not independently verified. Confirm that the project has:
-
-- `TRADEFLOW_STRIPE_MODE=test`
-- `STRIPE_SECRET_KEY` using a Stripe TEST secret key
-- `STRIPE_WEBHOOK_SECRET` copied from the TEST **TradeFlow TEST - Platform Payments** destination
-- `STRIPE_CONNECT_WEBHOOK_SECRET` copied from the TEST **TradeFlow TEST - Connect Events** destination
-
-Never copy a signing secret from one destination into the other. If a secret was entered before its corresponding endpoint was created or rotated, re-copy the current secret into TEST Supabase only.
-
-## Known open verification items
-
-1. Send a Stripe Sandbox test event to the platform webhook and inspect the delivery status, HTTP response, and new TEST Edge Function logs.
-2. Repeat separately for the Connect webhook.
-3. Investigate the platform webhook source's reported `admin` client reference before declaring payment/domain-order handling healthy; verify that the client is declared and initialized on every relevant path.
-4. Run Connect onboarding in TEST and verify account mode, onboarding completion, webhook processing, and persisted account status.
-5. Run a complete TEST checkout and confirm Stripe event delivery, database state transitions, and dashboard outcomes.
-6. Only after those pass, update the test-purchase runbook and resume the planned DJI Osmo Action 6 purchase-flow test.
-
-Until these are complete, do not describe Stripe Connect, checkout, or webhook handling as end-to-end verified.
-
-## Legacy TEST project retirement decision
-
-**Do not delete `twfbmjwwqzxdxvclxbun` yet.** It remains a legacy/reference environment until a read-only retirement audit confirms that no current Worker, application environment variable, CI/CD workflow, Supabase function, webhook, manual, or recovery procedure still depends on it, and that required schema/catalogue/reference data and any useful logs or backups have been preserved. The old project should be paused only after dependency checks and a restore/retention decision; permanent deletion requires a separate explicit owner approval after that checklist passes.
-
-## Update policy
-
-This addendum records verified configuration and outstanding checks as of 21 October 2026. Update the status after runtime evidence is collected. Do not rewrite an unverified state as complete.
-
----
-
-## Environment audit and handover — 21 October 2026 (TEST / Stripe Sandbox)
+## Environment audit and handover — 21 October 2026 (LIVE / production)
 
 ### Verified observations and open checks
 - Catalogue-tab CSS leakage was corrected in the environment's source. LIVE page cleanliness was confirmed by the owner; TEST category filters load, but a recent screenshot still showed zero product rows. Product retrieval/search is not yet verified.
-- The TEST Website Builder site_revisions authenticated UPDATE grant was applied and verified at database privilege level; browser Save draft still needs confirmation. Complimentary subscriber workspace was exercised by the owner. Paid TEST checkout remains unverified; enhanced plan was previously observed at £59.99 monthly with 30-day trial but missing Stripe Price IDs. Verify current config and use Sandbox only. Configured TEST payment/Connect webhooks have not had successful delivery verified.
+- The owner confirmed the LIVE Buying & Pricing page displays cleanly after the catalogue-tab CSS correction. Do not apply the TEST-only site_revisions grant to LIVE without checking existing grants and RLS first. LIVE Stripe is owner-reported working; no live payment was run.
 - Supabase advisors showed matching categories of existing warnings in TEST and LIVE: SECURITY DEFINER functions callable by anon/authenticated roles, pg_net in the public schema, and unindexed foreign keys. Investigate each finding in context; avoid blanket revocations or extension moves.
 - Supabase table inspection reported RLS enabled on inspected public tables, but this does not prove every policy is correct. Matching source/advisor counts do not establish full schema, migration, function, data, or deployment parity.
 - LIVE and TEST business/customer/payment records are separate. Do not copy tenant, customer, or payment records across environments. Verify shared master-catalogue behaviour at the query/data layer rather than assuming the interface means physical database sharing.
@@ -2639,131 +2594,179 @@ This addendum records verified configuration and outstanding checks as of 21 Oct
 
 Do not mark untested functionality complete. Update this note only when supported by a browser observation, query result, successful webhook delivery, or controlled end-to-end test.
 
-## Audit note — 21 October 2026 — TEST / Stripe Sandbox
+## Audit note — 21 October 2026 — LIVE
 
-- Catalogue-tab CSS leakage was corrected in TEST source. Categories load, but a recent screenshot still showed zero product rows; product search/retrieval remains open.
-- TEST Supabase was granted UPDATE on public.site_revisions for authenticated users because the Website Builder updates an existing draft revision. The RLS policy remains the tenant/draft access boundary. The matching migration is supabase/migrations/20261021195000_grant_site_revisions_update_to_authenticated.sql. Database privilege was verified; browser Save draft still needs confirmation.
-- The complimentary subscriber workspace was exercised by the owner. Complimentary subscriptions must remain free and must not be sent through Stripe Checkout.
-- Paid TEST checkout is not verified end-to-end. The enhanced plan was previously observed at £59.99 monthly with a 30-day trial but missing Stripe Price IDs. Recheck current plan configuration before creating anything, avoid duplicate products/prices, and use Stripe Sandbox only.
-- TEST platform-payment and Connect webhooks are configured, but successful delivery was not verified in this audit.
-- Supabase advisors show existing SECURITY DEFINER access warnings, pg_net in public schema, and unindexed foreign-key warnings. Review findings individually. RLS enabled on inspected tables is not proof every policy is correct.
-- TEST and LIVE business/customer/payment records are separate. Do not copy tenant, customer, or payment records across environments. Similar UI/source/advisor counts do not prove full schema/data parity.
-
-### Next checks
-1. Verify a known product returns rows in both master catalogues.
-2. Confirm Save draft succeeds in the TEST browser.
-3. Finish monthly Stripe Sandbox checkout, confirm webhook delivery, and verify subscription status in the TEST owner dashboard.
-4. Review Supabase advisor findings before any security changes.
-5. Do not merge/deploy the complimentary-subscriber release candidate until LIVE origin/redirects, migration compatibility, owner-only access, invitation flow, and paid checkout regression are verified.
-
-This note records evidence and open items as of 21 October 2026. Do not mark untested flows complete.
+- Owner confirmed the LIVE Buying & Pricing page is clean after the catalogue-tab CSS correction.
+- Product retrieval remains unverified: a recent catalogue screenshot showed categories but zero product rows. Verify known-product search before calling this complete.
+- The TEST-only site_revisions UPDATE grant was not applied to LIVE. Check existing table grants and RLS before any production change.
+- LIVE Stripe is owner-reported working; no live payment was run in this audit.
+- Supabase advisors show existing SECURITY DEFINER access warnings, pg_net in public schema, and unindexed foreign-key warnings. Review individually; do not blanket-revoke or change extension placement.
+- RLS being enabled on inspected tables does not prove every policy is correct. Matching frontend code/advisor counts do not establish complete environment parity.
+- Remaining checks: product rows in both catalogues, TEST Save draft browser confirmation, TEST Sandbox checkout/webhook/status, and advisor review. Keep TEST/LIVE data separate and do not mark untested flows complete.
 
 
-## SECURITY AUDIT CONTINUATION — 21 OCTOBER 2026 (TEST FIRST)
+## Complimentary subscription feature access — 21 October 2026
 
-Environment verified from the connected project: TEST is Supabase `nnsshnfkjcflucjrftzi`, Git branch `test/stripe-connect-test-mode-repair-20261020`; LIVE remains `gxsrajtqzdjvmceqcpgv` on `production`. The retired TEST project `twfbmjwwqzxdxvclxbun` must not be used. LIVE was not changed in this audit step.
+- LIVE migration `20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql` updates `private.has_tenant_feature(uuid,text)` to recognise explicitly active manual complimentary subscriptions (`billing_provider = 'manual'`, `provider_status = 'complimentary'`).
+- Access remains gated by an active plan, an enabled matching `plan_features` row, and `ended_at` being null or in the future. Trial and paid/past-due rules remain unchanged.
+- Applied to LIVE and verified the function definition, `SECURITY DEFINER` status, and pinned `search_path` (`pg_catalog, public`). This confirms the database function update, not a full end-to-end complimentary tenant browser test.
+- Do not route complimentary subscriptions through Stripe or alter Stripe price IDs for this change. Verify a designated complimentary tenant can access its enabled features and that ended/inactive subscriptions remain denied.
 
-Fresh TEST and LIVE advisor results report leaked-password protection disabled, 8 anonymous-callable and 164 authenticated-callable SECURITY DEFINER functions, and performance warnings. These are review queues, not proof every function is vulnerable. Direct SQL inspection was available in TEST and confirmed reviewed customer-order/payment/credit functions check the authenticated customer and order ownership; catalogue write functions check tenant permissions/features; complimentary provisioning checks platform-owner authority and invited-user email. This is a partial source review, not a full tenant-isolation certification.
+## Security and performance audit continuation — 21 October 2026
 
-### Verified TEST change
-Migration `supabase/migrations/20261021203732_harden_published_security_definer_search_paths.sql` sets an empty `search_path` for six public-facing SECURITY DEFINER functions, whose inspected bodies use schema-qualified table references: `get_published_site_by_slug(text)`, `get_published_site_preview(uuid)`, `get_published_sites()`, `get_published_store_listing_media(uuid)`, `get_published_store_listings(uuid)`, and `is_published_tradeflow_media(text,text)`.
-
-TEST migration application succeeded. A follow-up SQL query confirmed all six remain SECURITY DEFINER, have empty `search_path`, and retain their prior execution ACLs. Read-only smoke tests passed for nonexistent slug/media lookups; published site/listing queries returned zero rows because TEST currently has no published-site records. Therefore, populated-site browser regression remains pending. Rollback: restore each function's previous setting with `ALTER FUNCTION ... SET search_path TO 'pg_catalog','public'` for the three site RPCs, or `SET search_path TO 'public'` for the three listing/media RPCs; only do so if a verified compatibility issue requires rollback.
-
-### Required follow-up / blockers
-- Leaked-password protection cannot be configured through the connected Supabase tools currently available. In the TEST project dashboard, open Authentication → Attack Protection (or the current Auth password-security settings) and enable leaked password protection. Confirm the setting is saved; then test sign-up/password change, sign-in and recovery. Repeat on LIVE only after TEST verification and a separate production review. Supabase docs: https://supabase.com/docs/guides/auth/password-security
-- Review all flagged SECURITY DEFINER function bodies and grants; do not blanket-revoke intentional public published-site/catalogue RPCs.
-- Review 65 unindexed foreign keys, 166 RLS init-plan warnings, 14 multiple-permissive-policy warnings, 3 duplicate-index warnings, unused indexes and Auth connection allocation individually.
-- TEST `site_revisions` has RLS enabled; authenticated has UPDATE table privilege and anon does not. The browser Save Draft flow is still unverified end-to-end.
-- TEST has no published-site records, so public-site regression must be repeated once safe TEST fixture data is available.
-- PR #157 (complimentary subscriber release) remains OPEN and DRAFT; it is not merged or deployed. Keep it separate until owner origin/redirect allow-list, invitation/recovery, owner-only provisioning and paid Stripe regression tests pass.
-- Do not modify LIVE database, Auth configuration, Stripe, DNS or application deployment as part of this TEST change.
-
-This is a partial security-hardening checkpoint, not a declaration that TradeFlow is fully secure. Update this section only when the next findings and test results are verified.
+- Rechecked Supabase advisors for TEST and LIVE. Both report the same major categories: public-schema pg_net extension, 8 anon-executable SECURITY DEFINER functions, 164 authenticated-executable SECURITY DEFINER functions, and 65 unindexed foreign-key findings.
+- Both environments have RLS enabled on all 99 ordinary tables in public (99/99; none disabled). This is a coverage check only, not proof that every policy expression is correct.
+- Do not blanket-revoke SECURITY DEFINER execution grants: public published-site/catalogue and public-plan RPCs may intentionally need anon access, and authenticated RPCs require per-function authorization review.
+- Do not add all 65 foreign-key indexes blindly. Review existing index coverage, query plans and write overhead first; prioritize tenant-scoped transactional tables and high-traffic lookups.
+- Continue by comparing exact RLS policy expressions and security-sensitive RPC bodies across TEST and LIVE, then review advisor findings in batches. LIVE is the behavioural reference and must remain stable; TEST-only Stripe configuration must remain isolated.
+- Complimentary subscription access was added to LIVE in migration 20261021210642_add_complimentary_subscription_feature_access_live_20261021.sql. Database function definition verified; an end-to-end browser test for an actual complimentary tenant is still outstanding.
 
 
-## ADDITIONAL TEST PERFORMANCE FIX — 21 OCTOBER 2026
+## LIVE COMPLIMENTARY SUBSCRIBER WORKFLOW — 21 OCTOBER 2026
 
-A second TEST-only migration was applied: `supabase/migrations/20261021203935_remove_confirmed_duplicate_unique_indexes.sql`. Before removal, SQL confirmed exact duplicate definitions and checked constraint dependencies. The migration removed three redundant indexes while preserving uniqueness enforcement:
-- Removed `customer_credit_accounts_tenant_customer_uidx`; retained the identical constraint-backed `customer_credit_accounts_tenant_id_customer_id_key` index.
-- Removed `payment_records_tenant_idempotency_idx`; retained `payment_records_tenant_id_idempotency_key_uidx` with the same partial unique predicate.
-- Removed `tenant_domains_one_primary_per_tenant`; retained `tenant_domains_one_primary` with the same partial unique predicate.
+LIVE now has the complimentary subscriber workflow integrated into the platform owner dashboard source on the `production` branch. The form is in `platform-owner-dashboard.html`; `platform-owner-dashboard.js` validates the session and calls the `platform-create-complimentary-subscriber` Edge Function. The LIVE function is deployed as version 1, with JWT verification enabled and CORS restricted to `https://owner.laurendigital.co.uk`.
 
-Post-migration SQL verified the retained payment idempotency and tenant-primary indexes. The Supabase performance advisor's `duplicate_index` finding fell from 3 to 0; other performance warnings remain. No workload benchmark is claimed because TEST is newly created and has only one active tenant. Rollback, only if required, is to recreate the three removed indexes using their exact original definitions; this restores the previous redundant state and is not the preferred outcome.
+The LIVE RPC `public.platform_owner_create_complimentary_subscriber(uuid,text,text,text)` checks `private.is_platform_owner(auth.uid())`, validates that the invited auth user's email matches the requested email, refuses an existing active owner or duplicate tenant slug, and creates an active tenant membership and active manual complimentary subscription. Complimentary status is `status='active'`, `billing_provider='manual'`, `provider_status='complimentary'`; it is not a subscription status. Feature access remains governed by `private.has_tenant_feature` and enabled plan-feature rows.
 
-
-## TEST/LIVE PLAN-CONFIGURATION DRIFT FIX — 21 OCTOBER 2026
-
-Review found TEST's `enhanced` plan had `annual_price = NULL` and its `public_get_available_plans()` RPC omitted `trial_days`, while LIVE had annual price GBP 499.99 and returned the trial-days field. No dependent database objects were found for the RPC. TEST-only migration `supabase/migrations/20261021204236_align_test_public_plan_rpc_and_annual_price.sql` sets the TEST annual display price to GBP 499.99 only when the expected existing monthly/trial values match, then recreates the public RPC with the nine-column result shape used by LIVE. It retains `SECURITY DEFINER`, an empty `search_path`, and explicit EXECUTE grants for `anon`, `authenticated`, and `service_role`; PUBLIC execution is revoked. No Stripe product or price IDs were copied.
-
-Verified after migration: TEST plan row is GBP 59.99 monthly, GBP 499.99 annual, 30-day trial; the RPC returns `trial_days = 30`; anonymous/authenticated/service-role execution succeeds at privilege level; PUBLIC execution is false. Stripe product/monthly/annual Price IDs remain absent in TEST as intended for the separate Sandbox setup. Browser pricing/checkout regression remains pending. Rollback, only if required, must restore the previous eight-column RPC definition and set `annual_price = NULL` for the TEST `enhanced` plan; this would reintroduce the known mismatch and is not recommended without a confirmed compatibility issue.
+Commits: RPC migration `29f43a9d882a35a625b57ef242f8a0ecf51823a0`; dashboard HTML `bcfe3ec2707ab4461ce932eee9ca7719f570d113`; dashboard JS `e3b3b77a9b4bcf03ee7596e8939b220a154b536b`. The Edge Function is deployed in LIVE, but the hosted Cloudflare Worker asset rollout and a full browser test have not been independently verified. Do not claim the workflow is fully proven until a dedicated approved test address completes invitation, workspace creation, and feature access verification. No invitation or new tenant was created during this implementation.
 
 
-## OWNER DASHBOARD COMPLIMENTARY ACCESS AND BRANDING REPAIR — 21 OCTOBER 2026
+## Production / TEST parity audit — 22 October 2026
 
-TEST repository review found the complimentary-subscriber form and TEST-only Edge Function/RPC implementation were present, but `platform-owner-dashboard.js` contained the invalid declaration `async async function createComplimentarySubscriber(event)`. This prevents the browser from parsing the script and can stop all owner-dashboard handlers from initializing. The declaration has been corrected to `async function` on branch `test/stripe-connect-test-mode-repair-20261020` (commit `c702f5a1b69c74eca60d0be1be71016dee097d34`). Static source verification confirms the duplicated `async` token is gone; a browser end-to-end invitation/provisioning test has not yet been run.
-
-The TEST owner-dashboard HTML was aligned to the parent platform identity: document title `Lauren Digital Owner Dashboard`, eyebrow `Lauren Digital platform`, and brand link `Lauren Digital`. This removes the visible `TradeFlow SaaS` label from that dashboard (commit `88faea05c1852fb1517a53f1650c2601ac3e7e2b`). TradeFlow remains the product name in relevant plan and product copy. LIVE has not been changed by these UI edits.
-
-TEST has an ACTIVE `platform-create-complimentary-subscriber` Edge Function and repository migrations for `public.platform_owner_create_complimentary_subscriber` plus complimentary feature access. The endpoint is TEST-origin restricted and verifies the caller's platform-owner membership before invitation/provisioning. Do not test by creating a real subscriber invitation without an approved dedicated test email. Before promoting to LIVE, port the feature as a complete set: dashboard markup and JavaScript, LIVE-origin-specific Edge Function configuration, the owner-authorized creation RPC/migration, complimentary entitlement logic, docs, and a dedicated end-to-end test. Do not copy TEST Supabase credentials or Stripe IDs into LIVE. No LIVE subscriber, subscription, or dashboard record was changed in this repair.
-
-
-## Owner dashboard parity — 21 October 2026
-
-- The TEST platform-owner dashboard now includes the same Lauren Digital product-page editor section as LIVE for TradeFlow, StudioFlow, and BusinessFlow.
-- TEST `platform-owner-dashboard.js` loads product pages using `public.platform_owner_get_product_pages`, saves through `public.platform_owner_update_product_page`, and wires the refresh control. These RPCs were confirmed present in the TEST Supabase database.
-- TEST commits: HTML `8b9eaa9fbde7e620833f63e05e67ffeb50d5eb5c`; JavaScript `c5ad613cd0237f4ebf172811e9fa00614bcf913f`.
-- This is a source-level parity repair only. Hosted TEST delivery and browser-based save/refresh checks are still required. Do not copy LIVE Stripe identifiers or secrets into TEST. No LIVE dashboard files or subscriber records were changed for this repair.
+- Current branch comparison: `production` and `test/stripe-connect-test-mode-repair-20261020` are divergent (TEST is 114 commits ahead and 38 behind in GitHub's compare view). Do not merge the TEST branch wholesale into production. It contains TEST-only Stripe Connect and invitation/recovery work alongside unrelated changes.
+- LIVE remains the protected baseline. LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (link `link_6ad13c4afe848191899041a0a95b487d`). TEST Supabase project: `nnsshnfkjcflucjrftzi` (link `link_6a8b3c7f2f208191851663ebc14853ab`). Keep Stripe identifiers/secrets and database records environment-specific.
+- Latest browser evidence: TEST owner dashboard shows the product-page editor for TradeFlow, StudioFlow and BusinessFlow; statuses are Published, Coming soon and Coming soon respectively. User confirmed the complimentary TEST subscriber could set a password, sign in to the correct subscriber dashboard, sign out and sign back in. The earlier owner-login error was caused by trying the subscriber account on the platform-owner login page.
+- The resend-account-setup flow has not been confirmed end-to-end. Do not click its button again until specifically asked; do not claim resend verification is complete.
+- No LIVE schema, user, subscription, Stripe, or tenant changes were made during this verification. LIVE browser state must remain untouched unless a separately scoped LIVE change is approved.
+- No bulk legacy-code deletion is approved by this audit. Before removing files, map entry points, script references, Worker routes, migrations, deployed Edge Functions and rollback dependencies. Archived migrations/checkpoints are historical records, not dead runtime code, and must not be deleted as cleanup.
+- Remaining checks: verify the latest relevant TEST Cloudflare deployment is Ready; compare only reviewed, environment-neutral fixes against LIVE; run syntax/link checks and relevant tests; then record each production-safe change separately. Manual browser confirmation is required for save-and-refresh persistence and for resend behavior.
 
 
-## Complimentary invitation acceptance repair — 21 October 2026
+## Audit continuation — 22 October 2026 (LIVE source reconciliation and Supabase advisors)
 
-- The complimentary-subscriber Edge Function now redirects invitation emails to `subscriber-invitation-accept.html` rather than `subscriber-login.html`.
-- The new acceptance page presents email, password, and password-confirmation fields; it validates the invite access token and matching email, sets the password through Supabase Auth, stores the resulting subscriber session, and then redirects to the subscriber dashboard. It does not initiate Stripe checkout.
-- TEST Edge Function `platform-create-complimentary-subscriber` redeployed successfully as ACTIVE version 3 with JWT verification enabled.
-- The initial invitation to `scenesource1@gmail.com` arrived, but the click-through showed the ordinary sign-in page and failed. Do not treat the invitation flow as verified until a fresh invitation is issued after this change and account activation, dashboard access, and complimentary feature access are tested end-to-end.
-- Do not change LIVE or reuse the existing invite link for this test; its redirect points to the old sign-in route. The current repair is TEST-only.
+- Latest GitHub comparison for `production` against `test/stripe-connect-test-mode-repair-20261020`: TEST is 114 commits ahead and 42 behind. Earlier 38/33-behind figures in prior notes are stale. Do not bulk-merge.
+- LIVE deployed Edge Functions are present: `stripe-connect-onboarding` version 13 (JWT verification enabled; deployed source SHA-256 `f4f4d6054e486901cab6ec488bcd6baa1e9f445485b558102603822771c3c7de`) and `stripe-connect-webhook` version 4 (JWT verification disabled as expected for a webhook; deployed source SHA-256 `ec13b5ff7d6ceda7a42c3bf00d046fd184759c4500687de9208eec4eed7ecdd7`). Both are ACTIVE in LIVE.
+- The corresponding source files were absent from `production`. Exact source was retrieved from the deployed LIVE functions and committed to version control without redeploying or changing runtime behavior: onboarding source commit `421c7e66529b20f0542925a0c66a5c7b32238afd`; webhook source commit `6e83cfe28faec14fbfbb8e563c67ee38038f3609`. This repairs source traceability only; it is not a deployment or a functional test.
+- LIVE onboarding source uses a LIVE-key guard, validates the Supabase user and active tenant owner/admin membership, and uses a Stripe idempotency key. TEST source is not interchangeable: it includes an explicit environment-mode guard and differs in implementation. Keep each deployed implementation environment-specific.
+- Read-only SQL checks in LIVE and TEST each found 99 public tables, zero public tables without RLS, zero SECURITY DEFINER functions missing a configured search_path, and zero direct anon/PUBLIC grants on the inspected sensitive payment, membership, subscription and customer tables. These checks do not prove all RLS expressions, RPC authorization, storage policies, or tenant boundaries are correct.
+- Supabase security advisors in both environments report: `pg_net` installed in `public`; 8 SECURITY DEFINER RPCs executable by `anon`; 165 such functions executable by `authenticated` in LIVE and 164 in TEST; and leaked-password protection disabled. Review the eight anon-callable functions individually because some public-site/catalogue RPCs may intentionally serve public pages. Do not blanket-revoke function grants. Enable leaked-password protection through a separately verified Auth settings change.
+- Performance advisor snapshot: both environments report 65 unindexed foreign keys, 166 RLS init-plan warnings, and 14 multiple-permissive-policy warnings. LIVE reports 64 unused-index notices and 3 duplicate-index notices; TEST reports 112 unused-index notices. Do not drop indexes based only on a fresh/low-traffic usage snapshot. Review duplicate indexes against constraints and migrations before any change.
+- Sensitive-table policy inspection showed tenant-membership/permission checks on customers, payment records, payment-provider connections, payment-provider customers and tenant subscriptions in both environments. This was a targeted inspection, not a complete cross-tenant penetration test.
+- Outstanding: inspect all advisor-listed anon-callable SECURITY DEFINER functions and their grants/body authorization; audit full tenant isolation and payment/ledger writes; compare deployed LIVE/TEST checkout and payment-webhook source; verify the complimentary setup resend flow only under a deliberate test plan; run manual browser checks where specified. No SQL permissions, schemas, Stripe settings, data or Edge Function deployments were changed in this audit.
 
+## 2026-10-22 Follow-up — public website access hardening
 
-## Existing complimentary account resend — 21 October 2026
+The LIVE database migration `public_published_content_active_tenant_guard_20261022` was applied (remote migration version `20261022143445`; source migration: `supabase/migrations/20261022160000_public_published_content_active_tenant_guard.sql`). Public published-site, listing, and media RPCs now require an active tenant and use an empty `search_path`. The public read policies for `tenant_public_profiles` and `published_site_index` now use the active-tenant predicate. `anon` has EXECUTE on `private.is_active_tenant(uuid)` only so those policies can evaluate; the `private` schema remains inaccessible directly. LIVE `public-listing-media` is now version 11 and checks tenant status before issuing signed media URLs.
 
-- TEST Edge Function `platform-resend-complimentary-setup` was updated and redeployed as ACTIVE version 2 with JWT verification enabled.
-- The eligibility check now recognizes existing accounts linked to a complimentary/manual subscription even if the membership is inactive, the tenant is archived, or the subscription is cancelled. Resending only calls Supabase Auth recovery email; it does not create, attach, reactivate, or alter any workspace or subscription.
-- The operation remains restricted to the TEST owner portal origin and authenticated active platform-owner membership. The function still rejects accounts that have no existing complimentary/manual subscription record.
-- TEST account `scenesource1@gmail.com` remains available for recovery. No authentication account, tenant, membership, or subscription was deleted or modified in this change. No LIVE resources or Stripe settings were changed.
-- Next verification: use the TEST owner dashboard's “Resend account setup link” section for this existing email, complete password setup from the email, then separately review and restore the archived/cancelled workspace only if required for the no-payment access test.
+Verification: with SQL role `anon`, reads of the current public profile, published-site index, and published-site RPC succeeded (one current row each). The private schema remains inaccessible to `anon`. At verification time, LIVE had one active tenant with a published site and no inactive-tenant index rows. No product catalogue, pricing, or evidence-ingestion data was changed. Public request/browser end-to-end checks and full tenant-isolation/payment verification remain outstanding; do not blanket-revoke the intentionally public published-content RPCs.
 
+## LIVE security continuation — 22 October 2026
 
-## TEST owner resend session-token correction — 21 October 2026
-
-- Fixed `platform-owner-dashboard.js` resend handler to use the dashboard's stored `session.access_token` for the Edge Function Authorization header. The handler previously assigned the response from `/auth/v1/user` to a variable named `session`, then attempted to read `session.access_token`; `/auth/v1/user` returns user data, not the session token, causing the request to fail with `Invalid JWT`.
-- The handler now checks that a stored access token exists, validates the current user with `/auth/v1/user`, and sends the Edge Function request with the existing stored access token. If no token is present, it instructs the owner to sign in again.
-- Git commit: `e73ad3c8dcad922fc8daa569b63b9196ec6a86d0` on `test/stripe-connect-test-mode-repair-20261020`.
-- GitHub Actions reports no workflow runs for this branch. Therefore, the source fix is committed but hosted TEST asset deployment and browser verification are still pending. Do not ask the user to press the resend button until the served JavaScript is confirmed updated and the flow is tested.
-- No account, tenant, membership, subscription, LIVE, or Stripe records were changed by this correction.
-
-
-## TEST resend email validation correction — 21 October 2026
-
-- Screenshot showed `Enter a valid subscriber email address.` despite an apparently valid email. Root cause: the email-validation regex in `supabase/functions/platform-resend-complimentary-setup/index.ts` had over-escaped backslashes, so it tested for literal backslash/s characters rather than whitespace and a literal dot correctly.
-- Corrected the regex to `/^[^\s@]+@[^\s@]+\.[^\s@]+$/` and committed as `170a6ef121fc719840d00be040bd515a5976d7f0` on `test/stripe-connect-test-mode-repair-20261020`.
-- Deployed TEST Edge Function `platform-resend-complimentary-setup` as ACTIVE version 3 with JWT verification enabled.
-- The resend request had failed validation before attempting email delivery, so this screenshot does not indicate an email provider or JWT failure. Next step is a single retry from the TEST owner dashboard. If validation passes, investigate the next response rather than retrying repeatedly.
-- No tenant/account/subscription data, LIVE resources, or Stripe settings were changed by this fix.
+- Applied LIVE migration version `20261022144655` (`secure_test_registration_and_scope_domain_rpcs_20261022`). Source file is aligned to the remote migration version at `supabase/migrations/20261022144655_secure_test_registration_and_scope_domain_rpcs_20261022.sql`.
+- Reconciled the published-content guard source filename to LIVE migration version `20261022143445`; its source now lives at `supabase/migrations/20261022143445_public_published_content_active_tenant_guard_20261022.sql`. Do not reapply either migration.
+- Hardened `admin_complete_test_registration` and `staff_complete_test_registration`: both now require the target tenant to be active and `settings.test_lab` to equal true, in addition to their existing authentication, email, and reserved-slug checks.
+- Added tenant-explicit RPC signatures `subscriber_get_custom_domain_status(p_tenant_id uuid)` and `subscriber_request_custom_domain(p_tenant_id uuid, p_hostname text)`. Both require an authenticated active membership for that exact active tenant and `website.manage`; their execution is granted to `authenticated` only, not `anon`/PUBLIC.
+- Kept legacy no-argument / hostname-only signatures for backwards compatibility, but changed them to fail closed if the user has multiple active tenant memberships rather than selecting an arbitrary tenant.
+- Updated production `domain-settings.js` to pass its selected `tenantId` to both explicit RPCs (commit `727508bf1944bf914ee46072e6ae0f4927617746`).
+- Verified with LIVE SQL that both new domain RPCs are SECURITY DEFINER with pinned search paths; `has_function_privilege` confirms `anon` cannot execute them and `authenticated` can. LIVE currently has zero active reserved test slugs and zero active `test_lab` tenants.
+- Restored the previously missing source for `platform-create-complimentary-subscriber` at `supabase/functions/platform-create-complimentary-subscriber/index.ts` (commit `b9f97dda6584aadef1055a212571400389fff2aa`) and deployed LIVE version 2. Deployed source exactly matches the production-branch file; JWT verification remains enabled. Added explicit `POST, OPTIONS` CORS methods, corrected the stale TEST message to LIVE, stopped returning raw RPC error text or invited user IDs, and made unexpected errors generic while logging safe status-only diagnostics.
+- No domain request, invitation, customer, transaction, catalogue, pricing, or valuation record was created by verification. No browser end-to-end domain or complimentary-subscriber flow test was performed; these remain required before calling those workflows fully verified.
+- Still open: review remaining authenticated SECURITY DEFINER functions; enable leaked-password protection through supported Auth configuration; assess the `pg_net` advisor warning carefully. LIVE has an active `tradeflow-notification-queue` cron job running every minute via `net.http_post`, using Vault secrets named `tradeflow_project_url` and `tradeflow_notification_processor_secret` and the `x-tradeflow-cron-secret` header. The `process-notification-queue` function is version 10 with JWT verification disabled but checks that secret; do not move the extension or alter the cron job until the queue path is regression-tested. Complete browser/API tenant-isolation and payment tests, and run a controlled owner-portal test of complimentary subscriber provisioning.
 
 
-## TEST complimentary subscriber access restored — 21 October 2026
+### Post-change Supabase advisor snapshot — 22 October 2026, 14:50 UTC
 
-- The existing test account `scenesource1@gmail.com` completed the recovery email flow, but subscriber sign-in displayed “This account is not an active member of a TradeFlow business.”
-- TEST database inspection found tenant `test-test` (`e89c35a7-7518-45f8-b1f7-6324a0eba458`) had status `archived`; its owner membership was already `active`; its subscription was `cancelled` but explicitly marked `billing_provider=manual`, `provider_status=complimentary`, and `metadata.complimentary=true`.
-- Restored only this existing TEST workspace: set tenant status to `active`, cleared `archived_at`, restored the same manual complimentary subscription to `active`, cleared `ended_at`, and removed close-only metadata (`closed_at`, `close_reason`, `closed_by_platform_owner`). Kept the existing account, tenant, membership, plan, and complimentary billing markers. No Stripe fields or payment data changed.
-- A read-after-write query confirmed tenant `active`, owner membership `active`, subscription `active`, `billing_provider=manual`, `provider_status=complimentary`, and `metadata.complimentary=true`.
-- Next verification: user should sign in on the TEST subscriber login page with `scenesource1@gmail.com` and the newly set password. Confirm dashboard loads the existing `test test` workspace. Do not create a duplicate account. LIVE remains untouched.
+- Security: 8 anonymous-executable SECURITY DEFINER RPCs (reviewed as intended public catalogue/published-content/plan endpoints); 167 authenticated-executable SECURITY DEFINER functions requiring continued individual review; `pg_net` extension reported in `public`; leaked-password protection disabled.
+- Performance: 65 unindexed foreign keys, 166 RLS init-plan warnings, 64 unused-index notices, 14 multiple-permissive-policy warnings, 3 duplicate-index notices, and an informational Auth connection-allocation warning.
+- These advisor findings are not proof of exploitable vulnerabilities on their own. Do not blanket-revoke RPCs or drop indexes. Prioritize authorization review of privileged functions and verify each index/policy against actual query plans and workload before changing it.
 
 
-## TEST complimentary subscriber end-to-end checkpoint — 21 October 2026
 
-- Browser evidence confirms `scenesource1@gmail.com` successfully signed out and signed back in after password recovery; the existing `test test` subscriber dashboard loaded and showed the account as business owner.
-- The latest platform-owner dashboard screenshot confirms both `test test` (`scenesource1@gmail.com`) and `TradeFlow Complimentary Test` (`leannelauren07@gmail.com`) are visible in the Subscriber businesses list, each with Enhanced plan, subscription `active`, and workspace status `active`.
-- This verifies subscriber password recovery/sign-in persistence and owner-list visibility for the repaired TEST workspace. The screenshot does not independently prove resend does not create duplicates; that remains untested. Do not send additional recovery links unless needed.
-- TEST only. LIVE remains untouched. Continue with a read-only database duplicate check and confirm complimentary/manual billing markers for the repaired workspace; do not create or close another subscriber to test this.
+## Pokémon TCG catalogue — LIVE sync, 26 October 2026
+
+- Target: LIVE Supabase project `gxsrajtqzdjvmceqcpgv`; TEST source: `nnsshnfkjcflucjrftzi`. This is a collector-focused card-identification catalogue, not a valuation source. Do not import Pokémon card prices or let collector records enter ordinary buying/valuation flows without a separately approved design.
+- LIVE was reconciled against TEST by stable `card_key`, not by row counts alone. Added 5 set metadata records and 10,583 card records missing from LIVE, preserving existing LIVE-only records. LIVE now has 39 source-family categories, 574 sets, 42,453 cards and 1,895 printing/variant records. TEST has 39 categories, 569 sets, 42,395 cards and 1,071 variants.
+- Verification: every TEST card key is now present in LIVE; every TEST variant composite key (`card_key + variant_key`) is present in LIVE; all LIVE sets have a category assignment. The 58 LIVE-only cards belong to `asia:BW:path:BW8a` and are exact duplicates of the 58 cards under `asia:BW:BW8a` (same collector number, name, language, source path and blob SHA). They were retained to avoid destructive cleanup; resolve the duplicate set/card records only in a separately approved, reversible cleanup.
+- The LIVE master catalogue already has a `Pokémon Trading Cards` category and 327 related product rows. They are all `customer_visible=false` and have no duplicate `package_key` values. Do not bulk-create 42k master catalogue products or expose collector-only cards to customer buying flows; the dedicated `pokemon_tcg_*` tables remain the authoritative collector catalogue.
+- Data-quality follow-up: 23,604 LIVE cards have null `card_category`, often because the retained source payload is a set-summary record rather than full card detail. Do not guess card type. Retrieve and validate full card details, then assign `Pokemon`, `Trainer` or `Energy` where source evidence supports it. Some set metadata is still `source_retrieved` or `needs_review`; counts alone do not prove source completeness.
+- No card prices, market evidence, tenant data or valuation logic were changed. No existing records were deleted or overwritten. Import batches used `ON CONFLICT DO NOTHING` and preserved existing LIVE IDs/relationships.
+
+
+## 27 October 2026 — Separate automatic cash/trade-in and catalogue verification
+
+The merged PR #186 at `ff68b656c1e523d1144ff6c02fcef8fd3239d178` adds per-condition trade-in percentage controls in the Buying Catalogue. The current `production` head inspected for this continuation was `3cbba7add8a406c7c03cd0660ba3a3c80ea50742`. The database has corresponding pricing RPC parameters in both LIVE (`gxsrajtqzdjvmceqcpgv`) and TEST (`nnsshnfkjcflucjrftzi`).
+
+### Verified contract
+- `configure_master_catalogue_buying_product_pricing` persists five cash percentages, five trade-in percentages, and the separate manual override columns.
+- `get_tenant_buying_catalogue_page` exposes the saved trade-in percentage fields so the editor can reload them; `get_tenant_buying_catalogue_facets` filters My Buying Catalogue to configured products.
+- `calculate_buying_item_valuation` uses UK-new GBP evidence for both calculations. Cash amount is based on its cash percentage and trade-in amount on its separate trade-in percentage. Missing evidence returns the existing manual valuation path.
+- `customer_get_offers_v2` returns cash and trade-in prices, and `customer_accept_offer_choice` checks and records the customer's chosen mode and value.
+- `subscriber_credit_trade_in` retains the accepted trade-in plus post-inspection `final_offer_required` checks. Do not loosen these gates.
+- Pokémon master product counts are 23,780 in both environments. No all-products add/configuration should be run; selected cards require an explicit narrow product selection and verified tenant context.
+- TEST has two tenants/52 tenant buying products and LIVE one tenant/243 buying products; these are environment-specific business records and must not be synced.
+
+### Work performed on branch
+Branch `fix/automatic-tradein-pokemon-condition-20261027` contains the dual-price/customer-offer fixes plus Pokémon-specific grade labels in the pricing editor (Buying Catalogue script v60; customer dashboard v153; buying dashboard v79). Pokémon cards use the five existing per-product condition slots with grade-specific labels and valuation mapping; standard electronics condition labels are unchanged. TEST has the Pokémon grade-mapping, original-grade preservation, and subscriber catalogue visibility migrations applied. Those fixes do not make products publicly visible. Migration files are committed on the branch. See checkpoint `CHECKPOINTS/2026-10-26-pokemon-tcg-live-sync.md`.
+
+### Open verification / not yet complete
+- End-to-end browser acceptance of both prices with a fresh TEST-only item remains outstanding.
+- Actual save/refresh verification of separate percentages remains outstanding.
+- Specific-card add and My Buying Catalogue confirmation remains outstanding.
+- Pokémon-specific condition choices and valuation-slot mapping are implemented in the branch and TEST. End-to-end persistence through inspection, inventory and sales still requires a signed-in TEST flow; standard electronics condition labels remain unchanged.
+- Current Cloudflare deployments for latest production and TEST must be verified before saying this branch is live.
+
+
+### Independent cash and trade-in calculation follow-up (2026-10-27)
+TEST migration `20261027235942_independent_cash_tradein_condition_overrides` fixes the valuation early-return path: a per-condition cash manual override no longer suppresses a separately configured trade-in percentage when UK New GBP evidence exists. Cash and trade-in values are resolved independently, each using its own manual override when present; missing research still falls back to manual handling. Read-only TEST function checks passed for original Pokémon grade preservation, independent cash/trade-in calculations and manual fallback. Signed-in end-to-end TEST and Cloudflare runtime verification remain outstanding; do not promote to LIVE until those checks pass.
+
+### Pokémon research prerequisite
+
+- TEST evidence check: the active English Pokémon master catalogue has 23,780 cards, but there are currently zero active shared-market-evidence rows for Pokémon and zero Pokémon buying products configured for the selected TEST tenant. Therefore, percentage-based Pokémon valuation will correctly remain on manual fallback until valid UK New GBP evidence exists; do not insert guessed prices or treat collector metadata as pricing evidence.
+
+
+## Multi-item valuation consolidation — 28 October 2026
+
+### Product and workflow decision
+A customer may submit multiple products within one buying request. The request is the grouping boundary; each product remains a separate `buying_items` record with its own item reference, valuation amounts, offer, stage, shipping/receipt/inspection lifecycle, and downstream acquisition/inventory record. Do not merge item records or infer that two items belong together solely because they share a customer.
+
+### Customer portal
+- Initial/revised offers for all items in a request are presented in one combined quote when every item in that request has a current published initial/revised offer.
+- The quote displays item-level cash and trade-in values plus combined totals.
+- Customers can accept cash or trade-in for an individual item, refuse an individual item, or use the whole-quote actions to accept all for cash, accept all for trade-in, or refuse the complete quote.
+- Individual actions use the existing per-offer RPCs (`customer_accept_offer_choice` / `customer_refuse_offer`). Whole-quote actions use `customer_respond_to_combined_offer`.
+- Final offers after inspection remain item-specific. Separate buying requests remain separate quotes. A mixed response may result in some items proceeding while others are refused; downstream state must be checked per item.
+
+### Subscriber Buying workspace
+- Items sharing a request are grouped under a combined valuation heading while retaining individual item cards and item workspaces.
+- In a multi-item request, the item valuation panels are stacked before research evidence and photographs.
+- One “Submit total valuations” action is shown for eligible multi-item requests. It collects each item's cash/trade-in inputs and submits each item through the existing manual-valuation RPC sequentially, preserving per-item values.
+- **Important implementation limitation:** this subscriber-side multi-item submission is a sequence of per-item RPC calls, not one atomic database transaction. If a later call fails, an earlier item's offer may already have been created. Treat this as a known hardening item until an atomic batch RPC is implemented and tested.
+
+### Database and separation rules
+- The request-level RPC `customer_respond_to_combined_offer(p_tenant_id, p_buying_request_id, p_decision, p_offer_mode, p_response_notes)` is installed on TEST and LIVE. It validates ownership and offer eligibility and applies whole-request decisions in one database transaction.
+- The per-item RPCs remain in use for mixed decisions. Do not change them to request-wide decisions.
+- Keep TEST and LIVE tenant/customer/request data separate. Only promote code and documentation; do not copy test records into LIVE.
+- Keep item-level workflow transitions and event logging. Receiving, inspection, final offers, payments and inventory remain per item.
+
+### Changes and verification record
+- Updated `customer-dashboard.js` and `buying-dashboard.js` on `cloudflare-test` and `production`.
+- Syntax checks passed for the four dashboard JavaScript files after the latest changes.
+- Screenshot/browser review confirmed the combined customer quote, item-level decision buttons, whole-quote buttons, grouped subscriber request, stacked item valuation panels and single submit control.
+- Not yet verified end-to-end: accepting one item while refusing another through all downstream stages; whole-quote response under a real authenticated TEST session; shipping through payment for every mixed-state case; atomic rollback for multi-item manual valuation submission.
+- Therefore status is **implemented and UI-reviewed; partial verification only**. Do not describe the entire workflow as fully end-to-end tested or launch-certified.
+
+### Test checklist before closing the work
+1. In TEST, submit a request with two items and enter different cash/trade-in values for each.
+2. Confirm one subscriber submission creates an offer for each item and the customer sees correct per-item values and totals.
+3. Accept one item and refuse the other; verify each item independently in customer and subscriber dashboards.
+4. Test accept-all cash, accept-all trade-in and refuse-all on separate safe TEST requests.
+5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
+6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
+7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## SEO settings in the subscriber Website Builder — 30 October 2026
+
+Inspect `website-builder.js`, `website-builder.css`, and `public-site.js`. The SEO editor is rendered by `renderPageManager()` in the Pages sidebar and follows the selected page. Homepage values are `site.homepage.seo_title` and `site.homepage.seo_description`; other page values are `site.pages[].seo_title` and `site.pages[].seo_description`. The existing `site_revisions.content` JSON is the persistence layer; do not add a separate SEO table or migration for these fields.
+
+The existing Save Draft / Publish path persists the JSON. The public runtime resolves metadata for the active route and sets the document title, meta description, Open Graph title and description. Confirm both the builder and public runtime when testing; finding fields in JSON alone does not prove SEO is live. Keep LIVE and TEST subscriber records separate. This feature does not generate canonical URLs, XML sitemaps, robots directives or structured data.

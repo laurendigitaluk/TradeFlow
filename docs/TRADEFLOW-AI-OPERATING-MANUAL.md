@@ -2745,3 +2745,17 @@ The product catalogue evidence stream is separate from product-master creation a
 **Quality control:** direct-source checks take priority over snippets. Record source, condition and delivery/Buyer Protection caveats. Reject questionable seller/location/variant matches and anomalous used prices above the new retail price rather than using them to reduce missing counts. An out-of-stock refurb page is historical context, not an active listed asking price. A database insert is not complete until its returned row and subsequent read-back are verified in both environments.
 
 Latest verified Batch 96 database position (30 October 2026): TEST 160 mobile masters / 159 active / 156 visible / 276 active UK-used rows; LIVE 156 mobile masters / 156 active / 154 visible / 274 active UK-used rows. Active products with any active UK-used evidence: TEST 154/159; LIVE 152/156. Re-query before the next batch; these values replace earlier mobile-catalogue snapshots.
+
+## Mobile-phone catalogue — Batch 97 exception sweep, 30 October 2026
+
+Rechecked all currently active missing-UK-used-evidence products in TEST and LIVE. This is a nine-environment-record sweep (five TEST gaps, four LIVE gaps; four shared products), rather than a full ten because only nine active environment gaps remain. No evidence inserts were made: every candidate failed at least one acceptance criterion.
+
+- Apple iPhone 18 256GB (TEST only, hidden): the base iPhone 18 is not released; current reporting says spring 2027. No used-market listing exists to accept.
+- Motorola Edge 70 Plus 256GB (TEST + LIVE): surfaced exact-variant offers were new/sealed, including a UK version; not used/refurbished.
+- OPPO Find X10 256GB (TEST + LIVE, hidden): surfaced exact-variant UK listings were new; no qualifying used listing.
+- OPPO Find X10 Pro Max 512GB (TEST + LIVE): eBay UK search surfaced seller newdays4u at £1,047.67/£1,073.08, but the direct search detail labels the listing “Opened – never used”; seller had 100% positive feedback from 15 feedback entries. Excluded because the requested evidence requires used/refurbished condition. Other offers were new/sealed or seller/location/condition could not be independently established.
+- OPPO Reno16 F 5G 256GB (TEST + LIVE): eBay UK exact-variant offers were explicitly new/sealed (e.g. £439.99); excluded.
+
+No database changes were made. Fresh current totals: TEST 160 mobile masters, 159 active, 156 visible, 541 active evidence rows, 274 active uk_used rows, 79 listed uk_used; LIVE 156, 156, 154, 535, 272, 79 respectively. Products with active uk_used evidence: TEST 154/159; LIVE 152/156. Remaining active gaps: TEST 5 (4 visible), LIVE 4 (3 visible). Evidence row totals decreased by two in each environment since the Batch 96 snapshot, but coverage counts and listed-used totals did not change; this appears to be concurrent evidence maintenance, not an action in Batch 97.
+
+Source references checked: eBay UK search/listing pages for Motorola Edge 70 Plus, OPPO Find X10, OPPO Find X10 Pro Max and OPPO Reno16 F; official OPPO UK series hub and model details; Tech Advisor iPhone 18 release timeline. No source was promoted into Supabase because none met all evidence criteria.

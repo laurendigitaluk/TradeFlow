@@ -1551,3 +1551,14 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## Subscriber website SEO data path — 30 October 2026
+
+- UI: `website-builder.html` mounts `website-builder.js`; `renderPageManager()` provides SEO title and meta description controls for the selected page.
+- Homepage: `buildContent()` writes `site.homepage.seo_title` and `site.homepage.seo_description`.
+- Internal pages: SEO values remain on each `site.pages[]` object as `seo_title` and `seo_description`.
+- Database: existing `public.site_revisions.content` JSONB, existing draft update and `publish_site_revision` RPC. No schema change is required.
+- Public rendering: `public-site.js` applies document title, meta description and Open Graph title/description for the active route.
+- Verify Home and an internal page through Save Draft, reload, Publish, then inspect the rendered page head. Confirm an empty description removes the tag and does not retain a previous page's description.
+- Keep LIVE and TEST tenant records separate; do not copy subscriber content between environments.

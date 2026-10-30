@@ -2329,3 +2329,8 @@ Operate against cloudflare-test and TEST Supabase nnsshnfkjcflucjrftzi only. Pre
 When debugging, inspect website-builder.js functions renderCarouselControls, renderCarouselEditor, buildContent, loadContent, uploadImage, and removeImage; inspect public-site.js functions renderPublicCarousel, bindPublicCarousels, renderHome, renderBuyingPage, renderShopPage, renderContentPage, and applyContent. Images use the existing tradeflow-site-media bucket and media_assets. Confirm the browser's active Supabase URL from the TEST Worker and subscriber auth context; never use retired project twfbmjwwqzxdxvclxbun.
 
 Do not promote to LIVE until TEST deployment and the complete editor → save/reload → preview → publish → public interaction regression pass succeeds. Include slide image upload/remove, links, reordering, all three modes, arrow/dot/swipe/keyboard navigation, autoplay pause, mobile layout, and reduced-motion checks. Git commit does not prove Cloudflare deployment.
+
+
+### Carousel TEST hardening follow-up — 30 October 2026
+
+Image cleanup now traverses homepage carousel data as well as page carousel data. Public dots are rebuilt after viewport changes; image mode class names align with the CSS; horizontal swipe supports vertical page scrolling; autoplay pauses when the tab is hidden and respects reduced-motion. The TEST subscriber-auth source now uses only the current TEST Supabase project for TEST/local hosts and contains no retired project reference. Re-run the documented TEST browser acceptance list before promotion.

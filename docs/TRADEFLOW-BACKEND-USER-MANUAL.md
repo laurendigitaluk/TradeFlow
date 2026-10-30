@@ -1562,3 +1562,7 @@ A customer may submit multiple products within one buying request. The request i
 - Public rendering: `public-site.js` applies document title, meta description and Open Graph title/description for the active route.
 - Verify Home and an internal page through Save Draft, reload, Publish, then inspect the rendered page head. Confirm an empty description removes the tag and does not retain a previous page's description.
 - Keep LIVE and TEST tenant records separate; do not copy subscriber content between environments.
+
+
+### TEST/LIVE runtime endpoint correction — 30 October 2026
+The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.

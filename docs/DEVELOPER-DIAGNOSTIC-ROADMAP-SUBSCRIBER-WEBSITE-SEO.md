@@ -34,3 +34,15 @@ Save/reload Home and internal-page SEO in TEST; publish; inspect title, descript
 
 ### TEST/LIVE runtime endpoint correction — 30 October 2026
 The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.
+
+
+## LIVE server-rendered subscriber SEO — 30 October 2026
+
+- LIVE Worker source change: `worker/index.js`, commit `8c441953c69d6c1b73e4a9593ba82f10a7cddf62` (production branch).
+- On subscriber custom-domain requests routed to `/public-site.html`, the Worker now looks up exactly one row in the environment-specific `published_site_index`, filtered by the incoming hostname. It reads only the published `content` JSON and selects homepage SEO or the matching enabled page's SEO fields.
+- The Worker injects the title, meta description, Open Graph title and Open Graph description into the initial HTML response. Values are HTML-escaped. If the lookup fails, the original HTML response is returned; existing `public-site.js` metadata handling remains as a client-side fallback.
+- The lookup uses the Worker environment's matching Supabase URL/key (TEST variables on TEST, LIVE variables on production). It does not query all tenants, alter published content, or copy data between projects. Responses remain no-store.
+- LIVE read-only verification before the code change: `published_site_index` contained the active hostname `www.scenesource.co.uk`, tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`, revision 7, published at `2026-10-30 22:25:54.985446+00`; homepage SEO title and description were both the agreed temporary value `test`. These values were not changed.
+- The Cloudflare Production deployment visible around 30 minutes before the user's screenshot corresponded to commit `05cc0ff71eee93647bffacea1d55c68b9500bd34`; that commit changed documentation only and explicitly recorded no Worker deployment/code changes. It did not include this SEO implementation.
+- New SEO code was committed to LIVE `production` at `8c441953c69d6c1b73e4a9593ba82f10a7cddf62`. Cloudflare's post-commit deployment and raw HTTP response still require verification. Do not describe this as live until the deployed Worker version and returned HTML are checked.
+- Next verification: confirm Cloudflare Production deployed the new commit; request `https://www.scenesource.co.uk/` and inspect the raw response source for the title, description and OG tags; inspect an internal published page; confirm an unknown hostname or missing index row falls back safely; check no TEST data is read by production.

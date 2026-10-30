@@ -992,3 +992,10 @@ A customer may submit multiple products within one buying request. The request i
 
 ### Subscriber website SEO settings — 30 October 2026
 The subscriber Website Builder exposes SEO page title (maximum 70 characters) and meta description (maximum 320 characters) in the Pages panel for the selected page, including Home. Homepage values persist at `site.homepage.seo_title` and `site.homepage.seo_description`; individual page values persist on their `site.pages[]` objects. The published subscriber runtime applies the active page title, meta description and Open Graph title/description. Empty descriptions remove stale meta tags. TEST implementation is on `cloudflare-test` and uses the TEST Supabase endpoint `https://nnsshnfkjcflucjrftzi.supabase.co`; do not copy LIVE endpoint values or tenant data into TEST. Verify Cloudflare deployment and browser behaviour separately.
+
+
+## Website carousel data and media — TEST build — 30 October 2026
+
+Carousel configuration is stored in the existing site_revisions.content JSON document. Home uses site.homepage.carousel; other pages use site.pages[].carousel. No relational schema change is needed. Save Draft patches the existing draft revision; Publish continues through the existing publish_site_revision RPC and published revision/index flow. Carousel images use the existing tenant-owned tradeflow-site-media public Storage bucket and media_assets metadata. No new Edge Function or service credential is introduced.
+
+TEST only: cloudflare-test / tradeflow-test / Supabase nnsshnfkjcflucjrftzi. Do not use retired TEST project twfbmjwwqzxdxvclxbun, do not copy subscriber/site content into LIVE, and do not promote until browser and deployment checks pass.

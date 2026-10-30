@@ -1897,3 +1897,17 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## Adding a Carousel / Slider to your website (TEST feature)
+
+The Website Builder has one Fully Editable template. A Carousel / Slider is an optional component you can add to a page without changing the template or your existing drag-and-drop layout.
+
+1. Open the page you want to edit in Website Builder.
+2. In the Carousel / Slider panel, choose Add carousel to this page.
+3. Choose Image Gallery, Sliding Cards or Full Content Slides.
+4. Add slides, upload images, and edit each slide's heading, description and button text directly in the preview.
+5. Choose where each button links, reorder slides, and select arrows/dots, slide/fade transition and optional autoplay.
+6. Save Draft, preview the website, and publish when satisfied.
+
+The feature is currently being built and tested in TEST. It is not yet approved for LIVE. Existing website content and backgrounds remain separate from the carousel settings.

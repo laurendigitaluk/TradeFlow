@@ -50,3 +50,13 @@ A later attempt to insert two researched references (Xbox One 1TB item 188496733
 3. Find exact standard Xbox 360 500GB and Xbox One 1TB sales. Avoid special editions, bundles, and capacity-ambiguous listings.
 4. Recheck provisional Xbox Series S 512GB item 227560758629.
 5. Maintain TEST/LIVE shared evidence parity and do not merge divergent branches wholesale.
+
+
+## Subsequent verified TEST/LIVE evidence inserts — 30 October 2026
+Two additional exact UK completed-sale records have now been inserted separately into TEST and LIVE and read back successfully in both databases:
+- Xbox One 1TB: £52.54, sold 20 July 2026, eBay item 188496733818; key `ebayuk-188496733818-xboxone-1tb-20260720`. TEST product `781b9bbc-8b73-412c-919d-d68d979e10d8`; LIVE product `e419eb99-c430-4af7-893e-0e997514e337`. Source: https://www.ebay.co.uk/itm/188496733818
+- Xbox Series X Digital Edition 1TB: £329.99, sold 25 June 2026, eBay item 168372673741; key `ebayuk-168372673741-xboxseriesx-digital-1tb-20260625`. TEST product `5fc70dc3-5bf9-4e26-b888-abae5b12c8c8`; LIVE product `bd71b9e9-50fb-4e2a-9226-92dc38fd21eb`. Source: https://www.ebay.co.uk/itm/168372673741
+
+The Xbox One 1TB and Xbox Series X Digital Edition 1TB now each have two active evidence rows in both environments. The All-Digital Xbox One S 1TB has two active evidence rows in both environments following its earlier £40.00 record. TEST/LIVE parity for these added records is confirmed by source key, price, date, active status and mapped product identity.
+
+The database has no public-schema table with a name containing `memory` or `checkpoint`; structured project memory/checkpoint is therefore maintained in GitHub `PROJECT-MEMORY/` and `CHECKPOINTS/`, not by inventing a Supabase table.

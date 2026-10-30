@@ -39,7 +39,7 @@ async function injectSubscriberSeo(response, env, hostname, pathname) {
     endpoint.searchParams.set("hostname", "eq." + hostname);
     endpoint.searchParams.set("limit", "1");
     const lookup = await fetch(endpoint.toString(), {
-      headers: { apikey: supabaseKey, Authorization: "Bearer " + supabaseKey },
+      headers: { apikey: supabaseKey },
     });
     if (!lookup.ok) return response;
     const rows = await lookup.json();

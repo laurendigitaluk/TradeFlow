@@ -365,26 +365,26 @@ function defaultHeroElements(){
  return out;
 }
 function heroStyle(el){
- const style=\`left:\${Number(el.x)||0}%;top:\${Number(el.y)||0}%;width:\${Number(el.w)||20}%;height:\${Number(el.h)||20}%;z-index:\${Number(el.z)||1};\`;
- if(el.type==='text')return style+\`font-family:\${JSON.stringify(el.font||'Inter')};font-size:\${Math.max(8,Number(el.size)||24)}px;color:\${el.color||'#17212b'};font-weight:\${Number(el.weight)||400};text-align:\${HERO_ALIGN.includes(el.align)?el.align:'left'};letter-spacing:\${Number(el.letterSpacing)||0}px;line-height:\${Math.max(.7,Number(el.lineHeight)||1.2)};\`;
- return style+\`border-radius:\${Math.max(0,Number(el.radius)||0)}px;\`;
+ const style=`left:${Number(el.x)||0}%;top:${Number(el.y)||0}%;width:${Number(el.w)||20}%;height:${Number(el.h)||20}%;z-index:${Number(el.z)||1};`;
+ if(el.type==='text')return style+`font-family:${JSON.stringify(el.font||'Inter')};font-size:${Math.max(8,Number(el.size)||24)}px;color:${el.color||'#17212b'};font-weight:${Number(el.weight)||400};text-align:${HERO_ALIGN.includes(el.align)?el.align:'left'};letter-spacing:${Number(el.letterSpacing)||0}px;line-height:${Math.max(.7,Number(el.lineHeight)||1.2)};`;
+ return style+`border-radius:${Math.max(0,Number(el.radius)||0)}px;`;
 }
 function renderHeroCanvasEditor(){
  const elements=Array.isArray(heroElements)?heroElements:[];
  const markup=elements.map(el=>{
   const selected=selectedHeroElementId===el.id?' selected':'';
   if(el.type==='text'){
-   return \`<div class="hero-element hero-text-element\${selected}" draggable="false" data-hero-id="\${esc(el.id)}" style="\${esc(heroStyle(el))}">
-     <div class="hero-element-label">Text</div><div class="hero-text-content" contenteditable="true" data-hero-text="\${esc(el.id)}">\${esc(el.text||'')}</div><span class="hero-resize" data-hero-resize="\${esc(el.id)}"></span>
-   </div>\`;
+   return `<div class="hero-element hero-text-element${selected}" draggable="false" data-hero-id="${esc(el.id)}" style="${esc(heroStyle(el))}">
+     <div class="hero-element-label">Text</div><div class="hero-text-content" contenteditable="true" data-hero-text="${esc(el.id)}">${esc(el.text||'')}</div><span class="hero-resize" data-hero-resize="${esc(el.id)}"></span>
+   </div>`;
   }
-  return \`<div class="hero-element hero-image-element\${selected}" draggable="false" data-hero-id="\${esc(el.id)}" style="\${esc(heroStyle(el))}">
-    <div class="hero-element-label">\${esc(el.role==='logo'?'Logo':el.role==='banner'?'Banner':'Image')}</div>
-    \${el.image_url?\`<img src="\${esc(el.image_url)}" alt="\${esc(el.alt||'')}" style="object-fit:\${el.objectFit==='cover'?'cover':'contain'}">\`:'<button type="button" class="hero-image-empty" data-hero-upload="'+esc(el.id)+'">Add image</button>'}
-    <span class="hero-resize" data-hero-resize="\${esc(el.id)}"></span>
-  </div>\`;
+  return `<div class="hero-element hero-image-element${selected}" draggable="false" data-hero-id="${esc(el.id)}" style="${esc(heroStyle(el))}">
+    <div class="hero-element-label">${esc(el.role==='logo'?'Logo':el.role==='banner'?'Banner':'Image')}</div>
+    ${el.image_url?`<img src="${esc(el.image_url)}" alt="${esc(el.alt||'')}" style="object-fit:${el.objectFit==='cover'?'cover':'contain'}">`:'<button type="button" class="hero-image-empty" data-hero-upload="'+esc(el.id)+'">Add image</button>'}
+    <span class="hero-resize" data-hero-resize="${esc(el.id)}"></span>
+  </div>`;
  }).join('');
- return \`<section class="editable-hero-canvas" id="hero-canvas">
+ return `<section class="editable-hero-canvas" id="hero-canvas">
    <div class="hero-canvas-toolbar">
     <strong>Fully editable homepage</strong>
     <button type="button" data-add-hero="text">Add text box</button>
@@ -393,14 +393,14 @@ function renderHeroCanvasEditor(){
     <button type="button" data-add-hero="banner">Add banner</button>
     <span>Drag boxes to position them · drag the corner to resize</span>
    </div>
-   <div class="hero-canvas-stage">\${markup||'<div class="hero-canvas-empty">Use the buttons above to build your homepage.</div>'}</div>
- </section>\`;
+   <div class="hero-canvas-stage">${markup||'<div class="hero-canvas-empty">Use the buttons above to build your homepage.</div>'}</div>
+ </section>`;
 }
 function renderHeroElementControls(){
  const box=$('hero-element-controls');if(!box)return;
  const el=heroElements.find(x=>x.id===selectedHeroElementId);
  if(!el){box.innerHTML='<div class="control-title">Selected element</div><small>Select a text or image box on the homepage to edit it.</small>';return}
- const common=\`<button type="button" data-hero-delete="\${esc(el.id)}">Delete selected</button>\`;
+ const common=`<button type="button" data-hero-delete="${esc(el.id)}">Delete selected</button>`;
  if(el.type==='text'){
   box.innerHTML='<div class="control-title">Selected text</div><small>Change the selected text box without changing its position.</small>'+
    '<label class="select-control"><span>Font</span><select data-hero-style="font">'+HERO_FONTS.map(f=>'<option '+(el.font===f?'selected':'')+'>'+f+'</option>').join('')+'</select></label>'+

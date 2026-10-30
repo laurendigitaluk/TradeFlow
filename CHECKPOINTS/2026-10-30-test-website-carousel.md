@@ -40,3 +40,8 @@ website-builder.html/js/css, public-site.html/js/css. Cache-bust values incremen
 - Static builder/public/auth JavaScript parse checks passed; builder/public CSS brace checks passed. Read-only TEST database query: 3 site_revisions rows, all 3 draft, 0 published; latest revision timestamp unchanged at 2026-10-30 18:57:12 UTC. No TEST database rows were changed for this feature.
 - Deployment/browser verification remains pending: no Cloudflare deployment connection is available in this session and the public TEST Worker asset endpoint could not be fetched for verification. Do not claim deployed or promote to LIVE until the TEST Worker serves these assets and acceptance tests pass.
 - LIVE code, database, tenant content and published websites remain untouched.
+
+
+## Worker routing review
+
+Read-only inspection of TEST wrangler.jsonc and worker/index.js confirmed the tradeflow-test Worker has TRADEFLOW_ENV=test, current TEST Supabase URL/key variables, ASSETS from the repository root, and JavaScript LIVE-to-TEST endpoint rewriting. subscriber-auth.js now selects the current TEST project. This confirms source configuration only; deployed Worker version remains unverified because no Cloudflare deployment connection or accessible public runtime was available.

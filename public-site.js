@@ -422,6 +422,15 @@ function renderContentPage(site,p){
  return renderPublicNav(site,window.__tradeflowBuyingCatalogue||{})+'<main class="public-page"><div class="page-title-block"><h1>'+esc(p.title||'Page')+'</h1><div class="content-body">'+esc(p.body||'').replace(/\n/g,'<br>')+'</div>'+image+'</div>'+renderPageTiles(site,p)+'</main>'+renderFooter(site);
 }
 
+function setPublicMetaTag(selector,attribute,value){
+ const existing=document.querySelector(selector);
+ if(!String(value||'').trim()){if(existing)existing.remove();return;}
+ const tag=existing||document.createElement('meta');
+ const match=selector.match(/\\[(?:name|property)=\"([^\"]+)\"\\]/);
+ if(match)tag.setAttribute(attribute,match[1]);
+ tag.setAttribute('content',String(value).trim());
+ if(!existing)document.head.appendChild(tag);
+}
 function applyContent(content){
  window.__tradeflowSiteContent=content;
  const site=Object.assign({},content?.site||{});if(window.__tradeflowPublicProfile?.business_name)site.name=window.__tradeflowPublicProfile.business_name;
@@ -440,7 +449,14 @@ function applyContent(content){
  document.body.dataset.backgroundMode=backgroundMode;
  document.body.dataset.font=typography.font||'Inter';
  document.body.dataset.heroSize=typography.hero||'large';
- document.title=site.name||'Your business';
+ const seoPage=page==='home'?null:(Array.isArray(site.pages)?site.pages:[]).find(x=>x.slug===page&&x.enabled!==false);
+ const defaultPageTitle=page==='home'?(site.name||'Your business'):(seoPage?((seoPage.title||'')+' | '+(site.name||'Your business')):(site.name||'Your business'));
+ const seoTitle=String((page==='home'?site.homepage?.seo_title:seoPage?.seo_title)||'').trim()||defaultPageTitle;
+ const seoDescription=String((page==='home'?site.homepage?.seo_description:seoPage?.seo_description)||'').trim();
+ document.title=seoTitle;
+ setPublicMetaTag('meta[name=\"description\"]','name',seoDescription);
+ setPublicMetaTag('meta[property=\"og:title\"]','property',seoTitle);
+ setPublicMetaTag('meta[property=\"og:description\"]','property',seoDescription);
  const catalogue=window.__tradeflowBuyingCatalogue||{categories:[],products:[]};
  const listings=window.__tradeflowListings||[];
  let html='';

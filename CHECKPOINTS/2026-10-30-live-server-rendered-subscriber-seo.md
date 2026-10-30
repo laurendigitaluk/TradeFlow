@@ -17,7 +17,8 @@ Enable subscriber SEO metadata in the initial HTML response for published custom
 The Cloudflare Production screenshot showed a deployment approximately 30 minutes before 22:59 UTC, titled “Log further Xbox 360 500GB sold-listing research”. It matched GitHub commit `05cc0ff71eee93647bffacea1d55c68b9500bd34` (23:00:06 UTC). Its diff changed documentation only and stated no Worker/application code or deployment changes. It did not contain the SEO runtime fix.
 
 ## Implementation
-- Commit: `8c441953c69d6c1b73e4a9593ba82f10a7cddf62`.
+- Initial implementation commit: `8c441953c69d6c1b73e4a9593ba82f10a7cddf62`.
+- Follow-up correction commit: `02dbc30fa8c6bde9d723fa25d179e685e864dfa2`; public REST lookup sends the Supabase publishable key in the `apikey` header only, matching the existing public-site client pattern (no Bearer token).
 - File: `worker/index.js` only.
 - Subscriber custom-domain HTML requests routed to `/public-site.html` now look up exactly one `published_site_index` row by incoming hostname, using the Worker environment's corresponding Supabase URL/key.
 - The Worker reads only that row's published content, resolves homepage or enabled page SEO, HTML-escapes values, and inserts title, description and Open Graph title/description into the initial response.

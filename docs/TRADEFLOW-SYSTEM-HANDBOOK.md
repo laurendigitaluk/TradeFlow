@@ -1833,3 +1833,12 @@ No Supabase schema, rows, tenant content, SEO values, LIVE code, Stripe settings
 - TEST implementation files: website-builder.html, website-builder.js, website-builder.css, public-site.html, public-site.js, public-site.css; TEST Worker remains tradeflow-test on cloudflare-test, with TEST Supabase nnsshnfkjcflucjrftzi. The Worker performs environment URL/key substitutions; public-site source now names the current TEST project rather than the retired project.
 - Verification gates before LIVE promotion: deploy TEST Worker; verify one Fully Editable template only; add/configure/remove carousel on Home and a content page; upload/replace/remove images; Save Draft/reload; Preview draft; Publish; check public arrows/dots/swipe/keyboard/autoplay pause and reduced-motion; confirm TEST requests stay on TEST Supabase and existing hero/header/background/SEO/Buying/Selling flows regress cleanly. A Git commit alone is not deployment or browser verification.
 - Restore branch: checkpoint-pre-carousel-test-20261030. No LIVE branch, LIVE Supabase, subscriber content, domains, Stripe, or tenant records are modified by this TEST build.
+
+
+### Carousel TEST hardening follow-up — 30 October 2026
+
+- The builder image-reference collector now includes the homepage carousel as well as page carousels, preventing shared carousel media from being deleted while still referenced.
+- Public card-navigation dots are rebuilt at responsive breakpoints; image-gallery mode uses its own image-only layout class; touch gestures are restricted to horizontal interaction while preserving vertical page scroll. Autoplay pauses when the document is hidden and respects reduced-motion settings.
+- TEST subscriber authentication no longer contains the retired TEST project fallback. The TEST Worker uses current TEST Supabase nnsshnfkjcflucjrftzi; the production branch retains LIVE configuration separately.
+- Builder guidance now describes one editable template with background choices, rather than instructing subscribers to choose between multiple templates.
+- Final static JavaScript parse checks passed for builder, public renderer and subscriber auth; CSS brace-balance checks passed. TEST database remains read-only for this feature.

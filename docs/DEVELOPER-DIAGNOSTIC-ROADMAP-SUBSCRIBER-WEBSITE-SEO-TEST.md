@@ -41,3 +41,18 @@
 
 ## Known state at checkpoint
 SEO code and documentation have been ported to `cloudflare-test`. Cloudflare deployment and authenticated browser acceptance are still outstanding. GitHub commit presence alone does not prove the TEST Worker is updated.
+
+
+## TEST Website Builder JavaScript parse repair — 30 October 2026
+
+The TEST Website Builder was failing before its first website-data request. The first JavaScript parse failure was in the legacy editable homepage canvas helpers: `heroStyle()` and `renderHeroCanvasEditor()`. Literal backslashes had been added before template-literal delimiters and interpolation markers, making `website-builder.js` invalid JavaScript. This fault was already present in the parent of the 30 October SEO port; the SEO controls did not introduce it.
+
+Minimal repair on `cloudflare-test`:
+- Corrected the 16 escaped template-literal delimiters and 30 escaped interpolation markers in the affected canvas block.
+- Re-ran a full-file JavaScript parse check successfully.
+- Advanced `website-builder.html` from `website-builder.js?v=68` to `website-builder.js?v=69` to avoid the cached broken script.
+- Commits: JavaScript `5836eb4ec0b4d4716008cea21098abf13d7d13ff`; HTML cache-bust `bbdcb94a930cbff02fb887db339448bd5afabd26`.
+
+No Supabase schema, rows, tenant content, SEO values, LIVE code, Stripe settings or Cloudflare configuration were changed. TEST project `nnsshnfkjcflucjrftzi` remains the only database target. The TEST project has no structured memory/checkpoint table; this record is maintained in GitHub project documentation.
+
+**Verification remains pending:** no GitHub deployment workflow is configured in this branch and a GitHub commit does not prove the Cloudflare Worker has updated. After the TEST Worker is deployed, confirm the builder serves v69, the browser console has no parse/runtime error, the first `tenant_site_state` request targets TEST, and Save Draft / SEO reload / Preview / Publish work. Do not change LIVE or copy tenant data.

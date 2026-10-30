@@ -95,3 +95,17 @@ The Xbox 360 500GB gap was rechecked directly in both databases. Each environmen
 No second clean standard Xbox 360 500GB completed sale was found. Do not insert any of these candidates.
 
 Latest GitHub branch heads checked before this update: TEST `cloudflare-test` at `38c91b9ae7549f030bb73ea209eb308bea58ec28`; LIVE `production` at `1e094ea2b6f8783b1d4b319e2e58448bad1756ad`. No database rows were written and no application code or Worker was deployed during this continuation.
+
+
+## Further Xbox 360 500GB search — 30 October 2026
+A further targeted UK eBay sold-listing search returned no new clean standard-console reference:
+- The only clean black 500GB console-only result remains item 147564021425 at £64.46, sold 11/12 September 2026.
+- Item 398220373589 is titled 500GB but item specifics say 250GB and it includes six games; reject.
+- Item 840049098248 is 500GB but includes 20 games; reject as a bundle.
+- Item 298730185866 is a blue special-edition 500GB model; reject for the standard black model.
+- PriceCharting search surfaced US-dollar sales, not UK GBP references, so these were not imported.
+No new evidence was inserted. The TEST/LIVE counts remain 26 active rows each, with Xbox 360 500GB at one row per environment. Source URLs reviewed:
+https://www.ebay.co.uk/itm/147564021425
+https://www.ebay.co.uk/itm/398220373589
+https://www.ebay.co.uk/itm/840049098248
+https://www.ebay.co.uk/itm/298730185866

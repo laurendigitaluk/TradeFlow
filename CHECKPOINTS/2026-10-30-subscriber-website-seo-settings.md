@@ -34,3 +34,7 @@ No new table or migration is required. Existing SEO keys are retained on `site_r
 - Public TEST pages emit expected title, description and Open Graph tags; route changes do not leave stale descriptions.
 - Confirm LIVE code parity and actual deployed worker version.
 - Confirm no regression to locked starter template, editor interactions, Save Draft, Preview or Publish.
+
+
+### TEST/LIVE runtime endpoint correction — 30 October 2026
+The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.

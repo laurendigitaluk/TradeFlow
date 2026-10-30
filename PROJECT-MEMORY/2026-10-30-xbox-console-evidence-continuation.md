@@ -60,3 +60,15 @@ Two additional exact UK completed-sale records have now been inserted separately
 The Xbox One 1TB and Xbox Series X Digital Edition 1TB now each have two active evidence rows in both environments. The All-Digital Xbox One S 1TB has two active evidence rows in both environments following its earlier £40.00 record. TEST/LIVE parity for these added records is confirmed by source key, price, date, active status and mapped product identity.
 
 The database has no public-schema table with a name containing `memory` or `checkpoint`; structured project memory/checkpoint is therefore maintained in GitHub `PROJECT-MEMORY/` and `CHECKPOINTS/`, not by inventing a Supabase table.
+
+
+## Latest read-after-write audit
+The following four product variants were rechecked after the additional inserts. TEST and LIVE counts match exactly:
+- Xbox 360 500GB Standard Console: 1 active reference (eBay item 147564021425, £64.46, sold 12 September 2026). Do not add the £83.25 listing with 20 games or the £155.58 special-edition blue bundle as standard-console evidence.
+- Xbox One 1TB Standard Console: 2 active references, including item 188496733818 (£52.54, sold 20 July 2026).
+- Xbox One S All-Digital Edition 1TB: 2 active references, including item 336604763656 (£40.00, sold 12 August 2026).
+- Xbox Series X Digital Edition 1TB: 2 active references, including item 168372673741 (£329.99, sold 25 June 2026).
+
+The four manual files have been updated on both `cloudflare-test` and `production` with the same authoritative environment correction block. The TEST documentation and GitHub project-memory/checkpoint files were read back after commits. LIVE AI manual readback also confirms the new block. These are documentation commits only; no Worker deployment or code deployment was made.
+
+No exact additional standard Xbox 360 500GB completed sale was found in the latest search. Current candidate listings were active/unsold, ended in error, or special-edition/game bundles, so they were excluded.

@@ -2290,3 +2290,18 @@ A customer may submit multiple products within one buying request. The request i
 
 ### Subscriber website SEO settings — 30 October 2026
 The subscriber Website Builder exposes SEO page title (maximum 70 characters) and meta description (maximum 320 characters) in the Pages panel for the selected page, including Home. Homepage values persist at `site.homepage.seo_title` and `site.homepage.seo_description`; individual page values persist on their `site.pages[]` objects. The published subscriber runtime applies the active page title, meta description and Open Graph title/description. Empty descriptions remove stale meta tags. TEST implementation is on `cloudflare-test` and uses the TEST Supabase endpoint `https://nnsshnfkjcflucjrftzi.supabase.co`; do not copy LIVE endpoint values or tenant data into TEST. Verify Cloudflare deployment and browser behaviour separately.
+
+
+## TEST Website Builder JavaScript parse repair — 30 October 2026
+
+The TEST Website Builder was failing before its first website-data request. The first JavaScript parse failure was in the legacy editable homepage canvas helpers: `heroStyle()` and `renderHeroCanvasEditor()`. Literal backslashes had been added before template-literal delimiters and interpolation markers, making `website-builder.js` invalid JavaScript. This fault was already present in the parent of the 30 October SEO port; the SEO controls did not introduce it.
+
+Minimal repair on `cloudflare-test`:
+- Corrected the 16 escaped template-literal delimiters and 30 escaped interpolation markers in the affected canvas block.
+- Re-ran a full-file JavaScript parse check successfully.
+- Advanced `website-builder.html` from `website-builder.js?v=68` to `website-builder.js?v=69` to avoid the cached broken script.
+- Commits: JavaScript `5836eb4ec0b4d4716008cea21098abf13d7d13ff`; HTML cache-bust `bbdcb94a930cbff02fb887db339448bd5afabd26`.
+
+No Supabase schema, rows, tenant content, SEO values, LIVE code, Stripe settings or Cloudflare configuration were changed. TEST project `nnsshnfkjcflucjrftzi` remains the only database target. The TEST project has no structured memory/checkpoint table; this record is maintained in GitHub project documentation.
+
+**Verification remains pending:** no GitHub deployment workflow is configured in this branch and a GitHub commit does not prove the Cloudflare Worker has updated. After the TEST Worker is deployed, confirm the builder serves v69, the browser console has no parse/runtime error, the first `tenant_site_state` request targets TEST, and Save Draft / SEO reload / Preview / Publish work. Do not change LIVE or copy tenant data.

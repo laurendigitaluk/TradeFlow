@@ -16,7 +16,7 @@ Apple iPhone Duo 256GB, 512GB, 1TB and 2TB; Motorola Edge 70 Plus 256GB; Nothing
 | Product | Source | GBP | Condition | Availability |
 |---|---|---:|---|---|
 | Apple iPhone Duo 256GB | The Big Phone Store | £1,789.99 | Refurbished - Like New | listed |
-| Nothing Phone (4b) 128GB | PriceSpy UK / CeX | £270.00 | Used | listed |
+| Nothing Phone (4b) 128GB | PriceSpy UK | £270.00 | Used | listed |
 | Samsung Galaxy A18 4G 128GB | eBay UK item 287674257213 | £182.99 | Pristine - Used | listed |
 
 TEST evidence IDs:

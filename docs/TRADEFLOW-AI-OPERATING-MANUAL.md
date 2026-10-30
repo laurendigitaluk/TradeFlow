@@ -1,3 +1,18 @@
+> **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
+>
+> This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.
+>
+> - Repository: `laurendigitaluk/TradeFlow`
+> - TEST branch: `cloudflare-test`; TEST Cloudflare Worker: `tradeflow-test`; TEST Supabase project: `nnsshnfkjcflucjrftzi`.
+> - LIVE branch: `production`; LIVE Cloudflare Worker: `tradeflow`; LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`.
+> - Retired TEST Supabase project: `twfbmjwwqzxdxvclxbun`. **Never connect to, query, write to, deploy against, or use this retired project.**
+> - TEST and LIVE are separate. Complete and verify shared catalogue/evidence work in TEST first, then mirror shared catalogue/evidence to LIVE using each environment's own product IDs. Never copy tenant, customer, transaction, domain ownership, storefront, Stripe or subscription data between environments.
+> - A Git commit is not proof of Cloudflare deployment. Verify the configured Worker, deployed commit and runtime behaviour independently.
+>
+> Older occurrences of the retired project ID below are historical records only and are not valid connection instructions.
+
+---
+
 # TradeFlow AI Operating Manual & Continuity Base
 
 

@@ -2,7 +2,7 @@ const SUPABASE_URL='https://nnsshnfkjcflucjrftzi.supabase.co';
 const KEY_STORAGE='tradeflow_subscriber_publishable_key';
 let supabaseKey=localStorage.getItem(KEY_STORAGE)||null,session=null,tenantId=null,draftRevisionId=null,currentTemplate='editorial';
 let selectedPage='home',dirty=false;
-let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='';
+let siteName='Your Business',headerTagline='',footerText='',headline='',intro='',homeSeoTitle='',homeSeoDescription='',accent='#c46a2b',homeImageUrl='',homeImageUrl2='',homeBuyImageUrl='',homeSellImageUrl='',logoUrl='',bannerUrl='';
 let authoritativeBranding={logo_url:'',banner_url:''};
 let templateCopy={},homepageTileCount=8,homepageTileColumns=4,homeBuyHeading='What we buy',homeBuyIntro='Tell customers the types of products, equipment or services you are looking to buy.',homeSellHeading='What we sell',homeSellIntro='Showcase the products and collections customers can browse and buy.';
 let homepageTiles=[];
@@ -228,7 +228,17 @@ function renderHeaderFooterControls(){
 }
 function renderPageManager(){
  const box=$('page-manager');if(!box)return;
- box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>';
+ const isHome=selectedPage==='home';
+ const selected=pages.find(p=>p.slug===selectedPage)||{};
+ const seoTitle=isHome?homeSeoTitle:(selected.seo_title||'');
+ const seoDescription=isHome?homeSeoDescription:(selected.seo_description||'');
+ box.innerHTML='<div class="control-title">Pages</div><small>Add your own pages and then choose whether they appear in the header or footer.</small><div class="page-add-row"><input id="new-page-title" type="text" placeholder="New page name"><button type="button" id="add-page-button">Add page</button></div>'+
+ '<div class="seo-settings"><div class="control-title">SEO settings · '+(isHome?'Home page':esc(selected.title||selectedPage))+'</div><small>Set the search-result title and description for this page. Leave blank to use the website defaults.</small><label class="seo-field"><span>SEO page title</span><input type="text" data-seo-field="title" maxlength="70" value="'+esc(seoTitle)+'" placeholder="'+esc((isHome?siteName:(selected.title||siteName))+' | '+siteName)+'"></label><small class="seo-hint">Recommended: around 50–60 characters.</small><label class="seo-field"><span>Meta description</span><textarea data-seo-field="description" rows="4" maxlength="320" placeholder="Briefly describe this page for people searching online.">'+esc(seoDescription)+'</textarea></label><small class="seo-hint">Recommended: around 150–160 characters. Search engines may choose a different snippet.</small></div>';
+ box.querySelectorAll('[data-seo-field]').forEach(el=>el.addEventListener('input',()=>{
+   if(isHome){if(el.dataset.seoField==='title')homeSeoTitle=el.value;else homeSeoDescription=el.value;}
+   else {const target=pages.find(p=>p.slug===selectedPage);if(!target)return;if(el.dataset.seoField==='title')target.seo_title=el.value;else target.seo_description=el.value;}
+   markDirty();
+ }));
  const btn=$('add-page-button');if(btn)btn.addEventListener('click',()=>{const input=$('new-page-title'),title=input.value.trim();if(!title)return;const slug=title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'page-'+Date.now();if(pages.some(p=>p.slug===slug)){setStatus('That page already exists.','error');return}pages.push({slug,title,enabled:true,prompt:'Add the information customers should see on this page.',body:'',image_url:'',image_alt:'',image_url2:'',image_alt2:'',tile_count:0,tile_columns:3,tiles:[],seo_title:'',seo_description:''});headerLinks.push(slug);footerLinks.push(slug);input.value='';markDirty();renderPageList();renderHeaderFooterControls();renderEditor();selectPage(slug);});
 }
 function renderBrandingControls(){
@@ -525,6 +535,7 @@ function bindEditor(){
 
 function selectPage(slug){
  if(!validPageSlug(slug))return;
+ renderPageManager();
  selectedPage=slug;
  const next=new URL(location.href);
  next.searchParams.set('page',slug);
@@ -551,7 +562,7 @@ function buildContent(){
    header:{tagline:headerTagline,links:headerLinks},footer:{text:footerText,links:footerLinks},
    reviews:reviewLinks,
    branding:{logo_url:logoUrl||'',banner_url:bannerUrl||''},
-   homepage:{block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
+   homepage:{seo_title:homeSeoTitle||'',seo_description:homeSeoDescription||'',block_order:homepageOrder,headline:headline.trim()||null,intro:intro.trim()||null,image_url:homeImageUrl||'',image_alt:siteName||'Homepage image',image_url2:homeImageUrl2||'',image_alt2:siteName+' secondary image',buy_image_url:homeBuyImageUrl||'',buy_image_alt:homeBuyHeading||'What We Buy',sell_image_url:homeSellImageUrl||'',sell_image_alt:homeSellHeading||'What We Sell',sections:homepageSections,tile_count:homepageTileCount,tile_columns:homepageTileColumns,buy_heading:homeBuyHeading,buy_intro:homeBuyIntro,sell_heading:homeSellHeading,sell_intro:homeSellIntro,tiles:homepageTiles},
    navigation:[{label:'Home',path:'?page=home'}].concat(pages.filter(p=>p.enabled).map(p=>({label:p.title,path:'?page='+p.slug}))),
    category_manifest:Array.isArray(window.__existingCategoryManifest)?window.__existingCategoryManifest:[],
    template:currentTemplate,template_copy:templateCopy,
@@ -584,6 +595,7 @@ function loadContent(content){
  siteName=s.name||'';headerTagline=s.header?.tagline||'';footerText=s.footer?.text||'';
  headline=s.homepage?.headline||'';
  intro=s.homepage?.intro||'';
+ homeSeoTitle=s.homepage?.seo_title||'';homeSeoDescription=s.homepage?.seo_description||'';
  accent=s.theme?.accent||'#c46a2b';
  typography=Object.assign({font:'Inter',hero:'large',section:'large',body:'standard',nav:'standard',button:'solid',header:'standard',footer:'simple'},s.theme?.typography||{});homepageOrder=Array.isArray(s.homepage?.block_order)&&s.homepage.block_order.length?s.homepage.block_order:['hero','buy','sell','trust'];homepageSections=Object.assign({hero:true,hero_image:true,dual:true,buy:true,sell:true,trust:true,shop:true},s.homepage?.sections||{});
  themeColors={accent:accent,page_bg:s.theme?.page_bg||'#f5f6f8',text:s.theme?.text||'#17202a',header_bg:s.theme?.header_bg||'#ffffff',buy_bg:s.theme?.buy_bg||'#ffffff',sell_bg:s.theme?.sell_bg||'#f4f6f7',footer_bg:s.theme?.footer_bg||'#17202a',background_id:normalizeBackgroundId(s.theme?.background_id),background_mode:s.theme?.background_mode==='custom'?'custom':'preset'};

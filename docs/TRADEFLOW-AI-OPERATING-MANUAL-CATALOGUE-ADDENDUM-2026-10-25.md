@@ -94,3 +94,47 @@ Reviewed 20 exact variants; one eligible new-condition UK eBay completed-sale ob
 
 ## Batch 94 — 25 October 2026
 Added one verified new-condition UK completed-sale observation to the existing HONOR 600 Pro 512GB master in TEST and LIVE. TEST-first insertion and read-back completed before LIVE. No master products, valuation logic or schema changed. Twenty variants reviewed. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-94.md` and `PROJECT-MEMORY/2026-10-25-mobile-phone-catalogue-batch-94.md`. Re-run aggregate counts next batch; the post-batch counts are arithmetic estimates, not a fresh aggregate query.
+
+
+## Batch 96 — 30 October 2026
+
+Reviewed ten targets from the then-outstanding mobile-phone gap list: Apple iPhone Duo 256GB, 512GB, 1TB and 2TB; Motorola Edge 70 Plus 256GB; Nothing Phone (4b) 128GB; OPPO Find X10 256GB; OPPO Find X10 Pro Max 512GB; OPPO Reno16 F 5G 256GB; Samsung Galaxy A18 4G 128GB.
+
+### Verified inserts in TEST and LIVE
+
+- **Apple iPhone Duo 256GB:** The Big Phone Store, £1,789.99, refurbished Like New, listed. URL: https://www.thebigphonestore.co.uk/products/apple-iphone-duo. TEST evidence `ab070bf1-6512-44a6-a003-4afc467e61a6`, product `b62f9aae-4285-4185-9c90-19f3c91add36`; LIVE evidence `986c2e44-955e-4975-bbd2-5194cd63f294`, product `e40feac3-7861-45fc-867c-14194155e272`. Stable key: `bigphonestore-iphone-duo-256gb-20261030`.
+- **Nothing Phone (4b) 128GB:** PriceSpy UK records a used CeX offer from £270.00 for the exact 8GB/128GB variant, listed. URL: https://pricespy.co.uk/product.php?p=16698477. TEST evidence `22e8eb65-6e42-465c-b42a-d3611f71e8b2`, product `d31d491b-a5ab-440f-880a-fc84a185000c`; LIVE evidence `9cd28747-e5f9-4825-82a4-44dbd977bf24`, product `9ea16e96-f9da-49fc-baa6-8c498af007f9`. Stable key: `pricespy-nothing-phone-4b-128gb-used-20261030`.
+- **Samsung Galaxy A18 4G 128GB:** eBay UK item 287674257213, £182.99, Pristine/used, listed. The UK listing mirror identifies seller uk-fonedeals in Manchester and describes the phone as fully tested/quality checked. URL: https://www.ebay.co.uk/itm/287674257213. TEST evidence `a299288d-2595-46b8-b24c-c1712481852d`, product `113793f7-4be2-4234-8e31-0b4520bbc805`; LIVE evidence `057f2d57-24b1-434b-996b-0625f6a2344a`, product `b6e7f56b-6f49-42f9-a274-86b23af9c62a`. Stable key: `ebay-uk-287674257213`.
+
+Each evidence row was inserted and returned independently in TEST and LIVE. No master product rows were created or changed.
+
+### Invalid existing evidence corrected
+
+The existing £800 SellMyMobile UK iPhone Duo 256GB row was a buyback/trade-in quote, not a resale listing. It was deactivated in both environments and retained for audit: TEST `12aaec46-7a25-4973-9a3a-eb3bf1670873`; LIVE `57f21093-6d1d-4222-87ff-4e8e43024522`. The valid refurbished Big Phone Store asking-price evidence above replaces it for used-market comparison.
+
+### Excluded candidates / exceptions
+
+- iPhone Duo 512GB eBay used listing at £2,440.90 and 1TB listing at £2,939.27 were above the corresponding Apple UK new prices (£2,199 and £2,599); excluded as anomalous used-price references. Existing iOutlet refurb references for these variants were out of stock.
+- iPhone Duo 2TB refurb page at £3,199 was sold out; current eBay results were new/sealed, not used.
+- Motorola Edge 70 Plus 256GB: only new UK pricing found; no qualifying used/refurb listing.
+- OPPO Find X10 256GB: current new/launch listings only; no qualifying used listing.
+- OPPO Find X10 Pro Max 512GB: a pre-owned eBay result at £1,244.82 appeared, but the seller's UK location was not independently verified; excluded pending verification.
+- OPPO Reno16 F 5G 256GB: no qualifying UK used/refurb listing found; results were new-price references.
+
+### Fresh database verification after Batch 96
+
+| Measure | TEST | LIVE |
+|---|---:|---:|
+| Mobile master rows | 160 | 156 |
+| Active mobile masters | 159 | 156 |
+| Customer-visible active masters | 156 | 154 |
+| Active mobile evidence rows | 543 | 537 |
+| Active `uk_used` evidence rows | 276 | 274 |
+| Active `uk_used` rows with `availability='listed'` | 81 | 81 |
+| Active products with any active `uk_used` evidence | 154/159 | 152/156 |
+| Active-product gaps with no active `uk_used` evidence | 5 | 4 |
+| Customer-visible gaps with no active `uk_used` evidence | 4 | 3 |
+
+The 134/130 product and 15/13 gap figures in the previous user continuation note are stale; current Supabase reads supersede them. Remaining active-product gaps: TEST — Apple iPhone 18 256GB (hidden), Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB (hidden), OPPO Find X10 Pro Max 512GB, OPPO Reno16 F 5G 256GB. LIVE — Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB (hidden), OPPO Find X10 Pro Max 512GB, OPPO Reno16 F 5G 256GB.
+
+No matching Supabase tables for structured project-memory/checkpoint records were found in either supplied project; the dated GitHub checkpoint and project-memory files remain the available structured project record. No schema, RPC, Edge Function or valuation changes were made in this batch.

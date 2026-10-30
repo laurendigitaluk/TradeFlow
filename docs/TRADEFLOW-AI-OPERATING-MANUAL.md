@@ -2286,3 +2286,7 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+### Subscriber website SEO settings — 30 October 2026
+The subscriber Website Builder exposes SEO page title (maximum 70 characters) and meta description (maximum 320 characters) in the Pages panel for the selected page, including Home. Homepage values persist at `site.homepage.seo_title` and `site.homepage.seo_description`; individual page values persist on their `site.pages[]` objects. The published subscriber runtime applies the active page title, meta description and Open Graph title/description. Empty descriptions remove stale meta tags. TEST implementation is on `cloudflare-test` and uses the TEST Supabase endpoint `https://nnsshnfkjcflucjrftzi.supabase.co`; do not copy LIVE endpoint values or tenant data into TEST. Verify Cloudflare deployment and browser behaviour separately.

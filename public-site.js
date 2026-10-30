@@ -279,29 +279,40 @@ function renderPublicCarousel(carousel,scope){
  }).join('');
  const nav=carousel.navigation||'both',arrows=(nav==='both'||nav==='arrows')&&carousel.slides.length>1?'<button type="button" class="tf-carousel-arrow tf-carousel-prev" data-carousel-prev aria-label="Previous slide">‹</button><button type="button" class="tf-carousel-arrow tf-carousel-next" data-carousel-next aria-label="Next slide">›</button>':'';
  const dots=(nav==='both'||nav==='dots')&&carousel.slides.length>1?'<div class="tf-carousel-dots" data-carousel-dots></div>':'';
- return '<section class="tf-carousel tf-carousel-'+mode+' tf-carousel-'+transition+'" data-tf-carousel data-mode="'+mode+'" data-autoplay="'+(carousel.autoplay?'true':'false')+'" data-interval="'+Number(carousel.interval||5000)+'" aria-label="Featured content carousel" tabindex="0"><div class="tf-carousel-viewport"><div class="tf-carousel-track">'+slides+'</div></div>'+arrows+dots+'</section>';
+ return '<section class="tf-carousel tf-carousel-'+(mode==='image'?'image-only':mode)+' tf-carousel-'+transition+'" data-tf-carousel data-mode="'+mode+'" data-autoplay="'+(carousel.autoplay?'true':'false')+'" data-interval="'+Number(carousel.interval||5000)+'" aria-label="Featured content carousel" tabindex="0"><div class="tf-carousel-viewport"><div class="tf-carousel-track">'+slides+'</div></div>'+arrows+dots+'</section>';
 }
 function bindPublicCarousels(){
  document.querySelectorAll('[data-tf-carousel]').forEach(root=>{
   const track=root.querySelector('.tf-carousel-track'),slides=Array.from(root.querySelectorAll('.tf-carousel-slide')),dotsHost=root.querySelector('[data-carousel-dots]');
   if(!track||slides.length<2)return;
-  const mode=root.dataset.mode||'content';let index=0,timer=null,startX=null;
+  const mode=root.dataset.mode||'content';let index=0,timer=null,startX=null,dots=[];
   const visible=()=>mode==='cards'?(window.innerWidth<640?1:window.innerWidth<980?2:3):1;
   const maxIndex=()=>Math.max(0,slides.length-visible());
-  if(dotsHost)dotsHost.innerHTML=Array.from({length:maxIndex()+1},(_,i)=>'<button type="button" data-carousel-dot="'+i+'" aria-label="Go to carousel position '+(i+1)+'"></button>').join('');
-  const dots=Array.from(root.querySelectorAll('[data-carousel-dot]'));
-  function update(){index=Math.max(0,Math.min(maxIndex(),index));if(root.classList.contains('tf-carousel-fade'))slides.forEach((s,i)=>s.classList.toggle('is-active',i===index));else track.style.transform='translateX(-'+(index*100/visible())+'%)';dots.forEach((d,i)=>{d.classList.toggle('active',i===index);d.setAttribute('aria-current',i===index?'true':'false');});}
+  function rebuildDots(){
+   if(!dotsHost)return;
+   dotsHost.innerHTML=Array.from({length:maxIndex()+1},(_,i)=>'<button type="button" data-carousel-dot="'+i+'" aria-label="Go to carousel position '+(i+1)+'"></button>').join('');
+   dots=Array.from(dotsHost.querySelectorAll('[data-carousel-dot]'));
+   dots.forEach(d=>d.addEventListener('click',()=>go(Number(d.dataset.carouselDot))));
+  }
+  function update(){
+   index=Math.max(0,Math.min(maxIndex(),index));
+   if(root.classList.contains('tf-carousel-fade'))slides.forEach((s,i)=>s.classList.toggle('is-active',i===index));
+   else track.style.transform='translateX(-'+(index*100/visible())+'%)';
+   dots.forEach((d,i)=>{d.classList.toggle('active',i===index);d.setAttribute('aria-current',i===index?'true':'false');});
+  }
   const go=n=>{index=n<0?maxIndex():n>maxIndex()?0:n;update();};
   root.querySelector('[data-carousel-prev]')?.addEventListener('click',()=>go(index-1));
   root.querySelector('[data-carousel-next]')?.addEventListener('click',()=>go(index+1));
-  dots.forEach(d=>d.addEventListener('click',()=>go(Number(d.dataset.carouselDot))));
   root.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'){e.preventDefault();go(index-1);}if(e.key==='ArrowRight'){e.preventDefault();go(index+1);}});
   root.addEventListener('pointerdown',e=>{if(e.target.closest('a,button'))return;startX=e.clientX;});
   root.addEventListener('pointerup',e=>{if(startX===null)return;const dx=e.clientX-startX;startX=null;if(Math.abs(dx)>45)go(index+(dx<0?1:-1));});
+  root.addEventListener('pointercancel',()=>{startX=null;});
   const stop=()=>{if(timer){clearInterval(timer);timer=null;}};
-  const start=()=>{stop();if(root.dataset.autoplay!=='true'||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return;timer=setInterval(()=>go(index+1),Math.max(2500,Number(root.dataset.interval)||5000));};
-  root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',start);root.addEventListener('focusin',stop);root.addEventListener('focusout',start);
-  window.addEventListener('resize',update);update();start();
+  const startAuto=()=>{stop();if(root.dataset.autoplay!=='true'||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches||document.hidden)return;timer=setInterval(()=>go(index+1),Math.max(2500,Number(root.dataset.interval)||5000));};
+  root.addEventListener('mouseenter',stop);root.addEventListener('mouseleave',startAuto);root.addEventListener('focusin',stop);root.addEventListener('focusout',startAuto);
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():startAuto());
+  window.addEventListener('resize',()=>{rebuildDots();update();});
+  rebuildDots();update();startAuto();
  });
 }
 

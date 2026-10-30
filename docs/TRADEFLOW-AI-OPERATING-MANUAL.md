@@ -2808,3 +2808,12 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - The Cloudflare Production deployment visible around 30 minutes before the user's screenshot corresponded to commit `05cc0ff71eee93647bffacea1d55c68b9500bd34`; that commit changed documentation only and explicitly recorded no Worker deployment/code changes. It did not include this SEO implementation.
 - New SEO code was committed to LIVE `production` at `8c441953c69d6c1b73e4a9593ba82f10a7cddf62`. Cloudflare's post-commit deployment and raw HTTP response still require verification. Do not describe this as live until the deployed Worker version and returned HTML are checked.
 - Next verification: confirm Cloudflare Production deployed the new commit; request `https://www.scenesource.co.uk/` and inspect the raw response source for the title, description and OG tags; inspect an internal published page; confirm an unknown hostname or missing index row falls back safely; check no TEST data is read by production.
+
+
+## Website Status Preview CTA correction — 30 October 2026
+
+- The subscriber reported that the dark Preview website CTA beside Open Website Builder did not navigate, while the sidebar Preview website link worked.
+- In `subscriber-website.html`, the central `#preview-link-main` control is now a real `button type=button` rather than an anchor. Its click handler explicitly navigates to the same tenant-scoped draft preview URL (`public-site.html?preview=draft&business=<slug>`) generated after subscriber authentication and tenant slug resolution.
+- The sidebar preview link and dashboard preview tile remain ordinary links and retain their existing behavior. The action styling is covered by the existing `.actions button` CSS rule.
+- LIVE production commit: `72c2a521dd2d1834afb98094d0456d85b6aa875f`.
+- Deployment and browser click verification are still required; do not claim the button is fixed on the deployed site until tested after the production Worker/static asset update.

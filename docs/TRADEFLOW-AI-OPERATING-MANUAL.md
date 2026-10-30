@@ -2763,3 +2763,10 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## SEO settings in the subscriber Website Builder — 30 October 2026
+
+Inspect `website-builder.js`, `website-builder.css`, and `public-site.js`. The SEO editor is rendered by `renderPageManager()` in the Pages sidebar and follows the selected page. Homepage values are `site.homepage.seo_title` and `site.homepage.seo_description`; other page values are `site.pages[].seo_title` and `site.pages[].seo_description`. The existing `site_revisions.content` JSON is the persistence layer; do not add a separate SEO table or migration for these fields.
+
+The existing Save Draft / Publish path persists the JSON. The public runtime resolves metadata for the active route and sets the document title, meta description, Open Graph title and description. Confirm both the builder and public runtime when testing; finding fields in JSON alone does not prove SEO is live. Keep LIVE and TEST subscriber records separate. This feature does not generate canonical URLs, XML sitemaps, robots directives or structured data.

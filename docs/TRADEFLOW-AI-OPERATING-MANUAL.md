@@ -2789,3 +2789,10 @@ The existing Save Draft / Publish path persists the JSON. The public runtime res
 
 ### TEST/LIVE runtime endpoint correction — 30 October 2026
 The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.
+
+
+## Xbox evidence continuation — 30 October 2026
+
+- Added and read back UK used sold evidence for Xbox Series X Digital Edition 1TB in both TEST and LIVE: eBay item 318636321021, sold 27 July 2026. Item specifics confirm Xbox Series X, white colour and 1TB storage; condition is Used. The listing displays £312.59 including a separate £12.59 Buyer Protection fee, so the evidence price stored is the underlying listing price of £300.00 GBP. Source key: `ebayuk-318636321021-xboxseriesx-digital-1tb-20260727`. TEST product: `5fc70dc3-5bf9-4e26-b888-abae5b12c8c8`; LIVE product: `bd71b9e9-50fb-4e2a-9226-92dc38fd21eb`. Both writes returned and read-after-write queries confirmed matching active rows and three active evidence rows per environment for this product.
+- A second Xbox One 1TB candidate (eBay item 327264154460, £59.49, sold 1 August 2026) was already present in both databases under source key `ebayuk-327264154460-xboxone-1tb-20260801`; do not insert it again. TEST/LIVE readback confirmed two active Xbox One 1TB rows per environment: £52.54 (item 188496733818) and £59.49 (item 327264154460).
+- No application code, valuation rules, tenant data or Worker deployments were changed. Shared market evidence only was updated. TEST/LIVE product UUIDs remain environment-specific.

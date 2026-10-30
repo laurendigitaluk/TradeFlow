@@ -54,3 +54,11 @@ Environment: cloudflare-test / tradeflow-test / nnsshnfkjcflucjrftzi
 
 ## Promotion gate
 No LIVE code or data has been changed. Promote only after TEST Worker deployment and browser acceptance. Rebase/port the feature selectively to current production; do not merge the highly diverged branches wholesale.
+
+
+## Cloudflare TEST Worker path confirmed — 30 October 2026
+
+- wrangler.jsonc names the Worker tradeflow-test, sets TRADEFLOW_ENV=test, TEST_SUPABASE_URL=https://nnsshnfkjcflucjrftzi.supabase.co and TEST_SUPABASE_KEY to the current TEST publishable key; assets are served from the repository root through ASSETS.
+- worker/index.js fetch() serves static assets and rewrites JavaScript source using REPLACEMENT_PAIRS.test (LIVE_SUPABASE_URL → TEST_SUPABASE_URL and LIVE_SUPABASE_KEY → TEST_SUPABASE_KEY). HTML/CSS are served from ASSETS; HTML cache is no-store for clean routes, and transformed JS is no-store.
+- subscriber-auth.js establishes window.TRADEFLOW_CONFIG for the builder; the TEST source now points local/TEST hosts to the current TEST project and contains no retired project reference.
+- The Worker source/config are verified in GitHub, but the deployed Worker runtime was not fetched or confirmed. Keep deployment/browser status PENDING until an authenticated TEST browser session verifies the actual served asset versions.

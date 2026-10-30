@@ -2318,3 +2318,12 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## Subscriber website SEO settings — 30 October 2026
+
+The subscriber Website Builder provides page-specific SEO settings in the Pages panel. Home page values are stored in `content.site.homepage.seo_title` and `seo_description`; internal page values are stored on their corresponding `content.site.pages[]` objects. These fields remain part of the existing `site_revisions.content` JSON document; no new table or migration is required.
+
+The builder saves SEO values through the existing Save Draft and Publish lifecycle. The public website reads the active route's values and updates the document title, meta description, Open Graph title and Open Graph description. Empty SEO fields fall back to a sensible page title and omit an empty description rather than emitting stale metadata. Search engines may rewrite snippets; the description is a hint, not a guarantee.
+
+Keep tenant website revisions isolated between LIVE and TEST. Do not copy subscriber content or SEO values between environments. Code and documentation are aligned across the two environment branches; subscriber data remains environment-specific.

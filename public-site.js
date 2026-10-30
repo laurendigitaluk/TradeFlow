@@ -426,7 +426,7 @@ function setPublicMetaTag(selector,attribute,value){
  const existing=document.querySelector(selector);
  if(!String(value||'').trim()){if(existing)existing.remove();return;}
  const tag=existing||document.createElement('meta');
- const match=selector.match(/\\[(?:name|property)=\"([^\"]+)\"\\]/);
+ const match=selector.match(/\[(?:name|property)="([^"]+)"\]/);
  if(match)tag.setAttribute(attribute,match[1]);
  tag.setAttribute('content',String(value).trim());
  if(!existing)document.head.appendChild(tag);

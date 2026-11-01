@@ -55,3 +55,14 @@ Production `subscriber-login.html` and `subscriber-signup.js` were found to cont
 - The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
 - Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; draft PR [#192](https://github.com/laurendigitaluk/TradeFlow/pull/192). The branch has been rebased to latest production and is one commit ahead, zero behind.
 - The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.
+
+
+## Webhook source reconciliation completed in review branch — 1 November 2026
+
+- Re-read LIVE `stripe-payment-webhook` source and confirmed it remains ACTIVE version 16; no deployment or LIVE payment mutation was made.
+- Re-read the preserved v16 source snapshot and current PR branch source. The branch contains the deployed connected-account `account.updated` handling, tenant/account matching, connected-account payment/refund routing and refund idempotency protections.
+- The review branch repairs the three undefined `admin.from(...)` calls in the legacy domain-order path using service-role REST GET/PATCH requests. Expired-order PATCH remains constrained to `status=eq.pending_payment`.
+- Current branch `reconcile/live-stripe-webhook-v16-20261101-v2`; draft PR #192. Compared with `production`: exactly 1 commit ahead, 0 behind; only `supabase/functions/stripe-payment-webhook/index.ts` changed (16 additions, 12 deletions). No PR reviews or inline review threads were present at recheck.
+- Static source checks: no remaining `admin` references; connected-account and conflict-refund protections present; domain-order expiry guard present. These are source inspections, not runtime tests.
+- Runtime execution, signed Stripe event replay and webhook integration tests remain outstanding because a Deno runtime/test environment is not currently available. Do not merge or deploy until these checks can be run against the exact PR source.
+- User does not need to run LIVE website tests now. Do not create a Stripe checkout/payment or alter the Adventure Outpost complimentary account for this work.

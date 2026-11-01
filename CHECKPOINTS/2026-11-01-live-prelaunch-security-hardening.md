@@ -1,0 +1,56 @@
+# TradeFlow LIVE pre-launch security hardening — 1 November 2026
+
+## Environment
+- Repository: `laurendigitaluk/TradeFlow`
+- LIVE code branch: `production`
+- Isolated repair branch: `security/prelaunch-hardening-20261101`
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
+- TEST Supabase: `nnsshnfkjcflucjrftzi`
+- Retired TEST project `twfbmjwwqzxdxvclxbun` was not used.
+
+## User instruction
+Proceed with the security changes identified in the LIVE pre-launch audit. Exclude unfinished product catalogues and catalogue evidence. Preserve all LIVE/TEST subscriber, customer, tenant, website, payment, Stripe and ownership separation. Do not perform real LIVE Stripe payments or change Stripe products/prices/secrets.
+
+## Completed and verified
+1. Added version-controlled migration `supabase/migrations/20261101120000_harden_private_media_upload_limits.sql` on the isolated security branch.
+2. Applied migration `harden_private_media_upload_limits` to TEST and LIVE Supabase.
+3. Both environments now report:
+   - `tradeflow-media`: private; 5,242,880 bytes (5 MiB) per object; allowed MIME types `image/jpeg`, `image/png`, `image/webp`, `application/pdf`.
+   - `tradeflow-site-media`: public as before; 5 MiB; PNG/JPEG/WebP only.
+4. Confirmed storage object policies remain tenant-scoped and no bucket visibility change was made.
+5. Updated `buying-dashboard.js` on the isolated security branch to align shipping label/QR client-side size messages with 5 MiB and accepted MIME types with the bucket configuration.
+
+## Critical preservation notes
+- Keep `tradeflow-media` private. Earlier repair: Storage objects could be created while the `media_assets` insert-return/SELECT-RLS failed, leaving orphaned objects. The repair used insert without return, separate retrieval/link and cleanup on failure. Do not regress this sequence.
+- Continue using the protected subscriber media Edge Function for signed URLs after authentication and tenant membership verification. Do not make the private bucket public or weaken RLS to work around signed URL issues.
+- Existing subscriber website image uploads already validate 5 MiB and PNG/JPEG/WebP. Existing website bucket configuration is unchanged.
+- Buying dashboard shipping upload controls previously allowed 10 MiB; client code was aligned to 5 MiB on the isolated branch.
+- Storage configuration verification is complete, but end-to-end upload tests have not yet been run. Required tests: allowed JPEG/PNG/WebP/PDF under 5 MiB succeeds; over-limit file rejected; disallowed MIME rejected; private bucket remains inaccessible cross-tenant; image/label retrieval works through the existing protected access route.
+
+## Confirmed open issues from current code review
+1. `subscriber-create-checkout-session` derives Stripe success/cancel URLs from unvalidated Origin/Referer.
+2. `subscriber_finalize_signup` currently updates an existing tenant subscription with the incoming Stripe subscription ID when the user already has an active tenant membership. This can overwrite the existing subscription reference, including a complimentary subscription. Checkout should reject already-provisioned users before creating a Stripe session, and webhook finalization must be idempotent and refuse subscription collisions.
+3. Test Lab files remain in LIVE production assets. `test-lab.html` explicitly references retired TEST project `twfbmjwwqzxdxvclxbun`. Before removal, verify whether `app.js`, `test-lab-fix.js` or `testlab-config.js` are shared by any live page.
+4. Auth leaked-password protection was previously reported disabled; current Auth setting could not be read or changed with the available management actions. Email confirmation and rate limits remain unverified.
+5. Migration history discrepancy: LIVE records migration `20261028215641_add_combined_buying_request_offer_response`, but no matching migration file was found in the production Git tree during the audit. Reconcile before release.
+6. The TEST branch `cloudflare-test` is heavily diverged from `production` (130 commits ahead and 1,042 behind at audit time). Do not merge/reset wholesale. The isolated security branch was created from current production.
+
+## Not done / do not claim
+- No checkout/webhook code changed or deployed.
+- No Stripe configuration, secrets, products, prices, customer payments or subscription records changed.
+- No Test Lab assets removed or blocked.
+- No Auth setting changed.
+- No full multi-tenant adversarial browser test run.
+- No Cloudflare Worker deployment confirmed.
+- No end-to-end storage upload/retrieval test completed.
+- No production subscriber/customer/catalogue/website data copied or changed.
+
+## Next steps
+1. Finish checkout hardening in isolated code and add safe, testable idempotency/uniqueness handling. Do not change LIVE Stripe secrets/settings.
+2. Test against a controlled TEST Stripe Sandbox configuration without copying LIVE data/secrets.
+3. Remove Test Lab only after checking asset dependencies and confirming production Worker deployment route.
+4. Obtain/verify Auth settings using a supported Supabase Auth configuration control.
+5. Reconcile the missing migration with actual production source/history.
+6. Run storage positive/negative tests and verify upload metadata, protected retrieval, and cleanup behaviour.
+7. Update the manuals and checkpoint with verified implementation and deployment evidence.
+8. Promote only the reviewed release; never merge the divergent TEST branch wholesale.

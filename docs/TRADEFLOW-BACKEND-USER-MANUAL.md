@@ -1644,3 +1644,8 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - Production `subscriber-login.html` now resumes checkout with the saved monthly/annual choice when the pending signup email matches the authenticated account; it falls back to the Auth metadata interval and then monthly only when no saved selection exists (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
 - The pending signup record is cleared when the account already has an active membership and the user is sent to the subscriber dashboard.
 - Static source inspection confirms the selected interval is passed into `subscriber-create-checkout-session`. Browser verification remains outstanding; do not claim the email-confirmation route has passed end-to-end testing.
+
+
+## Webhook review — technical status (1 November 2026)
+
+Draft PR #194 is the current review vehicle. The LIVE webhook remains version 16 and has not been changed. CI run 41339767745 passed Deno type-checking and mocked handler behaviour tests. The tests cover signature rejection, domain-order payment/expiry, connected-account status and tenant matching, subscription synchronisation and subscriber signup finalisation. A signed Stripe test-event replay and LIVE E2E verification are still outstanding. No action is required from subscribers and no real LIVE payment should be made for this review.

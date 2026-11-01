@@ -50,3 +50,12 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
 - Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; draft PR [#192](https://github.com/laurendigitaluk/TradeFlow/pull/192). The branch has been rebased to latest production and is one commit ahead, zero behind.
 - The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.
+
+
+## Webhook reconciliation review update — 1 November 2026
+- Rechecked LIVE Supabase: `stripe-payment-webhook` remains ACTIVE version 16. No deployment or payment/database mutation performed.
+- Reconciled deployed v16 connected-account and refund logic is now present in draft PR #192 branch `reconcile/live-stripe-webhook-v16-20261101-v2`.
+- The branch repairs undefined `admin.from(...)` calls in the legacy domain-order path with service-role REST requests; expiry update is limited to `status=eq.pending_payment`.
+- GitHub comparison: one commit ahead of `production`, zero behind, one changed file only (`supabase/functions/stripe-payment-webhook/index.ts`). Static checks confirm connected-account matching and refund idempotency code remain present and no `admin` references remain.
+- Runtime Deno execution, signed-event replay and integration tests remain outstanding. PR must remain unmerged and LIVE must remain at v16 until those tests pass.
+- No LIVE website test or real payment is required from the user at this stage. Preserve Adventure Outpost complimentary access and all its records.

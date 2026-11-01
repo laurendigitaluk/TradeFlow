@@ -23,3 +23,9 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - Verified RPC definitions and migration registry. Existing subscription rows and all Stripe configuration/records were left unchanged.
 - LIVE deployed webhook version 16 contains connected-account code absent from GitHub production and hardening branch; do not redeploy it until source reconciliation is complete.
 - Browser signup, real Stripe Checkout and full webhook E2E remain outstanding.
+
+
+## Email-confirmation resume path — 1 November 2026
+- `subscriber-signup.js` persists selected billing interval in Auth metadata and pending browser signup state (commit `cc6b9e898a8f35f7ae5e6c24b2e9b2e5825136ce`).
+- `subscriber-login.html` resumes checkout using the pending interval only when its email matches the signed-in account, otherwise using Auth metadata then monthly fallback (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
+- Pending signup state is cleared after a membership is found. Browser/email-confirmation E2E still required.

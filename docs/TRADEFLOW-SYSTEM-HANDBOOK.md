@@ -2416,3 +2416,7 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - Production `subscriber-login.html` now resumes checkout with the saved monthly/annual choice when the pending signup email matches the authenticated account; it falls back to the Auth metadata interval and then monthly only when no saved selection exists (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
 - The pending signup record is cleared when the account already has an active membership and the user is sent to the subscriber dashboard.
 - Static source inspection confirms the selected interval is passed into `subscriber-create-checkout-session`. Browser verification remains outstanding; do not claim the email-confirmation route has passed end-to-end testing.
+
+## Subscriber TEST routing correction — 1 November 2026
+
+The subscriber login and signup frontend files had stale references to retired TEST Supabase project `twfbmjwwqzxdxvclxbun`. They now use current TEST project `nnsshnfkjcflucjrftzi` and its publishable key. Signup explicitly recognises the TEST Worker hostname. Changes are committed on `production`; browser/Worker runtime verification and Cloudflare deployment remain unverified.

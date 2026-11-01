@@ -62,3 +62,29 @@ Proceed with the security changes identified in the LIVE pre-launch audit. Exclu
 - Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
 - `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
 - Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.
+
+
+## Subscriber signup checkout hardening update — 1 November 2026
+
+### Findings confirmed against LIVE
+- Platform Worker routing confirms the four LIVE platform origins: `https://tradeflow.laurendigital.co.uk`, `https://laurendigital.co.uk`, `https://www.laurendigital.co.uk`, and `https://tradeflow.leannelaurenlowe.workers.dev`.
+- LIVE `subscriber-create-checkout-session` version 12 trusted unvalidated Origin/Referer values for Stripe return URLs, did not check existing active memberships, and did not send a Stripe idempotency key.
+- LIVE `stripe-payment-webhook` version 16 calls `subscriber_finalize_signup` after Stripe signature verification and subscription retrieval.
+- LIVE `subscriber_finalize_signup` overwrote an existing tenant subscription when the user already had an active membership. The current database has a unique index on (billing_provider, provider_subscription_id), but that does not prevent replacing the existing ID.
+
+### Candidate changes committed to the isolated branch
+- Edge Function origin validation and exact-origin CORS; Referer fallback removed.
+- Existing active membership check via `subscriber_get_my_memberships()`; fail closed if lookup fails.
+- Stable per-user Stripe idempotency key; repeated calls cannot create a second session for the same user during the active key window.
+- New migration `20261101130000_guard_subscriber_signup_subscription_collisions.sql`: per-user advisory lock, same-subscription webhook retry returns the existing tenant, different subscription ID is rejected without mutating the existing subscription.
+- New diagnostic roadmap: `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-SUBSCRIBER-CHECKOUT.md`.
+- New project-memory record: `PROJECT-MEMORY/2026-11-01-subscriber-checkout-security.md`.
+
+### Release and verification status
+- Edge Function source and SQL migration are committed on `security/prelaunch-hardening-20261101` only.
+- The SQL migration has not been applied to TEST or LIVE.
+- No Edge Function or Worker deployment has been performed.
+- No browser, Stripe Sandbox, webhook replay, duplicate-session or subscription-collision tests have been run.
+- Stripe products, prices, secrets, settings, payment records and existing subscription rows were not changed.
+- Do not merge the isolated branch wholesale or promote it before review and TEST verification.
+- Next: review the diff; confirm current TEST project `nnsshnfkjcflucjrftzi` and its own Stripe Sandbox configuration; apply and verify the migration in TEST; run the roadmap test matrix; then make a separate LIVE release decision.

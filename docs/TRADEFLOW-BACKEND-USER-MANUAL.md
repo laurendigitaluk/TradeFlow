@@ -1625,3 +1625,14 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - TEST Stripe is not required for this LIVE deployment and was not changed.
 - No Stripe products, prices, API secrets, dashboard settings, customer records, payment records or existing subscription rows were changed.
 - Deployment and database state are confirmed. Full real-browser checkout and webhook E2E verification have not yet been performed; do not mark the entire signup journey fully tested until that is complete.
+
+
+## LIVE subscriber checkout — billing interval and verification status (1 November 2026)
+
+The LIVE subscriber signup functions now store the correct monthly or annual interval from the exact configured Stripe Price ID. The finalisation RPC rejects an unrecognised Price ID before creating a tenant; the subscription-sync RPC updates the interval only for a recognised configured monthly/annual Price ID and otherwise preserves the stored value. The migration is `20261101131036_preserve_subscriber_billing_interval.sql`, applied to LIVE as registry version `20261101131036`.
+
+The configured LIVE plan remains £59.99 monthly or £499.99 annually, GBP, with a 30-day trial. Existing subscription rows, Stripe products/prices, Stripe secrets, customer/payment records and Stripe dashboard settings were not changed. TEST Stripe is not required for this LIVE work.
+
+Important verification boundary: checkout function version 13 and webhook version 16 are deployed, but a real browser signup through Stripe Checkout and webhook provisioning has not yet been completed. Do not describe signup as end-to-end verified. No live payment should be initiated without a controlled test plan.
+
+The deployed LIVE webhook source has connected-account handling that is absent from both the production and hardening-branch GitHub copies. Do not redeploy either repository copy over LIVE. Reconcile the deployed source into version control and review its connected-account payment/refund paths before any webhook edit or redeployment.

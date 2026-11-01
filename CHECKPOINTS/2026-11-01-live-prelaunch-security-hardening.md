@@ -54,3 +54,11 @@ Proceed with the security changes identified in the LIVE pre-launch audit. Exclu
 6. Run storage positive/negative tests and verify upload metadata, protected retrieval, and cleanup behaviour.
 7. Update the manuals and checkpoint with verified implementation and deployment evidence.
 8. Promote only the reviewed release; never merge the divergent TEST branch wholesale.
+
+
+## Image upload hardening update — 2026-11-01
+- On isolated branch `security/prelaunch-hardening-20261101`, Website Builder image uploads and subscriber inventory/retail listing photo uploads now convert JPEG/PNG/WebP source images to WebP in the browser, resize longest dimension to 2,000 px, and encode at quality 0.82. Upload paths use `.webp`; Storage content type and `media_assets.mime_type` are `image/webp`; recorded byte size is the converted object size. Website Builder retains the source filename in `media_assets.original_filename`.
+- The private `tradeflow-media` bucket remains private, tenant-scoped and capped at 5 MiB; allowed MIME types remain JPEG, PNG, WebP and PDF. Existing storage policies and protected media retrieval were not changed. `tradeflow-site-media` remains public as previously configured and retains its 5 MiB limit.
+- Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
+- `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
+- Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.

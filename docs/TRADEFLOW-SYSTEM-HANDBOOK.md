@@ -2422,7 +2422,7 @@ The Cloudflare Worker and system routing define these platform-owned LIVE signup
 - `https://www.laurendigital.co.uk`
 - `https://tradeflow.leannelaurenlowe.workers.dev`
 
-The TEST Worker `tradeflow-test.leannelaurenlowe.workers.dev`, subscriber-owned custom domains (including `www.scenesource.co.uk`), Platform Owner, StudioFlow and BusinessFlow hosts are not allowed to initiate LIVE TradeFlow subscription checkout. The function no longer uses `Referer` as a fallback.
+The TEST Worker `tradeflow-test.leannelaurenlowe.workers.dev`, subscriber-owned custom domains (including `www.scenesource.co.uk`), Platform Owner, StudioFlow and BusinessFlow hosts are not allowed to initiate LIVE TradeFlow subscription checkout. When the same source is deployed to the current TEST Supabase project (`nnsshnfkjcflucjrftzi`), it selects a separate TEST-only allowlist containing only `https://tradeflow-test.leannelaurenlowe.workers.dev`, based on the exact `SUPABASE_URL` hostname. The TEST origin is never accepted by the LIVE project. The function no longer uses `Referer` as a fallback.
 
 ### Candidate checkout changes
 `supabase/functions/subscriber-create-checkout-session/index.ts` now:

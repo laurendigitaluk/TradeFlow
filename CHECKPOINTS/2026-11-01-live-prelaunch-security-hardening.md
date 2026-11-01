@@ -37,3 +37,13 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
 - The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
 - Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.
+
+## Checkpoint addendum — reconciled webhook source (review branch only)
+
+- Review branch: `reconcile/live-stripe-webhook-v16-20261101`.
+- Commit: `4e90f33ab55aebd0fb4d5af9e78d52a14089aa9d`.
+- Source was taken from active LIVE `stripe-payment-webhook` v16, not the stale GitHub copy.
+- Preserved connected-account lifecycle handling, tenant/account validation, connected-account refunds, refund idempotency, and subscriber subscription handlers.
+- Replaced the three undefined `admin.from(...)` calls in the legacy domain-order path with service-role REST operations; cancellation is still conditional on `pending_payment`.
+- Static checks only. No runtime, Stripe signature replay, checkout, payment, or domain-order test completed.
+- Not deployed. LIVE remains on webhook v16 until review and test.

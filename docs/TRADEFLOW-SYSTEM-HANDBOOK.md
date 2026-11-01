@@ -2420,3 +2420,8 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 ## Subscriber TEST routing correction — 1 November 2026
 
 The subscriber login and signup frontend files had stale references to retired TEST Supabase project `twfbmjwwqzxdxvclxbun`. They now use current TEST project `nnsshnfkjcflucjrftzi` and its publishable key. Signup explicitly recognises the TEST Worker hostname. Changes are committed on `production`; browser/Worker runtime verification and Cloudflare deployment remain unverified.
+
+
+## Stripe webhook v16 reconciliation — review status (1 November 2026)
+
+The deployed LIVE `stripe-payment-webhook` remains ACTIVE version 16 and has not been redeployed. Draft PR #194 reconciles the exact deployed connected-account handling and repairs the legacy domain-order path's undefined `admin.from(...)` calls with service-role REST requests. Expiry cancellation remains limited to `pending_payment`. The PR includes a Deno CI workflow and handler tests executed against mocked external services. GitHub Actions run 41339767745 passed the Deno type-check and behaviour tests. This is isolated test evidence, not a Stripe signed-event replay or LIVE integration test. Do not merge/deploy until signed Stripe test-event replay and final review are complete. No user LIVE test or payment is required at this stage; preserve Adventure Outpost complimentary access.

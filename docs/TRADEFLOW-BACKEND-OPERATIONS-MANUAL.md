@@ -185,7 +185,7 @@ LIVE baseline inspected: Edge Function `subscriber-create-checkout-session` vers
 The checkout Edge Function previously derived Stripe return URLs from unvalidated `Origin`/`Referer` and had no explicit Stripe idempotency key. It also did not check whether the authenticated user already had an active tenant membership.
 
 Candidate source changes on `security/prelaunch-hardening-20261101`:
-- exact HTTPS allowlist: TradeFlow subdomain, Lauren Digital apex and www, and the LIVE TradeFlow workers.dev hostname;
+- environment-specific exact HTTPS allowlist: four platform-owned LIVE origins on LIVE; only `https://tradeflow-test.leannelaurenlowe.workers.dev` on current TEST project `nnsshnfkjcflucjrftzi`, selected from `SUPABASE_URL`;
 - no Referer fallback; exact-origin CORS;
 - authenticated `subscriber_get_my_memberships()` lookup, fail closed on lookup error and reject existing active membership;
 - stable per-user Stripe Checkout idempotency key;

@@ -2859,3 +2859,7 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - Production `subscriber-login.html` now resumes checkout with the saved monthly/annual choice when the pending signup email matches the authenticated account; it falls back to the Auth metadata interval and then monthly only when no saved selection exists (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
 - The pending signup record is cleared when the account already has an active membership and the user is sent to the subscriber dashboard.
 - Static source inspection confirms the selected interval is passed into `subscriber-create-checkout-session`. Browser verification remains outstanding; do not claim the email-confirmation route has passed end-to-end testing.
+
+## Webhook reconciliation guardrail — 1 November 2026
+
+When changing `stripe-payment-webhook`, first fetch the active LIVE source. Do not deploy a GitHub copy merely because it is on `production`: LIVE v16 contained connected-account `account.updated`, tenant/account validation, connected-account refund and refund-idempotency behaviour that was missing from the old GitHub file. Reconciled source is staged on `reconcile/live-stripe-webhook-v16-20261101` (commit `4e90f33ab55aebd0fb4d5af9e78d52a14089aa9d`). The undefined `admin.from(...)` references in the legacy domain-order path were replaced with service-role REST calls. Static checks only; no runtime or Stripe replay test. Do not deploy until reviewed and tested.

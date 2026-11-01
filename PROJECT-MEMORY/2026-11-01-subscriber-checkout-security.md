@@ -66,3 +66,12 @@ Production `subscriber-login.html` and `subscriber-signup.js` were found to cont
 - Static source checks: no remaining `admin` references; connected-account and conflict-refund protections present; domain-order expiry guard present. These are source inspections, not runtime tests.
 - Runtime execution, signed Stripe event replay and webhook integration tests remain outstanding because a Deno runtime/test environment is not currently available. Do not merge or deploy until these checks can be run against the exact PR source.
 - User does not need to run LIVE website tests now. Do not create a Stripe checkout/payment or alter the Adventure Outpost complimentary account for this work.
+
+
+## Webhook review branch refresh v3 — 1 November 2026
+
+- Documentation commits added to `production` after the earlier review-branch refresh moved the base forward. PR #192 consequently became three commits behind and diverged. It was superseded and closed without merging.
+- Created clean branch `reconcile/live-stripe-webhook-v16-20261101-v3` from current `production` commit `467efced09203a8a9ab5489123edd2d93ff03ec5` and reapplied only the reconciled webhook entrypoint.
+- New draft PR #193: https://github.com/laurendigitaluk/TradeFlow/pull/193. Verified compare: exactly one commit ahead, zero behind; one changed file (`supabase/functions/stripe-payment-webhook/index.ts`, 16 additions, 12 deletions).
+- Static checks confirm no undefined `admin` references remain and deployed connected-account handling, tenant matching, connected-account refund/idempotency and pending-payment expiry guard remain present.
+- LIVE remains `stripe-payment-webhook` version 16. No deployment or LIVE payment/database changes. Runtime Deno tests and signed Stripe event replay remain required before merge/deploy.

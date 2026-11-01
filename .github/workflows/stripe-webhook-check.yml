@@ -6,6 +6,11 @@ on:
       - "supabase/functions/stripe-payment-webhook/**"
       - ".github/workflows/stripe-webhook-check.yml"
       - "tests/stripe-payment-webhook.test.ts"
+      - "docs/TRADEFLOW-SYSTEM-HANDBOOK.md"
+      - "docs/TRADEFLOW-AI-OPERATING-MANUAL.md"
+      - "docs/TRADEFLOW-BACKEND-OPERATIONS-MANUAL.md"
+      - "docs/TRADEFLOW-BACKEND-USER-MANUAL.md"
+      - "docs/TRADEFLOW-HUMAN-USER-MANUAL.md"
   workflow_dispatch:
 
 permissions:

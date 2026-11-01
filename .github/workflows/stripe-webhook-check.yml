@@ -1,0 +1,25 @@
+name: Stripe webhook Deno check
+
+on:
+  pull_request:
+    paths:
+      - "supabase/functions/stripe-payment-webhook/**"
+      - ".github/workflows/stripe-webhook-check.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deno-check:
+    name: Type-check Stripe webhook with Deno
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check webhook entrypoint
+        run: deno check supabase/functions/stripe-payment-webhook/index.ts

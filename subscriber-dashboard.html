@@ -28,6 +28,8 @@
 .cancel-subscription-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
 .cancel-subscription-actions button{padding:10px 14px;border-radius:7px;border:1px solid #cfd6dc;background:#fff;color:var(--tf-ink);cursor:pointer}
 .cancel-subscription-actions button:first-child{background:#8f3d3d;border-color:#8f3d3d;color:#fff}
+
+.subscription-panel{border:1px solid #dce3e8;background:#fff}.subscription-details{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}.subscription-details>div{padding:13px;border:1px solid #e2e7eb;border-radius:8px;background:#f8fafb}.subscription-details span{display:block;color:#68757f;font-size:12px;margin-bottom:6px}.subscription-details strong{font-size:14px;color:#18212b}.subscription-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:12px}.subscription-actions span{font-size:12px;color:#68757f}.subscription-cancel-button{padding:10px 15px;border:1px solid #a44747;border-radius:7px;background:#fff;color:#943d3d;font-weight:700;cursor:pointer}.subscription-cancel-button:hover{background:#fff5f5}.subscription-cancel-button:disabled{display:none}@media(max-width:800px){.subscription-details{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style></head>
 <body>
 <header class="topbar">
@@ -55,13 +57,23 @@
 <div class="nav-section">Website</div>
 <a href="subscriber-website.html">Website</a><a href="buying-catalogue.html">What We Buy</a>
 <div class="nav-section">Settings</div>
-<a href="shipping-settings.html">Shipping Settings</a><a href="settings.html">Settings</a><a href="domain-settings.html">Website URL</a><a href="assistant.html">TradeFlow Assistant</a><a href="subscriber-customer-documentation.html">Customer Documentation</a>
+<a href="shipping-settings.html">Shipping Settings</a><a href="settings.html">Settings</a><a href="domain-settings.html">Website URL</a><a href="assistant.html">TradeFlow Assistant</a><a href="subscriber-customer-documentation.html">Customer Documentation</a><a href="#subscription-billing">Subscription &amp; Billing</a>
 </nav>
-<button id="cancel-subscription-link" class="cancel-subscription-link" type="button">Cancel subscription</button>
 </aside>
 <section class="content">
 <div class="page-heading"><div><div class="eyebrow">Business workspace</div><h1>Business dashboard</h1><p class="intro">Manage your buying, stock, sales, orders and customers from one clear business workspace. Your website is managed separately.</p></div></div>
 <section class="welcome-panel panel"><div><div class="eyebrow">Your business</div><h2 id="welcome-business">Your business</h2><p id="welcome-copy">Welcome back. Your business workspace is ready.</p></div><div class="account-summary"><div><span>Email</span><strong id="summary-email">Loading…</strong></div><div><span>Role</span><strong id="summary-role">Loading…</strong></div></div></section>
+<section class="panel subscription-panel" id="subscription-billing">
+ <div class="panel-heading"><div><div class="eyebrow">Account &amp; payments</div><h2>Subscription &amp; Billing</h2></div><span id="subscription-status-pill" class="status-pill">Checking…</span></div>
+ <p id="subscription-summary" class="section-intro">Loading your subscription details…</p>
+ <div class="subscription-details">
+  <div><span>Plan</span><strong id="subscription-plan">—</strong></div>
+  <div><span>Billing</span><strong id="subscription-billing-type">—</strong></div>
+  <div><span>Next payment</span><strong id="subscription-next-payment">—</strong></div>
+  <div><span>Access</span><strong id="subscription-access-end">—</strong></div>
+ </div>
+ <div class="subscription-actions"><button id="cancel-subscription-link" class="subscription-cancel-button" type="button">Cancel subscription</button><span id="subscription-action-note">You can manage your subscription here. Cancelling does not delete your business account or its records.</span></div>
+</section>
 <section class="panel retail-counter-panel"><div class="retail-copy"><div class="eyebrow">Retail counter</div><h2>In-Store Valuation</h2><p class="section-intro">Open the dedicated customer-facing counter screen on the store PC. It is separate from the public website and customer online selling journey, while still using the same TradeFlow valuation engine.</p></div><a class="retail-cta" href="in-store-valuation.html" target="_blank" rel="noopener">OPEN IN-STORE VALUATION</a></section>
 
 <section class="panel process-panel" id="workflow-status">
@@ -286,6 +298,34 @@ window.addEventListener('DOMContentLoaded',async()=>{
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!modal?.hidden)close()});
 });
 </script><script>
+window.addEventListener('DOMContentLoaded',async()=>{
+ const set=(id,value)=>{const el=document.getElementById(id);if(el)el.textContent=value};
+ const fmt=value=>{if(!value)return '—';const d=new Date(value);return Number.isNaN(d.getTime())?'—':d.toLocaleString('en-GB',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'UTC',timeZoneName:'short'})};
+ try{
+  const a=await window.tradeflowSubscriberAuthReady;
+  if(!a?.tenantId||!a?.session?.access_token||!a?.key)throw Error('Sign in to view billing details.');
+  const url=window.TRADEFLOW_CONFIG.supabaseUrl+'/rest/v1/tenant_subscriptions?select=status,billing_provider,provider_status,cancel_at_period_end,trial_end,current_period_end,started_at,ended_at,billing_interval,metadata&tenant_id=eq.'+encodeURIComponent(a.tenantId)+'&order=created_at.desc&limit=1';
+  const response=await fetch(url,{headers:{apikey:a.key,Authorization:'Bearer '+a.session.access_token}});
+  const rows=await response.json().catch(()=>[]);
+  if(!response.ok||!Array.isArray(rows)||!rows.length)throw Error('Subscription details are not currently available.');
+  const sub=rows[0],complimentary=sub.billing_provider==='manual'&&sub.provider_status==='complimentary'&&sub.status==='active';
+  set('subscription-plan','TradeFlow');
+  set('subscription-status-pill',complimentary?'Complimentary account':sub.cancel_at_period_end?'Cancellation scheduled':sub.status==='trialing'?'Free trial':sub.status);
+  set('subscription-billing-type',complimentary?'No subscription payments':sub.billing_interval==='year'?'Annual':sub.billing_interval==='month'?'£59.99 monthly':'—');
+  set('subscription-next-payment',complimentary?'No payment due':sub.cancel_at_period_end?'No further invoice':sub.status==='trialing'?'After free trial':'See Stripe billing');
+  set('subscription-access-end',complimentary?'Indefinite':fmt(sub.cancel_at_period_end?(sub.trial_end||sub.current_period_end):sub.current_period_end));
+  set('subscription-summary',complimentary?'This business has complimentary TradeFlow access for testing. No Stripe subscription is attached and no subscription payments will be taken. Your account, website, customers and business records remain in place.':sub.cancel_at_period_end?'Your subscription is set to end at the end of the current trial or billing period. Stripe has confirmed no further invoice.': 'Your TradeFlow subscription and billing details are shown below.');
+  if(complimentary){
+    const button=document.getElementById('cancel-subscription-link');if(button)button.hidden=true;
+    set('subscription-action-note','Complimentary access remains active until you choose to close this business account.');
+  } else if(sub.cancel_at_period_end){
+    const button=document.getElementById('cancel-subscription-link');if(button){button.textContent='Cancellation scheduled';button.disabled=true;}
+    set('subscription-action-note','Your cancellation is already scheduled. Your business account and records are not deleted.');
+  }
+ }catch(error){set('subscription-status-pill','Details unavailable');set('subscription-summary',error?.message||'Unable to load subscription details.');}
+});
+</script>
+<script>
 window.addEventListener('DOMContentLoaded',async()=>{
  const modal=document.getElementById('cancel-subscription-modal');
  const open=document.getElementById('cancel-subscription-link');

@@ -1,0 +1,33 @@
+name: Stripe webhook Deno check
+
+on:
+  pull_request:
+    paths:
+      - "supabase/functions/stripe-payment-webhook/**"
+      - ".github/workflows/stripe-webhook-check.yml"
+      - "tests/stripe-payment-webhook.test.ts"
+      - "docs/TRADEFLOW-SYSTEM-HANDBOOK.md"
+      - "docs/TRADEFLOW-AI-OPERATING-MANUAL.md"
+      - "docs/TRADEFLOW-BACKEND-OPERATIONS-MANUAL.md"
+      - "docs/TRADEFLOW-BACKEND-USER-MANUAL.md"
+      - "docs/TRADEFLOW-HUMAN-USER-MANUAL.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deno-check:
+    name: Type-check Stripe webhook with Deno
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check webhook entrypoint and tests
+        run: deno check supabase/functions/stripe-payment-webhook/index.ts tests/stripe-payment-webhook.test.ts
+      - name: Run webhook behaviour tests
+        run: deno test --allow-env --allow-net tests/stripe-payment-webhook.test.ts

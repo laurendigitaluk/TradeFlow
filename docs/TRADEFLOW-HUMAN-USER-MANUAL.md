@@ -2127,3 +2127,9 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - Production `subscriber-login.html` now resumes checkout with the saved monthly/annual choice when the pending signup email matches the authenticated account; it falls back to the Auth metadata interval and then monthly only when no saved selection exists (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
 - The pending signup record is cleared when the account already has an active membership and the user is sent to the subscriber dashboard.
 - Static source inspection confirms the selected interval is passed into `subscriber-create-checkout-session`. Browser verification remains outstanding; do not claim the email-confirmation route has passed end-to-end testing.
+
+
+## TradeFlow payment processing status — 1 November 2026
+
+No change to the customer or subscriber payment steps is live as a result of this review. The Stripe webhook repair is in draft PR #194 only. Automated Deno checks and mocked handler tests passed (run 41339767745), but the LIVE webhook remains version 16 pending signed Stripe test-event replay and final review. Users should not create a payment or change account settings for this work. Adventure Outpost complimentary access remains intentionally preserved.
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

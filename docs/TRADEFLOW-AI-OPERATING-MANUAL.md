@@ -2863,3 +2863,9 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 ## TEST environment routing rule — subscriber signup/login
 
 When changing subscriber login or signup, confirm the current TEST Supabase project from `wrangler.jsonc` and the project connection record. Do not reuse retired TEST ref `twfbmjwwqzxdxvclxbun`. Current TEST is `nnsshnfkjcflucjrftzi`. Ensure both login and signup explicitly recognise the TEST Worker hostname, and distinguish committed frontend code from verified Cloudflare deployment.
+
+
+## Stripe webhook review and test gate — 1 November 2026
+
+Current review is draft PR #194. LIVE webhook remains ACTIVE version 16; do not treat branch code as deployed. The branch reconciles deployed connected-account lifecycle/payment/refund protections and replaces three undefined `admin.from(...)` calls in the legacy domain-order path with service-role REST requests. The expiry PATCH is guarded by `status=eq.pending_payment`. CI run 41339767745 passed `deno check` and handler behaviour tests using mocked services (signature rejection, paid/expired domain orders, connected-account lifecycle/matching, subscription sync and subscriber signup finalisation). These are not signed Stripe event replay or LIVE E2E tests. Do not merge/deploy until signed test-event replay and final review. Preserve Adventure Outpost complimentary access.
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

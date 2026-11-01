@@ -126,3 +126,13 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - Draft PR #193: https://github.com/laurendigitaldigitaluk/TradeFlow/pull/193. Verified compare: one commit ahead, zero behind; only webhook entrypoint changed.
 - Static checks confirm source reconciliation and domain-order fix. Runtime Deno execution and signed Stripe event replay remain outstanding; do not merge or deploy until complete.
 - LIVE remains webhook v16. No LIVE user test/payment is required now; preserve Adventure Outpost complimentary account.
+
+
+## Webhook review branch v4 and Deno type-check workflow — 1 November 2026
+
+- Earlier PRs #192 and #193 were superseded as production documentation commits advanced their base branches. Neither was merged.
+- Clean branch `reconcile/live-stripe-webhook-v16-20261101-v4` is based on current production and carries the reconciled webhook entrypoint, the Deno type-check workflow and the associated documentation updates. PR #194 is the intended review vehicle.
+- `.github/workflows/stripe-webhook-check.yml` runs `deno check supabase/functions/stripe-payment-webhook/index.ts` on relevant pull requests. This is a compiler/type-check gate only; signed Stripe event replay and handler behaviour tests are still required.
+- Do not merge/deploy until the Deno check and controlled webhook behaviour tests pass. LIVE remains on webhook v16; no LIVE test/payment is required from the user now.
+
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

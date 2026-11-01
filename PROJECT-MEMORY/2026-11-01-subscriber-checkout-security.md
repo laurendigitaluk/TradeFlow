@@ -75,3 +75,15 @@ Production `subscriber-login.html` and `subscriber-signup.js` were found to cont
 - New draft PR #193: https://github.com/laurendigitaluk/TradeFlow/pull/193. Verified compare: exactly one commit ahead, zero behind; one changed file (`supabase/functions/stripe-payment-webhook/index.ts`, 16 additions, 12 deletions).
 - Static checks confirm no undefined `admin` references remain and deployed connected-account handling, tenant matching, connected-account refund/idempotency and pending-payment expiry guard remain present.
 - LIVE remains `stripe-payment-webhook` version 16. No deployment or LIVE payment/database changes. Runtime Deno tests and signed Stripe event replay remain required before merge/deploy.
+
+
+## Webhook review branch v4 and Deno CI — 1 November 2026
+
+- PR #193 was created from production commit `467efced09203a8a9ab5489123edd2d93ff03ec5`, then subsequent documentation commits advanced production by three commits. PR #193 is being superseded without merge to avoid divergent history.
+- Clean branch `reconcile/live-stripe-webhook-v16-20261101-v4` starts from the current production head and carries the reconciled webhook source, a Deno type-check workflow, and these documentation updates together.
+- Replacement PR #194 will be the authoritative review. Its comparison must be checked after creation; do not rely on stale PR #192/#193 metadata.
+- Added `.github/workflows/stripe-webhook-check.yml` to run `deno check` against the exact webhook entrypoint on pull requests. This provides a reproducible Deno type-check, not behavioural integration tests.
+- Signed Stripe event replay, handler-path runtime tests and LIVE end-to-end signup/payment tests remain outstanding. Do not merge/deploy until appropriate verification is complete.
+- LIVE remains webhook version 16 and no payment/database mutation was performed. Do not alter Adventure Outpost complimentary access or ask the user to create a LIVE payment.
+
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

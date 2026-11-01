@@ -92,3 +92,11 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
 - The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
 - Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.
+
+## Reconciled LIVE webhook v16 source — 1 November 2026
+
+- Created review branch `reconcile/live-stripe-webhook-v16-20261101` from `production` and reconciled `supabase/functions/stripe-payment-webhook/index.ts` against the exact active LIVE Supabase version 16 source.
+- Preserved the deployed `account.updated` connected-account status handling, tenant-to-connected-account validation, connected-account refund routing, refund idempotency key, subscriber signup finalization, and subscription synchronization branches.
+- Repaired the legacy domain-order payment path: removed three undefined `admin.from(...)` references and replaced them with authenticated Supabase REST GET/PATCH calls using the existing service-role key. The expiry PATCH remains constrained to `status=pending_payment`.
+- Static source checks passed for the presence of all listed branches and the absence of `admin` references. No Deno/runtime integration test, signed Stripe replay, real payment, or database mutation test has been performed.
+- This is a review-branch change only. Do not deploy to LIVE until the PR has been reviewed and the webhook path has been tested safely. Active LIVE remains version 16 unchanged.

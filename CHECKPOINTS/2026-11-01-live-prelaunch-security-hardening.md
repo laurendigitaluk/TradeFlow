@@ -37,3 +37,10 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
 - The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
 - Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.
+
+## Checkpoint addendum — subscriber TEST endpoint routing
+
+- Corrected retired TEST Supabase references in `subscriber-login.html` and `subscriber-signup.js` to current TEST project `nnsshnfkjcflucjrftzi` and current TEST publishable key.
+- Signup detector explicitly recognises `tradeflow-test.leannelaurenlowe.workers.dev`.
+- Commits: `0bd129a2c2645a6919b8b7f2408d7d1cfa905145`, `301508f507d88e2cb960390ae02f042ffece3a18`, `eaa66db4835f49cb51c4c97e6b656eda4e729f1d`.
+- Static verification only; no live browser/Worker verification. Do not treat the commits as a deployed release.

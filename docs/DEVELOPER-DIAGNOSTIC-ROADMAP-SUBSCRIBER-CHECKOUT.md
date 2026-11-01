@@ -117,3 +117,12 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - Static checks pass for absence of `admin` references and presence of connected-account/refund protections. This is not runtime verification.
 - **Outstanding gate:** execute the exact PR source in an isolated Deno environment, test signature rejection/acceptance, account updates, connected-account match/mismatch, subscription RPC calls, domain-order paid/expired paths and conflict refund idempotency; then perform signed Stripe test-event replay. Do not merge or deploy before this gate passes.
 - User LIVE website testing is not required now. Do not initiate real checkout/payment or change Adventure Outpost complimentary access for this work.
+
+
+## Review branch v3 correction — 1 November 2026
+
+- PR #192 was found three commits behind after project documentation updates landed on `production`; it was closed without merge and superseded.
+- Clean branch `reconcile/live-stripe-webhook-v16-20261101-v3` now starts from production commit `467efced09203a8a9ab5489123edd2d93ff03ec5`.
+- Draft PR #193: https://github.com/laurendigitaldigitaluk/TradeFlow/pull/193. Verified compare: one commit ahead, zero behind; only webhook entrypoint changed.
+- Static checks confirm source reconciliation and domain-order fix. Runtime Deno execution and signed Stripe event replay remain outstanding; do not merge or deploy until complete.
+- LIVE remains webhook v16. No LIVE user test/payment is required now; preserve Adventure Outpost complimentary account.

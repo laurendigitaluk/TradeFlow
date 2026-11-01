@@ -15,3 +15,11 @@
 
 ## WebP hardening
 Website Builder, inventory and retail listing image conversion remains on the isolated hardening branch unless separately promoted. Do not assume it is live from this checkout release.
+
+
+## Subscriber billing interval correction — 1 November 2026
+- Applied LIVE migration `preserve_subscriber_billing_interval`, registry version `20261101131036`.
+- Finalisation maps exact configured annual/monthly Stripe Price IDs to `year`/`month`; unknown IDs fail closed. Subscription updates preserve the interval unless the incoming price matches a configured ID.
+- Verified RPC definitions and migration registry. Existing subscription rows and all Stripe configuration/records were left unchanged.
+- LIVE deployed webhook version 16 contains connected-account code absent from GitHub production and hardening branch; do not redeploy it until source reconciliation is complete.
+- Browser signup, real Stripe Checkout and full webhook E2E remain outstanding.

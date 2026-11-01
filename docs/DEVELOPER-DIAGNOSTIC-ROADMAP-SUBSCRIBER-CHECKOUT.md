@@ -14,7 +14,7 @@
 
 The current Worker hostname routing is defined in `worker/index.js`. The platform-owned LIVE TradeFlow entry point is `https://tradeflow.laurendigital.co.uk`; the Lauren Digital parent domains `https://laurendigital.co.uk` and `https://www.laurendigital.co.uk` also serve the TradeFlow marketing homepage. The Worker also has the LIVE `tradeflow.leannelaurenlowe.workers.dev` hostname.
 
-The LIVE signup Edge Function must accept only those four verified HTTPS origins. It must not trust `Referer`, TEST Worker hosts, subscriber-owned custom domains, StudioFlow/BusinessFlow hosts, or the Platform Owner host.
+The LIVE signup Edge Function must accept only those four verified HTTPS origins. It must not trust `Referer`, TEST Worker hosts, subscriber-owned custom domains, StudioFlow/BusinessFlow hosts, or the Platform Owner host. When the same source is deployed to the current TEST Supabase project (`nnsshnfkjcflucjrftzi`), it selects a separate TEST-only allowlist containing only `https://tradeflow-test.leannelaurenlowe.workers.dev`. The allowlist is selected from the exact `SUPABASE_URL` hostname, so the TEST hostname is never accepted by the LIVE project.
 
 ## 3. Edge Function — checkout session
 

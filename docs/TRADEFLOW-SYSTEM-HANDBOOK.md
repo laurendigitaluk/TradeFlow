@@ -2430,7 +2430,7 @@ The TEST Worker `tradeflow-test.leannelaurenlowe.workers.dev`, subscriber-owned 
 - returns CORS permission only for the validated origin;
 - checks the authenticated user's existing active memberships using `subscriber_get_my_memberships()` and fails closed if that lookup fails;
 - rejects an account that already owns an active TradeFlow business;
-- uses a stable per-user Stripe idempotency key to prevent repeated requests creating additional checkout sessions;
+- uses a stable per-user Stripe idempotency key to prevent repeated requests creating additional checkout sessions during Stripe's idempotency retention window; this is request-level protection, not a permanent checkout-attempt ledger;
 - preserves the existing plan, Stripe Price IDs, trial period and return-page paths.
 
 ### Webhook/database protection

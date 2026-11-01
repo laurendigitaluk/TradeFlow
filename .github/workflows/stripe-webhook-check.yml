@@ -5,6 +5,7 @@ on:
     paths:
       - "supabase/functions/stripe-payment-webhook/**"
       - ".github/workflows/stripe-webhook-check.yml"
+      - "tests/stripe-payment-webhook.test.ts"
   workflow_dispatch:
 
 permissions:
@@ -21,5 +22,7 @@ jobs:
         uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
-      - name: Type-check webhook entrypoint
-        run: deno check supabase/functions/stripe-payment-webhook/index.ts
+      - name: Type-check webhook entrypoint and tests
+        run: deno check supabase/functions/stripe-payment-webhook/index.ts tests/stripe-payment-webhook.test.ts
+      - name: Run webhook behaviour tests
+        run: deno test --allow-env --allow-net tests/stripe-payment-webhook.test.ts

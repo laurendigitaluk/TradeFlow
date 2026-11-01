@@ -202,6 +202,39 @@ Deno.test("Stripe webhook entrypoint: signature, domain orders, connected accoun
     const signupBody = await bodyOf(signup);
     assert(signup.status === 200 && signupBody.subscriber_signup === true, "Subscriber Checkout should finalise.");
     assert(signupCalls.some((url) => url.includes("/rpc/subscriber_finalize_signup")), "Subscriber Checkout must call subscriber_finalize_signup.");
+
+    // A sold-item conflict must refund through the connected account with a stable idempotency key.
+    let paymentRpcCount = 0;
+    let refundIdempotencyKey = "";
+    let refundAccount = "";
+    globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
+      const url = String(input);
+      if (url.includes("/payment_provider_connections?")) return responseJson([{ id: "connection-refund" }]);
+      if (url.includes("/rpc/process_external_payment_event")) {
+        paymentRpcCount++;
+        return responseJson(paymentRpcCount === 1 ? false : true);
+      }
+      if (url === "https://api.stripe.com/v1/refunds") {
+        const headers = new Headers(init?.headers);
+        refundIdempotencyKey = headers.get("Idempotency-Key") || "";
+        refundAccount = headers.get("Stripe-Account") || "";
+        return responseJson({ id: "re_test_conflict", status: "succeeded" });
+      }
+      throw new Error(`Unexpected conflict-refund request: ${url}`);
+    }) as typeof fetch;
+    const conflictRefund = await handler(await requestFor(event("checkout.session.completed", {
+      id: "cs_test_conflict",
+      payment_status: "paid",
+      amount_total: 1000,
+      currency: "gbp",
+      payment_intent: "pi_test_conflict",
+      metadata: { tenant_id: "tenant-1", payment_id: "payment-conflict", order_id: "order-conflict" },
+    }, "acct_refund")));
+    const conflictBody = await bodyOf(conflictRefund);
+    assert(conflictRefund.status === 200 && conflictBody.refunded === true, "Sold-item conflict should complete the refund path.");
+    assert(refundIdempotencyKey === "tradeflow-conflict-refund-pi_test_conflict", "Conflict refund must use the stable PaymentIntent idempotency key.");
+    assert(refundAccount === "acct_refund", "Conflict refund must be scoped to the connected Stripe account.");
+    assert(paymentRpcCount === 2, "Conflict refund must record the cancellation after the refund.");
   } finally {
     globalThis.fetch = originalFetch;
   }

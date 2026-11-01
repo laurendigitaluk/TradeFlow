@@ -75,3 +75,5 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - Replacement PR #194 is authoritative after creation and compare verification.
 - New `.github/workflows/stripe-webhook-check.yml` runs `deno check` on the exact webhook entrypoint for relevant pull requests. It does not replace handler behaviour tests or signed Stripe event replay.
 - Do not merge/deploy until type-check and controlled event tests pass. LIVE webhook remains v16; preserve Adventure Outpost complimentary access; no user LIVE payment test is required now.
+
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

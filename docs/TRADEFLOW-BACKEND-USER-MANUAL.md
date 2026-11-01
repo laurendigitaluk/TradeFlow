@@ -1637,3 +1637,16 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
 - `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
 - Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.
+
+
+## Subscriber signup checkout security — 1 November 2026 (pending release)
+
+This is a source-code hardening candidate on `security/prelaunch-hardening-20261101`, not a deployed change.
+
+The signup service now validates the browser's exact HTTPS Origin against the active environment's platform allowlist. LIVE accepts only the TradeFlow and Lauren Digital platform origins. Current TEST accepts only `https://tradeflow-test.leannelaurenlowe.workers.dev` when the function is running against Supabase project `nnsshnfkjcflucjrftzi`. Subscriber-owned website domains are not valid platform signup origins.
+
+Before creating Stripe Checkout, the service checks the signed-in user's active TradeFlow memberships. Existing subscribers should sign in to their current workspace. A stable per-user Stripe idempotency key prevents repeated signup requests from creating additional Checkout Sessions.
+
+The database finalisation migration is also prepared to preserve an existing subscription: a webhook retry for the same Stripe subscription is accepted idempotently, while a different subscription ID is rejected instead of replacing an existing complimentary or paid subscription.
+
+No migration has been applied and no Edge Function/Worker deployment or checkout test has been performed. Stripe configuration, products, prices, secrets, payments and existing subscription records remain unchanged. Follow the Subscriber Checkout Developer Diagnostic Roadmap before TEST verification or LIVE promotion.

@@ -2132,3 +2132,17 @@ The following behaviour is a planned security improvement and is **not yet deplo
 - If you need to change the signup details while a checkout attempt is still active, the system may ask you to continue the existing checkout or wait for it to expire before trying again.
 
 Do not use a subscriber-owned shop domain or the TEST Worker to start a LIVE platform subscription. The release remains pending TEST verification and deployment.
+
+
+## LIVE release update — 1 November 2026
+
+**Production deployment completed after direct inspection of the LIVE database function signatures and current LIVE Edge Function.**
+
+- Supabase project: `gxsrajtqzdjvmceqcpgv` (TradeFlow Live, EU West 2).
+- `subscriber-create-checkout-session` deployed successfully as version **13**, with JWT verification still enabled.
+- LIVE database migration `guard_subscriber_signup_subscription_collisions` applied successfully and recorded as migration version `20261101130118`.
+- The LIVE `subscriber_finalize_signup(uuid,text,text,text,text,text,text,timestamptz,timestamptz,timestamptz,jsonb)` definition was re-read after migration and confirmed to contain the per-user advisory lock, same-Stripe-subscription retry guard and rejection of a different subscription ID for an existing active member.
+- The deployed checkout source was re-read from Supabase and confirmed to contain the strict LIVE origin allowlist, no Referer fallback, exact-origin CORS, active-membership lookup, and stable per-user Stripe idempotency key.
+- The current TEST project and its Stripe configuration were not used or changed. TEST Stripe is not a prerequisite for this LIVE deployment.
+- Stripe products, prices, API secrets, dashboard settings, customer records, payment records and existing subscription rows were not changed.
+- No live payment or customer signup was initiated during deployment. Full browser checkout and webhook E2E verification remain outstanding; do not describe the checkout journey as fully tested until those tests are completed.

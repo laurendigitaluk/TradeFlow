@@ -2858,7 +2858,7 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 
 Do not treat this work as deployed or tested. It is committed to `security/prelaunch-hardening-20261101` only.
 
-**Platform-owned LIVE origins:** `https://tradeflow.laurendigital.co.uk`, `https://laurendigital.co.uk`, `https://www.laurendigital.co.uk`, and `https://tradeflow.leannelaurenlowe.workers.dev`. Do not add the TEST Worker, subscriber-owned custom domains, SceneSource, Platform Owner, StudioFlow or BusinessFlow hosts to the LIVE signup allowlist. Do not fall back to the `Referer` header.
+**Platform-owned LIVE origins:** `https://tradeflow.laurendigital.co.uk`, `https://laurendigital.co.uk`, `https://www.laurendigital.co.uk`, and `https://tradeflow.leannelaurenlowe.workers.dev`. Do not add the TEST Worker, subscriber-owned custom domains, SceneSource, Platform Owner, StudioFlow or BusinessFlow hosts to the LIVE signup allowlist. When deployed to current TEST project `nnsshnfkjcflucjrftzi`, the source selects a separate allowlist containing only `https://tradeflow-test.leannelaurenlowe.workers.dev`; selection is based on the exact `SUPABASE_URL` hostname. Do not fall back to the `Referer` header.
 
 **Signup route:** `subscriber-signup.html` → `subscriber-signup.js` → Supabase Auth → `subscriber-create-checkout-session` → Stripe Checkout → `subscriber-signup-success.html` → `stripe-payment-webhook` → `subscriber_finalize_signup`.
 

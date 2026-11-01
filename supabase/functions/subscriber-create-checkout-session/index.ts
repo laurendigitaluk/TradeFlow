@@ -41,7 +41,7 @@ Deno.serve(async req=>{
  }
  if(!origin)return json({error:'Checkout origin is not permitted.'},403);
  if(req.method!=='POST')return json({error:'Method not allowed'},405);
- if(!STRIPE_SECRET_KEY)return json({error:'Stripe is not configured on the LIVE TradeFlow environment.'},503);
+ if(!STRIPE_SECRET_KEY)return json({error:'Stripe is not configured for this TradeFlow environment.'},503);
  const auth=req.headers.get('Authorization'); if(!auth)return json({error:'Authentication required'},401);
  try{
   const userRes=await fetch(SUPABASE_URL+'/auth/v1/user',{headers:{apikey:SERVICE_ROLE_KEY,Authorization:auth}});

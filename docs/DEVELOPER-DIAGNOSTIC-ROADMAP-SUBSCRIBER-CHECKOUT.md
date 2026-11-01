@@ -92,3 +92,10 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
 - The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
 - Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.
+
+## Subscriber TEST endpoint correction — 1 November 2026
+
+- Production `subscriber-login.html` and `subscriber-signup.js` contained the retired TEST project ref `twfbmjwwqzxdxvclxbun`. Updated both to the current TEST project `nnsshnfkjcflucjrftzi` and its current publishable key from the committed `wrangler.jsonc`.
+- Added the explicit `tradeflow-test.leannelaurenlowe.workers.dev` hostname to the signup script's TEST detector, matching the login page. This avoids depending solely on Worker source rewriting to select TEST.
+- Commits: login `0bd129a2c2645a6919b8b7f2408d7d1cfa905145`; signup TEST endpoint `301508f507d88e2cb960390ae02f042ffece3a18`; explicit hostname `eaa66db4835f49cb51c4c97e6b656eda4e729f1d`.
+- Static source inspection confirms both files reference current TEST and no longer contain the retired TEST ref/key. Browser/Worker runtime verification and Cloudflare deployment are still outstanding.

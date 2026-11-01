@@ -215,3 +215,7 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
 - The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
 - Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.
+
+## Subscriber TEST routing repair — 1 November 2026
+
+Updated subscriber login/signup references from retired TEST Supabase project `twfbmjwwqzxdxvclxbun` to current TEST project `nnsshnfkjcflucjrftzi`, including the current publishable key. Added explicit TEST Worker hostname detection to signup. Changes are committed to production GitHub source but have not been verified on the deployed Cloudflare Worker.

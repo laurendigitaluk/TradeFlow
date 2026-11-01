@@ -2374,3 +2374,14 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - The sidebar preview link and dashboard preview tile remain ordinary links and retain their existing behavior. The action styling is covered by the existing `.actions button` CSS rule.
 - LIVE production commit: `72c2a521dd2d1834afb98094d0456d85b6aa875f`.
 - Deployment and browser click verification are still required; do not claim the button is fixed on the deployed site until tested after the production Worker/static asset update.
+
+
+## Complimentary testing account and Subscription & Billing dashboard — 1 November 2026
+
+- Owner-approved LIVE change for tenant Adventure Outpost (`b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52`): retain the existing business account and all tenant data indefinitely for testing, with no recurring subscription payment.
+- Existing Stripe subscription was already set in Stripe to cancel at the end of its 30-day trial (2 November 2026 18:43:28 UTC; Stripe showed “No further invoice”). That Stripe cancellation was not reversed and no new Stripe checkout/subscription was created.
+- The historical Stripe-linked `tenant_subscriptions` row was archived locally as cancelled. Original Stripe subscription/customer/price identifiers and cancellation timing remain in its metadata/provider metadata; live provider ID columns were cleared so subsequent Stripe webhook sync cannot overwrite the replacement complimentary entitlement.
+- A separate current entitlement row was created for the same tenant and existing active TradeFlow plan: `billing_provider='manual'`, `provider_status='complimentary'`, `status='active'`, no Stripe identifiers, no period end, no cancellation. This uses the existing `private.has_tenant_feature` complimentary-access branch. Verified feature checks returned true for `module.buying` and `website.editor`.
+- No tenant, membership, website, catalogue, customer, transaction, or published content records were deleted or copied. No TEST project data was changed.
+- LIVE dashboard `subscriber-dashboard.html` now has a visible “Subscription & Billing” panel and a navigation link to it. It reads the current tenant subscription and displays complimentary status/no payments/indefinite access. The small cancellation link at the bottom of the sidebar has been removed. For normal paid/trial subscriptions it shows the plan/billing/next payment/access-end details and offers cancellation in the main panel; for already-cancelled subscriptions it shows that cancellation is scheduled; for complimentary accounts it hides cancellation.
+- LIVE production commit for dashboard panel: `04701b992cf1b6248448ee28a34a0b648043ec87`. Browser deployment and UI verification remain required.

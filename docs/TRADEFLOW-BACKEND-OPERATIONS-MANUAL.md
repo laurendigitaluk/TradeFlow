@@ -176,3 +176,23 @@ TradeFlow supports multiple products under one buying request while preserving a
 The subscriber Buying workspace groups items from the same request, stacks the item valuation panels before evidence/photos, and provides one “Submit total valuations” action. Each item's values remain separate. **Current limitation:** the submit action calls the manual valuation RPC sequentially per item; it is not an atomic batch. If a later item fails, earlier offers may already have been created.
 
 UI was reviewed in screenshots and JavaScript syntax checks passed. Mixed accept/refuse and the full shipping-to-inventory lifecycle have not yet passed end-to-end verification. See `CHECKPOINTS/2026-10-28-multi-item-valuation.md` for the full test checklist and safeguards. Do not mark this workflow fully verified until those tests pass.
+
+
+## Subscriber signup checkout security — 1 November 2026 (candidate only)
+
+LIVE baseline inspected: Edge Function `subscriber-create-checkout-session` version 12; `stripe-payment-webhook` version 16; LIVE Supabase project `gxsrajtqzdjvmceqcpgv`.
+
+The checkout Edge Function previously derived Stripe return URLs from unvalidated `Origin`/`Referer` and had no explicit Stripe idempotency key. It also did not check whether the authenticated user already had an active tenant membership.
+
+Candidate source changes on `security/prelaunch-hardening-20261101`:
+- exact HTTPS allowlist: TradeFlow subdomain, Lauren Digital apex and www, and the LIVE TradeFlow workers.dev hostname;
+- no Referer fallback; exact-origin CORS;
+- authenticated `subscriber_get_my_memberships()` lookup, fail closed on lookup error and reject existing active membership;
+- stable per-user Stripe Checkout idempotency key;
+- existing plan, Price IDs, trial period and return-page routes preserved.
+
+The LIVE `subscriber_finalize_signup` RPC was also inspected. It previously updated an existing tenant subscription with the incoming Stripe subscription/customer/price/status fields whenever the Auth user already had an active tenant membership. This could replace the tracking ID for a complimentary or existing subscription.
+
+Candidate migration `supabase/migrations/20261101130000_guard_subscriber_signup_subscription_collisions.sql` adds a per-user advisory transaction lock and idempotent same-subscription handling. A different incoming subscription ID is rejected; the existing subscription row is not modified. Existing table indexes and grants are preserved by `CREATE OR REPLACE FUNCTION`.
+
+**Not applied:** the migration is committed to the isolated branch only. Do not apply to LIVE. Next apply to current TEST only after confirming the TEST project and sandbox configuration, then verify allowed/blocked origins, existing-membership rejection, repeated checkout idempotency, same-subscription webhook replay and different-subscription collision rejection. No Stripe settings, products, prices, secrets, payments or subscription rows were changed. No runtime tests or deployment are claimed.

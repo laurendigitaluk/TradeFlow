@@ -1,0 +1,15 @@
+# Project Memory — Subscriber Checkout Security Hardening — 1 November 2026
+
+- Workstream: TradeFlow LIVE pre-launch security hardening.
+- Repository: `laurendigitaluk/TradeFlow`.
+- Working branch: `security/prelaunch-hardening-20261101`.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv` (EU West 2). Current TEST Supabase: `nnsshnfkjcflucjrftzi`. Retired TEST project `twfbmjwwqzxdxvclxbun` must not be used.
+- Verified platform-owned LIVE origins for subscriber signup: `https://tradeflow.laurendigital.co.uk`, `https://laurendigital.co.uk`, `https://www.laurendigital.co.uk`, `https://tradeflow.leannelaurenlowe.workers.dev`. TEST Worker, subscriber-owned domains, owner host and other product hosts are excluded.
+- LIVE `subscriber-create-checkout-session` was version 12 and accepted unvalidated Origin/Referer values for Stripe return URLs. It had no Stripe idempotency key and did not check whether the authenticated user already had an active tenant membership.
+- LIVE `stripe-payment-webhook` was version 16. It verifies Stripe signatures and calls `public.subscriber_finalize_signup(...)` for subscription Checkout completion.
+- LIVE `subscriber_finalize_signup` previously overwrote an existing tenant subscription's Stripe subscription ID when the user already had an active tenant membership. The database has a unique index on (billing_provider, provider_subscription_id), but that does not prevent replacing the existing subscription reference.
+- Candidate Edge Function hardening committed to this branch: strict HTTPS platform-origin allowlist, origin-bound CORS, no Referer fallback, fail-closed active-membership lookup, stable per-user Stripe idempotency key. Existing plan/price/trial parameters were preserved.
+- Candidate SQL migration `supabase/migrations/20261101130000_guard_subscriber_signup_subscription_collisions.sql` serialises finalisation per Auth user, accepts a retry only for the exact same Stripe subscription ID and rejects a different subscription ID without mutating the existing subscription.
+- Added developer diagnostic roadmap `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-SUBSCRIBER-CHECKOUT.md`.
+- Stripe products, prices, secrets, settings, customer/payment records and subscription rows were not changed. No LIVE or TEST Edge Function deployment or database migration application was performed.
+- No checkout, webhook, browser or Stripe Sandbox tests have yet been run. Do not describe the changes as tested or deployed. Next step: inspect the candidate diff, apply the migration to current TEST only when ready, test against TEST Stripe configuration without copying LIVE secrets/data, then verify and review before any LIVE promotion.

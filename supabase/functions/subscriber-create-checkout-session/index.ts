@@ -84,7 +84,7 @@ Deno.serve(async req=>{
   const stripeRes=await fetch('https://api.stripe.com/v1/checkout/sessions',{method:'POST',headers:{Authorization:`Bearer ${STRIPE_SECRET_KEY}`,'Content-Type':'application/x-www-form-urlencoded','Idempotency-Key':`tradeflow-subscriber-signup-${user.id}`},body:params});
   const stripe=await stripeRes.json();
   if(!stripeRes.ok){
-   if(stripe?.error?.type==='idempotency_error')return json({error:'A signup checkout is already in progress for this account. Continue with the existing checkout, or wait for it to expire before starting a different billing selection.'},409);
+   if(stripe?.error?.type==='idempotency_error')return json({error:'A signup checkout is already in progress for this account. Continue with the existing checkout, or wait for it to expire before changing the signup details.'},409);
    return json({error:stripe?.error?.message||'Unable to start Stripe subscription checkout.'},502);
   }
   return json({checkout_url:stripe.url,session_id:stripe.id,trial_days:Number(plan.trial_days??30),billing_interval:billingInterval,price:Number(billingInterval==='year'?plan.annual_price:plan.monthly_price)});

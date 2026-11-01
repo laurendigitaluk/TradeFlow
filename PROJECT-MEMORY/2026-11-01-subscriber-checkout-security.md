@@ -85,3 +85,5 @@ Production `subscriber-login.html` and `subscriber-signup.js` were found to cont
 - Added `.github/workflows/stripe-webhook-check.yml` to run `deno check` against the exact webhook entrypoint on pull requests. This provides a reproducible Deno type-check, not behavioural integration tests.
 - Signed Stripe event replay, handler-path runtime tests and LIVE end-to-end signup/payment tests remain outstanding. Do not merge/deploy until appropriate verification is complete.
 - LIVE remains webhook version 16 and no payment/database mutation was performed. Do not alter Adventure Outpost complimentary access or ask the user to create a LIVE payment.
+
+- Additional Deno test coverage now exercises the connected-account sold-item conflict-refund branch, verifies the stable `tradeflow-conflict-refund-{PaymentIntent}` idempotency key and `Stripe-Account` header, and confirms the cancellation event is recorded only after the refund response. GitHub Actions run `41340021394` passed both type-check and behaviour-test steps. This uses mocked Stripe/Supabase services; it does not issue a real refund or payment.

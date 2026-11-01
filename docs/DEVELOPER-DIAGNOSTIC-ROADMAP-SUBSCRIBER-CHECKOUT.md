@@ -99,3 +99,9 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - Added the explicit `tradeflow-test.leannelaurenlowe.workers.dev` hostname to the signup script's TEST detector, matching the login page. This avoids depending solely on Worker source rewriting to select TEST.
 - Commits: login `0bd129a2c2645a6919b8b7f2408d7d1cfa905145`; signup TEST endpoint `301508f507d88e2cb960390ae02f042ffece3a18`; explicit hostname `eaa66db4835f49cb51c4c97e6b656eda4e729f1d`.
 - Static source inspection confirms both files reference current TEST and no longer contain the retired TEST ref/key. Browser/Worker runtime verification and Cloudflare deployment are still outstanding.
+
+## Webhook review branch refresh — 1 November 2026
+
+- The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
+- Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; webhook reconciliation commit `d60e50919eae2f6e46d0c2176088c6a1cc427629`.
+- The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.

@@ -59,3 +59,11 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - GitHub comparison: one commit ahead of `production`, zero behind, one changed file only (`supabase/functions/stripe-payment-webhook/index.ts`). Static checks confirm connected-account matching and refund idempotency code remain present and no `admin` references remain.
 - Runtime Deno execution, signed-event replay and integration tests remain outstanding. PR must remain unmerged and LIVE must remain at v16 until those tests pass.
 - No LIVE website test or real payment is required from the user at this stage. Preserve Adventure Outpost complimentary access and all its records.
+
+
+## Webhook review branch v3 correction — 1 November 2026
+- PR #192 became three commits behind after production documentation commits. It was superseded and closed without merge.
+- New branch `reconcile/live-stripe-webhook-v16-20261101-v3` was created from current production `467efced09203a8a9ab5489123edd2d93ff03ec5`; only the reconciled webhook entrypoint was reapplied.
+- New draft PR #193: https://github.com/laurendigitaluk/TradeFlow/pull/193. Compare confirms 1 commit ahead, 0 behind, one changed file only.
+- Static source checks pass; Deno runtime tests and signed Stripe event replay remain outstanding. Do not merge/deploy until they pass.
+- LIVE webhook remains version 16; no user LIVE test/payment required. Preserve Adventure Outpost complimentary account.

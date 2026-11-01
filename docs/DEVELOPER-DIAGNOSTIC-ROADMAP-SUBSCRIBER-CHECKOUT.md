@@ -105,3 +105,15 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 - The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
 - Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; draft PR [#192](https://github.com/laurendigitaluk/TradeFlow/pull/192). The branch has been rebased to latest production and is one commit ahead, zero behind.
 - The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.
+
+
+## Webhook reconciliation follow-up — 1 November 2026
+
+**Current state:** LIVE `stripe-payment-webhook` remains ACTIVE version 16. Its exact deployed source is preserved in `PROJECT-MEMORY/SNAPSHOTS/2026-11-01-live-stripe-payment-webhook-v16.ts`. The reconciled source is now in draft PR #192 on `reconcile/live-stripe-webhook-v16-20261101-v2`.
+
+- The PR branch includes deployed `account.updated` connected-account status handling, tenant/account matching, connected-account retail payment/refund routing and the `tradeflow-conflict-refund-` idempotency key.
+- The three undefined `admin.from(...)` calls in the legacy domain-order path are replaced with service-role REST requests. Expiry PATCH is guarded by `status=eq.pending_payment`.
+- Latest compare against `production`: one commit ahead, zero behind; only the webhook entrypoint changed. No review submissions or inline review threads at recheck.
+- Static checks pass for absence of `admin` references and presence of connected-account/refund protections. This is not runtime verification.
+- **Outstanding gate:** execute the exact PR source in an isolated Deno environment, test signature rejection/acceptance, account updates, connected-account match/mismatch, subscription RPC calls, domain-order paid/expired paths and conflict refund idempotency; then perform signed Stripe test-event replay. Do not merge or deploy before this gate passes.
+- User LIVE website testing is not required now. Do not initiate real checkout/payment or change Adventure Outpost complimentary access for this work.

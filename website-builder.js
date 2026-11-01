@@ -931,6 +931,11 @@ function loadContent(content){
  renderPageList();renderPageManager();renderHeaderFooterControls();renderTemplates();renderHomepageControls();renderHeroImageControls();renderDesignControls();renderBrandingControls();renderBusinessExtras();renderEditor();
 }
 
+async function compressWebsiteImage(source){
+ if(!source||!['image/jpeg','image/png','image/webp'].includes(source.type))throw Error('Use JPEG, PNG or WebP images only.');
+ let bitmap;try{bitmap=await createImageBitmap(source)}catch{throw Error('The selected image could not be decoded by this browser.');}
+ try{const scale=Math.min(1,2000/Math.max(bitmap.width,bitmap.height));const width=Math.max(1,Math.round(bitmap.width*scale)),height=Math.max(1,Math.round(bitmap.height*scale));const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const ctx=canvas.getContext('2d',{alpha:false});if(!ctx)throw Error('Image compression is unavailable in this browser.');ctx.drawImage(bitmap,0,0,width,height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',0.82));if(!blob||blob.type!=='image/webp')throw Error('This browser could not create a WebP image. Please use a recent version of Chrome, Edge or Firefox.');if(blob.size>5242880)throw Error('The image is still larger than 5 MB after compression. Choose a smaller image.');const base=(source.name||'image').replace(/\\.[^.]+$/,'')||'image';return {file:new File([blob],base+'.webp',{type:'image/webp',lastModified:source.lastModified||Date.now()}),width,height};}finally{bitmap.close?.();}
+}
 async function getImageDimensions(file){
  return await new Promise(function(resolve){
   if(!file||!/^image\//.test(file.type)){resolve(null);return;}
@@ -988,9 +993,11 @@ async function uploadImage(file,target){
  else if(target.startsWith('tile:'))replacedOldUrl=homepageTiles.find(x=>x.id===target.slice(5))?.image_url||'';
  else if(target.startsWith('page:')&&target.includes(':tile:')){const parts=target.split(':');replacedOldUrl=pages.find(x=>x.slug===parts[1])?.tiles?.find(x=>x.id===parts[3])?.image_url||'';}
  else replacedOldUrl=pages.find(x=>x.slug===target)?.image_url||'';
- if(file.size>5242880)throw new Error('Image is larger than 5 MB.');
  if(!['image/png','image/jpeg','image/webp'].includes(file.type))throw new Error('Use PNG, JPEG or WebP images only.');
  if(!tenantId||!session?.access_token)throw new Error('Subscriber session is not ready.');
+ const originalFileName=file.name;
+ const compressed=await compressWebsiteImage(file);
+ file=compressed.file;
  // Build the local preview first. Do not wait for image decoding or Supabase.
  // The selected photograph must appear in the editor immediately.
  const previewUrl=await new Promise(function(resolve,reject){
@@ -1035,9 +1042,9 @@ async function uploadImage(file,target){
  setStatus('Uploading image to website storage…');
  const slug=target==='home'?'home':target==='logo'?'logo':target==='banner'?'banner':target.startsWith('global-header:')?'global-header':target.startsWith('hero-element:')?'hero-elements':target;
  const safe=(file.name||'image').toLowerCase().replace(/[^a-z0-9._-]+/g,'-');
- const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe;
+ const path=tenantId+'/'+slug+'/'+Date.now()+'-'+safe.replace(/\\.[^.]+$/,'')+'.webp';
  const response=await fetch(SUPABASE_URL+'/storage/v1/object/tradeflow-site-media/'+path.split('/').map(encodeURIComponent).join('/'),{
-   method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':file.type,'x-upsert':'false'},body:file
+   method:'POST',headers:{apikey:supabaseKey,Authorization:'Bearer '+session.access_token,'Content-Type':'image/webp','x-upsert':'false'},body:file
  });
  const responseText=await response.text();
  if(!response.ok){

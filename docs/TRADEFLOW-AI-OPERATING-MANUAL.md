@@ -2869,3 +2869,17 @@ Do not treat this work as deployed or tested. It is committed to `security/prela
 **Important boundaries:** customer retail checkout `create-stripe-checkout-session` is a separate flow. Do not change it as part of subscriber signup hardening. Do not alter Stripe products, prices, secrets, settings, customer/payment records or existing subscription rows. Do not deploy or apply the migration until the candidate has been reviewed and the current TEST environment is confirmed.
 
 **Verification status:** no browser checkout, Stripe Sandbox, webhook replay, duplicate-session, membership-collision or deployment test has been run. The migration is not applied to TEST or LIVE. See `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-SUBSCRIBER-CHECKOUT.md` and `CHECKPOINTS/2026-11-01-live-prelaunch-security-hardening.md`.
+
+
+## LIVE release update — 1 November 2026
+
+**Production deployment completed after direct inspection of the LIVE database function signatures and current LIVE Edge Function.**
+
+- Supabase project: `gxsrajtqzdjvmceqcpgv` (TradeFlow Live, EU West 2).
+- `subscriber-create-checkout-session` deployed successfully as version **13**, with JWT verification still enabled.
+- LIVE database migration `guard_subscriber_signup_subscription_collisions` applied successfully and recorded as migration version `20261101130118`.
+- The LIVE `subscriber_finalize_signup(uuid,text,text,text,text,text,text,timestamptz,timestamptz,timestamptz,jsonb)` definition was re-read after migration and confirmed to contain the per-user advisory lock, same-Stripe-subscription retry guard and rejection of a different subscription ID for an existing active member.
+- The deployed checkout source was re-read from Supabase and confirmed to contain the strict LIVE origin allowlist, no Referer fallback, exact-origin CORS, active-membership lookup, and stable per-user Stripe idempotency key.
+- The current TEST project and its Stripe configuration were not used or changed. TEST Stripe is not a prerequisite for this LIVE deployment.
+- Stripe products, prices, API secrets, dashboard settings, customer records, payment records and existing subscription rows were not changed.
+- No live payment or customer signup was initiated during deployment. Full browser checkout and webhook E2E verification remain outstanding; do not describe the checkout journey as fully tested until those tests are completed.

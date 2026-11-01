@@ -79,9 +79,9 @@ Deno.serve(async (req: Request) => {
       files = form.getAll("files").filter((value): value is File => value instanceof File);
     }
     for (const file of files) {
-      if (!file.type.startsWith("image/")) return json({ error: `${file.name} is not an image`, request_id: requestId }, 400);
-      if (file.size > 10 * 1024 * 1024) return json({ error: `${file.name} is larger than 10MB`, request_id: requestId }, 400);
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "") || "jpg";
+      if (file.type !== "image/webp") return json({ error: `${file.name} must be converted to WebP before upload`, request_id: requestId }, 400);
+      if (file.size > 5 * 1024 * 1024) return json({ error: `${file.name} is larger than 5MB after compression`, request_id: requestId }, 400);
+      const ext = "webp";
       const path = `${tenantId}/customer-buying/${item.id}/${crypto.randomUUID()}.${ext}`;
       const { error: uploadError } = await admin.storage.from("tradeflow-media").upload(
         path, new Uint8Array(await file.arrayBuffer()), { contentType: file.type, upsert: false }
@@ -89,7 +89,7 @@ Deno.serve(async (req: Request) => {
       if (uploadError) return json({ error: uploadError.message, request_id: requestId }, 500);
       const { data: asset, error: assetError } = await admin.from("media_assets").insert({
         tenant_id: tenantId, storage_bucket: "tradeflow-media", storage_path: path,
-        original_filename: file.name, mime_type: file.type, byte_size: file.size,
+        original_filename: file.name, mime_type: "image/webp", byte_size: file.size,
         asset_kind: "customer_valuation_photo", retention_policy: "customer_valuation"
       }).select("id").single();
       if (assetError) {

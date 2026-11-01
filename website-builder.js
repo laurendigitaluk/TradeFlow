@@ -1068,8 +1068,8 @@ async function uploadImage(file,target){
  else {const p=pages.find(x=>x.slug===target);if(p){p.image_url=url;p.image_alt=p.title;}}
  try{
    await api('/rest/v1/media_assets',{method:'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({
-     tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:file.name,
-     mime_type:file.type,byte_size:file.size,status:'active',created_by:session.user?.id||null,
+     tenant_id:tenantId,storage_bucket:'tradeflow-site-media',storage_path:path,original_filename:originalFileName,
+     mime_type:'image/webp',byte_size:file.size,status:'active',created_by:session.user?.id||null,
      asset_kind:target==='logo'?'site_logo':target==='banner'?'site_banner':'site_image',retention_policy:'permanent'
    })});
  }catch(e){console.warn('Site image metadata insert failed',e)}

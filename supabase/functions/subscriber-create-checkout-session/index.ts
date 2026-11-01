@@ -2,12 +2,17 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 const SUPABASE_URL=Deno.env.get('SUPABASE_URL')!;
 const SERVICE_ROLE_KEY=Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 const STRIPE_SECRET_KEY=Deno.env.get('STRIPE_SECRET_KEY');
-const ALLOWED_CHECKOUT_ORIGINS=new Set([
+const LIVE_CHECKOUT_ORIGINS=new Set([
  'https://tradeflow.laurendigital.co.uk',
  'https://laurendigital.co.uk',
  'https://www.laurendigital.co.uk',
  'https://tradeflow.leannelaurenlowe.workers.dev'
 ]);
+const TEST_CHECKOUT_ORIGINS=new Set([
+ 'https://tradeflow-test.leannelaurenlowe.workers.dev'
+]);
+const IS_CURRENT_TEST_PROJECT=new URL(SUPABASE_URL).hostname==='nnsshnfkjcflucjrftzi.supabase.co';
+const ALLOWED_CHECKOUT_ORIGINS=IS_CURRENT_TEST_PROJECT?TEST_CHECKOUT_ORIGINS:LIVE_CHECKOUT_ORIGINS;
 function getAllowedOrigin(req:Request):string|null{
  const value=req.headers.get('origin');
  if(!value)return null;

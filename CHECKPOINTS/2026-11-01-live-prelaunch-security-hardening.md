@@ -44,3 +44,9 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - Signup detector explicitly recognises `tradeflow-test.leannelaurenlowe.workers.dev`.
 - Commits: `0bd129a2c2645a6919b8b7f2408d7d1cfa905145`, `301508f507d88e2cb960390ae02f042ffece3a18`, `eaa66db4835f49cb51c4c97e6b656eda4e729f1d`.
 - Static verification only; no live browser/Worker verification. Do not treat the commits as a deployed release.
+
+## Webhook review branch refresh — 1 November 2026
+
+- The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
+- Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; webhook reconciliation commit `d60e50919eae2f6e46d0c2176088c6a1cc427629`.
+- The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.

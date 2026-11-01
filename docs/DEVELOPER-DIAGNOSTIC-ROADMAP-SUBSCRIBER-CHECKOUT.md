@@ -69,7 +69,7 @@ The previous RPC defect was that an existing active membership caused the RPC to
 - **401 authentication:** inspect Auth signup/confirmation and current bearer token.
 - **503 membership lookup:** inspect `subscriber_get_my_memberships()`, Supabase REST reachability and caller token forwarding. Do not proceed to Stripe when membership cannot be checked.
 - **409 existing business:** expected protection; direct the user to sign in rather than creating another subscription.
-- **409 Stripe idempotency conflict:** a checkout attempt already exists for that user with different parameters; do not bypass the key to create another session.
+- **409 Stripe idempotency conflict:** a checkout attempt already exists for that user with different parameters; do not bypass the key to create another session. The stable per-user key protects retries only while Stripe retains its idempotency result; this candidate does not add a permanent checkout-attempt ledger. If webhook finalisation is unresolved after the key's retention window, reconcile the completed Stripe session before allowing a new attempt.
 - **Webhook failure:** inspect Stripe signature, webhook delivery, subscription retrieval and the exact RPC exception. Do not overwrite existing tenant subscription data to make the webhook succeed.
 - **Subscription collision:** compare the incoming Stripe subscription ID with the tenant's existing `tenant_subscriptions.provider_subscription_id`; never replace a complimentary/manual/different paid subscription.
 

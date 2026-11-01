@@ -176,3 +176,15 @@ TradeFlow supports multiple products under one buying request while preserving a
 The subscriber Buying workspace groups items from the same request, stacks the item valuation panels before evidence/photos, and provides one “Submit total valuations” action. Each item's values remain separate. **Current limitation:** the submit action calls the manual valuation RPC sequentially per item; it is not an atomic batch. If a later item fails, earlier offers may already have been created.
 
 UI was reviewed in screenshots and JavaScript syntax checks passed. Mixed accept/refuse and the full shipping-to-inventory lifecycle have not yet passed end-to-end verification. See `CHECKPOINTS/2026-10-28-multi-item-valuation.md` for the full test checklist and safeguards. Do not mark this workflow fully verified until those tests pass.
+
+
+## LIVE subscriber checkout security — deployed 1 November 2026
+
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (EU West 2).
+- `subscriber-create-checkout-session` is deployed and verified at Edge Function version **13** with JWT verification enabled.
+- Migration `guard_subscriber_signup_subscription_collisions` is applied to LIVE and recorded as `20261101130118`.
+- The database finalisation RPC now serialises signup finalisation per Auth user, accepts a retry only for the same existing Stripe subscription ID, and rejects a different subscription ID rather than replacing an existing subscription.
+- LIVE checkout validates the exact platform HTTPS origin, uses origin-bound CORS, no longer trusts Referer, checks for an existing active business before creating checkout, and sends a stable per-user Stripe idempotency key.
+- TEST Stripe is not required for this LIVE deployment and was not changed.
+- No Stripe products, prices, API secrets, dashboard settings, customer records, payment records or existing subscription rows were changed.
+- Deployment and database state are confirmed. Full real-browser checkout and webhook E2E verification have not yet been performed; do not mark the entire signup journey fully tested until that is complete.

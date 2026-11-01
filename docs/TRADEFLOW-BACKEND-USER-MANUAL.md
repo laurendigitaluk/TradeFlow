@@ -1645,7 +1645,7 @@ This is a source-code hardening candidate on `security/prelaunch-hardening-20261
 
 The signup service now validates the browser's exact HTTPS Origin against the active environment's platform allowlist. LIVE accepts only the TradeFlow and Lauren Digital platform origins. Current TEST accepts only `https://tradeflow-test.leannelaurenlowe.workers.dev` when the function is running against Supabase project `nnsshnfkjcflucjrftzi`. Subscriber-owned website domains are not valid platform signup origins.
 
-Before creating Stripe Checkout, the service checks the signed-in user's active TradeFlow memberships. Existing subscribers should sign in to their current workspace. A stable per-user Stripe idempotency key prevents repeated signup requests from creating additional Checkout Sessions.
+Before creating Stripe Checkout, the service checks the signed-in user's active TradeFlow memberships. Existing subscribers should sign in to their current workspace. A stable per-user Stripe idempotency key prevents repeated signup requests from creating additional Checkout Sessions while Stripe retains the idempotency result. This is not a permanent checkout-attempt ledger; if webhook finalisation remains unresolved after that window, the completed Stripe session must be reconciled before a new attempt is allowed.
 
 The database finalisation migration is also prepared to preserve an existing subscription: a webhook retry for the same Stripe subscription is accepted idempotently, while a different subscription ID is rejected instead of replacing an existing complimentary or paid subscription.
 

@@ -2852,3 +2852,20 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
 - `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
 - Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.
+
+
+## 1 November 2026 — Subscriber signup checkout security (isolated candidate)
+
+Do not treat this work as deployed or tested. It is committed to `security/prelaunch-hardening-20261101` only.
+
+**Platform-owned LIVE origins:** `https://tradeflow.laurendigital.co.uk`, `https://laurendigital.co.uk`, `https://www.laurendigital.co.uk`, and `https://tradeflow.leannelaurenlowe.workers.dev`. Do not add the TEST Worker, subscriber-owned custom domains, SceneSource, Platform Owner, StudioFlow or BusinessFlow hosts to the LIVE signup allowlist. Do not fall back to the `Referer` header.
+
+**Signup route:** `subscriber-signup.html` → `subscriber-signup.js` → Supabase Auth → `subscriber-create-checkout-session` → Stripe Checkout → `subscriber-signup-success.html` → `stripe-payment-webhook` → `subscriber_finalize_signup`.
+
+**Edge Function candidate:** strict HTTPS Origin allowlist, exact-origin CORS, active-membership lookup via `subscriber_get_my_memberships()`, fail-closed handling when membership cannot be verified, and a stable per-user Stripe idempotency key. Existing plan/price/trial settings and return-page paths are preserved. A repeated request with changed signup parameters while the key is active returns a conflict rather than creating another session.
+
+**Database candidate:** `20261101130000_guard_subscriber_signup_subscription_collisions.sql`. The revised `subscriber_finalize_signup` takes a per-user advisory transaction lock. If an active membership already exists, it returns the tenant only when the exact incoming Stripe subscription ID is already linked to that tenant; otherwise it raises an exception and does not update the existing subscription. This protects complimentary, manual and different paid subscriptions from being overwritten.
+
+**Important boundaries:** customer retail checkout `create-stripe-checkout-session` is a separate flow. Do not change it as part of subscriber signup hardening. Do not alter Stripe products, prices, secrets, settings, customer/payment records or existing subscription rows. Do not deploy or apply the migration until the candidate has been reviewed and the current TEST environment is confirmed.
+
+**Verification status:** no browser checkout, Stripe Sandbox, webhook replay, duplicate-session, membership-collision or deployment test has been run. The migration is not applied to TEST or LIVE. See `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-SUBSCRIBER-CHECKOUT.md` and `CHECKPOINTS/2026-11-01-live-prelaunch-security-hardening.md`.

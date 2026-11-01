@@ -75,7 +75,7 @@ Proceed with the security changes identified in the LIVE pre-launch audit. Exclu
 ### Candidate changes committed to the isolated branch
 - Edge Function origin validation and exact-origin CORS; Referer fallback removed. LIVE accepts only the four verified platform origins. The same source selects a TEST-only allowlist containing only `https://tradeflow-test.leannelaurenlowe.workers.dev` when `SUPABASE_URL` is the current TEST project `nnsshnfkjcflucjrftzi`; TEST origin is never accepted by LIVE.
 - Existing active membership check via `subscriber_get_my_memberships()`; fail closed if lookup fails.
-- Stable per-user Stripe idempotency key; repeated calls cannot create a second session for the same user during the active key window.
+- Stable per-user Stripe idempotency key; repeated calls cannot create a second session for the same user during Stripe's idempotency retention window. This is not a permanent checkout-attempt ledger; if webhook finalisation remains unresolved beyond that window, reconcile the completed Stripe session before allowing another attempt.
 - New migration `20261101130000_guard_subscriber_signup_subscription_collisions.sql`: per-user advisory lock, same-subscription webhook retry returns the existing tenant, different subscription ID is rejected without mutating the existing subscription.
 - New diagnostic roadmap: `docs/DEVELOPER-DIAGNOSTIC-ROADMAP-SUBSCRIBER-CHECKOUT.md`.
 - New project-memory record: `PROJECT-MEMORY/2026-11-01-subscriber-checkout-security.md`.

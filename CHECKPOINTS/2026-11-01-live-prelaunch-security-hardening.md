@@ -67,3 +67,11 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - New draft PR #193: https://github.com/laurendigitaluk/TradeFlow/pull/193. Compare confirms 1 commit ahead, 0 behind, one changed file only.
 - Static source checks pass; Deno runtime tests and signed Stripe event replay remain outstanding. Do not merge/deploy until they pass.
 - LIVE webhook remains version 16; no user LIVE test/payment required. Preserve Adventure Outpost complimentary account.
+
+
+## Webhook review branch v4 and CI gate — 1 November 2026
+- Earlier PR branches became behind after documentation updates on production; PR #192 was closed and PR #193 is being superseded without merge.
+- Clean branch `reconcile/live-stripe-webhook-v16-20261101-v4` is based on the current production head and includes the reconciled webhook, a Deno type-check workflow and documentation corrections.
+- Replacement PR #194 is authoritative after creation and compare verification.
+- New `.github/workflows/stripe-webhook-check.yml` runs `deno check` on the exact webhook entrypoint for relevant pull requests. It does not replace handler behaviour tests or signed Stripe event replay.
+- Do not merge/deploy until type-check and controlled event tests pass. LIVE webhook remains v16; preserve Adventure Outpost complimentary access; no user LIVE payment test is required now.

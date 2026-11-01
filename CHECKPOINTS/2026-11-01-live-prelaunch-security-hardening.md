@@ -29,3 +29,11 @@ Website Builder, inventory and retail listing image conversion remains on the is
 - `subscriber-signup.js` persists selected billing interval in Auth metadata and pending browser signup state (commit `cc6b9e898a8f35f7ae5e6c24b2e9b2e5825136ce`).
 - `subscriber-login.html` resumes checkout using the pending interval only when its email matches the signed-in account, otherwise using Auth metadata then monthly fallback (commit `92068c1ed9c9477141d6d1857273b7bdd9c74d63`).
 - Pending signup state is cleared after a membership is found. Browser/email-confirmation E2E still required.
+
+
+## Deployed LIVE webhook v16 source-drift finding — 1 November 2026
+
+- Preserved the exact deployed LIVE `stripe-payment-webhook` version 16 entrypoint in `PROJECT-MEMORY/SNAPSHOTS/2026-11-01-live-stripe-payment-webhook-v16.ts` (commit `e40442c84d682f60ef0c80e98e87226a58c1ad0d`). This is an evidence snapshot only; it is not a deployable replacement.
+- The deployed v16 source contains `account.updated` handling and connected-account validation/refund logic. The GitHub `production` and `security/prelaunch-hardening-20261101` function files are the same older blob and omit those deployed branches. Do not redeploy either older copy over LIVE.
+- The deployed source references `admin.from(...)` in the legacy domain-order payment path but has no `admin` declaration/import in the entrypoint. This is a likely runtime ReferenceError if that retired domain-order branch is invoked. Do not invoke the retired flow; investigate and repair it separately after the deployed source is reconciled. The subscriber signup branch does not use this identifier.
+- Production frontend commits for billing interval persistence are in GitHub, but no GitHub CI/check runs are attached to the commit and the deployed Cloudflare Worker/static response could not be independently verified in this session. Treat the frontend change as committed, not yet deployment-verified.

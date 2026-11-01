@@ -103,5 +103,5 @@ TEST Stripe is not required for this LIVE work and was not changed. Stripe setti
 ## Webhook review branch refresh — 1 November 2026
 
 - The first webhook review branch diverged after subsequent production commits. A clean replacement branch was created from the latest `production` head (`aac33ed248ce3a7c9a22efd8ce7b5ee606cd24d3`) to avoid carrying unrelated divergence.
-- Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; webhook reconciliation commit `d60e50919eae2f6e46d0c2176088c6a1cc427629`.
+- Current review branch: `reconcile/live-stripe-webhook-v16-20261101-v2`; webhook reconciliation commit `c7ecde27f96c28c5ddf78167a273a1ec2f10e54d`; draft PR [#192](https://github.com/laurendigitaluk/TradeFlow/pull/192). The branch has been rebased to latest production and is one commit ahead, zero behind.
 - The replacement branch starts from current production, including the subscriber TEST routing corrections. Only the reconciled webhook source is added to this branch; current LIVE remains webhook v16 until review/testing.

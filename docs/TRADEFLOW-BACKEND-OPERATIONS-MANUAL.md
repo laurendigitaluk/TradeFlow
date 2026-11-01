@@ -188,7 +188,7 @@ Candidate source changes on `security/prelaunch-hardening-20261101`:
 - environment-specific exact HTTPS allowlist: four platform-owned LIVE origins on LIVE; only `https://tradeflow-test.leannelaurenlowe.workers.dev` on current TEST project `nnsshnfkjcflucjrftzi`, selected from `SUPABASE_URL`;
 - no Referer fallback; exact-origin CORS;
 - authenticated `subscriber_get_my_memberships()` lookup, fail closed on lookup error and reject existing active membership;
-- stable per-user Stripe Checkout idempotency key;
+- stable per-user Stripe Checkout idempotency key during Stripe's idempotency retention window; this is not a permanent checkout-attempt ledger;
 - existing plan, Price IDs, trial period and return-page routes preserved.
 
 The LIVE `subscriber_finalize_signup` RPC was also inspected. It previously updated an existing tenant subscription with the incoming Stripe subscription/customer/price/status fields whenever the Auth user already had an active tenant membership. This could replace the tracking ID for a complimentary or existing subscription.

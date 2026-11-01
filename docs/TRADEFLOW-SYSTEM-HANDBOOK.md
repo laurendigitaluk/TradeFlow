@@ -2409,3 +2409,39 @@ The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `
 - Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
 - `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
 - Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.
+
+
+## Subscriber signup checkout security hardening — 1 November 2026 (candidate only)
+
+**Status:** Implemented in source on `security/prelaunch-hardening-20261101`; not deployed or tested end-to-end.
+
+### Verified platform origins
+The Cloudflare Worker and system routing define these platform-owned LIVE signup origins:
+- `https://tradeflow.laurendigital.co.uk`
+- `https://laurendigital.co.uk`
+- `https://www.laurendigital.co.uk`
+- `https://tradeflow.leannelaurenlowe.workers.dev`
+
+The TEST Worker `tradeflow-test.leannelaurenlowe.workers.dev`, subscriber-owned custom domains (including `www.scenesource.co.uk`), Platform Owner, StudioFlow and BusinessFlow hosts are not allowed to initiate LIVE TradeFlow subscription checkout. The function no longer uses `Referer` as a fallback.
+
+### Candidate checkout changes
+`supabase/functions/subscriber-create-checkout-session/index.ts` now:
+- validates an exact HTTPS `Origin` against the four platform-owned origins;
+- returns CORS permission only for the validated origin;
+- checks the authenticated user's existing active memberships using `subscriber_get_my_memberships()` and fails closed if that lookup fails;
+- rejects an account that already owns an active TradeFlow business;
+- uses a stable per-user Stripe idempotency key to prevent repeated requests creating additional checkout sessions;
+- preserves the existing plan, Stripe Price IDs, trial period and return-page paths.
+
+### Webhook/database protection
+LIVE `stripe-payment-webhook` calls `public.subscriber_finalize_signup(...)` after validating the Stripe signature and retrieving the subscription. The previous RPC could overwrite an existing tenant's subscription ID when the user already had an active membership.
+
+Candidate migration `20261101130000_guard_subscriber_signup_subscription_collisions.sql` serialises finalisation per Auth user, treats a retry for the exact same Stripe subscription ID as idempotent, and rejects a different subscription ID without changing the existing subscription. It does not alter payment records or Stripe configuration.
+
+### Release boundary
+- Code and migration are committed on the isolated hardening branch only.
+- Migration has not been applied to TEST or LIVE.
+- No Edge Function or Cloudflare Worker has been deployed.
+- No Stripe Sandbox or browser checkout tests have been run.
+- Stripe products, prices, secrets, settings, customer/payment records and existing subscription rows remain untouched.
+- Next: verify the candidate diff, apply the migration to current TEST only, run the required TEST Stripe checkout/webhook cases, then review before any LIVE promotion.

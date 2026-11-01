@@ -2096,3 +2096,15 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## LIVE subscriber checkout security — deployed 1 November 2026
+
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (EU West 2).
+- `subscriber-create-checkout-session` is deployed and verified at Edge Function version **13** with JWT verification enabled.
+- Migration `guard_subscriber_signup_subscription_collisions` is applied to LIVE and recorded as `20261101130118`.
+- The database finalisation RPC now serialises signup finalisation per Auth user, accepts a retry only for the same existing Stripe subscription ID, and rejects a different subscription ID rather than replacing an existing subscription.
+- LIVE checkout validates the exact platform HTTPS origin, uses origin-bound CORS, no longer trusts Referer, checks for an existing active business before creating checkout, and sends a stable per-user Stripe idempotency key.
+- TEST Stripe is not required for this LIVE deployment and was not changed.
+- No Stripe products, prices, API secrets, dashboard settings, customer records, payment records or existing subscription rows were changed.
+- Deployment and database state are confirmed. Full real-browser checkout and webhook E2E verification have not yet been performed; do not mark the entire signup journey fully tested until that is complete.

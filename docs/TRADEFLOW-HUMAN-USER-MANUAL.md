@@ -2096,3 +2096,19 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## Security hardening — 1 November 2026 (in progress)
+
+- Scope: pre-launch LIVE security repairs; unfinished product catalogues and catalogue evidence excluded.
+- Confirmed LIVE and current TEST Supabase projects are `gxsrajtqzdjvmceqcpgv` and `nnsshnfkjcflucjrftzi`. Retired TEST project `twfbmjwwqzxdxvclxbun` was not used.
+- Previous media-upload repair must be preserved: `tradeflow-media` remains private and tenant-scoped. Do not make it public or replace protected signed-URL delivery with direct public URLs. A previous failed upload flow created orphaned Storage objects when the `media_assets` insert/return was blocked by RLS; preserve the existing upload/link/cleanup sequence and test it end-to-end before changing it.
+- Applied migration `20261101120000_harden_private_media_upload_limits` to LIVE and TEST: `tradeflow-media` remains private, now enforces a 5 MiB per-object limit and accepts only JPEG, PNG, WebP and PDF. The existing public `tradeflow-site-media` bucket remains unchanged at 5 MiB and PNG/JPEG/WebP only.
+- Verified both bucket configurations by querying `storage.buckets` after applying the migration. This confirms server-side configuration, not a successful browser upload test. A real positive/negative upload test (allowed image/PDF; oversized and disallowed MIME rejection) remains pending.
+- Updated `buying-dashboard.js` on this isolated branch so shipping-label and QR upload controls accept the allowed image/PDF types and show the same 5 MiB limit as Storage. Do not claim this front-end change is live: it is on the isolated security branch pending release/deployment verification.
+- Current production checkout function review confirmed two risks: checkout return URLs are derived from an unvalidated request Origin/Referer; and `subscriber_finalize_signup` updates an existing tenant subscription with a new Stripe subscription ID when the user already has an active tenant membership. This can overwrite tracking of a complimentary or existing subscription. No Stripe function, webhook, price, secret or real payment was changed in this pass.
+- The current `cloudflare-test` branch is heavily diverged from `production` (comparison at audit time: TEST 130 commits ahead and 1,042 behind). Do not merge or reset either branch. Use isolated, reviewed changes and do not assume TEST code is equivalent to LIVE.
+- Test Lab assets are present in production: `test-lab.html` references the retired TEST Supabase project. Removal/blocking is not yet implemented; verify shared script dependencies and Worker asset deployment before removal.
+- Auth leaked-password protection was previously reported disabled in the current project manuals, but no current Auth configuration control was available to verify/change it in this pass. Email confirmation and Auth rate limits also remain unverified.
+- No customer, subscriber, transaction, Stripe, website, catalogue or evidence records were copied or changed. No real Stripe payment was run.
+- Remaining work: fix and verify checkout origin allowlist and duplicate-subscription handling; remove Test Lab from LIVE safely; confirm Auth password/email/rate-limit settings; reconcile migration history; perform positive and negative upload tests; then update manuals/checkpoint with the actual deployed state.

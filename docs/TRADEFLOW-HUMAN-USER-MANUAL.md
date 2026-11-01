@@ -2120,3 +2120,15 @@ A customer may submit multiple products within one buying request. The request i
 - Shipping labels and QR uploads are not passed through image conversion; PDF label files remain PDFs. Their UI file-size checks were reduced to 5 MiB to match Storage.
 - `customer-selling-submit` now enforces JPEG/PNG/WebP and 5 MiB server-side. Automatic WebP conversion is NOT yet connected to customer valuation submissions: the active front-end caller was not identified in the reviewed customer dashboard/basket scripts, so the endpoint deliberately retains compatibility rather than rejecting existing image formats.
 - Verification status: code edits are committed on the isolated branch only. No browser upload tests, Edge Function deployment, Cloudflare Worker deployment or production promotion have been performed. Do not describe these code changes as live until deployment and positive/negative tests are completed.
+
+
+## Subscriber signup and existing accounts — pending security release
+
+The following behaviour is a planned security improvement and is **not yet deployed**.
+
+- Use the official TradeFlow signup page on the Lauren Digital platform to create a new business account.
+- If your account already has an active TradeFlow business, sign in to that workspace instead of starting another subscription.
+- If a signup checkout is already in progress, continue that checkout. Repeated clicks should not create additional checkout sessions.
+- If you need to change the signup details while a checkout attempt is still active, the system may ask you to continue the existing checkout or wait for it to expire before trying again.
+
+Do not use a subscriber-owned shop domain or the TEST Worker to start a LIVE platform subscription. The release remains pending TEST verification and deployment.

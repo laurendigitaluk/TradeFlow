@@ -1128,3 +1128,49 @@ Three new/sealed UK eBay completed-sale observations were added to existing mast
 Reviewed 20 exact variants. Three UK eBay new-condition completed-sale observations were inserted into existing masters after TEST insert/read-back and then LIVE insert/read-back: iPhone 16 Pro 256GB Natural Titanium, item 356312645257 (£979.99; TEST 4eb9eed4-edb6-45cb-a803-34af17c2910a; LIVE 7ac5d442-d783-42cf-a4c2-d4065cce0780); iPhone 17e 256GB Black, item 820089159254 (£503.75 incl £13.75 Buyer Protection; TEST bf57b742-09cc-4164-9bb8-0761e112e7e1; LIVE fda59deb-e2a6-4c19-9414-811619526b51); Google Pixel 10a 128GB Fog, item 147450361998 (£305.42 incl £10.42 Buyer Protection; TEST 7ea66ace-992e-431d-a153-8fb3ffff9958; LIVE 4f86b641-4b42-4acf-bcc0-a4662d46af77). No master products were changed. These verified records supersede earlier inaccurate Batch 92 text claiming zero inserts. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-92.md`.
 ## Batch 93 — 25 October 2026
 Reviewed 20 exact variants; one eligible new-condition UK eBay completed-sale observation was added TEST-first then LIVE to existing Samsung Galaxy S26 Ultra 512GB master. Item 127914642940 sold 14 Jul 2026 at 13:43 BST for displayed £989.00 (Buyer Protection indicated, fee not separately shown); UK business seller MrPhonesLtd, 99.7% positive. TEST master d3b3798d-a06a-408f-ac26-fc29d91a67e4 / evidence 65eb70b3-5d85-4f88-b9dd-54f936618c09; LIVE master abeb9f3f-b716-44d6-b711-e2b92f234c1f / evidence d813d211-b43e-4995-a38e-3a4f33b1e06a; stable key `mobile-new-sold-galaxys26ultra-512gb-silver-ebay-127914642940-20260714`. Exclusions included source redirects/404s, hidden accepted Best Offers, active multi-quantity listings, seller reliability concerns, conflicting prices, UK-model uncertainty and existing duplicate URLs. No master rows, valuation logic or schema changed. Current snapshot: TEST 134 masters/133 active/273 active evidence/19 new-sold/160 used-sold; LIVE 130/130/271/19/158. Master/evidence-count differences, global duplicate-key audit and iPhone 15 Pink price discrepancy remain open. See `CHECKPOINTS/2026-10-25-mobile-phone-catalogue-batch-93.md`.
+
+
+## 2 November 2026 — Gaming console and accessories catalogue (Nintendo batch 1)
+
+The gaming category is `Gaming Consoles & Accessories`. Current TEST and LIVE Supabase data were inspected independently before writes. Both environments now have the same verified catalogue coverage for this batch; each has its own product/evidence UUIDs.
+
+### Catalogue changes
+- Added Nintendo as a manufacturer.
+- Added branches: `Nintendo Consoles`, `Nintendo Handheld Consoles`, `Nintendo Controllers`, and `Nintendo Accessories`.
+- Added five visible master products: Nintendo Switch 2 256GB, Nintendo Switch OLED 64GB, Nintendo Switch (V2) 32GB, Nintendo Switch Lite 32GB, and Nintendo Switch 2 Pro Controller.
+- Added seven active UK evidence rows: two new and five used. Older Switch variants currently have used evidence only; do not invent current new retail prices.
+- Repaired ten existing Sony product records with null branch assignments by mapping them to the existing PlayStation console, handheld, VR, controller, headset or accessories branches. No Sony product prices or evidence were changed.
+- The first Switch 2 new-price capture used a generic retailer category page and was not sufficiently exact. It was deactivated and replaced with the exact Smyths Toys UK product page at £389.99 (RRP £419.99 shown). The replacement is active and has availability `listed`.
+
+### Nintendo evidence added
+| Product | Evidence | Price | Source / reference |
+|---|---|---:|---|
+| Nintendo Switch 2 256GB | UK new, listed | £389.99 | Smyths Toys UK, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-consoles/nintendo-switch-2-console/p/249605 |
+| Nintendo Switch 2 256GB | UK used, sold-market median | £309.00 | PathAu, median of 153 eBay UK used sales in the 30 days to 25 Oct 2026, https://pathau.co.uk/prices/consoles/switch-2/ |
+| Nintendo Switch OLED 64GB | UK used, sold | £145.00 | eBay UK item 307194468463, sold 24 Sep 2026, https://www.ebay.co.uk/itm/307194468463 |
+| Nintendo Switch V2 32GB | UK used, sold | £62.99 | eBay UK item 318506459251, sold 4 Sep 2026, https://www.ebay.co.uk/itm/318506459251 |
+| Nintendo Switch Lite 32GB | UK used, sold | £72.00 | eBay UK item 287545083895, sold 13 Oct 2026, https://www.ebay.co.uk/itm/287545083895 |
+| Nintendo Switch 2 Pro Controller | UK new, listed | £74.99 | Nintendo Store UK controller catalogue, https://store.nintendo.com/en-gb/_sites/nintendo.co.uk/consoles/nintendo-switch-2-consoles/nintendo-switch-2-accessories/nintendo-switch-2-controllers |
+| Nintendo Switch 2 Pro Controller | UK used, sold | £47.08 | eBay UK item 257762800651, sold 26 Sep 2026, https://www.ebay.co.uk/itm/257762800651 |
+
+eBay displayed totals can include Buyer Protection. The notes on each evidence row preserve the relevant caveat. The PathAu Switch 2 figure is an aggregate median from eBay UK completed sales, not a single listing. All active evidence is GBP and uses `uk_new` / `uk_used` separately, with `listed` / `sold` availability.
+
+### Verified database snapshot — both TEST and LIVE
+- Gaming category master products: **62**
+- Active, customer-visible products: **54**
+- Active evidence rows: **125** (17 `uk_new`, 108 `uk_used`)
+- Active customer-visible products missing evidence: **0**
+- Active evidence integrity failures (missing URL/key, non-positive price, non-GBP currency or missing availability): **0**
+- Products with null branch assignment: **0**
+- Nintendo products: **5**, each with at least one active evidence row
+- The Nintendo product and evidence content matches between TEST and LIVE; UUIDs are intentionally environment-specific.
+
+### Guardrails and next work
+- Keep TEST and LIVE independent. Do not copy customer, tenant, transaction or payment data.
+- Do not let market evidence change automatic valuation/buying prices.
+- Keep bundle, storage, colour/edition and console generation variants distinct.
+- Do not treat asking prices, hidden Best Offer amounts, trade-in quotes or overseas listings as completed UK used sales.
+- Continue with Switch 2 Joy-Con 2 pairs, camera, charging grip, cases, microSD Express cards, original Switch Pro Controller/Joy-Con, Nintendo handheld generations (3DS/2DS), Wii and GameCube accessories. Then complete Xbox controllers/headsets/storage and remaining PlayStation accessories.
+- `Nintendo Accessories` branch is prepared but has no products yet.
+- No TradeFlow application code, valuation logic, RLS/grants, tenants, customer records, transactions or Stripe configuration changed in this batch.
+- No structured project-memory/checkpoint tables were found in any non-system schema of the connected LIVE Supabase project. The verified continuity record is therefore maintained in the repository's `PROJECT-MEMORY/` and `CHECKPOINTS/` files; do not invent a Supabase memory table.

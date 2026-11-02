@@ -1825,3 +1825,7 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Xbox storage catalogue correction — 2 November 2026
+TEST and LIVE each contain WD_BLACK C50 512GB and 1TB, Seagate 1TB, and SanDisk Optimus GX C50 2TB. Unsupported generic-page evidence was deactivated. Active UK GBP new/listed evidence uses Argos for Seagate 1TB (£149.99) and WD_BLACK C50 1TB (£153.99), and Idealo UK for SanDisk 2TB (£249.99 offer). WD_BLACK 512GB has no active price evidence pending a verified UK listing. Evidence is reference-only and must not feed automatic buying valuations. No code or deployment changes were made.

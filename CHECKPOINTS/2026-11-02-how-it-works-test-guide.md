@@ -30,3 +30,9 @@ This checkpoint targets TEST only. Cloudflare TEST Worker is connected to the `c
 ## Known risk / history
 - `main` and `cloudflare-test` are substantially diverged; never merge `main` wholesale to obtain this static page. Transfer only scoped reviewed files.
 - Earlier attempts used incorrect Worker URLs. The authoritative TEST Worker is `tradeflow-test`.
+
+
+## Real screenshots embedded — 2 November 2026
+The public page now embeds four optimised WebP screenshots directly in `how-it-works.html`: customer progress, inspection decision, inventory and customer-facing shop. Internal item references and the inventory asset identifier were obscured; customer names, URLs, emails, bank details and transaction references are not displayed. The screenshot sections explain the real screens alongside the process. CSS is cache-busted to `how-it-works.css?v=3`. Static HTML/CSS only; no backend or Supabase dependency.
+
+Prepared on feature branch `feature/how-it-works-real-screenshots-20261102` for TEST only. Target TEST Worker: `tradeflow-test`. No Supabase, Stripe, tenant/customer data or LIVE configuration changed. After merge, verify the Cloudflare TEST deployment and inspect the page at `https://tradeflow-test.leannelaurenlowe.workers.dev/how-it-works.html`, including mobile layout and all four screenshots. GitHub merge alone does not prove deployment. Do not promote to LIVE without explicit approval.

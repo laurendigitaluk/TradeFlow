@@ -1192,3 +1192,31 @@ The Switch 2 Pro Controller remains a separate product from the original Switch 
 
 ## Switch 2 retail evidence source correction — 2 November 2026
 The Smyths Toys product URL could not be independently fetched (403), so its £389.99 evidence row was deactivated. The generic Harvey Norman capture remains inactive. The active UK-new source is now the directly opened Argos product page for Nintendo Switch 2 Console - Black, 256GB, at **£419.99**: https://www.argos.co.uk/product/7624867. The Argos page confirms the console model, 256GB storage and included Joy-Con 2 pair, dock, grip, AC adapter and HDMI cable. Active evidence key: `argos-switch2-7624867-2026-11-02`. LIVE evidence ID: `b8541ee9-fcdc-4a46-98c0-6a8242d4b099`; TEST evidence ID: `2f7f9991-2941-4760-abcf-898588eb1c35`. This supersedes the earlier £389.99 Smyths figure. Category totals remain 65 master products, 57 active customer-visible products, 130 active evidence rows (20 UK new / 110 UK used), zero visible products missing evidence and zero integrity failures.
+
+## Nintendo Switch 2 accessory batch 3 — 2 November 2026
+Added four independently keyed visible master products in TEST and LIVE:
+- Nintendo Switch 2 Joy-Con 2 Charging Grip — Argos UK new listing £29.99; used eBay UK completed sale £15.96 (item 128034280257, Billingham UK; buyer-facing total includes £0.96 Buyer Protection).
+- Nintendo Switch 2 Carrying Case & Screen Protector — Argos UK new listing £19.99; official case and film protector bundle, up to six game cards and two Joy-Con 2 straps.
+- SanDisk 256GB microSD Express Card for Nintendo Switch 2 — Argos UK new listing £44.99. This is microSD Express; ordinary microSD is not a substitute for Switch 2 expanded game storage.
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair — Argos UK new listing £16.99; two magnetic wheel adapters, controllers not included.
+Argos exact product URLs and stable keys are in the batch checkpoint. The Charging Grip used sale is recorded separately from the Argos new listing. Other three products currently have verified new retail evidence only; no used-price estimate was invented.
+
+## Nintendo 3DS family handheld batch 4 — 2 November 2026
+Added three independently keyed visible Nintendo handheld products, each with a current UK used retailer listing:
+- Nintendo 3DS XL — £149.99, Cash Converters UK St Helens, white, tested/working, light wear, charger included, stylus missing.
+- New Nintendo 3DS XL — £200.00, Cash Converters UK Worksop, red, good condition, charger included, factory reset.
+- New Nintendo 2DS XL — £169.99, Cash Converters UK Chesterfield, black, good condition, charger included, fully working.
+These are current UK used retailer asking/listing prices, not completed sales. They are classified as `uk_used` with availability `listed`. New Nintendo 3DS XL is kept distinct from original Nintendo 3DS XL and New Nintendo 2DS XL. Special editions/bundles should remain separate when later imported.
+
+## Updated verification — TEST and LIVE independently
+- Gaming master products: **72**
+- Active customer-visible products: **64**
+- Active evidence: **138** (24 `uk_new`, 114 `uk_used`)
+- Active visible products missing evidence: **0**
+- Active evidence integrity failures: **0**
+- Products with unassigned branch: **0** (checked in the pre-batch baseline; this batch inserts through the Nintendo handheld/accessory branches).
+- TEST and LIVE have matching catalogue content/counts; UUIDs are environment-specific. No tenant, customer, transaction, payment or Stripe data was copied or changed.
+- No application code or valuation logic changed. Evidence remains research reference only and must not be allowed to alter automatic buying prices.
+
+## Next
+Continue older Nintendo systems (standard 3DS, 2DS, DSi, Wii, Wii U, GameCube, N64, SNES) and accessories, then Xbox controllers/headsets/storage and PlayStation accessories. Check for model/edition/bundle duplicates before each insert. Do not use trade-in quotes as used market sales. Keep UK GBP evidence separate by new/used condition and listed/sold availability.

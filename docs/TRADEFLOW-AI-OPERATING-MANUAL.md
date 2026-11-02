@@ -43,7 +43,7 @@ There is deliberately **not** a second GitHub repository for Live. GitHub branch
 ### Supabase projects
 
 - **TradeFlow TEST:** `nnsshnfkjcflucjrftzi`, eu-west-2.
-- **TradeFlow LIVE:** separate production project, to be created under the upgraded TradeFlow Live organisation.
+- **TradeFlow LIVE:** `gxsrajtqzdjvmceqcpgv`, eu-west-2, ACTIVE_HEALTHY (current project inventory checked 2 November 2026).
 
 The TEST database contains deliberate test tenants, customers, orders, returns and other test data. LIVE must be a fresh production database built from the version-controlled migration history and must never be populated by copying TEST customer/transaction data.
 
@@ -101,7 +101,7 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - **LIVE release branch:** `production`.
 - Current TEST Release Candidate before this documentation/release-branch promotion: `ec6536818522a0e89d08f9defa68f557259cf280`.
 - TEST Supabase: `nnsshnfkjcflucjrftzi`, eu-west-2, ACTIVE_HEALTHY.
-- LIVE Supabase: separate production project; creation/onboarding remains the current release workstream.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`, eu-west-2, ACTIVE_HEALTHY. The earlier project-creation status is historical and superseded.
 - Test One remains the frozen known-good historical baseline and must not be overwritten.
 - Current TEST security hardening includes restricted client execution of SECURITY DEFINER functions and hardened payment/ledger trigger search paths.
 - Manual shipping is authoritative; Parcel2Go API/checkout/payment-link shipping is retired.

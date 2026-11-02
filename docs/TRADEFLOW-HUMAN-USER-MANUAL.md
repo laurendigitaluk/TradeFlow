@@ -1911,3 +1911,8 @@ The Website Builder has one Fully Editable template. A Carousel / Slider is an o
 6. Save Draft, preview the website, and publish when satisfied.
 
 The feature is currently being built and tested in TEST. It is not yet approved for LIVE. Existing website content and backgrounds remain separate from the carousel settings.
+
+
+## Xbox catalogue evidence update — 2 November 2026
+
+Two additional completed UK used sales have been added to the Xbox One X 1TB shared market evidence and confirmed in both TEST and LIVE: eBay item 397946718089 at £70.99 (underlying price excluding £2.95 Buyer Protection fee; sold 2 August 2026) and item 178527813316 at £63.83 (excluding £2.71 Buyer Protection fee; sold 5 October 2026). The evidence links point to the original eBay listings. No subscriber or customer data was changed.

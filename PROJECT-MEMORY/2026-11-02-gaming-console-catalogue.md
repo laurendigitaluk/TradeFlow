@@ -85,3 +85,14 @@ TEST and LIVE independently return identical totals:
 - Zero visible active products missing evidence.
 - Zero evidence integrity failures.
 - Product and evidence UUIDs remain environment-specific. No tenant, customer, transaction or payment data was copied.
+
+## Switch 2 retail source correction — 2 November 2026
+The Smyths Toys exact-product URL could not be independently fetched (403), so the £389.99 Smyths evidence row was deactivated. The generic Harvey Norman row also remains inactive. Replaced with the directly opened Argos UK product page, which lists Nintendo Switch 2 Console - Black, 256GB, at £419.99 and confirms included Joy-Con 2 pair, dock, grip, AC adapter and HDMI cable.
+- Active source: https://www.argos.co.uk/product/7624867
+- Active key: argos-switch2-7624867-2026-11-02
+- LIVE evidence ID: b8541ee9-fcdc-4a46-98c0-6a8242d4b099
+- TEST evidence ID: 2f7f9991-2941-4760-abcf-898588eb1c35
+- Price: £419.99, GBP, UK new, availability listed.
+This supersedes the earlier £389.99 Smyths figure. The £309 used figure remains a PathAu median across 153 eBay UK used sales in the 30 days to 25 Oct 2026.
+
+Final verified TEST and LIVE totals for this session: 65 gaming master products; 57 active customer-visible products; 130 active evidence rows (20 UK new / 110 UK used); zero visible active products without evidence; zero active evidence integrity failures. The product/evidence UUIDs are environment-specific and all rows were independently inserted/verified.

@@ -2132,3 +2132,10 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 ## Xbox catalogue evidence update — 2 November 2026
 
 Two additional completed UK used sales have been added to the Xbox One X 1TB shared market evidence and confirmed in both TEST and LIVE: eBay item 397946718089 at £70.99 (underlying price excluding £2.95 Buyer Protection fee; sold 2 August 2026) and item 178527813316 at £63.83 (excluding £2.71 fee; sold 5 October 2026). The displayed evidence links remain the original eBay listings. No subscriber or customer data was changed.
+
+
+## Xbox One X evidence quality corrections — 2 November 2026
+
+- eBay item 168682015736 is a valid used 1TB black console-only sale (power/HDMI leads, no controller), sold 13 September 2026. Display £59.50 included £2.48 Buyer Protection fee; stored price corrected to £57.02 GBP in TEST and LIVE. Key `ebayuk-168682015736-xboxonex-1tb-20260913`.
+- eBay item 336746788067 is a bundle (Elite controller, stand, PUBG, other games and play/charge kit), so it was retired from standard-console evidence in both environments (`is_active=false`) while retaining the row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
+- Both corrections read back consistently in TEST and LIVE. Four active standard-console rows remain from five historical Xbox One X evidence rows per environment. No valuation rules, RLS/grants or application code changed.

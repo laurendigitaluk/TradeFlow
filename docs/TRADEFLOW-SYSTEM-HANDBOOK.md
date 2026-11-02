@@ -1858,3 +1858,8 @@ No Supabase schema, rows, tenant content, SEO values, LIVE code, Stripe settings
 - LIVE read-after-write verified active evidence ID `e3498deb-5606-4965-80ab-d9d5951467b3`, £57.02 GBP, Used, eBay UK, sold, observed 8 July 2026 22:08 UTC, source https://www.ebay.co.uk/itm/178294853613.
 - Displayed total £59.50 included £2.48 Buyer Protection fee; stored item price excludes the fee.
 - No application code, valuation rules, tenant/customer/payment data, RLS, grants, or Worker deployment changed. This was a shared evidence data-only parity repair.
+
+
+## Xbox One X 1TB used-sale evidence batch — 2 November 2026
+
+Added TEST-first then LIVE-mirrored UK used sold evidence: eBay item 397946718089, £70.99 underlying price (display £73.94 incl £2.95 Buyer Protection fee), sold 2 Aug 2026, Used Very Good, black 1TB console with box; key `ebayuk-397946718089-xboxonex-1tb-20260802`. eBay item 178527813316, £63.83 underlying price (display £66.54 incl £2.71 fee), sold 5 Oct 2026, Used, black 1TB unit only; key `ebayuk-178527813316-xboxonex-1tb-20261005`. Both active rows were read back in both environments. Five active Xbox One X 1TB evidence rows per environment. Existing 13 Sep fee-inclusive £59.50 row and 16 Sep £134.92 row were left unchanged for separate audit. `ON CONFLICT(source_record_key)` is invalid because no matching unique constraint exists; successful insert used `WHERE NOT EXISTS`. No code, valuation, tenant data, RLS/grants or Worker deployment changed.

@@ -149,7 +149,7 @@ function show(id){const r=rows.find(x=>x.id===id);if(!r)return;const channel=cha
  const submit=form?.querySelector('button[type="submit"]');
  if(submit){submit.textContent='UPDATE LISTING';submit.disabled=false;}
  if($('cancel-edit'))$('cancel-edit').hidden=false;
- $('title').value=r.title||asset.title||'';
+ $('title').value=canonicalSellingTitle(asset,r.title||asset.title||'');
  $('description').value=r.description||'';
  $('price').value=r.asking_price??'';
  $('purchase-price-display').textContent=asset.purchase_price!=null?money(asset.purchase_price,asset.currency||r.currency||'GBP'):'Not recorded';
@@ -227,8 +227,9 @@ $('listing-form').onsubmit=async e=>{
      msg('Saving listing changes…');
      const updatedAsset=await api('/rest/v1/rpc/subscriber_update_inventory_asset_sales_fields',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_asset_id:assetRow.id,p_serial_number:inventoryUpdate.serial_number,p_location:inventoryUpdate.location})});
      if(!updatedAsset?.ok)throw Error('The inventory item could not be updated. Please refresh the Selling page and try again.');
-     const updated=await api('/rest/v1/listings?id=eq.'+encodeURIComponent(editingListingId)+'&tenant_id=eq.'+encodeURIComponent(tenantId),{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({title,description:$('description').value.trim()||null,asking_price:price,currency,listing_data:listingData})});
-     const saved=(updated||[])[0];
+     const updated=await api('/rest/v1/rpc/subscriber_update_listing_details',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_listing_id:editingListingId,p_title:title,p_description:$('description').value.trim()||null,p_asking_price:price,p_currency:currency,p_listing_data:listingData})});
+     if(!updated?.ok)throw Error('The listing details could not be saved. Please refresh the Selling page and try again.');
+     const saved={id:editingListingId};
      await load();
      if(saved){await beginEdit(saved.id);show(saved.id);}
      msg('Listing changes saved and published website details updated.','success');
@@ -253,4 +254,22 @@ function applyFocusedProductMode(){const focusAsset=new URLSearchParams(location
 const sendButton=$('send-to-website');if(sendButton)sendButton.onclick=()=>{$('listing-form')?.requestSubmit()};$('upload-sales-photos').onclick=uploadSalesPhotos;$('cancel-edit').onclick=cancelEdit;$('status-filter').onchange=load;$('refresh').onclick=load;$('sign-out').onclick=()=>window.tradeflowSubscriberSignOut?.();let sellingBooted=false;function bootSelling(){if(sellingBooted)return;sellingBooted=true;load()}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bootSelling,{once:true});else bootSelling();
 function availableListingPhotoCount(){return sourceMedia.length+sourceInspectionMedia.length}
 function resetPurchaseSummary(){if($('purchase-price-display'))$('purchase-price-display').textContent='—';if($('purchase-customer-display'))$('purchase-customer-display').textContent='—';if($('purchase-request-display'))$('purchase-request-display').textContent='—';if($('purchase-inspection-display'))$('purchase-inspection-display').textContent='—';}
-function syncAssetContext(){const token=++sourceLoadToken;const selectedId=$('asset').value;const a=assets.find(x=>x.id===selectedId);sourceMedia=[];sourceInspectionMedia=[];selectedSourceMediaIds=new Set();if(a){$('title').value=a.title||'';$('description').value=a.description||'';$('currency').value=(a.currency||'GBP').toUpperCase();$('price').value=a.current_value??'';$('purchase-price-display').textContent=a.purchase_price!=null?money(a.purchase_price,a.currency||'GBP'):'Not recorded';$('asset-condition').value='';$('asset-serial').value=a.serial_number||'';$('asset-location').value=a.location||'';$('category-display').textContent=categories.find(x=>x.id===a.category_id)?.name||'Inherited from original buying category';$('branch-display').textContent=branches.find(x=>x.id===a.branch_id)?.name||'Inherited from original buying branch';resetPurchaseSummary();$('source-information').innerHTML='<div class="empty">Loading purchase information…</div>';$('sales-photos').innerHTML='<div class="empty">Loading purchase photographs…</div>';loadSourceInformation(a,token)}else{resetPurchaseSummary();$('title').value='';$('description').value='';$('currency').value='GBP';$('price').value='';$('purchase-price-display').textContent='—';$('asset-condition').value='';$('asset-serial').value='';$('asset-location').value='';$('category-display').textContent='Inherited from original buying category';$('branch-display').textContent='Inherited from original buying branch';$('source-information').innerHTML='<div class="empty">Select an inventory asset to load the source information.</div>';$('sales-photos').innerHTML='<div class="empty">Select an inventory asset to load photographs.</div>';}}
+function canonicalSellingTitle(asset,candidate=''){
+ const fields={};
+ for(const line of String(asset?.description||'').replace(/\\n/g,'\n').split(/\r?\n/)){
+  const m=line.trim().match(/^(Manufacturer|Model|Package)\s*:\s*(.*)$/i);
+  if(m&&m[2].trim())fields[m[1].toLowerCase()]=m[2].trim();
+ }
+ const manufacturer=fields.manufacturer||'';
+ const model=fields.model||'';
+ const packageName=fields.package||'';
+ if(manufacturer&&model){
+  const parts=[manufacturer,model];
+  const norm=x=>x.toLocaleLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  if(packageName&&norm(packageName)!==norm(model)&&!norm(model).includes(norm(packageName)))parts.push(packageName);
+  return [...new Map(parts.map(x=>[norm(x),x])).values()].join(' ').trim();
+ }
+ const raw=String(candidate||asset?.title||'').trim();
+ return raw.replace(/^(.*?)(?:\s+\1)+$/i,'$1').replace(/\s+/g,' ').trim();
+}
+function syncAssetContext(){const token=++sourceLoadToken;const selectedId=$('asset').value;const a=assets.find(x=>x.id===selectedId);sourceMedia=[];sourceInspectionMedia=[];selectedSourceMediaIds=new Set();if(a){$('title').value=canonicalSellingTitle(a,a.title||'');$('description').value='';$('currency').value=(a.currency||'GBP').toUpperCase();$('price').value=a.current_value??'';$('purchase-price-display').textContent=a.purchase_price!=null?money(a.purchase_price,a.currency||'GBP'):'Not recorded';$('asset-condition').value='';$('asset-serial').value=a.serial_number||'';$('asset-location').value=a.location||'';$('category-display').textContent=categories.find(x=>x.id===a.category_id)?.name||'Inherited from original buying category';$('branch-display').textContent=branches.find(x=>x.id===a.branch_id)?.name||'Inherited from original buying branch';resetPurchaseSummary();$('source-information').innerHTML='<div class="empty">Loading purchase information…</div>';$('sales-photos').innerHTML='<div class="empty">Loading purchase photographs…</div>';loadSourceInformation(a,token)}else{resetPurchaseSummary();$('title').value='';$('description').value='';$('currency').value='GBP';$('price').value='';$('purchase-price-display').textContent='—';$('asset-condition').value='';$('asset-serial').value='';$('asset-location').value='';$('category-display').textContent='Inherited from original buying category';$('branch-display').textContent='Inherited from original buying branch';$('source-information').innerHTML='<div class="empty">Select an inventory asset to load the source information.</div>';$('sales-photos').innerHTML='<div class="empty">Select an inventory asset to load photographs.</div>';}}

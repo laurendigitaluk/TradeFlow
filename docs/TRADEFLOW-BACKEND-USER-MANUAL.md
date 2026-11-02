@@ -1656,3 +1656,12 @@ Two additional verified UK used completed sales were added TEST-first and mirror
 - eBay item 168682015736 is a valid used 1TB black console-only sale (power/HDMI leads, no controller), sold 13 September 2026. Display £59.50 included £2.48 Buyer Protection fee; stored price corrected to £57.02 GBP in TEST and LIVE. Key `ebayuk-168682015736-xboxonex-1tb-20260913`.
 - eBay item 336746788067 is a bundle (Elite controller, stand, PUBG, other games and play/charge kit), so it was retired from standard-console evidence in both environments (`is_active=false`) while retaining the row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
 - Both corrections read back consistently in TEST and LIVE. Four active standard-console rows remain from five historical Xbox One X evidence rows per environment. No valuation rules, RLS/grants or application code changed.
+
+
+## 2 November 2026 — Selling listing editor repair
+
+The Selling editor now saves title, description, asking price, currency and listing metadata through `public.subscriber_update_listing_details`, a tenant-scoped SECURITY DEFINER RPC. It requires authentication, `selling.manage`, and `module.selling`; it refuses sold/delisted records and never changes workflow status or ownership. Public/anon execution is revoked; authenticated execution is granted. Direct authenticated UPDATE on `public.listings` remains denied.
+
+The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
+
+The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.

@@ -1,3 +1,17 @@
+> **PUBLIC PROCESS GUIDE — 2 NOVEMBER 2026**
+>
+> The public explainer is `how-it-works.html`, styled by `how-it-works.css`. Homepage navigation, hero CTA, workflow summary and footer link to it. It is static HTML/CSS with no Supabase, Auth, Storage, Stripe, courier or customer-data dependency.
+>
+> The guide presents two distinct paths: (1) customer buying journey — Valuation → Offer → Shipping → Received → Inspection → Payment → Complete; (2) subscriber post-purchase stock journey — Inventory → Prepare listing → Publish to shop → Sale & fulfilment.
+>
+> Shipping is arranged by the subscriber outside TradeFlow; TradeFlow records label/QR and handoff information but does not book couriers or collect shipping payments. Payment is recorded by the subscriber; no automated payout is implied. An unchanged original accepted offer proceeds without a second customer acceptance.
+>
+> **Deployment boundary:** TEST source branch is `cloudflare-test`, TEST Worker is `tradeflow-test`, TEST Supabase is `nnsshnfkjcflucjrftzi`. LIVE source branch is `production`, LIVE Worker is `tradeflow`, LIVE Supabase is `gxsrajtqzdjvmceqcpgv`. Do not deploy this work to LIVE without explicit approval. `main` is not the Cloudflare TEST deployment source. The `main` and `cloudflare-test` branches have diverged substantially; never merge `main` wholesale into `cloudflare-test`. Transfer only reviewed, scoped files.
+>
+> A Git commit is not proof of Cloudflare deployment. Verify the Cloudflare TEST deployment history and open the exact TEST Worker URL before calling this page deployed.
+>
+> ---
+>
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
 >
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.

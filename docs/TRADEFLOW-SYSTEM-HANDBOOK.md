@@ -2462,3 +2462,11 @@ Two additional exact UK used completed sales were added to shared evidence in TE
 - Retired eBay item 278283038276 from active standard used-price evidence in TEST and LIVE. eBay confirms Best Offer accepted, but the accepted transaction price is not disclosed; displayed £41.92 (including £1.92 Buyer Protection fee) is not a verified sale price. Historical row retained inactive.
 - Added verified UK used sale eBay item 178548159734: Xbox One S All-Digital Edition, white, MPN 1681, 1TB, console only, sold 5 October 2026. Displayed £36.75 included £1.75 Buyer Protection fee; stored item price £35.00 GBP. Active row read back in TEST (evidence ID cb1995e7-9511-462b-be20-cfb10585bd2d) and LIVE (542ed2ea-409e-4c74-84b7-1d23819040cf), each mapped to its own product UUID.
 - No valuation logic, tenant/customer/payment data, RLS/grants, app code or Worker deployment changed. Shared market evidence only.
+
+## 2 November 2026 — Selling listing editor repair
+
+The Selling editor now saves title, description, asking price, currency and listing metadata through `public.subscriber_update_listing_details`, a tenant-scoped SECURITY DEFINER RPC. It requires authentication, `selling.manage`, and `module.selling`; it refuses sold/delisted records and never changes workflow status or ownership. Public/anon execution is revoked; authenticated execution is granted. Direct authenticated UPDATE on `public.listings` remains denied.
+
+The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
+
+The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.

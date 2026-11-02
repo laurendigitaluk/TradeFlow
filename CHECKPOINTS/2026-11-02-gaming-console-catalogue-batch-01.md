@@ -174,3 +174,34 @@ Batch 4 TEST:
 - New Nintendo 2DS XL product a7d24699-fdcf-4157-a945-7f41994cc117; evidence e7a7e9d6-8bb8-4d70-a629-0000cb4ee030.
 
 Next: standard 3DS, 2DS, DSi, Wii, Wii U, GameCube, N64 and SNES; then Xbox controllers/headsets/storage and PlayStation accessories. Do not use trade-in quotes as used-market sales; keep UK new/used evidence separate and distinguish listing from sold.
+
+## Nintendo legacy handheld and home console batch 5 — 2 November 2026
+Five visible Nintendo products and five UK used retailer listing evidence rows were added independently in TEST and LIVE:
+- Nintendo 2DS £49.99, Cash Converters Lancaster, black, light wear, charger included.
+- Nintendo DSi XL £69.99, Cash Converters Bethnal Green, charger included, light wear.
+- Nintendo Wii £29.99, Cash Converters Kings Heath, white, Wii Remote, sensor bar, AC adapter and AV cable, tested.
+- Nintendo Wii U £109.99, Cash Converters Dudley, black 8GB, leads and GamePad, tested.
+- Nintendo GameCube £85.49, Cash Converters Birkenhead, black, controller, power lead and memory card.
+These are current retailer asking/listing prices, not completed sales. Each is `uk_used` with `availability=listed`. A Nintendo Home Consoles branch was added for Wii, Wii U and GameCube. Wii U master is family-level pending 8GB/32GB and package-specific splits; the evidence is specifically the 8GB package.
+
+### LIVE IDs
+- Nintendo 2DS product 800a5100-39cb-4ac2-85cb-b730a2fc2bd4; evidence 76d0f929-26eb-4519-a122-06c5e850d3af; key cashconverters-2ds-058100046030-2026-11-02.
+- Nintendo DSi XL product 01bdbb45-c7db-41ce-a4ba-fca827435c52; evidence 1187732e-f618-4fd4-8ea6-f3ca440aaf37; key cashconverters-dsi-xl-047700187174-2026-11-02.
+- Nintendo Wii product 314ab322-1a35-48df-a1e8-d5ca7d667449; evidence 112584ec-bd67-4ba7-95bd-2f52d37b5a12; key cashconverters-wii-030100277435-2026-11-02.
+- Nintendo Wii U product 7b832fe8-383f-4c63-806b-3c746bcf0648; evidence 1ff54f93-26eb-4eec-9222-0bbe466bc377; key cashconverters-wii-u-056500109488-2026-11-02.
+- Nintendo GameCube product d2ce564c-1c54-48f6-9a94-67ab2a33feb3; evidence 955adebf-ded9-47a0-b673-cb6fd8dd5d78; key cashconverters-gamecube-015700300057-2026-11-02.
+
+### TEST IDs
+- Nintendo 2DS product 6e65d675-ddf0-44c4-8b6f-ba6571ac0f7c; evidence 2cb6fec3-1469-4998-907d-e5e4e0b0d1e6; key cashconverters-2ds-058100046030-2026-11-02.
+- Nintendo DSi XL product 85c1ed19-64a9-44c2-b2a7-55024dd26550; evidence 5b67d4f3-566f-4664-ab1f-7ce4070d28da; key cashconverters-dsi-xl-047700187174-2026-11-02.
+- Nintendo Wii product 65a8bf91-32e5-41be-9aca-97fe547a2f1d; evidence 19a89458-94ba-46d3-9817-436c450c8b2b; key cashconverters-wii-030100277435-2026-11-02.
+- Nintendo Wii U product c5027e1f-1885-45db-b409-4f016c1bea42; evidence f863c536-d956-42a1-b8ab-c09c8569e07c; key cashconverters-wii-u-056500109488-2026-11-02.
+- Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
+
+## Final verification after batch 5 — both TEST and LIVE
+- 77 gaming master products; 69 active customer-visible.
+- 143 active evidence rows: 24 UK new, 119 UK used.
+- Zero visible active products without evidence.
+- Zero active evidence integrity failures.
+- Counts and catalogue content match between environments; UUIDs are environment-specific.
+No code, valuation logic, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference material only and must not alter automatic buying prices.

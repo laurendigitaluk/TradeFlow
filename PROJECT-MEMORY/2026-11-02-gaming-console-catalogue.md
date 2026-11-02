@@ -96,3 +96,70 @@ The Smyths Toys exact-product URL could not be independently fetched (403), so t
 This supersedes the earlier £389.99 Smyths figure. The £309 used figure remains a PathAu median across 153 eBay UK used sales in the 30 days to 25 Oct 2026.
 
 Final verified TEST and LIVE totals for this session: 65 gaming master products; 57 active customer-visible products; 130 active evidence rows (20 UK new / 110 UK used); zero visible active products without evidence; zero active evidence integrity failures. The product/evidence UUIDs are environment-specific and all rows were independently inserted/verified.
+
+## Nintendo Switch 2 accessory batch 3 — 2 November 2026
+Added four independently keyed visible master products in TEST and LIVE:
+- Nintendo Switch 2 Joy-Con 2 Charging Grip — Argos UK new listing £29.99; used eBay UK completed sale £15.96 (item 128034280257, Billingham UK; buyer-facing total includes £0.96 Buyer Protection).
+- Nintendo Switch 2 Carrying Case & Screen Protector — Argos UK new listing £19.99; official case and film protector bundle, up to six game cards and two Joy-Con 2 straps.
+- SanDisk 256GB microSD Express Card for Nintendo Switch 2 — Argos UK new listing £44.99. This is microSD Express; ordinary microSD is not a substitute for Switch 2 expanded game storage.
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair — Argos UK new listing £16.99; two magnetic wheel adapters, controllers not included.
+Argos exact product URLs and stable keys are in the batch checkpoint. The Charging Grip used sale is recorded separately from the Argos new listing. Other three products currently have verified new retail evidence only; no used-price estimate was invented.
+
+## Nintendo 3DS family handheld batch 4 — 2 November 2026
+Added three independently keyed visible Nintendo handheld products, each with a current UK used retailer listing:
+- Nintendo 3DS XL — £149.99, Cash Converters UK St Helens, white, tested/working, light wear, charger included, stylus missing.
+- New Nintendo 3DS XL — £200.00, Cash Converters UK Worksop, red, good condition, charger included, factory reset.
+- New Nintendo 2DS XL — £169.99, Cash Converters UK Chesterfield, black, good condition, charger included, fully working.
+These are current UK used retailer asking/listing prices, not completed sales. They are classified as `uk_used` with availability `listed`. New Nintendo 3DS XL is kept distinct from original Nintendo 3DS XL and New Nintendo 2DS XL. Special editions/bundles should remain separate when later imported.
+
+## Updated verification — TEST and LIVE independently
+- Gaming master products: **72**
+- Active customer-visible products: **64**
+- Active evidence: **138** (24 `uk_new`, 114 `uk_used`)
+- Active visible products missing evidence: **0**
+- Active evidence integrity failures: **0**
+- Products with unassigned branch: **0** (checked in the pre-batch baseline; this batch inserts through the Nintendo handheld/accessory branches).
+- TEST and LIVE have matching catalogue content/counts; UUIDs are environment-specific. No tenant, customer, transaction, payment or Stripe data was copied or changed.
+- No application code or valuation logic changed. Evidence remains research reference only and must not be allowed to alter automatic buying prices.
+
+## Next
+Continue older Nintendo systems (standard 3DS, 2DS, DSi, Wii, Wii U, GameCube, N64, SNES) and accessories, then Xbox controllers/headsets/storage and PlayStation accessories. Check for model/edition/bundle duplicates before each insert. Do not use trade-in quotes as used market sales. Keep UK GBP evidence separate by new/used condition and listed/sold availability.
+
+
+## Accessory batch 3 — exact records
+
+### LIVE
+- Nintendo Switch 2 Joy-Con 2 Charging Grip: product 8d5adc75-5e59-4c0e-8189-2045c4855793
+  - New Argos £29.99: evidence acc4264b-59f1-4c9b-908d-0c90925a0c7e; key argos-switch2-charging-grip-7624692-2026-11-02.
+  - Used eBay sold £15.96: evidence 19f2947a-fa5a-4c25-b205-69fe985c92a1; key ebay-128034280257.
+- Nintendo Switch 2 Carrying Case & Screen Protector: product 9821a5f2-d0d2-4aec-a957-c388db2a0e48
+  - New Argos £19.99: evidence f2baf047-fb93-466c-8b49-9c2c1306543a; key argos-switch2-case-screen-protector-7623868-2026-11-02.
+- SanDisk 256GB microSD Express Card for Nintendo Switch 2: product a438b9ae-3f25-41ba-bc70-96d418849c76
+  - New Argos £44.99: evidence 6a8c54f2-16b4-4d55-9b94-32faae200829; key argos-sandisk-switch2-microsd-7624537-2026-11-02.
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair: product 4c1dcc45-135e-4583-90f4-faa84566d2c1
+  - New Argos £16.99: evidence 794c6031-2d8e-491a-b74d-17fe53413377; key argos-switch2-joycon-wheel-pair-7624661-2026-11-02.
+
+### TEST
+- Nintendo Switch 2 Joy-Con 2 Charging Grip: product 824abde3-63e1-43c6-89d9-9e26c8f9fd55
+  - New Argos £29.99: evidence 4aeb13f9-fc1a-4a44-b7b0-823db556e439; key argos-switch2-charging-grip-7624692-2026-11-02.
+  - Used eBay sold £15.96: evidence 38af2cb2-413d-4998-8246-0c9a55dbfa71; key ebay-128034280257.
+- Nintendo Switch 2 Carrying Case & Screen Protector: product 20513301-553a-4863-8f72-f9bd42ca6909
+  - New Argos £19.99: evidence de72a4b9-07a5-4412-9e4e-ba77985a0bac; key argos-switch2-case-screen-protector-7623868-2026-11-02.
+- SanDisk 256GB microSD Express Card for Nintendo Switch 2: product 588ccc1f-c893-405f-b3f8-59491fa240e4
+  - New Argos £44.99: evidence 1997a3d7-6663-473c-b389-457ef2bb333a; key argos-sandisk-switch2-microsd-7624537-2026-11-02.
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair: product 9d0a1eb7-362a-40fb-8a29-19a09eda8c71
+  - New Argos £16.99: evidence b4bc0e9c-12fd-4efd-8150-334ffa7a58d9; key argos-switch2-joycon-wheel-pair-7624661-2026-11-02.
+
+## Handheld batch 4 — exact records
+
+### LIVE
+- Nintendo 3DS XL: product 3f7e8893-3027-4f12-a423-4b1fe981f3be; Cash Converters UK £149.99; evidence 5d978043-2407-41e0-aa45-55f796f38b10; key cashconverters-3ds-xl-016200291556-2026-11-02.
+- New Nintendo 3DS XL: product 6c2e6776-ba5e-47b8-9ae6-a2ff36b1e5ba; Cash Converters UK £200.00; evidence d270f147-f138-4f5a-9078-71ebac501664; key cashconverters-new-3ds-xl-018000227499-2026-11-02.
+- New Nintendo 2DS XL: product 1908f953-12f5-44d2-ac91-7fd5097301f6; Cash Converters UK £169.99; evidence 51ff2b1e-2e36-41da-9be5-306cd412cb76; key cashconverters-new-2ds-xl-059600008755-2026-11-02.
+
+### TEST
+- Nintendo 3DS XL: product 6f3b8f2b-4500-4cd2-b878-7cb83ca40f3a; Cash Converters UK £149.99; evidence 460f6c6c-8545-4543-8614-98b8d86719d7; key cashconverters-3ds-xl-016200291556-2026-11-02.
+- New Nintendo 3DS XL: product 27465f05-df1f-4cc8-abae-503647293045; Cash Converters UK £200.00; evidence 48f72d34-03e9-4cf1-826a-d3205093b99b; key cashconverters-new-3ds-xl-018000227499-2026-11-02.
+- New Nintendo 2DS XL: product a7d24699-fdcf-4157-a945-7f41994cc117; Cash Converters UK £169.99; evidence e7a7e9d6-8bb8-4d70-a629-0000cb4ee030; key cashconverters-new-2ds-xl-059600008755-2026-11-02.
+
+All batch 3/4 Cash Converters entries are used-condition retailer listings, not completed sales. Argos records are new-condition retail listings. eBay grip is a completed used sale, buyer-facing total includes fee. All source URLs, GBP prices, availability values and stable keys are populated.

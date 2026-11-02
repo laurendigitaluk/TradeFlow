@@ -256,8 +256,8 @@ function availableListingPhotoCount(){return sourceMedia.length+sourceInspection
 function resetPurchaseSummary(){if($('purchase-price-display'))$('purchase-price-display').textContent='—';if($('purchase-customer-display'))$('purchase-customer-display').textContent='—';if($('purchase-request-display'))$('purchase-request-display').textContent='—';if($('purchase-inspection-display'))$('purchase-inspection-display').textContent='—';}
 function canonicalSellingTitle(asset,candidate=''){
  const fields={};
- for(const line of String(asset?.description||'').replace(/\\\\n/g,'\\n').split(/\\r?\\n/)){
-  const m=line.trim().match(/^(Manufacturer|Model|Package)\\s*:\\s*(.*)$/i);
+ for(const line of String(asset?.description||'').replace(/\\n/g,'\n').split(/\r?\n/)){
+  const m=line.trim().match(/^(Manufacturer|Model|Package)\s*:\s*(.*)$/i);
   if(m&&m[2].trim())fields[m[1].toLowerCase()]=m[2].trim();
  }
  const manufacturer=fields.manufacturer||'';
@@ -270,6 +270,6 @@ function canonicalSellingTitle(asset,candidate=''){
   return [...new Map(parts.map(x=>[norm(x),x])).values()].join(' ').trim();
  }
  const raw=String(candidate||asset?.title||'').trim();
- return raw.replace(/^(.*?)(?:\\s+\\1)+$/i,'$1').replace(/\\s+/g,' ').trim();
+ return raw.replace(/^(.*?)(?:\s+\1)+$/i,'$1').replace(/\s+/g,' ').trim();
 }
 function syncAssetContext(){const token=++sourceLoadToken;const selectedId=$('asset').value;const a=assets.find(x=>x.id===selectedId);sourceMedia=[];sourceInspectionMedia=[];selectedSourceMediaIds=new Set();if(a){$('title').value=canonicalSellingTitle(a,a.title||'');$('description').value='';$('currency').value=(a.currency||'GBP').toUpperCase();$('price').value=a.current_value??'';$('purchase-price-display').textContent=a.purchase_price!=null?money(a.purchase_price,a.currency||'GBP'):'Not recorded';$('asset-condition').value='';$('asset-serial').value=a.serial_number||'';$('asset-location').value=a.location||'';$('category-display').textContent=categories.find(x=>x.id===a.category_id)?.name||'Inherited from original buying category';$('branch-display').textContent=branches.find(x=>x.id===a.branch_id)?.name||'Inherited from original buying branch';resetPurchaseSummary();$('source-information').innerHTML='<div class="empty">Loading purchase information…</div>';$('sales-photos').innerHTML='<div class="empty">Loading purchase photographs…</div>';loadSourceInformation(a,token)}else{resetPurchaseSummary();$('title').value='';$('description').value='';$('currency').value='GBP';$('price').value='';$('purchase-price-display').textContent='—';$('asset-condition').value='';$('asset-serial').value='';$('asset-location').value='';$('category-display').textContent='Inherited from original buying category';$('branch-display').textContent='Inherited from original buying branch';$('source-information').innerHTML='<div class="empty">Select an inventory asset to load the source information.</div>';$('sales-photos').innerHTML='<div class="empty">Select an inventory asset to load photographs.</div>';}}

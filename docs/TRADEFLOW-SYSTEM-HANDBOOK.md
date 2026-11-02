@@ -2420,3 +2420,12 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 ## Subscriber TEST routing correction — 1 November 2026
 
 The subscriber login and signup frontend files had stale references to retired TEST Supabase project `twfbmjwwqzxdxvclxbun`. They now use current TEST project `nnsshnfkjcflucjrftzi` and its publishable key. Signup explicitly recognises the TEST Worker hostname. Changes are committed on `production`; browser/Worker runtime verification and Cloudflare deployment remain unverified.
+
+
+## Xbox One X 1TB evidence parity repair — 2 November 2026
+
+- TEST already contained eBay UK item 178294853613 under source key `ebayuk-178294853613-xboxonex-1tb-20260708`: £57.02 GBP, Used, sold; TEST product `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`.
+- LIVE initially had no row for this key. It was added using the established privileged Supabase migration route, mapped to LIVE product `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`.
+- LIVE read-after-write verified active evidence ID `e3498deb-5606-4965-80ab-d9d5951467b3`, £57.02 GBP, Used, eBay UK, sold, observed 8 July 2026 22:08 UTC, source https://www.ebay.co.uk/itm/178294853613.
+- Displayed total £59.50 included £2.48 Buyer Protection fee; stored item price excludes the fee.
+- No application code, valuation rules, tenant/customer/payment data, RLS, grants, or Worker deployment changed. This was a shared evidence data-only parity repair.

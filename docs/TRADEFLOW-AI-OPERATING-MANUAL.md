@@ -2389,3 +2389,10 @@ Added TEST-first then LIVE-mirrored UK used sold evidence: eBay item 39794671808
 
 ## Xbox Series S 512GB evidence expansion — 2 November 2026
 Four verified UK used sales (eBay items 147650120878 £249.32; 327383217934 £230.00; 137818359559 £206.29; 206610408847 £220.00) were added and read back in TEST and LIVE, with Buyer Protection fees excluded. The 17 October listing 227560758629 did not specify storage capacity and was retired from active 512GB evidence in both environments. No code, valuation, RLS/grants, tenant data or Worker deployment changed.
+
+
+## Xbox Series S Carbon Black and Series X Digital evidence additions — 2 November 2026
+
+- Added two UK used completed sales for Xbox Series S 1TB Carbon Black in TEST and LIVE: eBay item 127189380281 sold 9 Sep 2026, displayed £208.47 less £7.29 Buyer Protection fee = £201.18; item 147607178323 sold 30 Sep 2026, displayed £258.92 less £8.92 = £250.00. Both listings specify 1TB Carbon Black and include a controller. TEST evidence IDs b21e12c1-6fa3-4e39-8b9a-9dfd98baa50c and 65d98b98-3e6e-4808-96af-35e7f779635a; LIVE IDs 87d1ff1b-4a34-418c-8177-cefa67e865d5 and f41b7c25-2a39-42cf-a89d-56675a15c3ed.
+- Added one UK used completed sale for Xbox Series X Digital Edition 1TB: eBay item 137590211396, sold 12 Aug 2026. Displayed £347.75 included £11.19 Buyer Protection fee; stored underlying item price £336.56. TEST evidence ID 733e0e5a-752d-42f2-bc7f-8e119f885162; LIVE ID ac6082fa-9b4b-4ec8-a38e-3e935c324a20.
+- All three new rows read back active in both environments, mapped to their own product UUIDs. Updated active Xbox evidence total is 35 in TEST and 35 in LIVE across 13 variants. Series S Carbon Black now 4 active; Series X Digital now 4 active. No tenant/customer/transaction/Stripe data, valuation logic, RLS/grants, application code or Worker deployments changed.

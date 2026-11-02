@@ -2170,3 +2170,10 @@ The Selling editor now saves title, description, asking price, currency and list
 The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
 
 The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.
+
+
+## Xbox Series S Carbon Black and Series X Digital evidence additions — 2 November 2026
+
+- Added two UK used completed sales for Xbox Series S 1TB Carbon Black in TEST and LIVE: eBay item 127189380281 sold 9 Sep 2026, displayed £208.47 less £7.29 Buyer Protection fee = £201.18; item 147607178323 sold 30 Sep 2026, displayed £258.92 less £8.92 = £250.00. Both listings specify 1TB Carbon Black and include a controller. TEST evidence IDs b21e12c1-6fa3-4e39-8b9a-9dfd98baa50c and 65d98b98-3e6e-4808-96af-35e7f779635a; LIVE IDs 87d1ff1b-4a34-418c-8177-cefa67e865d5 and f41b7c25-2a39-42cf-a89d-56675a15c3ed.
+- Added one UK used completed sale for Xbox Series X Digital Edition 1TB: eBay item 137590211396, sold 12 Aug 2026. Displayed £347.75 included £11.19 Buyer Protection fee; stored underlying item price £336.56. TEST evidence ID 733e0e5a-752d-42f2-bc7f-8e119f885162; LIVE ID ac6082fa-9b4b-4ec8-a38e-3e935c324a20.
+- All three new rows read back active in both environments, mapped to their own product UUIDs. Updated active Xbox evidence total is 35 in TEST and 35 in LIVE across 13 variants. Series S Carbon Black now 4 active; Series X Digital now 4 active. No tenant/customer/transaction/Stripe data, valuation logic, RLS/grants, application code or Worker deployments changed.

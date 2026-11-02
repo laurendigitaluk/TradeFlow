@@ -1737,3 +1737,25 @@ Added three further visible Nintendo master products independently to TEST and L
 - Nintendo Switch Pro Controller (original Switch generation) — Currys UK new listing £49.97; used eBay UK sale £41.94 (item 147630967217, Birmingham seller, includes £2.03 Buyer Protection).
 - Nintendo Switch 2 Camera — Cash Converters UK pre-owned listing £19.99 (Kilburn store, pre-owned, fully functional).
 The Switch 2 Pro Controller remains a separate product from the original Switch Pro Controller. The Joy-Con 2 pair remains separate from single L/R replacement Joy-Cons. Current verified category totals in both environments: **65 master products, 57 active customer-visible products, 130 active evidence rows (20 UK new / 110 UK used), zero visible active products missing evidence, zero evidence integrity failures**. Exact TEST/LIVE IDs and source keys are recorded in the project memory and batch checkpoint. No code or valuation logic changed.
+
+
+
+## Public TradeFlow valuation-to-sale explainer page — 2 November 2026
+
+A dedicated static SaaS marketing page now explains the customer valuation journey and the subscriber's connected stock/resale workflow.
+
+- Public page: `how-it-works.html`
+- Page styles: `how-it-works.css`
+- Homepage entry points: primary navigation, hero "See how it works" link, homepage workflow summary and platform footer.
+- Scope: explanatory content and static visual workflow only. It does not read customer data, expose tenant records, call Supabase, submit valuations, or change operational workflow state.
+- Customer buying tracker is described as seven stages: Valuation → Offer → Shipping → Received → Inspection → Payment → Complete.
+- The operational explanation distinguishes customer actions from subscriber actions, including the manual shipping handoff: subscriber arranges the carrier service outside TradeFlow, then supplies label/QR and instructions; customer confirms dispatch; subscriber confirms physical receipt.
+- Inspection outcomes are described as original-offer acceptance, counteroffer/revised final offer, or refusal. If the original accepted value is unchanged, payment proceeds on that offer.
+- Purchase completion then creates the business-side continuation: Inventory → prepare retail listing → publish to subscriber shop → sale/fulfilment.
+- Multi-item requests are explained as supporting per-item decisions and an available combined offer.
+- No customer names, customer contact details, subscriber business names, example URLs, request IDs, or screenshots are embedded in the public page.
+- No Supabase schema, RLS, RPC, Edge Function, storage, Stripe, courier integration, or tenant data was changed.
+
+**Environment / release control:** GitHub `main` is the TEST code branch; GitHub `production` is the LIVE release branch. TEST Supabase is `nnsshnfkjcflucjrftzi`; LIVE Supabase is `gxsrajtqzdjvmceqcpgv`. This work is on feature branch `feature/tradeflow-how-it-works-page-20261102` based on `main`; do not promote it to `production` until TEST deployment and browser review pass.
+
+**Verification state:** Implemented on feature branch. Static source/link/privacy checks are the next gate; deployed TEST browser verification remains required. No claim of LIVE release is made.

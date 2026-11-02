@@ -2927,3 +2927,49 @@ The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIV
 - Added two UK used completed sales for Xbox Series S 1TB Carbon Black in TEST and LIVE: eBay item 127189380281 sold 9 Sep 2026, displayed £208.47 less £7.29 Buyer Protection fee = £201.18; item 147607178323 sold 30 Sep 2026, displayed £258.92 less £8.92 = £250.00. Both listings specify 1TB Carbon Black and include a controller. TEST evidence IDs b21e12c1-6fa3-4e39-8b9a-9dfd98baa50c and 65d98b98-3e6e-4808-96af-35e7f779635a; LIVE IDs 87d1ff1b-4a34-418c-8177-cefa67e865d5 and f41b7c25-2a39-42cf-a89d-56675a15c3ed.
 - Added one UK used completed sale for Xbox Series X Digital Edition 1TB: eBay item 137590211396, sold 12 Aug 2026. Displayed £347.75 included £11.19 Buyer Protection fee; stored underlying item price £336.56. TEST evidence ID 733e0e5a-752d-42f2-bc7f-8e119f885162; LIVE ID ac6082fa-9b4b-4ec8-a38e-3e935c324a20.
 - All three new rows read back active in both environments, mapped to their own product UUIDs. Updated active Xbox evidence total is 35 in TEST and 35 in LIVE across 13 variants. Series S Carbon Black now 4 active; Series X Digital now 4 active. No tenant/customer/transaction/Stripe data, valuation logic, RLS/grants, application code or Worker deployments changed.
+
+
+## 2 November 2026 — Gaming console and accessories catalogue (Nintendo batch 1)
+
+The gaming category is `Gaming Consoles & Accessories`. Current TEST and LIVE Supabase data were inspected independently before writes. Both environments now have the same verified catalogue coverage for this batch; each has its own product/evidence UUIDs.
+
+### Catalogue changes
+- Added Nintendo as a manufacturer.
+- Added branches: `Nintendo Consoles`, `Nintendo Handheld Consoles`, `Nintendo Controllers`, and `Nintendo Accessories`.
+- Added five visible master products: Nintendo Switch 2 256GB, Nintendo Switch OLED 64GB, Nintendo Switch (V2) 32GB, Nintendo Switch Lite 32GB, and Nintendo Switch 2 Pro Controller.
+- Added seven active UK evidence rows: two new and five used. Older Switch variants currently have used evidence only; do not invent current new retail prices.
+- Repaired ten existing Sony product records with null branch assignments by mapping them to the existing PlayStation console, handheld, VR, controller, headset or accessories branches. No Sony product prices or evidence were changed.
+- The first Switch 2 new-price capture used a generic retailer category page and was not sufficiently exact. It was deactivated and replaced with the exact Smyths Toys UK product page at £389.99 (RRP £419.99 shown). The replacement is active and has availability `listed`.
+
+### Nintendo evidence added
+| Product | Evidence | Price | Source / reference |
+|---|---|---:|---|
+| Nintendo Switch 2 256GB | UK new, listed | £389.99 | Smyths Toys UK, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-consoles/nintendo-switch-2-console/p/249605 |
+| Nintendo Switch 2 256GB | UK used, sold-market median | £309.00 | PathAu, median of 153 eBay UK used sales in the 30 days to 25 Oct 2026, https://pathau.co.uk/prices/consoles/switch-2/ |
+| Nintendo Switch OLED 64GB | UK used, sold | £145.00 | eBay UK item 307194468463, sold 24 Sep 2026, https://www.ebay.co.uk/itm/307194468463 |
+| Nintendo Switch V2 32GB | UK used, sold | £62.99 | eBay UK item 318506459251, sold 4 Sep 2026, https://www.ebay.co.uk/itm/318506459251 |
+| Nintendo Switch Lite 32GB | UK used, sold | £72.00 | eBay UK item 287545083895, sold 13 Oct 2026, https://www.ebay.co.uk/itm/287545083895 |
+| Nintendo Switch 2 Pro Controller | UK new, listed | £74.99 | Nintendo Store UK controller catalogue, https://store.nintendo.com/en-gb/_sites/nintendo.co.uk/consoles/nintendo-switch-2-consoles/nintendo-switch-2-accessories/nintendo-switch-2-controllers |
+| Nintendo Switch 2 Pro Controller | UK used, sold | £47.08 | eBay UK item 257762800651, sold 26 Sep 2026, https://www.ebay.co.uk/itm/257762800651 |
+
+eBay displayed totals can include Buyer Protection. The notes on each evidence row preserve the relevant caveat. The PathAu Switch 2 figure is an aggregate median from eBay UK completed sales, not a single listing. All active evidence is GBP and uses `uk_new` / `uk_used` separately, with `listed` / `sold` availability.
+
+### Verified database snapshot — both TEST and LIVE
+- Gaming category master products: **62**
+- Active, customer-visible products: **54**
+- Active evidence rows: **125** (17 `uk_new`, 108 `uk_used`)
+- Active customer-visible products missing evidence: **0**
+- Active evidence integrity failures (missing URL/key, non-positive price, non-GBP currency or missing availability): **0**
+- Products with null branch assignment: **0**
+- Nintendo products: **5**, each with at least one active evidence row
+- The Nintendo product and evidence content matches between TEST and LIVE; UUIDs are intentionally environment-specific.
+
+### Guardrails and next work
+- Keep TEST and LIVE independent. Do not copy customer, tenant, transaction or payment data.
+- Do not let market evidence change automatic valuation/buying prices.
+- Keep bundle, storage, colour/edition and console generation variants distinct.
+- Do not treat asking prices, hidden Best Offer amounts, trade-in quotes or overseas listings as completed UK used sales.
+- Continue with Switch 2 Joy-Con 2 pairs, camera, charging grip, cases, microSD Express cards, original Switch Pro Controller/Joy-Con, Nintendo handheld generations (3DS/2DS), Wii and GameCube accessories. Then complete Xbox controllers/headsets/storage and remaining PlayStation accessories.
+- `Nintendo Accessories` branch is prepared but has no products yet.
+- No TradeFlow application code, valuation logic, RLS/grants, tenants, customer records, transactions or Stripe configuration changed in this batch.
+- No structured project-memory/checkpoint tables were found in any non-system schema of the connected LIVE Supabase project. The verified continuity record is therefore maintained in the repository's `PROJECT-MEMORY/` and `CHECKPOINTS/` files; do not invent a Supabase memory table.

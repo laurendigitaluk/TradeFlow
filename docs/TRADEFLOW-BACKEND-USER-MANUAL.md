@@ -1656,3 +1656,12 @@ Two additional verified UK used completed sales were added TEST-first and mirror
 - eBay item 168682015736 is a valid used 1TB black console-only sale (power/HDMI leads, no controller), sold 13 September 2026. Display £59.50 included £2.48 Buyer Protection fee; stored price corrected to £57.02 GBP in TEST and LIVE. Key `ebayuk-168682015736-xboxonex-1tb-20260913`.
 - eBay item 336746788067 is a bundle (Elite controller, stand, PUBG, other games and play/charge kit), so it was retired from standard-console evidence in both environments (`is_active=false`) while retaining the row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
 - Both corrections read back consistently in TEST and LIVE. Four active standard-console rows remain from five historical Xbox One X evidence rows per environment. No valuation rules, RLS/grants or application code changed.
+
+
+## Xbox 360 500GB fee correction and parity audit — 2 November 2026
+
+- eBay UK item 147564021425 sold as a used, fully working black Xbox 360 E 500GB console. The displayed £64.46 included a £2.64 Buyer Protection fee; corrected the comparable item price to £61.82 GBP.
+- Updated the existing evidence row in TEST and LIVE only when its source key, environment-specific master product ID, active status and old £64.46 value matched. TEST evidence ID: 6146fc0b-8f8c-4422-a153-070f896fe5cc; LIVE evidence ID: b68e7dbd-c3ac-48ac-827b-c85c597c1726. Both read-after-write checks confirm £61.82, active=true, with notes recording the excluded fee.
+- Full Xbox catalogue readback shows matching TEST/LIVE evidence content for the 13 mapped variants. Current active counts: Xbox 360 4GB 2; 250GB 2; 500GB 1; Xbox One 500GB 2; 1TB 2; Xbox One S 500GB 2; 1TB 2; All-Digital 1TB 2; Xbox One X 1TB 4; Xbox Series S 512GB 3; 1TB Carbon Black 2; Xbox Series X Disc 1TB 2; Xbox Series X Digital 1TB 3. Total 27 active rows per environment. Retired historical rows remain retained and inactive.
+- No new Xbox 360 500GB comp was found: the other surfaced 500GB sold candidates were bundles or special editions. No new evidence row was inserted.
+- No application code, valuation logic, tenant/customer/payment data, RLS/grants or Worker deployment changed. This was a shared market-evidence price correction only.

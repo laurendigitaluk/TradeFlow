@@ -2429,3 +2429,12 @@ The subscriber login and signup frontend files had stale references to retired T
 - LIVE read-after-write verified active evidence ID `e3498deb-5606-4965-80ab-d9d5951467b3`, £57.02 GBP, Used, eBay UK, sold, observed 8 July 2026 22:08 UTC, source https://www.ebay.co.uk/itm/178294853613.
 - Displayed total £59.50 included £2.48 Buyer Protection fee; stored item price excludes the fee.
 - No application code, valuation rules, tenant/customer/payment data, RLS, grants, or Worker deployment changed. This was a shared evidence data-only parity repair.
+
+
+## 2 November 2026 — Selling listing editor repair
+
+The Selling editor now uses `subscriber_update_listing_details` rather than a direct browser PATCH to `public.listings`. The RPC requires an authenticated tenant member with `selling.manage` and `module.selling`; it validates editable listing fields and does not change workflow status or ownership. Public/anon execution is revoked; authenticated execution is granted. Direct authenticated table UPDATE remains denied.
+
+The editor normalises structured Manufacturer/Model/Package values so a package identical to the model is not repeated in the product title. New listing descriptions start blank rather than copying internal structured customer-submission fields. `selling-dashboard.html` cache version is v92.
+
+The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Database privilege checks passed in both. No cross-environment data was copied and the existing LIVE GoPro listing was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.

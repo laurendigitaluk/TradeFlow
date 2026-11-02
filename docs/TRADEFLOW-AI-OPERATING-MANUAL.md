@@ -2912,3 +2912,7 @@ Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), th
 
 ## Catalogue evidence operating note — 2 November 2026
 Retro console records must distinguish original hardware from later mini re-releases (for example, original Super Nintendo Entertainment System versus Super Nintendo Classic Mini). Check LIVE and TEST independently before insertion, preserve environment-specific UUIDs, use UK GBP sources only, and classify retailer asking prices as `availability=listed` rather than completed sales. Catalogue evidence remains reference-only and must not change automatic buying valuations. Database-only catalogue changes do not require Cloudflare Worker deployments.
+
+
+## Xbox storage catalogue correction — 2 November 2026
+TEST and LIVE each contain WD_BLACK C50 512GB and 1TB, Seagate 1TB, and SanDisk Optimus GX C50 2TB. The initial unsupported generic-page evidence rows were deactivated. Active UK GBP new/listed evidence now uses Argos for Seagate 1TB (£149.99) and WD_BLACK C50 1TB (£153.99), and Idealo UK for SanDisk 2TB (£249.99 offer). WD_BLACK 512GB has no active price evidence pending a verified UK retailer listing. Evidence remains reference-only and does not feed automatic buying valuations. No code or deployment changes were made. Maintain separate TEST and LIVE UUIDs.

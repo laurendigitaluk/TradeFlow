@@ -42,8 +42,8 @@ There is deliberately **not** a second GitHub repository for Live. GitHub branch
 
 ### Supabase projects
 
-- **TradeFlow TEST:** `twfbmjwwqzxdxvclxbun`, eu-west-2.
-- **TradeFlow LIVE:** separate production project, to be created under the upgraded TradeFlow Live organisation.
+- **TradeFlow TEST:** `nnsshnfkjcflucjrftzi`, eu-west-2.
+- **TradeFlow LIVE:** `gxsrajtqzdjvmceqcpgv`, eu-west-2, ACTIVE_HEALTHY (current project inventory checked 2 November 2026).
 
 The TEST database contains deliberate test tenants, customers, orders, returns and other test data. LIVE must be a fresh production database built from the version-controlled migration history and must never be populated by copying TEST customer/transaction data.
 
@@ -100,8 +100,8 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 - **TEST branch:** `main`.
 - **LIVE release branch:** `production`.
 - Current TEST Release Candidate before this documentation/release-branch promotion: `ec6536818522a0e89d08f9defa68f557259cf280`.
-- TEST Supabase: `twfbmjwwqzxdxvclxbun`, eu-west-2, ACTIVE_HEALTHY.
-- LIVE Supabase: separate production project; creation/onboarding remains the current release workstream.
+- TEST Supabase: `nnsshnfkjcflucjrftzi`, eu-west-2, ACTIVE_HEALTHY.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`, eu-west-2, ACTIVE_HEALTHY. The earlier project-creation status is historical and superseded.
 - Test One remains the frozen known-good historical baseline and must not be overwritten.
 - Current TEST security hardening includes restricted client execution of SECURITY DEFINER functions and hardened payment/ledger trigger search paths.
 - Manual shipping is authoritative; Parcel2Go API/checkout/payment-link shipping is retired.
@@ -1151,7 +1151,7 @@ New subscriber/business → new subscriber customer → customer request/selling
 - Restore branch: `checkpoint-test-one-20260923`
 - Functional baseline commit: `80c6e20b4fa89b37ed6fab2480fb1eb46293a0d1`
 - Checkpoint documentation commit on the restore branch: `ea00d6ae238f6e47c4798b73ec6340ade2c2d5fd`
-- Supabase project: `twfbmjwwqzxdxvclxbun`
+- Supabase project: `nnsshnfkjcflucjrftzi`
 
 ### Test Two rule
 
@@ -1686,7 +1686,7 @@ When an automatic pricing rule is saved, all condition reference fields must be 
 
 ## 2026-09-30 — TEST migration-history clean-baseline repair
 
-The TradeFlow TEST Supabase project `twfbmjwwqzxdxvclxbun` remains the authoritative TEST database. The remote migration-history records `20260930181936` and `20260930182507` were removed from `supabase_migrations.schema_migrations` as a history repair only; no business-table data was changed and no schema rollback was performed. The corresponding current function definitions remain present in TEST and match the replacement version-controlled migrations `20260930200000_exclude_completed_return_from_workflow_list` and `20260930201500_customer_initial_offer_refusal_closes_buying_item`.
+The TradeFlow TEST Supabase project `nnsshnfkjcflucjrftzi` remains the authoritative TEST database. The remote migration-history records `20260930181936` and `20260930182507` were removed from `supabase_migrations.schema_migrations` as a history repair only; no business-table data was changed and no schema rollback was performed. The corresponding current function definitions remain present in TEST and match the replacement version-controlled migrations `20260930200000_exclude_completed_return_from_workflow_list` and `20260930201500_customer_initial_offer_refusal_closes_buying_item`.
 
 This repair is part of the clean-baseline workstream. The next local step is to verify the dedicated `TradeFlow-Clean-Baseline-20260930` workspace has an empty `supabase/migrations` directory, then run `supabase db pull` against TEST and inspect the generated baseline before committing or replacing any migration history. Do not alter LIVE, the `production` branch, Test One, or the existing version-controlled migration set until that baseline has been verified.
 
@@ -1761,7 +1761,7 @@ TradeFlow's domain-purchase flow has now reached the end of the payment and regi
 
 Environment:
 - GitHub TEST/STAGING branch: `main`
-- TEST Supabase project: `twfbmjwwqzxdxvclxbun`
+- TEST Supabase project: `nnsshnfkjcflucjrftzi`
 - LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`
 - LIVE has not been changed during this domain-registration work.
 - Current tested registrar: Porkbun.
@@ -1875,7 +1875,7 @@ This section is authoritative for the current domain-registration work and super
 
 - TEST/STAGING GitHub branch: `main`
 - LIVE GitHub branch: `production`
-- TEST Supabase: `twfbmjwwqzxdxvclxbun`
+- TEST Supabase: `nnsshnfkjcflucjrftzi`
 - LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
 - LIVE has remained untouched during this domain-registration work.
 - Current tested registrar provider: **Porkbun**.
@@ -2823,3 +2823,24 @@ The Switch 2 Pro Controller remains a separate product from the original Switch 
 
 ## Switch 2 retail evidence source correction — 2 November 2026
 The Smyths Toys product URL could not be independently fetched (403), so its £389.99 evidence row was deactivated. The generic Harvey Norman capture remains inactive. The active UK-new source is now the directly opened Argos product page for Nintendo Switch 2 Console - Black, 256GB, at **£419.99**: https://www.argos.co.uk/product/7624867. The Argos page confirms the console model, 256GB storage and included Joy-Con 2 pair, dock, grip, AC adapter and HDMI cable. Active evidence key: `argos-switch2-7624867-2026-11-02`. LIVE evidence ID: `b8541ee9-fcdc-4a46-98c0-6a8242d4b099`; TEST evidence ID: `2f7f9991-2941-4760-abcf-898588eb1c35`. This supersedes the earlier £389.99 Smyths figure. Category totals remain 65 master products, 57 active customer-visible products, 130 active evidence rows (20 UK new / 110 UK used), zero visible products missing evidence and zero integrity failures.
+
+
+
+## Public TradeFlow valuation-to-sale explainer page — 2 November 2026
+
+A dedicated static SaaS marketing page explains the customer valuation journey and the subscriber's connected stock/resale workflow.
+
+- Public page: `how-it-works.html`; styles: `how-it-works.css`.
+- Homepage entry points: primary navigation, hero "See how it works" action, homepage workflow summary and platform footer.
+- Scope: static explanation and visual workflow only. It does not read customer data, expose tenant records, call Supabase, submit valuations or change operational workflow state.
+- Customer progress tracker: Valuation → Offer → Shipping → Received → Inspection → Payment → Complete.
+- The page distinguishes customer and subscriber actions, including the current manual shipping handoff: subscriber arranges the carrier service outside TradeFlow, supplies label/QR and instructions; customer confirms dispatch; subscriber confirms physical receipt.
+- Inspection outcomes are described as accepting the original offer, making a revised offer/counteroffer, or refusing. If the original accepted value is unchanged, payment can proceed on that offer.
+- Purchase completion leads to Inventory → prepare retail listing → publish to subscriber shop → sale/fulfilment.
+- Multi-item requests are explained as supporting per-item decisions and an available combined offer.
+- Customer names, contact details, subscriber business names, record references and screenshot URLs are excluded.
+- No Supabase schema/data, RLS, RPC, Edge Function, storage, Stripe, courier integration or tenant workflow changes.
+
+**Release control:** GitHub `main` = TEST; `production` = LIVE. TEST Supabase: `nnsshnfkjcflucjrftzi`; LIVE Supabase: `gxsrajtqzdjvmceqcpgv`. Work is on `feature/tradeflow-how-it-works-page-20261102-v2`, based on the latest `main`. Do not promote to `production` until TEST deployment and browser review pass.
+
+**Verification:** Static source/link/privacy checks passed. Deployed TEST browser verification remains required; no LIVE release is claimed.

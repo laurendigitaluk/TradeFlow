@@ -1740,3 +1740,24 @@ The Switch 2 Pro Controller remains a separate product from the original Switch 
 
 ## Switch 2 retail evidence source correction — 2 November 2026
 The Smyths Toys product URL could not be independently fetched (403), so its £389.99 evidence row was deactivated. The generic Harvey Norman capture remains inactive. The active UK-new source is now the directly opened Argos product page for Nintendo Switch 2 Console - Black, 256GB, at **£419.99**: https://www.argos.co.uk/product/7624867. The Argos page confirms the console model, 256GB storage and included Joy-Con 2 pair, dock, grip, AC adapter and HDMI cable. Active evidence key: `argos-switch2-7624867-2026-11-02`. LIVE evidence ID: `b8541ee9-fcdc-4a46-98c0-6a8242d4b099`; TEST evidence ID: `2f7f9991-2941-4760-abcf-898588eb1c35`. This supersedes the earlier £389.99 Smyths figure. Category totals remain 65 master products, 57 active customer-visible products, 130 active evidence rows (20 UK new / 110 UK used), zero visible products missing evidence and zero integrity failures.
+
+
+
+## Public TradeFlow valuation-to-sale explainer page — 2 November 2026
+
+A dedicated static SaaS marketing page explains the customer valuation journey and the subscriber's connected stock/resale workflow.
+
+- Public page: `how-it-works.html`; styles: `how-it-works.css`.
+- Homepage entry points: primary navigation, hero "See how it works" action, homepage workflow summary and platform footer.
+- Scope: static explanation and visual workflow only. It does not read customer data, expose tenant records, call Supabase, submit valuations or change operational workflow state.
+- Customer progress tracker: Valuation → Offer → Shipping → Received → Inspection → Payment → Complete.
+- The page distinguishes customer and subscriber actions, including the current manual shipping handoff: subscriber arranges the carrier service outside TradeFlow, supplies label/QR and instructions; customer confirms dispatch; subscriber confirms physical receipt.
+- Inspection outcomes are described as accepting the original offer, making a revised offer/counteroffer, or refusing. If the original accepted value is unchanged, payment can proceed on that offer.
+- Purchase completion leads to Inventory → prepare retail listing → publish to subscriber shop → sale/fulfilment.
+- Multi-item requests are explained as supporting per-item decisions and an available combined offer.
+- Customer names, contact details, subscriber business names, record references and screenshot URLs are excluded.
+- No Supabase schema/data, RLS, RPC, Edge Function, storage, Stripe, courier integration or tenant workflow changes.
+
+**Release control:** GitHub `main` = TEST; `production` = LIVE. TEST Supabase: `nnsshnfkjcflucjrftzi`; LIVE Supabase: `gxsrajtqzdjvmceqcpgv`. Work is on `feature/tradeflow-how-it-works-page-20261102-v2`, based on the latest `main`. Do not promote to `production` until TEST deployment and browser review pass.
+
+**Verification:** Static source/link/privacy checks passed. Deployed TEST browser verification remains required; no LIVE release is claimed.

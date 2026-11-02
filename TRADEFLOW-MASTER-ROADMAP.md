@@ -17,9 +17,10 @@ TradeFlow is a generic multi-tenant Buy & Sell SaaS. `tenant_id` is the primary 
 Tenant roles are exactly `owner`, `admin`, `staff`. Platform Owner is a separate platform-level security boundary and is never a tenant role.
 
 ## Current environment
-- GitHub: `laurendigitaluk/TradeFlow`, branch `main`.
-- Supabase: `twfbmjwwqzxdxvclxbun`, region `eu-west-2`.
-- Recorded health checkpoint: ACTIVE_HEALTHY.
+- GitHub: `laurendigitaluk/TradeFlow`; `main` = TEST code branch; `production` = LIVE release branch.
+- Supabase TEST: `nnsshnfkjcflucjrftzi`, region `eu-west-2`, ACTIVE_HEALTHY.
+- Supabase LIVE: `gxsrajtqzdjvmceqcpgv`, region `eu-west-2`, ACTIVE_HEALTHY.
+- TEST and LIVE remain separate; never copy TEST customer or transaction data into LIVE.
 - Recorded public-table checkpoint: RLS enabled across 60/60 public tables.
 - GearCashOut is reference material only and must not be modified during TradeFlow work.
 
@@ -825,3 +826,24 @@ Production had two faults: an incomplete Supabase endpoint in buying-catalogue.j
 Architectural rule confirmed: Master Catalogue → subscriber Buying Catalogue → Buying Request/Product identity → Valuation → Offer → Acquisition → Inventory → Selling/Retail category → Listing → Retail Order → Fulfilment → Return. The same subscriber category structure carries a purchased product into Retail Selling; TradeFlow must not invent a disconnected second taxonomy.
 
 Database restoration is VERIFIED. LIVE browser verification remains pending until the Master Catalogue page loads products without Failed to fetch and a product can be selected successfully.
+
+
+
+## Public TradeFlow valuation-to-sale explainer page — 2 November 2026
+
+A dedicated static SaaS marketing page explains the customer valuation journey and the subscriber's connected stock/resale workflow.
+
+- Public page: `how-it-works.html`; styles: `how-it-works.css`.
+- Homepage entry points: primary navigation, hero "See how it works" action, homepage workflow summary and platform footer.
+- Scope: static explanation and visual workflow only. It does not read customer data, expose tenant records, call Supabase, submit valuations or change operational workflow state.
+- Customer progress tracker: Valuation → Offer → Shipping → Received → Inspection → Payment → Complete.
+- The page distinguishes customer and subscriber actions, including the current manual shipping handoff: subscriber arranges the carrier service outside TradeFlow, supplies label/QR and instructions; customer confirms dispatch; subscriber confirms physical receipt.
+- Inspection outcomes are described as accepting the original offer, making a revised offer/counteroffer, or refusing. If the original accepted value is unchanged, payment can proceed on that offer.
+- Purchase completion leads to Inventory → prepare retail listing → publish to subscriber shop → sale/fulfilment.
+- Multi-item requests are explained as supporting per-item decisions and an available combined offer.
+- Customer names, contact details, subscriber business names, record references and screenshot URLs are excluded.
+- No Supabase schema/data, RLS, RPC, Edge Function, storage, Stripe, courier integration or tenant workflow changes.
+
+**Release control:** GitHub `main` = TEST; `production` = LIVE. TEST Supabase: `nnsshnfkjcflucjrftzi`; LIVE Supabase: `gxsrajtqzdjvmceqcpgv`. Work is on `feature/tradeflow-how-it-works-page-20261102-v2`, based on the latest `main`. Do not promote to `production` until TEST deployment and browser review pass.
+
+**Verification:** Static source/link/privacy checks passed. Deployed TEST browser verification remains required; no LIVE release is claimed.

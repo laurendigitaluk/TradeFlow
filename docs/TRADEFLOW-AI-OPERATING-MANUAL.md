@@ -2908,3 +2908,7 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Catalogue evidence operating note — 2 November 2026
+Retro console records must distinguish original hardware from later mini re-releases (for example, original Super Nintendo Entertainment System versus Super Nintendo Classic Mini). Check LIVE and TEST independently before insertion, preserve environment-specific UUIDs, use UK GBP sources only, and classify retailer asking prices as `availability=listed` rather than completed sales. Catalogue evidence remains reference-only and must not change automatic buying valuations. Database-only catalogue changes do not require Cloudflare Worker deployments.

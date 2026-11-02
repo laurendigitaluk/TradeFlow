@@ -2487,3 +2487,49 @@ A batch enrichment script is available on the TEST `main` branch at `scripts/pok
 ## Pokémon category reconciliation progress — 26 October 2026
 
 The first 57 missing English card categories have been filled in LIVE using matching card keys, names, and already source-parsed categories from TEST. The remaining blank-category count was verified at 23,547. The full card-detail payload enrichment is still outstanding. Continue only with exact, evidence-backed category matches; do not classify by guessing from card names.
+
+
+## 2 November 2026 — Gaming console and accessories catalogue (Nintendo batch 1)
+
+The gaming category is `Gaming Consoles & Accessories`. Current TEST and LIVE Supabase data were inspected independently before writes. Both environments now have the same verified catalogue coverage for this batch; each has its own product/evidence UUIDs.
+
+### Catalogue changes
+- Added Nintendo as a manufacturer.
+- Added branches: `Nintendo Consoles`, `Nintendo Handheld Consoles`, `Nintendo Controllers`, and `Nintendo Accessories`.
+- Added five visible master products: Nintendo Switch 2 256GB, Nintendo Switch OLED 64GB, Nintendo Switch (V2) 32GB, Nintendo Switch Lite 32GB, and Nintendo Switch 2 Pro Controller.
+- Added seven active UK evidence rows: two new and five used. Older Switch variants currently have used evidence only; do not invent current new retail prices.
+- Repaired ten existing Sony product records with null branch assignments by mapping them to the existing PlayStation console, handheld, VR, controller, headset or accessories branches. No Sony product prices or evidence were changed.
+- The first Switch 2 new-price capture used a generic retailer category page and was not sufficiently exact. It was deactivated and replaced with the exact Smyths Toys UK product page at £389.99 (RRP £419.99 shown). The replacement is active and has availability `listed`.
+
+### Nintendo evidence added
+| Product | Evidence | Price | Source / reference |
+|---|---|---:|---|
+| Nintendo Switch 2 256GB | UK new, listed | £389.99 | Smyths Toys UK, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-consoles/nintendo-switch-2-console/p/249605 |
+| Nintendo Switch 2 256GB | UK used, sold-market median | £309.00 | PathAu, median of 153 eBay UK used sales in the 30 days to 25 Oct 2026, https://pathau.co.uk/prices/consoles/switch-2/ |
+| Nintendo Switch OLED 64GB | UK used, sold | £145.00 | eBay UK item 307194468463, sold 24 Sep 2026, https://www.ebay.co.uk/itm/307194468463 |
+| Nintendo Switch V2 32GB | UK used, sold | £62.99 | eBay UK item 318506459251, sold 4 Sep 2026, https://www.ebay.co.uk/itm/318506459251 |
+| Nintendo Switch Lite 32GB | UK used, sold | £72.00 | eBay UK item 287545083895, sold 13 Oct 2026, https://www.ebay.co.uk/itm/287545083895 |
+| Nintendo Switch 2 Pro Controller | UK new, listed | £74.99 | Nintendo Store UK controller catalogue, https://store.nintendo.com/en-gb/_sites/nintendo.co.uk/consoles/nintendo-switch-2-consoles/nintendo-switch-2-accessories/nintendo-switch-2-controllers |
+| Nintendo Switch 2 Pro Controller | UK used, sold | £47.08 | eBay UK item 257762800651, sold 26 Sep 2026, https://www.ebay.co.uk/itm/257762800651 |
+
+eBay displayed totals can include Buyer Protection. The notes on each evidence row preserve the relevant caveat. The PathAu Switch 2 figure is an aggregate median from eBay UK completed sales, not a single listing. All active evidence is GBP and uses `uk_new` / `uk_used` separately, with `listed` / `sold` availability.
+
+### Verified database snapshot — both TEST and LIVE
+- Gaming category master products: **62**
+- Active, customer-visible products: **54**
+- Active evidence rows: **125** (17 `uk_new`, 108 `uk_used`)
+- Active customer-visible products missing evidence: **0**
+- Active evidence integrity failures (missing URL/key, non-positive price, non-GBP currency or missing availability): **0**
+- Products with null branch assignment: **0**
+- Nintendo products: **5**, each with at least one active evidence row
+- The Nintendo product and evidence content matches between TEST and LIVE; UUIDs are intentionally environment-specific.
+
+### Guardrails and next work
+- Keep TEST and LIVE independent. Do not copy customer, tenant, transaction or payment data.
+- Do not let market evidence change automatic valuation/buying prices.
+- Keep bundle, storage, colour/edition and console generation variants distinct.
+- Do not treat asking prices, hidden Best Offer amounts, trade-in quotes or overseas listings as completed UK used sales.
+- Continue with Switch 2 Joy-Con 2 pairs, camera, charging grip, cases, microSD Express cards, original Switch Pro Controller/Joy-Con, Nintendo handheld generations (3DS/2DS), Wii and GameCube accessories. Then complete Xbox controllers/headsets/storage and remaining PlayStation accessories.
+- `Nintendo Accessories` branch is prepared but has no products yet.
+- No TradeFlow application code, valuation logic, RLS/grants, tenants, customer records, transactions or Stripe configuration changed in this batch.
+- No structured project-memory/checkpoint tables were found in any non-system schema of the connected LIVE Supabase project. The verified continuity record is therefore maintained in the repository's `PROJECT-MEMORY/` and `CHECKPOINTS/` files; do not invent a Supabase memory table.

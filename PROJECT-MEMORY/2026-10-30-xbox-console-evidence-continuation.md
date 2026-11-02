@@ -116,3 +116,12 @@ https://www.ebay.co.uk/itm/298730185866
 - Added and read back UK used sold evidence for Xbox Series X Digital Edition 1TB in both TEST and LIVE: eBay item 318636321021, sold 27 July 2026. Item specifics confirm Xbox Series X, white colour and 1TB storage; condition is Used. The listing displays £312.59 including a separate £12.59 Buyer Protection fee, so the evidence price stored is the underlying listing price of £300.00 GBP. Source key: `ebayuk-318636321021-xboxseriesx-digital-1tb-20260727`. TEST product: `5fc70dc3-5bf9-4e26-b888-abae5b12c8c8`; LIVE product: `bd71b9e9-50fb-4e2a-9226-92dc38fd21eb`. Both writes returned and read-after-write queries confirmed matching active rows and three active evidence rows per environment for this product.
 - A second Xbox One 1TB candidate (eBay item 327264154460, £59.49, sold 1 August 2026) was already present in both databases under source key `ebayuk-327264154460-xboxone-1tb-20260801`; do not insert it again. TEST/LIVE readback confirmed two active Xbox One 1TB rows per environment: £52.54 (item 188496733818) and £59.49 (item 327264154460).
 - No application code, valuation rules, tenant data or Worker deployments were changed. Shared market evidence only was updated. TEST/LIVE product UUIDs remain environment-specific.
+
+
+## Xbox One X 1TB evidence parity repair — 2 November 2026
+
+- TEST source key `ebayuk-178294853613-xboxonex-1tb-20260708` was confirmed active at £57.02 GBP (Used, sold), TEST product `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`.
+- LIVE had no matching key before the repair. The row was added through Supabase `apply_migration`, the established privileged migration route. No RLS or table grants were changed.
+- LIVE read-after-write confirmed active ID `e3498deb-5606-4965-80ab-d9d5951467b3`, product `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`, price £57.02 GBP, Used, eBay UK, sold, observed 2026-07-08 22:08 UTC, URL https://www.ebay.co.uk/itm/178294853613.
+- Displayed total £59.50 included £2.48 Buyer Protection fee; stored item price excludes the fee.
+- Data-only shared evidence repair. No app code, valuation logic, tenant/customer/payment data, or Worker deployment changed.

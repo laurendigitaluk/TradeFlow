@@ -999,3 +999,8 @@ The subscriber Website Builder exposes SEO page title (maximum 70 characters) an
 Carousel configuration is stored in the existing site_revisions.content JSON document. Home uses site.homepage.carousel; other pages use site.pages[].carousel. No relational schema change is needed. Save Draft patches the existing draft revision; Publish continues through the existing publish_site_revision RPC and published revision/index flow. Carousel images use the existing tenant-owned tradeflow-site-media public Storage bucket and media_assets metadata. No new Edge Function or service credential is introduced.
 
 TEST only: cloudflare-test / tradeflow-test / Supabase nnsshnfkjcflucjrftzi. Do not use retired TEST project twfbmjwwqzxdxvclxbun, do not copy subscriber/site content into LIVE, and do not promote until browser and deployment checks pass.
+
+
+## Xbox One X evidence batch — 2 November 2026
+
+Two verified UK used sold records added TEST-first and mirrored to LIVE through privileged Supabase migrations: item 397946718089 (£70.99 underlying price, sold 2 Aug 2026) and item 178527813316 (£63.83 underlying price, sold 5 Oct 2026). Prices exclude displayed Buyer Protection fees (£2.95 and £2.71 respectively). Both active records were read back in both environments. Five active Xbox One X 1TB evidence rows now exist per environment. Product IDs remain environment-specific: TEST `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`; LIVE `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`. Use a `WHERE NOT EXISTS` source-key guard; the table has no unique constraint supporting `ON CONFLICT(source_record_key)`. Existing 13 Sep and 16 Sep records were not altered and need separate audit.

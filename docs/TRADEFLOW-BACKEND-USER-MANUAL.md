@@ -1004,3 +1004,10 @@ TEST only: cloudflare-test / tradeflow-test / Supabase nnsshnfkjcflucjrftzi. Do 
 ## Xbox One X evidence batch — 2 November 2026
 
 Two verified UK used sold records added TEST-first and mirrored to LIVE through privileged Supabase migrations: item 397946718089 (£70.99 underlying price, sold 2 Aug 2026) and item 178527813316 (£63.83 underlying price, sold 5 Oct 2026). Prices exclude displayed Buyer Protection fees (£2.95 and £2.71 respectively). Both active records were read back in both environments. Five active Xbox One X 1TB evidence rows now exist per environment. Product IDs remain environment-specific: TEST `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`; LIVE `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`. Use a `WHERE NOT EXISTS` source-key guard; the table has no unique constraint supporting `ON CONFLICT(source_record_key)`. Existing 13 Sep and 16 Sep records were not altered and need separate audit.
+
+
+## Xbox One X evidence quality corrections — 2 November 2026
+
+- eBay item 168682015736 is a valid used 1TB black console-only sale (power/HDMI leads, no controller), sold 13 September 2026. Display £59.50 included £2.48 Buyer Protection fee; stored price corrected to £57.02 GBP in TEST and LIVE. Key `ebayuk-168682015736-xboxonex-1tb-20260913`.
+- eBay item 336746788067 is a bundle (Elite controller, stand, PUBG, other games and play/charge kit), so it was retired from standard-console evidence in both environments (`is_active=false`) while retaining the row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
+- Both corrections read back consistently in TEST and LIVE. Four active standard-console rows remain from five historical Xbox One X evidence rows per environment. No valuation rules, RLS/grants or application code changed.

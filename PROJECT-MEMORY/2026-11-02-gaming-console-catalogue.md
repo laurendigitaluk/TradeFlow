@@ -194,3 +194,19 @@ These are current retailer asking/listing prices, not completed sales. Each is `
 - Zero active evidence integrity failures.
 - Counts and catalogue content match between environments; UUIDs are environment-specific.
 No code, valuation logic, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference material only and must not alter automatic buying prices.
+
+
+## Retro Nintendo console reconciliation — 2 November 2026
+Three distinct retro Nintendo master products and UK used evidence records were reconciled between LIVE and TEST. The products are Nintendo 64, original Super Nintendo Entertainment System, and Super Nintendo Classic Mini. They remain separate product variants; the Classic Mini is not an alias for the original SNES.
+
+### LIVE (pre-existing records verified; no duplicate inserted)
+- Nintendo 64 product `16128973-4f2e-40a1-899f-23eacd45a344`; evidence `61f335d2-ab7f-49ea-963f-a7c3872ddc48`; £79.99 Cash Converters UK used listing; source key `cashconverters-n64-053000248940-2026-11-02`.
+- Super Nintendo Entertainment System product `4174d041-8598-471b-9a49-4aad544c4da3`; evidence `7ce8132e-4be3-4d7a-82cc-b396a51fac2f`; £89.99 Cash Converters UK used listing; source key `cashconverters-snes-034700311366-2026-11-02`.
+- Super Nintendo Classic Mini product `c4a1ce64-69c9-4036-aeae-a4eb82697617`; evidence `9ae07e8c-6c6f-4c88-9a40-bd035aa0aa90`; £79.99 Cash Converters UK used listing; source key `cashconverters-snes-classic-mini-053400237398-2026-11-02`.
+
+### TEST (newly inserted independently)
+- Nintendo 64 product `cbc227cb-938b-4ac5-8279-d6a02fae8d9d`; evidence `d69666e1-0d0b-4bc8-9f7d-664a08acfd9a`; £79.99; same source key as LIVE.
+- Super Nintendo Entertainment System product `c02b2f45-d00a-4b76-95d0-e70561c4ea0f`; evidence `c8bf07e5-7294-46bd-907d-84d39e3f213a`; £89.99; same source key as LIVE.
+- Super Nintendo Classic Mini product `2095a254-5792-4f60-9cd1-dc3ff3d6e913`; evidence `3f241c48-ad4e-4912-8185-6d9730103453`; £79.99; same source key as LIVE.
+
+All three records use `uk_used`, GBP, condition Used, channel Retail, and availability `listed`. These are retailer asking prices, not completed sales. Evidence is reference-only and does not modify automatic buying valuations. No Worker deployment or application code change was required. LIVE records were checked first and deliberately not duplicated.

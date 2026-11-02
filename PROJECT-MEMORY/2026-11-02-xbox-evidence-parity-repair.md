@@ -29,3 +29,10 @@ Previous successful evidence population used privileged Supabase database migrat
 - Existing 13 Sep fee-inclusive £59.50 and 16 Sep £134.92 rows remain unchanged for separate audit.
 - A migration attempt using `ON CONFLICT(source_record_key)` failed because there is no matching unique constraint; no data was written by that attempt. Successful insertion used `WHERE NOT EXISTS`.
 - No app code, valuation logic, RLS/grants, tenant/customer/payment data or Worker deployments changed.
+
+
+## Xbox One X evidence quality corrections — 2 November 2026
+
+- eBay item 168682015736: £59.50 display included £2.48 Buyer Protection fee. Corrected stored price to £57.02 GBP in TEST and LIVE; valid used 1TB black console-only sale, no controller; key `ebayuk-168682015736-xboxonex-1tb-20260913`.
+- eBay item 336746788067: bundle includes Elite controller, free stand, PUBG, other games and play/charge kit. Retired from standard-console evidence (`is_active=false`) in both TEST and LIVE, preserving row; key `ebayuk-336746788067-xboxonex-1tb-20260916`.
+- Read-after-write confirms both environments match. Four active standard-console rows remain from five Xbox One X 1TB evidence rows in each environment. No valuation logic, RLS/grants, application code or Worker deployment changed.

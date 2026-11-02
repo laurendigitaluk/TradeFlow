@@ -1829,3 +1829,7 @@ Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), th
 
 ## Xbox storage catalogue correction — 2 November 2026
 TEST and LIVE each contain WD_BLACK C50 512GB and 1TB, Seagate 1TB, and SanDisk Optimus GX C50 2TB. Unsupported generic-page evidence was deactivated. Active UK GBP new/listed evidence uses Argos for Seagate 1TB (£149.99) and WD_BLACK C50 1TB (£153.99), and Idealo UK for SanDisk 2TB (£249.99 offer). WD_BLACK 512GB has no active price evidence pending a verified UK listing. Evidence is reference-only and must not feed automatic buying valuations. No code or deployment changes were made.
+
+
+## Xbox official accessories catalogue — 2 November 2026
+TEST and LIVE each now contain three additional Microsoft Xbox master products: Xbox Nano Controller (£44.99; pre-order with stated 4 November 2026 release), Xbox Adaptive Joystick (£24.99), and Xbox Elite Wireless Controller Series 2 Complete Component Pack (£54.99). Evidence is UK-only, GBP, new/listed retail evidence from Microsoft Store UK. Products are active and customer-visible in both environments. Evidence remains research reference only and does not alter automatic buying valuations. TEST and LIVE records use separate environment-specific UUIDs. No app code, Worker deployment, Stripe, tenant, customer, transaction or payment data changed. Do not add used-price evidence without a verified UK used-market listing; do not treat pre-order as in-stock stock.

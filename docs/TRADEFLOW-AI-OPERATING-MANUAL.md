@@ -2872,3 +2872,39 @@ These are current UK used retailer asking/listing prices, not completed sales. T
 
 ## Next
 Continue older Nintendo systems (standard 3DS, 2DS, DSi, Wii, Wii U, GameCube, N64, SNES) and accessories, then Xbox controllers/headsets/storage and PlayStation accessories. Check for model/edition/bundle duplicates before each insert. Do not use trade-in quotes as used market sales. Keep UK GBP evidence separate by new/used condition and listed/sold availability.
+
+## Nintendo legacy handheld and home console batch 5 — 2 November 2026
+Added five visible Nintendo master products independently in TEST and LIVE:
+- Nintendo 2DS — UK used Cash Converters listing £49.99, black, light wear, charger included, fully working; Lancaster.
+- Nintendo DSi XL — UK used Cash Converters listing £69.99, light cosmetic wear, charger included; Bethnal Green, London.
+- Nintendo Wii — UK used Cash Converters listing £29.99, white, Wii Remote, sensor bar, AC adapter and AV cable, fully tested; Kings Heath, Birmingham.
+- Nintendo Wii U — UK used Cash Converters listing £109.99, black 8GB, leads and main GamePad, unboxed, fully working; Dudley.
+- Nintendo GameCube — UK used Cash Converters listing £85.49, black, controller, power lead and memory card, good condition; Birkenhead.
+These are retailer asking/listing prices, not completed sales. All are classified `uk_used` and availability `listed`. A new `Nintendo Home Consoles` branch was added to keep Wii, Wii U and GameCube separate from Nintendo handheld consoles. The Wii U master record is family-level pending package-specific splits for 8GB/32GB editions and bundles; this batch's evidence is explicitly the 8GB package. No buyback/trade-in quotes were used.
+
+## Updated verification — TEST and LIVE independently
+- Gaming master products: **77**
+- Active customer-visible products: **69**
+- Active evidence: **143** (24 `uk_new`, 119 `uk_used`)
+- Active visible products missing evidence: **0**
+- Active evidence integrity failures: **0**
+- TEST and LIVE product/evidence counts and catalogue content match; environment UUIDs remain separate.
+- No tenant, customer, transaction, payment or Stripe data was copied or changed. No application code or valuation logic changed. Market evidence remains research reference only and must not affect automatic buying prices.
+
+### Batch 5 exact IDs
+
+LIVE:
+- Nintendo 2DS product 800a5100-39cb-4ac2-85cb-b730a2fc2bd4; evidence 76d0f929-26eb-4519-a122-06c5e850d3af; key cashconverters-2ds-058100046030-2026-11-02.
+- Nintendo DSi XL product 01bdbb45-c7db-41ce-a4ba-fca827435c52; evidence 1187732e-f618-4fd4-8ea6-f3ca440aaf37; key cashconverters-dsi-xl-047700187174-2026-11-02.
+- Nintendo Wii product 314ab322-1a35-48df-a1e8-d5ca7d667449; evidence 112584ec-bd67-4ba7-95bd-2f52d37b5a12; key cashconverters-wii-030100277435-2026-11-02.
+- Nintendo Wii U product 7b832fe8-383f-4c63-806b-3c746bcf0648; evidence 1ff54f93-26eb-4eec-9222-0bbe466bc377; key cashconverters-wii-u-056500109488-2026-11-02.
+- Nintendo GameCube product d2ce564c-1c54-48f6-9a94-67ab2a33feb3; evidence 955adebf-ded9-47a0-b673-cb6fd8dd5d78; key cashconverters-gamecube-015700300057-2026-11-02.
+
+TEST:
+- Nintendo 2DS product 6e65d675-ddf0-44c4-8b6f-ba6571ac0f7c; evidence 2cb6fec3-1469-4998-907d-e5e4e0b0d1e6; key cashconverters-2ds-058100046030-2026-11-02.
+- Nintendo DSi XL product 85c1ed19-64a9-44c2-b2a7-55024dd26550; evidence 5b67d4f3-566f-4664-ab1f-7ce4070d28da; key cashconverters-dsi-xl-047700187174-2026-11-02.
+- Nintendo Wii product 65a8bf91-32e5-41be-9aca-97fe547a2f1d; evidence 19a89458-94ba-46d3-9817-436c450c8b2b; key cashconverters-wii-030100277435-2026-11-02.
+- Nintendo Wii U product c5027e1f-1885-45db-b409-4f016c1bea42; evidence f863c536-d956-42a1-b8ab-c09c8569e07c; key cashconverters-wii-u-056500109488-2026-11-02.
+- Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
+
+Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.

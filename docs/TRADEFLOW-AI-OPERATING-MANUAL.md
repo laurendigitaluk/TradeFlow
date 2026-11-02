@@ -2355,3 +2355,10 @@ Image cleanup now traverses homepage carousel data as well as page carousel data
 ## Xbox One X 1TB used-sale evidence batch — 2 November 2026
 
 Added TEST-first then LIVE-mirrored UK used sold evidence: eBay item 397946718089, £70.99 underlying price (display £73.94 incl £2.95 Buyer Protection fee), sold 2 Aug 2026, Used Very Good, black 1TB console with box; key `ebayuk-397946718089-xboxonex-1tb-20260802`. eBay item 178527813316, £63.83 underlying price (display £66.54 incl £2.71 fee), sold 5 Oct 2026, Used, black 1TB unit only; key `ebayuk-178527813316-xboxonex-1tb-20261005`. Both active rows were read back in both environments. Five active Xbox One X 1TB evidence rows per environment. Existing 13 Sep fee-inclusive £59.50 row and 16 Sep £134.92 row were left unchanged for separate audit. `ON CONFLICT(source_record_key)` is invalid because no matching unique constraint exists; successful insert used `WHERE NOT EXISTS`. No code, valuation, tenant data, RLS/grants or Worker deployment changed.
+
+
+## Xbox One X evidence quality corrections — 2 November 2026
+
+- Rechecked eBay item 168682015736: sold 13 September 2026, 1TB black console only with power/HDMI leads and no controller. Display £59.50 included £2.48 Buyer Protection fee. Corrected active stored price from £59.50 to £57.02 GBP in TEST and LIVE; source key `ebayuk-168682015736-xboxonex-1tb-20260913`.
+- Rechecked item 336746788067: sold 16 September 2026, but listing bundle includes Elite controller, free stand, PUBG, other games and play/charge kit. Retired it from the standard-console evidence set (`is_active=false`) in both environments; retained row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
+- Read-after-write confirms both changes match across TEST and LIVE. The new 2 August and 5 October console-only sales remain active. Four active standard-console rows now remain from the five Xbox One X rows in each environment. No valuation logic or RLS/grants changed.

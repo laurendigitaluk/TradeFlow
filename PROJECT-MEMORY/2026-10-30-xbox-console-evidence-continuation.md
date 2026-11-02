@@ -152,3 +152,10 @@ https://www.ebay.co.uk/itm/298730185866
 - Full Xbox catalogue readback shows matching TEST/LIVE evidence content for the 13 mapped variants. Current active counts: Xbox 360 4GB 2; 250GB 2; 500GB 1; Xbox One 500GB 2; 1TB 2; Xbox One S 500GB 2; 1TB 2; All-Digital 1TB 2; Xbox One X 1TB 4; Xbox Series S 512GB 3; 1TB Carbon Black 2; Xbox Series X Disc 1TB 2; Xbox Series X Digital 1TB 3. Total 27 active rows per environment. Retired historical rows remain retained and inactive.
 - No new Xbox 360 500GB comp was found: the other surfaced 500GB sold candidates were bundles or special editions. No new evidence row was inserted.
 - No application code, valuation logic, tenant/customer/payment data, RLS/grants or Worker deployment changed. This was a shared market-evidence price correction only.
+
+
+## Xbox One S All-Digital evidence quality update — 2 November 2026
+
+- Retired eBay item 278283038276 from active standard used-price evidence in TEST and LIVE. eBay confirms Best Offer accepted, but the accepted transaction price is not disclosed; displayed £41.92 (including £1.92 Buyer Protection fee) is not a verified sale price. Historical row retained inactive.
+- Added verified UK used sale eBay item 178548159734: Xbox One S All-Digital Edition, white, MPN 1681, 1TB, console only, sold 5 October 2026. Displayed £36.75 included £1.75 Buyer Protection fee; stored item price £35.00 GBP. Active row read back in TEST (evidence ID cb1995e7-9511-462b-be20-cfb10585bd2d) and LIVE (542ed2ea-409e-4c74-84b7-1d23819040cf), each mapped to its own product UUID.
+- No valuation logic, tenant/customer/payment data, RLS/grants, app code or Worker deployment changed. Shared market evidence only.

@@ -2889,3 +2889,12 @@ Two additional exact UK used completed sales were added to shared evidence in TE
 - Rechecked eBay item 168682015736: sold 13 September 2026, 1TB black console only with power/HDMI leads and no controller. Display £59.50 included £2.48 Buyer Protection fee. Corrected active stored price from £59.50 to £57.02 GBP in TEST and LIVE; source key `ebayuk-168682015736-xboxonex-1tb-20260913`.
 - Rechecked item 336746788067: sold 16 September 2026, but listing bundle includes Elite controller, free stand, PUBG, other games and play/charge kit. Retired it from the standard-console evidence set (`is_active=false`) in both environments; retained row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
 - Read-after-write confirms both changes match across TEST and LIVE. The new 2 August and 5 October console-only sales remain active. Four active standard-console rows now remain from the five Xbox One X rows in each environment. No valuation logic or RLS/grants changed.
+
+
+## 2 November 2026 — Selling listing editor repair
+
+The Selling editor now saves title, description, asking price, currency and listing metadata through `public.subscriber_update_listing_details`, a tenant-scoped SECURITY DEFINER RPC. It requires authentication, `selling.manage`, and `module.selling`; it refuses sold/delisted records and never changes workflow status or ownership. Public/anon execution is revoked; authenticated execution is granted. Direct authenticated UPDATE on `public.listings` remains denied.
+
+The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
+
+The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.

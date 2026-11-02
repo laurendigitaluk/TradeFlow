@@ -1649,3 +1649,10 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 ## Xbox One X evidence batch — 2 November 2026
 
 Two additional verified UK used completed sales were added TEST-first and mirrored to LIVE using privileged Supabase migrations: eBay item 397946718089 (£70.99 underlying price after removing £2.95 Buyer Protection fee; sold 2 August 2026; Used Very Good; 1TB black console with box) and item 178527813316 (£63.83 underlying price after removing £2.71 fee; sold 5 October 2026; Used; 1TB black unit only). Source keys: `ebayuk-397946718089-xboxonex-1tb-20260802` and `ebayuk-178527813316-xboxonex-1tb-20261005`. Both records were read back active in TEST and LIVE. Each environment now has five active Xbox One X 1TB evidence rows. TEST product UUID `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`; LIVE UUID `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`. Do not use `ON CONFLICT(source_record_key)` unless a matching unique constraint is confirmed; the successful insert uses `WHERE NOT EXISTS`. Existing 13 September fee-inclusive row (£59.50) and 16 September £134.92 row were not modified and require separate audit. No valuation rules, RLS/grants, tenant data, application code or Worker deployment changed.
+
+
+## Xbox One X evidence quality corrections — 2 November 2026
+
+- eBay item 168682015736 is a valid used 1TB black console-only sale (power/HDMI leads, no controller), sold 13 September 2026. Display £59.50 included £2.48 Buyer Protection fee; stored price corrected to £57.02 GBP in TEST and LIVE. Key `ebayuk-168682015736-xboxonex-1tb-20260913`.
+- eBay item 336746788067 is a bundle (Elite controller, stand, PUBG, other games and play/charge kit), so it was retired from standard-console evidence in both environments (`is_active=false`) while retaining the row for audit. Key `ebayuk-336746788067-xboxonex-1tb-20260916`.
+- Both corrections read back consistently in TEST and LIVE. Four active standard-console rows remain from five historical Xbox One X evidence rows per environment. No valuation rules, RLS/grants or application code changed.

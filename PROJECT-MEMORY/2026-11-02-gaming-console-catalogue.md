@@ -96,3 +96,48 @@ The Smyths Toys exact-product URL could not be independently fetched (403), so t
 This supersedes the earlier £389.99 Smyths figure. The £309 used figure remains a PathAu median across 153 eBay UK used sales in the 30 days to 25 Oct 2026.
 
 Final verified TEST and LIVE totals for this session: 65 gaming master products; 57 active customer-visible products; 130 active evidence rows (20 UK new / 110 UK used); zero visible active products without evidence; zero active evidence integrity failures. The product/evidence UUIDs are environment-specific and all rows were independently inserted/verified.
+
+## Nintendo accessory batch 3 — 2 November 2026
+Four visible master products were added independently in TEST and LIVE:
+- Nintendo Switch 2 Joy-Con 2 Charging Grip — Argos UK new listing £29.99; used eBay UK completed sale £15.96 (item 128034280257, Billingham UK; buyer-facing total includes £0.96 Buyer Protection).
+- Nintendo Switch 2 Carrying Case & Screen Protector — Argos UK new listing £19.99.
+- SanDisk 256GB microSD Express Card for Nintendo Switch 2 — Argos UK new listing £44.99. Switch 2 requires microSD Express for expansion; ordinary microSD is not interchangeable.
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair — Argos UK new listing £16.99; controllers not included.
+No used price was invented for the other three accessories.
+
+## Nintendo 3DS family handheld batch 4 — 2 November 2026
+Three visible Nintendo handheld products added with current UK used retailer listings:
+- Nintendo 3DS XL — £149.99, Cash Converters UK St Helens; white, tested/working, light wear, charger included, stylus missing.
+- New Nintendo 3DS XL — £200.00, Cash Converters UK Worksop; red, good condition, charger included, factory reset.
+- New Nintendo 2DS XL — £169.99, Cash Converters UK Chesterfield; black, good condition, charger included, fully working.
+These are retailer asking/listing prices, not completed sales. Exact source URLs and stable keys: cashconverters-3ds-xl-016200291556-2026-11-02; cashconverters-new-3ds-xl-018000227499-2026-11-02; cashconverters-new-2ds-xl-059600008755-2026-11-02.
+
+## Verified totals in both environments
+- 72 gaming master products; 64 active customer-visible.
+- 138 active evidence rows: 24 UK new, 114 UK used.
+- Zero visible active products without evidence.
+- Zero active evidence integrity failures.
+TEST and LIVE counts and catalogue content match; environment UUIDs remain separate. No customer, tenant, transaction, payment or Stripe data was copied or changed. No application code or valuation logic changed. Evidence remains market research only and must not alter automatic buying prices.
+
+### Exact TEST/LIVE UUIDs
+Batch 3 LIVE:
+- Charging Grip product 8d5adc75-5e59-4c0e-8189-2045c4855793; new evidence acc4264b-59f1-4c9b-908d-0c90925a0c7e; used evidence 19f2947a-fa5a-4c25-b205-69fe985c92a1.
+- Case bundle product 9821a5f2-d0d2-4aec-a957-c388db2a0e48; evidence f2baf047-fb93-466c-8b49-9c2c1306543a.
+- SanDisk card product a438b9ae-3f25-41ba-bc70-96d418849c76; evidence 6a8c54f2-16b4-4d55-9b94-32faae200829.
+- Wheel pair product 4c1dcc45-135e-4583-90f4-faa84566d2c1; evidence 794c6031-2d8e-491a-b74d-17fe53413377.
+Batch 3 TEST:
+- Charging Grip product 824abde3-63e1-43c6-89d9-9e26c8f9fd55; new evidence 4aeb13f9-fc1a-4a44-b7b0-823db556e439; used evidence 38af2cb2-413d-4998-8246-0c9a55dbfa71.
+- Case bundle product 20513301-553a-4863-8f72-f9bd42ca6909; evidence de72a4b9-07a5-4412-9e4e-ba77985a0bac.
+- SanDisk card product 588ccc1f-c893-405f-b3f8-59491fa240e4; evidence 1997a3d7-6663-473c-b389-457ef2bb333a.
+- Wheel pair product 9d0a1eb7-362a-40fb-8a29-19a09eda8c71; evidence b4bc0e9c-12fd-4efd-8150-334ffa7a58d9.
+
+Batch 4 LIVE:
+- Nintendo 3DS XL product 3f7e8893-3027-4f12-a423-4b1fe981f3be; evidence 5d978043-2407-41e0-aa45-55f796f38b10.
+- New Nintendo 3DS XL product 6c2e6776-ba5e-47b8-9ae6-a2ff36b1e5ba; evidence d270f147-f138-4f5a-9078-71ebac501664.
+- New Nintendo 2DS XL product 1908f953-12f5-44d2-ac91-7fd5097301f6; evidence 51ff2b1e-2e36-41da-9be5-306cd412cb76.
+Batch 4 TEST:
+- Nintendo 3DS XL product 6f3b8f2b-4500-4cd2-b878-7cb83ca40f3a; evidence 460f6c6c-8545-4543-8614-98b8d86719d7.
+- New Nintendo 3DS XL product 27465f05-df1f-4cc8-abae-503647293045; evidence 48f72d34-03e9-4cf1-826a-d3205093b99b.
+- New Nintendo 2DS XL product a7d24699-fdcf-4157-a945-7f41994cc117; evidence e7a7e9d6-8bb8-4d70-a629-0000cb4ee030.
+
+Next: standard 3DS, 2DS, DSi, Wii, Wii U, GameCube, N64 and SNES; then Xbox controllers/headsets/storage and PlayStation accessories. Do not use trade-in quotes as used-market sales; keep UK new/used evidence separate and distinguish listing from sold.

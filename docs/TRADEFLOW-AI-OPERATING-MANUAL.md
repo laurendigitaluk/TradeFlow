@@ -2872,3 +2872,13 @@ When changing subscriber login or signup, confirm the current TEST Supabase proj
 - LIVE read-after-write verified active evidence ID `e3498deb-5606-4965-80ab-d9d5951467b3`, £57.02 GBP, Used, eBay UK, sold, observed 8 July 2026 22:08 UTC, source https://www.ebay.co.uk/itm/178294853613.
 - Displayed total £59.50 included £2.48 Buyer Protection fee; stored item price excludes the fee.
 - No application code, valuation rules, tenant/customer/payment data, RLS, grants, or Worker deployment changed. This was a shared evidence data-only parity repair.
+
+
+## Xbox One X 1TB used-sale evidence batch — 2 November 2026
+
+Two additional exact UK used completed sales were added to shared evidence in TEST first, then mirrored to LIVE using privileged Supabase migrations. Both environments were read back successfully by source key and active status:
+- eBay item 397946718089: sold 2 August 2026; Used Very Good; black Xbox One X 1TB console only with box; displayed £73.94 included £2.95 Buyer Protection fee; stored underlying item price £70.99 GBP. Key `ebayuk-397946718089-xboxonex-1tb-20260802`. TEST evidence ID `2c0dd7c3-6873-49df-a78c-37400bff6666`; LIVE ID `ff030633-5649-435e-a3f9-35aa8a3088e5`.
+- eBay item 178527813316: sold 5 October 2026; Used; black Xbox One X 1TB unit only, fully working; displayed £66.54 included £2.71 Buyer Protection fee; stored underlying item price £63.83 GBP. Key `ebayuk-178527813316-xboxonex-1tb-20261005`. TEST evidence ID `f753badd-83ec-4ed3-8b24-31386dcbfc4c`; LIVE ID `d76f6d1d-19f6-473e-be56-62f3bc6787f3`.
+- TEST product `4b12312f-59e6-4d56-bf4b-c4fab935a9fa`; LIVE product `ce5e59d6-5ff8-4bd3-983f-63d1bf4b8e3a`. Each environment now has five active Xbox One X 1TB evidence rows. Existing 13 September row remains fee-inclusive at £59.50 and 16 September £134.92 row has not been altered; audit these separately before correction.
+- An initial migration attempt using `ON CONFLICT(source_record_key)` failed because no matching unique constraint exists. It made no change; the successful migration used a `WHERE NOT EXISTS` duplicate-key guard. Do not use ON CONFLICT for this table unless a suitable unique constraint is first confirmed.
+- No valuation logic, tenant data, RLS/grants, application code or Worker deployment changed.

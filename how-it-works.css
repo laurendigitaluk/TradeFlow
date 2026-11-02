@@ -60,3 +60,11 @@
 .comparison-captions p{font-size:.88rem;line-height:1.6;color:#596b7e;margin:0 0 9px}
 .comparison-captions small{font-size:.7rem;color:#687789;line-height:1.45}
 @media(max-width:760px){.comparison-captions{grid-template-columns:1fr}.comparison-section{padding:38px 6%}}
+
+
+/* Full-resolution original screenshots: preserve their native pixel detail. */
+.comparison-composite{max-width:1700px}
+.comparison-composite img{width:100%;height:auto;max-height:none;object-fit:contain}
+.screen-feature figure img{width:100%;height:auto;max-height:none;object-fit:contain;image-rendering:auto}
+.screen-feature figure{width:100%;min-width:0}
+@media(max-width:760px){.comparison-composite{padding:4px}.comparison-composite img{width:100%;height:auto}.screen-feature figure img{max-height:none}}

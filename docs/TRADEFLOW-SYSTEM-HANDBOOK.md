@@ -1854,3 +1854,7 @@ The three-product controller variant batch is now fully represented and verified
 
 ## Xbox controller colour variants — 3 November 2026
 The catalogue has two additional colour variants in both TEST and LIVE: PowerA Advantage Xbox Wired Controller - Ice White (£32.99, Argos) and Hyperkin The Competitor Xbox & PC Wired Controller - Purple (£39.99, Argos). Both products are active/customer-visible and have active UK-new GBP evidence with `availability=listed`. Exact Argos product pages: https://www.argos.co.uk/product/7862461/ and https://www.argos.co.uk/product/7995589. IDs are environment-specific and recorded in the gaming catalogue project memory. Retail prices are asking/listed prices, not completed sales. Evidence is research reference only and does not alter automatic buying valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.
+
+
+## Turtle Beach Recon 70 headset variants — 3 November 2026
+Two additional headset colour variants are now represented in both TEST and LIVE: Recon 70 White (£22.99, Smyths UK) and Recon 70 Arctic Camo (£29.99, Smyths UK). Both are active/customer-visible and have active UK-new GBP evidence with `availability=listed`. Exact retailer pages and environment-specific product/evidence IDs are recorded in the gaming catalogue project memory. Prices are retailer listing prices, not completed sales. Evidence is research reference only and does not alter automatic buying valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.

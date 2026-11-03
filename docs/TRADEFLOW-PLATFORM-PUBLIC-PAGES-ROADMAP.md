@@ -82,3 +82,6 @@ Image replacement uses a URL field; blank URL preserves the existing embedded sc
 6. Confirm mobile layout and image URL replacement.
 7. Verify Cloudflare TEST deployment commit/runtime.
 8. Do not promote to LIVE without explicit approval.
+
+
+The follow-up migration `20261103183500_owner_public_pages_explicit_deny.sql` adds explicit deny policies for `anon` and `authenticated` direct table access. Security read-back confirmed RLS enabled, two deny policies, no direct SELECT privilege, owner RPCs executable only by authenticated users, and public read RPC executable by anon. The Supabase advisor still reports the public `platform_public_page_get(text)` SECURITY DEFINER function; this is intentional because it returns only published JSON for the two allow-listed page slugs, while direct table access remains denied. This finding is documented, not ignored.

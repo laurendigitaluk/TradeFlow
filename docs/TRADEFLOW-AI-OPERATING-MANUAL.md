@@ -2945,3 +2945,7 @@ Added and verified in both TEST and LIVE: PowerA Advantage Xbox Wired Controller
 
 ## Turtle Beach Recon 70 headset variants — 3 November 2026
 Added and verified in both TEST and LIVE: Recon 70 White (£22.99 Smyths UK) and Recon 70 Arctic Camo (£29.99 Smyths UK). Both have active customer-visible master records and active `uk_new` GBP evidence marked `listed`. Exact source URLs and environment-specific IDs are recorded in `PROJECT-MEMORY/2026-11-02-gaming-console-catalogue.md`. Duplicate checks were performed in both environments. Prices are retailer listing prices, not completed sales. Evidence is reference-only and must not affect automatic valuations. No application code, deployment, Stripe or operational customer data changed.
+
+
+## Turtle Beach Recon 50X headset — 3 November 2026
+Added to TEST and LIVE: Turtle Beach Recon 50X Xbox, PS5, PS4, PC Headset - Black and Green, £14.99 at Argos UK (was £19.99), exact page https://www.argos.co.uk/product/4506696/. Both environments received separate product/evidence IDs. Product active/customer-visible; evidence active `uk_new`, GBP, New, Retail and `listed`. Duplicate checks were clear. Treat this as a retailer asking/listed price, not a completed sale. Evidence is reference-only and must not affect automatic valuations. No application code, deployment, Stripe or operational customer data changed.

@@ -23,3 +23,9 @@ Replace the rejected nested text-form CMS with a drag-and-drop visual editor for
 - Visual editor and public renderer JavaScript syntax parsed successfully in the connector runtime for both branches.
 - Confirm the owner dashboard, image upload, drag/resize, save/reload, draft preview, publish, desktop/mobile rendering in both environments after PR merge and Cloudflare deployment.
 - Do not claim runtime deployment or browser acceptance until verified.
+
+
+## Merge status — 3 November 2026
+- LIVE PR #206 merged into `production` at `d08f4f156452d066cd39dad7943f8e39e38985d1`.
+- TEST PR #207 merged into `cloudflare-test` at `04989110d3fd49ab0bcf152e34819cc38193ac5d`.
+- Both branch heads were read back at their merge commits. GitHub reports no commit statuses and zero Actions workflow runs for either head. The Worker dashboard URLs could not be opened through the available browser check. Cloudflare deployment and browser acceptance therefore remain unverified; do not tell the user the feature is live until that is checked.

@@ -87,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await loadDomainActions();await loadProductPages();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await loadDomainActions();await loadProductPages();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -382,6 +382,6 @@ $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();

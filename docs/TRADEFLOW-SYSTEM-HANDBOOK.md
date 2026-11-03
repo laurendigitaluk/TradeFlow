@@ -1961,3 +1961,10 @@ The side-by-side introduction uses one composite WebP screenshot, not two duplic
 The four screenshots on the public How It Works page have been rebuilt from the original full-resolution desktop captures, rather than reusing the earlier reduced 720px images. The opening composite is 2058 × 486 pixels and preserves the subscriber business dashboard on the left beside the customer valuation wizard on the right. The inspection decision, inventory and customer shop captures are each approximately 1024 × 486 pixels. The images are embedded as high-quality WebP data URIs at quality 90, preserving the original screenshot pixel dimensions; responsive CSS no longer imposes a low max-height or resamples the source to 720px. Browser chrome/taskbars were cropped; subscriber business name/email/account labels and the public shop footer business name/test-only description were obscured. No customer identity, personal email, bank details or transaction references are published.
 
 Page stylesheet cache-buster: `how-it-works.css?v=6`. Images are embedded in `how-it-works.html`, so there are no additional asset paths or image fetch dependencies. Static website only; no Supabase, Stripe, tenant/customer data or LIVE configuration changed. After merge, verify the Cloudflare TEST Worker renders all four images at clear resolution and that the comparison remains side-by-side on desktop. Do not promote to LIVE without explicit approval.
+
+
+## Merge and deployment status — 3 November 2026
+- PR #204 merged into `cloudflare-test` with merge commit `204b3bbc286018d49ad1f4700ba2964c0bbbef28`.
+- TEST branch HEAD was read back at that merge commit. The `production` branch was not modified by this work.
+- GitHub reports no workflow runs or commit statuses for this commit. The TEST Worker URL could not be independently opened from the available browser check, so Cloudflare deployment/runtime remains unverified.
+- Next browser check: open `https://tradeflow-test.leannelaurenlowe.workers.dev/platform-owner-dashboard.html`, hard-refresh, sign in, and confirm the Public Website Pages editor. Do not treat the GitHub merge as proof of deployment.

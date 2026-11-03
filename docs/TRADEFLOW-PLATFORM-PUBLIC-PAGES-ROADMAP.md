@@ -92,3 +92,12 @@ The follow-up migration `20261103183500_owner_public_pages_explicit_deny.sql` ad
 - TEST branch HEAD was read back at that merge commit. The `production` branch was not modified by this work.
 - GitHub reports no workflow runs or commit statuses for this commit. The TEST Worker URL could not be independently opened from the available browser check, so Cloudflare deployment/runtime remains unverified.
 - Next browser check: open `https://tradeflow-test.leannelaurenlowe.workers.dev/platform-owner-dashboard.html`, hard-refresh, sign in, and confirm the Public Website Pages editor. Do not treat the GitHub merge as proof of deployment.
+
+
+## Final LIVE merge/deployment status — 3 November 2026
+- LIVE PR #205 merged into `production` with merge commit `f3cabb78556ccca1898d459c68c09acb5bb54f8a`.
+- TEST PR #204 merged into `cloudflare-test` with merge commit `204b3bbc286018d49ad1f4700ba2964c0bbbef28`.
+- LIVE and TEST database migrations applied and access-control read-back verified; each database has its own two page records.
+- JavaScript syntax checks passed for owner dashboard, editor and renderer in LIVE; environment URL/key checks passed.
+- Direct Worker URL checks for LIVE and TEST were inaccessible through the available browser tool. Cloudflare deployment commit/runtime and owner browser flow remain unverified. Do not state deployment is complete until the Worker version and browser flow are confirmed.
+- The user confirmed simultaneous LIVE and TEST development. Continue keeping code behaviour aligned and content/data isolated.

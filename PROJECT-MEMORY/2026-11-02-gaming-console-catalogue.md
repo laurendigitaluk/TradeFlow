@@ -241,3 +241,20 @@ TEST evidence IDs: Venom batteries 452ba9d6-961f-46f3-a25c-2fcfdf47bd80; Venom d
 Source URLs: Argos product 3635678 https://www.argos.co.uk/product/3635678 ; Argos Xbox accessories category for Venom products https://www.argos.co.uk/browse/technology/video-games-and-consoles/xbox/xbox-accessories/c%3A812428/ ; Smyths Recon 70 Black https://www.smythstoys.com/uk/en-gb/gaming-and-tech/gaming-headsets/turtle-beach-recon-70-wired-multiplatform-gaming-headset-black/p/237774 . The Smyths page reported stock available when researched. All evidence rows are `uk_new`, GBP, New, Retail, `listed`; these are retailer asking/listed prices, not completed sales. No used-market evidence was added.
 
 Verification in both environments returned all four products active and customer-visible, each joined to its active evidence row with matching GBP price and listed availability. No valuation logic, application code, deployment, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference-only. Continue with other verified Xbox accessories, then PlayStation accessories; inspect duplicates before each insertion.
+
+
+
+## Xbox controller and charging batch — 3 November 2026
+Four additional products were inserted independently into TEST and LIVE after exact-name duplicate checks in both environments. All are active, customer-visible and have active UK-new GBP retail evidence with `availability=listed`:
+- PowerA Hall Effect Advantage+ Xbox Wired Controller - Green — Argos £32.99, https://www.argos.co.uk/product/7637713.
+- PowerA Hall Effect Advantage+ Xbox Wired Controller - Ruby — Argos £32.99, https://www.argos.co.uk/product/7537112.
+- PowerA Dual Charging Station For Xbox Controllers - Black — Argos £9.99, https://www.argos.co.uk/product/7618055. Includes two rechargeable battery packs and four charge-through battery doors.
+- Turtle Beach Rematch Core Xbox & PC Wired Hall-Effect Controller - Black — Argos £19.99, https://www.argos.co.uk/product/8213112.
+
+LIVE product IDs: Green f7ce0314-cc55-42fe-966f-bfdf304a10b2; Ruby ee0571b1-4730-4a5f-b911-cb5806ab771a; Dual Charging Station fafe72e1-bd71-43cc-88c9-8c66b86c8dfe; Rematch Core Black 78d46f08-d626-4830-8c4a-e5ba3516c81f.
+LIVE evidence IDs: Green cd9fe4cf-133b-47c7-a8ac-923aafc6a409; Ruby b0c20b78-3b94-4238-ba3d-3dc6a13f85a0; Charging Station 198db089-9c22-49bc-8a57-805abc815211; Rematch Core 89e8b877-52c2-4a71-b887-b75ddf6ec39d.
+
+TEST product IDs: Green f124fce7-4b37-45be-a4bc-bd5e3e680706; Ruby 1c02e080-e312-4e50-afa8-3f70e8e4ba6b; Dual Charging Station deb4fae0-5042-419f-a71b-faefce0f9944; Rematch Core Black bbb3c178-db23-480f-8259-fd3de9a981d2.
+TEST evidence IDs: Green 59840f81-bb92-46cd-b7ba-82b783a7185e; Ruby a387129d-b86c-4faa-a2aa-f9b96d76606d; Charging Station 37c94101-fa6e-425c-bd4e-7535caef631c; Rematch Core 78a652c1-d341-4b2b-ad5a-d856249014e2.
+
+Both environments were re-queried after insertion and returned all four active/customer-visible products with active evidence, matching prices, GBP currency, `uk_new` classification and listed availability. Product and evidence UUIDs are environment-specific. These are retailer listing prices, not completed sales. No used evidence, valuation logic, application code, deployment, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference-only. Continue with other verified Xbox controllers, headsets and charging accessories, then PlayStation accessories.

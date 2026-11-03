@@ -296,3 +296,11 @@ Exact duplicate checks were clear in both environments before insertion. Final q
 
 ## Turtle Beach Recon 50X headset — 3 November 2026
 Added the Turtle Beach Recon 50X Xbox, PS5, PS4, PC Headset - Black and Green to both TEST and LIVE. Argos UK exact product page https://www.argos.co.uk/product/4506696/ lists it at £14.99 (reduced from £19.99). TEST product 16824bb1-49f7-4502-993e-2d283541724b; TEST evidence 69b8edc2-91b6-416b-83d1-f99a367ebe24. LIVE product f02b0707-d3e7-4a3f-ae2b-539f3de8d5a5; LIVE evidence e41ab040-5705-4580-bdbe-122abb61b128. The product is active and customer-visible in both environments; each evidence row is active `uk_new`, GBP, New, Retail, `listed`. Exact duplicate checks returned no match before insertion. Prices are retailer asking/listed prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.
+
+
+## Xbox headset and controller additions — 3 November 2026
+Two additional products were inserted independently in TEST and LIVE and verified:
+- Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - Green Camo — Smyths Toys UK £19.99 (reduced from £29.99), https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/turtle-beach-recon-70-wired-multiplatform-gaming-headset-green-camo/p/187052. TEST product 005ddcda-ef33-4c70-8619-0826bd4dccbb; evidence 71186aa4-fc78-4781-bf4e-aa2527719dd5. LIVE product 622caf30-3cb5-4e8d-b219-9e9909a273a7; evidence d76a0a98-da42-4e19-89e5-a54395405299.
+- Turtle Beach Rematch Core Xbox and PC Wired Hall-Effect Controller - Camo Orange — Argos £24.99, https://www.argos.co.uk/product/7853449. TEST product 8bd1cb58-8043-4f33-8a98-8ece6a6f2b3d; evidence 12d1f659-1a63-4314-a588-18dc5aa5020d. LIVE product 2954dd45-a2ed-4da9-bc04-415790e4d168; evidence 0eb947b6-9849-48a7-b62e-b149ce966a00.
+
+Duplicate checks were clear in both environments before insertion. Final TEST and LIVE queries confirm both products active/customer-visible, with active `uk_new` GBP evidence and `availability=listed`. Prices are retailer listed/asking prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.

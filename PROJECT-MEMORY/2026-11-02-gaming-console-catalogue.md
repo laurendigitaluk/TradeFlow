@@ -258,3 +258,12 @@ TEST product IDs: Green f124fce7-4b37-45be-a4bc-bd5e3e680706; Ruby 1c02e080-e312
 TEST evidence IDs: Green 59840f81-bb92-46cd-b7ba-82b783a7185e; Ruby a387129d-b86c-4faa-a2aa-f9b96d76606d; Charging Station 37c94101-fa6e-425c-bd4e-7535caef631c; Rematch Core 78a652c1-d341-4b2b-ad5a-d856249014e2.
 
 Both environments were re-queried after insertion and returned all four active/customer-visible products with active evidence, matching prices, GBP currency, `uk_new` classification and listed availability. Product and evidence UUIDs are environment-specific. These are retailer listing prices, not completed sales. No used evidence, valuation logic, application code, deployment, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference-only. Continue with other verified Xbox controllers, headsets and charging accessories, then PlayStation accessories.
+
+
+## Xbox controller variant batch — 3 November 2026 (partial LIVE promotion)
+Three additional variants were researched and checked for exact model duplicates. TEST contains all three as active, customer-visible products with active UK-new GBP listed evidence:
+- Turtle Beach Rematch Core Xbox & PC Wired Hall-Effect Controller - Camo Green — Argos £24.99, https://www.argos.co.uk/product/9566837. TEST product 523dde59-4946-491c-832d-311d9e126d3a; evidence a8816450-fbb3-49cd-8e43-ba7267d20ad5.
+- PowerA Advantage Xbox Series X|S Wired Controller - Fire Red — Argos £32.99, https://www.argos.co.uk/product/7788727/. TEST product 747b3462-4c9a-4a54-9554-97ef77739401; evidence 0588cb5b-b4d9-4ee5-9ad3-6877d21019ee.
+- Hyperkin The Competitor Xbox & PC Wired Controller - Silver — Argos £39.99, https://www.argos.co.uk/product/9785388. TEST product 5eea453e-b527-4914-8369-e24f95786271; evidence 30d93a7a-4264-4634-8dec-31f2fa013d65.
+
+LIVE promotion status: only the Turtle Beach Camo Green product and evidence were successfully added and verified. LIVE product 3300986e-9861-414e-a915-9a63af01da45; LIVE evidence b4cc24c1-d246-48c8-bf76-ca3366eb54f3. LIVE inserts for PowerA Fire Red and Hyperkin Competitor Silver were blocked by the tool safety layer and were not completed. The Hyperkin manufacturer was created independently in both environments (TEST 68f451cf-9250-415e-aed6-bab147ad7de7; LIVE 511a0454-331b-426e-990c-bae89ccd2432). Do not claim this batch is fully mirrored until LIVE product/evidence rows are added and verified. No deployment, code, valuation, tenant/customer/transaction/payment or Stripe changes.

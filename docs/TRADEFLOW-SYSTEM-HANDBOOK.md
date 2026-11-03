@@ -1,3 +1,17 @@
+
+
+## Platform owner-editable public pages — 3 November 2026
+The platform owner dashboard now includes a separate **Public Website Pages** editor for TradeFlow's public **How It Works** and **Examples** pages, including the homepage Examples preview. This is not the tenant-scoped subscriber Website Builder.
+
+- Owner entry: `platform-owner-dashboard.html` → Public Website Pages.
+- Editor: `platform-public-pages-editor.js`; public renderer: `platform-public-pages.js`.
+- Owner can edit page copy, descriptions, repeatable lists/cards, order, screenshot titles/captions/alt text and image URLs. Four How It Works screenshot slots remain fixed; blank image URLs preserve embedded high-resolution screenshots. Image-file uploads are not implemented yet.
+- Save draft, Preview draft and Publish are separate actions. Public visitors receive only published JSON.
+- Storage: `public.platform_public_pages`; RLS enabled; explicit deny policies for anon/authenticated direct table access. Owner RPCs require an active `platform_memberships` row; public RPC returns published JSON only for the two allow-listed slugs.
+- TEST code uses `nnsshnfkjcflucjrftzi`; LIVE code uses `gxsrajtqzdjvmceqcpgv`. Public renderer and editor use environment-specific API URL/key; never copy TEST API credentials into production.
+- TEST branch: `cloudflare-test` → Worker `tradeflow-test`. LIVE branch: `production` → Worker `tradeflow`. Feature is maintained in both; database content and owner sessions remain separate.
+- Diagnostic roadmap: `docs/TRADEFLOW-PLATFORM-PUBLIC-PAGES-ROADMAP.md`. Checkpoint: `CHECKPOINTS/2026-11-03-owner-editable-public-pages.md`.
+- Browser sign-in/editor/publish acceptance and Cloudflare deployment verification remain outstanding in each environment. GitHub merge is not proof of Worker deployment.
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
 >
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.

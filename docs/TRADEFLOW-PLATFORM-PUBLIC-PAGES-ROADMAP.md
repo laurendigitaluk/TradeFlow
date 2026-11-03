@@ -105,3 +105,9 @@ Both branches now contain the feature. Cloudflare deployment/runtime and authent
 Replace the rejected nested text form with a drag-and-drop visual canvas for the How It Works and Examples public pages. This is separate from the locked subscriber Website Builder. Owner can add text, image and screenshot boxes; drag them to position; resize them; edit text, image alt text, background, layout and numeric position/size; duplicate/delete; upload/replace/remove images; and save draft, preview and publish through the existing owner RPCs. Composition is stored in `draft_content.visual_layout` in `public.platform_public_pages`.
 
 A new `platform-public-media` public bucket accepts PNG/JPEG/WebP up to 8 MB. Write policies require an authenticated active `platform_memberships` record and an object path prefixed with the user's UUID. Original embedded How It Works screenshots remain the public fallback until replaced. Migration `20261103210000_platform_public_media_owner_uploads` has been applied separately to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Bucket and three owner-write policies were read back in both. JS syntax parsed in the connector runtime for editor and renderer in both feature branches. PR merge, Cloudflare deployment and browser acceptance remain pending; test drag/resize/upload/save/preview/publish and mobile layout before calling complete.
+
+
+## Merge status — 3 November 2026
+- LIVE PR #206 merged into `production` at `d08f4f156452d066cd39dad7943f8e39e38985d1`.
+- TEST PR #207 merged into `cloudflare-test` at `04989110d3fd49ab0bcf152e34819cc38193ac5d`.
+- Both branch heads were read back at their merge commits. GitHub reports no commit statuses and zero Actions workflow runs for either head. The Worker dashboard URLs could not be opened through the available browser check. Cloudflare deployment and browser acceptance therefore remain unverified; do not tell the user the feature is live until that is checked.

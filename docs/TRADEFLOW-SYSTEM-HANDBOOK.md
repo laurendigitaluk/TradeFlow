@@ -2654,3 +2654,6 @@ The owner-facing Public Website Pages editor is being upgraded from the rejected
 - LIVE PR #206 merged into `production` at `d08f4f156452d066cd39dad7943f8e39e38985d1`.
 - TEST PR #207 merged into `cloudflare-test` at `04989110d3fd49ab0bcf152e34819cc38193ac5d`.
 - Both branch heads were read back at their merge commits. GitHub reports no commit statuses and zero Actions workflow runs for either head. The Worker dashboard URLs could not be opened through the available browser check. Cloudflare deployment and browser acceptance therefore remain unverified; do not tell the user the feature is live until that is checked.
+
+
+Final editor refinement: free-position text/image/screenshot boxes are independently draggable and resizable on the canvas (x/y/width/height are also editable in the inspector). Full-width image boxes are rendered as images rather than hidden, and the owner canvas stacks split layouts on narrow screens. TEST visual editor URL/key were checked against TEST's own existing owner editor configuration; LIVE remains on LIVE Supabase. These refinements are included in the merged branches.

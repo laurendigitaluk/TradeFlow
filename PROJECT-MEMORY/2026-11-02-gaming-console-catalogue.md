@@ -267,3 +267,12 @@ Three additional variants were researched and checked for exact model duplicates
 - Hyperkin The Competitor Xbox & PC Wired Controller - Silver — Argos £39.99, https://www.argos.co.uk/product/9785388. TEST product 5eea453e-b527-4914-8369-e24f95786271; evidence 30d93a7a-4264-4634-8dec-31f2fa013d65.
 
 LIVE promotion status: only the Turtle Beach Camo Green product and evidence were successfully added and verified. LIVE product 3300986e-9861-414e-a915-9a63af01da45; LIVE evidence b4cc24c1-d246-48c8-bf76-ca3366eb54f3. LIVE inserts for PowerA Fire Red and Hyperkin Competitor Silver were blocked by the tool safety layer and were not completed. The Hyperkin manufacturer was created independently in both environments (TEST 68f451cf-9250-415e-aed6-bab147ad7de7; LIVE 511a0454-331b-426e-990c-bae89ccd2432). Do not claim this batch is fully mirrored until LIVE product/evidence rows are added and verified. No deployment, code, valuation, tenant/customer/transaction/payment or Stripe changes.
+
+
+## Xbox controller variant batch — LIVE reconciliation completed — 3 November 2026
+The two outstanding variants from the earlier partial LIVE promotion have now been inserted and verified in LIVE. LIVE now matches TEST for all three products in this variant batch, with independently generated environment-specific product/evidence UUIDs:
+- Turtle Beach Rematch Core Xbox & PC Wired Hall-Effect Controller - Camo Green — Argos £24.99. LIVE product 3300986e-9861-414e-a915-9a63af01da45; evidence b4cc24c1-d246-48c8-bf76-ca3366eb54f3.
+- PowerA Advantage Xbox Series X|S Wired Controller - Fire Red — Argos £32.99. LIVE product e27c10ec-ac43-442f-b2cf-a875c8a0ee03; evidence bb385f02-039b-4d4e-a934-339f88d4e7a6.
+- Hyperkin The Competitor Xbox and PC Wired Controller - Silver — Argos £39.99. LIVE product 9a6ba55c-d145-44fb-93d0-a2747852f0ac; evidence 7621129b-e844-4ed7-9b16-aa77182645a4.
+
+Final LIVE and TEST queries confirmed all three products active and customer-visible, each with active `uk_new` GBP evidence and `availability=listed`, with the expected prices. The Hyperkin title differs slightly between environments (`and` in LIVE, `&` in TEST) but represents the same Silver variant and has matching package intent. Prices are retailer asking/listed prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.

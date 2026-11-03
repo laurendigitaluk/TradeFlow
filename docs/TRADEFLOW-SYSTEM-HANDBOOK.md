@@ -1858,3 +1858,7 @@ The catalogue has two additional colour variants in both TEST and LIVE: PowerA A
 
 ## Turtle Beach Recon 70 headset variants — 3 November 2026
 Two additional headset colour variants are now represented in both TEST and LIVE: Recon 70 White (£22.99, Smyths UK) and Recon 70 Arctic Camo (£29.99, Smyths UK). Both are active/customer-visible and have active UK-new GBP evidence with `availability=listed`. Exact retailer pages and environment-specific product/evidence IDs are recorded in the gaming catalogue project memory. Prices are retailer listing prices, not completed sales. Evidence is research reference only and does not alter automatic buying valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.
+
+
+## Turtle Beach Recon 50X headset — 3 November 2026
+The gaming master catalogue now includes Turtle Beach Recon 50X Xbox, PS5, PS4, PC Headset - Black and Green in both TEST and LIVE. Argos UK exact product page https://www.argos.co.uk/product/4506696/ lists it at £14.99 (reduced from £19.99). Product records are active/customer-visible; evidence is active UK-new GBP retail evidence with `availability=listed`. Environment-specific IDs are recorded in project memory. This is a retailer listed price, not a completed sale. Evidence is research reference only and does not alter automatic buying valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.

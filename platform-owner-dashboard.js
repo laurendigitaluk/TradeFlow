@@ -1,5 +1,5 @@
-const SUPABASE_URL='https://twfbmjwwqzxdxvclxbun.supabase.co';
-const KEY='sb_publishable_AvcMgtUKV0O5k8H6k94mZQ_qH4pEIS9';
+const SUPABASE_URL='https://nnsshnfkjcflucjrftzi.supabase.co';
+const KEY='sb_publishable_T_6zeNcVL8WlCWS521n4xw_Nh9ILPBQ';
 const SESSION_KEY='tradeflow_platform_owner_session';
 let session=null;
 
@@ -58,7 +58,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -167,6 +167,6 @@ $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubm
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings()}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await window.loadPublicPages?.()}
   catch(e){showAuth('')}
 })();

@@ -101,3 +101,16 @@ The follow-up migration `20261103183500_owner_public_pages_explicit_deny.sql` ad
 - JavaScript syntax checks passed for owner dashboard, editor and renderer in LIVE; environment URL/key checks passed.
 - Direct Worker URL checks for LIVE and TEST were inaccessible through the available browser tool. Cloudflare deployment commit/runtime and owner browser flow remain unverified. Do not state deployment is complete until the Worker version and browser flow are confirmed.
 - The user confirmed simultaneous LIVE and TEST development. Continue keeping code behaviour aligned and content/data isolated.
+
+
+## Platform-owner visual public page designer — 3 November 2026
+
+The owner-facing Public Website Pages editor is being upgraded from the rejected nested text form to a visual, free-position canvas. The subscriber Website Builder remains unchanged and its locked baseline is not reopened.
+
+- Owner can add text boxes, image boxes and screenshot boxes; select a box and edit its text, image, alt text, background, layout and numeric position/size; drag boxes directly on the canvas; resize with the corner handle; duplicate and delete boxes; and upload/replace/remove images.
+- The page canvas stores its composition in `draft_content.visual_layout` JSONB within the existing `public.platform_public_pages` records. Existing draft/publish owner RPCs remain the persistence boundary. Published How It Works and Examples pages render the saved visual layout; homepage Examples preview continues to use its existing card renderer.
+- Original embedded How It Works screenshots remain the public fallback when a screenshot box has no uploaded replacement.
+- New public bucket `platform-public-media` accepts PNG/JPEG/WebP up to 8 MB. Storage insert/update/delete policies require an authenticated user with an active `platform_memberships` row and restrict object paths to that user's UUID. Public read is via the public bucket. Existing subscriber bucket/policies are not weakened.
+- TEST project `nnsshnfkjcflucjrftzi` and LIVE project `gxsrajtqzdjvmceqcpgv` each received migration `20261103210000_platform_public_media_owner_uploads`. No page content was copied between environments.
+- Feature branches: `feature/platform-public-visual-builder-test-20261103` and `feature/platform-public-visual-builder-live-20261103`. PRs and Cloudflare deployment/browser acceptance remain pending. JavaScript syntax was checked in the connector runtime for the visual editor and public renderer in both branches. Database bucket and three owner-only write policies were read back in both projects.
+- Known acceptance still required: open owner dashboard in both environments; test drag, resize, add/delete/duplicate, upload, save, draft preview, publish, mobile rendering, and verify original screenshots remain until replaced. A GitHub merge is not proof of Cloudflare deployment.

@@ -28,3 +28,12 @@ Both DBs:
 - No tenant/customer/transaction/Stripe/inventory/domain changes.
 
 Remaining: merge LIVE feature branch into production; verify Worker deployments; browser-test sign-in/editor/draft/preview/publish independently in both environments. Do not claim browser/deployment verified before that check.
+
+
+## Final LIVE merge/deployment status — 3 November 2026
+- LIVE PR #205 merged into `production` with merge commit `f3cabb78556ccca1898d459c68c09acb5bb54f8a`.
+- TEST PR #204 merged into `cloudflare-test` with merge commit `204b3bbc286018d49ad1f4700ba2964c0bbbef28`.
+- LIVE and TEST database migrations applied and access-control read-back verified; each database has its own two page records.
+- JavaScript syntax checks passed for owner dashboard, editor and renderer in LIVE; environment URL/key checks passed.
+- Direct Worker URL checks for LIVE and TEST were inaccessible through the available browser tool. Cloudflare deployment commit/runtime and owner browser flow remain unverified. Do not state deployment is complete until the Worker version and browser flow are confirmed.
+- The user confirmed simultaneous LIVE and TEST development. Continue keeping code behaviour aligned and content/data isolated.

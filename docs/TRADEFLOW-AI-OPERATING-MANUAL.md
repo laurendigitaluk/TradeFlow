@@ -3069,3 +3069,12 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Final LIVE merge/deployment status — 3 November 2026
+- LIVE PR #205 merged into `production` with merge commit `f3cabb78556ccca1898d459c68c09acb5bb54f8a`.
+- TEST PR #204 merged into `cloudflare-test` with merge commit `204b3bbc286018d49ad1f4700ba2964c0bbbef28`.
+- LIVE and TEST database migrations applied and access-control read-back verified; each database has its own two page records.
+- JavaScript syntax checks passed for owner dashboard, editor and renderer in LIVE; environment URL/key checks passed.
+- Direct Worker URL checks for LIVE and TEST were inaccessible through the available browser tool. Cloudflare deployment commit/runtime and owner browser flow remain unverified. Do not state deployment is complete until the Worker version and browser flow are confirmed.
+- The user confirmed simultaneous LIVE and TEST development. Continue keeping code behaviour aligned and content/data isolated.

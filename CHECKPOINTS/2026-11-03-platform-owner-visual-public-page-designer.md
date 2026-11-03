@@ -15,3 +15,9 @@ A new `platform-public-media` public bucket accepts PNG/JPEG/WebP up to 8 MB. Wr
 
 ## Remaining acceptance
 Merge each PR, verify Cloudflare Worker deployment separately, then browser-test drag, resize, add/delete/duplicate, image upload, draft save/reload, preview, publish and mobile display in each environment. A GitHub merge is not proof of deployment.
+
+
+## Merge status — 3 November 2026
+- LIVE PR #206 merged into `production` at `d08f4f156452d066cd39dad7943f8e39e38985d1`.
+- TEST PR #207 merged into `cloudflare-test` at `04989110d3fd49ab0bcf152e34819cc38193ac5d`.
+- Both branch heads were read back at their merge commits. GitHub reports no commit statuses and zero Actions workflow runs for either head. The Worker dashboard URLs could not be opened through the available browser check. Cloudflare deployment and browser acceptance therefore remain unverified; do not tell the user the feature is live until that is checked.

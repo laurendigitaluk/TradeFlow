@@ -276,3 +276,11 @@ The two outstanding variants from the earlier partial LIVE promotion have now be
 - Hyperkin The Competitor Xbox and PC Wired Controller - Silver — Argos £39.99. LIVE product 9a6ba55c-d145-44fb-93d0-a2747852f0ac; evidence 7621129b-e844-4ed7-9b16-aa77182645a4.
 
 Final LIVE and TEST queries confirmed all three products active and customer-visible, each with active `uk_new` GBP evidence and `availability=listed`, with the expected prices. The Hyperkin title differs slightly between environments (`and` in LIVE, `&` in TEST) but represents the same Silver variant and has matching package intent. Prices are retailer asking/listed prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.
+
+
+## Xbox controller colour variants — 3 November 2026
+Two further variants were added independently to TEST and LIVE and verified after insertion:
+- PowerA Advantage Xbox Wired Controller - Ice White — Argos £32.99, https://www.argos.co.uk/product/7862461/. TEST product 40df7ece-72aa-4c52-81e0-9c4b6daa879b; evidence 292dd6ef-b242-4753-b5ec-2fecc4aa3cd4. LIVE product 6db0d8ff-39dd-423a-901b-f8cd357276ef; evidence 4c40b1c2-1f08-4a92-8689-7e2b4f5afbc9.
+- Hyperkin The Competitor Xbox & PC Wired Controller - Purple — Argos £39.99, https://www.argos.co.uk/product/7995589. TEST product cb7e09a8-7e9e-4e29-a808-797faefeeb24; evidence e0defe4f-83ed-4833-8c41-ed01ea9ce731. LIVE product d6239b4f-3320-4db5-b16d-7c9052743c03; evidence e70aa35e-8fdc-43a8-b0c4-0310f6839190.
+
+Both environments were checked for duplicates before insertion. Final verification confirms each product is active/customer-visible and joined to active `uk_new` GBP evidence with `availability=listed`. Prices are retailer asking/listed prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.

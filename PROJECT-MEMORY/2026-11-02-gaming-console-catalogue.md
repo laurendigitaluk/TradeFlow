@@ -284,3 +284,11 @@ Two further variants were added independently to TEST and LIVE and verified afte
 - Hyperkin The Competitor Xbox & PC Wired Controller - Purple — Argos £39.99, https://www.argos.co.uk/product/7995589. TEST product cb7e09a8-7e9e-4e29-a808-797faefeeb24; evidence e0defe4f-83ed-4833-8c41-ed01ea9ce731. LIVE product d6239b4f-3320-4db5-b16d-7c9052743c03; evidence e70aa35e-8fdc-43a8-b0c4-0310f6839190.
 
 Both environments were checked for duplicates before insertion. Final verification confirms each product is active/customer-visible and joined to active `uk_new` GBP evidence with `availability=listed`. Prices are retailer asking/listed prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.
+
+
+## Turtle Beach Recon 70 headset colour variants — 3 November 2026
+Two further Recon 70 colour variants were added independently to TEST and LIVE and verified:
+- Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - White — Smyths Toys UK £22.99 (reduced from £29.99), https://www.smythstoys.com/uk/en-gb/gaming-and-tech/gaming-headsets/turtle-beach-recon-70-wired-multiplatform-gaming-headset-white/p/237775. TEST product 70554977-3219-4102-b84b-987d67d9b810; evidence 4715e4df-d7ca-4c71-912d-3923a460a656. LIVE product 7ec9e6d7-b438-44ec-ac7c-38718a9147c3; evidence 05dd9ff9-1765-4d3a-8bb9-21a614625d74.
+- Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - Arctic Camo — Smyths Toys UK £29.99, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/turtle-beach-recon-70-wired-multiplatform-gaming-headset-arctic-camo/p/199275. TEST product 185d02ac-8cb4-4aef-8bb9-8ee79b228c2a; evidence c7964b42-66f4-40de-8627-1d0ff7ae476f. LIVE product b03e0441-5c04-4908-832c-36b32030f39a; evidence bf97a70b-5780-4868-b6d1-de73e2d510a1.
+
+Exact duplicate checks were clear in both environments before insertion. Final queries confirm both products active/customer-visible with active `uk_new` GBP evidence and `availability=listed`. Prices are current retailer listing prices, not completed sales. Evidence remains reference-only and does not alter automatic valuations. No code, deployment, Stripe or operational customer data changed.

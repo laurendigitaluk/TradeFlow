@@ -30,3 +30,6 @@ Next:
 2. Deploy via established TEST Worker process; verify runtime.
 3. Browser acceptance as listed in `CHECKPOINTS/2026-11-03-owner-editable-public-pages.md`.
 4. Do not promote to LIVE without explicit user approval.
+
+
+The follow-up migration `20261103183500_owner_public_pages_explicit_deny.sql` adds explicit deny policies for `anon` and `authenticated` direct table access. Security read-back confirmed RLS enabled, two deny policies, no direct SELECT privilege, owner RPCs executable only by authenticated users, and public read RPC executable by anon. The Supabase advisor still reports the public `platform_public_page_get(text)` SECURITY DEFINER function; this is intentional because it returns only published JSON for the two allow-listed page slugs, while direct table access remains denied. This finding is documented, not ignored.

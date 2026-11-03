@@ -2924,3 +2924,8 @@ TEST and LIVE each now contain three additional Microsoft Xbox master products: 
 
 ## Gaming catalogue update — 3 November 2026
 Four Xbox accessory products were added and independently verified in both TEST and LIVE: Venom Twin Rechargeable Battery Packs (£12.99 Argos), Venom Twin Docking & Charging Station (£17.99 Argos), PowerA Wired Controller - Core Black (£19.99 Argos), and Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - Black (£22.99 Smyths Toys). All are active/customer-visible and have active UK-new GBP retailer evidence with availability `listed`. Treat these as current asking/listed prices, not completed sales. No used evidence was inferred. Keep TEST and LIVE product/evidence UUIDs separate. Evidence is reference-only and must not change automatic buying valuations. No app code, deployment, Stripe, tenant, customer, transaction or payment data was changed.
+
+
+
+## Gaming catalogue update — Xbox accessories, 3 November 2026
+Four additional Xbox products have been added and independently verified in TEST and LIVE: PowerA Hall Effect Advantage+ controllers in Green (£32.99) and Ruby (£32.99), PowerA Dual Charging Station for Xbox Controllers - Black (£9.99), and Turtle Beach Rematch Core Xbox & PC Wired Hall-Effect Controller - Black (£19.99). All have active customer-visible master records and active UK-new GBP retailer evidence with `availability=listed`. Source pages are exact Argos product pages. Treat prices as current retailer asking/listed prices, not completed sales. Do not infer used prices. Maintain separate environment-specific UUIDs. Evidence is reference-only and must not alter automatic buying valuations. No app code, deployment, Stripe, tenant, customer, transaction or payment data changed.

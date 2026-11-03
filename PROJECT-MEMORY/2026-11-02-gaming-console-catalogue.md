@@ -233,7 +233,7 @@ Added and independently verified four visible master products with active UK new
 | Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - Black | Smyths Toys UK | £22.99 |
 
 LIVE product IDs: Venom batteries 11d069a8-2ef8-4a4d-a0de-e3d24868f717; Venom dock 77700115-b738-4a61-92f5-9e0d738db1c3; PowerA controller 8c0895c6-9655-4e66-a671-d4b524444893; Turtle Beach headset 28862143-4594-4c13-82b4-43efaeab4d29.
-LIVE evidence IDs: Venom batteries bbdb9a79-e0de-4cd2-879f-64cb123b1a2e; Venom dock 81880662-9524-4e62-a1a9-c71cd4449c2b; PowerA c6500d2c-bcb3-4673-8a90-05681b77150c; Turtle Beach 4547fcfa-9882-4b52-8a42-e2bd22444bbe.
+LIVE evidence IDs: Venom batteries bbdb9a79-e0de-4cd2-879f-64cb123b1a2e; Venom dock 81880662-9524-4e62-a1a9-c71cd4449c2b; PowerA 0770f8ca-d2fc-4b25-8dd5-7c7b637f9a1f; Turtle Beach 4547fcfa-9882-4b52-8a42-e2bd22444bbe.
 
 TEST product IDs: Venom batteries ca4634d2-653d-4777-afa2-a87cb6f566b3; Venom dock 0aa86377-52d8-4692-83b5-77d093f6dd4d; PowerA controller 71a159be-56ad-40fe-aa55-cc2fe8eba908; Turtle Beach headset 74052356-9e15-4829-b609-f6f580efc706.
 TEST evidence IDs: Venom batteries 452ba9d6-961f-46f3-a25c-2fcfdf47bd80; Venom dock fe7c1117-9055-4972-a106-0394a1687dc9; PowerA c6500d2c-bcb3-4673-8a90-05681b77150c; Turtle Beach 3b5efa33-ba1d-46d1-9cee-0f62e259bfd9.

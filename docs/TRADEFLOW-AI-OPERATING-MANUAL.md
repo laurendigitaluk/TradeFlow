@@ -2949,3 +2949,7 @@ Added and verified in both TEST and LIVE: Recon 70 White (£22.99 Smyths UK) and
 
 ## Turtle Beach Recon 50X headset — 3 November 2026
 Added to TEST and LIVE: Turtle Beach Recon 50X Xbox, PS5, PS4, PC Headset - Black and Green, £14.99 at Argos UK (was £19.99), exact page https://www.argos.co.uk/product/4506696/. Both environments received separate product/evidence IDs. Product active/customer-visible; evidence active `uk_new`, GBP, New, Retail and `listed`. Duplicate checks were clear. Treat this as a retailer asking/listed price, not a completed sale. Evidence is reference-only and must not affect automatic valuations. No application code, deployment, Stripe or operational customer data changed.
+
+
+## Xbox headset and controller additions — 3 November 2026
+Added and verified in TEST and LIVE: Turtle Beach Recon 70 Green Camo headset (£19.99 Smyths UK) and Turtle Beach Rematch Core Hall-Effect Controller Camo Orange (£24.99 Argos). Both have active customer-visible master records and active `uk_new` GBP evidence marked `listed`. Exact source URLs and environment-specific IDs are recorded in the gaming catalogue project memory. Duplicate checks were clear in both environments. Treat prices as retailer listed/asking prices, not completed sales. Evidence is reference-only and must not affect automatic valuations. No application code, deployment, Stripe or operational customer data changed.

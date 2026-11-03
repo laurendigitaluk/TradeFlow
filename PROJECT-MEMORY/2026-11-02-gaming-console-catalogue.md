@@ -220,3 +220,24 @@ Four Xbox Series X|S storage products were inserted independently in TEST and LI
 Three Microsoft Xbox accessories were added independently to TEST and LIVE after checking the existing Xbox catalogue: Xbox Nano Controller (£44.99, Microsoft UK pre-order with stated release date 4 November 2026), Xbox Adaptive Joystick (£24.99), and Xbox Elite Wireless Controller Series 2 Complete Component Pack (£54.99). All evidence is uk_new, GBP, New, Retail, listed, active and research-reference only. All three products are active and customer-visible in both environments. No used-market evidence, valuation logic, application code, Worker deployment, tenant/customer/transaction/payment data or Stripe settings changed.
 LIVE product IDs: Nano 20d4c914-5233-41fb-8cff-dbaf8d612f6f; Adaptive d9d1d28c-481e-4f86-afa2-b465ef086624; Component Pack 7bad8b8a-527a-4393-82c0-5016a2431ad2. TEST product IDs: Nano 01dc1031-911d-4fcf-b0cd-f914a1e4564b; Adaptive e185779a-fbff-4fa9-a791-9b9d0123eae6; Component Pack 59c89dd9-f684-4318-b015-81c2da55642b.
 Sources: Microsoft UK Nano Controller https://www.microsoft.com/en-gb/d/XBOX-Nano-Controller/8wg5vqp0x4g3 ; Adaptive Joystick https://www.microsoft.com/en-gb/d/XBOX-Adaptive-Joystick/8mzbmmcjzqs4 ; Complete Component Pack https://www.microsoft.com/en-gb/d/complete-component-pack/93t8nmcclss7.
+
+
+## Xbox accessory catalogue batch — 3 November 2026
+Added and independently verified four visible master products with active UK new/listed GBP retail evidence in both TEST and LIVE. No UUIDs were copied between environments.
+
+| Product | Evidence source | Listed price |
+|---|---|---:|
+| Venom Twin Rechargeable Battery Packs | Argos UK | £12.99 |
+| Venom Twin Docking & Charging Station | Argos UK | £17.99 |
+| PowerA Wired Controller - Core Black | Argos UK | £19.99 |
+| Turtle Beach Recon 70 Wired Multiplatform Gaming Headset - Black | Smyths Toys UK | £22.99 |
+
+LIVE product IDs: Venom batteries 11d069a8-2ef8-4a4d-a0de-e3d24868f717; Venom dock 77700115-b738-4a61-92f5-9e0d738db1c3; PowerA controller 8c0895c6-9655-4e66-a671-d4b524444893; Turtle Beach headset 28862143-4594-4c13-82b4-43efaeab4d29.
+LIVE evidence IDs: Venom batteries bbdb9a79-e0de-4cd2-879f-64cb123b1a2e; Venom dock 81880662-9524-4e62-a1a9-c71cd4449c2b; PowerA c6500d2c-bcb3-4673-8a90-05681b77150c; Turtle Beach 4547fcfa-9882-4b52-8a42-e2bd22444bbe.
+
+TEST product IDs: Venom batteries ca4634d2-653d-4777-afa2-a87cb6f566b3; Venom dock 0aa86377-52d8-4692-83b5-77d093f6dd4d; PowerA controller 71a159be-56ad-40fe-aa55-cc2fe8eba908; Turtle Beach headset 74052356-9e15-4829-b609-f6f580efc706.
+TEST evidence IDs: Venom batteries 452ba9d6-961f-46f3-a25c-2fcfdf47bd80; Venom dock fe7c1117-9055-4972-a106-0394a1687dc9; PowerA c6500d2c-bcb3-4673-8a90-05681b77150c; Turtle Beach 3b5efa33-ba1d-46d1-9cee-0f62e259bfd9.
+
+Source URLs: Argos product 3635678 https://www.argos.co.uk/product/3635678 ; Argos Xbox accessories category for Venom products https://www.argos.co.uk/browse/technology/video-games-and-consoles/xbox/xbox-accessories/c%3A812428/ ; Smyths Recon 70 Black https://www.smythstoys.com/uk/en-gb/gaming-and-tech/gaming-headsets/turtle-beach-recon-70-wired-multiplatform-gaming-headset-black/p/237774 . The Smyths page reported stock available when researched. All evidence rows are `uk_new`, GBP, New, Retail, `listed`; these are retailer asking/listed prices, not completed sales. No used-market evidence was added.
+
+Verification in both environments returned all four products active and customer-visible, each joined to its active evidence row with matching GBP price and listed availability. No valuation logic, application code, deployment, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference-only. Continue with other verified Xbox accessories, then PlayStation accessories; inspect duplicates before each insertion.

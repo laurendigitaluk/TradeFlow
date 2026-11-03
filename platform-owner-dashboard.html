@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>TradeFlow Owner Dashboard</title>
-<link rel="stylesheet" href="platform-owner-dashboard.css?v=4">
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=5">
 </head>
 <body>
 <header class="topbar">
@@ -18,6 +18,7 @@
       <a class="active" href="#overview">Overview</a>
       <a href="#businesses">Subscriber businesses</a>
       <a href="#plans">Plans</a>
+      <a href="#public-pages">Public Website Pages</a>
       <a href="#settings">Platform settings</a>
     </nav>
   </aside>
@@ -51,6 +52,8 @@
       <div id="plan-admin-list" class="plan-admin-list"><p class="muted">Loading plans…</p></div>
       <p class="note">Stripe IDs identify the Product and recurring Prices already created in your Stripe account. This screen does not store a Stripe secret key.</p>
     </section>
+
+    <section id="public-pages" class="panel"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages independently of subscriber shop websites. Save a draft while you work, then publish only when you are ready.</p><div id="public-page-editor">Loading public page editor…</div></section>
 
     <section id="email-settings" class="panel">
 <div class="eyebrow">Platform email</div><h2>TradeFlow sending email</h2>
@@ -109,6 +112,7 @@
     </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=5" defer></script>
+<script src="platform-owner-dashboard.js?v=6" defer></script>
+<script src="platform-public-pages-editor.js?v=1" defer></script>
 </body>
 </html>

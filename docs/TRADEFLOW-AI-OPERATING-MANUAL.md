@@ -1,3 +1,18 @@
+# CURRENT OWNER-EDITABLE PUBLIC PAGES — 3 NOVEMBER 2026
+
+The platform owner dashboard now has a separate **Public Website Pages** editor for the TradeFlow marketing pages **How It Works** and **Examples**. This is not the subscriber Website Builder: that remains tenant-scoped and controls each subscriber's own storefront.
+
+- Owner entry point: `platform-owner-dashboard.html` → Public Website Pages.
+- Editor: `platform-public-pages-editor.js`; public renderer: `platform-public-pages.js`.
+- TEST dashboard and public pages use TEST Supabase `nnsshnfkjcflucjrftzi`. The old retired project `twfbmjwwqzxdxvclxbun` must never be used; the stale URL in `platform-owner-dashboard.js` was corrected on this feature branch.
+- Storage: `public.platform_public_pages`, RLS enabled, no direct anon/authenticated table access. Owner-only RPCs: `platform_owner_get_public_pages()`, `platform_owner_save_public_page(text,text,jsonb)`, `platform_owner_publish_public_page(text)`; public read-only RPC: `platform_public_page_get(text)`.
+- The owner editor supports nested text fields, repeatable lists/cards, reordering and removal/addition where the public renderer supports it. The four How It Works screenshot slots remain fixed; each has editable title, description, alt text, caption and image URL. Existing embedded screenshots remain the fallback when an image URL is blank.
+- Saving writes a draft only. Publishing copies the draft to the public version. Public pages only render published content.
+- The Examples page and homepage Examples preview use the same published content. No subscriber tenant, customer, transaction, domain, Stripe or buying data is involved.
+- TEST database schema/content was created and read-back checked. Browser acceptance and Cloudflare TEST deployment are still required; GitHub source/merge is not proof of deployment. Do not promote to LIVE without explicit approval.
+- Roadmap: `docs/TRADEFLOW-PLATFORM-PUBLIC-PAGES-ROADMAP.md`.
+- Checkpoint: `CHECKPOINTS/2026-11-03-owner-editable-public-pages.md`.
+
 > **PUBLIC PROCESS GUIDE — 2 NOVEMBER 2026**
 >
 > The public explainer is `how-it-works.html`, styled by `how-it-works.css`. Homepage navigation, hero CTA, workflow summary and footer link to it. It is static HTML/CSS with no Supabase, Auth, Storage, Stripe, courier or customer-data dependency.

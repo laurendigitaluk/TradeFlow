@@ -172,3 +172,26 @@ These are current retailer asking/listing prices, not completed sales. Each is `
 - Zero active evidence integrity failures.
 - Counts and catalogue content match between environments; UUIDs are environment-specific.
 No code, valuation logic, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference material only and must not alter automatic buying prices.
+
+
+## PlayStation evidence continuation — 4 November 2026
+Three additional UK-new retailer observations were added to existing products independently in TEST and LIVE. Each is GBP, new condition, retail channel, availability listed, and has an exact product URL and stable source key. These are retailer listed prices, not completed sales.
+
+| Product | Source | Price | Source URL | Stable key |
+|---|---|---:|---|---|
+| DualSense Charging Station | PlayStation UK | £24.99 | https://www.playstation.com/en-gb/accessories/dualsense-charging-station/ | ps-uk-dualsense-charging-station-20261104 |
+| PlayStation Portal Remote Player | Currys UK | £219.00 | https://www.currys.co.uk/products/sony-playstation-portal-remote-player-10257483.html | currys-playstation-portal-10257483-20261104 |
+| PlayStation VR2 | Smyths Toys UK | £399.99 | https://www.smythstoys.com/uk/en-gb/gaming-and-tech/virtual-reality/playstation-vr2/playstation-vr2-headsets/playstation-vr2/p/225323 | smyths-playstation-vr2-225323-20261104 |
+
+### TEST UUIDs
+- DualSense Charging Station product 7cad3b4c-1b97-4715-a15f-c6c47411d97e; evidence 1423522d-6d47-4cd0-b647-20508ab5f968.
+- PlayStation Portal product 5e701d30-e238-4807-ae05-6aeeef1acf46; evidence 153d65aa-d721-454f-a309-2b6fd0f2fce3.
+- PlayStation VR2 product 2dcfdf09-f096-4ccf-998d-251458c5b1c5; evidence 354d9afe-73e7-4440-8556-0907f983aa06.
+
+### LIVE UUIDs
+- DualSense Charging Station product 240adf4e-630b-46f7-8e03-71d4b3309712; evidence f2038306-ff3b-4dd8-b479-a00abe459b3d.
+- PlayStation Portal product b2da3766-77fe-4329-8c91-d712f7dd4146; evidence c7b5f07b-8512-4b18-8e92-1251d168c50e.
+- PlayStation VR2 product 40fa18d5-a59d-488d-9674-37883658a180; evidence 8ff07860-832d-4cbf-93d5-01f54c1a7cb1.
+
+### Verification — 4 November 2026
+TEST and LIVE both read back 113 gaming master products and 184 active evidence rows (59 UK new / 125 UK used). The active evidence quality check returned zero rows missing URL/key, non-GBP currency, non-positive price or availability. One active customer-visible product still has no evidence: WD_BLACK C50 512GB Expansion Card for Xbox Series X|S. This remains deliberately unpriced until an exact UK listing is verified. No product records were added in this batch, no valuation rules changed, and no tenant/customer/transaction/domain/Stripe/subscription data was copied or changed. No application code or Worker deployment was involved.

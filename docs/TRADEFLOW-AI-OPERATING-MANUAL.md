@@ -2508,3 +2508,8 @@ The public TradeFlow **How It Works** page is being rebuilt as a simple, source-
 - `platform-public-pages-visual-editor.js` now exposes Examples only. How It Works is maintained in source so the rejected screenshot canvas cannot overwrite the accordion page.
 - The existing `platform_public_pages` records are retained for audit continuity but are no longer read to render How It Works. No Supabase schema, RLS, RPC, customer, tenant, payment, or transaction data was changed.
 - This change is on isolated LIVE and TEST feature branches pending review, merge and separate Cloudflare Worker verification. A Git commit alone is not evidence of deployment.
+
+
+## How It Works accordion headings — numbering removed (4 November 2026)
+
+The public How It Works accordion now uses section titles and supporting subtitles only. All decorative section-number badges have been removed; the order is communicated by the headings themselves. This is a presentation-only change. No page copy, workflow behaviour, Supabase data, tenant/customer records, payments or subscriber website content is changed.

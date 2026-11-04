@@ -2805,3 +2805,11 @@ When updating public Examples, change both the database-driven renderer and the 
 
 ## Additional Sega historical systems — 4 November 2026
 Added Sega SG-1000 (£449.00, UK eBay item 168355445875), Sega Mark III (£173.80, eBay UK item 318928337003; seller based in Japan, international delivery/import terms to be checked), and Sega Pico (£155.58, UK eBay item 307149542948) independently to TEST and LIVE. SG-1000, Mark III and Pico remain separate models; Pico is an edutainment system, not a standard Master System bundle. Their UUIDs and source details are in `docs/checkpoints/TRADEFLOW_GAMING_CONSOLE_CATALOGUE_20261104.md`. Latest independent TEST/LIVE verification: 142 active gaming products, 134 customer-visible, 221 active evidence rows (59 new / 162 used), zero malformed. Evidence remains UK GBP asking-price reference only, with no impact on automated valuations. No customer/tenant/payment/Stripe data, valuation logic, application code or Worker deployment changed.
+
+
+## 3D printer catalogue expansion — Formlabs and UltiMaker batch 5 (4 November 2026)
+Added nine Formlabs printer models and eight UltiMaker printer/package records independently to TEST and LIVE, using the existing 3D Printers branch. Added one UK GBP new-price evidence record per product (17 per environment). Standard printers and S7/S8 Pro Bundle packages remain separate catalogue records. Formlabs prices are UK manufacturer prices inclusive of 20% VAT. 3DGBIRE UltiMaker prices are VAT-inclusive except the S6 £4,900 price, which is explicitly ex VAT and remains recorded as displayed; S8 and S8 Pro Bundle are marked preorder.
+
+TEST and LIVE independently verify 90 active customer-visible products across nine manufacturers, with 91 active UK-new and 12 active UK-used evidence rows (103 total). All visible products have active evidence and a branch; active evidence integrity failures: zero. Full product/evidence IDs and source prices are recorded in the Batch 5 project memory and checkpoint.
+
+No application code, schema, valuation logic, RLS, Edge Functions, customer/tenant/order/payment/Stripe/subscription/domain data or Cloudflare Worker deployment changed. Only manufacturer, product and UK-new evidence rows were inserted independently in TEST and LIVE. Database-only catalogue changes do not require a Worker deployment.

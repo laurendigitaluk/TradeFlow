@@ -3238,3 +3238,11 @@ When updating public Examples, change both the database-driven renderer and the 
 
 ## Additional Sega historical systems — 4 November 2026
 Added Sega SG-1000 (£449.00, UK eBay item 168355445875), Sega Mark III (£173.80, eBay UK item 318928337003; seller based in Japan, international delivery/import terms to be checked), and Sega Pico (£155.58, UK eBay item 307149542948) independently to TEST and LIVE. SG-1000, Mark III and Pico remain separate models; Pico is an edutainment system, not a standard Master System bundle. Their UUIDs and source details are in `docs/checkpoints/TRADEFLOW_GAMING_CONSOLE_CATALOGUE_20261104.md`. Latest independent TEST/LIVE verification: 142 active gaming products, 134 customer-visible, 221 active evidence rows (59 new / 162 used), zero malformed. Evidence remains UK GBP asking-price reference only, with no impact on automated valuations. No customer/tenant/payment/Stripe data, valuation logic, application code or Worker deployment changed.
+
+
+## 3D printer catalogue — Formlabs and UltiMaker batch 5 (4 November 2026)
+Batch 5 added nine Formlabs printer models (Form 3, Form 3L, Form 3BL, Form 4, Form 4B, Form 4L, Form 4BL, Fuse 1+ 30W and Fuse X1) and eight UltiMaker records (S3, S5, S6, S7 standard, S7 Pro Bundle, S8 standard, S8 Pro Bundle and Factor 4). Existing 3D Printers branch reused. One active UK GBP new-price evidence row per product.
+
+Formlabs prices are from the UK manufacturer printer catalogue and include 20% VAT. 3DGBIRE is the UK authorised reseller source for UltiMaker; S6 £4,900 is explicitly shown ex VAT and stored as displayed without VAT adjustment. S8 and S8 Pro Bundle are marked preorder, not in-stock. Keep Pro Bundle packages distinct from standard printer-only records. Form 3, Form 3L and Form 3BL remain listed by Formlabs with UK prices; do not mark discontinued without lifecycle confirmation.
+
+TEST and LIVE independently verify 90 products/90 visible, nine manufacturers, 91 UK-new + 12 UK-used active evidence = 103 total, zero visible-product evidence/branch gaps and zero integrity failures. Full UUID mappings and clickable sources are in the Batch 5 checkpoint. Used evidence remains reference-only and must not feed automatic valuation. No Worker deployment is required for database-only updates.

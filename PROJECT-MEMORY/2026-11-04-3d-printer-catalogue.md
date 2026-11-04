@@ -205,3 +205,14 @@ A2L standard is recorded as backorder because the UK retailer page says “Ships
 | P1P standard | uk_used | 197.61 | ec1f6e57-a3c3-4436-b9f9-04ade141dda2 | bc8e76fd-53a5-43d6-80b9-9cc2bad8d90b |
 
 No code/schema/valuation/RLS/Edge Function/Stripe/Worker changes were made. The full source URLs and evidence notes are recorded in the database rows and Batch 2 checkpoint.
+
+
+## Batch 3 — multi-manufacturer expansion (4 November 2026)
+
+Current verified TEST and LIVE snapshot: **72 active customer-visible products across seven manufacturers**, with **85 active UK GBP evidence rows** (74 `uk_new`, 11 `uk_used`). Both environments have zero visible products without active evidence, zero visible products without a branch, zero missing evidence URLs/keys, zero non-GBP evidence and zero non-positive prices. The category and two established branches are unchanged.
+
+The catalogue has been expanded across Creality, Anycubic and one additional printer manufacturer. Standard models and multi-material bundle variants remain separate product records. The latest model/package IDs, evidence IDs, prices and source references are recorded in the Batch 3 checkpoint.
+
+Evidence caveats: one current resin printer listing is marked sold out; the legacy Plus4 record is used-only and is supported by a completed UK eBay sale; the £559 Q2 multi-material bundle price is from a UK comparison page reporting the manufacturer direct-store price. Used evidence remains reference-only and never changes automatic valuations.
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe or Cloudflare Worker changed.

@@ -3141,3 +3141,6 @@ The catalogue's missing Nintendo Switch V1 and Game Boy Advance SP records were 
 
 ## Original Game Boy Advance catalogue insert (4 November 2026)
 The original Nintendo Game Boy Advance was added after confirming no duplicate in either environment. It is a distinct model from Game Boy Advance SP and Game Boy Micro. Two exact Cash Converters UK used/listed GBP evidence rows were attached (£59.99 and £69.99). TEST and LIVE independently verified 120 active gaming products, 112 visible and 192 active evidence rows (59 new / 133 used), with zero malformed rows. Keep asking/listing prices separate from completed-sale evidence and preserve environment-specific UUIDs.
+
+## Sega manufacturer and Mega Drive addition (4 November 2026)
+Before adding the first Sega model, confirm manufacturer and branch absence separately in TEST and LIVE. Create the Sega manufacturer and Sega Home Consoles branch within each environment, then add the product and exact UK-used listing evidence. Do not merge original Sega Mega Drive hardware with Mega Drive Mini or third-party AtGames emulation devices. TEST and LIVE independently verify 121 active gaming products, 113 visible and 193 active evidence rows, with zero malformed rows. Asking prices are not completed sales; preserve environment-specific IDs.

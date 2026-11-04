@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 4.4  
+**Version:** 4.5  
 **Date:** 4 November 2026  
 **Project:** TradeFlow
 
@@ -2961,7 +2961,7 @@ Added and verified in both TEST and LIVE: Turtle Beach Stealth 600X Gen 3 Wirele
 
 ## 1B. 3D printer catalogue operating checkpoint — 4 November 2026
 
-The 3D printer master catalogue is being expanded as data-only catalogue work. Current verified TEST and LIVE snapshot: category **3D Printers & Equipment**, existing branches **3D Printers** and **3D Printer Equipment & Accessories**, 25 active customer-visible products across six manufacturers, and 33 active UK GBP evidence rows (23 `uk_new`, 10 `uk_used`). Both environments independently pass the current evidence/branch integrity checks.
+The 3D printer master catalogue is being expanded as data-only catalogue work. Current verified TEST and LIVE snapshot: category **3D Printers & Equipment**, existing branches **3D Printers** and **3D Printer Equipment & Accessories**, 39 active customer-visible products across six manufacturers, and 47 active UK GBP evidence rows (36 `uk_new`, 11 `uk_used`). Both environments independently pass the current evidence/branch integrity checks.
 
 ### Mandatory continuation procedure
 
@@ -2975,3 +2975,8 @@ The 3D printer master catalogue is being expanded as data-only catalogue work. C
 8. After each material data batch, verify TEST and LIVE product/evidence totals, active evidence coverage, GBP/source URL integrity and non-null branch assignments. Update both manuals plus the relevant project-memory and checkpoint files.
 
 No new condition system is required for 3D printers. Use the established TradeFlow condition and product/package model; the Pokémon TCG-specific condition detail remains an exception for trading cards only. The full first-batch IDs and evidence mapping are in the 4 November 2026 3D printer checkpoint.
+
+
+### Bambu Lab expansion — 4 November 2026
+
+The latest independently verified snapshot is 39 products and 47 active UK GBP evidence rows (36 new, 11 used) in each environment. Batch 2 added 14 Bambu Lab model/package records: A2L, A2L Combo, H2D standard, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W and 40W Laser Full Combos, H2D Pro, H2C Vortek AMS 2 Pro Combo, H2S standard, H2S AMS 2 Pro Combo, H2S 10W Laser Combo and P1P legacy standard. The A2L standard evidence is marked backorder; P1P has used-only evidence. Keep all package variants separate and do not infer new pricing for legacy products.

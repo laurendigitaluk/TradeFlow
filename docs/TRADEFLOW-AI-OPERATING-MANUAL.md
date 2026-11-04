@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living operational document  
-**Version:** 4.5  
+**Version:** 4.6  
 **Date:** 4 November 2026  
 **Project:** TradeFlow
 
@@ -2961,7 +2961,7 @@ Added and verified in both TEST and LIVE: Turtle Beach Stealth 600X Gen 3 Wirele
 
 ## 1B. 3D printer catalogue operating checkpoint — 4 November 2026
 
-The 3D printer master catalogue is being expanded as data-only catalogue work. Current verified TEST and LIVE snapshot: category **3D Printers & Equipment**, existing branches **3D Printers** and **3D Printer Equipment & Accessories**, 39 active customer-visible products across six manufacturers, and 47 active UK GBP evidence rows (36 `uk_new`, 11 `uk_used`). Both environments independently pass the current evidence/branch integrity checks.
+The 3D printer master catalogue is being expanded as data-only catalogue work. Current verified TEST and LIVE snapshot: category **3D Printers & Equipment**, existing branches **3D Printers** and **3D Printer Equipment & Accessories**, 72 active customer-visible products across seven manufacturers, and 85 active UK GBP evidence rows (74 `uk_new`, 11 `uk_used`). Both environments independently pass the current evidence/branch integrity checks.
 
 ### Mandatory continuation procedure
 
@@ -2979,7 +2979,7 @@ No new condition system is required for 3D printers. Use the established TradeFl
 
 ### Bambu Lab expansion — 4 November 2026
 
-The latest independently verified snapshot is 39 products and 47 active UK GBP evidence rows (36 new, 11 used) in each environment. Batch 2 added 14 Bambu Lab model/package records: A2L, A2L Combo, H2D standard, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W and 40W Laser Full Combos, H2D Pro, H2C Vortek AMS 2 Pro Combo, H2S standard, H2S AMS 2 Pro Combo, H2S 10W Laser Combo and P1P legacy standard. The A2L standard evidence is marked backorder; P1P has used-only evidence. Keep all package variants separate and do not infer new pricing for legacy products.
+The latest independently verified snapshot is 39 products and 85 active UK GBP evidence rows (36 new, 11 used) in each environment. Batch 2 added 14 Bambu Lab model/package records: A2L, A2L Combo, H2D standard, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W and 40W Laser Full Combos, H2D Pro, H2C Vortek AMS 2 Pro Combo, H2S standard, H2S AMS 2 Pro Combo, H2S 10W Laser Combo and P1P legacy standard. The A2L standard evidence is marked backorder; P1P has used-only evidence. Keep all package variants separate and do not infer new pricing for legacy products.
 
 
 ## 3D printer catalogue continuation — 4 November 2026 (Batch 3)
@@ -2988,7 +2988,7 @@ The earlier 39-product / 47-evidence snapshot is superseded by this independentl
 
 - Category: **3D Printers & Equipment**.
 - Active branches: **3D Printers** and **3D Printer Equipment & Accessories**.
-- Master products: **64** across six manufacturers.
+- Master products: **64** across seven manufacturers.
 - Active customer-visible products: **63**. One active Anycubic Kobra S1 ACE 2 Pro variant remains deliberately non-visible; do not expose it without confirming the package presentation.
 - Active evidence: **77** (66 UK-new and 11 UK-used).
 - Visible products missing active evidence: **0**.
@@ -3031,3 +3031,10 @@ No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenan
 
 ### QIDI Plus4 legacy model — 4 November 2026
 Added the discontinued QIDI Plus4 as a separate legacy standard-printer record in TEST and LIVE, with one UK-local used-market completed-sale evidence record. eBay UK item 318168687789 showed two sold and out of stock at £381.75; seller located Shepperton, UK; seller described the unit as fully working after a repaired filament-sensor fault and fully tested. Displayed total includes £11.75 Buyer Protection, not seller proceeds. TEST product cb84e14e-25bc-48a7-a8cf-60cc956555d3 / evidence 7350ce29-1fc4-46c9-b024-49b52d44ae1f. LIVE product 11969e89-e139-40b9-bd53-5c8a6f8623c8 / evidence f35eb1b7-c715-46d5-8b68-a73766c527f3. The model is retained for used-market matching; it is discontinued and replaced by Plus5. This supersedes the Batch 4 snapshot: both environments now have 73 products, 73 visible, 86 active evidence (74 UK-new / 12 UK-used), zero visible products missing evidence/branch and zero integrity failures.
+
+
+### Multi-manufacturer expansion — 4 November 2026
+
+Current verified TEST/LIVE snapshot: 72 active customer-visible products, seven manufacturers, 85 active UK GBP evidence rows (74 new, 11 used). Both environments have zero visible products without active evidence, zero null branch assignments, and zero evidence integrity failures.
+
+Additional model coverage now includes Creality Ender-3 V3 SE, Ender-5 Max, K1 Max and K2/K2 Plus/K2 Pro/K2 SE standard and CFS bundles; Anycubic Kobra S1, S1 Max and Kobra 3 Max V2 package variants plus Photon Mono M7 family, Mono 4 and P1 Max; and QIDI Max4, Plus5, Q2, Q2C and Plus4. The QIDI Plus4 used sale evidence is present in both environments. Continue to reuse the same two branches and exact package variants. Do not invent extra branches or condition systems.

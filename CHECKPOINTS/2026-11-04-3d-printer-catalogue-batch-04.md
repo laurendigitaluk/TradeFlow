@@ -35,3 +35,9 @@ LIVE Supabase: gxsrajtqzdjvmceqcpgv
 
 ## Scope
 No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Only manufacturer/product/evidence data changed independently in TEST and LIVE.
+
+
+## Legacy QIDI Plus4 evidence addendum — 4 November 2026
+Added discontinued QIDI Plus4 standard model independently to TEST and LIVE, with UK-local eBay used sold evidence £381.75 (item 318168687789; two sold; Shepperton UK seller; fully working after repaired filament-sensor fault; includes £11.75 Buyer Protection). TEST product cb84e14e-25bc-48a7-a8cf-60cc956555d3 / evidence 7350ce29-1fc4-46c9-b024-49b52d44ae1f. LIVE product 11969e89-e139-40b9-bd53-5c8a6f8623c8 / evidence f35eb1b7-c715-46d5-8b68-a73766c527f3.
+
+Final snapshot now: TEST and LIVE each 73 master products, 73 visible, 74 UK-new and 12 UK-used active evidence (86 total), zero visible products missing evidence or branch, zero evidence integrity failures. This supersedes the 72/85 Batch 4 totals above.

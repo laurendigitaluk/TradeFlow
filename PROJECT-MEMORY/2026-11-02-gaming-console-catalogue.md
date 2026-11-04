@@ -195,3 +195,19 @@ Three additional UK-new retailer observations were added to existing products in
 
 ### Verification — 4 November 2026
 TEST and LIVE both read back 113 gaming master products and 184 active evidence rows (59 UK new / 125 UK used). The active evidence quality check returned zero rows missing URL/key, non-GBP currency, non-positive price or availability. One active customer-visible product still has no evidence: WD_BLACK C50 512GB Expansion Card for Xbox Series X|S. This remains deliberately unpriced until an exact UK listing is verified. No product records were added in this batch, no valuation rules changed, and no tenant/customer/transaction/domain/Stripe/subscription data was copied or changed. No application code or Worker deployment was involved.
+
+
+## Nintendo DS handheld completion — 4 November 2026
+Four additional master products and four active UK-used evidence rows were added independently to TEST and LIVE.
+
+Evidence sources (all Cash Converters UK, current used retailer listings, GBP, availability listed):
+- Nintendo 3DS, £100.00, Southport, black, good condition, charger not included. URL https://www.cashconverters.co.uk/shop/gaming/handheld-systems--equipment/handheld-consoles/nintendo-handheld-console/019300257481. Key cashconverters-nintendo-3ds-019300257481-2026-11-04.
+- Nintendo DSi, £39.99, Oldham, black, acceptable pre-owned condition, charger not included. URL https://www.cashconverters.co.uk/shop/gaming/handheld-systems--equipment/handheld-consoles/nintendo-handheld-console/021600167068. Key cashconverters-nintendo-dsi-021600167068-2026-11-04.
+- Nintendo DS Lite, £29.99, Widnes, black, good condition, tested working, charger included, stylus missing. URL https://www.cashconverters.co.uk/shop/gaming/handheld-systems--equipment/handheld-consoles/nintendo-handheld-console/015400188225. Key cashconverters-nintendo-ds-lite-015400188225-2026-11-04.
+- Original Nintendo DS, £29.99, Levenshulme, black, good condition, fully functional, charger included, stylus missing. URL https://www.cashconverters.co.uk/shop/gaming/handheld-systems--equipment/handheld-consoles/nintendo-handheld-console/020300169664. Key cashconverters-nintendo-ds-020300169664-2026-11-04.
+
+TEST IDs: Nintendo 3DS product 7fc5b7cb-7009-418a-a3c6-e9f62bfcd0b4 / evidence 9757eda4-afd6-4d9e-a25d-e1a29e2d25df; Nintendo DSi product c01aaf1f-eeea-4c22-bfde-f21c3f942ce2 / evidence 4e2ce2cd-795c-4ee1-b94b-51fd184dd853; Nintendo DS Lite product 5ee947ec-26ca-4e45-8e94-a8b193ea58da / evidence a1b62370-6d34-4407-93c5-8fc90f4d044a; original Nintendo DS product 5e3f2614-a97c-419d-82da-0e26a1fdf1a4 / evidence 7714913b-8431-4c75-9319-4ebf0acd6f1e.
+
+LIVE IDs: Nintendo 3DS product 23454e57-0125-4449-af81-5af370b32075 / evidence 865a6a82-f66e-47b9-a38d-bb6fa4438429; Nintendo DSi product 3a167119-f10c-4df0-b011-839e515ce748 / evidence 07113cef-4e59-4bd2-ac74-58f42452ce8e; Nintendo DS Lite product b7fd1e78-6ad3-4c17-b1ec-6ba0f89e9ce2 / evidence f4136357-9cfd-41ac-88f8-a8e079e8d9e0; original Nintendo DS product bd46f999-a530-4711-b132-480a06211662 / evidence c55173b3-8f25-45bd-a8a8-ac8526aaa707.
+
+Verification: TEST and LIVE each contain 117 active gaming master products, 109 active customer-visible products and 188 active evidence rows (59 UK new / 129 UK used). Zero malformed active evidence rows. All four models are on the existing Nintendo Handheld Consoles branch. Asking prices are not completed-sale data. No valuation rules, tenant/customer/transaction/domain/Stripe/subscription data, application code or Worker deployments were changed.

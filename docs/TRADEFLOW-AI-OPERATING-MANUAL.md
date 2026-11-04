@@ -3134,3 +3134,7 @@ For this catalogue workflow, `mcp__Supabase__execute_sql` was successfully used 
 
 ## How It Works homepage routing correction (4 November 2026)
 When checking the public guide, distinguish the homepage's legacy `#how` workflow preview from the dedicated accordion guide at `how-it-works.html`. The homepage header link and hero CTA must both target `how-it-works.html`. TEST already had the correct destinations; LIVE was corrected and merged in PR #218. Confirm the Worker deployment and test the no-www LIVE domain before reporting completion. Do not treat a Git merge or queued Cloudflare build as proof that the updated page is live. No Supabase or business data changes are involved.
+
+
+## Nintendo Switch V1 and Game Boy Advance SP catalogue insert (4 November 2026)
+The catalogue's missing Nintendo Switch V1 and Game Boy Advance SP records were added after checking both databases for duplicates. Switch V1 is identified specifically by hardware model HAC-001; do not merge with the existing Nintendo Switch (V2) HAC-001(-01) record. Game Boy Advance SP is separate from original Game Boy Advance and Game Boy Micro. Exact Cash Converters UK used/listed GBP evidence was attached to each product. After insertion, TEST and LIVE independently verified 119 active gaming products, 111 customer-visible and 190 active evidence rows (59 new / 131 used), zero malformed rows. Use environment-specific IDs and retain listing-vs-sold distinction.

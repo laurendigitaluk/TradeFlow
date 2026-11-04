@@ -2513,3 +2513,7 @@ The public TradeFlow **How It Works** page is being rebuilt as a simple, source-
 ## How It Works accordion headings — numbering removed (4 November 2026)
 
 The public How It Works accordion now uses section titles and supporting subtitles only. All decorative section-number badges have been removed; the order is communicated by the headings themselves. This is a presentation-only change. No page copy, workflow behaviour, Supabase data, tenant/customer records, payments or subscriber website content is changed.
+
+
+## Public website pages and examples update — 4 November 2026
+Use the dedicated `how-it-works.html` route rather than the former homepage `#how` anchor. Remove About/Facts from navigation and retain `facts.html` as a legacy redirect. The Examples page is DB-rendered by `platform-public-pages.js`; preserve the visual editor `visual_layout` renderer. Four product-led examples use Pokémon, Sony camera, DJI Mini 4 Pro and PlayStation 5 imagery. Do not invent Contact Us email or company registration details. Keep displayed monthly/annual pricing aligned to signup without modifying Stripe. Confirm Cloudflare separately.

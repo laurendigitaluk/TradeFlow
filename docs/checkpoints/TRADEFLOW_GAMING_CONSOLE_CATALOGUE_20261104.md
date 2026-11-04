@@ -41,3 +41,15 @@ TEST and LIVE independently verified:
 - No customer, tenant, transaction, payment, Stripe, subscription or domain data was touched.
 - No valuation logic, application code or Worker deployment changed.
 - Next research candidates: Sega CDX regional naming is covered by Multi-Mega rather than a duplicate; assess WonderMega variants and remaining historical Sega hardware, validating model identity and UK evidence before adding.
+
+
+## Further Sega historical systems — same session
+Added three more distinct Sega systems to both environments, each with a UK eBay GBP used-market evidence record:
+- Sega SG-1000 — £449.00, item 168355445875, London listing, boxed and described as complete/working. TEST product 4812bf9a-c2e7-4816-b1c8-b7476c299347, evidence 9150ba6d-37ed-41c2-b702-465fb4b59bbf. LIVE product a3a44c72-5b00-4376-8f4c-d9eb7e9b44ec, evidence 330d3837-300d-41d4-9f24-1a3c2ec34d15. https://www.ebay.co.uk/itm/168355445875
+- Sega Mark III — £173.80, item 318928337003. Seller location Japan; listing is on eBay UK and price displayed in GBP, but international delivery/import terms need checking. TEST product f6365657-eab9-4003-b45a-c78aa940b8eb, evidence add4ea94-7160-41ec-a939-627c886d5111. LIVE product 3917a14e-a664-4aec-8b93-00d023858e9b, evidence a30d8b5a-11ee-4993-a832-1e680e75920f. https://www.ebay.co.uk/itm/318928337003
+- Sega Pico — £155.58, item 307149542948, seller in Fareham, includes two games/cables/adaptors; active auction price, not completed sale. TEST product e2ce884b-2f6f-4e0b-858b-985ee32758a3, evidence 0b2b04cb-d390-40f4-a273-9fa42aba825f. LIVE product 4d50ecbf-ad3a-4519-8ff2-6d38d0a6e51a, evidence c8d94b25-4fc5-40ad-89ee-5b36bca28e39. https://www.ebay.co.uk/itm/307149542948
+
+The Mark III remains distinct from the UK Master System models; the SG-1000 is the earlier system; Pico is Sega's separate children's edutainment hardware. All evidence is `uk_used` asking-price reference only and does not influence automated valuations.
+
+## Latest verification after both Sega batches
+TEST and LIVE each independently show 142 active gaming products, 134 customer-visible products and 221 active evidence rows (59 `uk_new`, 162 `uk_used`), with zero malformed active evidence rows. IDs are environment-specific. No customer, tenant, transaction, payment, Stripe, subscription or domain data was changed; no application code, valuation logic or Worker deployment changed.

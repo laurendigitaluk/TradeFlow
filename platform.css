@@ -348,3 +348,98 @@ body{background:#f4f6f8}
 .pve-type-text .pve-public-inner,.pve-type-media .pve-public-inner{display:block}
 .journey-plain,.responsibility ol{list-style:none!important;padding-left:0!important}
 .journey-plain .number{display:none!important}
+
+/* Category storefront examples — GearCashOut-inspired layout, individual brand palettes */
+.category-example-previews{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.category-preview-card{display:block;min-width:0;background:#071a2d;border-radius:14px;padding:12px;color:#fff;box-shadow:0 14px 34px rgba(7,26,45,.14)}
+.category-preview-card>strong{display:block;color:#fff;font-size:1rem;margin:13px 4px 3px}
+.category-preview-card>span{display:block;color:#b9c7d5;font-size:.8rem;margin:0 4px 3px}
+.storefront-preview{--accent:#f15a24;--accent-dark:#c84414;--ink:#171b20;--hero:#111820;--soft:#f2f4f5;--paper:#f8f8f6;overflow:hidden;background:var(--paper);color:var(--ink);border-radius:8px;text-align:left;font-family:Inter,system-ui,sans-serif}
+.storefront-nav{height:36px;background:#f3eee5;display:flex;align-items:center;gap:10px;padding:0 12px;color:#171b20}
+.storefront-nav>b{font-size:10px;font-weight:850;white-space:nowrap}
+.storefront-nav>span{flex:1;text-align:center;font-size:6px;white-space:nowrap;color:#353a40}
+.storefront-nav>button,.storefront-hero-copy>button{border:0;border-radius:3px;background:var(--accent);color:#fff;padding:6px 9px;font-size:6px;font-weight:800;white-space:nowrap}
+.storefront-hero{min-height:150px;padding:20px 18px;display:grid;grid-template-columns:1.15fr .85fr;gap:10px;align-items:center;background:linear-gradient(112deg,var(--hero),var(--hero) 62%,var(--accent-dark))}
+.storefront-hero-copy{min-width:0}
+.storefront-hero-copy>small{font-size:6px;letter-spacing:1.2px;font-weight:850;color:var(--accent);display:block}
+.storefront-hero-copy h3{font-size:22px;line-height:.98;letter-spacing:-.6px;color:#fff;margin:7px 0;max-width:280px}
+.storefront-hero-copy p{font-size:7px;line-height:1.4;color:#d4d9dd;margin:6px 0 10px;max-width:260px}
+.storefront-hero-copy>button{font-size:6px;padding:7px 10px}
+.storefront-hero-art{height:108px;position:relative;display:grid;place-items:center;overflow:hidden;border-radius:6px;background:radial-gradient(circle at 50% 45%,var(--accent),transparent 68%)}
+.storefront-hero-art:before{content:"";position:absolute;width:90px;height:90px;border:1px solid rgba(255,255,255,.24);border-radius:50%;box-shadow:0 0 0 12px rgba(255,255,255,.05),0 0 0 24px rgba(255,255,255,.04)}
+.storefront-hero-art i{position:relative;display:block;width:60px;height:42px;border-radius:8px;background:linear-gradient(135deg,#f8f8f4,#aeb8c1);box-shadow:0 12px 22px rgba(0,0,0,.35);transform:rotate(-8deg)}
+.storefront-hero-art>b{position:absolute;bottom:7px;right:8px;font-size:5px;letter-spacing:1px;color:#fff}
+.storefront-categories{display:flex;gap:5px;overflow:hidden;padding:9px 10px;background:#fff;border-bottom:1px solid #e5e7e9}
+.storefront-categories span{white-space:nowrap;padding:5px 7px;border-radius:3px;background:var(--soft);font-size:5px;font-weight:750;color:var(--ink)}
+.storefront-section-head{display:flex;justify-content:space-between;align-items:center;padding:10px 10px 6px;background:var(--paper)}
+.storefront-section-head b{font-size:8px}.storefront-section-head span{font-size:6px;color:var(--accent-dark);font-weight:750}
+.storefront-products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:4px 9px 11px;background:var(--paper)}
+.storefront-product{min-width:0;background:#fff;border:1px solid #e5e7e9;border-radius:4px;padding:5px}
+.storefront-product>strong{display:block;font-size:6px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.storefront-product>small{display:block;font-size:5px;color:#68717b;margin-top:2px}
+.product-visual{height:48px;border-radius:3px;position:relative;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#dfe5e8,#f8f8f6)}
+.product-visual:before,.product-visual:after,.product-visual i{content:"";position:absolute;display:block}
+.product-visual>b{position:absolute;bottom:4px;left:5px;font-size:5px;color:rgba(20,25,30,.7);z-index:2}
+.theme-pokemon{--accent:#f3b51b;--accent-dark:#bd3c24;--hero:#222a38;--soft:#fff2c7;--paper:#fffaf0}
+.theme-pokemon .storefront-hero-art{background:radial-gradient(circle at 50% 45%,#f5c22c,#cf4d36 72%)}
+.hero-art-pokemon i{width:42px;height:57px;border:3px solid #f8d56b;border-radius:5px;background:linear-gradient(145deg,#3c91c9 0 38%,#f8d35a 39% 44%,#d94e40 45%);transform:rotate(9deg);box-shadow:0 5px 12px #1118}
+.hero-art-pokemon:after{content:"★  ★  ★";position:absolute;top:10px;color:#fff5bf;font-size:12px;letter-spacing:5px}
+.visual-card{background:radial-gradient(circle at 50% 45%,#f9d86e,#d45a44)}
+.visual-card:before{width:27px;height:38px;border:2px solid #f8d56b;border-radius:3px;background:linear-gradient(145deg,#4c9ac6 0 38%,#f6d35b 39% 45%,#d64b42 46%);transform:rotate(-9deg);box-shadow:0 4px 8px #3338}
+.visual-packs:before{width:19px;height:34px;background:linear-gradient(145deg,#6b5bd1,#e65c61 55%,#f4c84b);border:2px solid #f8e3a5;border-radius:3px;transform:rotate(9deg);box-shadow:14px 3px #6c86c8,-12px 5px #dd9a39}
+.visual-slab:before{width:25px;height:37px;border:3px solid #b9d6ed;border-radius:4px;background:linear-gradient(150deg,#f5f8fb,#f1ca65 45%,#6d85c4);box-shadow:0 3px 8px #3336}
+.theme-cameras{--accent:#c1a66a;--accent-dark:#4b5142;--hero:#202923;--soft:#e9e8df;--paper:#f7f7f1}
+.theme-cameras .storefront-hero-art{background:radial-gradient(circle at 50% 45%,#a5a17b,#353d35 72%)}
+.hero-art-cameras i{width:76px;height:44px;border-radius:7px;background:linear-gradient(145deg,#4a5350,#171d1c);border:2px solid #87908a}
+.hero-art-cameras i:before{content:"";position:absolute;width:29px;height:29px;left:22px;top:5px;border-radius:50%;border:5px solid #bbc2bc;background:radial-gradient(circle,#182d3a 0 30%,#56707a 33% 55%,#111 60%)}
+.visual-camera:before{width:42px;height:27px;border-radius:5px;background:linear-gradient(145deg,#5a625c,#171d1c);border:2px solid #9ca59b}
+.visual-camera:after{width:18px;height:18px;border-radius:50%;border:4px solid #c4c9c0;background:#243c4b}
+.visual-lens:before{width:19px;height:42px;border-radius:6px;background:linear-gradient(90deg,#15191b,#69736d,#1c2221);box-shadow:8px 0 #343b37,-8px 0 #343b37}
+.visual-kit:before{width:36px;height:25px;border-radius:4px;background:#303a36;border:2px solid #a4a88e}
+.visual-kit:after{width:14px;height:14px;border:3px solid #c3c9ba;border-radius:50%;background:#273e4b}
+.theme-drones{--accent:#49c6c2;--accent-dark:#126a70;--hero:#102d36;--soft:#d9f2f0;--paper:#f2fbfa}
+.theme-drones .storefront-hero-art{background:radial-gradient(circle at 50% 45%,#4ac7c3,#123e4a 72%)}
+.hero-art-drones i{width:58px;height:10px;border-radius:8px;background:#d5e3e1;transform:rotate(-12deg)}
+.hero-art-drones i:before,.hero-art-drones i:after{content:"";position:absolute;width:30px;height:4px;top:3px;left:-19px;background:#d5e3e1;transform:rotate(45deg);box-shadow:64px 0 #d5e3e1}
+.visual-drone:before{width:35px;height:7px;border-radius:8px;background:#394e52;box-shadow:-14px -13px 0 -1px #394e52,14px -13px 0 -1px #394e52,-14px 13px 0 -1px #394e52,14px 13px 0 -1px #394e52}
+.visual-drone:after{width:10px;height:10px;border-radius:50%;background:#63c7c1;box-shadow:0 0 0 3px #364f53}
+.visual-mini-drone:before{width:34px;height:18px;border-radius:50% 50% 35% 35%;background:#394c50;box-shadow:-18px -10px 0 -6px #394c50,18px -10px 0 -6px #394c50,-18px 10px 0 -6px #394c50,18px 10px 0 -6px #394c50}
+.visual-controller:before{width:42px;height:20px;border-radius:8px 8px 12px 12px;background:#364b50}
+.visual-controller:after{width:4px;height:4px;border-radius:50%;background:#5ed5ce;box-shadow:8px 4px #5ed5ce,23px -2px #5ed5ce}
+.theme-gaming{--accent:#a88aff;--accent-dark:#503b9a;--hero:#17162d;--soft:#eee9ff;--paper:#f7f5ff}
+.theme-gaming .storefront-hero-art{background:radial-gradient(circle at 50% 45%,#9878ef,#252044 72%)}
+.hero-art-gaming i{width:27px;height:72px;border-radius:6px;background:linear-gradient(90deg,#1d202d,#e6e3f2,#27283a);transform:rotate(18deg)}
+.hero-art-gaming i:before{content:"";position:absolute;left:6px;top:8px;width:13px;height:24px;border-radius:2px;background:#91b5ed}
+.visual-playstation:before{width:18px;height:42px;border-radius:5px;background:linear-gradient(90deg,#1c2333,#f1f1f3,#252c3d);box-shadow:12px 5px #343b53}
+.visual-xbox:before{width:45px;height:26px;border-radius:13px;background:linear-gradient(145deg,#313b42,#151b20)}
+.visual-xbox:after{width:12px;height:12px;border:3px solid #a6d87b;border-radius:50%}
+.visual-nintendo:before{width:37px;height:25px;border-radius:4px;background:linear-gradient(90deg,#ed626a 0 22%,#333 22% 78%,#5f8de9 78%)}
+@media(max-width:760px){.category-example-previews{grid-template-columns:1fr}.storefront-hero{min-height:140px;padding:15px 12px}.storefront-hero-copy h3{font-size:18px}.storefront-hero-art{height:94px}.storefront-nav{padding:0 8px;gap:6px}.storefront-nav>span{font-size:5px}.storefront-nav>button{font-size:5px;padding:5px}}
+.category-example-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.category-example-card{padding:12px;min-width:0}
+.category-example-frame{overflow:hidden;border-radius:8px}
+.category-example-card .storefront-nav{height:42px;padding:0 14px}
+.category-example-card .storefront-nav>b{font-size:12px}
+.category-example-card .storefront-nav>span{font-size:8px}
+.category-example-card .storefront-nav>button{font-size:7px;padding:8px 11px}
+.category-example-card .storefront-hero{min-height:210px;padding:26px 24px}
+.category-example-card .storefront-hero-copy h3{font-size:32px;max-width:320px}
+.category-example-card .storefront-hero-copy>small{font-size:8px}
+.category-example-card .storefront-hero-copy p{font-size:10px;max-width:320px}
+.category-example-card .storefront-hero-copy>button{font-size:8px;padding:9px 13px}
+.category-example-card .storefront-hero-art{height:160px}
+.category-example-card .storefront-hero-art i{transform:scale(1.4)}
+.category-example-card .storefront-categories{padding:13px 15px;gap:8px}
+.category-example-card .storefront-categories span{font-size:7px;padding:7px 10px}
+.category-example-card .storefront-section-head{padding:15px 15px 8px}
+.category-example-card .storefront-section-head b{font-size:11px}
+.category-example-card .storefront-section-head span{font-size:8px}
+.category-example-card .storefront-products{padding:5px 14px 15px;gap:10px}
+.category-example-card .product-visual{height:92px}
+.category-example-card .storefront-product{padding:8px}
+.category-example-card .storefront-product>strong{font-size:9px}
+.category-example-card .storefront-product>small{font-size:7px}
+.category-example-caption{padding:14px 4px 5px}
+.category-example-caption h2{color:#fff;margin:0 0 5px;font-size:1.15rem}
+.category-example-caption p{color:#c4d0db;font-size:.85rem;margin:0;line-height:1.5}
+@media(max-width:850px){.category-example-grid{grid-template-columns:1fr}.category-example-card .storefront-hero{min-height:180px}.category-example-card .storefront-hero-copy h3{font-size:27px}}

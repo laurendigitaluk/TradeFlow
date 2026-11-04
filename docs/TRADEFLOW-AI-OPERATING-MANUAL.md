@@ -3197,3 +3197,23 @@ Full environment-specific IDs, sources and duplicate cleanup are recorded in:
 - CHECKPOINTS/2026-11-04-3d-printer-catalogue-batch-03.md
 
 No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Only master catalogue and evidence rows were changed separately in TEST and LIVE.
+
+
+## QIDI current-model catalogue — 4 November 2026 (Batch 4)
+
+QIDI has been added as the seventh manufacturer in the 3D Printers & Equipment category. TEST and LIVE independently contain eight QIDI product/package records: Q2C standard and QIDI BOX Combo; Q2 standard and QIDI BOX Combo; Plus5 standard and QIDI BOX Combo; Max4 standard and QIDI BOX Combo. Eight UK GBP new-price evidence rows were added in each environment.
+
+Current independently verified TEST/LIVE snapshot:
+- 72 master products; 72 active customer-visible.
+- 85 active evidence rows (74 UK-new / 11 UK-used).
+- 0 visible products missing active evidence; 0 missing branch assignments; 0 evidence integrity failures.
+- Seven manufacturers represented.
+- TEST and LIVE counts match.
+
+QIDI standard printer and QIDI BOX package prices are separate. The Q2 Combo price is recorded from a UK comparison page that identifies the QIDI direct-store price; the source is named accordingly. Other prices are from QIDI UK Store pages. Combo prices must not be merged into standard printer records. No legacy QIDI models have been added in this batch; Plus4, Q1 Pro and X-Max 3 require separate lifecycle/used-market verification before adding.
+
+Full QIDI product/evidence UUIDs and sources are recorded in:
+- PROJECT-MEMORY/2026-11-04-3d-printer-catalogue-batch-04.md
+- CHECKPOINTS/2026-11-04-3d-printer-catalogue-batch-04.md
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Only manufacturer, product and evidence rows were changed separately in TEST and LIVE.

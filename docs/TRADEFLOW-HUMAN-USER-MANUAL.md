@@ -2269,3 +2269,18 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Public How It Works page — accordion rebuild (4 November 2026)
+
+The public TradeFlow **How It Works** page is being rebuilt as a simple, source-managed accordion page. It uses the shared TradeFlow public header, footer, typography, colours and button styling.
+
+- Source: `how-it-works.html` and `how-it-works.css`.
+- Interaction: native accessible HTML `details/summary` accordions; no screenshots, embedded screenshot media, illustrations or visual page canvas.
+- Content covers the TradeFlow subscription, business website template, Website Builder, master product catalogue and AI-assisted research, payment setup, valuation and offers, customer payment, manual shipping, inventory/retail listings and day-to-day management.
+- Includes GearCashOut.co.uk as an external example buying website.
+- Important operating boundaries remain explicit: the launch plan is £59.99/month after a 30-day free trial; platform subscription billing is separate from a business's retail payment account; TradeFlow does not automatically pay customers for acquired items; shipping is manually arranged outside TradeFlow and courier payments are not processed by TradeFlow.
+- `platform-public-pages.js` no longer applies the old visual/CMS page content to `how-it-works.html`; the Examples page remains CMS-rendered.
+- `platform-public-pages-visual-editor.js` now exposes Examples only. How It Works is maintained in source so the rejected screenshot canvas cannot overwrite the accordion page.
+- The existing `platform_public_pages` records are retained for audit continuity but are no longer read to render How It Works. No Supabase schema, RLS, RPC, customer, tenant, payment, or transaction data was changed.
+- This change is on isolated LIVE and TEST feature branches pending review, merge and separate Cloudflare Worker verification. A Git commit alone is not evidence of deployment.

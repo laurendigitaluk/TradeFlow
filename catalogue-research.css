@@ -1,0 +1,65 @@
+/* TradeFlow Product Catalogue & AI Research — aligned with the public landing page */
+.catalogue-page{color:#10243b;background:#fff}
+.catalogue-intro{padding:72px 7% 66px;background:linear-gradient(115deg,#071a2d 0%,#102a43 62%,#75401f 100%);color:#fff}
+.catalogue-intro .eyebrow,.catalogue-content .eyebrow,.research-band .eyebrow,.evidence-card .eyebrow,.valuation-content .eyebrow,.catalogue-closing .eyebrow{color:#fb923c;font-size:.7rem;font-weight:850;letter-spacing:.14em}
+.catalogue-intro h1{font-size:clamp(2.7rem,5.2vw,4.9rem);line-height:1.02;letter-spacing:-.05em;margin:15px 0 18px}
+.catalogue-intro h1 span{color:#fb923c}
+.catalogue-intro>p{max-width:800px;color:#d8e1eb;font-size:1.08rem;line-height:1.7;margin:0}
+.intro-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:27px}
+.catalogue-intro .button-outline{background:transparent;color:#fff;border-color:#8191a2}
+.catalogue-content{padding:65px 7% 70px;max-width:1500px;margin:0 auto}
+.content-heading{text-align:center;max-width:800px;margin:0 auto 34px}
+.content-heading h2{font-size:clamp(1.9rem,3.4vw,2.8rem);letter-spacing:-.04em;line-height:1.08;margin:10px 0}
+.content-heading>p{color:#647386;line-height:1.65;margin:0}
+.category-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.category-card{padding:24px 23px 22px;border:1px solid #dfe6ed;border-radius:13px;background:linear-gradient(180deg,#fff 0%,#f8fafb 100%);min-height:205px;box-shadow:0 7px 22px rgba(16,36,59,.035)}
+.category-kicker{display:block;color:#c45116;font-size:.65rem;font-weight:850;letter-spacing:.12em;margin-bottom:13px}
+.category-card h3{font-size:1.12rem;letter-spacing:-.02em;margin:0 0 9px}
+.category-card p{color:#5e6d7e;font-size:.87rem;line-height:1.55;margin:0 0 13px}
+.category-card small{display:block;padding-top:11px;border-top:1px solid #e6ebef;color:#667587;font-size:.74rem;line-height:1.5}
+.catalogue-footnote{max-width:980px;margin:22px auto 0;color:#788596;font-size:.76rem;line-height:1.55;text-align:center}
+.research-band{background:#f1f5f8;padding:68px 7% 74px}
+.research-inner{max-width:1150px;margin:auto}
+.research-band .content-heading{margin-bottom:32px}
+.research-steps{display:grid;gap:0;background:#fff;border:1px solid #dfe6ed;border-radius:14px;overflow:hidden}
+.research-steps article{display:grid;grid-template-columns:48px 1fr;gap:18px;padding:21px 25px;border-bottom:1px solid #e7ecf0}
+.research-steps article:last-child{border-bottom:0}
+.research-steps article>b{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff1e7;color:#c45116;font-size:.74rem}
+.research-steps h3{font-size:.98rem;margin:1px 0 6px}
+.research-steps p{font-size:.86rem;color:#647386;line-height:1.6;margin:0;max-width:850px}
+.evidence-content{padding:68px 7%;max-width:1250px;margin:auto}
+.evidence-card{border:1px solid #dfe6ed;border-radius:15px;padding:30px 32px;background:#fff;box-shadow:0 10px 28px rgba(16,36,59,.055)}
+.evidence-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px}
+.evidence-heading h2{font-size:1.55rem;letter-spacing:-.03em;margin:8px 0 20px}
+.evidence-status{border:1px solid #cfe3d9;background:#f2faf5;color:#286448;padding:7px 10px;border-radius:20px;font-size:.7rem;font-weight:800;white-space:nowrap}
+.evidence-product{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid #e7ecf0;border-bottom:1px solid #e7ecf0}
+.evidence-product strong{color:#10243b}
+.evidence-price{display:grid;gap:4px;padding:17px 0;border-bottom:1px solid #e7ecf0}
+.evidence-price small{font-size:.72rem;color:#7b8795}
+.evidence-price strong{font-size:1.65rem;letter-spacing:-.04em;color:#10243b}
+.evidence-price span{font-size:.76rem;color:#667587}
+.evidence-product span{color:#667587;font-size:.85rem}
+.evidence-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 25px;padding:22px 0}
+.evidence-fields div{display:grid;gap:5px}
+.evidence-fields small{color:#7b8795;font-size:.72rem}
+.evidence-fields strong{font-size:.86rem;color:#344054}
+.evidence-note{font-size:.78rem;color:#788596;line-height:1.6;margin:0;padding-top:16px;border-top:1px solid #e7ecf0}
+.valuation-content{background:#f7f9fb;padding:65px 7%}
+.valuation-grid{max-width:1250px;margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.valuation-grid article{background:#fff;border:1px solid #e0e6ed;border-radius:12px;padding:25px}
+.valuation-grid h2{font-size:1.12rem;letter-spacing:-.025em;margin:10px 0}
+.valuation-grid p{font-size:.86rem;color:#647386;line-height:1.6;margin:0}
+.catalogue-closing{padding:68px 7% 74px;text-align:center;background:#071a2d;color:#fff}
+.catalogue-closing h2{font-size:clamp(1.8rem,3.2vw,2.7rem);letter-spacing:-.04em;margin:10px 0}
+.catalogue-closing>p{max-width:720px;margin:0 auto;color:#cbd5e1;line-height:1.65;font-size:.92rem}
+.catalogue-closing .intro-actions{justify-content:center}
+.catalogue-closing .button-outline{background:transparent;color:#fff;border-color:#718197}
+.site-footer{display:flex;align-items:flex-start;justify-content:space-between;gap:30px;padding:34px 7%;background:#fff;border-top:1px solid #e5eaf0;color:#536273}
+.site-footer p{font-size:.8rem;margin:8px 0 0}
+.footer-logo{font-size:1.15rem;font-weight:900;color:#10243b}
+.site-footer nav{display:flex;flex-wrap:wrap;gap:12px 20px;font-size:.78rem}
+.site-footer nav a:hover{color:#c45116}
+.site-footer>small{font-size:.72rem;color:#8792a0}
+@media(max-width:900px){.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.valuation-grid{grid-template-columns:1fr}.site-footer{flex-wrap:wrap}}
+@media(max-width:760px){.catalogue-intro{padding:52px 6% 48px}.catalogue-content{padding:48px 6% 55px}.research-band{padding:48px 6% 55px}.evidence-content{padding:48px 6%}.evidence-card{padding:24px 20px}.evidence-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.research-steps article{padding:18px 16px;gap:12px}.site-footer{padding:28px 6%;display:grid}.site-footer nav{gap:11px 16px}}
+@media(max-width:500px){.category-grid{grid-template-columns:1fr}.category-card{min-height:0}.evidence-heading{display:block}.evidence-status{display:inline-block;margin-bottom:10px}.evidence-product{display:grid;gap:5px}.evidence-fields{grid-template-columns:1fr 1fr}.catalogue-intro h1{font-size:clamp(2.45rem,11vw,3.4rem)}}

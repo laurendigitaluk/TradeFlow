@@ -3144,3 +3144,6 @@ The original Nintendo Game Boy Advance was added after confirming no duplicate i
 
 ## Sega manufacturer and Mega Drive addition (4 November 2026)
 Before adding the first Sega model, confirm manufacturer and branch absence separately in TEST and LIVE. Create the Sega manufacturer and Sega Home Consoles branch within each environment, then add the product and exact UK-used listing evidence. Do not merge original Sega Mega Drive hardware with Mega Drive Mini or third-party AtGames emulation devices. TEST and LIVE independently verify 121 active gaming products, 113 visible and 193 active evidence rows, with zero malformed rows. Asking prices are not completed sales; preserve environment-specific IDs.
+
+## Sega Master System II addition (4 November 2026)
+Add Master System II as a separate Sega home-console product; do not merge with the original Master System or Mega Drive. Reuse the already-created Sega manufacturer and Sega Home Consoles branch separately in each environment. Evidence is a Cash Converters UK used/listed GBP retailer asking price, not a completed sale. TEST and LIVE independently verify 122 active gaming products, 114 visible and 194 active evidence rows (59 new / 135 used), with zero malformed rows.

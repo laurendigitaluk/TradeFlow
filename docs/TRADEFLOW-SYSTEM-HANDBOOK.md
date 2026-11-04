@@ -12,7 +12,7 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living document  
-**Version:** 4.6  
+**Version:** 4.7  
 **Date:** 4 November 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
@@ -1878,7 +1878,7 @@ The 3D printer master catalogue has been established independently in TEST and L
 
 - Category: **3D Printers & Equipment**.
 - Reused branches in both environments: **3D Printers** and **3D Printer Equipment & Accessories**. Do not invent a separate condition taxonomy or create technology-specific branches unless a later verified catalogue requirement justifies it.
-- Verified snapshot in each environment: **39 active customer-visible master products**, **6 manufacturers**, and **47 active UK GBP market-evidence records** (36 UK-new and 11 UK-used).
+- Verified snapshot in each environment: **72 active customer-visible master products**, **6 manufacturers**, and **85 active UK GBP market-evidence records** (74 UK-new and 11 UK-used).
 - Both environments have zero visible active products without active evidence, zero visible products without a branch, and zero active evidence integrity failures.
 - Manufacturers represented: Bambu Lab, Creality, Anycubic, Elegoo, Flashforge and Prusa Research.
 - Package variants are separate master product records where the package changes (for example AMS / AMS Lite / AMS 2 Pro bundles, Kobra 4 ACE 2 Pro Combo, Centauri Carbon 2 CANVAS Combo and X1 Carbon AMS Combo). Do not merge bundle prices into standard-printer evidence.
@@ -1903,7 +1903,7 @@ No application code, valuation logic, RLS, Edge Function, Stripe configuration o
 
 ### Bambu Lab expansion — 4 November 2026
 
-The verified catalogue has expanded to 39 products and 47 active evidence rows. Bambu Lab now includes A2L, A2L Combo, H2D, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W/40W Laser Full Combos, H2D Pro, H2C Vortek, H2S, H2S AMS Combo, H2S Laser Combo and legacy P1P. All package variants remain distinct master products. The A2L standard listing is recorded as backorder because the UK retailer page says “Ships When Available”. P1P has used evidence only. The latest product/evidence UUIDs are recorded in the Batch 2 checkpoint.
+The verified catalogue has expanded to 39 products and 85 active evidence rows. Bambu Lab now includes A2L, A2L Combo, H2D, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W/40W Laser Full Combos, H2D Pro, H2C Vortek, H2S, H2S AMS Combo, H2S Laser Combo and legacy P1P. All package variants remain distinct master products. The A2L standard listing is recorded as backorder because the UK retailer page says “Ships When Available”. P1P has used evidence only. The latest product/evidence UUIDs are recorded in the Batch 2 checkpoint.
 
 
 ## 3D printer catalogue continuation — 4 November 2026 (Batch 3)
@@ -1912,7 +1912,7 @@ The earlier 39-product / 47-evidence snapshot is superseded by this independentl
 
 - Category: **3D Printers & Equipment**.
 - Active branches: **3D Printers** and **3D Printer Equipment & Accessories**.
-- Master products: **64** across six manufacturers.
+- Master products: **64** across seven manufacturers.
 - Active customer-visible products: **63**. One active Anycubic Kobra S1 ACE 2 Pro variant remains deliberately non-visible; do not expose it without confirming the package presentation.
 - Active evidence: **77** (66 UK-new and 11 UK-used).
 - Visible products missing active evidence: **0**.
@@ -1955,3 +1955,12 @@ No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenan
 
 ### QIDI Plus4 legacy model — 4 November 2026
 Added the discontinued QIDI Plus4 as a separate legacy standard-printer record in TEST and LIVE, with one UK-local used-market completed-sale evidence record. eBay UK item 318168687789 showed two sold and out of stock at £381.75; seller located Shepperton, UK; seller described the unit as fully working after a repaired filament-sensor fault and fully tested. Displayed total includes £11.75 Buyer Protection, not seller proceeds. TEST product cb84e14e-25bc-48a7-a8cf-60cc956555d3 / evidence 7350ce29-1fc4-46c9-b024-49b52d44ae1f. LIVE product 11969e89-e139-40b9-bd53-5c8a6f8623c8 / evidence f35eb1b7-c715-46d5-8b68-a73766c527f3. The model is retained for used-market matching; it is discontinued and replaced by Plus5. This supersedes the Batch 4 snapshot: both environments now have 73 products, 73 visible, 86 active evidence (74 UK-new / 12 UK-used), zero visible products missing evidence/branch and zero integrity failures.
+
+
+### Multi-manufacturer expansion — 4 November 2026
+
+The current independently verified snapshot is **72 active customer-visible products across seven manufacturers** and **85 active UK GBP evidence rows** (74 `uk_new`, 11 `uk_used`) in both TEST and LIVE. Manufacturers: Bambu Lab, Creality, Anycubic, Elegoo, Flashforge, Prusa Research and QIDI.
+
+The catalogue now includes the Creality Ender-3 V3 SE, Ender-5 Max, K1 Max and K2/K2 Plus/K2 Pro/K2 SE families, including standard and CFS bundle variants; Anycubic Kobra S1/S1 Max/Kobra 3 Max V2 families and Photon Mono M7/M7 Pro/M7 Max/Mono 4/P1 Max resin printers; and QIDI Max4, Plus5, Q2, Q2C and legacy Plus4, including QIDI BOX bundles. Package variants remain distinct records.
+
+The QIDI Plus4 UK used sale is recorded in both environments at £381.75 (Shepperton, UK; £11.75 Buyer Protection included in the buyer-facing total). QIDI Q2 Combo £559 is from a UK comparison page reporting the QIDI UK direct-store price and is dated 6 October 2026. Anycubic Photon Mono M7 Max is recorded at £599 with `availability=sold_out`, not as available stock. Full IDs and source mapping are in the Batch 3 checkpoint.

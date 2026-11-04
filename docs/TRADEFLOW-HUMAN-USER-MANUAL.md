@@ -1953,3 +1953,18 @@ Two additional completed UK used sales have been added to the Xbox One X 1TB sha
 - Added two UK used completed sales for Xbox Series S 1TB Carbon Black in TEST and LIVE: eBay item 127189380281 sold 9 Sep 2026, displayed £208.47 less £7.29 Buyer Protection fee = £201.18; item 147607178323 sold 30 Sep 2026, displayed £258.92 less £8.92 = £250.00. Both listings specify 1TB Carbon Black and include a controller. TEST evidence IDs b21e12c1-6fa3-4e39-8b9a-9dfd98baa50c and 65d98b98-3e6e-4808-96af-35e7f779635a; LIVE IDs 87d1ff1b-4a34-418c-8177-cefa67e865d5 and f41b7c25-2a39-42cf-a89d-56675a15c3ed.
 - Added one UK used completed sale for Xbox Series X Digital Edition 1TB: eBay item 137590211396, sold 12 Aug 2026. Displayed £347.75 included £11.19 Buyer Protection fee; stored underlying item price £336.56. TEST evidence ID 733e0e5a-752d-42f2-bc7f-8e119f885162; LIVE ID ac6082fa-9b4b-4ec8-a38e-3e935c324a20.
 - All three new rows read back active in both environments, mapped to their own product UUIDs. Updated active Xbox evidence total is 35 in TEST and 35 in LIVE across 13 variants. Series S Carbon Black now 4 active; Series X Digital now 4 active. No tenant/customer/transaction/Stripe data, valuation logic, RLS/grants, application code or Worker deployments changed.
+
+
+## Public How It Works page — accordion rebuild (4 November 2026)
+
+The public TradeFlow **How It Works** page is being rebuilt as a simple, source-managed accordion page. It uses the shared TradeFlow public header, footer, typography, colours and button styling.
+
+- Source: `how-it-works.html` and `how-it-works.css`.
+- Interaction: native accessible HTML `details/summary` accordions; no screenshots, embedded screenshot media, illustrations or visual page canvas.
+- Content covers the TradeFlow subscription, business website template, Website Builder, master product catalogue and AI-assisted research, payment setup, valuation and offers, customer payment, manual shipping, inventory/retail listings and day-to-day management.
+- Includes GearCashOut.co.uk as an external example buying website.
+- Important operating boundaries remain explicit: the launch plan is £59.99/month after a 30-day free trial; platform subscription billing is separate from a business's retail payment account; TradeFlow does not automatically pay customers for acquired items; shipping is manually arranged outside TradeFlow and courier payments are not processed by TradeFlow.
+- `platform-public-pages.js` no longer applies the old visual/CMS page content to `how-it-works.html`; the Examples page remains CMS-rendered.
+- `platform-public-pages-visual-editor.js` now exposes Examples only. How It Works is maintained in source so the rejected screenshot canvas cannot overwrite the accordion page.
+- The existing `platform_public_pages` records are retained for audit continuity but are no longer read to render How It Works. No Supabase schema, RLS, RPC, customer, tenant, payment, or transaction data was changed.
+- This change is on isolated LIVE and TEST feature branches pending review, merge and separate Cloudflare Worker verification. A Git commit alone is not evidence of deployment.

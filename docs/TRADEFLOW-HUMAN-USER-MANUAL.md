@@ -1973,3 +1973,17 @@ The public TradeFlow **How It Works** page is being rebuilt as a simple, source-
 ## How It Works accordion headings — numbering removed (4 November 2026)
 
 The public How It Works accordion now uses section titles and supporting subtitles only. All decorative section-number badges have been removed; the order is communicated by the headings themselves. This is a presentation-only change. No page copy, workflow behaviour, Supabase data, tenant/customer records, payments or subscriber website content is changed.
+
+## Public Product Catalogue & AI Research page — 4 November 2026
+
+The TradeFlow public landing-page navigation includes **Catalogue & AI Research**, which opens `catalogue-research.html`. The same link is available from the public How It Works page.
+
+The page explains:
+- The catalogue is continually expanding across product categories, manufacturers, models and variants; examples are illustrative rather than a complete list.
+- Example areas include drones, phones and tablets, cameras and lenses, gaming, 3D printers, metal detectors, computers, audio/video and collectibles.
+- AI-assisted research checks the exact product and variant, researches UK market sources, checks for duplicates or mismatches, and records evidence source links and observation details.
+- Evidence records can show the source, GBP price, observed date, condition, channel, availability and notes so your business can review the reference.
+- Supported UK new-market evidence may support automatic valuation guidance. Used-market observations are reference information only and do not directly determine the automatic valuation.
+- Your business makes the final buying decision. Choosing a master catalogue product does not automatically publish it on your own website.
+
+The page is an explanation of the growing catalogue and research process, not a live search tool or a promise that every category is complete. The public page does not expose private database records or tenant-specific data.

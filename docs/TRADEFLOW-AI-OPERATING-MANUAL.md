@@ -2521,3 +2521,18 @@ Use the dedicated `how-it-works.html` route rather than the former homepage `#ho
 
 ## Examples cache correction — 4 November 2026
 When updating public Examples, change both the database-driven renderer and the static fallback markup in `index.html` and `examples.html`. Always bump the script and stylesheet query versions when changing these assets (`platform-public-pages.js?v=2`, `platform.css?v=17` for this correction); otherwise cached old examples may remain visible even after source merge. Ensure header/footer visible labels say Contact Us, not About/Facts. The four static and dynamic storefronts are Card Vault (Pokémon Charizard card), Shutter House (Sony Alpha 7 IV), Altitude Drones (DJI Mini 4 Pro), and Next Level Gaming (PlayStation 5). PR #226 merged LIVE (`8690c5b8`); PR #227 merged TEST (`d40735bf`). Source checked in both branches; Cloudflare deployment and browser check are still required.
+
+## Public product catalogue and AI research guide — 4 November 2026
+
+The public page `catalogue-research.html` explains the expanding TradeFlow master catalogue and AI-assisted UK market-evidence workflow. It is linked from the public landing-page navigation and the How It Works navigation.
+
+- Styling: `catalogue-research.css`, using the shared public `platform.css` design system (navy/amber, existing typography and buttons).
+- Page is text-led and responsive; no screenshots, illustrative images, catalogue queries, or database writes are required.
+- Category examples include drones, mobile phones/tablets, cameras/lenses, gaming consoles, 3D printers, metal detectors, laptops/computers, audio/video and trading cards/collectibles.
+- Explain catalogue growth as ongoing: new categories, manufacturers, models, variants and bundles are added as research progresses. Examples are illustrative, not an exhaustive or guaranteed-available list.
+- AI research explanation: exact product/variant matching; UK source research; duplicate/mismatch checks; evidence capture with source URL, GBP price, observed date, condition, channel, availability and notes; ongoing evidence refresh as research progresses.
+- Keep the established valuation boundary explicit: supported UK new-market evidence may support automatic valuation guidance; used-market observations are reference only and do not directly determine automatic buying valuations. The business makes the final offer decision.
+- Master catalogue selection is separate from a business's own public retail listings; selecting a master product does not publish it.
+- TEST and LIVE catalogue datasets are not synchronised by this public-page release. Current read-only audit found different environment counts, so do not publish a single hard-coded catalogue/evidence total or copy data between environments.
+- No Supabase schema, RLS, RPC, Edge Function, tenant, customer, transaction, Stripe, subscription or catalogue data changes are part of this page.
+- Verify TEST first, then promote the same source change to LIVE. A Git commit is not proof of deployment; check the correct Worker, deployed commit, public page URL and desktop/mobile rendering.

@@ -16,7 +16,6 @@
 .how-accordion[open]{border-color:#e9a06c;box-shadow:0 8px 24px rgba(16,36,59,.07)}
 .how-accordion summary{display:flex;align-items:center;gap:17px;padding:19px 22px;cursor:pointer;list-style:none;min-height:82px}
 .how-accordion summary::-webkit-details-marker{display:none}
-.accordion-number{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:10px;background:#fff1e7;color:#c45116;font-size:.75rem;font-weight:850}
 .summary-copy{display:grid;gap:5px;min-width:0}
 .summary-copy strong{font-size:1rem;line-height:1.35;color:#10243b}
 .summary-copy small{font-size:.78rem;line-height:1.4;color:#6b7888}
@@ -41,7 +40,6 @@
  .how-intro{padding:52px 6% 48px}
  .how-content{padding:48px 6% 58px}
  .how-accordion summary{padding:16px;gap:12px}
- .accordion-number{flex-basis:36px;width:36px;height:36px}
  .summary-copy strong{font-size:.92rem}
  .summary-copy small{font-size:.73rem}
  .accordion-body{padding:0 20px 21px;font-size:.86rem}

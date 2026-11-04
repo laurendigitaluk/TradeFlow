@@ -31,3 +31,7 @@ Discard the screenshot-led How It Works page and visual-canvas approach. Replace
 - LIVE: `feature/how-it-works-accordion-live-20261104` based on `production`.
 - TEST: `feature/how-it-works-accordion-test-20261104` based on `cloudflare-test`.
 - PRs and Cloudflare deployments are pending.
+
+
+## Follow-up routing correction — 4 November 2026
+The LIVE homepage was still routing its header "How it works" link and hero "See how it works" CTA to the old homepage `#how` preview section. TEST already routed both links to the dedicated guide. LIVE was corrected in PR #218, merged to `production` as `69ac4df6c171a767daee30777a576ad27a93c3ac`. Verified source in both branches now targets `how-it-works.html` for the header and hero CTA. The user screenshot showed the Cloudflare production rebuild queued; deployment and live browser rendering remain to be confirmed. No Supabase/database/customer/tenant/payment data changed.

@@ -1904,3 +1904,30 @@ No application code, valuation logic, RLS, Edge Function, Stripe configuration o
 ### Bambu Lab expansion — 4 November 2026
 
 The verified catalogue has expanded to 39 products and 47 active evidence rows. Bambu Lab now includes A2L, A2L Combo, H2D, H2D AMS 2 Pro Combo, H2D Engineering Bundle, H2D More Colour Bundle, H2D 10W/40W Laser Full Combos, H2D Pro, H2C Vortek, H2S, H2S AMS Combo, H2S Laser Combo and legacy P1P. All package variants remain distinct master products. The A2L standard listing is recorded as backorder because the UK retailer page says “Ships When Available”. P1P has used evidence only. The latest product/evidence UUIDs are recorded in the Batch 2 checkpoint.
+
+
+## 3D printer catalogue continuation — 4 November 2026 (Batch 3)
+
+The earlier 39-product / 47-evidence snapshot is superseded by this independently verified TEST and LIVE snapshot:
+
+- Category: **3D Printers & Equipment**.
+- Active branches: **3D Printers** and **3D Printer Equipment & Accessories**.
+- Master products: **64** across six manufacturers.
+- Active customer-visible products: **63**. One active Anycubic Kobra S1 ACE 2 Pro variant remains deliberately non-visible; do not expose it without confirming the package presentation.
+- Active evidence: **77** (66 UK-new and 11 UK-used).
+- Visible products missing active evidence: **0**.
+- Visible products with null branch: **0**.
+- Active evidence integrity failures (missing URL/key, non-GBP currency or non-positive price): **0**.
+- TEST and LIVE counts match exactly after reconciliation.
+
+This batch added/expanded Bambu Lab package variants, 11 Creality models/packages (K2, K2 Pro, K2 Plus, K2 SE, K1 Max, Ender-3 V3 SE and Ender-5 Max) and current Anycubic UK evidence for Kobra 3 Max V2, Kobra S1/S1 Max and Photon Mono/P1 resin models. Package variants remain separate records. Standard printers must not inherit combo pricing.
+
+Eleven duplicate Anycubic evidence captures (same product, source URL, price and evidence type) were deactivated in each environment. The canonical evidence rows remain active; duplicate rows and their notes are retained for audit. The Kobra S1 ACE 2 Pro £409 evidence is present in both environments.
+
+Some Anycubic pages displayed prices while the product was marked sold out. Their evidence notes explicitly state this and must not be interpreted as an in-stock claim. Retail asking prices are listed evidence, not completed sales. All used evidence remains reference-only and must never change automatic buying valuations.
+
+Full environment-specific IDs, sources and duplicate cleanup are recorded in:
+- PROJECT-MEMORY/2026-11-04-3d-printer-catalogue-batch-03.md
+- CHECKPOINTS/2026-11-04-3d-printer-catalogue-batch-03.md
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Only master catalogue and evidence rows were changed separately in TEST and LIVE.

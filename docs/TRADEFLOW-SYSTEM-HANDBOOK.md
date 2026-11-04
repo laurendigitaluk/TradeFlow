@@ -2681,3 +2681,7 @@ The master catalogue now includes Nintendo 3DS, Nintendo DSi, Nintendo DS Lite a
 
 ## Public How It Works navigation correction — 4 November 2026
 The LIVE homepage navigation and hero "See how it works" link must route to `how-it-works.html`, not the legacy `#how` workflow preview section. The updated accordion page is source-managed in `how-it-works.html` / `how-it-works.css`. TEST already used the correct destination; LIVE was corrected in PR #218 (merge `69ac4df6c171a767daee30777a576ad27a93c3ac`). Verify the actual Cloudflare Worker deployment and browser route separately; Git merge is not deployment proof. No database, tenant, customer, payment or subscription data was changed.
+
+
+## Nintendo Switch V1 and Game Boy Advance SP batch — 4 November 2026
+Two distinct Nintendo master products were added independently to TEST and LIVE: Nintendo Switch (V1), model HAC-001 (not HAC-001(-01)), and Nintendo Game Boy Advance SP. Each has one exact Cash Converters UK used/listed GBP evidence row. TEST and LIVE each now verify at 119 active gaming master products, 111 active customer-visible products and 190 active evidence rows (59 UK new / 131 UK used), with zero malformed active evidence rows. These are retailer asking prices, not completed-sale prices. No valuation logic, tenant/customer/transaction/domain/Stripe/subscription data, application code or Worker deployment was changed.

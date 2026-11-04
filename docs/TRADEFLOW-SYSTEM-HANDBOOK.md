@@ -12,8 +12,8 @@
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living document  
-**Version:** 4.4  
-**Date:** 19 September 2026  
+**Version:** 4.5  
+**Date:** 4 November 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
@@ -1870,3 +1870,32 @@ The gaming catalogue now includes Turtle Beach Recon 70 Green Camo (£19.99, Smy
 
 ## Xbox catalogue continuation — 4 November 2026
 The gaming master catalogue now includes the Turtle Beach Stealth 600X Gen 3 Xbox Black headset (£69.99, Smyths UK) and Turtle Beach Rematch Core Orange wired Xbox/PC controller (£19.99, Argos UK) in both TEST and LIVE. Both records are active/customer-visible and have active UK-new GBP retail evidence marked `listed`. Exact source pages and environment-specific IDs are recorded in the gaming catalogue project memory. Prices are retailer listing prices, not completed sales. Evidence is research reference only and does not alter automatic buying valuations. No code, deployment, Stripe or operational tenant/customer/transaction/payment data changed.
+
+
+## 12. Master catalogue — 3D printers (4 November 2026)
+
+The 3D printer master catalogue has been established independently in TEST and LIVE.
+
+- Category: **3D Printers & Equipment**.
+- Reused branches in both environments: **3D Printers** and **3D Printer Equipment & Accessories**. Do not invent a separate condition taxonomy or create technology-specific branches unless a later verified catalogue requirement justifies it.
+- Verified snapshot in each environment: **25 active customer-visible master products**, **6 manufacturers**, and **33 active UK GBP market-evidence records** (23 UK-new and 10 UK-used).
+- Both environments have zero visible active products without active evidence, zero visible products without a branch, and zero active evidence integrity failures.
+- Manufacturers represented: Bambu Lab, Creality, Anycubic, Elegoo, Flashforge and Prusa Research.
+- Package variants are separate master product records where the package changes (for example AMS / AMS Lite / AMS 2 Pro bundles, Kobra 4 ACE 2 Pro Combo, Centauri Carbon 2 CANVAS Combo and X1 Carbon AMS Combo). Do not merge bundle prices into standard-printer evidence.
+- The Equipment & Accessories branch currently exists but has no products; accessory catalogue expansion remains open.
+
+### Evidence and valuation rules
+
+- UK GBP only. Keep `uk_new` and `uk_used` distinct.
+- Retailer asking prices use `availability=listed`; completed eBay sales use `availability=sold`; current used asking listings remain `listed`.
+- Record the exact model/package, source URL, positive GBP price, stable source_record_key and observation date.
+- Check the UK seller/dispatch location for eBay used evidence. An eBay UK domain alone is not sufficient proof of UK-local evidence.
+- Where an eBay buyer-facing total includes Buyer Protection, record that fact and the fee in evidence notes; do not describe it as seller proceeds.
+- Used evidence is market research reference only. It must not directly or indirectly change automatic buying valuations.
+- No price should be inferred for discontinued or sold-out products. Keep sold-out/legacy status explicit and continue used-market research where possible.
+
+### Current limitations and next work
+
+The first 25 products are a verified foundation, not a complete industry catalogue. Continue manufacturer/model expansion across Creality, Bambu Lab, Anycubic, Elegoo, Flashforge, Prusa, QIDI, Phrozen, Formlabs, UltiMaker, Snapmaker, Raise3D and relevant industrial/specialist manufacturers. Add each model only after model/package identity and UK evidence have been checked. Do not fill the accessory branch with printer models.
+
+No application code, valuation logic, RLS, Edge Function, Stripe configuration or Cloudflare Worker was changed for this catalogue batch. The category/branch and master product/evidence data were inserted separately into TEST and LIVE; all environment-specific UUIDs remain separate. Full IDs and source mapping are recorded in `PROJECT-MEMORY/2026-11-04-3d-printer-catalogue.md` and `CHECKPOINTS/2026-11-04-3d-printer-catalogue-batch-01.md`.

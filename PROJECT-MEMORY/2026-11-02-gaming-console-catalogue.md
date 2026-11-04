@@ -211,3 +211,16 @@ TEST IDs: Nintendo 3DS product 7fc5b7cb-7009-418a-a3c6-e9f62bfcd0b4 / evidence 9
 LIVE IDs: Nintendo 3DS product 23454e57-0125-4449-af81-5af370b32075 / evidence 865a6a82-f66e-47b9-a38d-bb6fa4438429; Nintendo DSi product 3a167119-f10c-4df0-b011-839e515ce748 / evidence 07113cef-4e59-4bd2-ac74-58f42452ce8e; Nintendo DS Lite product b7fd1e78-6ad3-4c17-b1ec-6ba0f89e9ce2 / evidence f4136357-9cfd-41ac-88f8-a8e079e8d9e0; original Nintendo DS product bd46f999-a530-4711-b132-480a06211662 / evidence c55173b3-8f25-45bd-a8a8-ac8526aaa707.
 
 Verification: TEST and LIVE each contain 117 active gaming master products, 109 active customer-visible products and 188 active evidence rows (59 UK new / 129 UK used). Zero malformed active evidence rows. All four models are on the existing Nintendo Handheld Consoles branch. Asking prices are not completed-sale data. No valuation rules, tenant/customer/transaction/domain/Stripe/subscription data, application code or Worker deployments were changed.
+
+## Nintendo Switch V1 and Game Boy Advance SP — 4 November 2026
+Two additional active, customer-visible Nintendo products and two UK-used retailer listing evidence rows were inserted independently in TEST and LIVE. Evidence source is Cash Converters UK; GBP, uk_used, Retail, availability=listed, observed 2026-11-04 UTC. Prices are asking/listing prices, not completed sales.
+
+Evidence:
+- Nintendo Switch (V1), £89.99, model HAC-001, charger included, light cosmetic wear. URL https://www.cashconverters.co.uk/shop/gaming/consoles--equipment/gaming-consoles/nintendo-console/030400239725. Key cashconverters-switch-v1-hac001-030400239725-2026-11-04.
+- Nintendo Game Boy Advance SP, £60.00, good condition, case marks, screen without scratches, charging cable included. URL https://www.cashconverters.co.uk/shop/gaming/handheld-systems--equipment/handheld-consoles/nintendo-handheld-console/050500156561. Key cashconverters-game-boy-advance-sp-050500156561-2026-11-04.
+
+TEST IDs: Switch V1 product efef1626-c254-4569-babe-8bd5fb49ac37 / evidence c5a43d47-4525-489d-b88c-ff21deb36910; Game Boy Advance SP product 901d720c-4463-4b8b-ae15-b49c71356894 / evidence 04ac791a-468a-410d-aab7-f5085456bdeb.
+
+LIVE IDs: Switch V1 product b549fdd9-c29f-46a2-ad6f-822c5a49e466 / evidence 37cc8e2c-dc3f-46ff-95c8-aa10d18650ac; Game Boy Advance SP product 251cf99d-2e3b-4abb-8556-c619f74daa6b / evidence 71d4ffff-e835-4119-bba4-bb481f6cdffc.
+
+Verification in both environments: 119 active gaming master products, 111 active customer-visible products, 190 active evidence rows (59 UK new / 131 UK used), zero malformed active evidence rows. Switch V1 is distinct from existing V2 HAC-001(-01); GBA SP is distinct from original GBA and Game Boy Micro. No tenant/customer/transaction/domain/Stripe/subscription data or valuation logic changed; no code or Worker deployment was involved.

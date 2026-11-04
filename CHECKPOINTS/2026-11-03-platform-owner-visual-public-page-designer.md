@@ -24,3 +24,10 @@ Merge each PR, verify Cloudflare Worker deployment separately, then browser-test
 
 
 Final editor refinement: free-position text/image/screenshot boxes are independently draggable and resizable on the canvas (x/y/width/height are also editable in the inspector). Full-width image boxes are rendered as images rather than hidden, and the owner canvas stacks split layouts on narrow screens. TEST visual editor URL/key were checked against TEST's own existing owner editor configuration; LIVE remains on LIVE Supabase. These refinements are included in the merged branches.
+
+
+## Independent text and media boxes; unnumbered page copy — 4 November 2026
+The owner visual page editor now creates text-only boxes and image/screenshot-only boxes. They are independent objects with separate drag, resize, x/y/width/height controls; text boxes no longer contain empty image columns, and media boxes no longer carry heading/body fields. Existing screenshot captions/titles are imported as their own text boxes next to independent media boxes. Public rendering follows the same independent object model. Automatic sequence labels (01/02/03), ordered-list markers and leading PART/step number prefixes are removed from How It Works copy. This is a presentation/editor change only: no Supabase schema, public page data, subscriber builder, tenant/customer records, or LIVE/TEST content was migrated or copied.
+
+## Change verification
+The current source and environment mapping were checked before modification. LIVE and TEST public page tables contain the same two published slugs; neither environment has a saved visual_layout in draft_content at this checkpoint, so the new independent layout is generated from existing page content on first editor load. Existing public-page RPCs and media bucket policies remain unchanged.

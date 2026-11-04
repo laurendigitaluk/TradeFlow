@@ -9,3 +9,7 @@
 - Examples remain rendered by `platform-public-pages.js`; retain the owner editor `visual_layout` path. Current product image URLs are external, not stored in Supabase Storage.
 - No `platform_public_pages` rows, Supabase schema, tenant/customer/order/payment data or Stripe settings were changed.
 - Cloudflare deployment and browser acceptance are still unverified. Verify both environments before reporting the website live.
+
+
+## Follow-up correction after live screenshot — 4 November 2026
+A live screenshot showed the old GearCashOut / Tech Exchange / Style Resale / Stage Exchange cards and About label still visible. Inspection found the previous merge had updated the JS renderer but left the static HTML examples untouched and retained `platform-public-pages.js?v=1` / old stylesheet query strings. This could leave the browser or edge cache serving the previous assets. Follow-up PR #226 merged to production at `8690c5b83d1883266f9c6f0c425791020fd03ab1`; PR #227 merged to cloudflare-test at `d40735bf457c97ea10c322555fe164cc562f8177`. Both index and Examples pages now contain all four image-led storefronts in static markup, use `platform-public-pages.js?v=2` and `platform.css?v=17`, and show Contact Us instead of About/Facts. Source verification confirms all four names and product image elements are present and old sample storefront names/labels are absent in both branches. Cloudflare deployment and browser verification remain outstanding; do not claim the public URL is updated until verified.

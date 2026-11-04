@@ -31,3 +31,10 @@ Add a public landing-page link and sample page showing the growing range of prod
 - PR preview build and page rendering.
 - TEST deployment and desktop/mobile navigation/page checks.
 - Then merge/promote the same change to LIVE and independently verify the LIVE Worker and route.
+
+## Release update — 4 November 2026
+- LIVE PR #231 merged into `production`: `0381801bd37b7d0b5b9bf3949455de2d81866c83`.
+- The page and both navigation links are present in the merged LIVE source.
+- Cloudflare deployment status and browser rendering could not be independently confirmed from the available deployment/status interfaces in this session. Do not mark LIVE runtime verification complete until checked in the browser.
+- TEST PR #230 merged into `cloudflare-test`: `13fc852a767f2cec134acc304e42b56beb76caec`.
+- No Supabase project-memory/checkpoint tables were found in the linked LIVE or TEST databases; the durable checkpoint and project memory are maintained in the repository files above. No database write was made.

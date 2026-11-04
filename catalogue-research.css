@@ -34,6 +34,10 @@
 .evidence-status{border:1px solid #cfe3d9;background:#f2faf5;color:#286448;padding:7px 10px;border-radius:20px;font-size:.7rem;font-weight:800;white-space:nowrap}
 .evidence-product{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-top:1px solid #e7ecf0;border-bottom:1px solid #e7ecf0}
 .evidence-product strong{color:#10243b}
+.evidence-price{display:grid;gap:4px;padding:17px 0;border-bottom:1px solid #e7ecf0}
+.evidence-price small{font-size:.72rem;color:#7b8795}
+.evidence-price strong{font-size:1.65rem;letter-spacing:-.04em;color:#10243b}
+.evidence-price span{font-size:.76rem;color:#667587}
 .evidence-product span{color:#667587;font-size:.85rem}
 .evidence-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 25px;padding:22px 0}
 .evidence-fields div{display:grid;gap:5px}

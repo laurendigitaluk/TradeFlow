@@ -304,3 +304,11 @@ Two additional products were inserted independently in TEST and LIVE and verifie
 - Turtle Beach Rematch Core Xbox and PC Wired Hall-Effect Controller - Camo Orange — Argos £24.99, https://www.argos.co.uk/product/7853449. TEST product 8bd1cb58-8043-4f33-8a98-8ece6a6f2b3d; evidence 12d1f659-1a63-4314-a588-18dc5aa5020d. LIVE product 2954dd45-a2ed-4da9-bc04-415790e4d168; evidence 0eb947b6-9849-48a7-b62e-b149ce966a00.
 
 Duplicate checks were clear in both environments before insertion. Final TEST and LIVE queries confirm both products active/customer-visible, with active `uk_new` GBP evidence and `availability=listed`. Prices are retailer listed/asking prices, not completed sales. Evidence remains reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.
+
+
+## Xbox controller and headset additions — 4 November 2026
+Added independently to TEST and LIVE and verified in both environments:
+- Turtle Beach Stealth 600X Gen 3 Wireless Multiplatform Gaming Headset for Xbox - Black — Smyths Toys UK £69.99, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/xbox-series-x-s/xbox-series-x-s-accessories/turtle-beach-stealth-600x-gen-3-wireless-multiplatform-gaming-headset-for-xbox-black/p/238734. TEST product a1000000-0000-4000-8000-000000000001, evidence 8132a275-807d-4e68-b22e-2cd1f1f0e21c; LIVE product b1000000-0000-4000-8000-000000000001, evidence 943be747-c8cf-40ca-bf7f-9ea2fecb6ae7.
+- Turtle Beach Rematch Core Wired Xbox, PC Controller - Orange — Argos UK £19.99, https://www.argos.co.uk/product/8178343/. TEST product a2000000-0000-4000-8000-000000000002, evidence db9bf4a4-0663-4218-b58c-f95752fdb5eb; LIVE product b2000000-0000-4000-8000-000000000002, evidence b6a3fc55-5dac-45f7-9c54-4e0b04a770c9.
+
+Duplicate checks were clear in both environments before insertion. Final verification confirmed each product active/customer-visible with active `uk_new` GBP evidence, New condition and `availability=listed`. Prices are retailer asking/listed prices, not completed sales. Evidence is reference-only and does not affect automatic valuations. No code, deployment, Stripe or operational customer data changed.

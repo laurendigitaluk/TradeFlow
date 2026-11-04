@@ -29,3 +29,6 @@ Do not claim completion until TEST PR preview, TEST Worker deployment, and deskt
 
 ## Navigation consistency follow-up — 4 November 2026
 The Catalogue & AI Research top-nav link was initially added only to the homepage and How It Works. User screenshot showed it missing on Plans & Features. Corrected all primary public pages: plans, examples, contact-us, terms, privacy, and ensured homepage, How It Works and Catalogue & AI Research retain it. Link order: immediately after Plans & Features. Standardise Contact Us label; remove legacy About label. No Supabase/database changes. TEST and LIVE source branches are maintained independently; confirm Worker deployment and browser rendering after merge.
+
+## Navigation correction merged — 4 November 2026
+Public navigation correction merged to `production` at `e5d1a42a4297eace9d4c5b69499ee263af0e7ba8` (TEST PR #232 / LIVE PR #233). Verified in repository source that `index.html`, `how-it-works.html`, `plans.html`, `examples.html`, `contact-us.html`, `terms.html`, `privacy.html`, and `catalogue-research.html` all contain the Catalogue & AI Research top-nav link. Contact navigation reads **Contact Us**, not About. Cloudflare deployment and browser rendering have not yet been confirmed; do not treat source merge as proof the live site has refreshed. No Supabase or business data changed.

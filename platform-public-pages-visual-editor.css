@@ -4,3 +4,12 @@
 .pve-canvas{position:relative;min-height:560px;overflow:visible}.pve-block{position:absolute;box-sizing:border-box;padding:34px 18px 18px;min-height:90px;overflow:visible;touch-action:none}.pve-block .pve-inner{height:100%;min-height:0;overflow:auto}.pve-block.split-left .pve-inner,.pve-block.split-right .pve-inner{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:center}.pve-block .pve-copy{min-width:0}.pve-block .pve-copy h2{font-size:clamp(18px,2vw,30px);margin:4px 0 8px}.pve-block .pve-copy p{font-size:13px;line-height:1.45;margin:4px 0}.pve-block .pve-media{min-height:70px;height:100%;border-radius:4px}.pve-block .pve-media img{max-height:100%;height:100%;object-fit:contain}.pve-resize{position:absolute;right:0;bottom:0;width:16px;height:16px;background:#c46a2b;border:2px solid #fff;border-radius:3px;cursor:nwse-resize;z-index:4}.pve-tools{cursor:move;touch-action:none}.pve-inspector input[type=number]{font-variant-numeric:tabular-nums}
 
 .pve-block.split-left .pve-inner,.pve-block.split-right .pve-inner{min-height:0}.pve-block .pve-media{min-width:0}.pve-tools button{touch-action:manipulation}@media(max-width:700px){.pve-block.split-left .pve-inner,.pve-block.split-right .pve-inner{grid-template-columns:1fr;gap:8px}.pve-block .pve-copy h2{font-size:18px}.pve-block .pve-copy p{font-size:11px}}
+
+/* Independent content blocks: text and media never share a layout container. */
+.pve-block.pve-text-box .pve-inner{display:block;height:100%;overflow:auto}
+.pve-block.pve-media-box .pve-inner{display:block;height:100%;overflow:hidden}
+.pve-block.pve-text-box .pve-copy{width:100%;max-width:none}
+.pve-block.pve-media-box .pve-media{width:100%;height:100%;min-height:0;box-sizing:border-box}
+.pve-block.pve-media-box .pve-media img{width:100%;height:100%;max-height:none;object-fit:contain}
+.pve-block .pve-tools{opacity:.45}
+.pve-block:hover .pve-tools,.pve-block.selected .pve-tools{opacity:1}

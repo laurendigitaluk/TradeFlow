@@ -2517,3 +2517,7 @@ The public How It Works accordion now uses section titles and supporting subtitl
 
 ## Public website pages and examples update — 4 November 2026
 Use the dedicated `how-it-works.html` route rather than the former homepage `#how` anchor. Remove About/Facts from navigation and retain `facts.html` as a legacy redirect. The Examples page is DB-rendered by `platform-public-pages.js`; preserve the visual editor `visual_layout` renderer. Four product-led examples use Pokémon, Sony camera, DJI Mini 4 Pro and PlayStation 5 imagery. Do not invent Contact Us email or company registration details. Keep displayed monthly/annual pricing aligned to signup without modifying Stripe. Confirm Cloudflare separately.
+
+
+## Examples cache correction — 4 November 2026
+When updating public Examples, change both the database-driven renderer and the static fallback markup in `index.html` and `examples.html`. Always bump the script and stylesheet query versions when changing these assets (`platform-public-pages.js?v=2`, `platform.css?v=17` for this correction); otherwise cached old examples may remain visible even after source merge. Ensure header/footer visible labels say Contact Us, not About/Facts. The four static and dynamic storefronts are Card Vault (Pokémon Charizard card), Shutter House (Sony Alpha 7 IV), Altitude Drones (DJI Mini 4 Pro), and Next Level Gaming (PlayStation 5). PR #226 merged LIVE (`8690c5b8`); PR #227 merged TEST (`d40735bf`). Source checked in both branches; Cloudflare deployment and browser check are still required.

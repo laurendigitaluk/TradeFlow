@@ -19,3 +19,10 @@ Branches:
 - LIVE: `feature/catalogue-ai-research-page-live-20261104`, based on `production`.
 
 Do not claim completion until TEST PR preview, TEST Worker deployment, and desktop/mobile route checks pass; then repeat promotion and independent verification for LIVE.
+
+## Release update — 4 November 2026
+- TEST PR #230 merged into `cloudflare-test`: `13fc852a767f2cec134acc304e42b56beb76caec`.
+- The page and both navigation links are present in the merged TEST source.
+- Cloudflare deployment status and browser rendering could not be independently confirmed from the available deployment/status interfaces in this session. Do not mark TEST runtime verification complete until checked in the browser.
+- LIVE PR #231 was separately merged into `production`: `0381801bd37b7d0b5b9bf3949455de2d81866c83`.
+- No Supabase project-memory/checkpoint tables were found in the linked LIVE or TEST databases; the durable checkpoint and project memory are maintained in the repository files above. No database write was made.

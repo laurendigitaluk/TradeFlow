@@ -3171,3 +3171,29 @@ Use `how-it-works.html` as the canonical guide route; remove About/Facts from na
 
 ## Sega Mega-CD and 32X catalogue additions (4 November 2026)
 Added three distinct Sega add-on products in TEST and LIVE: Mega-CD Model 1, Mega-CD II and 32X. Created/reused the Sega Console Add-ons branch separately in each database. Exact UK item listings were sourced via second-hand aggregator pages; direct eBay fetches returned cache misses, so retain this provenance and validate listing status before reuse. Evidence is used/listed GBP asking price, not completed-sale data: Mega-CD Model 1 £361.09 (item 358455592974, tested working, official power supply; base Mega Drive not included); Mega-CD II £250.30 (item 407114465670, boxed with three games); 32X £487.36 (item 278107327310, unboxed PAL unit described as tested and fully functional). TEST/LIVE each verify 133 active products and 125 visible. TEST evidence 208, zero malformed; LIVE received all three inserts successfully but evidence-count verification was blocked on the follow-up query. Keep these expansion devices separate from Mega Drive base consoles and bundles. No valuation/payment/tenant/customer data or Worker deployment changed.
+
+## 3D printer catalogue continuation — 4 November 2026 (Batch 3)
+
+The earlier 39-product / 47-evidence snapshot is superseded by this independently verified TEST and LIVE snapshot:
+
+- Category: **3D Printers & Equipment**.
+- Active branches: **3D Printers** and **3D Printer Equipment & Accessories**.
+- Master products: **64** across six manufacturers.
+- Active customer-visible products: **63**. One active Anycubic Kobra S1 ACE 2 Pro variant remains deliberately non-visible; do not expose it without confirming the package presentation.
+- Active evidence: **77** (66 UK-new and 11 UK-used).
+- Visible products missing active evidence: **0**.
+- Visible products with null branch: **0**.
+- Active evidence integrity failures (missing URL/key, non-GBP currency or non-positive price): **0**.
+- TEST and LIVE counts match exactly after reconciliation.
+
+This batch added/expanded Bambu Lab package variants, 11 Creality models/packages (K2, K2 Pro, K2 Plus, K2 SE, K1 Max, Ender-3 V3 SE and Ender-5 Max) and current Anycubic UK evidence for Kobra 3 Max V2, Kobra S1/S1 Max and Photon Mono/P1 resin models. Package variants remain separate records. Standard printers must not inherit combo pricing.
+
+Eleven duplicate Anycubic evidence captures (same product, source URL, price and evidence type) were deactivated in each environment. The canonical evidence rows remain active; duplicate rows and their notes are retained for audit. The Kobra S1 ACE 2 Pro £409 evidence is present in both environments.
+
+Some Anycubic pages displayed prices while the product was marked sold out. Their evidence notes explicitly state this and must not be interpreted as an in-stock claim. Retail asking prices are listed evidence, not completed sales. All used evidence remains reference-only and must never change automatic buying valuations.
+
+Full environment-specific IDs, sources and duplicate cleanup are recorded in:
+- PROJECT-MEMORY/2026-11-04-3d-printer-catalogue-batch-03.md
+- CHECKPOINTS/2026-11-04-3d-printer-catalogue-batch-03.md
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Only master catalogue and evidence rows were changed separately in TEST and LIVE.

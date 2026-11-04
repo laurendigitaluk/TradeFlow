@@ -151,3 +151,57 @@ All prices below are GBP. Each evidence row has its own exact source URL and sta
 4. Populate the Equipment & Accessories branch only with actual accessories (enclosures, build plates, AMS systems, wash/cure stations, hotends, etc.) when researched as separate products.
 5. Re-run TEST/LIVE parity and evidence integrity checks after every batch.
 6. Never let market evidence update automatic buying valuations.
+
+
+## Batch 2 — Bambu Lab expansion (4 November 2026)
+
+Updated verified snapshot in TEST and LIVE: **39 products, 6 manufacturers, 47 active UK GBP evidence rows (36 new, 11 used)**. Both environments pass the same checks: zero visible products without active evidence, zero null branch assignments and zero evidence integrity failures. The two established branches remain unchanged.
+
+Batch 2 added 14 Bambu Lab products/packages:
+- A2L standard and AMS Combo.
+- H2D standard, AMS 2 Pro Combo, Engineering Bundle, More Colour Bundle, 10W and 40W Laser Full Combos, and H2D Pro.
+- H2C Vortek AMS 2 Pro Combo.
+- H2S standard, AMS 2 Pro Combo and 10W Laser Full Combo.
+- Legacy P1P standard.
+
+A2L standard is recorded as backorder because the UK retailer page says “Ships When Available”. P1P has used-only UK evidence. All bundle variants remain separate master products.
+
+### Batch 2 product IDs — TEST / LIVE
+
+| Product/package | TEST UUID | LIVE UUID |
+|---|---|---|
+| A2L standard | 326ce741-c669-4604-abd2-afccaf0b4b0d | 38347f9c-1066-4469-9449-127a8d28b965 |
+| A2L AMS Combo | 5cb5a0de-6f9c-4b7b-a682-9572f493f0ed | 4ccaa072-7bd5-4409-8d7a-feb7b1dec0ed |
+| H2D standard | aa7a5588-0ee7-4900-ae09-d41d8230f7e8 | 3e77287d-506e-4f6b-aecd-b098533e7262 |
+| H2D AMS 2 Pro Combo | 240eea57-ef94-4a98-9bce-caeac9ba114a | 3b6c898d-bdd4-4565-af32-f05d058f591d |
+| H2D Engineering Bundle | 03a09949-dd50-4341-8fdb-becad05c6abb | 8ce10368-437e-444c-a841-3704fa509868 |
+| H2D More Colour Bundle | 35072006-f48b-43bf-b4cf-22e2b5fb5eca | 92aa480f-f194-4e40-9161-4199eaf1e99d |
+| H2D 10W Laser Full Combo | c41c098f-b882-4ead-bb0c-840958889bf7 | 0fea6f10-bc84-403c-b789-040f4cfaefea |
+| H2D 40W Laser Full Combo | 62b48032-1db1-44cb-a32b-b7eaaaac55c6 | d141e550-67ba-4072-86ac-b7448ed4e306 |
+| H2D Pro | 3e7e26f4-1949-45a9-bb90-e7ea1bb17866 | 41131459-9762-4389-a17c-7f97727e85cb |
+| H2C Vortek Combo | e8ae7ea5-58fe-4c03-8398-e4c027f33ed9 | dc69207a-b476-45ff-82b4-e9e52f65df13 |
+| H2S standard | 88eb1b09-c12a-42c8-a59a-0e40618a1a9f | fea520db-9c7b-4f97-b221-7da18e459392 |
+| H2S AMS 2 Pro Combo | b5308296-88c0-48e2-b0f9-0c27787d7a85 | 50ab9b2b-d782-412e-8a6f-7f2a5205dc4c |
+| H2S 10W Laser Full Combo | 34feabc7-9c22-4ea3-a44e-d5033ace59b6 | c1e6d39c-eade-4567-9b96-c03bb0c038ab |
+| P1P standard | 48dde6d2-dbe4-40ae-ae77-f7dcbd236244 | eefb6287-7de8-4940-9d64-5d597b856c07 |
+
+### Batch 2 evidence IDs — TEST / LIVE
+
+| Product/package | Type | GBP | TEST evidence UUID | LIVE evidence UUID |
+|---|---|---:|---|---|
+| A2L standard | uk_new/backorder | 319 | f59cdf94-f14d-4d57-9aa0-f5f943893e61 | da0e08ec-2d5a-4a1c-9148-e78e8a9412b4 |
+| A2L Combo | uk_new | 429 | 11a1fb45-a63b-45e2-9ee9-0852dd6b0351 | 3f9996a9-99ec-43d4-bd60-480abab53528 |
+| H2D standard | uk_new | 1289 | 5c51bce4-6281-487e-ac4b-e3e2d26e4033 | 3ff2c360-df82-4dad-a970-ae12aa328301 |
+| H2D AMS 2 Pro Combo | uk_new | 1449 | 3424f88c-9a8f-4779-9d3f-94051e4c6595 | 361fc688-9622-4c95-8048-1e0da1c9dfa4 |
+| H2D Engineering Bundle | uk_new | 1539 | 39b57234-8e05-4690-8469-584f91099504 | 268efa1c-deec-4222-9391-0e32ad2fdd92 |
+| H2D More Colour Bundle | uk_new | 1889 | 3c4f11d1-4f28-4b32-81ee-7007419d7fdb | a6b20747-17e2-4332-83af-03bb59469f23 |
+| H2D 10W Laser Combo | uk_new | 1749 | 111c8ee6-2a6e-4c8d-85f9-46a27e866290 | 574e15b8-1d44-4d3b-8547-e445f551409e |
+| H2D 40W Laser Combo | uk_new | 2149 | 4a5ed8cb-4c2c-4849-bc3c-574990f42642 | cba78ccc-43f5-43c2-80d3-bc1acb10709d |
+| H2D Pro | uk_new | 2499 | 2e62358d-0b96-4246-b2fe-5a64da76c95b | b3085e5a-5f74-4c09-ae92-9bb71e6068a2 |
+| H2C Vortek Combo | uk_new | 1899 | 935303cb-1c48-4b53-8669-80ac4bc33cb8 | 1473f190-d8b7-4373-8161-2b5523c8d893 |
+| H2S standard | uk_new | 949 | ef47f85a-bd85-4104-a6f6-61734664be58 | 24ec2e1b-4c8b-449f-bee5-3650bf65b78a |
+| H2S AMS 2 Pro Combo | uk_new | 1099 | 540d9309-53b4-419e-b892-45bea0431958 | e0289f7e-c104-4f4e-b5df-636a8ea3ad70 |
+| H2S 10W Laser Combo | uk_new | 1399 | 648aeb65-5081-4e4f-9623-193dd31969f1 | 5e909119-8153-4077-b15d-d8f1591166f2 |
+| P1P standard | uk_used | 197.61 | ec1f6e57-a3c3-4436-b9f9-04ade141dda2 | bc8e76fd-53a5-43d6-80b9-9cc2bad8d90b |
+
+No code/schema/valuation/RLS/Edge Function/Stripe/Worker changes were made. The full source URLs and evidence notes are recorded in the database rows and Batch 2 checkpoint.

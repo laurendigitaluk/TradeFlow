@@ -47,3 +47,7 @@ Combo and standard printer prices remain separate. The Plus5 Combo £769 is the 
 ## Scope and next work
 No code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Worker deployment changed. Only manufacturer, master product and evidence rows were inserted independently in TEST and LIVE.
 Next: verify QIDI legacy models (Plus4, Q1 Pro, X-Max 3) and used-market evidence before adding them. Then proceed to Phrozen, Formlabs, UltiMaker, Snapmaker and Raise3D.
+
+
+## QIDI Plus4 legacy addition — 4 November 2026
+The discontinued QIDI Plus4 was added as a separate standard-printer legacy record in TEST and LIVE. UK used completed-sale evidence: eBay item 318168687789, £381.75, two sold, seller located Shepperton, UK, seller notes repaired filament-sensor issue and fully tested/working. Displayed price includes £11.75 Buyer Protection. TEST product cb84e14e-25bc-48a7-a8cf-60cc956555d3 / evidence 7350ce29-1fc4-46c9-b024-49b52d44ae1f. LIVE product 11969e89-e139-40b9-bd53-5c8a6f8623c8 / evidence f35eb1b7-c715-46d5-8b68-a73766c527f3. Do not treat buyer-facing total as seller proceeds. Current superseding snapshot in both environments: 73 products, 73 visible, 86 active evidence (74 new / 12 used), zero missing visible-product evidence/branch and zero evidence integrity failures.

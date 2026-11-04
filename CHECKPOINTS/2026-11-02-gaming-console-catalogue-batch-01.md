@@ -227,3 +227,17 @@ These are current retailer asking/listing prices, not completed sales. Each is `
 - Zero active evidence integrity failures.
 - Counts and catalogue content match between environments; UUIDs are environment-specific.
 No code, valuation logic, tenant/customer/transaction/payment data or Stripe settings changed. Evidence remains reference material only and must not alter automatic buying prices.
+
+
+### Sega legacy-console coverage extension — 4 November 2026
+
+The Sega home-console catalogue was extended and independently checked in TEST and LIVE. The current Sega manufacturer scope has **17 active customer-visible product records and 22 active UK-used GBP evidence rows** in each environment. All 17 visible products have active evidence; the Sega evidence scope has zero malformed active rows. TEST and LIVE use separate product/evidence UUIDs.
+
+This continuation confirms the following distinct systems and current evidence:
+- **Sega SG-1000** — existing active evidence £449.00, eBay UK item 168355445875, boxed/complete and seller-described as fully working: https://www.ebay.co.uk/itm/168355445875. TEST product 4812bf9a-c2e7-4816-b1c8-b7476c299347; LIVE product a3a44c72-5b00-4376-8f4c-d9eb7e9b44ec. Existing active evidence remains TEST 9150ba6d-37ed-41c2-b702-465fb4b59bbf / LIVE 330d3837-300d-41d4-9f24-1a3c2ec34d15.
+- **Sega Mark III** — additional active evidence £225.81, eBay UK product/listing page 11023766971, boxed NTSC-J system described as tested and working with cosmetic wear: https://www.ebay.co.uk/p/11023766971. TEST product f6365657-eab9-4003-b45a-c78aa940b8eb / evidence 8c089af3-5df9-4b60-ba2d-ae736b904412; LIVE product 3917a14e-a664-4aec-8b93-00d023858e9b / evidence 5ec96c9e-2ee4-4fc4-86a7-3e097823f834. Existing distinct listing evidence at £173.80 (item 318928337003) remains active.
+- **Sega Pico** — additional active evidence £155.58, eBay UK item 307172144334, UK private-seller auction with two games and cables/adaptors, condition stated Very Good: https://www.ebay.co.uk/itm/307172144334. TEST product e2ce884b-2f6f-4e0b-858b-985ee32758a3 / evidence 10a432ed-c288-408a-983e-4dad2fac8028; LIVE product 4d50ecbf-ad3a-4519-8ff2-6d38d0a6e51a / evidence 79ec6b4f-0fa5-4ede-85fe-ced960b982c5. Existing distinct listing evidence at £155.58 (item 307149542948) remains active.
+
+All three product records were already present in both environments when this evidence pass was completed; no duplicate master products were created. A duplicate SG-1000 evidence row for the same £449 listing was identified and deactivated, retaining the pre-existing active row: TEST duplicate evidence 1e031e68-8092-4813-8dba-03c38a8f1b9a; LIVE duplicate evidence a48731eb-e515-4817-aef5-d58e56ca9b91. Do not reactivate these duplicate rows.
+
+The “Master System Plus” label is treated as a bundle/retail package, not a separate console generation. SG-1000 II remains a separate research candidate but was not added in this pass because the surfaced UK listing did not expose a verified direct item URL. Prices above are asking/listing prices, not completed sales. All evidence is reference-only and does not alter automatic valuation. No application code, valuation logic, tenant/customer/transaction/payment data, Stripe configuration or deployment was changed.

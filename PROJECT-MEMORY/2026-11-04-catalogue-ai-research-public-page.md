@@ -26,3 +26,6 @@ Do not claim completion until TEST PR preview, TEST Worker deployment, and deskt
 - Cloudflare deployment status and browser rendering could not be independently confirmed from the available deployment/status interfaces in this session. Do not mark LIVE runtime verification complete until checked in the browser.
 - TEST PR #230 merged into `cloudflare-test`: `13fc852a767f2cec134acc304e42b56beb76caec`.
 - No Supabase project-memory/checkpoint tables were found in the linked LIVE or TEST databases; the durable checkpoint and project memory are maintained in the repository files above. No database write was made.
+
+## Navigation consistency follow-up — 4 November 2026
+The Catalogue & AI Research top-nav link was initially added only to the homepage and How It Works. User screenshot showed it missing on Plans & Features. Corrected all primary public pages: plans, examples, contact-us, terms, privacy, and ensured homepage, How It Works and Catalogue & AI Research retain it. Link order: immediately after Plans & Features. Standardise Contact Us label; remove legacy About label. No Supabase/database changes. TEST and LIVE source branches are maintained independently; confirm Worker deployment and browser rendering after merge.

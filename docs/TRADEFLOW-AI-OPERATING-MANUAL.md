@@ -3107,3 +3107,13 @@ The owner visual page editor now creates text-only boxes and image/screenshot-on
 
 ## Duplicate public-page copy correction — 4 November 2026
 The owner visual editor's first-time layout conversion previously imported the comparison heading/paragraph and then imported the first screenshot's identical heading/paragraph again, creating two text boxes above the same screenshot. `platform-public-pages-visual-editor.js` now de-duplicates text blocks by normalized heading while retaining the screenshot box. The conversion also strips leading numeric/Part/Step prefixes before creating text blocks. This does not split a heading from its paragraph: each text box remains one independently movable text element containing its optional heading and body, while image/screenshot boxes remain separate independent elements. No saved `visual_layout` existed in either environment at the time of diagnosis; legacy `draft_content` remains unchanged until the owner saves a draft. No database schema, published content, tenant/customer data, or subscriber Website Builder code is changed.
+
+
+## Gaming catalogue continuation — 4 November 2026
+When continuing the gaming catalogue, inspect the latest repository project memory and both Supabase environments before inserting. New PlayStation UK-new evidence has been added in TEST and mirrored to LIVE with environment-specific product/evidence IDs:
+- DualSense Charging Station: PlayStation UK £24.99, listed; https://www.playstation.com/en-gb/accessories/dualsense-charging-station/.
+- PlayStation Portal Remote Player: Currys UK £219.00, listed; https://www.currys.co.uk/products/sony-playstation-portal-remote-player-10257483.html.
+- PlayStation VR2: Smyths Toys UK £399.99, listed/in stock; https://www.smythstoys.com/uk/en-gb/gaming-and-tech/virtual-reality/playstation-vr2/playstation-vr2-headsets/playstation-vr2/p/225323.
+Treat retailer asking prices as uk_new with availability=listed, never as completed sales. Keep all evidence GBP, source-specific, URL-backed and keyed idempotently. Market evidence is reference-only and must not feed automatic buying valuations. Database-only catalogue changes do not require Worker deployments.
+
+Verified TEST and LIVE snapshot on 4 November 2026: 113 master products; 184 active evidence rows (59 uk_new, 125 uk_used); zero malformed active evidence rows. One visible product has no evidence: WD_BLACK C50 512GB Expansion Card for Xbox Series X|S. Do not fabricate a UK price; leave evidence pending a verified exact listing. TEST/LIVE product and evidence UUIDs are environment-specific. Do not copy tenant/customer/transaction/domain/Stripe/subscription data.

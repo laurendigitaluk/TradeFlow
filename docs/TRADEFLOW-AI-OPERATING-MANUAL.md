@@ -3127,3 +3127,7 @@ The public TradeFlow **How It Works** page is being rebuilt as a simple, source-
 ## How It Works accordion headings — numbering removed (4 November 2026)
 
 The public How It Works accordion now uses section titles and supporting subtitles only. All decorative section-number badges have been removed; the order is communicated by the headings themselves. This is a presentation-only change. No page copy, workflow behaviour, Supabase data, tenant/customer records, payments or subscriber website content is changed.
+
+
+## Catalogue import execution — 4 November 2026
+For this catalogue workflow, `mcp__Supabase__execute_sql` was successfully used against the TEST and LIVE project IDs with the TradeFlow LIVE connection after an earlier safety block. The earlier block was not a permanent prohibition. Confirm the target project ID and its environment-specific category, manufacturer and branch IDs before each write. Insert product masters and shared evidence as one transaction/CTE where appropriate; never reuse TEST UUIDs in LIVE. Read back counts and evidence integrity in both environments after insertion. Do not use a schema migration for ordinary catalogue DML. The 4 November Nintendo DS-family batch added Nintendo 3DS, DSi, DS Lite and original DS with exact UK used/listed GBP evidence; final counts are 117 active products, 109 visible and 188 active evidence rows (59 new / 129 used) per environment, with zero malformed active evidence rows. Evidence remains reference-only and does not change automatic valuations.

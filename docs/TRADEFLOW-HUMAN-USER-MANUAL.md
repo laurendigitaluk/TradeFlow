@@ -1987,3 +1987,6 @@ The page explains:
 - Your business makes the final buying decision. Choosing a master catalogue product does not automatically publish it on your own website.
 
 The page is an explanation of the growing catalogue and research process, not a live search tool or a promise that every category is complete. The public page does not expose private database records or tenant-specific data.
+
+## Finding Catalogue & AI Research from public pages — 4 November 2026
+The **Catalogue & AI Research** link is available from the top navigation across the main TradeFlow public pages, including the homepage, How It Works, Plans & Features, Examples, Contact Us, Terms and Privacy. It appears after Plans & Features. The page describes the expanding master product catalogue and the AI-assisted UK market-evidence process.

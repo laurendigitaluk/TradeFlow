@@ -38,3 +38,11 @@ Add a public landing-page link and sample page showing the growing range of prod
 - Cloudflare deployment status and browser rendering could not be independently confirmed from the available deployment/status interfaces in this session. Do not mark TEST runtime verification complete until checked in the browser.
 - LIVE PR #231 was separately merged into `production`: `0381801bd37b7d0b5b9bf3949455de2d81866c83`.
 - No Supabase project-memory/checkpoint tables were found in the linked LIVE or TEST databases; the durable checkpoint and project memory are maintained in the repository files above. No database write was made.
+
+## Public navigation consistency correction — 4 November 2026
+- Screenshot confirmed that `plans.html` did not show the new Catalogue & AI Research top-navigation link after the page was published.
+- Added the same link immediately after Plans & Features on `plans.html`, `examples.html`, `contact-us.html`, `terms.html`, and `privacy.html`; verified it remains on `index.html`, `how-it-works.html`, and `catalogue-research.html`.
+- Standardised the visible contact navigation label to **Contact Us** instead of legacy **About** on the applicable pages.
+- `facts.html` is a legacy redirect, not a separate navigation page.
+- Static source-only change; no Supabase schema, public-page content records, tenant/customer/order/payment data, Stripe settings, or catalogue data changed.
+- TEST and LIVE branches are separate. Verify the corresponding Cloudflare Worker deployment and browser pages after merge; GitHub merge alone does not prove deployment.

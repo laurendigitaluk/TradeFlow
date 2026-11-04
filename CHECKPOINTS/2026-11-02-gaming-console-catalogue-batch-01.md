@@ -241,3 +241,10 @@ Added Sega manufacturer and Sega Home Consoles branch independently to TEST and 
 - LIVE: manufacturer b0e1006d-c74f-46c9-b6c2-043d03117e02; branch 899f1154-d827-4683-9bfa-835ec3b05c68; product fb37f192-14db-4950-a5cb-11cf7056b070; evidence e37cde12-b7e5-42ce-b340-049fa18f3459.
 Evidence: Cash Converters UK item 015700307006, £39.99, black console, good condition, two controllers and power supply; URL https://www.cashconverters.co.uk/shop/gaming/consoles--equipment/gaming-consoles/sega-console/015700307006; key cashconverters-sega-mega-drive-015700307006-2026-11-04. GBP, uk_used, Retail, listed, observed 2026-11-04 UTC; asking price, not completed sale.
 TEST/LIVE final counts: 121 active gaming products, 113 visible, 193 active evidence rows, zero malformed. Keep original hardware distinct from Mega Drive Mini and AtGames Flashback. No valuation, tenant/customer/transaction/domain/Stripe/subscription data, code or Worker deployment changed.
+
+## Sega Master System II — 4 November 2026
+Added a separate Sega Master System II product to TEST and LIVE, using each environment's existing Sega manufacturer and Sega Home Consoles branch.
+- TEST product 13c412ae-39d5-45a2-9001-f2f631f581b2; evidence b558d292-85c8-4088-a92a-c8726cb46866.
+- LIVE product 8c069ea6-f22a-436c-8bfb-33e66906c430; evidence 52088245-8ff3-4dfb-bbd9-ab2e5c84f7a8.
+Evidence: Cash Converters UK item 054400283789, £60.00, built-in Sonic variant, unboxed, controller and cables, fully tested working. URL https://www.cashconverters.co.uk/shop/gaming/consoles--equipment/gaming-consoles/sega-console/054400283789; key cashconverters-sega-master-system-ii-054400283789-2026-11-04. GBP, uk_used, Retail, listed, observed 2026-11-04 UTC; asking price, not completed sale.
+Final TEST/LIVE counts: 122 active gaming products, 114 visible, 194 active evidence rows (59 new / 135 used), zero malformed. Keep separate from original Master System and Mega Drive. No valuation, tenant/customer/transaction/domain/Stripe/subscription data, code or Worker deployment changed.

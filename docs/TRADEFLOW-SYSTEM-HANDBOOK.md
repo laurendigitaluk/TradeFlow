@@ -2005,3 +2005,11 @@ The public TradeFlow website uses Home, How It Works, Plans & Features, Examples
 
 ## Examples cache correction — 4 November 2026
 When updating public Examples, change both the database-driven renderer and the static fallback markup in `index.html` and `examples.html`. Always bump the script and stylesheet query versions when changing these assets (`platform-public-pages.js?v=2`, `platform.css?v=17` for this correction); otherwise cached old examples may remain visible even after source merge. Ensure header/footer visible labels say Contact Us, not About/Facts. The four static and dynamic storefronts are Card Vault (Pokémon Charizard card), Shutter House (Sony Alpha 7 IV), Altitude Drones (DJI Mini 4 Pro), and Next Level Gaming (PlayStation 5). PR #226 merged LIVE (`8690c5b8`); PR #227 merged TEST (`d40735bf`). Source checked in both branches; Cloudflare deployment and browser check are still required.
+
+
+## 3D printer catalogue expansion — Formlabs and UltiMaker batch 5 (4 November 2026)
+Added nine Formlabs printer models and eight UltiMaker printer/package records independently to TEST and LIVE, using the existing 3D Printers branch. Added one UK GBP new-price evidence record per product (17 per environment). Standard printers and S7/S8 Pro Bundle packages remain separate catalogue records. Formlabs prices are UK manufacturer prices inclusive of 20% VAT. 3DGBIRE UltiMaker prices are VAT-inclusive except the S6 £4,900 price, which is explicitly ex VAT and remains recorded as displayed; S8 and S8 Pro Bundle are marked preorder.
+
+TEST and LIVE independently verify 90 active customer-visible products across nine manufacturers, with 91 active UK-new and 12 active UK-used evidence rows (103 total). All visible products have active evidence and a branch; active evidence integrity failures: zero. Full product/evidence IDs and source prices are recorded in the Batch 5 project memory and checkpoint.
+
+No application code, schema, valuation logic, RLS, Edge Functions, customer/tenant/order/payment/Stripe/subscription/domain data or Cloudflare Worker deployment changed. Only manufacturer, product and UK-new evidence rows were inserted independently in TEST and LIVE. Database-only catalogue changes do not require a Worker deployment.

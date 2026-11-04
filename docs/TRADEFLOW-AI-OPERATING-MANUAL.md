@@ -2521,3 +2521,11 @@ Use the dedicated `how-it-works.html` route rather than the former homepage `#ho
 
 ## Examples cache correction — 4 November 2026
 When updating public Examples, change both the database-driven renderer and the static fallback markup in `index.html` and `examples.html`. Always bump the script and stylesheet query versions when changing these assets (`platform-public-pages.js?v=2`, `platform.css?v=17` for this correction); otherwise cached old examples may remain visible even after source merge. Ensure header/footer visible labels say Contact Us, not About/Facts. The four static and dynamic storefronts are Card Vault (Pokémon Charizard card), Shutter House (Sony Alpha 7 IV), Altitude Drones (DJI Mini 4 Pro), and Next Level Gaming (PlayStation 5). PR #226 merged LIVE (`8690c5b8`); PR #227 merged TEST (`d40735bf`). Source checked in both branches; Cloudflare deployment and browser check are still required.
+
+
+## 3D printer catalogue — Formlabs and UltiMaker batch 5 (4 November 2026)
+Batch 5 added nine Formlabs printer models (Form 3, Form 3L, Form 3BL, Form 4, Form 4B, Form 4L, Form 4BL, Fuse 1+ 30W and Fuse X1) and eight UltiMaker records (S3, S5, S6, S7 standard, S7 Pro Bundle, S8 standard, S8 Pro Bundle and Factor 4). Existing 3D Printers branch reused. One active UK GBP new-price evidence row per product.
+
+Formlabs prices are from the UK manufacturer printer catalogue and include 20% VAT. 3DGBIRE is the UK authorised reseller source for UltiMaker; S6 £4,900 is explicitly shown ex VAT and stored as displayed without VAT adjustment. S8 and S8 Pro Bundle are marked preorder, not in-stock. Keep Pro Bundle packages distinct from standard printer-only records. Form 3, Form 3L and Form 3BL remain listed by Formlabs with UK prices; do not mark discontinued without lifecycle confirmation.
+
+TEST and LIVE independently verify 90 products/90 visible, nine manufacturers, 91 UK-new + 12 UK-used active evidence = 103 total, zero visible-product evidence/branch gaps and zero integrity failures. Full UUID mappings and clickable sources are in the Batch 5 checkpoint. Used evidence remains reference-only and must not feed automatic valuation. No Worker deployment is required for database-only updates.

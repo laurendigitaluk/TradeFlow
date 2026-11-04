@@ -46,3 +46,6 @@ Add a public landing-page link and sample page showing the growing range of prod
 - `facts.html` is a legacy redirect, not a separate navigation page.
 - Static source-only change; no Supabase schema, public-page content records, tenant/customer/order/payment data, Stripe settings, or catalogue data changed.
 - TEST and LIVE branches are separate. Verify the corresponding Cloudflare Worker deployment and browser pages after merge; GitHub merge alone does not prove deployment.
+
+## Navigation correction merged — 4 November 2026
+Public navigation correction merged to `production` at `e5d1a42a4297eace9d4c5b69499ee263af0e7ba8` (TEST PR #232 / LIVE PR #233). Verified in repository source that `index.html`, `how-it-works.html`, `plans.html`, `examples.html`, `contact-us.html`, `terms.html`, `privacy.html`, and `catalogue-research.html` all contain the Catalogue & AI Research top-nav link. Contact navigation reads **Contact Us**, not About. Cloudflare deployment and browser rendering have not yet been confirmed; do not treat source merge as proof the live site has refreshed. No Supabase or business data changed.

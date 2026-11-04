@@ -3107,3 +3107,18 @@ The owner visual page editor now creates text-only boxes and image/screenshot-on
 
 ## Duplicate public-page copy correction — 4 November 2026
 The owner visual editor's first-time layout conversion previously imported the comparison heading/paragraph and then imported the first screenshot's identical heading/paragraph again, creating two text boxes above the same screenshot. `platform-public-pages-visual-editor.js` now de-duplicates text blocks by normalized heading while retaining the screenshot box. The conversion also strips leading numeric/Part/Step prefixes before creating text blocks. This does not split a heading from its paragraph: each text box remains one independently movable text element containing its optional heading and body, while image/screenshot boxes remain separate independent elements. No saved `visual_layout` existed in either environment at the time of diagnosis; legacy `draft_content` remains unchanged until the owner saves a draft. No database schema, published content, tenant/customer data, or subscriber Website Builder code is changed.
+
+
+## Public How It Works page — accordion rebuild (4 November 2026)
+
+The public TradeFlow **How It Works** page is being rebuilt as a simple, source-managed accordion page. It uses the shared TradeFlow public header, footer, typography, colours and button styling.
+
+- Source: `how-it-works.html` and `how-it-works.css`.
+- Interaction: native accessible HTML `details/summary` accordions; no screenshots, embedded screenshot media, illustrations or visual page canvas.
+- Content covers the TradeFlow subscription, business website template, Website Builder, master product catalogue and AI-assisted research, payment setup, valuation and offers, customer payment, manual shipping, inventory/retail listings and day-to-day management.
+- Includes GearCashOut.co.uk as an external example buying website.
+- Important operating boundaries remain explicit: the launch plan is £59.99/month after a 30-day free trial; platform subscription billing is separate from a business's retail payment account; TradeFlow does not automatically pay customers for acquired items; shipping is manually arranged outside TradeFlow and courier payments are not processed by TradeFlow.
+- `platform-public-pages.js` no longer applies the old visual/CMS page content to `how-it-works.html`; the Examples page remains CMS-rendered.
+- `platform-public-pages-visual-editor.js` now exposes Examples only. How It Works is maintained in source so the rejected screenshot canvas cannot overwrite the accordion page.
+- The existing `platform_public_pages` records are retained for audit continuity but are no longer read to render How It Works. No Supabase schema, RLS, RPC, customer, tenant, payment, or transaction data was changed.
+- This change is on isolated LIVE and TEST feature branches pending review, merge and separate Cloudflare Worker verification. A Git commit alone is not evidence of deployment.

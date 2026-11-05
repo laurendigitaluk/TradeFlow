@@ -2223,3 +2223,16 @@ Added PDP REALMz Wireless Shadow Space ARK (£15.99) and PDP REALMz Wired Tails 
 HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) from parallel TEST catalogue work have now been mirrored to LIVE with printer-only UK-new evidence. Optional resin/wash-cure bundles excluded. TEST product UUIDs a17c7b10-8f01-4d3e-a101-000000000502/503; TEST evidence UUIDs a17c7b10-8f01-4d3e-a101-000000000512/513. LIVE product UUIDs c3d4e5f6-7081-49ab-9234-000000000502/503; LIVE evidence UUIDs c3d4e5f6-7081-49ab-9234-000000000512/513. Sources: https://store.creality.com/uk/products/halot-x1-neo-resin-3d-printer and https://store.creality.com/uk/products/halot-x1-max-resin-3d-printer. Current fulfilment is unconfirmed; delivery estimates on indexed pages are stale/past.
 
 TEST and LIVE each now report 151 active customer-visible 3D printer products and 165 active evidence rows (150 uk_new / 15 uk_used). LIVE confirms both product and evidence rows. TEST integrity check: zero missing evidence/branches, duplicate active source keys, missing URLs/keys, invalid/non-GBP prices or uk_new condition mismatches. Earlier pending-sync note is superseded. No schema/application/valuation/RLS/Edge Function/Stripe/tenant/customer/order/payment changes; no Worker deployment. Used evidence remains reference-only.
+
+
+## 2026-11-05 original Nintendo Switch controller catalogue — Batch 9
+
+Added four additional original Nintendo Switch-family compatible controllers independently to LIVE and TEST, each with active UK-new GBP Argos evidence:
+- PowerA Enhanced Switch & PC Wireless Controller — Kirby: £24.99; Argos https://www.argos.co.uk/product/7868290/.
+- PowerA Enhanced Switch Wireless Controller — Mario Peek A Boo: £29.99 current promotional listing (was £39.99); Argos https://www.argos.co.uk/product/7570289/.
+- Turtle Beach Rematch Wireless Switch Controller — Mario Bricks: £49.99; Argos https://www.argos.co.uk/product/7818848/.
+- Turtle Beach Rematch Wireless Switch Controller — Donkey Kong: £49.99; Argos https://www.argos.co.uk/product/7811089/.
+
+Each record is a separate visible Controller product with a unique package key and source_record_key. Manufacturer records were reused (PowerA and Turtle Beach); no manufacturer duplicates created. All evidence is UK-new, GBP, item_condition New, availability listed, and source-linked. Mario Bricks and Donkey Kong Rematch models are also Switch 2 compatible (C Button unavailable); they are retained in the shared Nintendo Controllers branch because the products also support the original Switch family. Used evidence remains reference-only and does not alter automatic valuation.
+
+Independent post-insert verification in both environments: 65 active customer-visible Nintendo Controllers products and 68 active evidence rows; zero visible products missing active evidence; zero active evidence integrity exceptions (source URL/key, positive price, GBP currency and condition classification). Product/evidence counts and product package keys match between LIVE and TEST; environment-specific UUIDs are listed in the Batch 9 checkpoint. Database-only change: no Worker deployment, application/schema/valuation/RLS/Edge Function/Stripe or tenant/customer/order/payment changes.

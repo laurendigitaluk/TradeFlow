@@ -64,3 +64,8 @@ Correction to prior foundation note: the six test cases are authored, but execut
 ## Release monitoring increment — 5 November 2026
 
 Added a central manufacturer watchlist and a separate ReleaseMonitor worker. The worker only considers official manufacturer domains and confirmed release states, excludes rumours, and independently checks exact model presence in TEST and LIVE. It stages release candidates in the TEST review queue. TEST-only review queue remains isolated from LIVE; no master products, evidence or tenant data were changed. Package commands and release-monitor tests were added. Research PC execution, scheduling, and approved product importer remain outstanding.
+
+
+## Approved importer
+
+Added `tools/tradeflow-gemma-agent/src/import-approved.mjs` and `npm run import-approved`. It imports approved evidence only, with full TEST/LIVE preflight and idempotent source-key checks. It has not been run on the Research PC; no evidence was imported in this change.

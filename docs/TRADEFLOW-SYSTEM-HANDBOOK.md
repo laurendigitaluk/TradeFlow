@@ -3014,3 +3014,10 @@ The shared catalogue evidence store is `public.shared_market_evidence`, linked t
 The first implementation stage is evidence-only for exact products already present in both environments. It is dry-run by default, and an explicit `--apply` is required to insert. It must enforce UK-only GBP observations, exact product matching, visible price verification, direct source URLs and duplicate prevention. UK-used evidence is reference-only and must not change automatic valuation. New product/category/branch/manufacturer creation is a later stage requiring its own duplicate and parity checks. No schema or Worker deployment is needed for evidence-only data writes.
 
 Implementation and diagnostic detail: `tools/tradeflow-gemma-agent/` and `docs/TRADEFLOW-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md`. Foundation 0.1 is on a feature branch and is not yet deployed or verified on the Research PC.
+
+
+## Platform-managed catalogue AI — 5 November 2026
+
+The TradeFlow Assistant remains part of the subscriber website. Subscribers cannot connect their own AI provider; centrally managed providers are controlled by the Platform Owner. Do not remove subscriber workspaces, websites, customer accounts, assistant conversations or messaging.
+
+Catalogue research is separate from the subscriber-facing assistant. Gemma workers stage product/release/evidence candidates in the TEST control-plane queue `public.platform_catalogue_research_queue`. They do not write directly to the shared master catalogue. ChatGPT review through the owner's existing conversation records an approval decision; a separate import stage is required to update the catalogue. Approved imports must resolve product IDs independently in TEST and LIVE and verify parity afterward. UK-only GBP evidence; UK-used is reference-only.

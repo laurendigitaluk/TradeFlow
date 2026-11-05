@@ -4103,3 +4103,8 @@ The owner-approved importer is `tools/tradeflow-gemma-agent/src/import-approved.
 ## Approved evidence import command
 
 Run `npm run import-approved` only after reviewing and approving the queue item. The importer performs TEST/LIVE preflight, exact package resolution, source-key duplicate checks and mirrored evidence writes. It marks the TEST queue row imported only after both environments verify. It has not been run on the Research PC.
+
+
+## Approved evidence import command
+
+Run `npm run import-approved` only after reviewing and approving the queue item. The importer performs TEST/LIVE preflight, exact package resolution, source-key duplicate checks and mirrored evidence writes. It marks the TEST queue row imported only after both environments verify. It has not been run on the Research PC.

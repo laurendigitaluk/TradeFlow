@@ -2590,3 +2590,31 @@ A new active eBay UK listing was checked and recorded against the exact Bambu La
 Do not interpret this as a sold price. It is a current marketplace asking-price reference only. Do not attach it to the AMS Combo or AMS 2 Pro + Upgrade Kit package, and do not feed it into automatic valuation calculations.
 
 The latest verified branch state is now 183 active product/package records, 17 manufacturers and 207 active evidence rows per environment (195 UK-new / 12 UK-used). All 183 active products have UK evidence. LIVE and TEST remain aligned by manufacturer/model/package identity.
+
+
+## Accessory catalogue import rules and batch — 5 November 2026
+
+The **3D Printer Equipment & Accessories** branch is no longer empty. Seven active, customer-visible products with seven UK-new evidence rows were independently added to LIVE and TEST:
+
+- Bambu Lab AMS 2 Pro, single unit — £266.04, 3DJake UK.
+- Bambu Lab Hotend Heating Assembly, A1/A1 mini — £23.00, 3DJake UK.
+- Creality CFS, single unit — £289.00, Creality UK.
+- Creality SpacePi X4 Filament Dryer, single unit — £150.00, Creality UK.
+- Creality Space Pi Filament Dryer Plus, two-roll unit — £85.00, Creality UK.
+- Creality Unicorn Quick-Swap Nozzle Kit, four-piece — £45.00, Creality UK.
+- Creality Unicorn K2P Quick-Swap Nozzle Kit, four-piece — £45.00, Creality UK.
+
+Source URLs, GBP values, new condition, sales channel, availability and observation date are stored on the evidence rows. Exact package/variant matching is mandatory: do not combine the K2P and standard Unicorn nozzle kits, the A1/A1 mini hotend variant and other hotend variants, or a multi-material system with a printer bundle.
+
+### Import controls
+
+1. Use the separate `3d-printer-equipment-accessories` branch; do not mix accessories into the printer branch.
+2. Confirm the manufacturer, exact model and package/compatibility variant before insertion.
+3. Use UK GBP source pages and preserve the exact URL, VAT context, availability, condition and observation date.
+4. Insert products independently into LIVE and TEST using the unique category + branch + manufacturer + model + package key. UUIDs are not portable between environments.
+5. Add evidence independently in each environment with a unique source record key. Repeated research runs must not create duplicate rows.
+6. Keep new and used evidence separate. Used marketplace asking prices remain reference-only and must not enter automatic valuation inputs.
+7. After each batch, verify counts, exact natural-key parity, missing evidence, GBP currency and source URL integrity in both environments.
+8. Database-only catalogue changes do not require Cloudflare Worker deployment.
+
+Latest verified state: printer branch 183 products / 207 evidence rows per environment; accessories branch 7 products / 7 UK-new evidence rows per environment. All 190 active products across both branches are customer-visible and have UK evidence. Zero accessory evidence integrity failures. SUNLU is not yet in the manufacturer master; create its manufacturer record before adding SUNLU products.

@@ -3415,3 +3415,29 @@ Added Sovol as a new master manufacturer and six UK-priced product configuration
 Added Anycubic Photon P1 Dual-Color / Dual-Material Platform Bundle as a distinct package configuration (£469 UK-new evidence; official page shows sold out): https://uk.anycubic3d.com/products/photon-p1-dual-color-and-dual-material-printing. Added a fresh 5 November standard Photon P1 UK-new price observation (£449, sold out), retaining the previous 4 November observation rather than overwriting it: https://uk.anycubic3d.com/products/photon-p1-resin-3d-printer.
 
 Verification after this batch: LIVE 171 product rows / 164 active visible / 190 active evidence (175 UK-new, 15 UK-used); TEST 172 / 164 / 190. Both have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid active evidence (missing source URL/key, non-positive price or non-GBP currency). Both contain 14 manufacturers; Sovol has 6 products and Anycubic 21. UK-used evidence remains reference-only and does not affect automatic valuation. Keep sold-out, pre-order and expired-delivery qualifications intact. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.
+
+
+### Original Nintendo Switch controller catalogue — Batch 15 (5 November 2026)
+Added four CRKD NEO S variants independently to LIVE and TEST, each with one active UK-new GBP Selfridges evidence record:
+- NEO S Retro Gold Edition — £29.99 (Selfridges reduced from £49.99): https://www.selfridges.com/GB/en/product/crkd-neo-s-retro-gold-edition-nintendo-switch-controller_R04386313/
+- NEO S Blossom Edition by POPeART — £29.99 (reduced from £49.99): https://www.selfridges.com/GB/en/product/crkd-neo-s-blossom-edition-by-popeart-nintendo-switch-controller_R04386311/
+- NEO S Raven Fortnite Edition with Charging Dock — £34.99 (reduced from £59.99): https://www.selfridges.com/GB/en/product/crkd-neo-s-raven-fortnite-edition-with-charging-dock_R04481400/
+- NEO S Rocket League Gold Edition with Charging Dock — £59.99: https://www.selfridges.com/GB/en/product/crkd-neo-s-rocket-league-gold-edition_R04417225/
+
+All four are original Nintendo Switch / Switch OLED-compatible NEO S controllers. The two Fortnite/Rocket League bundles include their respective charging docks; Raven also includes its Viceroy Mark I Glider code. These are separate packages from the previously catalogued Peely and Purple Wave NEO S products. Duplicate preflight found no matching product keys in either environment. Existing CRKD manufacturer records were reused.
+
+LIVE product/evidence UUIDs:
+- Retro Gold: da77ef86-a91b-4def-aa75-e3c42f928f42 / 2fcb358c-7aac-49a9-bbf4-d2b13cf13243
+- Blossom POPeART: ef09af0b-4c1d-42ef-b3db-07eb0dde67b8 / b76c0ecb-4264-4c35-b1e1-621a5bdfdfdb
+- Raven Fortnite Dock: 84bef6bd-225a-4e30-8df2-ee8c263a9a56 / cd2e878b-5dbb-415b-9372-2f0ccd3aa9c8
+- Rocket League Gold Dock: 9641c3d3-340a-4b45-bf89-d4de8aeaa294 / c64a1f7f-3c82-4e58-8bfa-70866003efb0
+
+TEST product/evidence UUIDs:
+- Retro Gold: d7175a65-077a-4621-bd91-6754b9625d81 / ed9cb5a2-2e72-4124-8e0f-126c3241429e
+- Blossom POPeART: e95c93da-3800-43ce-8857-08152c06e1c8 / 315e2a93-e599-4a25-b9a8-06dfebbdbbe4
+- Raven Fortnite Dock: 48f8e850-fe20-446e-8d2a-5f8adc4c8332 / 272a8d68-c279-44d2-be69-9983f10d3ac8
+- Rocket League Gold Dock: 82346c00-3806-4a28-96f3-e47bd6b59cf0 / 3ebb8d33-f707-4c08-9ce1-b53927f5e4a8
+
+Post-insert independent verification: LIVE and TEST each have 80 active customer-visible products and 83 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type outside UK-new/UK-used, non-GBP currency, non-positive price, missing URL/key, or UK-new condition other than New). The four new records have matching model/package keys, source URLs, evidence types and prices in both environments. All evidence is UK GBP; advertised asking prices are not completed sale prices. Used evidence remains reference-only and does not affect automatic valuation.
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment/custom-domain data changed. No Cloudflare Worker deployment is required for these database-only catalogue additions. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-15.md.

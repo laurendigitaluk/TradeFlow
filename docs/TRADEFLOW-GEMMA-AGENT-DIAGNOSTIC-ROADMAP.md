@@ -31,7 +31,7 @@ Research PC installation, a Windows service/Power-shell launcher and owner-facin
 
 ## Data flow
 
-`Task JSON → Coordinator → Brave Search API → direct UK source page → Ollama gemma3:4b → structured evidence candidate → deterministic validation → exact master-product resolution in TEST and LIVE → duplicate preflight → shared_market_evidence insert`.
+`Task JSON → Coordinator → Brave Search API → direct UK source page → Ollama using the `OLLAMA_MODEL` tag (example default `gemma3:4b`) → structured evidence candidate → deterministic validation → exact master-product resolution in TEST and LIVE → duplicate preflight → shared_market_evidence insert`.
 
 The source page is untrusted data. Instructions embedded in source content must never be followed. Gemma is an extractor, not an authority for inventing missing prices, condition, location, product identity or URLs.
 

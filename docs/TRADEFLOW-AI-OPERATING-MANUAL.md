@@ -4066,7 +4066,7 @@ No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/ord
 
 ## TradeFlow Gemma local research agent — foundation 0.1 — 5 November 2026
 
-Gemma is being rebuilt as a TradeFlow-first local catalogue research agent. Do not revive or import the retired GearCashOut local agent. The selected local runtime is Ollama with `gemma3:4b` on the Research PC. The coordinator uses a bounded worker pool with separate UK-new and UK-used research roles. Brave Search is the current source-discovery adapter; Gemma extracts structured observations from fetched direct source pages only.
+Gemma is being rebuilt as a TradeFlow-first local catalogue research agent. Do not revive or import the retired GearCashOut local agent. The local runtime is Ollama on the Research PC. The example configuration defaults to `gemma3:4b`, but `OLLAMA_MODEL` is configurable; the installed model tag has not yet been verified on the Research PC. The coordinator uses a bounded worker pool with separate UK-new and UK-used research roles. Brave Search is the current source-discovery adapter; Gemma extracts structured observations from fetched direct source pages only.
 
 The initial implementation lives in `tools/tradeflow-gemma-agent/` on feature branch `feature/tradeflow-gemma-agent-foundation-20261105`. It is not merged to `main`, deployed, or installed on the Research PC yet. The initial runner is dry-run by default; `--apply` is required for evidence writes. It resolves the exact master product independently in TEST and LIVE before writing to either environment, uses environment-specific UUIDs, and preflights the existing `(source_name, source_record_key)` uniqueness boundary.
 

@@ -92,3 +92,8 @@ Committed to `feature/tradeflow-gemma-agent-foundation-20261105`:
 - Resolves category/manufacturer/optional branch/product independently in TEST and LIVE; fails closed on ambiguity, duplicate identity, inactive product or package conflict.
 - Creates missing master rows separately with independent UUIDs and `customer_visible=false`; verifies both environments before marking the TEST queue row imported.
 - No runtime tests, Research PC execution, Supabase writes, branch merge or deployment have occurred. Production and TEST application branches remain unchanged. Next: run `npm test` on Research PC, inspect source schema assumptions, then test one owner-approved candidate with a controlled pre/post DB comparison before larger batches.
+
+
+## GBP price-validation fix — 5 November 2026
+
+Updated `tools/tradeflow-gemma-agent/src/agent.mjs` on the Gemma foundation feature branch so the pound sign is generated with `String.fromCharCode(163)` instead of a literal source character. This addresses Windows text-encoding/mojibake risk without relaxing exact price matching. Commit: `88b00bb64b371f798d8eb2487a9995d4e0c63532`. Research PC `npm test` is still required; no database writes, imports, merges or deployments occurred.

@@ -3909,3 +3909,14 @@ Research candidates were deliberately held rather than imported:
 - Edge 70 Plus 256GB: no used listing found; new UK prices (Argos £499.99 / MSE page £529.99) are not used evidence. Model release shown as Sep 2026.
 
 No database evidence rows changed in batch 109. Do not lower the evidence standard to fill gaps: exact model and storage, UK seller/market, GBP, correct condition, observed date and direct listing URL required. UK-used stays reference-only and excluded from automatic valuation. No code/schema/deployment changes. See batch 109 checkpoint and project memory.
+
+
+## Mobile phone used-evidence research — batch 110, 5 November 2026
+
+Targeted current eBay UK searches for the four shared used-evidence gaps produced search-only leads, none with a verified item-level URL and complete condition/location details:
+- Reno16 F 5G 8GB/256GB: Certified - Refurbished search result £379.99, seller fistech_uk (99.6%, 273 feedback), free delivery/returns. No direct item URL, dispatch location or refurb-grade details available from the result. A direct exact-model listing at £439.99 is New, not used.
+- Find X10 Pro Max 512GB: search result labelled Pre-owned £1,276.42 + £11.50 postage, but direct item URL and seller/location/condition details unverified. Separate exact model direct page £1,293.70 is New; another £1,120.23 listing is Opened – never used. Exclude these.
+- Find X10 12GB/256GB: UK-model result £876.03 is Opened – never used; exact 256GB Global Version at £999.99 dispatches from India. Exclude.
+- Motorola Edge 70 Plus 256GB: no exact UK used listing verified; do not substitute other Edge 70 models or storage.
+
+No database changes in batch 110. Keep the four gaps open until an exact model/storage listing has a direct item URL, UK dispatch/seller evidence, GBP price, observed date and verifiable condition. Do not treat search-result category pages as item-level evidence. Do not copy/activate the hidden unverified TEST-only iPhone 18 256GB. UK-used remains reference-only. No code or deployment work. See batch 110 checkpoint and project memory.

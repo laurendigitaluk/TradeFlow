@@ -2011,3 +2011,35 @@ When updating public Examples, change both the database-driven renderer and the 
 Batch 7 independently added five printer records to TEST and LIVE: Snapmaker U1, Artisan and Artisan Premium; QIDI Q1 Pro and X-Plus 3. Each has one active UK GBP evidence row. Snapmaker new prices are 3DJake UK retailer prices including 20% VAT: U1 £827.62, Artisan £1,932.33 and Artisan Premium £2,300.58. QIDI legacy used-market asking prices: Q1 Pro £190 from Gumtree UK (seller states good condition/fully working, includes filament dryer and filament); X-Plus 3 £257.66 from eBay UK (listing states used and fully operational; seller located London). These are listing prices, not completed-sale results. Q1 Pro is explicitly marked discontinued by QIDI and replaced by Q2; X-Plus 3 is retained as a legacy model without asserting formal EOL status.
 
 Independent TEST and LIVE verification: 118 active products / 118 customer-visible; 12 manufacturers; 131 active evidence rows (117 UK-new / 14 UK-used); zero visible products missing active evidence; zero visible products missing branch; zero active evidence integrity failures. New and used evidence are kept separate. Used listing prices remain reference-only and must not feed automatic valuations. TEST/LIVE records use independent UUIDs. No application code, schema, valuation logic, RLS, Edge Functions, tenant/customer/order/payment/Stripe/subscription/domain data or Cloudflare Worker deployment changed. Database-only catalogue updates do not require a Worker deployment.
+
+
+## 3D printer catalogue price refresh — 5 November 2026
+
+Three current UK retail price observations were added independently to the TradeFlow LIVE and TEST master catalogues for existing standard-printer records. These are additional dated evidence observations; they do not create duplicate product/package records or overwrite earlier price history.
+
+| Manufacturer / model | Package | Observed UK price | Source |
+|---|---|---:|---|
+| Flashforge Creator 5 | Standard Printer | £619.00 | https://uk.flashforge.com/products/flashforge-creator-5 |
+| Flashforge Creator 5 Pro | Standard Printer | £749.00 | https://uk.flashforge.com/products/flashforge-creator-5-pro |
+| Anycubic Kobra X | Standard Printer | £259.00 | https://uk.anycubic3d.com/products/kobra-x-3d-printer |
+
+The Flashforge pages showed reference prices of £719 and £849 respectively at the time of checking. The Anycubic UK page showed a reference price of £359. Prices are point-in-time retail observations, not permanent catalogue prices.
+
+### Verified catalogue state after the refresh
+
+Independent LIVE and TEST verification on 5 November 2026 confirmed:
+
+- 183 active product/package records in the **3D Printers** branch in each environment;
+- 17 manufacturers in each environment;
+- 206 active evidence rows in each environment: 195 UK-new and 11 UK-used;
+- all 183 active product/package records have at least one active UK evidence row;
+- zero active overseas evidence rows in this branch;
+- exact product identity parity between LIVE and TEST.
+
+The earlier 118-product / 131-evidence count recorded with Batch 7 was a point-in-time checkpoint before subsequent catalogue expansion. The current verified aggregate is 183 products and 206 evidence rows.
+
+The separate **3D Printer Equipment & Accessories** branch remains active but currently contains no active products. Continue it only with exact, independently verified accessory identities and UK GBP evidence; do not put accessories into the printer branch merely to fill it.
+
+Used UK observations remain reference-only and must not feed automatic valuation calculations. New UK retail observations may support the new-market comparison path. Preserve source URL, GBP currency, package identity, condition, observation date and a unique source record key.
+
+This was a database-only evidence refresh. No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. Catalogue-only data updates do not require a Worker deployment.

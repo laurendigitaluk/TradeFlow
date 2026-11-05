@@ -3708,3 +3708,16 @@ Post-insert read-back, scoped to 3D Printers branch:
 | TEST | 182 | 174 | 8 | 200 | 185 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No app code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment data changed. No Worker deployment. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-22.md.
+
+
+## Nintendo Switch 2 controller accessories — Batch continuation — 5 November 2026
+
+Added two official Nintendo Switch 2 controller accessories independently in TEST and LIVE:
+1. Nintendo Switch 2 Joy-Con 2 Wheel Pair — light blue and light red wheel attachments, Joy-Con 2 controllers not included. Argos UK-new £16.99; https://www.argos.co.uk/product/7624661/. EAN-13 0045496321383 verified from Argos and recorded in TEST identifier data.
+2. Nintendo Switch 2 Joy-Con 2 Charging Grip — black, USB charging cable and mappable GL/GR buttons, Joy-Con 2 controllers not included. Argos £29.99; https://www.argos.co.uk/product/7624692/; John Lewis £25.99; https://www.johnlewis.com/nintendo-joy-con-2-charging-grip-black/p113587848. EAN-13 0045496321376 recorded in TEST and LIVE identifier data.
+
+Three active UK-new evidence rows per environment, GBP/New, with source URLs and observation date 5 November 2026. Both products active/customer-visible. Current verified totals in both environments: 103 active/customer-visible products; 109 UK-new evidence rows covering all 103 products; 2 UK-used reference rows covering 2 products; zero active visible products missing active evidence or UK-new evidence. This supersedes the 101/106 totals in the preceding addendum.
+
+The wheel pair and charging grip are accessories rather than standalone electronic controllers; they are included here because Nintendo lists them within its Switch 2 controller/accessory range and they materially affect controller functionality. Keep the explicit compatibility notes: wheel pair only fits Joy-Con 2; charging grip only fits Joy-Con 2 and controllers are not included.
+
+No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.

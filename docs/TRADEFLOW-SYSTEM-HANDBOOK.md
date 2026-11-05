@@ -3447,3 +3447,13 @@ Environment-specific IDs:
 Independent post-write verification in both databases: 284 active gaming products, 276 active customer-visible products, 396 active evidence rows (231 UK-new / 165 UK-used), zero visible products missing all evidence, zero active evidence integrity failures and zero duplicate active source keys. All 20 gaming branch counts match between LIVE and TEST. Nintendo Accessories now has 10 active products / 10 visible / 16 evidence; Nintendo Controllers has 105 / 105 / 119. The eight added evidence rows are all UK-new GBP; no existing UK-used evidence was changed. UK-used remains reference-only and does not feed automatic buying valuation.
 
 No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment. No TEST business data copied to LIVE. Exact TEST/LIVE product and evidence IDs are environment-specific as listed above.
+
+
+## Nikon used-market batch 16 — LIVE and TEST (5 November 2026)
+
+Three matching used-market evidence observations were inserted and independently read back in both environments (six records total):
+- Nikon D7000 £181 typical asking price, UsedLens UK, 105 listings across 11 retailers. LIVE 33ee8b28-73f5-4f9d-aa3f-0e2d10214634; TEST 79958913-99a3-4042-a4a4-bf4e559e8437. https://usedlens.co.uk/product/nikon-d7000
+- Nikon D7200 £440 typical used asking price, CamCompare UK. LIVE 6de0370e-bd1b-4be7-bfe5-505ea17f6a2d; TEST 0f332083-80f0-413c-a4f9-bdac95ba7b37. https://www.camcompare.app/uk/cameras/nikon-d7200
+- Nikon D5600 £370 typical asking price across grades, UsedLens UK, 90 listings across 10 retailers. LIVE 39740339-06d9-48ac-99ea-a2774a4ceb57; TEST 1d432186-57fc-4c41-bca5-a2f942c73d57. https://usedlens.co.uk/product/nikon-d5600
+
+All six records independently verified active, GBP, uk_used and carrying the expected source URL. Same three models and values now match across LIVE and TEST. These are used asking-price benchmarks, not completed-sale prices or dealer acquisition offers. No previous evidence was overwritten. No schema, product-master, lifecycle, valuation, RLS, application, Worker, Stripe, tenant/customer/order/payment changes; no deployment.

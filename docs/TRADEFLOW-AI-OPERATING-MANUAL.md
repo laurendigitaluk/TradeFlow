@@ -3861,3 +3861,11 @@ Verified 3D Printers totals after this batch:
 | TEST | 191 | 183 | 210 | 195 | 15 | 0 |
 
 Both environments have zero duplicate product keys and zero active visible products missing evidence. UK-used remains reference-only and excluded from automatic valuation. LIVE and TEST were updated independently. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant/customer/order/payment changes. No Worker deployment required.
+
+## Gaming catalogue continuation — 5 November 2026
+
+Continuation batch verified independently in TEST and LIVE. Added the Nintendo Switch 2 Zelda 40th Anniversary console as a separate 256GB package (£429.99 Smyths UK), added Argos (£64.99) and Smyths (£79.99) UK-new observations to the existing Zelda 40th Anniversary Pro Controller (Currys £74.99 retained), mirrored the TEST-only Xbox Wireless Controller — Shock Blue product/evidence into LIVE (£59.99 Argos), and restored three PlayStation handheld evidence rows to LIVE (PSP-2000, PSP Go and PS Vita OLED). Repaired three existing evidence rows whose source_url was null, without changing prices or classifications.
+
+Both environments now verify at 277 active products / 269 active visible / 376 active evidence (211 uk_new, 165 uk_used). There is one visible product with no active evidence: WD_BLACK C50 Expansion Card 512GB. Active evidence integrity failures: 0. Duplicate active source keys: 0. 85 visible products lack UK-new evidence; this is not equivalent to missing all evidence and must not be “fixed” with stale launch prices.
+
+Continue the TEST-first / read-back / LIVE sequence. Keep UK GBP, exact variant, source URL and stable source_record_key requirements. Preserve sold versus listed availability and new versus used classification. UK-used remains reference-only and must not alter automatic buying valuation. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/Worker changes; no deployment. See `CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md` and `PROJECT-MEMORY/2026-11-02-gaming-console-catalogue.md` for exact IDs and source keys.

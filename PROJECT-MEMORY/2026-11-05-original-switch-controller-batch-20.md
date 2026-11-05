@@ -49,3 +49,13 @@ Current verified Nintendo Controllers branch totals in both environments:
 This supersedes the earlier 99 products / 102 UK-new evidence total in the previous addendum. The Grey and Neon Yellow/Neon Yellow original Joy-Con pairs remain research-only: official variants are confirmed, but reliable current UK new-price evidence was insufficient to add them. Do not use stale price pages as current evidence.
 
 No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.
+
+
+## Nintendo Switch 2 controller accessories — 5 November 2026
+Added independently in TEST and LIVE:
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair, one light blue and one light red. Argos UK-new £16.99, https://www.argos.co.uk/product/7624661/. EAN-13 0045496321383 was verified from the Argos listing and recorded in TEST identifier data.
+- Nintendo Switch 2 Joy-Con 2 Charging Grip, black, USB charging cable and mappable GL/GR buttons. Argos £29.99, https://www.argos.co.uk/product/7624692/; John Lewis £25.99, https://www.johnlewis.com/nintendo-joy-con-2-charging-grip-black/p113587848. EAN-13 0045496321376 recorded in TEST and LIVE identifier data.
+
+Three active UK-new GBP/New evidence rows per environment, observed 5 November 2026. Both products active/customer-visible. Current verified totals in both environments: 103 active/customer-visible Nintendo controller products; 109 active UK-new evidence rows covering all 103 products; 2 active UK-used reference rows covering 2 products; zero active visible products missing active or UK-new evidence. This supersedes 101/106 totals in the prior section. Wheel pair requires Joy-Con 2 controllers, not included; charging grip also excludes Joy-Con 2 controllers and is Switch 2-only. Both are included because Nintendo lists them in its controller/accessory range and they directly affect controller use.
+
+No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.

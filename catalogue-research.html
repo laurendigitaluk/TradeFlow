@@ -8,6 +8,8 @@
 <link rel="icon" href="tradeflow-logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="platform.css?v=17">
 <link rel="stylesheet" href="catalogue-research.css?v=1">
+<link rel="stylesheet" href="catalogue-nav.css?v=1">
+<link rel="stylesheet" href="catalogue-browser.css?v=1">
 </head>
 <body>
 <header class="site-header">
@@ -15,7 +17,7 @@
   <nav class="site-nav" aria-label="Main navigation">
     <a href="how-it-works.html">How it works</a>
     <a href="plans.html">Plans &amp; Features</a>
-    <a class="active" href="catalogue-research.html" aria-current="page">Catalogue &amp; AI Research</a>
+    <details class="catalogue-nav-menu"><summary>Catalogue &amp; AI Research</summary><div class="catalogue-mega-menu"><div class="catalogue-mega-heading"><strong>Browse product categories</strong><a href="catalogue-research.html#browse-catalogue">View complete catalogue →</a></div><div class="catalogue-mega-grid" id="catalogue-mega-grid"><span class="catalogue-mega-loading">Loading categories…</span></div></div></details>
     <a href="examples.html">Examples</a>
     <a href="contact-us.html">Contact Us</a>
     <a href="terms.html">Terms</a>
@@ -55,6 +57,29 @@
       <article class="category-card"><span class="category-kicker">09 · COLLECTING</span><h3>Trading cards &amp; collectibles</h3><p>Trading card products, sets, editions, sealed products and collectible ranges.</p><small>Set · Card number · Edition · Language · Variant · Condition</small></article>
     </div>
     <p class="catalogue-footnote">Category and manufacturer examples are illustrative, and availability varies as catalogue research progresses. Your business chooses which products and categories to use on its own website.</p>
+  </section>
+
+
+  <section class="public-catalogue-browser" id="browse-catalogue" aria-labelledby="browse-catalogue-title">
+    <div class="public-catalogue-inner">
+      <div class="content-heading">
+        <div class="eyebrow">THE LIVE MASTER CATALOGUE</div>
+        <h2 id="browse-catalogue-title">Browse products and manufacturers</h2>
+        <p>Search the growing catalogue by product, model or manufacturer. Choose a category to narrow the results. New products and variants appear as catalogue research progresses.</p>
+      </div>
+      <div class="public-catalogue-toolbar">
+        <input id="public-catalogue-search" type="search" placeholder="Search products, models or manufacturers" aria-label="Search products, models or manufacturers" autocomplete="off">
+        <select id="public-catalogue-category" aria-label="Filter by product category"><option value="">All product categories</option></select>
+        <div class="public-catalogue-count" id="public-catalogue-count" aria-live="polite">Loading catalogue…</div>
+      </div>
+      <div class="public-catalogue-results" id="public-catalogue-results" aria-live="polite"><div class="public-catalogue-loading">Loading products…</div></div>
+      <div class="public-catalogue-pagination">
+        <button type="button" id="public-catalogue-prev" disabled>Previous</button>
+        <span id="public-catalogue-page">Page 1</span>
+        <button type="button" id="public-catalogue-next" disabled>Next</button>
+      </div>
+      <p class="public-catalogue-note">This public browser shows active, customer-visible catalogue names only. It does not display internal buying settings, customer records, valuations or private market-evidence records. Product availability on an individual business website depends on that business's own selections.</p>
+    </div>
   </section>
 
   <section class="research-band">
@@ -115,5 +140,6 @@
   <nav aria-label="Footer navigation"><a href="how-it-works.html">How it works</a><a href="plans.html">Plans &amp; Features</a><a href="catalogue-research.html">Catalogue &amp; AI Research</a><a href="examples.html">Examples</a><a href="contact-us.html">Contact Us</a><a href="terms.html">Terms</a></nav>
   <small>TradeFlow by Lauren Digital</small>
 </footer>
+<script src="catalogue-nav.js?v=1" defer></script>
 </body>
 </html>

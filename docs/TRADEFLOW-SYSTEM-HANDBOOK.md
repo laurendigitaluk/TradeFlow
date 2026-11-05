@@ -3100,3 +3100,14 @@ Post-insert read-back, scoped to the 3D Printers branch:
 | TEST | 179 | 171 | 8 | 197 | 182 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-20.md.
+
+
+## Camera catalogue research updates — 5 November 2026 (batches 03, 05 and 06)
+
+LIVE-only UK GBP evidence additions; TEST remains untouched. Batch 03 added evidence for URSA Broadcast G2 (£3,586.80, RCB Logic), URSA Mini Pro 12K (£5,039, Blackmagic Design UK), URSA Mini Pro 12K OLPF (£5,412.94, RCB Logic), URSA Cine 12K LF Body (£5,999.99, Scan), and two distinct URSA Cine 12K LF 100G Body observations (£13,868.10 VAT-inclusive equivalent from BPS-TV, converted from £11,556.75 ex VAT; and £8,238 VAT-inclusive from RCB Logic, marked backorder/3–5 days). Preserve both price observations rather than overwrite or average them.
+
+Batch 05 added official manufacturer UK price observations for URSA Cine 12K LF (£11,779) and URSA Cine 12K LF + EVF (£12,779). Batch 06 added official manufacturer UK price observations for URSA Cine Immersive 100G (£21,275), URSA Cine Immersive 100G Body (£15,859), and URSA Cine Immersive Body (£15,245). All batch 05/06 observations use the official Blackmagic Design UK product page and availability is unknown; do not infer retailer stock from manufacturer list pricing.
+
+Batch 06 insert rows were independently read back and verified active, GBP and source-linked. Product master rows already existed; no master catalogue or lifecycle changes. All work is LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Used-market evidence remains reference-only and does not feed automatic valuation.
+
+Camera coverage totals remain unpublished pending reconciliation of the earlier 722-product baseline with the later 720-row main_category=Cameras roll-up. Do not compare or report coverage until category scope is reconciled. See PROJECT-MEMORY/2026-11-05-camera-research-batch-05-06.md and CHECKPOINTS/2026-11-05-camera-research-batch-05-06.md.

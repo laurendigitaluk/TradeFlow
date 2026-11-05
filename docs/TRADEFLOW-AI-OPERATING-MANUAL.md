@@ -2576,3 +2576,17 @@ The listed Flashforge reference prices were £719 and £849; the Anycubic refere
 8. Database-only catalogue/evidence changes do not require a Cloudflare Worker deployment. Do not deploy application code unless code actually changed.
 
 The active **3D Printer Equipment & Accessories** branch is currently empty. Treat accessory expansion as a separate workstream and add only confirmed accessory products with their own manufacturer/model/package identity and UK GBP evidence.
+
+
+## UK-used evidence: Bambu Lab P1S — 5 November 2026
+
+A new active eBay UK listing was checked and recorded against the exact Bambu Lab P1S **Standard Printer** package in both environments:
+
+- £295.08 asking price; listing condition Used.
+- Seller location: Manchester, United Kingdom.
+- Exact listing: https://www.ebay.co.uk/itm/880040550398
+- Evidence key: `ebay-uk:p1s-standard:880040550398:2026-11-05`.
+
+Do not interpret this as a sold price. It is a current marketplace asking-price reference only. Do not attach it to the AMS Combo or AMS 2 Pro + Upgrade Kit package, and do not feed it into automatic valuation calculations.
+
+The latest verified branch state is now 183 active product/package records, 17 manufacturers and 207 active evidence rows per environment (195 UK-new / 12 UK-used). All 183 active products have UK evidence. LIVE and TEST remain aligned by manufacturer/model/package identity.

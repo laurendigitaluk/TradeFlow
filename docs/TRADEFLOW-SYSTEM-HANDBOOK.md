@@ -2728,3 +2728,9 @@ LIVE: existing Neo standard product b2c3d4e5-6f70-489a-8123-000000000101 refresh
 TEST: existing Neo standard product a1b2c3d4-5e6f-4789-9012-000000000101 refreshed evidence 20fda591-e7d9-4102-8a3a-e8fbc141ad41 (£199); new CFS nano combo product e26954ad-9225-4195-9a18-757163eb8e64 / evidence 1fb1de2e-410e-4806-8311-e22c0a227dd7 (£289).
 
 Verified totals after this addition: LIVE 186 products / 179 active visible / 206 active evidence / 191 UK-new; TEST 187 products / 179 active visible / 206 active evidence / 191 UK-new. Both environments have zero active visible products missing active evidence. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.
+
+## Xbox controller expansion — 5 November 2026
+
+Added independently in TEST and LIVE under the existing Xbox Controllers branch: Ice Breaker, Heart Breaker and Storm Breaker Special Editions (Microsoft Store £64.99 each); Gears of War E-Day Limited Edition (Smyths £79.99, John Lewis and Microsoft Store £84.99); Forza Horizon 6 Limited Edition (Argos £69.99, Currys £84.99). All five are active/customer-visible with active UK-new GBP/New Retail evidence, direct source URLs, stable source_record_key and 5 November 2026 observation dates. Microsoft's Breaker page exposes the three variants as selectable configurations. Gears of War E-Day's Microsoft page still showed a pre-order CTA after the stated 29 September release, so evidence availability is Listed, not in-stock. Forza Horizon 6 released 21 May 2026.
+
+Verified TEST and LIVE each: 20 active/customer-visible Xbox controller products; 23 active UK-new evidence rows covering all 20 products; zero visible products missing UK-new evidence. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.

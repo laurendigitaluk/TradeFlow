@@ -141,3 +141,15 @@ Important constraints:
 - Refresh: manual button and 30-second dashboard polling. Running status older than five minutes is labelled heartbeat overdue.
 - Current seeded roster: mobile phones, gaming consoles, 3D printers, drones, cameras, metal detectors, laptops, release monitor, catalogue importer. Initial status is Not started until worker telemetry arrives.
 - Worker integration: Gemma task runner reports task start/progress/completion/failure; release monitor and approved evidence importer report lifecycle events. No Research PC execution or scheduler is verified yet.
+
+
+## Approved product-master import diagnostic path — 5 November 2026
+
+- Owner review: TEST `platform_catalogue_research_queue` → `record_type=product_candidate`, `status=approved`.
+- Local entry point: `tools/tradeflow-gemma-agent/src/import-approved-products.mjs`; package command `npm run import-approved-products`.
+- Credentials: Research PC local `.env`; separate TEST/LIVE `TRADEFLOW_*_URL` and `TRADEFLOW_*_SERVICE_ROLE_KEY`; project hostnames are pinned in code. Never expose service-role keys to browser code or commit `.env`.
+- Source validation: HTTPS and official manufacturer domain allowlist; exact model must appear in source excerpt; accepted lifecycle states are announced/preorder/released/available. Rumoured/discontinued/replaced/update candidates are not auto-created by this importer.
+- TEST and LIVE lookup chain: active `catalogue_master_categories.slug` → active `catalogue_master_manufacturers.name` → optional active `catalogue_master_branches(category_id,slug)` → `catalogue_master_products(category_id,branch_id,manufacturer_id,model,package_key)`.
+- Failure points: missing/ambiguous category, manufacturer or branch; duplicate product identity (including NULL branch); inactive product; package-name conflict; invalid source/status/excerpt; failed insert or failed post-write verification. Fail closed.
+- Write path: create missing product independently in each environment; preserve environment-specific UUIDs; set `customer_visible=false`; verify exact model/package and active state in each environment; only then update TEST queue status to imported and save both product IDs.
+- Verification state: committed on feature branch only. Research PC tests, controlled single-candidate import and post-import database parity check remain outstanding. No TEST/LIVE product writes or deployment have occurred.

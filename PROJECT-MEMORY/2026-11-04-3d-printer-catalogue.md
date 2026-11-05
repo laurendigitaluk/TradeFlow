@@ -386,3 +386,7 @@ Added Flashforge CJ270 (£3,499) in TEST and LIVE. Source: https://uk.flashforge
 Current indexed Flashforge UK collection confirms AD5X £299, Adventurer 5M £209 and Adventurer 5M Pro £339: https://uk.flashforge.com/collections/3d-printers. These match existing active 4 November evidence. Three temporary Batch 10 evidence rows based on an older cached page (£359/£259/£399) were deactivated and retained as historical only in both environments.
 
 Final verified TEST/LIVE category totals: 145 active customer-visible products; 159 active evidence rows (144 uk_new / 15 uk_used); 13 manufacturers. Zero missing evidence/branch, duplicate active source keys, missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Exact UUIDs and deactivated evidence IDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. Used evidence remains reference-only and does not affect automatic valuation. Database-only change; no Worker deployment.
+
+
+## Batch 12 — 5 November 2026
+Creality Ender-3 V3 Neo (£199, standard option in stock) and Ender-3 V3 Mega (£519, dispatch timing unconfirmed) added with UK-new evidence in TEST and LIVE. Both environments independently verified at 149 active visible products, 163 active evidence rows (148 UK-new / 15 UK-used), 13 manufacturers, zero integrity exceptions. Exact IDs: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-12.md. No Worker deployment. Used evidence remains reference-only.

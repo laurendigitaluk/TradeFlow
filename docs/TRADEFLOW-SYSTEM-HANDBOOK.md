@@ -2060,3 +2060,36 @@ This is an active listing asking price, not a completed-sale result. Keep it in 
 ### Latest verified totals after this addition
 
 Both environments now contain 183 active 3D printer product/package records across 17 manufacturers and 207 active evidence rows: 195 UK-new and 12 UK-used. All 183 products have UK evidence, and no overseas evidence is active in this branch. Product identity parity remains exact between LIVE and TEST. These totals supersede the 206-evidence count in the earlier 5 November price-refresh note.
+
+
+## 3D Printer Equipment & Accessories expansion — 5 November 2026
+
+The previously empty **3D Printer Equipment & Accessories** branch has now been populated independently in LIVE and TEST with seven active, customer-visible product/package records and seven active UK-new evidence rows.
+
+| Manufacturer | Product / exact package | UK price | Source |
+|---|---|---:|---|
+| Bambu Lab | AMS 2 Pro — Single Unit | £266.04 | https://www.3djake.uk/bambu-lab/ams-2-pro |
+| Bambu Lab | Hotend Heating Assembly — A1 / A1 mini | £23.00 | https://www.3djake.uk/bambu-lab/hotend-heating-assembly |
+| Creality | CFS — Single Unit | £289.00 | https://store.creality.com/uk/products/creality-filament-system-cfs |
+| Creality | SpacePi X4 Filament Dryer — Single Unit | £150.00 | https://store.creality.com/uk/products/creality-spacepi-x4 |
+| Creality | Space Pi Filament Dryer Plus — Two-Roll Unit | £85.00 | https://store.creality.com/uk/products/creality-space-pi-filament-dryer-plus |
+| Creality | Unicorn Quick-Swap Nozzle Kit — 4-piece | £45.00 | https://store.creality.com/uk/products/unicorn-quick-swap-nozzle-kit |
+| Creality | Unicorn K2P Quick-Swap Nozzle Kit — 4-piece | £45.00 | https://store.creality.com/uk/products/unicorn-k2p-quick-swap-nozzle-kit |
+
+Prices are point-in-time UK GBP observations including VAT where stated by the source; delivery may be extra. The Bambu Lab items are listed by 3DJake UK. Creality items are listed by the official Creality UK store. The K2P nozzle kit source states compatibility with K2 Plus and Creality Hi. Keep the two nozzle kits as distinct models/compatibility sets.
+
+### Verification after import
+
+Independent LIVE and TEST checks confirmed:
+
+- Printer branch: 183 active products, 17 manufacturers, 207 active evidence rows (195 UK-new / 12 UK-used) in each environment.
+- Accessories branch: 7 active products, 2 manufacturers, 7 active UK-new evidence rows in each environment.
+- All 190 active product/package records across both branches are customer-visible and have active UK evidence.
+- Exact manufacturer/model/package-key parity between LIVE and TEST.
+- Zero missing evidence and zero malformed evidence rows in the accessory branch.
+
+Product UUIDs are environment-specific; rows were independently inserted using the existing category/branch/manufacturer/model/package uniqueness key. Evidence rows use unique source record keys. No TEST UUIDs were copied into LIVE.
+
+This was a database-only catalogue and evidence update. No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. No Worker deployment is required.
+
+SUNLU was not added in this batch because no SUNLU manufacturer row exists in the manufacturer master. Create and verify that manufacturer master record before importing SUNLU products.

@@ -84,9 +84,9 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
   return {environment:'TEST_QUEUE',status:'queued-for-chatgpt-review',id:inserted?.[0]?.id,dedupe_key:dedupeKey};
 }
 
-export async function runTask(task,env,{enqueue=false}={}) {
+export async function runTask(task,env,{enqueue=false,onProgress}={}) {
   if(!task.category_slug||!task.manufacturer||!task.model||!task.package_key||!task.package_name||!task.search_query||!['uk_new','uk_used'].includes(task.research_type))throw new Error('incomplete task definition');
-  const candidates=[]; for(const s of await search(task.search_query,env)){try{const p=await page(s.url);const e=await extract(task,s,p.text,env);if(e.reject_reason)continue;e.source_url=p.url;const v=validate(e,task,p.text);if(v.valid)candidates.push({...e,source_excerpt:p.text.slice(0,2500)});}catch(err){candidates.push({rejected_source:s.url,reason:err.message});}}
+  const candidates=[];const searchResults=await search(task.search_query,env);for(let i=0;i<searchResults.length;i++){const s=searchResults[i];await onProgress?.({stage:'checking_source',source:s.url,checked:i+1,total:searchResults.length});try{const p=await page(s.url);const e=await extract(task,s,p.text,env);if(e.reject_reason)continue;e.source_url=p.url;const v=validate(e,task,p.text);if(v.valid)candidates.push({...e,source_excerpt:p.text.slice(0,2500)});}catch(err){candidates.push({rejected_source:s.url,reason:err.message});}}
   const testTarget=target('TEST',env),liveTarget=target('LIVE',env);
   const writes=[];
   for(const e of candidates.filter(x=>x.evidence_type)){

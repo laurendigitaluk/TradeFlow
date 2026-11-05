@@ -3860,3 +3860,9 @@ Verified 3D Printers totals after this batch:
 | TEST | 191 | 183 | 210 | 195 | 15 | 0 |
 
 Both environments have zero duplicate product keys and zero active visible products missing evidence. UK-used remains reference-only and excluded from automatic valuation. LIVE and TEST were updated independently. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant/customer/order/payment changes. No Worker deployment required.
+
+## Gaming catalogue continuation — 5 November 2026
+
+Both TEST and LIVE independently verified at 277 active products, 269 visible products and 376 active evidence rows (211 UK-new / 165 UK-used). Added the Nintendo Switch 2 Zelda 40th Anniversary console at £429.99 Smyths UK; added Argos £64.99 and Smyths £79.99 evidence to the existing Zelda 40th Anniversary Pro Controller (Currys £74.99 retained); mirrored Xbox Wireless Controller — Shock Blue (£59.99 Argos) from TEST into LIVE; and restored three missing LIVE PlayStation handheld evidence rows (PSP-2000, PSP Go and PS Vita OLED). Three existing null evidence URLs were repaired without changing prices or classifications.
+
+One visible product still has no active evidence: WD_BLACK C50 Expansion Card 512GB. Integrity failures: 0; duplicate active source keys: 0. 85 visible products lack UK-new evidence; do not infer current prices for legacy/used-only models. Keep UK-new and UK-used separate; used evidence remains reference-only. Continue TEST-first, verify, then LIVE. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/Worker changes or deployment. Exact IDs are in CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md and PROJECT-MEMORY/2026-11-02-gaming-console-catalogue.md.

@@ -3004,3 +3004,13 @@ All 565 active evidence rows match by model, package/storage variant, evidence t
 The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. UK-used evidence remains reference-only and excluded from automatic valuation.
 
 No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment.
+
+## Local AI catalogue research — Gemma — 5 November 2026
+
+TradeFlow's planned catalogue-maintenance agent is a separate local workload on the Research PC: Ollama `gemma3:4b`, a TradeFlow coordinator, bounded specialist research workers, source verification and controlled writes to the shared master catalogue. It is not the subscriber-facing AI assistant and does not depend on `platform_ai_settings.gemma_enabled`.
+
+The shared catalogue evidence store is `public.shared_market_evidence`, linked to `catalogue_master_products`. The subscriber Research Centre uses the separate tenant-scoped `tenant_buying_research` table. Never mix those responsibilities. The local agent must use the service-role key only from the Research PC for shared catalogue writes because client roles are denied direct writes by RLS. Keep TEST and LIVE credentials separate, resolve product UUIDs independently in each project and never copy TEST IDs into LIVE.
+
+The first implementation stage is evidence-only for exact products already present in both environments. It is dry-run by default, and an explicit `--apply` is required to insert. It must enforce UK-only GBP observations, exact product matching, visible price verification, direct source URLs and duplicate prevention. UK-used evidence is reference-only and must not change automatic valuation. New product/category/branch/manufacturer creation is a later stage requiring its own duplicate and parity checks. No schema or Worker deployment is needed for evidence-only data writes.
+
+Implementation and diagnostic detail: `tools/tradeflow-gemma-agent/` and `docs/TRADEFLOW-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md`. Foundation 0.1 is on a feature branch and is not yet deployed or verified on the Research PC.

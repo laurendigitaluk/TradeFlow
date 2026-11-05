@@ -3667,3 +3667,16 @@ Two existing Nintendo controller products share the generic package_key `single-
 Continue the Nintendo controller completeness audit for additional UK-sold Switch 2 controllers, racing-wheel/controller variants and remaining Nintendo controller families. Check product identity and existing package keys before every insert. Once Nintendo is reconciled, continue with PlayStation controllers, then Xbox controllers. Keep TEST and LIVE separate and apply each database-only batch independently to both.
 
 No Worker deployment or application-code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was part of Batch 5.
+
+
+## Nintendo controller continuation — additional products — 5 November 2026
+
+Added independently to TEST and LIVE:
+- Nintendo Switch 2 Pro Controller — Resident Evil Requiem Edition; EAN-13 0045496321840; Argos £69.99, Currys £74.99, Very £83.99 (three UK-new observations).
+- Nintendo GameCube (GCN) Controller — Nintendo Classics; Nintendo Store UK £58.99 (one UK-new observation). Nintendo Switch 2 only and purchase restricted to Nintendo Switch Online members. Nintendo Store item ID recorded as a non-GTIN identifier.
+
+Both products are active/customer-visible. All four new UK-new evidence rows are dated 5 November 2026 and have source URLs. Current verified Nintendo Controllers totals in both environments: 101 active/customer-visible products, 106 active UK-new evidence rows covering all 101 products, 2 UK-used reference rows covering 2 products, and zero active visible products missing any active or UK-new evidence.
+
+The Grey and Neon Yellow/Neon Yellow original Joy-Con pair research remains open: official colour variants are confirmed, but current reliable UK new-retailer evidence was not sufficient to add them. Do not invent a current price or use stale listings as current evidence.
+
+Next: finish the remaining Nintendo controller completeness audit, then move to PlayStation controllers and Xbox controllers. Database-only work; no Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.

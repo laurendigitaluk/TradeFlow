@@ -2660,3 +2660,7 @@ Two official Nintendo Switch 2 controller accessories were added independently t
 The Joy-Con 2 wheels do not include controllers and are only for Joy-Con 2. The charging grip also excludes Joy-Con 2 controllers and is not compatible with original Switch Joy-Con. Both records are active/customer-visible. Three UK-new evidence rows were recorded per environment, GBP/New with source URLs and 5 November 2026 observation timestamps.
 
 Current verified Nintendo Controllers totals in both environments: 103 active/customer-visible products; 109 active UK-new evidence rows covering all 103 products; 2 active UK-used reference rows covering 2 products. No active visible product is missing active evidence or UK-new evidence. This supersedes the prior 101 products / 106 UK-new evidence totals. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was made.
+
+
+## PlayStation controller batch — 5 November 2026
+Five DualSense models were added in TEST and LIVE: Midnight Black £59.99, Starlight Blue £59.99, Cosmic Red £59.99, Nova Pink £59.99 and Chroma Teal £64.99, each with UK-new Argos evidence. Both branches now have 16 active products and 15 UK-new evidence rows covering 15 products. One older DualShock 3 record has no UK-new evidence and is retained for legacy review. No deployment or code/schema/valuation changes.

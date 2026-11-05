@@ -3362,3 +3362,11 @@ Verified 3D Printers totals after this batch:
 | TEST | 191 | 183 | 210 | 195 | 15 | 0 |
 
 Both environments have zero duplicate product keys and zero active visible products missing evidence. UK-used remains reference-only and excluded from automatic valuation. LIVE and TEST were updated independently. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant/customer/order/payment changes. No Worker deployment required.
+
+## Gaming console catalogue continuation — 5 November 2026
+
+The Gaming Consoles & Accessories catalogue was continued in both TEST and LIVE. A separate Nintendo Switch 2 The Legend of Zelda 40th Anniversary 256GB console master was added at £429.99 UK-new (Smyths Toys UK). The existing Zelda 40th Anniversary Pro Controller now has three independent retailer observations: Argos £64.99, Currys £74.99 and Smyths £79.99. Xbox Wireless Controller — Shock Blue was mirrored from TEST into LIVE with its £59.99 Argos UK-new evidence. Three exact PlayStation handheld observations (PSP-2000 £69.43 sold, PSP Go £140 listed, PS Vita OLED £138.98 sold) were mirrored into LIVE. Three existing evidence rows with null URLs were repaired using direct retailer URLs.
+
+Final independent verification in both environments: 277 active master products, 269 active customer-visible products, 376 active evidence rows (211 UK-new / 165 UK-used), one visible product without any evidence, zero evidence integrity failures and zero duplicate active source keys. The single no-evidence product is WD_BLACK C50 Expansion Card 512GB (Xbox Accessories); continue sourcing an exact UK price rather than inventing one. A further 85 visible products lack UK-new evidence; do not infer new prices for older/used-only products.
+
+All additions are separate environment-specific records. UK-used evidence remains reference-only and does not affect automatic buying valuation. Database-only work: no app code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment or Cloudflare Worker changes; no Worker deployment. Exact IDs and source keys are in `CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md` and the aggregate gaming memory file.

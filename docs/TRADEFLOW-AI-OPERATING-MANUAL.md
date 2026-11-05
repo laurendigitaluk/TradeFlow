@@ -3733,3 +3733,13 @@ Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Editi
 
 ## PlayStation batch 2 — 5 November 2026
 Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Edition (£74.99 pre-order) and GTA VI White Limited Edition (£74.99 pre-order) to TEST and LIVE. GTA VI editions release 19 November 2026. Final verified totals match: 19 active products and 19 UK-new evidence rows covering 18 products. One legacy DualShock 3 Black remains without UK-new evidence. No deployment or code/schema changes.
+
+
+## PlayStation Gran Turismo Limited Edition — 5 November 2026
+
+Added independently to TEST and LIVE: DualSense Wireless Controller - Gran Turismo Limited Edition, model CFI-ZCT2WZMX, UK pre-order price £74.99, release date 10 December 2026. Three active UK-new GBP/New Retail pre-order evidence rows per environment:
+- PlayStation Direct: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/gran-turismo-limited-edition/
+- Argos: https://www.argos.co.uk/product/9906844 (EAN 711719072836 verified from retailer listing)
+- Smyths Toys: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/playstation-5-dualsense-wireless-controller-gran-turismo-limited-edition/p/266465
+
+Product active/customer-visible in both environments. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified branch totals in each environment: 20 active/customer-visible products, 22 active UK-new evidence rows covering 19 products. The legacy Sony DualShock 3 Wireless Controller - Black remains the one product without UK-new evidence and is retained for legacy/discontinued review. No Worker deployment, app code/schema/valuation/RLS/Edge Function, tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.

@@ -125,3 +125,8 @@ Important constraints:
 ## Importer source path
 
 `tools/tradeflow-gemma-agent/src/import-approved.mjs` reads approved evidence candidates from TEST, resolves exact product IDs separately in both environments, checks duplicate keys and inserts missing evidence. Command: `npm run import-approved`. Runtime verification remains pending.
+
+
+## Approved evidence importer — 5 November 2026
+
+`tools/tradeflow-gemma-agent/src/import-approved.mjs` is invoked with `npm run import-approved`. It reads only approved evidence candidates from TEST, independently resolves exact products in TEST/LIVE, preflights all candidates and source-key duplicates before writes, inserts missing evidence and marks the queue item imported only after both sides verify. UK source/HTTPS and GBP are revalidated. No runtime execution on Research PC has been verified.

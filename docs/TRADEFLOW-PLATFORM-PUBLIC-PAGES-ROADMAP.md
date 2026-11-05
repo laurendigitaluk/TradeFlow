@@ -162,3 +162,7 @@ The owner visual editor's first-time layout conversion previously imported the c
 - Failure points: wrong environment URL/key, RPC unavailable/permission error, inactive category, no active customer-visible products, stale deployed `catalogue-nav.js`, or browser tab not yet refreshed. Never bypass the public RPC with direct master-table reads; RLS intentionally denies direct access.
 - Environment state at checkpoint: TEST returned Laptops (8); LIVE did not yet return Laptops. No Computers category in either response. Both environments returned 3D Printers & Equipment, Mobile Phones and Gaming Consoles & Accessories. The datasets remain separate.
 - Browser and Cloudflare Worker acceptance must be completed before merge/release. See `CHECKPOINTS/2026-11-05-public-catalogue-category-auto-refresh.md`.
+
+
+### TEST merge status — 5 November 2026
+PR #240 merged to `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`. The TEST Worker route could not be accessed from this session, so deployment/browser acceptance remains OPEN. Do not promote the change to `production` until the live TEST Worker is checked for category menu refresh, filtering and pagination.

@@ -45,3 +45,8 @@ The separate importer is `src/import-approved.mjs`, invoked with `npm run import
 ## Agent activity reporting
 
 The worker runner reports each specialist's task start, per-source progress, completion and failure through `src/agent-telemetry.mjs` to both TEST and LIVE. The Agent Control Centre in the corresponding Platform Owner dashboard reads the local environment's telemetry. Specialist identities are mapped from `agent_key` or the task's `category_slug`; `research_type` remains the evidence type (`uk_new` or `uk_used`) and must not be used as the agent identity. ReleaseMonitor and the approved evidence importer also report their lifecycle events. The dashboard refreshes every 30 seconds. Initial seeded agents remain Not started until the Research PC sends a heartbeat.
+
+
+## Owner-approved product master import
+
+New confirmed product masters are staged as `product_candidate` rows in the TEST-only owner review queue. After a platform owner approves a candidate, run `npm run import-approved-products` on the Research PC. The importer accepts only confirmed release statuses (announced, preorder, released or available), an official manufacturer-domain source, and an excerpt explicitly naming the exact model. It independently resolves category, manufacturer and optional branch in TEST and LIVE; detects ambiguous/duplicate identities including NULL-branch matches; creates missing master rows with separate environment UUIDs; verifies both sides; and only then marks the queue item imported. Newly created products default to `customer_visible=false` pending catalogue curation. The importer has not been run against the live Research PC credentials; validate with `npm test` and a reviewed test candidate before operational use.

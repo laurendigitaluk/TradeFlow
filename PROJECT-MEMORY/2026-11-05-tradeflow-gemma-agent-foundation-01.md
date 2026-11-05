@@ -23,3 +23,8 @@ Gemma now stages evidence candidates into the TEST-only `public.platform_catalog
 Subscriber-supplied AI provider selection is being removed from Platform Owner settings. The TradeFlow Assistant/customer messaging remains; subscriber accounts, tenants, websites and customer data are not to be deleted. TEST and LIVE UI changes are isolated on separate feature branches. The current DB flag is false in both environments. Provider enforcement migration remains pending.
 
 Tests were authored but Research PC execution is pending; do not treat the earlier statement of six passing tests as verified. No scheduled background run or autonomous ChatGPT integration exists yet. ChatGPT review is interactive through the owner's existing conversation and connected Supabase tools. A separate approved-importer, release monitor, scheduler, runtime test and deployment remain outstanding.
+
+
+## Release monitoring increment — 5 November 2026
+
+ReleaseMonitor source added at `tools/tradeflow-gemma-agent/src/release-monitor.mjs`; watchlist at `tools/tradeflow-gemma-agent/tasks/release-watchlist.json`. It searches official manufacturer domains, verifies final redirect domain, extracts only explicit confirmed release states, and compares exact models independently across TEST/LIVE. Rumours are excluded. Candidates stage in TEST review queue; no product masters are auto-created. Daily/weekly/monthly cadence is specified but not scheduled. Added package scripts and tests; runtime execution on Research PC remains pending.

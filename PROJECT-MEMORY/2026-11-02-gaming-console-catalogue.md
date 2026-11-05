@@ -336,3 +336,20 @@ A fresh LIVE/TEST audit found that the PlayStation Controllers branch had matchi
 - £6.91, eBay item 800734415651, TEST evidence dd610da3-633a-4d71-85eb-7f0b8522d79a (ps3-ds3-black-spares-800734415651); explicitly classify as spares/repairs, not working-controller evidence.
 
 Post-repair verification in both LIVE and TEST: Nintendo Controllers 6 active evidence rows (4 UK-new / 2 UK-used); PlayStation Controllers 10 (2 UK-new / 8 UK-used); Xbox Controllers 17 (15 UK-new / 2 UK-used). The three controller branches now match. No product records, category/branch records, valuation logic, tenant/customer/transaction/payment data, Stripe configuration, application code or Worker deployment were changed. Evidence remains reference-only. Continue with additional exact-variant controller research only after checking duplicates in both environments; keep new and used evidence distinct and UK GBP only.
+
+
+### PlayStation DualSense colour and limited-edition controller expansion — 5 November 2026
+
+Added eight distinct Sony PlayStation controller products independently to TEST and LIVE under the existing Gaming Consoles & Accessories > PlayStation Controllers branch, each with one active UK-new GBP retail evidence record and a stable source key:
+- DualSense Chroma Indigo Wireless Controller — £69.99, GAME UK.
+- DualSense Chroma Pearl Wireless Controller — £69.99, GAME UK.
+- DualSense Hyperpop Remix Green Wireless Controller — £74.99, official PlayStation UK.
+- DualSense Hyperpop Rhythm Blue Wireless Controller — £74.99, official PlayStation UK.
+- DualSense Hyperpop Techno Red Wireless Controller — £74.99, official PlayStation UK.
+- DualSense 007 First Light Limited Edition Wireless Controller — £74.99, official PlayStation UK.
+- DualSense Wireless Controller - Grey Camo — £64.99, GAME UK.
+- DualSense Wireless Controller - Cobalt Blue — £69.99, GAME UK.
+
+Research references: GAME UK controller catalogue https://www.game.co.uk/playstation/accessories/controllers/ and official PlayStation UK controllers https://www.playstation.com/en-gb/accessories/controllers/shop-all/. Retail prices are observed new-product prices, not used-market sale prices. Used evidence has not been fabricated or inferred from new retail prices.
+
+Both environments inserted 8 products and 8 evidence records. Post-insert LIVE and TEST verification matches: PlayStation Controllers now has 11 active customer-visible products and 18 active evidence rows (10 UK-new / 8 UK-used); Nintendo Controllers remains 3 products / 6 evidence; Xbox Controllers remains 15 products / 17 evidence. All 29 active products across the three controller branches are customer-visible and have at least one active evidence row. No duplicates were created by this batch. No code, valuation logic, tenant/customer/transaction/payment data, Stripe configuration or Worker deployment was changed. Continue with Nintendo Switch 2 third-party controllers and additional Xbox editions after exact-variant duplicate checks in both environments.

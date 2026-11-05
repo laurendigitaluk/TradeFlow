@@ -2236,3 +2236,14 @@ Added four additional original Nintendo Switch-family compatible controllers ind
 Each record is a separate visible Controller product with a unique package key and source_record_key. Manufacturer records were reused (PowerA and Turtle Beach); no manufacturer duplicates created. All evidence is UK-new, GBP, item_condition New, availability listed, and source-linked. Mario Bricks and Donkey Kong Rematch models are also Switch 2 compatible (C Button unavailable); they are retained in the shared Nintendo Controllers branch because the products also support the original Switch family. Used evidence remains reference-only and does not alter automatic valuation.
 
 Independent post-insert verification in both environments: 65 active customer-visible Nintendo Controllers products and 68 active evidence rows; zero visible products missing active evidence; zero active evidence integrity exceptions (source URL/key, positive price, GBP currency and condition classification). Product/evidence counts and product package keys match between LIVE and TEST; environment-specific UUIDs are listed in the Batch 9 checkpoint. Database-only change: no Worker deployment, application/schema/valuation/RLS/Edge Function/Stripe or tenant/customer/order/payment changes.
+
+
+## 2026-11-05 original Nintendo Switch controller catalogue — Batch 10
+
+Added four additional original Switch-family controller products independently to LIVE and TEST with UK-new GBP Argos evidence:
+- CRKD Nitro Deck Handheld Controller — White: £34.99 current Argos listing (was £49.99), compatible with Switch and OLED; not Switch Lite. https://www.argos.co.uk/product/8563903/.
+- CRKD Nitro Deck — Cuddle Team Leader Fortnite Edition: £49.99, compatible with Switch and OLED. https://www.argos.co.uk/product/7658352/.
+- PowerA Enhanced Wired Controller — Cosmic Purple: £19.99. https://www.argos.co.uk/product/7551356/.
+- PowerA Enhanced Wired Controller — Green: £19.99. https://www.argos.co.uk/product/7265635/.
+
+Reused existing CRKD and PowerA manufacturers. Separate colour/design package keys were used; no existing product rows were overwritten. All evidence is UK-new GBP, New, listed, with Argos URL and stable key. Independent verification in both environments: 69 active customer-visible Nintendo Controllers products / 72 active evidence rows; zero visible products missing active evidence; zero evidence integrity exceptions. LIVE and TEST totals match. Exact UUIDs are in CHECKPOINTS/2026-11-05-original-switch-controller-batch-10.md. Database-only update; no Worker deployment, code/schema/valuation or tenant/transaction changes. Used evidence remains reference-only.

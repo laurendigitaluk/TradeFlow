@@ -80,3 +80,10 @@ Runtime evidence before correction: two dry runs completed with zero verified ca
 
 Commit: `64e78d95f3f114ec73c4f9eee6b2b71abd3fe85b`.
 Status: source and documentation updated on the feature branch; Research PC download and one post-fix validation run remain outstanding. Do not use `-Enqueue` until a dry run returns valid, reviewable evidence candidates.
+
+
+## Persistent background task service
+
+The supported unattended mode uses the TEST-only `platform_ai_agent_tasks` control-plane queue. ChatGPT/owner control inserts task instructions into TEST; the Research PC worker claims one task every 15 seconds, renews its 10-minute lease every 45 seconds, runs the existing UK evidence research pipeline and stages candidates for owner review. It reports task lifecycle and specialist progress to both TEST and LIVE Agent Control Centres. The task worker does not write master products or evidence directly.
+
+One-time Windows setup: download `src/task-worker.mjs`, `Start-TradeFlow-Gemma-Service.ps1` and `Install-TradeFlow-Gemma-Service.ps1` from the same feature branch into this folder, then run `Install-TradeFlow-Gemma-Service.ps1`. This registers a per-user Windows logon scheduled task and starts the auto-restarting supervisor. The supervisor uses this folder's `.env`; it does not read or change `C:\\GearCashOut-Config\\.env`. Logs are written to `logs/gemma-supervisor.log`. The service has not yet been installed on the Research PC.

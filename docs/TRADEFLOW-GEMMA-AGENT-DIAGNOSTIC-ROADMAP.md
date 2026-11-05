@@ -120,3 +120,8 @@ Important constraints:
 - Extraction: local Ollama configured by `OLLAMA_MODEL`; candidate states restricted to announced/preorder/released/available/update. Rumours are excluded.
 - Catalogue parity: exact manufacturer/model lookup is independently executed in TEST and LIVE. Missing on both -> pending review; present in one only -> needs_research; exact product already in both -> review as release/update note, never auto-create.
 - No product master creation, lifecycle-field updates, UK price evidence capture or Task Scheduler install in this increment. Tests authored; Research PC runtime execution remains pending.
+
+
+## Importer source path
+
+`tools/tradeflow-gemma-agent/src/import-approved.mjs` reads approved evidence candidates from TEST, resolves exact product IDs separately in both environments, checks duplicate keys and inserts missing evidence. Command: `npm run import-approved`. Runtime verification remains pending.

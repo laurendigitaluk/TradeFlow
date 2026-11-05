@@ -13,7 +13,7 @@ export function validate(e, task, page) {
   if (String(e.price_currency).toUpperCase() !== 'GBP') errors.push('only GBP evidence is allowed');
   const price = Number(e.observed_price);
   if (!Number.isFinite(price) || price <= 0) errors.push('price must be positive');
-  else if (!new RegExp('(?:£\\s*' + price.toFixed(2) + '|£\\s*' + price + '\\b|GBP\\s*' + price.toFixed(2) + ')','i').test(page)) errors.push('price is not visible on source page');
+  else { const amount=price.toFixed(2).replace('.', '\\\\.'); const whole=Number.isInteger(price)?String(price):null; const pattern='(?:£\\\\s*'+amount+(whole?'|£\\\\s*'+whole+'(?:\\\\.00)?(?=\\\\D|$)':'')+'|GBP\\\\s*'+amount+'|'+amount+'\\\\s*GBP)'; if(!new RegExp(pattern,'i').test(page)) errors.push('price is not visible on source page'); }
   if (!e.source_name || !e.item_condition || !e.sales_channel || !e.availability) errors.push('source, condition, channel and availability are required');
   if (e.evidence_type === 'uk_new' && /used|refurb|pre-owned|preowned/i.test(e.item_condition || '')) errors.push('used condition cannot be UK new');
   if (e.evidence_type === 'uk_used' && (/\bnew\b|sealed|opened\s*[-–]?\s*never used/i.test(e.item_condition || ''))) errors.push('new/sealed/opened-never-used cannot be UK used');

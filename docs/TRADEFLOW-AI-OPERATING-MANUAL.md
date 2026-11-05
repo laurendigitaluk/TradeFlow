@@ -3355,3 +3355,21 @@ Source pages:
 Prices include 20% VAT per 3DJake UK; delivery may be extra. Do not represent the S4 as in stock: its page indicates restock pending.
 
 Latest accessory branch totals per environment: 11 products, 3 manufacturers, 11 UK-new evidence rows, zero missing evidence and zero malformed records. The main printer branch remains 183 products / 207 evidence rows. LIVE and TEST product natural keys match exactly. Continue keeping accessory records in their separate branch and add further manufacturers only after verifying identity and checking for duplicates.
+
+
+## 5 November 2026 — LIVE / TEST category metadata reconciliation
+
+A fresh cross-environment audit found two existing Creality printer products in TEST (HALOT-X1 Neo and HALOT-X1 Max, package `printer-only`) had active product rows and active UK-new evidence, but their `product_type`, `main_category` and `catalogue_category` metadata were null. The matching LIVE records were correctly classified. TEST was corrected in place using its own category/manufacturer/branch identifiers; no product or evidence UUIDs were copied and no duplicate rows were created.
+
+Both environments now independently verify the same 189 active customer-visible 3D-printer-related product/package identities, with matching natural-key hash `7765a67becf07cbff191b429b6a02623`:
+
+| Main category | Catalogue category | LIVE | TEST |
+|---|---|---:|---:|
+| 3D Printers | 3D Printers | 5 | 5 |
+| 3D Printers | 3D Printers & Equipment | 27 | 27 |
+| 3D Printers & Equipment | 3D Printers | 146 | 146 |
+| 3D Printers & Equipment | 3D Printer Equipment & Accessories | 11 | 11 |
+
+Each environment has 213 active evidence rows across these products; all 213 are GBP. All 189 products have active UK-new or UK-used evidence and are customer-visible. No product-key parity difference remains. No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. Database-only metadata correction requires no Worker deployment.
+
+**Important count interpretation:** the earlier checkpoint's 183 printer products / 207 evidence rows described an earlier grouped snapshot and is superseded by the current category-level totals above. Always report category counts by both `main_category` and `catalogue_category`; do not collapse similarly named branches or assume the old 183 total remains current.

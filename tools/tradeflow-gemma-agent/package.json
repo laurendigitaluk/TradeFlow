@@ -12,6 +12,7 @@
     "release-monitor": "node src/release-monitor.mjs",
     "release-monitor:enqueue": "node src/release-monitor.mjs --enqueue",
     "import-approved": "node src/import-approved.mjs",
-    "import-approved-products": "node src/import-approved-products.mjs"
+    "import-approved-products": "node src/import-approved-products.mjs",
+    "service": "node src/task-worker.mjs"
   }
 }

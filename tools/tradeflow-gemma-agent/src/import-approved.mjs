@@ -1,6 +1,7 @@
 import {readFile} from 'node:fs/promises';
 import {resolve,dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {reportAgent} from './agent-telemetry.mjs';
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const ids={TEST:'nnsshnfkjcflucjrftzi',LIVE:'gxsrajtqzdjvmceqcpgv'};
 const env={...process.env};
@@ -8,6 +9,9 @@ for(const line of (await readFile(resolve(root,'.env'),'utf8')).split(/\r?\n/)){
 function target(n){const p='TRADEFLOW_'+n+'_';const u=env[p+'URL'],k=env[p+'SERVICE_ROLE_KEY'];if(!u||!k||new URL(u).hostname!==ids[n]+'.supabase.co')throw Error('Invalid '+n+' connection');return{n,u:u.replace(/\/$/,''),k};}
 async function db(t,path,opts={}){const r=await fetch(t.u+'/rest/v1/'+path,{...opts,headers:{apikey:t.k,Authorization:'Bearer '+t.k,'Content-Type':'application/json',...(opts.headers||{})}});const s=await r.text();if(!r.ok)throw Error(t.n+' '+r.status+' '+s.slice(0,350));return s?JSON.parse(s):[];}
 const T=target('TEST'),L=target('LIVE');
+const identity={agent_key:'catalogue-importer',agent_name:'TradeFlow — Catalogue Importer',category:'Owner-approved catalogue imports'};
+await reportAgent(env,{...identity,status:'running',current_task:'Approved evidence import',event_type:'task_started',message:'Started approved evidence import preflight.'});
+try{
 const queue=await db(T,'platform_catalogue_research_queue?'+new URLSearchParams({select:'*',status:'eq.approved',record_type:'eq.evidence_candidate',order:'created_at.asc',limit:'50'}));
 const plans=[];
 for(const q of queue){
@@ -33,4 +37,6 @@ for(const p of plans){
  await db(T,'platform_catalogue_research_queue?id=eq.'+p.q.id,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:'imported',imported_at:new Date().toISOString(),test_master_product_id:p.idsFor.TEST,live_master_product_id:p.idsFor.LIVE,test_evidence_id:saved[0],live_evidence_id:saved[1],updated_at:new Date().toISOString()})});
  done.push({queue_id:p.q.id,model:p.q.model,test_evidence_id:saved[0],live_evidence_id:saved[1]});
 }
+await reportAgent(env,{...identity,status:'idle',current_task:null,event_type:'task_completed',message:'Approved evidence import finished: '+done.length+' queue items imported and verified.',tasks_completed_delta:1,evidence_queued_delta:done.length,details:{imported:done.length}});
 console.log(JSON.stringify({status:'complete',imported:done.length,items:done},null,2));
+}catch(e){await reportAgent(env,{...identity,status:'error',current_task:'Approved evidence import',event_type:'task_failed',message:'Approved evidence import failed: '+e.message,last_error:e.message});throw e;}

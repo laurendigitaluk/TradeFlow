@@ -60,3 +60,11 @@ LIVE: existing Neo standard product b2c3d4e5-6f70-489a-8123-000000000101 refresh
 TEST: existing Neo standard product a1b2c3d4-5e6f-4789-9012-000000000101 refreshed evidence 20fda591-e7d9-4102-8a3a-e8fbc141ad41 (£199); new CFS nano combo product e26954ad-9225-4195-9a18-757163eb8e64 / evidence 1fb1de2e-410e-4806-8311-e22c0a227dd7 (£289).
 
 Verified totals after this addition: LIVE 186 products / 179 active visible / 206 active evidence / 191 UK-new; TEST 187 products / 179 active visible / 206 active evidence / 191 UK-new. Both environments have zero active visible products missing active evidence. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.
+
+## Bambu Lab H3C addition — 5 November 2026
+
+Added Bambu Lab H3C with AMS H3 Combo as a distinct package in both LIVE and TEST. Bambu Lab's official launch post dated 3 November 2026 explicitly lists the UK H3C + AMS H3 price at £2,199 including tax. Source: https://blog.bambulab.com/tool-changer-game-changer-bambu-lab-presents-h3c-the-defining-new-generation-of-3d-printers/. This is a bundled configuration; no standalone printer price is inferred. Availability and dispatch timing are recorded as requiring confirmation on the UK store.
+
+LIVE product e33286e7-1083-41e5-8677-ce147bf754cd; evidence bf9e3cba-d469-43d3-a0b2-5bf75b9f2bf3. TEST product 9149695d-2cd7-428c-bf52-b22ac3d85245; evidence aeb43102-77aa-4934-bfd3-42ea0463bd65.
+
+Verified 3D Printers totals after this addition: LIVE 187 products / 180 active visible / 207 active evidence / 192 UK-new; TEST 188 products / 180 active visible / 207 active evidence / 192 UK-new. Both environments have zero active visible products missing active evidence. Other recently released models in the catalogue were checked (Bambu A2L and X2D, Anycubic Kobra S1 Max and Kobra X, Flashforge Creator 5 and Creator 5 Pro, Prusa CORE One L+ and XL+); existing product records and current UK-new evidence were present, so no duplicates were created. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.

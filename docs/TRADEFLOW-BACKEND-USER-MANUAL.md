@@ -1800,3 +1800,10 @@ Verified totals match in both environments: 277 active products, 269 visible pro
 The remaining WD_BLACK C50 Expansion Card 512GB evidence gap was closed in TEST and LIVE with a £169.99 UK-new price-tracker observation from disks.co.uk (Amazon UK feed). The direct Amazon page was not independently accessible in this capture, and the tracker price is 55.4% above its 30-day average (£109.37); treat it as a high asking-price observation, not a representative value or confirmed checkout price. Source: https://www.disks.co.uk/drive/wd-black-c50-storage-expansion-card-for-xbox-series-x/B0C44B1VSH. LIVE evidence fbe726d0-7a02-4652-ae29-84468640d38c; TEST evidence 107c14fb-5c2a-4921-b858-a36a8a35a477.
 
 Final totals now match: 277 active products, 269 visible, 377 active evidence (212 UK-new / 165 UK-used), zero visible products missing all evidence, zero integrity failures and zero duplicate active source keys. No code, schema, valuation, payment or Worker deployment changes.
+
+ 
+## Gaming catalogue continuation — batch 02, 5 November 2026
+
+The gaming master catalogue now includes six additional Nintendo Switch 2 products in both TEST and LIVE: two PowerA wireless controller designs, the Venom 10-in-1 sports accessory kit, two PowerA protective cases and a Mario-themed SanDisk 256GB microSD Express card. Each new master has a matching UK-new Smyths evidence record. Additional retailer observations were added for Joy-Con 2 Purple/Green, Gioteck WX5+ Dark Camo, PlayStation 007 First Light and GTA VI limited controllers, and the Xbox Forza Horizon 6 limited controller.
+
+Both databases now independently verify at 283 active products, 275 visible products and 388 active evidence rows (223 UK-new / 165 UK-used). All 20 gaming branches match. No visible product is missing evidence; evidence integrity failures and duplicate source keys are both zero. See `CHECKPOINTS/2026-11-05-gaming-catalogue-continuation-batch-02.md` for exact IDs and source records. No code, schema, valuation, payment or Worker deployment changes.

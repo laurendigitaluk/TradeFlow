@@ -3153,3 +3153,10 @@ Two further products were added independently to the TEST and LIVE Nintendo Cont
 All four observations are dated 5 November 2026 and include source links. Both products are active/customer-visible and have active UK-new evidence. The GameCube membership restriction is retained in the product notes.
 
 Post-update verified totals in each environment: 101 active/customer-visible Nintendo controller products; 106 active UK-new evidence rows covering all 101 products; 2 active UK-used reference rows covering 2 products. No active visible product is missing active evidence or UK-new evidence. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was made.
+
+
+## Camera catalogue research — Brinno batch 07 (5 November 2026)
+
+LIVE-only UK GBP evidence added to five existing active products: Brinno BCC2000 £544.99 (Timelapse Store; availability unknown); BCC2000 Plus £719.00 (BrinnoUK, No Solar Kit configuration; page showed Add to cart); BCC2020 £432.00 starting price (BrinnoUK homepage; exact variant/availability unknown); TLC2020 + ATH1000 £399.00 starting price (BrinnoUK homepage; availability unknown); TLC2020 + ATH2000 £519.00 starting price (BrinnoUK homepage; availability unknown). Sources: https://timelapse.store/collections/brinno, https://www.brinnouk.com/products/bcc2000-plus, https://www.brinnouk.com/. Preserve starting-price and availability qualifications; do not treat them as confirmed stock except the BCC2000 Plus listing that displayed Add to cart.
+
+All five inserts were independently read back and verified active, GBP and source-linked. Existing product master records were used; no master or lifecycle changes. LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Camera coverage totals remain unpublished pending the 722 versus 720 category-scope reconciliation.

@@ -62,3 +62,21 @@ New confirmed product masters are staged as `product_candidate` rows in the TEST
 Brave Search has been removed from the research and release-monitor code paths. Both now use the locally hosted SearXNG JSON endpoint configured by `SEARXNG_BASE_URL` (default `http://127.0.0.1:8080`). The included `docker-compose.yml` binds the service to loopback only, and `searxng/settings.yml` enables the JSON API. No search API key, paid subscription or search-provider payment method is required by this agent. SearXNG is free/open-source software; upstream search engines may still rate-limit or block automated requests, so this is not a guarantee of unlimited throughput. If results are temporarily unavailable, the worker fails closed rather than inventing URLs.
 
 Research PC setup: install Docker Desktop for Windows and start its engine. From this folder run `docker compose up -d`. Confirm `http://127.0.0.1:8080/search?q=test&format=json` returns JSON. Set `SEARXNG_BASE_URL=http://127.0.0.1:8080` in local `.env`; no Brave key is used or required. Stop the service with `docker compose down`.
+
+
+## Gemma Research PC extraction performance correction — 5 November 2026
+
+Research PC runtime diagnosis confirmed that local SearXNG and direct manufacturer-page retrieval work: the tested Creality UK page returned HTTP 200 and 5,807 characters of extracted text in approximately 1.25 seconds. A direct Ollama chat request using the installed `gemma3:4b` model did not complete within a 60-second diagnostic window. The installed model was visible in `ollama ps` with a 4,096-token context. The earlier agent implementation used the generic 30-second HTTP helper for Ollama extraction and allowed two research workers to issue model calls concurrently; this was too restrictive for the Research PC runtime.
+
+Correction committed to the Gemma feature branch:
+- Ollama extraction now uses its own configurable timeout: `OLLAMA_TIMEOUT_MS`, default 180,000 ms and bounded to 60,000–300,000 ms.
+- Ollama requests are serialized through a process-local queue to avoid competing Gemma 3 4B inference requests from concurrent research workers.
+- Requests keep the model loaded for 10 minutes, use deterministic temperature 0, cap output at 256 tokens, and explicitly use the installed 4,096-token context.
+- Direct-page text supplied to the model is capped at 10,000 characters to reduce context overflow risk.
+- SearXNG request timeout, page-fetch timeout, Supabase request timeout, evidence validation, UK/GBP rules, exact TEST/LIVE product matching and review-queue boundary are unchanged.
+- Timeout errors now identify the Ollama extraction stage and configured duration.
+
+Runtime evidence before correction: two dry runs completed with zero verified candidates and no queue writes. The TEST research queue remained at zero rows; LIVE has no research queue table and was not written. No catalogue/evidence, tenant, customer, payment, Stripe, schema, RLS, RPC, Edge Function, Worker or deployment changes were made.
+
+Commit: `64e78d95f3f114ec73c4f9eee6b2b71abd3fe85b`.
+Status: source and documentation updated on the feature branch; Research PC download and one post-fix validation run remain outstanding. Do not use `-Enqueue` until a dry run returns valid, reviewable evidence candidates.

@@ -14,3 +14,16 @@ TEST and LIVE verification: 149 active customer-visible products, 163 active evi
 
 ### Post-Batch-12 reconciliation note — parallel Creality resin entries
 A subsequent TEST read detected two additional active, customer-visible Creality resin products created by parallel catalogue work: HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599), each with one active UK-new evidence row. These were not part of Batch 12 and are not yet mirrored in LIVE. Current category totals at this read: TEST 151 visible active products / 165 active evidence rows (150 UK-new / 15 UK-used); LIVE 149 / 163 (148 UK-new / 15 UK-used). Do not add duplicate TEST records; audit the exact TEST product/evidence metadata and then mirror into LIVE with environment-specific UUIDs. A second Ender-3 V3 Neo row was also observed in TEST but is already inactive and hidden, retained for audit; the Batch 12 Neo record remains the active listing.
+
+
+
+## Batch 13 — Creality printer-only additions — 5 November 2026
+
+Activated three canonical `printer-only` records in both environments:
+- SPARKX i7 Single £239 (not Autofill, Nano Combo or Color Combo); current stock/dispatch unconfirmed. https://store.creality.com/uk/products/sparkx-i7-3d-printer
+- HALOT-MAGE S 14K £439 standalone; resin and wash/cure bundles excluded. Page recently showed in stock with estimated delivery 2–6 November 2026. https://store.creality.com/uk/products/halot-mage-s-14k-resin-3d-printer
+- HALOT-R6 £119 standalone; current fulfilment unconfirmed due stale indexed page. https://store.creality.com/uk/products/halot-r6-resin-3d-printer
+
+TEST product UUIDs c7e4a901-6b32-4d8f-9a21-000000000601/602/603; TEST evidence UUIDs f73c9d20-9e43-4cb4-9a23-000000000611/612/613. LIVE product UUIDs d8f5b012-7c43-4e9a-a321-000000000601/602/603; LIVE evidence UUIDs d8f5b012-7c43-4e9a-a321-000000000611/612/613. Temporary duplicate standard-package rows/evidence were deactivated and hidden; canonical printer-only rows remain active.
+
+Verification: TEST 154 active visible products / 168 active evidence (153 UK-new / 15 UK-used); LIVE 154 / 169 (154 UK-new / 15 UK-used). Both environments have zero active visible products without active evidence. A one-row evidence-total difference remains unresolved; do not claim evidence parity until investigated. Used evidence remains reference-only. No Worker deployment, schema/application/valuation/RLS/Edge Function/Stripe/tenant/customer/order/payment changes.

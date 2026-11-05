@@ -3563,3 +3563,14 @@ Post-insert read-back, scoped to the 3D Printers branch:
 | TEST | 179 | 171 | 8 | 197 | 182 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-20.md.
+
+
+## Camera catalogue research updates — 5 November 2026 (batches 03, 05 and 06)
+
+For camera market evidence, preserve exact product configuration and source-specific price observations. Batch 03 recorded UK evidence for URSA Broadcast G2 (£3,586.80, RCB Logic), URSA Mini Pro 12K (£5,039, Blackmagic Design UK), URSA Mini Pro 12K OLPF (£5,412.94, RCB Logic), URSA Cine 12K LF Body (£5,999.99, Scan), and two different URSA Cine 12K LF 100G Body prices: £13,868.10 VAT-inclusive equivalent from BPS-TV (converted from £11,556.75 ex VAT) and £8,238 VAT-inclusive from RCB Logic (backorder, 3–5 days). Retain both as separate observations.
+
+Batch 05: URSA Cine 12K LF £11,779 and URSA Cine 12K LF + EVF £12,779, official Blackmagic Design UK. Batch 06: URSA Cine Immersive 100G £21,275; URSA Cine Immersive 100G Body £15,859; URSA Cine Immersive Body £15,245, official Blackmagic Design UK. Batch 05 and 06 availability is unknown; manufacturer list pricing is not stock confirmation. Batch 06 writes were read back and verified active, GBP and source-linked.
+
+All additions were made to existing LIVE product records only; TEST untouched. Do not change master products, active/customer-visible flags, valuation logic, schema, RLS, app/Edge Functions, Workers or commercial/tenant data during evidence-only research. Used-market evidence is reference-only and excluded from automatic valuation. No Worker deployment is required for database-only evidence updates.
+
+Do not publish camera coverage totals until the 722 versus 720 active-product scope discrepancy is reconciled. See PROJECT-MEMORY/2026-11-05-camera-research-batch-05-06.md and CHECKPOINTS/2026-11-05-camera-research-batch-05-06.md.

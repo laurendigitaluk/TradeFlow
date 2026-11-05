@@ -2743,3 +2743,17 @@ Added Bambu Lab H3C with AMS H3 Combo as a distinct package in both LIVE and TES
 LIVE product e33286e7-1083-41e5-8677-ce147bf754cd; evidence bf9e3cba-d469-43d3-a0b2-5bf75b9f2bf3. TEST product 9149695d-2cd7-428c-bf52-b22ac3d85245; evidence aeb43102-77aa-4934-bfd3-42ea0463bd65.
 
 Verified 3D Printers totals after this addition: LIVE 187 products / 180 active visible / 207 active evidence / 192 UK-new; TEST 188 products / 180 active visible / 207 active evidence / 192 UK-new. Both environments have zero active visible products missing active evidence. Other recently released models in the catalogue were checked (Bambu A2L and X2D, Anycubic Kobra S1 Max and Kobra X, Flashforge Creator 5 and Creator 5 Pro, Prusa CORE One L+ and XL+); existing product records and current UK-new evidence were present, so no duplicates were created. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.
+
+## Xbox controller expansion batch 2 — 5 November 2026
+
+Added independently to TEST and LIVE:
+- Xbox Wireless Controller - X25 Special Edition — £74.99, UK-new evidence from Currys, Microsoft Store and Argos; OG Green translucent 25th anniversary edition, Currys product code 618171.
+- GameSir G7 Pro Xbox & PC Wired Controller - White — £89.99 Argos; EAN 6936685222267.
+- GameSir G7 SE Xbox Wired Controller - White — Argos £49.99 and B&Q £44.99; EAN 6936685220676.
+- GameSir G7 SE Xbox Wired Controller - Grey — Argos £49.99; EAN 6936685221642.
+- Xbox Wireless Controller - Robot White — £49.99 Argos; EAN 889842611564.
+- Xbox Wireless Controller - Pulse Red — £49.99 Argos; EAN 889842707113.
+- Xbox Wireless Controller - Velocity Green — £49.99 Argos; EAN 889842896480.
+- Xbox Wireless Controller - Deep Pink — £49.99 Argos; EAN 889842875577.
+
+All eight products are active/customer-visible with active UK-new GBP/New Retail evidence and stable source_record_key values. TEST and LIVE final read-back both verify 28 active/customer-visible Xbox controller products and 34 active UK-new evidence rows covering all 28 products. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes. TEST and LIVE were updated independently.

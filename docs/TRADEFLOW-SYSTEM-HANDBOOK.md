@@ -3007,7 +3007,7 @@ No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/ord
 
 ## Local AI catalogue research — Gemma — 5 November 2026
 
-TradeFlow's planned catalogue-maintenance agent is a separate local workload on the Research PC: Ollama `gemma3:4b`, a TradeFlow coordinator, bounded specialist research workers, source verification and controlled writes to the shared master catalogue. It is not the subscriber-facing AI assistant and does not depend on `platform_ai_settings.gemma_enabled`.
+TradeFlow's planned catalogue-maintenance agent is a separate local workload on the Research PC: Ollama using the model tag configured by `OLLAMA_MODEL` (example default `gemma3:4b`), a TradeFlow coordinator, bounded specialist research workers, source verification and controlled writes to the shared master catalogue. It is not the subscriber-facing AI assistant and does not depend on `platform_ai_settings.gemma_enabled`.
 
 The shared catalogue evidence store is `public.shared_market_evidence`, linked to `catalogue_master_products`. The subscriber Research Centre uses the separate tenant-scoped `tenant_buying_research` table. Never mix those responsibilities. The local agent must use the service-role key only from the Research PC for shared catalogue writes because client roles are denied direct writes by RLS. Keep TEST and LIVE credentials separate, resolve product UUIDs independently in each project and never copy TEST IDs into LIVE.
 

@@ -3971,3 +3971,23 @@ Preflighted LIVE and TEST, then expanded research to eBay UK, UK refurb retailer
 - Find X10 Pro Max 12GB/512GB: eBay pre-owned category result £1,276.42 + £11.50 has no direct item URL or seller/condition verification. Direct item and Gumtree listings checked are new/sealed/never opened. EE verifies exact 512GB/12GB and 28 Oct 2026 launch.
 
 No database rows changed. Keep four common used-evidence gaps open; no estimates, adjacent model variants, opened-never-used, new/sealed or category-only result. Do not alter the hidden unverified TEST-only iPhone 18. UK-used remains reference-only. See batch 111 checkpoint and project memory. No code or deployment work.
+
+
+## Mobile phone catalogue research and aligned evidence update — batch 112, 5 November 2026
+
+One verified UK-new observation was added to both LIVE and TEST for OPPO Reno16 F 5G 8GB/256GB:
+- Currys direct product page: https://www.currys.co.uk/products/oppo-reno16-f-5g-256-gb-purple-black-10306159.html
+- £399.00 GBP, New, SIM-free, exact 8GB/256GB variant, Available for delivery; observed 5 November 2026.
+- Same source key in both: `mobile-new-oppo-reno16f5g-256gb-currys-10306159-20261105`.
+- LIVE row `db7f42a1-cd18-41d3-b4c3-c583a329cb6a`; TEST row `189ce5b8-d2f4-4a55-a4a9-9fa7571df760`.
+Do not classify this as used/refurbished or completed-sale evidence.
+
+New UK used research:
+- Reno16 F 5G 8GB/256GB: eBay search still surfaces Certified - Refurbished £379.99 from fistech_uk (99.6%, 273 feedback) but no direct item URL, dispatch location or refurbishment grade. Hold; no import.
+- Find X10 12GB/256GB: exact UK-model £821.20 / £876.03 results are Opened – never used, not used evidence. Exclude.
+- Find X10 Pro Max 12GB/512GB: Pre-owned £1,073.08 + £11.95 remains a category/search result without direct item URL or verified seller/location/condition. Hold.
+- Motorola Edge 70 Plus 8GB/256GB: no exact UK used listing. Currys new listing £499 confirms exact model/spec and availability; it is not used evidence.
+
+Verified post-write counts: LIVE and TEST each have 563 active mobile evidence rows (267 UK-new / 296 UK-used), 154 products with used evidence and 156 visible products. Product counts remain 158 LIVE / 159 TEST, with the hidden unverified TEST-only iPhone 18 256GB unchanged. Missing used remains 4 LIVE / 5 TEST; no-evidence remains 0 LIVE / 1 TEST.
+
+UK-used remains reference-only, excluded from automatic valuation. No code/schema/deployment changes. See batch 112 checkpoint and project memory.

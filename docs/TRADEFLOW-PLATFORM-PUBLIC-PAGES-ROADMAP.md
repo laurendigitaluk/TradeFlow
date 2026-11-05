@@ -130,3 +130,34 @@ The owner visual page editor now creates text-only boxes and image/screenshot-on
 
 ## Duplicate public-page copy correction — 4 November 2026
 The owner visual editor's first-time layout conversion previously imported the comparison heading/paragraph and then imported the first screenshot's identical heading/paragraph again, creating two text boxes above the same screenshot. `platform-public-pages-visual-editor.js` now de-duplicates text blocks by normalized heading while retaining the screenshot box. The conversion also strips leading numeric/Part/Step prefixes before creating text blocks. This does not split a heading from its paragraph: each text box remains one independently movable text element containing its optional heading and body, while image/screenshot boxes remain separate independent elements. No saved `visual_layout` existed in either environment at the time of diagnosis; legacy `draft_content` remains unchanged until the owner saves a draft. No database schema, published content, tenant/customer data, or subscriber Website Builder code is changed.
+
+## Public catalogue browser and navigation mega-menu — 5 November 2026
+
+### User journey
+- Any public TradeFlow marketing/legal page shows a **Catalogue & AI Research** dropdown in the top navigation.
+- Dropdown categories load from the environment's own Supabase public read RPC and link to `catalogue-research.html?category=<slug>#browse-catalogue`.
+- Catalogue & AI Research page contains a searchable, paginated live master-catalogue browser.
+
+### Front-end entry points
+- `catalogue-nav.js`: loads category list/counts for the mega-menu on all public pages; on the catalogue page it also handles product search, category filter, page navigation and result rendering.
+- `catalogue-nav.css`: shared mega-menu styling and responsive/mobile layout.
+- `catalogue-browser.css`: search/filter/result/pagination styling.
+- `catalogue-research.html`: browse UI at `#browse-catalogue`.
+- Navigation is present on homepage, How It Works, Plans, Examples, Contact Us, Terms, Privacy and Catalogue & AI Research.
+
+### Data path and security
+- Browser → Supabase REST RPC `public.platform_public_catalogue_browse(text,text,integer,integer)`.
+- RPC returns active categories with public counts and paginated active `customer_visible` product labels only.
+- Public product fields: category, category slug, manufacturer, model, package name, product type and branch name.
+- No direct client SELECT is granted on master catalogue tables; existing deny-direct-client-access RLS policies remain in force.
+- RPC is SECURITY DEFINER with fixed `search_path = public, pg_catalog`, no tenant parameter, read-only, and grants EXECUTE to anon/authenticated. It does not return evidence, IDs, prices, notes, valuation settings or tenant/customer data.
+- TEST project `nnsshnfkjcflucjrftzi`; LIVE project `gxsrajtqzdjvmceqcpgv`. JS URL and publishable key must remain environment-specific.
+- Migration `20261105010000_platform_public_catalogue_browser.sql` applied independently in TEST and LIVE.
+- Page size defaults to 24 and is clamped to 48; never load the complete catalogue in one browser request.
+
+### Failure points / acceptance
+- Empty dropdown: check script loaded, correct environment URL/key, RPC execute grants, active category/product data.
+- No product results: check category slug, active/customer_visible flags, manufacturer/category active flags and RPC response.
+- Search mismatch: inspect the RPC's manufacturer/model/package/product_type matching; do not expose internal notes or evidence as a workaround.
+- Category URL not filtering first page: ensure query string is read before the initial RPC request.
+- Verify dropdown keyboard/click/mobile operation, search, category filter, result cards and pagination in both TEST and LIVE browsers. GitHub merge alone does not prove Worker deployment.

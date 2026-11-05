@@ -3256,3 +3256,20 @@ The public page `catalogue-research.html` explains the expanding TradeFlow maste
 
 ## Consistent public top navigation — 4 November 2026
 The **Catalogue & AI Research** link must appear in the top navigation on all primary public marketing/legal pages: `index.html`, `how-it-works.html`, `plans.html`, `examples.html`, `contact-us.html`, `terms.html`, `privacy.html`, and `catalogue-research.html`. Keep it immediately after Plans & Features. Use the consistent label **Contact Us** (not the legacy About label) wherever the contact link appears. `facts.html` is a legacy redirect and is not a separate navigation page. When adding a new public page, carry forward the shared public navigation links. TEST and LIVE source updates are separate; no database/content migration is needed for this static navigation correction.
+
+## Public master catalogue browser and mega-menu — 5 November 2026
+
+The public marketing navigation uses a dynamic **Catalogue & AI Research** mega-menu. Category names and active public product counts are loaded from the safe public RPC; the full browse page is searchable and paginated (24 records per page).
+
+- Front-end assets: `catalogue-nav.js`, `catalogue-nav.css`, `catalogue-browser.css`.
+- Browser page: `catalogue-research.html`, section `#browse-catalogue`.
+- Shared navigation is present on `index.html`, `how-it-works.html`, `plans.html`, `examples.html`, `contact-us.html`, `terms.html`, `privacy.html`, and `catalogue-research.html`.
+- TEST JS uses TEST Supabase project `nnsshnfkjcflucjrftzi`; LIVE JS uses LIVE project `gxsrajtqzdjvmceqcpgv`. Never cross-wire the environment keys.
+- RPC: `public.platform_public_catalogue_browse(text,text,integer,integer)`; accepts search term, category slug, page and page size. Page size is clamped to 48 maximum.
+- RPC returns only category slug/name/count and active, customer-visible product category/manufacturer/model/package/product-type/branch labels. It does not return product IDs, evidence, source links, prices, internal notes, buying rules, tenant/customer/order data or valuation settings.
+- Direct table RLS policies remain deny-direct-client-access. The RPC is SECURITY DEFINER with fixed search_path, and execute is granted to anon/authenticated. It is read-only and uses no tenant identifier.
+- Product list is dynamic; no full catalogue is copied into HTML or bundled into the Worker. Pagination prevents loading thousands of rows at once.
+- The category dropdown uses current master categories; query-string category links pre-filter the first result request.
+- Public browsing is limited to active `customer_visible` products. Individual business website availability still depends on that business's own selections.
+- Migration: `20261105010000_platform_public_catalogue_browser.sql`, applied independently to TEST and LIVE on 5 November 2026.
+- Validate search, category filters, next/previous pagination, dropdown on desktop/mobile, and public anon RPC access in browser before treating release as complete.

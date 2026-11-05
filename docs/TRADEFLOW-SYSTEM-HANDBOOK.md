@@ -3504,3 +3504,21 @@ No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/
 ## Nikon used-market batch 19 — D7500 (5 November 2026)
 
 Located the exact Nikon D7500 master product in both databases (LIVE b5e2b666-2972-471d-a65c-cfdb2cc72157; TEST d26560b8-6674-4048-8ed3-db84377fd393). The earlier statement that no D7500 master existed was incorrect: the model is stored as `D7500`, not `Nikon D7500`. Added two matching UK used observations per environment from the current UsedLens D7500 guide: £529 typical asking price across grades (62 listings, six retailers) and £424 lowest current listing (listing floor only). LIVE evidence IDs ae06f5a7-0066-4264-a17b-9a61ce4e9906 (£529) and 004ce679-c24d-46b9-a99e-b26be639c6b7 (£424); TEST IDs 13b05cc5-1f61-400a-8161-6325d5e551a4 (£529) and f6ec319e-733f-4501-936f-35bad0fc4431 (£424). All four independently read back active and GBP. Source https://usedlens.co.uk/product/nikon-d7500. Existing market evidence retained. MPB D5300 (26 used units, £174–£284) and D3400 (9 units, £209–£269) researched, but exact active master products were not found in either environment; no evidence was misattached and no product masters were created in this evidence-only batch. No app/schema/RLS/valuation/lifecycle/Stripe/tenant/customer/order/payment/Worker changes; no deployment.
+
+
+## Gaming catalogue expansion — batch 06, 5 November 2026
+
+Added a distinct HORI Piranha Plant Camera for Nintendo Switch 2 product master to Nintendo Accessories in TEST, verified, then independently added the matching master to LIVE. It is a different product from Nintendo's official Switch 2 Camera: the HORI model is the plant-shaped detachable camera with flexible neck, Warp Pipe base, adjustable clip, USB-C cable and 3.5mm adapter. Exact package key piranha-plant-camera-green.
+
+Five active UK-new GBP observations per environment:
+- John Lewis £22.95, product code 82685414, two-year guarantee: https://www.johnlewis.com/nintendo-hori-piranha-plant-camera-for-nintendo-switch-2/p113587839
+- Argos £33.99, product 762/4609: https://www.argos.co.uk/product/7624609/
+- Very £33.99, item WH6QM: https://www.very.co.uk/nintendo-switch-2-piranha-plant-camera-for-switch-2/1601136130.prd
+- GAME £33.99, currently out of stock: https://www.game.co.uk/nintendo-nintendo-piranha-plant-camera-for-nintendo-switch-2-753575
+- Selfridges £39.99: https://www.selfridges.com/GB/en/product/hori-piranha-plant-camera-for-nintendo-switch-2_R04473556/
+
+IDs: product TEST d7e37ea0-1191-4e57-9693-3600b609da06; LIVE 0dede96e-8cb7-4dc6-82df-507999c5820c. Evidence TEST John Lewis 50615da5-c5b3-477e-bdcf-57ae77165e91; Argos 23bd205f-dc34-4eba-a822-fa9613e2106c; Very cc18c1b3-0016-4731-ab17-97b38224ca16; GAME 2df85e9b-6a60-4f97-8d37-92e387c05714; Selfridges c09b43c1-1947-46aa-b280-de134e7e8dc1. LIVE John Lewis 0a5dd84e-6156-4160-9057-6a6d7343ef4f; Argos 108da92a-af16-46a6-ba76-090b7920a77b; Very c16ab86b-e25d-463a-bae4-d43cae7ecb00; GAME 82878b4a-398f-4167-b9b1-f970d1ed1f4d; Selfridges 158e7cdf-3d58-4f4a-abda-4c5795ce976a.
+
+Both environments independently verified: 285 active gaming products, 277 active customer-visible products, 409 active evidence rows (244 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures, zero duplicate active source keys. All 20 gaming branches match. Nintendo Accessories now has 11 active products / 11 visible / 28 evidence. Five new UK-new evidence rows and one product master added per environment. UK-used remains reference-only and does not affect automatic buying valuation.
+
+No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/customer/order/payment/ownership or Worker changes. No deployment. TEST and LIVE records created independently; no customer or tenant data copied.

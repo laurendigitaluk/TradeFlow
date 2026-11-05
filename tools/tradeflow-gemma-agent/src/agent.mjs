@@ -35,12 +35,19 @@ async function json(url, options={}) {
   const r = await fetch(url,{...options,signal:AbortSignal.timeout(30000)}); const t=await r.text();
   if (!r.ok) throw new Error('HTTP '+r.status+': '+t.slice(0,300)); return JSON.parse(t);
 }
-async function search(query, env) {
-  if (!env.BRAVE_SEARCH_API_KEY) throw new Error('BRAVE_SEARCH_API_KEY is missing; no source URLs will be invented');
-  const u=new URL('https://api.search.brave.com/res/v1/web/search'); u.searchParams.set('q',query+' UK GBP'); u.searchParams.set('count',env.SEARCH_RESULTS_PER_TASK||'8');
-  const r=await json(u,{headers:{Accept:'application/json','X-Subscription-Token':env.BRAVE_SEARCH_API_KEY}});
-  return (r.web?.results||[]).map(x=>({title:x.title,url:x.url,description:x.description||''}));
+export async function searchWebResults(query, env) {
+  const base=(env.SEARXNG_BASE_URL||'http://127.0.0.1:8080').replace(/\/$/,'');
+  let endpoint;
+  try { endpoint=new URL('/search',base); } catch { throw new Error('SEARXNG_BASE_URL is invalid'); }
+  if (!['http:','https:'].includes(endpoint.protocol) || endpoint.username || endpoint.password) throw new Error('SEARXNG_BASE_URL must be an HTTP(S) SearXNG endpoint without embedded credentials');
+  endpoint.searchParams.set('q',query+' UK GBP');
+  endpoint.searchParams.set('format','json');
+  endpoint.searchParams.set('language','en-GB');
+  endpoint.searchParams.set('categories','general');
+  const r=await json(endpoint,{headers:{Accept:'application/json'}});
+  return (r.results||[]).filter(x=>x.url).slice(0,Math.max(1,Number(env.SEARCH_RESULTS_PER_TASK)||8)).map(x=>({title:x.title||x.url,url:x.url,description:x.content||''}));
 }
+const search=searchWebResults;
 async function page(url) {
   const requested=new URL(url); if (!['https:','http:'].includes(requested.protocol)||requested.username||requested.password||!ukHost(requested.hostname,requested.pathname)) throw new Error('ineligible source URL');
   const r=await fetch(url,{redirect:'follow',headers:{'User-Agent':'TradeFlowGemmaResearch/0.1'},signal:AbortSignal.timeout(20000)});

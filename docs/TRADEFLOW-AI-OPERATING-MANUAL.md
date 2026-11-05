@@ -4118,3 +4118,8 @@ The Platform Owner dashboard now has an Agent Control Centre section. It reads t
 ## Owner-approved product master import — 5 November 2026
 
 After ChatGPT/platform-owner review changes a TEST queue `product_candidate` to `approved`, the Research PC can run `npm run import-approved-products` from `tools/tradeflow-gemma-agent`. The importer accepts only confirmed release statuses and official manufacturer source URLs; checks that the source excerpt names the exact model; independently resolves category/manufacturer/branch/package in TEST and LIVE; fails closed on ambiguity, duplicates, inactive matches or package conflicts; inserts missing master rows separately in each environment; verifies exact model/package identity on both sides; and marks the TEST queue record imported only after verification. New records are not customer-visible by default. This code is committed only to the Gemma foundation feature branch. Do not run operationally until the Research PC has the matching branch, local TEST/LIVE service-role credentials, dependencies and tests verified. No runtime execution or database import is claimed.
+
+
+## GBP price-validation encoding fix — 5 November 2026
+
+The Gemma evidence validator constructs the pound-sign matcher with `String.fromCharCode(163)` rather than embedding a literal `£` in JavaScript source. This avoids mojibake when `agent.mjs` is edited or transferred through Windows text editors/code pages. The existing exact-price checks remain in place; this change does not relax price validation. The Research PC test suite must be rerun after replacing the local file. No database connection or catalogue import is part of this fix.

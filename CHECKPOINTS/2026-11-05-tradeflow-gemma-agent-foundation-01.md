@@ -102,3 +102,10 @@ Updated `tools/tradeflow-gemma-agent/src/agent.mjs` on the Gemma foundation feat
 ## Research PC launcher correction — 5 November 2026
 
 Fixed `Start-TradeFlow-Gemma.ps1` on the Gemma foundation feature branch. It now exposes safe dry-run by default and `-Enqueue` for TEST review-queue staging; it no longer offers the retired `--Apply` flag that would pass a rejected `--apply` argument. Preflight checks local `.env` presence, required settings, fixed TEST/LIVE project hostnames, Ollama/model availability and `npm test` before the worker starts. This script change has not yet been executed on the Research PC. No catalogue/queue import or deployment occurred.
+
+
+## Free local search provider — 5 November 2026
+
+Brave Search API is no longer a dependency of TradeFlow Gemma. The evidence research worker in `tools/tradeflow-gemma-agent/src/agent.mjs` and the official release monitor in `src/release-monitor.mjs` now query a local SearXNG JSON endpoint configured by `SEARXNG_BASE_URL` (default `http://127.0.0.1:8080`). The Research PC package includes `docker-compose.yml` and `searxng/settings.yml`; Docker binds the search service to loopback only. `.env.example` no longer contains `BRAVE_SEARCH_API_KEY`. No paid search API, subscription or card is required by the agent. SearXNG is free software, but upstream search engines can rate-limit or block automated traffic; do not describe this as unlimited guaranteed search capacity. Worker failure remains fail-closed when SearXNG is unavailable. The PowerShell launcher now checks the local JSON endpoint before research starts.
+
+Verification at this checkpoint: GitHub feature-branch code and test fixtures updated. The Research PC has not yet downloaded these changes, Docker Desktop/SearXNG have not yet been installed or started, and the new runtime tests have not yet been executed locally. No Supabase data, schema, queues, product/evidence rows, tenant data, Stripe settings, Workers or deployments were changed. Production and TEST application branches remain untouched.

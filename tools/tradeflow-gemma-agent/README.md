@@ -13,7 +13,7 @@ TradeFlow-first local research agent for Ollama `gemma3:4b`. It does not import 
 
 ## Research PC setup
 
-1. Copy this folder to the Research PC working directory.
+1. Copy this folder to the Research PC working directory. Use `Start-TradeFlow-Gemma.ps1` as the dedicated Windows launcher; do not use the retired GearCashOut launcher.
 2. Run `npm test`.
 3. Copy `.env.example` to `.env`; configure Ollama, Brave Search and separate TEST/LIVE service-role keys. Never commit `.env`.
 4. Confirm `ollama list` contains `gemma3:4b` and Ollama responds at `http://127.0.0.1:11434`.

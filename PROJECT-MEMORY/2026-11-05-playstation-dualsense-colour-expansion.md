@@ -15,3 +15,7 @@ Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Editi
 
 ## Final read-back — 5 November 2026
 TEST and LIVE now match at 19 active PlayStation controller products and 19 UK-new evidence rows covering 18 products. One pre-existing DualShock 3 Black has no UK-new evidence and remains for legacy review. LIVE's second GTA VI Black pre-order row uses the official PlayStation controller listing page; TEST uses the direct product page.
+
+
+## PlayStation Gran Turismo controller — 5 November 2026
+Added DualSense Wireless Controller - Gran Turismo Limited Edition (CFI-ZCT2WZMX) independently in TEST and LIVE. UK pre-order £74.99; release 10 December 2026. Three UK-new GBP/New Retail evidence rows per environment: PlayStation Direct, Argos (EAN 711719072836) and Smyths Toys. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified each environment: 20 active visible products, 22 active UK-new evidence rows covering 19 products. The single uncovered legacy product remains Sony DualShock 3 Wireless Controller - Black. No Worker deployment or code/schema/valuation/tenant/customer/order/payment changes.

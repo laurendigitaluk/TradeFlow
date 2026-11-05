@@ -2121,3 +2121,23 @@ Evidence is stored as uk_new, GBP, item_condition New, with observed_at timestam
 Post-insert verification, separately run in both environments for the Nintendo Controllers branch: 19 active customer-visible products; 22 active evidence rows (20 uk_new / 2 uk_used); zero visible products missing evidence; zero invalid active evidence rows (missing URL/key, non-positive price or non-GBP currency). The 11 new product rows and 11 evidence rows match by model, package key, source and price in LIVE and TEST. Existing eight Nintendo controller products and their prior evidence were retained. The prior batch's counts were 8 products / 11 evidence; new totals are 19 / 22.
 
 Database-only catalogue change. No Worker deployment, code, schema, valuation logic, RLS, Edge Function, Stripe, tenant, customer, order, payment or custom-domain data changed. Used evidence remains reference-only and must not affect automatic valuation. Exact product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-02.md.
+
+
+### 3D printer catalogue expansion — Batch 10 — 5 November 2026
+
+Expanded Prusa Research and refreshed current Flashforge UK price evidence in TEST and LIVE.
+
+New Prusa Research printer-only models:
+- CORE One+ (Gen 2) — £919.00 from Fabinity UK; listing in stock and offers two purchase options, so this is the advertised entry price rather than a single universal configuration. Source: https://www.fabinity.com/product/prusa-core-one
+- CORE One L+ — £1,829.00 from Fabinity UK; in stock. Source: https://www.fabinity.com/product/prusa-core-one-l
+- XL+ Single-Tool — £2,109.00 from Fabinity UK; ships in 4–5 weeks. Source: https://www.fabinity.com/product/original-prusa-xl-single-toolhead-3d-printer
+
+Refreshed UK-new price observations for existing Flashforge products from the official UK collection:
+- AD5X — £359.00.
+- Adventurer 5M — £259.00.
+- Adventurer 5M Pro — £399.00.
+The collection identifies the six-model current UK range. Flashforge product pages state that printer fulfilment is from international local warehouses, with typical 2–5 working day delivery; do not describe these as UK warehouse stock. Promotions and checkout discounts may apply. Source: https://uk.flashforge.com/collections/3d-printers
+
+Post-insert independent category-scoped verification in both TEST and LIVE: 144 active customer-visible 3D printer products; 161 active evidence rows (146 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. The TEST and LIVE counts match exactly.
+
+Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. All evidence is UK GBP, New, and source-linked. Printer-only records remain separate from kits/accessories; used evidence remains reference-only and must not affect automatic valuation. Database-only catalogue/evidence change; no schema, code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.

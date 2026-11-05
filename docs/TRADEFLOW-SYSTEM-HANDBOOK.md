@@ -3111,3 +3111,12 @@ Batch 05 added official manufacturer UK price observations for URSA Cine 12K LF 
 Batch 06 insert rows were independently read back and verified active, GBP and source-linked. Product master rows already existed; no master catalogue or lifecycle changes. All work is LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Used-market evidence remains reference-only and does not feed automatic valuation.
 
 Camera coverage totals remain unpublished pending reconciliation of the earlier 722-product baseline with the later 720-row main_category=Cameras roll-up. Do not compare or report coverage until category scope is reconciled. See PROJECT-MEMORY/2026-11-05-camera-research-batch-05-06.md and CHECKPOINTS/2026-11-05-camera-research-batch-05-06.md.
+
+
+### ENTINA / WEEFUN Tina2 naming and duplicate-key review — Batch 21 (5 November 2026)
+
+Researched ENTINA's official Tina2C/Tina2 Plus/Tina2S lineup and WEEFUN's own Tina2C/Tina2S pages. ENTINA Tina2C has a UK Amazon tracker observation at £208.00 (new condition; last seen approximately 31 October 2026): https://www.3dprinterdeals.co.uk/item/entina-tina2c-3d-printer-friendly-for-beginners-ready-to-print-in-5/B0GQSR943V. ENTINA's official product page confirms the separate ENTINA brand and the Tina2C model: https://www.entina3d.com/products/entina-3d-printer-tina2c.
+
+A trial ENTINA Tina2C master row and evidence record were inserted and immediately reverted in both environments after the global branch-level duplicate-key check identified the same model/package key as the already-catalogued WEEFUN TINA2C. No ENTINA product/evidence row remains, and no manufacturer row remains from that trial. This avoids leaving duplicate product keys or claiming the two brand listings are separate hardware without a confirmed model distinction. The existing WEEFUN TINA2C remains unchanged. Revisit only if the catalogue key strategy is deliberately extended to support same-model brand variants or reliable evidence proves a distinct configuration.
+
+Post-revert verification remains unchanged from Batch 20: LIVE 178 products / 171 active visible / 197 active evidence (182 UK-new, 15 UK-used); TEST 179 / 171 / 197. Both have zero missing active visible evidence and zero duplicate product keys. No Worker deployment or app/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-21.md.

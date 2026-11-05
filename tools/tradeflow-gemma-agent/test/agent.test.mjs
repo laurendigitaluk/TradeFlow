@@ -8,3 +8,4 @@ test('accepts visible UK GBP evidence',()=>assert.equal(validate(evidence,task,'
 test('rejects non-UK sources',()=>assert.equal(validate({...evidence,source_url:'https://example.com/product'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));
 test('rejects opened-never-used as UK used',()=>assert.equal(validate({...evidence,evidence_type:'uk_used',item_condition:'Opened - never used'},{...task,research_type:'uk_used'},'Creality K1 Speedy 3D Printer £299.00').valid,false));
 test('rejects marketplace search pages',()=>assert.equal(validate({...evidence,source_url:'https://www.ebay.co.uk/sch/i.html?_nkw=k1'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));
+test('rejects a near-match price rather than accepting a different amount',()=>assert.equal(validate(evidence,task,'Creality K1 Speedy 3D Printer £299.99').valid,false));

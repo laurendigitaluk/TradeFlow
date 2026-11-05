@@ -3311,3 +3311,16 @@ Added four previously missing ELEGOO resin printer models independently in TEST 
 Independent TEST/LIVE verification after Batch 7: 136 active customer-visible products; 150 active evidence rows (135 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-07.md.
 
 No category or branch created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue/evidence work; no Worker deployment required.
+
+
+### 3D printer catalogue expansion — Batch 8 — 5 November 2026
+
+Added two verified ELEGOO printer-only models independently in TEST and LIVE:
+- Neptune 3 Pro — £127.00 UK new, ELEGOO UK. The official UK product page identifies the exact model and FDM specification, offers the standard new printer option and lists the UK delivery guidance for in-stock goods. Source: https://uk.elegoo.com/collections/elegoo-products-dc/products/elegoo-neptune-3-pro-fdm-3d-printer-225x225x280mm
+- Saturn 2 (8K) — £350.00 UK new, 123-3D UK. Exact 8K model and SKU DKI00121; retailer explicitly says backordered/available to order with estimated 10–14 days, so do not describe as in stock. Source: https://www.123-3d.co.uk/collections/3d-printers/products/elegoo-saturn-2-8k-3d-printer
+
+Neptune 3 Plus was not added because the official UK page is sold out. Neptune 3 Max was not added as a new-price item because only sold-out/new and pre-owned listings were found. Mars 3 Pro was not added because current UK retailer evidence is not dependable enough to treat as an available new offer; other retailer pages show sold out. No unsupported legacy models or bundles were introduced.
+
+Post-insert independent category-scoped verification in both TEST and LIVE: 138 active and customer-visible 3D printer products; 152 active evidence rows (137 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Counts are for the 3D Printers category only, not the entire master catalogue.
+
+Exact Batch 8 product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-08.md. TEST and LIVE use independent environment-specific UUIDs. UK GBP only; printer-only variants kept separate from bundles; used evidence remains reference-only and must not affect automatic valuation. Database-only change: no schema, code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.

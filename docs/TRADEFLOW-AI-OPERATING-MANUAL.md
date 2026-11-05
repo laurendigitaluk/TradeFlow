@@ -3898,3 +3898,14 @@ Added seven UK used-market asking-price benchmark observations in each environme
 - COOLPIX P610 £209
 
 All 14 records were independently read back from their respective LIVE and TEST databases as active GBP uk_used evidence with source URLs. The same seven models and values now match across environments. No existing evidence was overwritten. This batch only changes shared market evidence; no product catalogue, lifecycle, schema, valuation, RLS, application, Worker, Stripe, tenant/customer/order/payment data was changed and no deployment was made. These guide prices are indicative used asking-price benchmarks only.
+
+ 
+## Gaming catalogue continuation — batch 02, 5 November 2026
+
+Added six new active, customer-visible gaming master products across Nintendo Switch 2 controllers and accessories in both TEST and LIVE: PowerA Pokémon Mega Evolutions controller (£39.99), Venom 10-in-1 sports pack (£29.99), PowerA Mario & Yoshi wireless controller (£39.99), PowerA Dark Heather Grey Slim Case (£14.99), PowerA Mario & Yoshi Protection Case (£14.99 promotional price) and SanDisk Mario 256GB microSD Express card (£44.99). Each has a Smyths UK-new evidence row and an exact package key. Existing records were checked first; no duplicate product masters were created.
+
+Added further Smyths/Argos UK-new evidence to existing masters: Joy-Con 2 Light Purple/Light Green pair (Smyths £64.99; Argos £64.95 retained), Gioteck WX5+ Dark Camo (Argos £21.99; Smyths £24.99 retained), DualSense 007 First Light Limited Edition (Smyths £69.99; PlayStation UK £74.99 retained), DualSense GTA VI White Limited Edition (Smyths £74.99; PlayStation Direct £74.99 retained), and Xbox Forza Horizon 6 Limited Edition controller (Smyths £69.99; Argos £69.99 and Currys £84.99 retained).
+
+Final independently queried totals match in both environments: 283 active gaming products, 275 active visible products, 388 active evidence rows (223 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures and zero duplicate active source keys. Branch-level product/visible/evidence counts match across all 20 gaming branches. This batch added 6 product masters and 11 evidence rows to each environment.
+
+UK-used remains reference-only and does not affect automatic buying valuation. No application code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment. Exact IDs, source keys, source URLs and variant notes are recorded in `CHECKPOINTS/2026-11-05-gaming-catalogue-continuation-batch-02.md`.

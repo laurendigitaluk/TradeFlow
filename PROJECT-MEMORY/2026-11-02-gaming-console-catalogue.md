@@ -274,3 +274,55 @@ LIVE branch 1f6a60ce-04a0-4745-aa4a-3b4b7450a789; product IDs c80a5028-72bc-489a
 Added two distinct Sega home-console master products independently in TEST and LIVE after checking the existing Sega product catalogue for duplicates: Sega Mega Drive II and original Sega Master System (Model 1 / Mark I). Reused the existing Sega Home Consoles branch and Sega manufacturer in each environment. Do not merge Mega Drive II with the existing original Mega Drive product or Master System Model 1 with Master System II.
 UK GBP used/listed asking-price evidence (not completed sales): Mega Drive II Cash Converters item 057000067593 £129.99, fully functioning, boxed with two controllers, manuals and Mega Games 1; item 054200288249 £49.99, black unit, fully functional with controllers and power/AV leads. URLs https://www.cashconverters.co.uk/shop/gaming/consoles--equipment/gaming-consoles/sega-console/057000067593 and https://www.cashconverters.co.uk/shop/gaming/consoles--equipment/gaming-consoles/sega-console/054200288249. Original Master System Model 1 eBay item 800307959836 £71.67, model 3005-05-B, AC adaptor, RF cable and Hang-On; seller describes it as tested and working. Price/details from UK second-hand aggregator; direct eBay page cache miss. URL https://www.ebay.co.uk/itm/800307959836.
 TEST products: Mega Drive II 7886fa8c-f980-4227-9683-c31b4504c32a; Master System Model 1 29681c32-645d-4d26-a8f8-7c4b3329317d. Evidence: Mega Drive II 56f37aa3-6178-4d62-904e-2b72d94a19cb and bdb5ac16-3766-4cc7-8f88-0aa7419938f8; Master System I e91d68e3-567e-4706-8c92-44d595c74f6c. LIVE products: Mega Drive II 1c1b8b6f-f8f0-406e-b922-a69617341ee1; Master System Model 1 3ebdebbd-f806-4cfd-9c3b-3d8b77b0c33b. Evidence: Mega Drive II 01cbb214-7409-49e4-8863-db2e914a9a7e and 110545ed-3310-4eee-b70f-c0ed524b9bfb; Master System I b9cc0561-56cb-44d0-b842-fc78bb956a17. TEST and LIVE independently verify 135 active gaming products, 127 customer-visible, 211 active evidence rows (59 UK new / 152 UK used), zero malformed active evidence. Evidence is market reference only and does not affect automated valuations. No customer/tenant/transaction/domain/Stripe/subscription data, valuation logic, code or Worker deployment changed.
+
+## Gaming console catalogue continuation — 5 November 2026
+
+Both TEST and LIVE were updated and independently verified. The Nintendo Switch 2 The Legend of Zelda 40th Anniversary 256GB console was added as a separate master product, with Smyths Toys UK-new evidence at £429.99. The existing Zelda 40th Anniversary Pro Controller gained Argos £64.99 and Smyths £79.99 UK-new evidence; existing Currys £74.99 evidence was retained.
+
+### Exact records
+
+LIVE:
+- Zelda 40th Anniversary Switch 2 console product 916a5fda-15f4-42e8-9a35-5b28c484c9e2; evidence 14f07bfe-08cb-4e3b-9787-4db4b346152a; key smyths-switch2-zelda-40th-console-266502-uk-new-20261105.
+- Zelda 40th Anniversary Pro Controller product e26d1a7c-05a4-4b06-a704-1237b98d61e2; Argos evidence 338dda77-94f3-4426-8a6b-a858f4339037; Smyths evidence c823a00e-ae08-423b-acad-3dccc88cc9e9; existing Currys evidence 7139cb37-c834-4471-be75-82ded2c07256.
+- Xbox Wireless Controller — Shock Blue product ae034a43-c388-49bf-b1da-11a136ddeb13; Argos evidence 9f690f7e-6bd8-435a-ab78-3f346b2fc0de; key argos-xbox-shock-blue-2026-11-05.
+- PSP-2000 evidence 57198479-79ee-4202-857b-1878ed3a74af; PSP Go evidence e6439fed-8aee-463e-92d5-ea2b010c7e64; PS Vita OLED evidence 20e7f652-4bd3-4036-b19a-d30b3fb836cc.
+
+TEST:
+- Zelda 40th Anniversary Switch 2 console product e8dc9421-8b85-43e0-87de-71ebf26bb67f; evidence 5f0f2069-a442-4189-bbda-51bca51016f0; same stable key.
+- Zelda 40th Anniversary Pro Controller product e1bafaef-875a-438f-83e2-841890ebb5ea; Argos evidence aecd6462-d98f-40d1-9d73-11b92f6c0e69; Smyths evidence d63a057f-6d61-444c-870a-8191f6d26a19; existing Currys evidence 7cb30e70-bd8f-4d45-887c-ce998d32387a.
+- Xbox Wireless Controller — Shock Blue product b7efaed8-d9e9-4af5-ae78-ada86a365363; Argos evidence 14a7c6fb-1284-4343-9514-29ac24680440.
+- PSP-2000 evidence 2751e821-2eee-43fa-aa41-07195141d7ab; PSP Go evidence eefe9d8a-5100-4bd0-babb-a940876f2ec6; PS Vita OLED evidence 461f0daf-0d66-43e7-92aa-350a216d86e2.
+
+Sources:
+- Zelda 40th Anniversary console, Smyths £429.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-consoles/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-console/p/266502
+- Zelda 40th Anniversary Pro Controller, Argos £64.99: https://www.argos.co.uk/product/9630952
+- Zelda 40th Anniversary Pro Controller, Smyths £79.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-pro-controller/p/266456
+- Xbox Shock Blue, Argos £59.99: https://www.argos.co.uk/product/8399139/GM-Variant
+- PSP-2000 sold £69.43: https://www.ebay.co.uk/itm/860086510676
+- PSP Go listed £140.00: https://www.ebay.co.uk/itm/277314993924
+- PS Vita OLED sold £138.98: https://www.ebay.co.uk/itm/267796509409
+
+Existing null source URLs repaired without changing prices or classifications:
+- LIVE John Lewis Nintendo Switch 2 Joy-Con 2 Charging Grip evidence 567a4590-1bfb-4f28-826f-65233742362f now links to https://www.johnlewis.com/nintendo-joy-con-2-charging-grip-black/p113587848.
+- TEST DualSense Starlight Blue evidence 796fe468-b181-47dd-bb06-ef39df0bff81 now links to https://www.argos.co.uk/product/1256028/.
+- TEST DualSense Nova Pink evidence 2820f23c-4072-47c1-95cc-b2bcb3c29ef0 now links to https://www.argos.co.uk/product/1256035/.
+
+### Verified totals after continuation
+| Metric | LIVE | TEST |
+|---|---:|---:|
+| Active gaming master products | 277 | 277 |
+| Active customer-visible products | 269 | 269 |
+| Active evidence rows | 376 | 376 |
+| UK-new evidence | 211 | 211 |
+| UK-used evidence | 165 | 165 |
+| Visible products missing all evidence | 1 | 1 |
+| Active evidence integrity failures | 0 | 0 |
+| Duplicate active source keys | 0 | 0 |
+
+The single visible product without active evidence is WD_BLACK C50 Expansion Card 512GB in Xbox Accessories. Continue sourcing an exact UK price; do not invent one. A further 85 visible products lack UK-new evidence, including legacy/used-only products; do not infer new prices from old launch prices.
+
+TEST/LIVE UUIDs are environment-specific. The product and evidence rows were inserted independently. UK-used remains reference-only and must not affect automatic buying valuation. No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment or Cloudflare Worker changes; no Worker deployment.
+
+No TradeFlow project-memory/checkpoint table or application function was found in the database schemas. Repository PROJECT-MEMORY and CHECKPOINTS files remain the continuity record.
+
+Checkpoint: CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.

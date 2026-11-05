@@ -1,0 +1,22 @@
+[
+  {
+    "category_slug": "3d-printers-equipment",
+    "branch_slug": "3d-printers",
+    "manufacturer": "Creality",
+    "model": "K1",
+    "package_key": "standard",
+    "package_name": "Standard Printer",
+    "research_type": "uk_new",
+    "search_query": "Creality K1 standard 3D printer UK price"
+  },
+  {
+    "category_slug": "3d-printers-equipment",
+    "branch_slug": "3d-printers",
+    "manufacturer": "Creality",
+    "model": "K1",
+    "package_key": "standard",
+    "package_name": "Standard Printer",
+    "research_type": "uk_used",
+    "search_query": "Creality K1 used 3D printer UK sold listing GBP"
+  }
+]

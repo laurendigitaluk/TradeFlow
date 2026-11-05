@@ -2910,3 +2910,23 @@ Rechecked LIVE and TEST against batch 110, then expanded searches to UK refurbis
 - OPPO Find X10 Pro Max 12GB/512GB: current eBay search results include a pre-owned category result at £1,276.42 + £11.50 postage but no direct item URL/seller/condition details; exact direct eBay item pages inspected were new/sealed, and Gumtree's £999 listing explicitly says brand new, sealed and never opened. EE confirms 512GB/12GB and launch 28 October 2026. No used candidate accepted. Sources: https://www.ebay.co.uk/b/bn_74893092 ; https://www.ebay.co.uk/itm/820280763288 ; https://www.gumtree.com/p/oppo/oppo-find-x10-pro-with-hasselblad-kit-or-find-x9-ultra/1804314977 ; https://ee.co.uk/products/oppo-find-x10-pro-max-sim-free .
 
 No database evidence rows were inserted or changed in batch 111. New, sealed, opened-never-used, overseas and category-only results remain excluded from UK-used evidence. The recent release dates (Sep 2026 / 28 Oct 2026) explain thin resale supply but do not justify estimated prices. UK-used remains reference-only and excluded from automatic valuation. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment. See `CHECKPOINTS/2026-11-05-mobile-phone-used-research-batch-111.md` and project memory.
+
+
+## Mobile phone catalogue research and aligned evidence update — batch 112, 5 November 2026
+
+Added one verified UK-new retail observation to the matching Reno16 F 5G 8GB/256GB master in both LIVE and TEST:
+- Currys product page: https://www.currys.co.uk/products/oppo-reno16-f-5g-256-gb-purple-black-10306159.html
+- £399.00 GBP, New, SIM-free, 8GB RAM / 256GB, Currys shows Available for delivery. Observed 5 November 2026.
+- Stable source key: `mobile-new-oppo-reno16f5g-256gb-currys-10306159-20261105`.
+- LIVE evidence ID `db7f42a1-cd18-41d3-b4c3-c583a329cb6a`; TEST evidence ID `189ce5b8-d2f4-4a55-a4a9-9fa7571df760`.
+This is a new retail asking price only, not a used/refurbished benchmark or completed sale.
+
+Additional used-market research did not produce an accepted exact-variant used listing:
+- Reno16 F 5G 8GB/256GB: eBay UK still shows Certified - Refurbished £379.99 from fistech_uk (99.6%, 273 feedback), but result has no direct item URL, dispatch location or refurb-grade details. Do not import the search result. Exact Currys £399.00 new listing is now recorded above.
+- Find X10 12GB/256GB: eBay UK direct search results identify exact UK-model listings at £821.20 / £876.03 as Opened – never used; exclude from used evidence. Brand-new listings are also present.
+- Find X10 Pro Max 12GB/512GB: search results still surface a Pre-owned listing £1,073.08 + £11.95, but no direct item URL or verifiable seller/location/condition details were obtained. Hold; do not import category result.
+- Motorola Edge 70 Plus 8GB/256GB: no exact UK used listing found. Current Currys new listing £499.00 confirms exact 8GB/256GB and availability; this does not count as used evidence. Source: https://www.currys.co.uk/products/motorola-edge-70-plus-256-gb-pantone-mountain-view-10310979.html .
+
+Post-write verification: both environments now have 563 active mobile evidence rows (267 UK-new / 296 UK-used), 154 products with UK-used evidence and 156 customer-visible products. LIVE remains 158 active products / 4 missing used / 0 missing any evidence; TEST remains 159 / 5 / 1 because its hidden, unverified iPhone 18 256GB is TEST-only. The shared evidence addition is aligned exactly; product master difference remains intentionally untouched.
+
+UK-used remains reference-only and excluded from automatic valuation. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment. See `CHECKPOINTS/2026-11-05-mobile-phone-catalogue-batch-112.md` and project memory.

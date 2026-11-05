@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": {
-    "node": ">=22"
-  },
+  "engines": { "node": ">=22" },
   "scripts": {
     "start": "node src/index.mjs",
-    "test": "node --test"
+    "test": "node --test",
+    "release-monitor": "node src/release-monitor.mjs",
+    "release-monitor:enqueue": "node src/release-monitor.mjs --enqueue"
   }
 }

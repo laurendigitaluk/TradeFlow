@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { sourceKey, validate } from '../src/agent.mjs';
+const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
+const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
+test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
+test('accepts visible UK GBP evidence',()=>assert.equal(validate(evidence,task,'Creality K1 Speedy 3D Printer £299.00').valid,true));
+test('rejects non-UK sources',()=>assert.equal(validate({...evidence,source_url:'https://example.com/product'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));
+test('rejects opened-never-used as UK used',()=>assert.equal(validate({...evidence,evidence_type:'uk_used',item_condition:'Opened - never used'},{...task,research_type:'uk_used'},'Creality K1 Speedy 3D Printer £299.00').valid,false));
+test('rejects marketplace search pages',()=>assert.equal(validate({...evidence,source_url:'https://www.ebay.co.uk/sch/i.html?_nkw=k1'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));

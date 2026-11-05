@@ -2012,3 +2012,8 @@ The public Catalogue & AI Research page uses `public.platform_public_catalogue_b
 
 
 TEST merge status — 5 November 2026: PR #240 merged to `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`. Runtime deployment and browser acceptance remain unverified; LIVE `production` was not changed.
+
+
+## Subscriber AI provider controls — 5 November 2026
+
+Subscriber-supplied AI provider selection is removed from the Platform Owner dashboard UI. The TradeFlow Assistant and customer messaging are retained as part of the subscriber website. Do not delete subscriber accounts, tenant records, websites, customer accounts or assistant conversations. This is a source change on an isolated feature branch, not a LIVE deployment.

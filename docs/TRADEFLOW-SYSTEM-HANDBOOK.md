@@ -2816,3 +2816,12 @@ Verified independently after both writes: 128 active customer-visible products i
 The QIDI X-Max 3 UK eBay sale is £361.42, sold 30 July 2026 (item 406940086609); the displayed total includes £11.42 Buyer Protection and is not seller proceeds. Nine ELEGOO UK retail observations are £169, £189, £279, £377, £154, £231, £299, £699 and £2,049 respectively; exact product URLs and evidence IDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-05.md.
 
 No new category or branch was created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. This was database-only catalogue and evidence work; no Worker deployment was required. TEST and LIVE use environment-specific manufacturer, product and evidence UUIDs. Continue TEST-first, then mirror to LIVE, and never infer used values from new retail prices.
+
+
+### FLSUN 3D printer expansion — Batch 6 — 5 November 2026
+
+Added FLSUN as a new active manufacturer and added four standard FDM printer models independently in TEST and LIVE: S1, T1, S1 Pro and T1-PRO. Each model has one UK GBP new-market evidence row with its observed stock state preserved: S1 £499 in stock at 3D Prima; T1 £500 backordered at 123-3D; S1 Pro £1,299 out of stock at the FLSUN UK Store; T1-PRO £509 out of stock at the FLSUN UK Store. Do not present the backordered or out-of-stock items as available now.
+
+Post-write verification matches independently in TEST and LIVE: 132 active customer-visible products; 145 active evidence rows (130 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP rows or uk_new condition mismatches. FLSUN has four active products. Exact UUID mapping and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-06.md.
+
+No new category or branch was created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue/evidence work; no Worker deployment required. Preserve the stock-state notes and do not infer used prices from retail asking prices.

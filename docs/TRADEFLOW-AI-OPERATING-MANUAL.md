@@ -3628,3 +3628,42 @@ Researched ENTINA's official Tina2C/Tina2 Plus/Tina2S lineup and WEEFUN's own Ti
 A trial ENTINA Tina2C master row and evidence record were inserted and immediately reverted in both environments after the global branch-level duplicate-key check identified the same model/package key as the already-catalogued WEEFUN TINA2C. No ENTINA product/evidence row remains, and no manufacturer row remains from that trial. This avoids leaving duplicate product keys or claiming the two brand listings are separate hardware without a confirmed model distinction. The existing WEEFUN TINA2C remains unchanged. Revisit only if the catalogue key strategy is deliberately extended to support same-model brand variants or reliable evidence proves a distinct configuration.
 
 Post-revert verification remains unchanged from Batch 20: LIVE 178 products / 171 active visible / 197 active evidence (182 UK-new, 15 UK-used); TEST 179 / 171 / 197. Both have zero missing active visible evidence and zero duplicate product keys. No Worker deployment or app/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-21.md.
+
+
+## Nintendo Controllers continuation — Batch 5 — 5 November 2026
+
+### Completed
+
+Added the following HORI products to the existing Nintendo Controllers branch in both TradeFlow environments:
+
+| Product | EAN-13 | UK-new observations checked 5 November 2026 |
+|---|---|---|
+| Mario Kart Racing Wheel Pro Mini for Nintendo Switch 2 — Red | 4961818042445 | Smyths Toys UK £69.99; Argos £74.99 |
+| Mario Kart Racing Wheel Pro Deluxe for Nintendo Switch 2 — Red & Black | 4961818042469 | Very £104.99; Argos £119.99 |
+
+Each product has two active `uk_new` evidence rows, with source URLs, GBP currency, New condition, retailer name, observed_at timestamp and a stable source_record_key. Both products are active/customer-visible and have verified EAN identifiers. No used-market evidence was fabricated or added.
+
+### Verified database position
+
+Nintendo Controllers branch, independently checked in both projects:
+
+- TEST Supabase: `nnsshnfkjcflucjrftzi`.
+- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`.
+- 99 active products; 99 customer-visible.
+- 102 active UK-new evidence rows, covering all 99 products.
+- 2 active UK-used evidence rows, covering 2 products.
+- Zero active visible products missing active evidence.
+- Zero active visible products missing UK-new evidence.
+- TEST and LIVE counts and new evidence records match.
+
+The previous Batch 4 checkpoint reported 43 products / 46 evidence rows. The current database position supersedes that earlier snapshot; do not use the older count when resuming.
+
+### Known item for later review
+
+Two existing Nintendo controller products share the generic package_key `single-controller`. This predates Batch 5 and was not changed. It is a package-key collision, not yet proven to be duplicate product records. Inspect exact model/package identities and the historical insertion before deciding whether to change it. The two new HORI products use distinct product-specific keys.
+
+### Next stopping point
+
+Continue the Nintendo controller completeness audit for additional UK-sold Switch 2 controllers, racing-wheel/controller variants and remaining Nintendo controller families. Check product identity and existing package keys before every insert. Once Nintendo is reconciled, continue with PlayStation controllers, then Xbox controllers. Keep TEST and LIVE separate and apply each database-only batch independently to both.
+
+No Worker deployment or application-code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was part of Batch 5.

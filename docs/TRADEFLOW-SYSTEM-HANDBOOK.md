@@ -2983,3 +2983,18 @@ All evidence remains UK GBP. UK-used evidence is reference-only and must never f
 
 ### Batch 17 — Anycubic 3D printer catalogue
 Added Kobra 4 Standard Printer and Photon Mono 4 Ultra Standard Resin Printer at £279 GBP in both TEST and LIVE; added a separate £849 UK-new Photon P1 Max pre-order observation. Stock and delivery qualifications are retained. Verification: LIVE 164 products / 157 active visible / 182 active evidence; TEST 165 / 157 / 182. No missing active evidence, duplicate active product/evidence keys or invalid active evidence. See PROJECT-MEMORY/2026-11-05-3d-printer-catalogue-batch-15.md and CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-17.md. No Worker deployment or valuation/application changes.
+
+
+### Camera category research — initial LIVE batch (5 November 2026)
+
+Scope: active LIVE products in the Cameras category only; Pokémon Trading Cards excluded. Starting coverage check showed 722 active camera products, 353 with at least one active GBP evidence record and source URL, and 369 requiring research.
+
+Added four UK-new evidence observations to LIVE `public.shared_market_evidence`, matched to existing master product UUIDs:
+- Blackmagic Design Cinema Camera 6K — £1,219.00; Blackmagic Design UK; availability recorded unknown.
+- Canon Cinema EOS C70 Camera Body — £3,599.99; Canon UK Store; in stock at time checked.
+- Canon EOS R50 V Camera Body — £529.00; Park Cameras; in stock at time checked.
+- Brinno TLC300 Long Term Time Lapse Camera — £269.99 starting price; BrinnoUK; collection page showed in-stock range; selected package price must be reconfirmed.
+
+Sources: https://www.blackmagicdesign.com/uk/products/blackmagiccinemacamera ; https://www.canon.co.uk/store/cinema-eos-cameras/ ; https://www.parkcameras.com/cameras/mirrorless-cameras/canon/?pi=2 ; https://www.brinnouk.com/collections/1080p-cameras .
+
+Post-insert read-back: 722 active Cameras products; 357 have qualifying active GBP evidence with source URLs; 365 remain without qualifying evidence. This is an evidence-presence count, not a complete quality/freshness audit. Continue in small verified batches, check exact model/package, UK GBP price and availability, and duplicate source keys before inserting. UK-used evidence remains reference-only and excluded from automatic valuation. LIVE only was changed; TEST, catalogue products, lifecycle flags, valuation, application code and Worker deployments were not changed.

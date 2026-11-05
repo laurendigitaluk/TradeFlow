@@ -68,3 +68,21 @@ Added Bambu Lab H3C with AMS H3 Combo as a distinct package in both LIVE and TES
 LIVE product e33286e7-1083-41e5-8677-ce147bf754cd; evidence bf9e3cba-d469-43d3-a0b2-5bf75b9f2bf3. TEST product 9149695d-2cd7-428c-bf52-b22ac3d85245; evidence aeb43102-77aa-4934-bfd3-42ea0463bd65.
 
 Verified 3D Printers totals after this addition: LIVE 187 products / 180 active visible / 207 active evidence / 192 UK-new; TEST 188 products / 180 active visible / 207 active evidence / 192 UK-new. Both environments have zero active visible products missing active evidence. Other recently released models in the catalogue were checked (Bambu A2L and X2D, Anycubic Kobra S1 Max and Kobra X, Flashforge Creator 5 and Creator 5 Pro, Prusa CORE One L+ and XL+); existing product records and current UK-new evidence were present, so no duplicates were created. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.
+
+## Further 3D printer catalogue continuation — 5 November 2026
+
+Added Flashforge Adventurer 5X independently to LIVE and TEST. The official Flashforge UK store lists £279.00 GBP, reduced from £449.00, as its entry-level multicolour printer. Source: https://uk.flashforge.com/ (official UK store homepage). Price observed 5 November 2026; delivery and final checkout availability to be confirmed in checkout.
+- LIVE product 3200eb99-8cf7-46dc-bad8-b3cfa8b8d874; evidence 219b6262-fd23-4329-b22c-904387ea8e80.
+- TEST product 7f266b64-c0c2-4dd1-80fc-fea0e1761220; evidence 8114b3fd-0d2c-4b9d-8fc5-281b33dc889b.
+
+Also completed the prior Creality Ender-3 V4 CFS Combo addition at £289.00, sourced from GM Crafts UK (https://www.gmcrafts.co.uk/product/creality-ender-3-v4-combo/), with Add to Basket and free UK delivery shown. LIVE product bbf4ef13-c073-4fe2-a1ed-54975e9151a8 / evidence 401c9eaf-6153-45ab-add1-2f7bdcbbed30; TEST product 2bcf22b1-a2fa-412c-81d8-6e074e95fd81 / evidence 9a9177a2-e720-4e8a-8caa-f50771be7029.
+
+Verified recent-model coverage: Creality HALOT-X1 Neo and HALOT-X1 Max already have current UK-new evidence in both environments (Neo £199; Max £1,599); Flashforge CJ270 already exists with UK-new evidence; Anycubic Kobra 3 Max V2 standard and combo and Photon P1 Max already exist with active UK-new evidence; no duplicates were added. Existing Bambu Lab A2L/X2D, Anycubic Kobra S1 Max/Kobra X, Flashforge Creator 5/Creator 5 Pro, and Prusa CORE One L+/XL+ were also confirmed present with active UK-new evidence in the previous check. UK-new evidence remains the price source; UK-used stays reference-only.
+
+Verified 3D Printers totals after this continuation:
+| Environment | Products | Active visible | Active evidence | UK-new | UK-used | Visible products missing evidence |
+|---|---:|---:|---:|---:|---:|---:|
+| LIVE | 189 | 182 | 209 | 194 | 15 | 0 |
+| TEST | 190 | 182 | 209 | 194 | 15 | 0 |
+
+Both environments: zero duplicate product keys. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required. TEST and LIVE were updated independently.

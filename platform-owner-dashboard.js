@@ -389,7 +389,8 @@ async function createComplimentarySubscriber(event){
 
 $('complimentary-subscriber-form')?.addEventListener('submit',createComplimentarySubscriber);
 
-$('refresh-agent-control')?.addEventListener('click',loadAgentControlCentre);\n$('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
+$('refresh-agent-control')?.addEventListener('click',loadAgentControlCentre);
+$('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
@@ -397,4 +398,5 @@ $('sign-out').onclick=()=>{session=null;save();location.reload()};
 (async()=>{
   try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadAgentControlCentre(),loadDomainActions(),loadProductPages(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
-})();\nsetInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);
+})();
+setInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);

@@ -4063,3 +4063,19 @@ All 565 active evidence rows match by model, package/storage variant, evidence t
 The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. UK-used evidence remains reference-only and excluded from automatic valuation.
 
 No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment.
+
+## TradeFlow Gemma local research agent — foundation 0.1 — 5 November 2026
+
+Gemma is being rebuilt as a TradeFlow-first local catalogue research agent. Do not revive or import the retired GearCashOut local agent. The selected local runtime is Ollama with `gemma3:4b` on the Research PC. The coordinator uses a bounded worker pool with separate UK-new and UK-used research roles. Brave Search is the current source-discovery adapter; Gemma extracts structured observations from fetched direct source pages only.
+
+The initial implementation lives in `tools/tradeflow-gemma-agent/` on feature branch `feature/tradeflow-gemma-agent-foundation-20261105`. It is not merged to `main`, deployed, or installed on the Research PC yet. The initial runner is dry-run by default; `--apply` is required for evidence writes. It resolves the exact master product independently in TEST and LIVE before writing to either environment, uses environment-specific UUIDs, and preflights the existing `(source_name, source_record_key)` uniqueness boundary.
+
+The current master catalogue evidence target is `shared_market_evidence`, not subscriber-entered `tenant_buying_research`. The latter remains the tenant-scoped Research Centre record store and must continue to respect tenant RLS. The local agent uses the service-role key only on the Research PC because direct authenticated client writes to shared evidence are denied by the current RLS policy. Never put service-role keys in GitHub, browser code, prompts, logs or documentation.
+
+Research guardrails: UK sources only; GBP only; evidence types limited to `uk_new` and `uk_used`; exact manufacturer/model verification against the source page; visible GBP price verification; direct product/listing URLs; explicit condition and availability; duplicate checks before insertion. UK-used evidence remains reference-only and must not feed automatic valuation. The agent must not change valuation logic.
+
+Foundation 0.1 deliberately writes evidence only for an exact master product already present in both environments. It does not create new categories, branches, manufacturers or product masters yet. That is the next development increment. If the product does not resolve uniquely in both environments, the task fails closed. TEST and LIVE remain separate; never copy TEST UUIDs or business/customer/transaction data into LIVE.
+
+Database inspection on 5 November 2026 confirmed both TradeFlow projects are ACTIVE_HEALTHY: TEST `nnsshnfkjcflucjrftzi`, LIVE `gxsrajtqzdjvmceqcpgv`. The master product/evidence schemas are aligned for this first agent stage. `platform_ai_settings.gemma_enabled` is false and `active_provider='none'` in both environments; this is the subscriber/platform assistant setting, not the local Ollama agent switch. Do not enable or alter it as part of local Gemma work.
+
+Current stopping point: source files and five deterministic validation tests have been prepared locally; tests pass. GitHub feature branch exists. No Supabase rows, schema, RLS, Edge Functions, valuation, Worker, Stripe, tenant or customer data have been changed. Research PC runtime verification and a first dry-run task remain outstanding. See `docs/TRADEFLOW-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md` and `CHECKPOINTS/2026-11-05-tradeflow-gemma-agent-foundation-01.md`.

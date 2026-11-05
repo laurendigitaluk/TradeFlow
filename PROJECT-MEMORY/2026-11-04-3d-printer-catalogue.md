@@ -315,3 +315,12 @@ All four have UK GBP new-market evidence. Do not describe backordered or out-of-
 - Database-only catalogue changes do not require Worker deployment.
 - No accessible Supabase project-memory/checkpoint table exists. Do not repurpose platform_ai_settings (provider configuration); update versioned GitHub checkpoint and project-memory files instead.
 - Next research: expand FLSUN with verified T1 Max/V400 and assess UniFormation, Prusa and additional Flashforge models. Verify live UK evidence and exact variant identity before inserting.
+
+
+### FLSUN evidence freshness correction — 5 November 2026
+
+Final source review found that the official FLSUN UK Store S1 Pro and T1-PRO pages were last crawled about five months before this review. Their £1,299 and £509 observations are retained as historical price references only: observed_at is NULL, availability is “Historical listing; current availability unconfirmed”, and their source keys are marked historical. Do not present either as a current available offer. The S1 Pro direct page could not be fetched during review.
+
+A newer UK T1-PRO retailer observation was added separately: 3DShop UK £365.00, marked in stock and ready for dispatch (page last crawled about four weeks before review), https://3dshop.uk/shop/flsun-t1pro/. TEST evidence UUID b7fb29b9-4d1c-4928-9f10-b9cb90dbf862; LIVE evidence UUID a35fd5f9-72ad-4314-9230-b01a08756517. The older FLSUN UK £509 record remains historical and is not merged with the 3DShop offer.
+
+Latest independent TEST/LIVE snapshot supersedes the earlier Batch 6 total: 132 active customer-visible products; 146 active evidence rows (131 uk_new / 15 uk_used); zero missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, invalid prices, non-GBP evidence or uk_new condition mismatches.

@@ -3256,3 +3256,7 @@ Added two distinct Creality models in TEST and LIVE with UK GBP new-price eviden
 
 ## 2026-11-05 Nintendo Switch 2 controller catalogue — Batch 6
 Added five Nintendo-branded Switch 2 variants to LIVE and TEST with UK-new GBP evidence: Joy-Con 2 (L) Light Blue £41.99; Joy-Con 2 (R) Light Red £41.99; Joy-Con 2 Pair Light Purple/Light Green £64.95; Joy-Con 2 Pair Blue/Light Yellow £64.99; Pro Controller The Legend of Zelda 40th Anniversary Edition £74.99. Both environments now have 50 active visible Nintendo controller products and 53 active evidence rows (51 UK-new / 2 UK-used), with zero visible products missing active evidence. LIVE/TEST matched. No deployment, code/schema/valuation or tenant/transaction changes. Used evidence remains reference-only. Checkpoint: CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-06.md.
+
+
+### 3D printer catalogue reconciliation — parallel Creality resin entries
+After Batch 12 verification, a further TEST read found active Creality HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) entries, each with active UK-new evidence. They are not in LIVE yet and were not part of Batch 12's 149/163 verified baseline. Current read: TEST 151 active visible products / 165 active evidence (150 UK-new / 15 UK-used); LIVE 149 / 163 (148 UK-new / 15 UK-used). Audit the exact TEST rows before mirroring; do not create duplicate TEST products. A duplicate Ender-3 V3 Neo row was found already inactive and hidden; keep it as audit history.

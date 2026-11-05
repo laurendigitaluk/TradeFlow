@@ -1332,3 +1332,15 @@ The separate `3d-printer-equipment-accessories` branch was populated in both LIV
 Independent LIVE and TEST verification: accessories branch 7 products / 7 UK-new evidence rows / 2 manufacturers / zero missing evidence / zero malformed rows. Printer branch remains 183 products / 207 evidence rows (195 UK-new / 12 UK-used) / 17 manufacturers in each environment. All 190 products across both branches are customer-visible and have UK evidence. Natural-key parity is exact.
 
 No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Worker deployment changed. No Worker deployment is required for catalogue-only data changes. SUNLU import remains pending until its manufacturer master record exists.
+
+
+## 5 November 2026 — SUNLU accessory manufacturer and products
+
+Added the SUNLU manufacturer master record independently in LIVE and TEST, followed by four SUNLU filament-dryer products in the accessories branch, each with UK-new evidence from 3DJake UK:
+
+- FilaDryer S4 — £94.80 (restock pending).
+- FilaDryer S4 Pro — £129.00 (in stock).
+- Fila Dryer S2 — £59.82 (in stock).
+- FilaDryer SP2 — £72.15 (in stock).
+
+Updated accessory branch verification: 11 active products across Bambu Lab, Creality and SUNLU; 11 UK-new evidence rows; zero missing evidence; zero malformed rows in each environment. The printer branch remains 183 active products / 207 active evidence rows. Exact product natural-key parity is maintained. No schema, application code, valuation logic or Worker deployment changed.

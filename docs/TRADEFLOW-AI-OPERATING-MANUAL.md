@@ -4123,3 +4123,8 @@ After ChatGPT/platform-owner review changes a TEST queue `product_candidate` to 
 ## GBP price-validation encoding fix — 5 November 2026
 
 The Gemma evidence validator constructs the pound-sign matcher with `String.fromCharCode(163)` rather than embedding a literal `£` in JavaScript source. This avoids mojibake when `agent.mjs` is edited or transferred through Windows text editors/code pages. The existing exact-price checks remain in place; this change does not relax price validation. The Research PC test suite must be rerun after replacing the local file. No database connection or catalogue import is part of this fix.
+
+
+## Research PC launcher preflight — 5 November 2026
+
+The Windows launcher `tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1` now uses an explicit `-Enqueue` switch; the obsolete `-Apply` path is removed. Before starting it checks the local `.env`, required TEST/LIVE URLs and service-role key settings, exact project hostnames, Brave key presence, Ollama availability/model tag, and a passing `npm test`. Default mode researches and performs independent TEST/LIVE exact-product lookups, records agent telemetry, and does not write review-queue or catalogue rows. `-Enqueue` stages validated evidence candidates only in the TEST owner queue. Never share `.env` or expose service-role keys. First run remains dry-run; enqueue only after output review.

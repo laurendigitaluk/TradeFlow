@@ -2563,3 +2563,8 @@ For the public Catalogue & AI Research navigation dropdown and category filter, 
 
 
 TEST merge status — 5 November 2026: PR #240 merged to `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`. Runtime deployment and browser acceptance remain unverified; LIVE `production` was not changed.
+
+
+## Subscriber-owned AI provider option retired — 5 November 2026
+
+The Platform Owner AI settings no longer offer the subscriber-supplied provider option. The TradeFlow Assistant remains available to subscribers as a website feature. Existing subscriber accounts, tenants, websites, customer conversations and messages are retained. The database configuration was already `active_provider='none'` and `subscriber_provider_enabled=false` in both environments at the time of this change. The UI change is isolated on this feature branch and has not been deployed.

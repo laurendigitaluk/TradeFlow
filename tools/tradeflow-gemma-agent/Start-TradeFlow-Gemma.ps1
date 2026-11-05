@@ -33,8 +33,11 @@ foreach ($Key in $RequiredKeys) {
 
 $Models = & ollama list 2>$null
 if ($LASTEXITCODE -ne 0) { throw "Ollama is not responding. Start Ollama and retry." }
-if (($Models -join "`n") -notmatch "(?m)^gemma3:4b\s") {
-    throw "Ollama model gemma3:4b is not installed. Install the configured model before running Gemma."
+$ModelMatch = [regex]::Match($EnvText, "(?m)^\s*OLLAMA_MODEL\s*=\s*(\S+)")
+$ModelTag = if ($ModelMatch.Success) { $ModelMatch.Groups[1].Value.Trim('"').Trim("'") } else { "gemma3:4b" }
+$ModelPattern = "(?m)^" + [regex]::Escape($ModelTag) + "\s"
+if (($Models -join "`n") -notmatch $ModelPattern) {
+    throw "Ollama model $ModelTag is not installed. Set OLLAMA_MODEL in .env to an installed Gemma model."
 }
 
 Push-Location $AgentRoot

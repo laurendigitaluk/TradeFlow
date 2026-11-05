@@ -2333,3 +2333,12 @@ Six additional Nintendo Switch 2 products have been added to the catalogue: Powe
 We also added more retailer comparisons for Joy-Con 2 Purple/Green, Gioteck WX5+ Dark Camo, two special-edition PlayStation controllers and the Xbox Forza Horizon 6 controller. Existing retailer observations have been retained rather than replaced.
 
 TEST and LIVE now match at 283 active products, 275 customer-visible products and 388 evidence records. All visible products have evidence, and the evidence integrity and duplicate checks both pass. New and used evidence remain separate; used-market comparisons do not automatically set buying offers. No website deployment was needed.
+
+
+## Gaming catalogue update — batch 02, 5 November 2026
+
+Six additional Nintendo Switch 2 products have been added to the catalogue: PowerA Pokémon Mega Evolutions and Mario & Yoshi controllers, a Venom 10-in-1 sports pack, two PowerA cases and a Mario-themed SanDisk 256GB microSD Express card. Their UK-new Smyths prices are recorded with source links.
+
+We also added more retailer comparisons for Joy-Con 2 Purple/Green, Gioteck WX5+ Dark Camo, two special-edition PlayStation controllers and the Xbox Forza Horizon 6 controller. Existing retailer observations have been retained rather than replaced.
+
+TEST and LIVE now match at 283 active products, 275 customer-visible products and 388 evidence records. All visible products have evidence, and the evidence integrity and duplicate checks both pass. New and used evidence remain separate; used-market comparisons do not automatically set buying offers. No website deployment was needed.

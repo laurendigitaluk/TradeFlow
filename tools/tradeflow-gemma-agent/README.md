@@ -1,6 +1,6 @@
 # TradeFlow Gemma Local Research Agent — foundation 0.1
 
-TradeFlow-first local research agent for Ollama `gemma3:4b`. It does not import or execute the retired GearCashOut agent.
+TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `gemma3:4b`; set `OLLAMA_MODEL` to the Gemma tag actually installed on the Research PC. It does not import or execute the retired GearCashOut agent.
 
 - Coordinator with bounded worker concurrency.
 - Separate UK-new and UK-used research tasks.

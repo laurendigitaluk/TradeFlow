@@ -32,3 +32,15 @@ Added independently to TEST and LIVE: DualSense Wireless Controller - Gran Turis
 - Smyths Toys: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/playstation-5-dualsense-wireless-controller-gran-turismo-limited-edition/p/266465
 
 Product active/customer-visible in both environments. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified branch totals in each environment: 20 active/customer-visible products, 22 active UK-new evidence rows covering 19 products. The legacy Sony DualShock 3 Wireless Controller - Black remains the one product without UK-new evidence and is retained for legacy/discontinued review. No Worker deployment, app code/schema/valuation/RLS/Edge Function, tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.
+
+
+## PlayStation additional special editions — 5 November 2026
+Added independently in TEST and LIVE:
+- DualSense Wireless Controller - Icon Blue Special Edition, model CFI-ZCT2WZBX, £74.99; two active UK-new GBP/New Retail evidence rows from PlayStation UK and PlayStation Direct.
+- DualSense Wireless Controller - Marvel's Wolverine Adamantium Limited Edition, model CFI-ZCT2WZKX, £74.99; two active UK-new GBP/New Retail evidence rows from PlayStation UK and PlayStation Direct.
+
+Direct evidence URLs:
+- Icon Blue: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/icon-blue-special-edition/ and https://direct.playstation.com/en-gb/buy-accessories/dualsense-wireless-controller-icon-blue-special-edition-for-ps5-pc-mac-mobile
+- Wolverine Adamantium: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/marvels-wolverine-adamantium-limited-edition/ and https://direct.playstation.com/en-gb/buy-accessories/dualsense-wireless-controller-marvels-wolverine-adamantium-limited-edition-for-ps5-pc-mac-mobile
+
+Combined with the Gran Turismo Limited Edition batch, verified TEST and LIVE branch totals now match at 22 active/customer-visible products and 26 active UK-new evidence rows covering 21 products. The only uncovered product remains the pre-existing Sony DualShock 3 Wireless Controller - Black. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes.

@@ -475,3 +475,56 @@ Added CRKD Gibson Les Paul Alpine White Pro Edition Guitar Controller (£119.99,
 
 ### Original Nintendo Switch controller Batch 14 — 5 November 2026
 Added CRKD Gibson Les Paul Cherry Sunburst Pro Edition Collector Bundle Guitar Controller (£179.99, reduced from £199.99; Argos 848/7292; https://www.argos.co.uk/product/8487292) independently in LIVE and TEST with active UK-new GBP evidence. Argos confirms Switch 1, OLED and Switch 2 compatibility. Collector bundle includes Pro Mechanical Neck, Solo Mechanical Neck, branded guitar backpack, strap, pins, cable and stickers; distinct package from Alpine White and Blueberry Burst standard Pro editions. Duplicate preflight found no Cherry Sunburst model in either branch; existing CRKD manufacturers reused. LIVE product b29b16fd-2f00-48f1-b89a-5f3ce5032ee5, evidence 1608ddd6-837f-45e3-ba92-717a748a06d1. TEST product 64d3d0cd-1a53-4f10-94cd-3261c3a1bafa, evidence 9d5e1bc9-8676-4f17-acfb-4fda75064dcc. Both environments independently verified at 76 active visible products / 79 active evidence rows, zero visible products missing active evidence and zero invalid active evidence. No Worker deployment or application/schema/valuation/tenant/transaction changes; used evidence remains reference-only. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-14.md.
+
+
+## Gaming console catalogue continuation — 5 November 2026
+
+Both TEST and LIVE were updated and independently verified. The Nintendo Switch 2 The Legend of Zelda 40th Anniversary 256GB console was added as a separate master product, with Smyths Toys UK-new evidence at £429.99. The existing Zelda 40th Anniversary Pro Controller gained Argos £64.99 and Smyths £79.99 UK-new evidence; existing Currys £74.99 evidence was retained.
+
+### Exact records
+
+LIVE:
+- Zelda 40th Anniversary Switch 2 console product 916a5fda-15f4-42e8-9a35-5b28c484c9e2; evidence 14f07bfe-08cb-4e3b-9787-4db4b346152a; key smyths-switch2-zelda-40th-console-266502-uk-new-20261105.
+- Zelda 40th Anniversary Pro Controller product e26d1a7c-05a4-4b06-a704-1237b98d61e2; Argos evidence 338dda77-94f3-4426-8a6b-a858f4339037; Smyths evidence c823a00e-ae08-423b-acad-3dccc88cc9e9; existing Currys evidence 7139cb37-c834-4471-be75-82ded2c07256.
+- Xbox Wireless Controller — Shock Blue product ae034a43-c388-49bf-b1da-11a136ddeb13; Argos evidence 9f690f7e-6bd8-435a-ab78-3f346b2fc0de; key argos-xbox-shock-blue-2026-11-05.
+- PSP-2000 evidence 57198479-79ee-4202-857b-1878ed3a74af; PSP Go evidence e6439fed-8aee-463e-92d5-ea2b010c7e64; PS Vita OLED evidence 20e7f652-4bd3-4036-b19a-d30b3fb836cc.
+
+TEST:
+- Zelda 40th Anniversary Switch 2 console product e8dc9421-8b85-43e0-87de-71ebf26bb67f; evidence 5f0f2069-a442-4189-bbda-51bca51016f0; same stable key.
+- Zelda 40th Anniversary Pro Controller product e1bafaef-875a-438f-83e2-841890ebb5ea; Argos evidence aecd6462-d98f-40d1-9d73-11b92f6c0e69; Smyths evidence d63a057f-6d61-444c-870a-8191f6d26a19; existing Currys evidence 7cb30e70-bd8f-4d45-887c-ce998d32387a.
+- Xbox Wireless Controller — Shock Blue product b7efaed8-d9e9-4af5-ae78-ada86a365363; Argos evidence 14a7c6fb-1284-4343-9514-29ac24680440.
+- PSP-2000 evidence 2751e821-2eee-43fa-aa41-07195141d7ab; PSP Go evidence eefe9d8a-5100-4bd0-babb-a940876f2ec6; PS Vita OLED evidence 461f0daf-0d66-43e7-92aa-350a216d86e2.
+
+Sources:
+- Zelda 40th Anniversary console, Smyths £429.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-consoles/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-console/p/266502
+- Zelda 40th Anniversary Pro Controller, Argos £64.99: https://www.argos.co.uk/product/9630952
+- Zelda 40th Anniversary Pro Controller, Smyths £79.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/nintendo-switch-2-the-legend-of-zelda-40th-anniversary-edition-pro-controller/p/266456
+- Xbox Shock Blue, Argos £59.99: https://www.argos.co.uk/product/8399139/GM-Variant
+- PSP-2000 sold £69.43: https://www.ebay.co.uk/itm/860086510676
+- PSP Go listed £140.00: https://www.ebay.co.uk/itm/277314993924
+- PS Vita OLED sold £138.98: https://www.ebay.co.uk/itm/267796509409
+
+Existing null source URLs repaired without changing prices or classifications:
+- LIVE John Lewis Nintendo Switch 2 Joy-Con 2 Charging Grip evidence 567a4590-1bfb-4f28-826f-65233742362f now links to https://www.johnlewis.com/nintendo-joy-con-2-charging-grip-black/p113587848.
+- TEST DualSense Starlight Blue evidence 796fe468-b181-47dd-bb06-ef39df0bff81 now links to https://www.argos.co.uk/product/1256028/.
+- TEST DualSense Nova Pink evidence 2820f23c-4072-47c1-95cc-b2bcb3c29ef0 now links to https://www.argos.co.uk/product/1256035/.
+
+### Verified totals after continuation
+| Metric | LIVE | TEST |
+|---|---:|---:|
+| Active gaming master products | 277 | 277 |
+| Active customer-visible products | 269 | 269 |
+| Active evidence rows | 376 | 376 |
+| UK-new evidence | 211 | 211 |
+| UK-used evidence | 165 | 165 |
+| Visible products missing all evidence | 1 | 1 |
+| Active evidence integrity failures | 0 | 0 |
+| Duplicate active source keys | 0 | 0 |
+
+The single visible product without active evidence is WD_BLACK C50 Expansion Card 512GB in Xbox Accessories. Continue sourcing an exact UK price; do not invent one. A further 85 visible products lack UK-new evidence, including legacy/used-only products; do not infer new prices from old launch prices.
+
+TEST/LIVE UUIDs are environment-specific. The product and evidence rows were inserted independently. UK-used remains reference-only and must not affect automatic buying valuation. No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment or Cloudflare Worker changes; no Worker deployment.
+
+No TradeFlow project-memory/checkpoint table or application function was found in the database schemas. Repository PROJECT-MEMORY and CHECKPOINTS files remain the continuity record.
+
+Checkpoint: CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.

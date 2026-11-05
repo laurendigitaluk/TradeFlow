@@ -181,7 +181,7 @@ $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubm
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await window.loadPublicPages?.()}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await loadAgentControlCentre();await window.loadPublicPages?.()}
   catch(e){showAuth('')}
 })();
 setInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);

@@ -62,17 +62,35 @@ async function product(t,task) {
   let q='catalogue_master_products?select=id&category_id=eq.'+c[0].id+'&manufacturer_id=eq.'+m[0].id+'&model=eq.'+encodeURIComponent(task.model)+'&package_key=eq.'+encodeURIComponent(task.package_key)+'&active=eq.true'; q+=branch?'&branch_id=eq.'+branch:'&branch_id=is.null';
   const p=await db(t,q); if(p.length!==1)throw new Error(t.name+': exact product missing or ambiguous; new product creation is not enabled in foundation 0.1'); return p[0];
 }
-async function write(t,p,e,apply) {
-  const key=sourceKey(e.source_url,e.evidence_type,e.observed_price); const dup=await db(t,'shared_market_evidence?select=id&source_name=eq.'+encodeURIComponent(e.source_name)+'&source_record_key=eq.'+key);
-  if(dup.length)return {environment:t.name,status:'duplicate-skipped',id:dup[0].id};
-  const row={master_product_id:p.id,evidence_type:e.evidence_type,source_name:e.source_name,source_url:e.source_url,observed_price:Number(e.observed_price),price_currency:'GBP',item_condition:e.item_condition,sales_channel:e.sales_channel,availability:e.availability,observed_at:new Date().toISOString(),notes:(e.notes||'')+' Captured by TradeFlow Gemma. UK-used is reference-only and excluded from automatic valuation.',is_active:true,source_record_key:key};
-  if(!apply)return {environment:t.name,status:'dry-run-ready',product_id:p.id,row};
-  const inserted=await db(t,'shared_market_evidence',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(row)}); return {environment:t.name,status:'inserted',id:inserted?.[0]?.id,product_id:p.id};
+async function enqueueCandidate(testTarget, products, task, e, enqueue) {
+  const key=sourceKey(e.source_url,e.evidence_type,e.observed_price);
+  const dup=await db(testTarget,'platform_catalogue_research_queue?select=id&dedupe_key=eq.'+encodeURIComponent(key));
+  if(dup.length)return {environment:'TEST_QUEUE',status:'duplicate-skipped',id:dup[0].id};
+  const row={
+    record_type:'evidence_candidate',status:'pending_review',dedupe_key:key,
+    agent_name:'Gemma-'+task.research_type,task_key:task.task_key||null,
+    category_slug:task.category_slug,branch_slug:task.branch_slug||null,
+    manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,
+    package_name:task.package_name,evidence_type:e.evidence_type,
+    source_name:e.source_name,source_url:e.source_url,observed_price:Number(e.observed_price),
+    price_currency:'GBP',item_condition:e.item_condition,sales_channel:e.sales_channel,
+    availability:e.availability,source_record_key:key,source_excerpt:e.source_excerpt||null,
+    research_notes:e.notes||null,
+    raw_payload:{task,evidence:e,product_ids:{TEST:products.TEST.id,LIVE:products.LIVE.id}}
+  };
+  if(!enqueue)return {environment:'TEST_QUEUE',status:'queue-dry-run-ready',row};
+  const inserted=await db(testTarget,'platform_catalogue_research_queue',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(row)});
+  return {environment:'TEST_QUEUE',status:'queued-for-chatgpt-review',id:inserted?.[0]?.id,dedupe_key:key};
 }
-export async function runTask(task,env,{apply=false}={}) {
+
+export async function runTask(task,env,{enqueue=false}={}) {
   if(!task.category_slug||!task.manufacturer||!task.model||!task.package_key||!task.package_name||!task.search_query||!['uk_new','uk_used'].includes(task.research_type))throw new Error('incomplete task definition');
-  const candidates=[]; for(const s of await search(task.search_query,env)){try{const p=await page(s.url);const e=await extract(task,s,p.text,env);if(e.reject_reason)continue;e.source_url=p.url;const v=validate(e,task,p.text);if(v.valid)candidates.push(e);}catch(err){candidates.push({rejected_source:s.url,reason:err.message});}}
-  const targets=[target('TEST',env),target('LIVE',env)]; const writes=[];
-  for(const e of candidates.filter(x=>x.evidence_type)){const products=await Promise.all(targets.map(t=>product(t,task)));const pair=await Promise.all(targets.map((t,i)=>write(t,products[i],e,apply)));writes.push(...pair);}
-  return {product:task.manufacturer+' '+task.model+' / '+task.package_name,worker:task.research_type,apply,candidates,writes};
+  const candidates=[]; for(const s of await search(task.search_query,env)){try{const p=await page(s.url);const e=await extract(task,s,p.text,env);if(e.reject_reason)continue;e.source_url=p.url;const v=validate(e,task,p.text);if(v.valid)candidates.push({...e,source_excerpt:p.text.slice(0,2500)});}catch(err){candidates.push({rejected_source:s.url,reason:err.message});}}
+  const testTarget=target('TEST',env),liveTarget=target('LIVE',env);
+  const writes=[];
+  for(const e of candidates.filter(x=>x.evidence_type)){
+    const [testProduct,liveProduct]=await Promise.all([product(testTarget,task),product(liveTarget,task)]);
+    writes.push(await enqueueCandidate(testTarget,{TEST:testProduct,LIVE:liveProduct},task,e,enqueue));
+  }
+  return {product:task.manufacturer+' '+task.model+' / '+task.package_name,worker:task.research_type,enqueue,candidates,writes};
 }

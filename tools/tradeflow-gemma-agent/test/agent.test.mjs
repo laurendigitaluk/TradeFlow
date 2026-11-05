@@ -9,3 +9,26 @@ test('rejects non-UK sources',()=>assert.equal(validate({...evidence,source_url:
 test('rejects opened-never-used as UK used',()=>assert.equal(validate({...evidence,evidence_type:'uk_used',item_condition:'Opened - never used'},{...task,research_type:'uk_used'},'Creality K1 Speedy 3D Printer £299.00').valid,false));
 test('rejects marketplace search pages',()=>assert.equal(validate({...evidence,source_url:'https://www.ebay.co.uk/sch/i.html?_nkw=k1'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));
 test('rejects a near-match price rather than accepting a different amount',()=>assert.equal(validate(evidence,task,'Creality K1 Speedy 3D Printer £299.99').valid,false));
+
+
+import { searchWebResults } from '../src/agent.mjs';
+
+test('search uses local SearXNG JSON endpoint without an API key',async()=>{
+ const original=globalThis.fetch;let requested;
+ globalThis.fetch=async(url,options)=>{requested={url:new URL(url),options};return new Response(JSON.stringify({results:[{title:'Product UK',url:'https://shop.co.uk/product',content:'UK listing'},{title:'No URL'}]}),{status:200,headers:{'content-type':'application/json'}});};
+ try {
+  const results=await searchWebResults('Creality K1',{SEARXNG_BASE_URL:'http://127.0.0.1:8080',SEARCH_RESULTS_PER_TASK:'5'});
+  assert.equal(requested.url.origin,'http://127.0.0.1:8080');
+  assert.equal(requested.url.pathname,'/search');
+  assert.equal(requested.url.searchParams.get('format'),'json');
+  assert.equal(requested.url.searchParams.get('language'),'en-GB');
+  assert.match(requested.url.searchParams.get('q'),/Creality K1 UK GBP/);
+  assert.deepEqual(results,[{title:'Product UK',url:'https://shop.co.uk/product',description:'UK listing'}]);
+ } finally {globalThis.fetch=original;}
+});
+
+test('search fails clearly when local SearXNG is unavailable',async()=>{
+ const original=globalThis.fetch;globalThis.fetch=async()=>new Response('offline',{status:503});
+ try {await assert.rejects(()=>searchWebResults('phone',{}),/HTTP 503/);}
+ finally {globalThis.fetch=original;}
+});

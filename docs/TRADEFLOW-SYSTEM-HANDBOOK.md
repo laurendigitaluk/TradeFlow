@@ -2891,3 +2891,7 @@ Exact environment-specific product/evidence UUIDs are in CHECKPOINTS/2026-11-05-
 
 ### 3D printer catalogue update — Batch 12 — 5 November 2026
 Creality Ender-3 V3 Neo (£199; standard option marked in stock) and Ender-3 V3 Mega (£519; dispatch timing not confirmed) were added to TEST and LIVE with UK GBP new-price evidence. Standard printer records exclude optional Neo Combo/CFS nano packages. Sources: https://store.creality.com/uk/products/creality-ender-3-v3-neo-3d-printer and https://store.creality.com/uk/collections/ender-series-3d-printer. Both environments verified at 149 active visible products and 163 active evidence rows (148 UK-new / 15 UK-used), 13 manufacturers, with no integrity exceptions. UUIDs: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-12.md. No application/schema/valuation or Worker changes; used evidence remains reference-only.
+
+
+### Catalogue reconciliation note — 5 November 2026
+Following the Batch 12 Creality update, parallel TEST catalogue activity added active HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) entries with active UK-new evidence. These are not yet in LIVE. Current category read: TEST 151 active visible products / 165 active evidence; LIVE 149 / 163. Audit the existing TEST records and mirror them to LIVE with environment-specific IDs; do not duplicate them in TEST. An additional duplicate Ender-3 V3 Neo record is already inactive and hidden. See CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-12.md for the detailed status.

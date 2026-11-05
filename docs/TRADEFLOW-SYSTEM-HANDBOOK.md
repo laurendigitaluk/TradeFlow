@@ -2500,3 +2500,26 @@ Post-insert read-back, scoped to the 3D Printers branch:
 | TEST | 175 | 167 | 8 | 193 | 178 | 15 |
 
 Both environments have zero active visible products missing active evidence, zero duplicate active product keys, zero duplicate active evidence source keys, and zero invalid/missing evidence or invalid UK-new evidence. UK-used evidence remains reference-only and does not affect automatic valuation. TEST retains its pre-existing additional hidden product row; no deletion or reactivation was performed. No app code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-19.md.
+
+
+### Original Nintendo Switch controller catalogue — Batch 19 (5 November 2026)
+Added three more CRKD NEO S colour variants independently to LIVE and TEST, each with active UK-new GBP price evidence at £39.99 from the Idealo UK comparison snapshot dated 30 October 2026 08:10 UTC:
+- Splatter POPeART Edition — https://www.idealo.co.uk/compare/204670657/crkd-neo-s-splatter-popeart-edition.html
+- Atomic Red Edition — https://www.idealo.co.uk/compare/204670659/crkd-neo-s-atomic-red-edition.html
+- Emerald Green Edition — https://www.idealo.co.uk/compare/204670660/crkd-neo-s-emerald-green-edition.html
+
+CRKD's official NEO S pages confirm Nintendo Switch compatibility. The Idealo snapshot lists UK prices but does not confirm current stock for these individual variants; availability is therefore explicitly recorded as "Price listed; stock not confirmed". Do not represent these as confirmed in-stock. Duplicate preflight found no matching package keys in either environment; existing CRKD manufacturer rows reused.
+
+LIVE product/evidence UUIDs:
+- Splatter POPeART: 1d39bf99-b6fd-4d91-bbc9-25b7511a67dd / 58c15442-6c57-4d8e-af8e-59e798e3152d
+- Atomic Red: edbf2936-c65b-437b-8ed8-923d23ec10a1 / 62ae4c1f-bfbe-4c19-80c2-8d8d58fb26e8
+- Emerald Green: cc3538ad-119d-4ff7-93d7-ae51f4657994 / 40293a66-11be-4815-9b94-f6ec2c7d7252
+
+TEST product/evidence UUIDs:
+- Splatter POPeART: 82b22201-e4cb-4344-9494-af61ecb9f26e / 851a7921-9ac9-4c52-9ed8-aeaf42544bc9
+- Atomic Red: b852df42-a66e-4d9c-bdf9-bd9778050c45 / 61ac340c-e38c-4ae0-bbf9-2930bd26a7a2
+- Emerald Green: c24b0c65-998d-4a09-83e4-bafa54c18a6c / a520665e-2721-4ca2-8d27-9629efabcaaa
+
+Post-insert verification: LIVE and TEST each have 95 active customer-visible products and 98 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type, currency, price, URL/key and UK-new condition checks). The three package keys, prices, source URLs, evidence types and currency match across environments. Price evidence is an advertised marketplace asking price, not a completed sale; source observation date and stock qualification are retained.
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-19.md.

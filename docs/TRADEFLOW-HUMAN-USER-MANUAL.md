@@ -2317,3 +2317,10 @@ The gaming catalogue now includes the Nintendo Switch 2 Zelda 40th Anniversary c
 Both environments have matching totals: 277 active gaming products, 269 customer-visible products and 376 UK market-evidence records. New retail prices and used-market observations are kept separate. Used listings and completed sales are reference comparisons, not automatic buying offers. One product still needs evidence: the 512GB WD_BLACK C50 Xbox storage expansion card. Its price will only be added when an exact UK source is verified.
 
 No website deployment was needed for these database-only catalogue changes. Further details are in CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.
+
+
+### Gaming catalogue evidence update — 5 November 2026
+
+The WD_BLACK C50 512GB Xbox storage expansion card now has a UK-new price observation in both TEST and LIVE: £169.99 from the disks.co.uk Amazon UK price tracker. This is a high asking-price observation, 55.4% above the tracker's 30-day average (£109.37), and the Amazon product page was not independently accessible during capture. Do not treat it as a typical market value or guaranteed checkout price. The source and caveat are recorded in the project checkpoint.
+
+The final gaming catalogue totals now match in both environments: 277 active products, 269 visible products and 377 evidence records. All visible products have at least one evidence row; evidence integrity checks and duplicate-key checks both return zero. New and used evidence remain separate, and used comparisons do not automatically determine buying offers.

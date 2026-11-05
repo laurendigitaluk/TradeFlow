@@ -326,3 +326,13 @@ This continuation confirms the following distinct systems and current evidence:
 All three product records were already present in both environments when this evidence pass was completed; no duplicate master products were created. A duplicate SG-1000 evidence row for the same £449 listing was identified and deactivated, retaining the pre-existing active row: TEST duplicate evidence 1e031e68-8092-4813-8dba-03c38a8f1b9a; LIVE duplicate evidence a48731eb-e515-4817-aef5-d58e56ca9b91. Do not reactivate these duplicate rows.
 
 The “Master System Plus” label is treated as a bundle/retail package, not a separate console generation. SG-1000 II remains a separate research candidate but was not added in this pass because the surfaced UK listing did not expose a verified direct item URL. Prices above are asking/listing prices, not completed sales. All evidence is reference-only and does not alter automatic valuation. No application code, valuation logic, tenant/customer/transaction/payment data, Stripe configuration or deployment was changed.
+
+
+### Gaming controller evidence parity repair — 5 November 2026
+
+A fresh LIVE/TEST audit found that the PlayStation Controllers branch had matching product records but TEST was missing three active UK-used evidence records that were already present in LIVE for the existing Sony DualShock 3 Wireless Controller - Black. Reinserted the three missing evidence records into TEST only, using the exact original UK eBay item URLs, observed GBP prices, sale dates, condition classifications, notes and stable source keys:
+- £15.99, eBay item 800496127743, TEST evidence 37e770dc-1900-4424-8922-425a9870c7d5 (ps3-ds3-black-800496127743).
+- £24.72, eBay item 206595246997, TEST evidence ca62ef8c-d304-4dc5-961b-95bba0675fb6 (ps3-ds3-black-nearmint-206595246997); retain the near-mint condition and buyer-protection-total note.
+- £6.91, eBay item 800734415651, TEST evidence dd610da3-633a-4d71-85eb-7f0b8522d79a (ps3-ds3-black-spares-800734415651); explicitly classify as spares/repairs, not working-controller evidence.
+
+Post-repair verification in both LIVE and TEST: Nintendo Controllers 6 active evidence rows (4 UK-new / 2 UK-used); PlayStation Controllers 10 (2 UK-new / 8 UK-used); Xbox Controllers 17 (15 UK-new / 2 UK-used). The three controller branches now match. No product records, category/branch records, valuation logic, tenant/customer/transaction/payment data, Stripe configuration, application code or Worker deployment were changed. Evidence remains reference-only. Continue with additional exact-variant controller research only after checking duplicates in both environments; keep new and used evidence distinct and UK GBP only.

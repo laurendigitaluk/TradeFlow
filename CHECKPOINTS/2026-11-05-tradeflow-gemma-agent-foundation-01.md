@@ -59,3 +59,8 @@ Gemma evidence submissions are now staged for review rather than inserted direct
 The test and LIVE Platform Owner dashboard feature branches remove the subscriber-supplied AI provider option while preserving the TradeFlow Assistant and all subscriber records. Current database values already show `active_provider='none'` and `subscriber_provider_enabled=false` in both projects. The enforcement migration is not yet applied.
 
 Correction to prior foundation note: the six test cases are authored, but execution in the Research PC runtime has not been verified in this environment. Do not report them as runtime-passed until `npm test` is run on the configured Research PC.
+
+
+## Release monitoring increment — 5 November 2026
+
+Added a central manufacturer watchlist and a separate ReleaseMonitor worker. The worker only considers official manufacturer domains and confirmed release states, excludes rumours, and independently checks exact model presence in TEST and LIVE. It stages release candidates in the TEST review queue. TEST-only review queue remains isolated from LIVE; no master products, evidence or tenant data were changed. Package commands and release-monitor tests were added. Research PC execution, scheduling, and approved product importer remain outstanding.

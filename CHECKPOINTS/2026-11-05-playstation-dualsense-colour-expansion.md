@@ -22,3 +22,13 @@ Added to TEST and LIVE: DualSense Edge Midnight Black (£189.99 Argos); DualSens
 
 ## Final read-back correction — 5 November 2026
 The missing PlayStation Direct GTA VI Black pre-order evidence row was added to LIVE. Final branch totals now match: TEST and LIVE each have 19 active/customer-visible products and 19 active UK-new evidence rows covering 18 products. The single product without UK-new evidence is the pre-existing Sony DualShock 3 Wireless Controller - Black, retained for legacy/discontinued review. The LIVE PlayStation Direct GTA VI Black evidence uses the official PlayStation controller listing page; TEST uses the direct product page. No other records changed.
+
+
+## PlayStation Gran Turismo Limited Edition — 5 November 2026
+
+Added independently to TEST and LIVE: DualSense Wireless Controller - Gran Turismo Limited Edition, model CFI-ZCT2WZMX, UK pre-order price £74.99, release date 10 December 2026. Three active UK-new GBP/New Retail pre-order evidence rows per environment:
+- PlayStation Direct: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/gran-turismo-limited-edition/
+- Argos: https://www.argos.co.uk/product/9906844 (EAN 711719072836 verified from retailer listing)
+- Smyths Toys: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/playstation-5-dualsense-wireless-controller-gran-turismo-limited-edition/p/266465
+
+Product active/customer-visible in both environments. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified branch totals in each environment: 20 active/customer-visible products, 22 active UK-new evidence rows covering 19 products. The legacy Sony DualShock 3 Wireless Controller - Black remains the one product without UK-new evidence and is retained for legacy/discontinued review. No Worker deployment, app code/schema/valuation/RLS/Edge Function, tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.

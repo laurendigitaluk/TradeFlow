@@ -3160,3 +3160,31 @@ Post-update verified totals in each environment: 101 active/customer-visible Nin
 LIVE-only UK GBP evidence added to five existing active products: Brinno BCC2000 £544.99 (Timelapse Store; availability unknown); BCC2000 Plus £719.00 (BrinnoUK, No Solar Kit configuration; page showed Add to cart); BCC2020 £432.00 starting price (BrinnoUK homepage; exact variant/availability unknown); TLC2020 + ATH1000 £399.00 starting price (BrinnoUK homepage; availability unknown); TLC2020 + ATH2000 £519.00 starting price (BrinnoUK homepage; availability unknown). Sources: https://timelapse.store/collections/brinno, https://www.brinnouk.com/products/bcc2000-plus, https://www.brinnouk.com/. Preserve starting-price and availability qualifications; do not treat them as confirmed stock except the BCC2000 Plus listing that displayed Add to cart.
 
 All five inserts were independently read back and verified active, GBP and source-linked. Existing product master records were used; no master or lifecycle changes. LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Camera coverage totals remain unpublished pending the 722 versus 720 category-scope reconciliation.
+
+
+### Geeetech and Artillery 3D printer additions — Batch 22 (5 November 2026)
+
+Added three distinct printer configurations independently to LIVE and TEST, with active UK-new GBP evidence:
+- Geeetech M1S / Standard Printer — £185.00, official Geeetech GBP store listing: https://www.geeetech.com/index.php?currency=GBP&main_page=product_info&products_id=1085. The page has a ship-from selector; verify UK warehouse selection and checkout total.
+- Artillery M1 Pro / Standard Printer — £299.00 sale price (£349.00 regular), official UK page https://uk.artillery3d.com/products/m1-carbon. Page reports Out of stock.
+- Artillery M1 Pro S1 / Standard Printer — £319.00 sale price (£349.00 regular), official UK page https://uk.artillery3d.com/products/m1-pro-s1. Page reports Out of stock.
+
+Stock status for both Artillery models is explicitly recorded as out of stock; prices are current official UK observations, not claims of availability. Geeetech M1 (non-S1) was not added because the GBP price evidence varied between £128 and £150 in different captures; defer until price and source page are reconciled. Artillery Sidewinder X4/X3 variants were not added because the official product-series listing marks them sold out and no reliable current UK printer price was established in this batch.
+
+LIVE IDs:
+- Geeetech manufacturer dc71aafe-1eec-43d4-832e-2f37918455ee; M1S product 16387858-242f-4ed3-962a-4262250e0af6; evidence dec25b70-c9c5-4d5c-8d7a-ddab4c74e63e.
+- Artillery manufacturer 6ade46dc-dd65-4b96-948c-050c5678ad97; M1 Pro product 03f5d9f9-cf09-4ffc-85d8-87eb81972402; evidence bddeb903-6c0c-4586-875b-0f0ad6b68fda.
+- M1 Pro S1 product 9a2cec2d-b2f2-4dcf-b9f3-7f82b23b5c6f; evidence 4fe5e6bf-ab50-463e-b1a1-be0058584db1.
+
+TEST IDs:
+- Geeetech manufacturer 6bf26f3d-805a-44f2-9655-b36a84b40fdc; M1S product d2c6a15b-3e58-4ff0-8342-3605457f7462; evidence 38f855d6-4d22-4893-af4e-772e30558a9f.
+- Artillery manufacturer 4f7a1362-534e-4ccd-9c32-0c61667a82f3; M1 Pro product 8ca46de2-cc0d-495f-8b78-bd14a7397a7f; evidence 41c13355-eddc-40eb-a4a3-d435ac347bc7.
+- M1 Pro S1 product e85b8a23-6862-4439-863c-fddf1ed75d78; evidence 214de6e3-84af-46b6-91ac-4c19c63ff874.
+
+Post-insert read-back, scoped to 3D Printers branch:
+| Environment | Products | Active visible | Inactive/hidden | Active evidence | UK-new | UK-used |
+|---|---:|---:|---:|---:|---:|---:|
+| LIVE | 181 | 174 | 7 | 200 | 185 | 15 |
+| TEST | 182 | 174 | 8 | 200 | 185 | 15 |
+
+Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No app code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment data changed. No Worker deployment. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-22.md.

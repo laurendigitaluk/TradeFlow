@@ -174,7 +174,8 @@ async function loadAgentControlCentre(){
 }
 \nfunction formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-$('refresh-agent-control')?.addEventListener('click',loadAgentControlCentre);\n$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
+$('refresh-agent-control')?.addEventListener('click',loadAgentControlCentre);
+$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
@@ -182,4 +183,5 @@ $('sign-out').onclick=()=>{session=null;save();location.reload()};
 (async()=>{
   try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await window.loadPublicPages?.()}
   catch(e){showAuth('')}
-})();\nsetInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);
+})();
+setInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);

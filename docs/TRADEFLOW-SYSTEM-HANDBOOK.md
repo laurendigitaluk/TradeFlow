@@ -2190,3 +2190,7 @@ Added two further confirmed Switch 2-compatible controllers to both LIVE and TES
 Sources: https://www.argos.co.uk/product/8535508 ; https://www.argos.co.uk/product/8384467 ; https://cld.eu/en/publisher/dragonshock .
 
 Nintendo Controllers branch totals in both environments: 45 active customer-visible products, 48 active evidence rows, and zero visible products without active evidence. The new records are matched between LIVE and TEST by model, package key, source and price. No Worker deployment, schema/application/valuation changes, or tenant/transaction data changes. Used evidence remains reference-only and excluded from automatic valuation. Exact IDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-05.md.
+
+
+### 3D printer catalogue update — Batch 12 — 5 November 2026
+Creality Ender-3 V3 Neo (£199; standard option marked in stock) and Ender-3 V3 Mega (£519; dispatch timing not confirmed) were added to TEST and LIVE with UK GBP new-price evidence. Standard printer records exclude optional Neo Combo/CFS nano packages. Sources: https://store.creality.com/uk/products/creality-ender-3-v3-neo-3d-printer and https://store.creality.com/uk/collections/ender-series-3d-printer. Both environments verified at 149 active visible products and 163 active evidence rows (148 UK-new / 15 UK-used), 13 manufacturers, with no integrity exceptions. UUIDs: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-12.md. No application/schema/valuation or Worker changes; used evidence remains reference-only.

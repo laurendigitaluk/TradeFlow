@@ -64,10 +64,11 @@ async function product(t,task) {
 }
 async function enqueueCandidate(testTarget, products, task, e, enqueue) {
   const key=sourceKey(e.source_url,e.evidence_type,e.observed_price);
-  const dup=await db(testTarget,'platform_catalogue_research_queue?select=id&dedupe_key=eq.'+encodeURIComponent(key));
+  const dedupeKey='review-'+createHash('sha256').update([task.manufacturer,task.model,task.package_key,key].join('|')).digest('hex').slice(0,32);
+  const dup=await db(testTarget,'platform_catalogue_research_queue?select=id&dedupe_key=eq.'+encodeURIComponent(dedupeKey));
   if(dup.length)return {environment:'TEST_QUEUE',status:'duplicate-skipped',id:dup[0].id};
   const row={
-    record_type:'evidence_candidate',status:'pending_review',dedupe_key:key,
+    record_type:'evidence_candidate',status:'pending_review',dedupe_key:dedupeKey,
     agent_name:'Gemma-'+task.research_type,task_key:task.task_key||null,
     category_slug:task.category_slug,branch_slug:task.branch_slug||null,
     manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,
@@ -80,7 +81,7 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
   };
   if(!enqueue)return {environment:'TEST_QUEUE',status:'queue-dry-run-ready',row};
   const inserted=await db(testTarget,'platform_catalogue_research_queue',{method:'POST',headers:{Prefer:'return=representation'},body:JSON.stringify(row)});
-  return {environment:'TEST_QUEUE',status:'queued-for-chatgpt-review',id:inserted?.[0]?.id,dedupe_key:key};
+  return {environment:'TEST_QUEUE',status:'queued-for-chatgpt-review',id:inserted?.[0]?.id,dedupe_key:dedupeKey};
 }
 
 export async function runTask(task,env,{enqueue=false}={}) {

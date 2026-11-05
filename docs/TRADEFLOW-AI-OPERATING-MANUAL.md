@@ -3146,3 +3146,17 @@ Neptune 3 Plus was not added because the official UK page is sold out. Neptune 3
 Post-insert independent category-scoped verification in both TEST and LIVE: 138 active and customer-visible 3D printer products; 152 active evidence rows (137 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Counts are for the 3D Printers category only, not the entire master catalogue.
 
 Exact Batch 8 product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-08.md. TEST and LIVE use independent environment-specific UUIDs. UK GBP only; printer-only variants kept separate from bundles; used evidence remains reference-only and must not affect automatic valuation. Database-only change: no schema, code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.
+
+
+### 3D printer catalogue expansion — Batch 9 — 5 November 2026
+
+Expanded Flashforge in TEST and LIVE with three verified printer-only models:
+- Creator 5 — £719.00 UK new; official Flashforge UK page shows In Stock and advertises a £100 automatic cart discount. Source: https://uk.flashforge.com/products/flashforge-creator-5
+- Creator 5 Pro — £849.00 UK new; official Flashforge UK page shows In Stock and advertises a £100 automatic cart discount. Source: https://uk.flashforge.com/products/flashforge-creator-5-pro
+- Guider 3 Ultra — £2,999.00 UK new; official Flashforge UK page states shipment direct from China warehouse, shipping in 30 days. It is not represented as UK-stocked. Source: https://uk.flashforge.com/products/guider-3-ultra-3d-printer
+
+Creator 5 and Creator 5 Pro are separate models, not package variants; the Pro includes an enclosed frame, active heated chamber and HEPA/carbon filtration. Guider 3 Ultra is a large-format dual-extruder CoreXY model. Advertised list prices were recorded; Creator 5 and Creator 5 Pro product pages separately advertise £100 automatically applied at checkout, so verify checkout price before quoting.
+
+Post-insert independent category-scoped verification in both TEST and LIVE: 141 active customer-visible 3D printer products; 155 active evidence rows (140 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Counts are for the 3D Printers category only.
+
+Exact Batch 9 product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-09.md. TEST and LIVE use independent environment-specific UUIDs. UK GBP only; used evidence remains reference-only and must not affect automatic valuation. Database-only change; no Worker deployment required.

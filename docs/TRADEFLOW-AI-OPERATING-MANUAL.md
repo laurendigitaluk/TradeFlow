@@ -2560,3 +2560,6 @@ The public marketing navigation uses a dynamic **Catalogue & AI Research** mega-
 
 ## Public catalogue category auto-refresh — 5 November 2026
 For the public Catalogue & AI Research navigation dropdown and category filter, inspect `catalogue-nav.js` and `public.platform_public_catalogue_browse(text,text,integer,integer)`. The RPC supplies active categories with at least one active customer-visible product; the browser refreshes on initial load, focus, tab visibility return and every three minutes. Do not hard-code product categories or create placeholder categories merely because research has started. A category becomes visible once it has an active customer-visible product in that environment. TEST and LIVE remain independent. Confirm the relevant Worker deployment and browser rendering before marking a change live. See `CHECKPOINTS/2026-11-05-public-catalogue-category-auto-refresh.md`.
+
+
+TEST merge status — 5 November 2026: PR #240 merged to `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`. Runtime deployment and browser acceptance remain unverified; LIVE `production` was not changed.

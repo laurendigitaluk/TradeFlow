@@ -3729,3 +3729,7 @@ Added five DualSense colour variants independently in TEST and LIVE: Midnight Bl
 
 ## PlayStation batch 2 — 5 November 2026
 Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Edition (£74.99 pre-order), and GTA VI White Limited Edition (£74.99 pre-order) in TEST and LIVE. GTA VI editions release 19 November 2026. TEST verified: 19 products, 19 UK-new evidence rows covering 18 products; one older DualShock 3 remains without UK-new evidence. LIVE product count is 19; recheck evidence count before asserting exact parity. No deployment or code/schema changes.
+
+
+## PlayStation batch 2 — 5 November 2026
+Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Edition (£74.99 pre-order) and GTA VI White Limited Edition (£74.99 pre-order) to TEST and LIVE. GTA VI editions release 19 November 2026. Final verified totals match: 19 active products and 19 UK-new evidence rows covering 18 products. One legacy DualShock 3 Black remains without UK-new evidence. No deployment or code/schema changes.

@@ -2309,3 +2309,11 @@ The **Catalogue & AI Research** link is available from the top navigation across
 
 ## Browsing the product catalogue — 5 November 2026
 The **Catalogue & AI Research** item in the top navigation opens a category menu across the public TradeFlow pages. Select a category to open the catalogue browser with that category pre-selected, or choose **View complete catalogue**. On the catalogue page, search by manufacturer, product model or product name, or use the category filter. Results are shown 24 at a time with Previous and Next controls. The public browser shows active, customer-visible product names and package variants; it does not show internal buying settings, customer information, prices or private market-evidence records. Whether a product appears on an individual business website depends on that business's own catalogue selections.
+
+## Gaming product catalogue — 5 November 2026
+
+The gaming catalogue now includes the Nintendo Switch 2 Zelda 40th Anniversary console and updated retailer comparisons for its matching Pro Controller. Xbox Shock Blue controller coverage and three PlayStation handheld price observations have also been brought into line between TEST and LIVE.
+
+Both environments have matching totals: 277 active gaming products, 269 customer-visible products and 376 UK market-evidence records. New retail prices and used-market observations are kept separate. Used listings and completed sales are reference comparisons, not automatic buying offers. One product still needs evidence: the 512GB WD_BLACK C50 Xbox storage expansion card. Its price will only be added when an exact UK source is verified.
+
+No website deployment was needed for these database-only catalogue changes. Further details are in CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.

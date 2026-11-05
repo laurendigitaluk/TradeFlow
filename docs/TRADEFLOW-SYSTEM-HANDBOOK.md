@@ -2678,3 +2678,32 @@ Added independently to TEST and LIVE: DualSense Wireless Controller - Gran Turis
 - Smyths Toys: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/playstation-5-dualsense-wireless-controller-gran-turismo-limited-edition/p/266465
 
 Product active/customer-visible in both environments. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified branch totals in each environment: 20 active/customer-visible products, 22 active UK-new evidence rows covering 19 products. The legacy Sony DualShock 3 Wireless Controller - Black remains the one product without UK-new evidence and is retained for legacy/discontinued review. No Worker deployment, app code/schema/valuation/RLS/Edge Function, tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.
+
+
+## 3D printer catalogue continuation — ELEGOO and FLSUN batch (5 November 2026)
+
+Added and evidenced three previously missing ELEGOO configurations independently in LIVE and TEST:
+- Centauri Carbon 2 standard (without CANVAS): £259.00 GBP; https://uk.elegoo.com/products/centauri-carbon-2
+- Centauri 2 standard (without CANVAS): £179.00 GBP; https://uk.elegoo.com/products/centauri-2
+- Centauri 2 CANVAS 4-colour Combo: £219.00 GBP; https://uk.elegoo.com/products/centauri-2-combo
+The existing Centauri Carbon 2 CANVAS combo was already present in both environments and was not duplicated. Official ELEGOO UK pages show the UK shipping territory and pricing; checkout shipping is calculated separately. Source prices observed 5 November 2026.
+
+Product/evidence IDs — LIVE:
+- Centauri Carbon 2 standard: product 5063b4eb-0300-4fdc-9845-2f90c4d42764; evidence c35bab99-2ec6-4d43-b76e-ef093e1f2724.
+- Centauri 2 standard: product 6d562965-b9a7-4f89-a495-24b32993a26c; evidence e50b55df-65ee-4db8-818f-47b7c3222d58.
+- Centauri 2 CANVAS combo: product 9b3dc3cb-9e64-4253-b389-9f27bbaa61ee; evidence b5312394-0f51-4815-8c0b-cc727f6e6f12.
+
+Product/evidence IDs — TEST:
+- Centauri Carbon 2 standard: product f5b16bc4-23ed-4406-b1cc-1c26ef57aefe; evidence fe2eeabd-5d76-4f4c-a44b-7a3e97860af8.
+- Centauri 2 standard: product 9c1be54d-8251-432a-96f3-77dc428d11cf; evidence f004ef0f-47e1-4eee-9ecc-2e4c5cb85bb4.
+- Centauri 2 CANVAS combo: product 39cce755-195f-48a9-ab45-06106460bbba; evidence e03010e5-ebd4-4725-9189-b9702aaa388c.
+
+Resolved the incomplete FLSUN T1 MAX record from the previous continuation. The official FLSUN UK collection lists £459.00 sale / £599.00 regular and marks it in stock: https://uk.store.flsun3d.com/collections/3d-printer-new. Evidence is now present in both environments. LIVE product a22e38a9-8de5-4bdf-a3ab-4b5e110ee101 / evidence 2f51f375-8931-4b1e-aa43-49bf6809217c. TEST product 5d1797a2-0f28-4efb-8d31-e318ee2da3bf / evidence 7d21abe5-21b2-4b59-ac75-52150d52050e. Product notes were corrected to match the current official collection's in-stock status.
+
+Verified 3D Printers branch totals after inserts:
+| Environment | Products | Active visible | Active evidence | UK-new | Missing visible evidence |
+|---|---:|---:|---:|---:|---:|
+| LIVE | 185 | 178 | 204 | 189 | 0 |
+| TEST | 186 | 178 | 204 | 189 | 0 |
+
+Both environments: zero duplicate active product keys and zero duplicate active evidence source keys. Previous hidden/inactive counts remain 7 LIVE and 8 TEST. UK-used evidence remains reference-only and excluded from automatic valuation. TEST and LIVE were updated independently. No application code, schema, valuation logic, RLS, Edge Functions, Worker, Stripe, tenant/customer/order/payment data changed. No Worker deployment required.

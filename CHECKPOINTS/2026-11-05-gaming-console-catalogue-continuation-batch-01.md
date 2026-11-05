@@ -99,3 +99,17 @@ No TradeFlow project-memory/checkpoint table or application function was found i
 
 ## Next action
 Continue with the remaining exact gaming-console models and accessories, prioritising the WD_BLACK C50 512GB UK-new evidence gap and new/used evidence coverage. Run duplicate/model/branch preflight independently in TEST and LIVE, add TEST first, verify, then add and verify LIVE. Update this checkpoint and aggregate project memory after each material batch.
+
+
+## Addendum — WD_BLACK C50 512GB evidence — 5 November 2026
+
+The one remaining visible product without evidence was WD_BLACK C50 Expansion Card 512GB (Xbox Accessories). Added a UK-new GBP price-tracker observation in TEST first, verified the row, then added and verified the matching LIVE row:
+- Observed price: £169.99.
+- Source: disks.co.uk Amazon UK price tracker, https://www.disks.co.uk/drive/wd-black-c50-storage-expansion-card-for-xbox-series-x/B0C44B1VSH.
+- Stable key: disksco-wd-black-c50-512gb-uk-new-20261105.
+- LIVE product dd718e4c-a491-40ff-82d8-70d1ba538195; evidence fbe726d0-7a02-4652-ae29-84468640d38c.
+- TEST product d6a011b9-3f8f-40e9-b45d-d96a026548c4; evidence 107c14fb-5c2a-4921-b858-a36a8a35a477.
+
+Source caveat: the tracker states the Amazon UK feed refreshed within minutes, but Amazon's direct product page could not be independently opened during this capture. The £169.99 observation is 55.4% above the displayed 30-day average (£109.37). Retain it as a high asking-price observation, not a representative market value or confirmed checkout price.
+
+Final independent verification in both environments now shows: 277 active products, 269 active customer-visible products, 377 active evidence rows (212 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures and zero duplicate active source keys. This closes the previous single visible-product-without-evidence gap. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/Worker changes; no deployment.

@@ -3845,3 +3845,19 @@ Verified 3D Printers totals after this continuation:
 | TEST | 190 | 182 | 209 | 194 | 15 | 0 |
 
 Both environments: zero duplicate product keys. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required. TEST and LIVE were updated independently.
+
+## Additional 3D printer catalogue additions — 5 November 2026
+
+Added Flashforge Adventurer 5X standard multicolour printer at £279.00 GBP (official UK store price reduced from £449.00): https://uk.flashforge.com/. LIVE product 3200eb99-8cf7-46dc-bad8-b3cfa8b8d874 / evidence 219b6262-fd23-4329-b22c-904387ea8e80; TEST product 7f266b64-c0c2-4dd1-80fc-fea0e1761220 / evidence 8114b3fd-0d2c-4b9d-8fc5-281b33dc889b.
+
+Added distinct Anycubic Kobra X Combo (base 7-colour package, expandable to 19 colours) at £429.00 GBP: https://uk.anycubic.com/products/kobra-x-combo-3d-printer. Official product page states ships in 24 hours and free express shipping. LIVE product 634078d8-39d8-4bf1-b01a-c391f481d4ec / evidence 14e0207a-f4d0-4d17-bd1b-9bc52078a976; TEST product 834e5612-67da-4ad2-be67-1bf4b638ea7d / evidence da4e3863-e612-4654-b706-69fe76cf3e20.
+
+Also completed the previous Ender-3 V4 CFS Combo addition at £289.00 from GM Crafts UK; product/evidence IDs and source are recorded in the immediately preceding continuation section. Verified that HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) already have current UK-new evidence in both environments; no duplicates were created. Flashforge CJ270 and Anycubic Kobra 3 Max V2 / Photon P1 Max already have active UK-new evidence in both environments.
+
+Verified 3D Printers totals after this batch:
+| Environment | Products | Active visible | Active evidence | UK-new | UK-used | Missing visible evidence |
+|---|---:|---:|---:|---:|---:|---:|
+| LIVE | 190 | 183 | 210 | 195 | 15 | 0 |
+| TEST | 191 | 183 | 210 | 195 | 15 | 0 |
+
+Both environments have zero duplicate product keys and zero active visible products missing evidence. UK-used remains reference-only and excluded from automatic valuation. LIVE and TEST were updated independently. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant/customer/order/payment changes. No Worker deployment required.

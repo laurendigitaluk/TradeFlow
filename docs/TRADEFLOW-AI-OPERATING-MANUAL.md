@@ -4098,3 +4098,8 @@ The specialist `ReleaseMonitor` is implemented at `tools/tradeflow-gemma-agent/s
 ## Approved evidence importer — 5 November 2026
 
 The owner-approved importer is `tools/tradeflow-gemma-agent/src/import-approved.mjs` (`npm run import-approved`). It reads only approved evidence candidates from the TEST review queue. It preflights the full batch before any writes, independently resolves category/branch/manufacturer/exact package in TEST and LIVE, checks the stable source key in both evidence tables, inserts only missing rows, and marks each queue row imported only after both writes are verified. Retries are idempotent if one environment succeeds and the other fails. UK-used notes are marked reference-only and excluded from automatic valuation. Runtime execution and integration testing on the Research PC remain outstanding.
+
+
+## Approved evidence import command
+
+Run `npm run import-approved` only after reviewing and approving the queue item. The importer performs TEST/LIVE preflight, exact package resolution, source-key duplicate checks and mirrored evidence writes. It marks the TEST queue row imported only after both environments verify. It has not been run on the Research PC.

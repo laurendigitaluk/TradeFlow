@@ -3021,3 +3021,8 @@ Implementation and diagnostic detail: `tools/tradeflow-gemma-agent/` and `docs/T
 The TradeFlow Assistant remains part of the subscriber website. Subscribers cannot connect their own AI provider; centrally managed providers are controlled by the Platform Owner. Do not remove subscriber workspaces, websites, customer accounts, assistant conversations or messaging.
 
 Catalogue research is separate from the subscriber-facing assistant. Gemma workers stage product/release/evidence candidates in the TEST control-plane queue `public.platform_catalogue_research_queue`. They do not write directly to the shared master catalogue. ChatGPT review through the owner's existing conversation records an approval decision; a separate import stage is required to update the catalogue. Approved imports must resolve product IDs independently in TEST and LIVE and verify parity afterward. UK-only GBP evidence; UK-used is reference-only.
+
+
+## Release monitoring architecture — 5 November 2026
+
+Release monitoring is a separate Gemma specialist worker, not a subscriber feature. Its watchlist covers Apple, Samsung, 3D printer makers, DJI, console makers, camera makers and metal detector manufacturers. It accepts only official manufacturer source pages and confirmed release states; rumours cannot create products. It compares exact model presence in TEST and LIVE, stages candidates in the TEST platform review queue, and leaves catalogue creation to a later owner-approved importer. The worker has dry-run and enqueue modes; it does not deploy code or modify subscriber data. No automatic schedule is installed yet.

@@ -2392,3 +2392,8 @@ The Nintendo Switch 2 Carrying Case & Screen Protector now has three active UK-n
 ## Gaming catalogue update — 5 November 2026
 
 The Nintendo Switch 2 catalogue now includes the separate HORI Piranha Plant Camera product, with five UK-new retailer price references: John Lewis £22.95, Argos £33.99, Very £33.99, GAME £33.99 (out of stock), and Selfridges £39.99. This is not the same product as Nintendo's official Switch 2 Camera. The record is active and customer-visible in both TEST and LIVE. Overall gaming catalogue totals are 285 active products, 277 visible products and 409 evidence rows (244 UK-new / 165 UK-used) in each environment; all 20 branches match. No application deployment or valuation workflow change was made.
+
+
+## Gaming catalogue update — batch 06, 5 November 2026
+
+Added the separate HORI Piranha Plant Camera for Nintendo Switch 2 product to Nintendo Accessories, with five UK-new retailer references: John Lewis £22.95, Argos £33.99, Very £33.99, GAME £33.99 (out of stock), and Selfridges £39.99. This HORI model is distinct from Nintendo's official Switch 2 Camera. Product TEST d7e37ea0-1191-4e57-9693-3600b609da06 / LIVE 0dede96e-8cb7-4dc6-82df-507999c5820c. Both environments verified at 285 active gaming products, 277 customer-visible products and 409 active evidence rows (244 UK-new / 165 UK-used); all 20 branches align. No application deployment or valuation workflow change. UK-used remains reference-only.

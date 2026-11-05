@@ -3960,3 +3960,14 @@ Sources:
 Evidence IDs: TEST b5e9070b-2065-4ce1-808f-c7c50f2a7678 (Smyths), 5f85d615-b670-4931-ae43-3f8998772a09 (Argos), a100d555-6e54-4a78-9fcc-0a684fc138e5 (Currys), c6637563-09c3-4bf2-ac03-a29f6aa588c2 (John Lewis), 97bc47e7-7811-48d2-9c3b-f1656bb97992 (EE). LIVE: f5d15edd-57a9-461c-9bc0-269b1b77a9df (Smyths), 1727641c-7c81-4669-b3f8-8480c942737f (Argos), 1780870e-ec5a-407b-9557-0555dbb6b4d2 (Currys), f67f0592-b4d0-4466-be75-dc260ff51804 (John Lewis), c4c82385-dbb6-4282-81ef-5e561215d3a9 (EE).
 
 Post-write verification in both environments: 284 active gaming products, 276 active customer-visible products, 401 active evidence rows (236 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures and zero duplicate active source keys. All 20 gaming branch counts match; Nintendo Accessories now has 10 active products / 10 visible / 21 evidence. No product master, code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Worker changes. No deployment. UK-used remains reference-only and does not affect automatic buying valuation.
+
+
+## Mobile phone used-evidence research — batch 111, 5 November 2026
+
+Preflighted LIVE and TEST, then expanded research to eBay UK, UK refurb retailers, Gumtree and official launch/retail pages. No qualifying used evidence was accepted:
+- Edge 70 Plus 256GB: only other Edge 70 family members/storage variants surfaced; exact £430 listing is new/sealed. MSE's exact 256GB model page shows Sep 2026 release and no refurb offer with refurb filter, not a used price.
+- Reno16 F 5G 8GB/256GB: eBay search/category result shows Certified - Refurbished £379.99 from fistech_uk, but no direct item URL, dispatch location or grading details. Exact direct £439.99 listing is new/sealed. OPPO UK current £349 from-price is new pricing, not used evidence.
+- Find X10 12GB/256GB: EE/iD Mobile verify exact 256GB/12GB and 28 Oct 2026 launch, but current UK listings are new/contract; no used/refurb item verified.
+- Find X10 Pro Max 12GB/512GB: eBay pre-owned category result £1,276.42 + £11.50 has no direct item URL or seller/condition verification. Direct item and Gumtree listings checked are new/sealed/never opened. EE verifies exact 512GB/12GB and 28 Oct 2026 launch.
+
+No database rows changed. Keep four common used-evidence gaps open; no estimates, adjacent model variants, opened-never-used, new/sealed or category-only result. Do not alter the hidden unverified TEST-only iPhone 18. UK-used remains reference-only. See batch 111 checkpoint and project memory. No code or deployment work.

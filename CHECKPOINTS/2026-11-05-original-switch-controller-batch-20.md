@@ -30,3 +30,7 @@ Both listings confirm original Nintendo Switch compatibility, Bluetooth wireless
 Nintendo's official accessories catalogue also lists Grey, Neon Yellow/Neon Yellow and pastel Joy-Con pairings. Existing Purple/Green and Purple/Orange rows appear to correspond to Pastel Purple/Pastel Green and Neon Purple/Neon Orange families, but retain existing package identities until exact evidence is reconciled.
 
 No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Used evidence remains reference-only and does not affect automatic valuation.
+
+
+## Batch 21 — HORI racing wheels — 5 November 2026
+Two HORI Switch 2 racing wheel controllers were added independently to LIVE and TEST: Pro Mini Red (EAN 4961818042445) and Pro Deluxe Red/Black (EAN 4961818042469). Four active UK-new GBP/New evidence observations were recorded on 5 November 2026: Mini £69.99 Smyths and £74.99 Argos; Deluxe £104.99 Very and £119.99 Argos. Both products are active and customer-visible. Verified totals in each environment are now 99 products, 102 UK-new evidence rows covering all 99 products, and 2 UK-used reference rows covering 2 products. No active visible product is missing evidence. Two pre-existing records share the generic package key single-controller; they were not changed because duplicate product identity is unproven. No Worker deployment or code/schema/valuation/RLS/tenant/transaction changes. TEST and LIVE remain separate.

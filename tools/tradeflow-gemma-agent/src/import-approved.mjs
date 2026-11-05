@@ -37,6 +37,6 @@ for(const p of plans){
  await db(T,'platform_catalogue_research_queue?id=eq.'+p.q.id,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({status:'imported',imported_at:new Date().toISOString(),test_master_product_id:p.idsFor.TEST,live_master_product_id:p.idsFor.LIVE,test_evidence_id:saved[0],live_evidence_id:saved[1],updated_at:new Date().toISOString()})});
  done.push({queue_id:p.q.id,model:p.q.model,test_evidence_id:saved[0],live_evidence_id:saved[1]});
 }
-await reportAgent(env,{...identity,status:'idle',current_task:null,event_type:'task_completed',message:'Approved evidence import finished: '+done.length+' queue items imported and verified.',tasks_completed_delta:1,evidence_queued_delta:done.length,details:{imported:done.length}});
+await reportAgent(env,{...identity,status:'idle',current_task:null,event_type:'task_completed',message:'Approved evidence import finished: '+done.length+' queue items imported and verified.',tasks_completed_delta:1,details:{imported:done.length}});
 console.log(JSON.stringify({status:'complete',imported:done.length,items:done},null,2));
 }catch(e){await reportAgent(env,{...identity,status:'error',current_task:'Approved evidence import',event_type:'task_failed',message:'Approved evidence import failed: '+e.message,last_error:e.message});throw e;}

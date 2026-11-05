@@ -2587,3 +2587,24 @@ Researched ENTINA's official Tina2C/Tina2 Plus/Tina2S lineup and WEEFUN's own Ti
 A trial ENTINA Tina2C master row and evidence record were inserted and immediately reverted in both environments after the global branch-level duplicate-key check identified the same model/package key as the already-catalogued WEEFUN TINA2C. No ENTINA product/evidence row remains, and no manufacturer row remains from that trial. This avoids leaving duplicate product keys or claiming the two brand listings are separate hardware without a confirmed model distinction. The existing WEEFUN TINA2C remains unchanged. Revisit only if the catalogue key strategy is deliberately extended to support same-model brand variants or reliable evidence proves a distinct configuration.
 
 Post-revert verification remains unchanged from Batch 20: LIVE 178 products / 171 active visible / 197 active evidence (182 UK-new, 15 UK-used); TEST 179 / 171 / 197. Both have zero missing active visible evidence and zero duplicate product keys. No Worker deployment or app/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-21.md.
+
+
+## Nintendo controller catalogue expansion — 5 November 2026
+
+The Nintendo Controllers master-catalogue branch received two additional verified HORI products in both TEST and LIVE:
+
+- HORI Mario Kart Racing Wheel Pro Mini for Nintendo Switch 2 — Red (EAN-13 4961818042445).
+- HORI Mario Kart Racing Wheel Pro Deluxe for Nintendo Switch 2 — Red & Black (EAN-13 4961818042469).
+
+Both are active and customer-visible, assigned to the existing Nintendo Controllers branch, and recorded as controller products. Each has two UK-new retail evidence observations dated 5 November 2026:
+
+- Pro Mini: Smyths Toys UK £69.99; Argos £74.99.
+- Pro Deluxe: Very £104.99; Argos £119.99.
+
+Evidence is GBP, New condition, with retailer source URLs and source-record keys. Product identifiers are recorded against the master products. No UK-used evidence was added; existing UK-used evidence remains reference-only and must not affect automatic valuation.
+
+Verified result in each environment after the update: 99 active/customer-visible Nintendo controller products; 102 active UK-new evidence rows covering all 99 products; 2 active UK-used evidence rows covering 2 products. There are zero active visible products missing any active evidence or UK-new evidence. TEST and LIVE counts and research rows match.
+
+An existing package-key collision remains: two older records in this branch use the generic key `single-controller`. It predates this batch and was not changed because the records were not established as duplicate products. Do not delete or merge them without checking their actual model/package identity and prior history. The two HORI additions use distinct product-specific package keys.
+
+This was a database-only catalogue/evidence update. No Worker deployment, application-code change, schema migration, tenant/customer/order/payment change, or valuation-rule change was made.

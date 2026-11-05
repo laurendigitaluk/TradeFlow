@@ -33,3 +33,8 @@ ReleaseMonitor source added at `tools/tradeflow-gemma-agent/src/release-monitor.
 ## Approved importer
 
 Added `tools/tradeflow-gemma-agent/src/import-approved.mjs` and `npm run import-approved`. It imports approved evidence only, with full TEST/LIVE preflight and idempotent source-key checks. It has not been run on the Research PC; no evidence was imported in this change.
+
+
+## Approved importer hardening — 5 November 2026
+
+`tools/tradeflow-gemma-agent/src/import-approved.mjs` is the separate owner-approved evidence import path. It preflights all approved evidence candidates in TEST and LIVE, re-resolves exact product identities independently, validates HTTPS UK source and GBP price, checks stable source-key duplicates, writes missing evidence and updates queue status only after both sides verify. `npm run import-approved`. Research PC execution remains pending; no product/evidence data was imported by this change.

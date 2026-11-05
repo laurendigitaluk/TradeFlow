@@ -2213,3 +2213,7 @@ The two original Nintendo Switch Joy-Con pairs previously added to LIVE only hav
 
 ### 2026-11-05 Nintendo controller catalogue Batch 7
 Original Switch Joy-Con parity restored and seven further original Switch variants added in both LIVE and TEST: Joy-Con Blue/Neon Yellow £59.99; Joy-Con Purple/Green £40.19; GameSir Nova Lite Space Purple, Pink and Grey £17.99 each; HORI Split Pad Pro Black £39.99; HORI Wired HORIPAD Turbo Zelda £22.99. Each has active UK-new GBP Argos evidence. GameSir manufacturer added to both environments. Verified independent totals: LIVE 59 active visible products / 62 active evidence; TEST 59 / 62; zero visible products missing evidence. Exact IDs and sources are in CHECKPOINTS/2026-11-05-original-switch-controller-batch-07.md. No Worker deployment or code/schema/valuation/tenant/transaction changes; used evidence remains reference-only.
+
+
+### 2026-11-05 original Nintendo Switch controller Batch 8 — PDP REALMz
+Added PDP REALMz Wireless Shadow Space ARK (£15.99) and PDP REALMz Wired Tails Seaside Hill Zone (£7.99) to both LIVE and TEST, each with active UK-new GBP Argos evidence. PDP manufacturer added in both environments. Independent totals: LIVE 61 active visible products / 64 active evidence; TEST 61 / 64; zero visible products missing active evidence. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-08.md. No Worker deployment or application/schema/valuation/tenant/transaction changes.

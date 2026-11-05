@@ -3483,3 +3483,19 @@ Added a second, independently sourced UK used-price observation for the exact Ni
 ## Nikon used-market batch 18 — LIVE and TEST (5 November 2026)
 
 Added a second UK used-market price observation for Nikon D5600 in both databases: MPB UK category snapshot shows 10+ D5600 bodies from £194 to £424. The £194 floor is explicitly a category-page listing floor, not a typical price or condition-normalised benchmark. LIVE evidence b252dba1-fc47-452e-afa2-c7728c163deb; TEST a55dc2c6-9390-4030-b7ee-1f363416e8ff. Source https://www.mpb.com/used-equipment/used-photo-and-video/used-digital-slr-cameras/. Both records independently read back active, GBP, uk_used, exact Nikon D5600 product and source URL. Existing £370 typical UsedLens benchmark retained. Current UsedLens D7500 index: 62 listings from six retailers, low £424, typical £529; MPB has 18 listings from £299 to £594. However no active exact Nikon D7500 product exists in either LIVE or TEST, so no evidence was attached to a different model. No product/schema/valuation/lifecycle/RLS/application/Worker/Stripe/tenant/customer/order/payment changes; no deployment.
+
+
+## Gaming catalogue evidence continuation — batch 05, 5 November 2026
+
+Added three active UK-new GBP observations in TEST, then the matching independent LIVE records, reusing existing masters only:
+- Nintendo Switch 2 Carrying Case & Screen Protector bundle: Smyths £17.99 promotional (was £19.99; category listing) and Currys £20.99 (product code 539477). Existing Argos £19.99 observation retained. Sources: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/c/SM06040203 and https://www.currys.co.uk/products/nintendo-switch-2-carrying-case-and-screen-protector-black-10281818.html
+- HORI Wireless HORIPAD Turbo — Kirby & Waddle Dee: Smyths £39.99, in stock with delivery and Click & Collect shown. Existing Argos £64.99 listing retained as a separate retailer observation. Source: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/hori-wireless-horipad-turbo-for-nintendo-switch-2-kirby-and-waddle-dee/p/259385
+
+IDs:
+- Carry Case Smyths evidence: TEST 8b79c8ab-ba49-4f63-8820-330505ff31e9; LIVE 36d02bcf-2c54-4351-bffc-61af9f833b4d.
+- Carry Case Currys evidence: TEST 4e27b24f-644d-4956-9e57-9c539f4889ff; LIVE ec8f5e06-5362-45de-aab7-934b064893d5.
+- HORI Kirby Smyths evidence: TEST 26873d05-eea3-47cd-aa77-703dd61540b5; LIVE 85f80133-13c5-404a-ade1-f5ad25ac06a6.
+
+Both environments independently verified: 284 active gaming products, 276 customer-visible products, 404 active evidence rows (239 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures, zero duplicate active source keys. All 20 gaming branches match. Nintendo Accessories: 10 products / 10 visible / 23 evidence; Nintendo Controllers: 105 / 105 / 120. Three UK-new observations added per environment; no new product masters or used-market rows in this batch. UK-used remains reference-only and does not affect automatic buying valuation.
+
+No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/customer/order/payment/ownership or Worker changes. No deployment. TEST and LIVE records were created independently; no business data copied between environments.

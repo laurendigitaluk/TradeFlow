@@ -2848,3 +2848,14 @@ Research leads found but not imported because item-level source validation was i
 - Motorola Edge 70 Plus 256GB: no qualifying used listing found. Current UK new listings are not used evidence (Argos £499.99; MoneySavingExpert price-comparison page £529.99). Model release shown as September 2026, so used supply may be limited.
 
 No evidence rows were added or modified in this pass. Exact-variant UK GBP rules and direct item URL requirement remain in force. UK-used evidence remains reference-only and must not feed automatic buying valuation. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment. Research notes are in `CHECKPOINTS/2026-11-05-mobile-phone-used-research-batch-109.md` and `PROJECT-MEMORY/2026-11-05-mobile-phone-used-research-batch-109.md`.
+
+
+## Mobile phone used-evidence research — batch 110, 5 November 2026
+
+Rechecked exact-variant UK marketplace results for the four common mobile used-evidence gaps. New search leads remain unfit for import:
+- OPPO Reno16 F 5G 8GB/256GB: eBay UK search results show a Certified - Refurbished offer at £379.99 from fistech_uk (99.6% positive, 273 feedback) with free delivery/returns. The search result does not expose a direct item URL, seller dispatch location or full refurb grading/description. A separate direct item page found for this model is £439.99 NEW and is not used evidence. Do not enter the £379.99 search result without opening and verifying the actual item.
+- OPPO Find X10 Pro Max 512GB: eBay category/search results show an apparent Pre-owned result at £1,276.42 plus £11.50 postage, but no direct item URL or item-level condition/seller location was verifiable. Direct page found at £1,293.70 is New and located in Forest Row, UK; another result at £1,120.23 is Opened – never used. Neither qualifies as used evidence.
+- OPPO Find X10 12GB/256GB: exact UK-model result at £876.03 is Opened – never used; another exact 256GB Global Version listing at £999.99 is dispatched from India. Exclude both from UK-used evidence.
+- Motorola Edge 70 Plus 256GB: targeted eBay searches did not return a verifiable exact used listing. Do not substitute Edge 70 base/Pro/Fusion or other storage variants.
+
+No database evidence rows were added or changed. LIVE and TEST remain aligned on shared catalogue evidence; TEST-only hidden/unverified iPhone 18 256GB remains untouched. UK-used evidence is reference-only and excluded from automatic valuation. See `CHECKPOINTS/2026-11-05-mobile-phone-used-research-batch-110.md` and matching project-memory record. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment.

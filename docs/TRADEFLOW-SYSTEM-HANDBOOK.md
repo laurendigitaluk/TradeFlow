@@ -2928,3 +2928,54 @@ Added the standalone HALOT-X1 resin printer to TEST and LIVE at £579 GBP, separ
 Added Creality K1 SE as a legacy printer-only catalogue record in both environments. Official Creality UK collection lists £229 and marks it Sold Out; this is historical UK-new price evidence only, not a current purchase offer. Source: https://store.creality.com/uk/collections/creality-could-3d-printers. TEST product/evidence UUIDs aa83d910-2f44-4b7a-9c31-000000000701/711; LIVE UUIDs bb94ea21-3a55-4c8b-8d42-000000000701/711. K1 SE remains a visible model reference, with sold-out availability explicitly recorded.
 
 Final independent category verification after this addition: TEST and LIVE each have 157 active customer-visible products and 171 active evidence rows (156 UK-new / 15 UK-used). Both environments return zero active visible products without active evidence. The previously noted one-row evidence difference is resolved; product/evidence totals now match. All evidence remains UK GBP. Used-market evidence remains reference-only and does not affect automatic valuation. No Worker deployment or code/schema/valuation/transactional changes.
+
+
+## 3D printer catalogue evidence and package expansion — 5 November 2026 (batch 14)
+
+This was a database-only catalogue update applied independently to TEST and LIVE. The canonical category remains `3d-printers-equipment`. No application code, schema, RLS, valuation logic, Edge Functions, tenants, customers, orders, payments or Worker deployments were changed.
+
+### New products and UK evidence
+
+Added two distinct Original Prusa XL+ printer configurations in both environments:
+- XL+ / Two-Toolhead — £2,675 GBP, EDS3D: https://eds3d.co.uk/products/original-prusa-xl-two-toolhead-3d-printer
+- XL+ / Five-Toolhead — £3,530 GBP, EDS3D: https://eds3d.co.uk/products/original-prusa-xl-five-toolhead-3d-printer
+
+These are printer configurations, not accessory/upgrade-only records. Their product-specific stock and dispatch timing are not confirmed; the evidence records the reseller's listed prices and the qualification.
+
+Additional UK-new price evidence was attached to existing exact product/package records:
+- Bambu Lab P1P — £399; manufacturer page gives conflicting availability (lead-time text says in stock, purchase CTA says sold out).
+- QIDI Plus4 — £569; selector says in stock but the embedded product variant reports unavailable.
+- Anycubic Photon Mono M5s — £549; official page reports sold out. It remains active because the source did not explicitly confirm discontinuation.
+- Bambu Lab X1 Carbon Standard Printer — £919; official page reports sold out and a UK reseller confirms the model is no longer manufactured.
+- QIDI Q1 Pro — £299; official UK page confirms discontinued/no longer in production.
+- QIDI X-Max 3 — £499; official UK page confirms discontinued/no longer in production and its variant reports unavailable.
+
+All six additional prices are stored as observed UK-new market evidence with availability qualifiers; none is represented as confirmed current stock. QIDI Q1 Pro, QIDI X-Max 3 and both Bambu X1 Carbon packages (Standard Printer and AMS Combo) are inactive and hidden from the customer-facing catalogue. Their historic evidence is retained. QIDI X-Plus 3 remains active; do not mark it discontinued without explicit manufacturer confirmation.
+
+### Stable identifiers
+
+LIVE:
+- XL+ Two-Toolhead product `fb964376-c098-4723-a22a-fb5ee12587e5`; evidence `98206eac-d425-47a8-89eb-0ff2b49b5ec4`.
+- XL+ Five-Toolhead product `bc3b2121-57af-41ca-a165-02895627cdb9`; evidence `39609ff5-3aab-43ac-9b86-73ef4c076950`.
+
+TEST:
+- XL+ Two-Toolhead product `d6b95041-45b3-46c4-9cc2-97828fdab7af`; evidence `387d8e7e-5942-43c6-bd9a-f85c99a175ca`.
+- XL+ Five-Toolhead product `2fda6830-8d17-4047-bfd8-e8797337859a`; evidence `4578e7bd-c890-4904-8cb3-1a5960fcf337`.
+
+The six other UK-new evidence records use stable source keys dated 2026-11-05:
+`uk-new:bambu-lab:p1p:standard:2026-11-05`,
+`uk-new:qidi:plus4:standard:2026-11-05`,
+`uk-new:anycubic:photon-mono-m5s:standard:2026-11-05`,
+`uk-new:bambu-lab:x1-carbon:standard:2026-11-05`,
+`uk-new:qidi:q1-pro:standard:2026-11-05`,
+`uk-new:qidi:x-max-3:standard:2026-11-05`.
+
+### Verification and operating rules
+
+Final independent verification:
+- LIVE: 162 product rows, 155 active/customer-visible, 7 inactive; 179 active evidence rows (164 UK-new / 15 UK-used), covering 159 products.
+- TEST: 163 product rows, 155 active/customer-visible, 8 inactive; 179 active evidence rows (164 UK-new / 15 UK-used), covering 159 products.
+- Both environments have zero active visible products without active evidence, zero duplicate active evidence source keys and zero invalid active evidence (missing URL/key, non-positive price or non-GBP currency).
+- Active catalogue and evidence totals are aligned. TEST has one additional inactive/hidden Creality Ender-3 V3 Neo / Printer only duplicate row with no LIVE counterpart. Retain it hidden; do not delete or reactivate it as part of routine parity work.
+
+All evidence remains UK GBP. UK-used evidence is reference-only and must never feed automatic valuation. Sold-out, discontinued, stale-delivery and stock-conflict listings must retain their explicit availability qualification and must not be presented as confirmed available stock. No Worker deployment is required for these database-only changes.

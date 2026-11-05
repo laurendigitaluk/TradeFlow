@@ -2618,3 +2618,23 @@ Source URLs, GBP values, new condition, sales channel, availability and observat
 8. Database-only catalogue changes do not require Cloudflare Worker deployment.
 
 Latest verified state: printer branch 183 products / 207 evidence rows per environment; accessories branch 7 products / 7 UK-new evidence rows per environment. All 190 active products across both branches are customer-visible and have UK evidence. Zero accessory evidence integrity failures. SUNLU is not yet in the manufacturer master; create its manufacturer record before adding SUNLU products.
+
+
+## SUNLU manufacturer and filament-dryer import — 5 November 2026
+
+SUNLU was verified as the manufacturer on 3DJake UK product pages and added to the manufacturer master independently in LIVE and TEST. Four exact accessory product/package records and UK-new evidence rows were added to each environment:
+
+- FilaDryer S4 — £94.80; availability recorded as **restock pending**.
+- FilaDryer S4 Pro — £129.00; in stock.
+- Fila Dryer S2 — £59.82; in stock.
+- FilaDryer SP2 — £72.15; in stock.
+
+Source pages:
+- https://www.3djake.uk/sunlu/filadryer-s4
+- https://www.3djake.uk/sunlu/filadryer-s4-pro
+- https://www.3djake.uk/sunlu/fila-dryer-s2
+- https://www.3djake.uk/sunlu/filadryer-sp2
+
+Prices include 20% VAT per 3DJake UK; delivery may be extra. Do not represent the S4 as in stock: its page indicates restock pending.
+
+Latest accessory branch totals per environment: 11 products, 3 manufacturers, 11 UK-new evidence rows, zero missing evidence and zero malformed records. The main printer branch remains 183 products / 207 evidence rows. LIVE and TEST product natural keys match exactly. Continue keeping accessory records in their separate branch and add further manufacturers only after verifying identity and checking for duplicates.

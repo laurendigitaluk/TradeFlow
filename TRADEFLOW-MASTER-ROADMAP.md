@@ -1021,3 +1021,10 @@ The 118-product / 131-evidence totals recorded in the 4 November Batch 7 checkpo
 No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Worker deployment changed. The three price observations were inserted independently in LIVE and TEST using unique source record keys. Used evidence remains reference-only and is excluded from automatic valuation inputs.
 
 Next: continue verified product/package expansion; populate the accessories branch only with exact products and UK GBP evidence; expand used-market references where a UK listing can be matched confidently; repeat independent LIVE/TEST parity checks.
+
+
+## 5 November 2026 — UK-used evidence addition
+
+Added one active UK-used reference observation in both LIVE and TEST for Bambu Lab P1S, Standard Printer: £295.08 on eBay UK, item 880040550398. The listing states Used condition and seller location Manchester. This is an asking price, not a completed-sale result, and remains reference-only.
+
+Latest independent verification: 183 active products/packages, 17 manufacturers and 207 active evidence rows in each environment (195 UK-new / 12 UK-used). All 183 active products have UK evidence; no overseas evidence is active in this branch. Product identity parity remains exact. This supersedes the earlier same-day 206 evidence-row total.

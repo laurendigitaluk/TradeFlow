@@ -2872,21 +2872,18 @@ Post-insert independent category-scoped verification in both TEST and LIVE: 141 
 Exact Batch 9 product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-09.md. TEST and LIVE use independent environment-specific UUIDs. UK GBP only; used evidence remains reference-only and must not affect automatic valuation. Database-only change; no Worker deployment required.
 
 
-### 3D printer catalogue expansion — Batch 10 — 5 November 2026
+### 3D printer catalogue expansion — Batch 10 — 5 November 2026 (corrected final state)
 
-Expanded Prusa Research and refreshed current Flashforge UK price evidence in TEST and LIVE.
+Expanded Prusa Research and Flashforge in TEST and LIVE. A final current-source cross-check was performed before locking the checkpoint.
 
-New Prusa Research printer-only models:
-- CORE One+ (Gen 2) — £919.00 from Fabinity UK; listing in stock and offers two purchase options, so this is the advertised entry price rather than a single universal configuration. Source: https://www.fabinity.com/product/prusa-core-one
-- CORE One L+ — £1,829.00 from Fabinity UK; in stock. Source: https://www.fabinity.com/product/prusa-core-one-l
-- XL+ Single-Tool — £2,109.00 from Fabinity UK; ships in 4–5 weeks. Source: https://www.fabinity.com/product/original-prusa-xl-single-toolhead-3d-printer
+New printer-only models:
+- Prusa CORE One+ (Gen 2) — £909.00 advertised from-price, Fabinity UK; in stock, two purchase options, so confirm assembly/configuration before quotation. Source: https://www.fabinity.com/brands/prusa
+- Prusa CORE One L+ — £1,829.00, Fabinity UK; in stock. Source: https://www.fabinity.com/brands/prusa
+- Prusa XL+ Single-Tool — £2,099.00, Fabinity UK; ships in 4–5 weeks. Source: https://www.fabinity.com/brands/prusa
+- Flashforge CJ270 — £3,499.00, official Flashforge UK. The product page still carries pre-order timeline language (first 100 units scheduled to ship 15 October, later orders in purchase order); current fulfilment is not independently confirmed. Record as listed with availability caveat, not as confirmed in-stock. Source: https://uk.flashforge.com/products/flashforge-cj270
 
-Refreshed UK-new price observations for existing Flashforge products from the official UK collection:
-- AD5X — £359.00.
-- Adventurer 5M — £259.00.
-- Adventurer 5M Pro — £399.00.
-The collection identifies the six-model current UK range. Flashforge product pages state that printer fulfilment is from international local warehouses, with typical 2–5 working day delivery; do not describe these as UK warehouse stock. Promotions and checkout discounts may apply. Source: https://uk.flashforge.com/collections/3d-printers
+Current Flashforge collection snapshot confirms AD5X £299, Adventurer 5M £209 and Adventurer 5M Pro £339. These match the prior 4 November evidence already stored for those models. An intermediate Batch 10 observation from an older cached collection page showed £359/£259/£399; those three evidence rows were deactivated and retained as historical only, not used as current prices. Latest collection source: https://uk.flashforge.com/collections/3d-printers
 
-Post-insert independent category-scoped verification in both TEST and LIVE: 144 active customer-visible 3D printer products; 161 active evidence rows (146 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. The TEST and LIVE counts match exactly.
+Post-correction independent category-scoped verification in both TEST and LIVE: 145 active customer-visible 3D printer products; 159 active evidence rows (144 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. TEST and LIVE counts match exactly.
 
-Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. All evidence is UK GBP, New, and source-linked. Printer-only records remain separate from kits/accessories; used evidence remains reference-only and must not affect automatic valuation. Database-only catalogue/evidence change; no schema, code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.
+Exact environment-specific product/evidence UUIDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. All active evidence is UK GBP, New and source-linked. Printer-only models remain separate from kits/accessories; used evidence remains reference-only and must not affect automatic valuation. Database-only catalogue/evidence change; no schema, application code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.

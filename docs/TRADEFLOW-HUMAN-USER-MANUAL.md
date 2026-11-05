@@ -2387,3 +2387,8 @@ Post-write verification in both environments: 284 active gaming products, 276 ac
 ## Gaming catalogue research update — 5 November 2026
 
 The Nintendo Switch 2 Carrying Case & Screen Protector now has three active UK-new retailer observations: Argos £19.99, Smyths £17.99 promotional and Currys £20.99. The HORI Wireless HORIPAD Turbo Kirby & Waddle Dee now has two: Smyths £39.99 and Argos £64.99. Existing masters were reused; prices remain retailer-specific observations, not valuation offers. UK-used evidence remains separately classified and reference-only. LIVE and TEST both verified at 284 active gaming products, 276 customer-visible products and 404 active evidence rows (239 UK-new / 165 UK-used); all 20 branches align. No application deployment or workflow change was made.
+
+
+## Gaming catalogue update — 5 November 2026
+
+The Nintendo Switch 2 catalogue now includes the separate HORI Piranha Plant Camera product, with five UK-new retailer price references: John Lewis £22.95, Argos £33.99, Very £33.99, GAME £33.99 (out of stock), and Selfridges £39.99. This is not the same product as Nintendo's official Switch 2 Camera. The record is active and customer-visible in both TEST and LIVE. Overall gaming catalogue totals are 285 active products, 277 visible products and 409 evidence rows (244 UK-new / 165 UK-used) in each environment; all 20 branches match. No application deployment or valuation workflow change was made.

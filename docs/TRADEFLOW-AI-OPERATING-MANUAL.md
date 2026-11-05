@@ -3783,3 +3783,17 @@ Direct evidence URLs:
 - Wolverine Adamantium: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/marvels-wolverine-adamantium-limited-edition/ and https://direct.playstation.com/en-gb/buy-accessories/dualsense-wireless-controller-marvels-wolverine-adamantium-limited-edition-for-ps5-pc-mac-mobile
 
 Combined with the Gran Turismo Limited Edition batch, verified TEST and LIVE branch totals now match at 22 active/customer-visible products and 26 active UK-new evidence rows covering 21 products. The only uncovered product remains the pre-existing Sony DualShock 3 Wireless Controller - Black. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes.
+
+
+## Xbox controller expansion — 5 November 2026
+
+Added independently in TEST and LIVE under the existing Xbox Controllers branch:
+- Xbox Wireless Controller - Ice Breaker Special Edition — Microsoft Store £64.99.
+- Xbox Wireless Controller - Heart Breaker Special Edition — Microsoft Store £64.99.
+- Xbox Wireless Controller - Storm Breaker Special Edition — Microsoft Store £64.99.
+- Xbox Wireless Controller - Gears of War E-Day Limited Edition — Smyths £79.99; John Lewis £84.99; Microsoft Store £84.99.
+- Xbox Wireless Controller - Forza Horizon 6 Limited Edition — Argos £69.99; Currys £84.99.
+
+All 5 products are active/customer-visible. Each evidence row is active UK-new, GBP, New, Retail, dated 5 November 2026, with a direct retailer/product URL and stable source_record_key. Microsoft Breaker variants share the official Breaker-series product page, which exposes Ice Breaker, Heart Breaker and Storm Breaker as selectable configurations. Forza Horizon 6 release date 21 May 2026. Gears of War E-Day release date 29 September 2026; the Microsoft page still presents a pre-order CTA after that date, so availability is recorded as Listed rather than claiming in-stock.
+
+Verified TEST and LIVE each: 20 active/customer-visible Xbox controller products; 23 active UK-new evidence rows covering all 20 products. No visible product in this branch is missing UK-new evidence. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.

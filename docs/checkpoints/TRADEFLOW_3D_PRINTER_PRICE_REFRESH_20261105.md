@@ -62,3 +62,44 @@ Added in both environments for Bambu Lab P1S, Standard Printer:
 This is a live listing asking price, not a completed-sale result. It is reference-only and must not feed automatic valuations.
 
 Updated verified totals in each environment: 183 active products/packages, 17 manufacturers, 207 active evidence rows (195 UK-new / 12 UK-used), 183 products with UK evidence, zero products without UK evidence, and zero active overseas evidence. Product identity parity remains exact.
+
+
+## Follow-up batch — accessories branch population, 5 November 2026
+
+Seven accessory products and seven UK-new evidence rows were added independently to LIVE and TEST:
+
+| Manufacturer | Product / package | UK price | Evidence source |
+|---|---|---:|---|
+| Bambu Lab | AMS 2 Pro — Single Unit | £266.04 | 3DJake UK |
+| Bambu Lab | Hotend Heating Assembly — A1 / A1 mini | £23.00 | 3DJake UK |
+| Creality | CFS — Single Unit | £289.00 | Creality UK |
+| Creality | SpacePi X4 Filament Dryer — Single Unit | £150.00 | Creality UK |
+| Creality | Space Pi Filament Dryer Plus — Two-Roll Unit | £85.00 | Creality UK |
+| Creality | Unicorn Quick-Swap Nozzle Kit — 4-piece | £45.00 | Creality UK |
+| Creality | Unicorn K2P Quick-Swap Nozzle Kit — 4-piece | £45.00 | Creality UK |
+
+Evidence source URLs are stored on each record:
+- https://www.3djake.uk/bambu-lab/ams-2-pro
+- https://www.3djake.uk/bambu-lab/hotend-heating-assembly
+- https://store.creality.com/uk/products/creality-filament-system-cfs
+- https://store.creality.com/uk/products/creality-spacepi-x4
+- https://store.creality.com/uk/products/creality-space-pi-filament-dryer-plus
+- https://store.creality.com/uk/products/unicorn-quick-swap-nozzle-kit
+- https://store.creality.com/uk/products/unicorn-k2p-quick-swap-nozzle-kit
+
+### Latest independent verification
+
+| Branch | LIVE | TEST |
+|---|---:|---:|
+| 3D Printers active products | 183 | 183 |
+| 3D Printers active evidence | 207 | 207 |
+| Accessories active products | 7 | 7 |
+| Accessories active UK-new evidence | 7 | 7 |
+| Accessory products missing UK evidence | 0 | 0 |
+| Malformed accessory evidence rows | 0 | 0 |
+
+Both accessory branches contain two manufacturers (Bambu Lab and Creality). All 190 active products across both branches are customer-visible and have UK evidence. Product manufacturer/model/package-key parity is exact between environments. Product UUIDs remain environment-specific.
+
+No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. Database-only catalogue work requires no Worker deployment.
+
+SUNLU has not yet been imported because it is not present in the manufacturer master. Add the manufacturer master record first, then continue with exact accessory identities and UK GBP evidence.

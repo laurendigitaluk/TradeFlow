@@ -2093,3 +2093,23 @@ Product UUIDs are environment-specific; rows were independently inserted using t
 This was a database-only catalogue and evidence update. No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. No Worker deployment is required.
 
 SUNLU was not added in this batch because no SUNLU manufacturer row exists in the manufacturer master. Create and verify that manufacturer master record before importing SUNLU products.
+
+
+## SUNLU filament-dryer expansion — 5 November 2026
+
+Added the SUNLU manufacturer master record independently to LIVE and TEST, then added four accessory products with UK-new evidence to the **3D Printer Equipment & Accessories** branch:
+
+| Product / package | UK price | Availability | Source |
+|---|---:|---|---|
+| SUNLU FilaDryer S4 — Single Unit | £94.80 | Restock pending | https://www.3djake.uk/sunlu/filadryer-s4 |
+| SUNLU FilaDryer S4 Pro — Single Unit | £129.00 | In stock | https://www.3djake.uk/sunlu/filadryer-s4-pro |
+| SUNLU Fila Dryer S2 — Single Unit | £59.82 | In stock | https://www.3djake.uk/sunlu/fila-dryer-s2 |
+| SUNLU FilaDryer SP2 — Single Unit | £72.15 | In stock | https://www.3djake.uk/sunlu/filadryer-sp2 |
+
+Prices include 20% VAT according to 3DJake UK; delivery is excluded where stated. The S4 product page indicates restock pending, so its evidence row records that availability rather than implying stock.
+
+### Updated accessory branch verification
+
+LIVE and TEST each now contain 11 active customer-visible accessory products across three manufacturers (Bambu Lab, Creality and SUNLU), with 11 active UK-new evidence rows. All 11 have UK evidence; zero malformed evidence rows. The printer branch remains at 183 active products and 207 active evidence rows (195 UK-new / 12 UK-used) in each environment. Product identity parity remains exact across both branches.
+
+The SUNLU manufacturer row was created separately in each environment; manufacturer and product UUIDs remain environment-specific. No Worker deployment or application/schema change was required.

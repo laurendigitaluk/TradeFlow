@@ -3377,3 +3377,14 @@ All additions are separate environment-specific records. UK-used evidence remain
 Added the missing UK-new observation for the exact WD_BLACK C50 Expansion Card 512GB product in TEST and LIVE at £169.99. Source: disks.co.uk Amazon UK price tracker, https://www.disks.co.uk/drive/wd-black-c50-storage-expansion-card-for-xbox-series-x/B0C44B1VSH. Stable key: disksco-wd-black-c50-512gb-uk-new-20261105. LIVE evidence fbe726d0-7a02-4652-ae29-84468640d38c; TEST evidence 107c14fb-5c2a-4921-b858-a36a8a35a477. The tracker states its Amazon UK feed refreshed within minutes, but the Amazon detail page was not independently accessible during capture. The £169.99 observation is 55.4% above the displayed 30-day average (£109.37); retain the caveat and do not treat it as a representative market value or confirmed checkout price.
 
 Final gaming catalogue verification now matches in both environments: 277 active products, 269 active visible products, 377 active evidence rows (212 UK-new / 165 UK-used), zero visible products missing all evidence, zero active evidence integrity failures and zero duplicate active source keys. No code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/Worker changes; no deployment. Updated checkpoint and aggregate memory record the exact IDs and caveat.
+
+
+## Nikon used-market batch 13 — LIVE and TEST (5 November 2026)
+
+Added and independently read back four new UK used-market evidence observations in each environment, matched by exact camera model:
+- COOLPIX 3100 typical asking price £30 UsedLens UK: LIVE 10e4ff05-0710-462a-8c70-6cafd1de83c3; TEST f2c526fc-c0be-411a-9cb0-223467fe3e67. Source https://usedlens.co.uk/product/nikon-coolpix-3100 (62 tracked listings; typical £30, current low £15).
+- Nikon D200 £70 UsedLens UK: LIVE fdc6aea3-844b-486d-b29f-4948975aa035; TEST 0082b667-78bd-4662-906e-8ef5f6f50673. Source https://usedlens.co.uk/product/nikon-d200 (low £70; typical across grades £123).
+- Nikon D800 £194 UsedLens UK: LIVE a70ae87f-a68b-4033-818f-8b300f3c20cd; TEST e9c238e1-9b1b-434f-82e0-6cc842e18b90. Source https://usedlens.co.uk/product/nikon-d800 (low £194).
+- Nikon D300 £32 MPB UK: LIVE 90113520-8ec8-4310-aab6-e8a9b914df11; TEST 5b507a8a-f49b-4148-9b30-3b8a32fc3b65. Source https://www.mpb.com/en-uk/category/used-cameras/dslr-cameras/nikon-dslr-cameras?page=2.
+
+All eight new rows independently verified active, GBP, used, with source URLs. Existing TEST D200 £99 and D300 £76 observations retained; no overwrites. LIVE and TEST now contain the matching new observations for these four models. No Worker deployment, schema or valuation changes, and no unrelated TEST data copied.

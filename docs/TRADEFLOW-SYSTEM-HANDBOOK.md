@@ -3051,3 +3051,8 @@ The Gemma catalogue workflow now has a distinct owner-approved product-master im
 ## Gemma GBP validator encoding safeguard — 5 November 2026
 
 `tools/tradeflow-gemma-agent/src/agent.mjs` now constructs the pound symbol with `String.fromCharCode(163)` when building the exact GBP price regular expression. This avoids source-file encoding corruption while preserving exact amount matching and the existing validation rules. The local Research PC must rerun `npm test` after updating this file; this feature-branch change has not yet been runtime-verified. No database writes or deployments were performed.
+
+
+## Research PC safe launcher — 5 November 2026
+
+Use `tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1`. It validates the local environment file, required credentials, fixed TEST/LIVE Supabase hostnames, configured Ollama model and test suite before starting. Default mode is dry-run with read-only catalogue identity checks and agent telemetry; it creates no catalogue or review-queue rows. `-Enqueue` stages validated evidence candidates in the TEST-only review queue. Do not use the retired `--apply` flag. The launcher and local `.env` must not be copied into the web client or committed with secrets.

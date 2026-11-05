@@ -9,7 +9,7 @@ $EnvFile = Join-Path $AgentRoot ".env"
 $TaskPath = if ([System.IO.Path]::IsPathRooted($TaskFile)) { $TaskFile } else { Join-Path $AgentRoot $TaskFile }
 
 if (-not (Test-Path -LiteralPath $EnvFile -PathType Leaf)) {
-    throw "Missing local .env. Copy .env.example to .env and configure Ollama, Brave Search and both TradeFlow environments. Do not send the keys to anyone."
+    throw "Missing local .env. Copy .env.example to .env and configure Ollama, local SearXNG and both TradeFlow environments. Do not send the keys to anyone."
 }
 if (-not (Test-Path -LiteralPath $TaskPath -PathType Leaf)) {
     throw "Task file not found: $TaskPath"
@@ -21,7 +21,6 @@ $null = Get-Command ollama -ErrorAction Stop
 
 $EnvText = Get-Content -LiteralPath $EnvFile -Raw
 $RequiredKeys = @(
-    "BRAVE_SEARCH_API_KEY",
     "TRADEFLOW_TEST_URL",
     "TRADEFLOW_TEST_SERVICE_ROLE_KEY",
     "TRADEFLOW_LIVE_URL",
@@ -57,6 +56,13 @@ if (($Models -join [Environment]::NewLine) -notmatch $ModelPattern) {
 
 Push-Location $AgentRoot
 try {
+    Write-Host "Checking local SearXNG search service..."
+    $SearchMatch = [regex]::Match($EnvText, "(?m)^\s*SEARXNG_BASE_URL\s*=\s*(\S+)")
+    $SearchUrl = if ($SearchMatch.Success) { $SearchMatch.Groups[1].Value.Trim('"').Trim("'") } else { "http://127.0.0.1:8080" }
+    try { $SearchUri = [uri]$SearchUrl; $SearchCheck = Invoke-RestMethod -Uri ($SearchUri.GetLeftPart([System.UriPartial]::Authority) + "/search?q=tradeflow&format=json") -TimeoutSec 8 }
+    catch { throw "SearXNG is not responding at the configured local address. Start it with docker compose before running Gemma." }
+    if ($null -eq $SearchCheck.results) { throw "SearXNG responded but did not return JSON results. Check that JSON format is enabled." }
+
     Write-Host "Running Gemma validation tests..."
     & npm test
     if ($LASTEXITCODE -ne 0) { throw "Gemma tests failed; research run stopped." }

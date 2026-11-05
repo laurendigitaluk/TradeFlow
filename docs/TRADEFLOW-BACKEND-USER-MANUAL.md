@@ -1793,3 +1793,10 @@ Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), th
 The Gaming Consoles & Accessories master catalogue was updated independently in TEST and LIVE. A distinct Nintendo Switch 2 Zelda 40th Anniversary console package was added with £429.99 Smyths UK-new evidence. The existing Zelda 40th Anniversary Pro Controller gained Argos £64.99 and Smyths £79.99 evidence (Currys £74.99 retained). Xbox Wireless Controller — Shock Blue was brought into LIVE to match TEST, with £59.99 Argos evidence. Three missing LIVE PlayStation handheld evidence rows were restored (PSP-2000, PSP Go and PS Vita OLED). Three existing null evidence URLs were repaired.
 
 Verified totals match in both environments: 277 active products, 269 visible products, 376 active evidence rows (211 UK-new / 165 UK-used). One visible product has no evidence: WD_BLACK C50 Expansion Card 512GB. Evidence integrity failures and duplicate active source keys are both zero. UK-used comparisons are reference-only and must not alter buying valuations. No code, schema, valuation, RLS, payment or Worker deployment changes. See CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.
+
+
+### Gaming catalogue coverage correction — 5 November 2026
+
+The remaining WD_BLACK C50 Expansion Card 512GB evidence gap was closed in TEST and LIVE with a £169.99 UK-new price-tracker observation from disks.co.uk (Amazon UK feed). The direct Amazon page was not independently accessible in this capture, and the tracker price is 55.4% above its 30-day average (£109.37); treat it as a high asking-price observation, not a representative value or confirmed checkout price. Source: https://www.disks.co.uk/drive/wd-black-c50-storage-expansion-card-for-xbox-series-x/B0C44B1VSH. LIVE evidence fbe726d0-7a02-4652-ae29-84468640d38c; TEST evidence 107c14fb-5c2a-4921-b858-a36a8a35a477.
+
+Final totals now match: 277 active products, 269 visible, 377 active evidence (212 UK-new / 165 UK-used), zero visible products missing all evidence, zero integrity failures and zero duplicate active source keys. No code, schema, valuation, payment or Worker deployment changes.

@@ -1075,3 +1075,20 @@ Both environments now independently verify the same 189 active customer-visible 
 Each environment has 213 active evidence rows across these products; all 213 are GBP. All 189 products have active UK-new or UK-used evidence and are customer-visible. No product-key parity difference remains. No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. Database-only metadata correction requires no Worker deployment.
 
 **Important count interpretation:** the earlier checkpoint's 183 printer products / 207 evidence rows described an earlier grouped snapshot and is superseded by the current category-level totals above. Always report category counts by both `main_category` and `catalogue_category`; do not collapse similarly named branches or assume the old 183 total remains current.
+
+
+## 5 November 2026 — Additional Anycubic and Creality accessory evidence
+
+Added three exact accessory product/package records and active UK-new evidence independently in LIVE and TEST:
+
+| Manufacturer | Product / variant | UK price | Evidence source |
+|---|---|---:|---|
+| Anycubic | Hotend, Kobra S1 — 0.4 mm | £11.76 | https://www.3djake.uk/anycubic-3d-printer-and-accessories/hotend-2 |
+| Anycubic | Hotend with hardened-steel nozzle, Kobra S1 — 0.4 mm | £14.71 | https://www.3djake.uk/anycubic-3d-printer-and-accessories/hotend-incl-nozzle-hardened-steel |
+| Creality | K2 Plus Ceramic Heating Block Kit | £29.00 | https://store.creality.com/uk/products/k2-plus-ceramic-heating-block-kit |
+
+The 3DJake prices include UK VAT; delivery is excluded. The indexed delivery dates are stale, so the Anycubic records do not assert current stock. Creality's official UK listing showed add-to-cart, but the displayed delivery dates were stale; fulfilment timing remains unconfirmed. Evidence rows are UK GBP and use unique source keys.
+
+### Post-import verification
+
+LIVE and TEST each contain 192 active customer-visible printer/accessory product-package identities and 216 active UK evidence rows. All 216 evidence rows are GBP, zero products are missing active UK evidence, and the independently calculated manufacturer/model/package identity hash matches exactly: `1be83cac9ae94bafb6ccd30ee55f888b`. The separate Equipment & Accessories branch now contains 14 active products, including the three additions above. No product UUIDs were copied between environments. No schema/application/valuation/RLS/RPC/Edge Function/tenant/customer/order/payment/Stripe changes or Worker deployment occurred.

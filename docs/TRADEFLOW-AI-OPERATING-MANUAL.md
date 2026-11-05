@@ -3991,3 +3991,10 @@ New UK used research:
 Verified post-write counts: LIVE and TEST each have 563 active mobile evidence rows (267 UK-new / 296 UK-used), 154 products with used evidence and 156 visible products. Product counts remain 158 LIVE / 159 TEST, with the hidden unverified TEST-only iPhone 18 256GB unchanged. Missing used remains 4 LIVE / 5 TEST; no-evidence remains 0 LIVE / 1 TEST.
 
 UK-used remains reference-only, excluded from automatic valuation. No code/schema/deployment changes. See batch 112 checkpoint and project memory.
+
+
+## Gaming catalogue evidence continuation — batch 05, 5 November 2026
+
+Added three UK-new GBP observations to existing masters in TEST and LIVE: Nintendo Switch 2 Carrying Case & Screen Protector — Smyths £17.99 promotional and Currys £20.99; HORI Wireless HORIPAD Turbo Kirby & Waddle Dee — Smyths £39.99. Existing Argos evidence retained (£19.99 case; £64.99 Kirby controller). Sources: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/c/SM06040203 ; https://www.currys.co.uk/products/nintendo-switch-2-carrying-case-and-screen-protector-black-10281818.html ; https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/hori-wireless-horipad-turbo-for-nintendo-switch-2-kirby-and-waddle-dee/p/259385 . TEST evidence IDs: 8b79c8ab-ba49-4f63-8820-330505ff31e9, 4e27b24f-644d-4956-9e57-9c539f4889ff, 26873d05-eea3-47cd-aa77-703dd61540b5. LIVE IDs: 36d02bcf-2c54-4351-bffc-61af9f833b4d, ec8f5e06-5362-45de-aab7-934b064893d5, 85f80133-13c5-404a-ade1-f5ad25ac06a6.
+
+Both DBs verified: 284 active gaming products, 276 visible, 404 active evidence (239 UK-new / 165 UK-used); zero visible products missing evidence, zero integrity failures, zero duplicate source keys; all 20 branches aligned. Nintendo Accessories 10/10/23; Nintendo Controllers 105/105/120 (products/visible/evidence). No new masters or used rows. UK-used remains reference-only. No code/schema/valuation/Stripe/tenant/customer/order/payment/Worker changes and no deployment.

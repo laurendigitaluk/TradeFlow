@@ -1092,3 +1092,32 @@ The 3DJake prices include UK VAT; delivery is excluded. The indexed delivery dat
 ### Post-import verification
 
 LIVE and TEST each contain 192 active customer-visible printer/accessory product-package identities and 216 active UK evidence rows. All 216 evidence rows are GBP, zero products are missing active UK evidence, and the independently calculated manufacturer/model/package identity hash matches exactly: `1be83cac9ae94bafb6ccd30ee55f888b`. The separate Equipment & Accessories branch now contains 14 active products, including the three additions above. No product UUIDs were copied between environments. No schema/application/valuation/RLS/RPC/Edge Function/tenant/customer/order/payment/Stripe changes or Worker deployment occurred.
+
+
+## 5 November 2026 — Creality K2 replacement parts and build plates
+
+Added four exact Creality accessory product/package identities and UK-new evidence independently in LIVE and TEST:
+
+| Product / compatibility | UK price | Source |
+|---|---:|---|
+| K2 Plus PEI Frosted Build Plate | £33.00 | https://store.creality.com/uk/products/k2-plus-pei-frosted-build-plate |
+| K2 PEI Double-Sided Frosted Build Plate | £16.98 | https://store.creality.com/uk/products/k2-k2-pro-pei-double-sided-frosted-build-plate |
+| K2 Pro PEI Double-Sided Frosted Build Plate | £18.98 | https://store.creality.com/uk/products/k2-k2-pro-pei-double-sided-frosted-build-plate |
+| K2 SE Extruder Kit | £29.90 | https://store.creality.com/uk/products/creality-k2-se-extruder-kit |
+
+The K2 and K2 Pro build-plate options are separate product/package identities because the official UK page gives them different compatibility and prices. The K2 SE extruder kit is specified for K2 SE 4C. All prices are GBP and VAT-inclusive according to the official UK store. Delivery dates shown by the store are stale, so availability is not overstated.
+
+### Post-import LIVE / TEST verification
+
+| Measure | LIVE | TEST |
+|---|---:|---:|
+| Active 3D-printer-related products | 196 | 196 |
+| Customer-visible products | 196 | 196 |
+| Active UK evidence rows | 220 | 220 |
+| GBP evidence rows | 220 | 220 |
+| Non-GBP evidence rows | 0 | 0 |
+| Products missing active UK evidence | 0 | 0 |
+| Equipment & Accessories products | 18 | 18 |
+| Equipment & Accessories evidence rows | 18 | 18 |
+
+The independently calculated manufacturer/model/package identity hash matches in both environments: `8d19ec27cf3d17c9fceeb52ad3f320be`. Each environment received its own product and evidence UUIDs. No duplicate product identities were inserted. No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Worker deployment changed. Database-only catalogue work requires no Worker deployment.

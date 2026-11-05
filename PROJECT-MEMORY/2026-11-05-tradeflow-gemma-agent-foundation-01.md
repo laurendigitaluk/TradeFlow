@@ -2,7 +2,7 @@
 
 TradeFlow Gemma is being rebuilt as a separate local TradeFlow-first research agent, not by reviving the retired GearCashOut local agent.
 
-Selected runtime: Node.js 22+ and Ollama `gemma3:4b` on the Research PC. Initial architecture: task coordinator with bounded concurrency; distinct UK-new and UK-used research roles; Brave Search source discovery; Gemma structured extraction from direct source pages; deterministic validation; independent product lookup in TEST and LIVE; duplicate-safe mirrored inserts into `shared_market_evidence`.
+Selected runtime: Node.js 22+ and Ollama on the Research PC. The sample `.env` defaults to `gemma3:4b`, but `OLLAMA_MODEL` is configurable; the installed tag has not yet been verified. Initial architecture: task coordinator with bounded concurrency; distinct UK-new and UK-used research roles; Brave Search source discovery; Gemma structured extraction from direct source pages; deterministic validation; independent product lookup in TEST and LIVE; duplicate-safe mirrored inserts into `shared_market_evidence`.
 
 Important data distinction:
 - `shared_market_evidence`: shared master-catalogue research evidence; local Gemma target.

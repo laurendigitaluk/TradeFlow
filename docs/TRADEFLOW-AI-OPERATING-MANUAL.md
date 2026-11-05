@@ -4045,3 +4045,12 @@ Baseline read-only counts: LIVE 28,387 active master products / 28,363 visible; 
 shared_market_evidence requires server-side trusted writes; unique key is (source_name, source_record_key). New service must keep service-role credentials off the PC, use a dedicated authenticated server-side API, write each environment independently, and verify each write. Used evidence remains reference-only and cannot alter automatic buying valuations. UK evidence GBP only; preserve exact package/model, source URL, observed_at, availability, condition and price-basis notes. Ambiguous matches go to review.
 
 A Developer Diagnostic Roadmap was created at docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md (commit b523fc661e1fa6e07531a1a46795a325108f940a). This is architecture/preflight only: no schema, RLS, Edge Function, application, valuation, tenant, customer, order, payment, Stripe, Worker or deployment changes have been made.
+
+
+## Central catalogue research and ChatGPT review — 5 November 2026
+
+TradeFlow's catalogue research is platform-managed. Subscribers retain their normal websites, workspaces, customers, orders and the read-only TradeFlow Assistant/customer messaging experience. Subscriber-supplied AI provider selection is retired; platform AI settings allow centrally managed providers only. Do not delete subscriber, tenant, conversation or customer records. The `platform_ai_settings` flag `subscriber_provider_enabled` is forced false by migration `20261105190100_disable_subscriber_ai_provider`.
+
+Gemma specialist workers submit product, release and UK GBP evidence candidates to `platform_catalogue_research_queue`. They do not directly publish to the master catalogue. ChatGPT, used interactively through the owner's existing conversation and connected Supabase tools, reviews queue items and records owner approval/rejection/needs-research decisions. Only approved items proceed to separately resolved TEST and LIVE imports. UK-used evidence remains reference-only and excluded from automatic valuation. No tenant/customer/transaction/Stripe data is shared between environments.
+
+Queue migration: `20261105190000_central_catalogue_research_review_queue`. This feature is being developed on isolated TEST and LIVE branches; no deployment or production database migration is implied by a GitHub commit.

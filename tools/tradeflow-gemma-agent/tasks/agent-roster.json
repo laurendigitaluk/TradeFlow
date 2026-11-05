@@ -1,0 +1,47 @@
+[
+  {
+    "agent_key": "mobile-phones",
+    "agent_name": "Gemma — Mobile Phones",
+    "category": "Mobile phones"
+  },
+  {
+    "agent_key": "gaming-consoles",
+    "agent_name": "Gemma — Gaming Consoles",
+    "category": "Gaming consoles and accessories"
+  },
+  {
+    "agent_key": "3d-printers",
+    "agent_name": "Gemma — 3D Printers",
+    "category": "3D printers and accessories"
+  },
+  {
+    "agent_key": "drones",
+    "agent_name": "Gemma — Drones",
+    "category": "Drones and accessories"
+  },
+  {
+    "agent_key": "cameras",
+    "agent_name": "Gemma — Cameras",
+    "category": "Cameras and lenses"
+  },
+  {
+    "agent_key": "metal-detectors",
+    "agent_name": "Gemma — Metal Detectors",
+    "category": "Metal detectors and accessories"
+  },
+  {
+    "agent_key": "laptops",
+    "agent_name": "Gemma — Laptops",
+    "category": "Laptops and computers"
+  },
+  {
+    "agent_key": "release-monitor",
+    "agent_name": "Gemma — Release Monitor",
+    "category": "Official manufacturer release monitoring"
+  },
+  {
+    "agent_key": "catalogue-importer",
+    "agent_name": "TradeFlow — Catalogue Importer",
+    "category": "Owner-approved catalogue imports"
+  }
+]

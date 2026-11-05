@@ -130,3 +130,14 @@ Important constraints:
 ## Approved evidence importer — 5 November 2026
 
 `tools/tradeflow-gemma-agent/src/import-approved.mjs` is invoked with `npm run import-approved`. It reads only approved evidence candidates from TEST, independently resolves exact products in TEST/LIVE, preflights all candidates and source-key duplicates before writes, inserts missing evidence and marks the queue item imported only after both sides verify. UK source/HTTPS and GBP are revalidated. No runtime execution on Research PC has been verified.
+
+
+## Agent Control Centre telemetry — 5 November 2026
+
+- Dashboard entry: `platform-owner-dashboard.html#agent-control-centre`; JS: `platform-owner-dashboard.js`; CSS: `platform-owner-dashboard.css`.
+- Read path: authenticated owner session -> `POST /rest/v1/rpc/platform_owner_get_ai_agent_control_centre` -> agent status/activity tables.
+- Write path: Research PC worker -> service-role `POST /rest/v1/rpc/platform_ai_agent_report_event` -> status upsert + append-only activity event.
+- Tables in both TEST and LIVE: `platform_ai_agent_status`, `platform_ai_agent_activity`. RLS enabled; anon/authenticated table grants revoked. Owner RPC checks active `platform_memberships`; telemetry RPC requires `auth.role()='service_role'`.
+- Refresh: manual button and 30-second dashboard polling. Running status older than five minutes is labelled heartbeat overdue.
+- Current seeded roster: mobile phones, gaming consoles, 3D printers, drones, cameras, metal detectors, laptops, release monitor, catalogue importer. Initial status is Not started until worker telemetry arrives.
+- Worker integration: Gemma task runner reports task start/progress/completion/failure; release monitor and approved evidence importer report lifecycle events. No Research PC execution or scheduler is verified yet.

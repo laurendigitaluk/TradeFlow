@@ -1,0 +1,159 @@
+{
+  "version": 1,
+  "scope": "UK consumer product catalogue release monitoring",
+  "rules": {
+    "rumours": "Record as unconfirmed research notes only; never create a confirmed catalogue product.",
+    "announcements": "Require an official manufacturer announcement or official product page before creating a confirmed release candidate.",
+    "pricing": "UK GBP only; capture pre-order/retail price only from a direct UK storefront page.",
+    "deduplication": "Resolve manufacturer, model, package and revision against each environment before proposing a new master product.",
+    "approval": "All new product/release candidates require owner review before master catalogue creation.",
+    "usedEvidence": "Reference-only; excluded from automatic valuation."
+  },
+  "manufacturers": [
+    {
+      "name": "Apple",
+      "families": [
+        "iPhone",
+        "iPad",
+        "MacBook",
+        "Apple Watch",
+        "AirPods",
+        "Apple accessories"
+      ],
+      "official_domains": [
+        "apple.com/uk"
+      ]
+    },
+    {
+      "name": "Samsung",
+      "families": [
+        "Galaxy S series",
+        "Galaxy Z Fold",
+        "Galaxy Z Flip",
+        "Galaxy A series",
+        "Galaxy Tab",
+        "Galaxy Watch",
+        "Galaxy Buds"
+      ],
+      "official_domains": [
+        "samsung.com/uk"
+      ]
+    },
+    {
+      "name": "Creality",
+      "families": [
+        "3D printers",
+        "3D printer accessories"
+      ],
+      "official_domains": [
+        "creality.com"
+      ]
+    },
+    {
+      "name": "Bambu Lab",
+      "families": [
+        "3D printers",
+        "AMS systems",
+        "3D printer accessories"
+      ],
+      "official_domains": [
+        "bambulab.com"
+      ]
+    },
+    {
+      "name": "DJI",
+      "families": [
+        "Drones",
+        "Action cameras",
+        "Gimbals",
+        "Drone accessories"
+      ],
+      "official_domains": [
+        "dji.com/uk"
+      ]
+    },
+    {
+      "name": "Sony",
+      "families": [
+        "PlayStation consoles",
+        "Controllers",
+        "Gaming accessories",
+        "Cameras"
+      ],
+      "official_domains": [
+        "sony.co.uk"
+      ]
+    },
+    {
+      "name": "Microsoft",
+      "families": [
+        "Xbox consoles",
+        "Controllers",
+        "Gaming accessories",
+        "Surface laptops"
+      ],
+      "official_domains": [
+        "xbox.com/en-GB",
+        "microsoft.com/en-gb"
+      ]
+    },
+    {
+      "name": "Nintendo",
+      "families": [
+        "Nintendo Switch consoles",
+        "Controllers",
+        "Gaming accessories"
+      ],
+      "official_domains": [
+        "nintendo.com/en-gb"
+      ]
+    },
+    {
+      "name": "Canon",
+      "families": [
+        "EOS cameras",
+        "RF lenses",
+        "Printers"
+      ],
+      "official_domains": [
+        "canon.co.uk"
+      ]
+    },
+    {
+      "name": "Nikon",
+      "families": [
+        "Z cameras",
+        "NIKKOR lenses"
+      ],
+      "official_domains": [
+        "nikon.co.uk"
+      ]
+    },
+    {
+      "name": "Garrett",
+      "families": [
+        "Metal detectors",
+        "Detector accessories"
+      ],
+      "official_domains": [
+        "garrett.com"
+      ]
+    },
+    {
+      "name": "Minelab",
+      "families": [
+        "Metal detectors",
+        "Detector accessories"
+      ],
+      "official_domains": [
+        "minelab.com"
+      ]
+    }
+  ],
+  "cadence": {
+    "daily": "Check official manufacturer newsrooms and launch pages for new announcements and pre-order availability.",
+    "weekly": "Review manufacturer product-family pages for newly listed models, variants and bundles.",
+    "monthly": "Reconcile discontinued, replaced and superseded models."
+  },
+  "last_checked": null
+}

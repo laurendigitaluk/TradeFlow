@@ -1005,3 +1005,19 @@ A customer may submit multiple products within one buying request. The request i
 5. Check per-item shipping, receipt, inspection, final offer, payment and inventory for accepted items; confirm refused items do not advance.
 6. Test error handling if one per-item submission fails. Replace sequential submissions with an atomic batch RPC before treating bulk submission as transaction-safe.
 7. Repeat visual and regression checks on TEST before confirming LIVE behavior. Do not use LIVE customer transactions as test fixtures.
+
+
+## 5 November 2026 — 3D printer catalogue evidence refresh
+
+The 3D Printers branch is now independently verified at 183 active product/package records and 17 manufacturers in both TradeFlow LIVE and TEST. Each environment contains 206 active evidence rows (195 UK-new / 11 UK-used); all 183 active products have UK evidence and no overseas evidence is active in this branch. Product natural-key parity is exact.
+
+Added on 5 November in both environments:
+- Flashforge Creator 5 standard — £619 UK-new, Flashforge UK.
+- Flashforge Creator 5 Pro standard — £749 UK-new, Flashforge UK.
+- Anycubic Kobra X standard — £259 UK-new, Anycubic UK.
+
+The 118-product / 131-evidence totals recorded in the 4 November Batch 7 checkpoint are historical point-in-time figures and are superseded by this current 183 / 206 verification. The separate 3D Printer Equipment & Accessories branch remains active and empty.
+
+No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Worker deployment changed. The three price observations were inserted independently in LIVE and TEST using unique source record keys. Used evidence remains reference-only and is excluded from automatic valuation inputs.
+
+Next: continue verified product/package expansion; populate the accessories branch only with exact products and UK GBP evidence; expand used-market references where a UK listing can be matched confidently; repeat independent LIVE/TEST parity checks.

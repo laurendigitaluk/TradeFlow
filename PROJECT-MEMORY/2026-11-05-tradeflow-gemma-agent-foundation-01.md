@@ -53,3 +53,8 @@ The feature branch now includes `tools/tradeflow-gemma-agent/src/import-approved
 ## GBP price-validation encoding fix — 5 November 2026
 
 On `feature/tradeflow-gemma-agent-foundation-20261105`, `tools/tradeflow-gemma-agent/src/agent.mjs` now builds the pound sign using `String.fromCharCode(163)` to avoid Windows encoding corruption in the source file. Exact-price matching and the existing evidence validation rules are retained. Commit `88b00bb64b371f798d8eb2487a9995d4e0c63532`. Awaiting local Research PC `npm test`; no catalogue/database writes or deployments were made.
+
+
+## Research PC launcher correction — 5 November 2026
+
+`Start-TradeFlow-Gemma.ps1` now has a dry-run default and explicit `-Enqueue` option. Removed the obsolete `-Apply` switch. Preflight checks `.env` required values, TEST/LIVE Supabase project hostnames, Ollama model availability and passing tests. Dry-run performs source research and exact product reads in both environments plus agent telemetry, without queue/catalogue writes. Enqueue stages evidence candidates only in the TEST owner review queue. Not yet run on Research PC; no catalogue changes or deployment.

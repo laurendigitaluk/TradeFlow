@@ -13,11 +13,11 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 
 ## Research PC setup
 
-1. Copy this folder to the Research PC working directory. Use `Start-TradeFlow-Gemma.ps1` as the dedicated Windows launcher; do not use the retired GearCashOut launcher.
-2. Run `npm test`.
-3. Copy `.env.example` to `.env`; configure Ollama, local SearXNG and separate TEST/LIVE service-role keys. Never commit `.env`.
-4. Confirm `ollama list` contains the configured `OLLAMA_MODEL` tag and Ollama responds at `http://127.0.0.1:11434`.
-5. Run `npm start -- tasks/example.json` first. Inspect the output and sources. Use `--enqueue` only to stage candidates; importing is a separate owner-approved step.
+1. Keep this folder separate from the retired GearCashOut agent. TradeFlow interactive runs, Node entry point and background worker all read this folder's `.env` by default. The old `C:\\GearCashOut-Config\\.env` is not read, copied, moved or overwritten.
+2. Create the TradeFlow `.env` from `.env.example` once, then populate the separate TEST and LIVE URL/key settings and the installed `OLLAMA_MODEL` tag. Never paste keys into chat or commit `.env`.
+3. Confirm `ollama list` contains the configured model tag and Ollama responds at `http://127.0.0.1:11434`.
+4. Start Docker Desktop and run `docker compose up -d` from this folder. Confirm the local SearXNG JSON endpoint responds.
+5. Run `npm test` and then `Start-TradeFlow-Gemma.ps1` for a dry run. Only after a successful dry run should `-Enqueue` be used to stage candidates for owner review. Importing remains a separate owner-approved step.
 
 ## Foundation 0.1 limits
 

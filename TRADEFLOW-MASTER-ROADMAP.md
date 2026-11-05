@@ -847,3 +847,11 @@ A dedicated static SaaS marketing page explains the customer valuation journey a
 **Release control:** GitHub `main` = TEST; `production` = LIVE. TEST Supabase: `nnsshnfkjcflucjrftzi`; LIVE Supabase: `gxsrajtqzdjvmceqcpgv`. Work is on `feature/tradeflow-how-it-works-page-20261102-v2`, based on the latest `main`. Do not promote to `production` until TEST deployment and browser review pass.
 
 **Verification:** Static source/link/privacy checks passed. Deployed TEST browser verification remains required; no LIVE release is claimed.
+
+## Gemma local catalogue research agent — 5 November 2026
+
+**Status: Foundation implemented on a feature branch; not yet installed or verified on the Research PC.** Build the new TradeFlow-first local agent using Ollama `gemma3:4b`. Keep the old GearCashOut agent out of the runtime. Initial work: bounded coordinator/worker pool, UK-new and UK-used research roles, Brave Search source discovery, Gemma structured extraction, deterministic evidence validation, independent TEST/LIVE product resolution and duplicate-safe mirrored writes to `shared_market_evidence`. Dry-run is default; explicit `--apply` is required.
+
+Stage 0.1 is evidence-only for existing exact product masters. Next stages: (1) install/configure on Research PC and run a verified dry-run; (2) add controlled creation of missing manufacturers/products with package-variant and category/branch duplicate checks; (3) broaden specialist workers and batch scheduling; (4) add durable run history, checkpoints and recovery; (5) connect an owner-facing control/monitoring surface only after the local workflow is stable. Do not change subscriber AI provider settings, valuation logic, RLS or Cloudflare Workers for this local-agent work.
+
+See `docs/TRADEFLOW-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md` and `CHECKPOINTS/2026-11-05-tradeflow-gemma-agent-foundation-01.md`.

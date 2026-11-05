@@ -5,11 +5,12 @@ param(
 
 $ErrorActionPreference = "Stop"
 $AgentRoot = $PSScriptRoot
-$EnvFile = if ($env:TRADEFLOW_GEMMA_ENV_FILE) { $env:TRADEFLOW_GEMMA_ENV_FILE } else { "C:\GearCashOut-Config\.env" }
+# TradeFlow has its own local configuration. Never read or modify the retired GearCashOut .env.
+$EnvFile = Join-Path $AgentRoot ".env"
 $TaskPath = if ([System.IO.Path]::IsPathRooted($TaskFile)) { $TaskFile } else { Join-Path $AgentRoot $TaskFile }
 
 if (-not (Test-Path -LiteralPath $EnvFile -PathType Leaf)) {
-    throw "Missing external configuration file at the configured path. The default is C:\GearCashOut-Config\.env. Keep this file separate from the downloaded repository and do not copy or overwrite it."
+    throw "TradeFlow .env is missing from the agent folder. Create it from .env.example and keep GearCashOut configuration separate."
 }
 if (-not (Test-Path -LiteralPath $TaskPath -PathType Leaf)) {
     throw "Task file not found: $TaskPath"
@@ -51,7 +52,7 @@ $ModelMatch = [regex]::Match($EnvText, "(?m)^\s*OLLAMA_MODEL\s*=\s*(\S+)")
 $ModelTag = if ($ModelMatch.Success) { $ModelMatch.Groups[1].Value.Trim('"').Trim("'") } else { "gemma3:4b" }
 $ModelPattern = "(?m)^" + [regex]::Escape($ModelTag) + "\s"
 if (($Models -join [Environment]::NewLine) -notmatch $ModelPattern) {
-    throw "Ollama model $ModelTag is not installed. Set OLLAMA_MODEL in .env to an installed Gemma model."
+    throw "Ollama model $ModelTag is not installed. Set OLLAMA_MODEL in TradeFlow .env to an installed Gemma model."
 }
 
 Push-Location $AgentRoot
@@ -76,6 +77,8 @@ try {
         Write-Host "DRY-RUN mode: source research and read-only TEST/LIVE product checks. Agent telemetry is recorded; no queue or catalogue rows are written."
     }
 
+    # Pass the exact TradeFlow .env path to Node; no other .env file is consulted.
+    $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
     & npm @NpmArgs
     if ($LASTEXITCODE -ne 0) { throw "Gemma task failed. Review the failed-closed output before retrying." }
 }

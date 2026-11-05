@@ -3058,3 +3058,12 @@ Added three UK-new observations to existing active Blackmagic product records:
 - URSA Cine Immersive — £20,529, official Blackmagic Design UK products listing; availability unknown. This is the standard Immersive configuration only, not the 100G or Body variants.
 
 Source URLs: https://www.blackmagicdesign.com/uk/products/blackmagicursacine and https://www.blackmagicdesign.com/uk/products. All three records were inserted into LIVE `public.shared_market_evidence` and independently read back with GBP currency, source URL and active status confirmed. Existing master products only; no new product rows or lifecycle/valuation changes. LIVE only; TEST untouched. No schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. See PROJECT-MEMORY/2026-11-05-camera-research-batch-04.md and CHECKPOINTS/2026-11-05-camera-research-batch-04.md.
+
+
+## Camera research — batch 05 (LIVE, 5 November 2026)
+
+Added two further UK-new observations to existing active Blackmagic products after checking that neither product had qualifying active evidence:
+- URSA Cine 12K LF — £11,779, official Blackmagic Design UK listing; availability unknown.
+- URSA Cine 12K LF + EVF — £12,779, official Blackmagic Design UK listing; availability unknown. This is the EVF package, not the body-only product.
+
+Source: https://www.blackmagicdesign.com/uk/products/blackmagicursacine. Both evidence inserts returned successfully. Existing product rows only; no product master, package, lifecycle or valuation changes. LIVE only; TEST untouched. No schema/RLS/application/Edge Function/Worker/tenant/customer/order/payment/Stripe changes. No Worker deployment. Category count reconciliation remains open; do not publish coverage totals until the camera inclusion rule is resolved. See PROJECT-MEMORY/2026-11-05-camera-research-batch-05.md and CHECKPOINTS/2026-11-05-camera-research-batch-05.md.

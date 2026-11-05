@@ -1277,3 +1277,27 @@ Final totals now match: 277 active products, 269 visible, 377 active evidence (2
 The gaming master catalogue now includes six additional Nintendo Switch 2 products in both TEST and LIVE: two PowerA wireless controller designs, the Venom 10-in-1 sports accessory kit, two PowerA protective cases and a Mario-themed SanDisk 256GB microSD Express card. Each new master has a matching UK-new Smyths evidence record. Additional retailer observations were added for Joy-Con 2 Purple/Green, Gioteck WX5+ Dark Camo, PlayStation 007 First Light and GTA VI limited controllers, and the Xbox Forza Horizon 6 limited controller.
 
 Both databases now independently verify at 283 active products, 275 visible products and 388 active evidence rows (223 UK-new / 165 UK-used). All 20 gaming branches match. No visible product is missing evidence; evidence integrity failures and duplicate source keys are both zero. See `CHECKPOINTS/2026-11-05-gaming-catalogue-continuation-batch-02.md` for exact IDs and source records. No code, schema, valuation, payment or Worker deployment changes.
+
+
+## Gaming catalogue continuation — batch 03, 5 November 2026
+
+TEST was updated and independently read back before the matching LIVE write. Added one active, customer-visible Nintendo Switch 2 AC Adapter master to Nintendo Accessories, exact package single-ac-adapter-black, with four active UK-new GBP retailer observations: Smyths £21.99, Currys £21.99, EE £19.99 and Argos £24.99. The official adapter is the black replacement power supply with detachable cable, compatible with the Switch 2 console and dock.
+
+Added Smyths UK-new observations to the existing Switch 2 Joy-Con 2 Charging Grip (£29.99) and Joy-Con 2 Wheel Pair (£14.99) masters in both existing catalogue branches (Nintendo Accessories and Nintendo Controllers). No new masters were created for these already-catalogued products. The wheel pair is two magnetic wheel adapters; Joy-Con controllers are not included. The charging grip is sold separately from Joy-Con controllers. The existing used grip observation and all previous retailer evidence were retained.
+
+Sources:
+- Smyths AC Adapter £21.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/nintendo-switch-2-ac-adapter/p/249615
+- Currys AC Adapter £21.99: https://www.currys.co.uk/products/nintendo-switch-2-ac-adapter-10281817.html
+- EE AC Adapter £19.99: https://ee.co.uk/products/nintendo-switch-2-ac-adapter
+- Argos AC Adapter £24.99: https://www.argos.co.uk/product/7624812/
+- Smyths Joy-Con 2 grip and wheel listing: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/c/SM06040203
+
+Environment-specific IDs:
+- AC Adapter product: TEST e54ae54b-1e58-4be5-9b0a-56142d941244; LIVE 26987446-1a04-4f2a-8970-72079a0a583f.
+- AC Adapter evidence (Smyths, Currys, EE, Argos): TEST 4dd4eac2-de01-4d1f-82dc-2d42ae9678fa, 1b9462ae-807d-4e4a-81d6-5221d92b37ff, a334b8de-de3b-4350-8de4-d9231f536798, 5c20cf58-b9dd-482e-9329-a3ef1f89fee9; LIVE 1884d558-e2f7-4add-8ca3-088ed1bf9796, 41b8ab83-e760-49a9-a4f1-72dee2a14738, 101751bd-efb4-4d66-abb9-94c8650aec83, 31f2a943-8fa3-414d-8cf0-9a439b9b461f.
+- Charging Grip Smyths evidence (Accessories branch): TEST d8669b3f-4552-4780-a6ba-ef2cd8b11604; LIVE 3d4156cf-edf7-4148-b10c-f17fcc92cc5a. Controllers branch: TEST f133249c-ab0d-4f20-9331-052271a61f83; LIVE f04cb182-882c-45d1-a712-a70119478300.
+- Joy-Con 2 Wheel Pair Smyths evidence (Accessories branch): TEST 9239582f-f8ce-4c63-ba8f-61e045134884; LIVE c319a31e-0382-4397-9c2e-93a78c094690. Controllers branch: TEST 75b5641d-a89c-4f6d-880b-3e81f3afa745; LIVE 2381ed36-361c-4ef3-a2fa-88b48a533d7b.
+
+Independent post-write verification in both databases: 284 active gaming products, 276 active customer-visible products, 396 active evidence rows (231 UK-new / 165 UK-used), zero visible products missing all evidence, zero active evidence integrity failures and zero duplicate active source keys. All 20 gaming branch counts match between LIVE and TEST. Nintendo Accessories now has 10 active products / 10 visible / 16 evidence; Nintendo Controllers has 105 / 105 / 119. The eight added evidence rows are all UK-new GBP; no existing UK-used evidence was changed. UK-used remains reference-only and does not feed automatic buying valuation.
+
+No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment. No TEST business data copied to LIVE. Exact TEST/LIVE product and evidence IDs are environment-specific as listed above.

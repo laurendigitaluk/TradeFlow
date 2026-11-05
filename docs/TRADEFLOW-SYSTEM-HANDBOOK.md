@@ -2400,3 +2400,14 @@ TEST product/evidence UUIDs:
 Post-insert independent verification: LIVE and TEST each have 80 active customer-visible products and 83 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type outside UK-new/UK-used, non-GBP currency, non-positive price, missing URL/key, or UK-new condition other than New). The four new records have matching model/package keys, source URLs, evidence types and prices in both environments. All evidence is UK GBP; advertised asking prices are not completed sale prices. Used evidence remains reference-only and does not affect automatic valuation.
 
 No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment/custom-domain data changed. No Cloudflare Worker deployment is required for these database-only catalogue additions. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-15.md.
+
+
+### Original Nintendo Switch controller catalogue — Batch 16 (5 November 2026)
+Added CRKD NEO S Classic Clear Edition to both LIVE and TEST with active UK-new GBP evidence from Very at £39.99. The Very listing specifies charger included and offers Add to basket: https://www.very.co.uk/crkd-neo-s-classic-clear/1601312390.prd. CRKD's official NEO S product documentation confirms Switch compatibility. Duplicate preflight found no Classic Clear package in either Nintendo Controllers branch; existing CRKD manufacturer rows were reused.
+
+LIVE product/evidence UUID: b6950fc8-ace2-41f8-aabd-7efc9459a8ef / e52a5a16-943a-4e27-9dd6-3d1309186502.
+TEST product/evidence UUID: 2ea7b4a3-aa56-47c5-b5f5-419a94eb0f8f / 301369a6-4e1b-44b9-a05b-45bd77b9b55b.
+
+Post-insert verification: LIVE and TEST each have 81 active customer-visible products and 84 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type, currency, price, URL/key and UK-new condition checks). Counts and package identity match across environments. Price is an advertised UK retail asking price, not a completed sale.
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-16.md.

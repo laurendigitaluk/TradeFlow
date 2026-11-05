@@ -3048,3 +3048,13 @@ Post-insert read-back, scoped to the 3D Printers branch:
 | TEST | 175 | 167 | 8 | 193 | 178 | 15 |
 
 Both environments have zero active visible products missing active evidence, zero duplicate active product keys, zero duplicate active evidence source keys, and zero invalid/missing evidence or invalid UK-new evidence. UK-used evidence remains reference-only and does not affect automatic valuation. TEST retains its pre-existing additional hidden product row; no deletion or reactivation was performed. No app code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-19.md.
+
+
+## Camera research — batch 04 (LIVE, 5 November 2026)
+
+Added three UK-new observations to existing active Blackmagic product records:
+- URSA Cine 17K 65 — £18,235, official Blackmagic Design UK price; availability unknown.
+- URSA Cine 17K 65 Body — £14,075, official Blackmagic Design UK price; availability unknown.
+- URSA Cine Immersive — £20,529, official Blackmagic Design UK products listing; availability unknown. This is the standard Immersive configuration only, not the 100G or Body variants.
+
+Source URLs: https://www.blackmagicdesign.com/uk/products/blackmagicursacine and https://www.blackmagicdesign.com/uk/products. All three records were inserted into LIVE `public.shared_market_evidence` and independently read back with GBP currency, source URL and active status confirmed. Existing master products only; no new product rows or lifecycle/valuation changes. LIVE only; TEST untouched. No schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. See PROJECT-MEMORY/2026-11-05-camera-research-batch-04.md and CHECKPOINTS/2026-11-05-camera-research-batch-04.md.

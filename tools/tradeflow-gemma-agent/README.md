@@ -22,3 +22,9 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 ## Foundation 0.1 limits
 
 Evidence-only for an exact master product already present in both environments. New categories, branches, manufacturers and product masters are not created yet; that is the next increment. If either environment has an ambiguous or missing product match, the task fails closed. No schema, RLS, valuation, Edge Function or Worker deployment changes.
+
+## ChatGPT review queue (foundation increment)
+
+Gemma no longer writes directly to `shared_market_evidence`. It resolves the exact product independently in TEST and LIVE, then stages a candidate in the TEST-only control-plane table `public.platform_catalogue_research_queue`. The row includes both environment-specific product IDs, the source observation, excerpt and raw extraction. It remains `pending_review` until the platform owner reviews it through ChatGPT. Use `--enqueue` to submit candidates; default remains dry-run. The former `--apply` flag is deliberately rejected. Queue records are not catalogue evidence and do not affect valuations.
+
+The queue schema and owner-review RPCs were applied to TEST only. LIVE catalogue data is not changed by queue submissions. After approval, the import stage must independently re-resolve products and duplicate-check both environments before writing evidence to either. No automated ChatGPT API agent is assumed: the owner uses the existing ChatGPT conversation and connected Supabase access to review the queue.

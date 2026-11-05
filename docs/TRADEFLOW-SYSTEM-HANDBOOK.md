@@ -3556,3 +3556,10 @@ Baseline read-only counts: LIVE 28,387 active master products / 28,363 visible; 
 shared_market_evidence requires server-side trusted writes; unique key is (source_name, source_record_key). New service must keep service-role credentials off the PC, use a dedicated authenticated server-side API, write each environment independently, and verify each write. Used evidence remains reference-only and cannot alter automatic buying valuations. UK evidence GBP only; preserve exact package/model, source URL, observed_at, availability, condition and price-basis notes. Ambiguous matches go to review.
 
 A Developer Diagnostic Roadmap was created at docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md (commit b523fc661e1fa6e07531a1a46795a325108f940a). This is architecture/preflight only: no schema, RLS, Edge Function, application, valuation, tenant, customer, order, payment, Stripe, Worker or deployment changes have been made.
+
+
+## Platform-managed catalogue AI — 5 November 2026
+
+The TradeFlow Assistant remains part of the subscriber website. Subscribers cannot add or connect their own AI providers. The Platform Owner controls centrally managed AI providers. The retired subscriber-provider option must remain disabled; do not remove subscriber workspaces, websites, customer accounts, assistant conversations or messaging.
+
+Catalogue research is separate from the subscriber-facing assistant. Gemma workers stage product/release/evidence candidates in `public.platform_catalogue_research_queue` for interactive ChatGPT review. No candidate is written into the shared master catalogue until approved. Approved imports must resolve product IDs independently in TEST and LIVE and verify parity afterward. UK-only GBP evidence; UK-used is reference-only.

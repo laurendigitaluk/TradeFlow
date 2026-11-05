@@ -1,6 +1,6 @@
 param(
     [string]$TaskFile = "tasks/example.json",
-    [switch]$Apply
+    [switch]$Enqueue
 )
 
 $ErrorActionPreference = "Stop"
@@ -9,7 +9,7 @@ $EnvFile = Join-Path $AgentRoot ".env"
 $TaskPath = if ([System.IO.Path]::IsPathRooted($TaskFile)) { $TaskFile } else { Join-Path $AgentRoot $TaskFile }
 
 if (-not (Test-Path -LiteralPath $EnvFile -PathType Leaf)) {
-    throw "Missing local .env. Copy .env.example to .env and configure Ollama, Brave Search and both TradeFlow environments."
+    throw "Missing local .env. Copy .env.example to .env and configure Ollama, Brave Search and both TradeFlow environments. Do not send the keys to anyone."
 }
 if (-not (Test-Path -LiteralPath $TaskPath -PathType Leaf)) {
     throw "Task file not found: $TaskPath"
@@ -22,7 +22,9 @@ $null = Get-Command ollama -ErrorAction Stop
 $EnvText = Get-Content -LiteralPath $EnvFile -Raw
 $RequiredKeys = @(
     "BRAVE_SEARCH_API_KEY",
+    "TRADEFLOW_TEST_URL",
     "TRADEFLOW_TEST_SERVICE_ROLE_KEY",
+    "TRADEFLOW_LIVE_URL",
     "TRADEFLOW_LIVE_SERVICE_ROLE_KEY"
 )
 foreach ($Key in $RequiredKeys) {
@@ -31,12 +33,25 @@ foreach ($Key in $RequiredKeys) {
     }
 }
 
+foreach ($Target in @(
+    @{ Name = "TEST"; Host = "nnsshnfkjcflucjrftzi.supabase.co" },
+    @{ Name = "LIVE"; Host = "gxsrajtqzdjvmceqcpgv.supabase.co" }
+)) {
+    $Match = [regex]::Match($EnvText, "(?m)^\s*TRADEFLOW_$($Target.Name)_URL\s*=\s*(\S+)")
+    if (-not $Match.Success) { throw "Missing TradeFlow $($Target.Name) URL." }
+    try { $ParsedUrl = [uri]$Match.Groups[1].Value.Trim('"').Trim("'") }
+    catch { throw "TradeFlow $($Target.Name) URL is invalid." }
+    if ($ParsedUrl.Host -ne $Target.Host -or $ParsedUrl.Scheme -ne "https") {
+        throw "TradeFlow $($Target.Name) URL does not match the expected project. No connection was made."
+    }
+}
+
 $Models = & ollama list 2>$null
 if ($LASTEXITCODE -ne 0) { throw "Ollama is not responding. Start Ollama and retry." }
 $ModelMatch = [regex]::Match($EnvText, "(?m)^\s*OLLAMA_MODEL\s*=\s*(\S+)")
 $ModelTag = if ($ModelMatch.Success) { $ModelMatch.Groups[1].Value.Trim('"').Trim("'") } else { "gemma3:4b" }
 $ModelPattern = "(?m)^" + [regex]::Escape($ModelTag) + "\s"
-if (($Models -join "`n") -notmatch $ModelPattern) {
+if (($Models -join [Environment]::NewLine) -notmatch $ModelPattern) {
     throw "Ollama model $ModelTag is not installed. Set OLLAMA_MODEL in .env to an installed Gemma model."
 }
 
@@ -47,12 +62,12 @@ try {
     if ($LASTEXITCODE -ne 0) { throw "Gemma tests failed; research run stopped." }
 
     $NpmArgs = @("start", "--", $TaskPath)
-    if ($Apply) {
-        Write-Host "APPLY mode selected: verified candidates may be written separately to TEST and LIVE."
-        $NpmArgs += "--apply"
+    if ($Enqueue) {
+        Write-Host "ENQUEUE mode: candidates may be staged in the TEST review queue. No master catalogue or evidence rows are imported."
+        $NpmArgs += "--enqueue"
     }
     else {
-        Write-Host "DRY-RUN mode selected: no catalogue evidence will be written."
+        Write-Host "DRY-RUN mode: source research and read-only TEST/LIVE product checks only. No queue or catalogue writes."
     }
 
     & npm @NpmArgs

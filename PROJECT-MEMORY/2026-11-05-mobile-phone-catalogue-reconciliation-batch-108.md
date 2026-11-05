@@ -1,0 +1,10 @@
+# Project Memory — Mobile Phone Catalogue Batch 108
+Date: 5 November 2026
+
+Reconciled the shared mobile evidence rows across TradeFlow LIVE and TEST. Copied two verified Galaxy S23 128GB observations from TEST to the corresponding LIVE product, preserving stable source keys: Idealo UK £274.99 historical new asking-price observation (26 Oct 2026) and eBay UK completed damaged-condition sale £160.41 including £6.90 Buyer Protection fee. Corrected the TEST eBay row from £160.35 to £160.41 and item condition to `Used - damaged`. LIVE evidence IDs: `5e5dbb34-7aea-40e7-a6e7-b31dca0e54db` and `92d69093-ba7b-46df-89b8-505c02a84901`; TEST IDs: `a528b5a8-e670-48d2-89ab-9f25b8526350` and `d3360ca8-50af-4840-8b7a-f46259286283`.
+
+Verified both environments now have 562 active mobile evidence rows (266 UK-new / 296 UK-used), 154 active products with UK-used evidence, and 156 customer-visible active products. LIVE has 158 active products and no product with zero evidence. TEST has 159 active products and one zero-evidence product. The one product-key difference is the TEST-only hidden, unverified `iPhone 18 256 GB`; leave it untouched and do not copy, activate, publish, deactivate or delete without independent verification and a separate decision.
+
+Four shared products still lack UK-used evidence: Motorola Edge 70 Plus 256GB; OPPO Find X10 256GB; OPPO Find X10 Pro Max 512GB; OPPO Reno16 F 5G 256GB. No qualifying exact-variant UK used listing was accepted in this research pass. Exclude new/opened-never-used listings, overseas offers, unverified direct-link/location leads, adjacent variants and trade-in quotes (including Reno16 quote for Reno16 F).
+
+UK-used evidence remains reference-only and must not affect automatic valuation. No application code/schema/valuation/RLS/RPC/Edge Function/Stripe/tenant/customer/order/payment/ownership/Worker changes and no deployment. Continue with exact-variant UK GBP evidence and direct-link verification. See checkpoint `CHECKPOINTS/2026-11-05-mobile-phone-catalogue-reconciliation-batch-108.md`.

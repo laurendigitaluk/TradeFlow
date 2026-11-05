@@ -3026,3 +3026,8 @@ Catalogue research is separate from the subscriber-facing assistant. Gemma worke
 ## Release monitoring architecture — 5 November 2026
 
 Release monitoring is a separate Gemma specialist worker, not a subscriber feature. Its watchlist covers Apple, Samsung, 3D printer makers, DJI, console makers, camera makers and metal detector manufacturers. It accepts only official manufacturer source pages and confirmed release states; rumours cannot create products. It compares exact model presence in TEST and LIVE, stages candidates in the TEST platform review queue, and leaves catalogue creation to a later owner-approved importer. The worker has dry-run and enqueue modes; it does not deploy code or modify subscriber data. No automatic schedule is installed yet.
+
+
+## Evidence import control
+
+The `import-approved` command is the only current path from approved queue evidence into shared market evidence. It is limited to existing master products and requires both environments to pass preflight. New product master creation and release candidate import are not yet implemented.

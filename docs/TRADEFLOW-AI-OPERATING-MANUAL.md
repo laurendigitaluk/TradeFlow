@@ -3259,3 +3259,37 @@ The public page `catalogue-research.html` explains the expanding TradeFlow maste
 Batch 7 independently added five printer records to TEST and LIVE: Snapmaker U1, Artisan and Artisan Premium; QIDI Q1 Pro and X-Plus 3. Each has one active UK GBP evidence row. Snapmaker new prices are 3DJake UK retailer prices including 20% VAT: U1 £827.62, Artisan £1,932.33 and Artisan Premium £2,300.58. QIDI legacy used-market asking prices: Q1 Pro £190 from Gumtree UK (seller states good condition/fully working, includes filament dryer and filament); X-Plus 3 £257.66 from eBay UK (listing states used and fully operational; seller located London). These are listing prices, not completed-sale results. Q1 Pro is explicitly marked discontinued by QIDI and replaced by Q2; X-Plus 3 is retained as a legacy model without asserting formal EOL status.
 
 Independent TEST and LIVE verification: 118 active products / 118 customer-visible; 12 manufacturers; 131 active evidence rows (117 UK-new / 14 UK-used); zero visible products missing active evidence; zero visible products missing branch; zero active evidence integrity failures. New and used evidence are kept separate. Used listing prices remain reference-only and must not feed automatic valuations. TEST/LIVE records use independent UUIDs. No application code, schema, valuation logic, RLS, Edge Functions, tenant/customer/order/payment/Stripe/subscription/domain data or Cloudflare Worker deployment changed. Database-only catalogue updates do not require a Worker deployment.
+
+
+## 3D printer catalogue evidence refresh — operating record, 5 November 2026
+
+The shared TradeFlow master catalogue has continued expanding after the 4 November Batch 7 checkpoint. Current independently verified branch totals are **183 active product/package records across 17 manufacturers** in both LIVE and TEST.
+
+Current active evidence totals in each environment:
+
+- UK-new: 195 rows
+- UK-used: 11 rows
+- Total active evidence: 206 rows
+- Active products with UK evidence: 183 of 183
+- Active products without UK evidence: 0
+- Overseas evidence: 0
+
+On 5 November, add three fresh UK-new observations to both environments for products already present:
+- Flashforge Creator 5, standard printer: £619.00 — https://uk.flashforge.com/products/flashforge-creator-5
+- Flashforge Creator 5 Pro, standard printer: £749.00 — https://uk.flashforge.com/products/flashforge-creator-5-pro
+- Anycubic Kobra X, standard printer: £259.00 — https://uk.anycubic3d.com/products/kobra-x-3d-printer
+
+The listed Flashforge reference prices were £719 and £849; the Anycubic reference price was £359. Treat these as time-stamped observations, not permanent list prices. Keep earlier observations for price history. Use unique `source_name + source_record_key` values so repeat runs are idempotent.
+
+### Research and import rules
+
+1. Confirm exact manufacturer, model and package before attaching evidence. A printer-only price must not be attached to a combo package, and vice versa.
+2. Use UK GBP sources only for this catalogue work. Do not convert overseas prices into GBP or classify overseas listings as UK evidence.
+3. Record the exact source URL and observed date. A search snippet can identify a candidate, but the linked product page must support the exact model/package and price.
+4. Add evidence to both LIVE and TEST independently. Product UUIDs may differ; resolve the product by manufacturer + model + package key + branch, not by copying UUIDs between projects.
+5. Preserve historical observations with distinct source record keys. Do not silently overwrite a previous observation when a price changes.
+6. Keep UK-new and UK-used evidence separate. Used listings are asking-price reference only, not completed-sale evidence and not automatic valuation inputs.
+7. After each batch, verify both environments independently: active products, manufacturers, evidence by type, missing evidence, missing branch, invalid currency/source fields and natural-key parity.
+8. Database-only catalogue/evidence changes do not require a Cloudflare Worker deployment. Do not deploy application code unless code actually changed.
+
+The active **3D Printer Equipment & Accessories** branch is currently empty. Treat accessory expansion as a separate workstream and add only confirmed accessory products with their own manufacturer/model/package identity and UK GBP evidence.

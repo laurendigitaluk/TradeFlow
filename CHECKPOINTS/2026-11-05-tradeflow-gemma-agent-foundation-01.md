@@ -50,3 +50,12 @@ The first stage only writes evidence for a product already present uniquely in b
 ## Next safe action
 
 Install the feature branch on the Research PC, configure local secrets without sharing them, verify Ollama and Brave Search connectivity, run tests and execute the example task in dry-run mode. Review all candidates before any `--apply`. Then build controlled new-product creation as the next increment.
+
+
+## Review-gated update — 5 November 2026
+
+Gemma evidence submissions are now staged for review rather than inserted directly. `agent.mjs` resolves the exact product in both environments and writes one candidate to the TEST-only `platform_catalogue_research_queue`. The CLI now supports `--enqueue`; `--apply` is rejected. The queue table has RLS enabled, direct client access revoked, and owner-only list/review RPCs. TEST migration was applied and the RLS flag was verified. LIVE queue migration remains pending. No product or evidence rows were imported.
+
+The test and LIVE Platform Owner dashboard feature branches remove the subscriber-supplied AI provider option while preserving the TradeFlow Assistant and all subscriber records. Current database values already show `active_provider='none'` and `subscriber_provider_enabled=false` in both projects. The enforcement migration is not yet applied.
+
+Correction to prior foundation note: the six test cases are authored, but execution in the Research PC runtime has not been verified in this environment. Do not report them as runtime-passed until `npm test` is run on the configured Research PC.

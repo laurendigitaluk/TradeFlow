@@ -528,3 +528,10 @@ TEST/LIVE UUIDs are environment-specific. The product and evidence rows were ins
 No TradeFlow project-memory/checkpoint table or application function was found in the database schemas. Repository PROJECT-MEMORY and CHECKPOINTS files remain the continuity record.
 
 Checkpoint: CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.
+
+
+## WD_BLACK C50 512GB UK-new evidence — 5 November 2026
+
+The previously uncovered WD_BLACK C50 Expansion Card 512GB Xbox Accessories master now has one active UK-new GBP observation in both environments. Source: disks.co.uk Amazon UK price tracker, £169.99; https://www.disks.co.uk/drive/wd-black-c50-storage-expansion-card-for-xbox-series-x/B0C44B1VSH. The tracker states its Amazon UK feed refreshed within minutes. Amazon's direct product page could not be independently opened during this capture. The observed £169.99 is 55.4% above the displayed 30-day average (£109.37), so retain it as a high asking-price observation only, not a representative market value or confirmed checkout price. Stable key: disksco-wd-black-c50-512gb-uk-new-20261105. LIVE product dd718e4c-a491-40ff-82d8-70d1ba538195 / evidence fbe726d0-7a02-4652-ae29-84468640d38c. TEST product d6a011b9-3f8f-40e9-b45d-d96a026548c4 / evidence 107c14fb-5c2a-4921-b858-a36a8a35a477.
+
+Final verified totals in both environments: 277 active products, 269 active customer-visible products, 377 active evidence rows (212 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures and zero duplicate active source keys. This closes the previous single visible-product-without-evidence gap. The count of visible products without UK-new evidence remains a separate coverage metric; do not infer new prices for legacy/used-only products.

@@ -39,7 +39,7 @@ The first stage only writes evidence for a product already present uniquely in b
 
 ## Verification
 
-- Local prototype tests: 5 passed, 0 failed.
+- Local committed-code tests: 6 passed, 0 failed, including exact GBP price-token matching.
 - Current Supabase inspection was read-only.
 - No database rows changed.
 - No schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/customer/order/payment, ownership or Worker changes.

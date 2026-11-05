@@ -3896,3 +3896,16 @@ Kept the shared mobile catalogue aligned by copying two verified TEST Galaxy S23
 Verified post-write totals: LIVE and TEST each have 562 active mobile evidence rows (266 UK-new / 296 UK-used), 154 active products with UK-used evidence, and 156 customer-visible active products. Active products remain 158 LIVE / 159 TEST; the only product-key difference is the hidden, unverified TEST-only iPhone 18 256GB. Leave it untouched pending independent product verification. LIVE has zero active products without any evidence; TEST has one (that iPhone 18). Four shared used-price gaps remain: Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB, OPPO Find X10 Pro Max 512GB and OPPO Reno16 F 5G 256GB.
 
 Research exclusions: do not count opened-never-used or new listings as used evidence; do not use overseas offers; do not substitute adjacent variants; do not use the OPPO Reno16 trade-in quote for the Reno16 F; do not use an unverified direct-link/location lead for the Find X10 Pro Max. No accepted used listing was found for the four common gaps in this pass. UK-used evidence remains reference-only, not an automatic valuation input. No code/schema/deployment change. See the batch 108 checkpoint and project-memory record for details.
+
+
+## Mobile phone used-evidence research continuation — batch 109, 5 November 2026
+
+Preflighted LIVE and TEST before research: both have 562 active mobile evidence rows (266 UK-new / 296 UK-used), 154 products with UK-used evidence and 156 customer-visible products. Both share the same four UK-used gaps: Motorola Edge 70 Plus 256GB, OPPO Find X10 256GB, OPPO Find X10 Pro Max 512GB and OPPO Reno16 F 5G 256GB. LIVE 158 active products / zero without any evidence; TEST 159 / one without evidence. The TEST-only no-evidence record is hidden `iPhone 18 256 GB`; do not copy, activate or delete it without separate product verification.
+
+Research candidates were deliberately held rather than imported:
+- Reno16 F 5G 256GB: eBay UK search result shows Certified - Refurbished £379.99, seller fistech_uk (99.6% positive). Direct item URL, dispatch location and detailed listing condition were not verified. The accessible seller-store page did not expose that specific listing. iD Mobile confirms the exact 256GB product and refurb grades/warranty but the £479 shown is its new price, not a refurb quote. Do not use £379.99 until direct item verification is possible.
+- Find X10 Pro Max 512GB: eBay UK search result shows a Pre-owned offer £1,073.08 plus £11.95 postage, titled `Oppo Find X10 Pro Max 512GB 12GB RAM Grey UK Version BARGAIN`. Direct item URL, seller and condition detail remain unverified; do not import.
+- Find X10 256GB: results were new or opened-never-used, not used.
+- Edge 70 Plus 256GB: no used listing found; new UK prices (Argos £499.99 / MSE page £529.99) are not used evidence. Model release shown as Sep 2026.
+
+No database evidence rows changed in batch 109. Do not lower the evidence standard to fill gaps: exact model and storage, UK seller/market, GBP, correct condition, observed date and direct listing URL required. UK-used stays reference-only and excluded from automatic valuation. No code/schema/deployment changes. See batch 109 checkpoint and project memory.

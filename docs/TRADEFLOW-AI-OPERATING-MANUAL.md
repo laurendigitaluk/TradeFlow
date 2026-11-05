@@ -3696,3 +3696,8 @@ Added five DualSense colour models to TEST and LIVE: Midnight Black £59.99, Sta
 
 ## PlayStation pre-order batch — 5 November 2026
 Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Edition (£74.99 pre-order) and GTA VI White Limited Edition (£74.99 pre-order) to TEST and LIVE. GTA VI editions release 19 November 2026. Final verified totals match: 19 active products and 19 UK-new evidence rows covering 18 products. One legacy DualShock 3 Black remains without UK-new evidence. No deployment or code/schema changes.
+
+
+## Camera catalogue research — Brinno batch 10 (5 November 2026)
+
+LIVE-only evidence inserted and independently read back for existing product TLC300 Waterproof Bundle (TLC300 & Waterproof Case Timelapse Camera Bundle), product ee75b3d2-c298-4d36-9cd0-8121bac10fd2. Timelapse Store UK lists Brinno TLC300 & ATH120 Bundle at £299 GBP: https://timelapse.store/collections/brinno. Evidence c231daec-df62-468f-bb26-b1ebc01b9470, UK-new, active, availability unknown; stock not independently confirmed. The exact TLC300 plus ATH120 package was matched. No standalone TLC2000/TLC5000 prices or obsolete-model new prices were inferred. LIVE only, TEST untouched; no master product, lifecycle, valuation, schema, RLS, application, Worker, Stripe, customer or payment changes. No Worker deployment. See PROJECT-MEMORY/2026-11-05-camera-research-batch-10.md and CHECKPOINTS/2026-11-05-camera-research-batch-10.md.

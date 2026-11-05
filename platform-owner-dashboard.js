@@ -58,7 +58,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();await window.loadPublicPages?.();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainPricing();await loadAiSettings();await loadAgentControlCentre();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -159,9 +159,22 @@ async function savePlan(e){
 }
 function escapeAttr(value){return escapeHtml(value)}
 function escapeHtml(value){return String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
 
-$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
+function formatDateTime(value){if(!value)return'Not started';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}
+function agentDisplayStatus(agent){if(!agent.last_heartbeat)return'not-started';if(agent.status==='running'&&Date.now()-new Date(agent.last_heartbeat).getTime()>5*60*1000)return'stale';return agent.status||'idle';}
+async function loadAgentControlCentre(){
+ const status=$('agent-control-status'),grid=$('agent-status-grid'),rows=$('agent-activity-rows');if(!grid||!rows)return;
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_get_ai_agent_control_centre',{method:'POST',body:JSON.stringify({p_activity_limit:60})});
+  const agents=Array.isArray(data?.agents)?data.agents:[],activity=Array.isArray(data?.activity)?data.activity:[];
+  status.textContent=agents.length+' agents registered · '+activity.length+' recent activity events · Last refreshed '+formatDateTime(new Date().toISOString());
+  grid.innerHTML=agents.map(a=>{const s=agentDisplayStatus(a),label=s==='not-started'?'Not started':s==='stale'?'Heartbeat overdue':s.charAt(0).toUpperCase()+s.slice(1);return '<article class="agent-status-card"><div class="agent-card-top"><strong>'+escapeHtml(a.agent_name)+'</strong><span class="agent-status-pill status-'+escapeHtml(s)+'">'+escapeHtml(label)+'</span></div><p>'+escapeHtml(a.category||'Specialist research')+'</p><div class="agent-current-task">'+(a.current_task?'Current task: '+escapeHtml(a.current_task):'No active task')+'</div><div class="agent-metrics"><span><b>'+Number(a.tasks_completed||0)+'</b> tasks</span><span><b>'+Number(a.candidates_found||0)+'</b> candidates</span><span><b>'+Number(a.evidence_queued||0)+'</b> queued</span></div><small>Last heartbeat: '+formatDateTime(a.last_heartbeat)+'</small>'+(a.last_error?'<div class="agent-error">'+escapeHtml(a.last_error)+'</div>':'')+'</article>'}).join('')||'<p class="muted">No agents are registered yet. Start the Research PC worker to register its activity.</p>';
+  rows.innerHTML=activity.map(e=>'<tr><td>'+formatDateTime(e.created_at)+'</td><td>'+escapeHtml(e.agent_name)+'</td><td>'+escapeHtml(e.event_type)+'</td><td>'+escapeHtml(e.message)+'</td></tr>').join('')||'<tr><td colspan="4">No agent activity has been reported yet.</td></tr>';
+ }catch(e){status.textContent='Unable to load agent activity: '+(e.message||String(e));grid.innerHTML='<p class="muted">Agent status is temporarily unavailable.</p>';rows.innerHTML='<tr><td colspan="4">Unable to load activity.</td></tr>';}
+}
+\nfunction formatDate(value){if(!value)return'—';const d=new Date(value);return Number.isNaN(d.getTime())?escapeHtml(value):d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}
+
+$('refresh-agent-control')?.addEventListener('click',loadAgentControlCentre);\n$('refresh').onclick=loadTenants;$('refresh-plans').onclick=loadPlans;
 $('platform-email-form').onsubmit=savePlatformEmail;
 $('domain-pricing-form').onsubmit=saveDomainPricing;$('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
@@ -169,4 +182,4 @@ $('sign-out').onclick=()=>{session=null;save();location.reload()};
 (async()=>{
   try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadAiSettings();await window.loadPublicPages?.()}
   catch(e){showAuth('')}
-})();
+})();\nsetInterval(()=>{if(session?.access_token)loadAgentControlCentre()},30000);

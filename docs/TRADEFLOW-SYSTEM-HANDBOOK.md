@@ -2009,3 +2009,6 @@ When updating public Examples, change both the database-driven renderer and the 
 
 ## Public catalogue category auto-refresh — 5 November 2026
 The public Catalogue & AI Research page uses `public.platform_public_catalogue_browse(text,text,integer,integer)` to derive its category menu and product filter from active categories containing active customer-visible products. `catalogue-nav.js` refreshes category data on initial load, window focus, tab visibility return and every three minutes; it does not maintain a hard-coded category list. Categories remain hidden until at least one product is active and customer-visible. TEST and LIVE remain independent; never copy catalogue rows or evidence between them as part of a UI refresh. Browser/Worker verification is required after deployment. Checkpoint: `CHECKPOINTS/2026-11-05-public-catalogue-category-auto-refresh.md`.
+
+
+TEST merge status — 5 November 2026: PR #240 merged to `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`. Runtime deployment and browser acceptance remain unverified; LIVE `production` was not changed.

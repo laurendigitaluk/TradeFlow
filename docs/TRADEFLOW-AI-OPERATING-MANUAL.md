@@ -3117,3 +3117,19 @@ Added four previously missing ELEGOO resin printer models independently in TEST 
 Independent TEST/LIVE verification after Batch 7: 136 active customer-visible products; 150 active evidence rows (135 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-07.md.
 
 No category or branch created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue/evidence work; no Worker deployment required.
+
+
+### Nintendo Switch 2 third-party controller expansion — 5 November 2026
+
+Expanded Gaming Consoles & Accessories > Nintendo Controllers independently in TEST and LIVE. Added five distinct third-party controller products with one active UK-new GBP evidence row each:
+- PowerA Advantage Wireless Controller for Nintendo Switch 2 - Black — £34.99, Smyths Toys UK.
+- 8BitDo Pro 3 Wireless Controller for Nintendo Switch 2 - Purple — £59.99, Argos UK.
+- Turtle Beach Afterglow Wave Wireless Controller for Nintendo Switch 2 - Black — £41.99, Smyths Toys UK.
+- PowerA Advantage Wired Controller for Nintendo Switch 2 - Mario Time — £12.99, Smyths Toys UK.
+- PowerA Advantage Wireless Controller for Nintendo Switch 2 - Mario and Friends — £29.99, Smyths Toys UK.
+
+Research URLs: Smyths Switch 2 controller listings https://www.smythstoys.com/uk/en-gb/gaming-and-tech/gaming-controllers/nintendo-switch-2-controllers/c/nintendo-switch-2-controllers and Argos Switch 2 controller catalogue https://www.argos.co.uk/browse/technology/video-games-and-consoles/nintendo/nintendo-switch-2-controllers/c%3A1054685/. All entries use GBP, item_condition New, source URLs and stable source_record_key values. Retail asking prices are not completed-sale prices. No used evidence was inferred from new prices.
+
+Recovery note: a prior interrupted attempt had inserted the PowerA Advantage Wireless Black product into TEST without evidence or LIVE parity. This pass completed the missing TEST evidence and inserted the matching LIVE product/evidence, then independently verified the final parity. No duplicate products were created.
+
+Post-insert verification in both LIVE and TEST: Nintendo Controllers has 8 active customer-visible products and 11 active evidence rows (9 UK-new / 2 UK-used); all 8 visible products have at least one active evidence row. Product and evidence rows match between environments. Existing official Nintendo Switch 2 Joy-Con 2 and Pro Controller records were retained unchanged. No category/branch creation, code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue work; no Worker deployment required. Continue with remaining verified Gioteck, HORI, CRKD, Deltaco, Snakebyte and other exact Switch 2 controller variants after manufacturer and duplicate checks in both environments.

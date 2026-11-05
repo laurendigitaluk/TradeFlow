@@ -30,3 +30,22 @@ Four active UK-new evidence rows were recorded in GBP, New condition, with obser
 Post-update verified totals in both environments: 99 active customer-visible Nintendo controller products; 102 active UK-new evidence rows covering all 99 products; 2 active UK-used reference rows covering 2 products; zero active visible products missing active evidence or UK-new evidence. This supersedes the earlier 97 products / 100 evidence count above.
 
 An existing generic package_key collision remains: two older records use single-controller. This was not introduced by this update and is not confirmed to represent duplicate products. Leave unchanged pending model/package identity and insertion-history review. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain independent.
+
+
+## Further Nintendo controller additions — 5 November 2026
+
+Two more products were independently added to TEST and LIVE:
+- Nintendo Switch 2 Pro Controller — Resident Evil Requiem Edition; EAN-13 0045496321840. UK-new observations: Argos £69.99, Currys £74.99, Very £83.99.
+- Nintendo GameCube (GCN) Controller — Nintendo Classics; Nintendo Store UK £58.99. Nintendo Switch 2 only; Nintendo Switch Online membership required to purchase. Nintendo Store item ID 000000000010015326 is stored as a non-GTIN identifier.
+
+Four active UK-new GBP/New evidence records were added on 5 November 2026 with retailer/source URLs. Both products are active/customer-visible.
+
+Current verified Nintendo Controllers branch totals in both environments:
+- 101 active/customer-visible products.
+- 106 active UK-new evidence rows covering all 101 products.
+- 2 active UK-used reference rows covering 2 products.
+- Zero active visible products missing active evidence or UK-new evidence.
+
+This supersedes the earlier 99 products / 102 UK-new evidence total in the previous addendum. The Grey and Neon Yellow/Neon Yellow original Joy-Con pairs remain research-only: official variants are confirmed, but reliable current UK new-price evidence was insufficient to add them. Do not use stale price pages as current evidence.
+
+No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.

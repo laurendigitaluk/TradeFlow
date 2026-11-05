@@ -3206,3 +3206,8 @@ Brinno's current support centre identifies BBT2000, TLC200, TLC200Pro and BCC200
 
 ## PlayStation controller batch — 5 November 2026
 Five DualSense models were added in TEST and LIVE: Midnight Black £59.99, Starlight Blue £59.99, Cosmic Red £59.99, Nova Pink £59.99 and Chroma Teal £64.99, each with UK-new Argos evidence. Both branches now have 16 active products and 15 UK-new evidence rows covering 15 products. One older DualShock 3 record has no UK-new evidence and is retained for legacy review. No deployment or code/schema/valuation changes.
+
+
+## Camera catalogue research — Brinno batch 10 (5 November 2026)
+
+LIVE-only evidence inserted and independently read back for existing product TLC300 Waterproof Bundle (TLC300 & Waterproof Case Timelapse Camera Bundle), product ee75b3d2-c298-4d36-9cd0-8121bac10fd2. Timelapse Store UK lists Brinno TLC300 & ATH120 Bundle at £299 GBP: https://timelapse.store/collections/brinno. Evidence c231daec-df62-468f-bb26-b1ebc01b9470, UK-new, active, availability unknown; stock not independently confirmed. The exact TLC300 plus ATH120 package was matched. No standalone TLC2000/TLC5000 prices or obsolete-model new prices were inferred. LIVE only, TEST untouched; no master product, lifecycle, valuation, schema, RLS, application, Worker, Stripe, customer or payment changes. No Worker deployment. See PROJECT-MEMORY/2026-11-05-camera-research-batch-10.md and CHECKPOINTS/2026-11-05-camera-research-batch-10.md.

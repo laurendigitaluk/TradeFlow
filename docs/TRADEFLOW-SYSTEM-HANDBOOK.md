@@ -3036,3 +3036,8 @@ The `import-approved` command is the only current path from approved queue evide
 ## Evidence import control
 
 The `import-approved` command is the only current path from approved queue evidence into shared market evidence. It is limited to existing master products and requires both environments to pass preflight. New product master creation and release candidate import are not yet implemented.
+
+
+## Platform Owner Agent Control Centre — 5 November 2026
+
+The owner dashboard includes an Agent Control Centre navigation link and panel. It displays agent identity, category, running/idle/paused/error state, current task, counters, heartbeat, latest error and recent activity. Dashboard reads are protected by active platform-owner membership. Worker writes use the service-role-only telemetry RPC; direct anon/authenticated table access is revoked and RLS is enabled. Separate TEST and LIVE telemetry tables preserve environment separation. Dashboard source changes are staged on their corresponding feature branches; production and cloudflare-test remain unchanged until reviewed and deployed.

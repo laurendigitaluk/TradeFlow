@@ -2578,3 +2578,12 @@ Post-insert read-back, scoped to the 3D Printers branch:
 | TEST | 179 | 171 | 8 | 197 | 182 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-20.md.
+
+
+### ENTINA / WEEFUN Tina2 naming and duplicate-key review — Batch 21 (5 November 2026)
+
+Researched ENTINA's official Tina2C/Tina2 Plus/Tina2S lineup and WEEFUN's own Tina2C/Tina2S pages. ENTINA Tina2C has a UK Amazon tracker observation at £208.00 (new condition; last seen approximately 31 October 2026): https://www.3dprinterdeals.co.uk/item/entina-tina2c-3d-printer-friendly-for-beginners-ready-to-print-in-5/B0GQSR943V. ENTINA's official product page confirms the separate ENTINA brand and the Tina2C model: https://www.entina3d.com/products/entina-3d-printer-tina2c.
+
+A trial ENTINA Tina2C master row and evidence record were inserted and immediately reverted in both environments after the global branch-level duplicate-key check identified the same model/package key as the already-catalogued WEEFUN TINA2C. No ENTINA product/evidence row remains, and no manufacturer row remains from that trial. This avoids leaving duplicate product keys or claiming the two brand listings are separate hardware without a confirmed model distinction. The existing WEEFUN TINA2C remains unchanged. Revisit only if the catalogue key strategy is deliberately extended to support same-model brand variants or reliable evidence proves a distinct configuration.
+
+Post-revert verification remains unchanged from Batch 20: LIVE 178 products / 171 active visible / 197 active evidence (182 UK-new, 15 UK-used); TEST 179 / 171 / 197. Both have zero missing active visible evidence and zero duplicate product keys. No Worker deployment or app/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-21.md.

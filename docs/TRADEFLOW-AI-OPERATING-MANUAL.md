@@ -3835,3 +3835,11 @@ Verified 3D Printers totals after this continuation:
 | TEST | 190 | 182 | 209 | 194 | 15 | 0 |
 
 Both environments: zero duplicate product keys. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required. TEST and LIVE were updated independently.
+
+## TEST parity reconciliation — Nikon batches 11–12 (5 November 2026)
+
+Correction to the earlier LIVE-only note: the Nikon used-market evidence from batches 11 and 12 has now been mirrored into TradeFlow TEST wherever the corresponding product exists. TEST product IDs differ from LIVE IDs; records were matched by exact model and package, not by copying database identifiers.
+
+TEST verification: added matching evidence for D750 £450 (13255492-b7ce-4941-92db-d1679b2a9c03), COOLPIX P1000 £744 (8affa3f7-4344-40bb-89d6-e41d6079e887), COOLPIX A1000 £469 (5222d2ec-b40a-43ed-89c7-ee3f65b273da), A900 £314 (373add1f-68de-4b52-a5b6-e3943380dc9d), AW130 £136 (ec6f4c41-a803-4c6c-9598-20bc79d05006), B600 £117 (f0a5be26-46da-4f5e-967b-c8e419a7fc22), B700 £149 (10447eed-76fd-4cf7-b765-594787fd4d2a), D3300 £114 (cd171797-e940-4017-9b7c-a01b4b6c4abe), D3500 £79 (6f96661f-c2c6-445c-af37-51b692119f00), D5500 £249 (1f6cc769-30f1-441e-8991-e65e243e3aa9), D610 £259 (d7bb3d12-2abb-4f23-b47a-a3ead6cbb1a0), D700 £199 (daf3ea49-68f9-4876-9ce8-6e4bd7c928c3), and D7100 £279 (5f859dc4-930f-422f-b888-8ff6174dea09). All 13 rows were independently read back and confirmed active, GBP, used, with source URLs.
+
+TEST already contained older D3300 and D7100 used observations at different prices (£99 and £209); these were retained, and matching current observations were added rather than overwriting history. The Nikon catalogue has aligned matching observations for all 13 LIVE batch-11/12 targets in both environments. TEST-only unrelated records were not copied. No deployment or application, schema, valuation, RLS, Stripe, tenant, customer, order or payment changes.

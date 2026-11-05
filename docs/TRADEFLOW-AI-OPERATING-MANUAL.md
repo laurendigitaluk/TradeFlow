@@ -3494,3 +3494,29 @@ Continued Blackmagic Design camera research. Added UK GBP observations to existi
 Sources include https://www.blackmagicdesign.com/uk/products ; https://www.blackmagicdesign.com/uk/products/blackmagicpyxis/blackmagicraw ; https://www.parkcameras.com/video/blackmagic/ ; https://www.mpb.com/en-uk/product/blackmagic-design-pocket-cinema-camera-4k .
 
 Read-back after batch: 722 active Cameras products; 364 have qualifying active GBP evidence with source URL; 358 still require qualifying evidence. Seven additional product records gained evidence coverage. UK-used MPB observation is reference-only and excluded from automatic valuation. No product master/lifecycle/valuation/application/schema/RLS/tenant/customer/order/payment changes; LIVE only; no Worker deployment.
+
+
+### Sovol 3D printer catalogue — Batch 19 (5 November 2026)
+
+Added three missing Sovol configurations independently to LIVE and TEST, with active UK-new GBP evidence:
+- SV06 ACE / Standard Printer — £210; official UK page https://sovol.uk/products/sovol-sv06-ace. Page displays Sold Out / Notify me alongside conflicting limited-stock wording; availability unconfirmed.
+- SV06 ACE / SH02 Filament Box Combo — £269; same official UK page. Page displays Sold Out / Notify me; availability unconfirmed.
+- Zero / Standard Printer — £249 sale price; official UK page https://sovol.uk/products/sovol-zero-3d-printer. Page says only 8 left in the UK warehouse but also displays Sold Out / Notify me; availability unconfirmed. Product classified as enclosed CoreXY FDM printer.
+
+LIVE product/evidence UUIDs:
+- SV06 ACE Standard: 8453c386-45e0-413b-9f70-43fb428ae919 / 418a0008-2c75-4c2b-a3c8-2c82442794c4
+- SV06 ACE SH02 combo: 49872fc8-73c9-43be-8784-c2e5fae98e36 / 48c985f9-531a-4f88-b478-2712a47e26f4
+- Zero Standard: 479484f0-eb4b-40cb-ae86-3e0f16f3968c / a9794fb9-f81c-440f-89fe-72d607d7860c
+
+TEST product/evidence UUIDs:
+- SV06 ACE Standard: 5c823ba8-8707-4fe4-af76-d69f1d58eaab / 935a6d29-281a-4c16-b0aa-999cef5bb404
+- SV06 ACE SH02 combo: 366983ef-d69b-4466-9941-e776934485da / c19f0335-a97a-4bb0-90bd-547a295eafae
+- Zero Standard: 2f6670e9-aa1f-4cbf-b6e1-e49d6165724b / 476a0073-7b7f-46ea-a120-861c96ea4e4d
+
+Post-insert read-back, scoped to the 3D Printers branch:
+| Environment | Products | Active visible | Inactive/hidden | Active evidence | UK-new | UK-used |
+|---|---:|---:|---:|---:|---:|---:|
+| LIVE | 174 | 167 | 7 | 193 | 178 | 15 |
+| TEST | 175 | 167 | 8 | 193 | 178 | 15 |
+
+Both environments have zero active visible products missing active evidence, zero duplicate active product keys, zero duplicate active evidence source keys, and zero invalid/missing evidence or invalid UK-new evidence. UK-used evidence remains reference-only and does not affect automatic valuation. TEST retains its pre-existing additional hidden product row; no deletion or reactivation was performed. No app code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-19.md.

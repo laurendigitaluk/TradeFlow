@@ -3563,3 +3563,8 @@ A Developer Diagnostic Roadmap was created at docs/TRADEFLOW-DEEP-SOURCE-RESEARC
 The TradeFlow Assistant remains part of the subscriber website. Subscribers cannot add or connect their own AI providers. The Platform Owner controls centrally managed AI providers. The retired subscriber-provider option must remain disabled; do not remove subscriber workspaces, websites, customer accounts, assistant conversations or messaging.
 
 Catalogue research is separate from the subscriber-facing assistant. Gemma workers stage product/release/evidence candidates in `public.platform_catalogue_research_queue` for interactive ChatGPT review. No candidate is written into the shared master catalogue until approved. Approved imports must resolve product IDs independently in TEST and LIVE and verify parity afterward. UK-only GBP evidence; UK-used is reference-only.
+
+
+## Subscriber AI provider controls — 5 November 2026
+
+Subscriber-supplied AI provider selection is removed from the Platform Owner dashboard UI. The TradeFlow Assistant and customer messaging are retained as part of the subscriber website. Do not delete subscriber accounts, tenant records, websites, customer accounts or assistant conversations. This is a source change on an isolated feature branch, not a LIVE deployment.

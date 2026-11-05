@@ -2973,3 +2973,34 @@ Five active UK-new GBP observations per environment: John Lewis £22.95 (https:/
 Product IDs TEST d7e37ea0-1191-4e57-9693-3600b609da06 / LIVE 0dede96e-8cb7-4dc6-82df-507999c5820c. TEST evidence IDs: 50615da5-c5b3-477e-bdcf-57ae77165e91, 23bd205f-dc34-4eba-a822-fa9613e2106c, cc18c1b3-0016-4731-ab17-97b38224ca16, 2df85e9b-6a60-4f97-8d37-92e387c05714, c09b43c1-1947-46aa-b280-de134e7e8dc1. LIVE evidence IDs: 0a5dd84e-6156-4160-9057-6a6d7343ef4f, 108da92a-af16-46a6-ba76-090b7920a77b, c16ab86b-e25d-463a-bae4-d43cae7ecb00, 82878b4a-398f-4167-b9b1-f970d1ed1f4d, 158e7cdf-3d58-4f4a-abda-4c5795ce976a.
 
 Both environments verified: 285 active gaming products, 277 visible, 409 active evidence (244 UK-new / 165 UK-used), zero visible products missing evidence, zero integrity failures, zero duplicate active source keys; all 20 branches match. Nintendo Accessories 11 active products / 11 visible / 28 evidence. One product master and five UK-new observations added per environment. UK-used remains reference-only and does not affect automatic buying valuation. No code/schema/RLS/RPC/Edge Function/valuation/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment.
+
+
+## Mobile catalogue UK market evidence expansion — batch 114, 5 November 2026
+
+Continued the mobile-phone UK market research and kept shared catalogue evidence aligned in LIVE and TEST. Rechecked batch 113 checkpoint and both current Supabase environments before writing. Existing master products and exact variant IDs were confirmed; both source URLs and stable source keys were checked for active duplicates before insertion.
+
+Two additional verified UK-new retailer observations were inserted into both environments:
+
+1. Motorola Edge 70 Plus, 8GB RAM / 256GB, Mountain View — Argos direct product page https://www.argos.co.uk/product/9654763 ; £499.99 GBP; New; observed 5 November 2026; availability recorded as listed because the page offers Add to trolley but requires a postcode check to confirm local stock/delivery. Stable key: mobile-new-motorola-edge70plus-256gb-argos-9654763-20261105. LIVE evidence ID 4af13ff5-a357-4a9f-91c6-4c252c51fc19; TEST evidence ID 28e2260c-03b9-4f20-ac67-1e86995df5aa. Master product IDs remain LIVE 4da6cf8a-bc1d-4012-ae23-43214d32ee22 / TEST 018599e7-86a6-4b50-a267-5d2ccddb8076.
+
+2. OPPO Find X10 Pro Max, 12GB RAM / 512GB, Luna White — Currys direct product page https://www.currys.co.uk/products/oppo-find-x10-pro-max-512-gb-luna-white-10312083.html ; £1,499.00 GBP; New; observed 5 November 2026; availability recorded as listed because the captured page shows price and exact RAM/storage but did not explicitly confirm stock. Stable key: mobile-new-oppo-findx10promax-512gb-currys-10312083-20261105. LIVE evidence ID fc8e9167-0cc1-4455-87f5-e23b01ee2f1e; TEST evidence ID acabf972-24c1-44e4-83b2-23af2ec59542. Master product IDs remain LIVE 93cb19f9-8a90-4d9e-a02d-a1c70ab471a2 / TEST d026d651-5d8a-483a-8732-bec0efcba445.
+
+These are new-retail asking prices only, not used/refurbished evidence or completed sales. No used price was imported. Research did not verify a direct item-level UK used/refurbished listing for any of the four outstanding variants. The Reno16 F £379.99 Certified - Refurbished eBay lead remains search-only without a direct item URL and refurbishment grade. Find X10 results remain opened-never-used/new or unverified at item level. Find X10 Pro Max category results lack direct verified condition/seller detail; its current direct UK retailer pages are new. Motorola Edge 70 Plus used/refurbished results remain absent; MSE's refurb filter showed no Pristine refurbished result, while the Argos listing is new. Other model variants are not substitutes.
+
+Post-write database verification:
+| Metric | LIVE | TEST |
+|---|---:|---:|
+| Active mobile products | 158 | 159 |
+| Customer-visible active mobile products | 156 | 156 |
+| Active evidence rows | 565 | 565 |
+| UK-new evidence | 269 | 269 |
+| UK-used evidence | 296 | 296 |
+| Active products missing UK-used evidence | 4 | 5 |
+| Active products missing all evidence | 0 | 1 |
+| Active evidence attached to inactive products | 0 | 0 |
+
+All 565 active evidence rows match by model, package/storage variant, evidence type, source URL, observed price, condition and sales channel; no row differences or duplicate insertions were found. Product-master counts retain the intentional one-product difference: hidden, unverified TEST-only iPhone 18 256GB remains untouched. Do not copy, activate, publish, deactivate or delete it without separate verification and approval.
+
+The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. UK-used evidence remains reference-only and excluded from automatic valuation.
+
+No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment.

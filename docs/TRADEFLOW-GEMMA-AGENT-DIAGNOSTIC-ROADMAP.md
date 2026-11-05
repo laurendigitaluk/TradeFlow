@@ -98,3 +98,14 @@ Important constraints:
 5. Test duplicate handling and mirrored write behaviour on one preselected exact product before enabling larger batches.
 6. Build the next increment for safe manufacturer/product creation and package-variant reconciliation.
 7. Only after successful Research PC tests, merge feature branch to `main` and follow the existing TEST → verified release → `production` → LIVE process.
+
+
+## Central review queue handoff — 5 November 2026
+
+- Gemma evidence worker entry: `tools/tradeflow-gemma-agent/src/agent.mjs` → `enqueueCandidate(...)`.
+- Coordinator/CLI: `tools/tradeflow-gemma-agent/src/index.mjs`; dry-run is default and `--enqueue` is the only write mode. `--apply` is retired and fails closed.
+- Queue control plane: TEST Supabase `public.platform_catalogue_research_queue`; RLS enabled, direct anon/authenticated table access revoked. Owner RPCs: `platform_owner_list_catalogue_research_queue(text,integer)` and `platform_owner_review_catalogue_research_item(uuid,text,text)`.
+- Gemma resolves exact product rows independently in TEST and LIVE before enqueueing one queue record into TEST. The queue stores both UUIDs but does not modify either catalogue.
+- ChatGPT review is interactive through the existing conversation and connected Supabase tools; no separate API chatbot or autonomous ChatGPT background worker is assumed.
+- Importer is not yet implemented. Do not manually treat `approved` as imported. Import must preflight both environments, write idempotently and verify exact parity.
+- TEST queue migration applied; LIVE migration not applied. Research PC runtime/tests and scheduled execution remain pending.

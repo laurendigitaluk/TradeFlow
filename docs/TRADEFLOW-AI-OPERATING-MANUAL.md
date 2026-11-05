@@ -3998,3 +3998,28 @@ UK-used remains reference-only, excluded from automatic valuation. No code/schem
 Added three UK-new GBP observations to existing masters in TEST and LIVE: Nintendo Switch 2 Carrying Case & Screen Protector — Smyths £17.99 promotional and Currys £20.99; HORI Wireless HORIPAD Turbo Kirby & Waddle Dee — Smyths £39.99. Existing Argos evidence retained (£19.99 case; £64.99 Kirby controller). Sources: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/c/SM06040203 ; https://www.currys.co.uk/products/nintendo-switch-2-carrying-case-and-screen-protector-black-10281818.html ; https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/hori-wireless-horipad-turbo-for-nintendo-switch-2-kirby-and-waddle-dee/p/259385 . TEST evidence IDs: 8b79c8ab-ba49-4f63-8820-330505ff31e9, 4e27b24f-644d-4956-9e57-9c539f4889ff, 26873d05-eea3-47cd-aa77-703dd61540b5. LIVE IDs: 36d02bcf-2c54-4351-bffc-61af9f833b4d, ec8f5e06-5362-45de-aab7-934b064893d5, 85f80133-13c5-404a-ade1-f5ad25ac06a6.
 
 Both DBs verified: 284 active gaming products, 276 visible, 404 active evidence (239 UK-new / 165 UK-used); zero visible products missing evidence, zero integrity failures, zero duplicate source keys; all 20 branches aligned. Nintendo Accessories 10/10/23; Nintendo Controllers 105/105/120 (products/visible/evidence). No new masters or used rows. UK-used remains reference-only. No code/schema/valuation/Stripe/tenant/customer/order/payment/Worker changes and no deployment.
+
+
+## Mobile phone catalogue alignment and integrity reconciliation — batch 113, 5 November 2026
+
+Rechecked the current LIVE and TEST mobile-phone catalogue and batch 112 checkpoint. This revealed one active TEST evidence row attached to an already-retired invalid product variant: Pixel 11 128GB. TEST product e3ed0762-1709-4881-8568-e97272bd79ff was explicitly retired on 23 October 2026 because Google Store UK confirms Pixel 11 starts at 256GB. Its MyMobiles UK £594 new-price evidence row (1a21bf68-2959-4ade-bfbb-7b0fa33218da, source key mobile-new-pixel-11-128gb-mymobiles-20261026) was therefore deactivated in TEST while preserving the row and audit history. The retired product itself was not changed. No evidence for this invalid 128GB variant was copied to LIVE.
+
+Also reconciled observed metadata drift on matching evidence rows: TEST Galaxy S22 128GB and iPhone 15 128GB conditions/notes were aligned to the more specific LIVE descriptions; LIVE Motorola Edge 70 256GB source label/channel/notes were aligned to the fuller TEST description; Galaxy S23 128GB Idealo channel and Galaxy Z Fold7 1TB Samsung new-price condition/channel were normalised across both environments. No price, source URL, product master, condition class beyond the verified labels, or valuation behaviour was changed.
+
+Post-reconciliation verification (active products only):
+| Metric | LIVE | TEST |
+|---|---:|---:|
+| Active mobile products | 158 | 159 |
+| Customer-visible active mobile products | 156 | 156 |
+| Active evidence rows attached to active products | 563 | 563 |
+| UK-new | 267 | 267 |
+| UK-used | 296 | 296 |
+| Active products missing UK-used evidence | 4 | 5 |
+| Active products missing all evidence | 0 | 1 |
+| Active evidence attached to inactive mobile products | 0 | 0 |
+
+A row-by-row comparison confirms the 563 active evidence records now match across LIVE and TEST by model, storage variant, evidence type, source URL, observed price, condition and sales channel. Descriptive note wording and some recorded observation timestamps still differ slightly between environments; these were retained rather than overwritten because they do not change the underlying observation and may contain useful capture detail. Product-master counts remain intentionally different by one because the hidden, unverified TEST-only iPhone 18 256GB remains untouched. Do not copy, activate, publish, deactivate or delete that iPhone 18 without separate verification and approval.
+
+The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. New UK research found no qualifying direct item-level used/refurbished listing for any of these exact variants. Reno16 F eBay UK still surfaces £379.99 Certified - Refurbished without a direct item URL, dispatch location or grade details; Find X10 surfaced UK-model results at £821.20/£876.03 but they are Opened – never used or otherwise not item-level verified; Find X10 Pro Max category results marked pre-owned lack direct item-level verification while direct Gumtree/eBay examples are new/sealed; Motorola Edge 70 Plus has no exact UK used listing. Do not import these as used evidence. UK-used evidence remains reference-only and excluded from automatic valuation.
+
+No new mobile evidence rows were added in batch 113. No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes; no deployment. See CHECKPOINTS/2026-11-05-mobile-phone-catalogue-alignment-batch-113.md and project memory.

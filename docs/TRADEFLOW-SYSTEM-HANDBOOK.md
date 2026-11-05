@@ -3188,3 +3188,10 @@ Post-insert read-back, scoped to 3D Printers branch:
 | TEST | 182 | 174 | 8 | 200 | 185 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No app code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment data changed. No Worker deployment. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-22.md.
+
+
+## Camera catalogue research — Brinno batch 08 (5 November 2026)
+
+LIVE-only UK GBP evidence added to five existing active Brinno camera products: BCC300-C £429 (BrinnoUK construction kits collection); BCC300-M £329 (same collection); TLC2020 £349 starting price (BrinnoUK 1080p collection); TLC2020-C £545 (same collection); TLC2020-M £409 (same collection). Source pages: https://www.brinnouk.com/collections/construction-timelapse-kits and https://www.brinnouk.com/collections/1080p-cameras. Availability is recorded as unknown; TLC2020 price is a starting price. The collection listing also states the TLC300 range has replaced TLC200 Pro; do not add a current new-market price for TLC200Pro from obsolete stock listings.
+
+All five insert statements returned the new product/evidence keys. Independent read-back was attempted but blocked by the query safety layer; therefore do not describe these five rows as independently read-back verified. Product master records were not modified. LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Camera coverage totals remain unpublished pending reconciliation of 722 versus 720 category scope.

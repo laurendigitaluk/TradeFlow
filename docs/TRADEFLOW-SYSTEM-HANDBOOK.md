@@ -3457,3 +3457,19 @@ Three matching used-market evidence observations were inserted and independently
 - Nikon D5600 £370 typical asking price across grades, UsedLens UK, 90 listings across 10 retailers. LIVE 39740339-06d9-48ac-99ea-a2774a4ceb57; TEST 1d432186-57fc-4c41-bca5-a2f942c73d57. https://usedlens.co.uk/product/nikon-d5600
 
 All six records independently verified active, GBP, uk_used and carrying the expected source URL. Same three models and values now match across LIVE and TEST. These are used asking-price benchmarks, not completed-sale prices or dealer acquisition offers. No previous evidence was overwritten. No schema, product-master, lifecycle, valuation, RLS, application, Worker, Stripe, tenant/customer/order/payment changes; no deployment.
+
+
+## Gaming catalogue evidence continuation — batch 04, 5 November 2026
+
+Added five active UK-new GBP retailer observations to the existing Nintendo Switch 2 Camera master in Nintendo Accessories; no duplicate product master was created. Captured prices: Smyths £34.99 promotional (was £44.99; Click & Collect in stock, delivery unavailable), Argos £49.99, Currys £44.99, John Lewis £44.99 and EE £45.00. The camera remains a separate Switch 2 USB-C camera product; its existing UK-used Cash Converters £19.99 observation was retained and remains classified as used/reference-only.
+
+Sources:
+- Smyths £34.99: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/nintendo-switch-2/nintendo-switch-2-accessories/nintendo-switch-2-camera/p/249607
+- Argos £49.99: https://www.argos.co.uk/product/7624599
+- Currys £44.99: https://www.currys.co.uk/products/nintendo-switch-2-camera-10281819.html
+- John Lewis £44.99: https://www.johnlewis.com/nintendo-switch-2-camera-black/p113587836
+- EE £45.00: https://ee.co.uk/products/nintendo-switch-2-camera
+
+Evidence IDs: TEST b5e9070b-2065-4ce1-808f-c7c50f2a7678 (Smyths), 5f85d615-b670-4931-ae43-3f8998772a09 (Argos), a100d555-6e54-4a78-9fcc-0a684fc138e5 (Currys), c6637563-09c3-4bf2-ac03-a29f6aa588c2 (John Lewis), 97bc47e7-7811-48d2-9c3b-f1656bb97992 (EE). LIVE: f5d15edd-57a9-461c-9bc0-269b1b77a9df (Smyths), 1727641c-7c81-4669-b3f8-8480c942737f (Argos), 1780870e-ec5a-407b-9557-0555dbb6b4d2 (Currys), f67f0592-b4d0-4466-be75-dc260ff51804 (John Lewis), c4c82385-dbb6-4282-81ef-5e561215d3a9 (EE).
+
+Post-write verification in both environments: 284 active gaming products, 276 active customer-visible products, 401 active evidence rows (236 UK-new / 165 UK-used), zero visible products missing all active evidence, zero active evidence integrity failures and zero duplicate active source keys. All 20 gaming branch counts match; Nintendo Accessories now has 10 active products / 10 visible / 21 evidence. No product master, code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Worker changes. No deployment. UK-used remains reference-only and does not affect automatic buying valuation.

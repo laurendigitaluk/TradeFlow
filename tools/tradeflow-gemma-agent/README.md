@@ -40,3 +40,8 @@ Run a dry scan with `npm run release-monitor`; stage candidates with `npm run re
 ## Owner-approved evidence import
 
 The separate importer is `src/import-approved.mjs`, invoked with `npm run import-approved` from the agent directory. It reads only `approved` evidence candidates from the TEST control-plane queue. It preflights every candidate against both databases, re-resolves category, branch, manufacturer and exact package identity independently, checks both evidence stores for the stable source key, and only then writes missing evidence rows. It marks the queue item imported only after both environment writes are verified. A partial cross-environment failure can be retried safely because the source key is idempotent. UK-used notes explicitly mark the evidence as reference-only. The importer has not yet been executed against the Research PC credentials.
+
+
+## Agent activity reporting
+
+The worker runner reports each specialist's task start, per-source progress, completion and failure through `src/agent-telemetry.mjs` to both TEST and LIVE. The Agent Control Centre in the corresponding Platform Owner dashboard reads the local environment's telemetry. Specialist identities are mapped from `agent_key` or the task's `category_slug`; `research_type` remains the evidence type (`uk_new` or `uk_used`) and must not be used as the agent identity. ReleaseMonitor and the approved evidence importer also report their lifecycle events. The dashboard refreshes every 30 seconds. Initial seeded agents remain Not started until the Research PC sends a heartbeat.

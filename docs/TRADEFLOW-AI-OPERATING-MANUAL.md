@@ -3338,3 +3338,23 @@ Creator 5 and Creator 5 Pro are separate models, not package variants; the Pro i
 Post-insert independent category-scoped verification in both TEST and LIVE: 141 active customer-visible 3D printer products; 155 active evidence rows (140 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Counts are for the 3D Printers category only.
 
 Exact Batch 9 product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-09.md. TEST and LIVE use independent environment-specific UUIDs. UK GBP only; used evidence remains reference-only and must not affect automatic valuation. Database-only change; no Worker deployment required.
+
+
+### 3D printer catalogue expansion — Batch 10 — 5 November 2026
+
+Expanded Prusa Research and refreshed current Flashforge UK price evidence in TEST and LIVE.
+
+New Prusa Research printer-only models:
+- CORE One+ (Gen 2) — £919.00 from Fabinity UK; listing in stock and offers two purchase options, so this is the advertised entry price rather than a single universal configuration. Source: https://www.fabinity.com/product/prusa-core-one
+- CORE One L+ — £1,829.00 from Fabinity UK; in stock. Source: https://www.fabinity.com/product/prusa-core-one-l
+- XL+ Single-Tool — £2,109.00 from Fabinity UK; ships in 4–5 weeks. Source: https://www.fabinity.com/product/original-prusa-xl-single-toolhead-3d-printer
+
+Refreshed UK-new price observations for existing Flashforge products from the official UK collection:
+- AD5X — £359.00.
+- Adventurer 5M — £259.00.
+- Adventurer 5M Pro — £399.00.
+The collection identifies the six-model current UK range. Flashforge product pages state that printer fulfilment is from international local warehouses, with typical 2–5 working day delivery; do not describe these as UK warehouse stock. Promotions and checkout discounts may apply. Source: https://uk.flashforge.com/collections/3d-printers
+
+Post-insert independent category-scoped verification in both TEST and LIVE: 144 active customer-visible 3D printer products; 161 active evidence rows (146 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. The TEST and LIVE counts match exactly.
+
+Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. All evidence is UK GBP, New, and source-linked. Printer-only records remain separate from kits/accessories; used evidence remains reference-only and must not affect automatic valuation. Database-only catalogue/evidence change; no schema, code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.

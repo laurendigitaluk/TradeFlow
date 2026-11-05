@@ -5,7 +5,7 @@ import {runReleaseMonitor} from '../src/release-monitor.mjs';
 const env={TRADEFLOW_TEST_URL:'https://nnsshnfkjcflucjrftzi.supabase.co',TRADEFLOW_TEST_SERVICE_ROLE_KEY:'test',TRADEFLOW_LIVE_URL:'https://gxsrajtqzdjvmceqcpgv.supabase.co',TRADEFLOW_LIVE_SERVICE_ROLE_KEY:'live'};
 const watchlist={manufacturers:[{name:'Example Maker',families:['Phone'],official_domains:['example.com/uk']}]};
 const hit={title:'Official product announcement',url:'https://example.com/uk/news/new-phone'};
-const page={url:hit.url,text:'Example Maker New Phone official announcement'};
+const page={url:hit.url,text:'Example Maker New Phone 1 official announcement'};
 const extraction={candidates:[{model:'New Phone 1',release_status:'announced',release_date:null,category_slug:'phones',branch_slug:'mobile-phones',summary:'Officially announced.'}]};
 
 test('release monitor stages an officially announced model missing from both environments',async()=>{

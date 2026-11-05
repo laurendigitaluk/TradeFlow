@@ -4079,3 +4079,12 @@ Foundation 0.1 deliberately writes evidence only for an exact master product alr
 Database inspection on 5 November 2026 confirmed both TradeFlow projects are ACTIVE_HEALTHY: TEST `nnsshnfkjcflucjrftzi`, LIVE `gxsrajtqzdjvmceqcpgv`. The master product/evidence schemas are aligned for this first agent stage. `platform_ai_settings.gemma_enabled` is false and `active_provider='none'` in both environments; this is the subscriber/platform assistant setting, not the local Ollama agent switch. Do not enable or alter it as part of local Gemma work.
 
 Current stopping point: source files and six deterministic validation tests pass locally, including exact GBP price-token matching. GitHub feature branch exists. No Supabase rows, schema, RLS, Edge Functions, valuation, Worker, Stripe, tenant or customer data have been changed. Research PC runtime verification and a first dry-run task remain outstanding. See `docs/TRADEFLOW-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md` and `CHECKPOINTS/2026-11-05-tradeflow-gemma-agent-foundation-01.md`.
+
+
+## Central catalogue research and ChatGPT review — 5 November 2026
+
+TradeFlow's catalogue research is platform-managed. Subscribers retain their normal websites, workspaces, customers, orders and the read-only TradeFlow Assistant/customer messaging experience. Subscriber-supplied AI provider selection is being removed from the owner AI settings; centrally managed providers remain available. Do not delete subscriber, tenant, conversation or customer records.
+
+Gemma's evidence worker now stages candidates in the TEST control-plane table `platform_catalogue_research_queue`, not directly in `shared_market_evidence`. The queue holds exact product/variant identity, UK GBP observation, source excerpt, agent identity and independently resolved TEST/LIVE product IDs. Queue status starts at `pending_review`. The owner can review candidates interactively through this ChatGPT conversation and connected Supabase tools. Approved candidates require a separate import step; approval is not itself a catalogue write. TEST and LIVE evidence inserts must be independently preflighted and verified. UK-used evidence remains reference-only and excluded from automatic valuation.
+
+The review queue table and owner-only list/review RPCs have been applied to TEST only. No LIVE queue migration or product/evidence import has been made. The local Research PC has not yet run the revised agent; automated scheduling and ChatGPT connector orchestration remain outstanding.

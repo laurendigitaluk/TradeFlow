@@ -2648,3 +2648,15 @@ Post-insert read-back, scoped to 3D Printers branch:
 | TEST | 182 | 174 | 8 | 200 | 185 | 15 |
 
 Both environments have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid/missing evidence. UK-used evidence remains reference-only and does not affect automatic valuation. No app code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment data changed. No Worker deployment. Checkpoint: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-22.md.
+
+
+## Nintendo Switch 2 controller accessories — 5 November 2026
+
+Two official Nintendo Switch 2 controller accessories were added independently to TEST and LIVE under Gaming Consoles & Accessories / Gaming / Controller:
+
+- Nintendo Switch 2 Joy-Con 2 Wheel Pair — one light blue and one light red steering-wheel attachment. Argos UK-new evidence: £16.99, https://www.argos.co.uk/product/7624661/. EAN-13 0045496321383 verified from Argos listing and recorded in TEST identifiers.
+- Nintendo Switch 2 Joy-Con 2 Charging Grip — black grip with USB charging cable and mappable GL/GR buttons. Argos £29.99, https://www.argos.co.uk/product/7624692/; John Lewis £25.99, https://www.johnlewis.com/nintendo-joy-con-2-charging-grip-black/p113587848. EAN-13 0045496321376 verified from Argos listing and recorded in TEST and LIVE identifiers.
+
+The Joy-Con 2 wheels do not include controllers and are only for Joy-Con 2. The charging grip also excludes Joy-Con 2 controllers and is not compatible with original Switch Joy-Con. Both records are active/customer-visible. Three UK-new evidence rows were recorded per environment, GBP/New with source URLs and 5 November 2026 observation timestamps.
+
+Current verified Nintendo Controllers totals in both environments: 103 active/customer-visible products; 109 active UK-new evidence rows covering all 103 products; 2 active UK-used reference rows covering 2 products. No active visible product is missing active evidence or UK-new evidence. This supersedes the prior 101 products / 106 UK-new evidence totals. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was made.

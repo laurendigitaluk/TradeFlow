@@ -4093,3 +4093,8 @@ The review queue table and owner-only list/review RPCs have been applied to TEST
 ## Release monitoring worker — 5 November 2026
 
 The specialist `ReleaseMonitor` is implemented at `tools/tradeflow-gemma-agent/src/release-monitor.mjs`, driven by `tasks/release-watchlist.json`. It searches official manufacturer domains, fetches official pages, extracts explicitly named announced/pre-order/released/available/update models through the configured Ollama model, and checks product presence independently in TEST and LIVE. Rumours are not accepted as confirmed candidates. Candidate records enter the TEST-only `platform_catalogue_research_queue`; no product master is created automatically. A product found in only one environment is marked `needs_research` for manual parity resolution. Run `npm run release-monitor` for dry-run or `npm run release-monitor:enqueue` to stage candidates. Scheduling is not yet installed and Research PC execution remains pending.
+
+
+## Approved evidence importer — 5 November 2026
+
+The owner-approved importer is `tools/tradeflow-gemma-agent/src/import-approved.mjs` (`npm run import-approved`). It reads only approved evidence candidates from the TEST review queue. It preflights the full batch before any writes, independently resolves category/branch/manufacturer/exact package in TEST and LIVE, checks the stable source key in both evidence tables, inserts only missing rows, and marks each queue row imported only after both writes are verified. Retries are idempotent if one environment succeeds and the other fails. UK-used notes are marked reference-only and excluded from automatic valuation. Runtime execution and integration testing on the Research PC remain outstanding.

@@ -2523,3 +2523,25 @@ TEST product/evidence UUIDs:
 Post-insert verification: LIVE and TEST each have 95 active customer-visible products and 98 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type, currency, price, URL/key and UK-new condition checks). The three package keys, prices, source URLs, evidence types and currency match across environments. Price evidence is an advertised marketplace asking price, not a completed sale; source observation date and stock qualification are retained.
 
 No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-19.md.
+
+
+### Original Nintendo Switch controller catalogue — Batch 20 (5 November 2026)
+Added two official Nintendo Joy-Con pairs to LIVE and TEST with active UK-new GBP Play Pixels evidence at £64.99 each (reduced from £79.99; retailer listing states in stock):
+- Neon Green / Neon Pink — SKU 12630, EAN 045496430795, MPN HAC-A-JAFAA(EUR): https://www.playpixels.co.uk/products/nintendo-official-switch-joy-con-controller-pair-neon-green-neon-pink-switch
+- Pastel Pink / Pastel Yellow — SKU 29548, EAN 4902370551112, MPN HAC-A-JAVAF: https://www.playpixels.co.uk/collections/nintendo-switch-controllers-switch/products/nintendo-official-switch-joy-con-controller-pair-neon-pink-neon-yellow
+
+Both listings confirm original Nintendo Switch compatibility, wireless Bluetooth, motion controls and rechargeable Joy-Con batteries. The Pastel Pink/Yellow listing notes that Japanese-language packaging may be supplied, while confirming compatibility with UK Switch consoles. Duplicate preflight found neither package in either Nintendo Controllers branch; existing Nintendo manufacturer rows reused.
+
+LIVE product/evidence UUIDs:
+- Neon Green/Pink: ae5792ab-3381-4c27-95f7-bffa34beda98 / dc4bed85-04f4-4157-8966-71ceebd8d995
+- Pastel Pink/Yellow: ec23eb67-b0a5-4188-8d80-b2b5bbbbc125 / 776ae77c-0189-472a-9c97-2888a1e4fad5
+
+TEST product/evidence UUIDs:
+- Neon Green/Pink: af3e7838-fa68-4a1e-b4a9-2190bc25f00e / 935c0dad-e609-4816-90a4-e6cd03a5c376
+- Pastel Pink/Yellow: 6281fcf8-3be0-4f01-867f-eeb27e2bd519 / 79613d19-33bc-47e3-9c23-2adc88f4de62
+
+Post-insert verification: LIVE and TEST each have 97 active customer-visible products and 100 active evidence rows. Both have zero visible products missing active evidence, zero duplicate active evidence source keys and zero invalid active evidence (evidence type, currency, price, URL/key and UK-new condition checks). The two package keys, prices, source URLs, evidence types and currencies match across environments. Prices are advertised retail asking prices, not completed sales.
+
+Nintendo's official accessories catalogue also identifies other Joy-Con colour pairings, including Grey, Neon Yellow/Neon Yellow, and the pastel pairs. Existing Purple/Green and Purple/Orange records appear to correspond to the Pastel Purple/Pastel Green and Neon Purple/Neon Orange families, but retain their current package identities until their exact source evidence is reconciled. Continue researching missing official colour variants with UK GBP evidence.
+
+No application code, schema, valuation logic, RLS, Edge Functions, Stripe or tenant/customer/order/payment/custom-domain data changed. No Worker deployment required. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-20.md.

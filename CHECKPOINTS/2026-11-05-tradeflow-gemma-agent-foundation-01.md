@@ -25,6 +25,7 @@ Build a new TradeFlow-first Gemma catalogue research agent. Do not revive the ol
 `tools/tradeflow-gemma-agent/` contains:
 
 - Node.js 22+ ESM CLI and bounded task coordinator.
+- Dedicated PowerShell launcher `tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1` with explicit `-Apply` switch; PowerShell runtime verification remains outstanding.
 - Ollama `gemma3:4b` extraction client.
 - Brave Search discovery adapter.
 - Direct-page fetch and deterministic UK/GBP/product/condition/price validation.

@@ -4054,3 +4054,8 @@ TradeFlow's catalogue research is platform-managed. Subscribers retain their nor
 Gemma specialist workers submit product, release and UK GBP evidence candidates to `platform_catalogue_research_queue`. They do not directly publish to the master catalogue. ChatGPT, used interactively through the owner's existing conversation and connected Supabase tools, reviews queue items and records owner approval/rejection/needs-research decisions. Only approved items proceed to separately resolved TEST and LIVE imports. UK-used evidence remains reference-only and excluded from automatic valuation. No tenant/customer/transaction/Stripe data is shared between environments.
 
 Queue migration: `20261105190000_central_catalogue_research_review_queue`. This feature is being developed on isolated TEST and LIVE branches; no deployment or production database migration is implied by a GitHub commit.
+
+
+## Subscriber-owned AI provider option retired — 5 November 2026
+
+The Platform Owner AI settings no longer offer the subscriber-supplied provider option. The TradeFlow Assistant remains available to subscribers as a website feature. Existing subscriber accounts, tenants, websites, customer conversations and messages are retained. The database configuration was already `active_provider='none'` and `subscriber_provider_enabled=false` in both environments at the time of this change. The UI change is isolated on this feature branch and has not been deployed.

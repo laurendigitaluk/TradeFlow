@@ -366,3 +366,11 @@ Added ELEGOO Neptune 3 Pro (£127.00, official UK) and Saturn 2 (8K) (£350.00, 
 
 ## Batch 9 — 5 November 2026
 Added Flashforge Creator 5 (£719.00; In Stock, £100 automatic cart discount advertised), Creator 5 Pro (£849.00; In Stock, £100 automatic cart discount advertised) and Guider 3 Ultra (£2,999.00; China warehouse dispatch in 30 days) in TEST and LIVE. The 3D Printers category now has 141 active visible products, 155 active evidence rows (140 uk_new / 15 uk_used), and 13 represented manufacturers in each environment. Zero missing evidence/branch, duplicate keys, missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Exact UUIDs and sources: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-09.md. No Worker deployment required.
+
+
+## Batch 10 — 5 November 2026
+Added three Prusa Research printer-only products independently in TEST and LIVE: CORE One+ (Gen 2) (£919 from Fabinity UK; two options, advertised from price), CORE One L+ (£1,829, in stock), and XL+ Single-Tool (£2,109, ships in 4–5 weeks). Exact source URLs and product/evidence UUIDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md.
+
+Refreshed current UK-new Flashforge observations in both environments for existing models: AD5X £359, Adventurer 5M £259, Adventurer 5M Pro £399. Official UK collection says six models available and the product pages describe international local-warehouse fulfilment, typical 2–5 working days; do not claim UK warehouse stock. Checkout promotions may apply.
+
+Verified category totals in TEST and LIVE: 144 active customer-visible products; 161 active evidence rows (146 uk_new / 15 uk_used); 13 manufacturers. Zero missing evidence/branch, duplicate active source keys, missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Used evidence remains reference-only and does not affect automatic valuation. Database-only change; no Worker deployment.

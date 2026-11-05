@@ -427,3 +427,12 @@ Database-only catalogue update. No Worker deployment, application code, schema, 
 
 ## 2026-11-05 Nintendo Switch 2 controller batch 4
 Added 11 further PowerA, Turtle Beach and GXTrust controller models/editions with 11 active UK-new evidence rows in both LIVE and TEST. Observed prices: PowerA Mario Kart World £37.99, Super Mario £49.99, Pokémon £54.99, Pikachu Moments £49.99, wired Black £14.99, wired Mushroom Kingdom £14.99; Turtle Beach Rematch Wireless Black £39.99, Mario Kart World £54.99, Koopa Troop £54.99, The Legend of Zelda £24.97; GXTrust Muta Wired White £24.99. Argos and Currys UK controller category listings are recorded as evidence sources. Branch totals in each environment: 43 active visible products, 46 active evidence rows (44 UK-new / 2 UK-used), zero visible products missing active evidence. All 11 new products/evidence match across environments. Retail asking prices are not completed-sale prices. No code/schema/valuation/deployment or tenant/transaction changes. Used evidence remains reference-only. Exact product/evidence IDs are in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-04.md.
+
+
+## 2026-11-05 Nintendo Switch 2 controller catalogue — Batch 5
+Added two further confirmed Switch 2-compatible controllers to both LIVE and TEST, with active UK-new GBP evidence:
+- Freaks and Geeks Wireless Controller — Dragon Blossom, £29.99 at Argos. Argos confirms compatibility with Switch 2, original Switch, Switch OLED and PC; EAN 3701625906025. Brand/manufacturer record added as Freaks and Geeks (Trade Invaders).
+- DragonShock FIFA WorldCup 26 AURORA+ Wireless Controller — England, £44.99 at Argos. The Argos EAN 5061111810167 is identified by DragonShock's distributor catalogue as the AURORA+ England Switch 2 model; added under manufacturer DragonShock, not FIFA.
+Sources: https://www.argos.co.uk/product/8535508 ; https://www.argos.co.uk/product/8384467 ; https://cld.eu/en/publisher/dragonshock .
+
+Nintendo Controllers branch totals in both environments: 45 active customer-visible products, 48 active evidence rows, and zero visible products without active evidence. The new records are matched between LIVE and TEST by model, package key, source and price. No Worker deployment, schema/application/valuation changes, or tenant/transaction data changes. Used evidence remains reference-only and excluded from automatic valuation. Exact IDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-05.md.

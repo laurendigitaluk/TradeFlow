@@ -4059,3 +4059,8 @@ Queue migration: `20261105190000_central_catalogue_research_review_queue`. This 
 ## Subscriber-owned AI provider option retired — 5 November 2026
 
 The Platform Owner AI settings no longer offer the subscriber-supplied provider option. The TradeFlow Assistant remains available to subscribers as a website feature. Existing subscriber accounts, tenants, websites, customer conversations and messages are retained. The database configuration was already `active_provider='none'` and `subscriber_provider_enabled=false` in both environments at the time of this change. The UI change is isolated on this feature branch and has not been deployed.
+
+
+## Agent Control Centre
+
+The owner dashboard includes an Agent Control Centre link and panel showing registered agents, status, current task, counters, heartbeat, errors and recent activity. It reads the environment-local agent telemetry tables through an authenticated owner RPC and refreshes every 30 seconds. Worker telemetry is written through a service-role-only RPC. The panel is staged on this branch and is not deployed.

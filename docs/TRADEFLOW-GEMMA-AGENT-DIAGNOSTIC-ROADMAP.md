@@ -153,3 +153,10 @@ Important constraints:
 - Failure points: missing/ambiguous category, manufacturer or branch; duplicate product identity (including NULL branch); inactive product; package-name conflict; invalid source/status/excerpt; failed insert or failed post-write verification. Fail closed.
 - Write path: create missing product independently in each environment; preserve environment-specific UUIDs; set `customer_visible=false`; verify exact model/package and active state in each environment; only then update TEST queue status to imported and save both product IDs.
 - Verification state: committed on feature branch only. Research PC tests, controlled single-candidate import and post-import database parity check remain outstanding. No TEST/LIVE product writes or deployment have occurred.
+
+
+## Free local search provider — 5 November 2026
+
+Brave Search API is no longer a dependency of TradeFlow Gemma. The evidence research worker in `tools/tradeflow-gemma-agent/src/agent.mjs` and the official release monitor in `src/release-monitor.mjs` now query a local SearXNG JSON endpoint configured by `SEARXNG_BASE_URL` (default `http://127.0.0.1:8080`). The Research PC package includes `docker-compose.yml` and `searxng/settings.yml`; Docker binds the search service to loopback only. `.env.example` no longer contains `BRAVE_SEARCH_API_KEY`. No paid search API, subscription or card is required by the agent. SearXNG is free software, but upstream search engines can rate-limit or block automated traffic; do not describe this as unlimited guaranteed search capacity. Worker failure remains fail-closed when SearXNG is unavailable. The PowerShell launcher now checks the local JSON endpoint before research starts.
+
+Verification at this checkpoint: GitHub feature-branch code and test fixtures updated. The Research PC has not yet downloaded these changes, Docker Desktop/SearXNG have not yet been installed or started, and the new runtime tests have not yet been executed locally. No Supabase data, schema, queues, product/evidence rows, tenant data, Stripe settings, Workers or deployments were changed. Production and TEST application branches remain untouched.

@@ -26,3 +26,8 @@ SearXNG software is free/open source and this architecture does not require an A
 ## Verification boundary
 
 GitHub feature-branch edits are committed. Research PC has not yet downloaded this revision, Docker Desktop/SearXNG have not yet been installed or started, and `npm test` has not yet been run against this revised branch on the PC. No Supabase database, queue, catalogue, evidence, tenant, payment, Stripe, Worker or deployment changes were made. TEST and LIVE application branches remain untouched.
+
+
+## External Research PC secrets configuration — 5 November 2026
+
+Preserve the existing separate GearCashOut configuration folder. The Gemma PowerShell launcher and Node entry point now read the existing secrets file at `C:\\GearCashOut-Config\\.env` by default; an alternate path can be supplied through `TRADEFLOW_GEMMA_ENV_FILE`. Do not create a new `.env` inside the downloaded repository, copy `.env.example` over the existing secrets file, or move/rename the GearCashOut config folder. The launcher validates required TradeFlow TEST/LIVE setting names and project hostnames without printing secret values. SearXNG uses its built-in local default unless `SEARXNG_BASE_URL` is already configured. Changes are committed on the Gemma feature branch only; no PC config, Supabase data or deployment has been changed.

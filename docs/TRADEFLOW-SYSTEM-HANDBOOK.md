@@ -3568,3 +3568,8 @@ Catalogue research is separate from the subscriber-facing assistant. Gemma worke
 ## Subscriber AI provider controls — 5 November 2026
 
 Subscriber-supplied AI provider selection is removed from the Platform Owner dashboard UI. The TradeFlow Assistant and customer messaging are retained as part of the subscriber website. Do not delete subscriber accounts, tenant records, websites, customer accounts or assistant conversations. This is a source change on an isolated feature branch, not a LIVE deployment.
+
+
+## Agent Control Centre
+
+Platform Owner navigation includes an Agent Control Centre panel. It displays agent status and activity from the environment-specific telemetry tables. The authenticated read RPC checks active platform-owner membership; service-role workers report events through a separate RPC. The UI is staged on this branch and has not been deployed.

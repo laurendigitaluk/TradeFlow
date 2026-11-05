@@ -4,7 +4,7 @@ $EnvFile = Join-Path $AgentRoot ".env"
 $Supervisor = Join-Path $AgentRoot "Start-TradeFlow-Gemma-Service.ps1"
 if (-not (Test-Path -LiteralPath $EnvFile -PathType Leaf)) { throw "TradeFlow .env is missing from the agent folder. No task was installed." }
 if (-not (Test-Path -LiteralPath $Supervisor -PathType Leaf)) { throw "TradeFlow Gemma supervisor script is missing." }
-$PowerShell = (Get-Command powershell.exe -ErrorAction Stop).Source
+$null = Get-Command npm -ErrorAction Stop\n& node --check (Join-Path $AgentRoot "src\\task-worker.mjs")\nif ($LASTEXITCODE -ne 0) { throw "Gemma task worker syntax check failed. No scheduled task was installed." }\nPush-Location $AgentRoot\ntry { & npm test; if ($LASTEXITCODE -ne 0) { throw "Gemma validation tests failed. No scheduled task was installed." } } finally { Pop-Location }\n$PowerShell = (Get-Command powershell.exe -ErrorAction Stop).Source
 $Action = New-ScheduledTaskAction -Execute $PowerShell -Argument "-NoProfile -NonInteractive -ExecutionPolicy Bypass -File `"$Supervisor`"" -WorkingDirectory $AgentRoot
 $Trigger = New-ScheduledTaskTrigger -AtLogOn -User ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name)
 $Principal = New-ScheduledTaskPrincipal -UserId ([System.Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited

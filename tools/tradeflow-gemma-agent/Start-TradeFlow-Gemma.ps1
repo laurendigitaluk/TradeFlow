@@ -5,11 +5,11 @@ param(
 
 $ErrorActionPreference = "Stop"
 $AgentRoot = $PSScriptRoot
-$EnvFile = Join-Path $AgentRoot ".env"
+$EnvFile = if ($env:TRADEFLOW_GEMMA_ENV_FILE) { $env:TRADEFLOW_GEMMA_ENV_FILE } else { "C:\GearCashOut-Config\.env" }
 $TaskPath = if ([System.IO.Path]::IsPathRooted($TaskFile)) { $TaskFile } else { Join-Path $AgentRoot $TaskFile }
 
 if (-not (Test-Path -LiteralPath $EnvFile -PathType Leaf)) {
-    throw "Missing local .env. Copy .env.example to .env and configure Ollama, local SearXNG and both TradeFlow environments. Do not send the keys to anyone."
+    throw "Missing external configuration file at the configured path. The default is C:\GearCashOut-Config\.env. Keep this file separate from the downloaded repository and do not copy or overwrite it."
 }
 if (-not (Test-Path -LiteralPath $TaskPath -PathType Leaf)) {
     throw "Task file not found: $TaskPath"

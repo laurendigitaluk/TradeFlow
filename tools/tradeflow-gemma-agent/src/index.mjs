@@ -8,7 +8,7 @@ const args=process.argv.slice(2);const enqueue=args.includes('--enqueue');
 if(args.includes('--apply'))throw new Error('--apply is retired: Gemma can only enqueue candidates for ChatGPT review');
 const taskPath=args.find(x=>!x.startsWith('--'));
 if(!taskPath)throw new Error('Usage: npm start -- tasks/example.json [--enqueue]');
-const env={...process.env};const envText=await readFile(resolve(root,'.env'),'utf8');
+const env={...process.env};const configPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||'C:\\GearCashOut-Config\\.env';const envText=await readFile(configPath,'utf8');
 for(const line of envText.split(/\r?\n/)){const m=line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);if(m&&env[m[1]]===undefined)env[m[1]]=m[2].replace(/^['"]|['"]$/g,'');}
 const roster=JSON.parse(await readFile(resolve(root,'tasks/agent-roster.json'),'utf8'));
 const rosterByKey=new Map(roster.map(x=>[x.agent_key,x]));

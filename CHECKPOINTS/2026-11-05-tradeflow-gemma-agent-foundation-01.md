@@ -97,3 +97,8 @@ Committed to `feature/tradeflow-gemma-agent-foundation-20261105`:
 ## GBP price-validation fix — 5 November 2026
 
 Updated `tools/tradeflow-gemma-agent/src/agent.mjs` on the Gemma foundation feature branch so the pound sign is generated with `String.fromCharCode(163)` instead of a literal source character. This addresses Windows text-encoding/mojibake risk without relaxing exact price matching. Commit: `88b00bb64b371f798d8eb2487a9995d4e0c63532`. Research PC `npm test` is still required; no database writes, imports, merges or deployments occurred.
+
+
+## Research PC launcher correction — 5 November 2026
+
+Fixed `Start-TradeFlow-Gemma.ps1` on the Gemma foundation feature branch. It now exposes safe dry-run by default and `-Enqueue` for TEST review-queue staging; it no longer offers the retired `--Apply` flag that would pass a rejected `--apply` argument. Preflight checks local `.env` presence, required settings, fixed TEST/LIVE project hostnames, Ollama/model availability and `npm test` before the worker starts. This script change has not yet been executed on the Research PC. No catalogue/queue import or deployment occurred.

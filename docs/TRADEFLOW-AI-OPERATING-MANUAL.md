@@ -3239,3 +3239,12 @@ Added Original Prusa SL1S SPEED (£1,999; printer-only option, CW1S bundle exclu
 
 ## 2026-11-05 Switch 2 controller batch 4
 Added 11 PowerA, Turtle Beach and GXTrust controller editions with UK-new GBP evidence in both LIVE and TEST. Sources: Argos and Currys UK Switch 2 controller listings. Branch totals now 43 active visible products and 46 active evidence rows (44 UK-new, 2 UK-used), with no visible product missing active evidence. The new rows match across environments. Retail prices are asking prices, not completed sales. Used evidence remains reference-only and excluded from automatic valuation. No deployment, schema, code, valuation, tenant or transaction changes. UUID checkpoint: CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-04.md.
+
+
+## 2026-11-05 Nintendo Switch 2 controller catalogue — Batch 5
+Added two further confirmed Switch 2-compatible controllers to both LIVE and TEST, with active UK-new GBP evidence:
+- Freaks and Geeks Wireless Controller — Dragon Blossom, £29.99 at Argos. Argos confirms compatibility with Switch 2, original Switch, Switch OLED and PC; EAN 3701625906025. Brand/manufacturer record added as Freaks and Geeks (Trade Invaders).
+- DragonShock FIFA WorldCup 26 AURORA+ Wireless Controller — England, £44.99 at Argos. The Argos EAN 5061111810167 is identified by DragonShock's distributor catalogue as the AURORA+ England Switch 2 model; added under manufacturer DragonShock, not FIFA.
+Sources: https://www.argos.co.uk/product/8535508 ; https://www.argos.co.uk/product/8384467 ; https://cld.eu/en/publisher/dragonshock .
+
+Nintendo Controllers branch totals in both environments: 45 active customer-visible products, 48 active evidence rows, and zero visible products without active evidence. The new records are matched between LIVE and TEST by model, package key, source and price. No Worker deployment, schema/application/valuation changes, or tenant/transaction data changes. Used evidence remains reference-only and excluded from automatic valuation. Exact IDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-05.md.

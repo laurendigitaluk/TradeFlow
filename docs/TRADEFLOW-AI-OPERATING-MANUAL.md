@@ -3681,3 +3681,10 @@ All five insert statements returned the new product/evidence keys. Independent r
 
 ## Switch 2 controller accessory additions — 5 November 2026
 The Nintendo Controllers branch was extended in both TEST and LIVE with Nintendo Switch 2 Joy-Con 2 Wheel Pair (Argos £16.99, EAN 0045496321383) and Joy-Con 2 Charging Grip (Argos £29.99; John Lewis £25.99; EAN 0045496321376). Three active UK-new GBP/New evidence rows per environment. Both products are active/customer-visible. Current verified totals in each environment: 103 products, 109 UK-new evidence rows covering all 103 products, 2 UK-used reference rows, and zero active visible products missing active or UK-new evidence. No Worker deployment or code/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change. The accessories require Joy-Con 2 controllers, which are not included.
+
+
+## Camera catalogue research — Brinno batch 09 (5 November 2026)
+
+LIVE-only evidence added for the existing active Brinno BCC5000 Wi-Fi & 4K Construction Time Lapse Bundle: £1,899.00 GBP, official BrinnoUK construction kits collection, https://www.brinnouk.com/collections/construction-timelapse-kits. Availability is recorded as unknown because the page lists the product and price but does not independently confirm stock. The product had zero qualifying active GBP/source-linked evidence before this insert; insert returned the new evidence key. No product master or lifecycle changes.
+
+Brinno's current support centre identifies BBT2000, TLC200, TLC200Pro and BCC200 BLE in its product/support lists, while the EOL FAQ explicitly lists BBT2000 and the TLC200Pro/BCC200 family as end-of-life. No unsupported current new-market price was added for those models. Brinno's homepage states TLC300 replaced TLC200Pro. LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. See PROJECT-MEMORY/2026-11-05-camera-research-batch-09.md and CHECKPOINTS/2026-11-05-camera-research-batch-09.md.

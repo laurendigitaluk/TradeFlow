@@ -4016,3 +4016,17 @@ No application code, schema, RLS, RPC, Edge Function, valuation, Stripe, tenant/
 ## Nikon used-market batch 20 — D7500 condition-specific listings (5 November 2026)
 
 Added two additional MPB UK D7500 asking-price observations in both databases, sourced from the current UsedLens retailer index: Good condition £424 and Excellent condition £494. These are live retailer asking prices for specific condition grades, not completed sales or dealer acquisition offers. Source https://usedlens.co.uk/product/nikon-d7500 (index lists 62 current listings across six retailers). LIVE evidence IDs: 6371cea1-4473-4863-9c6f-d2a7d95a209d (£424 Good), 8a98a13a-4af3-4842-a560-a6671cd7efdb (£494 Excellent). TEST IDs: 2db171d9-6f4d-48eb-81bd-baf1b56f5dc5 (£424 Good), b5289924-2c0c-4899-95b9-9db347fe3179 (£494 Excellent). All four independently read back active, GBP, used. Earlier typical £529 and low £424 evidence retained. MPB D5300 (26 listings £174–£284) and D3400 (9 listings £209–£269) researched but neither exact active product master was found in LIVE or TEST; no mislinked evidence or unrequested master creation. No schema, RLS, app, valuation, lifecycle, Stripe, tenant/customer/order/payment/Worker changes; no deployment.
+
+
+
+## Gaming console catalogue continuation — batch 07 (5 November 2026)
+
+TEST was written first and read back before the independent LIVE insert. Four UK-new GBP retailer observations were added to existing Xbox console masters; no product masters or package records were created or altered:
+- Xbox Series S 512GB Standard Console: Argos UK £429.00, https://www.argos.co.uk/product/5812657; Currys UK £429.00, https://www.currys.co.uk/products/microsoft-xbox-series-s-512-gb-ssd-10205195.html.
+- Xbox Series X 1TB Disc Edition Console: Argos UK £669.99, https://www.argos.co.uk/product/4881139; Smyths Toys UK £669.99, https://www.smythstoys.com/uk/en-gb/gaming-and-tech/xbox-series-x-s/xbox-series-x-s-consoles/xbox-series-x-1tb-console/p/192012.
+
+All four records are uk_new, GBP, condition New, availability listed, with unique source_record_key values and observation date 5 November 2026. TEST evidence IDs: 9b48d535-fe7f-4fde-83fa-b3442c139202, 1398c15d-85f0-4661-9334-2e9ef52d4a8c, d375b578-8396-4135-85f8-e190f65f5f3b, 4e55d92b-3701-4620-bc21-da35836822f5. LIVE evidence IDs: 0085700e-20b1-423b-bc43-0d622cd31b60, 8c5eee05-af3b-464a-86af-5343618af7ae, ed8db4e0-8351-4a40-a3ad-a426178446a9, 805e0908-530a-4871-8541-b2800fd2b329. Product/evidence UUIDs are environment-specific; matching was performed by exact model/package keys within each environment.
+
+Independent post-write verification: TEST and LIVE each have 285 active gaming products, 277 customer-visible products, and 413 active gaming evidence rows (248 UK-new / 165 UK-used). No visible product is missing all evidence; 81 visible products still lack UK-new evidence and 182 lack UK-used evidence. Zero active evidence integrity failures and zero duplicate active source keys. All 20 gaming branches have matching active and visible product counts between environments.
+
+No schema, RLS, RPC, Edge Function, valuation, customer/tenant/order/payment/Stripe/subscription/domain data, application code, Worker or deployment changes. UK-used evidence remains reference-only and does not affect automatic buying valuations. Continue with product-specific UK retailer and UK second-hand research; do not invent or misattach evidence to a similar model or bundle.

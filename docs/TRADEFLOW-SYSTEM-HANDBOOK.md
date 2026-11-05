@@ -2043,3 +2043,20 @@ The separate **3D Printer Equipment & Accessories** branch remains active but cu
 Used UK observations remain reference-only and must not feed automatic valuation calculations. New UK retail observations may support the new-market comparison path. Preserve source URL, GBP currency, package identity, condition, observation date and a unique source record key.
 
 This was a database-only evidence refresh. No application code, schema, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Cloudflare Worker deployment changed. Catalogue-only data updates do not require a Worker deployment.
+
+
+## UK-used reference evidence addition — 5 November 2026
+
+A current UK eBay listing was independently recorded in LIVE and TEST for the existing **Bambu Lab P1S — Standard Printer** package:
+
+- Asking price: **£295.08**
+- Condition: **Used**
+- Seller location stated on listing: Manchester, United Kingdom
+- Source: https://www.ebay.co.uk/itm/880040550398
+- Source record key: `ebay-uk:p1s-standard:880040550398:2026-11-05`
+
+This is an active listing asking price, not a completed-sale result. Keep it in **UK-used** evidence and do not use it as an automatic valuation input. It is attached to the standard printer package, not either AMS bundle.
+
+### Latest verified totals after this addition
+
+Both environments now contain 183 active 3D printer product/package records across 17 manufacturers and 207 active evidence rows: 195 UK-new and 12 UK-used. All 183 products have UK evidence, and no overseas evidence is active in this branch. Product identity parity remains exact between LIVE and TEST. These totals supersede the 206-evidence count in the earlier 5 November price-refresh note.

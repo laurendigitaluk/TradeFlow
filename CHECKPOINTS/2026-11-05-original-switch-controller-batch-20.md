@@ -34,3 +34,22 @@ No application code, schema, valuation logic, RLS, Edge Functions, Stripe or ten
 
 ## Batch 21 — HORI racing wheels — 5 November 2026
 Two HORI Switch 2 racing wheel controllers were added independently to LIVE and TEST: Pro Mini Red (EAN 4961818042445) and Pro Deluxe Red/Black (EAN 4961818042469). Four active UK-new GBP/New evidence observations were recorded on 5 November 2026: Mini £69.99 Smyths and £74.99 Argos; Deluxe £104.99 Very and £119.99 Argos. Both products are active and customer-visible. Verified totals in each environment are now 99 products, 102 UK-new evidence rows covering all 99 products, and 2 UK-used reference rows covering 2 products. No active visible product is missing evidence. Two pre-existing records share the generic package key single-controller; they were not changed because duplicate product identity is unproven. No Worker deployment or code/schema/valuation/RLS/tenant/transaction changes. TEST and LIVE remain separate.
+
+
+## Further Nintendo controller additions — 5 November 2026
+
+Two more products were independently added to TEST and LIVE:
+- Nintendo Switch 2 Pro Controller — Resident Evil Requiem Edition; EAN-13 0045496321840. UK-new observations: Argos £69.99, Currys £74.99, Very £83.99.
+- Nintendo GameCube (GCN) Controller — Nintendo Classics; Nintendo Store UK £58.99. Nintendo Switch 2 only; Nintendo Switch Online membership required to purchase. Nintendo Store item ID 000000000010015326 is stored as a non-GTIN identifier.
+
+Four active UK-new GBP/New evidence records were added on 5 November 2026 with retailer/source URLs. Both products are active/customer-visible.
+
+Current verified Nintendo Controllers branch totals in both environments:
+- 101 active/customer-visible products.
+- 106 active UK-new evidence rows covering all 101 products.
+- 2 active UK-used reference rows covering 2 products.
+- Zero active visible products missing active evidence or UK-new evidence.
+
+This supersedes the earlier 99 products / 102 UK-new evidence total in the previous addendum. The Grey and Neon Yellow/Neon Yellow original Joy-Con pairs remain research-only: official variants are confirmed, but reliable current UK new-price evidence was insufficient to add them. Do not use stale price pages as current evidence.
+
+No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.

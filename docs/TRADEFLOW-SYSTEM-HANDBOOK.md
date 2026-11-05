@@ -3006,3 +3006,19 @@ Added Sovol as a new master manufacturer and six UK-priced product configuration
 Added Anycubic Photon P1 Dual-Color / Dual-Material Platform Bundle as a distinct package configuration (£469 UK-new evidence; official page shows sold out): https://uk.anycubic3d.com/products/photon-p1-dual-color-and-dual-material-printing. Added a fresh 5 November standard Photon P1 UK-new price observation (£449, sold out), retaining the previous 4 November observation rather than overwriting it: https://uk.anycubic3d.com/products/photon-p1-resin-3d-printer.
 
 Verification after this batch: LIVE 171 product rows / 164 active visible / 190 active evidence (175 UK-new, 15 UK-used); TEST 172 / 164 / 190. Both have zero active visible products missing evidence, zero duplicate active product keys, zero duplicate active evidence source keys and zero invalid active evidence (missing source URL/key, non-positive price or non-GBP currency). Both contain 14 manufacturers; Sovol has 6 products and Anycubic 21. UK-used evidence remains reference-only and does not affect automatic valuation. Keep sold-out, pre-order and expired-delivery qualifications intact. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.
+
+
+### Camera category research — batch 02 (LIVE, 5 November 2026)
+
+Continued Blackmagic Design camera research. Added UK GBP observations to existing active camera products:
+- Micro Studio Camera 4K G2 — £809 UK manufacturer list price; stock unknown.
+- Pocket Cinema Camera 4K — £849 Park Cameras, marked in stock; separate MPB used-market reference from £669, reference-only.
+- Studio Camera 4K Plus G2 — £1,065 UK manufacturer list price; stock unknown.
+- Studio Camera 4K Pro G2 — £1,455 UK manufacturer list price; stock unknown.
+- Studio Camera 6K Pro — £1,909 UK manufacturer list price; stock unknown.
+- PYXIS 12K PL — £3,139 UK manufacturer promotional price (was £3,925); stock at retailer unknown.
+- PYXIS 6K L Mount — £1,525 UK manufacturer list price; stock at retailer unknown.
+
+Sources include https://www.blackmagicdesign.com/uk/products ; https://www.blackmagicdesign.com/uk/products/blackmagicpyxis/blackmagicraw ; https://www.parkcameras.com/video/blackmagic/ ; https://www.mpb.com/en-uk/product/blackmagic-design-pocket-cinema-camera-4k .
+
+Read-back after batch: 722 active Cameras products; 364 have qualifying active GBP evidence with source URL; 358 still require qualifying evidence. Seven additional product records gained evidence coverage. UK-used MPB observation is reference-only and excluded from automatic valuation. No product master/lifecycle/valuation/application/schema/RLS/tenant/customer/order/payment changes; LIVE only; no Worker deployment.

@@ -2306,3 +2306,6 @@ The page is an explanation of the growing catalogue and research process, not a 
 
 ## Finding Catalogue & AI Research from public pages — 4 November 2026
 The **Catalogue & AI Research** link is available from the top navigation across the main TradeFlow public pages, including the homepage, How It Works, Plans & Features, Examples, Contact Us, Terms and Privacy. It appears after Plans & Features. The page describes the expanding master product catalogue and the AI-assisted UK market-evidence process.
+
+## Browsing the product catalogue — 5 November 2026
+The **Catalogue & AI Research** item in the top navigation opens a category menu across the public TradeFlow pages. Select a category to open the catalogue browser with that category pre-selected, or choose **View complete catalogue**. On the catalogue page, search by manufacturer, product model or product name, or use the category filter. Results are shown 24 at a time with Previous and Next controls. The public browser shows active, customer-visible product names and package variants; it does not show internal buying settings, customer information, prices or private market-evidence records. Whether a product appears on an individual business website depends on that business's own catalogue selections.

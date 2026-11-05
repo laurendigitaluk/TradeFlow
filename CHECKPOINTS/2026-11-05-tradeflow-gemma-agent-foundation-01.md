@@ -79,3 +79,16 @@ Added `src/import-approved.mjs` and `npm run import-approved`. The importer read
 ## Agent Control Centre increment — 5 November 2026
 
 Added agent status and activity telemetry tables and owner/service-role RPCs to both TEST and LIVE. Seeded nine named specialist agents. Added `agent-telemetry.mjs`; Gemma task runner reports task lifecycle and source progress to both environments. ReleaseMonitor and approved evidence importer also report activity. Added Agent Control Centre panel, sidebar link, cards, activity table and 30-second refresh to the corresponding LIVE and TEST dashboard feature branches. The dashboard code is not deployed. Both environments currently show nine registered agents and zero activity events; no worker heartbeat has been received. Research PC runtime and scheduling remain outstanding.
+
+
+## Approved product-master importer increment — 5 November 2026
+
+Committed to `feature/tradeflow-gemma-agent-foundation-20261105`:
+- Added `tools/tradeflow-gemma-agent/src/import-approved-products.mjs`.
+- Added package script `npm run import-approved-products`.
+- Documented operation and limitations in the agent README.
+- Import reads only approved `product_candidate` rows from the TEST owner queue.
+- Requires confirmed release status, official manufacturer HTTPS source and exact model in source excerpt.
+- Resolves category/manufacturer/optional branch/product independently in TEST and LIVE; fails closed on ambiguity, duplicate identity, inactive product or package conflict.
+- Creates missing master rows separately with independent UUIDs and `customer_visible=false`; verifies both environments before marking the TEST queue row imported.
+- No runtime tests, Research PC execution, Supabase writes, branch merge or deployment have occurred. Production and TEST application branches remain unchanged. Next: run `npm test` on Research PC, inspect source schema assumptions, then test one owner-approved candidate with a controlled pre/post DB comparison before larger batches.

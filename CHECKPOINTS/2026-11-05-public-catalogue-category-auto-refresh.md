@@ -23,3 +23,9 @@ Make the public Catalogue & AI Research category dropdown and navigation mega-me
 - Read-only LIVE RPC returns dynamic categories and 28,254 public-visible products at the time of inspection; Laptops is not yet public-visible in LIVE.
 - Code change is committed to `feature/catalogue-category-live-refresh-20261105` from `cloudflare-test`.
 - Browser/Worker deployment acceptance remains required before merging or promoting to LIVE. Do not call the change deployed until the TEST Worker and browser behaviour are checked.
+
+
+## TEST merge update — 5 November 2026
+- PR #240 merged into `cloudflare-test` at `94b836c4aea294679633519c035bba561d89e858`.
+- TEST Worker/browser rendering could not be independently accessed from this session; do not claim runtime deployment or browser acceptance is complete.
+- LIVE `production` branch and LIVE Supabase were not changed. Promote the scoped `catalogue-nav.js` refresh change only after TEST Worker/browser acceptance.

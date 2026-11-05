@@ -67,7 +67,7 @@ try {
         $NpmArgs += "--enqueue"
     }
     else {
-        Write-Host "DRY-RUN mode: source research and read-only TEST/LIVE product checks only. No queue or catalogue writes."
+        Write-Host "DRY-RUN mode: source research and read-only TEST/LIVE product checks. Agent telemetry is recorded; no queue or catalogue rows are written."
     }
 
     & npm @NpmArgs

@@ -1786,3 +1786,10 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Gaming catalogue continuation — 5 November 2026
+
+The Gaming Consoles & Accessories master catalogue was updated independently in TEST and LIVE. A distinct Nintendo Switch 2 Zelda 40th Anniversary console package was added with £429.99 Smyths UK-new evidence. The existing Zelda 40th Anniversary Pro Controller gained Argos £64.99 and Smyths £79.99 evidence (Currys £74.99 retained). Xbox Wireless Controller — Shock Blue was brought into LIVE to match TEST, with £59.99 Argos evidence. Three missing LIVE PlayStation handheld evidence rows were restored (PSP-2000, PSP Go and PS Vita OLED). Three existing null evidence URLs were repaired.
+
+Verified totals match in both environments: 277 active products, 269 visible products, 376 active evidence rows (211 UK-new / 165 UK-used). One visible product has no evidence: WD_BLACK C50 Expansion Card 512GB. Evidence integrity failures and duplicate active source keys are both zero. UK-used comparisons are reference-only and must not alter buying valuations. No code, schema, valuation, RLS, payment or Worker deployment changes. See CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.

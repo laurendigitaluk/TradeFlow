@@ -3285,3 +3285,9 @@ LIVE: existing Neo standard product b2c3d4e5-6f70-489a-8123-000000000101 refresh
 TEST: existing Neo standard product a1b2c3d4-5e6f-4789-9012-000000000101 refreshed evidence 20fda591-e7d9-4102-8a3a-e8fbc141ad41 (£199); new CFS nano combo product e26954ad-9225-4195-9a18-757163eb8e64 / evidence 1fb1de2e-410e-4806-8311-e22c0a227dd7 (£289).
 
 Verified totals after this addition: LIVE 186 products / 179 active visible / 206 active evidence / 191 UK-new; TEST 187 products / 179 active visible / 206 active evidence / 191 UK-new. Both environments have zero active visible products missing active evidence. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment required.
+
+## Nikon used-market evidence — batch 11 (5 November 2026)
+
+Added two active UK-used GBP reference observations to existing LIVE Nikon camera products, sourced from UsedLens UK live retailer index (prices updated 5 November 2026): Nikon D750 typical asking price £450 across 135 listings, product efea69a4-2861-4ce6-87e7-cc14e1e0f26d, evidence 694b727c-aa85-4e0e-b793-94a1e072ad55, https://usedlens.co.uk/product/nikon-d750; Nikon COOLPIX P1000 typical asking price £744 across 30 listings, product 46542fe9-05d7-4d3c-a94b-2d23218712e0, evidence 09ec7d81-1161-4079-91a3-d8e2b651bbf0, https://usedlens.co.uk/product/nikon-coolpix-p1000. These are market asking-price benchmarks, not dealer acquisition offers or automatic valuation inputs. Both rows independently read back active, GBP, used condition and source-linked.
+
+Checked UK-used evidence before inserting: D750 and P1000 had none; D850, D7500, D780 and P1100 already had UK-used records, so no duplicate rows were added. LIVE only; TEST untouched. No product master, lifecycle, UK-new evidence, valuation, schema, RLS, application, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment.

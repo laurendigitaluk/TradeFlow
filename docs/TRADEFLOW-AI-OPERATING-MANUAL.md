@@ -3725,3 +3725,7 @@ No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/cu
 
 ## PlayStation DualSense expansion — 5 November 2026
 Added five DualSense colour variants independently in TEST and LIVE: Midnight Black £59.99, Starlight Blue £59.99, Cosmic Red £59.99, Nova Pink £59.99 and Chroma Teal £64.99. One active UK-new GBP/New Argos evidence row with direct product URL per model. Both environments now have 16 active/customer-visible PlayStation controller products and 15 UK-new evidence rows covering 15 products. The pre-existing Sony DualShock 3 Wireless Controller - Black is the one active product without UK-new evidence; leave unchanged for legacy/discontinued research rather than adding stale or fabricated pricing. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.
+
+
+## PlayStation batch 2 — 5 November 2026
+Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Edition (£74.99 pre-order), and GTA VI White Limited Edition (£74.99 pre-order) in TEST and LIVE. GTA VI editions release 19 November 2026. TEST verified: 19 products, 19 UK-new evidence rows covering 18 products; one older DualShock 3 remains without UK-new evidence. LIVE product count is 19; recheck evidence count before asserting exact parity. No deployment or code/schema changes.

@@ -2979,3 +2979,7 @@ Final independent verification:
 - Active catalogue and evidence totals are aligned. TEST has one additional inactive/hidden Creality Ender-3 V3 Neo / Printer only duplicate row with no LIVE counterpart. Retain it hidden; do not delete or reactivate it as part of routine parity work.
 
 All evidence remains UK GBP. UK-used evidence is reference-only and must never feed automatic valuation. Sold-out, discontinued, stale-delivery and stock-conflict listings must retain their explicit availability qualification and must not be presented as confirmed available stock. No Worker deployment is required for these database-only changes.
+
+
+### Batch 17 — Anycubic 3D printer catalogue
+Added Kobra 4 Standard Printer and Photon Mono 4 Ultra Standard Resin Printer at £279 GBP in both TEST and LIVE; added a separate £849 UK-new Photon P1 Max pre-order observation. Stock and delivery qualifications are retained. Verification: LIVE 164 products / 157 active visible / 182 active evidence; TEST 165 / 157 / 182. No missing active evidence, duplicate active product/evidence keys or invalid active evidence. See PROJECT-MEMORY/2026-11-05-3d-printer-catalogue-batch-15.md and CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-17.md. No Worker deployment or valuation/application changes.

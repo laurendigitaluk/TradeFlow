@@ -3141,3 +3141,15 @@ Verified result in each environment after the update: 99 active/customer-visible
 An existing package-key collision remains: two older records in this branch use the generic key `single-controller`. It predates this batch and was not changed because the records were not established as duplicate products. Do not delete or merge them without checking their actual model/package identity and prior history. The two HORI additions use distinct product-specific package keys.
 
 This was a database-only catalogue/evidence update. No Worker deployment, application-code change, schema migration, tenant/customer/order/payment change, or valuation-rule change was made.
+
+
+## Additional Nintendo controller products — 5 November 2026
+
+Two further products were added independently to the TEST and LIVE Nintendo Controllers branches:
+
+- Nintendo Switch 2 Pro Controller — Resident Evil Requiem Edition. EAN-13 0045496321840. UK-new observations: Argos £69.99, Currys £74.99, Very £83.99.
+- Nintendo GameCube (GCN) Controller — Nintendo Classics. Nintendo Store UK £58.99. This is a Nintendo Switch 2 wireless controller, exclusive to Nintendo Switch Online members; the Nintendo Store item identifier is recorded as a non-GTIN identifier.
+
+All four observations are dated 5 November 2026 and include source links. Both products are active/customer-visible and have active UK-new evidence. The GameCube membership restriction is retained in the product notes.
+
+Post-update verified totals in each environment: 101 active/customer-visible Nintendo controller products; 106 active UK-new evidence rows covering all 101 products; 2 active UK-used reference rows covering 2 products. No active visible product is missing active evidence or UK-new evidence. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment change was made.

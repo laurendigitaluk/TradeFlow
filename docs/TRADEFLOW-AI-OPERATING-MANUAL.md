@@ -3721,3 +3721,7 @@ Three active UK-new evidence rows per environment, GBP/New, with source URLs and
 The wheel pair and charging grip are accessories rather than standalone electronic controllers; they are included here because Nintendo lists them within its Switch 2 controller/accessory range and they materially affect controller functionality. Keep the explicit compatibility notes: wheel pair only fits Joy-Con 2; charging grip only fits Joy-Con 2 and controllers are not included.
 
 No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes. TEST and LIVE remain separate.
+
+
+## PlayStation DualSense expansion — 5 November 2026
+Added five DualSense colour variants independently in TEST and LIVE: Midnight Black £59.99, Starlight Blue £59.99, Cosmic Red £59.99, Nova Pink £59.99 and Chroma Teal £64.99. One active UK-new GBP/New Argos evidence row with direct product URL per model. Both environments now have 16 active/customer-visible PlayStation controller products and 15 UK-new evidence rows covering 15 products. The pre-existing Sony DualShock 3 Wireless Controller - Black is the one active product without UK-new evidence; leave unchanged for legacy/discontinued research rather than adding stale or fabricated pricing. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.

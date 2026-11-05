@@ -3031,3 +3031,8 @@ Release monitoring is a separate Gemma specialist worker, not a subscriber featu
 ## Evidence import control
 
 The `import-approved` command is the only current path from approved queue evidence into shared market evidence. It is limited to existing master products and requires both environments to pass preflight. New product master creation and release candidate import are not yet implemented.
+
+
+## Evidence import control
+
+The `import-approved` command is the only current path from approved queue evidence into shared market evidence. It is limited to existing master products and requires both environments to pass preflight. New product master creation and release candidate import are not yet implemented.

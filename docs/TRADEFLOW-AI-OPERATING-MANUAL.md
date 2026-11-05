@@ -3260,3 +3260,7 @@ Added five Nintendo-branded Switch 2 variants to LIVE and TEST with UK-new GBP e
 
 ### 3D printer catalogue reconciliation — parallel Creality resin entries
 After Batch 12 verification, a further TEST read found active Creality HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) entries, each with active UK-new evidence. They are not in LIVE yet and were not part of Batch 12's 149/163 verified baseline. Current read: TEST 151 active visible products / 165 active evidence (150 UK-new / 15 UK-used); LIVE 149 / 163 (148 UK-new / 15 UK-used). Audit the exact TEST rows before mirroring; do not create duplicate TEST products. A duplicate Ender-3 V3 Neo row was found already inactive and hidden; keep it as audit history.
+
+
+## 2026-11-05 reconciliation note — original Switch Joy-Con pairs
+Two original Switch Joy-Con pairs (Purple & Orange and Neon Red & Blue, £59.99 each) were added to LIVE only with Argos UK-new evidence. TEST mirroring was blocked before completion. Current Nintendo Controllers branch totals: LIVE 52 active visible products / 55 active evidence; TEST 50 / 53. Both LIVE additions have evidence, but parity is not restored. Reconcile the two package keys in TEST or deactivate the LIVE-only entries before claiming full parity or continuing further original-Switch imports. Source: https://www.argos.co.uk/browse/technology/video-games-and-consoles/nintendo/nintendo-switch-controllers/c%3A812401/ .

@@ -10,8 +10,8 @@
 | Active products/packages in 3D Printers branch | 183 | 183 |
 | Manufacturers | 17 | 17 |
 | Active UK-new evidence | 195 | 195 |
-| Active UK-used evidence | 11 | 11 |
-| Total active evidence | 206 | 206 |
+| Active UK-used evidence | 12 | 12 |
+| Total active evidence | 207 | 207 |
 | Active products with UK evidence | 183 | 183 |
 | Active products without UK evidence | 0 | 0 |
 | Active overseas evidence | 0 | 0 |
@@ -47,3 +47,18 @@ Flashforge reference prices at observation: £719 and £849. Anycubic reference 
 2. Expand the separate accessories branch only when exact product identity and UK GBP evidence are verified.
 3. Add UK-used reference evidence where listing condition and model match are clear.
 4. Re-run independent LIVE/TEST parity and evidence-integrity checks after each batch.
+
+
+## Follow-up: UK-used reference evidence added 5 November 2026
+
+Added in both environments for Bambu Lab P1S, Standard Printer:
+- Evidence type: `uk_used`
+- Price: £295.08
+- Condition: Used
+- Seller location: Manchester, United Kingdom
+- Source: https://www.ebay.co.uk/itm/880040550398
+- Source key: `ebay-uk:p1s-standard:880040550398:2026-11-05`
+
+This is a live listing asking price, not a completed-sale result. It is reference-only and must not feed automatic valuations.
+
+Updated verified totals in each environment: 183 active products/packages, 17 manufacturers, 207 active evidence rows (195 UK-new / 12 UK-used), 183 products with UK evidence, zero products without UK evidence, and zero active overseas evidence. Product identity parity remains exact.

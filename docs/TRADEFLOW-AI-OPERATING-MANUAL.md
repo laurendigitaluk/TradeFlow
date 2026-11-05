@@ -4108,3 +4108,8 @@ Run `npm run import-approved` only after reviewing and approving the queue item.
 ## Approved evidence import command
 
 Run `npm run import-approved` only after reviewing and approving the queue item. The importer performs TEST/LIVE preflight, exact package resolution, source-key duplicate checks and mirrored evidence writes. It marks the TEST queue row imported only after both environments verify. It has not been run on the Research PC.
+
+
+## Agent Control Centre — 5 November 2026
+
+The Platform Owner dashboard now has an Agent Control Centre section. It reads through `platform_owner_get_ai_agent_control_centre` and displays registered specialist agents, status, current task, task/candidate/evidence counters, last heartbeat, errors and the 60 most recent activity events. It refreshes every 30 seconds while the dashboard is open. Agent telemetry is stored separately in each environment's `platform_ai_agent_status` and `platform_ai_agent_activity` tables. Gemma's Research PC worker reports to both TEST and LIVE through the service-role-only `platform_ai_agent_report_event` RPC. The roster currently includes mobile phones, gaming consoles, 3D printers, drones, cameras, metal detectors, laptops, release monitoring and the approved catalogue importer. A registered agent with no heartbeat is shown as Not started; this is not evidence that a worker is running. Dashboard changes are on the separate LIVE/TEST feature branches and have not been deployed.

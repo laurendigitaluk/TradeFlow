@@ -3273,3 +3273,14 @@ The public marketing navigation uses a dynamic **Catalogue & AI Research** mega-
 - Public browsing is limited to active `customer_visible` products. Individual business website availability still depends on that business's own selections.
 - Migration: `20261105010000_platform_public_catalogue_browser.sql`, applied independently to TEST and LIVE on 5 November 2026.
 - Validate search, category filters, next/previous pagination, dropdown on desktop/mobile, and public anon RPC access in browser before treating release as complete.
+
+
+### 3D printer catalogue expansion — Batch 5 — 5 November 2026
+
+Expanded the existing 3D Printers branch independently in TEST and LIVE. Added nine ELEGOO models (Neptune 4, Neptune 4 Pro, Neptune 4 Plus, Neptune 4 Max, Mars 5, Mars 5 Ultra, Saturn 4, Jupiter 2 and OrangeStorm Giga) plus the discontinued QIDI X-Max 3 legacy model. Added nine UK-new GBP retailer observations and one UK-used completed-sale observation. Printer-only variants remain separate from wash/cure and other accessory bundles. OrangeStorm Giga is recorded as pre-order, not in-stock. QIDI X-Max 3 is marked discontinued according to QIDI UK.
+
+Verified independently after both writes: 128 active customer-visible products in each environment; 141 active evidence rows (126 uk_new / 15 uk_used); zero visible products missing evidence or branch; zero duplicate active source_record_key groups; zero missing evidence URLs/keys, invalid prices, non-GBP prices or uk_new condition mismatches. The twelve manufacturers and their product counts are: Anycubic 18, Bambu Lab 26, Creality 13, Elegoo 12, Flashforge 3, Formlabs 9, Phrozen 13, Prusa Research 1, QIDI 12, Raise3D 10, Snapmaker 3 and Ultimaker 8.
+
+The QIDI X-Max 3 UK eBay sale is £361.42, sold 30 July 2026 (item 406940086609); the displayed total includes £11.42 Buyer Protection and is not seller proceeds. Nine ELEGOO UK retail observations are £169, £189, £279, £377, £154, £231, £299, £699 and £2,049 respectively; exact product URLs and evidence IDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-05.md.
+
+No new category or branch was created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. This was database-only catalogue and evidence work; no Worker deployment was required. TEST and LIVE use environment-specific manufacturer, product and evidence UUIDs. Continue TEST-first, then mirror to LIVE, and never infer used values from new retail prices.

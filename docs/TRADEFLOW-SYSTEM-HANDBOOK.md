@@ -2164,3 +2164,16 @@ Source listing: https://www.argos.co.uk/browse/technology/video-games-and-consol
 Post-insert verification in both LIVE and TEST: Nintendo Controllers branch totals are now 32 active customer-visible products and 35 active evidence rows (33 uk_new / 2 uk_used); zero visible products missing evidence. This batch independently verifies 13 products and 13 active evidence rows in each environment, all with positive GBP prices, source keys and New condition. Product/evidence model, package key, source and price parity was checked across environments. Used evidence remains reference-only and must not affect automatic valuation.
 
 Database-only catalogue update. No Worker deployment, application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment or custom-domain data changed. Exact environment-specific UUIDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-03.md.
+
+### 3D printer catalogue expansion — Batch 11 — 5 November 2026
+
+Added two Prusa Research printer-only products in TEST and LIVE:
+- Original Prusa SL1S SPEED — £1,999 UK new evidence from Fabinity. The listing has an explicitly selectable printer-only option; optional CW1S wash/cure bundle is excluded. Recheck before quotation. Source: https://www.fabinity.com/product/original-prusa-sl1s-speed-3d-printer-cw1s-bundle
+- Prusa Pro HT90 — £10,600 UK new evidence from 123-3D UK; listing marked backordered. Source: https://www.123-3d.co.uk/products/prusa-pro-ht90-3d-printer
+
+TEST product UUIDs: SL1S SPEED 8d7c7b10-8f01-4d3e-a101-000000000401; Pro HT90 8d7c7b10-8f01-4d3e-a101-000000000402. TEST evidence UUIDs: 8d7c7b10-8f01-4d3e-a101-000000000411 and 8d7c7b10-8f01-4d3e-a101-000000000412.
+LIVE product UUIDs: SL1S SPEED 9d7c7b10-8f01-4d3e-a101-000000000401; Pro HT90 9d7c7b10-8f01-4d3e-a101-000000000402. LIVE evidence UUIDs: 9d7c7b10-8f01-4d3e-a101-000000000411 and 9d7c7b10-8f01-4d3e-a101-000000000412.
+
+Independent category-scoped verification in TEST and LIVE after insertion: 147 active customer-visible products; 161 active evidence rows (146 uk_new / 15 uk_used); 13 manufacturers. Zero visible products missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. TEST and LIVE match exactly.
+
+No schema, application code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue/evidence work. Used evidence remains reference-only and must not affect automatic valuation.

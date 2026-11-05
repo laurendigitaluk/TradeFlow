@@ -2615,3 +2615,12 @@ TEST:
 - Nintendo GameCube product c03789fd-ca34-4ecd-941c-76a6e2008f6c; evidence 99794ab2-acdd-4956-923a-05935d5c6c94; key cashconverters-gamecube-015700300057-2026-11-02.
 
 Next: complete standard Nintendo 3DS, DSi and older home hardware (N64/SNES), then Xbox controllers/headsets/storage and PlayStation accessories. Maintain package-specific variants and avoid treating trade-in values as used sale evidence.
+
+
+## Gaming product catalogue — 5 November 2026
+
+The gaming catalogue now includes the Nintendo Switch 2 Zelda 40th Anniversary console and updated retailer comparisons for its matching Pro Controller. Xbox Shock Blue controller coverage and three PlayStation handheld price observations have also been brought into line between TEST and LIVE.
+
+Both environments have matching totals: 277 active gaming products, 269 customer-visible products and 376 UK market-evidence records. New retail prices and used-market observations are kept separate. Used listings and completed sales are reference comparisons, not automatic buying offers. One product still needs evidence: the 512GB WD_BLACK C50 Xbox storage expansion card. Its price will only be added when an exact UK source is verified.
+
+No website deployment was needed for these database-only catalogue changes. Further details are in CHECKPOINTS/2026-11-05-gaming-console-catalogue-continuation-batch-01.md.

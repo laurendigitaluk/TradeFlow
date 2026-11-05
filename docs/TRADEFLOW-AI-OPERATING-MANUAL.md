@@ -3843,3 +3843,20 @@ Correction to the earlier LIVE-only note: the Nikon used-market evidence from ba
 TEST verification: added matching evidence for D750 £450 (13255492-b7ce-4941-92db-d1679b2a9c03), COOLPIX P1000 £744 (8affa3f7-4344-40bb-89d6-e41d6079e887), COOLPIX A1000 £469 (5222d2ec-b40a-43ed-89c7-ee3f65b273da), A900 £314 (373add1f-68de-4b52-a5b6-e3943380dc9d), AW130 £136 (ec6f4c41-a803-4c6c-9598-20bc79d05006), B600 £117 (f0a5be26-46da-4f5e-967b-c8e419a7fc22), B700 £149 (10447eed-76fd-4cf7-b765-594787fd4d2a), D3300 £114 (cd171797-e940-4017-9b7c-a01b4b6c4abe), D3500 £79 (6f96661f-c2c6-445c-af37-51b692119f00), D5500 £249 (1f6cc769-30f1-441e-8991-e65e243e3aa9), D610 £259 (d7bb3d12-2abb-4f23-b47a-a3ead6cbb1a0), D700 £199 (daf3ea49-68f9-4876-9ce8-6e4bd7c928c3), and D7100 £279 (5f859dc4-930f-422f-b888-8ff6174dea09). All 13 rows were independently read back and confirmed active, GBP, used, with source URLs.
 
 TEST already contained older D3300 and D7100 used observations at different prices (£99 and £209); these were retained, and matching current observations were added rather than overwriting history. The Nikon catalogue has aligned matching observations for all 13 LIVE batch-11/12 targets in both environments. TEST-only unrelated records were not copied. No deployment or application, schema, valuation, RLS, Stripe, tenant, customer, order or payment changes.
+
+
+## Additional 3D printer catalogue additions — 5 November 2026
+
+Added Flashforge Adventurer 5X standard multicolour printer at £279.00 GBP (official UK store price reduced from £449.00): https://uk.flashforge.com/. LIVE product 3200eb99-8cf7-46dc-bad8-b3cfa8b8d874 / evidence 219b6262-fd23-4329-b22c-904387ea8e80; TEST product 7f266b64-c0c2-4dd1-80fc-fea0e1761220 / evidence 8114b3fd-0d2c-4b9d-8fc5-281b33dc889b.
+
+Added distinct Anycubic Kobra X Combo (base 7-colour package, expandable to 19 colours) at £429.00 GBP: https://uk.anycubic.com/products/kobra-x-combo-3d-printer. Official product page states ships in 24 hours and free express shipping. LIVE product 634078d8-39d8-4bf1-b01a-c391f481d4ec / evidence 14e0207a-f4d0-4d17-bd1b-9bc52078a976; TEST product 834e5612-67da-4ad2-be67-1bf4b638ea7d / evidence da4e3863-e612-4654-b706-69fe76cf3e20.
+
+Also completed the previous Ender-3 V4 CFS Combo addition at £289.00 from GM Crafts UK; product/evidence IDs and source are recorded in the immediately preceding continuation section. Verified that HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) already have current UK-new evidence in both environments; no duplicates were created. Flashforge CJ270 and Anycubic Kobra 3 Max V2 / Photon P1 Max already have active UK-new evidence in both environments.
+
+Verified 3D Printers totals after this batch:
+| Environment | Products | Active visible | Active evidence | UK-new | UK-used | Missing visible evidence |
+|---|---:|---:|---:|---:|---:|---:|
+| LIVE | 190 | 183 | 210 | 195 | 15 | 0 |
+| TEST | 191 | 183 | 210 | 195 | 15 | 0 |
+
+Both environments have zero duplicate product keys and zero active visible products missing evidence. UK-used remains reference-only and excluded from automatic valuation. LIVE and TEST were updated independently. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant/customer/order/payment changes. No Worker deployment required.

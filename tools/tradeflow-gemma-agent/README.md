@@ -4,7 +4,7 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 
 - Coordinator with bounded worker concurrency.
 - Separate UK-new and UK-used research tasks.
-- Brave Search source discovery; Gemma extracts only visible facts from fetched direct pages.
+- Local self-hosted SearXNG source discovery; Gemma extracts only visible facts from fetched direct pages. No paid search API or API key is required.
 - Rejects non-UK sources, non-GBP prices, wrong evidence type, unsupported prices, mismatched product identity and search/category pages.
 - Resolves exact master product independently in TEST and LIVE; environment UUIDs are never copied.
 - Checks `(source_name, source_record_key)` before insertion.
@@ -15,7 +15,7 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 
 1. Copy this folder to the Research PC working directory. Use `Start-TradeFlow-Gemma.ps1` as the dedicated Windows launcher; do not use the retired GearCashOut launcher.
 2. Run `npm test`.
-3. Copy `.env.example` to `.env`; configure Ollama, Brave Search and separate TEST/LIVE service-role keys. Never commit `.env`.
+3. Copy `.env.example` to `.env`; configure Ollama, local SearXNG and separate TEST/LIVE service-role keys. Never commit `.env`.
 4. Confirm `ollama list` contains the configured `OLLAMA_MODEL` tag and Ollama responds at `http://127.0.0.1:11434`.
 5. Run `npm start -- tasks/example.json` first. Inspect the output and sources. Use `--enqueue` only to stage candidates; importing is a separate owner-approved step.
 
@@ -55,3 +55,10 @@ New confirmed product masters are staged as `product_candidate` rows in the TEST
 ## Safe launcher and first-run sequence — 5 November 2026
 
 `Start-TradeFlow-Gemma.ps1` is the supported Windows entry point. It verifies the local `.env` exists, required setting names are populated without displaying secret values, TEST/LIVE URLs match the expected Supabase project refs, the configured Ollama model is installed, and `npm test` passes before starting research. Default invocation is dry-run: it performs Brave/Ollama research, exact TEST/LIVE product lookups and records agent telemetry, but does not write review-queue or catalogue evidence/product rows. Use `./Start-TradeFlow-Gemma.ps1 -Enqueue` only after reviewing dry-run output; this stages candidates in the TEST-only owner review queue and does not import catalogue products/evidence. The retired `--apply` mode is not supported. The launcher requires both environment service-role credentials because exact product identity is checked independently in both environments. Keep `.env` local and never share or commit its contents.
+
+
+## Search provider — free local operation
+
+Brave Search has been removed from the research and release-monitor code paths. Both now use the locally hosted SearXNG JSON endpoint configured by `SEARXNG_BASE_URL` (default `http://127.0.0.1:8080`). The included `docker-compose.yml` binds the service to loopback only, and `searxng/settings.yml` enables the JSON API. No search API key, paid subscription or search-provider payment method is required by this agent. SearXNG is free/open-source software; upstream search engines may still rate-limit or block automated requests, so this is not a guarantee of unlimited throughput. If results are temporarily unavailable, the worker fails closed rather than inventing URLs.
+
+Research PC setup: install Docker Desktop for Windows and start its engine. From this folder run `docker compose up -d`. Confirm `http://127.0.0.1:8080/search?q=test&format=json` returns JSON. Set `SEARXNG_BASE_URL=http://127.0.0.1:8080` in local `.env`; no Brave key is used or required. Stop the service with `docker compose down`.

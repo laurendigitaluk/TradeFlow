@@ -109,3 +109,14 @@ Important constraints:
 - ChatGPT review is interactive through the existing conversation and connected Supabase tools; no separate API chatbot or autonomous ChatGPT background worker is assumed.
 - Importer is not yet implemented. Do not manually treat `approved` as imported. Import must preflight both environments, write idempotently and verify exact parity.
 - TEST queue migration applied; LIVE migration not applied. Research PC runtime/tests and scheduled execution remain pending.
+
+
+## ReleaseMonitor specialist — 5 November 2026
+
+- Entry point: `tools/tradeflow-gemma-agent/src/release-monitor.mjs`.
+- Watchlist: `tools/tradeflow-gemma-agent/tasks/release-watchlist.json`.
+- Commands: `npm run release-monitor` (dry-run); `npm run release-monitor:enqueue` (writes only release-candidate rows to TEST review queue).
+- Discovery: Brave Search API, constrained to each watchlist official domain. Source fetch follows redirects only when final URL remains on the official domain.
+- Extraction: local Ollama configured by `OLLAMA_MODEL`; candidate states restricted to announced/preorder/released/available/update. Rumours are excluded.
+- Catalogue parity: exact manufacturer/model lookup is independently executed in TEST and LIVE. Missing on both -> pending review; present in one only -> needs_research; exact product already in both -> review as release/update note, never auto-create.
+- No product master creation, lifecycle-field updates, UK price evidence capture or Task Scheduler install in this increment. Tests authored; Research PC runtime execution remains pending.

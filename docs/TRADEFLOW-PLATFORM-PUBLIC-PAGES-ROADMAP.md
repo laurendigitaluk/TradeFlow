@@ -152,3 +152,13 @@ The owner visual editor's first-time layout conversion previously imported the c
 - Search mismatch: inspect the RPC's manufacturer/model/package/product_type matching; do not expose internal notes or evidence as a workaround.
 - Category URL not filtering first page: ensure query string is read before the initial RPC request.
 - Verify dropdown keyboard/click/mobile operation, search, category filter, result cards and pagination in both TEST and LIVE browsers. GitHub merge alone does not prove Worker deployment.
+
+
+## Public catalogue browser — category refresh update — 5 November 2026
+- Front end: `catalogue-research.html` → `catalogue-nav.js` → public category filter and `#catalogue-mega-grid`.
+- Data source: read-only `public.platform_public_catalogue_browse(text,text,integer,integer)` in the environment's own Supabase project.
+- Category inclusion: category must be active and contain at least one active, customer-visible master product. Counts are computed from those public-visible products.
+- Refresh: initial load, window focus, tab visibility return and a three-minute interval. The selected category is retained while still valid; a removed/unavailable category resets to All categories.
+- Failure points: wrong environment URL/key, RPC unavailable/permission error, inactive category, no active customer-visible products, stale deployed `catalogue-nav.js`, or browser tab not yet refreshed. Never bypass the public RPC with direct master-table reads; RLS intentionally denies direct access.
+- Environment state at checkpoint: TEST returned Laptops (8); LIVE did not yet return Laptops. No Computers category in either response. Both environments returned 3D Printers & Equipment, Mobile Phones and Gaming Consoles & Accessories. The datasets remain separate.
+- Browser and Cloudflare Worker acceptance must be completed before merge/release. See `CHECKPOINTS/2026-11-05-public-catalogue-category-auto-refresh.md`.

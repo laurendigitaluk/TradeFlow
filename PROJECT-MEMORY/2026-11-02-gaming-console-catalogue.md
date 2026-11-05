@@ -369,3 +369,31 @@ Research URLs: Smyths Switch 2 controller listings https://www.smythstoys.com/uk
 Recovery note: a prior interrupted attempt had inserted the PowerA Advantage Wireless Black product into TEST without evidence or LIVE parity. This pass completed the missing TEST evidence and inserted the matching LIVE product/evidence, then independently verified the final parity. No duplicate products were created.
 
 Post-insert verification in both LIVE and TEST: Nintendo Controllers has 8 active customer-visible products and 11 active evidence rows (9 UK-new / 2 UK-used); all 8 visible products have at least one active evidence row. Product and evidence rows match between environments. Existing official Nintendo Switch 2 Joy-Con 2 and Pro Controller records were retained unchanged. No category/branch creation, code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue work; no Worker deployment required. Continue with remaining verified Gioteck, HORI, CRKD, Deltaco, Snakebyte and other exact Switch 2 controller variants after manufacturer and duplicate checks in both environments.
+
+
+## 2026-11-05 Nintendo Switch 2 controller catalogue — Batch 2
+
+Added and verified 11 further Nintendo Switch 2 controller products and 11 UK-new evidence rows in both LIVE and TEST. Six manufacturer records were added in each environment: Gioteck, Snakebyte, HORI, CRKD, Deltaco and GXTrust. No existing manufacturer or product rows were overwritten.
+
+Products and observed UK GBP new prices (observed 2026-11-05):
+- Gioteck WX5+ Wireless RGB Controller — Dark Camo: £24.99 (Smyths Toys UK)
+- Gioteck WX5 Bluetooth Wireless Controller — Black: £19.99 (Smyths Toys UK)
+- Snakebyte GamePad S2 Wireless Pro: £10.00 (Smyths Toys UK)
+- Snakebyte GamePad RGB S2 Wireless Pro: £9.99 (Smyths Toys UK)
+- HORI Wireless HORIPAD Turbo — Pokémon Pixel Green: £54.99 (Argos)
+- HORI Wireless HORIPAD Turbo — Pokémon Pixel Red: £54.99 (Argos)
+- CRKD Nitro Deck 2 — Smoke Black: £89.99 (Argos)
+- CRKD ATOM+ Mini Bluetooth Controller — Retro Purple: £28.99 (Argos)
+- Deltaco GAM-198-T RGB Wireless Controller — Clear: £19.99 (Argos)
+- Deltaco GAM-196 Ergonomic Controller — Black: £29.99 (Argos)
+- GXTrust Muta Wireless Controller — Red/Blue: £24.99 (Argos)
+
+Research listing URLs:
+- Smyths Toys UK: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/gaming-controllers/nintendo-switch-2-controllers/c/nintendo-switch-2-controllers
+- Argos: https://www.argos.co.uk/browse/technology/video-games-and-consoles/nintendo/nintendo-switch-2-controllers/c%3A1054685/
+
+Evidence is stored as uk_new, GBP, item_condition New, with observed_at timestamp, source URL, retailer, and stable source_record_key. These are advertised retail asking prices, not completed-sale prices. No used evidence was inferred from retail listings. CRKD Nitro Deck 2 is a handheld controller/grip device and remains recorded as a controller product, not as a conventional standalone gamepad.
+
+Post-insert verification, separately run in both environments for the Nintendo Controllers branch: 19 active customer-visible products; 22 active evidence rows (20 uk_new / 2 uk_used); zero visible products missing evidence; zero invalid active evidence rows (missing URL/key, non-positive price or non-GBP currency). The 11 new product rows and 11 evidence rows match by model, package key, source and price in LIVE and TEST. Existing eight Nintendo controller products and their prior evidence were retained. The prior batch's counts were 8 products / 11 evidence; new totals are 19 / 22.
+
+Database-only catalogue change. No Worker deployment, code, schema, valuation logic, RLS, Edge Function, Stripe, tenant, customer, order, payment or custom-domain data changed. Used evidence remains reference-only and must not affect automatic valuation. Exact product/evidence UUIDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-02.md.

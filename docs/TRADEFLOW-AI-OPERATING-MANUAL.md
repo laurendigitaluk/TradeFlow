@@ -3635,3 +3635,10 @@ Both products are active/customer-visible. All four new UK-new evidence rows are
 The Grey and Neon Yellow/Neon Yellow original Joy-Con pair research remains open: official colour variants are confirmed, but current reliable UK new-retailer evidence was not sufficient to add them. Do not invent a current price or use stale listings as current evidence.
 
 Next: finish the remaining Nintendo controller completeness audit, then move to PlayStation controllers and Xbox controllers. Database-only work; no Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment changes.
+
+
+## Camera catalogue research — Brinno batch 07 (5 November 2026)
+
+LIVE-only UK GBP evidence added to five existing active products: Brinno BCC2000 £544.99 (Timelapse Store; availability unknown); BCC2000 Plus £719.00 (BrinnoUK, No Solar Kit configuration; page showed Add to cart); BCC2020 £432.00 starting price (BrinnoUK homepage; exact variant/availability unknown); TLC2020 + ATH1000 £399.00 starting price (BrinnoUK homepage; availability unknown); TLC2020 + ATH2000 £519.00 starting price (BrinnoUK homepage; availability unknown). Sources: https://timelapse.store/collections/brinno, https://www.brinnouk.com/products/bcc2000-plus, https://www.brinnouk.com/. Preserve starting-price and availability qualifications; do not treat them as confirmed stock except the BCC2000 Plus listing that displayed Add to cart.
+
+All five inserts were independently read back and verified active, GBP and source-linked. Existing product master records were used; no master or lifecycle changes. LIVE only; TEST untouched. No valuation, schema, RLS, application, Edge Function, Worker, tenant, customer, order, payment or Stripe changes. No Worker deployment required. Camera coverage totals remain unpublished pending the 722 versus 720 category-scope reconciliation.

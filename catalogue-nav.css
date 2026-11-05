@@ -15,3 +15,7 @@
 .catalogue-mega-loading{font-size:.76rem;color:#788596;padding:10px}
 .catalogue-nav-menu[open] .catalogue-mega-menu{display:block}
 @media(max-width:760px){.catalogue-nav-menu{display:block}.catalogue-nav-menu>summary{padding:8px 0}.catalogue-mega-menu{position:static;transform:none;width:100%;max-height:55vh;overflow:auto;padding:12px;box-shadow:none;margin:5px 0 10px}.catalogue-mega-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none}}
+
+.catalogue-nav-menu>summary{color:inherit;font:inherit;font-weight:650;white-space:nowrap;padding:4px 0}
+.catalogue-nav-menu>summary:hover{color:#ea580c}
+.catalogue-nav-menu>summary:focus-visible{outline:2px solid #fb923c;outline-offset:4px;border-radius:3px}

@@ -20,3 +20,16 @@ A subsequent TEST read detected two additional active, customer-visible Creality
 The two parallel TEST resin products have now been mirrored to LIVE and independently verified. HALOT-X1 Neo £199 and HALOT-X1 Max £1,599, both standard printer-only records; resin/wash-cure bundles excluded. TEST IDs: products a17c7b10-8f01-4d3e-a101-000000000502/503; evidence a17c7b10-8f01-4d3e-a101-000000000512/513. LIVE IDs: products c3d4e5f6-7081-49ab-9234-000000000502/503; evidence c3d4e5f6-7081-49ab-9234-000000000512/513. Official UK source pages: https://store.creality.com/uk/products/halot-x1-neo-resin-3d-printer and https://store.creality.com/uk/products/halot-x1-max-resin-3d-printer. Current availability is not confirmed because delivery estimates on indexed pages are stale/past; prices are captured as UK GBP new evidence, not guaranteed live checkout quotes.
 
 After mirroring, TEST and LIVE each report 151 active customer-visible 3D printer products and 165 active evidence rows (150 uk_new / 15 uk_used). LIVE read confirmed both product rows, both evidence rows, and counts. TEST read confirms the same totals and no visible products missing evidence, branches, duplicate active source keys, missing URLs/keys, invalid/non-GBP prices or uk_new condition mismatches. Previous statement that these two entries were pending in LIVE is superseded. No schema/application/valuation/RLS/Edge Function/Stripe/tenant/customer/order/payment changes; no Worker deployment. Used evidence remains reference-only.
+
+
+
+## Batch 13 — Creality printer-only additions — 5 November 2026
+
+Activated three canonical `printer-only` records in both environments:
+- SPARKX i7 Single £239 (not Autofill, Nano Combo or Color Combo); current stock/dispatch unconfirmed. https://store.creality.com/uk/products/sparkx-i7-3d-printer
+- HALOT-MAGE S 14K £439 standalone; resin and wash/cure bundles excluded. Page recently showed in stock with estimated delivery 2–6 November 2026. https://store.creality.com/uk/products/halot-mage-s-14k-resin-3d-printer
+- HALOT-R6 £119 standalone; current fulfilment unconfirmed due stale indexed page. https://store.creality.com/uk/products/halot-r6-resin-3d-printer
+
+TEST product UUIDs c7e4a901-6b32-4d8f-9a21-000000000601/602/603; TEST evidence UUIDs f73c9d20-9e43-4cb4-9a23-000000000611/612/613. LIVE product UUIDs d8f5b012-7c43-4e9a-a321-000000000601/602/603; LIVE evidence UUIDs d8f5b012-7c43-4e9a-a321-000000000611/612/613. Temporary duplicate standard-package rows/evidence were deactivated and hidden; canonical printer-only rows remain active.
+
+Verification: TEST 154 active visible products / 168 active evidence (153 UK-new / 15 UK-used); LIVE 154 / 169 (154 UK-new / 15 UK-used). Both environments have zero active visible products without active evidence. A one-row evidence-total difference remains unresolved; do not claim evidence parity until investigated. Used evidence remains reference-only. No Worker deployment, schema/application/valuation/RLS/Edge Function/Stripe/tenant/customer/order/payment changes.

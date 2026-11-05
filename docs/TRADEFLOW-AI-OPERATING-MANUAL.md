@@ -3275,3 +3275,9 @@ Original Switch Joy-Con parity restored. Added seven more original Switch varian
 
 ### 2026-11-05 original Nintendo Switch controller Batch 8 — PDP REALMz
 Added PDP REALMz Wireless Shadow Space ARK (£15.99) and PDP REALMz Wired Tails Seaside Hill Zone (£7.99) to LIVE and TEST with active UK-new GBP Argos evidence. PDP manufacturer added in both environments. Independent totals: LIVE 61 active visible products / 64 active evidence; TEST 61 / 64; zero visible products missing active evidence. Checkpoint: CHECKPOINTS/2026-11-05-original-switch-controller-batch-08.md. No Worker deployment or application/schema/valuation/tenant/transaction changes.
+
+
+### Reconciliation completed — Creality HALOT resin models — 5 November 2026
+HALOT-X1 Neo (£199) and HALOT-X1 Max (£1,599) from parallel TEST catalogue work have now been mirrored to LIVE with printer-only UK-new evidence. Optional resin/wash-cure bundles excluded. TEST product UUIDs a17c7b10-8f01-4d3e-a101-000000000502/503; TEST evidence UUIDs a17c7b10-8f01-4d3e-a101-000000000512/513. LIVE product UUIDs c3d4e5f6-7081-49ab-9234-000000000502/503; LIVE evidence UUIDs c3d4e5f6-7081-49ab-9234-000000000512/513. Sources: https://store.creality.com/uk/products/halot-x1-neo-resin-3d-printer and https://store.creality.com/uk/products/halot-x1-max-resin-3d-printer. Current fulfilment is unconfirmed; delivery estimates on indexed pages are stale/past.
+
+TEST and LIVE each now report 151 active customer-visible 3D printer products and 165 active evidence rows (150 uk_new / 15 uk_used). LIVE confirms both product and evidence rows. TEST integrity check: zero missing evidence/branches, duplicate active source keys, missing URLs/keys, invalid/non-GBP prices or uk_new condition mismatches. Earlier pending-sync note is superseded. No schema/application/valuation/RLS/Edge Function/Stripe/tenant/customer/order/payment changes; no Worker deployment. Used evidence remains reference-only.

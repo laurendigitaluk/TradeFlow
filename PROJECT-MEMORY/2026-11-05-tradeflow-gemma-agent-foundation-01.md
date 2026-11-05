@@ -38,3 +38,8 @@ Added `tools/tradeflow-gemma-agent/src/import-approved.mjs` and `npm run import-
 ## Approved importer hardening — 5 November 2026
 
 `tools/tradeflow-gemma-agent/src/import-approved.mjs` is the separate owner-approved evidence import path. It preflights all approved evidence candidates in TEST and LIVE, re-resolves exact product identities independently, validates HTTPS UK source and GBP price, checks stable source-key duplicates, writes missing evidence and updates queue status only after both sides verify. `npm run import-approved`. Research PC execution remains pending; no product/evidence data was imported by this change.
+
+
+## Agent Control Centre increment — 5 November 2026
+
+Agent telemetry is live in TEST and LIVE databases. Tables: `platform_ai_agent_status`, `platform_ai_agent_activity`. RPCs: `platform_owner_get_ai_agent_control_centre` (owner read) and `platform_ai_agent_report_event` (service-role write). Nine agents are seeded as Not started. The Gemma task runner, ReleaseMonitor and approved evidence importer report status/activity. Owner dashboard UI is staged on separate LIVE and TEST feature branches; not deployed. Current counts: 9 agents in each environment, 0 activity events. No Research PC heartbeat or continuous schedule yet.

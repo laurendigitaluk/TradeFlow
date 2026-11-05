@@ -2041,3 +2041,12 @@ Final source review found that the official FLSUN UK Store S1 Pro and T1-PRO pag
 A newer UK T1-PRO retailer observation was added separately: 3DShop UK £365.00, marked in stock and ready for dispatch (page last crawled about four weeks before review), https://3dshop.uk/shop/flsun-t1pro/. TEST evidence UUID b7fb29b9-4d1c-4928-9f10-b9cb90dbf862; LIVE evidence UUID a35fd5f9-72ad-4314-9230-b01a08756517. The older FLSUN UK £509 record remains historical and is not merged with the 3DShop offer.
 
 Latest independent TEST/LIVE snapshot supersedes the earlier Batch 6 total: 132 active customer-visible products; 146 active evidence rows (131 uk_new / 15 uk_used); zero missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, invalid prices, non-GBP evidence or uk_new condition mismatches.
+
+
+### ELEGOO resin printer catalogue expansion — Batch 7 — 5 November 2026
+
+Added four previously missing ELEGOO resin printer models independently in TEST and LIVE: Mars 4, Mars 4 Ultra, Saturn 3 and Saturn 3 Ultra. Each has one active UK-new GBP price observation. Mars 4 £149 and Mars 4 Ultra £189 are from their official UK product pages. Saturn 3 £214 and Saturn 3 Ultra £239 are from the ELEGOO UK Saturn Series collection's latest indexed capture (about one month before review); stock is unconfirmed and those two prices must be rechecked before valuation or customer quotation. Printer-only prices; wash/cure bundles excluded.
+
+Independent TEST/LIVE verification after Batch 7: 136 active customer-visible products; 150 active evidence rows (135 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. Exact environment-specific product/evidence UUIDs and source URLs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-07.md.
+
+No category or branch created. No application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. Database-only catalogue/evidence work; no Worker deployment required.

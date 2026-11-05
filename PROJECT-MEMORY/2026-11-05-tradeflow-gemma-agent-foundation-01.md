@@ -48,3 +48,8 @@ Agent telemetry is live in TEST and LIVE databases. Tables: `platform_ai_agent_s
 ## Approved product-master importer increment — 5 November 2026
 
 The feature branch now includes `tools/tradeflow-gemma-agent/src/import-approved-products.mjs` and package command `npm run import-approved-products`. It processes only owner-approved `product_candidate` queue rows from TEST. It requires confirmed release status, an official manufacturer HTTPS domain and an excerpt naming the exact model. It resolves active category, manufacturer, optional branch and exact package identity independently in TEST/LIVE; rejects ambiguous/duplicate identities (including NULL branch), inactive matches and package conflicts; creates missing rows independently with distinct UUIDs and `customer_visible=false`; verifies both sides; and only then marks the queue item imported with both product IDs. README and both manuals/diagnostic roadmap/checkpoint updated on the same feature branch. This is not deployed or runtime-tested. No Supabase catalogue rows have been written. Research PC tests and one controlled approved-candidate import are the next verification gates.
+
+
+## GBP price-validation encoding fix — 5 November 2026
+
+On `feature/tradeflow-gemma-agent-foundation-20261105`, `tools/tradeflow-gemma-agent/src/agent.mjs` now builds the pound sign using `String.fromCharCode(163)` to avoid Windows encoding corruption in the source file. Exact-price matching and the existing evidence validation rules are retained. Commit `88b00bb64b371f798d8eb2487a9995d4e0c63532`. Awaiting local Research PC `npm test`; no catalogue/database writes or deployments were made.

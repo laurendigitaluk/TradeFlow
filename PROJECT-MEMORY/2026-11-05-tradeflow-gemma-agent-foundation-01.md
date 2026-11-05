@@ -28,3 +28,8 @@ Tests were authored but Research PC execution is pending; do not treat the earli
 ## Release monitoring increment — 5 November 2026
 
 ReleaseMonitor source added at `tools/tradeflow-gemma-agent/src/release-monitor.mjs`; watchlist at `tools/tradeflow-gemma-agent/tasks/release-watchlist.json`. It searches official manufacturer domains, verifies final redirect domain, extracts only explicit confirmed release states, and compares exact models independently across TEST/LIVE. Rumours are excluded. Candidates stage in TEST review queue; no product masters are auto-created. Daily/weekly/monthly cadence is specified but not scheduled. Added package scripts and tests; runtime execution on Research PC remains pending.
+
+
+## Approved importer
+
+Added `tools/tradeflow-gemma-agent/src/import-approved.mjs` and `npm run import-approved`. It imports approved evidence only, with full TEST/LIVE preflight and idempotent source-key checks. It has not been run on the Research PC; no evidence was imported in this change.

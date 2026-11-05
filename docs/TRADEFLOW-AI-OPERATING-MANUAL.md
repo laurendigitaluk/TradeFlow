@@ -3701,3 +3701,13 @@ Added DualSense Edge Midnight Black (£189.99 Argos), GTA VI Black Limited Editi
 ## Camera catalogue research — Brinno batch 10 (5 November 2026)
 
 LIVE-only evidence inserted and independently read back for existing product TLC300 Waterproof Bundle (TLC300 & Waterproof Case Timelapse Camera Bundle), product ee75b3d2-c298-4d36-9cd0-8121bac10fd2. Timelapse Store UK lists Brinno TLC300 & ATH120 Bundle at £299 GBP: https://timelapse.store/collections/brinno. Evidence c231daec-df62-468f-bb26-b1ebc01b9470, UK-new, active, availability unknown; stock not independently confirmed. The exact TLC300 plus ATH120 package was matched. No standalone TLC2000/TLC5000 prices or obsolete-model new prices were inferred. LIVE only, TEST untouched; no master product, lifecycle, valuation, schema, RLS, application, Worker, Stripe, customer or payment changes. No Worker deployment. See PROJECT-MEMORY/2026-11-05-camera-research-batch-10.md and CHECKPOINTS/2026-11-05-camera-research-batch-10.md.
+
+
+## PlayStation Gran Turismo Limited Edition — 5 November 2026
+
+Added independently to TEST and LIVE: DualSense Wireless Controller - Gran Turismo Limited Edition, model CFI-ZCT2WZMX, UK pre-order price £74.99, release date 10 December 2026. Three active UK-new GBP/New Retail pre-order evidence rows per environment:
+- PlayStation Direct: https://www.playstation.com/en-gb/accessories/dualsense-wireless-controller/buy-now/product/gran-turismo-limited-edition/
+- Argos: https://www.argos.co.uk/product/9906844 (EAN 711719072836 verified from retailer listing)
+- Smyths Toys: https://www.smythstoys.com/uk/en-gb/gaming-and-tech/playstation-5/playstation-5-accessories/playstation-5-dualsense-wireless-controller-gran-turismo-limited-edition/p/266465
+
+Product active/customer-visible in both environments. Product IDs: TEST 777420ef-7ac3-4151-ae40-9691eeba3493; LIVE 3892048b-c072-421c-be1a-78181e7785ef. Verified branch totals in each environment: 20 active/customer-visible products, 22 active UK-new evidence rows covering 19 products. The legacy Sony DualShock 3 Wireless Controller - Black remains the one product without UK-new evidence and is retained for legacy/discontinued review. No Worker deployment, app code/schema/valuation/RLS/Edge Function, tenant/customer/order/payment/Stripe changes. TEST and LIVE updated independently.

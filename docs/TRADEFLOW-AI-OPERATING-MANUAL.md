@@ -3808,3 +3808,12 @@ Research references: MPB Nikon DSLR category https://www.mpb.com/en-uk/category/
 
 ## Xbox controller follow-on note — 5 November 2026
 The verified batch-2 state remains 28 active/customer-visible products and 34 active UK-new evidence rows covering all 28 products in both TEST and LIVE. A subsequent Shock Blue colour-variant insert succeeded in TEST only, but the corresponding LIVE write and verification were blocked by a connector/tool failure. Treat this one additional TEST record as an environment-parity exception; do not copy TEST data wholesale. Resolve by checking the exact TEST record and adding the equivalent LIVE record independently (or removing the TEST-only addition if product scope is reconsidered) before declaring the Xbox branches fully aligned. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes.
+
+
+## Creality Ender-3 V4 Combo and Bambu Lab H3C — 5 November 2026
+
+Added Bambu Lab H3C + AMS H3 Combo at the official UK launch price £2,199 including tax (official announcement 3 November 2026): https://blog.bambulab.com/tool-changer-game-changer-bambu-lab-presents-h3c-the-defining-new-generation-of-3d-printers/. LIVE product/evidence e33286e7-1083-41e5-8677-ce147bf754cd / bf9e3cba-d469-43d3-a0b2-5bf75b9f2bf3; TEST 9149695d-2cd7-428c-bf52-b22ac3d85245 / aeb43102-77aa-4934-bfd3-42ea0463bd65. This is the AMS H3 combo, not a standalone price.
+
+Added Creality Ender-3 V4 CFS Combo using GM Crafts UK evidence £289 (was £349), Add to basket and free UK delivery: https://www.gmcrafts.co.uk/product/creality-ender-3-v4-combo/. LIVE product/evidence bbf4ef13-c073-4fe2-a1ed-54975e9151a8 / 401c9eaf-6153-45ab-add1-2f7bdcbbed30; TEST 2bcf22b1-a2fa-412c-81d8-6e074e95fd81 / 9a9177a2-e720-4e8a-8caa-f50771be7029.
+
+Verified 3D Printers totals: LIVE 188 products / 181 active visible / 208 active evidence / 193 UK-new; TEST 189 / 181 / 208 / 193. Zero visible products missing active evidence in either environment. No app code, schema, valuation, RLS, Edge Function, Worker, Stripe, tenant, customer, order or payment changes. No Worker deployment.

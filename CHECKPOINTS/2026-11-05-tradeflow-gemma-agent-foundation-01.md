@@ -159,3 +159,11 @@ Source and migration are committed on `feature/tradeflow-gemma-agent-foundation-
 - TEST and LIVE product identity is independently resolved by the existing research pipeline; product/evidence imports remain separate and approved.
 - Worker leases expire after 10 minutes and are renewed every 45 seconds while processing. Poll interval defaults to 15 seconds.
 - Do not merge/deploy to production or apply task-control schema to LIVE as part of this setup step.
+
+## Configuration-path consistency repair — 5 November 2026
+
+The interactive PowerShell launcher and Node research entry point previously defaulted to `C:\\GearCashOut-Config\\.env`, while the persistent supervisor and task worker defaulted to the TradeFlow agent folder `.env`. This split could make interactive runs fail credential preflight even when the TradeFlow service configuration was correct, and risked confusing the retired GearCashOut configuration with the new TradeFlow agent.
+
+Corrected on `feature/tradeflow-gemma-agent-foundation-20261105`: `Start-TradeFlow-Gemma.ps1` now reads only `tools/tradeflow-gemma-agent/.env` and explicitly passes that path to Node; `src/index.mjs` defaults to the same local file. The supervisor and task worker already used this location. README setup instructions now describe one isolated TradeFlow configuration. The old GearCashOut `.env` is not read, copied, moved or modified. No credentials, queue rows, catalogue/evidence records, TEST/LIVE schema, or deployments were changed.
+
+Verification still required on Research PC: refresh the three changed files from this branch, ensure TradeFlow `.env` contains the four project-specific TEST/LIVE settings and correct installed Ollama model tag without exposing secrets, run tests and dry-run. Do not install the scheduled service until the interactive dry-run succeeds.

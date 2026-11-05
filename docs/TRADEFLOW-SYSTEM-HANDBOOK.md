@@ -2138,3 +2138,29 @@ Current Flashforge collection snapshot confirms AD5X £299, Adventurer 5M £209 
 Post-correction independent category-scoped verification in both TEST and LIVE: 145 active customer-visible 3D printer products; 159 active evidence rows (144 uk_new / 15 uk_used); 13 manufacturers; zero visible products missing evidence or branch; zero duplicate active source keys; zero missing evidence URLs/keys, non-positive prices, non-GBP evidence or uk_new condition mismatches. TEST and LIVE counts match exactly.
 
 Exact environment-specific product/evidence UUIDs are in CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-10.md. All active evidence is UK GBP, New and source-linked. Printer-only models remain separate from kits/accessories; used evidence remains reference-only and must not affect automatic valuation. Database-only catalogue/evidence change; no schema, application code, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment data or Cloudflare Worker deployment changed. No Worker deployment required.
+
+
+## 2026-11-05 Nintendo Switch 2 controller catalogue — Batch 3
+
+Added 13 further Nintendo Switch 2 compatible controllers and 13 UK-new market-evidence rows in both LIVE and TEST. Existing manufacturer records were reused; no manufacturer duplication was introduced.
+
+Products and observed Argos UK new asking prices (2026-11-05):
+- Gioteck WX5+ Crayons — £24.99
+- Gioteck WX5+ Pink Swirl — £24.99
+- Gioteck WX5+ Doodle — £24.99
+- CRKD ATOM+ Mini Pal Grey — £28.99
+- CRKD ATOM+ Mini Glacier Blue — £28.99
+- CRKD ATOM+ Mini Smoke Black — £28.99
+- CRKD ULT PRO Smoke Black — £64.99
+- HORI Wireless HORIPAD Turbo Kirby & Waddle Dee — £64.99
+- Turtle Beach Afterglow RGB Wired Clear — £24.99
+- Turtle Beach Afterglow Wave RGB Wired — £19.99
+- Turtle Beach Afterglow RGB Wireless — £49.99
+- Turtle Beach Rematch Mario & Luigi — £54.99
+- Turtle Beach Rematch Rosalina — £54.99
+
+Source listing: https://www.argos.co.uk/browse/technology/video-games-and-consoles/nintendo/nintendo-switch-2-controllers/c%3A1054685/. Gioteck product family listing: https://www.gioteck.com/collections/brand-new-wx5-switch-2-controllers. Evidence rows are uk_new, GBP, condition New, with source URL, source key and observation timestamp. Retail asking prices are not completed-sale prices. No used evidence was inferred. 
+
+Post-insert verification in both LIVE and TEST: Nintendo Controllers branch totals are now 32 active customer-visible products and 35 active evidence rows (33 uk_new / 2 uk_used); zero visible products missing evidence. This batch independently verifies 13 products and 13 active evidence rows in each environment, all with positive GBP prices, source keys and New condition. Product/evidence model, package key, source and price parity was checked across environments. Used evidence remains reference-only and must not affect automatic valuation.
+
+Database-only catalogue update. No Worker deployment, application code, schema, valuation logic, RLS, Edge Functions, Stripe, tenant/customer/order/payment or custom-domain data changed. Exact environment-specific UUIDs are recorded in CHECKPOINTS/2026-11-05-gaming-controller-catalogue-batch-03.md.

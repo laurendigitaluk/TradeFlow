@@ -358,3 +358,7 @@ Exact product/evidence UUIDs and sources are in CHECKPOINTS/2026-11-05-3d-printe
 - Used evidence is reference-only and must not affect automatic valuation.
 - Database-only catalogue changes do not require Worker deployment.
 - Preserve separate TEST/LIVE tenant, customer, website, custom-domain and payment data.
+
+
+## Batch 8 — 5 November 2026
+Added ELEGOO Neptune 3 Pro (£127.00, official UK) and Saturn 2 (8K) (£350.00, 123-3D UK; backordered, available to order, 10–14 day estimate) in TEST and LIVE. Neptune 3 Plus and Neptune 3 Max were excluded from new-price imports due to sold-out status; Mars 3 Pro excluded due to weak current availability evidence. The 3D Printers category now has 138 active visible products, 152 active evidence rows (137 uk_new / 15 uk_used), and 13 represented manufacturers in each environment. Zero missing evidence/branch, duplicate keys, missing URLs/keys, non-positive prices, non-GBP evidence or new-condition mismatches. Exact UUIDs and source links: CHECKPOINTS/2026-11-05-3d-printer-catalogue-batch-08.md. No Worker deployment required.

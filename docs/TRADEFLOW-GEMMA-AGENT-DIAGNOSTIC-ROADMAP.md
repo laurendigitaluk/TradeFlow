@@ -21,6 +21,7 @@ Research PC installation, a Windows service/Power-shell launcher and owner-facin
 
 | Responsibility | Current path | Behaviour |
 |---|---|---|
+| Windows launcher | `tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1` | Checks Node/npm/Ollama/model/config, runs tests, defaults to dry-run; `-Apply` is explicit |
 | CLI/coordinator | `tools/tradeflow-gemma-agent/src/index.mjs` | Loads environment/task JSON; bounds worker concurrency; reports failed-closed tasks |
 | Research, extraction, validation and DB adapter | `tools/tradeflow-gemma-agent/src/agent.mjs` | Brave Search → direct page fetch → Ollama/Gemma JSON extraction → deterministic checks → independent TEST/LIVE product lookup → duplicate-safe evidence write |
 | Runtime/dependencies | `tools/tradeflow-gemma-agent/package.json` | Node.js 22+; no npm runtime dependencies |

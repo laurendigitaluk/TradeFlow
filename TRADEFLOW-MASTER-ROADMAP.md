@@ -1315,3 +1315,20 @@ Next: continue verified product/package expansion; populate the accessories bran
 Added one active UK-used reference observation in both LIVE and TEST for Bambu Lab P1S, Standard Printer: £295.08 on eBay UK, item 880040550398. The listing states Used condition and seller location Manchester. This is an asking price, not a completed-sale result, and remains reference-only.
 
 Latest independent verification: 183 active products/packages, 17 manufacturers and 207 active evidence rows in each environment (195 UK-new / 12 UK-used). All 183 active products have UK evidence; no overseas evidence is active in this branch. Product identity parity remains exact. This supersedes the earlier same-day 206 evidence-row total.
+
+
+## 5 November 2026 — 3D Printer Equipment & Accessories populated
+
+The separate `3d-printer-equipment-accessories` branch was populated in both LIVE and TEST with seven active, customer-visible products and seven UK-new evidence rows:
+
+- Bambu Lab AMS 2 Pro — £266.04, 3DJake UK.
+- Bambu Lab Hotend Heating Assembly (A1/A1 mini) — £23.00, 3DJake UK.
+- Creality CFS — £289.00, official Creality UK.
+- Creality SpacePi X4 Filament Dryer — £150.00, official Creality UK.
+- Creality Space Pi Filament Dryer Plus — £85.00, official Creality UK.
+- Creality Unicorn Quick-Swap Nozzle Kit, four-piece — £45.00, official Creality UK.
+- Creality Unicorn K2P Quick-Swap Nozzle Kit, four-piece — £45.00, official Creality UK.
+
+Independent LIVE and TEST verification: accessories branch 7 products / 7 UK-new evidence rows / 2 manufacturers / zero missing evidence / zero malformed rows. Printer branch remains 183 products / 207 evidence rows (195 UK-new / 12 UK-used) / 17 manufacturers in each environment. All 190 products across both branches are customer-visible and have UK evidence. Natural-key parity is exact.
+
+No schema, application code, valuation logic, RLS, RPC, Edge Function, tenant/customer/order/payment/Stripe data or Worker deployment changed. No Worker deployment is required for catalogue-only data changes. SUNLU import remains pending until its manufacturer master record exists.

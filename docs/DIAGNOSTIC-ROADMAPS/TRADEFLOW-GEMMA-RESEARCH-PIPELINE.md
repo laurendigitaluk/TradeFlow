@@ -261,3 +261,13 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - The JSON parser selects by exact model title/handle, excludes sibling variants (K1 Max, K1C, etc.), builds direct `/uk/products/{handle}` URLs, and sends those URLs through the normal direct-page fetch and GBP price checks. JSON metadata and collection pages are not evidence.
 - Added a unit test proving Flash Sale K1 is selected while K1 Max and K1C are excluded.
 - Code commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`. The local PC still needs this code and one controlled dry-run.
+
+
+### Manufacturer routing guard and Shopify syntax repair (6 November 2026)
+
+- Confirmed source registry contains DJI UK, Sony UK and Creality UK Official Store as enabled manufacturer sources in both environments. They are not interchangeable search providers.
+- Manufacturer source routing now requires the source identity to match the task's requested manufacturer. For Creality K1, DJI and Sony are skipped before URL construction; UK retailer/marketplace sources remain eligible for all brands.
+- Added fail-closed test when a manufacturer task has no manufacturer identity.
+- Research PC updater caught an invalid regular-expression syntax in the Shopify collection JSON fallback. The updater's backup/restore worked: the failed update restored the previous agent code and preserved local configuration/tasks/logs.
+- Corrected the regex and validated via GitHub Actions PR #257, run 42231223625, successful. PR merged into feature branch at `23bd99b6b17c915bd41e5e1d8c625196503e8669`.
+- Next local updater run will install the corrected code and run the tests before research. No catalogue/evidence imports or deployments.

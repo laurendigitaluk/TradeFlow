@@ -3122,3 +3122,8 @@ The TradeFlow Gemma interactive launcher, Node research entry point, persistent 
 ## Gemma Research PC inference stability correction — 6 November 2026
 
 The Research PC diagnostic showed approximately 80 GB system RAM and an NVIDIA GeForce GTX 1650 with approximately 4 GB VRAM (plus Intel integrated graphics). Ollama loaded `gemma3:4b` at approximately 3.5 GB and returned HTTP 500 `model runner has unexpectedly stopped` during extraction. The agent now requests CPU-only inference by default through Ollama chat option `num_gpu: 0`, avoiding reliance on constrained discrete GPU memory. The extraction timeout remains 180 seconds; no evidence-validation weakening was made. `OLLAMA_NUM_GPU` is an optional non-negative integer override, but keep it at 0 until CPU inference is confirmed stable. TEST and LIVE catalogue/evidence data remain unchanged.
+
+
+## Gemma launcher SearXNG endpoint fallback — 6 November 2026
+
+The Research PC manual test against `http://127.0.0.1:8080/search?q=tradeflow&format=json` returned one result while the launcher still failed its SearXNG preflight. This established that the local service could respond and pointed to a mismatch in the configured `SEARXNG_BASE_URL` read by the PowerShell launcher. The launcher now tries the configured endpoint and then the known local Compose binding `http://127.0.0.1:8080`, accepting only a response with a `results` field. It does not edit or print `.env`, and does not touch the retired GearCashOut configuration. If both fail, it stops with the endpoint errors. Commit: `a142f71cc24f2ab36152f00f900ddeab1fb4ccf2`.

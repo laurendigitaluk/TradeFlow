@@ -82,3 +82,7 @@ No application-level memory/checkpoint tables were found in either Supabase proj
 The category scope is now applied at query-construction time as well as result filtering. `buildCategoryScopedSearchQuery()` appends `site:domain` operators for the allowed UK domains only, grouped with OR. If no source is configured for a category, the general web search is skipped (fail-closed). Returned result URLs are still checked against the same category + manufacturer allowlist before page fetch. Tests cover that a DJI/drone query includes DJI and universal marketplaces but excludes GAME, while a gaming query includes GAME and excludes DJI.
 
 This is a code-only enhancement; the already-applied TEST/LIVE source registry migration is unchanged. PR #261 remains open and unmerged. The new Node tests have not been executed by GitHub Actions or on the Research PC yet.
+
+## Targeted routing smoke test — 6 November 2026
+
+An isolated Node.js smoke test of the new routing helpers passed 5/5 cases: category isolation, manufacturer matching, universal marketplace wildcard, result-host filtering, and `site:`-restricted search query construction. This is a focused helper smoke test, not the complete TradeFlow Gemma package test suite. The two inspected package test files currently contain 36 agent tests and 2 release-monitor tests (38 declarations); the complete `npm test` run on the updated branch remains outstanding.

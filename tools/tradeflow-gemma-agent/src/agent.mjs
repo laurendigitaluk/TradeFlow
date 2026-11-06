@@ -229,7 +229,28 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
 
 export async function runTask(task,env,{enqueue=false,onProgress}={}) {
   if(!task.category_slug||!task.manufacturer||!task.model||!task.package_key||!task.package_name||!task.search_query||!['uk_new','uk_used'].includes(task.research_type))throw new Error('incomplete task definition');
-  const candidates=[];const searchResults=await search(task.search_query,env);for(let i=0;i<searchResults.length;i++){const s=searchResults[i];await onProgress?.({stage:'checking_source',source:s.url,checked:i+1,total:searchResults.length});try{const p=await page(s.url);const e=await extract(task,s,p.text,env);if(e.reject_reason)continue;e.source_url=p.url;const v=validate(e,task,p.text);if(v.valid)candidates.push({...e,source_excerpt:p.text.slice(0,2500)});}catch(err){candidates.push({rejected_source:s.url,reason:err.message});}}
+  const candidates=[];
+  await onProgress?.({stage:'searching',message:'Searching DuckDuckGo, Bing and Mojeek for '+task.manufacturer+' '+task.model});
+  const searchResults=await search(task.search_query,env);
+  await onProgress?.({stage:'search_complete',message:'Search finished; '+searchResults.length+' candidate source(s) found',total:searchResults.length});
+  for(let i=0;i<searchResults.length;i++){
+    const s=searchResults[i];
+    await onProgress?.({stage:'fetching_page',source:s.url,checked:i+1,total:searchResults.length,message:'Fetching source '+(i+1)+' of '+searchResults.length+': '+s.url});
+    try{
+      const p=await page(s.url);
+      await onProgress?.({stage:'extracting',source:p.url,checked:i+1,total:searchResults.length,message:'Page retrieved; asking Ollama to extract visible evidence from '+p.url});
+      const e=await extract(task,s,p.text,env);
+      if(e.reject_reason){await onProgress?.({stage:'rejected',source:p.url,message:'Ollama rejected source: '+e.reject_reason});continue;}
+      e.source_url=p.url;
+      const v=validate(e,task,p.text);
+      if(v.valid)candidates.push({...e,source_excerpt:p.text.slice(0,2500)});
+      else await onProgress?.({stage:'validation_rejected',source:p.url,message:'Evidence failed validation: '+v.errors.join('; ')});
+    }catch(err){
+      candidates.push({rejected_source:s.url,reason:err.message});
+      await onProgress?.({stage:'source_error',source:s.url,message:'Source skipped: '+err.message});
+    }
+  }
+  await onProgress?.({stage:'resolving_products',message:'Checking exact product identity in TEST and LIVE'});
   const testTarget=target('TEST',env),liveTarget=target('LIVE',env);
   const writes=[];
   for(const e of candidates.filter(x=>x.evidence_type)){

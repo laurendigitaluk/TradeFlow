@@ -191,3 +191,8 @@ The TEST and LIVE `platform_research_sources` registries now include the Crealit
 ### Creality collection route and approved-source diagnostics — 6 November 2026
 
 The Creality UK source is now configured to open the known K1 Series collection route directly rather than relying on Shopify's generic `/search?q=` endpoint. The approved-source probe recognises a model-matching collection route as a discovery result and passes it to the same bounded collection-expansion stage used for general search results. The collection itself is never evidence. Approved-source registry failures, empty routes, route errors and successful match counts are now emitted as progress diagnostics instead of being silently swallowed. TEST and LIVE use the identical K1 collection route. The second local dry-run still produced only one irrelevant Mojeek result; the next run must validate this direct route.
+
+
+### Shopify collection product JSON fallback — 6 November 2026
+
+The Creality K1 collection rendered three product cards in the browser, but the local HTML anchor parser returned zero matching links. Collection discovery now falls back to Shopify's public collection `products.json?limit=50` endpoint when ordinary HTML link extraction returns no exact-model products. The JSON parser uses product title and handle, excludes sibling variants such as K1 Max and K1C, constructs the direct UK product URL, and then the existing pipeline fetches and validates that product page for explicit GBP price and evidence attributes. Collection JSON metadata itself is not evidence. A unit test covers exact K1 selection and sibling-variant exclusion.

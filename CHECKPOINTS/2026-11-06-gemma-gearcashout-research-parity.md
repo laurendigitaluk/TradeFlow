@@ -77,3 +77,14 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Approved-source probing now accepts exact-model collection/category hubs as discovery-only results alongside direct product pages. They are expanded by the bounded collection stage and never become evidence.
 - Added unit test for collection discovery eligibility vs direct evidence eligibility. Code commits: `6e9572391a1d70e91a06ecaad68495a13137b51d`, `2badce15eebf59e2ccc046cd257605f7d787df15`.
 - Local Research PC still needs this follow-up code update and one more controlled Creality K1 dry-run. No catalogue/evidence writes or production deployment.
+
+
+## Direct Creality collection route and source diagnostics (6 November 2026)
+
+- Second local run passed 33/33 tests but still returned one irrelevant Mojeek result, 0 eligible URLs and 0 fetched pages. The Creality approved-source probe was not yielding results.
+- Inspection showed the probe silently swallowed database/HTTP errors and used Shopify's generic `/search?q=` route, which did not yield usable model links.
+- Updated both TEST and LIVE Creality source rows to use the known K1 Series collection URL directly: `https://store.creality.com/uk/collections/k1-series-3d-printer`.
+- Approved-source probe now returns a model-matching collection page as a discovery candidate so it enters the bounded collection expansion path; direct product links are fetched individually and collection pages are never evidence.
+- Added visible progress diagnostics for registry errors, route failures, empty search results and successful approved-source matches.
+- Independent page inspection confirms the collection contains the base K1 listing and variant listings, with the base K1 product URL `https://store.creality.com/uk/products/k1-speedy-3d-printer`.
+- Latest code commit: `9225590c49f20e88cff3882cec63319fa89dbde7`. Local update/dry-run remains pending; no catalogue/evidence writes.

@@ -58,3 +58,12 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Added README instructions (commit `e84d067e8c9057dc45670f2366c3533083d28e99`).
 - Updater downloads the approved feature branch archive, checks local agent folder, existing TradeFlow `.env`, and Node 22+, preserves `.env`, task files, logs and node_modules, updates code, runs tests, and restores previous code if tests fail.
 - This is a safe handoff for the Research PC; the local update and controlled Creality collection dry-run have not yet been run. No queue, catalogue, evidence or production writes are made by the updater.
+
+
+## Research PC updater fault and recovery fix (6 November 2026)
+
+- User's first updater run failed while PowerShell extracted the full GitHub repository ZIP; screenshot showed path resolution failures in unrelated nested migration archive files.
+- The first updater's rollback guard was insufficient if extraction failed before backup completion. That version must not be reused.
+- Replaced extraction with a short system-drive temporary directory and selective extraction of only `tools/tradeflow-gemma-agent` via .NET ZipArchive.
+- Backup is now verified before any rollback; rollback only runs when both the prior launcher and agent entry point are present in backup. Recovery mode can repopulate incomplete code when TradeFlow `.env` remains available.
+- Corrected updater latest commit: `3f90d3aa8789d759791c51e3c815edc64c5dca7c`. Local recovery/update and dry-run have not yet been confirmed. No research/import/deployment actions were performed.

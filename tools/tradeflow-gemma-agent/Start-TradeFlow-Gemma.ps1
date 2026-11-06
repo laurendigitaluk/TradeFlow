@@ -71,8 +71,21 @@ try {
             $SearchUri = [uri]$Candidate
             if ($SearchUri.Scheme -notin @("http", "https")) { throw "Search URL must use HTTP or HTTPS." }
             $SearchEndpoint = $SearchUri.GetLeftPart([System.UriPartial]::Authority) + "/search?q=tradeflow&format=json"
-            $CandidateCheck = Invoke-RestMethod -Uri $SearchEndpoint -TimeoutSec 8
-            if ($null -eq $CandidateCheck.results) { throw "Endpoint did not return SearXNG JSON results." }
+            # First search requests can take longer while the local search engine warms up.
+            $CandidateCheck = $null
+            $LastSearchError = $null
+            for ($Attempt = 1; $Attempt -le 2; $Attempt++) {
+                try {
+                    $CandidateCheck = Invoke-RestMethod -Uri $SearchEndpoint -TimeoutSec 25
+                    if ($null -eq $CandidateCheck.results) { throw "Endpoint did not return SearXNG JSON results." }
+                    break
+                }
+                catch {
+                    $LastSearchError = $_
+                    if ($Attempt -lt 2) { Start-Sleep -Seconds 2 }
+                }
+            }
+            if ($null -eq $CandidateCheck) { throw $LastSearchError }
             $SearchCheck = $CandidateCheck
             Write-Host "SearXNG responding at $($SearchUri.GetLeftPart([System.UriPartial]::Authority))"
             break

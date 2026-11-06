@@ -201,3 +201,8 @@ The Creality K1 collection rendered three product cards in the browser, but the 
 ### Manufacturer source matching — 6 November 2026
 
 Manufacturer-owned sources are now brand-scoped. A manufacturer source is probed only when its source name/domain matches the requested task manufacturer. For example, a Creality K1 task can use the Creality official collection but will skip DJI and Sony manufacturer search pages; DJI and Sony sources remain available for their own products. UK retailers and used-market sources remain eligible for cross-brand model searches. This prevents nonsensical URLs such as `dji.com/search?q=Creality K1` and keeps generic retailers available for market coverage.
+
+
+### Manufacturer-aware source routing and Shopify fallback validation — 6 November 2026
+
+Manufacturer sources are now filtered against the requested task manufacturer before any manufacturer-site search is constructed. For a Creality task, DJI and Sony manufacturer sources are skipped; UK retailers and marketplaces remain eligible across brands. A fail-closed test covers tasks with a missing manufacturer. The Shopify collection products JSON fallback path regex was corrected after the Research PC updater surfaced a syntax error and safely restored the previous code. CI passed on PR #257 (run 42231223625); PR #257 was squash-merged into the feature branch as `23bd99b6b17c915bd41e5e1d8c625196503e8669`. No TEST/LIVE catalogue or evidence rows were written.

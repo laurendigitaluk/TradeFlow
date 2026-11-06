@@ -16,8 +16,7 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 1. Keep this folder separate from the retired GearCashOut agent. TradeFlow interactive runs, Node entry point and background worker all read this folder's `.env` by default. The old `C:\\GearCashOut-Config\\.env` is not read, copied, moved or overwritten.
 2. Create the TradeFlow `.env` from `.env.example` once, then populate the separate TEST and LIVE URL/key settings and the installed `OLLAMA_MODEL` tag. Never paste keys into chat or commit `.env`.
 3. Confirm `ollama list` contains the configured model tag and Ollama responds at `http://127.0.0.1:11434`.
-4. Start Docker Desktop and run `docker compose up -d` from this folder. Confirm the local SearXNG JSON endpoint responds.
-5. Run `npm test` and then `Start-TradeFlow-Gemma.ps1` for a dry run. Only after a successful dry run should `-Enqueue` be used to stage candidates for owner review. Importing remains a separate owner-approved step.
+4. Run `npm test` and then `Start-TradeFlow-Gemma.ps1` for a dry run. Web discovery uses independent public search providers; Docker and SearXNG are not required. Only after a successful dry run should `-Enqueue` be used to stage candidates for owner review. Importing remains a separate owner-approved step.
 
 ## Foundation 0.1 limits
 
@@ -57,11 +56,11 @@ New confirmed product masters are staged as `product_candidate` rows in the TEST
 `Start-TradeFlow-Gemma.ps1` is the supported Windows entry point. It verifies the local `.env` exists, required setting names are populated without displaying secret values, TEST/LIVE URLs match the expected Supabase project refs, the configured Ollama model is installed, and `npm test` passes before starting research. Default invocation is dry-run: it performs Brave/Ollama research, exact TEST/LIVE product lookups and records agent telemetry, but does not write review-queue or catalogue evidence/product rows. Use `./Start-TradeFlow-Gemma.ps1 -Enqueue` only after reviewing dry-run output; this stages candidates in the TEST-only owner review queue and does not import catalogue products/evidence. The retired `--apply` mode is not supported. The launcher requires both environment service-role credentials because exact product identity is checked independently in both environments. Keep `.env` local and never share or commit its contents.
 
 
-## Search provider — free local operation
+## Search provider — GearCashOut-compatible fallback
 
-Brave Search has been removed from the research and release-monitor code paths. Both now use the locally hosted SearXNG JSON endpoint configured by `SEARXNG_BASE_URL` (default `http://127.0.0.1:8080`). The included `docker-compose.yml` binds the service to loopback only, and `searxng/settings.yml` enables the JSON API. No search API key, paid subscription or search-provider payment method is required by this agent. SearXNG is free/open-source software; upstream search engines may still rate-limit or block automated requests, so this is not a guarantee of unlimited throughput. If results are temporarily unavailable, the worker fails closed rather than inventing URLs.
+TradeFlow uses the same resilient search-provider pattern as the established GearCashOut agent: DuckDuckGo, Bing and Mojeek are queried independently and in parallel. A timeout, block or unavailable response from one provider does not prevent the others from returning results. No local SearXNG container, Docker Desktop, paid search API or search-provider API key is required. Search results are still only discovery candidates; direct page retrieval, UK storefront checks, GBP price visibility, exact model matching and evidence validation remain mandatory before a candidate can be staged.
 
-Research PC setup: install Docker Desktop for Windows and start its engine. From this folder run `docker compose up -d`. Confirm `http://127.0.0.1:8080/search?q=test&format=json` returns JSON. Set `SEARXNG_BASE_URL=http://127.0.0.1:8080` in local `.env`; no Brave key is used or required. Stop the service with `docker compose down`.
+The old SearXNG-only implementation was an unnecessary architectural divergence and has been removed from the main research and release-monitor paths. The SEARXNG_BASE_URL setting is no longer used and should not be added to the TradeFlow .env.
 
 
 ## Gemma Research PC extraction performance correction — 5 November 2026

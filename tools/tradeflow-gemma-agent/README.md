@@ -92,3 +92,8 @@ One-time Windows setup: download `src/task-worker.mjs`, `Start-TradeFlow-Gemma-S
 ## Gemma Research PC low-VRAM fallback — 6 November 2026
 
 The Research PC has approximately 80 GB system RAM and an NVIDIA GeForce GTX 1650 with approximately 4 GB VRAM. Ollama reported HTTP 500 `model runner has unexpectedly stopped` while extracting with `gemma3:4b` (approximately 3.5 GB). The agent now defaults to CPU-only inference via `num_gpu: 0` to avoid exhausting GPU memory. Keep `OLLAMA_NUM_GPU=0` in the local `.env` until CPU inference is confirmed stable. A non-negative integer override is available for later controlled GPU testing. The 180-second extraction timeout and evidence-validation rules remain unchanged.
+
+
+## SearXNG launcher fallback — 6 November 2026
+
+The Windows launcher now tries the configured `SEARXNG_BASE_URL` first and then the known local Compose endpoint `http://127.0.0.1:8080` if the configured address fails or does not return JSON results. This handles stale local `.env` endpoint values without editing or displaying `.env`, changing the old GearCashOut configuration, or requiring the user to diagnose Docker. It fails closed if neither endpoint responds. The launcher change is committed as `a142f71cc24f2ab36152f00f900ddeab1fb4ccf2`.

@@ -624,7 +624,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       // endpoint as a fallback, then still fetch each direct product page.
       if (!links.length) {
         const collection = new URL(result.url);
-        const jsonPath = collection.pathname.replace(/\\/$/, '') + '/products.json?limit=50';
+        const jsonPath = collection.pathname.replace(/\/$/, '') + '/products.json?limit=50';
         const jsonUrl = new URL(jsonPath, collection.origin).toString();
         const jsonResponse = await fetch(jsonUrl, {
           redirect: 'follow',

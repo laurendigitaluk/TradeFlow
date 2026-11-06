@@ -118,3 +118,30 @@ Correction on the TradeFlow Gemma feature branch:
 This correction supersedes the SearXNG-only setup notes and the two SearXNG launcher timeout adjustments earlier in this README. Search providers can individually block or rate-limit requests; the intended behaviour is to continue with the remaining providers, not fail the entire research run because one local service is unavailable.
 
 Commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31` (research search), `53dc247da01c37bf743e0e63c54e3abce537160c` (tests), `27a3e964022400f0af903b286de66d9fb4a53517` (launcher), `34a127fb26e908974c3e891331dcfd01795e2728` (release monitor), `6987a2c782e4ea227dde131bb92e476f0e3f21ff` (.env example).
+
+
+## Batched research pipeline — 6 November 2026
+
+The earlier implementation called Ollama once for every fetched source page. With separate UK-new and UK-used workers and eight search results per worker, one product run could issue up to sixteen serialized model requests. That kept the local CPU busy for several minutes and sent collection pages, forums and search-result pages into extraction unnecessarily.
+
+The current pipeline changes the order:
+
+1. Search DuckDuckGo, Bing and Mojeek independently in parallel.
+2. Reject search, category, collection, forum and other non-product URLs before fetching.
+3. Fetch remaining pages in bounded groups of four.
+4. Reject pages without a visible positive GBP price before calling Ollama.
+5. Send the remaining page excerpts to one consolidated Ollama request per research task.
+6. Bind each model response to a supplied source ID; the agent supplies the authoritative source URL, host, GBP currency and task evidence type.
+7. Run the existing strict UK source, exact product identity, visible-price, condition and availability validation.
+8. Resolve exact product identity independently in TEST and LIVE; stage only valid candidates in the TEST owner-review queue.
+
+The UK-new and UK-used research tasks remain separate. Ollama calls remain serialized across tasks, CPU-only inference remains the safe default after the previous GTX 1650 runner crash, and no catalogue/evidence rows are written directly. Dry-run remains the default.
+
+The run summary now reports search results, eligible URLs, fetched price-bearing pages, Gemma call count and accepted candidates. Progress events distinguish URL prefiltering, missing-price rejection, batch extraction and validation rejection.
+
+**Important limitation:** this pipeline deliberately does not turn a page without a visible GBP price into a priced evidence candidate. Such a page is recorded in run progress as excluded before Gemma, rather than inventing a price. A future owner-review-only note workflow can preserve exact-product pages with missing prices without weakening the evidence schema.
+
+Automated regression coverage now includes direct-product URL filtering, visible GBP-price screening and a mocked multi-page extraction test that asserts one Ollama request handles multiple source pages. The GitHub Actions test workflow is configured; the local Research PC benchmark and real dry-run are still required before marking the change verified live.
+
+Implementation branch: `fix/gemma-batched-extraction-20261106`.
+Pre-change restore branch: `checkpoint-gemma-research-pipeline-pre-batch-20261106`.

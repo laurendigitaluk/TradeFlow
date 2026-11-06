@@ -46,3 +46,8 @@ Supabase activity for the K1 dry run on 6 November 2026:
 4. Run one small dry-run and measure elapsed time and PC responsiveness.
 5. Confirm `research_metrics.gemma_calls` is no more than one per research task and inspect any candidates.
 6. Do not enqueue until valid candidates pass manual review.
+
+
+## Automated verification update — 6 November 2026
+
+GitHub Actions regression suite passed on latest implementation commit `53ced5c47674a13e1f92d4f6ce4b4106af0ede52` (workflow run `42143240473`, conclusion `success`). The Research PC has not yet pulled or executed the change; runtime and responsiveness verification remain pending.

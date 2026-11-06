@@ -129,3 +129,13 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 - PR #245 is open and awaiting CI. Do not update Research PC or repeat research until CI passes and the PR is merged.
 - Performance finding: one consolidated Gemma call completed for three pages. The candidate-quality gate still needs work: product-page content extraction should isolate product detail content and avoid navigation text before inference/validation.
 - No catalogue, review queue, TEST/LIVE product/evidence rows, schema or deployment changes were made by the dry-run.
+
+
+## Second Research PC dry-run — storefront homepage false positive (6 November 2026)
+
+- Second controlled Creality K1 dry-run after Amazon URL filtering: 8 search results, 2 eligible URLs, 1 fetched price-bearing page, 1 Gemma batch call, 1 accepted candidate.
+- The accepted candidate URL was `https://waustore.creality.com/uk/`, a locale storefront homepage rather than a K1 product-detail page. Its excerpt contained broad catalogue/navigation content and unrelated products. Candidate is explicitly NOT approved and must not be imported.
+- Root cause: generic URL filtering excluded known collection/search/category routes and Amazon search routes but allowed locale-only homepage paths. PR #246 now rejects root and locale-only landing paths both before fetching and again during evidence validation. Specific product routes such as `/uk/products/k1` remain eligible. PR #246 merged as `4825b894b09faed2bc76467eeb5c5c8312018411`; CI run 42213976962 passed.
+- Performance: still one Gemma call per product. The current issue is evidence quality, not extraction-call count.
+- Remaining known quality weakness: fetched HTML is flattened into text with navigation, footer and unrelated product listings retained. A visible GBP price and product identity terms can therefore occur in unrelated page chrome. Next improvement should isolate product-detail content (JSON-LD Product/Offer, product-specific main content, title/H1 and canonical URL) and require corroborating product identity and price within the same product block before Gemma extraction/acceptance. Do not weaken strict UK/GBP/new-used rules.
+- No catalogue products/evidence or review queue rows were written by the dry-run. No TEST/LIVE schema, RLS, RPC, Edge Function, tenant/customer/Stripe/domain data or deployment changed.

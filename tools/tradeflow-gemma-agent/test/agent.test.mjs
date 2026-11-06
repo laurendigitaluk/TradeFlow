@@ -1,9 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, isRelevantApprovedSource, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, matchesExactProductPage, isRelevantApprovedSource, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
 import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
+test('exact model guard rejects K1 Max and CFS accessory as K1 evidence', () => {
+ const task={manufacturer:'Creality',model:'K1'};
+ assert.equal(matchesExactProductPage({url:'https://store.creality.com/uk/products/k1-max-ai-fast-3d-printer?country=GB&currency=GBP',title:'K1 Max AI Fast 3D Printer'},task),false);
+ assert.equal(matchesExactProductPage({url:'https://www.currys.co.uk/products/creality-k1-max-ai-fast-3d-printer-black-10298241.html',title:'Creality K1 Max'},task),false);
+ assert.equal(matchesExactProductPage({url:'https://www.crealityofficial.co.uk/products/k1-series-cfs-upgrade-accessory-kit',title:'K1 Series CFS Upgrade Accessory Kit'},task),false);
+ assert.equal(matchesExactProductPage({url:'https://store.creality.com/uk/products/k1-speedy-3d-printer',title:'Creality K1 Speedy 3D Printer'},task),true);
+ assert.equal(matchesExactProductPage({url:'https://www.ypc.co.uk/product/official-creality-k1-3d-printer-high-speed/',title:'Official Creality K1 3D Printer'},task),true);
+});
+
 test('manufacturer source probes only run for the requested manufacturer', () => {
  const task={manufacturer:'Creality',model:'K1'};
  assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'Creality UK Official Store',domain:'store.creality.com'},task),true);

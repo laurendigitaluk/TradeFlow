@@ -88,3 +88,12 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Added visible progress diagnostics for registry errors, route failures, empty search results and successful approved-source matches.
 - Independent page inspection confirms the collection contains the base K1 listing and variant listings, with the base K1 product URL `https://store.creality.com/uk/products/k1-speedy-3d-printer`.
 - Latest code commit: `9225590c49f20e88cff3882cec63319fa89dbde7`. Local update/dry-run remains pending; no catalogue/evidence writes.
+
+
+## Shopify collection JSON discovery fallback (6 November 2026)
+
+- Latest Research PC run successfully fetched the Creality K1 Series collection page but extracted zero matching product links. Browser-rendered collection visibly contains New K1 Max, Carbon Fiber Ready K1C 2025 and Flash Sale K1 cards.
+- Root cause: collection parser depended on ordinary anchor text, which does not expose the dynamically rendered Shopify product cards reliably.
+- Added fallback to Shopify collection public `products.json?limit=50` endpoint when HTML extraction returns zero exact-model products. Product title/handle is matched to exact model; K1 Max and K1C are excluded; direct UK product URL is then fetched through existing validation/GBP checks. JSON/collection metadata is not evidence.
+- Added test for exact K1 inclusion and sibling variant exclusion. Commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`.
+- Local updater and dry-run remain pending. No catalogue or evidence writes.

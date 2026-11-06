@@ -3218,3 +3218,14 @@ This supersedes the earlier pending-rerun note. PR #261 remains open and unmerge
 The latest TEST telemetry check shows the 3D-printer agent is idle with its last heartbeat at 16:18:17 UTC (23 cumulative tasks, 3 cumulative candidates, 0 evidence queued). That last K1 task completed with 0 evidence candidates; no page contained a visible GBP price and Gemma was not called. This run predates category-scoped source routing.
 
 The TEST `platform_ai_agent_tasks` table and `platform_catalogue_research_queue` both currently contain zero rows. Drones, mobile phones and metal-detectors agent telemetry rows have no heartbeat yet. The Research PC has not demonstrated installation of the category-scoped branch. Do not assume the persistent worker is running or submit research tasks to it until the local package is updated and its heartbeat/test run is verified.
+
+
+## Integration status update — 6 November 2026, 21:42 UTC
+
+- Category-scoped source routing is now integrated into the existing Research PC updater branch `feature/tradeflow-gemma-agent-foundation-20261105` via PR #263 (merged at `92cc845b8ed69bb49b7bb9b6eef61759185bcb8b`).
+- The earlier category implementation PR #261 was merged into its intermediate brand/Shopify fix branch; a clean integration branch was then created from the updater's foundation branch so the newer exact-model and collection-discovery work was retained.
+- Verified on the updater branch: `agent.mjs` contains category allowlisting, category-restricted search-query construction and fetched-host filtering; tests contain five category-routing regression tests; the existing updater still downloads the foundation branch and explicitly preserves `.env`, tasks, logs and `node_modules`.
+- TEST and LIVE remain independently verified at 51 enabled sources each (47 category-scoped, 2 wildcard, 4 unmapped/fail-closed). No product/evidence import or catalogue queue write was performed.
+- The Research PC has not yet been updated with this merged branch. Its previous 39-test run was against the old local copy and is not evidence for this change. Next gate: run the existing `Update-TradeFlow-Gemma.ps1` from the agent folder; it backs up code, downloads the foundation branch, preserves local configuration/tasks/logs/dependencies, runs `npm test`, and rolls back code on failure. Then run a dry-run Creality K1 task and inspect actual source domains and candidate evidence. No enqueue/import until owner review.
+- Earlier category implementation CI run #158 passed 41/41 on its source branch; the clean foundation integration has not yet produced a separate CI run, so the Research PC updater's test result remains required.
+- Laptop research remains blocked until the LIVE category master is reconciled with TEST.

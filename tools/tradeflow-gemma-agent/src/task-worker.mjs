@@ -1,4 +1,5 @@
 import os from 'node:os';
+import { combineProductResearchTasks } from './task-groups.mjs';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -48,7 +49,7 @@ function agentIdentity(task){
 async function processClaim(claim){
  const payload=claim.payload||{};
  if(claim.task_type!=='catalogue_research')throw new Error('Unsupported task type: '+claim.task_type);
- const tasks=Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]);
+ const tasks=combineProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
  const heartbeat=setInterval(()=>rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message)),45000);

@@ -3127,3 +3127,8 @@ The Research PC diagnostic showed approximately 80 GB system RAM and an NVIDIA G
 ## Gemma launcher SearXNG endpoint fallback — 6 November 2026
 
 The Research PC manual test against `http://127.0.0.1:8080/search?q=tradeflow&format=json` returned one result while the launcher still failed its SearXNG preflight. This established that the local service could respond and pointed to a mismatch in the configured `SEARXNG_BASE_URL` read by the PowerShell launcher. The launcher now tries the configured endpoint and then the known local Compose binding `http://127.0.0.1:8080`, accepting only a response with a `results` field. It does not edit or print `.env`, and does not touch the retired GearCashOut configuration. If both fail, it stops with the endpoint errors. Commit: `a142f71cc24f2ab36152f00f900ddeab1fb4ccf2`.
+
+
+## SearXNG preflight warm-up timeout adjustment — 6 November 2026
+
+The Research PC returned one result from `http://127.0.0.1:8080/search?q=tradeflow&format=json` with a 10-second manual timeout, while the launcher fallback timed out with an 8-second limit. The launcher preflight now allows 25 seconds per attempt and retries once after a two-second pause before failing closed. This accommodates a slow/warming local search service without changing the search URL, `.env`, Docker configuration, Ollama settings, or catalogue data. Commit: `75cd7bcf00787b8ac477ac8503aebc288e7049c8`.

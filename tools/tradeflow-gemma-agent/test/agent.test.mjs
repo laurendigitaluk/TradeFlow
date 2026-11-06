@@ -78,12 +78,12 @@ test('general web-search query is restricted to configured category websites', (
   {source_kind:'marketplace',source_name:'Amazon UK',domain:'amazon.co.uk',country_code:'GB',category_slugs:['*']}
  ];
  const droneQuery=buildCategoryScopedSearchQuery('DJI Mini 5 UK price',sources,{manufacturer:'DJI',category_slug:'drones'});
- assert.match(droneQuery,/site:dji\\.com/);
- assert.match(droneQuery,/site:amazon\\.co\\.uk/);
- assert.doesNotMatch(droneQuery,/game\\.co\\.uk/);
+ assert.match(droneQuery,/site:dji\.com/);
+ assert.match(droneQuery,/site:amazon\.co\.uk/);
+ assert.doesNotMatch(droneQuery,/game\.co\.uk/);
  const gamingQuery=buildCategoryScopedSearchQuery('Nintendo Switch UK price',sources,{manufacturer:'Nintendo',category_slug:'gaming-consoles-accessories'});
- assert.match(gamingQuery,/site:game\\.co\\.uk/);
- assert.doesNotMatch(gamingQuery,/dji\\.com/);
+ assert.match(gamingQuery,/site:game\.co\.uk/);
+ assert.doesNotMatch(gamingQuery,/dji\.com/);
  assert.equal(buildCategoryScopedSearchQuery('unknown category',sources.filter(source=>source.domain!=='amazon.co.uk'),{manufacturer:'Creality',category_slug:'3d-printers-equipment'}),null);
 });
 

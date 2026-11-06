@@ -72,6 +72,11 @@ test('prefilter rejects collection, search, forum and marketplace category URLs 
  assert.equal(isEligibleProductPage('https://www.ebay.co.uk/shop/k1-max?_nkw=k1+max'), false);
 });
 
+test('rejects storefront homepages and locale landing pages', () => {
+ assert.equal(isEligibleProductPage('https://waustore.creality.com/uk/'), false);
+ assert.equal(isEligibleProductPage('https://store.creality.com/'), false);
+ assert.equal(validate({...evidence,source_url:'https://waustore.creality.com/uk/'},task,'Creality K1 £339.00').valid,false);
+});
 test('prefilter permits a direct UK product listing', () => {
  assert.equal(isEligibleProductPage('https://www.ebay.co.uk/itm/405135219874'), true);
  assert.equal(isEligibleProductPage('https://store.creality.com/uk/products/k1'), true);

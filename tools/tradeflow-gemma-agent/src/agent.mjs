@@ -8,6 +8,12 @@ export function validate(e, task, page) {
   const errors = []; let u;
   try { u = new URL(e.source_url); } catch { errors.push('invalid source URL'); }
   if (u && (!['https:','http:'].includes(u.protocol) || !ukHost(u.hostname,u.pathname))) errors.push('source is not an eligible UK storefront');
+  if (u) {
+    const segments = u.pathname.toLowerCase().split('/').filter(Boolean);
+    if (segments.length === 0 || (segments.length === 1 && /^(uk|en|en-gb|en-us|gb|us|de|fr|es|it|nl)$/i.test(segments[0]))) {
+      errors.push('source must be a specific product detail or listing page, not a storefront homepage');
+    }
+  }
   if (u && (/search|category|results|\/sch\//i.test(u.pathname) || ['q','query','_nkw'].some(k=>u.searchParams.has(k)))) errors.push('source must be a direct product/listing page');
   if (u && /(^|\.)amazon\./i.test(u.hostname) &&
       (/^\/s\/?$/i.test(u.pathname) || u.searchParams.has('k') ||
@@ -151,6 +157,10 @@ export function isEligibleProductPage(url, title = '') {
   let path;
   try { path = decodeURIComponent(u.pathname).toLowerCase(); } catch { return false; }
   const host = u.hostname.toLowerCase();
+  // A locale-only storefront route (for example /uk/) is a homepage, not a product detail page.
+  const routeSegments = path.split('/').filter(Boolean);
+  const localeOnly = routeSegments.length === 1 && /^(uk|en|en-gb|en-us|gb|us|de|fr|es|it|nl)$/i.test(routeSegments[0]);
+  if (routeSegments.length === 0 || localeOnly) return false;
   if (/forum|viewtopic|srpsearch|\/(collections?|categories?|search|results|pages?)\b|\/shop\//i.test(path)) return false;
   if (['q', 'query', '_nkw', 'search'].some(key => u.searchParams.has(key))) return false;
   // Amazon search/category URLs can look like product slugs but are not offer pages.

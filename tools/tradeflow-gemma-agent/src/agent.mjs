@@ -225,9 +225,8 @@ export function isCollectionDiscoveryPage(url, title = '') {
 function matchesTaskModel(title, url, task = {}) {
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
-  const identity = (' ' + (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ');
+  const identity = ' ' + (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
   if (!identity.includes(' ' + model + ' ')) return false;
-  // A base model is not interchangeable with a visibly different family member.
   const afterModel = identity.split(' ' + model + ' ')[1] || '';
   const firstSuffix = afterModel.trim().split(' ')[0];
   return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2'].includes(firstSuffix);
@@ -235,7 +234,7 @@ function matchesTaskModel(title, url, task = {}) {
 
 export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
   const rows = [], seen = new Set();
-  const anchors = /<a\\b[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi;
+  const anchors = /<a\b[^>]*href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
   let match;
   while ((match = anchors.exec(String(html || '')))) {
     let url;
@@ -247,28 +246,6 @@ export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 
     rows.push({ title, url: key, description: '', provider: 'collection_discovery' });
   }
   return rows.slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
-}
-
-export function isEligibleProductPage(url, title = '') {'));
-  const expression = new RegExp('(?:^| )' + escaped.join(' ') + '(?: |$)', 'i');
-  if (!expression.test(identity)) return false;
-  // Do not confuse a base model with a visibly different model family member.
-  const suffixes = ['max', 'plus', 'pro', 'ultra', 'combo', 'se', 's1', 's1 pro', 'v2'];
-  const modelIndex = identity.search(expression);
-  const after = identity.slice(modelIndex + model.toLowerCase().length).trim();
-  return !suffixes.some(suffix => after === suffix || after.startsWith(suffix + ' '));
-}
-
-export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
-  const rows = extractSearchLinks(String(html || ''), baseUrl);
-  const seen = new Set();
-  return rows.filter(item => {
-    if (!isEligibleProductPage(item.url, item.title) || !matchesTaskModel(item.title, item.url, task)) return false;
-    const key = item.url.split('#')[0];
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  }).slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
 }
 
 export function isEligibleProductPage(url, title = '') {

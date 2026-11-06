@@ -3188,3 +3188,8 @@ Source assignments are configuration, not evidence. Every candidate must still b
 
 A known separate data issue remains: the Laptops category is active in TEST but missing from LIVE. Do not run/import laptop research until the LIVE category master is reconciled. The code change is on the Gemma feature/fix branch and still requires CI plus a controlled Research PC dry-run; it is not a production application deployment.
 
+## CI diagnostic and correction — 6 November 2026
+
+The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
+
+Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.

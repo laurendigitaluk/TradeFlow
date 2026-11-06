@@ -273,7 +273,7 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 1. Loads enabled source rows from TEST `platform_research_sources`, including `category_slugs`.
 2. Requires exact task `category_slug` membership (or the reserved `*` wildcard).
 3. Applies the existing manufacturer-name check to `source_kind='manufacturer'`.
-4. Filters broad DuckDuckGo/Bing/Mojeek/optional Google result URLs to the same allowed UK source domains before page fetch.
+4. Adds `site:` restrictions for the category-approved domains to DuckDuckGo/Bing/Mojeek/optional Google queries, then validates returned URLs against the same allowed UK source domains before page fetch.
 5. Probes only category-approved sources through the existing balanced UK-new / UK-used / official lanes.
 6. Continues through existing direct-page, visible GBP, exact product/variant and Gemma validation.
 

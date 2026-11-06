@@ -233,3 +233,13 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Corrected updater uses a short path under the system drive and extracts only the Gemma agent subtree using .NET ZipArchive. It verifies backup completeness before rollback and never attempts rollback from an empty/incomplete backup.
 - Recovery mode allows repair when previous local code files are incomplete, while requiring the local TradeFlow `.env` to exist. The updater preserves `.env`, tasks, logs and node_modules.
 - Corrected updater commit: `3f90d3aa8789d759791c51e3c815edc64c5dca7c`. Research PC update and controlled dry-run remain pending.
+
+
+### Category-aware approved-source fallback (6 November 2026)
+
+- Research PC run after the updater passed 32/32 tests but returned one irrelevant Mojeek newsletter result, zero eligible URLs, zero fetched pages and zero Gemma calls. This is a discovery-yield issue, not a candidate-validation failure.
+- Root cause in configuration: the 20-source registry was camera-centric and contained no Creality official store. The balanced probe selects at most four official sources, so 3D-printer discovery had no authoritative manufacturer source.
+- Added Creality UK Official Store to both TEST and LIVE `platform_research_sources`, domain `store.creality.com`, UK manufacturer/official, priority 1, search template `https://store.creality.com/uk/search?type=product&q={query}`. Registry now has 21 matching entries in both environments.
+- Updated approved-source probing to accept exact-model collection/category URLs as discovery results as well as direct product pages. Collection hubs flow through the existing bounded extraction path and cannot become evidence.
+- Added a unit test asserting the Creality collection is discovery-eligible but not a direct product evidence page.
+- Local agent has not yet received this latest source-registry/probe update; one controlled update-and-dry-run remains required.

@@ -97,3 +97,12 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Added fallback to Shopify collection public `products.json?limit=50` endpoint when HTML extraction returns zero exact-model products. Product title/handle is matched to exact model; K1 Max and K1C are excluded; direct UK product URL is then fetched through existing validation/GBP checks. JSON/collection metadata is not evidence.
 - Added test for exact K1 inclusion and sibling variant exclusion. Commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`.
 - Local updater and dry-run remain pending. No catalogue or evidence writes.
+
+
+## Manufacturer-specific source routing and Shopify regex repair (6 November 2026)
+
+- User identified an invalid query: DJI manufacturer search was being called with a Creality K1 printer query. DJI/Sony manufacturer sources must only be searched for matching DJI/Sony product tasks; UK retailers and marketplaces remain cross-brand sources.
+- Implemented `isRelevantApprovedSource` filter before source group selection. Creality tasks skip DJI/Sony manufacturer sources and retain Creality official plus UK retailers/marketplaces. Missing manufacturer fails closed. Tests cover these rules.
+- Research PC updater caught an invalid escaped regular expression in the Shopify collection JSON fallback. The updater safely restored previous code, preserving .env/tasks/logs.
+- Fixed regex and added fail-closed test. CI passed: run 42231223625, PR #257. Squash merge SHA `23bd99b6b17c915bd41e5e1d8c625196503e8669` into feature branch.
+- Current next step: one corrected local update/test, then one Creality K1 dry-run. No queue/catalogue/evidence writes.

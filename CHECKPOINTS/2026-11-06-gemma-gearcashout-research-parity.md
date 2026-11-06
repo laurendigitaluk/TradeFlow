@@ -38,3 +38,15 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Added support for future source-specific `{query}`, `{model}` and `{manufacturer}` URL templates.
 - TEST and LIVE registry seed sets are aligned. No catalogue/evidence rows or queue rows were changed.
 - The source-balancing follow-up commit still requires GitHub CI and one controlled Research PC dry-run. Do not enqueue or import research until source URLs, product identity and prices are independently validated.
+
+
+
+## Follow-up: deep collection-page discovery (6 November 2026)
+
+- User identified a concrete discovery gap: a UK collection page exposed multiple usable product listings, but Gemma stopped at the collection page and did not follow through to individual items.
+- Opened PR #256: https://github.com/laurendigitaluk/TradeFlow/pull/256
+- Search terms now prioritise manufacturer + model + UK retail intent and omit internal package labels.
+- Agent can fetch up to six UK collection/category pages and extract up to twelve matching individual product URLs from each; relative URLs are resolved and duplicates removed.
+- Collection pages are discovery-only and cannot become evidence. Individual direct product pages must still pass UK URL eligibility, visible GBP price, exact model, condition and availability checks.
+- Obvious sibling variants (Max, Plus, Pro, Ultra, Combo, SE, V2) are excluded from base-model matches.
+- CI passed run 42223386531: 32 tests, 32 passed. The PR is ready to merge into the existing feature branch. No production deployment, catalogue/evidence write, TEST/LIVE queue write or importer run occurred.

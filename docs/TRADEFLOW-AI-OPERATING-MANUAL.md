@@ -4199,3 +4199,8 @@ When Ollama returns HTTP 500 `model runner has unexpectedly stopped` during extr
 ## Research PC SearXNG preflight correction — 6 November 2026
 
 A direct request to the known local endpoint `http://127.0.0.1:8080/search?q=tradeflow&format=json` returned one result, but the Windows launcher continued to fail its preflight. The likely discrepancy was the `SEARXNG_BASE_URL` value in the local TradeFlow `.env`. The launcher has been corrected to try the configured endpoint first and then the known local Compose endpoint, without displaying or modifying `.env` and without accessing the old GearCashOut configuration. It requires a JSON response containing `results` and fails closed if neither endpoint works. Commit: `a142f71cc24f2ab36152f00f900ddeab1fb4ccf2`.
+
+
+## SearXNG preflight warm-up timeout adjustment — 6 November 2026
+
+The Research PC returned one result from `http://127.0.0.1:8080/search?q=tradeflow&format=json` with a 10-second manual timeout, while the launcher fallback timed out with an 8-second limit. The launcher preflight now allows 25 seconds per attempt and retries once after a two-second pause before failing closed. This accommodates a slow/warming local search service without changing the search URL, `.env`, Docker configuration, Ollama settings, or catalogue data. Commit: `75cd7bcf00787b8ac477ac8503aebc288e7049c8`.

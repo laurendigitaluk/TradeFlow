@@ -448,6 +448,16 @@ async function db(t,path,options={}) {
   const r=await fetch(t.url+'/rest/v1/'+path,{...options,headers:{apikey:t.key,Authorization:'Bearer '+t.key,'Content-Type':'application/json',...(options.headers||{})},signal:AbortSignal.timeout(25000)});
   const body=await r.text(); if(!r.ok) throw new Error(t.name+' Supabase '+r.status+': '+body.slice(0,400)); return body?JSON.parse(body):null;
 }
+export function isRelevantApprovedSource(source, task) {
+  const kind = String(source?.source_kind || '').toLowerCase();
+  if (kind !== 'manufacturer') return true;
+  const manufacturer = String(task?.manufacturer || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  if (!manufacturer) return false;
+  const sourceIdentity = (String(source?.source_name || '') + ' ' + String(source?.domain || ''))
+    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return sourceIdentity.includes(manufacturer);
+}
+
 async function probeApprovedResearchSources(task, env, onProgress) {
   let sources = [];
   try {
@@ -471,7 +481,14 @@ async function probeApprovedResearchSources(task, env, onProgress) {
   };
   // GearCashOut's balanced source rotation: do not let new/official sources
   // consume the whole probe budget before used-market sources are reached.
-  const groups = new Map(['new_uk','used_uk','official'].map(key => [key, (sources || []).filter(source => bucket(source) === key)]));
+  const relevantSources = (sources || []).filter(source => {
+    const relevant = isRelevantApprovedSource(source, task);
+    if (!relevant && String(source.source_kind || '').toLowerCase() === 'manufacturer') {
+      onProgress?.({ stage: 'approved_source_skipped', source: source.domain, message: 'Skipped manufacturer source ' + source.domain + ': it does not match requested manufacturer ' + task.manufacturer });
+    }
+    return relevant;
+  });
+  const groups = new Map(['new_uk','used_uk','official'].map(key => [key, relevantSources.filter(source => bucket(source) === key)]));
   const selected = [];
   for (let index = 0; selected.length < 12; index++) {
     let added = false;

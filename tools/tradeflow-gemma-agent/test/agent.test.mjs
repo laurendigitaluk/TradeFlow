@@ -188,3 +188,30 @@ test('combined extraction accepts both explicit UK-new and UK-used classificatio
  assert.equal(validate(newEvidence,{...task,research_type:'uk_both'},'Creality K1 new £299.00').valid,true);
  assert.equal(validate(usedEvidence,{...task,research_type:'uk_both'},'Creality K1 used £249.00').valid,true);
 });
+
+
+test('search result cap is shared fairly across independent providers', async () => {
+ const original=globalThis.fetch;
+ globalThis.fetch=async(url)=>{
+  const target=String(url);
+  const parsed=new URL(target);
+  const queryIndex=parsed.searchParams.get('q')?.includes('buy new')?2:parsed.searchParams.get('q')?.includes('price GBP')?1:0;
+  if(target.includes('duckduckgo.com')) return new Response(
+   '<html><a class="result__a" href="https://ddg-retailer.co.uk/product/'+queryIndex+'">Creality K1 direct product</a></html>',
+   {status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('bing.com')) return new Response(
+   '<html><li class="b_algo"><h2><a href="https://bing-retailer.co.uk/product/'+queryIndex+'">Creality K1 direct product</a></h2></li></html>',
+   {status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('mojeek.com')) return new Response(
+   '<html><a class="result__a" href="https://mojeek-retailer.co.uk/product/'+queryIndex+'">Creality K1 direct product</a></html>',
+   {status:200,headers:{'content-type':'text/html'}});
+  throw new Error('unexpected provider');
+ };
+ try {
+  const results=await searchWebResults('Creality K1 Standard Printer',{SEARCH_RESULTS_PER_TASK:'6'});
+  assert.equal(results.length,6);
+  for(const provider of ['duckduckgo','bing','mojeek']) {
+   assert.equal(results.filter(item=>item.provider===provider).length,2);
+  }
+ } finally { globalThis.fetch=original; }
+});

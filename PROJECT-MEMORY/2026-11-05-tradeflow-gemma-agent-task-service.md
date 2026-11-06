@@ -26,3 +26,7 @@ Source and migration are committed on `feature/tradeflow-gemma-agent-foundation-
 - TEST and LIVE product identity is independently resolved by the existing research pipeline; product/evidence imports remain separate and approved.
 - Worker leases expire after 10 minutes and are renewed every 45 seconds while processing. Poll interval defaults to 15 seconds.
 - Do not merge/deploy to production or apply task-control schema to LIVE as part of this setup step.
+
+## Configuration-path consistency repair — 5 November 2026
+
+Interactive launcher and Node research entry point had been reading the retired GearCashOut config path, while the persistent supervisor and task worker used the TradeFlow agent folder `.env`. This is now corrected on the Gemma feature branch: launcher and Node entry point both use the TradeFlow-local `.env`; launcher passes the exact path to Node. Supervisor and worker already used that file. Old `C:\\GearCashOut-Config\\.env` remains untouched. README updated. No secrets or data written, no queue/catalogue writes, and no deployment. Research PC must refresh updated launcher and `src/index.mjs`, then pass local tests and dry-run before service installation.

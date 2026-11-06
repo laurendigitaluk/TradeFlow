@@ -154,8 +154,14 @@ export function isEligibleProductPage(url, title = '') {
 }
 
 export function hasVisibleUkPrice(text = '') {
-  const matches = [...String(text).matchAll(/(?:£\s*|\bGBP\s*)([0-9][0-9,]*(?:\.[0-9]{2})?)/gi)];
-  return matches.some(match => Number(match[1].replace(/,/g, '')) > 0);
+  const pound = String.fromCharCode(163);
+  const pattern = new RegExp('(?:' + pound + '\\s*|\\bGBP\\s*)([0-9][0-9,]*(?:\\.[0-9]{2})?)', 'gi');
+  const source = String(text ?? '').replace(/\u00a0/g, ' ');
+  for (const match of source.matchAll(pattern)) {
+    const amount = Number(match[1].replace(/,/g, ''));
+    if (Number.isFinite(amount) && amount > 0) return true;
+  }
+  return false;
 }
 
 async function page(url) {

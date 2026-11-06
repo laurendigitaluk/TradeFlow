@@ -475,7 +475,12 @@ async function probeApprovedResearchSources(task, env) {
         const matches = [];
         for (const item of extractSearchLinks(pageResult.html, pageResult.url)) {
           const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
-          if (!model || !identity.includes(model) || !isEligibleProductPage(item.url, item.title)) continue;
+          const directProduct = isEligibleProductPage(item.url, item.title);
+          const collectionHub = isCollectionDiscoveryPage(item.url, item.title);
+          // Approved manufacturer search pages may return either direct product
+          // links or a model-specific collection hub. Collection hubs are passed
+          // to runTask's bounded discovery stage and can never become evidence.
+          if (!model || !identity.includes(model) || (!directProduct && !collectionHub)) continue;
           matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
         }
         if (matches.length) return matches;

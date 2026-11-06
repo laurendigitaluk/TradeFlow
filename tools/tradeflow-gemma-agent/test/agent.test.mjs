@@ -48,7 +48,7 @@ test('Gemma defaults to CPU inference to avoid exhausting 4 GB GPU memory',()=>{
  const options=ollamaOptions({});
  assert.equal(options.num_gpu,0);
  assert.equal(options.num_ctx,4096);
- assert.equal(options.num_predict,256);
+ assert.equal(options.num_predict,512);
 });
 test('Gemma GPU layer override must be a non-negative integer',()=>{
  assert.equal(ollamaOptions({OLLAMA_NUM_GPU:'12'}).num_gpu,12);

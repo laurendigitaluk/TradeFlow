@@ -151,3 +151,10 @@ The GitHub Actions regression suite passed on the latest implementation commit `
 
 
 Merged-branch verification: GitHub Actions run `42143345106` completed successfully on merged commit `e31d974b0b513e1d5101fa6678d798ac1555a2df`. The remaining verification is the Research PC pull, dry-run timing and responsiveness check.
+
+
+## GearCashOut research parity — 6 November 2026
+
+TradeFlow discovery now follows the proven GearCashOut provider pattern: optional official Google Web Search Service / Google Programmable Search, with DuckDuckGo, Bing and Mojeek as independent fallbacks. Exact-model Amazon UK discovery queries are issued as a separate discovery lane; Amazon search pages remain discovery-only and must resolve to a direct ASIN product page before they can be fetched as evidence. Google settings belong only in the TradeFlow `.env`; the GearCashOut `.env` is never read or copied. The TradeFlow source-registry migration adds `platform_research_sources` as a separate approved-source list, read-only by the local agent from TEST. Source-page results still pass the existing strict direct-product, UK, GBP, exact-model, condition and availability checks. No Gemma extraction, queue handoff or importer rule is relaxed.
+
+Google requires TradeFlow-owned settings: `GOOGLE_SEARCH_API_KEY` plus either `GOOGLE_WEB_SEARCH_CLIENT_ID` and `GOOGLE_SEARCH_USER_IP`, or `GOOGLE_CSE_ID`. If those are not configured, Google is skipped and the independent public providers continue. The approved-source registry is introduced by `supabase/migrations/20261106210000_platform_research_sources.sql`; apply it to TEST and LIVE before adding approved source rows. The agent reads the TEST registry as the research control plane and does not write to it.

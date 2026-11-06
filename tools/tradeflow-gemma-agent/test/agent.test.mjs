@@ -160,6 +160,13 @@ test('Gemma GPU layer override must be a non-negative integer',()=>{
 });
 
 
+test('approved exact direct product pages remain eligible as discovery results', () => {
+ const url='https://store.creality.com/uk/products/k1-speedy-3d-printer';
+ assert.equal(isEligibleProductPage(url,'K1 Speedy 3D Printer'),true);
+ assert.equal(matchesTaskModel('K1 Speedy 3D Printer',url,task),true);
+ assert.equal(isEligibleProductPage('https://store.creality.com/uk/collections/k1-series-3d-printer','K1 Series'),false);
+});
+
 test('approved source collection discovery hubs are permitted as discovery, never direct evidence', () => {
  assert.equal(isCollectionDiscoveryPage('https://store.creality.com/uk/collections/k1-series-3d-printer','Creality K1 Series'),true);
  assert.equal(isEligibleProductPage('https://store.creality.com/uk/collections/k1-series-3d-printer','Creality K1 Series'),false);

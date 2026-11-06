@@ -355,7 +355,32 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   }
 
   await onProgress?.({ stage: 'handoff', message: 'Research complete; candidates remain in the ChatGPT verification handoff. No TEST/LIVE catalogue writes or lookups.' });
-  const writes = candidates.map(evidence => ({ environment: 'RESEARCH_HANDOFF', status: 'dry-run-ready-for-verification', evidence }));
+  const writes = [];
+  for (const evidence of candidates) {
+    const key = sourceKey(evidence.source_url, evidence.evidence_type, evidence.observed_price);
+    const dedupeKey = 'review-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, key].join('|')).digest('hex').slice(0, 32);
+    const row = {
+      record_type: 'evidence_candidate', status: 'pending_review', dedupe_key: dedupeKey,
+      agent_name: 'Gemma-' + evidence.evidence_type, task_key: task.task_key || null,
+      category_slug: task.category_slug, branch_slug: task.branch_slug || null,
+      manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
+      package_name: task.package_name, evidence_type: evidence.evidence_type,
+      source_name: evidence.source_name, source_url: evidence.source_url,
+      observed_price: Number(evidence.observed_price), price_currency: 'GBP',
+      item_condition: evidence.item_condition, sales_channel: evidence.sales_channel,
+      availability: evidence.availability, source_record_key: key,
+      source_excerpt: evidence.source_excerpt || null, research_notes: evidence.notes || null,
+      raw_payload: { task, evidence, handoff: 'ChatGPT verification; TEST/LIVE catalogue writes disabled' }
+    };
+    if (!enqueue) { writes.push({ environment: 'RESEARCH_HANDOFF', status: 'dry-run-ready-for-verification', row }); continue; }
+    const testTarget = target('TEST', env);
+    const existing = await db(testTarget, 'platform_catalogue_research_queue?select=id&dedupe_key=eq.' + encodeURIComponent(dedupeKey));
+    if (existing.length) { writes.push({ environment: 'TEST_REVIEW_QUEUE', status: 'duplicate-skipped', id: existing[0].id }); continue; }
+    const inserted = await db(testTarget, 'platform_catalogue_research_queue', {
+      method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
+    });
+    writes.push({ environment: 'TEST_REVIEW_QUEUE', status: 'queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: dedupeKey });
+  }
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,
     worker: task.research_type, enqueue, candidates, writes,

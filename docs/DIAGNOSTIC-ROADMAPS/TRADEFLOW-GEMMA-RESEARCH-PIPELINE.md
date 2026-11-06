@@ -271,3 +271,12 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Research PC updater caught an invalid regular-expression syntax in the Shopify collection JSON fallback. The updater's backup/restore worked: the failed update restored the previous agent code and preserved local configuration/tasks/logs.
 - Corrected the regex and validated via GitHub Actions PR #257, run 42231223625, successful. PR merged into feature branch at `23bd99b6b17c915bd41e5e1d8c625196503e8669`.
 - Next local updater run will install the corrected code and run the tests before research. No catalogue/evidence imports or deployments.
+
+
+### Exact-model evidence guard — K1 Max and accessory rejection (6 November 2026)
+
+- Research PC run completed 36/36 tests and performed one Gemma batch, but its candidate was the Creality K1 Max at £589, not the requested base K1. The output's model field was empty; the source page title and URL explicitly identified K1 Max. A K1 Series CFS upgrade accessory page was also fetched.
+- Treat the £589 K1 Max result as invalid for K1. It remains dry-run handoff only and was not imported into TEST/LIVE.
+- Tightened `matchesTaskModel`: rejects sibling suffixes (Max, Plus, Pro, Ultra, Combo, SE, V2) and accessory/upgrade/kit/CFS/series identities. Apply filter to discovered URLs before fetch and again to fetched page title/final URL before price prefilter or Gemma.
+- Regression tests cover K1 Max, K1C, K1 Combo, CFS upgrade accessory and valid base K1. CI run 42250634337 passed; PR #259 merged at `1891b02a67843baac6b48d8fb8bb5846e9101f43`.
+- Next local run should update and test this guard, then repeat the Creality K1 dry-run. Success criterion: only exact base K1 pages reach Gemma; K1 Max and CFS accessory pages emit model-variant skip diagnostics.

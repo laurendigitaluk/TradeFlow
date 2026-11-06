@@ -196,3 +196,13 @@ The local TradeFlow discovery layer must mirror the proven GearCashOut sequence 
 5. Deduplicate discovered URLs, then retain the existing strict direct-product URL, UK storefront, GBP price, exact model, condition and availability checks before Gemma.
 
 The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalog_ai_sources`. Its migration must be applied independently to TEST and LIVE, and approved source rows must be curated separately. Do not copy GearCashOut credentials, catalogue records, source IDs, customer data or evidence into TradeFlow. If Google credentials are absent, Google is skipped without blocking the other providers. If the registry table is not yet present, approved-source probing is skipped and public discovery continues.
+
+
+### Source registry parity and probe scheduling
+
+- TEST and LIVE both contain `platform_research_sources`, with the same curated 20-source public directory and GearCashOut-style operational metadata.
+- Local research reads the TEST registry only. Keep the LIVE registry aligned as the deployment/configuration mirror; do not write research results to either registry.
+- Probe UK new-retail, UK used-market and official-manufacturer lanes in round-robin order. Never let the first high-priority retail sources consume all slots.
+- Probe in groups of four, with short per-route timeouts. This avoids serially spending several minutes on twelve source domains.
+- Only UK sources may supply UK evidence; overseas rows remain excluded from this path.
+- Support per-source search URL templates using `{query}`, `{model}` and `{manufacturer}`. Verify templates with a direct source probe before enabling them.

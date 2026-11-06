@@ -142,7 +142,8 @@ export function isEligibleProductPage(url, title = '') {
   let u;
   try { u = new URL(url); } catch { return false; }
   if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
-  const path = decodeURIComponent(u.pathname).toLowerCase();
+  let path;
+  try { path = decodeURIComponent(u.pathname).toLowerCase(); } catch { return false; }
   const host = u.hostname.toLowerCase();
   if (/forum|viewtopic|srpsearch|\/(collections?|categories?|search|results|pages?)\b|\/shop\//i.test(path)) return false;
   if (['q', 'query', '_nkw', 'search'].some(key => u.searchParams.has(key))) return false;

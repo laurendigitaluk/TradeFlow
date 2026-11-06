@@ -27,3 +27,14 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Apply the source registry migration separately to TEST and LIVE, verify table/RLS parity, and seed only approved TradeFlow sources after review.
 - Add Google settings to the TradeFlow `.env` only if the existing Google integration credentials are authorised for TradeFlow use; do not expose or paste keys in chat.
 - One controlled Research PC dry-run should report Google/provider/approved-source counts, Amazon UK discoveries, eligible URLs, fetch failures, fetched price-bearing pages, Gemma calls and accepted candidates. Keep dry-run; do not enqueue/import until evidence is independently validated.
+
+
+## Follow-up — source registry schema and balanced probing
+
+- Applied the initial `platform_research_sources` registry migration to TradeFlow TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`).
+- Applied the metadata-alignment migration to both environments. The registry now carries the same operational metadata fields used by GearCashOut (including search URL template and source status/verification fields).
+- Seeded both environments with the same curated set of 20 established sources from the existing GearCashOut registry. This copies public source-directory metadata only; no GearCashOut catalogue, product, evidence, customer or credential data was copied. Insert used `ON CONFLICT DO NOTHING`.
+- Updated the agent to read the TEST registry, select UK sources in balanced new/used/official lanes, and probe sources in bounded groups of four. Overseas sources are not treated as UK evidence.
+- Added support for future source-specific `{query}`, `{model}` and `{manufacturer}` URL templates.
+- TEST and LIVE registry seed sets are aligned. No catalogue/evidence rows or queue rows were changed.
+- The source-balancing follow-up commit still requires GitHub CI and one controlled Research PC dry-run. Do not enqueue or import research until source URLs, product identity and prices are independently validated.

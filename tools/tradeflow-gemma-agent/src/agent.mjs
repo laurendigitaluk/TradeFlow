@@ -378,12 +378,25 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const candidates = [];
   await onProgress?.({ stage: 'searching', message: 'Searching DuckDuckGo, Bing and Mojeek for ' + task.manufacturer + ' ' + task.model });
   const searchResults = await search(task.search_query, env);
-  await onProgress?.({ stage: 'search_complete', message: 'Search finished; ' + searchResults.length + ' candidate source(s) found', total: searchResults.length });
+  const providerCounts = Object.fromEntries(['duckduckgo', 'bing', 'mojeek', 'unknown'].map(name => [
+    name,
+    searchResults.filter(item => (item.provider || 'unknown') === name).length
+  ]));
+  await onProgress?.({
+    stage: 'search_complete', total: searchResults.length, provider_counts: providerCounts,
+    message: 'Search finished; ' + searchResults.length + ' candidate source(s) found (' +
+      Object.entries(providerCounts).filter(([name, count]) => name !== 'unknown' && count > 0)
+        .map(([name, count]) => name + ': ' + count).join(', ') + ')'
+  });
 
   const eligible = [];
   for (const source of searchResults) {
     if (!isEligibleProductPage(source.url, source.title)) {
-      await onProgress?.({ stage: 'prefilter_skipped', source: source.url, message: 'Skipped before fetching: not a direct product/listing page' });
+      await onProgress?.({
+        stage: 'prefilter_skipped', source: source.url,
+        message: 'Skipped before fetching [' + (source.provider || 'unknown') + ']: not a direct UK product/listing page — ' +
+          (source.title || '(untitled)') + ' — ' + source.url
+      });
     } else eligible.push(source);
   }
 

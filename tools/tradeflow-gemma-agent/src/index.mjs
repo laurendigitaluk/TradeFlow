@@ -44,11 +44,15 @@ async function worker() {
     try {
       const result = await runTask(task, env, {
         enqueue,
-        onProgress: async progress => reportAgent(env, {
-          ...identity, status: 'running', current_task: taskKey, event_type: 'progress', task_key: taskKey,
-          message: 'Checking source ' + progress.checked + ' of ' + progress.total + ': ' + progress.source,
-          details: { stage: progress.stage, checked: progress.checked, total: progress.total }
-        })
+        onProgress: async progress => {
+          const message = progress.message || (progress.source ? 'Checking source: ' + progress.source : progress.stage);
+          console.log('[' + taskKey + '] ' + message);
+          await reportAgent(env, {
+            ...identity, status: 'running', current_task: taskKey, event_type: 'progress', task_key: taskKey,
+            message,
+            details: { stage: progress.stage, checked: progress.checked, total: progress.total, source: progress.source || null }
+          });
+        }
       });
       const found = (result.candidates || []).filter(item => item.evidence_type).length;
       const queued = (result.writes || []).filter(item => item.status === 'queued-for-chatgpt-review').length;

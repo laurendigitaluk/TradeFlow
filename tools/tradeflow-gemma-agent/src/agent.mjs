@@ -212,6 +212,42 @@ export async function searchWebResults(query, env = {}) {
   return merged;
 }
 const search=searchWebResults;
+export function isCollectionDiscoveryPage(url, title = '') {
+  let u;
+  try { u = new URL(url); } catch { return false; }
+  if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
+  const path = decodeURIComponent(u.pathname).toLowerCase();
+  if (!/\\/(collections?|categories?)\\//i.test(path)) return false;
+  if (/facebook\\.com/i.test(u.hostname)) return false;
+  return true;
+}
+
+function matchesTaskModel(title, url, task = {}) {
+  const model = String(task.model || '').trim();
+  if (!model) return false;
+  const identity = (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const escaped = model.toLowerCase().split(/\\s+/).filter(Boolean).map(token => token.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\export function isEligibleProductPage(url, title = '') {'));
+  const expression = new RegExp('(?:^| )' + escaped.join(' ') + '(?: |$)', 'i');
+  if (!expression.test(identity)) return false;
+  // Do not confuse a base model with a visibly different model family member.
+  const suffixes = ['max', 'plus', 'pro', 'ultra', 'combo', 'se', 's1', 's1 pro', 'v2'];
+  const modelIndex = identity.search(expression);
+  const after = identity.slice(modelIndex + model.toLowerCase().length).trim();
+  return !suffixes.some(suffix => after === suffix || after.startsWith(suffix + ' '));
+}
+
+export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
+  const rows = extractSearchLinks(String(html || ''), baseUrl);
+  const seen = new Set();
+  return rows.filter(item => {
+    if (!isEligibleProductPage(item.url, item.title) || !matchesTaskModel(item.title, item.url, task)) return false;
+    const key = item.url.split('#')[0];
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
+}
+
 export function isEligibleProductPage(url, title = '') {
   let u;
   try { u = new URL(url); } catch { return false; }
@@ -285,6 +321,19 @@ export function extractRelevantPageText(html, task = {}) {
     .replace(/&amp;/gi, '&').replace(/&nbsp;|&#160;/gi, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   return [content, ...structured].filter(Boolean).join(' ').slice(0, 10000);
+}
+
+async function collectionPage(url) {
+  if (!isCollectionDiscoveryPage(url)) throw new Error('ineligible collection discovery URL');
+  const response = await fetch(url, {
+    redirect: 'follow',
+    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradeFlowGemmaResearch/0.2)', 'Accept-Language': 'en-GB,en;q=0.9' },
+    signal: AbortSignal.timeout(15000)
+  });
+  if (!response.ok) throw new Error('collection HTTP ' + response.status);
+  const finalUrl = new URL(response.url);
+  if (!isCollectionDiscoveryPage(finalUrl.toString())) throw new Error('collection redirected outside an eligible collection route');
+  return { url: finalUrl.toString(), html: await response.text() };
 }
 
 async function page(url, task = {}) {
@@ -489,23 +538,39 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   });
 
   const eligible = [];
+  const collections = [];
   for (const source of searchResults) {
-    if (!isEligibleProductPage(source.url, source.title)) {
-      await onProgress?.({
-        stage: 'prefilter_skipped', source: source.url,
-        message: 'Skipped before fetching [' + (source.provider || 'unknown') + ']: not a direct UK product/listing page — ' +
-          (source.title || '(untitled)') + ' — ' + source.url
-      });
-    } else eligible.push(source);
+    if (isEligibleProductPage(source.url, source.title)) eligible.push(source);
+    else if (isCollectionDiscoveryPage(source.url, source.title)) collections.push(source);
+    else await onProgress?.({
+      stage: 'prefilter_skipped', source: source.url,
+      message: 'Skipped before fetching [' + (source.provider || 'unknown') + ']: not an eligible UK product or collection discovery page — ' +
+        (source.title || '(untitled)') + ' — ' + source.url
+    });
   }
 
+  // Collection pages are discovery hubs, not evidence. Fetch them to enumerate
+  // exact-model product cards, then follow each matching product detail URL.
+  const collectionProducts = [];
+  for (const source of collections.slice(0, 6)) {
+    try {
+      await onProgress?.({ stage: 'collection_discovery', source: source.url, message: 'Opening collection to discover individual product listings: ' + source.url });
+      const result = await collectionPage(source.url);
+      const links = extractCollectionProductLinks(result.html, result.url, task, 12);
+      collectionProducts.push(...links.map(item => ({ ...item, provider: 'collection_discovery' })));
+      await onProgress?.({ stage: 'collection_discovered', source: source.url, total: links.length, message: 'Collection yielded ' + links.length + ' matching individual product page(s)' });
+    } catch (error) {
+      await onProgress?.({ stage: 'collection_error', source: source.url, message: 'Collection discovery skipped: ' + error.message });
+    }
+  }
+  const directPages = [...new Map([...eligible, ...collectionProducts].map(item => [item.url, item])).values()];
   const fetched = [];
-  for (let offset = 0; offset < eligible.length; offset += 4) {
-    const batch = eligible.slice(offset, offset + 4);
+  for (let offset = 0; offset < directPages.length; offset += 4) {
+    const batch = directPages.slice(offset, offset + 4);
     const pages = await Promise.all(batch.map(async (source, batchIndex) => {
       const index = offset + batchIndex;
       await onProgress?.({
-        stage: 'fetching_page', source: source.url, checked: index + 1, total: eligible.length,
+        stage: 'fetching_page', source: source.url, checked: index + 1, total: directPages.length,
         message: 'Fetching eligible product page ' + (index + 1) + ' of ' + eligible.length + ': ' + source.url
       });
       try {

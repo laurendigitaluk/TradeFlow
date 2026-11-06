@@ -3193,3 +3193,13 @@ A known separate data issue remains: the Laptops category is active in TEST but 
 The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
 
 Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.
+
+## Full GitHub Actions verification — 6 November 2026
+
+The corrected PR head completed the GitHub Actions workflow **TradeFlow Gemma agent tests** successfully:
+- Workflow run #156, ID `42271575330`
+- Head commit `a9cec7cd95ad8aee9098cd30656ec39f8c16dfec`
+- Node.js 24
+- **41 tests passed, 0 failed**
+
+The earlier syntax-error run was superseded by the hostname-normalisation fix. The current PR #261 is still open and unmerged; GitHub currently reports `mergeable=false`. Do not force or bypass a merge. Resolve/refresh the PR mergeability state before merging into the previous fix branch. Research PC installation and an end-to-end category-filtered dry-run remain outstanding.

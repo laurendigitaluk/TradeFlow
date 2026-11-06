@@ -514,6 +514,18 @@ async function probeApprovedResearchSources(task, env, onProgress) {
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 8000);
         const matches = [];
+        // An approved source may be configured with an exact direct product
+        // URL (not only a search or collection route). Add that page itself
+        // as a candidate so it is fetched again through the normal price guard.
+        if (isEligibleProductPage(pageResult.url, pageResult.title) &&
+            matchesTaskModel(pageResult.title, pageResult.url, task)) {
+          matches.push({
+            title: pageResult.title || source.source_name + ' ' + task.model,
+            url: pageResult.url,
+            description: 'Approved direct product page: ' + (source.source_name || domain),
+            provider: 'approved_source'
+          });
+        }
         // If the approved route itself is a model-specific collection page,
         // pass it to runTask's collection expansion stage. It is discovery only.
         if (isCollectionDiscoveryPage(pageResult.url, source.source_name + ' ' + task.model) &&

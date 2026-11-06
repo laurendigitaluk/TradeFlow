@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice, extractBatch } from '../src/agent.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
@@ -73,4 +73,35 @@ test('visible UK price prefilter requires an explicit positive GBP amount', () =
  assert.equal(hasVisibleUkPrice('Price GBP 1,299.99'), true);
  assert.equal(hasVisibleUkPrice('Creality K1 high speed 3D printer'), false);
  assert.equal(hasVisibleUkPrice('£0.00'), false);
+});
+
+
+test('one Ollama request extracts multiple eligible pages in one batch', async () => {
+ const original = globalThis.fetch;
+ let calls = 0;
+ globalThis.fetch = async (url, options) => {
+  calls++;
+  assert.equal(String(url), 'http://ollama.local/api/chat');
+  const request = JSON.parse(options.body);
+  assert.equal(request.messages.length, 1);
+  assert.equal(request.options.num_predict, 512);
+  return new Response(JSON.stringify({
+   message: { content: JSON.stringify({ evidence: [
+    { source_id: 'S1', observed_price: 299, item_condition: 'New', availability: 'In stock' },
+    { source_id: 'S2', observed_price: 249, item_condition: 'Used - good', availability: 'Available' }
+   ] }) }
+  }), { status: 200, headers: { 'content-type': 'application/json' } });
+ };
+ try {
+  const pages = [
+   { source_id: 'S1', title: 'Creality K1', url: 'https://store.creality.com/uk/products/k1', text: 'Creality K1 £299.00' },
+   { source_id: 'S2', title: 'Creality K1 used', url: 'https://retailer.co.uk/item/k1', text: 'Creality K1 used £249.00' }
+  ];
+  const result = await extractBatch({ manufacturer: 'Creality', model: 'K1', research_type: 'uk_new' }, pages, { OLLAMA_BASE_URL: 'http://ollama.local' });
+  assert.equal(calls, 1);
+  assert.equal(result.length, 2);
+  assert.equal(result[0].evidence_type, 'uk_new');
+  assert.equal(result[1].price_currency, 'GBP');
+  assert.equal(result[1].source_url, pages[1].url);
+ } finally { globalThis.fetch = original; }
 });

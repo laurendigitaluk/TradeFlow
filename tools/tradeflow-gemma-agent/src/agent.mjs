@@ -36,13 +36,13 @@ async function json(url, options={}) {
   if (!r.ok) throw new Error('HTTP '+r.status+': '+t.slice(0,300)); return JSON.parse(t);
 }
 function searchHost(url) {
-  try { return new URL(url).hostname.replace(/^www\\./, '').toLowerCase(); } catch { return ''; }
+  try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch { return ''; }
 }
 function stripSearchHtml(value) {
-  return String(value || '').replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')
-    .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')
+  return String(value || '').replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
-    .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/\\s+/g, ' ').trim();
+    .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/\s+/g, ' ').trim();
 }
 function decodeSearchRedirect(href) {
   try {
@@ -55,14 +55,14 @@ function decodeSearchRedirect(href) {
 function extractSearchLinks(html, baseUrl) {
   const out = [], seen = new Set();
   const patterns = [
-    /<a[^>]+class=["'][^"']*(?:result__a|result-link)[^"']*["'][^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi,
-    /<a[^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi
+    /<a[^>]+class=["'][^"']*(?:result__a|result-link)[^"']*["'][^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi,
+    /<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi
   ];
   for (const re of patterns) {
     let match;
     while ((match = re.exec(html))) {
       const url = decodeSearchRedirect(match[1]) || (() => { try { return new URL(match[1], baseUrl).href; } catch { return null; } })();
-      if (!url || !/^https?:\\/\\//i.test(url)) continue;
+      if (!url || !/^https?:\/\//i.test(url)) continue;
       const host = searchHost(url);
       if (!host || ['duckduckgo.com','bing.com','mojeek.com','google.com','google.co.uk'].some(d => host === d || host.endsWith('.' + d))) continue;
       const key = url.split('#')[0];
@@ -101,7 +101,7 @@ async function searchBing(query) {
   try {
     const html = (await fetchSearchHtml(url)).html;
     const out = [], seen = new Set();
-    const re = /<li[^>]+class=["'][^"']*b_algo[^"']*["'][^>]*>[\\s\\S]*?<h2[^>]*>[\\s\\S]*?<a[^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>[\\s\\S]*?<\\/li>/gi;
+    const re = /<li[^>]+class=["'][^"']*b_algo[^"']*["'][^>]*>[\s\S]*?<h2[^>]*>[\s\S]*?<a[^>]+href=["']([^"']+)["'][^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/li>/gi;
     let match;
     while ((match = re.exec(html))) {
       const url = match[1], host = searchHost(url);

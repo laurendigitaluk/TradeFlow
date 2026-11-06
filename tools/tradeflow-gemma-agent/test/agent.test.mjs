@@ -12,6 +12,10 @@ test('manufacturer source probes only run for the requested manufacturer', () =>
  assert.equal(isRelevantApprovedSource({source_kind:'retailer',source_name:'Jessops',domain:'jessops.com'},task),true);
 });
 
+test('manufacturer source filter fails closed when task manufacturer is missing', () => {
+ assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'DJI UK',domain:'dji.com'},{model:'K1'}),false);
+});
+
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
 test('Shopify collection JSON discovers exact K1 product and excludes sibling variants', () => {
  const payload={products:[

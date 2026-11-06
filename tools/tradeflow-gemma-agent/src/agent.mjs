@@ -384,31 +384,62 @@ async function probeApprovedResearchSources(task, env) {
   let sources = [];
   try {
     const control = target('TEST', env);
-    sources = await db(control, 'platform_research_sources?select=source_name,domain,source_kind,country_code,research_scope,enabled,priority&enabled=eq.true&order=priority.asc&limit=12');
+    sources = await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority&enabled=eq.true&order=priority.asc&limit=60');
   } catch { return []; }
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  const found = [], seen = new Set();
-  for (const source of sources || []) {
-    if (!source.domain) continue;
+  const bucket = source => {
+    const scope = String(source.research_scope || '').toLowerCase();
+    const kind = String(source.source_kind || '').toLowerCase();
+    const country = String(source.country_code || '').toUpperCase();
+    if (country !== 'GB') return null; // UK evidence only; overseas remains excluded.
+    if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'used_uk';
+    if (scope === 'official' || kind === 'manufacturer') return 'official';
+    if (scope === 'new_uk' || kind === 'retailer') return 'new_uk';
+    return null;
+  };
+  // GearCashOut's balanced source rotation: do not let new/official sources
+  // consume the whole probe budget before used-market sources are reached.
+  const groups = new Map(['new_uk','used_uk','official'].map(key => [key, (sources || []).filter(source => bucket(source) === key)]));
+  const selected = [];
+  for (let index = 0; selected.length < 12; index++) {
+    let added = false;
+    for (const key of ['new_uk','used_uk','official']) {
+      const item = groups.get(key)?.[index];
+      if (item) { selected.push(item); added = true; }
+      if (selected.length >= 12) break;
+    }
+    if (!added) break;
+  }
+  const probe = async source => {
+    if (!source.domain) return [];
     const domain = String(source.domain).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '');
     const root = 'https://' + domain, q = encodeURIComponent(name);
-    const attempts = [root + '/search?q=' + q, root + '/search?query=' + q, root + '/search?s=' + q];
-    if (domain.includes('ebay.')) attempts.unshift(root + '/sch/i.html?_nkw=' + q);
-    if (domain.includes('vinted.')) attempts.unshift(root + '/catalog?search_text=' + q);
+    const attempts = source.search_url_template
+      ? [String(source.search_url_template).replaceAll('{query}', q).replaceAll('{model}', encodeURIComponent(task.model || '')).replaceAll('{manufacturer}', encodeURIComponent(task.manufacturer || ''))]
+      : [root + '/search?q=' + q, root + '/search?query=' + q, root + '/search?s=' + q];
+    if (!source.search_url_template && domain.includes('ebay.')) attempts.unshift(root + '/sch/i.html?_nkw=' + q);
+    if (!source.search_url_template && domain.includes('vinted.')) attempts.unshift(root + '/catalog?search_text=' + q);
     for (const searchUrl of attempts.slice(0, 3)) {
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 5000);
+        const matches = [];
         for (const item of extractSearchLinks(pageResult.html, pageResult.url)) {
           const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
-          if (!model || !identity.includes(model) || !isEligibleProductPage(item.url, item.title) || seen.has(item.url)) continue;
-          seen.add(item.url); found.push({ ...item, provider: 'approved_source' });
+          if (!model || !identity.includes(model) || !isEligibleProductPage(item.url, item.title)) continue;
+          matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
         }
-      } catch { /* try next known search route */ }
+        if (matches.length) return matches;
+      } catch { /* try the next source-specific search route */ }
     }
-    if (found.length >= 12) break;
+    return [];
+  };
+  const results = [];
+  for (let offset = 0; offset < selected.length; offset += 4) {
+    const batch = await Promise.all(selected.slice(offset, offset + 4).map(probe));
+    for (const rows of batch) results.push(...rows);
   }
-  return found;
+  return [...new Map(results.map(item => [item.url, item])).values()];
 }
 async function product(t,task) {
   const c=await db(t,'catalogue_master_categories?select=id&slug=eq.'+encodeURIComponent(task.category_slug)+'&active=eq.true'); if(c.length!==1) throw new Error(t.name+': category not unique');

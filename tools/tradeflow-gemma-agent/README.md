@@ -4,7 +4,7 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 
 - Coordinator with bounded worker concurrency.
 - Separate UK-new and UK-used research tasks.
-- Local self-hosted SearXNG source discovery; Gemma extracts only visible facts from fetched direct pages. No paid search API or API key is required.
+- GearCashOut-compatible independent DuckDuckGo, Bing and Mojeek search discovery; Gemma extracts only visible facts from fetched direct pages. No local Docker/SearXNG service or paid search API is required.
 - Rejects non-UK sources, non-GBP prices, wrong evidence type, unsupported prices, mismatched product identity and search/category pages.
 - Resolves exact master product independently in TEST and LIVE; environment UUIDs are never copied.
 - Checks `(source_name, source_record_key)` before insertion.
@@ -101,3 +101,20 @@ The Windows launcher now tries the configured `SEARXNG_BASE_URL` first and then 
 ## SearXNG preflight warm-up timeout adjustment — 6 November 2026
 
 The Research PC returned one result from `http://127.0.0.1:8080/search?q=tradeflow&format=json` with a 10-second manual timeout, while the launcher fallback timed out with an 8-second limit. The launcher preflight now allows 25 seconds per attempt and retries once after a two-second pause before failing closed. This accommodates a slow/warming local search service without changing the search URL, `.env`, Docker configuration, Ollama settings, or catalogue data. Commit: `75cd7bcf00787b8ac477ac8503aebc288e7049c8`.
+
+
+## Architecture audit correction — 6 November 2026
+
+A direct comparison with the working GearCashOut implementation in `laurendigitaluk/Action-Buyer-UK` found that GearCashOut uses independent DuckDuckGo, Bing and Mojeek search providers (plus optional configured Google), not a mandatory local SearXNG service. TradeFlow foundation 0.1 had incorrectly replaced that resilient provider layer with a single SearXNG dependency and added a blocking PowerShell preflight. This was an unnecessary divergence and caused the Research PC startup loop.
+
+Correction on the TradeFlow Gemma feature branch:
+- `src/agent.mjs` now queries DuckDuckGo, Bing and Mojeek independently in parallel and merges deduplicated results; provider failures are isolated.
+- `src/release-monitor.mjs` now reuses the same shared search implementation.
+- `Start-TradeFlow-Gemma.ps1` no longer checks Docker or SearXNG before starting.
+- `.env.example` no longer includes `SEARXNG_BASE_URL`.
+- The GearCashOut `.env` remains untouched and is never loaded by TradeFlow.
+- UK/GBP validation, exact TEST/LIVE product matching, Ollama extraction, dry-run default and owner-review queue boundary remain unchanged.
+
+This correction supersedes the SearXNG-only setup notes and the two SearXNG launcher timeout adjustments earlier in this README. Search providers can individually block or rate-limit requests; the intended behaviour is to continue with the remaining providers, not fail the entire research run because one local service is unavailable.
+
+Commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31` (research search), `53dc247da01c37bf743e0e63c54e3abce537160c` (tests), `27a3e964022400f0af903b286de66d9fb4a53517` (launcher), `34a127fb26e908974c3e891331dcfd01795e2728` (release monitor), `6987a2c782e4ea227dde131bb92e476f0e3f21ff` (.env example).

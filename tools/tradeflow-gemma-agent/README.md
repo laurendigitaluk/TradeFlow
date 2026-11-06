@@ -1,12 +1,12 @@
 # TradeFlow Gemma Local Research Agent — foundation 0.1
 
-TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `gemma3:4b`; set `OLLAMA_MODEL` to the Gemma tag actually installed on the Research PC. It does not import or execute the retired GearCashOut agent.
+TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `gemma3:4b` and 18 search results per product; set `OLLAMA_MODEL` to the Gemma tag actually installed on the Research PC. Existing local `.env` files are not overwritten by updates: change `SEARCH_RESULTS_PER_TASK=8` to `SEARCH_RESULTS_PER_TASK=18` manually if the older setting is present. It does not import or execute the retired GearCashOut agent.
 
 - Coordinator with bounded worker concurrency.
-- Separate UK-new and UK-used research tasks.
+- One product-level research task combines UK-new and UK-used discovery; each source is classified separately during one Gemma extraction pass.
 - GearCashOut-compatible independent DuckDuckGo, Bing and Mojeek search discovery; Gemma extracts only visible facts from fetched direct pages. No local Docker/SearXNG service or paid search API is required.
 - Rejects non-UK sources, non-GBP prices, wrong evidence type, unsupported prices, mismatched product identity and search/category pages.
-- Resolves exact master product independently in TEST and LIVE; environment UUIDs are never copied.
+- Research itself does not look up TEST/LIVE catalogue products; verified candidates are handed to ChatGPT for review.
 - Checks `(source_name, source_record_key)` before insertion.
 - Dry-run is default; `--enqueue` stages evidence candidates for owner review. Gemma does not write directly to `shared_market_evidence`.
 - UK-used evidence remains reference-only and does not alter automatic valuation.
@@ -53,7 +53,7 @@ New confirmed product masters are staged as `product_candidate` rows in the TEST
 
 ## Safe launcher and first-run sequence — 5 November 2026
 
-`Start-TradeFlow-Gemma.ps1` is the supported Windows entry point. It verifies the local `.env` exists, required setting names are populated without displaying secret values, TEST/LIVE URLs match the expected Supabase project refs, the configured Ollama model is installed, and `npm test` passes before starting research. Default invocation is dry-run: it performs Brave/Ollama research, exact TEST/LIVE product lookups and records agent telemetry, but does not write review-queue or catalogue evidence/product rows. Use `./Start-TradeFlow-Gemma.ps1 -Enqueue` only after reviewing dry-run output; this stages candidates in the TEST-only owner review queue and does not import catalogue products/evidence. The retired `--apply` mode is not supported. The launcher requires both environment service-role credentials because exact product identity is checked independently in both environments. Keep `.env` local and never share or commit its contents.
+`Start-TradeFlow-Gemma.ps1` is the supported Windows entry point. It verifies the local `.env` exists, required setting names are populated without displaying secret values, TEST/LIVE URLs match the expected Supabase project refs, the configured Ollama model is installed, and `npm test` passes before starting research. Default invocation is dry-run: it performs independent DuckDuckGo, Bing and Mojeek discovery, fetches eligible product pages, performs one Gemma extraction pass per product, and records agent telemetry. It does not write review-queue or catalogue evidence/product rows. Search results are balanced round-robin across providers; skipped candidates are logged with provider, title and URL for diagnosis. Use `./Start-TradeFlow-Gemma.ps1 -Enqueue` only after reviewing dry-run output; this stages candidates in the TEST-only owner review queue and does not import catalogue products/evidence. The retired `--apply` mode is not supported. The launcher requires both environment service-role credentials because exact product identity is checked independently in both environments. Keep `.env` local and never share or commit its contents.
 
 
 ## Search provider — GearCashOut-compatible fallback

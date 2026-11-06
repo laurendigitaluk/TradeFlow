@@ -458,15 +458,45 @@ export function isRelevantApprovedSource(source, task) {
   return sourceIdentity.includes(manufacturer);
 }
 
-async function probeApprovedResearchSources(task, env, onProgress) {
-  let sources = [];
+export function isCategoryAllowedSource(source, task) {
+  const category = String(task?.category_slug || '').trim().toLowerCase();
+  const configured = Array.isArray(source?.category_slugs)
+    ? source.category_slugs.map(value => String(value).trim().toLowerCase())
+    : [];
+  return Boolean(category && (configured.includes('*') || configured.includes(category)));
+}
+
+export function isApprovedSourceForTask(source, task) {
+  return isCategoryAllowedSource(source, task) && isRelevantApprovedSource(source, task);
+}
+
+function sourceDomainMatches(host, source) {
+  const domain = String(source?.domain || '').replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '').toLowerCase();
+  return Boolean(domain && (host === domain || host.endsWith('.' + domain)));
+}
+
+export function isAllowedSourceHost(url, sources, task) {
+  let host;
+  try { host = new URL(url).hostname.replace(/^www\\./i, '').toLowerCase(); } catch { return false; }
+  return (sources || []).some(source =>
+    String(source?.country_code || '').toUpperCase() === 'GB' &&
+    isApprovedSourceForTask(source, task) &&
+    sourceDomainMatches(host, source)
+  );
+}
+
+async function loadApprovedResearchSources(env, onProgress) {
   try {
     const control = target('TEST', env);
-    sources = await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority&enabled=eq.true&order=priority.asc&limit=60');
+    return await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority,category_slugs&enabled=eq.true&order=priority.asc&limit=100');
   } catch (error) {
     await onProgress?.({ stage: 'approved_source_registry_error', message: 'Approved source registry could not be read: ' + error.message });
     return [];
   }
+}
+
+async function probeApprovedResearchSources(task, env, onProgress, sourceRows = null) {
+  const sources = Array.isArray(sourceRows) ? sourceRows : await loadApprovedResearchSources(env, onProgress);
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {
@@ -482,11 +512,14 @@ async function probeApprovedResearchSources(task, env, onProgress) {
   // GearCashOut's balanced source rotation: do not let new/official sources
   // consume the whole probe budget before used-market sources are reached.
   const relevantSources = (sources || []).filter(source => {
-    const relevant = isRelevantApprovedSource(source, task);
-    if (!relevant && String(source.source_kind || '').toLowerCase() === 'manufacturer') {
+    const categoryRelevant = isCategoryAllowedSource(source, task);
+    const manufacturerRelevant = isRelevantApprovedSource(source, task);
+    if (!categoryRelevant) {
+      onProgress?.({ stage: 'approved_source_skipped', source: source.domain, message: 'Skipped source ' + source.domain + ': not configured for category ' + task.category_slug });
+    } else if (!manufacturerRelevant && String(source.source_kind || '').toLowerCase() === 'manufacturer') {
       onProgress?.({ stage: 'approved_source_skipped', source: source.domain, message: 'Skipped manufacturer source ' + source.domain + ': it does not match requested manufacturer ' + task.manufacturer });
     }
-    return relevant;
+    return categoryRelevant && manufacturerRelevant;
   });
   const groups = new Map(['new_uk','used_uk','official'].map(key => [key, relevantSources.filter(source => bucket(source) === key)]));
   const selected = [];
@@ -583,9 +616,26 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
 export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   if (!task.category_slug || !task.manufacturer || !task.model || !task.package_key || !task.package_name || !task.search_query || !['uk_new', 'uk_used', 'uk_both'].includes(task.research_type)) throw new Error('incomplete task definition');
   const candidates = [];
-  await onProgress?.({ stage: 'searching', message: 'Searching DuckDuckGo, Bing and Mojeek for ' + task.manufacturer + ' ' + task.model });
-  const webResults = await search(task.search_query, env);
-  const approvedResults = await probeApprovedResearchSources(task, env, onProgress);
+  const sourceRows = await loadApprovedResearchSources(env, onProgress);
+  const categorySources = sourceRows.filter(source =>
+    String(source?.country_code || '').toUpperCase() === 'GB' &&
+    isApprovedSourceForTask(source, task)
+  );
+  await onProgress?.({
+    stage: 'searching',
+    message: 'Searching UK-approved websites for ' + task.category_slug + ': ' + task.manufacturer + ' ' + task.model,
+    total: categorySources.length
+  });
+  const rawWebResults = await search(task.search_query, env);
+  const webResults = rawWebResults.filter(item => {
+    const allowed = isAllowedSourceHost(item.url, categorySources, task);
+    if (!allowed) onProgress?.({
+      stage: 'category_source_skipped', source: item.url,
+      message: 'Search result excluded: its website is not approved for category ' + task.category_slug + ' — ' + item.url
+    });
+    return allowed;
+  });
+  const approvedResults = await probeApprovedResearchSources(task, env, onProgress, sourceRows);
   const searchResults = [...new Map([...webResults, ...approvedResults].map(item => [item.url, item])).values()];
   const providerCounts = Object.fromEntries(['google', 'duckduckgo', 'bing', 'mojeek', 'approved_source', 'unknown'].map(name => [
     name,

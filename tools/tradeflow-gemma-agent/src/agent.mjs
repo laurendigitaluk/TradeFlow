@@ -26,11 +26,11 @@ export function validate(e, task, page) {
   const price = Number(e.observed_price);
   if (!Number.isFinite(price) || price <= 0) errors.push('price must be positive');
   else {
-    const amount = price.toFixed(2).replace('.', '\\.');
+    const amount = price.toFixed(2).replace('.', '\.');
     const whole = Number.isInteger(price) ? String(price) : null;
     const pound = String.fromCharCode(163) + '\\s*';
     const pattern = '(?:' + pound + amount +
-      (whole ? '|' + pound + whole + '(?:\\.00)?(?=\\s|$|[),;])' : '') +
+      (whole ? '|' + pound + whole + '(?:\.00)?(?=\\s|$|[),;])' : '') +
       '|GBP\\s*' + amount +
       '|' + amount + '\\s*GBP)';
     if (!new RegExp(pattern, 'i').test(page)) errors.push('price is not visible on source page');
@@ -162,7 +162,7 @@ async function searchGoogle(query, env = {}) {
     return rows.map(item => ({
       title: stripSearchHtml(item.title || ''), url: item.displayUrl || item.link || '',
       description: stripSearchHtml(item.snippet || ''), provider: 'google'
-    })).filter(item => /^https?:\\/\\//i.test(item.url));
+    })).filter(item => /^https?:\/\//i.test(item.url));
   } catch (error) {
     // A Google API outage or quota limit must not stop the independent providers.
     return [];
@@ -237,7 +237,7 @@ export function isEligibleProductPage(url, title = '') {
 
 export function hasVisibleUkPrice(text = '') {
   const pound = String.fromCharCode(163);
-  const pattern = new RegExp('(?:' + pound + '\\s*|\\bGBP\\s*)([0-9][0-9,]*(?:\\.[0-9]{2})?)', 'gi');
+  const pattern = new RegExp('(?:' + pound + '\\s*|\\bGBP\\s*)([0-9][0-9,]*(?:\.[0-9]{2})?)', 'gi');
   const source = String(text ?? '').replace(/\u00a0/g, ' ');
   for (const match of source.matchAll(pattern)) {
     const amount = Number(match[1].replace(/,/g, ''));
@@ -391,7 +391,7 @@ async function probeApprovedResearchSources(task, env) {
   const found = [], seen = new Set();
   for (const source of sources || []) {
     if (!source.domain) continue;
-    const domain = String(source.domain).replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '');
+    const domain = String(source.domain).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '');
     const root = 'https://' + domain, q = encodeURIComponent(name);
     const attempts = [root + '/search?q=' + q, root + '/search?query=' + q, root + '/search?s=' + q];
     if (domain.includes('ebay.')) attempts.unshift(root + '/sch/i.html?_nkw=' + q);

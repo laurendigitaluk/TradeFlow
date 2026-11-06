@@ -145,3 +145,6 @@ Automated regression coverage now includes direct-product URL filtering, visible
 
 Implementation branch: `fix/gemma-batched-extraction-20261106`.
 Pre-change restore branch: `checkpoint-gemma-research-pipeline-pre-batch-20261106`.
+
+
+The GitHub Actions regression suite passed on the latest implementation commit `53ced5c47674a13e1f92d4f6ce4b4106af0ede52` (run `42143240473`, conclusion `success`). The Research PC benchmark and real dry-run remain outstanding.

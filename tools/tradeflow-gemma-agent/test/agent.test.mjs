@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice, extractBatch } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
 import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
@@ -82,6 +82,21 @@ test('prefilter permits a direct UK product listing', () => {
  assert.equal(isEligibleProductPage('https://store.creality.com/uk/products/k1'), true);
 });
 
+test('product extraction excludes navigation and unrelated footer prices', () => {
+ const html = '<html><body><header>Sale £999.00</header><nav>Other printer £799.00</nav><main><h1>Creality K1 3D Printer</h1><p>New model £299.00 in stock</p></main><footer>Unrelated product £499.00</footer></body></html>';
+ const text = extractRelevantPageText(html, {manufacturer:'Creality',model:'K1'});
+ assert.match(text,/Creality K1 3D Printer/);
+ assert.match(text,/£299.00/);
+ assert.doesNotMatch(text,/£999.00|£799.00|£499.00/);
+});
+test('product extraction adds matching JSON-LD product offer', () => {
+ const html = '<main><h1>Creality K1</h1></main><script type="application/ld+json">'+JSON.stringify({
+  '@context':'https://schema.org','@type':'Product',name:'Creality K1 3D Printer',brand:{'@type':'Brand',name:'Creality'},model:'K1',offers:{'@type':'Offer',price:'299.00',priceCurrency:'GBP',availability:'https://schema.org/InStock',itemCondition:'https://schema.org/NewCondition'}
+ })+'</script>';
+ const text = extractRelevantPageText(html,{manufacturer:'Creality',model:'K1'});
+ assert.match(text,/Price: 299.00 Currency: GBP/);
+ assert.match(text,/Creality K1 3D Printer/);
+});
 test('visible UK price prefilter requires an explicit positive GBP amount', () => {
  assert.equal(hasVisibleUkPrice('Creality K1 3D Printer ' + String.fromCharCode(163) + '299.00'), true);
  assert.equal(hasVisibleUkPrice('Price ' + String.fromCharCode(163) + '1,299.99'), true);

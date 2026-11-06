@@ -131,13 +131,21 @@ async function searchMojeek(query) {
   catch (error) { return []; }
 }
 export async function searchWebResults(query, env = {}) {
-  // Match the established GearCashOut design: independent free providers run
-  // together. A timeout/block at one provider must never stop the others.
-  const settled = await Promise.allSettled([
-    searchDuckDuckGo(query + ' UK GBP'),
-    searchBing(query + ' UK GBP'),
-    searchMojeek(query + ' UK GBP')
-  ]);
+  // Run complementary UK product queries across independent free providers.
+  // This improves direct product-page discovery when one broad query is dominated
+  // by marketplace search results or non-product pages.
+  const clean = String(query || '').trim();
+  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 4).join(' ');
+  const queries = [...new Set([
+    clean + ' UK GBP',
+    '"' + quoted + '" UK price GBP product page',
+    '"' + quoted + '" UK buy new used price'
+  ])];
+  const settled = await Promise.allSettled(queries.flatMap(term => [
+    searchDuckDuckGo(term),
+    searchBing(term),
+    searchMojeek(term)
+  ]));
   const merged = [], seen = new Set();
   for (const result of settled) {
     if (result.status !== 'fulfilled') continue;

@@ -200,7 +200,8 @@ test('paired new and used tasks collapse to one combined product research task',
  const combined=combineProductResearchTasks(tasks);
  assert.equal(combined.length,1);
  assert.equal(combined[0].research_type,'uk_both');
- assert.match(combined[0].search_query,/new used price GBP/);
+ assert.equal(combined[0].search_query,'Creality K1 UK price retailer product');
+ assert.doesNotMatch(combined[0].search_query,/Standard Printer/);
 });
 test('different package variants remain separate research tasks', () => {
  const tasks = [

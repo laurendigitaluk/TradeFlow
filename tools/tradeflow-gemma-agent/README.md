@@ -165,3 +165,9 @@ Google requires TradeFlow-owned settings: `GOOGLE_SEARCH_API_KEY` plus either `G
 ### Approved source registry operation
 
 TradeFlow TEST and LIVE each have a `platform_research_sources` table. The local agent reads the TEST registry as its research control plane and probes enabled UK sources in balanced new-retail, used-market and official-manufacturer lanes, using bounded batches of four. The same curated 20-source public directory is seeded in TEST and LIVE for parity. Overseas sources are excluded from UK evidence. Source-specific search routes can be stored in `search_url_template` using `{query}`, `{model}` and `{manufacturer}` placeholders. Keep the two registries aligned when adding or disabling sources.
+
+
+
+### Collection-page product discovery
+
+Collection and category URLs are discovery hubs, not evidence pages. The agent may open up to six eligible UK collection/category pages per product task and extract up to twelve matching direct product links from each. Relative product links are resolved against the collection URL. Only individual UK product/listing pages continue into the existing visible-GBP-price prefilter, one-batch Gemma extraction and strict identity/condition/availability validation. Collection pages are never submitted as evidence. Search terms are built from manufacturer + model + UK retail intent; internal package labels such as “Standard Printer” are deliberately excluded. Exact model matching excludes obvious sibling variants such as Max, Plus, Pro, Ultra, Combo, SE and V2. CI passed run 42223386531 (32 tests, 32 passed).

@@ -9,6 +9,8 @@ export function combineProductResearchTasks(tasks) {
   return [...groups.values()].map(task => ({
     ...task,
     research_type: 'uk_both',
-    search_query: [task.manufacturer, task.model, task.package_name, 'UK new used price GBP'].filter(Boolean).join(' ')
+    // Search on the real manufacturer/model identity first. package_name is an
+    // internal catalogue label (often "Standard ..."), not a retail search term.
+    search_query: [task.manufacturer, task.model, 'UK price retailer product'].filter(Boolean).join(' ')
   }));
 }

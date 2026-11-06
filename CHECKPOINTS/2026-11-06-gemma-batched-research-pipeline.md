@@ -51,3 +51,6 @@ Supabase activity for the K1 dry run on 6 November 2026:
 ## Automated verification update — 6 November 2026
 
 GitHub Actions regression suite passed on latest implementation commit `53ced5c47674a13e1f92d4f6ce4b4106af0ede52` (workflow run `42143240473`, conclusion `success`). The Research PC has not yet pulled or executed the change; runtime and responsiveness verification remain pending.
+
+
+Merged-branch verification: GitHub Actions run `42143345106` completed successfully on merged commit `e31d974b0b513e1d5101fa6678d798ac1555a2df`. The remaining verification is the Research PC pull, dry-run timing and responsiveness check.

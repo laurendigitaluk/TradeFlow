@@ -189,7 +189,7 @@ export function ollamaOptions(env = {}) {
 
 let ollamaExtractionQueue = Promise.resolve();
 
-async function extractBatch(task, pages, env) {
+export async function extractBatch(task, pages, env) {
   const run = async () => {
     const base = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
@@ -231,7 +231,8 @@ async function extractBatch(task, pages, env) {
     const rows = Array.isArray(parsed) ? parsed : parsed.evidence;
     if (!Array.isArray(rows)) throw new Error('Ollama batch response did not contain an evidence array');
     const byId = new Map(pages.map(item => [item.source_id, item]));
-    return rows.filter(row => byId.has(row.source_id)).map(row => {
+    const seenSourceIds = new Set();
+    return rows.filter(row => row && byId.has(row.source_id) && !seenSourceIds.has(row.source_id) && seenSourceIds.add(row.source_id)).map(row => {
       const source = byId.get(row.source_id);
       const host = new URL(source.url).hostname.replace(/^www\./, '');
       return {

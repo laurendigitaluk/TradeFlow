@@ -176,3 +176,8 @@ Collection and category URLs are discovery hubs, not evidence pages. The agent m
 ## Updating the Research PC installation
 
 Use `Update-TradeFlow-Gemma.ps1` from inside the existing TradeFlow agent folder. It downloads the approved feature branch, validates the expected agent files, updates code, and runs the full local test suite. It deliberately preserves the local `.env`, `tasks`, `logs` and `node_modules`; it never reads or modifies the retired GearCashOut configuration folder. If tests fail after the update, the previous code files are restored automatically. Run the normal `Start-TradeFlow-Gemma.ps1` only after the updater reports success. The updater does not enqueue research or write catalogue/evidence records.
+
+
+### Windows updater recovery note (6 November 2026)
+
+The first updater attempt exposed a Windows archive extraction/path issue. The updater now uses a short system-drive temporary directory and extracts only the `tools/tradeflow-gemma-agent` subtree from the repository ZIP via .NET ZipArchive, avoiding unrelated long paths elsewhere in the repository. It verifies a local code backup before any destructive rollback; rollback is attempted only when both the previous launcher and agent entry point were backed up. It can also repair a local agent folder whose code files are incomplete, provided its TradeFlow `.env` remains present. Local updater execution and dry-run are still pending.

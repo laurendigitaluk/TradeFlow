@@ -7,11 +7,16 @@ $StageRoot = Join-Path $TempRoot "stage"
 $BackupRoot = Join-Path $TempRoot "backup"
 $ZipPath = Join-Path $TempRoot "tradeflow.zip"
 function Copy-AgentCode([string]$Source, [string]$Destination) {
-    Get-ChildItem -LiteralPath $Source -Force | Where-Object { $_.Name -notin @(".env", "tasks", "logs", "node_modules") } | ForEach-Object {
+    Get-ChildItem -LiteralPath $Source -Force | Where-Object { $_.Name -notin @(".env", "tasks", "logs", "node_modules", "Update-TradeFlow-Gemma.ps1") } | ForEach-Object {
         $target = Join-Path $Destination $_.Name
         if ($_.PSIsContainer) { if (Test-Path -LiteralPath $target) { Remove-Item -LiteralPath $target -Recurse -Force }; Copy-Item -LiteralPath $_.FullName -Destination $target -Recurse -Force }
         else { Copy-Item -LiteralPath $_.FullName -Destination $target -Force }
     }
+}
+function Restore-AgentCode([string]$Backup, [string]$Destination) {
+    $keep = @(".env", "tasks", "logs", "node_modules", "Update-TradeFlow-Gemma.ps1")
+    Get-ChildItem -LiteralPath $Destination -Force | Where-Object { $_.Name -notin $keep } | ForEach-Object { Remove-Item -LiteralPath $_.FullName -Recurse -Force }
+    Copy-AgentCode -Source $Backup -Destination $Destination
 }
 try {
     if (-not (Test-Path -LiteralPath $AgentRoot -PathType Container)) { throw "TradeFlow Gemma folder not found: $AgentRoot" }
@@ -43,7 +48,7 @@ try {
 } catch {
     if ((Test-Path -LiteralPath $BackupRoot) -and (Test-Path -LiteralPath $AgentRoot)) {
         Write-Warning "Update failed. Restoring the previous agent code..."
-        Copy-AgentCode -Source $BackupRoot -Destination $AgentRoot
+        Restore-AgentCode -Backup $BackupRoot -Destination $AgentRoot
         Write-Warning "Previous code restored. Existing .env, tasks and logs were not changed."
     }
     throw

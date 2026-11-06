@@ -3132,3 +3132,36 @@ The Research PC manual test against `http://127.0.0.1:8080/search?q=tradeflow&fo
 ## SearXNG preflight warm-up timeout adjustment — 6 November 2026
 
 The Research PC returned one result from `http://127.0.0.1:8080/search?q=tradeflow&format=json` with a 10-second manual timeout, while the launcher fallback timed out with an 8-second limit. The launcher preflight now allows 25 seconds per attempt and retries once after a two-second pause before failing closed. This accommodates a slow/warming local search service without changing the search URL, `.env`, Docker configuration, Ollama settings, or catalogue data. Commit: `75cd7bcf00787b8ac477ac8503aebc288e7049c8`.
+
+
+## Research PC search architecture audit and correction — 6 November 2026
+
+A direct source comparison was completed against the established GearCashOut implementation in `laurendigitaluk/Action-Buyer-UK`, including `tools/gear-ai-local-agent/agent.mjs`, `supervisor.mjs`, `Start-GearCashOut-AI.ps1`, its README, the AI Research PC control roadmap and September 2026 repair checkpoints.
+
+### Confirmed cause of the TradeFlow startup failure
+
+GearCashOut's established search path uses independent DuckDuckGo, Bing and Mojeek providers in parallel, with optional configured Google search. It does not require a local SearXNG container. TradeFlow foundation 0.1 had diverged by replacing this with one mandatory SearXNG JSON endpoint and a PowerShell preflight that blocked all research if that local service timed out. The manual SearXNG success followed by launcher timeout was a misleading symptom of this unnecessary dependency, not proof that Gemma or the Windows PC was broken.
+
+### Minimal correction committed on the Gemma feature branch
+
+- `src/agent.mjs`: independent DuckDuckGo, Bing and Mojeek search requests run concurrently; one provider failure is isolated; results are deduplicated and capped.
+- `src/release-monitor.mjs`: reuses the same shared search function so release monitoring does not retain a separate SearXNG dependency.
+- `Start-TradeFlow-Gemma.ps1`: removes the Docker/SearXNG blocking preflight.
+- `.env.example`: removes the obsolete `SEARXNG_BASE_URL` setting.
+- README and this handbook record the corrected architecture.
+
+The old `C:\\GearCashOut-Config\\.env` remains untouched and is not read by TradeFlow. The TradeFlow `.env` remains its own configuration file. Do not ask the owner to change either `.env` to resolve the retired SearXNG dependency.
+
+### Preserved safety and data boundaries
+
+No change to UK storefront/GBP evidence validation, direct-page retrieval, Gemma extraction, CPU-only `OLLAMA_NUM_GPU=0` default, exact product resolution independently in TEST and LIVE, dry-run default, TEST-only owner-review queue, or owner-approved import boundary. No catalogue/evidence rows, Supabase schema, RLS, RPC, Edge Function, Worker, Stripe or production deployment were changed by this search correction.
+
+### Remaining architecture distinction
+
+GearCashOut has a mature persistent supervisor/worker lifecycle. TradeFlow has a separate persistent task-worker service (`src/task-worker.mjs` and `Start-TradeFlow-Gemma-Service.ps1`) and a one-shot task runner (`src/index.mjs`). The Windows service has not been installed on the Research PC. Do not claim full lifecycle parity until the TradeFlow service is deployed and verified. This is separate from the immediate SearXNG startup fault.
+
+### Verification status
+
+Code and tests have been updated on `feature/tradeflow-gemma-agent-foundation-20261105`. The owner has not yet downloaded this latest correction to the Research PC and the revised provider tests have not yet been executed on that PC. No successful research run is claimed. The connected Supabase project-memory/checkpoint update remains blocked by connector permission and has not been claimed as complete.
+
+Key commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0e63c54e3abce537160c`, `27a3e964022400f0af903b286de66d9fb4a53517`, `34a127fb26e908974c3e891331dcfd01795e2728`, `6987a2c782e4ea227dde131bb92e476f0e3f21ff`.

@@ -222,7 +222,7 @@ export function isCollectionDiscoveryPage(url, title = '') {
   return true;
 }
 
-function matchesTaskModel(title, url, task = {}) {
+export function matchesTaskModel(title, url, task = {}) {
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
   const identity = ' ' + (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';

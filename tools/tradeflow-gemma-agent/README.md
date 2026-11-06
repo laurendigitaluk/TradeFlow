@@ -171,3 +171,8 @@ TradeFlow TEST and LIVE each have a `platform_research_sources` table. The local
 ### Collection-page product discovery
 
 Collection and category URLs are discovery hubs, not evidence pages. The agent may open up to six eligible UK collection/category pages per product task and extract up to twelve matching direct product links from each. Relative product links are resolved against the collection URL. Only individual UK product/listing pages continue into the existing visible-GBP-price prefilter, one-batch Gemma extraction and strict identity/condition/availability validation. Collection pages are never submitted as evidence. Search terms are built from manufacturer + model + UK retail intent; internal package labels such as “Standard Printer” are deliberately excluded. Exact model matching excludes obvious sibling variants such as Max, Plus, Pro, Ultra, Combo, SE and V2. CI passed run 42223386531 (32 tests, 32 passed).
+
+
+## Updating the Research PC installation
+
+Use `Update-TradeFlow-Gemma.ps1` from inside the existing TradeFlow agent folder. It downloads the approved feature branch, validates the expected agent files, updates code, and runs the full local test suite. It deliberately preserves the local `.env`, `tasks`, `logs` and `node_modules`; it never reads or modifies the retired GearCashOut configuration folder. If tests fail after the update, the previous code files are restored automatically. Run the normal `Start-TradeFlow-Gemma.ps1` only after the updater reports success. The updater does not enqueue research or write catalogue/evidence records.

@@ -1,0 +1,23 @@
+name: TradeFlow Gemma agent tests
+
+on:
+  push:
+    paths:
+      - 'tools/tradeflow-gemma-agent/**'
+      - '.github/workflows/tradeflow-gemma-agent-tests.yml'
+  pull_request:
+    paths:
+      - 'tools/tradeflow-gemma-agent/**'
+      - '.github/workflows/tradeflow-gemma-agent-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run Gemma agent tests
+        working-directory: tools/tradeflow-gemma-agent
+        run: npm test

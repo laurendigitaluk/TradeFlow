@@ -151,3 +151,15 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 - The Research PC's last controlled run still exposed a quality issue: navigation/storefront content can be mistaken for a product detail page. The next substantive engineering task is product-content extraction and corroboration (Product/Offer JSON-LD, canonical URL, title/H1 and product-specific main content), not another search-rule tweak.
 - The most recent local Research PC dry-run showed 8 search results, 2 eligible URLs, 1 fetched price-bearing page, 1 Gemma call, and 0 candidates after the content-extraction change; do not infer that this is resolved without a verified direct product detail candidate.
 - No catalogue/evidence imports, review queue inserts, schema/RLS/RPC/Edge Function changes, TEST/LIVE tenant/customer/payment/domain changes, secrets, or deployments were made by PRs #249 or #250.
+
+
+## Verified opened-never-used condition correction — 6 November 2026
+
+- PR #251 merged to the Gemma feature branch as `c31b856cb561099b730753d7de195c914e08c3bd`.
+- CI run #50 (`42215870318`) completed successfully; the Gemma agent test job passed.
+- Source audit caught that the earlier claimed correction had not actually changed the feature-branch source. This PR changes the real validator, Gemma prompt and regression tests.
+- `Opened - never used` is accepted as UK-used evidence; the exact condition is preserved. It remains invalid as UK-new evidence.
+- The prior local 25/25 test result was not proof of the correction because the local test still asserted that the condition should be rejected. Research PC must receive the merged source and test files before this rule is considered verified locally.
+- The latest controlled run remains blocked before Gemma: 8 search results, 1 eligible URL, 0 fetched price-bearing pages, 0 Gemma calls, 0 accepted candidates. The sole eligible eBay listing returned HTTP 403.
+- Next technical priority is source discovery/fetch resilience and genuine product-page coverage. Do not treat zero candidates as a model extraction failure. Do not enqueue or import until a direct product page and evidence are independently verified.
+- No TEST/LIVE catalogue or evidence writes, schema/RLS/RPC/Edge Function changes, tenant/customer/Stripe/domain changes, secrets or deployments were made.

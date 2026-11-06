@@ -206,3 +206,8 @@ Manufacturer-owned sources are now brand-scoped. A manufacturer source is probed
 ### Manufacturer-aware source routing and Shopify fallback validation — 6 November 2026
 
 Manufacturer sources are now filtered against the requested task manufacturer before any manufacturer-site search is constructed. For a Creality task, DJI and Sony manufacturer sources are skipped; UK retailers and marketplaces remain eligible across brands. A fail-closed test covers tasks with a missing manufacturer. The Shopify collection products JSON fallback path regex was corrected after the Research PC updater surfaced a syntax error and safely restored the previous code. CI passed on PR #257 (run 42231223625); PR #257 was squash-merged into the feature branch as `23bd99b6b17c915bd41e5e1d8c625196503e8669`. No TEST/LIVE catalogue or evidence rows were written.
+
+
+### Exact-model page validation — K1 vs K1 Max/accessories (6 November 2026)
+
+A Research PC dry-run fetched several Creality pages and Gemma proposed a £589 K1 Max listing as evidence for the base K1 task. This is not valid evidence. The exact-model matcher now rejects sibling suffixes (Max, Plus, Pro, Ultra, Combo, SE, V2), K1 Series collection/upgrade pages and accessory/kit/CFS pages. Every discovered URL is checked before fetch, and the fetched page title and final URL are checked again before GBP price extraction. Regression coverage includes K1 Max, K1C, K1 Combo, CFS upgrade accessory and a genuine K1 Speedy listing. CI passed on PR #259 (run 42250634337); merged into the feature branch as `1891b02a67843baac6b48d8fb8bb5846e9101f43`. The prior £589 candidate remains rejected and was not imported.

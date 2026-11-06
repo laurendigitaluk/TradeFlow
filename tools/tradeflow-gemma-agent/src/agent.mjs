@@ -514,6 +514,7 @@ async function probeApprovedResearchSources(task, env, onProgress) {
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 8000);
         const matches = [];
+        // Direct approved product-page routes are useful when collection APIs are unavailable.
         // An approved source may be configured with an exact direct product
         // URL (not only a search or collection route). Add that page itself
         // as a candidate so it is fetched again through the normal price guard.

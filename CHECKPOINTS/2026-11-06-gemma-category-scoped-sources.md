@@ -67,3 +67,12 @@ TEST has active category `laptops` (ID `6761efc2-9a89-44ac-a18c-349867effc77`); 
 ## Project memory
 
 No application-level memory/checkpoint tables were found in either Supabase project; the only name matches were PostgreSQL system catalog tables. This checkpoint and `PROJECT-MEMORY/2026-11-06-gemma-category-scoped-sources.md` are the GitHub continuity records.
+
+
+## Verification addendum — 6 November 2026, after PR #261 opened
+
+- Pull request #261 is open: https://github.com/laurendigitaluk/TradeFlow/pull/261. It is not merged and must not be merged until the test/runtime gap is resolved.
+- GitHub returned no workflow runs or commit status checks for the PR head. The container cannot reach GitHub to clone the branch, so the complete Node test suite has not been executed in this session.
+- The current branch contains 35 test declarations in `test/agent.test.mjs` and 2 in `test/release-monitor.test.mjs`. The earlier Research PC run reported 38 tests passing. Treat this as a possible local/branch version difference and reconcile the installed package with the PR branch before treating the earlier 38-test result as validation of this change.
+- TEST `platform_ai_agent_tasks` and `platform_catalogue_research_queue` both currently contain zero rows. The 3D-printer agent telemetry is cumulative (23 tasks completed / 3 candidates found / 0 evidence queued); the latest K1 event at 16:18:17 UTC explicitly reports zero candidates, zero queued, and Gemma not called because no fetched product page showed a visible GBP price. This was before the new category-scope configuration and is not a post-change test.
+- The Research PC has not yet downloaded this branch. Do not claim a category-filtered end-to-end run until the PC runs the updated package, full tests pass, and a controlled dry-run demonstrates only allowed source domains are fetched.

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, matchesTaskModel, isRelevantApprovedSource, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, matchesTaskModel, isRelevantApprovedSource, isCategoryAllowedSource, isApprovedSourceForTask, isAllowedSourceHost, buildCategoryScopedSearchQuery, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
 import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
@@ -31,6 +31,60 @@ test('manufacturer source probes only run for the requested manufacturer', () =>
 
 test('manufacturer source filter fails closed when task manufacturer is missing', () => {
  assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'DJI UK',domain:'dji.com'},{model:'K1'}),false);
+});
+
+
+test('category source filter fails closed unless the exact category is configured', () => {
+ const gaming={source_kind:'retailer',domain:'game.co.uk',category_slugs:['gaming-consoles-accessories']};
+ assert.equal(isCategoryAllowedSource(gaming,{category_slug:'gaming-consoles-accessories'}),true);
+ assert.equal(isCategoryAllowedSource(gaming,{category_slug:'drones'}),false);
+ assert.equal(isCategoryAllowedSource(gaming,{category_slug:'3d-printers-equipment'}),false);
+ assert.equal(isCategoryAllowedSource({domain:'unmapped.co.uk'},{category_slug:'drones'}),false);
+ assert.equal(isCategoryAllowedSource(gaming,{}),false);
+});
+
+test('category wildcard permits a deliberately general UK source only', () => {
+ const source={source_kind:'marketplace',domain:'ebay.co.uk',country_code:'GB',category_slugs:['*']};
+ assert.equal(isCategoryAllowedSource(source,{category_slug:'drones'}),true);
+ assert.equal(isCategoryAllowedSource(source,{category_slug:'gaming-consoles-accessories'}),true);
+});
+
+test('approved source must match both category and manufacturer', () => {
+ const creality={source_kind:'manufacturer',source_name:'Creality UK Official Store',domain:'store.creality.com',category_slugs:['3d-printers-equipment']};
+ assert.equal(isApprovedSourceForTask(creality,{manufacturer:'Creality',category_slug:'3d-printers-equipment'}),true);
+ assert.equal(isApprovedSourceForTask(creality,{manufacturer:'Creality',category_slug:'gaming-consoles-accessories'}),false);
+ assert.equal(isApprovedSourceForTask(creality,{manufacturer:'DJI',category_slug:'3d-printers-equipment'}),false);
+});
+
+test('web search results are restricted to configured category source domains', () => {
+ const sources=[
+  {source_kind:'manufacturer',source_name:'DJI UK',domain:'dji.com',country_code:'GB',category_slugs:['drones','drone-accessories']},
+  {source_kind:'retailer',source_name:'GAME',domain:'game.co.uk',country_code:'GB',category_slugs:['gaming-consoles-accessories']},
+  {source_kind:'marketplace',source_name:'Amazon UK',domain:'amazon.co.uk',country_code:'GB',category_slugs:['*']}
+ ];
+ const droneTask={manufacturer:'DJI',category_slug:'drones'};
+ assert.equal(isAllowedSourceHost('https://www.dji.com/uk/product/mini-5',sources,droneTask),true);
+ assert.equal(isAllowedSourceHost('https://www.game.co.uk/products/switch',sources,droneTask),false);
+ assert.equal(isAllowedSourceHost('https://www.amazon.co.uk/dp/B000000000',sources,droneTask),true);
+ const gamingTask={manufacturer:'Nintendo',category_slug:'gaming-consoles-accessories'};
+ assert.equal(isAllowedSourceHost('https://www.dji.com/uk/product/mini-5',sources,gamingTask),false);
+ assert.equal(isAllowedSourceHost('https://www.game.co.uk/products/switch',sources,gamingTask),true);
+});
+
+test('general web-search query is restricted to configured category websites', () => {
+ const sources=[
+  {source_kind:'manufacturer',source_name:'DJI UK',domain:'dji.com',country_code:'GB',category_slugs:['drones']},
+  {source_kind:'retailer',source_name:'GAME UK',domain:'game.co.uk',country_code:'GB',category_slugs:['gaming-consoles-accessories']},
+  {source_kind:'marketplace',source_name:'Amazon UK',domain:'amazon.co.uk',country_code:'GB',category_slugs:['*']}
+ ];
+ const droneQuery=buildCategoryScopedSearchQuery('DJI Mini 5 UK price',sources,{manufacturer:'DJI',category_slug:'drones'});
+ assert.match(droneQuery,/site:dji\.com/);
+ assert.match(droneQuery,/site:amazon\.co\.uk/);
+ assert.doesNotMatch(droneQuery,/game\.co\.uk/);
+ const gamingQuery=buildCategoryScopedSearchQuery('Nintendo Switch UK price',sources,{manufacturer:'Nintendo',category_slug:'gaming-consoles-accessories'});
+ assert.match(gamingQuery,/site:game\.co\.uk/);
+ assert.doesNotMatch(gamingQuery,/dji\.com/);
+ assert.equal(buildCategoryScopedSearchQuery('unknown category',sources.filter(source=>source.domain!=='amazon.co.uk'),{manufacturer:'Creality',category_slug:'3d-printers-equipment'}),null);
 });
 
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));

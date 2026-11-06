@@ -26,11 +26,11 @@ export function validate(e, task, page) {
   const price = Number(e.observed_price);
   if (!Number.isFinite(price) || price <= 0) errors.push('price must be positive');
   else {
-    const amount = price.toFixed(2).replace('.', '\\.');
+    const amount = price.toFixed(2).replace('.', '\.');
     const whole = Number.isInteger(price) ? String(price) : null;
     const pound = String.fromCharCode(163) + '\\s*';
     const pattern = '(?:' + pound + amount +
-      (whole ? '|' + pound + whole + '(?:\\.00)?(?=\\s|$|[),;])' : '') +
+      (whole ? '|' + pound + whole + '(?:\.00)?(?=\\s|$|[),;])' : '') +
       '|GBP\\s*' + amount +
       '|' + amount + '\\s*GBP)';
     if (!new RegExp(pattern, 'i').test(page)) errors.push('price is not visible on source page');
@@ -130,20 +130,59 @@ async function searchMojeek(query) {
   try { return extractSearchLinks((await fetchSearchHtml(url)).html, url); }
   catch (error) { return []; }
 }
+async function searchGoogle(query, env = {}) {
+  if (env.GOOGLE_SEARCH_ENABLED === 'false' || !String(env.GOOGLE_SEARCH_API_KEY || '').trim()) return [];
+  const apiKey = String(env.GOOGLE_SEARCH_API_KEY).trim();
+  const clientId = String(env.GOOGLE_WEB_SEARCH_CLIENT_ID || '').trim();
+  const userIp = String(env.GOOGLE_SEARCH_USER_IP || '').trim();
+  const cseId = String(env.GOOGLE_CSE_ID || '').trim();
+  try {
+    let endpoint, params, mode;
+    if (clientId && userIp) {
+      mode = 'google-web-search-service';
+      endpoint = 'https://websearchservice.googleapis.com/v1:search';
+      params = new URLSearchParams({
+        'clientContext.clientId': clientId, 'userContext.ipAddress': userIp,
+        'userContext.regionCode': 'GB', 'searchQuery.query': query,
+        'searchQuery.languageCode': 'en', 'searchQuery.restrictRegionCode': 'GB',
+        'searchQuery.safeSearch': 'ON', pageSize: '10'
+      });
+    } else if (cseId) {
+      mode = 'google-programmable-search';
+      endpoint = 'https://www.googleapis.com/customsearch/v1';
+      params = new URLSearchParams({ key: apiKey, cx: cseId, q: query, num: '10', gl: 'uk', hl: 'en' });
+    } else return [];
+    const response = await fetch(endpoint + '?' + params.toString(), {
+      headers: { Accept: 'application/json', ...(mode === 'google-web-search-service' ? { 'X-Goog-Api-Key': apiKey } : {}) },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!response.ok) throw new Error('Google ' + mode + ' HTTP ' + response.status);
+    const data = await response.json();
+    const rows = mode === 'google-web-search-service' ? (data.searchResults || []) : (data.items || []);
+    return rows.map(item => ({
+      title: stripSearchHtml(item.title || ''), url: item.displayUrl || item.link || '',
+      description: stripSearchHtml(item.snippet || ''), provider: 'google'
+    })).filter(item => /^https?:\/\//i.test(item.url));
+  } catch (error) {
+    // A Google API outage or quota limit must not stop the independent providers.
+    return [];
+  }
+}
 export async function searchWebResults(query, env = {}) {
-  // Run complementary UK product queries across independent free providers.
-  // This improves direct product-page discovery when one broad query is dominated
-  // by marketplace search results or non-product pages.
   const clean = String(query || '').trim();
-  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 4).join(' ');
+  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 5).join(' ');
+  // General product discovery plus dedicated Amazon UK indexed discovery.
+  // Amazon search-result URLs remain discovery-only; the normal direct-ASIN
+  // page filter and source-page validation still decide what can be evidence.
   const queries = [...new Set([
     clean + ' UK GBP',
     '"' + quoted + '" UK price GBP product page',
-    '"' + quoted + '" UK buy new used price'
+    '"' + quoted + '" UK buy new used price',
+    'site:amazon.co.uk/dp/ "' + quoted + '"',
+    'site:amazon.co.uk "' + quoted + '" price'
   ])];
-  // Keep provider results in separate lanes so the first provider cannot fill
-  // the entire result cap before Bing and Mojeek contribute any direct listings.
   const providers = [
+    { name: 'google', search: term => searchGoogle(term, env) },
     { name: 'duckduckgo', search: searchDuckDuckGo },
     { name: 'bing', search: searchBing },
     { name: 'mojeek', search: searchMojeek }
@@ -160,15 +199,12 @@ export async function searchWebResults(query, env = {}) {
   }));
   const merged = [], seen = new Set();
   const limit = Math.max(1, Math.min(30, Number(env.SEARCH_RESULTS_PER_TASK) || 18));
-  // Round-robin providers; skip duplicate URLs while retaining provider diversity.
   for (let index = 0; merged.length < limit; index++) {
     let added = false;
     for (const lane of lanes) {
       const item = lane.items[index];
-      if (!item || !item.url || seen.has(item.url)) continue;
-      seen.add(item.url);
-      merged.push(item);
-      added = true;
+      if (!item?.url || seen.has(item.url)) continue;
+      seen.add(item.url); merged.push(item); added = true;
       if (merged.length >= limit) break;
     }
     if (!added && lanes.every(lane => index >= lane.items.length)) break;
@@ -201,7 +237,7 @@ export function isEligibleProductPage(url, title = '') {
 
 export function hasVisibleUkPrice(text = '') {
   const pound = String.fromCharCode(163);
-  const pattern = new RegExp('(?:' + pound + '\\s*|\\bGBP\\s*)([0-9][0-9,]*(?:\\.[0-9]{2})?)', 'gi');
+  const pattern = new RegExp('(?:' + pound + '\\s*|\\bGBP\\s*)([0-9][0-9,]*(?:\.[0-9]{2})?)', 'gi');
   const source = String(text ?? '').replace(/\u00a0/g, ' ');
   for (const match of source.matchAll(pattern)) {
     const amount = Number(match[1].replace(/,/g, ''));
@@ -344,6 +380,36 @@ async function db(t,path,options={}) {
   const r=await fetch(t.url+'/rest/v1/'+path,{...options,headers:{apikey:t.key,Authorization:'Bearer '+t.key,'Content-Type':'application/json',...(options.headers||{})},signal:AbortSignal.timeout(25000)});
   const body=await r.text(); if(!r.ok) throw new Error(t.name+' Supabase '+r.status+': '+body.slice(0,400)); return body?JSON.parse(body):null;
 }
+async function probeApprovedResearchSources(task, env) {
+  let sources = [];
+  try {
+    const control = target('TEST', env);
+    sources = await db(control, 'platform_research_sources?select=source_name,domain,source_kind,country_code,research_scope,enabled,priority&enabled=eq.true&order=priority.asc&limit=12');
+  } catch { return []; }
+  const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
+  const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const found = [], seen = new Set();
+  for (const source of sources || []) {
+    if (!source.domain) continue;
+    const domain = String(source.domain).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '');
+    const root = 'https://' + domain, q = encodeURIComponent(name);
+    const attempts = [root + '/search?q=' + q, root + '/search?query=' + q, root + '/search?s=' + q];
+    if (domain.includes('ebay.')) attempts.unshift(root + '/sch/i.html?_nkw=' + q);
+    if (domain.includes('vinted.')) attempts.unshift(root + '/catalog?search_text=' + q);
+    for (const searchUrl of attempts.slice(0, 3)) {
+      try {
+        const pageResult = await fetchSearchHtml(searchUrl, 5000);
+        for (const item of extractSearchLinks(pageResult.html, pageResult.url)) {
+          const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+          if (!model || !identity.includes(model) || !isEligibleProductPage(item.url, item.title) || seen.has(item.url)) continue;
+          seen.add(item.url); found.push({ ...item, provider: 'approved_source' });
+        }
+      } catch { /* try next known search route */ }
+    }
+    if (found.length >= 12) break;
+  }
+  return found;
+}
 async function product(t,task) {
   const c=await db(t,'catalogue_master_categories?select=id&slug=eq.'+encodeURIComponent(task.category_slug)+'&active=eq.true'); if(c.length!==1) throw new Error(t.name+': category not unique');
   let branch=null; if(task.branch_slug){const b=await db(t,'catalogue_master_branches?select=id&category_id=eq.'+c[0].id+'&slug=eq.'+encodeURIComponent(task.branch_slug)+'&active=eq.true');if(b.length!==1)throw new Error(t.name+': branch not unique');branch=b[0].id;}
@@ -377,8 +443,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   if (!task.category_slug || !task.manufacturer || !task.model || !task.package_key || !task.package_name || !task.search_query || !['uk_new', 'uk_used', 'uk_both'].includes(task.research_type)) throw new Error('incomplete task definition');
   const candidates = [];
   await onProgress?.({ stage: 'searching', message: 'Searching DuckDuckGo, Bing and Mojeek for ' + task.manufacturer + ' ' + task.model });
-  const searchResults = await search(task.search_query, env);
-  const providerCounts = Object.fromEntries(['duckduckgo', 'bing', 'mojeek', 'unknown'].map(name => [
+  const webResults = await search(task.search_query, env);
+  const approvedResults = await probeApprovedResearchSources(task, env);
+  const searchResults = [...new Map([...webResults, ...approvedResults].map(item => [item.url, item])).values()];
+  const providerCounts = Object.fromEntries(['google', 'duckduckgo', 'bing', 'mojeek', 'approved_source', 'unknown'].map(name => [
     name,
     searchResults.filter(item => (item.provider || 'unknown') === name).length
   ]));

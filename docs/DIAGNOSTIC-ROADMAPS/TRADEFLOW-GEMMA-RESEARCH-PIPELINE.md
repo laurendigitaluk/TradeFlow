@@ -183,3 +183,16 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 - Follow-up PR #253 adds per-provider result counts to the search-complete event and logs provider, title and URL for every URL rejected by the pre-fetch direct-product filter. The example environment now uses 18. This is diagnostic visibility, not an assertion that provider search results are good or fetchable.
 - Next run must show which providers are returning non-product pages, and the actual links/titles being rejected. If the next set remains low quality, adjust search queries/provider parsers based on those observed links, not by weakening UK/product-page/evidence validation. Keep dry-run; no queue or catalogue writes.
 - The previous dry-run did not call Gemma and did not write catalogue or review-queue rows.
+
+
+## GearCashOut research parity — discovery path (6 November 2026)
+
+The local TradeFlow discovery layer must mirror the proven GearCashOut sequence rather than relying on generic web search alone:
+
+1. Optional official Google Web Search Service or existing Google Programmable Search, using credentials configured only in the TradeFlow `.env`.
+2. Parallel independent DuckDuckGo, Bing and Mojeek queries with provider-level failure isolation and balanced result lanes.
+3. Explicit Amazon UK exact-model discovery queries. Amazon search URLs are discovery only; evidence requires a direct ASIN detail URL.
+4. Read the approved TradeFlow source registry (`public.platform_research_sources`) from TEST as a read-only research control plane and probe enabled source domains using their known site-search routes.
+5. Deduplicate discovered URLs, then retain the existing strict direct-product URL, UK storefront, GBP price, exact model, condition and availability checks before Gemma.
+
+The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalog_ai_sources`. Its migration must be applied independently to TEST and LIVE, and approved source rows must be curated separately. Do not copy GearCashOut credentials, catalogue records, source IDs, customer data or evidence into TradeFlow. If Google credentials are absent, Google is skipped without blocking the other providers. If the registry table is not yet present, approved-source probing is skipped and public discovery continues.

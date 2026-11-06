@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice } from '../src/agent.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
@@ -53,4 +53,24 @@ test('Gemma defaults to CPU inference to avoid exhausting 4 GB GPU memory',()=>{
 test('Gemma GPU layer override must be a non-negative integer',()=>{
  assert.equal(ollamaOptions({OLLAMA_NUM_GPU:'12'}).num_gpu,12);
  assert.throws(()=>ollamaOptions({OLLAMA_NUM_GPU:'auto'}),/non-negative integer/);
+});
+
+
+test('prefilter rejects collection, search, forum and marketplace category URLs before page fetch', () => {
+ assert.equal(isEligibleProductPage('https://store.creality.com/uk/collections/k1-series-3d-printer'), false);
+ assert.equal(isEligibleProductPage('https://www.gumtree.com/for-sale/miscellaneous-goods/uk/srpsearch+3d+printer'), false);
+ assert.equal(isEligibleProductPage('https://www.3dprintersforum.co.uk/viewtopic.php?t=704'), false);
+ assert.equal(isEligibleProductPage('https://www.ebay.co.uk/shop/k1-max?_nkw=k1+max'), false);
+});
+
+test('prefilter permits a direct UK product listing', () => {
+ assert.equal(isEligibleProductPage('https://www.ebay.co.uk/itm/405135219874'), true);
+ assert.equal(isEligibleProductPage('https://store.creality.com/uk/products/k1'), true);
+});
+
+test('visible UK price prefilter requires an explicit positive GBP amount', () => {
+ assert.equal(hasVisibleUkPrice('Creality K1 3D Printer £299.00'), true);
+ assert.equal(hasVisibleUkPrice('Price GBP 1,299.99'), true);
+ assert.equal(hasVisibleUkPrice('Creality K1 high speed 3D printer'), false);
+ assert.equal(hasVisibleUkPrice('£0.00'), false);
 });

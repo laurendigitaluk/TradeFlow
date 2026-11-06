@@ -216,3 +216,11 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Extract up to twelve matching individual product URLs per collection, resolve relative URLs, deduplicate and enforce exact base-model matching while excluding obvious sibling variants.
 - Collection/category URLs must never pass the direct-page evidence gate. Only individual product/listing URLs continue through visible GBP price, Gemma extraction and strict validation.
 - CI for PR #256 passed: run 42223386531, 32/32 tests. This change is on the Gemma feature branch only; no production deployment or catalogue/evidence writes.
+
+
+### Research PC update procedure (6 November 2026)
+
+- Added `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1` for a one-step update from the approved feature branch.
+- It verifies the expected local agent folder, TradeFlow `.env` presence and Node.js 22+, stages the GitHub branch archive, updates agent code, and runs `npm test`.
+- It preserves local `.env`, `tasks`, `logs` and `node_modules`; it does not read the GearCashOut config folder or run research/imports. Previous code is restored if the local test suite fails.
+- Local PC update and dry-run remain pending user execution; do not claim they have occurred.

@@ -470,14 +470,24 @@ export function isApprovedSourceForTask(source, task) {
   return isCategoryAllowedSource(source, task) && isRelevantApprovedSource(source, task);
 }
 
+function normaliseSourceDomain(value) {
+  let domain = String(value || '').trim().toLowerCase();
+  if (domain.startsWith('https://')) domain = domain.slice(8);
+  else if (domain.startsWith('http://')) domain = domain.slice(7);
+  if (domain.startsWith('www.')) domain = domain.slice(4);
+  const pathStart = domain.indexOf('/');
+  if (pathStart >= 0) domain = domain.slice(0, pathStart);
+  return domain;
+}
+
 function sourceDomainMatches(host, source) {
-  const domain = String(source?.domain || '').replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '').toLowerCase();
+  const domain = normaliseSourceDomain(source?.domain);
   return Boolean(domain && (host === domain || host.endsWith('.' + domain)));
 }
 
 export function isAllowedSourceHost(url, sources, task) {
   let host;
-  try { host = new URL(url).hostname.replace(/^www\\./i, '').toLowerCase(); } catch { return false; }
+  try { host = normaliseSourceDomain(new URL(url).hostname); } catch { return false; }
   return (sources || []).some(source =>
     String(source?.country_code || '').toUpperCase() === 'GB' &&
     isApprovedSourceForTask(source, task) &&
@@ -491,7 +501,7 @@ export function buildCategoryScopedSearchQuery(query, sources, task) {
       String(source?.country_code || '').toUpperCase() === 'GB' &&
       isApprovedSourceForTask(source, task)
     )
-    .map(source => String(source?.domain || '').replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '').toLowerCase())
+    .map(source => normaliseSourceDomain(source?.domain))
     .filter(Boolean))].sort();
   if (!domains.length) return null;
   return String(query || '').trim() + ' (' + domains.map(domain => 'site:' + domain).join(' OR ') + ')';

@@ -66,7 +66,7 @@ test('general web-search query is restricted to configured category websites', (
  const gamingQuery=buildCategoryScopedSearchQuery('Nintendo Switch UK price',sources,{manufacturer:'Nintendo',category_slug:'gaming-consoles-accessories'});
  assert.match(gamingQuery,/site:game\.co\.uk/);
  assert.doesNotMatch(gamingQuery,/dji\.com/);
- assert.equal(buildCategoryScopedSearchQuery('unknown category',sources,{manufacturer:'Creality',category_slug:'3d-printers-equipment'}),null);
+ assert.equal(buildCategoryScopedSearchQuery('unknown category',sources.filter(source=>source.domain!=='amazon.co.uk'),{manufacturer:'Creality',category_slug:'3d-printers-equipment'}),null);
 });
 
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));

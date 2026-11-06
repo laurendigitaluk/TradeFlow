@@ -248,6 +248,25 @@ export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 
   return rows.slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
 }
 
+export function extractShopifyCollectionProducts(payload, baseUrl, task = {}, limit = 12) {
+  let parsed;
+  try { parsed = typeof payload === 'string' ? JSON.parse(payload) : payload; } catch { return []; }
+  const products = Array.isArray(parsed?.products) ? parsed.products : [];
+  const rows = [];
+  for (const product of products) {
+    const title = String(product.title || '');
+    const handle = String(product.handle || '');
+    const identity = title + ' ' + handle;
+    if (!matchesTaskModel(identity, '', task)) continue;
+    if (!handle || /(?:^|[- ])(?:max|plus|pro|ultra|combo|se|v2)(?:$|[- ])/i.test(handle)) continue;
+    const url = new URL('/uk/products/' + encodeURIComponent(handle), baseUrl).toString();
+    if (!isEligibleProductPage(url, title)) continue;
+    rows.push({ title, url, description: 'Shopify collection product JSON', provider: 'collection_discovery' });
+    if (rows.length >= Math.max(1, Math.min(24, Number(limit) || 12))) break;
+  }
+  return rows;
+}
+
 export function isEligibleProductPage(url, title = '') {
   let u;
   try { u = new URL(url); } catch { return false; }
@@ -581,9 +600,27 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     try {
       await onProgress?.({ stage: 'collection_discovery', source: source.url, message: 'Opening collection to discover individual product listings: ' + source.url });
       const result = await collectionPage(source.url);
-      const links = extractCollectionProductLinks(result.html, result.url, task, 12);
+      let links = extractCollectionProductLinks(result.html, result.url, task, 12);
+      let discoveryMethod = 'collection HTML links';
+      // Shopify storefront themes often render product cards from JSON rather
+      // than ordinary anchor text. Use Shopify's public collection products
+      // endpoint as a fallback, then still fetch each direct product page.
+      if (!links.length) {
+        const collection = new URL(result.url);
+        const jsonPath = collection.pathname.replace(/\\/$/, '') + '/products.json?limit=50';
+        const jsonUrl = new URL(jsonPath, collection.origin).toString();
+        const jsonResponse = await fetch(jsonUrl, {
+          redirect: 'follow',
+          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradeFlowGemmaResearch/0.2)', 'Accept': 'application/json', 'Accept-Language': 'en-GB,en;q=0.9' },
+          signal: AbortSignal.timeout(12000)
+        });
+        if (!jsonResponse.ok) throw new Error('collection HTML contained no matching links; Shopify products JSON HTTP ' + jsonResponse.status);
+        const payload = await jsonResponse.json();
+        links = extractShopifyCollectionProducts(payload, result.url, task, 12);
+        discoveryMethod = 'Shopify collection products JSON';
+      }
       collectionProducts.push(...links.map(item => ({ ...item, provider: 'collection_discovery' })));
-      await onProgress?.({ stage: 'collection_discovered', source: source.url, total: links.length, message: 'Collection yielded ' + links.length + ' matching individual product page(s)' });
+      await onProgress?.({ stage: 'collection_discovered', source: source.url, total: links.length, method: discoveryMethod, message: 'Collection yielded ' + links.length + ' matching individual product page(s) via ' + discoveryMethod });
     } catch (error) {
       await onProgress?.({ stage: 'collection_error', source: source.url, message: 'Collection discovery skipped: ' + error.message });
     }

@@ -130,20 +130,59 @@ async function searchMojeek(query) {
   try { return extractSearchLinks((await fetchSearchHtml(url)).html, url); }
   catch (error) { return []; }
 }
+async function searchGoogle(query, env = {}) {
+  if (env.GOOGLE_SEARCH_ENABLED === 'false' || !String(env.GOOGLE_SEARCH_API_KEY || '').trim()) return [];
+  const apiKey = String(env.GOOGLE_SEARCH_API_KEY).trim();
+  const clientId = String(env.GOOGLE_WEB_SEARCH_CLIENT_ID || '').trim();
+  const userIp = String(env.GOOGLE_SEARCH_USER_IP || '').trim();
+  const cseId = String(env.GOOGLE_CSE_ID || '').trim();
+  try {
+    let endpoint, params, mode;
+    if (clientId && userIp) {
+      mode = 'google-web-search-service';
+      endpoint = 'https://websearchservice.googleapis.com/v1:search';
+      params = new URLSearchParams({
+        'clientContext.clientId': clientId, 'userContext.ipAddress': userIp,
+        'userContext.regionCode': 'GB', 'searchQuery.query': query,
+        'searchQuery.languageCode': 'en', 'searchQuery.restrictRegionCode': 'GB',
+        'searchQuery.safeSearch': 'ON', pageSize: '10'
+      });
+    } else if (cseId) {
+      mode = 'google-programmable-search';
+      endpoint = 'https://www.googleapis.com/customsearch/v1';
+      params = new URLSearchParams({ key: apiKey, cx: cseId, q: query, num: '10', gl: 'uk', hl: 'en' });
+    } else return [];
+    const response = await fetch(endpoint + '?' + params.toString(), {
+      headers: { Accept: 'application/json', ...(mode === 'google-web-search-service' ? { 'X-Goog-Api-Key': apiKey } : {}) },
+      signal: AbortSignal.timeout(8000)
+    });
+    if (!response.ok) throw new Error('Google ' + mode + ' HTTP ' + response.status);
+    const data = await response.json();
+    const rows = mode === 'google-web-search-service' ? (data.searchResults || []) : (data.items || []);
+    return rows.map(item => ({
+      title: stripSearchHtml(item.title || ''), url: item.displayUrl || item.link || '',
+      description: stripSearchHtml(item.snippet || ''), provider: 'google'
+    })).filter(item => /^https?:\\/\\//i.test(item.url));
+  } catch (error) {
+    // A Google API outage or quota limit must not stop the independent providers.
+    return [];
+  }
+}
 export async function searchWebResults(query, env = {}) {
-  // Run complementary UK product queries across independent free providers.
-  // This improves direct product-page discovery when one broad query is dominated
-  // by marketplace search results or non-product pages.
   const clean = String(query || '').trim();
-  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 4).join(' ');
+  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 5).join(' ');
+  // General product discovery plus dedicated Amazon UK indexed discovery.
+  // Amazon search-result URLs remain discovery-only; the normal direct-ASIN
+  // page filter and source-page validation still decide what can be evidence.
   const queries = [...new Set([
     clean + ' UK GBP',
     '"' + quoted + '" UK price GBP product page',
-    '"' + quoted + '" UK buy new used price'
+    '"' + quoted + '" UK buy new used price',
+    'site:amazon.co.uk/dp/ "' + quoted + '"',
+    'site:amazon.co.uk "' + quoted + '" price'
   ])];
-  // Keep provider results in separate lanes so the first provider cannot fill
-  // the entire result cap before Bing and Mojeek contribute any direct listings.
   const providers = [
+    { name: 'google', search: term => searchGoogle(term, env) },
     { name: 'duckduckgo', search: searchDuckDuckGo },
     { name: 'bing', search: searchBing },
     { name: 'mojeek', search: searchMojeek }
@@ -160,15 +199,12 @@ export async function searchWebResults(query, env = {}) {
   }));
   const merged = [], seen = new Set();
   const limit = Math.max(1, Math.min(30, Number(env.SEARCH_RESULTS_PER_TASK) || 18));
-  // Round-robin providers; skip duplicate URLs while retaining provider diversity.
   for (let index = 0; merged.length < limit; index++) {
     let added = false;
     for (const lane of lanes) {
       const item = lane.items[index];
-      if (!item || !item.url || seen.has(item.url)) continue;
-      seen.add(item.url);
-      merged.push(item);
-      added = true;
+      if (!item?.url || seen.has(item.url)) continue;
+      seen.add(item.url); merged.push(item); added = true;
       if (merged.length >= limit) break;
     }
     if (!added && lanes.every(lane => index >= lane.items.length)) break;

@@ -217,16 +217,35 @@ export function isCollectionDiscoveryPage(url, title = '') {
   try { u = new URL(url); } catch { return false; }
   if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
   const path = decodeURIComponent(u.pathname).toLowerCase();
-  if (!/\\/(collections?|categories?)\\//i.test(path)) return false;
-  if (/facebook\\.com/i.test(u.hostname)) return false;
+  if (!/\/(collections?|categories?)\//i.test(path)) return false;
+  if (/facebook\.com/i.test(u.hostname)) return false;
   return true;
 }
 
 function matchesTaskModel(title, url, task = {}) {
-  const model = String(task.model || '').trim();
+  const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
-  const identity = (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  const escaped = model.toLowerCase().split(/\\s+/).filter(Boolean).map(token => token.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\export function isEligibleProductPage(url, title = '') {'));
+  const identity = (' ' + (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ');
+  if (!identity.includes(' ' + model + ' ')) return false;
+  // A base model is not interchangeable with a visibly different family member.
+  const afterModel = identity.split(' ' + model + ' ')[1] || '';
+  const firstSuffix = afterModel.trim().split(' ')[0];
+  return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2'].includes(firstSuffix);
+}
+
+export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
+  const rows = extractSearchLinks(String(html || ''), baseUrl);
+  const seen = new Set();
+  return rows.filter(item => {
+    if (!isEligibleProductPage(item.url, item.title) || !matchesTaskModel(item.title, item.url, task)) return false;
+    const key = item.url.split('#')[0];
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  }).slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
+}
+
+export function isEligibleProductPage(url, title = '') {'));
   const expression = new RegExp('(?:^| )' + escaped.join(' ') + '(?: |$)', 'i');
   if (!expression.test(identity)) return false;
   // Do not confuse a base model with a visibly different model family member.

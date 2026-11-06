@@ -13,26 +13,36 @@ test('rejects a near-match price rather than accepting a different amount',()=>a
 
 import { searchWebResults } from '../src/agent.mjs';
 
-test('search uses local SearXNG JSON endpoint without an API key',async()=>{
- const original=globalThis.fetch;let requested;
- globalThis.fetch=async(url,options)=>{requested={url:new URL(url),options};return new Response(JSON.stringify({results:[{title:'Product UK',url:'https://shop.co.uk/product',content:'UK listing'},{title:'No URL'}]}),{status:200,headers:{'content-type':'application/json'}});};
+test('search continues when one independent provider is unavailable', async () => {
+ const original=globalThis.fetch;
+ globalThis.fetch=async(url)=>{
+  const target=String(url);
+  if(target.includes('duckduckgo.com')) throw new Error('provider unavailable');
+  if(target.includes('bing.com')) return new Response('<html><li class="b_algo"><h2><a href="https://shop.co.uk/product">Creality K1 UK printer</a></h2></li></html>',{status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('mojeek.com')) return new Response('<html><a class="result__a" href="https://retailer.co.uk/item">Creality K1 listing</a></html>',{status:200,headers:{'content-type':'text/html'}});
+  throw new Error('unexpected provider');
+ };
  try {
-  const results=await searchWebResults('Creality K1',{SEARXNG_BASE_URL:'http://127.0.0.1:8080',SEARCH_RESULTS_PER_TASK:'5'});
-  assert.equal(requested.url.origin,'http://127.0.0.1:8080');
-  assert.equal(requested.url.pathname,'/search');
-  assert.equal(requested.url.searchParams.get('format'),'json');
-  assert.equal(requested.url.searchParams.get('language'),'en-GB');
-  assert.match(requested.url.searchParams.get('q'),/Creality K1 UK GBP/);
-  assert.deepEqual(results,[{title:'Product UK',url:'https://shop.co.uk/product',description:'UK listing'}]);
+  const results=await searchWebResults('Creality K1',{SEARCH_RESULTS_PER_TASK:'5'});
+  assert.equal(results.length,2);
+  assert.ok(results.some(x=>x.url==='https://shop.co.uk/product'));
+  assert.ok(results.some(x=>x.url==='https://retailer.co.uk/item'));
  } finally {globalThis.fetch=original;}
 });
 
-test('search fails clearly when local SearXNG is unavailable',async()=>{
- const original=globalThis.fetch;globalThis.fetch=async()=>new Response('offline',{status:503});
- try {await assert.rejects(()=>searchWebResults('phone',{}),/HTTP 503/);}
- finally {globalThis.fetch=original;}
+test('search does not require a local SearXNG service', async () => {
+ const original=globalThis.fetch;
+ globalThis.fetch=async(url)=>{
+  if(String(url).includes('duckduckgo.com')) throw new Error('offline');
+  if(String(url).includes('bing.com')) throw new Response('blocked',{status:503});
+  return new Response('<html><a class="result__a" href="https://manufacturer.co.uk/product">Creality K1 product page</a></html>',{status:200,headers:{'content-type':'text/html'}});
+ };
+ try {
+  const results=await searchWebResults('Creality K1',{});
+  assert.equal(results.length,1);
+  assert.equal(results[0].url,'https://manufacturer.co.uk/product');
+ } finally {globalThis.fetch=original;}
 });
-
 
 test('Gemma defaults to CPU inference to avoid exhausting 4 GB GPU memory',()=>{
  const options=ollamaOptions({});

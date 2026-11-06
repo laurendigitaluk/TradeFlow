@@ -57,46 +57,7 @@ if (($Models -join [Environment]::NewLine) -notmatch $ModelPattern) {
 
 Push-Location $AgentRoot
 try {
-    Write-Host "Checking local SearXNG search service..."
-    $SearchMatch = [regex]::Match($EnvText, "(?m)^\s*SEARXNG_BASE_URL\s*=\s*(\S+)")
-    $ConfiguredSearchUrl = if ($SearchMatch.Success) { $SearchMatch.Groups[1].Value.Trim('"').Trim("'") } else { "http://127.0.0.1:8080" }
-
-    # Prefer the configured endpoint, but fall back to the known local Compose binding.
-    # This avoids a stale/incorrect .env URL blocking a healthy local SearXNG instance.
-    $SearchCandidates = @($ConfiguredSearchUrl, "http://127.0.0.1:8080") | Select-Object -Unique
-    $SearchCheck = $null
-    $SearchErrors = @()
-    foreach ($Candidate in $SearchCandidates) {
-        try {
-            $SearchUri = [uri]$Candidate
-            if ($SearchUri.Scheme -notin @("http", "https")) { throw "Search URL must use HTTP or HTTPS." }
-            $SearchEndpoint = $SearchUri.GetLeftPart([System.UriPartial]::Authority) + "/search?q=tradeflow&format=json"
-            # First search requests can take longer while the local search engine warms up.
-            $CandidateCheck = $null
-            $LastSearchError = $null
-            for ($Attempt = 1; $Attempt -le 2; $Attempt++) {
-                try {
-                    $CandidateCheck = Invoke-RestMethod -Uri $SearchEndpoint -TimeoutSec 25
-                    if ($null -eq $CandidateCheck.results) { throw "Endpoint did not return SearXNG JSON results." }
-                    break
-                }
-                catch {
-                    $LastSearchError = $_
-                    if ($Attempt -lt 2) { Start-Sleep -Seconds 2 }
-                }
-            }
-            if ($null -eq $CandidateCheck) { throw $LastSearchError }
-            $SearchCheck = $CandidateCheck
-            Write-Host "SearXNG responding at $($SearchUri.GetLeftPart([System.UriPartial]::Authority))"
-            break
-        }
-        catch {
-            $SearchErrors += ($Candidate + ": " + $_.Exception.Message)
-        }
-    }
-    if ($null -eq $SearchCheck) {
-        throw ("SearXNG did not respond at the configured address or the local fallback. " + ($SearchErrors -join " | "))
-    }
+    Write-Host "Web search uses independent free providers; no local Docker/SearXNG service is required."
 
     Write-Host "Running Gemma validation tests..."
     & npm test

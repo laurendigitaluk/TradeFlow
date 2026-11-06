@@ -184,7 +184,48 @@ export function hasVisibleUkPrice(text = '') {
   return false;
 }
 
-async function page(url) {
+export function extractRelevantPageText(html, task = {}) {
+  const source = String(html || '');
+  const products = [];
+  for (const match of source.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      const parsed = JSON.parse(match[1]);
+      const visit = value => {
+        if (Array.isArray(value)) return value.forEach(visit);
+        if (!value || typeof value !== 'object') return;
+        const types = Array.isArray(value['@type']) ? value['@type'] : [value['@type']];
+        if (types.some(type => String(type).toLowerCase() === 'product')) products.push(value);
+        Object.values(value).forEach(visit);
+      };
+      visit(parsed);
+    } catch { /* Ignore malformed third-party structured data. */ }
+  }
+  const tokens = [task.manufacturer, task.model].filter(Boolean).map(value => String(value).toLowerCase());
+  const structured = products.filter(product => {
+    const identity = [product.name, product.brand?.name || product.brand, product.model, product.sku].filter(Boolean).join(' ').toLowerCase();
+    return tokens.length > 0 && tokens.every(token => identity.includes(token));
+  }).map(product => {
+    const offers = Array.isArray(product.offers) ? product.offers : [product.offers];
+    return [
+      'Product: ' + (product.name || ''),
+      'Brand: ' + (product.brand?.name || product.brand || ''),
+      'Model: ' + (product.model || ''),
+      ...offers.filter(Boolean).map(offer => 'Price: ' + (offer.price ?? offer.lowPrice ?? '') +
+        ' Currency: ' + (offer.priceCurrency || '') + ' Availability: ' + (offer.availability || '') +
+        ' Condition: ' + (offer.itemCondition || ''))
+    ].join(' ');
+  });
+  let content = source.replace(/<(script|style|noscript|svg)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ');
+  const main = content.match(/<(main|article)\b[^>]*>([\s\S]*?)<\/\1>/i);
+  if (main) content = main[2];
+  content = content.replace(/<(nav|header|footer|aside)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ')
+    .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
+    .replace(/&amp;/gi, '&').replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return [content, ...structured].filter(Boolean).join(' ').slice(0, 10000);
+}
+
+async function page(url, task = {}) {
   if (!isEligibleProductPage(url)) throw new Error('ineligible product page URL');
   const r = await fetch(url, {
     redirect: 'follow',
@@ -197,14 +238,8 @@ async function page(url) {
   const html = await r.text();
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   const title = titleMatch ? stripSearchHtml(titleMatch[1]) : '';
-  const text = html
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, ' ')
-    .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
-    .replace(/&amp;/gi, '&').replace(/&nbsp;/gi, ' ')
-    .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  return { url: final.toString(), title, text: text.slice(0, 10000) };
+  const text = extractRelevantPageText(html, task);
+  return { url: final.toString(), title, text };
 }
 export function ollamaOptions(env = {}) {
   const configuredGpuLayers = env.OLLAMA_NUM_GPU;
@@ -336,7 +371,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         message: 'Fetching eligible product page ' + (index + 1) + ' of ' + eligible.length + ': ' + source.url
       });
       try {
-        const result = await page(source.url);
+        const result = await page(source.url, task);
         if (!hasVisibleUkPrice(result.text)) {
           await onProgress?.({ stage: 'price_prefilter_skipped', source: result.url, message: 'Skipped before Gemma: no visible GBP price on page' });
           return null;

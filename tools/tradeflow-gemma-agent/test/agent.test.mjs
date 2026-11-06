@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions } from '../src/agent.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
@@ -31,4 +31,16 @@ test('search fails clearly when local SearXNG is unavailable',async()=>{
  const original=globalThis.fetch;globalThis.fetch=async()=>new Response('offline',{status:503});
  try {await assert.rejects(()=>searchWebResults('phone',{}),/HTTP 503/);}
  finally {globalThis.fetch=original;}
+});
+
+
+test('Gemma defaults to CPU inference to avoid exhausting 4 GB GPU memory',()=>{
+ const options=ollamaOptions({});
+ assert.equal(options.num_gpu,0);
+ assert.equal(options.num_ctx,4096);
+ assert.equal(options.num_predict,256);
+});
+test('Gemma GPU layer override must be a non-negative integer',()=>{
+ assert.equal(ollamaOptions({OLLAMA_NUM_GPU:'12'}).num_gpu,12);
+ assert.throws(()=>ollamaOptions({OLLAMA_NUM_GPU:'auto'}),/non-negative integer/);
 });

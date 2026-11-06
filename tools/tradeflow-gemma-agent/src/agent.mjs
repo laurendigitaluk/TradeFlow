@@ -429,12 +429,15 @@ async function db(t,path,options={}) {
   const r=await fetch(t.url+'/rest/v1/'+path,{...options,headers:{apikey:t.key,Authorization:'Bearer '+t.key,'Content-Type':'application/json',...(options.headers||{})},signal:AbortSignal.timeout(25000)});
   const body=await r.text(); if(!r.ok) throw new Error(t.name+' Supabase '+r.status+': '+body.slice(0,400)); return body?JSON.parse(body):null;
 }
-async function probeApprovedResearchSources(task, env) {
+async function probeApprovedResearchSources(task, env, onProgress) {
   let sources = [];
   try {
     const control = target('TEST', env);
     sources = await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority&enabled=eq.true&order=priority.asc&limit=60');
-  } catch { return []; }
+  } catch (error) {
+    await onProgress?.({ stage: 'approved_source_registry_error', message: 'Approved source registry could not be read: ' + error.message });
+    return [];
+  }
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {
@@ -471,9 +474,20 @@ async function probeApprovedResearchSources(task, env) {
     if (!source.search_url_template && domain.includes('vinted.')) attempts.unshift(root + '/catalog?search_text=' + q);
     for (const searchUrl of attempts.slice(0, 3)) {
       try {
-        const pageResult = await fetchSearchHtml(searchUrl, 5000);
+        const pageResult = await fetchSearchHtml(searchUrl, 8000);
         const matches = [];
-        for (const item of extractSearchLinks(pageResult.html, pageResult.url)) {
+        // If the approved route itself is a model-specific collection page,
+        // pass it to runTask's collection expansion stage. It is discovery only.
+        if (isCollectionDiscoveryPage(pageResult.url, source.source_name + ' ' + task.model) &&
+            matchesTaskModel(source.source_name + ' ' + task.model, pageResult.url, task)) {
+          matches.push({
+            title: source.source_name + ' ' + task.model + ' collection',
+            url: pageResult.url, description: 'Approved collection discovery: ' + (source.source_name || domain),
+            provider: 'approved_source'
+          });
+        }
+        const extractedLinks = extractSearchLinks(pageResult.html, pageResult.url);
+        for (const item of extractedLinks) {
           const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
           const directProduct = isEligibleProductPage(item.url, item.title);
           const collectionHub = isCollectionDiscoveryPage(item.url, item.title);
@@ -483,8 +497,14 @@ async function probeApprovedResearchSources(task, env) {
           if (!model || !identity.includes(model) || (!directProduct && !collectionHub)) continue;
           matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
         }
-        if (matches.length) return matches;
-      } catch { /* try the next source-specific search route */ }
+        if (matches.length) {
+          await onProgress?.({ stage: 'approved_source_found', source: source.domain, total: matches.length, message: 'Approved source ' + source.domain + ' returned ' + matches.length + ' matching product/collection discovery URL(s)' });
+          return matches;
+        }
+        await onProgress?.({ stage: 'approved_source_empty', source: source.domain, message: 'Approved source route returned HTML but no matching exact-model product or collection links: ' + searchUrl });
+      } catch (error) {
+        await onProgress?.({ stage: 'approved_source_error', source: source.domain, message: 'Approved source route failed for ' + source.domain + ': ' + error.message });
+      }
     }
     return [];
   };
@@ -529,7 +549,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const candidates = [];
   await onProgress?.({ stage: 'searching', message: 'Searching DuckDuckGo, Bing and Mojeek for ' + task.manufacturer + ' ' + task.model });
   const webResults = await search(task.search_query, env);
-  const approvedResults = await probeApprovedResearchSources(task, env);
+  const approvedResults = await probeApprovedResearchSources(task, env, onProgress);
   const searchResults = [...new Map([...webResults, ...approvedResults].map(item => [item.url, item])).values()];
   const providerCounts = Object.fromEntries(['google', 'duckduckgo', 'bing', 'mojeek', 'approved_source', 'unknown'].map(name => [
     name,

@@ -234,15 +234,19 @@ function matchesTaskModel(title, url, task = {}) {
 }
 
 export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
-  const rows = extractSearchLinks(String(html || ''), baseUrl);
-  const seen = new Set();
-  return rows.filter(item => {
-    if (!isEligibleProductPage(item.url, item.title) || !matchesTaskModel(item.title, item.url, task)) return false;
-    const key = item.url.split('#')[0];
-    if (seen.has(key)) return false;
+  const rows = [], seen = new Set();
+  const anchors = /<a\\b[^>]*href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi;
+  let match;
+  while ((match = anchors.exec(String(html || '')))) {
+    let url;
+    try { url = new URL(match[1].replace(/&amp;/g, '&'), baseUrl).href; } catch { continue; }
+    const title = stripSearchHtml(match[2]);
+    const key = url.split('#')[0];
+    if (seen.has(key) || !isEligibleProductPage(url, title) || !matchesTaskModel(title, url, task)) continue;
     seen.add(key);
-    return true;
-  }).slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
+    rows.push({ title, url: key, description: '', provider: 'collection_discovery' });
+  }
+  return rows.slice(0, Math.max(1, Math.min(24, Number(limit) || 12)));
 }
 
 export function isEligibleProductPage(url, title = '') {'));

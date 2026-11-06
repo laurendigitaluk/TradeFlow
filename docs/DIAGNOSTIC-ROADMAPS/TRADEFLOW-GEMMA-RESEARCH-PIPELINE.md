@@ -243,3 +243,12 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Updated approved-source probing to accept exact-model collection/category URLs as discovery results as well as direct product pages. Collection hubs flow through the existing bounded extraction path and cannot become evidence.
 - Added a unit test asserting the Creality collection is discovery-eligible but not a direct product evidence page.
 - Local agent has not yet received this latest source-registry/probe update; one controlled update-and-dry-run remains required.
+
+
+### Direct collection route and diagnostics correction (6 November 2026)
+
+- Second local dry-run still returned one irrelevant Mojeek result and no approved-source results despite the Creality registry row being present. The approved-source probe silently swallowed registry and route errors, obscuring the first failure.
+- Replaced the Creality source's Shopify generic search URL with the known K1 Series collection URL: `https://store.creality.com/uk/collections/k1-series-3d-printer` in both TEST and LIVE.
+- The approved-source probe now recognises a model-matching collection URL itself as a discovery result and sends it to the standard bounded collection expansion stage. Direct product links are then fetched individually; the collection page is never evidence.
+- Added explicit progress diagnostics for registry errors, approved-source fetch errors, empty routes and successful matching URLs.
+- The live collection was independently checked: it contains a base K1 listing as well as K1 Max and K1C variants; the base K1 links to `/uk/products/k1-speedy-3d-printer`. Do not merge or claim success until local dry-run proves that route and exact-model filtering work.

@@ -174,3 +174,12 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 - Regression test verifies a six-result cap receives two results from each provider. Existing direct-page URL filters, fetch validation, UK GBP, exact model, condition and availability checks remain unchanged.
 - This improves discovery breadth but does not guarantee that any provider will return accessible product pages. The next Research PC dry-run must report provider mix, eligible URLs, HTTP failures, fetched price-bearing pages and Gemma calls. Do not enqueue/import until a genuine product detail page and all evidence fields are verified.
 - No TEST/LIVE catalogue/evidence writes, database/schema/RLS/RPC/Edge Function changes, tenant/customer/payment/domain data, credentials or deployments were changed.
+
+
+## Research PC follow-up — search result diagnostics, 6 November 2026
+
+- The Research PC confirmed the balanced-search code and all 27 tests passed. The subsequent dry-run still returned 8 results, only 1 eligible URL, 0 fetched pages, 0 Gemma calls and 0 candidates. The only eligible URL was an eBay listing and returned HTTP 403.
+- The local result cap remained 8 because the existing .env explicitly sets SEARCH_RESULTS_PER_TASK=8. The code default of 18 is only used when the setting is absent/empty. Never overwrite the existing .env; the owner should change that single setting to 18 manually.
+- Follow-up PR #253 adds per-provider result counts to the search-complete event and logs provider, title and URL for every URL rejected by the pre-fetch direct-product filter. The example environment now uses 18. This is diagnostic visibility, not an assertion that provider search results are good or fetchable.
+- Next run must show which providers are returning non-product pages, and the actual links/titles being rejected. If the next set remains low quality, adjust search queries/provider parsers based on those observed links, not by weakening UK/product-page/evidence validation. Keep dry-run; no queue or catalogue writes.
+- The previous dry-run did not call Gemma and did not write catalogue or review-queue rows.

@@ -298,3 +298,8 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 
 The active `laptops` category exists in TEST but is absent in LIVE. Do not research/import laptop products until the LIVE category master is aligned. Code/unit tests are committed on `fix/gemma-category-scoped-sources-20261106`; CI and Research PC dry-run remain outstanding. No catalogue/evidence/queue writes or deployment.
 
+## CI diagnostic and correction — 6 November 2026
+
+The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
+
+Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.

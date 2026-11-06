@@ -53,3 +53,15 @@ Next: pull the branch after checking local uncommitted changes; run npm test; pe
 - Regression tests now accept opened-never-used as UK used and reject it as UK new.
 - Research PC update and a new controlled dry-run remain outstanding. The last run still needs a valid direct product-detail candidate; no evidence should be imported until the source URL, product identity, price and condition are verified.
 - No TEST/LIVE catalogue/evidence rows, review queue rows, schema, RLS, RPC, Edge Functions, tenant/customer/Stripe/domain data, credentials or deployments were changed.
+
+
+## Verified opened-never-used condition correction — 6 November 2026
+
+- PR #251 merged to the Gemma feature branch as `c31b856cb561099b730753d7de195c914e08c3bd`.
+- CI run #50 (`42215870318`) completed successfully; the Gemma agent test job passed.
+- Source audit caught that the earlier claimed correction had not actually changed the feature-branch source. This PR changes the real validator, Gemma prompt and regression tests.
+- `Opened - never used` is accepted as UK-used evidence; the exact condition is preserved. It remains invalid as UK-new evidence.
+- The prior local 25/25 test result was not proof of the correction because the local test still asserted that the condition should be rejected. Research PC must receive the merged source and test files before this rule is considered verified locally.
+- The latest controlled run remains blocked before Gemma: 8 search results, 1 eligible URL, 0 fetched price-bearing pages, 0 Gemma calls, 0 accepted candidates. The sole eligible eBay listing returned HTTP 403.
+- Next technical priority is source discovery/fetch resilience and genuine product-page coverage. Do not treat zero candidates as a model extraction failure. Do not enqueue or import until a direct product page and evidence are independently verified.
+- No TEST/LIVE catalogue or evidence writes, schema/RLS/RPC/Edge Function changes, tenant/customer/Stripe/domain changes, secrets or deployments were made.

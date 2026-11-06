@@ -181,3 +181,8 @@ Use `Update-TradeFlow-Gemma.ps1` from inside the existing TradeFlow agent folder
 ### Windows updater recovery note (6 November 2026)
 
 The first updater attempt exposed a Windows archive extraction/path issue. The updater now uses a short system-drive temporary directory and extracts only the `tools/tradeflow-gemma-agent` subtree from the repository ZIP via .NET ZipArchive, avoiding unrelated long paths elsewhere in the repository. It verifies a local code backup before any destructive rollback; rollback is attempted only when both the previous launcher and agent entry point were backed up. It can also repair a local agent folder whose code files are incomplete, provided its TradeFlow `.env` remains present. Local updater execution and dry-run are still pending.
+
+
+### Category-aware manufacturer source discovery — 6 November 2026
+
+The TEST and LIVE `platform_research_sources` registries now include the Creality UK Official Store (`store.creality.com`) with a UK product-search template. Manufacturer source probing accepts both exact-model direct product pages and exact-model collection/category hubs; collection hubs are routed into the bounded collection expansion stage and are never evidence. The official Creality source is prioritised in the manufacturer lane so 3D-printer research does not rely solely on camera-focused source entries. The 20 original public sources remain aligned, with this 21st source added identically to TEST and LIVE. The latest Research PC dry-run exposed poor generic search-provider yield (one irrelevant Mojeek result; no eligible pages); the next run will use the approved Creality source as a direct discovery fallback.

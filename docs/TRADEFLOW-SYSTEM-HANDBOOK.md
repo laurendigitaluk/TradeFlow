@@ -3117,3 +3117,8 @@ Source and migration are committed on `feature/tradeflow-gemma-agent-foundation-
 ## TradeFlow Gemma configuration isolation — 5 November 2026
 
 The TradeFlow Gemma interactive launcher, Node research entry point, persistent supervisor and task worker use the TradeFlow agent folder's `.env` as their single configuration source. The launcher explicitly passes that path to Node. Do not read, copy, move, overwrite or repurpose the retired `C:\\GearCashOut-Config\\.env`; preserve it unchanged. Keep TEST and LIVE Supabase URLs and service-role credentials separate in the local TradeFlow `.env`, and never expose credentials in chat or commit the file. Before installing the Windows scheduled service, refresh the launcher and `src/index.mjs`, verify the installed Ollama model tag, run `npm test`, and complete a successful dry-run. No service installation, catalogue/evidence writes or deployment is implied by this documentation update.
+
+
+## Gemma Research PC inference stability correction — 6 November 2026
+
+The Research PC diagnostic showed approximately 80 GB system RAM and an NVIDIA GeForce GTX 1650 with approximately 4 GB VRAM (plus Intel integrated graphics). Ollama loaded `gemma3:4b` at approximately 3.5 GB and returned HTTP 500 `model runner has unexpectedly stopped` during extraction. The agent now requests CPU-only inference by default through Ollama chat option `num_gpu: 0`, avoiding reliance on constrained discrete GPU memory. The extraction timeout remains 180 seconds; no evidence-validation weakening was made. `OLLAMA_NUM_GPU` is an optional non-negative integer override, but keep it at 0 until CPU inference is confirmed stable. TEST and LIVE catalogue/evidence data remain unchanged.

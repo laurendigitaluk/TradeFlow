@@ -3172,3 +3172,19 @@ Key commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0e
 The one-off launcher previously appeared idle because `src/index.mjs` only reported progress through agent telemetry and printed the final JSON after all tasks completed. The research path now emits PowerShell progress messages for search start/completion, source-page retrieval, Ollama extraction, rejected evidence, source errors, and TEST/LIVE product resolution. This is diagnostic visibility only: it does not change dry-run/enqueue permissions or allow direct catalogue/evidence writes.
 
 The owner confirmed all 12 existing Node tests pass locally after correcting escaped closing-tag regexes in the local `src/agent.mjs`. That exact local repair must be kept aligned with the branch. The latest progress-output commits are `a8c2b613005cb1262bcbe6313f1cc1208cbdb1a8` and `056fc59ae4456a345e706a2c4f27b99cd34a7f5f`. The latest progress changes have not yet been downloaded or tested on the Research PC. Do not claim the end-to-end research run is verified until the updated files are installed and a dry-run completes.
+
+ 
+---
+
+# Category-scoped Gemma source selection — 6 November 2026
+
+TradeFlow Gemma's approved source registry now assigns websites to explicit catalogue categories. A website is not globally eligible merely because it is enabled. The source must have the current task's exact category slug in `platform_research_sources.category_slugs`; only Amazon UK and eBay UK are configured with the deliberate wildcard `*`. An empty array means the source is not eligible.
+
+The local worker reads the registry from TEST and uses the same category allowlist for approved source probing and for filtering general search-engine result URLs before any page fetch or Gemma extraction. Manufacturer sources also have to match the requested manufacturer. This avoids cross-category noise such as gaming retailers being fetched for drones or camera retailers being fetched for 3D printers.
+
+The additive migration `20261106170000_add_category_scopes_to_platform_research_sources.sql` was applied and independently verified in TEST and LIVE. Both source registries have 51 enabled rows, 47 scoped rows and two universal sources; their ordered registry hashes match. Category counts verified: 3D printers 3, drones 6, gaming 12, mobile phones 11 and metal detectors 6 (category-specific counts, excluding the two wildcard sources).
+
+Source assignments are configuration, not evidence. Every candidate must still be a direct UK product/listing page and pass exact manufacturer/model/variant, visible GBP price, condition, availability and evidence-type validation. Research candidates still require ChatGPT/owner review; no direct catalogue or live-evidence writes are permitted from Gemma.
+
+A known separate data issue remains: the Laptops category is active in TEST but missing from LIVE. Do not run/import laptop research until the LIVE category master is reconciled. The code change is on the Gemma feature/fix branch and still requires CI plus a controlled Research PC dry-run; it is not a production application deployment.
+

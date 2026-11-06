@@ -4347,7 +4347,7 @@ The previous global source list allowed unrelated retailers to be probed for any
 - Added 24 UK source records relevant to gaming, mobile phones, 3D printers and metal detectors, and explicitly scoped all 27 existing records.
 - Empty category arrays are fail-closed. The wildcard `*` is reserved for Amazon UK and eBay UK as broad marketplaces/retailers.
 - Manufacturer sources require both an exact configured category and manufacturer-name match.
-- Generic search-engine result URLs are now filtered against the same category/domain allowlist before page fetch or Ollama/Gemma extraction. Unapproved websites are logged and discarded.
+- Generic search-engine queries now include `site:` restrictions for the category-approved UK domains. Returned URLs are also checked against the same host allowlist before page fetch or Ollama/Gemma extraction. Unapproved websites are logged and discarded.
 - Approved source probing also filters by category before the balanced new/used/official rotation. UK country and evidence-scope rules remain unchanged.
 
 ### Database deployment and verification

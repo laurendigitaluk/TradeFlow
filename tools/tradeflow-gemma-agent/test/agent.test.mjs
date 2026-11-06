@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { sourceKey, validate, ollamaOptions, isEligibleProductPage, hasVisibleUkPrice, extractBatch } from '../src/agent.mjs';
+import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
@@ -104,4 +105,28 @@ test('one Ollama request extracts multiple eligible pages in one batch', async (
   assert.equal(result[1].price_currency, 'GBP');
   assert.equal(result[1].source_url, pages[1].url);
  } finally { globalThis.fetch = original; }
+});
+
+test('paired new and used tasks collapse to one combined product research task', () => {
+ const tasks = [
+  {category_slug:'3d-printers-equipment',branch_slug:'3d-printers',manufacturer:'Creality',model:'K1',package_key:'standard',package_name:'Standard Printer',research_type:'uk_new',search_query:'Creality K1 new UK'},
+  {category_slug:'3d-printers-equipment',branch_slug:'3d-printers',manufacturer:'Creality',model:'K1',package_key:'standard',package_name:'Standard Printer',research_type:'uk_used',search_query:'Creality K1 used UK'}
+ ];
+ const combined=combineProductResearchTasks(tasks);
+ assert.equal(combined.length,1);
+ assert.equal(combined[0].research_type,'uk_both');
+ assert.match(combined[0].search_query,/new used price GBP/);
+});
+test('different package variants remain separate research tasks', () => {
+ const tasks = [
+  {category_slug:'3d-printers-equipment',manufacturer:'Creality',model:'K1',package_key:'standard',package_name:'Standard Printer'},
+  {category_slug:'3d-printers-equipment',manufacturer:'Creality',model:'K1',package_key:'combo',package_name:'Combo Bundle'}
+ ];
+ assert.equal(combineProductResearchTasks(tasks).length,2);
+});
+test('combined extraction accepts both explicit UK-new and UK-used classifications', () => {
+ const newEvidence={...evidence,evidence_type:'uk_new',item_condition:'New'};
+ const usedEvidence={...evidence,evidence_type:'uk_used',item_condition:'Used - good',observed_price:249,source_url:'https://retailer.co.uk/item/k1'};
+ assert.equal(validate(newEvidence,{...task,research_type:'uk_both'},'Creality K1 new £299.00').valid,true);
+ assert.equal(validate(usedEvidence,{...task,research_type:'uk_both'},'Creality K1 used £249.00').valid,true);
 });

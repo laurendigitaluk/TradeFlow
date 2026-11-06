@@ -1,4 +1,5 @@
 import { readFile } from 'node:fs/promises';
+import { combineProductResearchTasks } from './task-groups.mjs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask } from './agent.mjs';
@@ -24,7 +25,7 @@ for (const line of envText.split(/\r?\n/)) {
 const roster = JSON.parse(await readFile(resolve(root, 'tasks/agent-roster.json'), 'utf8'));
 const rosterByKey = new Map(roster.map(item => [item.agent_key, item]));
 const input = JSON.parse(await readFile(resolve(process.cwd(), taskPath), 'utf8'));
-const tasks = Array.isArray(input) ? input : [input];
+const tasks = combineProductResearchTasks(Array.isArray(input) ? input : [input]);
 const limit = Math.max(1, Math.min(4, Number(env.WORKER_CONCURRENCY || 2)));
 const results = [];
 let next = 0;

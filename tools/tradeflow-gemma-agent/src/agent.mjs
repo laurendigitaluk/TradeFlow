@@ -55,6 +55,15 @@ async function page(url) {
   const html=await r.text(); const text=html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&pound;|&#163;/gi,' GBP ').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
   return {url:final.toString(),text:text.slice(0,10000)};
 }
+export function ollamaOptions(env = {}) {
+  const configuredGpuLayers = env.OLLAMA_NUM_GPU;
+  const num_gpu = configuredGpuLayers === undefined || configuredGpuLayers === ''
+    ? 0
+    : Number(configuredGpuLayers);
+  if (!Number.isInteger(num_gpu) || num_gpu < 0) throw new Error('OLLAMA_NUM_GPU must be a non-negative integer; use 0 for CPU-only inference');
+  return { temperature: 0, num_ctx: 4096, num_predict: 256, num_gpu };
+}
+
 let ollamaExtractionQueue = Promise.resolve();
 
 async function extract(task, source, text, env) {
@@ -70,7 +79,7 @@ async function extract(task, source, text, env) {
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({
           model,stream:false,format:'json',keep_alive:'10m',
-          options:{temperature:0,num_ctx:4096,num_predict:256},
+          options:ollamaOptions(env),
           messages:[{role:'user',content:prompt}]
         }),
         signal:AbortSignal.timeout(timeoutMs)

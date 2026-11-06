@@ -115,3 +115,14 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Implemented exact-model matching to reject K1 Max/Plus/Pro/Ultra/Combo/SE/V2 and series/upgrade/accessory/kit/CFS listings. Filter now runs on discovered URLs before fetch and again on fetched page title/final URL before GBP price extraction.
 - Added regression tests for K1 Max, K1C, K1 Combo, CFS accessory and genuine base K1. CI run 42250634337 passed. PR #259 merged into feature branch at `1891b02a67843baac6b48d8fb8bb5846e9101f43`.
 - One local update and dry-run remains. No production deployment or catalogue/evidence writes.
+
+
+## Direct product-page fallback and latest controlled run (6 November 2026)
+
+- The latest Research PC run completed its updater and test suite successfully: 38/38 tests passed. It still produced zero accepted candidates because source routes were blocked, empty, or returned no direct model page; Gemma was not called and no TEST/LIVE queue, catalogue or evidence writes occurred.
+- The source probe had been relying on search/collection routes. A known official Creality K1 direct product URL is now supported as an approved-source route: `https://store.creality.com/uk/products/k1-speedy-3d-printer`.
+- The TEST and LIVE `platform_research_sources` row for Creality now uses that direct URL. Read-back confirms the row is enabled and the same in both environments.
+- The official page currently advertises £299 but is marked Sold Out. It may support price observation only if the local agent fetches the page and independently validates visible GBP and exact K1 identity; it must not be described as in-stock availability.
+- Added direct approved product-page discovery to the agent and a regression test. PR #260 passed GitHub Actions run 42251672462 (success) and merged into the feature branch as 230e6fda6390981b55939b40c0a26ad8496010ea.
+- This does not prove end-to-end source access on the Research PC. The next single controlled local dry-run must confirm approved-source direct page fetch, eligible URL count, fetched price-bearing pages, Gemma calls and accepted candidates. Keep dry-run; do not enqueue/import or deploy.
+- Architecture direction: use one universal research engine, reusable category profiles and manufacturer/retailer source metadata. Do not create product-by-product rules. Category profiles should describe identity dimensions (for example storage/RAM, bundles, lens kits, console revisions or printer combos) and generic exclusion terms; all categories retain the same UK/GBP/direct-page/evidence validation gates.

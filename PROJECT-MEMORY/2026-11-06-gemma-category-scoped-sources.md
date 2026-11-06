@@ -117,3 +117,5 @@ This supersedes the earlier pending-rerun note. PR #261 remains open and unmerge
 The latest TEST telemetry check shows the 3D-printer agent is idle with its last heartbeat at 16:18:17 UTC (23 cumulative tasks, 3 cumulative candidates, 0 evidence queued). That last K1 task completed with 0 evidence candidates; no page contained a visible GBP price and Gemma was not called. This run predates category-scoped source routing.
 
 The TEST `platform_ai_agent_tasks` table and `platform_catalogue_research_queue` both currently contain zero rows. Drones, mobile phones and metal-detectors agent telemetry rows have no heartbeat yet. The Research PC has not demonstrated installation of the category-scoped branch. Do not assume the persistent worker is running or submit research tasks to it until the local package is updated and its heartbeat/test run is verified.
+
+The latest branch head contains documentation/checkpoint-only commits after run #158. The `src/agent.mjs` and `test/agent.test.mjs` GitHub blob SHAs are unchanged from the passing run, so the current code/test files remain exactly those that passed 41/41.

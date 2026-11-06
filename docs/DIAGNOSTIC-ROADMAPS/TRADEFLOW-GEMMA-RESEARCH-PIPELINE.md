@@ -139,3 +139,15 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 - Performance: still one Gemma call per product. The current issue is evidence quality, not extraction-call count.
 - Remaining known quality weakness: fetched HTML is flattened into text with navigation, footer and unrelated product listings retained. A visible GBP price and product identity terms can therefore occur in unrelated page chrome. Next improvement should isolate product-detail content (JSON-LD Product/Offer, product-specific main content, title/H1 and canonical URL) and require corroborating product identity and price within the same product block before Gemma extraction/acceptance. Do not weaken strict UK/GBP/new-used rules.
 - No catalogue products/evidence or review queue rows were written by the dry-run. No TEST/LIVE schema, RLS, RPC, Edge Function, tenant/customer/Stripe/domain data or deployment changed.
+
+
+## Search coverage and condition-classification corrections (6 November 2026)
+
+- PR #249 merged as `153426a6dfa1ef72869a46f26f8847f900c4389c`; CI run 42214714558 passed. Search coverage now runs complementary product searches across DuckDuckGo, Bing and Mojeek. Search-provider query coverage is separate from evidence eligibility: all candidate pages still pass direct product/listing URL filters and strict source/product/price/condition validation.
+- PR #250 merged as `94d3fbf84497622acb8e6afd7585db3076d7c04a`; CI run 42215131080 passed. `Opened - never used` is valid UK-used evidence, not UK-new. The exact condition phrase is preserved. Factory-new/sealed items remain UK-new; used, pre-owned, refurbished and opened-never-used items may be UK-used when explicitly stated.
+- The previous test that rejected opened-never-used UK-used evidence has been replaced with acceptance coverage plus a regression test preventing it being classified as UK-new.
+- Do not discard opened-never-used prices or relabel them as ordinary used condition. Keep their source condition text in the evidence record.
+- Current feature branch includes PR #249 and PR #250. PR #250 CI is green.
+- The Research PC's last controlled run still exposed a quality issue: navigation/storefront content can be mistaken for a product detail page. The next substantive engineering task is product-content extraction and corroboration (Product/Offer JSON-LD, canonical URL, title/H1 and product-specific main content), not another search-rule tweak.
+- The most recent local Research PC dry-run showed 8 search results, 2 eligible URLs, 1 fetched price-bearing page, 1 Gemma call, and 0 candidates after the content-extraction change; do not infer that this is resolved without a verified direct product detail candidate.
+- No catalogue/evidence imports, review queue inserts, schema/RLS/RPC/Edge Function changes, TEST/LIVE tenant/customer/payment/domain changes, secrets, or deployments were made by PRs #249 or #250.

@@ -59,10 +59,31 @@ Push-Location $AgentRoot
 try {
     Write-Host "Checking local SearXNG search service..."
     $SearchMatch = [regex]::Match($EnvText, "(?m)^\s*SEARXNG_BASE_URL\s*=\s*(\S+)")
-    $SearchUrl = if ($SearchMatch.Success) { $SearchMatch.Groups[1].Value.Trim('"').Trim("'") } else { "http://127.0.0.1:8080" }
-    try { $SearchUri = [uri]$SearchUrl; $SearchCheck = Invoke-RestMethod -Uri ($SearchUri.GetLeftPart([System.UriPartial]::Authority) + "/search?q=tradeflow&format=json") -TimeoutSec 8 }
-    catch { throw "SearXNG is not responding at the configured local address. Start it with docker compose before running Gemma." }
-    if ($null -eq $SearchCheck.results) { throw "SearXNG responded but did not return JSON results. Check that JSON format is enabled." }
+    $ConfiguredSearchUrl = if ($SearchMatch.Success) { $SearchMatch.Groups[1].Value.Trim('"').Trim("'") } else { "http://127.0.0.1:8080" }
+
+    # Prefer the configured endpoint, but fall back to the known local Compose binding.
+    # This avoids a stale/incorrect .env URL blocking a healthy local SearXNG instance.
+    $SearchCandidates = @($ConfiguredSearchUrl, "http://127.0.0.1:8080") | Select-Object -Unique
+    $SearchCheck = $null
+    $SearchErrors = @()
+    foreach ($Candidate in $SearchCandidates) {
+        try {
+            $SearchUri = [uri]$Candidate
+            if ($SearchUri.Scheme -notin @("http", "https")) { throw "Search URL must use HTTP or HTTPS." }
+            $SearchEndpoint = $SearchUri.GetLeftPart([System.UriPartial]::Authority) + "/search?q=tradeflow&format=json"
+            $CandidateCheck = Invoke-RestMethod -Uri $SearchEndpoint -TimeoutSec 8
+            if ($null -eq $CandidateCheck.results) { throw "Endpoint did not return SearXNG JSON results." }
+            $SearchCheck = $CandidateCheck
+            Write-Host "SearXNG responding at $($SearchUri.GetLeftPart([System.UriPartial]::Authority))"
+            break
+        }
+        catch {
+            $SearchErrors += ($Candidate + ": " + $_.Exception.Message)
+        }
+    }
+    if ($null -eq $SearchCheck) {
+        throw ("SearXNG did not respond at the configured address or the local fallback. " + ($SearchErrors -join " | "))
+    }
 
     Write-Host "Running Gemma validation tests..."
     & npm test

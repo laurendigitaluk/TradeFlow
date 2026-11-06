@@ -76,3 +76,9 @@ No application-level memory/checkpoint tables were found in either Supabase proj
 - The current branch contains 35 test declarations in `test/agent.test.mjs` and 2 in `test/release-monitor.test.mjs`. The earlier Research PC run reported 38 tests passing. Treat this as a possible local/branch version difference and reconcile the installed package with the PR branch before treating the earlier 38-test result as validation of this change.
 - TEST `platform_ai_agent_tasks` and `platform_catalogue_research_queue` both currently contain zero rows. The 3D-printer agent telemetry is cumulative (23 tasks completed / 3 candidates found / 0 evidence queued); the latest K1 event at 16:18:17 UTC explicitly reports zero candidates, zero queued, and Gemma not called because no fetched product page showed a visible GBP price. This was before the new category-scope configuration and is not a post-change test.
 - The Research PC has not yet downloaded this branch. Do not claim a category-filtered end-to-end run until the PC runs the updated package, full tests pass, and a controlled dry-run demonstrates only allowed source domains are fetched.
+
+## Search query hardening — 6 November 2026
+
+The category scope is now applied at query-construction time as well as result filtering. `buildCategoryScopedSearchQuery()` appends `site:domain` operators for the allowed UK domains only, grouped with OR. If no source is configured for a category, the general web search is skipped (fail-closed). Returned result URLs are still checked against the same category + manufacturer allowlist before page fetch. Tests cover that a DJI/drone query includes DJI and universal marketplaces but excludes GAME, while a gaming query includes GAME and excludes DJI.
+
+This is a code-only enhancement; the already-applied TEST/LIVE source registry migration is unchanged. PR #261 remains open and unmerged. The new Node tests have not been executed by GitHub Actions or on the Research PC yet.

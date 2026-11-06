@@ -4416,3 +4416,12 @@ The corrected PR head completed the GitHub Actions workflow **TradeFlow Gemma ag
 - **41 tests passed, 0 failed**
 
 The earlier syntax-error run was superseded by the hostname-normalisation fix. The current PR #261 is still open and unmerged; GitHub currently reports `mergeable=false`. Do not force or bypass a merge. Resolve/refresh the PR mergeability state before merging into the previous fix branch. Research PC installation and an end-to-end category-filtered dry-run remain outstanding.
+
+## Latest PR-head verification — 6 November 2026
+
+The latest workflow run for the current PR head also passed:
+- GitHub Actions run #158, ID `42271722093`
+- Head commit `4b116df4e4cc75cb625e7e556332d80658a43de4`
+- **41 passed, 0 failed**
+
+This supersedes the earlier pending-rerun note. PR #261 remains open and unmerged; the connector still reports `mergeable=false`, so no merge has been attempted. The next operational gate is to install this verified branch on the Research PC and run the controlled category-filtered dry-run.

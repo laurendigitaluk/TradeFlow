@@ -9,6 +9,11 @@ export function validate(e, task, page) {
   try { u = new URL(e.source_url); } catch { errors.push('invalid source URL'); }
   if (u && (!['https:','http:'].includes(u.protocol) || !ukHost(u.hostname,u.pathname))) errors.push('source is not an eligible UK storefront');
   if (u && (/search|category|results|\/sch\//i.test(u.pathname) || ['q','query','_nkw'].some(k=>u.searchParams.has(k)))) errors.push('source must be a direct product/listing page');
+  if (u && /(^|\.)amazon\./i.test(u.hostname) &&
+      (/^\/s\/?$/i.test(u.pathname) || u.searchParams.has('k') ||
+       !/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/)[A-Z0-9]{10}(?:\/|$)/i.test(u.pathname))) {
+    errors.push('Amazon evidence must come from a direct product detail page, not search or category results');
+  }
   const allowedEvidenceTypes = task.research_type === 'uk_both' ? ['uk_new', 'uk_used'] : [task.research_type];
   if (!allowedEvidenceTypes.includes(e.evidence_type) || !['uk_new', 'uk_used'].includes(e.evidence_type)) errors.push('evidence type mismatch');
   if (String(e.price_currency).toUpperCase() !== 'GBP') errors.push('only GBP evidence is allowed');
@@ -148,6 +153,11 @@ export function isEligibleProductPage(url, title = '') {
   const host = u.hostname.toLowerCase();
   if (/forum|viewtopic|srpsearch|\/(collections?|categories?|search|results|pages?)\b|\/shop\//i.test(path)) return false;
   if (['q', 'query', '_nkw', 'search'].some(key => u.searchParams.has(key))) return false;
+  // Amazon search/category URLs can look like product slugs but are not offer pages.
+  if (/(^|\.)amazon\./i.test(host)) {
+    if (/^\/s\/?$/i.test(path) || u.searchParams.has('k')) return false;
+    if (!/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/)[A-Z0-9]{10}(?:\/|$)/i.test(path)) return false;
+  }
   if (/collection|category|search results|browse all/i.test(title)) return false;
   if (/facebook\.com/i.test(host)) return false;
   return true;

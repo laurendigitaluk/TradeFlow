@@ -66,6 +66,33 @@ test('search fans out complementary UK product queries across providers', async 
  } finally {globalThis.fetch=original;}
 });
 
+test('Google Web Search Service is used when its own TradeFlow credentials are configured', async () => {
+ const original=globalThis.fetch; const seen=[];
+ globalThis.fetch=async(url,options={})=>{
+  seen.push({url:String(url),headers:options.headers||{}});
+  if(String(url).includes('websearchservice.googleapis.com')) return new Response(JSON.stringify({searchResults:[{title:'Creality K1 UK printer',displayUrl:'https://retailer.co.uk/products/k1',snippet:'£299.00'}]}),{status:200,headers:{'content-type':'application/json'}});
+  throw new Error('unexpected provider');
+ };
+ try {
+  const results=await searchWebResults('Creality K1',{GOOGLE_SEARCH_API_KEY:'test-key',GOOGLE_WEB_SEARCH_CLIENT_ID:'test-client',GOOGLE_SEARCH_USER_IP:'192.0.2.10',SEARCH_RESULTS_PER_TASK:'5'});
+  assert.ok(seen.some(item=>item.url.includes('websearchservice.googleapis.com')));
+  assert.ok(results.some(item=>item.provider==='google'&&item.url==='https://retailer.co.uk/products/k1'));
+ } finally {globalThis.fetch=original;}
+});
+test('Amazon UK exact-model discovery queries are included without accepting search URLs as evidence', async () => {
+ const original=globalThis.fetch; const seen=[];
+ globalThis.fetch=async(url)=>{
+  const target=String(url); seen.push(target);
+  if(target.includes('duckduckgo.com')) return new Response('<html></html>',{status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('bing.com')) return new Response('<html></html>',{status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('mojeek.com')) return new Response('<html></html>',{status:200,headers:{'content-type':'text/html'}});
+  throw new Error('unexpected provider');
+ };
+ try {
+  await searchWebResults('Creality K1',{});
+  assert.ok(seen.some(url=>decodeURIComponent(url).includes('site:amazon.co.uk/dp/')));
+ } finally {globalThis.fetch=original;}
+});
 test('search does not require a local SearXNG service', async () => {
  const original=globalThis.fetch;
  globalThis.fetch=async(url)=>{

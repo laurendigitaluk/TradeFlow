@@ -141,21 +141,39 @@ export async function searchWebResults(query, env = {}) {
     '"' + quoted + '" UK price GBP product page',
     '"' + quoted + '" UK buy new used price'
   ])];
-  const settled = await Promise.allSettled(queries.flatMap(term => [
-    searchDuckDuckGo(term),
-    searchBing(term),
-    searchMojeek(term)
-  ]));
+  // Keep provider results in separate lanes so the first provider cannot fill
+  // the entire result cap before Bing and Mojeek contribute any direct listings.
+  const providers = [
+    { name: 'duckduckgo', search: searchDuckDuckGo },
+    { name: 'bing', search: searchBing },
+    { name: 'mojeek', search: searchMojeek }
+  ];
+  const settled = await Promise.allSettled(queries.flatMap(term =>
+    providers.map(provider => provider.search(term).then(items =>
+      (items || []).map(item => ({ ...item, provider: provider.name }))
+    ))
+  ));
+  const lanes = providers.map(provider => ({
+    name: provider.name,
+    items: settled.flatMap(result => result.status === 'fulfilled' ? result.value : [])
+      .filter(item => item.provider === provider.name)
+  }));
   const merged = [], seen = new Set();
-  for (const result of settled) {
-    if (result.status !== 'fulfilled') continue;
-    for (const item of result.value || []) {
-      if (!item.url || seen.has(item.url)) continue;
+  const limit = Math.max(1, Math.min(30, Number(env.SEARCH_RESULTS_PER_TASK) || 18));
+  // Round-robin providers; skip duplicate URLs while retaining provider diversity.
+  for (let index = 0; merged.length < limit; index++) {
+    let added = false;
+    for (const lane of lanes) {
+      const item = lane.items[index];
+      if (!item || !item.url || seen.has(item.url)) continue;
       seen.add(item.url);
       merged.push(item);
+      added = true;
+      if (merged.length >= limit) break;
     }
+    if (!added && lanes.every(lane => index >= lane.items.length)) break;
   }
-  return merged.slice(0, Math.max(1, Number(env.SEARCH_RESULTS_PER_TASK) || 8));
+  return merged;
 }
 const search=searchWebResults;
 export function isEligibleProductPage(url, title = '') {

@@ -4217,3 +4217,10 @@ All evidence controls remain in force: UK storefront, GBP price visible on the s
 This corrects and supersedes the SearXNG setup/preflight notes earlier in this manual. The persistent TradeFlow Windows task-worker service is a separate deployment step and has not yet been installed or verified on the Research PC.
 
 Code commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0e63c54e3abce537160c`, `27a3e964022400f0af903b286de66d9fb4a53517`, `34a127fb26e908974c3e891331dcfd01795e2728`, `6987a2c782e4ea227dde131bb92e476f0e3f21ff`.
+
+
+### Research PC visibility update — 6 November 2026
+
+The one-off launcher previously appeared idle because `src/index.mjs` only reported progress through agent telemetry and printed the final JSON after all tasks completed. The research path now emits PowerShell progress messages for search start/completion, source-page retrieval, Ollama extraction, rejected evidence, source errors, and TEST/LIVE product resolution. This is diagnostic visibility only: it does not change dry-run/enqueue permissions or allow direct catalogue/evidence writes.
+
+The owner confirmed all 12 existing Node tests pass locally after correcting escaped closing-tag regexes in the local `src/agent.mjs`. That exact local repair must be kept aligned with the branch. The latest progress-output commits are `a8c2b613005cb1262bcbe6313f1cc1208cbdb1a8` and `056fc59ae4456a345e706a2c4f27b99cd34a7f5f`. The latest progress changes have not yet been downloaded or tested on the Research PC. Do not claim the end-to-end research run is verified until the updated files are installed and a dry-run completes.

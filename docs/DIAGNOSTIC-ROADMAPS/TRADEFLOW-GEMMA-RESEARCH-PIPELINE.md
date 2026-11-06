@@ -252,3 +252,12 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - The approved-source probe now recognises a model-matching collection URL itself as a discovery result and sends it to the standard bounded collection expansion stage. Direct product links are then fetched individually; the collection page is never evidence.
 - Added explicit progress diagnostics for registry errors, approved-source fetch errors, empty routes and successful matching URLs.
 - The live collection was independently checked: it contains a base K1 listing as well as K1 Max and K1C variants; the base K1 links to `/uk/products/k1-speedy-3d-printer`. Do not merge or claim success until local dry-run proves that route and exact-model filtering work.
+
+
+### Shopify collection cards rendered outside ordinary anchors (6 November 2026)
+
+- Research PC output confirms the Creality collection URL is now discovered and fetched, but the collection yielded 0 matching individual product links. The page is visibly populated with three product cards (New K1 Max, Carbon Fiber Ready K1C 2025, Flash Sale K1), so the failure is specifically in the HTML anchor extraction path.
+- Added a Shopify collection JSON fallback: `/uk/collections/{handle}/products.json?limit=50` when HTML link parsing returns zero exact-model products.
+- The JSON parser selects by exact model title/handle, excludes sibling variants (K1 Max, K1C, etc.), builds direct `/uk/products/{handle}` URLs, and sends those URLs through the normal direct-page fetch and GBP price checks. JSON metadata and collection pages are not evidence.
+- Added a unit test proving Flash Sale K1 is selected while K1 Max and K1C are excluded.
+- Code commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`. The local PC still needs this code and one controlled dry-run.

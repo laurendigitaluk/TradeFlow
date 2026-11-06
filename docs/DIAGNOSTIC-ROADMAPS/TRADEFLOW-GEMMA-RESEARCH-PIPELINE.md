@@ -261,3 +261,40 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - The JSON parser selects by exact model title/handle, excludes sibling variants (K1 Max, K1C, etc.), builds direct `/uk/products/{handle}` URLs, and sends those URLs through the normal direct-page fetch and GBP price checks. JSON metadata and collection pages are not evidence.
 - Added a unit test proving Flash Sale K1 is selected while K1 Max and K1C are excluded.
 - Code commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`. The local PC still needs this code and one controlled dry-run.
+
+ 
+---
+
+## Category-scoped source routing — 6 November 2026
+
+### Data flow update
+
+`runTask(task)` now:
+1. Loads enabled source rows from TEST `platform_research_sources`, including `category_slugs`.
+2. Requires exact task `category_slug` membership (or the reserved `*` wildcard).
+3. Applies the existing manufacturer-name check to `source_kind='manufacturer'`.
+4. Filters broad DuckDuckGo/Bing/Mojeek/optional Google result URLs to the same allowed UK source domains before page fetch.
+5. Probes only category-approved sources through the existing balanced UK-new / UK-used / official lanes.
+6. Continues through existing direct-page, visible GBP, exact product/variant and Gemma validation.
+
+### Database object
+
+- `public.platform_research_sources.category_slugs text[] NOT NULL DEFAULT '{}'`
+- GIN index: `platform_research_sources_category_slugs_gin`
+- Migration: `20261106170000_add_category_scopes_to_platform_research_sources.sql`
+- Applied to TEST and LIVE; 51 sources in each, 47 with explicit category scope, two wildcard sources. Ordered registry hash is identical.
+
+### Category routing checks
+
+- 3D printers: 3 category-specific sources.
+- Drones: 6.
+- Gaming consoles/accessories: 12.
+- Mobile phones: 11.
+- Metal detectors: 6.
+- SQL negative checks: zero gaming-only sites mapped to drones; zero drone-only sites mapped to gaming.
+- Unmapped sources fail closed. US source records remain excluded by the GB country gate.
+
+### Known issue / verification boundary
+
+The active `laptops` category exists in TEST but is absent in LIVE. Do not research/import laptop products until the LIVE category master is aligned. Code/unit tests are committed on `fix/gemma-category-scoped-sources-20261106`; CI and Research PC dry-run remain outstanding. No catalogue/evidence/queue writes or deployment.
+

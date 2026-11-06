@@ -65,3 +65,14 @@ Next: pull the branch after checking local uncommitted changes; run npm test; pe
 - The latest controlled run remains blocked before Gemma: 8 search results, 1 eligible URL, 0 fetched price-bearing pages, 0 Gemma calls, 0 accepted candidates. The sole eligible eBay listing returned HTTP 403.
 - Next technical priority is source discovery/fetch resilience and genuine product-page coverage. Do not treat zero candidates as a model extraction failure. Do not enqueue or import until a direct product page and evidence are independently verified.
 - No TEST/LIVE catalogue or evidence writes, schema/RLS/RPC/Edge Function changes, tenant/customer/Stripe/domain changes, secrets or deployments were made.
+
+
+## Balanced search coverage correction — 6 November 2026
+
+- PR #252 merged to the Gemma feature branch as `360fa12755e043fac8de400fc732d11fcbb4ffed`.
+- GitHub Actions run #54 (`42216410881`) passed; the test job completed successfully. Push run #53 (`42216389814`) also passed.
+- Root cause from the Research PC dry-run: results were flattened in provider order, so DuckDuckGo could consume the entire eight-result cap before Bing and Mojeek contributed. Only one of eight results was an eligible direct listing, and that eBay page returned HTTP 403; Gemma was never called.
+- Search now maintains independent DuckDuckGo, Bing and Mojeek lanes and merges them round-robin. Default search cap increased from 8 to 18; `SEARCH_RESULTS_PER_TASK` remains configurable and is clamped to 1–30.
+- Regression test verifies a six-result cap receives two results from each provider. Existing direct-page URL filters, fetch validation, UK GBP, exact model, condition and availability checks remain unchanged.
+- This improves discovery breadth but does not guarantee that any provider will return accessible product pages. The next Research PC dry-run must report provider mix, eligible URLs, HTTP failures, fetched price-bearing pages and Gemma calls. Do not enqueue/import until a genuine product detail page and all evidence fields are verified.
+- No TEST/LIVE catalogue/evidence writes, database/schema/RLS/RPC/Edge Function changes, tenant/customer/payment/domain data, credentials or deployments were changed.

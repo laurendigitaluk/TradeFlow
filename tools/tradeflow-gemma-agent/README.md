@@ -87,3 +87,8 @@ Status: source and documentation updated on the feature branch; Research PC down
 The supported unattended mode uses the TEST-only `platform_ai_agent_tasks` control-plane queue. ChatGPT/owner control inserts task instructions into TEST; the Research PC worker claims one task every 15 seconds, renews its 10-minute lease every 45 seconds, runs the existing UK evidence research pipeline and stages candidates for owner review. It reports task lifecycle and specialist progress to both TEST and LIVE Agent Control Centres. The task worker does not write master products or evidence directly.
 
 One-time Windows setup: download `src/task-worker.mjs`, `Start-TradeFlow-Gemma-Service.ps1` and `Install-TradeFlow-Gemma-Service.ps1` from the same feature branch into this folder, then run `Install-TradeFlow-Gemma-Service.ps1`. This registers a per-user Windows logon scheduled task and starts the auto-restarting supervisor. The supervisor uses this folder's `.env`; it does not read or change `C:\\GearCashOut-Config\\.env`. Logs are written to `logs/gemma-supervisor.log`. The service has not yet been installed on the Research PC.
+
+
+## Gemma Research PC low-VRAM fallback — 6 November 2026
+
+The Research PC has approximately 80 GB system RAM and an NVIDIA GeForce GTX 1650 with approximately 4 GB VRAM. Ollama reported HTTP 500 `model runner has unexpectedly stopped` while extracting with `gemma3:4b` (approximately 3.5 GB). The agent now defaults to CPU-only inference via `num_gpu: 0` to avoid exhausting GPU memory. Keep `OLLAMA_NUM_GPU=0` in the local `.env` until CPU inference is confirmed stable. A non-negative integer override is available for later controlled GPU testing. The 180-second extraction timeout and evidence-validation rules remain unchanged.

@@ -1,10 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
 import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
+test('Shopify collection JSON discovers exact K1 product and excludes sibling variants', () => {
+ const payload={products:[
+  {title:'New K1 Max',handle:'new-k1-max-3d-printer'},
+  {title:'Carbon Fiber Ready K1C 2025',handle:'k1c-2025'},
+  {title:'Flash Sale K1',handle:'k1-speedy-3d-printer'}
+ ]};
+ const rows=extractShopifyCollectionProducts(payload,'https://store.creality.com/uk/collections/k1-series-3d-printer',{manufacturer:'Creality',model:'K1'},12);
+ assert.equal(rows.length,1);
+ assert.equal(rows[0].title,'Flash Sale K1');
+ assert.equal(rows[0].url,'https://store.creality.com/uk/products/k1-speedy-3d-printer');
+});
+
 test('accepts visible UK GBP evidence',()=>assert.equal(validate(evidence,task,'Creality K1 Speedy 3D Printer £299.00').valid,true));
 test('rejects non-UK sources',()=>assert.equal(validate({...evidence,source_url:'https://example.com/product'},task,'Creality K1 Speedy 3D Printer £299.00').valid,false));
 test('accepts opened-never-used as UK used and preserves exact condition',()=>{

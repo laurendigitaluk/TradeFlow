@@ -1,10 +1,12 @@
 # TradeFlow Gemma Local Research Agent — foundation 0.1
 
-TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `gemma3:4b` and 18 search results per product; set `OLLAMA_MODEL` to the Gemma tag actually installed on the Research PC. Existing local `.env` files are not overwritten by updates: change `SEARCH_RESULTS_PER_TASK=8` to `SEARCH_RESULTS_PER_TASK=18` manually if the older setting is present. It does not import or execute the retired GearCashOut agent.
+TradeFlow-first local research agent for Ollama, deliberately aligned with the proven GearCashOut research architecture. The sample `.env.example` defaults to `gemma3:4b` and 18 search results per product; the installed Research PC model is selected through the separate TradeFlow `.env`. Existing local `.env` files are never overwritten by code updates.
 
 - Coordinator with bounded worker concurrency.
 - One product-level research task combines UK-new and UK-used discovery; each source is classified separately during one Gemma extraction pass.
-- GearCashOut-compatible independent DuckDuckGo, Bing and Mojeek search discovery; Gemma extracts only visible facts from fetched direct pages. No local Docker/SearXNG service or paid search API is required.
+- Discovery uses optional configured Google Web Search Service / Google Programmable Search, plus independent DuckDuckGo, Bing and Mojeek providers. Exact-model Amazon UK discovery is included; Amazon search pages are never accepted as evidence.
+- The agent reads the approved TradeFlow `platform_research_sources` registry from TEST, rotating through UK new-retail, used-market and official-manufacturer sources in balanced groups. TEST and LIVE hold the same curated public source directory.
+- Gemma extracts only visible facts from fetched direct pages. No Docker or SearXNG service is required.
 - Rejects non-UK sources, non-GBP prices, wrong evidence type, unsupported prices, mismatched product identity and search/category pages.
 - Research itself does not look up TEST/LIVE catalogue products; verified candidates are handed to ChatGPT for review.
 - Checks `(source_name, source_record_key)` before insertion.
@@ -16,7 +18,7 @@ TradeFlow-first local research agent for Ollama. The sample `.env` defaults to `
 1. Keep this folder separate from the retired GearCashOut agent. TradeFlow interactive runs, Node entry point and background worker all read this folder's `.env` by default. The old `C:\\GearCashOut-Config\\.env` is not read, copied, moved or overwritten.
 2. Create the TradeFlow `.env` from `.env.example` once, then populate the separate TEST and LIVE URL/key settings and the installed `OLLAMA_MODEL` tag. Never paste keys into chat or commit `.env`.
 3. Confirm `ollama list` contains the configured model tag and Ollama responds at `http://127.0.0.1:11434`.
-4. Run `npm test` and then `Start-TradeFlow-Gemma.ps1` for a dry run. Web discovery uses independent public search providers; Docker and SearXNG are not required. Only after a successful dry run should `-Enqueue` be used to stage candidates for owner review. Importing remains a separate owner-approved step.
+4. Run `npm test` and then `Start-TradeFlow-Gemma.ps1` for a dry run. Google is optional and requires TradeFlow-owned settings; public providers continue if Google is not configured. Docker and SearXNG are not required. Keep dry-run until ChatGPT has independently verified candidate URLs, model identity, price and condition. Enqueue and import remain separate owner-approved steps.
 
 ## Foundation 0.1 limits
 
@@ -157,7 +159,7 @@ Merged-branch verification: GitHub Actions run `42143345106` completed successfu
 
 TradeFlow discovery now follows the proven GearCashOut provider pattern: optional official Google Web Search Service / Google Programmable Search, with DuckDuckGo, Bing and Mojeek as independent fallbacks. Exact-model Amazon UK discovery queries are issued as a separate discovery lane; Amazon search pages remain discovery-only and must resolve to a direct ASIN product page before they can be fetched as evidence. Google settings belong only in the TradeFlow `.env`; the GearCashOut `.env` is never read or copied. The TradeFlow source-registry migration adds `platform_research_sources` as a separate approved-source list, read-only by the local agent from TEST. Source-page results still pass the existing strict direct-product, UK, GBP, exact-model, condition and availability checks. No Gemma extraction, queue handoff or importer rule is relaxed.
 
-Google requires TradeFlow-owned settings: `GOOGLE_SEARCH_API_KEY` plus either `GOOGLE_WEB_SEARCH_CLIENT_ID` and `GOOGLE_SEARCH_USER_IP`, or `GOOGLE_CSE_ID`. If those are not configured, Google is skipped and the independent public providers continue. The approved-source registry is introduced by `supabase/migrations/20261106210000_platform_research_sources.sql`; apply it to TEST and LIVE before adding approved source rows. The agent reads the TEST registry as the research control plane and does not write to it.
+Google requires TradeFlow-owned settings: `GOOGLE_SEARCH_API_KEY` plus either `GOOGLE_WEB_SEARCH_CLIENT_ID` and `GOOGLE_SEARCH_USER_IP`, or `GOOGLE_CSE_ID`. If those are not configured, Google is skipped and the independent public providers continue. The approved-source registry and its metadata-alignment migration have been applied to TEST and LIVE and seeded with the same curated 20-source public directory. The agent reads the TEST registry as the research control plane and does not write to it.
 
 
 ### Approved source registry operation

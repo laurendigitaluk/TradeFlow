@@ -229,7 +229,9 @@ function matchesTaskModel(title, url, task = {}) {
   if (!identity.includes(' ' + model + ' ')) return false;
   const afterModel = identity.split(' ' + model + ' ')[1] || '';
   const firstSuffix = afterModel.trim().split(' ')[0];
-  return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2'].includes(firstSuffix);
+  // Do not let a base-model token inside a larger product family,
+  // upgrade kit or accessory qualify as the requested standalone printer.
+  return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2', 'series', 'upgrade', 'accessory', 'kit', 'cfs'].includes(firstSuffix);
 }
 
 export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
@@ -642,7 +644,13 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       await onProgress?.({ stage: 'collection_error', source: source.url, message: 'Collection discovery skipped: ' + error.message });
     }
   }
-  const directPages = [...new Map([...eligible, ...collectionProducts].map(item => [item.url, item])).values()];
+  const directPages = [...new Map([...eligible, ...collectionProducts]
+    .filter(item => {
+      const matches = matchesTaskModel(item.title, item.url, task);
+      if (!matches) onProgress?.({ stage: 'model_variant_skipped', source: item.url, message: 'Skipped unrelated model variant or accessory; requested exact model is ' + task.manufacturer + ' ' + task.model });
+      return matches;
+    })
+    .map(item => [item.url, item])).values()];
   const fetched = [];
   for (let offset = 0; offset < directPages.length; offset += 4) {
     const batch = directPages.slice(offset, offset + 4);
@@ -654,6 +662,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       });
       try {
         const result = await page(source.url, task);
+        if (!matchesTaskModel(result.title, result.url, task)) {
+          await onProgress?.({ stage: 'model_variant_skipped', source: result.url, message: 'Fetched page is not the requested exact model; rejected before price extraction' });
+          return null;
+        }
         if (!hasVisibleUkPrice(result.text)) {
           await onProgress?.({ stage: 'price_prefilter_skipped', source: result.url, message: 'Skipped before Gemma: no visible GBP price on page' });
           return null;

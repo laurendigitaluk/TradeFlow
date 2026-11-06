@@ -4204,3 +4204,16 @@ A direct request to the known local endpoint `http://127.0.0.1:8080/search?q=tra
 ## SearXNG preflight warm-up timeout adjustment — 6 November 2026
 
 The Research PC returned one result from `http://127.0.0.1:8080/search?q=tradeflow&format=json` with a 10-second manual timeout, while the launcher fallback timed out with an 8-second limit. The launcher preflight now allows 25 seconds per attempt and retries once after a two-second pause before failing closed. This accommodates a slow/warming local search service without changing the search URL, `.env`, Docker configuration, Ollama settings, or catalogue data. Commit: `75cd7bcf00787b8ac477ac8503aebc288e7049c8`.
+
+
+## Research PC search audit — corrected GearCashOut-compatible behaviour — 6 November 2026
+
+When operating TradeFlow Gemma, do not require Docker Desktop or SearXNG. The original GearCashOut worker uses independent DuckDuckGo, Bing and Mojeek providers (with optional Google when configured). TradeFlow's original SearXNG-only implementation was a regression: a single local service timeout prevented all research from starting. The current feature-branch correction runs the three public providers independently, merges deduplicated results, and continues if any one provider is unavailable. The release monitor uses the same search implementation.
+
+The Windows launcher no longer performs a SearXNG/Docker preflight. `SEARXNG_BASE_URL` is obsolete and removed from `.env.example`; it should not be added to the TradeFlow `.env`. Leave `C:\\GearCashOut-Config\\.env` untouched. TradeFlow continues to use only its own local `.env`.
+
+All evidence controls remain in force: UK storefront, GBP price visible on the source page, exact model identity, evidence type/condition consistency, exact independent TEST/LIVE product resolution, and staging only to the TEST owner-review queue when explicitly requested. Default mode remains dry-run. Do not use `-Enqueue` until a dry-run has produced valid candidates and been reviewed. The owner-approved import remains a separate operation.
+
+This corrects and supersedes the SearXNG setup/preflight notes earlier in this manual. The persistent TradeFlow Windows task-worker service is a separate deployment step and has not yet been installed or verified on the Research PC.
+
+Code commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0e63c54e3abce537160c`, `27a3e964022400f0af903b286de66d9fb4a53517`, `34a127fb26e908974c3e891331dcfd01795e2728`, `6987a2c782e4ea227dde131bb92e476f0e3f21ff`.

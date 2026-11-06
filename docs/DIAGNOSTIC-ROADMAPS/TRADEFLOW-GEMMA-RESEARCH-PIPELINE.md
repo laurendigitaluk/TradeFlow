@@ -105,3 +105,6 @@ No schema, RLS, RPC, Edge Function, Worker, Stripe, tenant or customer changes a
 
 Pre-change branch: `checkpoint-gemma-research-pipeline-pre-batch-20261106`.
 Implementation branch: `fix/gemma-batched-extraction-20261106`.
+
+
+Merged-branch verification: GitHub Actions run `42143345106` completed successfully on merged commit `e31d974b0b513e1d5101fa6678d798ac1555a2df`. The remaining verification is the Research PC pull, dry-run timing and responsiveness check.

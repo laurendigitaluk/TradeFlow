@@ -485,6 +485,18 @@ export function isAllowedSourceHost(url, sources, task) {
   );
 }
 
+export function buildCategoryScopedSearchQuery(query, sources, task) {
+  const domains = [...new Set((sources || [])
+    .filter(source =>
+      String(source?.country_code || '').toUpperCase() === 'GB' &&
+      isApprovedSourceForTask(source, task)
+    )
+    .map(source => String(source?.domain || '').replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '').toLowerCase())
+    .filter(Boolean))].sort();
+  if (!domains.length) return null;
+  return String(query || '').trim() + ' (' + domains.map(domain => 'site:' + domain).join(' OR ') + ')';
+}
+
 async function loadApprovedResearchSources(env, onProgress) {
   try {
     const control = target('TEST', env);
@@ -626,7 +638,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     message: 'Searching UK-approved websites for ' + task.category_slug + ': ' + task.manufacturer + ' ' + task.model,
     total: categorySources.length
   });
-  const rawWebResults = await search(task.search_query, env);
+  const scopedSearchQuery = buildCategoryScopedSearchQuery(task.search_query, categorySources, task);
+  const rawWebResults = scopedSearchQuery ? await search(scopedSearchQuery, env) : [];
   const webResults = rawWebResults.filter(item => {
     const allowed = isAllowedSourceHost(item.url, categorySources, task);
     if (!allowed) onProgress?.({

@@ -4194,3 +4194,8 @@ The TradeFlow Gemma interactive launcher, Node research entry point, persistent 
 ## Research PC Gemma runtime: low-VRAM fallback — 6 November 2026
 
 When Ollama returns HTTP 500 `model runner has unexpectedly stopped` during extraction, check system memory and GPU VRAM before changing prompts or timeouts. The Research PC has about 80 GB system RAM and a GTX 1650 with about 4 GB VRAM; Gemma 3 4B was around 3.5 GB. TradeFlow's agent now defaults the Ollama chat option `num_gpu` to 0 (CPU-only inference). Keep `OLLAMA_NUM_GPU=0` in the local TradeFlow `.env` for the first stable run. Only consider a positive GPU-layer override after stable repeat runs and explicit VRAM monitoring. Do not weaken evidence validation or write catalogue/evidence rows to work around model runtime failures.
+
+
+## Research PC SearXNG preflight correction — 6 November 2026
+
+A direct request to the known local endpoint `http://127.0.0.1:8080/search?q=tradeflow&format=json` returned one result, but the Windows launcher continued to fail its preflight. The likely discrepancy was the `SEARXNG_BASE_URL` value in the local TradeFlow `.env`. The launcher has been corrected to try the configured endpoint first and then the known local Compose endpoint, without displaying or modifying `.env` and without accessing the old GearCashOut configuration. It requires a JSON response containing `results` and fails closed if neither endpoint works. Commit: `a142f71cc24f2ab36152f00f900ddeab1fb4ccf2`.

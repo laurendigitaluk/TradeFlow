@@ -148,3 +148,6 @@ Pre-change restore branch: `checkpoint-gemma-research-pipeline-pre-batch-2026110
 
 
 The GitHub Actions regression suite passed on the latest implementation commit `53ced5c47674a13e1f92d4f6ce4b4106af0ede52` (run `42143240473`, conclusion `success`). The Research PC benchmark and real dry-run remain outstanding.
+
+
+Merged-branch verification: GitHub Actions run `42143345106` completed successfully on merged commit `e31d974b0b513e1d5101fa6678d798ac1555a2df`. The remaining verification is the Research PC pull, dry-run timing and responsiveness check.

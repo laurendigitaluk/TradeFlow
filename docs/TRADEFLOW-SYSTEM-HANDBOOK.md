@@ -3172,3 +3172,49 @@ Key commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0e
 The one-off launcher previously appeared idle because `src/index.mjs` only reported progress through agent telemetry and printed the final JSON after all tasks completed. The research path now emits PowerShell progress messages for search start/completion, source-page retrieval, Ollama extraction, rejected evidence, source errors, and TEST/LIVE product resolution. This is diagnostic visibility only: it does not change dry-run/enqueue permissions or allow direct catalogue/evidence writes.
 
 The owner confirmed all 12 existing Node tests pass locally after correcting escaped closing-tag regexes in the local `src/agent.mjs`. That exact local repair must be kept aligned with the branch. The latest progress-output commits are `a8c2b613005cb1262bcbe6313f1cc1208cbdb1a8` and `056fc59ae4456a345e706a2c4f27b99cd34a7f5f`. The latest progress changes have not yet been downloaded or tested on the Research PC. Do not claim the end-to-end research run is verified until the updated files are installed and a dry-run completes.
+
+ 
+---
+
+# Category-scoped Gemma source selection — 6 November 2026
+
+TradeFlow Gemma's approved source registry now assigns websites to explicit catalogue categories. A website is not globally eligible merely because it is enabled. The source must have the current task's exact category slug in `platform_research_sources.category_slugs`; only Amazon UK and eBay UK are configured with the deliberate wildcard `*`. An empty array means the source is not eligible.
+
+The local worker reads the registry from TEST, adds `site:` restrictions for the category-approved domains to general search-engine queries, and uses the same category allowlist for approved source probing and result-host validation before any page fetch or Gemma extraction. Manufacturer sources also have to match the requested manufacturer. This avoids cross-category noise such as gaming retailers being fetched for drones or camera retailers being fetched for 3D printers.
+
+The additive migration `20261106170000_add_category_scopes_to_platform_research_sources.sql` was applied and independently verified in TEST and LIVE. Both source registries have 51 enabled rows, 47 scoped rows and two universal sources; their ordered registry hashes match. Category counts verified: 3D printers 3, drones 6, gaming 12, mobile phones 11 and metal detectors 6 (category-specific counts, excluding the two wildcard sources).
+
+Source assignments are configuration, not evidence. Every candidate must still be a direct UK product/listing page and pass exact manufacturer/model/variant, visible GBP price, condition, availability and evidence-type validation. Research candidates still require ChatGPT/owner review; no direct catalogue or live-evidence writes are permitted from Gemma.
+
+A known separate data issue remains: the Laptops category is active in TEST but missing from LIVE. Do not run/import laptop research until the LIVE category master is reconciled. The code change is on the Gemma feature/fix branch and still requires CI plus a controlled Research PC dry-run; it is not a production application deployment.
+
+## CI diagnostic and correction — 6 November 2026
+
+The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
+
+Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.
+
+## Full GitHub Actions verification — 6 November 2026
+
+The corrected PR head completed the GitHub Actions workflow **TradeFlow Gemma agent tests** successfully:
+- Workflow run #156, ID `42271575330`
+- Head commit `a9cec7cd95ad8aee9098cd30656ec39f8c16dfec`
+- Node.js 24
+- **41 tests passed, 0 failed**
+
+The earlier syntax-error run was superseded by the hostname-normalisation fix. The current PR #261 is still open and unmerged; GitHub currently reports `mergeable=false`. Do not force or bypass a merge. Resolve/refresh the PR mergeability state before merging into the previous fix branch. Research PC installation and an end-to-end category-filtered dry-run remain outstanding.
+
+## Latest PR-head verification — 6 November 2026
+
+The latest workflow run for the current PR head also passed:
+- GitHub Actions run #158, ID `42271722093`
+- Head commit `4b116df4e4cc75cb625e7e556332d80658a43de4`
+- **41 passed, 0 failed**
+
+This supersedes the earlier pending-rerun note. PR #261 remains open and unmerged; the connector still reports `mergeable=false`, so no merge has been attempted. The next operational gate is to install this verified branch on the Research PC and run the controlled category-filtered dry-run.
+
+## Research PC / queue status — 6 November 2026
+
+The latest TEST telemetry check shows the 3D-printer agent is idle with its last heartbeat at 16:18:17 UTC (23 cumulative tasks, 3 cumulative candidates, 0 evidence queued). That last K1 task completed with 0 evidence candidates; no page contained a visible GBP price and Gemma was not called. This run predates category-scoped source routing.
+
+The TEST `platform_ai_agent_tasks` table and `platform_catalogue_research_queue` both currently contain zero rows. Drones, mobile phones and metal-detectors agent telemetry rows have no heartbeat yet. The Research PC has not demonstrated installation of the category-scoped branch. Do not assume the persistent worker is running or submit research tasks to it until the local package is updated and its heartbeat/test run is verified.

@@ -43,3 +43,13 @@ Next: pull the branch after checking local uncommitted changes; run npm test; pe
 - Performance: still one Gemma call per product. The current issue is evidence quality, not extraction-call count.
 - Remaining known quality weakness: fetched HTML is flattened into text with navigation, footer and unrelated product listings retained. A visible GBP price and product identity terms can therefore occur in unrelated page chrome. Next improvement should isolate product-detail content (JSON-LD Product/Offer, product-specific main content, title/H1 and canonical URL) and require corroborating product identity and price within the same product block before Gemma extraction/acceptance. Do not weaken strict UK/GBP/new-used rules.
 - No catalogue products/evidence or review queue rows were written by the dry-run. No TEST/LIVE schema, RLS, RPC, Edge Function, tenant/customer/Stripe/domain data or deployment changed.
+
+
+## Follow-on fixes — search coverage and condition handling (6 November 2026)
+
+- PR #249 merged: `153426a6dfa1ef72869a46f26f8847f900c4389c`. CI run 42214714558 passed. Complementary searches now run across DuckDuckGo, Bing and Mojeek, while evidence URL and validation gates remain strict.
+- PR #250 merged: `94d3fbf84497622acb8e6afd7585db3076d7c04a`. CI run 42215131080 passed.
+- Corrected condition rule: `Opened - never used` is eligible as UK-used evidence when explicitly stated; preserve the exact condition wording. It must not be classified as factory-new/sealed or rejected merely because it has never been used.
+- Regression tests now accept opened-never-used as UK used and reject it as UK new.
+- Research PC update and a new controlled dry-run remain outstanding. The last run still needs a valid direct product-detail candidate; no evidence should be imported until the source URL, product identity, price and condition are verified.
+- No TEST/LIVE catalogue/evidence rows, review queue rows, schema, RLS, RPC, Edge Functions, tenant/customer/Stripe/domain data, credentials or deployments were changed.

@@ -39,6 +39,24 @@ test('search continues when one independent provider is unavailable', async () =
  } finally {globalThis.fetch=original;}
 });
 
+test('search fans out complementary UK product queries across providers', async () => {
+ const original=globalThis.fetch;
+ const seen=[];
+ globalThis.fetch=async(url)=>{
+  const target=String(url); seen.push(target);
+  if(target.includes('duckduckgo.com')) return new Response('<html><a class="result__a" href="https://maker.co.uk/products/k1">Creality K1 product</a></html>',{status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('bing.com')) return new Response('<html><li class="b_algo"><h2><a href="https://retailer.co.uk/products/k1">Creality K1 printer</a></h2></li></html>',{status:200,headers:{'content-type':'text/html'}});
+  if(target.includes('mojeek.com')) return new Response('<html><a class="result__a" href="https://shop.co.uk/item/k1">Creality K1 listing</a></html>',{status:200,headers:{'content-type':'text/html'}});
+  throw new Error('unexpected provider');
+ };
+ try {
+  const results=await searchWebResults('Creality K1 Standard Printer',{SEARCH_RESULTS_PER_TASK:'8'});
+  assert.ok(seen.length >= 9);
+  assert.ok(seen.some(url=>decodeURIComponent(url).includes('"Creality K1 Standard Printer" UK price GBP product page')));
+  assert.equal(results.length,3);
+ } finally {globalThis.fetch=original;}
+});
+
 test('search does not require a local SearXNG service', async () => {
  const original=globalThis.fetch;
  globalThis.fetch=async(url)=>{

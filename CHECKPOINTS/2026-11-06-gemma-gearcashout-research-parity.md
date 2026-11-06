@@ -67,3 +67,13 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Replaced extraction with a short system-drive temporary directory and selective extraction of only `tools/tradeflow-gemma-agent` via .NET ZipArchive.
 - Backup is now verified before any rollback; rollback only runs when both the prior launcher and agent entry point are present in backup. Recovery mode can repopulate incomplete code when TradeFlow `.env` remains available.
 - Corrected updater latest commit: `3f90d3aa8789d759791c51e3c815edc64c5dca7c`. Local recovery/update and dry-run have not yet been confirmed. No research/import/deployment actions were performed.
+
+
+## Dry-run discovery-yield correction (6 November 2026)
+
+- First post-update Research PC dry-run completed safely but found only one irrelevant Mojeek newsletter page; eligible URLs 0, fetched pages 0, Gemma calls 0, accepted candidates 0. No queue/catalogue/evidence writes.
+- Identified source coverage gap: the 20-source registry was predominantly camera-focused and had no Creality official store entry.
+- Added Creality UK Official Store to TEST and LIVE registries identically (domain `store.creality.com`, GB, manufacturer, official, priority 1, search template `https://store.creality.com/uk/search?type=product&q={query}`). Registry parity is now 21 sources in each environment.
+- Approved-source probing now accepts exact-model collection/category hubs as discovery-only results alongside direct product pages. They are expanded by the bounded collection stage and never become evidence.
+- Added unit test for collection discovery eligibility vs direct evidence eligibility. Code commits: `6e9572391a1d70e91a06ecaad68495a13137b51d`, `2badce15eebf59e2ccc046cd257605f7d787df15`.
+- Local Research PC still needs this follow-up code update and one more controlled Creality K1 dry-run. No catalogue/evidence writes or production deployment.

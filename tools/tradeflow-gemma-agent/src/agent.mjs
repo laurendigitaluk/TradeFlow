@@ -35,17 +35,107 @@ async function json(url, options={}) {
   const r = await fetch(url,{...options,signal:AbortSignal.timeout(30000)}); const t=await r.text();
   if (!r.ok) throw new Error('HTTP '+r.status+': '+t.slice(0,300)); return JSON.parse(t);
 }
-export async function searchWebResults(query, env) {
-  const base=(env.SEARXNG_BASE_URL||'http://127.0.0.1:8080').replace(/\/$/,'');
-  let endpoint;
-  try { endpoint=new URL('/search',base); } catch { throw new Error('SEARXNG_BASE_URL is invalid'); }
-  if (!['http:','https:'].includes(endpoint.protocol) || endpoint.username || endpoint.password) throw new Error('SEARXNG_BASE_URL must be an HTTP(S) SearXNG endpoint without embedded credentials');
-  endpoint.searchParams.set('q',query+' UK GBP');
-  endpoint.searchParams.set('format','json');
-  endpoint.searchParams.set('language','en-GB');
-  endpoint.searchParams.set('categories','general');
-  const r=await json(endpoint,{headers:{Accept:'application/json'}});
-  return (r.results||[]).filter(x=>x.url).slice(0,Math.max(1,Number(env.SEARCH_RESULTS_PER_TASK)||8)).map(x=>({title:x.title||x.url,url:x.url,description:x.content||''}));
+function searchHost(url) {
+  try { return new URL(url).hostname.replace(/^www\\./, '').toLowerCase(); } catch { return ''; }
+}
+function stripSearchHtml(value) {
+  return String(value || '').replace(/<script[\\s\\S]*?<\\/script>/gi, ' ')
+    .replace(/<style[\\s\\S]*?<\\/style>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/\\s+/g, ' ').trim();
+}
+function decodeSearchRedirect(href) {
+  try {
+    if (href.startsWith('//')) href = 'https:' + href;
+    const u = new URL(href, 'https://duckduckgo.com');
+    if (u.searchParams.has('uddg')) return u.searchParams.get('uddg');
+    return u.href;
+  } catch { return null; }
+}
+function extractSearchLinks(html, baseUrl) {
+  const out = [], seen = new Set();
+  const patterns = [
+    /<a[^>]+class=["'][^"']*(?:result__a|result-link)[^"']*["'][^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi,
+    /<a[^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>/gi
+  ];
+  for (const re of patterns) {
+    let match;
+    while ((match = re.exec(html))) {
+      const url = decodeSearchRedirect(match[1]) || (() => { try { return new URL(match[1], baseUrl).href; } catch { return null; } })();
+      if (!url || !/^https?:\\/\\//i.test(url)) continue;
+      const host = searchHost(url);
+      if (!host || ['duckduckgo.com','bing.com','mojeek.com','google.com','google.co.uk'].some(d => host === d || host.endsWith('.' + d))) continue;
+      const key = url.split('#')[0];
+      const title = stripSearchHtml(match[2]);
+      if (seen.has(key) || title.length < 2) continue;
+      seen.add(key);
+      out.push({ title, url: key, description: '', provider: 'web' });
+      if (out.length >= 20) return out;
+    }
+    if (out.length) break;
+  }
+  return out;
+}
+async function fetchSearchHtml(url, timeoutMs = 7000) {
+  const response = await fetch(url, {
+    redirect: 'follow',
+    headers: {
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122 Safari/537.36',
+      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      'Accept-Language': 'en-GB,en;q=0.9'
+    },
+    signal: AbortSignal.timeout(timeoutMs)
+  });
+  if (!response.ok) throw new Error('HTTP ' + response.status);
+  const type = response.headers.get('content-type') || '';
+  if (!type.includes('text/html')) throw new Error('Not HTML: ' + type);
+  return { url: response.url, html: await response.text() };
+}
+async function searchDuckDuckGo(query) {
+  const url = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(query);
+  try { return extractSearchLinks((await fetchSearchHtml(url, 5000)).html, url); }
+  catch (error) { return []; }
+}
+async function searchBing(query) {
+  const url = 'https://www.bing.com/search?q=' + encodeURIComponent(query) + '&cc=gb&setlang=en-GB';
+  try {
+    const html = (await fetchSearchHtml(url)).html;
+    const out = [], seen = new Set();
+    const re = /<li[^>]+class=["'][^"']*b_algo[^"']*["'][^>]*>[\\s\\S]*?<h2[^>]*>[\\s\\S]*?<a[^>]+href=["']([^"']+)["'][^>]*>([\\s\\S]*?)<\\/a>[\\s\\S]*?<\\/li>/gi;
+    let match;
+    while ((match = re.exec(html))) {
+      const url = match[1], host = searchHost(url);
+      if (!host || ['bing.com','microsoft.com'].some(d => host === d || host.endsWith('.' + d)) || seen.has(url)) continue;
+      seen.add(url);
+      out.push({ title: stripSearchHtml(match[2]), url, description: '', provider: 'bing' });
+      if (out.length >= 20) break;
+    }
+    return out;
+  } catch (error) { return []; }
+}
+async function searchMojeek(query) {
+  const url = 'https://www.mojeek.com/search?q=' + encodeURIComponent(query);
+  try { return extractSearchLinks((await fetchSearchHtml(url)).html, url); }
+  catch (error) { return []; }
+}
+export async function searchWebResults(query, env = {}) {
+  // Match the established GearCashOut design: independent free providers run
+  // together. A timeout/block at one provider must never stop the others.
+  const settled = await Promise.allSettled([
+    searchDuckDuckGo(query + ' UK GBP'),
+    searchBing(query + ' UK GBP'),
+    searchMojeek(query + ' UK GBP')
+  ]);
+  const merged = [], seen = new Set();
+  for (const result of settled) {
+    if (result.status !== 'fulfilled') continue;
+    for (const item of result.value || []) {
+      if (!item.url || seen.has(item.url)) continue;
+      seen.add(item.url);
+      merged.push(item);
+    }
+  }
+  return merged.slice(0, Math.max(1, Number(env.SEARCH_RESULTS_PER_TASK) || 8));
 }
 const search=searchWebResults;
 async function page(url) {

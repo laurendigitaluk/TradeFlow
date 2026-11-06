@@ -206,3 +206,13 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Probe in groups of four, with short per-route timeouts. This avoids serially spending several minutes on twelve source domains.
 - Only UK sources may supply UK evidence; overseas rows remain excluded from this path.
 - Support per-source search URL templates using `{query}`, `{model}` and `{manufacturer}`. Verify templates with a direct source probe before enabling them.
+
+
+
+### Collection-page discovery (6 November 2026)
+
+- Search terms use manufacturer + model + UK retail intent; do not append internal package labels that weaken product discovery.
+- Classify eligible UK collection/category routes as discovery-only. Fetch a maximum of six per product task.
+- Extract up to twelve matching individual product URLs per collection, resolve relative URLs, deduplicate and enforce exact base-model matching while excluding obvious sibling variants.
+- Collection/category URLs must never pass the direct-page evidence gate. Only individual product/listing URLs continue through visible GBP price, Gemma extraction and strict validation.
+- CI for PR #256 passed: run 42223386531, 32/32 tests. This change is on the Gemma feature branch only; no production deployment or catalogue/evidence writes.

@@ -34,7 +34,6 @@ try {
     if (-not (Test-Path -LiteralPath $AgentRoot -PathType Container)) { throw "TradeFlow Gemma folder not found: $AgentRoot" }
     $AgentRoot = (Resolve-Path -LiteralPath $AgentRoot).Path
     if (-not (Test-Path -LiteralPath (Join-Path $AgentRoot ".env") -PathType Leaf)) { throw "TradeFlow .env is missing. Update stopped without changing files." }
-    if (-not (Test-Path -LiteralPath (Join-Path $AgentRoot "Start-TradeFlow-Gemma.ps1") -PathType Leaf)) { throw "This does not look like the TradeFlow Gemma agent folder. Update stopped." }
     $null = Get-Command node -ErrorAction Stop
     $NodeVersion = (& node --version).Trim()
     if ([int]($NodeVersion.TrimStart("v").Split(".")[0]) -lt 22) { throw "Node.js 22 or newer is required; found $NodeVersion." }
@@ -42,11 +41,11 @@ try {
     New-Item -ItemType Directory -Path $TempRoot, $StageRoot, $BackupRoot -Force | Out-Null
     # Take and verify a complete code backup BEFORE any archive extraction or replacement.
     Copy-AgentCode -Source $AgentRoot -Destination $BackupRoot
-    if (-not (Test-Path -LiteralPath (Join-Path $BackupRoot "Start-TradeFlow-Gemma.ps1") -PathType Leaf) -or
-        -not (Test-Path -LiteralPath (Join-Path $BackupRoot "src/agent.mjs") -PathType Leaf)) {
-        throw "Could not verify the local code backup. No local code has been changed."
+    $BackupComplete = (Test-Path -LiteralPath (Join-Path $BackupRoot "Start-TradeFlow-Gemma.ps1") -PathType Leaf) -and
+        (Test-Path -LiteralPath (Join-Path $BackupRoot "src/agent.mjs") -PathType Leaf)
+    if (-not $BackupComplete) {
+        Write-Warning "The previous code is incomplete; proceeding with a clean repair from GitHub. A rollback will not be attempted unless a complete backup exists."
     }
-    $BackupComplete = $true
 
     Write-Host "Downloading the approved TradeFlow feature branch..."
     Invoke-WebRequest -Uri $RepoArchive -OutFile $ZipPath

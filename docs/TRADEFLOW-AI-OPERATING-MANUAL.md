@@ -4332,3 +4332,59 @@ The immediate unfinished requirement is **category-specific source website selec
 After that, test the complete research pipeline, synchronise the verified files to the Research PC without touching the preserved GearCashOut secrets/configuration, run a controlled dry-run, and report the actual evidence candidates to ChatGPT. Do not enqueue or import until the candidates are reviewed and approved. Keep TEST and LIVE separate and verify any approved mirrored writes independently.
 
 Proceed with the work; do not stop at another audit or a plan. Update the manuals and structured project checkpoint after material changes.
+
+ 
+---
+
+## Category-scoped source registry implementation — 6 November 2026
+
+The previous global source list allowed unrelated retailers to be probed for any product category. The owner clarified that the approved website set must be category-specific (for example, no gaming-only retailer for a drone task and no drone specialist for gaming).
+
+### Implementation
+
+- Added `category_slugs text[] NOT NULL DEFAULT '{}'` to `public.platform_research_sources`.
+- Added a GIN index for category membership.
+- Added 24 UK source records relevant to gaming, mobile phones, 3D printers and metal detectors, and explicitly scoped all 27 existing records.
+- Empty category arrays are fail-closed. The wildcard `*` is reserved for Amazon UK and eBay UK as broad marketplaces/retailers.
+- Manufacturer sources require both an exact configured category and manufacturer-name match.
+- Generic search-engine result URLs are now filtered against the same category/domain allowlist before page fetch or Ollama/Gemma extraction. Unapproved websites are logged and discarded.
+- Approved source probing also filters by category before the balanced new/used/official rotation. UK country and evidence-scope rules remain unchanged.
+
+### Database deployment and verification
+
+Migration file: `supabase/migrations/20261106170000_add_category_scopes_to_platform_research_sources.sql`
+
+Migration name: `add_category_scopes_to_platform_research_sources_20261106`
+
+Applied independently to:
+- TEST `nnsshnfkjcflucjrftzi`
+- LIVE `gxsrajtqzdjvmceqcpgv`
+
+Both environments now have 51 enabled source records, 47 category-scoped records, and exactly two wildcard sources. A deterministic registry hash matches between TEST and LIVE.
+
+Verified category assignments in both:
+- 3D printers: 3 category-specific sources, plus the two universal sources.
+- Drones: 6 category-specific sources, plus the two universal sources.
+- Gaming consoles/accessories: 12 category-specific sources, plus the two universal sources.
+- Mobile phones: 11 category-specific sources, plus the two universal sources.
+- Metal detectors: 6 category-specific sources, plus the two universal sources.
+
+Cross-category SQL checks returned zero gaming-specific sites in the drone scope and zero drone-specific sites in the gaming scope. Camera retailers are scoped to camera/photo/video categories rather than globally. Four sources remain unmapped and therefore fail closed: Vinted UK and the three US camera retailers Adorama, B&H and KEH. US sources are additionally excluded by the UK-only country gate.
+
+### Important category master discrepancy
+
+The `laptops` category exists and is active in TEST but no matching category exists in LIVE. Retailer source scopes include laptops, but do not start laptop research/imports until the LIVE category master is reconciled and independently verified. This discrepancy predates and is not changed by the source-scope migration.
+
+### Code and verification status
+
+Implementation branch: `fix/gemma-category-scoped-sources-20261106`.
+
+- Core code now reads `category_slugs`, applies manufacturer + category checks, and filters generic search results by allowed host.
+- Added unit tests for category mismatch, missing category fail-closed, wildcard sources, manufacturer/category combined filtering, and web-result host filtering.
+- CI/full test result is still pending. The Research PC has not yet been updated to this branch and no new end-to-end dry-run has been run.
+- No catalogue product, market-evidence, review-queue, tenant, customer, order, payment, Stripe or Cloudflare Worker records were changed. No application deployment occurred.
+
+### Project memory/checkpoint location
+
+No application-level project-memory or checkpoint tables were found in either Supabase database; the only name matches were PostgreSQL system catalog tables. This is not evidence of an application memory bank. The authoritative continuation records for this change are the GitHub checkpoint and project-memory files added with this commit.
+

@@ -11,6 +11,16 @@ test('exact model matching rejects K1 Max and accessory listings', () => {
  assert.equal(matchesTaskModel('Creality K1 3D Printer','https://example.co.uk/products/creality-k1-3d-printer',task),true);
 });
 
+test('exact K1 matching rejects sibling models, combos and accessory pages', () => {
+ for (const [title,url] of [
+  ['Creality K1 Max AI Fast 3D Printer','https://store.creality.com/uk/products/k1-max-ai-fast-3d-printer'],
+  ['Creality K1C 2025 3D Printer','https://store.creality.com/uk/products/k1c-2025'],
+  ['Creality K1 Combo 3D Printer','https://example.co.uk/products/k1-combo'],
+  ['K1 Series CFS Upgrade Accessory Kit','https://www.crealityofficial.co.uk/products/k1-series-cfs-upgrade-accessory-kit']
+ ]) assert.equal(matchesTaskModel(title,url,task),false, title);
+ assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer','https://store.creality.com/uk/products/k1-speedy-3d-printer',task),true);
+});
+
 test('manufacturer source probes only run for the requested manufacturer', () => {
  const task={manufacturer:'Creality',model:'K1'};
  assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'Creality UK Official Store',domain:'store.creality.com'},task),true);

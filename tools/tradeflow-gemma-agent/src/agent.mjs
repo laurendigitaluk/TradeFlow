@@ -20,6 +20,7 @@ export function validate(e, task, page) {
        !/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/)[A-Z0-9]{10}(?:\/|$)/i.test(u.pathname))) {
     errors.push('Amazon evidence must come from a direct product detail page, not search or category results');
   }
+  if (!matchesExactProductPage({url:e.source_url,title:e.product_title || e.product_name || ''},task)) errors.push('source product model differs from requested exact model');
   const allowedEvidenceTypes = task.research_type === 'uk_both' ? ['uk_new', 'uk_used'] : [task.research_type];
   if (!allowedEvidenceTypes.includes(e.evidence_type) || !['uk_new', 'uk_used'].includes(e.evidence_type)) errors.push('evidence type mismatch');
   if (String(e.price_currency).toUpperCase() !== 'GBP') errors.push('only GBP evidence is allowed');
@@ -230,6 +231,33 @@ function matchesTaskModel(title, url, task = {}) {
   const afterModel = identity.split(' ' + model + ' ')[1] || '';
   const firstSuffix = afterModel.trim().split(' ')[0];
   return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2'].includes(firstSuffix);
+}
+
+export function matchesExactProductPage(source = {}, task = {}) {
+  const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  if (!model) return false;
+  let url;
+  try { url = new URL(source.url || source.source_url); } catch { return false; }
+  const path = decodeURIComponent(url.pathname).toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+  const title = String(source.title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+  const modelTokens = model.split(' ');
+  const suffixes = new Set(['max','plus','pro','ultra','combo','se','v2','c','accessory','upgrade','kit']);
+  const exact = value => {
+    const tokens = value.trim().split(/\s+/).filter(Boolean);
+    for (let i = 0; i <= tokens.length - modelTokens.length; i++) {
+      if (!modelTokens.every((token,j) => tokens[i+j] === token)) continue;
+      if (suffixes.has(tokens[i+modelTokens.length])) continue;
+      return true;
+    }
+    return false;
+  };
+  // A product URL naming a different model or an accessory must not be
+  // overridden by a broad search-result title or by incidental page text.
+  if (/(?:^|\s)(?:accessory|upgrade|spare|replacement)(?:\s|$)/.test(path)) return false;
+  if (exact(path)) return true;
+  // Only use the page title when the product URL is an opaque identifier.
+  if (/(?:^|\s)(?:products?|product|dp)(?:\s|$)/.test(path) && /(?:^|\s)(?:k1|max|plus|pro|ultra|combo)(?:\s|$)/.test(path)) return false;
+  return exact(title);
 }
 
 export function extractCollectionProductLinks(html, baseUrl, task = {}, limit = 12) {
@@ -601,7 +629,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const eligible = [];
   const collections = [];
   for (const source of searchResults) {
-    if (isEligibleProductPage(source.url, source.title)) eligible.push(source);
+    if (isEligibleProductPage(source.url, source.title)) {
+      if (matchesExactProductPage(source, task)) eligible.push(source);
+      else await onProgress?.({ stage: 'model_prefilter_skipped', source: source.url, message: 'Skipped wrong-model or accessory product URL: ' + source.url });
+    }
     else if (isCollectionDiscoveryPage(source.url, source.title)) collections.push(source);
     else await onProgress?.({
       stage: 'prefilter_skipped', source: source.url,
@@ -654,6 +685,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       });
       try {
         const result = await page(source.url, task);
+        if (!matchesExactProductPage({url:result.url,title:result.title || source.title},task)) {
+          await onProgress?.({ stage: 'model_prefilter_skipped', source:result.url, message:'Skipped fetched page: wrong model or accessory' });
+          return null;
+        }
         if (!hasVisibleUkPrice(result.text)) {
           await onProgress?.({ stage: 'price_prefilter_skipped', source: result.url, message: 'Skipped before Gemma: no visible GBP price on page' });
           return null;
@@ -677,6 +712,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       const byId = new Map(fetched.map(item => [item.source_id, item]));
       for (const evidence of extracted) {
         const source = byId.get(evidence.source_id);
+        if (!source) {
+          await onProgress?.({ stage:'validation_rejected', source:evidence.source_url || '', message:'Evidence source ID does not match any fetched page' });
+          continue;
+        }
         const validation = validate(evidence, task, source.text);
         if (validation.valid) candidates.push(evidence);
         else await onProgress?.({

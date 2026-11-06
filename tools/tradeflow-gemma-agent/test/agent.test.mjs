@@ -1,9 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
+import { sourceKey, validate, ollamaOptions, isEligibleProductPage, isCollectionDiscoveryPage, extractShopifyCollectionProducts, isRelevantApprovedSource, hasVisibleUkPrice, extractBatch, extractRelevantPageText } from '../src/agent.mjs';
 import { combineProductResearchTasks } from '../src/task-groups.mjs';
 const task={manufacturer:'Creality',model:'K1',research_type:'uk_new'};
 const evidence={evidence_type:'uk_new',source_name:'Creality UK',source_url:'https://store.creality.com/uk/products/k1',observed_price:299,price_currency:'GBP',item_condition:'New',sales_channel:'Creality UK',availability:'sold_out'};
+test('manufacturer source probes only run for the requested manufacturer', () => {
+ const task={manufacturer:'Creality',model:'K1'};
+ assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'Creality UK Official Store',domain:'store.creality.com'},task),true);
+ assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'DJI UK',domain:'dji.com'},task),false);
+ assert.equal(isRelevantApprovedSource({source_kind:'manufacturer',source_name:'Sony UK',domain:'sony.co.uk'},task),false);
+ assert.equal(isRelevantApprovedSource({source_kind:'retailer',source_name:'Jessops',domain:'jessops.com'},task),true);
+});
+
 test('source keys are deterministic',()=>assert.equal(sourceKey(evidence.source_url,'uk_new',299),sourceKey(evidence.source_url,'uk_new',299)));
 test('Shopify collection JSON discovers exact K1 product and excludes sibling variants', () => {
  const payload={products:[

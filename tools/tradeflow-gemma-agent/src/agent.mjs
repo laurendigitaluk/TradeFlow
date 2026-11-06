@@ -505,11 +505,26 @@ async function probeApprovedResearchSources(task, env, onProgress) {
     if (!source.domain) return [];
     const domain = String(source.domain).replace(/^https?:\/\//i, '').replace(/^www\./i, '').replace(/\/$/, '');
     const root = 'https://' + domain, q = encodeURIComponent(name);
-    const attempts = source.search_url_template
-      ? [String(source.search_url_template).replaceAll('{query}', q).replaceAll('{model}', encodeURIComponent(task.model || '')).replaceAll('{manufacturer}', encodeURIComponent(task.manufacturer || ''))]
-      : [root + '/search?q=' + q, root + '/search?query=' + q, root + '/search?s=' + q];
-    if (!source.search_url_template && domain.includes('ebay.')) attempts.unshift(root + '/sch/i.html?_nkw=' + q);
-    if (!source.search_url_template && domain.includes('vinted.')) attempts.unshift(root + '/catalog?search_text=' + q);
+    // Mirror the proven GearCashOut direct-source sweep: try the site's common
+    // search routes, not just one guessed endpoint. A configured route is tried
+    // first, followed by the generic fallbacks; failed patterns do not stop the
+    // remaining routes for this source.
+    const attempts = [];
+    if (source.search_url_template) {
+      attempts.push(String(source.search_url_template)
+        .replaceAll('{query}', q)
+        .replaceAll('{model}', encodeURIComponent(task.model || ''))
+        .replaceAll('{manufacturer}', encodeURIComponent(task.manufacturer || '')));
+    }
+    if (domain.includes('ebay.')) attempts.push(root + '/sch/i.html?_nkw=' + q);
+    if (domain.includes('vinted.')) attempts.push(root + '/catalog?search_text=' + q);
+    attempts.push(
+      root + '/search?q=' + q,
+      root + '/search?query=' + q,
+      root + '/search?s=' + q,
+      root + '/?s=' + q,
+      root + '/search?keyword=' + q
+    );
     for (const searchUrl of attempts.slice(0, 3)) {
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 8000);

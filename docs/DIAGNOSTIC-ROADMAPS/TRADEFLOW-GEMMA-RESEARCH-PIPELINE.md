@@ -262,6 +262,73 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - Added a unit test proving Flash Sale K1 is selected while K1 Max and K1C are excluded.
 - Code commits: `431d27b8d97f29acd0cbe4013e150eeb79b7db5b`, `de86a657187c1c949ea45d7daffdbed50ca924e8`. The local PC still needs this code and one controlled dry-run.
 
+ 
+---
+
+## Category-scoped source routing — 6 November 2026
+
+### Data flow update
+
+`runTask(task)` now:
+1. Loads enabled source rows from TEST `platform_research_sources`, including `category_slugs`.
+2. Requires exact task `category_slug` membership (or the reserved `*` wildcard).
+3. Applies the existing manufacturer-name check to `source_kind='manufacturer'`.
+4. Adds `site:` restrictions for the category-approved domains to DuckDuckGo/Bing/Mojeek/optional Google queries, then validates returned URLs against the same allowed UK source domains before page fetch.
+5. Probes only category-approved sources through the existing balanced UK-new / UK-used / official lanes.
+6. Continues through existing direct-page, visible GBP, exact product/variant and Gemma validation.
+
+### Database object
+
+- `public.platform_research_sources.category_slugs text[] NOT NULL DEFAULT '{}'`
+- GIN index: `platform_research_sources_category_slugs_gin`
+- Migration: `20261106170000_add_category_scopes_to_platform_research_sources.sql`
+- Applied to TEST and LIVE; 51 sources in each, 47 with explicit category scope, two wildcard sources. Ordered registry hash is identical.
+
+### Category routing checks
+
+- 3D printers: 3 category-specific sources.
+- Drones: 6.
+- Gaming consoles/accessories: 12.
+- Mobile phones: 11.
+- Metal detectors: 6.
+- SQL negative checks: zero gaming-only sites mapped to drones; zero drone-only sites mapped to gaming.
+- Unmapped sources fail closed. US source records remain excluded by the GB country gate.
+
+### Known issue / verification boundary
+
+The active `laptops` category exists in TEST but is absent in LIVE. Do not research/import laptop products until the LIVE category master is aligned. Code/unit tests are committed on `fix/gemma-category-scoped-sources-20261106`; CI and Research PC dry-run remain outstanding. No catalogue/evidence/queue writes or deployment.
+
+## CI diagnostic and correction — 6 November 2026
+
+The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
+
+Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.
+
+## Full GitHub Actions verification — 6 November 2026
+
+The corrected PR head completed the GitHub Actions workflow **TradeFlow Gemma agent tests** successfully:
+- Workflow run #156, ID `42271575330`
+- Head commit `a9cec7cd95ad8aee9098cd30656ec39f8c16dfec`
+- Node.js 24
+- **41 tests passed, 0 failed**
+
+The earlier syntax-error run was superseded by the hostname-normalisation fix. The current PR #261 is still open and unmerged; GitHub currently reports `mergeable=false`. Do not force or bypass a merge. Resolve/refresh the PR mergeability state before merging into the previous fix branch. Research PC installation and an end-to-end category-filtered dry-run remain outstanding.
+
+## Latest PR-head verification — 6 November 2026
+
+The latest workflow run for the current PR head also passed:
+- GitHub Actions run #158, ID `42271722093`
+- Head commit `4b116df4e4cc75cb625e7e556332d80658a43de4`
+- **41 passed, 0 failed**
+
+This supersedes the earlier pending-rerun note. PR #261 remains open and unmerged; the connector still reports `mergeable=false`, so no merge has been attempted. The next operational gate is to install this verified branch on the Research PC and run the controlled category-filtered dry-run.
+
+## Research PC / queue status — 6 November 2026
+
+The latest TEST telemetry check shows the 3D-printer agent is idle with its last heartbeat at 16:18:17 UTC (23 cumulative tasks, 3 cumulative candidates, 0 evidence queued). That last K1 task completed with 0 evidence candidates; no page contained a visible GBP price and Gemma was not called. This run predates category-scoped source routing.
+
+The TEST `platform_ai_agent_tasks` table and `platform_catalogue_research_queue` both currently contain zero rows. Drones, mobile phones and metal-detectors agent telemetry rows have no heartbeat yet. The Research PC has not demonstrated installation of the category-scoped branch. Do not assume the persistent worker is running or submit research tasks to it until the local package is updated and its heartbeat/test run is verified.
+
 
 ### Manufacturer routing guard and Shopify syntax repair (6 November 2026)
 

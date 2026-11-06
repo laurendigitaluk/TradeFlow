@@ -4224,3 +4224,212 @@ Code commits: `8c83d666b602d149c2e1fbcbf158100053bbaa31`, `53dc247da01c37bf743e0
 The one-off launcher previously appeared idle because `src/index.mjs` only reported progress through agent telemetry and printed the final JSON after all tasks completed. The research path now emits PowerShell progress messages for search start/completion, source-page retrieval, Ollama extraction, rejected evidence, source errors, and TEST/LIVE product resolution. This is diagnostic visibility only: it does not change dry-run/enqueue permissions or allow direct catalogue/evidence writes.
 
 The owner confirmed all 12 existing Node tests pass locally after correcting escaped closing-tag regexes in the local `src/agent.mjs`. That exact local repair must be kept aligned with the branch. The latest progress-output commits are `a8c2b613005cb1262bcbe6313f1cc1208cbdb1a8` and `056fc59ae4456a345e706a2c4f27b99cd34a7f5f`. The latest progress changes have not yet been downloaded or tested on the Research PC. Do not claim the end-to-end research run is verified until the updated files are installed and a dry-run completes.
+
+---
+
+# NEW CHAT HANDOVER — GEMMA RESEARCH AGENT — 6 NOVEMBER 2026
+
+**READ THIS SECTION FIRST when continuing Gemma work in a new ChatGPT conversation.** The user specifically asked the next assistant to check this message before doing anything else. Do not restart the investigation or assume the last implementation is verified.
+
+## Exact project and current workstream
+
+- Project: TradeFlow, repository `laurendigitaluk/TradeFlow`.
+- AI continuity file: `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`.
+- Current code work is on the Gemma feature/fix branches, not the production release branch. The branch containing the latest inspected manufacturer-source / Shopify fallback correction at this handover is `fix/gemma-brand-filter-shopify-json-20261106`.
+- Permanent environment separation remains: `main` is TEST code; `production` is LIVE release code. Do not deploy or alter the production branch as part of this Gemma setup.
+- TEST Supabase project: `nnsshnfkjcflucjrftzi`. LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`. Keep the two environments separate and independently verify mirrored writes.
+- PR #256 was reported as merged into the Gemma feature branch for collection-discovery work (32/32 tests at that checkpoint). Do not assume every later fix branch has also been merged. Verify the live branch/PR state before merging anything.
+
+## Agreed operating model — do not change
+
+The intended workflow is:
+
+1. **Gemma researches** exact products and gathers candidate evidence from relevant websites.
+2. Gemma reports the raw source URL, page evidence/excerpt, exact model/variant, GBP price, condition, availability and classification.
+3. **ChatGPT validates** the candidate against the source page, exact product identity, price, condition and evidence rules.
+4. ChatGPT/owner approves or rejects the candidate.
+5. The separate approved import process writes approved product/evidence data to TEST and LIVE, verifies both writes, and only then marks the review queue item imported.
+
+Gemma is not allowed to write directly to master catalogue products or live evidence. Do not bypass the review/approval boundary. Do not treat a dry-run, a candidate, a commit or a passing unit test as a completed catalogue import.
+
+The intended research granularity is **one combined new-and-used research task per product** (`uk_both`), with new and used evidence classified separately from each source. The verification agent and database/import agent remain separate responsibilities.
+
+## User's latest explicit requirement — category-specific source websites
+
+The user has explicitly said that websites must be selectable/configurable for specific product categories. A source suitable for drones must not be searched for gaming products, and gaming websites must not be searched for drones. The user gave the manufacturer example that DJI/Sony research must not search Creality printer sources. This is a functional requirement, not merely a query-wording preference.
+
+**Status at this handover: NOT YET VERIFIED / NOT YET COMPLETE.**
+
+Inspection of `tools/tradeflow-gemma-agent/src/agent.mjs` on the branch above confirms:
+- approved sources are currently loaded from TEST table `platform_research_sources`;
+- the query selects `source_name, domain, homepage_url, search_url_template, source_kind, country_code, research_scope, enabled, priority`;
+- UK sources are bucketed into `new_uk`, `used_uk` and `official`, with balanced rotation;
+- manufacturer-type sources are filtered by manufacturer name through `isRelevantApprovedSource()`;
+- non-manufacturer retailers/marketplaces are not yet category-filtered in the inspected code;
+- the inspected query does not select a category association field.
+
+Therefore the latest manufacturer-relevance correction is not the same as the requested category-specific source configuration. Do not tell the user this requirement is complete. First inspect the actual TEST and LIVE schema/data for the source registry and any category/source mapping. Do not invent a column or table. Implement the smallest real schema/code change that makes source eligibility category-aware, preserve existing source kind/country/research-scope rules, and test explicit negative cases (e.g. drone task excludes gaming and 3D-printer sources; gaming task excludes drone and printer sources; printer task excludes gaming/drone sources). Keep any schema migration versioned and TEST-first. Only mirror an approved schema change to LIVE through the normal release process.
+
+## Current research code and constraints
+
+Main package path: `tools/tradeflow-gemma-agent/`.
+
+Relevant files already identified:
+- `src/agent.mjs` — source discovery, page fetching, extraction, validation and candidate staging.
+- `src/index.mjs` — one-off task runner and visible progress output.
+- `src/task-worker.mjs` — persistent TEST task-queue worker.
+- `tasks/example.json` and `tasks/agent-roster.json` — task examples and agent roster.
+- `test/agent.test.mjs` — research/validation tests.
+- Windows launcher and service scripts are in the same package; inspect actual branch paths before changing them.
+
+Search providers were changed back from the SearXNG-only regression to independent DuckDuckGo, Bing and Mojeek searches, with optional Google when configured. A failure of one public provider should not stop the other providers. Do not reintroduce a mandatory Docker Desktop/SearXNG dependency. Collection discovery can inspect a collection page to discover exact product detail URLs; Shopify's public collection products JSON is a fallback when product cards are not present in HTML. Collection/category/search pages are discovery only, never acceptable evidence pages.
+
+Evidence must remain strict:
+- UK storefront / UK listing;
+- GBP price visibly present on the direct source page;
+- exact manufacturer, model and variant identity;
+- direct product/listing URL, not generic homepage, category, search result or collection page;
+- explicit condition and availability;
+- evidence type consistent with condition;
+- only positive numeric prices;
+- no inferred price, variant, condition, availability, seller location or source URL;
+- preserve rejected/uncertain findings and reasons for review/research rather than silently inventing or discarding evidence;
+- opened-never-used must not be mislabelled as sealed/new; classify it according to the agreed `uk_both` rules and preserve the exact condition wording.
+
+The Research PC had Ollama/Gemma runtime issues. CPU-only inference is the safe first-run default (`OLLAMA_NUM_GPU=0`) after the GTX 1650/4 GB VRAM caused instability with Gemma 3 4B. Do not weaken evidence validation to work around inference/search failures.
+
+## Current progress and what is not verified
+
+- The user previously confirmed 12 local Node tests passed after correcting escaped closing-tag regexes. That confirmation predates some later progress and source-filter changes.
+- Collection-discovery PR #256 was reported merged into the feature branch with 32/32 tests at that checkpoint.
+- Progress reporting was added so PowerShell output shows search start/completion, page retrieval, Ollama extraction, rejected evidence, source errors and TEST/LIVE product resolution.
+- The latest inspected manufacturer relevance / Shopify fallback correction is on `fix/gemma-brand-filter-shopify-json-20261106`. It was reported as not yet tested/installed at the last user update.
+- No successful end-to-end Research PC run is established by this handover.
+- No approved product/evidence import is established by this handover.
+- The persistent Windows task-worker service installation/registration on the Research PC must be checked; previous documentation says it had not yet been installed/verified.
+- The user wants research results reported to ChatGPT for validation and catalogue processing, not merely logged as agent activity.
+
+## Immediate next actions for the new chat
+
+1. **Check this handover message first**, then inspect current project memory/checkpoints, current GitHub branch/PR state and current TEST/LIVE source-registry schema/data. Do not rely only on this note.
+2. Inspect the latest Gemma branch code and the actual source registry. Complete the user's category-specific source website configuration requirement; do not assume manufacturer-only filtering satisfies it.
+3. Add targeted automated tests proving category isolation and that relevant sources remain available. Run the full package test suite and report the actual count/results.
+4. Check the local Research PC package state before replacing files. Preserve the user's existing GearCashOut configuration folder and secrets. Do not print, copy into chat, commit or overwrite any `.env` or secret. Use only the current TradeFlow Gemma configuration path established by the current launcher/manual; verify it on disk rather than guessing.
+5. Install/synchronise the verified branch files on the Research PC, run syntax checks and tests there, then run a controlled **dry-run** for a known exact product. Confirm search providers, source/category filtering, source-page extraction, Ollama response, exact product resolution and candidate report.
+6. Review dry-run results with the user/ChatGPT. Only after valid candidates are visible and approved should the explicit enqueue/import steps be used. Keep product master import and evidence import separate and approved; verify TEST and LIVE after writes.
+7. Update this manual, the Human/Developer Handbook and the relevant Supabase structured checkpoint after material changes. Do not claim LIVE verification or deployment unless actually completed.
+
+## Copy/paste prompt for the new ChatGPT conversation
+
+Continue the TradeFlow Gemma research-agent setup from the exact stopping point in the latest handover section of `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` titled **“NEW CHAT HANDOVER — GEMMA RESEARCH AGENT — 6 NOVEMBER 2026”**.
+
+**Before doing anything else, read and acknowledge that handover section.** Then retrieve the relevant Supabase project memory/checkpoints and inspect current GitHub branches, PRs, code and TEST/LIVE source-registry schema/data. Do not guess, restart from scratch, repeat failed SearXNG-only approaches, or overwrite any working behaviour or secrets.
+
+The agreed workflow is: Gemma researches one product with a combined new/used pass and reports source-linked candidates; ChatGPT validates; only approved product/evidence records are imported separately into TEST and LIVE. Gemma must not directly write catalogue masters or live evidence.
+
+The immediate unfinished requirement is **category-specific source website selection**. Drones must not be researched against gaming sites; gaming must not use drone/printer sources; DJI/Sony manufacturer research must not use Creality printer sources. The inspected code currently filters manufacturer sources by manufacturer but does not yet prove category-aware filtering for all retailers/marketplaces. Inspect the real source registry schema and implement category mapping without inventing database fields. Add negative and positive tests.
+
+After that, test the complete research pipeline, synchronise the verified files to the Research PC without touching the preserved GearCashOut secrets/configuration, run a controlled dry-run, and report the actual evidence candidates to ChatGPT. Do not enqueue or import until the candidates are reviewed and approved. Keep TEST and LIVE separate and verify any approved mirrored writes independently.
+
+Proceed with the work; do not stop at another audit or a plan. Update the manuals and structured project checkpoint after material changes.
+
+ 
+---
+
+## Category-scoped source registry implementation — 6 November 2026
+
+The previous global source list allowed unrelated retailers to be probed for any product category. The owner clarified that the approved website set must be category-specific (for example, no gaming-only retailer for a drone task and no drone specialist for gaming).
+
+### Implementation
+
+- Added `category_slugs text[] NOT NULL DEFAULT '{}'` to `public.platform_research_sources`.
+- Added a GIN index for category membership.
+- Added 24 UK source records relevant to gaming, mobile phones, 3D printers and metal detectors, and explicitly scoped all 27 existing records.
+- Empty category arrays are fail-closed. The wildcard `*` is reserved for Amazon UK and eBay UK as broad marketplaces/retailers.
+- Manufacturer sources require both an exact configured category and manufacturer-name match.
+- Generic search-engine queries now include `site:` restrictions for the category-approved UK domains. Returned URLs are also checked against the same host allowlist before page fetch or Ollama/Gemma extraction. Unapproved websites are logged and discarded.
+- Approved source probing also filters by category before the balanced new/used/official rotation. UK country and evidence-scope rules remain unchanged.
+
+### Database deployment and verification
+
+Migration file: `supabase/migrations/20261106170000_add_category_scopes_to_platform_research_sources.sql`
+
+Migration name: `add_category_scopes_to_platform_research_sources_20261106`
+
+Applied independently to:
+- TEST `nnsshnfkjcflucjrftzi`
+- LIVE `gxsrajtqzdjvmceqcpgv`
+
+Both environments now have 51 enabled source records, 47 category-scoped records, and exactly two wildcard sources. A deterministic registry hash matches between TEST and LIVE.
+
+Verified category assignments in both:
+- 3D printers: 3 category-specific sources, plus the two universal sources.
+- Drones: 6 category-specific sources, plus the two universal sources.
+- Gaming consoles/accessories: 12 category-specific sources, plus the two universal sources.
+- Mobile phones: 11 category-specific sources, plus the two universal sources.
+- Metal detectors: 6 category-specific sources, plus the two universal sources.
+
+Cross-category SQL checks returned zero gaming-specific sites in the drone scope and zero drone-specific sites in the gaming scope. Camera retailers are scoped to camera/photo/video categories rather than globally. Four sources remain unmapped and therefore fail closed: Vinted UK and the three US camera retailers Adorama, B&H and KEH. US sources are additionally excluded by the UK-only country gate.
+
+### Important category master discrepancy
+
+The `laptops` category exists and is active in TEST but no matching category exists in LIVE. Retailer source scopes include laptops, but do not start laptop research/imports until the LIVE category master is reconciled and independently verified. This discrepancy predates and is not changed by the source-scope migration.
+
+### Code and verification status
+
+Implementation branch: `fix/gemma-category-scoped-sources-20261106`.
+
+- Core code now reads `category_slugs`, applies manufacturer + category checks, and filters generic search results by allowed host.
+- Added unit tests for category mismatch, missing category fail-closed, wildcard sources, manufacturer/category combined filtering, and web-result host filtering.
+- CI/full test result is still pending. The Research PC has not yet been updated to this branch and no new end-to-end dry-run has been run.
+- No catalogue product, market-evidence, review-queue, tenant, customer, order, payment, Stripe or Cloudflare Worker records were changed. No application deployment occurred.
+
+### Project memory/checkpoint location
+
+No application-level project-memory or checkpoint tables were found in either Supabase database; the only name matches were PostgreSQL system catalog tables. This is not evidence of an application memory bank. The authoritative continuation records for this change are the GitHub checkpoint and project-memory files added with this commit.
+
+
+## Verification addendum — 6 November 2026, after PR #261 opened
+
+- Pull request #261 is open: https://github.com/laurendigitaluk/TradeFlow/pull/261. It is not merged and must not be merged until the test/runtime gap is resolved.
+- GitHub returned no workflow runs or commit status checks for the PR head. The container cannot reach GitHub to clone the branch, so the complete Node test suite has not been executed in this session.
+- The current branch contains 36 test declarations in `test/agent.test.mjs` and 2 in `test/release-monitor.test.mjs` (38 across the two inspected test files). The earlier Research PC run reported 38 tests passing. The count matches the earlier Research PC report of 38 tests, but the actual suite on this updated branch still needs to be executed; a matching count alone does not prove the installed files are identical or that the new tests pass.
+- TEST `platform_ai_agent_tasks` and `platform_catalogue_research_queue` both currently contain zero rows. The 3D-printer agent telemetry is cumulative (23 tasks completed / 3 candidates found / 0 evidence queued); the latest K1 event at 16:18:17 UTC explicitly reports zero candidates, zero queued, and Gemma not called because no fetched product page showed a visible GBP price. This was before the new category-scope configuration and is not a post-change test.
+- The Research PC has not yet downloaded this branch. Do not claim a category-filtered end-to-end run until the PC runs the updated package, full tests pass, and a controlled dry-run demonstrates only allowed source domains are fetched.
+
+## Targeted routing smoke test — 6 November 2026
+
+An isolated Node.js smoke test of the new routing helpers passed 5/5 cases: category isolation, manufacturer matching, universal marketplace wildcard, result-host filtering, and `site:`-restricted search query construction. This is a focused helper smoke test, not the complete TradeFlow Gemma package test suite. The two inspected package test files currently contain 36 agent tests and 2 release-monitor tests (38 declarations); the complete `npm test` run on the updated branch remains outstanding.
+
+## CI diagnostic and correction — 6 November 2026
+
+The first GitHub Actions run for PR #261 (run `42271395436`) failed before executing the tests. Node 24 rejected over-escaped regular-expression literals in the newly added source-domain normaliser (`SyntaxError: Invalid regular expression flags`). This was a code syntax defect, not a database or model/runtime failure.
+
+Correction committed as `b66626b9ddd8d606260ad9ba707c3dab4cd07360`: replaced the fragile regular-expression stripping with explicit hostname string normalisation (scheme, www prefix and path removal). The isolated Node smoke test of the corrected routing helpers passed 5/5. A fresh full GitHub Actions run for the corrected head is still pending; keep PR #261 open and do not merge until it passes.
+
+## Full GitHub Actions verification — 6 November 2026
+
+The corrected PR head completed the GitHub Actions workflow **TradeFlow Gemma agent tests** successfully:
+- Workflow run #156, ID `42271575330`
+- Head commit `a9cec7cd95ad8aee9098cd30656ec39f8c16dfec`
+- Node.js 24
+- **41 tests passed, 0 failed**
+
+The earlier syntax-error run was superseded by the hostname-normalisation fix. The current PR #261 is still open and unmerged; GitHub currently reports `mergeable=false`. Do not force or bypass a merge. Resolve/refresh the PR mergeability state before merging into the previous fix branch. Research PC installation and an end-to-end category-filtered dry-run remain outstanding.
+
+## Latest PR-head verification — 6 November 2026
+
+The latest workflow run for the current PR head also passed:
+- GitHub Actions run #158, ID `42271722093`
+- Head commit `4b116df4e4cc75cb625e7e556332d80658a43de4`
+- **41 passed, 0 failed**
+
+This supersedes the earlier pending-rerun note. PR #261 remains open and unmerged; the connector still reports `mergeable=false`, so no merge has been attempted. The next operational gate is to install this verified branch on the Research PC and run the controlled category-filtered dry-run.
+
+## Research PC / queue status — 6 November 2026
+
+The latest TEST telemetry check shows the 3D-printer agent is idle with its last heartbeat at 16:18:17 UTC (23 cumulative tasks, 3 cumulative candidates, 0 evidence queued). That last K1 task completed with 0 evidence candidates; no page contained a visible GBP price and Gemma was not called. This run predates category-scoped source routing.
+
+The TEST `platform_ai_agent_tasks` table and `platform_catalogue_research_queue` both currently contain zero rows. Drones, mobile phones and metal-detectors agent telemetry rows have no heartbeat yet. The Research PC has not demonstrated installation of the category-scoped branch. Do not assume the persistent worker is running or submit research tasks to it until the local package is updated and its heartbeat/test run is verified.
+
+The latest branch head contains documentation/checkpoint-only commits after run #158. The `src/agent.mjs` and `test/agent.test.mjs` GitHub blob SHAs are unchanged from the passing run, so the current code/test files remain exactly those that passed 41/41.

@@ -716,6 +716,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
           await onProgress?.({ stage:'validation_rejected', source:evidence.source_url || '', message:'Evidence source ID does not match any fetched page' });
           continue;
         }
+        if (evidence.source_url !== source.url) {
+          await onProgress?.({ stage:'validation_rejected', source:evidence.source_url || '', message:'Gemma evidence URL does not match fetched source URL' });
+          continue;
+        }
         const validation = validate(evidence, task, source.text);
         if (validation.valid) candidates.push(evidence);
         else await onProgress?.({

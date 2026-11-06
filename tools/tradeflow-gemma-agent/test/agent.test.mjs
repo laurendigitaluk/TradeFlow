@@ -119,6 +119,11 @@ test('Gemma GPU layer override must be a non-negative integer',()=>{
 });
 
 
+test('approved source collection discovery hubs are permitted as discovery, never direct evidence', () => {
+ assert.equal(isCollectionDiscoveryPage('https://store.creality.com/uk/collections/k1-series-3d-printer','Creality K1 Series'),true);
+ assert.equal(isEligibleProductPage('https://store.creality.com/uk/collections/k1-series-3d-printer','Creality K1 Series'),false);
+});
+
 test('prefilter rejects collection, search, forum and marketplace category URLs before page fetch', () => {
  assert.equal(isEligibleProductPage('https://store.creality.com/uk/collections/k1-series-3d-printer'), false);
  assert.equal(isEligibleProductPage('https://www.gumtree.com/for-sale/miscellaneous-goods/uk/srpsearch+3d+printer'), false);

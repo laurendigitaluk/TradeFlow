@@ -50,3 +50,11 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Collection pages are discovery-only and cannot become evidence. Individual direct product pages must still pass UK URL eligibility, visible GBP price, exact model, condition and availability checks.
 - Obvious sibling variants (Max, Plus, Pro, Ultra, Combo, SE, V2) are excluded from base-model matches.
 - CI passed run 42223386531: 32 tests, 32 passed. The PR is ready to merge into the existing feature branch. No production deployment, catalogue/evidence write, TEST/LIVE queue write or importer run occurred.
+
+
+## Research PC update handoff (6 November 2026)
+
+- Added `Update-TradeFlow-Gemma.ps1` to the TradeFlow feature branch (commit `839f8d43885cd8f81a53923147e92ed365cdbbbe`).
+- Added README instructions (commit `e84d067e8c9057dc45670f2366c3533083d28e99`).
+- Updater downloads the approved feature branch archive, checks local agent folder, existing TradeFlow `.env`, and Node 22+, preserves `.env`, task files, logs and node_modules, updates code, runs tests, and restores previous code if tests fail.
+- This is a safe handoff for the Research PC; the local update and controlled Creality collection dry-run have not yet been run. No queue, catalogue, evidence or production writes are made by the updater.

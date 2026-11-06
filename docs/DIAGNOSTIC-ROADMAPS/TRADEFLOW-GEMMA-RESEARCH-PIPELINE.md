@@ -224,3 +224,12 @@ The registry is a new TradeFlow table, not a link to GearCashOut's `quote_catalo
 - It verifies the expected local agent folder, TradeFlow `.env` presence and Node.js 22+, stages the GitHub branch archive, updates agent code, and runs `npm test`.
 - It preserves local `.env`, `tasks`, `logs` and `node_modules`; it does not read the GearCashOut config folder or run research/imports. Previous code is restored if the local test suite fails.
 - Local PC update and dry-run remain pending user execution; do not claim they have occurred.
+
+
+### Windows updater extraction fault and correction (6 November 2026)
+
+- First Research PC updater attempt failed during archive extraction because Windows PowerShell could not resolve some deep paths in the full repository ZIP.
+- The initial rollback logic was also unsafe when extraction failed before backup completion. Do not reuse that version.
+- Corrected updater uses a short path under the system drive and extracts only the Gemma agent subtree using .NET ZipArchive. It verifies backup completeness before rollback and never attempts rollback from an empty/incomplete backup.
+- Recovery mode allows repair when previous local code files are incomplete, while requiring the local TradeFlow `.env` to exist. The updater preserves `.env`, tasks, logs and node_modules.
+- Corrected updater commit: `3f90d3aa8789d759791c51e3c815edc64c5dca7c`. Research PC update and controlled dry-run remain pending.

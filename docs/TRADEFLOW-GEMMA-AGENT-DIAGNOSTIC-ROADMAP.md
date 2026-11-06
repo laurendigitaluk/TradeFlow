@@ -192,3 +192,7 @@ Source and migration are committed on `feature/tradeflow-gemma-agent-foundation-
 - TEST and LIVE product identity is independently resolved by the existing research pipeline; product/evidence imports remain separate and approved.
 - Worker leases expire after 10 minutes and are renewed every 45 seconds while processing. Poll interval defaults to 15 seconds.
 - Do not merge/deploy to production or apply task-control schema to LIVE as part of this setup step.
+
+## Configuration-path consistency repair — 5 November 2026
+
+All TradeFlow Gemma execution modes now converge on `tools/tradeflow-gemma-agent/.env`: interactive launcher `Start-TradeFlow-Gemma.ps1`, Node entry `src/index.mjs`, persistent supervisor `Start-TradeFlow-Gemma-Service.ps1`, and queue worker `src/task-worker.mjs`. The launcher passes `TRADEFLOW_GEMMA_ENV_FILE` explicitly to Node. The retired `C:\\GearCashOut-Config\\.env` is not read or modified. Required config includes TEST/LIVE URLs and service-role keys plus installed Ollama model tag. Research PC refresh and runtime verification remain outstanding; no database writes/deployments as part of this repair.

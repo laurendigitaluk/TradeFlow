@@ -70,6 +70,8 @@ test('prefilter permits a direct UK product listing', () => {
 });
 
 test('visible UK price prefilter requires an explicit positive GBP amount', () => {
+ assert.equal(hasVisibleUkPrice('Creality K1 3D Printer ' + String.fromCharCode(163) + '299.00'), true);
+ assert.equal(hasVisibleUkPrice('Price ' + String.fromCharCode(163) + '1,299.99'), true);
  assert.equal(hasVisibleUkPrice('Creality K1 3D Printer £299.00'), true);
  assert.equal(hasVisibleUkPrice('Price GBP 1,299.99'), true);
  assert.equal(hasVisibleUkPrice('Creality K1 high speed 3D printer'), false);

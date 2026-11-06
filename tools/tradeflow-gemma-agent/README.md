@@ -203,6 +203,18 @@ The Creality K1 collection rendered three product cards in the browser, but the 
 Manufacturer-owned sources are now brand-scoped. A manufacturer source is probed only when its source name/domain matches the requested task manufacturer. For example, a Creality K1 task can use the Creality official collection but will skip DJI and Sony manufacturer search pages; DJI and Sony sources remain available for their own products. UK retailers and used-market sources remain eligible for cross-brand model searches. This prevents nonsensical URLs such as `dji.com/search?q=Creality K1` and keeps generic retailers available for market coverage.
 
 
+## Category-scoped approved research websites — 6 November 2026
+
+The approved source registry is now explicitly scoped by catalogue category. A source is eligible only when its `category_slugs` array contains the task's exact `category_slug`, or contains the reserved wildcard `*` for a deliberately general source. Empty arrays mean the source is not used for any category. Manufacturer sources must additionally match the requested manufacturer.
+
+The worker loads enabled source rows from TEST `platform_research_sources`, adds `site:` restrictions for only the category-approved UK domains to its general DuckDuckGo/Bing/Mojeek/optional Google queries, and applies a second host allowlist to reject any out-of-scope result before page fetch and Gemma extraction. This prevents unrelated camera/gaming/drone/printer domains from entering the evidence pipeline. Search-provider results are discovery candidates only; the host allowlist remains authoritative.
+
+The category configuration is stored in Supabase, not hard-coded in the worker. New sources should be added only after confirming the domain is a relevant UK retailer/manufacturer/marketplace and assigning explicit category slugs. Amazon UK and eBay UK are the only wildcard sources in this migration.
+
+The category scope field is read-only at runtime and does not change evidence validation, exact model/variant checks, UK/GBP rules, approval or import boundaries.
+
+
+
 ### Manufacturer-aware source routing and Shopify fallback validation — 6 November 2026
 
 Manufacturer sources are now filtered against the requested task manufacturer before any manufacturer-site search is constructed. For a Creality task, DJI and Sony manufacturer sources are skipped; UK retailers and marketplaces remain eligible across brands. A fail-closed test covers tasks with a missing manufacturer. The Shopify collection products JSON fallback path regex was corrected after the Research PC updater surfaced a syntax error and safely restored the previous code. CI passed on PR #257 (run 42231223625); PR #257 was squash-merged into the feature branch as `23bd99b6b17c915bd41e5e1d8c625196503e8669`. No TEST/LIVE catalogue or evidence rows were written.

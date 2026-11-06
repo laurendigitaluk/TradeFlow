@@ -106,3 +106,12 @@ Restore the proven GearCashOut research-discovery architecture in TradeFlow. Pre
 - Research PC updater caught an invalid escaped regular expression in the Shopify collection JSON fallback. The updater safely restored previous code, preserving .env/tasks/logs.
 - Fixed regex and added fail-closed test. CI passed: run 42231223625, PR #257. Squash merge SHA `23bd99b6b17c915bd41e5e1d8c625196503e8669` into feature branch.
 - Current next step: one corrected local update/test, then one Creality K1 dry-run. No queue/catalogue/evidence writes.
+
+
+## Exact K1 model guard (6 November 2026)
+
+- Research PC latest run passed 36/36 tests, found Creality collection/product pages and made one Gemma batch. Candidate output incorrectly classified Creality K1 Max at £589 as base K1; model field was empty. A K1 Series CFS upgrade accessory page was also fetched.
+- £589 K1 Max candidate rejected; no TEST/LIVE queue/catalogue/evidence import occurred.
+- Implemented exact-model matching to reject K1 Max/Plus/Pro/Ultra/Combo/SE/V2 and series/upgrade/accessory/kit/CFS listings. Filter now runs on discovered URLs before fetch and again on fetched page title/final URL before GBP price extraction.
+- Added regression tests for K1 Max, K1C, K1 Combo, CFS accessory and genuine base K1. CI run 42250634337 passed. PR #259 merged into feature branch at `1891b02a67843baac6b48d8fb8bb5846e9101f43`.
+- One local update and dry-run remains. No production deployment or catalogue/evidence writes.

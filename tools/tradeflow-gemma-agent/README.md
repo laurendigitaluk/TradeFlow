@@ -207,7 +207,7 @@ Manufacturer-owned sources are now brand-scoped. A manufacturer source is probed
 
 The approved source registry is now explicitly scoped by catalogue category. A source is eligible only when its `category_slugs` array contains the task's exact `category_slug`, or contains the reserved wildcard `*` for a deliberately general source. Empty arrays mean the source is not used for any category. Manufacturer sources must additionally match the requested manufacturer.
 
-The worker loads enabled source rows from TEST `platform_research_sources`, filters both approved-source probes and general search-engine results against the category allowlist, and rejects unapproved result domains before page fetch and Gemma extraction. This prevents unrelated camera/gaming/drone/printer domains from entering the evidence pipeline. Search-provider results are discovery candidates only; the host allowlist remains authoritative.
+The worker loads enabled source rows from TEST `platform_research_sources`, adds `site:` restrictions for only the category-approved UK domains to its general DuckDuckGo/Bing/Mojeek/optional Google queries, and applies a second host allowlist to reject any out-of-scope result before page fetch and Gemma extraction. This prevents unrelated camera/gaming/drone/printer domains from entering the evidence pipeline. Search-provider results are discovery candidates only; the host allowlist remains authoritative.
 
 The category configuration is stored in Supabase, not hard-coded in the worker. New sources should be added only after confirming the domain is a relevant UK retailer/manufacturer/marketplace and assigning explicit category slugs. Amazon UK and eBay UK are the only wildcard sources in this migration.
 

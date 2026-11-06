@@ -196,3 +196,8 @@ The Creality UK source is now configured to open the known K1 Series collection 
 ### Shopify collection product JSON fallback — 6 November 2026
 
 The Creality K1 collection rendered three product cards in the browser, but the local HTML anchor parser returned zero matching links. Collection discovery now falls back to Shopify's public collection `products.json?limit=50` endpoint when ordinary HTML link extraction returns no exact-model products. The JSON parser uses product title and handle, excludes sibling variants such as K1 Max and K1C, constructs the direct UK product URL, and then the existing pipeline fetches and validates that product page for explicit GBP price and evidence attributes. Collection JSON metadata itself is not evidence. A unit test covers exact K1 selection and sibling-variant exclusion.
+
+
+### Manufacturer source matching — 6 November 2026
+
+Manufacturer-owned sources are now brand-scoped. A manufacturer source is probed only when its source name/domain matches the requested task manufacturer. For example, a Creality K1 task can use the Creality official collection but will skip DJI and Sony manufacturer search pages; DJI and Sony sources remain available for their own products. UK retailers and used-market sources remain eligible for cross-brand model searches. This prevents nonsensical URLs such as `dji.com/search?q=Creality K1` and keeps generic retailers available for market coverage.

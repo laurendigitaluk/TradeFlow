@@ -1,6 +1,6 @@
 # TradeFlow Platform Public Pages — Diagnostic Roadmap
 Date: 3 November 2026
-Status: Implemented for TEST and LIVE; database migrations applied in both; browser/deployment acceptance pending.
+Status: How It Works is source-managed static accordion HTML/CSS; Examples remains database-backed CMS. Owner browser and Cloudflare deployment acceptance pending.
 
 ## Scope and boundary
 This is the platform owner's CMS for two TradeFlow marketing pages:
@@ -161,3 +161,18 @@ The owner visual editor's first-time layout conversion previously imported the c
 - Search mismatch: inspect the RPC's manufacturer/model/package/product_type matching; do not expose internal notes or evidence as a workaround.
 - Category URL not filtering first page: ensure query string is read before the initial RPC request.
 - Verify dropdown keyboard/click/mobile operation, search, category filter, result cards and pagination in both TEST and LIVE browsers. GitHub merge alone does not prove Worker deployment.
+
+
+
+## Current source-of-truth correction — 7 November 2026
+
+- `how-it-works.html` is the published source of truth for the How It Works guide. It contains ten native HTML `details` accordion sections, with presentation in `how-it-works.css`. It is text-only and does not load `platform-public-pages.js`.
+- The old `platform_public_pages` row for `how-it-works` remains in TEST and LIVE for historical continuity, but the static guide does not consume its `draft_content` or `published_content`.
+- The Owner Dashboard's legacy CMS editor still loads the How It Works row. Saving that record does not alter the static public guide. The dashboard now displays an explicit note so the limitation is not mistaken for a working publish path. If in-dashboard editing is required later, it needs a deliberate accordion-schema/editor/renderer implementation; do not silently re-enable the old screenshot/visual-layout renderer.
+- `examples` remains the database-backed editable public page and uses the existing owner save/publish RPCs.
+- The How It Works source has ten accordions covering subscription, website template, Website Builder, catalogue/research, payment setup, valuation, customer payment, shipping, inventory/retail and day-to-day management. It includes a GearCashOut example link. Browser rendering still requires authenticated desktop/mobile acceptance; source inspection alone is not live verification.
+
+
+## Owner dashboard accordion layout — 7 November 2026
+
+The Platform Owner dashboard now has a consistent collapsible-section layout on branch `feature/owner-dashboard-dropdown-sections-20261107`. It wraps the existing product pages, subscriber businesses, domain requests, plans, public pages, Gemma, complimentary-subscriber and platform-email panels in native `details` elements. Sidebar hash navigation opens the selected panel. No RPC, database, authentication or permission behaviour is changed by the layout work.

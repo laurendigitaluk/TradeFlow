@@ -4302,3 +4302,13 @@ LIVE review found that the short model identifier `A1` allowed Audi A1 car pages
 - No schema change, catalogue mutation, evidence approval/import, TEST data change, secret change, Research PC update or worker restart was made. The active task had already loaded its source rows before the source-registry update, so this running task is not expected to use the new routes.
 - PR #278 was merged to production at 22:13 UTC (merge commit fece19063a4101b449fa3cc120a652c9acd66d15). PR #279 remains open and unmerged, but the short-model identity guard is present in production commit 6941fba5b7b74cf4f005cf0e6cbfca7905c8f4e4; do not merge the divergent PR branch blindly.
 - Proposed fix on feature branch feature/gemma-3d-printer-source-routes-20261107: lane-aware 123-3D collection routing; verified WordPress category routes for 3DFLO/iDig; explicit WordPress category discovery classification; regression tests for route isolation and following product links. CI and PR review are required before merge. No deployment or Research PC update is authorised by this checkpoint.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.

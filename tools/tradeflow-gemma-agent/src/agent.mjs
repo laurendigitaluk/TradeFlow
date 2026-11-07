@@ -17,7 +17,7 @@ export function validate(e, task, page) {
     }
   }
   if (u && (/search|category|results|\/sch\//i.test(u.pathname) || ['q','query','_nkw'].some(k=>u.searchParams.has(k)))) errors.push('source must be a direct product/listing page');
-    if (/(^|\.)amazon\.co\.uk$/i.test(u.hostname)) {
+  if (u && /(^|\.)amazon\./i.test(u.hostname) &&
       (/^\/s\/?$/i.test(u.pathname) || u.searchParams.has('k') ||
        !/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/)[A-Z0-9]{10}(?:\/|$)/i.test(u.pathname))) {
     errors.push('Amazon evidence must come from a direct product detail page, not search or category results');

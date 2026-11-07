@@ -171,11 +171,14 @@ async function processClaim(claim){
     'Opposite-lane sources skipped: '+(routeMetrics.opposite_lane_sources_skipped??0)
    ];
    const failureLines=routeFailures.slice(0,8).map(item=>'['+item.stage+'] '+(item.source||'unknown source')+' — '+item.message);
+   const gemmaFailureLines=(Array.isArray(metrics.gemma_failure_details)?metrics.gemma_failure_details:[]).slice(0,5)
+    .map(item=>'[Gemma extraction] '+(item.source_ids||[]).join(', ')+' — '+item.error);
    await roomPost(identity,'handover','Research task handover',[
     'Task: '+taskKey,
     'Research category: '+identity.category,
     ...metricLines,
     ...(failureLines.length?['Route failures:',...failureLines]:['Route failures: none recorded']),
+    ...(gemmaFailureLines.length?['Gemma extraction issues:',...gemmaFailureLines]:['Gemma extraction issues: none recorded']),
     'Review gate: candidate rows are staged for ChatGPT/owner validation; no catalogue or shared evidence import is authorised by this handover.'
    ].join('\n'),{task_key:taskKey,thread_key:'research',metadata:{
     queue_task_id:claim.id,subtask_count:tasks.length,staged:stagedCount,

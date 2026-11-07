@@ -2413,3 +2413,7 @@ Do not treat a message as an approved product price or catalogue import. Researc
 ## Public How It Works page — source-managed
 
 The public How It Works page is maintained directly in `how-it-works.html` and `how-it-works.css`. The Platform Owner Dashboard is not used to edit this page. Ask the platform maintainer to update the page source when wording or process descriptions need changing. Examples remains editable from the Owner Dashboard.
+
+## Current AI agent workspace availability — 7 November 2026
+
+The AI Agent Common Room is being prepared for release. The LIVE database and security functions are installed; the dashboard page and Research PC worker are still under review and are not yet available in the live website. Subscribers do not access this internal tool. The How It Works public page is source-managed as agreed.

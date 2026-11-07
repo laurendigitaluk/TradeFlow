@@ -229,3 +229,37 @@ Production now contains all-route probing, bounded search/collection pagination,
 - Existing queue schema supports this without migration: `evidence_type`, `observed_price`, `item_condition` and `availability` remain nullable; `needs_research` is an allowed status. No Supabase schema change was made.
 - Scope: only the 3D-printer agent/category `3d-printers-equipment`, branch `3d-printers`. Do not start other category agents until the controlled test passes.
 - Next: update/restart the Research PC using the existing updater (preserve its private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`), then run a small controlled batch and confirm every fetched page is staged, including multi-price bundles and extraction failures. ChatGPT will inspect the full captures and open source pages as needed before any catalogue decision.
+
+
+## 7 November 2026 — LIVE 3D-printer research diagnosis and PR #278
+
+### Current LIVE state observed
+- LIVE project: gxsrajtqzdjvmceqcpgv. No TEST/LIVE data copy, source-registry edit, schema migration, catalogue mutation or evidence approval/import was performed during this diagnosis.
+- Controlled task: owner-3d-printers-new-used-capture-20261107-2016. Payload contains eight product/lane subtasks: Anycubic Kobra S1, Bambu Lab A1, Creality K1 and Elegoo Neptune 4 Pro, each split into uk_new and uk_used.
+- The worker claimed the task on the Research PC and renewed its task lease. During the first Anycubic subtask, page discovery/fetch reached an extraction stage with 9 pages. The worker remained alive; the earlier apparently stale status timestamp was a telemetry/progress visibility gap, not proof of a dead worker.
+- Nine Anycubic Kobra S1 raw captures were staged in LIVE platform_catalogue_research_queue with status needs_research. All nine had visible GBP price mentions in raw page_capture data; zero had structured observed_price or evidence_type. They remain review-only and include standard, Combo and Max/package variants that ChatGPT must distinguish.
+- The raw payload on all nine records records: “Gemma returned JSON without a findings array”. Therefore the first measured loss point in this batch is after direct page fetch, at Ollama JSON-envelope parsing. The capture-first fallback preserved the pages and price mentions. Do not treat the nine as nine valid comparable prices or map them automatically to the Standard Printer package.
+- The earlier task/status metadata showed an eBay challenge URL; subsequent progress showed an individual eBay /itm URL. Treat the challenge URL as a blocked discovery result, not evidence that the individual listing itself was blocked.
+- Before this run, the 3D-printer review queue contained four needs_research captures (one with a structured price and three without); after the first Anycubic subtask it contained thirteen, including the nine new raw captures. These are queue counts, not accepted evidence counts.
+
+### Confirmed production-code causes
+1. Source lane leak: isApprovedSourceForTask() checked category and manufacturer, but not research_type. The category-scoped web-search domain list and direct host allow-list therefore admitted both new and used sources to either task. The approved-source probe also rotated through all lane buckets regardless of the task type.
+2. Price entity mismatch: extractRelevantPageText() normalises &pound;/&#163;/&#xA3; to the text label GBP, while extractVisibleGbpPriceMentions() only matched the pound sign. Encoded prices could be absent from the structured price list.
+3. Bot-challenge ambiguity: isEligibleProductPage() did not explicitly exclude known challenge/captcha routes.
+4. Monitoring gap: extractBatch() emitted no progress between Ollama batches; task-worker Common Room handovers omitted the available search/page metrics and source-route failure details.
+5. Extraction schema mismatch: extractBatch() accepted arrays, findings, evidence and borderline only. The first live Anycubic batch returned a valid JSON object with none of those recognised arrays. The worker correctly preserved all pages as raw fallback captures but did not produce structured observations.
+
+### PR #278 — open, unmerged, no deployment
+- Branch: feature/gemma-3d-printer-lanes-metrics-20261107.
+- Changes: research-type-aware source lane filtering in the category web-search allow-list, host validator and approved-source probe; 3D-printer search-result default increased from 18 to 30 (hard maximum 30, configurable downward); GBP/HTML-entity price extraction; explicit challenge-page skip/report; recognised JSON-envelope parser with top-level shape diagnostics; per-batch Ollama progress; route/page/extraction metrics in task results, telemetry and Common Room handovers.
+- Regression tests cover new/used/both lane routing, category-scoped search and host validation, 3D-only search limit, HTML pound entities, challenge routes and common Gemma JSON wrappers.
+- GitHub Actions Gemma Research Tests run 42411454578 passed. Lane/parser test runs 42411512585, 42411518602, 42411597295 and 42411603001 passed. Run 42411615477 is the latest telemetry/handover change and must be checked before declaring CI complete.
+- No Supabase schema, source registry, catalogue or evidence changes are included. The Research PC has not been updated from this branch. Do not merge or deploy without explicit owner approval and a successful controlled acceptance test.
+
+### Post-merge acceptance plan (3D branch only)
+1. Merge PR #278 only after CI and owner review.
+2. Stop the current worker cleanly only after its active queue task finishes. Run the existing updater in place against the existing TradeFlow installation; preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE. Do not point it at GearCashOut configuration.
+3. Verify a fresh worker heartbeat and Common Room round-trip.
+4. Run one small controlled new/used pair for a known printer. Confirm the new task probes only official/new retailers and the used task probes only approved used marketplaces/dealers; verify no other category is affected.
+5. Confirm search result limit, source route outcomes, page discovery/fetch counts, Ollama batch progress, JSON parser success/fallback counts, GBP mentions and staged captures appear in LIVE telemetry/Common Room.
+6. ChatGPT inspects source pages and all package/condition/price context. Keep every candidate at needs_research until manually reviewed. No automatic catalogue/evidence import.

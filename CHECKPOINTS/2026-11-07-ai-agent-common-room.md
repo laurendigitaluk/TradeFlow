@@ -93,3 +93,11 @@ A source review found that the first worker version only read the General thread
 - Corrected the current shipping architecture in the System Handbook, Human User Manual, AI Operating Manual, Backend User Manual, Backend Operations Manual, Subscriber Website Manual and public How It Works page.
 - The customer pays the selected carrier directly. TradeFlow does not collect shipping charges, add postage to the accepted buying offer, pay the carrier or book courier services. The subscriber configures supported services and manages the handoff; subscriber or customer may upload label/QR as the handoff requires; the customer adds tracking and confirms dispatch; the subscriber confirms physical receipt.
 - The earlier 21 September 2026 statement that the subscriber paid shipping is now explicitly marked superseded in the Human User Manual.
+
+
+## Final Common Room RPC hardening — 7 November 2026
+- Applied four additive LIVE routing/security migrations after the base Common Room schema: two for thread/recipient routing, one for agent-post RPC hardening, and one for owner RPC hardening.
+- Verified all four SECURITY DEFINER RPCs now use an empty search_path.
+- Owner list/post RPCs: anon=false, authenticated=true, service_role=false; each checks auth.uid() against an active platform_memberships row.
+- Agent list/post RPCs: anon=false, authenticated=false, service_role=true; each validates the service_role JWT claim.
+- RLS remains enabled on platform_ai_agent_messages; anon/authenticated direct table SELECT remains denied; no Common Room messages are seeded.

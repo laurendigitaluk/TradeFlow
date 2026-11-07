@@ -51,3 +51,13 @@ Read-only checks:
 5. Post a limited owner instruction and verify worker read and handover post.
 6. Confirm owner dashboard can read the returned message.
 7. Run one small research batch and confirm existing candidate review gate is unchanged.
+
+ 
+## Follow-up implementation — 7 November 2026
+- Gemma now passes up to ten bounded Common Room notes (instructions, handovers and learning notes) into the Ollama extraction prompt.
+- The prompt labels Common Room notes as untrusted operational guidance and explicitly prevents them overriding exact task identity, research type, category-approved source restrictions, UK/GBP/direct-product-page rules, evidence validation, privacy and review gates.
+- The owner dashboard now has nine consistent collapsible sections, including the new Common Room and Gemma Control Centre. Overview metrics remain visible; sidebar hash navigation opens the matching panel.
+- Added the Owner Dashboard Developer Diagnostic Roadmap.
+- Updated the five owner-linked manuals plus Backend Operations and Subscriber Website Manual. Removed the old statement that subscribers could connect their own AI provider; TradeFlow AI research is centrally operated.
+- Worker code is committed but the Research PC has not been updated/restarted. The instruction → worker prompt → handover → owner-visible round-trip remains pending.
+- Cloudflare deployment and authenticated browser acceptance remain pending. PR #267 is still the combined release candidate.

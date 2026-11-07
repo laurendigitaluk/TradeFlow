@@ -1,14 +1,14 @@
 # TradeFlow Backend Operations Manual — LIVE
 
-**Last updated:** 14 October 2026  
+**Last updated:** 7 November 2026  
 **Repository:** `laurendigitaluk/TradeFlow`  
 **Production branch:** `production`
 
 ## 1. Environment boundary
 
 - LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (`https://gxsrajtqzdjvmceqcpgv.supabase.co`).
-- TEST Supabase project: `twfbmjwwqzxdxvclxbun`.
-- Current instruction: operate in LIVE only. TEST is a reference environment and must not be modified during this work.
+- TEST Supabase project: `nnsshnfkjcflucjrftzi`. The retired `twfbmjwwqzxdxvclxbun` project must never be used.
+- LIVE is authoritative for product research and research candidates. TEST is reserved for code development, migrations and regression; it is not a live agent research queue.
 - Keep all code and SQL migrations version-controlled in the repository. Do not apply ad-hoc grants to make a UI error disappear.
 
 ## 2. Inventory permissions and Selling workflow
@@ -249,3 +249,12 @@ This section supersedes older environment references above where they conflict.
 4. Restart the worker and confirm a current LIVE heartbeat.
 5. Once the Common Room migration is applied, check worker startup, owner instruction read, research handover post and owner dashboard visibility.
 6. Run one deliberately limited research task and inspect the first failing hop before any larger batch.
+
+## Current LIVE AI operations — 7 November 2026
+
+- LIVE Gemma task queue and candidate-review queue are installed; worker queue RPCs are service-role-only, owner task/review RPCs require active platform membership.
+- Approved research sources are category-scoped in LIVE `platform_research_sources`. No category match must fail closed.
+- Candidate market evidence is staged to LIVE and still requires owner/ChatGPT validation. Used-market observations are reference only.
+- AI Agent Common Room migration is applied to LIVE; table is RLS-protected with no direct anon/authenticated access. Owner RPC is authenticated with active owner check; agent RPCs are service-role-only.
+- Dashboard and worker Common Room code are in feature branch `feature/ai-agent-common-room-20261107`; not yet released. Research PC update/restart and owner-instruction → worker-read → handover → owner-view round-trip remain outstanding.
+- Preserve the PC's existing .env file and `TRADEFLOW_GEMMA_ENV_FILE` setting. Do not copy service-role keys into code/browser.

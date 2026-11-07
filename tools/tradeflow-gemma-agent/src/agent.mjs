@@ -553,6 +553,8 @@ export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new
     ? incoming.raw_payload : {};
   if (existingPayload.review_classification !== 'unverified_capture' || incomingPayload.review_classification !== 'unverified_capture') return null;
   const evidence = incomingPayload.evidence && typeof incomingPayload.evidence === 'object' ? incomingPayload.evidence : {};
+  const pageCapture = evidence.page_capture && typeof evidence.page_capture === 'object' ? evidence.page_capture : {};
+  const capturedText = String(pageCapture.captured_text || evidence.source_excerpt || incoming.source_excerpt || '').slice(0, 4000);
   const observation = {
     task_key: incoming.task_key || incomingPayload.task?.task_key || null,
     source_url: incoming.source_url || null,
@@ -569,7 +571,12 @@ export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new
     product_identity_text: evidence.product_identity_text || null,
     match_observation: evidence.match_observation || null,
     uncertainty_and_conflicts: evidence.uncertainty_and_conflicts || null,
-    price_mentions: Array.isArray(evidence.price_mentions) ? evidence.price_mentions : [],
+    price_mentions: Array.isArray(pageCapture.gbp_price_mentions) ? pageCapture.gbp_price_mentions : (Array.isArray(evidence.price_mentions) ? evidence.price_mentions : []),
+    page_capture_excerpt: capturedText ? {
+      url: pageCapture.url || incoming.source_url || null,
+      title: pageCapture.title || incoming.page_title || null,
+      captured_text: capturedText
+    } : null,
     notes: evidence.notes || null,
     extracted_at: enrichedAt
   };
@@ -589,12 +596,12 @@ export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new
     observation.availability ? 'Availability observation: ' + observation.availability + '.' : '',
     observation.package_or_variant_text ? 'Package/variant observation: ' + observation.package_or_variant_text + '.' : '',
     observation.product_identity_text ? 'Identity observation: ' + observation.product_identity_text + '.' : '',
-    'Details are in raw_payload.enrichment_history. Top-level price/evidence fields and review status remain unchanged; ChatGPT review is required.'
+    'Latest page text and extraction are in raw_payload.enrichment_history. Top-level price/evidence fields and review status remain unchanged; ChatGPT review is required.'
   ].filter(Boolean).join(' ');
   return {
     raw_payload: {
       ...existingPayload,
-      enrichment_history: [...history.slice(-9), observation],
+      enrichment_history: [...history.slice(-4), observation],
       last_enrichment_at: enrichedAt
     },
     research_notes: [existing.research_notes, summary].filter(Boolean).join('\n\n').slice(-12000),
@@ -1193,12 +1200,12 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     };
     if (!enqueue) { writes.push({ environment: 'LIVE_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target('LIVE', env);
-    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,approved_by,imported_at,imported_by,raw_payload,research_notes&dedupe_key=eq.' + encodeURIComponent(captureKey));
+    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,approved_by,imported_at,imported_by,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
     if (existing.length) {
       const prior = existing[0];
       const enrichmentPatch = is3dPrinterResearchTask(task) ? buildCaptureEnrichmentPatch(prior, row) : null;
       if (enrichmentPatch) {
-        const updated = await db(liveTarget, 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(prior.id) + '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&approved_by=is.null&imported_at=is.null&imported_by=is.null', {
+        const updated = await db(liveTarget, 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(prior.id) + '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&approved_by=is.null&imported_at=is.null&imported_by=is.null' + (prior.updated_at ? '&updated_at=eq.' + encodeURIComponent(prior.updated_at) : ''), {
           method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(enrichmentPatch)
         });
         if (updated?.length) {

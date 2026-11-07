@@ -250,11 +250,11 @@ export function matchesTaskModel(title, url, task = {}) {
     String(task?.branch_slug || '').toLowerCase() === '3d-printers';
   if (is3dPrinterBranch && model.length <= 2) {
     const manufacturerTokens = String(task?.manufacturer || '')
-      .toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(/\\s+/).filter(token => token.length > 1);
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(/\s+/).filter(token => token.length > 1);
     const manufacturerMatches = manufacturerTokens.length > 0 &&
       manufacturerTokens.every(token => identity.includes(' ' + token + ' '));
-    const explicitPrinterContext = /\\b3d printers?\\b/.test(identity);
-    const automotiveRoute = /(?:^|\\/)cars-vans-motorbikes(?:\\/|$)|(?:^|\\/)cars(?:\\/|$)|(?:^|\\/)motorbikes(?:\\/|$)/i.test(urlIdentity);
+    const explicitPrinterContext = /\b3d printers?\b/.test(identity);
+    const automotiveRoute = /(?:^|\/)cars-vans-motorbikes(?:\/|$)|(?:^|\/)cars(?:\/|$)|(?:^|\/)motorbikes(?:\/|$)/i.test(urlIdentity);
     if (automotiveRoute || (!manufacturerMatches && !explicitPrinterContext)) return false;
   }
   return true;

@@ -382,6 +382,26 @@ $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
+
+function gemmaDate(value){if(!value)return'Never';const d=new Date(value);if(Number.isNaN(d.getTime()))return'Unknown';return d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+function gemmaStatus(agent){const age=agent.last_heartbeat?Date.now()-new Date(agent.last_heartbeat).getTime():Infinity;if(agent.status==='running'&&age<120000)return'<span class="gemma-status running">Running</span>';if(agent.status==='error')return'<span class="gemma-status error">Error</span>';if(agent.status==='paused')return'<span class="gemma-status paused">Paused</span>';if(age>300000)return'<span class="gemma-status offline">Offline / stale</span>';return'<span class="gemma-status idle">Idle</span>'}
+async function loadGemmaControlCentre(){
+ const error=$('gemma-error'),rows=$('gemma-agent-rows'),activity=$('gemma-activity');if(!rows||!activity)return;
+ error.textContent='';rows.innerHTML='<tr><td colspan="7">Refreshing…</td></tr>';
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_get_ai_agent_control_centre',{method:'POST',body:JSON.stringify({p_activity_limit:60})});
+  const agents=Array.isArray(data?.agents)?data.agents:[],events=Array.isArray(data?.activity)?data.activity:[];
+  $('gemma-agent-count').textContent=agents.length;
+  $('gemma-running-count').textContent=agents.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
+  $('gemma-task-count').textContent=agents.reduce((n,a)=>n+Number(a.tasks_completed||0),0);
+  $('gemma-candidate-count').textContent=agents.reduce((n,a)=>n+Number(a.candidates_found||0),0);
+  $('gemma-evidence-count').textContent=agents.reduce((n,a)=>n+Number(a.evidence_queued||0),0);
+  rows.innerHTML=agents.length?agents.map(a=>'<tr><td><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</td><td>'+escapeHtml(a.category||'—')+'</td><td>'+gemmaStatus(a)+'</td><td>'+escapeHtml(a.current_task||'—')+'</td><td>'+Number(a.tasks_completed||0)+'</td><td>'+Number(a.candidates_found||0)+'</td><td>'+gemmaDate(a.last_heartbeat)+'</td></tr>').join(''):'<tr><td colspan="7">No agent telemetry has been reported yet.</td></tr>';
+  activity.innerHTML=events.length?events.map(e=>'<article class="gemma-event"><div class="gemma-event-head"><strong>'+escapeHtml(e.agent_name||e.agent_key||'Agent')+'</strong><time>'+gemmaDate(e.created_at)+'</time></div><div>'+escapeHtml(e.message||e.event_type||'Activity')+'</div><small>'+escapeHtml(e.event_type||'event')+(e.task_key?' · '+escapeHtml(e.task_key):'')+'</small></article>').join(''):'<p class="muted">No activity has been reported yet.</p>';
+  $('gemma-updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+ }catch(e){error.textContent=e.message||String(e);rows.innerHTML='<tr><td colspan="7">Unable to load agent telemetry.</td></tr>';activity.innerHTML='<p class="muted">Activity unavailable.</p>'}
+}
+$('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);

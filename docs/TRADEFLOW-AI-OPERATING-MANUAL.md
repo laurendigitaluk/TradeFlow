@@ -4045,3 +4045,16 @@ Baseline read-only counts: LIVE 28,387 active master products / 28,363 visible; 
 shared_market_evidence requires server-side trusted writes; unique key is (source_name, source_record_key). New service must keep service-role credentials off the PC, use a dedicated authenticated server-side API, write each environment independently, and verify each write. Used evidence remains reference-only and cannot alter automatic buying valuations. UK evidence GBP only; preserve exact package/model, source URL, observed_at, availability, condition and price-basis notes. Ambiguous matches go to review.
 
 A Developer Diagnostic Roadmap was created at docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md (commit b523fc661e1fa6e07531a1a46795a325108f940a). This is architecture/preflight only: no schema, RLS, Edge Function, application, valuation, tenant, customer, order, payment, Stripe, Worker or deployment changes have been made.
+
+
+## Gemma Control Centre — 7 November 2026
+The production Platform Owner dashboard has a proposed **Gemma Control Centre** section on branch `feature/gemma-owner-control-centre-20261107`.
+
+- Owner entry: `platform-owner-dashboard.html` → Gemma Control Centre.
+- Front end: `platform-owner-dashboard.html`, `platform-owner-dashboard.js`, `platform-owner-dashboard.css`.
+- Data source: LIVE `public.platform_owner_get_ai_agent_control_centre(p_activity_limit)` RPC. It returns `platform_ai_agent_status` and the latest activity events; authenticated execution is granted, anonymous execution is not.
+- The page displays agent status, stale/offline heartbeat interpretation, task/candidate/evidence totals, last task and activity feed. It is read-only at this stage; no start/pause/cancel controls are represented as working.
+- LIVE currently reports 11 agent rows and 526 activity events. The Gemma task worker heartbeat was current at the last check. The task queue table and claim/complete/fail/heartbeat RPCs exist in TEST but are absent from LIVE. The worker code presently polls TEST. Therefore task submission from the LIVE owner dashboard is not yet implemented; doing so requires a deliberate control-plane migration and worker change, not direct writes to TEST from a LIVE browser session.
+- No database schema, task queue, product catalogue, evidence, tenant, customer, order, payment, Stripe or Cloudflare Worker changes were made for this dashboard screen. No production deployment has been performed.
+- Branch was created from `production`; changes are pending review and deployment. Verify in the authenticated owner dashboard before publishing.
+

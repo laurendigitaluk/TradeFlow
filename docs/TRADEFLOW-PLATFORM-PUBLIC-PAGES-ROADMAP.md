@@ -175,4 +175,4 @@ The owner visual editor's first-time layout conversion previously imported the c
 
 ## Owner dashboard accordion layout — 7 November 2026
 
-The Platform Owner dashboard now has a consistent collapsible-section layout on branch `feature/owner-dashboard-dropdown-sections-20261107`. It wraps the existing product pages, subscriber businesses, domain requests, plans, public pages, Gemma, complimentary-subscriber and platform-email panels in native `details` elements. Sidebar hash navigation opens the selected panel. No RPC, database, authentication or permission behaviour is changed by the layout work.
+The Platform Owner dashboard now has a consistent collapsible-section layout on branch `feature/owner-dashboard-dropdown-sections-20261107` (PR [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266)). It wraps the existing product pages, subscriber businesses, domain requests, plans, public pages, Gemma, complimentary-subscriber and platform-email panels in native `details` elements. Sidebar hash navigation opens the selected panel. No RPC, database, authentication or permission behaviour is changed by the layout work.

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -318,4 +318,64 @@ test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-
   assert.match(prompt, /visible_gbp_price_context/);
   assert.ok(prompt.includes('A'.repeat(2200)));
   assert.ok(!prompt.includes('A'.repeat(2201)));
+});
+
+
+test('duplicate enrichment appends unverified extraction history without changing top-level price or review state', () => {
+  const existing = {
+    id: 'queue-1', status: 'needs_research', dedupe_key: 'capture-abc',
+    category_slug: '3d-printers-equipment', branch_slug: '3d-printers',
+    manufacturer: 'Anycubic', model: 'Kobra S1', package_key: 'standard',
+    source_url: 'https://store.anycubic.com/products/kobra-s1',
+    observed_price: null, evidence_type: null, reviewed_at: null, reviewed_by: null,
+    approved_at: null, approved_by: null, imported_at: null, imported_by: null,
+    research_notes: 'Original raw capture retained.',
+    raw_payload: { review_classification: 'unverified_capture', page_capture: { captured_text: 'Original page text' } }
+  };
+  const incoming = {
+    ...existing, task_key: 'task-20261107', raw_payload: {
+      review_classification: 'unverified_capture',
+      evidence: {
+        evidence_type: 'uk_new', observed_price: 319, price_currency: 'GBP',
+        item_condition_text: 'New', availability_text: 'In stock',
+        package_or_variant_text: 'Kobra S1 Standard Printer',
+        product_identity_text: 'Anycubic Kobra S1', match_observation: 'Exact model title match',
+        notes: 'Structured observation for ChatGPT review.'
+      }
+    }
+  };
+  const patch = buildCaptureEnrichmentPatch(existing, incoming, '2026-11-07T22:50:00.000Z');
+  assert.ok(patch);
+  assert.equal(patch.raw_payload.review_classification, 'unverified_capture');
+  assert.equal(patch.raw_payload.enrichment_history.length, 1);
+  assert.equal(patch.raw_payload.enrichment_history[0].task_key, 'task-20261107');
+  assert.equal(patch.raw_payload.enrichment_history[0].gemma_observed_price, 319);
+  assert.match(patch.research_notes, /unverified Gemma extraction/i);
+  assert.equal(patch.updated_at, '2026-11-07T22:50:00.000Z');
+  assert.equal('status' in patch, false);
+  assert.equal('observed_price' in patch, false);
+  assert.equal('evidence_type' in patch, false);
+});
+
+test('duplicate enrichment refuses reviewed, approved, imported, cross-category or already-enriched rows', () => {
+  const existing = {
+    status: 'needs_research', dedupe_key: 'capture-abc', category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers', manufacturer: 'Anycubic', model: 'Kobra S1', package_key: 'standard',
+    source_url: 'https://store.anycubic.com/products/kobra-s1', reviewed_at: null, reviewed_by: null,
+    approved_at: null, approved_by: null, imported_at: null, imported_by: null,
+    raw_payload: { review_classification: 'unverified_capture' }
+  };
+  const incoming = {
+    ...existing, task_key: 'task-20261107', raw_payload: {
+      review_classification: 'unverified_capture',
+      evidence: { evidence_type: 'uk_new', observed_price: 319, product_identity_text: 'Anycubic Kobra S1' }
+    }
+  };
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, reviewed_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, approved_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, imported_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, status: 'approved' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, category_slug: 'mobile-phones' }, incoming), null);
+  const alreadyEnriched = { ...existing, raw_payload: { ...existing.raw_payload, enrichment_history: [{ task_key: 'task-20261107', source_url: existing.source_url }] } };
+  assert.equal(buildCaptureEnrichmentPatch(alreadyEnriched, incoming), null);
 });

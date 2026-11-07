@@ -161,3 +161,11 @@ The owner visual editor's first-time layout conversion previously imported the c
 - Search mismatch: inspect the RPC's manufacturer/model/package/product_type matching; do not expose internal notes or evidence as a workaround.
 - Category URL not filtering first page: ensure query string is read before the initial RPC request.
 - Verify dropdown keyboard/click/mobile operation, search, category filter, result cards and pagination in both TEST and LIVE browsers. GitHub merge alone does not prove Worker deployment.
+
+
+## Public How It Works content refresh — 7 November 2026
+- Updated the source-managed public page in how-it-works.html (ten native accordion sections; the separate Catalogue & AI Research navigation menu is not counted as a content accordion).
+- Rewrote the catalogue research explanation to describe the central TradeFlow AI Research Centre, specialist Gemma agents, category-approved UK websites, exact product matching, UK-new/UK-used evidence and ChatGPT/Platform Owner review before import.
+- Clarified that subscribers use TradeFlow's centrally operated research capability and do not connect their own AI provider.
+- Clarified the manual shipping model: the customer pays the selected carrier directly; TradeFlow does not collect shipping charges or book courier services.
+- Replaced the obsolete GearCashOut public example panel with a link to TradeFlow Examples. The published page remains source-managed; no legacy How It Works CMS record is used.

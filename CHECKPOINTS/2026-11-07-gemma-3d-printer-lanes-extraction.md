@@ -36,7 +36,7 @@ The first subtask successfully discovered, fetched and preserved 9 pages. The fi
 ## Code branch and review
 - Feature branch: `feature/gemma-3d-printer-lanes-metrics-20261107`.
 - PR: https://github.com/laurendigitaluk/TradeFlow/pull/278
-- Current PR head at checkpoint update: `10a81ce7c7fed055cd391f59ffcfdad2a1962432` (latest code commit `0cb9f6b603a10769895d5fe1bd955c06a4a95982`; later commits are documentation/checkpoint updates).
+- Current PR head at checkpoint update: `c9e014612994dab3d0b6cb63984c45074e829105` (latest code commit `0cb9f6b603a10769895d5fe1bd955c06a4a95982`; later commits are documentation/checkpoint updates).
 - PR is open and unmerged. Do not merge or deploy without owner review.
 - GitHub Actions Gemma Research Tests runs 42411454578, 42411512585, 42411518602, 42411597295, 42411603001, 42411615477, 42411650325, 42411660316, 42411686018, 42411719991 and 42411824125 passed. Run 42411844905 for the README update also passed. All listed Gemma Research Tests runs are green.
 - The latest worker-code change adds a periodic LIVE telemetry heartbeat during active subtasks, preserving the current extraction stage while Ollama is waiting. Its CI run 42411824125 passed.

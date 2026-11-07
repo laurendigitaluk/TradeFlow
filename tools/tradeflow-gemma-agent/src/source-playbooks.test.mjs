@@ -90,15 +90,15 @@ test('3D printer instructions require category-to-product traversal and retain b
 
 test('collection pagination follows same-site next pages only and is bounded', () => {
   const html = [
-    '<a rel="next" href="/collections/3d-printers?page=2">Next</a>',
+    '<a rel="next" href="/uk/collections/3d-printers?page=2">Next</a>',
     '<a href="https://outside.example/collections/3d-printers?page=3">Next</a>',
-    '<a href="/collections/3d-printers?page=4">4</a>',
+    '<a href="/uk/collections/3d-printers?page=4">4</a>',
     '<a href="/products/creality-k1">Product</a>'
   ].join('');
   const links = extractCollectionPaginationLinks(html, 'https://store.creality.com/uk/collections/3d-printers', 3);
   assert.deepEqual(links, [
-    'https://store.creality.com/collections/3d-printers?page=2',
-    'https://store.creality.com/collections/3d-printers?page=4'
+    'https://store.creality.com/uk/collections/3d-printers?page=2',
+    'https://store.creality.com/uk/collections/3d-printers?page=4'
   ]);
 });
 

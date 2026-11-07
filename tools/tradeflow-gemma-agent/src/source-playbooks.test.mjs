@@ -104,14 +104,14 @@ test('collection pagination follows same-site next pages only and is bounded', (
 
 test('website search pagination follows same-host next and page links only', () => {
   const html = [
-    '<a rel="next" href="/search?q=Creality%20K1&page=2">Next</a>',
+    '<a rel="next" href="?q=Creality%20K1&page=2">Next</a>',
     '<a href="https://outside.example/search?page=3">Next</a>',
-    '<a href="/search?q=Creality%20K1&page=4">4</a>',
+    '<a href="?q=Creality%20K1&page=4">4</a>',
     '<a href="/products/creality-k1">Product</a>'
   ].join('');
   assert.deepEqual(extractSearchPaginationLinks(html, 'https://store.creality.com/uk/search?q=Creality%20K1', 2), [
-    'https://store.creality.com/search?q=Creality%20K1&page=2',
-    'https://store.creality.com/search?q=Creality%20K1&page=4'
+    'https://store.creality.com/uk/search?q=Creality%20K1&page=2',
+    'https://store.creality.com/uk/search?q=Creality%20K1&page=4'
   ]);
 });
 

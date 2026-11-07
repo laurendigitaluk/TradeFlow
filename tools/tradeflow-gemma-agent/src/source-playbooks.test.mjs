@@ -58,7 +58,7 @@ test('UK Gumtree individual adverts are accepted and second-hand category pages 
 });
 
 test('designated UK 3D printer retailer hosts accept individual product pages', () => {
-  for (const host of ['3dgbire.com','3dflo.com','bambu-lab-uk.myshopify.com','uk.anycubic.com','www.gumtree.com']) {
+  for (const host of ['3dgbire.com','3dflo.com','bambu-lab-uk.myshopify.com','uk.anycubic3d.com','www.gumtree.com']) {
     assert.equal(isEligibleProductPage('https://'+host+'/products/creality-k1', 'Creality K1 3D Printer'), true, host);
   }
 });

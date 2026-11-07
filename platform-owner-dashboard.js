@@ -386,6 +386,19 @@ $('sign-out').onclick=()=>{session=null;save();location.reload()};
   catch(e){showAuth('')}
 })();
 
+function renderGemmaResearcherCards(agents){
+ const host=$('gemma-researcher-cards');if(!host)return;
+ const specialists=(agents||[]).filter(a=>!String(a.agent_key||'').includes('worker')&&!/task control/i.test(String(a.category||'')));
+ const groups=new Map();
+ for(const a of specialists){const key=String(a.category||a.agent_name||'General research').trim();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(a)}
+ const order=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+ host.innerHTML=order.length?order.map(([category,list])=>{
+  const active=list.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
+  const completed=list.reduce((n,a)=>n+Number(a.tasks_completed||0),0),candidates=list.reduce((n,a)=>n+Number(a.candidates_found||0),0);
+  const agentsHtml=list.map(a=>'<div class="gemma-researcher-agent"><div><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong> '+gemmaStatus(a)+'</div><small>Current work: '+escapeHtml(a.current_task||'Idle')+' · Last heartbeat: '+gemmaDate(a.last_heartbeat)+'</small>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</div>').join('');
+  return '<article class="gemma-researcher-card"><div class="gemma-researcher-head"><div><span class="eyebrow">CATEGORY TEAM</span><h4>'+escapeHtml(category)+'</h4></div><span class="gemma-team-live">'+active+' active</span></div><div class="gemma-researcher-metrics"><div><strong>'+completed+'</strong><small>Tasks completed</small></div><div><strong>'+candidates+'</strong><small>Candidates found</small></div><div><strong>'+list.length+'</strong><small>Registered agents</small></div></div>'+agentsHtml+'</article>';
+ }).join(''):'<p class="muted">No category researchers are registered yet. Agent teams will appear here as they report their first heartbeat.</p>';
+}
 function gemmaDate(value){if(!value)return'Never';const d=new Date(value);if(Number.isNaN(d.getTime()))return'Unknown';return d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
 function gemmaStatus(agent){const age=agent.last_heartbeat?Date.now()-new Date(agent.last_heartbeat).getTime():Infinity;if(agent.status==='running'&&age<120000)return'<span class="gemma-status running">Running</span>';if(agent.status==='error')return'<span class="gemma-status error">Error</span>';if(agent.status==='paused')return'<span class="gemma-status paused">Paused</span>';if(age>300000)return'<span class="gemma-status offline">Offline / stale</span>';return'<span class="gemma-status idle">Idle</span>'}
 async function loadGemmaControlCentre(){
@@ -400,6 +413,7 @@ async function loadGemmaControlCentre(){
   $('gemma-candidate-count').textContent=agents.reduce((n,a)=>n+Number(a.candidates_found||0),0);
   $('gemma-evidence-count').textContent=agents.reduce((n,a)=>n+Number(a.evidence_queued||0),0);
   rows.innerHTML=agents.length?agents.map(a=>'<tr><td><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</td><td>'+escapeHtml(a.category||'—')+'</td><td>'+gemmaStatus(a)+'</td><td>'+escapeHtml(a.current_task||'—')+'</td><td>'+Number(a.tasks_completed||0)+'</td><td>'+Number(a.candidates_found||0)+'</td><td>'+gemmaDate(a.last_heartbeat)+'</td></tr>').join(''):'<tr><td colspan="7">No agent telemetry has been reported yet.</td></tr>';
+  renderGemmaResearcherCards(agents);
   activity.innerHTML=events.length?events.map(e=>'<article class="gemma-event"><div class="gemma-event-head"><strong>'+escapeHtml(e.agent_name||e.agent_key||'Agent')+'</strong><time>'+gemmaDate(e.created_at)+'</time></div><div>'+escapeHtml(e.message||e.event_type||'Activity')+'</div><small>'+escapeHtml(e.event_type||'event')+(e.task_key?' · '+escapeHtml(e.task_key):'')+'</small></article>').join(''):'<p class="muted">No activity has been reported yet.</p>';
   $('gemma-updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
  }catch(e){error.textContent=e.message||String(e);rows.innerHTML='<tr><td colspan="7">Unable to load agent telemetry.</td></tr>';activity.innerHTML='<p class="muted">Activity unavailable.</p>'}

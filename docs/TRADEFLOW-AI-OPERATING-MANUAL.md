@@ -8,8 +8,9 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 ## Agent roles and data flow
 1. **Platform Owner** defines priorities and posts instructions in the AI Agent Common Room.
 2. **Gemma category/research agents** receive queued catalogue research tasks on the Research PC, search category-approved UK sources, inspect direct product pages, validate exact model identity and visible GBP price/condition/availability, then stage candidate evidence.
-3. **ChatGPT supervisor** can inspect agent messages and staged research when actively working in a ChatGPT session, validate source/product fit and report issues. ChatGPT is not a continuously running background process.
-4. **Platform Owner/approved import workflow** decides whether validated evidence is accepted into the master catalogue. Neither a message nor a Gemma candidate automatically approves or imports data.
+3. **Research again** is a task-dispatch action, not just a review status: the Owner Dashboard must enqueue a new `catalogue_research` task via `platform_owner_enqueue_ai_agent_task` using the candidate's exact product identity and `uk_both`, then mark the candidate `needs_research`. Enqueue must succeed before the review-state update. The LIVE worker claims the task automatically. The candidate remains subject to owner/ChatGPT review.
+4. **ChatGPT supervisor** can inspect agent messages and staged research when actively working in a ChatGPT session, validate source/product fit and report issues. ChatGPT is not a continuously running background process.
+5. **Platform Owner/approved import workflow** decides whether validated evidence is accepted into the master catalogue. Neither a message nor a Gemma candidate automatically approves or imports data.
 
 ## Common Room protocol
 - Message types are instruction, handover, finding, question, learning_note and status_update.
@@ -20,7 +21,7 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 - Messages are not task dispatch, catalogue records, evidence rows, valuation inputs or customer communications.
 
 ## Continuity and release state
-The LIVE Common Room database migration and four additive routing/security migrations are installed. Dashboard and worker code are in PR #267; release and Research PC update/restart remain pending. The round-trip must be proven with a controlled owner instruction, worker read, worker handover and owner-visible message before the feature is described as operational.
+The LIVE Common Room database migration and four additive routing/security migrations are installed. PR #267 merged to production as `45049f5c4a1b131d95b701b2603fe0a351c392bd`. The Research PC worker was updated and one controlled LIVE research task completed with owner-visible handover and completion messages. The Research Again handler correction is under review on `fix/gemma-research-again-enqueue-20261107`; Cloudflare deployment and a separate owner-authored instruction-delivery test remain pending.
 
 Preserve the Research PC's dedicated .env and TRADEFLOW_GEMMA_ENV_FILE path. Never commit secrets. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
 
@@ -4160,3 +4161,7 @@ The merged production worker now includes the Common Room prompt context and tas
  
 ## Queue task validation refinement — 7 November 2026
 The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.
+
+
+## Research Again queue-dispatch correction — 7 November 2026
+The production `reviewGemmaCandidate()` handler previously called only `platform_owner_review_catalogue_research_item()`. For `needs_research`, that changed the candidate status but did not enqueue a worker task. The correction on `fix/gemma-research-again-enqueue-20261107` first calls `platform_owner_enqueue_ai_agent_task()` with one validated product task (`category_slug`, optional `branch_slug`, `agent_key`, manufacturer, model, package key/name, search query and `research_type: uk_both`), then records `needs_research`. If enqueue fails, the candidate is not moved out of its existing review state. No new database schema or service-role browser access is introduced. Cloudflare deployment and browser acceptance are still required.

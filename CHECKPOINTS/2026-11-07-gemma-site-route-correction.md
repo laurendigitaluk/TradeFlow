@@ -35,3 +35,13 @@ For these approved sources, useful pages were lost before individual page fetchi
 - TEST and LIVE remain separate. No schema, Stripe, Cloudflare, tenant, customer or payment data changed.
 - No Research PC files, .env, secrets, Ollama settings or worker process changed.
 - PR review and CI are required before merge. Do not deploy or update the Research PC until explicitly approved and the current active run is complete.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.

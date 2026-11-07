@@ -66,7 +66,7 @@ test('designated UK 3D printer retailer hosts accept individual product pages', 
 test('model matching ignores search query terms so accessories are not mistaken for the requested printer', () => {
   const accessory = 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V?keywords=Creality+K1';
   assert.equal(matchesTaskModel('Creality Leveling Extruder Filament', accessory, task), false);
-  assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);
+  assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);\n  assert.equal(matchesTaskModel('Creality K1 Max Combo 8-Color Printer', 'https://store.creality.com/uk/products/k1-max-combo', task), true);\n  assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), true);
 });
 
 test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product URL', () => {

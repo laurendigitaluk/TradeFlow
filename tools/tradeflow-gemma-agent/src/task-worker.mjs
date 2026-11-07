@@ -4,6 +4,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask } from './agent.mjs';
 import { normaliseProductResearchTasks } from './task-groups.mjs';
+import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -124,10 +125,6 @@ async function checkFirstAgentCommonRoom(){
  return {read:messages.length,replied:actionable.length};
  }finally{commonRoomCheckRunning=false;}
 }
-function agentIdentity(task){
- const key=String(task.agent_key||task.category_slug||task.branch_slug||'general-research').toLowerCase().replace(/[^a-z0-9]+/g,'-');
- return {agent_key:key,agent_name:'Gemma — '+(task.category_slug||task.branch_slug||'Catalogue research'),category:task.category_slug||task.branch_slug||'General research'};
-}
 async function processClaim(claim){
  const payload=claim.payload||{};
  if(claim.task_type!=='catalogue_research')throw new Error('Unsupported task type: '+claim.task_type);
@@ -143,7 +140,7 @@ async function processClaim(claim){
  try{
   for(const task of tasks){
    if(stopping)throw new Error('Worker stopping before all subtasks completed.');
-   const identity=agentIdentity(task);
+   const identity=resolveAgentIdentity(task);
    activeIdentity=identity; activeStage='task_started';
    const taskKey=claim.task_key;
    if(identity.agent_key===FIRST_AGENT_KEY) await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));

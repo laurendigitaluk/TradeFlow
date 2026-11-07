@@ -172,7 +172,7 @@ async function searchGoogle(query, env = {}) {
 }
 export async function searchWebResults(query, env = {}) {
   const clean = String(query || '').trim();
-  const quoted = clean.replace(/\\s+/g, ' ').split(' ').filter(Boolean).slice(0, 5).join(' ');
+  const quoted = clean.replace(/\s+/g, ' ').split(' ').filter(Boolean).slice(0, 5).join(' ');
   // General product discovery plus dedicated Amazon UK indexed discovery.
   // Amazon search-result URLs remain discovery-only; the normal direct-ASIN
   // page filter and source-page validation still decide what can be evidence.
@@ -562,7 +562,8 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
   }
   const probe = async source => {
     if (!source.domain) return [];
-    const domain = String(source.domain).replace(/^https?:\\/\\//i, '').replace(/^www\\./i, '').replace(/\\/$/, '');
+    const sourceUrl = new URL(/^https?:\/\//i.test(String(source.domain)) ? String(source.domain) : 'https://' + String(source.domain));
+    const domain = sourceUrl.hostname.replace(/^www\./i, '').toLowerCase();
     const sitePlaybook = getWebsiteInstructions(task.category_slug, domain);
     const attempts = buildWebsiteSearchRoutes(source, task);
     await onProgress?.({

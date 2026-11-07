@@ -1,3 +1,32 @@
+# CURRENT BACKEND OPERATING POSITION — 7 NOVEMBER 2026
+
+This block supersedes older conflicting operating instructions below; dated material is retained as history.
+
+## Owner dashboard and public content
+- Owner entry: platform-owner-dashboard.html; runtime: platform-owner-dashboard.js; styles: platform-owner-dashboard.css.
+- Nine main management sections use details.owner-section-accordion; the Overview statistics remain visible. initOwnerSectionAccordions() opens a matching panel for sidebar/hash navigation.
+- Public How It Works source: how-it-works.html / how-it-works.css (ten text-only accordion sections). The legacy platform_public_pages How It Works row does not drive this page. Examples remains CMS-backed.
+- The dashboard contains no Platform Configuration or AI-provider setup for subscribers. Do not add a subscriber BYO-AI provider workflow.
+
+## AI Agent Common Room
+- LIVE table: public.platform_ai_agent_messages; RLS enabled; no direct anon/authenticated table policies.
+- Owner RPCs: platform_owner_list_ai_agent_messages(...) and platform_owner_post_ai_agent_message(...); owner authorization checks an authenticated user with an active platform_memberships row.
+- Agent RPCs: platform_ai_agent_list_messages(...) and platform_ai_agent_post_message(...); executable by service_role only. Agent posting cannot create owner-only instruction messages.
+- Message types: instruction, handover, finding, question, learning_note, status_update. Message rows are not queue tasks, candidate evidence, approvals or catalogue imports.
+- LIVE migration 20261107190000_platform_ai_agent_common_room has been applied. Security checks confirmed anon/authenticated cannot directly read or write the table and agent RPCs are service-role-only.
+
+## Gemma worker integration
+- Worker entry: tools/tradeflow-gemma-agent/src/task-worker.mjs; research and extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
+- The worker reads shared notes from the LIVE Common Room and passes a bounded set into the Ollama extraction prompt. These notes are untrusted operational guidance and cannot override task identity, source allow-listing, UK/GBP rules, direct product-page checks, evidence validation or review gates.
+- The worker posts task status and a handover containing candidate/staged counts. A handover does not approve the candidates.
+- The local PC environment file is resolved through TRADEFLOW_GEMMA_ENV_FILE; preserve its existing value and separate .env file. Never copy service-role secrets into the repo or browser.
+- The Research PC has not yet been updated/restarted. Verify owner instruction → worker read → handover post → owner-visible message before calling the integration operational.
+
+## Release boundary
+The LIVE database migration is installed. The combined dashboard/worker/docs feature remains on PR #267, not yet merged or deployed. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
+
+---
+
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
 >
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.

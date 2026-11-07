@@ -11,15 +11,15 @@ $Updater = Join-Path $env:TEMP 'Update-TradeFlow-Gemma.ps1'
 Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/laurendigitaluk/TradeFlow/production/tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1' -OutFile $Updater
 ```
 
-For a first installation, choose a new dedicated code folder (do not use the retired GearCashOut source folder). Example:
+The current Research PC TradeFlow installation is already in its dedicated folder. Update it in place using the existing TradeFlow `.env` in that same folder. Do not point this at the separate GearCashOut configuration or source folders.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File $Updater -InstallPath 'C:\TradeFlowGemmaAgent' -EnvFile 'D:\PATH\TO\YOUR\EXISTING\PRIVATE.env' -NewInstall
 ```
 
-For an existing TradeFlow Gemma installation, omit `-NewInstall` and supply its existing code folder and the exact existing private environment-file path.
+The existing private TradeFlow environment file is `C:\\CTFGemma2\\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\\tools\\tradeflow-gemma-agent\\.env`. The separate `C:\\GearCashOut-Config\\.env` belongs to the old GearCashOut setup and must not be used or changed.
 
-Replace the example environment path with the actual path already used on the Research PC. Do not create a replacement .env file, move it, rename it or paste its contents into ChatGPT/GitHub.
+The updater validates the existing TradeFlow .env without printing its values. Do not create a replacement .env file, move it, rename it or paste its contents into ChatGPT/GitHub.
 
 ## Start the worker after the update
 
@@ -30,7 +30,7 @@ $env:TRADEFLOW_GEMMA_ENV_FILE = 'D:\PATH\TO\YOUR\EXISTING\PRIVATE.env'
 node 'C:\TradeFlowGemmaAgent\src\task-worker.mjs'
 ```
 
-Use the same paths you supplied to the updater. The worker window stays open while it polls the LIVE queue. Press Ctrl+C to stop it cleanly.
+Use the same existing folder and .env path. The worker window stays open while it polls the LIVE queue. Press Ctrl+C to stop it cleanly.
 
 Alternatively, add `-StartWorker` to the updater command to start the worker immediately after updating and testing.
 

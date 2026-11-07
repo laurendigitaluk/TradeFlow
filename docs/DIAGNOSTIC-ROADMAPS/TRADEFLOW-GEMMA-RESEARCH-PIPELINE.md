@@ -282,3 +282,11 @@ LIVE review found that the short model identifier `A1` allowed Audi A1 car pages
 - Idle heartbeat interpretation: production `task-worker.mjs` starts the lease/status heartbeat interval inside `processClaim()`; it is not a continuous idle-poll heartbeat. An old last-heartbeat timestamp while status is `idle` and `current_task` is null is therefore not proof that the process is dead. The Sigma task temporarily refreshed the 3D row because of the identity mismatch.
 - Scope: telemetry/Common Room attribution only. No queue/evidence/catalogue writes, no source registry change, no TEST/LIVE data copy, no secrets or local environment changes. No 3D research task was queued.
 - PR: https://github.com/laurendigitaluk/TradeFlow/pull/283. CI and review remain the verification gate; no merge/deployment is authorised by this note.
+
+
+## Verification update — 7 November 2026
+
+- Initial PR CI run 42425821009 completed successfully with 32 tests, but inspection of its logs showed the workflow's explicit test command did not include the new `agent-identity.test.mjs` file. Therefore that run did not execute the five new regression tests.
+- The PR branch now updates `.github/workflows/gemma-research-tests.yml` to include `agent-identity.test.mjs` in the test command.
+- The exact new module and five regression tests were run locally with Node's test runner: 5 passed, 0 failed. A new GitHub Actions run covering the updated workflow has not yet been observed; do not describe the new tests as CI-verified.
+- PR #283 remains open and unmerged. No deployment, Research PC update, worker restart, database mutation or new task was performed.

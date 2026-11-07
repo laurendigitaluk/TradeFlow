@@ -87,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await window.loadPublicPages?.();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadAiAgentCommonRoom();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -380,7 +380,7 @@ $('platform-email-form').onsubmit=savePlatformEmail;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),loadGemmaBatchCategories(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),loadGemmaBatchCategories(),loadAiAgentCommonRoom(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -512,7 +512,7 @@ $('gemma-task-submit')?.addEventListener('click',submitGemmaBatch);$('gemma-task
 $('gemma-researcher-cards')?.addEventListener('click',e=>{const b=e.target.closest('[data-manage-sources]');if(b)loadGemmaSources(b.dataset.manageSources)});
 $('gemma-source-close')?.addEventListener('click',()=>$('gemma-source-manager').hidden=true);
 $('gemma-source-form')?.addEventListener('submit',addGemmaResearchSource);
-setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue()}},20000);
+setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue();loadAiAgentCommonRoom()}},20000);
 
 /* AI Agent Common Room — LIVE shared collaboration feed. */
 function aiRoomEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}

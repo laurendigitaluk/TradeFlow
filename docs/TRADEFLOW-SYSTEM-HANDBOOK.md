@@ -2,7 +2,7 @@
 
 ## Owner Dashboard and public-page state — 7 November 2026
 
-The Platform Owner dashboard is being standardised around eight native collapsible sections: Product details (name, headline and tagline), Subscriber businesses, Domain connection requests, TradeFlow plan and pricing, Public Website Pages, Gemma Control Centre, Complimentary subscriber accounts, and Platform email settings. The overview statistics remain visible. Sidebar anchor links expand the corresponding section. The implementation branch is `feature/owner-dashboard-dropdown-sections-20261107`; it is not yet merged or deployed.
+The Platform Owner dashboard is being standardised around eight native collapsible sections: Product details (name, headline and tagline), Subscriber businesses, Domain connection requests, TradeFlow plan and pricing, Public Website Pages, Gemma Control Centre, Complimentary subscriber accounts, and Platform email settings. The overview statistics remain visible. Sidebar anchor links expand the corresponding section. The implementation branch is `feature/owner-dashboard-dropdown-sections-20261107` (PR [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266)); it is not yet merged or deployed.
 
 - Owner authentication remains in `platform-owner-dashboard.js`: the `tradeflow_platform_owner_session` session is verified through Supabase Auth and an active `platform_memberships` row. Platform Owner access is separate from tenant membership.
 - The dashboard retains the existing business, domain, plan, product-page, email, complimentary-subscriber and Gemma workflows. This layout change does not change their RPCs, Edge Functions, permissions or data.

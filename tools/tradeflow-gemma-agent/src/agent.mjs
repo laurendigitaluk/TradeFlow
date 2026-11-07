@@ -473,7 +473,7 @@ export function buildExtractionPrompt(task, pages) {
 }
 
 function fallbackPageCapture(task, source, reason) {
-  const host = new URL(source.url).hostname.replace(/^www\\./, '');
+  const host = new URL(source.url).hostname.replace(/^www\./, '');
   return {
     source_id: source.source_id,
     page_title: source.title || '',
@@ -546,7 +546,7 @@ export async function extractBatch(task, pages, env) {
         if (row && byId.has(row.source_id) && !returned.has(row.source_id)) returned.set(row.source_id, row);
       }
       for (const source of batch) {
-        const host = new URL(source.url).hostname.replace(/^www\\./, '');
+        const host = new URL(source.url).hostname.replace(/^www\./, '');
         const row = returned.get(source.source_id);
         let finding;
         if (!row) {
@@ -925,7 +925,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         const validationInput = {
           ...finding,
           source_url: source.url,
-          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\\./, ''),
+          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\./, ''),
           price_currency: hasPrice ? 'GBP' : null,
           sales_channel: new URL(source.url).hostname,
           observed_price: hasPrice ? price : null,
@@ -973,7 +973,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   } else {
     await onProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
-  await onProgress?.({ stage: 'handoff', message: 'Research complete; verified candidates and clearly labelled borderline findings are staged in the LIVE owner review queue. Borderline findings require ChatGPT inspection and cannot be approved from the dashboard.' });
+  await onProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const writes = [];
   for (const evidence of candidates) {
     const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0, 32);
@@ -985,7 +985,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       category_slug: task.category_slug, branch_slug: task.branch_slug || null,
       manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
       package_name: task.package_name, evidence_type: ['uk_new','uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
-      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\\./, ''),
+      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\./, ''),
       source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
       price_currency: usablePrice ? 'GBP' : null,
       item_condition: evidence.item_condition || evidence.item_condition_text || null,

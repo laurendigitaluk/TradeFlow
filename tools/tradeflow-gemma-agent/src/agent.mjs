@@ -254,7 +254,7 @@ export function matchesTaskModel(title, url, task = {}) {
     const manufacturerMatches = manufacturerTokens.length > 0 &&
       manufacturerTokens.every(token => identity.includes(' ' + token + ' '));
     const explicitPrinterContext = /\b3d printers?\b/.test(identity);
-    const automotiveRoute = /(?:^|\/)cars-vans-motorbikes(?:\/|$)|(?:^|\/)cars(?:\/|$)|(?:^|\/)motorbikes(?:\/|$)/i.test(urlIdentity);
+    const automotiveRoute = /\b(?:cars-vans-motorbikes|cars|motorbikes)\b/i.test(urlIdentity);
     if (automotiveRoute || (!manufacturerMatches && !explicitPrinterContext)) return false;
   }
   return true;

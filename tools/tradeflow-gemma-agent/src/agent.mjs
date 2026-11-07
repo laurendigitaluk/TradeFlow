@@ -245,6 +245,22 @@ export function matchesTaskModel(title, url, task = {}) {
   return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2', 'series', 'upgrade', 'accessory', 'kit', 'cfs'].includes(firstSuffix);
 }
 
+export function extractSearchPaginationLinks(html, baseUrl, limit = 2) {
+  const rows = [], seen = new Set(), anchors = /<a\\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\\s\\S]*?)<\\/a>/gi;
+  let match, base; try { base = new URL(baseUrl); } catch { return []; }
+  while ((match = anchors.exec(String(html || '')))) {
+    let url; try { url = new URL(match[2].replace(/&amp;/g, '&'), base); } catch { continue; }
+    const attrs = (match[1] + ' ' + match[3]).toLowerCase(), label = stripSearchHtml(match[4]).toLowerCase();
+    const pathPage = /\\/page\\/[2-9][0-9]*\\/?$/i.test(url.pathname);
+    const queryPage = ['page','_pgn','p','offset','start'].some(key => url.searchParams.has(key) && Number(url.searchParams.get(key)) > Number(base.searchParams.get(key) || 1));
+    const next = /rel=["'][^"']*next/i.test(attrs) || /^(next|older|›|»|→)$/.test(label) || pathPage || queryPage;
+    if (!next || url.hostname !== base.hostname || url.href === base.href) continue;
+    const key = url.href.split('#')[0]; if (!seen.has(key)) { seen.add(key); rows.push(key); }
+    if (rows.length >= Math.max(1, Math.min(3, Number(limit) || 2))) break;
+  }
+  return rows;
+}
+
 export function extractCollectionPaginationLinks(html, baseUrl, limit = 3) {
   const rows = [], seen = new Set(), anchors = /<a\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/gi;
   let match, base; try { base = new URL(baseUrl); } catch { return []; }
@@ -593,13 +609,26 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
     const routeResults = await Promise.all(attempts.map(async (searchUrl, routeIndex) => {
       await onProgress?.({ stage: 'approved_source_route_attempt', source: domain, checked: routeIndex + 1, total: attempts.length, message: 'Checking route ' + (routeIndex + 1) + ' of ' + attempts.length + ' on ' + domain + ': ' + searchUrl });
       try {
-        const pageResult = await fetchSearchHtml(searchUrl, 8000), matches = [];
-        if (isEligibleProductPage(pageResult.url, pageResult.title) && matchesTaskModel(pageResult.title, pageResult.url, task)) matches.push({ title: pageResult.title || source.source_name + ' ' + task.model, url: pageResult.url, description: 'Approved direct product page: ' + (source.source_name || domain), provider: 'approved_source' });
-        if (isCollectionDiscoveryPage(pageResult.url, source.source_name + ' ' + task.model) && matchesTaskModel(source.source_name + ' ' + task.model, pageResult.url, task)) matches.push({ title: source.source_name + ' ' + task.model + ' collection', url: pageResult.url, description: 'Approved collection discovery: ' + (source.source_name || domain), provider: 'approved_source' });
-        for (const item of extractSearchLinks(pageResult.html, pageResult.url)) {
-          const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' '), direct = isEligibleProductPage(item.url, item.title), collection = isCollectionDiscoveryPage(item.url, item.title);
-          if (!model || !identity.includes(model) || (!direct && !collection)) continue;
-          matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
+        const pageResult = await fetchSearchHtml(searchUrl, 8000), matches = [], searchPages = [pageResult];
+        for (const nextUrl of extractSearchPaginationLinks(pageResult.html, pageResult.url, 2)) {
+          try {
+            const nextPage = await fetchSearchHtml(nextUrl, 8000);
+            if (new URL(nextPage.url).hostname === domain) {
+              searchPages.push(nextPage);
+              await onProgress?.({ stage: 'approved_source_pagination', source: domain, total: searchPages.length, message: 'Followed website search pagination page ' + searchPages.length + ' on ' + domain });
+            }
+          } catch (error) {
+            await onProgress?.({ stage: 'approved_source_pagination_error', source: domain, message: 'Search pagination could not be opened on ' + domain + ': ' + error.message });
+          }
+        }
+        for (const resultPage of searchPages) {
+          if (isEligibleProductPage(resultPage.url, resultPage.title) && matchesTaskModel(resultPage.title, resultPage.url, task)) matches.push({ title: resultPage.title || source.source_name + ' ' + task.model, url: resultPage.url, description: 'Approved direct product page: ' + (source.source_name || domain), provider: 'approved_source' });
+          if (isCollectionDiscoveryPage(resultPage.url, source.source_name + ' ' + task.model) && matchesTaskModel(source.source_name + ' ' + task.model, resultPage.url, task)) matches.push({ title: source.source_name + ' ' + task.model + ' collection', url: resultPage.url, description: 'Approved collection discovery: ' + (source.source_name || domain), provider: 'approved_source' });
+          for (const item of extractSearchLinks(resultPage.html, resultPage.url)) {
+            const identity = (item.title + ' ' + item.url).toLowerCase().replace(/[^a-z0-9]+/g, ' '), direct = isEligibleProductPage(item.url, item.title), collection = isCollectionDiscoveryPage(item.url, item.title);
+            if (!model || !identity.includes(model) || (!direct && !collection)) continue;
+            matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
+          }
         }
         await onProgress?.({ stage: matches.length ? 'approved_source_route_found' : 'approved_source_empty', source: domain, checked: routeIndex + 1, total: attempts.length, total_matches: matches.length, message: matches.length ? 'Route ' + (routeIndex + 1) + ' found ' + matches.length + ' matching link(s); continuing through remaining routes.' : 'Route ' + (routeIndex + 1) + ' returned no matching links: ' + searchUrl });
         return matches;

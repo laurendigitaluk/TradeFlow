@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -222,12 +222,23 @@ test('category-scoped web search and host validation obey the new/used lane', ()
   assert.equal(isAllowedSourceHost('https://www.amazon.co.uk/dp/B000000000', laneSources, usedTask), true);
 });
 
-test('3D printer web search defaults to 30 results without changing other categories', () => {
-  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, {}), 30);
-  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '24' }), 24);
-  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '80' }), 30);
+test('3D printer web search defaults to 30 results only for the 3D Printers branch', () => {
+  const printerTask = { category_slug: '3d-printers-equipment', branch_slug: '3d-printers' };
+  assert.equal(is3dPrinterResearchTask(printerTask), true);
+  assert.equal(searchResultsLimitForTask(printerTask, {}), 30);
+  assert.equal(searchResultsLimitForTask(printerTask, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '24' }), 24);
+  assert.equal(searchResultsLimitForTask(printerTask, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '80' }), 30);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment', branch_slug: 'other' }, {}), 18);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, {}), 18);
   assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, {}), 18);
   assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, { SEARCH_RESULTS_PER_TASK: '12' }), 12);
+});
+
+test('new/used lane routing does not change other catalogue categories', () => {
+  const mobileUsedTask = { ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones', research_type: 'uk_used' };
+  assert.equal(is3dPrinterResearchTask(mobileUsedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[1], mobileUsedTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[3], mobileUsedTask), true);
 });
 
 test('GBP price extraction recognises HTML pound entities after page text normalisation', () => {

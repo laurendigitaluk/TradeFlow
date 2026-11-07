@@ -246,7 +246,7 @@ export function matchesTaskModel(title, url, task = {}) {
 }
 
 export function extractCollectionPaginationLinks(html, baseUrl, limit = 3) {
-  const rows = [], seen = new Set(), anchors = /<a\\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\\s\\S]*?)<\\/a>/gi;
+  const rows = [], seen = new Set(), anchors = /<a\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/gi;
   let match, base; try { base = new URL(baseUrl); } catch { return []; }
   while ((match = anchors.exec(String(html || '')))) {
     let url; try { url = new URL(match[2].replace(/&amp;/g, '&'), base); } catch { continue; }
@@ -457,7 +457,7 @@ export async function extractBatch(task, pages, env) {
     const mapRows = (rows, classification) => {
       const seen = new Set();
       return rows.filter(row => row && byId.has(row.source_id) && !seen.has(row.source_id) && seen.add(row.source_id)).map(row => {
-        const source = byId.get(row.source_id), host = new URL(source.url).hostname.replace(/^www\\./, '');
+        const source = byId.get(row.source_id), host = new URL(source.url).hostname.replace(/^www\./, '');
         return { ...row, review_classification: classification, evidence_type: classification === 'verified' ? (task.research_type === 'uk_both' ? row.evidence_type : task.research_type) : null,
           source_name: host, source_url: source.url, price_currency: classification === 'verified' || (row.observed_price != null && hasVisibleUkPrice(source.text)) ? 'GBP' : null,
           sales_channel: host, source_excerpt: source.text.slice(0, 2500) };
@@ -586,8 +586,8 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
   }
   const probe = async source => {
     if (!source.domain) return [];
-    const sourceUrl = new URL(/^https?:\\/\\//i.test(String(source.domain)) ? String(source.domain) : 'https://' + String(source.domain));
-    const domain = sourceUrl.hostname.replace(/^www\\./i, '').toLowerCase();
+    const sourceUrl = new URL(/^https?:\/\//i.test(String(source.domain)) ? String(source.domain) : 'https://' + String(source.domain));
+    const domain = sourceUrl.hostname.replace(/^www\./i, '').toLowerCase();
     const sitePlaybook = getWebsiteInstructions(task.category_slug, domain), attempts = buildWebsiteSearchRoutes(source, task);
     await onProgress?.({ stage: 'approved_source_probe_started', source: domain, total: attempts.length, message: 'Deep-searching ' + (sitePlaybook?.label || source.source_name || domain) + ': checking every configured route, not stopping at the first match. ' + (sitePlaybook?.navigation || 'Follow category branches to exact-model product pages; collections are discovery only.') });
     const routeResults = await Promise.all(attempts.map(async (searchUrl, routeIndex) => {
@@ -722,9 +722,9 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       for (const result of collectionPages) {
         let links = extractCollectionProductLinks(result.html, result.url, task, 24), method = 'collection HTML product links';
         if (!links.length) {
-          const host = new URL(result.url).hostname.replace(/^www\\./i, '').toLowerCase(), site = getWebsiteInstructions(task.category_slug, host);
+          const host = new URL(result.url).hostname.replace(/^www\./i, '').toLowerCase(), site = getWebsiteInstructions(task.category_slug, host);
           if (site?.collectionApi === 'shopify') {
-            const collection = new URL(result.url), jsonUrl = new URL(collection.pathname.replace(/\\/$/, '') + '/products.json?limit=50', collection.origin).toString();
+            const collection = new URL(result.url), jsonUrl = new URL(collection.pathname.replace(/\/$/, '') + '/products.json?limit=50', collection.origin).toString();
             const response = await fetch(jsonUrl, { redirect: 'follow', headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradeFlowGemmaResearch/0.2)', 'Accept': 'application/json', 'Accept-Language': 'en-GB,en;q=0.9' }, signal: AbortSignal.timeout(12000) });
             if (!response.ok) throw new Error('Shopify collection products JSON HTTP ' + response.status);
             links = extractShopifyCollectionProducts(await response.json(), result.url, task, 24); method = 'website-approved Shopify collection products JSON';
@@ -752,7 +752,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       const index = offset + batchIndex;
       await onProgress?.({
         stage: 'fetching_page', source: source.url, checked: index + 1, total: directPages.length,
-        message: 'Fetching eligible product page ' + (index + 1) + ' of ' + eligible.length + ': ' + source.url
+        message: 'Fetching eligible product page ' + (index + 1) + ' of ' + directPages.length + ': ' + source.url
       });
       try {
         const result = await page(source.url, task);
@@ -773,7 +773,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   if (fetched.length) {
     await onProgress?.({
       stage: 'batch_extracting', total: fetched.length,
-      message: 'Sending ' + fetched.length + ' price-bearing product page(s) to Gemma in one batch'
+      message: 'Sending ' + fetched.length + ' individual product page(s) to Gemma for verified or borderline evidence extraction'
     });
     try {
       const extracted = await extractBatch(task, fetched, env), byId = new Map(fetched.map(item => [item.source_id, item]));

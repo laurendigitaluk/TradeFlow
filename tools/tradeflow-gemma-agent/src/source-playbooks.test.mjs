@@ -72,7 +72,7 @@ test('model matching ignores search query terms so accessories are not mistaken 
 });
 
 test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
-  const a1Task = { ...task, manufacturer: 'Bambu Lab', model: 'A1' };
+  const a1Task = { ...task, branch_slug: '3d-printers', manufacturer: 'Bambu Lab', model: 'A1' };
   assert.equal(
     matchesTaskModel('Used Audi A1 for Sale in Narberth', 'https://www.gumtree.com/cars-vans-motorbikes/cars/audi/a1/uk/narberth', a1Task),
     false

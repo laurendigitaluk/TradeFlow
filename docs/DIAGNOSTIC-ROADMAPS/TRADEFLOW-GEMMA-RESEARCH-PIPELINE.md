@@ -70,3 +70,5 @@ Updated: 7 November 2026
 - Owner-only instruction posts are separated from agent post types. Messages are not research jobs or approved evidence.
 - Branch `feature/ai-agent-common-room-20261107`; migration, worker and owner UI not yet merged/applied/deployed. PC restart and round-trip acceptance are required.
 - Never expose service-role credentials in browser/subscriber UI/GitHub. Preserve the PC `.env` and configured env-file path.
+
+null

@@ -58,7 +58,7 @@ The layout uses native `details.owner-section-accordion` wrappers in `platform-o
 ## Known failure points and verification
 - A valid Supabase session without an active `platform_memberships` row must be denied Platform Owner access.
 - Never assume a GitHub commit proves Cloudflare deployment or browser behaviour.
-- Check stale cached CSS/JS by confirming asset versions (`platform-owner-dashboard.css?v=10`, `platform-owner-dashboard.js?v=25`).
+- Check stale cached CSS/JS by confirming asset versions (`platform-owner-dashboard.css?v=10`, `platform-owner-dashboard.js?v=26`).
 - Verify sidebar links open the right section, direct hash links expand on load, buttons still work after their DOM nodes are moved inside `details`, and keyboard focus remains visible.
 - Verify each owner section on desktop and mobile, including the Gemma batch form, queue review buttons, source manager, domain workflow, product-page forms and public-page editor.
 - Verify the static How It Works page separately; do not test it through the legacy JSON CMS as a proxy.

@@ -1,10 +1,31 @@
 import os from 'node:os';
-import { combineProductResearchTasks } from './task-groups.mjs';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask } from './agent.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
+
+// Each queue payload contains independent product tasks. Keep each product
+// separate for runTask's exact manufacturer/model/package validation, while
+// removing accidental duplicate task definitions within the same queue claim.
+function combineProductResearchTasks(tasks){
+ const seen=new Set();
+ return (Array.isArray(tasks)?tasks:[]).filter(task=>{
+  if(!task||typeof task!=='object'||Array.isArray(task))return false;
+  const key=[
+   task.category_slug||'',
+   task.branch_slug||'',
+   task.agent_key||'',
+   task.manufacturer||'',
+   task.model||'',
+   task.package_key||'',
+   task.research_type||''
+  ].map(value=>String(value).trim().toLowerCase()).join('|');
+  if(seen.has(key))return false;
+  seen.add(key);
+  return true;
+ });
+}
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');

@@ -3621,3 +3621,29 @@ The Platform Owner dashboard now includes a LIVE **AI Agent Common Room** alongs
 - TEST and LIVE remain separate. Common Room collaboration is designed for LIVE; no TEST business data is copied.
 
 The public How It Works page remains a source-managed, ten-section text-only accordion in `how-it-works.html` and `how-it-works.css`. It is not an owner CMS field. Ask for a source change when the wording needs updating. Examples remains dashboard-editable.
+
+## AI Agent Common Room — LIVE integration checkpoint — 7 November 2026
+
+The persistent Common Room schema has been applied to TradeFlow LIVE using migration `20261107190000_platform_ai_agent_common_room`. Read-only privilege checks confirm:
+- `platform_ai_agent_messages` exists with RLS enabled and zero direct anon/authenticated policies.
+- Anonymous cannot execute owner or agent message RPCs.
+- Authenticated can execute the owner-list RPC, which checks active `platform_memberships`.
+- Only `service_role` can execute the agent read/post RPCs; authenticated cannot.
+- No messages were seeded and no customer/tenant data was copied.
+
+The dashboard UI, worker integration and manuals remain on branch `feature/ai-agent-common-room-20261107`. The Common Room has not yet been merged or deployed, and the PC worker has not yet been updated/restarted. Do not describe the round-trip as working until the worker starts, reads an owner instruction, posts a handover, and the owner dashboard displays that response.
+
+## Documentation index — owner dashboard
+
+The five dashboard manual links point to:
+- System Handbook: `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- Human User Manual: `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+- Subscriber Manual: `subscriber-website-manual.html`
+- Backend User Manual: `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`
+- AI Operating Manual: `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+
+Backend Operations Manual: `docs/TRADEFLOW-BACKEND-OPERATIONS-MANUAL.md`. Gemma diagnostic roadmap: `docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-GEMMA-RESEARCH-PIPELINE.md`.
+
+## AI Agent Common Room architecture — current release boundary
+
+The LIVE Common Room table and security functions are installed. Dashboard/worker code is still on feature PR; deployment and PC round-trip tests remain pending. Do not treat message history as evidence approval or task dispatch.

@@ -516,7 +516,7 @@ export function extractGemmaFindingRows(parsed) {
   if (!parsed || typeof parsed !== 'object') return null;
   const containers = [parsed, parsed.data, parsed.result, parsed.output, parsed.response]
     .filter(value => value && typeof value === 'object' && !Array.isArray(value));
-  const keys = ['findings','evidence','borderline','results','items','pages','observations','records'];
+  const keys = ['findings','evidence','borderline','results','items','pages','observations','records','data','result','output','response'];
   for (const container of containers) {
     const rows = keys.flatMap(key => Array.isArray(container[key]) ? container[key] : []);
     if (rows.length) return rows;

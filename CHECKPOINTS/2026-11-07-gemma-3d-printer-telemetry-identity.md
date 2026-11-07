@@ -24,3 +24,11 @@ PR: https://github.com/laurendigitaluk/TradeFlow/pull/283
 - No Supabase data, source registry, queue, evidence, catalogue, approvals or imports were changed.
 - No TEST/LIVE crossover, credentials, local .env, Research PC files, worker process, merge, deployment or new research task was touched.
 - This PR only corrects future attribution. Historical 3D `tasks_completed=51` is not rewritten.
+
+
+## Verification update — 7 November 2026
+
+- Initial PR CI run 42425821009 completed successfully with 32 tests, but inspection of its logs showed the workflow's explicit test command did not include the new `agent-identity.test.mjs` file. Therefore that run did not execute the five new regression tests.
+- The PR branch now updates `.github/workflows/gemma-research-tests.yml` to include `agent-identity.test.mjs` in the test command.
+- The exact new module and five regression tests were run locally with Node's test runner: 5 passed, 0 failed. A new GitHub Actions run covering the updated workflow has not yet been observed; do not describe the new tests as CI-verified.
+- PR #283 remains open and unmerged. No deployment, Research PC update, worker restart, database mutation or new task was performed.

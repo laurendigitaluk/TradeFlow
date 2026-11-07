@@ -810,11 +810,17 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       for (const evidence of extracted.evidence) {
         const source = byId.get(evidence.source_id), validation = validate(evidence, task, source.text);
         if (validation.valid) candidates.push(evidence);
-        else await onProgress?.({ stage: 'validation_rejected', source: source.url, message: 'Evidence failed validation: ' + validation.errors.join('; ') });
+        else {
+          const notes = 'BORDERLINE — ChatGPT inspection required. The page matched the exact product, but automated validation found: ' + validation.errors.join('; ');
+          candidates.push({ review_classification: 'borderline', source_id: evidence.source_id, source_name: new URL(source.url).hostname.replace(/^www\\./, ''),
+            source_url: source.url, sales_channel: new URL(source.url).hostname, evidence_type: null, observed_price: null, price_currency: null,
+            item_condition: null, availability: null, source_excerpt: source.text.slice(0, 2500), notes });
+          await onProgress?.({ stage: 'validation_borderline', source: source.url, message: notes });
+        }
       }
       for (const borderline of extracted.borderline) {
         const source = byId.get(borderline.source_id);
-        if (!source || !matchesTaskModel(source.title, source.url, task)) continue;
+        if (!source || !matchesTaskModel(source.title, source.url, task) || candidates.some(item => item.review_classification === 'borderline' && item.source_url === source.url)) continue;
         borderline.review_classification = 'borderline'; borderline.evidence_type = null; borderline.observed_price = null; borderline.price_currency = null;
         borderline.notes = 'BORDERLINE — ChatGPT inspection required. ' + String(borderline.reason || 'One or more evidence fields are incomplete or ambiguous.').slice(0, 500);
         candidates.push(borderline);

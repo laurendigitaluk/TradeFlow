@@ -18,6 +18,8 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 - Price extraction must handle visible £ values and GBP values produced when HTML pound entities are normalised. Keep all visible price mentions and context; do not choose the correct bundle price automatically.
 - Anti-bot challenge/captcha pages are blocked discovery results, not product pages. Do not bypass access controls.
 - Per-batch extraction progress and route/page metrics are surfaced in LIVE telemetry and Common Room handovers so a slow Ollama batch can be distinguished from a dead worker and source-route failures can be measured.
+- The extraction parser accepts the required findings array and common recognised JSON envelopes; unknown top-level shapes are reported with their keys. Missing/invalid structured output must never erase a fetched page: retain the raw capture for ChatGPT.
+- In the first controlled Anycubic Kobra S1 subtask, 9 fetched pages retained visible GBP price mentions, but all 9 structured price/evidence fields were null because Gemma returned JSON without a recognised findings array. This locates the first failure after page fetch, at response-envelope parsing; the raw capture fallback worked. PR #278 adds parser compatibility and diagnostics.
 - PR #278 is open and unmerged: https://github.com/laurendigitaluk/TradeFlow/pull/278. CI run 42411454578 passed the current syntax and regression suite. These changes are not yet installed on the Research PC or live runtime. After review/merge, update in place with the existing updater, preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE, and run a controlled LIVE acceptance test. No evidence approval/import is added.
 
 ## Common Room protocol

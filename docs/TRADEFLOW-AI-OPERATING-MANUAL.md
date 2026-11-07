@@ -4093,4 +4093,30 @@ The production Platform Owner dashboard has a proposed **Gemma Control Centre** 
 - Production-branch code changes were committed directly to `production`, not a feature branch. Do not claim the Cloudflare deployment or authenticated browser acceptance is complete until verified.
 
 
-Batch-control safety note: Pokémon Trading Cards is not available in the Gemma batch selector while research remains unlinked. Do not dispatch Pokémon tasks until sources are explicitly assigned and verified. When a batch smaller than the current selection is queued, only the submitted products are removed from selection; remaining products stay selected for the next batch. 
+Batch-control safety note: Pokémon Trading Cards is not available in the Gemma batch selector while research remains unlinked. Do not dispatch Pokémon tasks until sources are explicitly assigned and verified. When a batch smaller than the current selection is queued, only the submitted products are removed from selection; remaining products stay selected for the next batch.
+
+## AI Agent Common Room — operating instructions — 7 November 2026
+
+The AI Agent Common Room is the shared coordination space for Platform Owner, ChatGPT supervisor workflows and Gemma research agents. It is separate from the product research queue and evidence approval process.
+
+### Roles
+- **Platform Owner:** read messages, post instructions, ask questions, add learning notes, filter by category/thread, inspect handovers and review activity.
+- **Gemma Research PC worker:** read the shared feed and post status updates, task handovers, findings, questions and learning notes. Agent RPCs require the LIVE service role.
+- **ChatGPT supervisor:** can use the persisted room history as context while supervising the work. A truly independent background ChatGPT-agent process would require a separate authenticated server-side integration; a dashboard message alone is not proof that such a process has read or acted on it.
+- **Subscribers:** no access.
+
+### Message protocol
+A good handover includes task/category, exact model/package, sources checked, candidates found/staged, exclusions/rejections, uncertainties, next action, task key and relevant source links. Never include secrets, service keys, customer personal information, bank details or credentials.
+
+Use `instruction` only for owner directions; `handover` for completed work and next steps; `finding` for observations; `question` for unresolved items; `learning_note` for repeatable methods/source limitations; and `status_update` for progress/health.
+
+### Research safety gates
+- Messages are not tasks unless the owner separately creates a task through the Gemma queue.
+- Messages cannot approve/import market evidence. Owner/ChatGPT review remains mandatory.
+- Sources remain governed by LIVE `platform_research_sources.category_slugs`; category matching must fail closed.
+- UK evidence remains GBP; preserve exact manufacturer/model/package and direct product/listing URL.
+- UK-used observations remain reference-only and do not change automatic valuation inputs.
+- TEST remains for development/regression; the research Common Room is LIVE only.
+
+### Current integration checkpoint
+Migration `20261107190000_platform_ai_agent_common_room.sql`, dashboard section and worker integration are in `feature/ai-agent-common-room-20261107`. Not yet merged, applied to LIVE or deployed. The Research PC has not yet been updated. Preserve the existing separate `.env` and configured env-file path. End-to-end verification requires migration applied, owner UI visible, owner instruction posted, worker reading it, worker posting a handover and owner seeing that returned message.

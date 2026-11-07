@@ -4289,3 +4289,14 @@ Production now contains all-route probing, bounded search/collection pagination,
 ## 7 November 2026 — short model identity collision guard (PR #279)
 
 LIVE review found that the short model identifier `A1` allowed Audi A1 car pages to match Bambu Lab A1 printer research. The 3D-printer branch now requires manufacturer tokens or explicit 3D-printer context for model identifiers of two characters or fewer and rejects clearly automotive routes. Genuine generic A1 3D-printer listings remain eligible for ChatGPT review. Other categories and longer model IDs retain their existing matching behaviour. Regression tests cover the false-positive car page, genuine Bambu Lab A1 Combo, generic A1 printer page and cross-category non-interference. This is a discovery guard only: all captured evidence remains in `needs_research` until ChatGPT/owner review; no automatic approval or import.
+
+
+## 3D Printers telemetry identity isolation — PR #283 pending review (7 November 2026)
+
+- A completed LIVE task named `owner-sigma-105-dg-dn-macro-art-new-used-20261107-2332` carried `agent_key=3d-printers-equipment` while its explicit `category_slug=lenses` and `branch_slug=photography-lenses` identified a Sigma camera-lens task.
+- The worker's previous `agentIdentity()` trusted `task.agent_key` before checking the explicit category. The two lens subtasks were therefore counted against the 3D Printers status row: `tasks_completed` rose from 49 to 51 while 3D candidate/evidence counters stayed at 70/40.
+- The correction is intentionally narrow: when (and only when) the supplied agent key is `3d-printers-equipment` but a non-empty explicit `category_slug` names another category, telemetry and Common Room identity are derived from that category. Correctly assigned 3D Printer tasks and all other supplied agent keys retain their previous identity behaviour.
+- This changes attribution only. It does not alter task payloads, source selection, research execution, queue rows, evidence, catalogue products or approval/import state. No other category or agent is otherwise reconfigured.
+- Five regression tests cover correct 3D identity, the observed Sigma/lenses mismatch, correctly assigned non-3D identity, preservation of other supplied agent keys and category fallback.
+- The 3D status counter currently includes the two misattributed lens subtasks. Historical counters are not rewritten. The 3D review queue remains 40 `needs_research` rows; 3 have top-level prices, 1 has an evidence type, and 0 are approved, imported or enriched.
+- PR: https://github.com/laurendigitaluk/TradeFlow/pull/283. This is a feature-branch proposal only. Do not merge, deploy or update the Research PC without owner review and explicit approval.

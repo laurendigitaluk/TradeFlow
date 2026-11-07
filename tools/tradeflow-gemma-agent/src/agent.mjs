@@ -511,6 +511,20 @@ function fallbackPageCapture(task, source, reason) {
   };
 }
 
+export function extractGemmaFindingRows(parsed) {
+  if (Array.isArray(parsed)) return parsed;
+  if (!parsed || typeof parsed !== 'object') return null;
+  const containers = [parsed, parsed.data, parsed.result, parsed.output, parsed.response]
+    .filter(value => value && typeof value === 'object' && !Array.isArray(value));
+  const keys = ['findings','evidence','borderline','results','items','pages','observations','records'];
+  for (const container of containers) {
+    const rows = keys.flatMap(key => Array.isArray(container[key]) ? container[key] : []);
+    if (rows.length) return rows;
+    if (typeof container.source_id === 'string' && container.source_id.trim()) return [container];
+  }
+  return null;
+}
+
 let ollamaExtractionQueue = Promise.resolve();
 
 export async function extractBatch(task, pages, env, onProgress) {
@@ -548,10 +562,14 @@ export async function extractBatch(task, pages, env, onProgress) {
         const result = JSON.parse(raw);
         if (!result.message?.content) throw new Error('Ollama returned no content');
         const parsed = JSON.parse(result.message.content);
-        if (Array.isArray(parsed)) batchRows = parsed;
-        else if (Array.isArray(parsed.findings)) batchRows = parsed.findings;
-        else if (Array.isArray(parsed.evidence) || Array.isArray(parsed.borderline)) batchRows = [...(parsed.evidence || []), ...(parsed.borderline || [])];
-        else throw new Error('Gemma returned JSON without a findings array');
+        const extractedRows = extractGemmaFindingRows(parsed);
+        if (extractedRows) batchRows = extractedRows;
+        else {
+          const shape = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? Object.keys(parsed).slice(0, 20).join(', ')
+            : typeof parsed;
+          throw new Error('Gemma returned JSON without a recognised findings array (top-level shape: ' + shape + ')');
+        }
       } catch (error) {
         failures.push({ source_ids: batch.map(item => item.source_id), error: error.message });
         await onProgress?.({
@@ -1104,6 +1122,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       fetched_price_pages: fetched.filter(item => hasVisibleUkPrice(item.text)).length,
       gemma_calls: extractionMetrics.batches,
       gemma_batch_failures: extractionMetrics.failures.length,
+      gemma_failure_details: extractionMetrics.failures.slice(0, 10),
       captured_pages: candidates.length,
       accepted_candidates: 0,
       borderline_candidates: candidates.length

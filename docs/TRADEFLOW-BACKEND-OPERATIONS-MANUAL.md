@@ -280,3 +280,7 @@ The production worker source is under tools/tradeflow-gemma-agent/src. Use tools
  
 ## Queue task validation refinement — 7 November 2026
 The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.
+
+ 
+### Existing Research PC installation paths
+The current TradeFlow Gemma installation folder is `C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent`. Its existing private TradeFlow environment file is `.env` inside that folder. The updater should be run in-place against that folder and exact .env path. The separate `C:\GearCashOut-Config\.env` and GearCashOut source folders are unrelated and must remain untouched. The existing local launcher/supervisor setup must be preserved; the new updater only replaces reviewed files under `src` and creates a source backup.

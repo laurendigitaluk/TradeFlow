@@ -3590,3 +3590,14 @@ The Platform Owner dashboard has a proposed Gemma Control Centre section on bran
 - Public page editor's nested groups and repeated items are now collapsed by default and can be expanded individually.
 - Subscriber-supplied AI providers were already rejected by `platform_owner_update_ai_settings` and the LIVE setting was already false. The dashboard no longer offers a subscriber provider selection or toggle and always submits `p_subscriber_provider_enabled=false`.
 - The LIVE migration `20261107150000_platform_owner_category_research_source_manager.sql` was applied and committed to production. Existing TEST catalogue, tenants and queues were not changed.
+
+
+## 7 November 2026 — Gemma LIVE batch controls and How It Works editor correction
+
+- The LIVE Platform Owner Gemma Control Centre now replaces the one-product form with category and branch selection, product evidence coverage filters, research operation selection (UK new, UK used, or both), specialist agent selection where registered, and batch sizes of 10, 20, 50, 100 or all selected products.
+- Product coverage is read from LIVE `catalogue_master_products` joined to LIVE `shared_market_evidence`. Counts distinguish active UK new and UK used evidence. Filters include missing new, missing used, missing both, missing either, has new and has used.
+- Selected products are sent as one `tasks[]` payload through the existing owner-authenticated LIVE enqueue RPC. The existing worker processes each subtask sequentially. Candidate findings remain in the LIVE review queue; no automatic approval or evidence write is introduced.
+- Added owner-authenticated RPCs `platform_owner_list_gemma_research_categories()` and `platform_owner_list_gemma_research_products(text,text,text,integer)`. Anonymous execution is revoked; authenticated execution is granted but each function validates active `platform_memberships` before returning catalogue data.
+- The old Platform AI provider settings panel and navigation link have been removed from the Platform Owner dashboard. Subscriber-supplied AI remains disabled; the product positioning is the centrally operated TradeFlow AI Research Centre.
+- The public TradeFlow How It Works page remains the text-only accordion page. The owner page editor now hides legacy `screenshots` and `visual_layout` image-box data for How It Works. The Examples visual editor no longer overrides the How It Works page editor's loader.
+- The database functions were applied directly to LIVE and verified in `pg_proc`; anon cannot execute and authenticated can execute subject to the in-function owner membership check. The versioned SQL migration was added to production GitHub. The authenticated browser flow and Cloudflare production deployment still require live browser verification.

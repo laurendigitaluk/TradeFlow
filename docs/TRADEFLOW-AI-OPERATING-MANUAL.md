@@ -4120,3 +4120,7 @@ Use `instruction` only for owner directions; `handover` for completed work and n
 
 ### Current integration checkpoint
 Migration `20261107190000_platform_ai_agent_common_room.sql`, dashboard section and worker integration are in `feature/ai-agent-common-room-20261107`. Not yet merged, applied to LIVE or deployed. The Research PC has not yet been updated. Preserve the existing separate `.env` and configured env-file path. End-to-end verification requires migration applied, owner UI visible, owner instruction posted, worker reading it, worker posting a handover and owner seeing that returned message.
+
+## AI Agent Common Room LIVE database deployment — 7 November 2026
+
+The LIVE Common Room migration is applied and its table/RPC grants verified. The UI/worker integration remains on feature branch and requires merge/deployment and a controlled PC restart. A full owner-instruction → worker-read → agent-handover → owner-view round trip is still pending.

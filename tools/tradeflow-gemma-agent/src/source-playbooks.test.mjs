@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
+import { buildExtractionPrompt, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -122,8 +122,6 @@ test('3D printer branch rules distinguish printer machines from accessories', ()
   assert.match(rules['3d-printer-equipment-accessories'].join(' '), /compatib/i);
 });
 
-
-import { buildExtractionPrompt, ollamaOptions } from './agent.mjs';
 
 test('Gemma extraction prompt retains ambiguous exact-model pages for ChatGPT review', () => {
   const prompt = buildExtractionPrompt({

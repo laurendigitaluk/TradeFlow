@@ -72,3 +72,10 @@ A source review found that the first worker version only read the General thread
 - The agent-list RPC now pins an empty search_path, validates the service_role JWT claim, revokes public/anon/authenticated execution and grants execution only to service_role.
 - Post-migration SQL verification confirmed anon=false, authenticated=false, service_role=true and search_path empty. No test messages remain in the LIVE table.
 - This fixes the routing logic at source/database level; the PC worker still needs updating/restarting and the full end-to-end round-trip remains pending.
+
+ 
+## Owner feed loading and refresh — 7 November 2026
+- The Common Room feed now loads after an existing owner session is validated and after a new owner sign-in.
+- The feed refreshes alongside the Gemma Control Centre while the dashboard tab is visible, and can also be refreshed manually.
+- Gemma reads across threads and receives instructions, handovers, findings, questions and learning notes; status-only chatter is not injected into the research extraction prompt.
+- ChatGPT supervisor messages are a session-driven capability, not an always-running background ChatGPT process. The schema reserves the supervisor sender type, but a persistent ChatGPT worker/integration is not deployed.

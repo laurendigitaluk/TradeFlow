@@ -1,5 +1,7 @@
 # CURRENT OWNER AND USER GUIDE — 7 NOVEMBER 2026
 
+Last updated: 7 November 2026.
+
 This section is the current user-facing guide and supersedes older conflicting descriptions below.
 
 ## Public site and subscriber websites
@@ -114,7 +116,7 @@ A separate direct-stock route is available where an item enters through the busi
 
 ### Important operating boundaries
 
-- Customer shipping costs are not processed by TradeFlow. Shipping is manually arranged and recorded.
+- Customers pay the selected shipping carrier directly. TradeFlow does not collect or process shipping charges; the subscriber manages the service options and handoff.
 - Parcel2Go API/checkout is retired.
 - Customer-facing status and internal subscriber workflow status are separate views of the same tenant-scoped transaction.
 - Buying is not complete when an offer is accepted. Payment completion is the point at which the purchase becomes inventory.
@@ -128,7 +130,7 @@ A separate direct-stock route is available where an item enters through the busi
 >
 > The current TradeFlow shipping architecture is **subscriber-managed shipping services with manual handoff**. The former Parcel2Go API/connected-provider route is **retired and must not be used or reintroduced from the older sections of this document**.
 >
-> **Current flow:** Subscriber opens **Settings → Shipping Settings**, selects the shipping services they use from the TradeFlow service catalogue, and saves them. Those services appear in the Buying shipping handoff. The subscriber uses the chosen provider's official website/service outside TradeFlow and pays the shipping provider directly. The subscriber then returns to TradeFlow and uploads the shipping label and, where applicable, QR code, plus carrier/service, tracking number and customer instructions. TradeFlow stores the handoff against the existing acquisition/buying item and sends the shipping information to the customer. The customer can open/print the label or QR code and confirms when the item has been sent. The subscriber then confirms receipt and proceeds to **Inspection**.
+> **Current flow:** Subscriber opens **Settings → Shipping Settings**, selects the shipping services they use from the TradeFlow service catalogue, and saves them. Those services appear in the Buying shipping handoff. The customer pays the chosen provider directly outside TradeFlow; TradeFlow does not collect shipping charges. The subscriber selects the services it supports and supplies the shipping instructions and, where needed, a label or QR code. The subscriber or customer can upload the label/QR through the manual handoff, and the customer adds the tracking number and confirms when the item has been sent. The subscriber confirms physical receipt and proceeds to **Inspection**.
 >
 > TradeFlow **does not create Parcel2Go quotes, book Parcel2Go shipments, process shipping payments, or require Parcel2Go API credentials** in this current flow. Do not add direct courier credentials or an automated shipping-payment path unless the architecture is deliberately changed, tested and checkpointed.
 >
@@ -486,11 +488,11 @@ The Customer Portal now shows the selected shipping method, courier/service info
 The automated Voila option is currently represented in the UI but deliberately disabled until the secure Voila account/API connection is implemented. This prevents a subscriber from selecting an automated route that cannot yet create a real label.
 
 
-## Shipping Cost Responsibility — 21 September 2026
+## Shipping Cost Responsibility — 21 September 2026 (SUPERSEDED 7 NOVEMBER 2026)
 
-TradeFlow does not handle customer shipping payments or shipping expenses. For items a customer is selling to a subscriber, the **subscriber is responsible for arranging and paying for shipping**. TradeFlow does not add shipping to the accepted offer, collect a shipping payment, reimburse the customer, or record customer shipping as a TradeFlow business expense.
+The earlier 21 September decision that the subscriber would pay shipping is superseded. **The customer pays the selected carrier directly.** The subscriber selects supported services and provides the shipping instructions and, where needed, the label/QR. TradeFlow does not collect shipping charges, reimburse shipping or record customer postage as a TradeFlow business expense.
 
-The shipping handoff is an information and workflow facility only. It may contain a subscriber-provided label, URL, QR code, courier/service details, tracking information and instructions. The subscriber can use its own shipping arrangement or the future Voila route. The financial responsibility for shipping remains outside TradeFlow's transaction and accounting model.
+The shipping handoff is an information and workflow facility only. It may contain the provider link, label, QR code, courier/service details, tracking information and instructions. The customer pays the selected carrier directly. The financial responsibility for shipping remains outside TradeFlow's transaction and accounting model.
 
 ### Shipping handoff and customer confirmation
 
@@ -500,7 +502,7 @@ For an accepted acquisition, the subscriber chooses either a manual label or an 
 
 Publishing the shipping handoff does not mean the customer has sent the item. The acquisition remains **Awaiting item from customer** until the customer clicks **Item sent** after handing the parcel to the courier or dropping it off. Only then does the subscriber see **Item on its way — awaiting receipt** and the integrated tracking state can progress.
 
-The customer does not pay the shipping cost in this workflow. The subscriber arranges and pays the shipping service and supplies the label/QR/instructions needed by the customer.
+The customer pays the selected shipping service directly. The subscriber manages the available services and handoff, and can supply or upload the label/QR and instructions. The customer adds tracking details and confirms dispatch.
 
 
 ## 22 September 2026 — Shipping handoff controls and receipt workflow
@@ -520,7 +522,7 @@ If a label is missing from the acquisition record, staff must be able to replace
 
 ## 2026-09-22 — Item receipt and inspection handoff repair
 
-The acquisition receipt stage is authoritative. When the subscriber confirms receipt after the customer has sent the item, the acquisition moves to `received`, `received_at` is recorded, shipping status becomes `received`, and the next acquisition action is inspection. The customer portal now explicitly renders `Item received by subscriber — inspection next`; the subscriber Buying dashboard renders `Item received — inspection next` and the existing acquisition inspection workflow remains the next operational step. Receipt handling also synchronises acquisition-item workflow state through the authoritative workflow transition function. Shipping remains subscriber-arranged and subscriber-paid; the £100 accepted offer is not altered by receipt.
+The acquisition receipt stage is authoritative. When the subscriber confirms receipt after the customer has sent the item, the acquisition moves to `received`, `received_at` is recorded, shipping status becomes `received`, and the next acquisition action is inspection. The customer portal now explicitly renders `Item received by subscriber — inspection next`; the subscriber Buying dashboard renders `Item received — inspection next` and the existing acquisition inspection workflow remains the next operational step. Receipt handling also synchronises acquisition-item workflow state through the authoritative workflow transition function. Shipping remains outside TradeFlow's payment flow and is paid by the customer directly to the selected carrier; the £100 accepted offer is not altered by receipt.
 
 
 ## 2026-09-22 — Purchasing inspection workspace after item receipt
@@ -1066,7 +1068,7 @@ Do not restore the retired Parcel2Go API flow or the old post-acceptance message
 
 
 ## 25 September 2026 — Test Two inspection workflow correction
-The current unified buying workflow is: customer confirms dispatch → subscriber confirms item received → subscriber explicitly starts inspection → inspection is completed → accepted inspection proceeds to final offer → customer accepts final offer → payment → Inventory. The Start inspection control must call the `subscriber_start_buying_item_inspection` RPC and change `buying_items.purchase_stage` from `received` to `inspection`; the inspection completion control then calls `subscriber_complete_buying_item_inspection`. Do not treat the inspection form as available while the database stage remains `received`. Parcel2Go API shipping remains retired; shipping labels/services are subscriber-managed and paid directly to the selected carrier/service.
+The current unified buying workflow is: customer confirms dispatch → subscriber confirms item received → subscriber explicitly starts inspection → inspection is completed → accepted inspection proceeds to final offer → customer accepts final offer → payment → Inventory. The Start inspection control must call the `subscriber_start_buying_item_inspection` RPC and change `buying_items.purchase_stage` from `received` to `inspection`; the inspection completion control then calls `subscriber_complete_buying_item_inspection`. Do not treat the inspection form as available while the database stage remains `received`. Parcel2Go API shipping remains retired; shipping services and the handoff are subscriber-managed, while customers pay the selected carrier directly.
 
 
 ## 25 September 2026 — After inspection: trade-in decisions
@@ -1740,7 +1742,7 @@ If the approved knowledge does not contain the answer, the Assistant must say so
 
 ## 2026-10-03 — Shipping service catalogue restored
 
-Shipping Settings now uses the researched shipping-service catalogue. Subscribers can search the catalogue, tick the services they use, open each provider's official website, and save the selected services. The current catalogue contains 26 services/providers: Royal Mail, Parcelforce Worldwide, Evri, InPost, DPD, DHL eCommerce UK, UPS, FedEx, Yodel, Parcel2Go, Packlink, Sendcloud, Shippo, Shiptheory, Scurri, Metapack, Linnworks, Shiply, CitySprint, Stuart, Palletforce, Tuffnells, DX, APC Overnight, Whistl and Amazon Shipping. Selected services appear in Buying for the manual shipping handoff. Shipping remains subscriber-paid directly with the selected provider; TradeFlow does not collect or pay the shipping charge.
+Shipping Settings now uses the researched shipping-service catalogue. Subscribers can search the catalogue, tick the services they use, open each provider's official website, and save the selected services. The current catalogue contains 26 services/providers: Royal Mail, Parcelforce Worldwide, Evri, InPost, DPD, DHL eCommerce UK, UPS, FedEx, Yodel, Parcel2Go, Packlink, Sendcloud, Shippo, Shiptheory, Scurri, Metapack, Linnworks, Shiply, CitySprint, Stuart, Palletforce, Tuffnells, DX, APC Overnight, Whistl and Amazon Shipping. Selected services appear in Buying for the manual shipping handoff. Shipping is customer-paid directly with the selected provider; TradeFlow does not collect or pay the shipping charge.
 
 
 ## 2026-10-03 — Master Catalogue Restoration

@@ -36,9 +36,9 @@ The first subtask successfully discovered, fetched and preserved 9 pages. The fi
 ## Code branch and review
 - Feature branch: `feature/gemma-3d-printer-lanes-metrics-20261107`.
 - PR: https://github.com/laurendigitaluk/TradeFlow/pull/278
-- Current PR head at checkpoint update: `c9e014612994dab3d0b6cb63984c45074e829105` (latest code commit `0cb9f6b603a10769895d5fe1bd955c06a4a95982`; later commits are documentation/checkpoint updates).
+- Current PR head at checkpoint update: `39546a860df74c5d90428b5a53301253857d26b3` (latest runtime-code commits `c7b5fdbb846728dc200b104550d606bbda88d7d0` and `22324633b95d39ac1e3169018e64333383473e8c`; later commits are tests/documentation/checkpoint updates).
 - PR is open and unmerged. Do not merge or deploy without owner review.
-- GitHub Actions Gemma Research Tests runs 42411454578, 42411512585, 42411518602, 42411597295, 42411603001, 42411615477, 42411650325, 42411660316, 42411686018, 42411719991 and 42411824125 passed. Run 42411844905 for the README update also passed. All listed Gemma Research Tests runs are green.
+- GitHub Actions Gemma Research Tests runs 42411454578, 42411512585, 42411518602, 42411597295, 42411603001, 42411615477, 42411650325, 42411660316, 42411686018, 42411719991, 42411824125, 42411844905, 42411907218, 42411928814, 42411935718, 42411944342, 42412032479, 42412042087, 42412054040, 42412073931, 42412083242 and 42412098193 all passed. The latest run 42412098193 covers the bounded-prompt/recent-note change.
 - The latest worker-code change adds a periodic LIVE telemetry heartbeat during active subtasks, preserving the current extraction stage while Ollama is waiting. Its CI run 42411824125 passed.
 - No Supabase schema, source registry, product catalogue, shared evidence, TEST/LIVE tenant/customer/order/domain/Stripe data, Cloudflare deployment or local PC files were changed by the PR work.
 

@@ -276,3 +276,7 @@ This section supersedes older environment references above where they conflict.
  
 ## Gemma Research PC update — 7 November 2026
 The production worker source is under tools/tradeflow-gemma-agent/src. Use tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 to update/install the local worker. Supply the existing private environment file path explicitly; the updater validates approved TEST/LIVE URLs, tests Node source, backs up source files and changes only the dedicated src directory. It must not replace, print, copy or move the private .env, Ollama configuration or other local secrets. For a new install, use a dedicated TradeFlow folder, not the retired GearCashOut source directory. Set TRADEFLOW_GEMMA_ENV_FILE to the exact existing private .env path before starting src/task-worker.mjs.
+
+ 
+## Queue task validation refinement — 7 November 2026
+The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.

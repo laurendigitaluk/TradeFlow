@@ -69,7 +69,7 @@ The LIVE worker review identified two separate capture bottlenecks and an observ
 - The visible-price extractor recognises £ and GBP, including pound HTML entities normalised from page markup.
 - Known bot/captcha challenge routes are reported and skipped as blocked discovery results, not treated as product pages or bypassed.
 - Gemma JSON parsing accepts the required findings array and common recognised wrappers. Unknown response shapes report their top-level keys; all fetched pages remain in raw fallback captures.
-- Ollama extraction reports each batch start/completion/failure. Telemetry and Common Room handovers expose search, source-route, page-fetch, price, extraction and capture counts plus failure details.
+- Ollama extraction reports each batch start/completion/failure. The worker also refreshes LIVE heartbeat telemetry while a subtask is active, including during a long model call. Telemetry and Common Room handovers expose search, source-route, page-fetch, price, extraction and capture counts plus failure details.
 
 LIVE diagnostic: the first Anycubic Kobra S1 subtask staged 9 individual pages. Every raw capture retained visible GBP price mentions, but Gemma returned JSON without a recognised findings array, leaving structured price/evidence fields empty. The first measured loss point was extraction-envelope parsing after page fetch. The raw capture fallback worked and preserved the page content/prices.
 

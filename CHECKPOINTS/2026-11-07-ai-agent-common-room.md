@@ -61,3 +61,14 @@ Read-only checks:
 - Updated the five owner-linked manuals plus Backend Operations and Subscriber Website Manual. Removed the old statement that subscribers could connect their own AI provider; TradeFlow AI research is centrally operated.
 - Worker code is committed but the Research PC has not been updated/restarted. The instruction → worker prompt → handover → owner-visible round-trip remains pending.
 - Cloudflare deployment and authenticated browser acceptance remain pending. PR #267 is still the combined release candidate.
+
+ 
+## Recipient and thread routing correction — 7 November 2026
+A source review found that the first worker version only read the General thread and did not match the dashboard's research-group/gemma-worker recipient labels. This has been corrected before release:
+- Worker reads across all Common Room threads, not just General.
+- Category-specific reads include global messages with a null category as well as matching category messages.
+- Recipient routing now supports all/*, the exact agent key, worker ID, gemma-task-worker and research-agents. ChatGPT-only messages are not delivered to Gemma.
+- Additive LIVE migrations 20261107160000_fix_common_room_agent_routing and 20261107161000_fix_common_room_research_group_routing have both applied successfully.
+- The agent-list RPC now pins an empty search_path, validates the service_role JWT claim, revokes public/anon/authenticated execution and grants execution only to service_role.
+- Post-migration SQL verification confirmed anon=false, authenticated=false, service_role=true and search_path empty. No test messages remain in the LIVE table.
+- This fixes the routing logic at source/database level; the PC worker still needs updating/restarting and the full end-to-end round-trip remains pending.

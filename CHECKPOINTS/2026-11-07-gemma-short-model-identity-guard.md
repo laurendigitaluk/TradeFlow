@@ -67,3 +67,10 @@ Elegoo Neptune 4 Pro produced five search results in each lane but zero eligible
 - The Creality K1 eBay product page reports “currently sold out”. The £208.69 + £20 postage mention belongs to a related pre-owned item, not a confirmed active listing for the target page. Do not use it as current used asking-price evidence.
 - The Amazon direct K1 capture contains £299.00 in the fetched page text, but the live Amazon page returned HTTP 503 during ChatGPT inspection. Keep the raw capture for later re-check; do not mark the price as independently verified.
 - Creality's official K1 Max page currently shows £589 sale versus £729 previous, with separate package options including K1 MAX + CFS-C £799, K1 Max + PLA*2 £599, K1 Max + Ferret Pro £839, K1 Max + build plate/nozzle kit £609, and Sermoon S1 + K1 Max £2,599. These are K1 Max or bundle variants, not the requested standard K1. The page's package selector is useful variant evidence but must not be copied into the Standard Printer product.
+
+
+## Elegoo source coverage gap
+
+Both Elegoo Neptune 4 Pro subtasks returned five search results but zero discovered product pages and zero captures. LIVE `platform_research_sources` contains no Elegoo domain (including no wildcard entry). ChatGPT found the official UK product page at `https://uk.elegoo.com/products/elegoo-neptune-4-pro-fdm-3d-printer`, showing £169 sale versus £290 regular and UK delivery information. This is a strong candidate for a category-scoped `new_uk` manufacturer source. The LIVE source registry was not changed; owner approval is required before the worker uses it.
+
+Latest verification for this branch: CI run 42417043572 passed on head `555c75f32dc9e997200ef405c687970ee957f07d` (24 tests, 24 passed, 0 failed). PR #279 remains open, unmerged and undeployed. PR #278 remains open and unmerged; latest known Gemma Research Tests run 42412984353 passed.

@@ -382,6 +382,73 @@ $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
+
+function renderGemmaResearcherCards(agents){
+ const host=$('gemma-researcher-cards');if(!host)return;
+ const specialists=(agents||[]).filter(a=>!String(a.agent_key||'').includes('worker')&&!/task control/i.test(String(a.category||'')));
+ const groups=new Map();
+ for(const a of specialists){const key=String(a.category||a.agent_name||'General research').trim();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(a)}
+ const order=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
+ host.innerHTML=order.length?order.map(([category,list])=>{
+  const active=list.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
+  const completed=list.reduce((n,a)=>n+Number(a.tasks_completed||0),0),candidates=list.reduce((n,a)=>n+Number(a.candidates_found||0),0);
+  const agentsHtml=list.map(a=>'<div class="gemma-researcher-agent"><div><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong> '+gemmaStatus(a)+'</div><small>Current work: '+escapeHtml(a.current_task||'Idle')+' · Last heartbeat: '+gemmaDate(a.last_heartbeat)+'</small>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</div>').join('');
+  return '<article class="gemma-researcher-card"><div class="gemma-researcher-head"><div><span class="eyebrow">CATEGORY TEAM</span><h4>'+escapeHtml(category)+'</h4></div><span class="gemma-team-live">'+active+' active</span></div><div class="gemma-researcher-metrics"><div><strong>'+completed+'</strong><small>Tasks completed</small></div><div><strong>'+candidates+'</strong><small>Candidates found</small></div><div><strong>'+list.length+'</strong><small>Registered agents</small></div></div>'+agentsHtml+'</article>';
+ }).join(''):'<p class="muted">No category researchers are registered yet. Agent teams will appear here as they report their first heartbeat.</p>';
+}
+function gemmaDate(value){if(!value)return'Never';const d=new Date(value);if(Number.isNaN(d.getTime()))return'Unknown';return d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
+function gemmaStatus(agent){const age=agent.last_heartbeat?Date.now()-new Date(agent.last_heartbeat).getTime():Infinity;if(agent.status==='running'&&age<120000)return'<span class="gemma-status running">Running</span>';if(agent.status==='error')return'<span class="gemma-status error">Error</span>';if(agent.status==='paused')return'<span class="gemma-status paused">Paused</span>';if(age>300000)return'<span class="gemma-status offline">Offline / stale</span>';return'<span class="gemma-status idle">Idle</span>'}
+async function loadGemmaControlCentre(){
+ const error=$('gemma-error'),rows=$('gemma-agent-rows'),activity=$('gemma-activity');if(!rows||!activity)return;
+ error.textContent='';rows.innerHTML='<tr><td colspan="7">Refreshing…</td></tr>';
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_get_ai_agent_control_centre',{method:'POST',body:JSON.stringify({p_activity_limit:60})});
+  const agents=Array.isArray(data?.agents)?data.agents:[],events=Array.isArray(data?.activity)?data.activity:[];
+  $('gemma-agent-count').textContent=agents.length;
+  $('gemma-running-count').textContent=agents.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
+  $('gemma-task-count').textContent=agents.reduce((n,a)=>n+Number(a.tasks_completed||0),0);
+  $('gemma-candidate-count').textContent=agents.reduce((n,a)=>n+Number(a.candidates_found||0),0);
+  $('gemma-evidence-count').textContent=agents.reduce((n,a)=>n+Number(a.evidence_queued||0),0);
+  rows.innerHTML=agents.length?agents.map(a=>'<tr><td><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</td><td>'+escapeHtml(a.category||'—')+'</td><td>'+gemmaStatus(a)+'</td><td>'+escapeHtml(a.current_task||'—')+'</td><td>'+Number(a.tasks_completed||0)+'</td><td>'+Number(a.candidates_found||0)+'</td><td>'+gemmaDate(a.last_heartbeat)+'</td></tr>').join(''):'<tr><td colspan="7">No agent telemetry has been reported yet.</td></tr>';
+  renderGemmaResearcherCards(agents);
+  activity.innerHTML=events.length?events.map(e=>'<article class="gemma-event"><div class="gemma-event-head"><strong>'+escapeHtml(e.agent_name||e.agent_key||'Agent')+'</strong><time>'+gemmaDate(e.created_at)+'</time></div><div>'+escapeHtml(e.message||e.event_type||'Activity')+'</div><small>'+escapeHtml(e.event_type||'event')+(e.task_key?' · '+escapeHtml(e.task_key):'')+'</small></article>').join(''):'<p class="muted">No activity has been reported yet.</p>';
+  $('gemma-updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+ }catch(e){error.textContent=e.message||String(e);rows.innerHTML='<tr><td colspan="7">Unable to load agent telemetry.</td></tr>';activity.innerHTML='<p class="muted">Activity unavailable.</p>'}
+}
+async function loadGemmaTasks(){
+ const target=$('gemma-task-list');if(!target)return;target.textContent='Loading task queue…';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_ai_agent_tasks',{method:'POST',body:JSON.stringify({p_limit:50})});
+  const items=Array.isArray(rows)?rows:[];
+  target.innerHTML=items.length?'<table><thead><tr><th>Task</th><th>Status</th><th>Attempts</th><th>Created</th><th>Error</th></tr></thead><tbody>'+items.map(x=>'<tr><td><strong>'+escapeHtml(x.task_key)+'</strong><small>'+escapeHtml((x.payload?.tasks||[]).map(t=>t.manufacturer+' '+t.model).join(', '))+'</small></td><td>'+escapeHtml(x.status)+'</td><td>'+Number(x.attempts||0)+'</td><td>'+gemmaDate(x.created_at)+'</td><td>'+escapeHtml(x.last_error||'—')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No research tasks submitted yet.</p>';
+ }catch(e){target.textContent='Task queue unavailable: '+(e.message||String(e))}
+}
+async function loadGemmaQueue(){
+ const target=$('gemma-queue-list');if(!target)return;target.textContent='Loading LIVE research queue…';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'all',p_limit:100})});
+  const items=Array.isArray(rows)?rows:[];
+  target.innerHTML=items.length?'<table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Source</th><th>Status</th><th>Received</th><th>Owner review</th></tr></thead><tbody>'+items.map(x=>'<tr><td><strong>'+escapeHtml(x.manufacturer+' '+x.model)+'</strong><small>'+escapeHtml(x.package_name||'')+'</small></td><td>'+escapeHtml(x.category_slug||'—')+'</td><td>'+(x.observed_price==null?'—':'£'+Number(x.observed_price).toFixed(2))+'</td><td>'+(x.source_url?'<a href="'+escapeHtml(x.source_url)+'" target="_blank" rel="noopener">Open source</a>':'—')+'</td><td>'+escapeHtml(x.status||'—')+'</td><td>'+gemmaDate(x.created_at)+'</td><td>'+(x.status==='pending_review'||x.status==='needs_research'?'<button type="button" data-gemma-review="approved" data-id="'+escapeHtml(x.id)+'">Approve for import review</button> <button type="button" data-gemma-review="needs_research" data-id="'+escapeHtml(x.id)+'">Research again</button> <button type="button" data-gemma-review="rejected" data-id="'+escapeHtml(x.id)+'">Reject</button>':'Reviewed')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No research candidates are waiting in LIVE.</p>';
+ }catch(e){target.textContent='Queue unavailable: '+(e.message||String(e))}
+}
+async function reviewGemmaCandidate(id,decision){
+ const notes=decision==='approved'?'Owner accepted candidate for subsequent verification/import review.':decision==='rejected'?'Owner rejected candidate.':'Candidate requires further research.';
+ try{await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes})});await loadGemmaQueue()}
+ catch(e){$('gemma-error').textContent=e.message||String(e)}
+}
+$('gemma-queue-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-gemma-review]');if(b){b.disabled=true;reviewGemmaCandidate(b.dataset.id,b.dataset.gemmaReview)}});
+async function submitGemmaTask(e){
+ e.preventDefault();const status=$('gemma-task-status'),button=$('gemma-task-submit');button.disabled=true;status.textContent='Submitting to LIVE…';
+ const task={task_key:'owner-'+Date.now(),category_slug:$('gemma-task-category').value.trim(),manufacturer:$('gemma-task-manufacturer').value.trim(),model:$('gemma-task-model').value.trim(),package_key:$('gemma-task-package').value.trim(),package_name:$('gemma-task-package-name').value.trim(),research_type:$('gemma-task-type').value,search_query:$('gemma-task-query').value.trim()};
+ try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:task.task_key,p_payload:{tasks:[task]},p_priority:50})});status.textContent='Queued in LIVE: '+(result?.task_key||task.task_key);$('gemma-task-form').reset();await loadGemmaQueue();await loadGemmaTasks();await loadGemmaControlCentre()}
+ catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
+$('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
+$('gemma-queue-refresh')?.addEventListener('click',()=>{loadGemmaQueue();loadGemmaTasks()});
+$('gemma-task-refresh')?.addEventListener('click',loadGemmaTasks);
+$('gemma-task-form')?.addEventListener('submit',submitGemmaTask);
+setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue()}},20000);

@@ -175,3 +175,13 @@ Production now contains all-route probing, bounded search/collection pagination,
 ## 7 November 2026 — LIVE 3D printer source route correction
 
 Verified category routes were added to the LIVE source registry under the user's standing permission. 3DFLO and iDig use their 3D-printer WordPress category pages; 123-3D remains scope=all with separate new and refurbished collection routes. The active task had already loaded its source registry before this change and is not affected. See PROJECT-MEMORY/2026-11-07-gemma-3d-printer-site-routes.md and CHECKPOINTS/2026-11-07-gemma-site-route-correction.md for the diagnosis and proposed code fix. No evidence was approved or imported, no duplicate task was queued, and TEST/LIVE separation and secrets were preserved.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.

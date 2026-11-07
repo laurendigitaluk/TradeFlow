@@ -5,6 +5,7 @@ import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantP
 
 const task = {
   category_slug: '3d-printers-equipment',
+  branch_slug: '3d-printers',
   manufacturer: 'Creality',
   model: 'K1',
   search_query: 'Creality K1 UK new and used price'

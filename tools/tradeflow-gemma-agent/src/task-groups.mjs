@@ -6,6 +6,9 @@ export function normaliseProductResearchTasks(tasks) {
   const seen = new Set();
   return tasks.filter(task => {
     if (!task || typeof task !== 'object' || Array.isArray(task)) return false;
+    const required = ['category_slug', 'manufacturer', 'model', 'package_key', 'package_name', 'search_query'];
+    if (required.some(field => !String(task[field] || '').trim())) return false;
+    if (!['uk_new', 'uk_used', 'uk_both'].includes(task.research_type)) return false;
     const key = [
       task.category_slug || '',
       task.branch_slug || '',

@@ -114,3 +114,10 @@ test('website search pagination follows same-host next and page links only', () 
     'https://store.creality.com/search?q=Creality%20K1&page=4'
   ]);
 });
+
+test('3D printer branch rules distinguish printer machines from accessories', () => {
+  const rules = getCategoryWebsitePlaybook(task.category_slug).branchInstructions;
+  assert.match(rules['3d-printers'].join(' '), /standalone 3D printer machines/i);
+  assert.match(rules['3d-printer-equipment-accessories'].join(' '), /do not reject an accessory/i);
+  assert.match(rules['3d-printer-equipment-accessories'].join(' '), /compatib/i);
+});

@@ -1,0 +1,44 @@
+name: Gemma Research Tests
+
+on:
+  pull_request:
+    paths:
+      - 'tools/tradeflow-gemma-agent/**'
+      - 'platform-owner-dashboard.js'
+      - 'platform-owner-dashboard.html'
+      - '.github/workflows/gemma-research-tests.yml'
+  push:
+    branches:
+      - production
+    paths:
+      - 'tools/tradeflow-gemma-agent/**'
+      - 'platform-owner-dashboard.js'
+      - 'platform-owner-dashboard.html'
+      - '.github/workflows/gemma-research-tests.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  gemma-research-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Check Gemma source syntax
+        shell: bash
+        run: |
+          for file in tools/tradeflow-gemma-agent/src/*.mjs; do
+            node --check "$file"
+          done
+      - name: Run Gemma task and website playbook tests
+        run: |
+          node --test \
+            tools/tradeflow-gemma-agent/src/task-groups.test.mjs \
+            tools/tradeflow-gemma-agent/src/source-playbooks.test.mjs
+      - name: Check Owner Dashboard JavaScript syntax
+        run: node --check platform-owner-dashboard.js

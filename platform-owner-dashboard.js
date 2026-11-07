@@ -479,7 +479,8 @@ async function reviewGemmaCandidate(id,decision){
     package_key:candidate.package_key||'standard',
     package_name:candidate.package_name||'Standard package',
     research_type:'uk_both',
-    search_query:[candidate.manufacturer,candidate.model,candidate.package_name,'UK','new and used price'].filter(Boolean).join(' ')
+    search_query:[candidate.manufacturer,candidate.model,candidate.package_name,'UK','new and used price'].filter(Boolean).join(' '),
+    seed_urls:candidate.source_url?[candidate.source_url]:[]
    };
    const taskKey='owner-research-again-'+id+'-'+Date.now();
    const queued=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks:[task]},p_priority:60})});

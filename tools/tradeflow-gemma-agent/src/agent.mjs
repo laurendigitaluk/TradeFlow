@@ -58,11 +58,16 @@ function stripSearchHtml(value) {
     .replace(/<[^>]+>/g, ' ').replace(/&nbsp;/gi, ' ').replace(/&amp;/gi, '&')
     .replace(/&quot;/gi, '"').replace(/&#39;/gi, "'").replace(/\s+/g, ' ').trim();
 }
-function decodeSearchRedirect(href) {
+export function decodeSearchRedirect(href) {
   try {
     if (href.startsWith('//')) href = 'https:' + href;
     const u = new URL(href, 'https://duckduckgo.com');
     if (u.searchParams.has('uddg')) return u.searchParams.get('uddg');
+    if (/(^|\.)amazon\.co\.uk$/i.test(u.hostname)) {
+      const path = decodeURIComponent(u.pathname);
+      const match = path.match(/https?:\/\/(?:www\.)?amazon\.co\.uk\/[^?#]+/i);
+      if (match) return new URL(match[0]).href;
+    }
     return u.href;
   } catch { return null; }
 }
@@ -228,7 +233,10 @@ export function isCollectionDiscoveryPage(url, title = '') {
 export function matchesTaskModel(title, url, task = {}) {
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
-  const identity = ' ' + (String(title || '') + ' ' + String(url || '')).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
+  let urlIdentity = String(url || '');
+  try { const parsed = new URL(urlIdentity); urlIdentity = parsed.hostname + ' ' + decodeURIComponent(parsed.pathname); } catch { /* Keep plain URL text for non-URL identifiers. */ }
+  // Ignore query strings: marketplace tracking parameters often repeat the search term on unrelated accessories.
+  const identity = ' ' + (String(title || '') + ' ' + urlIdentity).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
   if (!identity.includes(' ' + model + ' ')) return false;
   const afterModel = identity.split(' ' + model + ' ')[1] || '';
   const firstSuffix = afterModel.trim().split(' ')[0];
@@ -693,9 +701,19 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         .map(([name, count]) => name + ': ' + count).join(', ') + ')'
   });
 
+  const seedResults = (Array.isArray(task.seed_urls) ? task.seed_urls : []).map(seed => {
+    const item = typeof seed === 'string' ? { url: seed } : (seed || {});
+    return { title: item.title || task.manufacturer + ' ' + task.model, url: String(item.url || ''), description: 'Owner-provided previous product source; re-verify before use', provider: 'owner_seed' };
+  }).filter(item => {
+    const approved = isAllowedSourceHost(item.url, categorySources, task);
+    const eligible = approved && isEligibleProductPage(item.url, item.title) && matchesTaskModel(item.title, item.url, task);
+    if (!eligible) onProgress?.({ stage: 'seed_url_skipped', source: item.url, message: 'Previous product source was not eligible for this category, model or direct product-page rules' });
+    else onProgress?.({ stage: 'seed_url_added', source: item.url, message: 'Rechecking previous exact-model product source before broader discovery' });
+    return eligible;
+  });
   const eligible = [];
   const collections = [];
-  for (const source of searchResults) {
+  for (const source of [...seedResults, ...searchResults]) {
     if (isEligibleProductPage(source.url, source.title)) eligible.push(source);
     else if (isCollectionDiscoveryPage(source.url, source.title)) collections.push(source);
     else await onProgress?.({
@@ -718,18 +736,24 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       // than ordinary anchor text. Use Shopify's public collection products
       // endpoint as a fallback, then still fetch each direct product page.
       if (!links.length) {
-        const collection = new URL(result.url);
-        const jsonPath = collection.pathname.replace(/\/$/, '') + '/products.json?limit=50';
-        const jsonUrl = new URL(jsonPath, collection.origin).toString();
-        const jsonResponse = await fetch(jsonUrl, {
-          redirect: 'follow',
-          headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradeFlowGemmaResearch/0.2)', 'Accept': 'application/json', 'Accept-Language': 'en-GB,en;q=0.9' },
-          signal: AbortSignal.timeout(12000)
-        });
-        if (!jsonResponse.ok) throw new Error('collection HTML contained no matching links; Shopify products JSON HTTP ' + jsonResponse.status);
-        const payload = await jsonResponse.json();
-        links = extractShopifyCollectionProducts(payload, result.url, task, 12);
-        discoveryMethod = 'Shopify collection products JSON';
+        const collectionHost = new URL(result.url).hostname.replace(/^www\./i, '').toLowerCase();
+        const sitePlaybook = getWebsiteInstructions(task.category_slug, collectionHost);
+        if (sitePlaybook?.collectionApi === 'shopify') {
+          const collection = new URL(result.url);
+          const jsonPath = collection.pathname.replace(/\/$/, '') + '/products.json?limit=50';
+          const jsonUrl = new URL(jsonPath, collection.origin).toString();
+          const jsonResponse = await fetch(jsonUrl, {
+            redirect: 'follow',
+            headers: { 'User-Agent': 'Mozilla/5.0 (compatible; TradeFlowGemmaResearch/0.2)', 'Accept': 'application/json', 'Accept-Language': 'en-GB,en;q=0.9' },
+            signal: AbortSignal.timeout(12000)
+          });
+          if (!jsonResponse.ok) throw new Error('Shopify collection products JSON HTTP ' + jsonResponse.status);
+          const payload = await jsonResponse.json();
+          links = extractShopifyCollectionProducts(payload, result.url, task, 12);
+          discoveryMethod = 'Shopify collection products JSON';
+        } else {
+          discoveryMethod = 'site HTML links only; no Shopify API fallback configured';
+        }
       }
       collectionProducts.push(...links.map(item => ({ ...item, provider: 'collection_discovery' })));
       await onProgress?.({ stage: 'collection_discovered', source: source.url, total: links.length, method: discoveryMethod, message: 'Collection yielded ' + links.length + ' matching individual product page(s) via ' + discoveryMethod });

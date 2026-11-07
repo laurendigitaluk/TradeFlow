@@ -427,7 +427,7 @@ export function ollamaOptions(env = {}) {
 
 export function extractVisibleGbpPriceMentions(text) {
   const matches = [];
-  const re = /£\\s*((?:\\d{1,3}(?:,\\d{3})+|\\d+)(?:\\.\\d{2})?)/g;
+  const re = /£\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})?)/g;
   let match;
   while ((match = re.exec(String(text || '')))) {
     const raw = '£' + match[1];
@@ -506,7 +506,7 @@ let ollamaExtractionQueue = Promise.resolve();
 
 export async function extractBatch(task, pages, env) {
   const run = async () => {
-    const base = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\\/$/, '');
+    const base = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
     const timeoutMs = Math.max(60000, Math.min(300000, Number(env.OLLAMA_TIMEOUT_MS) || 180000));
     const findings = [], failures = [];

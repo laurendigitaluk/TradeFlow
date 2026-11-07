@@ -1,63 +1,20 @@
 
 
-## Platform owner-editable public pages — 3 November 2026
-The platform owner dashboard now includes a separate **Public Website Pages** editor for TradeFlow's public **How It Works** and **Examples** pages, including the homepage Examples preview. This is not the tenant-scoped subscriber Website Builder.
+## Owner Dashboard and public-page state — 7 November 2026
 
-- Owner entry: `platform-owner-dashboard.html` → Public Website Pages.
-- Editor: `platform-public-pages-editor.js`; public renderer: `platform-public-pages.js`.
-- Owner can edit page copy, descriptions, repeatable lists/cards, order, screenshot titles/captions/alt text and image URLs. Four How It Works screenshot slots remain fixed; blank image URLs preserve embedded high-resolution screenshots. Image-file uploads are not implemented yet.
-- Save draft, Preview draft and Publish are separate actions. Public visitors receive only published JSON.
-- Storage: `public.platform_public_pages`; RLS enabled; explicit deny policies for anon/authenticated direct table access. Owner RPCs require an active `platform_memberships` row; public RPC returns published JSON only for the two allow-listed slugs.
-- TEST code uses `nnsshnfkjcflucjrftzi`; LIVE code uses `gxsrajtqzdjvmceqcpgv`. Public renderer and editor use environment-specific API URL/key; never copy TEST API credentials into production.
-- TEST branch: `cloudflare-test` → Worker `tradeflow-test`. LIVE branch: `production` → Worker `tradeflow`. Feature is maintained in both; database content and owner sessions remain separate.
-- Diagnostic roadmap: `docs/TRADEFLOW-PLATFORM-PUBLIC-PAGES-ROADMAP.md`. Checkpoint: `CHECKPOINTS/2026-11-03-owner-editable-public-pages.md`.
-- Browser sign-in/editor/publish acceptance and Cloudflare deployment verification remain outstanding in each environment. GitHub merge is not proof of Worker deployment.
-> **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
->
-> This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.
->
-> - Repository: `laurendigitaluk/TradeFlow`
-> - TEST branch: `cloudflare-test`; TEST Cloudflare Worker: `tradeflow-test`; TEST Supabase project: `nnsshnfkjcflucjrftzi`.
-> - LIVE branch: `production`; LIVE Cloudflare Worker: `tradeflow`; LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`.
-> - Retired TEST Supabase project: `twfbmjwwqzxdxvclxbun`. **Never connect to, query, write to, deploy against, or use this retired project.**
-> - TEST and LIVE are separate. Complete and verify shared catalogue/evidence work in TEST first, then mirror shared catalogue/evidence to LIVE using each environment's own product IDs. Never copy tenant, customer, transaction, domain ownership, storefront, Stripe or subscription data between environments.
-> - A Git commit is not proof of Cloudflare deployment. Verify the configured Worker, deployed commit and runtime behaviour independently.
->
-> Older occurrences of the retired project ID below are historical records only and are not valid connection instructions.
+The Platform Owner dashboard is being standardised around eight native collapsible sections: Product details (name, headline and tagline), Subscriber businesses, Domain connection requests, TradeFlow plan and pricing, Public Website Pages, Gemma Control Centre, Complimentary subscriber accounts, and Platform email settings. The overview statistics remain visible. Sidebar anchor links expand the corresponding section. The implementation branch is `feature/owner-dashboard-dropdown-sections-20261107`; it is not yet merged or deployed.
 
----
+- Owner authentication remains in `platform-owner-dashboard.js`: the `tradeflow_platform_owner_session` session is verified through Supabase Auth and an active `platform_memberships` row. Platform Owner access is separate from tenant membership.
+- The dashboard retains the existing business, domain, plan, product-page, email, complimentary-subscriber and Gemma workflows. This layout change does not change their RPCs, Edge Functions, permissions or data.
+- The Gemma Control Centre already has LIVE category/branch selection, new/used evidence filters, specialist-agent selection, product selection, batch sizes, task queue visibility, candidate review and category-specific website assignments. Research candidate approval is a review state, not an automatic catalogue/evidence import.
+- The obsolete Platform Configuration / AI-provider UI and handlers are absent from the current production dashboard. The `platform_ai_settings` compatibility table remains in both databases; its current provider is `none`, its allowed providers are `["none"]`, and subscriber-supplied AI is disabled. Do not drop the table as part of a UI cleanup.
+- The public `how-it-works.html` page is source-managed HTML/CSS with ten native text-only accordion sections and no screenshot-led layout. It does not read the legacy `platform_public_pages` JSON. Those database rows are retained. The Owner Dashboard editor still exposes the legacy How It Works draft record; edits there do not change the published static guide. The dashboard now explains this limitation. Examples remains editable through the public-page editor.
+- TEST Supabase is `nnsshnfkjcflucjrftzi`; LIVE Supabase is `gxsrajtqzdjvmceqcpgv`. LIVE is the authoritative Gemma research queue; TEST is for software development and regression. Do not move subscriber, customer, transaction, domain-ownership or Stripe data between environments.
+- No Supabase schema/data, tenant/customer/order/payment/Stripe data, Worker configuration or credentials are changed by the collapsible-dashboard implementation. Browser and Cloudflare deployment verification remain required before release.
 
-# TradeFlow AI Operating Manual & Continuity Base
+## Public-page correction — 7 November 2026
 
-> **LIVE FULL SYSTEM AUDIT — 9 OCTOBER 2026**
->
-> - Correct LIVE Supabase project reference: `gxsrajtqzdjvmceqcpgv` (the previously repeated `...v5` reference is invalid). TEST remains `twfbmjwwqzxdxvclxbun`.
-> - LIVE Adventure Outpost tenant `b2a17a9f-dee6-4b2b-9b0d-a4f9b7836f52` is active. Read-only LIVE audit on 9 October confirms 2 non-deleted, email-confirmed Auth users: 1 platform-owner membership and 1 active Adventure Outpost subscriber-owner membership. `public.customers` has 0 rows and 0 customer-to-auth links; no SceneSource website customer account exists yet. Do not create a LIVE customer until the user explicitly approves the registration test.
-> - `www.scenesource.co.uk` is the active primary domain and has published-site revision 1. Do not alter DNS, SSL, Cloudflare routing, the published site, or account credentials as part of this audit.
-> - **Worker configuration discrepancy and isolated candidate fix:** production `wrangler.jsonc` declares `LIVE_SUPABASE_URL` as `https://gxsrajtqzdjvmceqcpgv2.supabase.co`, which does not match the verified LIVE project URL. The current production-based correction is committed only to isolated branch `audit/fix-live-supabase-url-current-prod-20261009` at `b6d838ae45d3c9830fd6bdd2c25d5eaee7dcfa2c`, based directly on current production and changing only `wrangler.jsonc`. Older Worker URL candidate branches are stale/diverged; do not merge them. The refreshed candidate has no reported CI statuses and is not deployed or merged. Controlled non-production runtime and browser route/session tests remain mandatory before promotion.
-> - **Open retired-code discrepancy / elevated risk:** six old LIVE domain-purchase/registration Edge Functions remain ACTIVE: `porkbun-domain-availability`, `create-domain-checkout-session`, `reconcile-domain-payment`, `save-domain-registrant`, `porkbun-domain-registration`, and `index` (version 5). The deployed `index` source contains the same legacy Stripe/Porkbun domain-checkout flow; its callers have not been independently established. LIVE has two legacy domain orders (`adventureoutpost.co.uk` / `pending_payment`, and `laurendigital.co.uk` / `registrant_details_saved`) and one registrant record; neither order is positively marked as sandbox (`false` / absent). The `laurendigital.co.uk` order is in a state accepted by the legacy registration function, which can reach production Porkbun preflight/registration if the required production credentials are configured and its checks pass. Do not invoke these legacy endpoints. Do not delete records or disable functions until all callers and provider-secret configuration have been verified. The current domain model remains customer-owned domains plus Platform Owner connection/verification.
-> - **TEST retired-shipping/domain code still present:** TEST Supabase (`twfbmjwwqzxdxvclxbun`) has active `parcel2go-customer-shipping` v7, `parcel2go-subscriber-shipping` v11 and `shipping-provider-test` v8, although manual subscriber-managed shipping is the current architecture. The active `cloudflare-test` branch also still contains directly addressable `domain-purchase.html` / `domain-purchase.js` and `domain-registrant.html` / `domain-registrant.js`, which call the retired TEST Stripe/Porkbun registration endpoints. These pages are not linked from the current `domain-settings.js` or subscriber dashboard files inspected, but direct URLs can still reach them. They were not removed or disabled in this audit: finish the repo-wide caller/checkpoint review, then remove or retire them in an isolated cleanup branch and run a TEST regression pass before promotion.
-> - LIVE Supabase reports RLS enabled on all 98 public tables. Advisors also report 14 RLS-enabled tables with no policies, 14 anon-callable SECURITY DEFINER functions, 160 authenticated-callable SECURITY DEFINER functions, disabled leaked-password protection, and performance findings (64 unindexed foreign keys, 166 RLS init-plan findings, 105 unused indexes, 14 multiple-permissive-policy findings and 3 duplicate indexes). These are review queues, not permission to bulk-change policies or indexes; review each against intended access and current code before repair.
-> - The `production` and `main` branches have diverged substantially. Do not merge or force-sync them as part of cleanup.
-> - The customer registration code and tenant-registration RPC exist, but the three-role Chrome session test and live clean-route acceptance tests remain **PENDING**. The external site could not be independently fetched by the audit tools; the latest recorded browser screenshot in the continuation checkpoint showed the homepage rendering.
->
-> This snapshot supersedes older conflicting environment/status notes. Audit queries were read-only. No LIVE runtime code, database rows, authentication accounts, subscriptions, DNS, Cloudflare settings or published content were changed.
-
-
-> **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
->
-> The current TradeFlow shipping architecture is **subscriber-managed shipping services with manual handoff**. The former Parcel2Go API/connected-provider route is **retired and must not be used or reintroduced from the older sections of this document**.
->
-> **Current flow:** Subscriber opens **Settings → Shipping Settings**, selects the shipping services they use from the TradeFlow service catalogue, and saves them. Those services appear in the Buying shipping handoff. The subscriber uses the chosen provider's official website/service outside TradeFlow and pays the shipping provider directly. The subscriber then returns to TradeFlow and uploads the shipping label and, where applicable, QR code, plus carrier/service, tracking number and customer instructions. TradeFlow stores the handoff against the existing acquisition/buying item and sends the shipping information to the customer. The customer can open/print the label or QR code and confirms when the item has been sent. The subscriber then confirms receipt and proceeds to **Inspection**.
->
-> TradeFlow **does not create Parcel2Go quotes, book Parcel2Go shipments, process shipping payments, or require Parcel2Go API credentials** in this current flow. Do not add direct courier credentials or an automated shipping-payment path unless the architecture is deliberately changed, tested and checkpointed.
->
-> **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
-
-**Status:** Living operational document  
-**Version:** 4.4  
-**Date:** 7 October 2026  
-**Project:** TradeFlow
+The 4 November How It Works accordion rebuild supersedes the older 3 November screenshot-based CMS description. The public guide is ten text-only accordions in `how-it-works.html` with styling in `how-it-works.css`. The old `platform_public_pages` How It Works JSON is retained for history but is not the source of the published page. Do not claim that editing or publishing that legacy JSON updates the public guide.
 
 ## 1. Purpose
 AI continuity companion for TradeFlow. It records architectural truth, decisions, faults, verification state and exact stopping point so future sessions resume without guessing.

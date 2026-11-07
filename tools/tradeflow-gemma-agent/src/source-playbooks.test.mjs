@@ -121,3 +121,26 @@ test('3D printer branch rules distinguish printer machines from accessories', ()
   assert.match(rules['3d-printer-equipment-accessories'].join(' '), /do not reject an accessory/i);
   assert.match(rules['3d-printer-equipment-accessories'].join(' '), /compatib/i);
 });
+
+
+import { buildExtractionPrompt, ollamaOptions } from './agent.mjs';
+
+test('Gemma extraction prompt retains ambiguous exact-model pages for ChatGPT review', () => {
+  const prompt = buildExtractionPrompt({
+    ...task, branch_slug: '3d-printers', research_type: 'uk_both',
+    package_name: 'Printer only'
+  }, [{
+    source_id: 'S1', title: 'Creality K1 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    text: 'Creality K1 Speedy 3D Printer £299. Availability data conflicts.'
+  }]);
+  assert.match(prompt, /Do NOT omit a direct individual product\/listing page/i);
+  assert.match(prompt, /machine-only and combo\/bundle offers separate/i);
+  assert.match(prompt, /ChatGPT inspection only/i);
+  assert.doesNotMatch(prompt, /If condition is ambiguous, omit the source/i);
+});
+
+test('Gemma extraction uses a larger output budget without increasing the 4k context', () => {
+  assert.equal(ollamaOptions({}).num_ctx, 4096);
+  assert.equal(ollamaOptions({}).num_predict, 1024);
+});

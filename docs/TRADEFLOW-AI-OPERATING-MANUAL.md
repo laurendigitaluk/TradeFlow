@@ -135,7 +135,7 @@ For the current platform infrastructure, `laurendigital.co.uk` has been purchase
 
 
 ### Current shipping architecture
-Shipping is subscriber-managed and manual. Parcel2Go API/checkout/payment-link shipping is retired and must not be reintroduced. Subscribers select services under **Settings → Shipping Settings**, use the chosen provider outside TradeFlow, and return the label/QR/tracking/instructions to TradeFlow where required.
+Shipping is subscriber-managed and manual. The customer pays the selected carrier directly; TradeFlow does not collect shipping charges. Parcel2Go API/checkout/payment-link shipping is retired and must not be reintroduced. Subscribers select services under **Settings → Shipping Settings**, provide the handoff instructions/label where needed, and record tracking and receipt progress in TradeFlow.
 
 ### Current Cloudflare automation
 The LIVE Platform Owner domain workflow now has phased connection handling. Step 2 uses the protected `platform-prepare-custom-domain` Edge Function to create/reuse a Cloudflare custom hostname and record the exact DNS/validation information. The function is JWT-protected and keeps the Cloudflare API token server-side.

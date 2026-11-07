@@ -44,3 +44,8 @@ test('unknown categories do not inherit the 3D printer website playbook', () => 
   assert.equal(getCategoryWebsitePlaybook('mobile-phones'), null);
   assert.deepEqual(getWebsiteInstructions('mobile-phones', 'store.creality.com'), null);
 });
+
+test('Gumtree uses its UK srpsearch slug route for marketplace discovery', () => {
+  const routes = buildWebsiteSearchRoutes({ domain: 'gumtree.com' }, task);
+  assert.ok(routes.some(url => url === 'https://gumtree.com/uk/srpsearch%2Bcreality-k1'));
+});

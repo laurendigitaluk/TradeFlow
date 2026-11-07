@@ -464,6 +464,7 @@ async function loadGemmaQueue(){
  }catch(e){target.textContent='Queue unavailable: '+(e.message||String(e))}
 }
 async function reviewGemmaCandidate(id,decision){
+ $('gemma-error').textContent='';
  const notes=decision==='approved'?'Owner accepted candidate for subsequent verification/import review.':decision==='rejected'?'Owner rejected candidate.':'Candidate requires further research.';
  try{
   if(decision==='needs_research'){
@@ -483,13 +484,13 @@ async function reviewGemmaCandidate(id,decision){
    const taskKey='owner-research-again-'+id+'-'+Date.now();
    const queued=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks:[task]},p_priority:60})});
    await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes+' Research task queued: '+(queued?.task_key||taskKey)})});
-   $('gemma-error').textContent='Further research queued for '+candidate.manufacturer+' '+candidate.model+'.';
+   const taskStatus=$('gemma-task-status');if(taskStatus)taskStatus.textContent='Further research queued for '+candidate.manufacturer+' '+candidate.model+'.';
    await Promise.all([loadGemmaQueue(),loadGemmaTasks()]);
    return;
   }
   await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes})});
   await loadGemmaQueue();
- }catch(e){$('gemma-error').textContent=e.message||String(e)}
+ }catch(e){$('gemma-error').textContent=e.message||String(e);await loadGemmaQueue()}
 }
 $('gemma-queue-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-gemma-review]');if(b){b.disabled=true;reviewGemmaCandidate(b.dataset.id,b.dataset.gemmaReview)}});
 let gemmaBatchProducts=[],gemmaSelectedProducts=new Set();

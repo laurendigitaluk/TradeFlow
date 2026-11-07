@@ -1,6 +1,7 @@
 # Checkpoint — Owner Dashboard dropdown sections — 7 November 2026
 
 ## Branch and base
+- Pull request: [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266), open against `production`; GitHub reports mergeable after refresh.
 - Branch: `feature/owner-dashboard-dropdown-sections-20261107`
 - Base: current LIVE release branch `production` at commit `e8f2bece911cd79864376a48a5a9559ee988671b`.
 

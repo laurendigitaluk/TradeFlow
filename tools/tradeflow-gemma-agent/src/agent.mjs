@@ -218,7 +218,8 @@ export function isCollectionDiscoveryPage(url, title = '') {
   try { u = new URL(url); } catch { return false; }
   if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
   const path = decodeURIComponent(u.pathname).toLowerCase();
-  if (!(/\\/(collections?|categories?)\\//i.test(path) || /\\/(used-3d-printers|reconditioned-3d-printers(?:-and-3d-scanners)?|second-hand-3d-printers)(?:\\/|$)/i.test(path))) return false;
+  const known3dCategoryRoute = ['/used-3d-printers', '/reconditioned-3d-printers', '/reconditioned-3d-printers-and-3d-scanners', '/second-hand-3d-printers'].some(route => path.startsWith(route));
+  if (!(path.includes('/collections/') || path.includes('/collection/') || path.includes('/categories/') || known3dCategoryRoute)) return false;
   if (/facebook\.com/i.test(u.hostname)) return false;
   return true;
 }

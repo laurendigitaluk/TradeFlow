@@ -235,16 +235,12 @@ export function matchesTaskModel(title, url, task = {}) {
   if (!model) return false;
   let urlIdentity = String(url || '');
   try { const parsed = new URL(urlIdentity); urlIdentity = parsed.hostname + ' ' + decodeURIComponent(parsed.pathname); } catch { /* Keep plain URL text for non-URL identifiers. */ }
-  // Ignore query strings: marketplace tracking parameters often repeat the search term on unrelated accessories.
+  // This is intentionally a broad discovery match, not an approval filter.
+  // Keep Combo, Max/Plus/Pro, bundle and accessory references for ChatGPT to classify.
+  // Ignore query strings so search terms in tracking parameters do not create false matches.
   const identity = ' ' + (String(title || '') + ' ' + urlIdentity).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
-  if (!identity.includes(' ' + model + ' ')) return false;
-  const afterModel = identity.split(' ' + model + ' ')[1] || '';
-  const firstSuffix = afterModel.trim().split(' ')[0];
-  // Do not let a base-model token inside a larger product family,
-  // upgrade kit or accessory qualify as the requested standalone printer.
-  return !['max', 'plus', 'pro', 'ultra', 'combo', 'se', 'v2', 'series', 'upgrade', 'accessory', 'kit', 'cfs'].includes(firstSuffix);
+  return identity.includes(' ' + model + ' ');
 }
-
 export function extractSearchPaginationLinks(html, baseUrl, limit = 2) {
   const rows = [], seen = new Set(), anchors = /<a\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/gi;
   let match, base; try { base = new URL(baseUrl); } catch { return []; }

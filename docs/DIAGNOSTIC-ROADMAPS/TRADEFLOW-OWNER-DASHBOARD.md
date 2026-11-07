@@ -1,6 +1,6 @@
 # TradeFlow Platform Owner Dashboard — Developer Diagnostic Roadmap
 Updated: 7 November 2026
-Status: UI layout implemented on `feature/owner-dashboard-dropdown-sections-20261107`; browser acceptance and deployment pending.
+Status: UI layout implemented on `feature/owner-dashboard-dropdown-sections-20261107` (PR [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266)); browser acceptance and deployment pending.
 
 ## Scope and boundaries
 The Platform Owner dashboard is a platform-level control surface, not a subscriber tenant workspace. It uses the separate `platform_memberships` authorization boundary. The current UI has eight collapsible management sections; the overview metrics remain visible.

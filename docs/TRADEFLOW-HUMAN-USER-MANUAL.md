@@ -1,3 +1,38 @@
+# CURRENT OWNER AND USER GUIDE — 7 NOVEMBER 2026
+
+This section is the current user-facing guide and supersedes older conflicting descriptions below.
+
+## Public site and subscriber websites
+- The public **How It Works** guide is maintained in how-it-works.html and how-it-works.css. It contains ten text-only expandable sections. It is not edited through the legacy How It Works draft in the Owner Dashboard. Ask for a source update when its wording or process needs to change.
+- **Examples** remains editable from Owner Dashboard → Public Website Pages.
+- A subscriber's website is separate from the public TradeFlow marketing site. Subscribers use Website Builder for branding, layout, page copy and visibility. Buying Catalogue products feed What We Buy; published Selling listings feed What We Sell.
+
+## Platform Owner Dashboard
+The dashboard is organised into consistent expandable sections: TradeFlow product details; Subscriber businesses; Complimentary subscriber accounts; Domain connection requests; TradeFlow plan and pricing; Public Website Pages; Platform email settings; AI Agent Common Room; and Gemma Control Centre. The overview figures stay visible. Select a section title to expand it; sidebar links open the matching section.
+
+## AI Research Centre
+The AI Research Centre is operated centrally by TradeFlow. Subscribers do not configure or supply their own AI provider. The Platform Owner controls research categories, approved websites, research batches, queue activity and candidate review in Gemma Control Centre.
+
+Gemma searches approved UK sources for exact products and returns candidate evidence for review. ChatGPT/Platform Owner validation remains required before catalogue or evidence records are imported. A research result or Common Room message is not an approval.
+
+## AI Agent Common Room
+The Common Room is an internal Platform Owner workspace for:
+- **Instruction** — direction from the Platform Owner.
+- **Handover** — what an agent completed and what needs attention next.
+- **Finding** — a result for review.
+- **Question** — a request for clarification.
+- **Learning note** — a repeatable method or source limitation.
+- **Status update** — progress or health.
+
+Messages can be grouped by thread/category and associated with task keys. The Platform Owner can read the same history and post instructions. Subscribers cannot access this internal workspace. ChatGPT participates when actively supervising a session; it is not represented as a continuously running independent service.
+
+**Availability:** the LIVE database migration is installed, but the dashboard release, Research PC update/restart and end-to-end message round-trip are still release gates. Do not describe the feature as live until that test passes.
+
+## Environment safety
+TEST Supabase is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv. The retired project twfbmjwwqzxdxvclxbun must not be used. Keep tenant/customer/order/payment/domain ownership and Stripe data isolated between environments.
+
+---
+
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
 >
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.

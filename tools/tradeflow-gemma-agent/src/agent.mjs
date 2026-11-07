@@ -63,7 +63,7 @@ export function decodeSearchRedirect(href) {
     if (href.startsWith('//')) href = 'https:' + href;
     const u = new URL(href, 'https://duckduckgo.com');
     if (u.searchParams.has('uddg')) return u.searchParams.get('uddg');
-    if (/(^|\\.)amazon\\.co\\.uk$/i.test(u.hostname)) {
+    if (/(^|\.)amazon\.co\.uk$/i.test(u.hostname)) {
       const path = decodeURIComponent(u.pathname);
       const match = path.match(/https?:\/\/(?:www\.)?amazon\.co\.uk\/[^?#]+/i);
       if (match) return new URL(match[0]).href;

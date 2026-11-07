@@ -513,3 +513,30 @@ $('gemma-researcher-cards')?.addEventListener('click',e=>{const b=e.target.close
 $('gemma-source-close')?.addEventListener('click',()=>$('gemma-source-manager').hidden=true);
 $('gemma-source-form')?.addEventListener('submit',addGemmaResearchSource);
 setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue()}},20000);
+
+/* AI Agent Common Room — LIVE shared collaboration feed. */
+function aiRoomEscape(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function aiRoomDate(value){if(!value)return'Unknown time';const d=new Date(value);return Number.isNaN(d.getTime())?'Unknown time':d.toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+function aiRoomTypeLabel(type){return({instruction:'Instruction',handover:'Handover',finding:'Finding',question:'Question',learning_note:'Learning note',status_update:'Status update'})[type]||type}
+async function loadAiAgentCommonRoom(){
+ const feed=$('ai-room-feed'),status=$('ai-room-status');if(!feed)return;
+ feed.innerHTML='<p class="muted">Loading shared LIVE messages…</p>';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_ai_agent_messages',{method:'POST',body:JSON.stringify({p_thread_key:$('ai-room-thread').value||null,p_category_slug:$('ai-room-category').value.trim()||null,p_limit:Number($('ai-room-limit').value||100),p_before:null})});
+  const messages=Array.isArray(rows)?rows:[];
+  feed.innerHTML=messages.length?messages.map(m=>'<article class="ai-room-message '+aiRoomEscape(m.message_type)+'"><header><div><strong>'+aiRoomEscape(m.title)+'</strong><span class="ai-room-badge">'+aiRoomEscape(aiRoomTypeLabel(m.message_type))+'</span></div><time>'+aiRoomDate(m.created_at)+'</time></header><div class="ai-room-meta">'+aiRoomEscape(m.sender_name)+' · '+aiRoomEscape(m.sender_kind)+(m.category_slug?' · '+aiRoomEscape(m.category_slug):'')+(m.task_key?' · Task '+aiRoomEscape(m.task_key):'')+(m.recipient_key?' · To '+aiRoomEscape(m.recipient_key):'')+'</div><p>'+aiRoomEscape(m.body).replace(/\n/g,'<br>')+'</p>'+(m.parent_message_id?'<small>Reply/reference message: '+aiRoomEscape(m.parent_message_id)+'</small>':'')+'</article>').join(''):'<p class="muted">No messages in this thread yet. Use the form below to start the conversation.</p>';
+  if(status)status.textContent='Loaded '+messages.length+' message'+(messages.length===1?'':'s')+' from LIVE.';
+ }catch(e){feed.innerHTML='<p class="error">Common Room unavailable: '+aiRoomEscape(e.message||String(e))+'</p>'}
+}
+async function postAiAgentCommonRoom(){
+ const button=$('ai-room-send'),status=$('ai-room-status'),thread=$('ai-room-thread').value||'general',type=$('ai-room-type').value,recipient=$('ai-room-recipient').value,title=$('ai-room-title').value.trim(),body=$('ai-room-body').value.trim(),category=$('ai-room-category').value.trim()||null;
+ if(!title||!body){status.textContent='Enter both a title and message.';return}
+ button.disabled=true;status.textContent='Posting to LIVE…';
+ try{
+  await request('/rest/v1/rpc/platform_owner_post_ai_agent_message',{method:'POST',body:JSON.stringify({p_message_type:type,p_thread_key:thread,p_recipient_key:recipient,p_category_slug:category,p_task_key:null,p_title:title,p_body:body,p_parent_message_id:null,p_metadata:{origin:'platform-owner-dashboard'}})});
+  $('ai-room-title').value='';$('ai-room-body').value='';status.textContent='Message posted to the shared LIVE Common Room.';await loadAiAgentCommonRoom();
+ }catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
+}
+$('ai-room-refresh')?.addEventListener('click',loadAiAgentCommonRoom);
+$('ai-room-send')?.addEventListener('click',postAiAgentCommonRoom);
+['ai-room-thread','ai-room-limit','ai-room-category'].forEach(id=>$(id)?.addEventListener('change',loadAiAgentCommonRoom));

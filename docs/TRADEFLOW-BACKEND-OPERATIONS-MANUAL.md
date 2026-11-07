@@ -3,7 +3,8 @@
 - Approved TEST Supabase: nnsshnfkjcflucjrftzi.
 - Approved LIVE Supabase: gxsrajtqzdjvmceqcpgv.
 - Retired project twfbmjwwqzxdxvclxbun is forbidden; older references below are historical only.
-- The LIVE Common Room migration and four additive routing/security migrations are installed. Owner RPCs are authenticated with active-membership checks; agent RPCs are service_role-only; all four use an empty search_path. Dashboard and Gemma worker changes remain in PR #267; no Cloudflare deployment or Research PC restart has been verified.
+- The LIVE Common Room migration and four additive routing/security migrations are installed. Owner RPCs are authenticated with active-membership checks; agent RPCs are service_role-only; all four use an empty search_path. PR #267 is merged to production; the Research PC worker has completed a controlled LIVE research task and posted an owner-visible handover. Cloudflare dashboard deployment and the separate owner-instruction delivery test remain unverified.
+- A LIVE dashboard defect was confirmed: Research Again previously changed a candidate to `needs_research` without enqueuing a new task. The fix is in `fix/gemma-research-again-enqueue-20261107`; it uses the existing owner enqueue RPC before the existing review RPC. Do not re-click repeatedly or manually insert rows into `platform_ai_agent_tasks`.
 - The Research PC updater must preserve the separate local environment file selected by TRADEFLOW_GEMMA_ENV_FILE. Update code without overwriting the existing .env, tokens, API keys or local Ollama configuration. Never copy these secrets into GitHub, the dashboard or Common Room messages.
 - Gemma receives bounded Common Room guidance in the extraction prompt; exact task identity, approved category sources, evidence validation and human review rules remain authoritative.
 - How It Works is source-managed in how-it-works.html / how-it-works.css; the legacy JSON draft is not its published source. Examples remains owner-CMS editable.
@@ -284,3 +285,7 @@ The task normaliser now rejects incomplete payload rows before calling runTask. 
  
 ### Existing Research PC installation paths
 The current TradeFlow Gemma installation folder is `C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent`. Its existing private TradeFlow environment file is `.env` inside that folder. The updater should be run in-place against that folder and exact .env path. The separate `C:\GearCashOut-Config\.env` and GearCashOut source folders are unrelated and must remain untouched. The existing local launcher/supervisor setup must be preserved; the new updater only replaces reviewed files under `src` and creates a source backup.
+
+
+## Gemma Research Again repair — 7 November 2026
+The defect is in `platform-owner-dashboard.js` → `reviewGemmaCandidate()`, not in the Research PC polling loop. The prior handler only called `platform_owner_review_catalogue_research_item()`. The corrected handler obtains the selected candidate from the loaded LIVE queue, builds a single exact-product task (`uk_both`), calls `platform_owner_enqueue_ai_agent_task()`, and only after successful enqueue records `needs_research`. It refreshes the task and candidate lists. The worker's existing 15-second polling/claim flow is unchanged. Branch `fix/gemma-research-again-enqueue-20261107`; Cloudflare deployment and browser acceptance pending.

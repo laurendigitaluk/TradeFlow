@@ -76,3 +76,12 @@ The layout uses native `details.owner-section-accordion` wrappers in `platform-o
 
 ## Change state
 This increment changes dashboard HTML/CSS/JS, Gemma worker prompt integration, documentation and repository checkpoint files. No Supabase schema/data, RLS, Edge Functions, tenants, customers, orders, payment records, Stripe configuration, domain ownership, Research PC secrets or Cloudflare deployment are changed.
+
+
+## Research Again button — 7 November 2026
+- User action: select **Research again** on a `pending_review` or `needs_research` candidate.
+- Runtime: `platform-owner-dashboard.js` → `loadGemmaQueue()` caches returned rows in `window.gemmaQueueItems`; `reviewGemmaCandidate(id, 'needs_research')` builds the exact product task.
+- Dispatch: `platform_owner_enqueue_ai_agent_task(...)` creates a new LIVE `platform_ai_agent_tasks` row. Payload must satisfy `normaliseProductResearchTasks()` in `tools/tradeflow-gemma-agent/src/task-groups.mjs`: category, manufacturer, model, package key/name, search query and `uk_new`/`uk_used`/`uk_both` research type.
+- Review state: after successful enqueue, call `platform_owner_review_catalogue_research_item(...)` to set `needs_research`. Never change status first; failed enqueue must leave the candidate reviewable.
+- Worker: existing LIVE `task-worker.mjs` polls every 15 seconds and claims the new task. Findings return to `platform_catalogue_research_queue` for owner review.
+- Known production defect: old handler only called the review RPC, changing status without a task. Fix branch: `fix/gemma-research-again-enqueue-20261107`. Cloudflare deployment and browser acceptance remain pending.

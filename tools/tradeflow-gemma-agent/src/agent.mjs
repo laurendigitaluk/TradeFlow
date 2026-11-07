@@ -836,7 +836,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     const inserted = await db(liveTarget, 'platform_catalogue_research_queue', {
       method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
     });
-    writes.push({ environment: 'TEST_REVIEW_QUEUE', status: 'queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: dedupeKey });
+    writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: dedupeKey });
   }
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,

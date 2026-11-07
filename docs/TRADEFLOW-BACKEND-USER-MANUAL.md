@@ -19,11 +19,12 @@ This block supersedes older conflicting operating instructions below; dated mate
 - Worker entry: tools/tradeflow-gemma-agent/src/task-worker.mjs; research and extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
 - The worker reads shared notes from the LIVE Common Room and passes a bounded set into the Ollama extraction prompt. These notes are untrusted operational guidance and cannot override task identity, source allow-listing, UK/GBP rules, direct product-page checks, evidence validation or review gates.
 - The worker posts task status and a handover containing candidate/staged counts. A handover does not approve the candidates.
+- Research Again dispatch path: `platform-owner-dashboard.js` → `reviewGemmaCandidate(id, 'needs_research')` → `platform_owner_enqueue_ai_agent_task(...)` → `platform_ai_agent_tasks` → `platform_ai_agent_claim_task(...)` → `task-worker.mjs` → `runTask(...)` → `platform_catalogue_research_queue`. The owner handler enqueues first, then updates the candidate through `platform_owner_review_catalogue_research_item(...)`. The payload uses the exact candidate identity and `research_type: uk_both`. No new RPC/schema is required.
 - The local PC environment file is resolved through TRADEFLOW_GEMMA_ENV_FILE; preserve its existing value and separate .env file. Never copy service-role secrets into the repo or browser.
 - The Research PC has not yet been updated/restarted. Verify owner instruction → worker read → handover post → owner-visible message before calling the integration operational.
 
 ## Release boundary
-The LIVE database migration is installed. The combined dashboard/worker/docs feature remains on PR #267, not yet merged or deployed. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
+The Common Room migration is installed and PR #267 is merged to production. The Research PC worker has completed a controlled LIVE task and posted a handover. The Research Again fix is in `fix/gemma-research-again-enqueue-20261107`; it is not yet merged/deployed. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
 
 ---
 
@@ -1932,3 +1933,7 @@ Feature branch: `feature/ai-agent-common-room-20261107`. Migration, UI and worke
 ## AI Agent Common Room LIVE database verification — 7 November 2026
 
 LIVE migration is applied. `platform_ai_agent_messages` exists with RLS on and no anon/authenticated table policies. Owner RPC authenticated execution is granted with active platform owner check; service-role-only agent list/post RPCs reject anon and authenticated roles. No data was seeded. Front-end and worker release remain pending.
+
+
+## Research Again failure and repair — 7 November 2026
+Observed LIVE failure: `reviewGemmaCandidate()` called only the candidate-review RPC. The candidate status changed to `needs_research`, but no new `platform_ai_agent_tasks` row was created. The fix uses the existing authenticated owner enqueue RPC before the status update. It retains the original candidate row and existing evidence; subsequent findings are separately deduplicated/staged in the LIVE review queue. Do not expose service-role credentials or write directly to task tables from the browser.

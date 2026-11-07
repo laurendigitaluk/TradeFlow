@@ -271,3 +271,14 @@ Production now contains all-route probing, bounded search/collection pagination,
 ## 7 November 2026 — short model identity collision guard (PR #279)
 
 LIVE review found that the short model identifier `A1` allowed Audi A1 car pages to match Bambu Lab A1 printer research. The 3D-printer branch now requires manufacturer tokens or explicit 3D-printer context for model identifiers of two characters or fewer and rejects clearly automotive routes. Genuine generic A1 3D-printer listings remain eligible for ChatGPT review. Other categories and longer model IDs retain their existing matching behaviour. Regression tests cover the false-positive car page, genuine Bambu Lab A1 Combo, generic A1 printer page and cross-category non-interference. This is a discovery guard only: all captured evidence remains in `needs_research` until ChatGPT/owner review; no automatic approval or import.
+
+
+## 7 November 2026 — 3D Printers agent identity / telemetry boundary
+
+- Task payload enters `tools/tradeflow-gemma-agent/src/task-worker.mjs` → `resolveAgentIdentity(task)` → `safeReport(...)` / `roomPost(...)` → `agent-telemetry.mjs:reportAgent` → LIVE RPC `platform_ai_agent_report_event` → `platform_ai_agent_status` and Common Room messages.
+- The previous identity resolver trusted `task.agent_key` without reconciling an explicit `category_slug`. A Sigma 105mm lens task had `agent_key=3d-printers-equipment`, `category_slug=lenses`, `branch_slug=photography-lenses`. Its two subtasks were consequently added to the 3D Printers `tasks_completed` counter (49 → 51); candidate/evidence counters did not move.
+- First failure is telemetry identity resolution, before status RPC reporting. Research routing itself used the task's `category_slug=lenses`; this was not a 3D product discovery or evidence loss.
+- PR #283 adds a narrow resolver rule: a supplied 3D Printers agent key is replaced by the explicit non-3D category key only when that category slug is present. Other supplied agent keys and correctly assigned 3D tasks are unchanged.
+- Idle heartbeat interpretation: production `task-worker.mjs` starts the lease/status heartbeat interval inside `processClaim()`; it is not a continuous idle-poll heartbeat. An old last-heartbeat timestamp while status is `idle` and `current_task` is null is therefore not proof that the process is dead. The Sigma task temporarily refreshed the 3D row because of the identity mismatch.
+- Scope: telemetry/Common Room attribution only. No queue/evidence/catalogue writes, no source registry change, no TEST/LIVE data copy, no secrets or local environment changes. No 3D research task was queued.
+- PR: https://github.com/laurendigitaluk/TradeFlow/pull/283. CI and review remain the verification gate; no merge/deployment is authorised by this note.

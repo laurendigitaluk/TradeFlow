@@ -1,3 +1,32 @@
+# CURRENT BACKEND OPERATING POSITION — 7 NOVEMBER 2026
+
+This block supersedes older conflicting operating instructions below; dated material is retained as history.
+
+## Owner dashboard and public content
+- Owner entry: platform-owner-dashboard.html; runtime: platform-owner-dashboard.js; styles: platform-owner-dashboard.css.
+- Nine main management sections use details.owner-section-accordion; the Overview statistics remain visible. initOwnerSectionAccordions() opens a matching panel for sidebar/hash navigation.
+- Public How It Works source: how-it-works.html / how-it-works.css (ten text-only accordion sections). The legacy platform_public_pages How It Works row does not drive this page. Examples remains CMS-backed.
+- The dashboard contains no Platform Configuration or AI-provider setup for subscribers. Do not add a subscriber BYO-AI provider workflow.
+
+## AI Agent Common Room
+- LIVE table: public.platform_ai_agent_messages; RLS enabled; no direct anon/authenticated table policies.
+- Owner RPCs: platform_owner_list_ai_agent_messages(...) and platform_owner_post_ai_agent_message(...); owner authorization checks an authenticated user with an active platform_memberships row.
+- Agent RPCs: platform_ai_agent_list_messages(...) and platform_ai_agent_post_message(...); executable by service_role only. Agent posting cannot create owner-only instruction messages.
+- Message types: instruction, handover, finding, question, learning_note, status_update. Message rows are not queue tasks, candidate evidence, approvals or catalogue imports.
+- LIVE migration 20261107190000_platform_ai_agent_common_room and four additive routing/security migrations have been applied. Additive LIVE migrations: 20261107160000_fix_common_room_agent_routing, 20261107161000_fix_common_room_research_group_routing, 20261107162000_harden_common_room_agent_post and 20261107163000_harden_common_room_owner_rpcs. Security checks confirmed anon/authenticated cannot directly read or write the table; owner RPCs are authenticated-only with active-membership checks; agent RPCs are service_role-only; all four SECURITY DEFINER RPCs now use an empty search_path.
+
+## Gemma worker integration
+- Worker entry: tools/tradeflow-gemma-agent/src/task-worker.mjs; research and extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
+- The worker reads shared notes from the LIVE Common Room and passes a bounded set into the Ollama extraction prompt. These notes are untrusted operational guidance and cannot override task identity, source allow-listing, UK/GBP rules, direct product-page checks, evidence validation or review gates.
+- The worker posts task status and a handover containing candidate/staged counts. A handover does not approve the candidates.
+- The local PC environment file is resolved through TRADEFLOW_GEMMA_ENV_FILE; preserve its existing value and separate .env file. Never copy service-role secrets into the repo or browser.
+- The Research PC has not yet been updated/restarted. Verify owner instruction → worker read → handover post → owner-visible message before calling the integration operational.
+
+## Release boundary
+The LIVE database migration is installed. The combined dashboard/worker/docs feature remains on PR #267, not yet merged or deployed. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
+
+---
+
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
 >
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.
@@ -202,7 +231,7 @@ When an accepted offer requires the customer to send an item, the subscriber pre
 
 ### Customer shipping responsibility
 
-The customer pays for their own shipping. TradeFlow does not collect or process the customer's shipping cost as part of the buying workflow.
+The customer pays the selected carrier directly. The subscriber manages the supported service options and manual handoff. TradeFlow does not collect or process the customer's shipping cost as part of the buying workflow.
 
 ### Label
 
@@ -641,7 +670,7 @@ The following are retired and must not be reintroduced into the current workflow
 
 Current model:
 
-**Subscriber configures shipping services → subscriber supplies/records label where required → customer ships item → customer/subscriber records tracking → subscriber confirms receipt → inspection continues.**
+**Subscriber configures shipping services → customer pays selected carrier directly → subscriber supplies/records label where required → customer ships item → customer/subscriber records tracking → subscriber confirms receipt → inspection continues.**
 
 ## 28. Quick operating map
 
@@ -666,7 +695,7 @@ GitHub feature/checkpoint branch → `main` → TEST Supabase → browser/databa
 - **Subscriber Website Manual:** `subscriber-website-manual.html` — public/site-building controls, not backend operations.
 - **Human User Manual:** `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
 
-Last updated: 30 September 2026.
+Last updated: 7 November 2026.
 
 
 ## 2026-10-01 — ResellerClub domain integration boundary
@@ -1865,3 +1894,41 @@ Added the distinct HORI Piranha Plant Camera for Nintendo Switch 2 to Nintendo A
 Product IDs TEST d7e37ea0-1191-4e57-9693-3600b609da06 / LIVE 0dede96e-8cb7-4dc6-82df-507999c5820c. Evidence TEST: 50615da5-c5b3-477e-bdcf-57ae77165e91, 23bd205f-dc34-4eba-a822-fa9613e2106c, cc18c1b3-0016-4731-ab17-97b38224ca16, 2df85e9b-6a60-4f97-8d37-92e387c05714, c09b43c1-1947-46aa-b280-de134e7e8dc1. LIVE: 0a5dd84e-6156-4160-9057-6a6d7343ef4f, 108da92a-af16-46a6-ba76-090b7920a77b, c16ab86b-e25d-463a-bae4-d43cae7ecb00, 82878b4a-398f-4167-b9b1-f970d1ed1f4d, 158e7cdf-3d58-4f4a-abda-4c5795ce976a.
 
 Verified both environments: 285 active gaming products, 277 visible, 409 active evidence (244 UK-new / 165 UK-used), no visible product missing evidence, zero integrity failures, zero duplicate active source keys; all 20 branches match. Nintendo Accessories 11 products / 11 visible / 28 evidence. One master and five UK-new observations added per environment. UK-used remains reference-only and does not affect automatic buying valuation. No code/schema/RLS/RPC/Edge Function/valuation/Stripe/tenant/customer/order/payment/ownership/Worker changes; no deployment.
+
+## AI Agent Common Room — backend and security map — 7 November 2026
+
+### Data model
+- Table: `public.platform_ai_agent_messages`.
+- UUID primary key and self-referencing parent message support.
+- Fields include `thread_key`, `message_type`, `sender_kind`, `sender_key`, `sender_name`, `recipient_key`, `category_slug`, `task_key`, `title`, `body`, `metadata`, timestamps and archive state.
+- Message types: `instruction`, `handover`, `finding`, `question`, `learning_note`, `status_update`.
+- Sender kinds: `platform_owner`, `chatgpt_supervisor`, `gemma_agent`, `system`.
+
+### Authorization
+- RLS enabled; direct table grants revoked from public, anon and authenticated.
+- Owner reads/writes use `platform_owner_list_ai_agent_messages` and `platform_owner_post_ai_agent_message`; both check authenticated `auth.uid()` and active `platform_memberships`.
+- Agent reads/writes use `platform_ai_agent_list_messages` and `platform_ai_agent_post_message`; both require `auth.role()='service_role'`. Only service_role receives EXECUTE.
+- Never embed a service-role key in browser code. It stays in the Research PC protected `.env` or approved server runtime.
+- Agent write API disallows `instruction`; only a signed-in platform owner can post instructions. Agents may post handovers/findings/questions/learning notes/status updates.
+- This is not a general user chat and must not expose subscriber/customer records or unrestricted database operations.
+
+### Data flow
+1. Owner posts an instruction in the dashboard.
+2. Owner RPC stores it in LIVE.
+3. Research PC reads Common Room messages with its service-role identity.
+4. Worker posts task-start/task-end/failure and handover messages through the service-role RPC.
+5. Owner dashboard reads the history through the owner RPC.
+6. Messages do not create tasks, approve candidate evidence or change catalogue/valuation tables.
+
+### Integration locations
+- Owner HTML: `platform-owner-dashboard.html` section `ai-agent-common-room`.
+- Owner JS: `loadAiAgentCommonRoom()`, `postAiAgentCommonRoom()`.
+- Worker: `tools/tradeflow-gemma-agent/src/task-worker.mjs`, functions `roomRpc`, `roomRead`, `roomPost`.
+- Migration: `supabase/migrations/20261107190000_platform_ai_agent_common_room.sql`.
+
+### Rollout state
+Feature branch: `feature/ai-agent-common-room-20261107`. Migration, UI and worker code are versioned in that branch; not applied to LIVE, merged, deployed or confirmed on the PC at this checkpoint. Preserve local `.env`; update only source files and restart with the original env-file path. Verify worker startup, owner instruction visibility, agent handover insertion and owner feed visibility. Existing Gemma queue and evidence review must remain intact.
+
+## AI Agent Common Room LIVE database verification — 7 November 2026
+
+LIVE migration is applied. `platform_ai_agent_messages` exists with RLS on and no anon/authenticated table policies. Owner RPC authenticated execution is granted with active platform owner check; service-role-only agent list/post RPCs reject anon and authenticated roles. No data was seeded. Front-end and worker release remain pending.

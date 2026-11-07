@@ -1,3 +1,31 @@
+# CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
+
+This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
+
+## Product and site architecture
+- Lauren Digital is the parent brand. TradeFlow is the SaaS platform.
+- The public **How It Works** guide is source-managed in how-it-works.html and how-it-works.css. It is a ten-section, text-only native accordion page; its AI Research Centre explanation, customer-paid shipping guidance and TradeFlow Examples link were refreshed on 7 November 2026. The legacy platform_public_pages How It Works draft is retained but does not drive the published page. Request source changes when its wording/process needs updating.
+- **Examples** remains editable through the Owner Dashboard Public Website Pages editor.
+- Subscriber websites are tenant-specific. Website Builder controls design, branding, page text and visibility; Buying Catalogue and published Selling listings supply connected product data. Public TradeFlow marketing pages are separate from subscriber websites.
+- The Platform Owner Dashboard has nine consistent collapsible management sections: Product details; Subscriber businesses; Complimentary subscriber accounts; Domain connection requests; TradeFlow plan/pricing; Public Website Pages; Platform email; AI Agent Common Room; Gemma Control Centre. Overview metrics remain visible. Sidebar anchors open the matching section.
+- The Owner Dashboard has no Platform Configuration or subscriber AI-provider setup. AI research is a centrally operated TradeFlow capability; do not reintroduce subscriber-supplied AI configuration as a default.
+
+## AI Research Centre and agents
+- Gemma runs on the dedicated Research PC using the local Ollama model and the separate local environment file selected by TRADEFLOW_GEMMA_ENV_FILE.
+- Research tasks use the LIVE master catalogue and LIVE research queue. Category-scoped approved websites are applied before discovery; evidence candidates must be direct UK product/listing pages with exact product identity, visible GBP price, condition and availability.
+- The worker stages candidates for ChatGPT/Platform Owner review. It does not approve or import product/evidence records simply because a candidate was found.
+- The AI Agent Common Room is a persistent message workspace for owner instructions, handovers, findings, questions, learning notes and status updates. It is separate from task dispatch, evidence approval and catalogue imports.
+- Gemma receives bounded Common Room notes in its extraction prompt as guidance only. Exact task definition, approved-source restrictions, product identity checks, evidence validation, privacy and review gates take precedence.
+- ChatGPT can participate as a supervisor during an active ChatGPT session. There is no always-running ChatGPT process unless a separate persistent integration is built.
+
+## Release and environment status
+- TEST Supabase: nnsshnfkjcflucjrftzi. LIVE Supabase: gxsrajtqzdjvmceqcpgv. Retired project twfbmjwwqzxdxvclxbun must never be used.
+- The Common Room schema plus four additive routing/security migrations are installed on LIVE. All four owner/agent SECURITY DEFINER RPCs use an empty search_path with role-specific grants and the appropriate owner-membership or service-role check. Dashboard, worker and documentation changes are in feature PR #267; Owner Dashboard accordion work is being combined into that same branch. Neither PR merge nor Git commit proves Cloudflare deployment.
+- The Research PC has not yet been updated/restarted. Do not report the Common Room round-trip as operational until the PC worker reads a controlled owner instruction, posts a handover, and the owner dashboard displays it.
+- Preserve the Research PC's existing dedicated .env, secrets and TRADEFLOW_GEMMA_ENV_FILE path during any update. Never commit or replace local credentials.
+
+---
+
 
 
 ## Platform owner-editable public pages — 3 November 2026
@@ -44,19 +72,19 @@ The platform owner dashboard now includes a separate **Public Website Pages** ed
 > This snapshot supersedes older conflicting environment/status notes. Audit queries were read-only. No LIVE runtime code, database rows, authentication accounts, subscriptions, DNS, Cloudflare settings or published content were changed.
 
 
-> **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
+> **CURRENT SHIPPING ARCHITECTURE — 7 November 2026**
 >
 > The current TradeFlow shipping architecture is **subscriber-managed shipping services with manual handoff**. The former Parcel2Go API/connected-provider route is **retired and must not be used or reintroduced from the older sections of this document**.
 >
-> **Current flow:** Subscriber opens **Settings → Shipping Settings**, selects the shipping services they use from the TradeFlow service catalogue, and saves them. Those services appear in the Buying shipping handoff. The subscriber uses the chosen provider's official website/service outside TradeFlow and pays the shipping provider directly. The subscriber then returns to TradeFlow and uploads the shipping label and, where applicable, QR code, plus carrier/service, tracking number and customer instructions. TradeFlow stores the handoff against the existing acquisition/buying item and sends the shipping information to the customer. The customer can open/print the label or QR code and confirms when the item has been sent. The subscriber then confirms receipt and proceeds to **Inspection**.
+> **Current flow:** Subscriber opens **Settings → Shipping Settings**, selects the shipping services they use from the TradeFlow service catalogue, and saves them. Those services appear in the Buying shipping handoff. The customer pays the chosen provider directly outside TradeFlow; TradeFlow does not collect shipping charges. The subscriber selects the services it supports and supplies the shipping instructions and, where needed, a label or QR code. The subscriber or customer can upload the label/QR through the manual handoff, and the customer adds the tracking number and confirms when the item has been sent. The subscriber confirms physical receipt and proceeds to **Inspection**.
 >
 > TradeFlow **does not create Parcel2Go quotes, book Parcel2Go shipments, process shipping payments, or require Parcel2Go API credentials** in this current flow. Do not add direct courier credentials or an automated shipping-payment path unless the architecture is deliberately changed, tested and checkpointed.
 >
 > **Documentation rule:** Sections below dated before this architecture change may describe earlier experiments or implementation history. They are retained for audit continuity, but they are **historical records, not current operating instructions**. Current code, current Supabase state and this section take precedence.
 
 **Status:** Living document  
-**Version:** 4.4  
-**Date:** 19 September 2026  
+**Version:** 4.5  
+**Date:** 7 November 2026  
 **Audience:** Platform owner, tenant owners, administrators, staff and future developers
 
 ## 1. Purpose and authority
@@ -1248,7 +1276,7 @@ Do not restore the retired Parcel2Go API flow or the old post-acceptance message
 
 
 ## 25 September 2026 — Test Two inspection workflow correction
-The current unified buying workflow is: customer confirms dispatch → subscriber confirms item received → subscriber explicitly starts inspection → inspection is completed → accepted inspection proceeds to final offer → customer accepts final offer → payment → Inventory. The Start inspection control must call the `subscriber_start_buying_item_inspection` RPC and change `buying_items.purchase_stage` from `received` to `inspection`; the inspection completion control then calls `subscriber_complete_buying_item_inspection`. Do not treat the inspection form as available while the database stage remains `received`. Parcel2Go API shipping remains retired; shipping labels/services are subscriber-managed and paid directly to the selected carrier/service.
+The current unified buying workflow is: customer confirms dispatch → subscriber confirms item received → subscriber explicitly starts inspection → inspection is completed → accepted inspection proceeds to final offer → customer accepts final offer → payment → Inventory. The Start inspection control must call the `subscriber_start_buying_item_inspection` RPC and change `buying_items.purchase_stage` from `received` to `inspection`; the inspection completion control then calls `subscriber_complete_buying_item_inspection`. Do not treat the inspection form as available while the database stage remains `received`. Parcel2Go API shipping remains retired; shipping services and the handoff are subscriber-managed, while customers pay the selected carrier directly.
 
 
 ## 25 September 2026 — Post-inspection trade-in decision model
@@ -3603,4 +3631,47 @@ The Platform Owner dashboard has a proposed Gemma Control Centre section on bran
 - The database functions were applied directly to LIVE and verified in `pg_proc`; anon cannot execute and authenticated can execute subject to the in-function owner membership check. The versioned SQL migration was added to production GitHub. The authenticated browser flow and Cloudflare production deployment still require live browser verification.
 
 
-Batch-control safety note (7 November 2026): Pokémon Trading Cards remains a reserved master category and is deliberately excluded from the Gemma batch category selector until the owner explicitly links research sources and agents. The selector preserves unqueued selections when a smaller batch is submitted, so a 50-product selection can be worked through in successive 10/20-product batches without losing the remainder. 
+Batch-control safety note (7 November 2026): Pokémon Trading Cards remains a reserved master category and is deliberately excluded from the Gemma batch category selector until the owner explicitly links research sources and agents. The selector preserves unqueued selections when a smaller batch is submitted, so a 50-product selection can be worked through in successive 10/20-product batches without losing the remainder.
+
+## AI Agent Common Room — 7 November 2026
+
+The Platform Owner dashboard now includes a LIVE **AI Agent Common Room** alongside the Gemma AI Research Centre. It is the shared communication, instruction and learning workspace for Platform Owner, ChatGPT supervisor workflows and Gemma specialist agents.
+
+- Owner dashboard: `platform-owner-dashboard.html` → **AI Agent Common Room**.
+- Owner UI: `platform-owner-dashboard.js` functions `loadAiAgentCommonRoom()` / `postAiAgentCommonRoom()`; styling in `platform-owner-dashboard.css`.
+- LIVE storage: `public.platform_ai_agent_messages`.
+- Owner RPCs: `platform_owner_list_ai_agent_messages(text,text,integer,timestamptz)` and `platform_owner_post_ai_agent_message(...)`. Both require authenticated `auth.uid()` and active `platform_memberships`.
+- Agent RPCs: `platform_ai_agent_list_messages(...)` and `platform_ai_agent_post_message(...)`. Both are service-role-only; direct table grants to anon/authenticated are revoked.
+- Message types: instruction, handover, finding, question, learning_note and status_update. Messages may be grouped by thread, recipient, category and task. They are coordination records, not product-market evidence.
+- Worker: `tools/tradeflow-gemma-agent/src/task-worker.mjs`. Code posts startup/task status, completion/failure and handovers, and can read the common instruction/learning feed.
+- Current status: migration, dashboard and worker changes are in `feature/ai-agent-common-room-20261107`. Not yet applied to LIVE, merged, deployed or confirmed on the Research PC. Preserve the PC's dedicated `.env` and configured env-file path; never put service-role keys in browser code.
+- A Common Room post does not create a queue task, approve evidence, import catalogue data, or alter valuation rules. Instructions must be implemented via the approved task queue/code. Owner/ChatGPT evidence review remains mandatory.
+- TEST and LIVE remain separate. Common Room collaboration is designed for LIVE; no TEST business data is copied.
+
+The public How It Works page remains a source-managed, ten-section text-only accordion in `how-it-works.html` and `how-it-works.css`. It is not an owner CMS field. Ask for a source change when the wording needs updating. Examples remains dashboard-editable.
+
+## AI Agent Common Room — LIVE integration checkpoint — 7 November 2026
+
+The persistent Common Room schema has been applied to TradeFlow LIVE using migration `20261107190000_platform_ai_agent_common_room`. Read-only privilege checks confirm:
+- `platform_ai_agent_messages` exists with RLS enabled and zero direct anon/authenticated policies.
+- Anonymous cannot execute owner or agent message RPCs.
+- Authenticated can execute the owner-list RPC, which checks active `platform_memberships`.
+- Only `service_role` can execute the agent read/post RPCs; authenticated cannot.
+- No messages were seeded and no customer/tenant data was copied.
+
+The dashboard UI, worker integration and manuals remain on branch `feature/ai-agent-common-room-20261107`. The Common Room has not yet been merged or deployed, and the PC worker has not yet been updated/restarted. Do not describe the round-trip as working until the worker starts, reads an owner instruction, posts a handover, and the owner dashboard displays that response.
+
+## Documentation index — owner dashboard
+
+The five dashboard manual links point to:
+- System Handbook: `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`
+- Human User Manual: `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
+- Subscriber Manual: `subscriber-website-manual.html`
+- Backend User Manual: `docs/TRADEFLOW-BACKEND-USER-MANUAL.md`
+- AI Operating Manual: `docs/TRADEFLOW-AI-OPERATING-MANUAL.md`
+
+Backend Operations Manual: `docs/TRADEFLOW-BACKEND-OPERATIONS-MANUAL.md`. Gemma diagnostic roadmap: `docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-GEMMA-RESEARCH-PIPELINE.md`.
+
+## AI Agent Common Room architecture — current release boundary
+
+The LIVE Common Room table and security functions are installed. Dashboard/worker code is still on feature PR; deployment and PC round-trip tests remain pending. Do not treat message history as evidence approval or task dispatch.

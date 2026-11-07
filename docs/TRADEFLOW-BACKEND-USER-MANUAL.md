@@ -13,7 +13,7 @@ This block supersedes older conflicting operating instructions below; dated mate
 - Owner RPCs: platform_owner_list_ai_agent_messages(...) and platform_owner_post_ai_agent_message(...); owner authorization checks an authenticated user with an active platform_memberships row.
 - Agent RPCs: platform_ai_agent_list_messages(...) and platform_ai_agent_post_message(...); executable by service_role only. Agent posting cannot create owner-only instruction messages.
 - Message types: instruction, handover, finding, question, learning_note, status_update. Message rows are not queue tasks, candidate evidence, approvals or catalogue imports.
-- LIVE migration 20261107190000_platform_ai_agent_common_room has been applied. Security checks confirmed anon/authenticated cannot directly read or write the table and agent RPCs are service-role-only.
+- LIVE migration 20261107190000_platform_ai_agent_common_room and four additive routing/security migrations have been applied. Additive LIVE migrations: 20261107160000_fix_common_room_agent_routing, 20261107161000_fix_common_room_research_group_routing, 20261107162000_harden_common_room_agent_post and 20261107163000_harden_common_room_owner_rpcs. Security checks confirmed anon/authenticated cannot directly read or write the table; owner RPCs are authenticated-only with active-membership checks; agent RPCs are service_role-only; all four SECURITY DEFINER RPCs now use an empty search_path.
 
 ## Gemma worker integration
 - Worker entry: tools/tradeflow-gemma-agent/src/task-worker.mjs; research and extraction: tools/tradeflow-gemma-agent/src/agent.mjs.

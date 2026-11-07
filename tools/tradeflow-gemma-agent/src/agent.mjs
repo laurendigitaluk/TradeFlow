@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
 
 const projects = { LIVE: 'gxsrajtqzdjvmceqcpgv', TEST: 'nnsshnfkjcflucjrftzi' };
-const ukHost = (host, path='') => /\\.(co\\.uk|org\\.uk|ac\\.uk|gov\\.uk|uk)$/i.test(host) || /\\/uk\\//i.test(path + '/') || host === 'gumtree.com' || host.endsWith('.gumtree.com');
+const ukHost = (host, path='') => ['co.uk','org.uk','ac.uk','gov.uk'].some(suffix => host === suffix || host.endsWith('.' + suffix)) || host.endsWith('.uk') || (path + '/').includes('/uk/') || host === 'gumtree.com' || host.endsWith('.gumtree.com');
 export const sourceKey = (url, type, price) => 'gemma-' + createHash('sha256').update(url.replace(/\/$/, '') + '|' + type + '|' + Number(price).toFixed(2)).digest('hex').slice(0, 32);
 
 export function validate(e, task, page) {

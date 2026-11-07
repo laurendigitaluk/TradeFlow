@@ -58,3 +58,19 @@ The first category-specific website playbook is `src/source-playbooks.mjs`. It g
 The first Common Room inbox rollout is deliberately limited to the `3d-printers-equipment` agent. It checks the LIVE AI Common Room at worker startup, before that agent's research tasks, and during idle queue polling. It replies in a thread to the owner's welcome message, acknowledges owner instructions, and uses local Ollama to answer unanswered questions; replies are linked with `parent_message_id` to prevent repeats. Other category agents are not enabled until this first agent has been tested. Message content is treated as untrusted context and cannot override exact-model checks, approved-source rules, privacy constraints or the owner review gate.
 
 After this change is merged, update the Research PC using the reviewed updater. It retains the existing TradeFlow `.env` path and never reads or changes the separate GearCashOut configuration. Stop the old worker cleanly before replacing source files, then restart and verify the 3D Printer Gemma greeting appears as a reply to the owner's Welcome message in AI Common Room. Cloud/PC deployment is not complete until that round-trip is visible.
+
+
+## Gemma 3D-printer lane and extraction improvements — PR #278 pending review
+
+The LIVE worker review identified two separate capture bottlenecks and an observability gap:
+
+- Research tasks now need lane-aware source selection: uk_new uses manufacturer/new-retailer sources; uk_used uses marketplace/used/refurbished sources; uk_both uses both. Category, manufacturer and UK restrictions still apply.
+- 3D-printer web-search retention defaults to 30 results per task (existing hard maximum 30), configurable downward with GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK. Other categories keep their existing default.
+- The visible-price extractor recognises £ and GBP, including pound HTML entities normalised from page markup.
+- Known bot/captcha challenge routes are reported and skipped as blocked discovery results, not treated as product pages or bypassed.
+- Gemma JSON parsing accepts the required findings array and common recognised wrappers. Unknown response shapes report their top-level keys; all fetched pages remain in raw fallback captures.
+- Ollama extraction reports each batch start/completion/failure. Telemetry and Common Room handovers expose search, source-route, page-fetch, price, extraction and capture counts plus failure details.
+
+LIVE diagnostic: the first Anycubic Kobra S1 subtask staged 9 individual pages. Every raw capture retained visible GBP price mentions, but Gemma returned JSON without a recognised findings array, leaving structured price/evidence fields empty. The first measured loss point was extraction-envelope parsing after page fetch. The raw capture fallback worked and preserved the page content/prices.
+
+PR #278: https://github.com/laurendigitaluk/TradeFlow/pull/278. CI run 42411454578 and subsequent lane/parser regression runs passed; the latest telemetry/handover run is tracked separately. This is not in production and has not been installed on the Research PC. After review/merge, use the existing updater in place, preserve the existing private .env and TRADEFLOW_GEMMA_ENV_FILE path, and run a controlled LIVE test. Do not merge/deploy or approve/import evidence without the owner's review.

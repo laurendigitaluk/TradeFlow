@@ -253,6 +253,8 @@ test('Gemma JSON parser accepts recognised finding arrays and a single source fi
   assert.deepEqual(extractGemmaFindingRows({ findings: [row] }), [row]);
   assert.deepEqual(extractGemmaFindingRows({ evidence: [row], borderline: [{ source_id: 'S2' }] }), [row, { source_id: 'S2' }]);
   assert.deepEqual(extractGemmaFindingRows({ results: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ output: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ response: [row] }), [row]);
   assert.deepEqual(extractGemmaFindingRows({ data: { pages: [row] } }), [row]);
   assert.deepEqual(extractGemmaFindingRows(row), [row]);
   assert.equal(extractGemmaFindingRows({ summary: 'done', candidates: [] }), null);

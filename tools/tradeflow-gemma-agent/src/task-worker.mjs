@@ -67,6 +67,7 @@ async function safeReport(record){
 }
 const FIRST_AGENT_KEY='3d-printers-equipment';
 const firstAgentIdentity={agent_key:FIRST_AGENT_KEY,agent_name:'Gemma — 3D Printers & Equipment',category:FIRST_AGENT_KEY};
+let commonRoomCheckRunning=false;
 async function draftCommonRoomAnswer(agent,message){
  const baseRaw=env.OLLAMA_BASE_URL||'http://127.0.0.1:11434';
  const base=baseRaw.endsWith('/')?baseRaw.slice(0,-1):baseRaw;
@@ -91,6 +92,9 @@ async function draftCommonRoomAnswer(agent,message){
  return answer.slice(0,3000);
 }
 async function checkFirstAgentCommonRoom(){
+ if(commonRoomCheckRunning)return {read:0,replied:0,skipped:'already-running'};
+ commonRoomCheckRunning=true;
+ try{
  const messages=await roomRead(firstAgentIdentity.agent_key,firstAgentIdentity.category,null,150);
  const repliedTo=new Set(messages.filter(m=>m.sender_key===firstAgentIdentity.agent_key&&m.parent_message_id).map(m=>m.parent_message_id));
  const actionable=messages.filter(m=>{
@@ -118,6 +122,7 @@ async function checkFirstAgentCommonRoom(){
   console.log('[common room] replied to',message.id,'from',message.sender_name||message.sender_key||'unknown');
  }
  return {read:messages.length,replied:actionable.length};
+ }finally{commonRoomCheckRunning=false;}
 }
 function agentIdentity(task){
  const key=String(task.agent_key||task.category_slug||task.branch_slug||'general-research').toLowerCase().replace(/[^a-z0-9]+/g,'-');
@@ -130,6 +135,7 @@ async function processClaim(claim){
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
  const heartbeat=setInterval(()=>rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message)),45000);
+ const inboxHeartbeat=setInterval(()=>{if(tasks.some(task=>agentIdentity(task).agent_key===FIRST_AGENT_KEY))checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));},Math.max(30000,pollMs*2));
  try{
   for(const task of tasks){
    if(stopping)throw new Error('Worker stopping before all subtasks completed.');
@@ -169,7 +175,7 @@ async function processClaim(claim){
   await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'error',current_task:claim.task_key,event_type:'task_failed',task_key:claim.task_key,message:'Queued task failed: '+error.message,last_error:error.message,details:{queue_task_id:claim.id}});
   await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Research task failed','Task '+claim.task_key+' failed: '+error.message,{task_key:claim.task_key,thread_key:'engineering'}).catch(e=>console.error('[common room failure]',e.message));
   console.error('[failed]',claim.task_key,error.stack||error.message);
- }finally{clearInterval(heartbeat);}
+ }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);}
 }
 
 console.log('[TradeFlow Gemma] background worker started');

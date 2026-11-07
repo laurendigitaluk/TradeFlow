@@ -72,6 +72,24 @@ test('model matching ignores search query terms so accessories are not mistaken 
   assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), true);
 });
 
+test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
+  const a1Task = { ...task, category_slug: '3d-printers-equipment', branch_slug: '3d-printers', manufacturer: 'Bambu Lab', model: 'A1' };
+  assert.equal(
+    matchesTaskModel('Used Audi A1 for Sale in Narberth', 'https://www.gumtree.com/cars-vans-motorbikes/cars/audi/a1/uk/narberth', a1Task),
+    false
+  );
+  assert.equal(
+    matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1Task),
+    true
+  );
+  assert.equal(
+    matchesTaskModel('A1 3D Printer Used', 'https://www.gumtree.com/p/printers-scanners/a1-3d-printer/123', a1Task),
+    true
+  );
+  const unrelatedCategory = { ...a1Task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones' };
+  assert.equal(matchesTaskModel('Audi A1', 'https://example.com/audi-a1', unrelatedCategory), true);
+});
+
 test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product URL', () => {
   const wrapped = 'https://aax-eu-zaz.amazon.co.uk/x/c/token/https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin?keywords=Creality+K1';
   assert.equal(decodeSearchRedirect(wrapped), 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin');

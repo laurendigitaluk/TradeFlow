@@ -41,6 +41,17 @@ const playbooks = {
         routes: ['/search?type=product&q={query}', '/collections/3d-printers'],
         navigation: 'Use product search and the 3D printer collection. Open the exact model page and keep printer-only and bundle variants separate.'
       },
+      'uk.elegoo.com': {
+        label: 'ELEGOO UK official store',
+        collectionApi: 'shopify',
+        routes: ['/collections/fdm-printers', '/collections/pre-owned-3d-printer'],
+        routesByResearchType: {
+          uk_new: ['/collections/fdm-printers'],
+          uk_used: ['/collections/pre-owned-3d-printer']
+        },
+        genericSearchFallback: false,
+        navigation: 'Use the FDM 3D Printers collection for uk_new and the dedicated Pre-owned 3D Printers collection for uk_used. Treat both as discovery pages only, follow exact individual printer product pages, preserve package/variant and new versus pre-owned condition, and reject sold-out listings as current used evidence.'
+      },
       'uni3dverse.co.uk': {
         label: 'Uni3Dverse used and refurbished',
         routes: ['/used-3d-printers?search={query}', '/used-3d-printers'],

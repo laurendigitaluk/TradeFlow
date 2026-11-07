@@ -3603,4 +3603,21 @@ The Platform Owner dashboard has a proposed Gemma Control Centre section on bran
 - The database functions were applied directly to LIVE and verified in `pg_proc`; anon cannot execute and authenticated can execute subject to the in-function owner membership check. The versioned SQL migration was added to production GitHub. The authenticated browser flow and Cloudflare production deployment still require live browser verification.
 
 
-Batch-control safety note (7 November 2026): Pokémon Trading Cards remains a reserved master category and is deliberately excluded from the Gemma batch category selector until the owner explicitly links research sources and agents. The selector preserves unqueued selections when a smaller batch is submitted, so a 50-product selection can be worked through in successive 10/20-product batches without losing the remainder. 
+Batch-control safety note (7 November 2026): Pokémon Trading Cards remains a reserved master category and is deliberately excluded from the Gemma batch category selector until the owner explicitly links research sources and agents. The selector preserves unqueued selections when a smaller batch is submitted, so a 50-product selection can be worked through in successive 10/20-product batches without losing the remainder.
+
+## AI Agent Common Room — 7 November 2026
+
+The Platform Owner dashboard now includes a LIVE **AI Agent Common Room** alongside the Gemma AI Research Centre. It is the shared communication, instruction and learning workspace for Platform Owner, ChatGPT supervisor workflows and Gemma specialist agents.
+
+- Owner dashboard: `platform-owner-dashboard.html` → **AI Agent Common Room**.
+- Owner UI: `platform-owner-dashboard.js` functions `loadAiAgentCommonRoom()` / `postAiAgentCommonRoom()`; styling in `platform-owner-dashboard.css`.
+- LIVE storage: `public.platform_ai_agent_messages`.
+- Owner RPCs: `platform_owner_list_ai_agent_messages(text,text,integer,timestamptz)` and `platform_owner_post_ai_agent_message(...)`. Both require authenticated `auth.uid()` and active `platform_memberships`.
+- Agent RPCs: `platform_ai_agent_list_messages(...)` and `platform_ai_agent_post_message(...)`. Both are service-role-only; direct table grants to anon/authenticated are revoked.
+- Message types: instruction, handover, finding, question, learning_note and status_update. Messages may be grouped by thread, recipient, category and task. They are coordination records, not product-market evidence.
+- Worker: `tools/tradeflow-gemma-agent/src/task-worker.mjs`. Code posts startup/task status, completion/failure and handovers, and can read the common instruction/learning feed.
+- Current status: migration, dashboard and worker changes are in `feature/ai-agent-common-room-20261107`. Not yet applied to LIVE, merged, deployed or confirmed on the Research PC. Preserve the PC's dedicated `.env` and configured env-file path; never put service-role keys in browser code.
+- A Common Room post does not create a queue task, approve evidence, import catalogue data, or alter valuation rules. Instructions must be implemented via the approved task queue/code. Owner/ChatGPT evidence review remains mandatory.
+- TEST and LIVE remain separate. Common Room collaboration is designed for LIVE; no TEST business data is copied.
+
+The public How It Works page remains a source-managed, ten-section text-only accordion in `how-it-works.html` and `how-it-works.css`. It is not an owner CMS field. Ask for a source change when the wording needs updating. Examples remains dashboard-editable.

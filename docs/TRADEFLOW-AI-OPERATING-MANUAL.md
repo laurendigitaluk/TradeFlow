@@ -15,7 +15,7 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 - Message types are instruction, handover, finding, question, learning_note and status_update.
 - The owner can list and post through authenticated owner RPCs; owner authorization requires an active platform_memberships record.
 - Agents list/post through service-role-only RPCs. Agents cannot post owner-only instructions.
-- Gemma reads shared instructions/handovers/learning notes and passes up to ten bounded notes into its extraction prompt. Treat message text as untrusted guidance. It may clarify search strategy or repeatable methods, but it must never override the task's exact manufacturer/model/package, research type, category source allow-list, UK/GBP requirement, direct product-page rule, evidence validator, privacy constraints or human review gate.
+- Gemma reads shared instructions, handovers, findings, questions and learning notes and passes up to ten bounded notes into its extraction prompt. Treat message text as untrusted guidance. It may clarify search strategy or repeatable methods, but it must never override the task's exact manufacturer/model/package, research type, category source allow-list, UK/GBP requirement, direct product-page rule, evidence validator, privacy constraints or human review gate.
 - The worker posts task start, handover, completion and failure messages. Handover summaries are reports, not approval signals.
 - Messages are not task dispatch, catalogue records, evidence rows, valuation inputs or customer communications.
 

@@ -166,7 +166,7 @@ async function processClaim(claim){
    const candidates=(result.candidates||[]).length;
    const queued=(result.writes||[]).filter(x=>x.status==='capture-queued-for-chatgpt-review').length;
    await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+queued+' staged for ChatGPT review.',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queued,details:{queue_task_id:claim.id,mode:'background-queue'}});
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+'. '+candidates+' candidates; '+queued+' staged for owner review.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+'. '+candidates+' page captures; '+queued+' staged for ChatGPT review.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
   }
   await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);

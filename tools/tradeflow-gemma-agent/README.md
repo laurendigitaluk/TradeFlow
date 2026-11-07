@@ -30,7 +30,7 @@ $env:TRADEFLOW_GEMMA_ENV_FILE = 'D:\PATH\TO\YOUR\EXISTING\PRIVATE.env'
 node 'C:\TradeFlowGemmaAgent\src\task-worker.mjs'
 ```
 
-Use the same existing folder and .env path. The worker window stays open while it polls the LIVE queue. Press Ctrl+C to stop it cleanly.
+Use the same existing folder and .env path. Stop any older TradeFlow queue-worker process cleanly before starting this one so two workers do not poll the same queue. Do not interrupt an active research task. The worker window stays open while it polls the LIVE queue. Press Ctrl+C to stop it cleanly.
 
 Alternatively, add `-StartWorker` to the updater command to start the worker immediately after updating and testing.
 

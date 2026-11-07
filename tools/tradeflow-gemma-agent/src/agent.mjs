@@ -443,7 +443,7 @@ export function buildExtractionPrompt(task, pages) {
   const sourcePack = pages.map(item => ({
     source_id: item.source_id, title: item.title, url: item.url,
     visible_gbp_prices: extractVisibleGbpPriceMentions(item.text).map(price => price.display),
-    page_content: item.text.slice(0, 6500)
+    page_content: item.text.slice(0, 3500)
   }));
   const category = getCategoryWebsitePlaybook(task.category_slug);
   const branchRules = category?.branchInstructions?.[task.branch_slug] || [];

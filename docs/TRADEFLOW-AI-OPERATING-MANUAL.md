@@ -4289,3 +4289,56 @@ Production now contains all-route probing, bounded search/collection pagination,
 ## 7 November 2026 — short model identity collision guard (PR #279)
 
 LIVE review found that the short model identifier `A1` allowed Audi A1 car pages to match Bambu Lab A1 printer research. The 3D-printer branch now requires manufacturer tokens or explicit 3D-printer context for model identifiers of two characters or fewer and rejects clearly automotive routes. Genuine generic A1 3D-printer listings remain eligible for ChatGPT review. Other categories and longer model IDs retain their existing matching behaviour. Regression tests cover the false-positive car page, genuine Bambu Lab A1 Combo, generic A1 printer page and cross-category non-interference. This is a discovery guard only: all captured evidence remains in `needs_research` until ChatGPT/owner review; no automatic approval or import.
+
+
+## 7 November 2026 — 3D printer retailer route correction
+
+- Scope: TradeFlow LIVE Gemma only, category 3d-printers-equipment, branch 3d-printers.
+- The current LIVE controlled task owner-3d-printers-controlled-rerun-20261107-2225 is still running on worker DESKTOP-LVASEUB-42580. At 22:42 UTC its first Anycubic Kobra S1 / uk_new subtask had discovered and fetched seven individual pages from the Anycubic printer collection. Extraction batches 1 and 2 each returned two structured observations and zero raw fallback captures; batch 3 was still in progress. No queue writes from this active task had yet been committed.
+- The same active pass exposed stale approved-source routes: 3DFLO /search?q= returned HTTP 404 and /?s= returned no matching links; iDig3DPrinting /search?search= and /search?q= returned HTTP 404 while /?s= returned no matching links; 123-3D generic /search?q= and /?s= routes returned no matching links. These failures occur before individual product-page fetching.
+- Direct public-site inspection verified the correct routes: 3DFLO https://www.3dflo.com/product-category/3d-printers/; iDig3DPrinting https://www.idig3dprinting.co.uk/product-category/3d-printers/; 123-3D new collection https://www.123-3d.co.uk/collections/3d-printers; 123-3D refurbished collection https://www.123-3d.co.uk/collections/refurbished-printers.
+- A second discovery-stage issue was confirmed in production code: isCollectionDiscoveryPage() recognised Shopify /collections/ and generic /categories/ paths but not WordPress /product-category/; isEligibleProductPage() also did not explicitly exclude that WordPress category path. A correct category URL could therefore be misclassified and not traversed.
+- LIVE source registry was updated under the user's standing permission: 3DFLO and iDig3DPrinting now have their verified category URLs in search_url_template; 123-3D notes record both verified routes while its scope remains all. The 123-3D routes are selected by research_type in the playbook: new uses the all-printers collection, used uses the refurbished collection. This avoids deliberately probing refurbished inventory in the new lane.
+- No schema change, catalogue mutation, evidence approval/import, TEST data change, secret change, Research PC update or worker restart was made. The active task had already loaded its source rows before the source-registry update, so this running task is not expected to use the new routes.
+- PR #278 was merged to production at 22:13 UTC (merge commit fece19063a4101b449fa3cc120a652c9acd66d15). PR #279 remains open and unmerged, but the short-model identity guard is present in production commit 6941fba5b7b74cf4f005cf0e6cbfca7905c8f4e4; do not merge the divergent PR branch blindly.
+- Proposed fix on feature branch feature/gemma-3d-printer-source-routes-20261107: lane-aware 123-3D collection routing; verified WordPress category routes for 3DFLO/iDig; explicit WordPress category discovery classification; regression tests for route isolation and following product links. CI and PR review are required before merge. No deployment or Research PC update is authorised by this checkpoint.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.
+
+
+## 7 November 2026 — canonical source URL de-duplication
+
+The LIVE source registry and site playbook both carry the verified 3DFLO/iDig category URLs. To avoid probing the same page twice through bare-host and www redirects, the playbook now stores the verified canonical www URLs and buildWebsiteSearchRoutes accepts absolute routes as well as relative paths. The same canonical-host treatment is used for 123-3D's new/refurbished collections. Regression coverage verifies that a configured search_url_template and its playbook route collapse to one URL. This remains confined to the 3D-printer source playbook; no other category route logic is changed.
+
+
+## 7 November 2026 — ELEGOO UK new/pre-owned route coverage
+
+- LIVE already contains the enabled ELEGOO UK manufacturer source for category `3d-printers-equipment`. ChatGPT verified the official UK FDM collection `https://uk.elegoo.com/collections/fdm-printers`: it exposes 60 products and lists the Neptune 4 Pro with GBP pricing. The official pre-owned collection `https://uk.elegoo.com/collections/pre-owned-3d-printer` exposes 27 products and includes a Neptune 4 Pro entry, but that entry is currently marked sold out. Both URLs are discovery routes only; Gemma must follow individual product pages and verify current availability.
+- LIVE source notes now record both URLs. The source's current `research_scope` remains `new_uk` until the lane-specific playbook is reviewed and deployed; do not let the pre-owned route enter the used lane before that coordinated change.
+- This feature branch adds `uk.elegoo.com` to the 3D-printer playbook with Shopify collection discovery and strict routes: `uk_new` → `/collections/fdm-printers`; `uk_used` → `/collections/pre-owned-3d-printer`; `uk_both` → both. Generic search fallback is disabled for this site. Sold-out individual listings must not be accepted as current used evidence.
+- Regression tests verify the three lane route sets and confirm both collection pages are discovery pages, not direct product evidence.
+- This is confined to the 3D Printers source playbook. No catalogue/evidence import, approval, task enqueue, TEST/LIVE data copy or secret change is included.
+- PR #281 remains open and unmerged. Do not merge/deploy or widen the LIVE source scope until owner review and the Research PC/runtime route acceptance test.
+
+
+## 7 November 2026 — ELEGOO UK host eligibility guard
+
+- The official storefront is hosted on `uk.elegoo.com`, which is not covered by the generic `.co.uk`/UK-path check. Without an explicit allow-list entry, the verified FDM and pre-owned collection pages and direct product pages would be rejected by `ukHost()` even though the site displays GBP and explicitly ships to the United Kingdom.
+- The 3D-printer UK source-host allow-list now includes `uk.elegoo.com`. Regression coverage includes an individual Neptune 4 Pro product URL, plus the new/used collection discovery routes; collections remain ineligible as direct product evidence.
+- The source registry remains `new_uk` until the lane-specific playbook is reviewed/deployed. No used-lane activation, catalogue approval/import, TEST/LIVE crossover or secret change is included.
+
+
+## Verification update — 7 November 2026
+
+- Added `uk.elegoo.com` to the explicit UK 3D-printer source-host allow-list; without this, the .com subdomain would fail the UK host check despite its GBP/UK storefront.
+- Added ELEGOO lane-specific collection routing and tests for new, used and combined tasks, collection discovery-only classification, and direct Neptune 4 Pro product-page eligibility.
+- Focused Node.js checks for the eight route/host assertions passed: 8 passed, 0 failed. The last available GitHub Actions run for PR #281 (42422365717) passed 35/35 before the ELEGOO additions; a new CI run covering these additions has not yet been observed. PR remains open and unmerged.
+- LIVE ELEGOO source scope remains `new_uk`; the used collection is recorded but intentionally not enabled for used-lane research until after reviewed/deployed route code.

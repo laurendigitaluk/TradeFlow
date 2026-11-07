@@ -170,3 +170,23 @@ PR #272, `Fix Gemma research navigation and exact-model filtering`, was merged t
 PR #273, “Deepen Gemma category research and capture borderline findings”, was merged into production as commit 7e8e2d4ba6e634fa788ec78b345ac6047e54aee7. GitHub Actions Gemma Research Tests run 42403829606 completed successfully: all Gemma source syntax checks passed, the task-group and website-playbook test suites passed (19 tests, 0 failures), and Owner Dashboard JavaScript syntax passed. The first test run exposed a collection-pagination fixture that dropped the Creality UK locale path; the fixture was corrected to retain /uk/, and the subsequent complete CI run passed.
 
 Production now contains all-route probing, bounded search/collection pagination, branch-specific printer/accessory rules, direct-page borderline assessment, validation-failure borderline handoff, approval suppression for borderline queue rows, expanded research coverage metrics, and Owner Dashboard cache reference v29. This confirms GitHub source and CI only; it does not yet confirm Cloudflare's production deployment or Research PC installation. The Research PC must be updated with the production updater, then the owner dashboard must be checked for v29, and exactly one controlled Creality K1 task run before any wider batch is dispatched.
+
+
+## 7 November 2026 — LIVE 3D printer source route correction
+
+Verified category routes were added to the LIVE source registry under the user's standing permission. 3DFLO and iDig use their 3D-printer WordPress category pages; 123-3D remains scope=all with separate new and refurbished collection routes. The active task had already loaded its source registry before this change and is not affected. See PROJECT-MEMORY/2026-11-07-gemma-3d-printer-site-routes.md and CHECKPOINTS/2026-11-07-gemma-site-route-correction.md for the diagnosis and proposed code fix. No evidence was approved or imported, no duplicate task was queued, and TEST/LIVE separation and secrets were preserved.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.
+
+
+## 7 November 2026 — canonical source URL de-duplication
+
+The LIVE source registry and site playbook both carry the verified 3DFLO/iDig category URLs. To avoid probing the same page twice through bare-host and www redirects, the playbook now stores the verified canonical www URLs and buildWebsiteSearchRoutes accepts absolute routes as well as relative paths. The same canonical-host treatment is used for 123-3D's new/refurbished collections. Regression coverage verifies that a configured search_url_template and its playbook route collapse to one URL. This remains confined to the 3D-printer source playbook; no other category route logic is changed.

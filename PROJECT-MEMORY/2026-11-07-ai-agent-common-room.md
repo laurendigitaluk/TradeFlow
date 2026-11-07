@@ -66,3 +66,11 @@ LIVE migrations 20261107160000_fix_common_room_agent_routing and 20261107161000_
 - The subscriber-website-manual.html had internal historical/test notes appended after the main subscriber guide, including Adventure Outpost sign-in and payment test details and a TEST/LIVE runtime implementation note. These were not appropriate subscriber-facing instructions.
 - Removed the internal/test-only appendages from the published subscriber manual, retained the useful SEO instructions as a properly styled section 14 inside the manual, and added the current customer-paid shipping section 13.
 - The subscriber manual now ends cleanly at </body></html> with no trailing internal text and has an explicit 7 November 2026 last-updated marker.
+
+ 
+## Production merge and Research PC updater — 7 November 2026
+PR #267 merged to production as 45049f5c4a1b131d95b701b2603fe0a351c392bd. Post-merge review found task-worker.mjs referenced a missing task-groups.mjs module. Fixed the worker import and added task-groups.mjs plus task-groups.test.mjs. Four Node built-in tests passed for non-array inputs, malformed entries, deduplication and preserving distinct product/package/category/branch/agent/research-type tasks.
+
+Added tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 and README.md. The updater downloads only reviewed source/test files, validates the supplied private .env against approved TEST/LIVE project URLs, runs syntax checks and tests before installation, backs up existing source files and replaces only the dedicated src folder. It never prints, copies, backs up or overwrites the .env and sets TRADEFLOW_GEMMA_ENV_FILE to the exact supplied path. It supports first install into a separate dedicated TradeFlow folder.
+
+The updater has not been run on the Research PC. Its real path, Ollama service, worker startup and Common Room round-trip remain unverified. No Cloudflare deployment was made; this repo has no GitHub Actions deployment workflow and no Cloudflare connector is available in the current tool connections.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lauren Digital Owner Dashboard</title>
-<link rel="stylesheet" href="platform-owner-dashboard.css?v=7">
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=8">
 <link rel="stylesheet" href="platform-public-pages-visual-editor.css?v=1">
 </head>
 <body>
@@ -34,12 +34,12 @@
     <h1>Owner Dashboard</h1>
     <p class="intro">Manage Lauren Digital's product pages and the TradeFlow platform. Subscriber operational data remains inside each business tenant.</p>
 
-    <section id="product-pages" class="panel">
+    <section id="product-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PRODUCT DETAILS</span><strong>TradeFlow product details</strong><small>Set the product name, headline and tagline for the public product cards.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
       <div class="panel-head"><div><div class="eyebrow">Parent brand</div><h2>Lauren Digital product pages</h2></div><button id="refresh-product-pages" type="button">Refresh pages</button></div>
       <p class="muted">Edit the public homepage details for TradeFlow, StudioFlow and BusinessFlow here. Changes are stored in the platform database and appear on the public product cards/pages after saving. Use “Hidden” to remove a product from public listings.</p>
       <div id="product-pages-error" class="error" role="alert"></div>
       <div id="product-pages-list" class="plan-admin-list"><p class="muted">Sign in to load product pages.</p></div>
-    </section>
+    </div></details></section>
 
     <section id="overview" class="stats">
       <article><span>Subscriber businesses</span><strong id="tenant-count">—</strong></article>
@@ -47,7 +47,7 @@
       <article><span>TradeFlow plan</span><strong id="tradeflow-count">—</strong></article>
     </section>
 
-    <section id="businesses" class="panel">
+    <section id="businesses" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">TENANTS</span><strong>Subscriber businesses</strong><small>Review subscriber accounts, workspace status and business details.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
       <div class="panel-head"><div><div class="eyebrow">Tenants</div><h2>Subscriber businesses</h2></div><button id="refresh" type="button">Refresh</button></div>
       <p class="muted">This view shows real subscriber businesses only. Development and security test tenants are kept out of the commercial subscriber list.</p>
       <div id="error" class="error" role="alert"></div><div id="action-message" class="action-message" role="status"></div>
@@ -57,9 +57,9 @@
           <tbody id="tenant-rows"><tr><td colspan="9">Loading…</td></tr></tbody>
         </table>
       </div>
-    </section>
+    </div></details></section>
 
-    <section id="complimentary-access" class="panel">
+    <section id="complimentary-access" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PLATFORM OWNER</span><strong>Complimentary subscriber accounts</strong><small>Create a subscriber workspace and send its invitation.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
       <div class="panel-head"><div><div class="eyebrow">Platform owner controls</div><h2>Create complimentary subscriber</h2></div></div>
       <p class="muted">Invite a new subscriber without Stripe checkout. The account receives an active TradeFlow workspace with complimentary billing status. An invitation email is sent so the subscriber can set up access. Existing accounts are not attached automatically.</p>
       <form id="complimentary-subscriber-form" style="max-width:680px">
@@ -69,35 +69,35 @@
         <p><button id="complimentary-submit" type="submit">Create complimentary account and send invitation</button></p>
       </form>
       <div id="complimentary-status" class="action-message" role="status" aria-live="polite"></div>
-    </section>
+    </div></details></section>
 
-    <section id="domain-connections" class="panel">
+    <section id="domain-connections" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">CUSTOMER DOMAINS</span><strong>Domain connection requests</strong><small>Review DNS instructions, SSL checks and domain routing.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
 <div class="panel-head"><div><div class="eyebrow">Subscriber domains</div><h2>Domain connection requests</h2></div><button id="refresh-domain-actions" type="button">Refresh</button></div>
 <p class="muted">Work through each request in order. TradeFlow guides the Platform Owner through review, connection preparation, customer DNS instructions, DNS verification, SSL verification and tenant-routing verification before activation.</p>
 <div id="domain-actions-error" class="error" role="alert"></div>
 <div id="domain-actions-list"><p class="muted">Loading domain requests…</p></div>
-</section>
+</div></details></section>
 
-<section id="plans" class="panel">
+<section id="plans" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">COMMERCIAL MODEL</span><strong>TradeFlow plan and pricing</strong><small>Manage the plan description, price, free trial and billing identifiers.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
       <div class="panel-head"><div><div class="eyebrow">Commercial model</div><h2>TradeFlow plan</h2></div></div>
       <p class="muted">Control the single TradeFlow commercial plan shown on the website. Set the plan name, description, live/hidden status, prices, free-trial period and Stripe Product/Price IDs here.</p>
       <div id="plans-error" class="error" role="alert"></div><div id="stripe-setup-status" class="action-message" role="status"></div>
       <div id="plan-admin-list" class="plan-admin-list"><p class="muted">Loading plans…</p></div>
       <p class="note">Stripe Product and Price IDs are already configured for LIVE subscriber billing. This dashboard only manages the saved TradeFlow plan details; Stripe secret keys are never stored here.</p>
-    </section>
+    </div></details></section>
 
-    <section id="public-pages" class="panel"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div id="public-page-editor">Loading public page editor…</div></section>
+    <section id="public-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PUBLIC WEBSITE</span><strong>Public Website Pages</strong><small>Edit the public How It Works and Examples pages.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div id="public-page-editor">Loading public page editor…</div></div></details></section>
 
-    <section id="email-settings" class="panel">
+    <section id="email-settings" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PLATFORM EMAIL</span><strong>Platform email settings</strong><small>Set the sending address used by TradeFlow.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
 <div class="eyebrow">Platform email</div><h2>TradeFlow sending email</h2>
 <p>Enter the email address TradeFlow should use as its platform sending address. You can use an existing address now and replace it later when the TradeFlow domain and permanent email address are ready.</p>
 <p><strong>This is a platform-owner setting.</strong> Subscribers do not need to configure email servers or Resend.</p>
 <form id="platform-email-form" style="max-width:620px"><label>TradeFlow email address<input id="platform-email-input" type="email" autocomplete="email" placeholder="hello@tradeflow.co.uk" required></label><p><button type="submit">Save TradeFlow email</button></p></form>
 <div id="platform-email-status" class="muted" aria-live="polite">Loading email status…</div>
 <div id="platform-email-help" class="note">This setting records the platform sending address. It does not send a confirmation email. The sender must be authorised through the email provider/domain verification process before TradeFlow can send from it.</div>
-</section>
+</div></details></section>
 
-<section id="gemma-control-centre" class="panel">
+<section id="gemma-control-centre" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">AI RESEARCH OPERATIONS</span><strong>Gemma Control Centre</strong><small>Manage research teams, approved websites, batches, queues and evidence review.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
 <div class="panel-head"><div><div class="eyebrow">Research operations · LIVE telemetry</div><h2>Gemma Control Centre</h2></div><button id="gemma-refresh" type="button">Refresh activity</button></div>
 <p class="muted">LIVE research operations. Submit work, monitor the Research PC, and review discoveries here. TEST remains for software regression only.</p>
 <div class="gemma-subpanel gemma-task-form">
@@ -134,10 +134,10 @@
  </form>
 </div>
 <details class="gemma-diagnostics"><summary>Agent diagnostics and supervisor activity</summary><div class="gemma-grid"><div class="gemma-subpanel"><div class="panel-head"><h3>All registered agents</h3></div><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Category</th><th>Status</th><th>Current task</th><th>Completed</th><th>Candidates</th><th>Last heartbeat</th></tr></thead><tbody id="gemma-agent-rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div><div class="gemma-subpanel"><div class="panel-head"><h3>Supervisor activity</h3><span class="muted">Latest 60 events</span></div><div id="gemma-activity" class="gemma-activity"><p class="muted">Loading activity…</p></div></div></div></details>
-</section>
+</div></details></section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=22" defer></script>
+<script src="platform-owner-dashboard.js?v=23" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

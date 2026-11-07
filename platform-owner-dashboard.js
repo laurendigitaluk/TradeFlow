@@ -540,3 +540,13 @@ async function postAiAgentCommonRoom(){
 $('ai-room-refresh')?.addEventListener('click',loadAiAgentCommonRoom);
 $('ai-room-send')?.addEventListener('click',postAiAgentCommonRoom);
 ['ai-room-thread','ai-room-limit','ai-room-category'].forEach(id=>$(id)?.addEventListener('change',loadAiAgentCommonRoom));
+
+/* Sidebar links open their matching owner-dashboard accordion. */
+function initOwnerSectionAccordions(){
+ const detailsFor=id=>{const section=document.getElementById(id);return section?Array.from(section.children).find(el=>el.matches&&el.matches('details.owner-section-accordion')):null};
+ const openSection=id=>{const details=detailsFor(id);if(details)details.open=true};
+ document.querySelectorAll('.sidebar nav a[href^="#"]').forEach(link=>link.addEventListener('click',()=>openSection(link.hash.slice(1))));
+ window.addEventListener('hashchange',()=>{if(location.hash)openSection(decodeURIComponent(location.hash.slice(1)))});
+ if(location.hash)openSection(decodeURIComponent(location.hash.slice(1)));
+}
+initOwnerSectionAccordions();

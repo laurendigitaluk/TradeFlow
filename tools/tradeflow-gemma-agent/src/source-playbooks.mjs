@@ -4,7 +4,7 @@
 const playbooks = {
   '3d-printers-equipment': {
     categoryInstructions: [
-      'Research standalone 3D printers only; reject filament, resin, hotends, build plates, upgrades, spare parts and accessories unless the task explicitly asks for them.',
+      'Respect the assigned master-catalogue branch. Do not mix standalone printer models with equipment, parts or accessory products; apply the matching branch-specific instructions.',
       'A brand catalogue, collection, search-results page or multi-product category page is a discovery page only. Extract links for the exact requested model, open each individual product/listing page, and validate price, GBP currency, condition and availability there.',
       'On manufacturer sites, search the requested manufacturer and exact model first, then navigate Printers / 3D Printers / product collections if search is weak.',
       'On used marketplaces, inspect individual seller listings. Do not use category averages, completed/sold prices, snippets without a direct listing, or listings for a different model/variant.',
@@ -14,6 +14,17 @@ const playbooks = {
       'Where product cards are loaded dynamically, use the website-specific public catalogue/search endpoint only when its playbook explicitly allows it; otherwise try the site search, category navigation, sitemap or visible product links and report which methods failed. Never invent a URL or bypass login/access controls.',
       'If a direct exact-model listing looks useful but one evidence field is missing or ambiguous, return it as BORDERLINE for ChatGPT inspection with the original URL, captured text and exact uncertainty. Never fill gaps by inference or treat borderline findings as verified evidence.'
     ],
+    branchInstructions: {
+      '3d-printers': [
+        'Research standalone 3D printer machines and exact machine packages only. Reject filament, resin, hotends, build plates, upgrades, spare parts and accessories as mismatches.',
+        'Break the printer branch into manufacturer, printer family, exact model and package/bundle variants. Inspect each model/package as a separate catalogue product and preserve Combo, bundle and machine-only distinctions.'
+      ],
+      '3d-printer-equipment-accessories': [
+        'Research the exact equipment/accessory product requested by the catalogue task. Do not reject an accessory merely because it is not a standalone printer.',
+        'Identify the exact accessory type, manufacturer, model/part number and compatible printer models. Never substitute a similar-looking part or infer compatibility.',
+        'Separate consumables, replacement parts, upgrades and add-ons into their correct product identities; inspect the individual product page for UK GBP price, condition and availability.'
+      ]
+    },
     sites: {
       'store.creality.com': {
         label: 'Creality UK official store',

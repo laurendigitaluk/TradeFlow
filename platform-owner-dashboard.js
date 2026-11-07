@@ -263,8 +263,8 @@ async function savePlatformEmail(e){
   status.textContent='Status: '+(data?.sender_verification_status==='verified'?'Ready — TradeFlow can send platform emails.':'Saved — sender/domain verification is still required.');
  }catch(e){status.textContent=e.message||String(e)}
 }
-async function loadAiSettings(){const s=$('ai-settings-status');if(!s)return;try{const d=await request('/rest/v1/rpc/platform_owner_get_ai_settings',{method:'POST',body:'{}'});$('ai-active-provider').value=d?.active_provider||'none';$('ai-gemma').checked=!!d?.gemma_enabled;$('ai-openai').checked=!!d?.openai_enabled;$('ai-anthropic').checked=!!d?.anthropic_enabled;$('ai-google').checked=!!d?.google_enabled;$('ai-subscriber').checked=!!d?.subscriber_provider_enabled;s.textContent='AI settings loaded. Active provider: '+($('ai-active-provider').selectedOptions[0]?.text||'None')+'.'}catch(e){s.textContent=e.message||String(e)}}
-async function saveAiSettings(e){e.preventDefault();const s=$('ai-settings-status'),b=e.currentTarget.querySelector('button[type="submit"]');const p={p_active_provider:$('ai-active-provider').value,p_subscriber_provider_enabled:$('ai-subscriber').checked,p_gemma_enabled:$('ai-gemma').checked,p_openai_enabled:$('ai-openai').checked,p_anthropic_enabled:$('ai-anthropic').checked,p_google_enabled:$('ai-google').checked};b.disabled=true;s.textContent='Saving…';try{const d=await request('/rest/v1/rpc/platform_owner_update_ai_settings',{method:'POST',body:JSON.stringify(p)});$('ai-active-provider').value=d?.active_provider||p.p_active_provider;s.textContent='Saved. Active provider: '+($('ai-active-provider').selectedOptions[0]?.text||'None')+'.'}catch(e){s.textContent=e.message||String(e)}finally{b.disabled=false}}
+async function loadAiSettings(){const s=$('ai-settings-status');if(!s)return;try{const d=await request('/rest/v1/rpc/platform_owner_get_ai_settings',{method:'POST',body:'{}'});$('ai-active-provider').value=d?.active_provider||'none';$('ai-gemma').checked=!!d?.gemma_enabled;$('ai-openai').checked=!!d?.openai_enabled;$('ai-anthropic').checked=!!d?.anthropic_enabled;$('ai-google').checked=!!d?.google_enabled;s.textContent='AI settings loaded. Subscriber-supplied providers are disabled.'}catch(e){s.textContent=e.message||String(e)}}
+async function saveAiSettings(e){e.preventDefault();const s=$('ai-settings-status'),b=e.currentTarget.querySelector('button[type="submit"]');const p={p_active_provider:$('ai-active-provider').value,p_subscriber_provider_enabled:false,p_gemma_enabled:$('ai-gemma').checked,p_openai_enabled:$('ai-openai').checked,p_anthropic_enabled:$('ai-anthropic').checked,p_google_enabled:$('ai-google').checked};b.disabled=true;s.textContent='Saving…';try{const d=await request('/rest/v1/rpc/platform_owner_update_ai_settings',{method:'POST',body:JSON.stringify(p)});$('ai-active-provider').value=d?.active_provider||p.p_active_provider;s.textContent='Saved. Subscriber-supplied providers remain disabled.'}catch(e){s.textContent=e.message||String(e)}finally{b.disabled=false}}
 function nextPlan(code){return null}
 function setActionMessage(text,isError=false){const el=$('action-message');if(el){el.textContent=text;el.className=isError?'action-message error':'action-message'}}
 async function manageSubscription(tenantId,action,planCode,name){if(action==='close'&&!confirm('Close the TradeFlow account for "'+name+'"? The tenant will be archived and its subscription cancelled. This does not delete its stored business data.'))return;if(action==='upgrade'&&!confirm('Upgrade "'+name+'" to '+planCode+'?'))return;setActionMessage(action==='close'?'Closing account…':'Updating subscription…');try{await request('/rest/v1/rpc/platform_admin_manage_subscription',{method:'POST',body:JSON.stringify({p_tenant_id:tenantId,p_action:action,p_plan_code:planCode})});setActionMessage(action==='close'?'Account closed.':'Subscription upgraded.');await loadTenants()}catch(e){setActionMessage(e.message||String(e),true)}}
@@ -386,18 +386,48 @@ $('sign-out').onclick=()=>{session=null;save();location.reload()};
   catch(e){showAuth('')}
 })();
 
+function gemmaCategoryMeta(agent){
+ const raw=String(agent.category||agent.agent_key||'').toLowerCase();
+ if(/3d[- ]?printers?|printer.*equipment/.test(raw)||String(agent.agent_key||'')==='3d-printers')return{slug:'3d-printers-equipment',label:'3D Printers & Equipment'};
+ if(/pokemon/.test(raw))return{slug:'pokemon-trading-cards',label:'Pokémon Trading Cards'};
+ if(/camera/.test(raw))return{slug:'cameras',label:'Cameras and lenses'};
+ if(/drone/.test(raw))return{slug:'drones',label:'Drones and accessories'};
+ if(/gaming|console/.test(raw))return{slug:'gaming-consoles-accessories',label:'Gaming consoles and accessories'};
+ if(/laptop|computer/.test(raw))return{slug:'laptops',label:'Laptops and computers'};
+ if(/metal detector/.test(raw))return{slug:'metal-detectors',label:'Metal detectors and accessories'};
+ if(/mobile|phone/.test(raw))return{slug:'mobile-phones',label:'Mobile phones'};
+ return{slug:String(agent.agent_key||raw).toLowerCase().replace(/[^a-z0-9]+/g,'-'),label:String(agent.category||agent.agent_name||'General research')};
+}
 function renderGemmaResearcherCards(agents){
  const host=$('gemma-researcher-cards');if(!host)return;
- const specialists=(agents||[]).filter(a=>!String(a.agent_key||'').includes('worker')&&!/task control/i.test(String(a.category||'')));
+ const specialists=(agents||[]).filter(a=>!String(a.agent_key||'').includes('worker')&&!/task control|release monitor|catalogue importer/i.test(String(a.category||'')));
  const groups=new Map();
- for(const a of specialists){const key=String(a.category||a.agent_name||'General research').trim();if(!groups.has(key))groups.set(key,[]);groups.get(key).push(a)}
- const order=[...groups.entries()].sort((a,b)=>a[0].localeCompare(b[0]));
- host.innerHTML=order.length?order.map(([category,list])=>{
-  const active=list.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
+ for(const a of specialists){const meta=gemmaCategoryMeta(a);if(!groups.has(meta.slug))groups.set(meta.slug,{...meta,list:[]});groups.get(meta.slug).list.push(a)}
+ if(!groups.has('pokemon-trading-cards'))groups.set('pokemon-trading-cards',{slug:'pokemon-trading-cards',label:'Pokémon Trading Cards',list:[],unlinked:true});
+ const order=[...groups.values()].sort((a,b)=>a.label.localeCompare(b.label));
+ host.innerHTML=order.map(group=>{
+  const list=group.list,active=list.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
   const completed=list.reduce((n,a)=>n+Number(a.tasks_completed||0),0),candidates=list.reduce((n,a)=>n+Number(a.candidates_found||0),0);
   const agentsHtml=list.map(a=>'<div class="gemma-researcher-agent"><div><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong> '+gemmaStatus(a)+'</div><small>Current work: '+escapeHtml(a.current_task||'Idle')+' · Last heartbeat: '+gemmaDate(a.last_heartbeat)+'</small>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</div>').join('');
-  return '<article class="gemma-researcher-card"><div class="gemma-researcher-head"><div><span class="eyebrow">CATEGORY TEAM</span><h4>'+escapeHtml(category)+'</h4></div><span class="gemma-team-live">'+active+' active</span></div><div class="gemma-researcher-metrics"><div><strong>'+completed+'</strong><small>Tasks completed</small></div><div><strong>'+candidates+'</strong><small>Candidates found</small></div><div><strong>'+list.length+'</strong><small>Registered agents</small></div></div>'+agentsHtml+'</article>';
- }).join(''):'<p class="muted">No category researchers are registered yet. Agent teams will appear here as they report their first heartbeat.</p>';
+  return '<article class="gemma-researcher-card"><div class="gemma-researcher-head"><div><span class="eyebrow">CATEGORY TEAM</span><h4>'+escapeHtml(group.label)+'</h4></div><span class="gemma-team-live">'+(group.unlinked?'Not linked':active+' active')+'</span></div><div class="gemma-researcher-metrics"><div><strong>'+completed+'</strong><small>Tasks completed</small></div><div><strong>'+candidates+'</strong><small>Candidates found</small></div><div><strong>'+list.length+'</strong><small>Registered agents</small></div></div>'+(agentsHtml||'<p class="muted">No research agent linked. This category is reserved for future research.</p>')+'<button type="button" class="gemma-manage-sources" data-manage-sources="'+escapeHtml(group.slug)+'">Manage research websites</button></article>';
+ }).join('');
+}
+let gemmaSelectedSourceCategory='';
+async function loadGemmaSources(category){
+ gemmaSelectedSourceCategory=category;const panel=$('gemma-source-manager');if(!panel)return;panel.hidden=false;
+ const names={'3d-printers-equipment':'3D Printers & Equipment','pokemon-trading-cards':'Pokémon Trading Cards','cameras':'Cameras and lenses','drones':'Drones and accessories','gaming-consoles-accessories':'Gaming consoles and accessories','laptops':'Laptops and computers','metal-detectors':'Metal detectors and accessories','mobile-phones':'Mobile phones'};
+ $('gemma-source-title').textContent=(names[category]||category)+' — research websites';
+ $('gemma-source-list').textContent='Loading approved websites…';$('gemma-source-status').textContent='';
+ try{const rows=await request('/rest/v1/rpc/platform_owner_list_research_sources',{method:'POST',body:JSON.stringify({p_category_slug:category})});
+  $('gemma-source-list').innerHTML=rows.length?'<table><thead><tr><th>Website</th><th>Type</th><th>Scope</th><th>Status</th><th>Category access</th></tr></thead><tbody>'+rows.map(x=>'<tr><td><strong>'+escapeHtml(x.source_name)+'</strong><br><a href="'+escapeHtml(x.homepage_url)+'" target="_blank" rel="noopener">'+escapeHtml(x.domain)+'</a></td><td>'+escapeHtml(x.source_kind)+'</td><td>'+escapeHtml(x.research_scope)+'</td><td>'+(x.enabled?'Enabled':'Disabled')+'</td><td>'+(x.universal?'<span class="gemma-universal-source">Universal</span>':'<label class="gemma-source-toggle"><input type="checkbox" data-source-id="'+escapeHtml(x.id)+'" '+(x.category_slugs.includes(category)?'checked':'')+'> Search this category</label>')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No websites are assigned to this category yet. Add the websites you want Gemma to search below.</p>';
+  $('gemma-source-list').querySelectorAll('[data-source-id]').forEach(el=>el.onchange=async()=>{el.disabled=true;try{await request('/rest/v1/rpc/platform_owner_set_research_source_category',{method:'POST',body:JSON.stringify({p_source_id:el.dataset.sourceId,p_category_slug:category,p_enabled:el.checked})});await loadGemmaSources(category)}catch(e){$('gemma-source-status').textContent=e.message||String(e);el.checked=!el.checked;el.disabled=false}});
+ }catch(e){$('gemma-source-list').textContent=e.message||String(e)}
+}
+async function addGemmaResearchSource(e){
+ e.preventDefault();const status=$('gemma-source-status'),button=e.currentTarget.querySelector('button[type=submit]');if(!gemmaSelectedSourceCategory)return;
+ const p={p_source_name:$('gemma-source-name').value.trim(),p_domain:$('gemma-source-domain').value.trim().toLowerCase(),p_homepage_url:$('gemma-source-url').value.trim(),p_category_slug:gemmaSelectedSourceCategory,p_source_kind:$('gemma-source-kind').value,p_research_scope:$('gemma-source-scope').value};
+ button.disabled=true;status.textContent='Adding website…';
+ try{await request('/rest/v1/rpc/platform_owner_add_research_source',{method:'POST',body:JSON.stringify(p)});e.currentTarget.reset();status.textContent='Website added to this category.';await loadGemmaSources(gemmaSelectedSourceCategory)}catch(err){status.textContent=err.message||String(err)}finally{button.disabled=false}
 }
 function gemmaDate(value){if(!value)return'Never';const d=new Date(value);if(Number.isNaN(d.getTime()))return'Unknown';return d.toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}
 function gemmaStatus(agent){const age=agent.last_heartbeat?Date.now()-new Date(agent.last_heartbeat).getTime():Infinity;if(agent.status==='running'&&age<120000)return'<span class="gemma-status running">Running</span>';if(agent.status==='error')return'<span class="gemma-status error">Error</span>';if(agent.status==='paused')return'<span class="gemma-status paused">Paused</span>';if(age>300000)return'<span class="gemma-status offline">Offline / stale</span>';return'<span class="gemma-status idle">Idle</span>'}
@@ -451,4 +481,7 @@ $('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
 $('gemma-queue-refresh')?.addEventListener('click',()=>{loadGemmaQueue();loadGemmaTasks()});
 $('gemma-task-refresh')?.addEventListener('click',loadGemmaTasks);
 $('gemma-task-form')?.addEventListener('submit',submitGemmaTask);
+$('gemma-researcher-cards')?.addEventListener('click',e=>{const b=e.target.closest('[data-manage-sources]');if(b)loadGemmaSources(b.dataset.manageSources)});
+$('gemma-source-close')?.addEventListener('click',()=>$('gemma-source-manager').hidden=true);
+$('gemma-source-form')?.addEventListener('submit',addGemmaResearchSource);
 setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue()}},20000);

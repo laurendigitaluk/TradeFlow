@@ -126,7 +126,7 @@ A separate direct-stock route is available where an item enters through the busi
 
 
 
-> **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
+> **CURRENT SHIPPING ARCHITECTURE — 7 November 2026**
 >
 > The current TradeFlow shipping architecture is **subscriber-managed shipping services with manual handoff**. The former Parcel2Go API/connected-provider route is **retired and must not be used or reintroduced from the older sections of this document**.
 >

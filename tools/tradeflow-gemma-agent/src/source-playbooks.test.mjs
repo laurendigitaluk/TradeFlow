@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { isCollectionDiscoveryPage, isEligibleProductPage } from './agent.mjs';
+import { decodeSearchRedirect, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -61,4 +61,15 @@ test('designated UK 3D printer retailer hosts accept individual product pages', 
   for (const host of ['3dgbire.com','3dflo.com','bambu-lab-uk.myshopify.com','uk.anycubic3d.com','www.gumtree.com']) {
     assert.equal(isEligibleProductPage('https://'+host+'/products/creality-k1', 'Creality K1 3D Printer'), true, host);
   }
+});
+
+test('model matching ignores search query terms so accessories are not mistaken for the requested printer', () => {
+  const accessory = 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V?keywords=Creality+K1';
+  assert.equal(matchesTaskModel('Creality Leveling Extruder Filament', accessory, task), false);
+  assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);
+});
+
+test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product URL', () => {
+  const wrapped = 'https://aax-eu-zaz.amazon.co.uk/x/c/token/https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin?keywords=Creality+K1';
+  assert.equal(decodeSearchRedirect(wrapped), 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin');
 });

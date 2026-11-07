@@ -225,7 +225,8 @@ export function isCollectionDiscoveryPage(url, title = '') {
   if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
   const path = decodeURIComponent(u.pathname).toLowerCase();
   const known3dCategoryRoute = ['/used-3d-printers', '/reconditioned-3d-printers', '/reconditioned-3d-printers-and-3d-scanners', '/second-hand-3d-printers'].some(route => path.startsWith(route));
-  if (!(path.includes('/collections/') || path.includes('/collection/') || path.includes('/categories/') || known3dCategoryRoute)) return false;
+  const wordpressProductCategoryRoute = path.includes('/product-category/');
+  if (!(path.includes('/collections/') || path.includes('/collection/') || path.includes('/categories/') || wordpressProductCategoryRoute || known3dCategoryRoute)) return false;
   if (/facebook\.com/i.test(u.hostname)) return false;
   return true;
 }
@@ -344,7 +345,7 @@ export function isEligibleProductPage(url, title = '') {
   const routeSegments = path.split('/').filter(Boolean);
   const localeOnly = routeSegments.length === 1 && /^(uk|en|en-gb|en-us|gb|us|de|fr|es|it|nl)$/i.test(routeSegments[0]);
   if (routeSegments.length === 0 || localeOnly) return false;
-  if (/forum|viewtopic|srpsearch|\/(collections?|categories?|search|results|pages?)\b|\/shop\//i.test(path)) return false;
+  if (/forum|viewtopic|srpsearch|\/(collections?|categories?|product-category|search|results|pages?)\b|\/shop\//i.test(path)) return false;
   if (['q', 'query', '_nkw', 'search'].some(key => u.searchParams.has(key))) return false;
   // Amazon search/category URLs can look like product slugs but are not offer pages.
   if (/(^|\.)amazon\./i.test(host)) {

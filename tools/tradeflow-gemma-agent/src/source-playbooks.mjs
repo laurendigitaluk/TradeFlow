@@ -63,7 +63,7 @@ const playbooks = {
       },
       'gumtree.com': {
         label: 'Gumtree UK used marketplace',
-        routes: ['/search?q={query}', '/search?search_category=all&q={query}'],
+        routes: ['/uk/srpsearch%2B{query}', '/for-sale/uk/srpsearch%2B{query}'],
         navigation: 'Search UK advertisements for the exact model. Open individual adverts, verify seller asking price, location, condition and availability. Exclude wanted ads, accessories, parts and expired listings.'
       },
       'secondhand.org.uk': {

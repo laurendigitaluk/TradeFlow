@@ -27,3 +27,13 @@ The first active Anycubic new pass tried generic search routes for 3DFLO, iDig a
 
 ## Proposed correction
 Feature branch feature/gemma-3d-printer-source-routes-20261107 adds lane-specific 123-3D routes, verified 3DFLO/iDig category routes, WordPress discovery-page classification, and regression tests. Wait for CI and PR review. No merge/deploy or Research PC update is authorised yet.
+
+
+## Verification update — 7 November 2026, 22:46 UTC
+
+- PR #281 is open and mergeable: https://github.com/laurendigitaluk/TradeFlow/pull/281.
+- Gemma Research Tests run 42422054014 completed successfully: 35 tests passed, 0 failed, 0 skipped. The syntax checks also passed.
+- Cloudflare Workers preview builds for the tradeflow and tradeflow-test services both completed successfully. The tradeflow check returned a feature-branch preview URL; these are PR previews, not a production merge/deployment.
+- No merge, production deployment, Research PC update or worker restart was performed.
+- The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
+- All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.

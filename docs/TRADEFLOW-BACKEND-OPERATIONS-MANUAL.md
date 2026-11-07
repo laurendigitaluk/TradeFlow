@@ -227,3 +227,25 @@ The Selling editor now saves title, description, asking price, currency and list
 The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
 
 The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.
+
+## 7 November 2026 — Current environment and AI operations correction
+
+This section supersedes older environment references above where they conflict.
+
+- LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`.
+- TEST Supabase project: `nnsshnfkjcflucjrftzi`.
+- Retired TEST project `twfbmjwwqzxdxvclxbun` is forbidden for current operations; any earlier mention is historical only.
+- LIVE Gemma control plane is versioned: `platform_ai_agent_tasks`, `platform_catalogue_research_queue`, owner task enqueue/list/review RPCs, and service-role-only worker claim/heartbeat/complete/fail RPCs. LIVE is the authoritative research queue; TEST is software development/regression only.
+- Research PC worker is `tools/tradeflow-gemma-agent/src/task-worker.mjs`; it expects `TRADEFLOW_LIVE_URL` and `TRADEFLOW_LIVE_SERVICE_ROLE_KEY`, and checks the TEST URL/key as explicit environment-boundary inputs. Keep the protected `.env` separate and preserve it when updating code.
+- Approved websites are stored in LIVE `platform_research_sources` with category scoping. Amazon UK and eBay UK are universal only where explicitly marked; no category mapping means fail closed.
+- Candidate results are staged in LIVE `platform_catalogue_research_queue`. Owner/ChatGPT verification remains mandatory before catalogue/evidence import.
+- AI Agent Common Room has a versioned migration in branch `feature/ai-agent-common-room-20261107`; it is not yet applied or deployed. It will use `platform_ai_agent_messages`, owner-authenticated RPCs and service-role-only agent RPCs.
+- Public How It Works is source-managed in `how-it-works.html` and `how-it-works.css`; do not edit legacy `platform_public_pages` JSON and assume it updates the public page.
+
+### Research PC deployment/acceptance
+1. Confirm the PC's current worker process and original `TRADEFLOW_GEMMA_ENV_FILE` path.
+2. Preserve the dedicated `.env`, TEST/LIVE URLs and service-role credentials. Do not copy them into GitHub or browser HTML.
+3. Update only worker source/code from the accepted production release, preserving local configuration.
+4. Restart the worker and confirm a current LIVE heartbeat.
+5. Once the Common Room migration is applied, check worker startup, owner instruction read, research handover post and owner dashboard visibility.
+6. Run one deliberately limited research task and inspect the first failing hop before any larger batch.

@@ -40,7 +40,7 @@ The first subtask successfully discovered, fetched and preserved 9 pages. The fi
 - PR: https://github.com/laurendigitaluk/TradeFlow/pull/278
 - PR branch: `feature/gemma-3d-printer-lanes-metrics-20261107`. Runtime-code commits include `c7b5fdbb846728dc200b104550d606bbda88d7d0` and `22324633b95d39ac1e3169018e64333383473e8c`; bounded-prompt tests are in `1b58951c3d2756428e3f2f2a64cf14aac6eeb5f2`. Later commits update tests, documentation and checkpoints; use the PR link for the current head SHA.
 - PR is open and unmerged. Do not merge or deploy without owner review.
-- GitHub Actions Gemma Research Tests runs through 42412370161 all passed syntax and regression tests. This includes lane routing, JSON-envelope compatibility, worker heartbeat telemetry, bounded prompt/recent-note selection and the updated documentation.
+- GitHub Actions Gemma Research Tests run 42412639461 passed. Intermediate runs 42412521340–42412604266 failed first on a stale all-scope lane expectation and then on literal newline characters accidentally written into the test file; both test-fixture issues were corrected in commit edbe4a3a4940dcb8c8936b3e60bf037c342765d3. The current run is green for lane routing, JSON-envelope compatibility, worker heartbeat telemetry and bounded prompt/recent-note selection.
 - The latest worker-code change adds a periodic LIVE telemetry heartbeat during active subtasks, preserving the current extraction stage while Ollama is waiting. Its CI run 42411824125 passed.
 - No Supabase schema, source registry, product catalogue, shared evidence, TEST/LIVE tenant/customer/order/domain/Stripe data, Cloudflare deployment or local PC files were changed by the PR work.
 

@@ -31,3 +31,10 @@ Still pending: PR #267 merge/release, Cloudflare LIVE deployment/browser accepta
 A code review identified and corrected two delivery gaps before release: Gemma was reading only the General thread, and dashboard recipients gemma-task-worker/research-agents did not match the worker's agent identity. The worker now reads across all threads; the list RPC includes global category-null messages plus matching category messages; recipient routing supports all/*, exact agent key, worker ID, gemma-task-worker and research-agents. ChatGPT-only messages are not sent to Gemma.
 
 LIVE migrations 20261107160000_fix_common_room_agent_routing and 20261107161000_fix_common_room_research_group_routing applied. The final agent-list RPC uses an empty search_path and checks the service_role JWT role claim; verified anon and authenticated cannot execute it, service_role can, and no temporary test messages persisted. PC update/restart and round-trip test are still pending.
+
+ 
+## Owner feed loading and refresh — 7 November 2026
+- The Common Room feed now loads after an existing owner session is validated and after a new owner sign-in.
+- The feed refreshes alongside the Gemma Control Centre while the dashboard tab is visible, and can also be refreshed manually.
+- Gemma reads across threads and receives instructions, handovers, findings, questions and learning notes; status-only chatter is not injected into the research extraction prompt.
+- ChatGPT supervisor messages are a session-driven capability, not an always-running background ChatGPT process. The schema reserves the supervisor sender type, but a persistent ChatGPT worker/integration is not deployed.

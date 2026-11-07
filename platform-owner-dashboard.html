@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lauren Digital Owner Dashboard</title>
-<link rel="stylesheet" href="platform-owner-dashboard.css?v=7">
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=9">
 <link rel="stylesheet" href="platform-public-pages-visual-editor.css?v=1">
 </head>
 <body>
@@ -21,6 +21,7 @@
       <a href="#plans">Plans</a>
       <a href="#public-pages">Public Website Pages</a>
       <a href="#gemma-control-centre">AI Research Centre</a>
+      <a href="#ai-agent-common-room">AI Agent Common Room</a>
       <div class="nav-section" style="margin-top:18px">Documentation</div>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Handbook</a>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-HUMAN-USER-MANUAL.md" target="_blank" rel="noopener">Human User Manual</a>
@@ -97,6 +98,26 @@
 <div id="platform-email-help" class="note">This setting records the platform sending address. It does not send a confirmation email. The sender must be authorised through the email provider/domain verification process before TradeFlow can send from it.</div>
 </section>
 
+<section id="ai-agent-common-room" class="panel">
+<div class="panel-head"><div><div class="eyebrow">Shared AI operations workspace · LIVE</div><h2>AI Agent Common Room</h2></div><button id="ai-room-refresh" type="button">Refresh messages</button></div>
+<p class="muted">Shared instructions, handovers, findings, questions and learning notes for ChatGPT and Gemma agents. Messages are separate from product evidence and cannot approve or import catalogue data.</p>
+<div class="ai-room-toolbar">
+ <label>Thread<select id="ai-room-thread"><option value="general">General</option><option value="research">Research operations</option><option value="catalogue">Catalogue and evidence</option><option value="engineering">Engineering and fixes</option><option value="learning">Learning and methods</option></select></label>
+ <label>Category<input id="ai-room-category" placeholder="All categories or exact slug"></label>
+ <label>Show<select id="ai-room-limit"><option value="50">Latest 50</option><option value="100" selected>Latest 100</option><option value="200">Latest 200</option></select></label>
+</div>
+<div id="ai-room-feed" class="ai-room-feed" aria-live="polite"><p class="muted">Loading messages…</p></div>
+<div class="ai-room-compose">
+ <h3>Post an instruction or message</h3>
+ <div class="ai-room-compose-grid">
+  <label>Message type<select id="ai-room-type"><option value="instruction">Instruction</option><option value="handover">Handover</option><option value="question">Question</option><option value="finding">Finding</option><option value="learning_note">Learning note</option><option value="status_update">Status update</option></select></label>
+  <label>Recipient<select id="ai-room-recipient"><option value="all">All agents and supervisors</option><option value="gemma-task-worker">Gemma task worker</option><option value="chatgpt-supervisor">ChatGPT supervisor</option><option value="research-agents">Research agents</option><option value="engineering-agents">Engineering agents</option></select></label>
+  <label>Title<input id="ai-room-title" maxlength="180" placeholder="Brief subject"></label>
+ </div>
+ <label>Message<textarea id="ai-room-body" rows="5" maxlength="12000" placeholder="Write instructions, context, findings or a handover…"></textarea></label>
+ <div class="ai-room-compose-foot"><span id="ai-room-status" class="muted" role="status" aria-live="polite">Visible to the shared LIVE agent workspace.</span><button id="ai-room-send" type="button">Post to Common Room</button></div>
+</div>
+</section>
 <section id="gemma-control-centre" class="panel">
 <div class="panel-head"><div><div class="eyebrow">Research operations · LIVE telemetry</div><h2>Gemma Control Centre</h2></div><button id="gemma-refresh" type="button">Refresh activity</button></div>
 <p class="muted">LIVE research operations. Submit work, monitor the Research PC, and review discoveries here. TEST remains for software regression only.</p>
@@ -137,7 +158,7 @@
 </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=22" defer></script>
+<script src="platform-owner-dashboard.js?v=24" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

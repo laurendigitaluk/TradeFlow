@@ -3,7 +3,7 @@
 - Approved TEST Supabase: nnsshnfkjcflucjrftzi.
 - Approved LIVE Supabase: gxsrajtqzdjvmceqcpgv.
 - Retired project twfbmjwwqzxdxvclxbun is forbidden; older references below are historical only.
-- The LIVE Common Room migration is installed. Dashboard and Gemma worker changes remain in PR #267; no Cloudflare deployment or Research PC restart has been verified.
+- The LIVE Common Room migration and four additive routing/security migrations are installed. Owner RPCs are authenticated with active-membership checks; agent RPCs are service_role-only; all four use an empty search_path. Dashboard and Gemma worker changes remain in PR #267; no Cloudflare deployment or Research PC restart has been verified.
 - The Research PC updater must preserve the separate local environment file selected by TRADEFLOW_GEMMA_ENV_FILE. Update code without overwriting the existing .env, tokens, API keys or local Ollama configuration. Never copy these secrets into GitHub, the dashboard or Common Room messages.
 - Gemma receives bounded Common Room guidance in the extraction prompt; exact task identity, approved category sources, evidence validation and human review rules remain authoritative.
 - How It Works is source-managed in how-it-works.html / how-it-works.css; the legacy JSON draft is not its published source. Examples remains owner-CMS editable.

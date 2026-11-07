@@ -1,3 +1,31 @@
+# CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
+
+This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
+
+## Product and site architecture
+- Lauren Digital is the parent brand. TradeFlow is the SaaS platform.
+- The public **How It Works** guide is source-managed in how-it-works.html and how-it-works.css. It is a ten-section, text-only native accordion page. The legacy platform_public_pages How It Works draft is retained but does not drive the published page. Request source changes when its wording/process needs updating.
+- **Examples** remains editable through the Owner Dashboard Public Website Pages editor.
+- Subscriber websites are tenant-specific. Website Builder controls design, branding, page text and visibility; Buying Catalogue and published Selling listings supply connected product data. Public TradeFlow marketing pages are separate from subscriber websites.
+- The Platform Owner Dashboard has nine consistent collapsible management sections: Product details; Subscriber businesses; Complimentary subscriber accounts; Domain connection requests; TradeFlow plan/pricing; Public Website Pages; Platform email; AI Agent Common Room; Gemma Control Centre. Overview metrics remain visible. Sidebar anchors open the matching section.
+- The Owner Dashboard has no Platform Configuration or subscriber AI-provider setup. AI research is a centrally operated TradeFlow capability; do not reintroduce subscriber-supplied AI configuration as a default.
+
+## AI Research Centre and agents
+- Gemma runs on the dedicated Research PC using the local Ollama model and the separate local environment file selected by TRADEFLOW_GEMMA_ENV_FILE.
+- Research tasks use the LIVE master catalogue and LIVE research queue. Category-scoped approved websites are applied before discovery; evidence candidates must be direct UK product/listing pages with exact product identity, visible GBP price, condition and availability.
+- The worker stages candidates for ChatGPT/Platform Owner review. It does not approve or import product/evidence records simply because a candidate was found.
+- The AI Agent Common Room is a persistent message workspace for owner instructions, handovers, findings, questions, learning notes and status updates. It is separate from task dispatch, evidence approval and catalogue imports.
+- Gemma receives bounded Common Room notes in its extraction prompt as guidance only. Exact task definition, approved-source restrictions, product identity checks, evidence validation, privacy and review gates take precedence.
+- ChatGPT can participate as a supervisor during an active ChatGPT session. There is no always-running ChatGPT process unless a separate persistent integration is built.
+
+## Release and environment status
+- TEST Supabase: nnsshnfkjcflucjrftzi. LIVE Supabase: gxsrajtqzdjvmceqcpgv. Retired project twfbmjwwqzxdxvclxbun must never be used.
+- The Common Room schema/security migration is installed on LIVE. Dashboard, worker and documentation changes are in feature PR #267; Owner Dashboard accordion work is being combined into that same branch. Neither PR merge nor Git commit proves Cloudflare deployment.
+- The Research PC has not yet been updated/restarted. Do not report the Common Room round-trip as operational until the PC worker reads a controlled owner instruction, posts a handover, and the owner dashboard displays it.
+- Preserve the Research PC's existing dedicated .env, secrets and TRADEFLOW_GEMMA_ENV_FILE path during any update. Never commit or replace local credentials.
+
+---
+
 
 
 ## Platform owner-editable public pages — 3 November 2026

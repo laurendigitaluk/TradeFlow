@@ -541,6 +541,67 @@ function fallbackPageCapture(task, source, reason) {
   };
 }
 
+export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new Date().toISOString()) {
+  if (!existing || !incoming || existing.status !== 'needs_research') return null;
+  if (existing.reviewed_at || existing.reviewed_by || existing.approved_at || existing.approved_by || existing.imported_at || existing.imported_by) return null;
+  const sameIdentity = ['dedupe_key','category_slug','branch_slug','manufacturer','model','package_key','source_url']
+    .every(field => String(existing[field] ?? '') === String(incoming[field] ?? ''));
+  if (!sameIdentity) return null;
+  const existingPayload = existing.raw_payload && typeof existing.raw_payload === 'object' && !Array.isArray(existing.raw_payload)
+    ? existing.raw_payload : {};
+  const incomingPayload = incoming.raw_payload && typeof incoming.raw_payload === 'object' && !Array.isArray(incoming.raw_payload)
+    ? incoming.raw_payload : {};
+  if (existingPayload.review_classification !== 'unverified_capture' || incomingPayload.review_classification !== 'unverified_capture') return null;
+  const evidence = incomingPayload.evidence && typeof incomingPayload.evidence === 'object' ? incomingPayload.evidence : {};
+  const observation = {
+    task_key: incoming.task_key || incomingPayload.task?.task_key || null,
+    source_url: incoming.source_url || null,
+    source_name: incoming.source_name || null,
+    gemma_evidence_type: evidence.evidence_type || null,
+    queue_evidence_type: incoming.evidence_type || null,
+    gemma_observed_price: evidence.observed_price ?? null,
+    gemma_price_currency: evidence.price_currency || null,
+    queue_observed_price: incoming.observed_price ?? null,
+    queue_price_currency: incoming.price_currency || null,
+    item_condition: evidence.item_condition || evidence.item_condition_text || incoming.item_condition || null,
+    availability: evidence.availability || evidence.availability_text || incoming.availability || null,
+    package_or_variant_text: evidence.package_or_variant_text || null,
+    product_identity_text: evidence.product_identity_text || null,
+    match_observation: evidence.match_observation || null,
+    uncertainty_and_conflicts: evidence.uncertainty_and_conflicts || null,
+    price_mentions: Array.isArray(evidence.price_mentions) ? evidence.price_mentions : [],
+    notes: evidence.notes || null,
+    extracted_at: enrichedAt
+  };
+  const structuredFields = [
+    observation.gemma_evidence_type, observation.gemma_observed_price,
+    observation.item_condition, observation.availability,
+    observation.package_or_variant_text, observation.product_identity_text
+  ];
+  if (!structuredFields.some(value => value !== null && value !== undefined && value !== '')) return null;
+  const history = Array.isArray(existingPayload.enrichment_history) ? existingPayload.enrichment_history : [];
+  if (observation.task_key && history.some(item => item?.task_key === observation.task_key && item?.source_url === observation.source_url)) return null;
+  const summary = [
+    'Additional unverified Gemma extraction from task ' + (observation.task_key || 'unknown') + '.',
+    observation.gemma_evidence_type ? 'Gemma lane observation: ' + observation.gemma_evidence_type + '.' : '',
+    observation.gemma_observed_price !== null ? 'Gemma price observation: ' + observation.gemma_observed_price + ' ' + (observation.gemma_price_currency || 'currency not established') + '.' : '',
+    observation.item_condition ? 'Condition observation: ' + observation.item_condition + '.' : '',
+    observation.availability ? 'Availability observation: ' + observation.availability + '.' : '',
+    observation.package_or_variant_text ? 'Package/variant observation: ' + observation.package_or_variant_text + '.' : '',
+    observation.product_identity_text ? 'Identity observation: ' + observation.product_identity_text + '.' : '',
+    'Details are in raw_payload.enrichment_history. Top-level price/evidence fields and review status remain unchanged; ChatGPT review is required.'
+  ].filter(Boolean).join(' ');
+  return {
+    raw_payload: {
+      ...existingPayload,
+      enrichment_history: [...history.slice(-9), observation],
+      last_enrichment_at: enrichedAt
+    },
+    research_notes: [existing.research_notes, summary].filter(Boolean).join('\n\n').slice(-12000),
+    updated_at: enrichedAt
+  };
+}
+
 export function extractGemmaFindingRows(parsed) {
   if (Array.isArray(parsed)) return parsed;
   if (!parsed || typeof parsed !== 'object') return null;
@@ -1132,8 +1193,24 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     };
     if (!enqueue) { writes.push({ environment: 'LIVE_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target('LIVE', env);
-    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id&dedupe_key=eq.' + encodeURIComponent(captureKey));
-    if (existing.length) { writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: existing[0].id }); continue; }
+    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,approved_by,imported_at,imported_by,raw_payload,research_notes&dedupe_key=eq.' + encodeURIComponent(captureKey));
+    if (existing.length) {
+      const prior = existing[0];
+      const enrichmentPatch = is3dPrinterResearchTask(task) ? buildCaptureEnrichmentPatch(prior, row) : null;
+      if (enrichmentPatch) {
+        const updated = await db(liveTarget, 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(prior.id) + '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&approved_by=is.null&imported_at=is.null&imported_by=is.null', {
+          method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(enrichmentPatch)
+        });
+        if (updated?.length) {
+          writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
+        } else {
+          writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
+        }
+      } else {
+        writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
+      }
+      continue;
+    }
     const inserted = await db(liveTarget, 'platform_catalogue_research_queue', {
       method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
     });

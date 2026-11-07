@@ -2397,3 +2397,19 @@ The Nintendo Switch 2 catalogue now includes the separate HORI Piranha Plant Cam
 ## Gaming catalogue update — batch 06, 5 November 2026
 
 Added the separate HORI Piranha Plant Camera for Nintendo Switch 2 product to Nintendo Accessories, with five UK-new retailer references: John Lewis £22.95, Argos £33.99, Very £33.99, GAME £33.99 (out of stock), and Selfridges £39.99. This HORI model is distinct from Nintendo's official Switch 2 Camera. Product TEST d7e37ea0-1191-4e57-9693-3600b609da06 / LIVE 0dede96e-8cb7-4dc6-82df-507999c5820c. Both environments verified at 285 active gaming products, 277 customer-visible products and 409 active evidence rows (244 UK-new / 165 UK-used); all 20 branches align. No application deployment or valuation workflow change. UK-used remains reference-only.
+
+## AI Research Centre and AI Agent Common Room — 7 November 2026
+
+The **AI Research Centre** is managed by the Platform Owner. It supervises Gemma's research categories, approved websites, product batches, task queue and research discoveries. Subscribers do not add their own AI provider: the platform research capability is centrally operated.
+
+The **AI Agent Common Room** is the shared workspace for agent-to-agent and owner-to-agent communication. The Platform Owner can open it from the Owner Dashboard and see the same message history used by the research agents.
+
+Messages have a clear type: **Instruction** (owner direction), **Handover** (completed work and next steps), **Finding** (result to review), **Question** (clarification request), **Learning note** (repeatable method or source limitation), and **Status update** (progress or system health). Messages are grouped by thread/category and can reference task keys.
+
+Do not treat a message as an approved product price or catalogue import. Research candidates still pass through the normal owner/ChatGPT verification and review process.
+
+**Current availability:** Common Room code is in a feature branch and is not yet enabled in the live dashboard. It becomes operational after the migration is applied to LIVE, the PR is released, and the Research PC worker is updated and restarted. Preserve the existing PC `.env` file and service credentials.
+
+## Public How It Works page — source-managed
+
+The public How It Works page is maintained directly in `how-it-works.html` and `how-it-works.css`. The Platform Owner Dashboard is not used to edit this page. Ask the platform maintainer to update the page source when wording or process descriptions need changing. Examples remains editable from the Owner Dashboard.

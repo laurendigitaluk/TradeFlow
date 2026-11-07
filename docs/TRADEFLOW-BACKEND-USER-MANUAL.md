@@ -670,7 +670,7 @@ The following are retired and must not be reintroduced into the current workflow
 
 Current model:
 
-**Subscriber configures shipping services → subscriber supplies/records label where required → customer ships item → customer/subscriber records tracking → subscriber confirms receipt → inspection continues.**
+**Subscriber configures shipping services → customer pays selected carrier directly → subscriber supplies/records label where required → customer ships item → customer/subscriber records tracking → subscriber confirms receipt → inspection continues.**
 
 ## 28. Quick operating map
 

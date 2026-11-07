@@ -127,3 +127,29 @@ The task normaliser now rejects incomplete payload rows before calling runTask. 
 - The existing folder contains the TradeFlow .env; the updater should run in-place and explicitly pass that same .env path.
 - Do not use, modify or overwrite the separate legacy `C:\GearCashOut-Config\.env`, GearCashOut source folders or old launcher.
 - The current update command is documented in tools/tradeflow-gemma-agent/README.md. Local update/restart has not yet been performed.
+
+
+## Research Again defect and correction — 7 November 2026
+
+### Verified LIVE findings
+- Controlled LIVE task `owner-3d-printers-equipment-1794069178464` was claimed once and completed without a worker error.
+- Common Room contains task-start, handover and task-completed messages for that task; the handover reports one candidate staged for owner review.
+- Candidate `b94e2225-c07b-4001-8dfa-cd045bf962fd` is a Creality K1 UK-new candidate from the official Creality UK product page at £299. It remains `needs_research`; it was not approved/imported.
+- At 16:38:30 UTC the owner clicked Research again. LIVE row changed to `needs_research`, but no new `platform_ai_agent_tasks` row appeared.
+
+### Root cause
+Production `platform-owner-dashboard.js` → `reviewGemmaCandidate()` called only `platform_owner_review_catalogue_research_item()`. It had no call to `platform_owner_enqueue_ai_agent_task()`. The status change worked; dispatch never occurred. The worker/polling path was not the failure.
+
+### Repair branch
+`fix/gemma-research-again-enqueue-20261107` (based directly on production).
+- Research Again now resolves the candidate from the loaded LIVE queue.
+- Builds one exact-product `uk_both` task using the existing worker payload contract.
+- Enqueues through the existing authenticated owner RPC first.
+- Only after enqueue succeeds, marks the candidate `needs_research` through the existing review RPC.
+- Refreshes candidate and task lists. Existing candidate/evidence rows are retained; no schema migration or service-role browser access is added.
+- Corrects the LIVE queue result label in `agent.mjs` from `TEST_REVIEW_QUEUE` to `LIVE_REVIEW_QUEUE` for the actual LIVE insert path; no data routing is changed.
+
+### Release/verification state
+- Code committed to the repair branch; not yet merged or deployed to Cloudflare.
+- No Supabase schema or data changes were made for this repair.
+- Next: source/static validation, review PR, deploy LIVE dashboard asset, click Research again once, confirm a new queued task and automatic worker completion, then verify new candidates remain pending review.

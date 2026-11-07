@@ -246,12 +246,12 @@ export function matchesTaskModel(title, url, task = {}) {
 }
 
 export function extractSearchPaginationLinks(html, baseUrl, limit = 2) {
-  const rows = [], seen = new Set(), anchors = /<a\\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\\s\\S]*?)<\\/a>/gi;
+  const rows = [], seen = new Set(), anchors = /<a\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/gi;
   let match, base; try { base = new URL(baseUrl); } catch { return []; }
   while ((match = anchors.exec(String(html || '')))) {
     let url; try { url = new URL(match[2].replace(/&amp;/g, '&'), base); } catch { continue; }
     const attrs = (match[1] + ' ' + match[3]).toLowerCase(), label = stripSearchHtml(match[4]).toLowerCase();
-    const pathPage = /\\/page\\/[2-9][0-9]*\\/?$/i.test(url.pathname);
+    const pathPage = /\/page\/[2-9][0-9]*\/?$/i.test(url.pathname);
     const queryPage = ['page','_pgn','p','offset','start'].some(key => url.searchParams.has(key) && Number(url.searchParams.get(key)) > Number(base.searchParams.get(key) || 1));
     const next = /rel=["'][^"']*next/i.test(attrs) || /^(next|older|›|»|→)$/.test(label) || pathPage || queryPage;
     if (!next || url.hostname !== base.hostname || url.href === base.href) continue;

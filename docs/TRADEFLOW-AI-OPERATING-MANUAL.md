@@ -12,6 +12,14 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 4. **ChatGPT supervisor** can inspect agent messages and staged research when actively working in a ChatGPT session, validate source/product fit and report issues. ChatGPT is not a continuously running background process.
 5. **Platform Owner/approved import workflow** decides whether validated evidence is accepted into the master catalogue. Neither a message nor a Gemma candidate automatically approves or imports data.
 
+## 3D Printer research lanes and observability — PR #278 pending review
+- A uk_new task must search only its approved UK new-retailer and manufacturer sources. A uk_used task must search only its approved UK marketplace and used/refurbished-dealer sources. uk_both may use both. Category, UK country and manufacturer-specific restrictions still apply.
+- The 3D-printer category retains up to 30 search results per task by default (previous default 18; hard maximum 30). GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK can set a lower per-task limit. Other categories are unchanged.
+- Price extraction must handle visible £ values and GBP values produced when HTML pound entities are normalised. Keep all visible price mentions and context; do not choose the correct bundle price automatically.
+- Anti-bot challenge/captcha pages are blocked discovery results, not product pages. Do not bypass access controls.
+- Per-batch extraction progress and route/page metrics are surfaced in LIVE telemetry and Common Room handovers so a slow Ollama batch can be distinguished from a dead worker and source-route failures can be measured.
+- PR #278 is open and unmerged: https://github.com/laurendigitaluk/TradeFlow/pull/278. CI run 42411454578 passed the current syntax and regression suite. These changes are not yet installed on the Research PC or live runtime. After review/merge, update in place with the existing updater, preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE, and run a controlled LIVE acceptance test. No evidence approval/import is added.
+
 ## Common Room protocol
 - Message types are instruction, handover, finding, question, learning_note and status_update.
 - The owner can list and post through authenticated owner RPCs; owner authorization requires an active platform_memberships record. Both owner RPCs use an empty search_path.

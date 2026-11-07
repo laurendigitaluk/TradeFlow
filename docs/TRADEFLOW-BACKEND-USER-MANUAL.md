@@ -231,7 +231,7 @@ When an accepted offer requires the customer to send an item, the subscriber pre
 
 ### Customer shipping responsibility
 
-The customer pays for their own shipping. TradeFlow does not collect or process the customer's shipping cost as part of the buying workflow.
+The customer pays the selected carrier directly. The subscriber manages the supported service options and manual handoff. TradeFlow does not collect or process the customer's shipping cost as part of the buying workflow.
 
 ### Label
 
@@ -695,7 +695,7 @@ GitHub feature/checkpoint branch → `main` → TEST Supabase → browser/databa
 - **Subscriber Website Manual:** `subscriber-website-manual.html` — public/site-building controls, not backend operations.
 - **Human User Manual:** `docs/TRADEFLOW-HUMAN-USER-MANUAL.md`
 
-Last updated: 30 September 2026.
+Last updated: 7 November 2026.
 
 
 ## 2026-10-01 — ResellerClub domain integration boundary

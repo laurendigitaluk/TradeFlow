@@ -3,29 +3,8 @@ import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask } from './agent.mjs';
+import { normaliseProductResearchTasks } from './task-groups.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
-
-// Each queue payload contains independent product tasks. Keep each product
-// separate for runTask's exact manufacturer/model/package validation, while
-// removing accidental duplicate task definitions within the same queue claim.
-function combineProductResearchTasks(tasks){
- const seen=new Set();
- return (Array.isArray(tasks)?tasks:[]).filter(task=>{
-  if(!task||typeof task!=='object'||Array.isArray(task))return false;
-  const key=[
-   task.category_slug||'',
-   task.branch_slug||'',
-   task.agent_key||'',
-   task.manufacturer||'',
-   task.model||'',
-   task.package_key||'',
-   task.research_type||''
-  ].map(value=>String(value).trim().toLowerCase()).join('|');
-  if(seen.has(key))return false;
-  seen.add(key);
-  return true;
- });
-}
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -93,7 +72,7 @@ function agentIdentity(task){
 async function processClaim(claim){
  const payload=claim.payload||{};
  if(claim.task_type!=='catalogue_research')throw new Error('Unsupported task type: '+claim.task_type);
- const tasks=combineProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
+ const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
  const heartbeat=setInterval(()=>rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message)),45000);

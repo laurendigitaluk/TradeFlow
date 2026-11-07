@@ -100,7 +100,21 @@
 
 <section id="gemma-control-centre" class="panel">
 <div class="panel-head"><div><div class="eyebrow">Research operations · LIVE telemetry</div><h2>Gemma Control Centre</h2></div><button id="gemma-refresh" type="button">Refresh activity</button></div>
-<p class="muted">Supervisor view of Gemma and specialist research agents. This screen reads actual live agent telemetry. Task controls will be enabled after the LIVE task queue is connected to the Research PC worker.</p>
+<p class="muted">LIVE research operations. Submit work, monitor the Research PC, and review discoveries here. TEST remains for software regression only.</p>
+<div class="gemma-subpanel gemma-task-form">
+<h3>Queue a research task</h3>
+<form id="gemma-task-form" class="gemma-task-fields">
+<label>Category slug<input id="gemma-task-category" required placeholder="3d-printers"></label>
+<label>Manufacturer<input id="gemma-task-manufacturer" required placeholder="Creality"></label>
+<label>Model<input id="gemma-task-model" required placeholder="K1"></label>
+<label>Package key<input id="gemma-task-package" required placeholder="standard"></label>
+<label>Package name<input id="gemma-task-package-name" required placeholder="Standard package"></label>
+<label>Research type<select id="gemma-task-type"><option value="uk_both">UK new and used</option><option value="uk_new">UK new</option><option value="uk_used">UK used</option></select></label>
+<label class="wide">Search query<input id="gemma-task-query" required placeholder="Creality K1 UK price"></label>
+<div class="wide"><button id="gemma-task-submit" type="submit">Submit research task to LIVE queue</button><span id="gemma-task-status" class="muted" role="status" aria-live="polite"></span></div>
+</form>
+</div>
+<div class="gemma-subpanel"><div class="panel-head"><h3>Research queue</h3><button id="gemma-queue-refresh" type="button">Refresh queue</button></div><div id="gemma-queue-list" class="table-wrap">Loading queue…</div></div>
 <div id="gemma-error" class="error" role="alert"></div>
 <div class="stats gemma-stats"><article><span>Registered agents</span><strong id="gemma-agent-count">—</strong></article><article><span>Running</span><strong id="gemma-running-count">—</strong></article><article><span>Tasks completed</span><strong id="gemma-task-count">—</strong></article><article><span>Candidates found</span><strong id="gemma-candidate-count">—</strong></article><article><span>Evidence staged</span><strong id="gemma-evidence-count">—</strong></article></div>
 <div class="gemma-grid"><div class="gemma-subpanel"><div class="panel-head"><h3>Specialist agents</h3><span id="gemma-updated" class="muted">Not refreshed yet</span></div><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Category</th><th>Status</th><th>Current task</th><th>Completed</th><th>Candidates</th><th>Last heartbeat</th></tr></thead><tbody id="gemma-agent-rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div><div class="gemma-subpanel"><div class="panel-head"><h3>Supervisor activity</h3><span class="muted">Latest 60 events</span></div><div id="gemma-activity" class="gemma-activity"><p class="muted">Loading activity…</p></div></div></div>

@@ -239,7 +239,25 @@ export function matchesTaskModel(title, url, task = {}) {
   // Keep Combo, Max/Plus/Pro, bundle and accessory references for ChatGPT to classify.
   // Ignore query strings so search terms in tracking parameters do not create false matches.
   const identity = ' ' + (String(title || '') + ' ' + urlIdentity).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
-  return identity.includes(' ' + model + ' ');
+  if (!identity.includes(' ' + model + ' ')) return false;
+
+  // Very short model IDs (for example A1 or K1) collide with unrelated categories.
+  // In the 3D-printer branch only, require the manufacturer or explicit 3D-printer
+  // context, and reject clearly automotive listing routes. This remains a discovery
+  // guard: legitimate generic "A1 3D Printer" pages are retained for ChatGPT review.
+  const is3dPrinterBranch =
+    String(task?.category_slug || '').toLowerCase() === '3d-printers-equipment' &&
+    String(task?.branch_slug || '').toLowerCase() === '3d-printers';
+  if (is3dPrinterBranch && model.length <= 2) {
+    const manufacturerTokens = String(task?.manufacturer || '')
+      .toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(/\\s+/).filter(token => token.length > 1);
+    const manufacturerMatches = manufacturerTokens.length > 0 &&
+      manufacturerTokens.every(token => identity.includes(' ' + token + ' '));
+    const explicitPrinterContext = /\\b3d printers?\\b/.test(identity);
+    const automotiveRoute = /\\b(?:cars-vans-motorbikes|cars|motorbikes)\\b/i.test(urlIdentity);
+    if (automotiveRoute || (!manufacturerMatches && !explicitPrinterContext)) return false;
+  }
+  return true;
 }
 export function extractSearchPaginationLinks(html, baseUrl, limit = 2) {
   const rows = [], seen = new Set(), anchors = /<a\b([^>]*?)href=["']([^"']+)["']([^>]*)>([\s\S]*?)<\/a>/gi;

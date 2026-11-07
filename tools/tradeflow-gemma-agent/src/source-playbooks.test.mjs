@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -143,4 +143,27 @@ test('Gemma extraction prompt retains ambiguous exact-model pages for ChatGPT re
 test('Gemma extraction uses a larger output budget without increasing the 4k context', () => {
   assert.equal(ollamaOptions({}).num_ctx, 4096);
   assert.equal(ollamaOptions({}).num_predict, 1024);
+});
+
+
+test('Gemma reports observations rather than deciding whether evidence is usable', () => {
+  const prompt = buildExtractionPrompt({
+    ...task, branch_slug: '3d-printers', research_type: 'uk_both',
+    package_name: '8-Color Combo'
+  }, [
+    { source_id: 'S1', title: 'Kobra S1 Max', url: 'https://uk.anycubic3d.com/products/kobra-s1-max', text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00' },
+    { source_id: 'S2', title: 'Kobra S1 Max used', url: 'https://www.ebay.co.uk/itm/1234567890', text: 'Used Kobra S1 Max £400 collection only' }
+  ]);
+  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
+  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
+  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
+  assert.match(prompt, /S1/);
+  assert.match(prompt, /S2/);
+  assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
+});
+
+test('GBP price capture preserves multiple visible prices and their context', () => {
+  const prices = extractVisibleGbpPriceMentions('Machine £549.00; 4-colour combo £749.00; 8-colour combo £935.00');
+  assert.deepEqual(prices.map(item => item.amount), [549, 749, 935]);
+  assert.match(prices[2].context, /8-colour combo/);
 });

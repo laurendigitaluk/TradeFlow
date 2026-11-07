@@ -72,7 +72,7 @@ The platform owner dashboard now includes a separate **Public Website Pages** ed
 > This snapshot supersedes older conflicting environment/status notes. Audit queries were read-only. No LIVE runtime code, database rows, authentication accounts, subscriptions, DNS, Cloudflare settings or published content were changed.
 
 
-> **CURRENT SHIPPING ARCHITECTURE — 25 September 2026**
+> **CURRENT SHIPPING ARCHITECTURE — 7 November 2026**
 >
 > The current TradeFlow shipping architecture is **subscriber-managed shipping services with manual handoff**. The former Parcel2Go API/connected-provider route is **retired and must not be used or reintroduced from the older sections of this document**.
 >

@@ -17,7 +17,7 @@ export function validate(e, task, page) {
     }
   }
   if (u && (/search|category|results|\/sch\//i.test(u.pathname) || ['q','query','_nkw'].some(k=>u.searchParams.has(k)))) errors.push('source must be a direct product/listing page');
-  if (u && /(^|\.)amazon\./i.test(u.hostname) &&
+    if (/(^|\)amazon\.co\.uk$/i.test(u.hostname)) {
       (/^\/s\/?$/i.test(u.pathname) || u.searchParams.has('k') ||
        !/(?:\/dp\/|\/gp\/product\/|\/gp\/aw\/d\/)[A-Z0-9]{10}(?:\/|$)/i.test(u.pathname))) {
     errors.push('Amazon evidence must come from a direct product detail page, not search or category results');
@@ -65,7 +65,7 @@ export function decodeSearchRedirect(href) {
     if (u.searchParams.has('uddg')) return u.searchParams.get('uddg');
     if (/(^|\\.)amazon\\.co\\.uk$/i.test(u.hostname)) {
       const path = decodeURIComponent(u.pathname);
-      const match = path.match(/https?:\\/\\/(?:www\\.)?amazon\\.co\\.uk\\/[^?#]+/i);
+      const match = path.match(/https?:\\/\\/(?:www\.)?amazon\.co\.uk\/[^?#]+/i);
       if (match) return new URL(match[0]).href;
     }
     return u.href;
@@ -736,11 +736,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       // than ordinary anchor text. Use Shopify's public collection products
       // endpoint as a fallback, then still fetch each direct product page.
       if (!links.length) {
-        const collectionHost = new URL(result.url).hostname.replace(/^www\\./i, '').toLowerCase();
+        const collectionHost = new URL(result.url).hostname.replace(/^www\./i, '').toLowerCase();
         const sitePlaybook = getWebsiteInstructions(task.category_slug, collectionHost);
         if (sitePlaybook?.collectionApi === 'shopify') {
           const collection = new URL(result.url);
-          const jsonPath = collection.pathname.replace(/\\/$/, '') + '/products.json?limit=50';
+          const jsonPath = collection.pathname.replace(/\/$/, '') + '/products.json?limit=50';
           const jsonUrl = new URL(jsonPath, collection.origin).toString();
           const jsonResponse = await fetch(jsonUrl, {
             redirect: 'follow',

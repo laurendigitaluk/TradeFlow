@@ -60,18 +60,25 @@ const playbooks = {
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
         collectionApi: 'shopify',
-        routes: ['/search?q={query}', '/?s={query}'],
-        navigation: 'Search exact model and inspect the individual printer product page. Separate machine-only and package bundles.'
+        routes: ['/collections/3d-printers', '/collections/refurbished-printers'],
+        routesByResearchType: {
+          uk_new: ['/collections/3d-printers'],
+          uk_used: ['/collections/refurbished-printers']
+        },
+        genericSearchFallback: false,
+        navigation: 'Use the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used. Keep the routes lane-specific, follow exact individual product pages, and preserve refurbished grade/condition and package variants.'
       },
       'idig3dprinting.co.uk': {
         label: 'iDig3DPrinting UK retailer',
-        routes: ['/search?search={query}', '/?s={query}', '/search?q={query}'],
-        navigation: 'Use site search and printer category navigation. Open the individual exact-model page before recording a price.'
+        routes: ['/product-category/3d-printers/'],
+        genericSearchFallback: false,
+        navigation: 'Use the dedicated WordPress 3D Printers product category as a discovery page. Follow pagination and exact individual printer product links; do not use the general shop/search routes as evidence.'
       },
       '3dflo.com': {
         label: '3DFLO UK retailer',
-        routes: ['/search?q={query}', '/?s={query}'],
-        navigation: 'Search the exact model and use printer category/brand collections as discovery only. Follow the matching model card to its product page.'
+        routes: ['/product-category/3d-printers/'],
+        genericSearchFallback: false,
+        navigation: 'Use the dedicated 3D Printers product category as a discovery page. Follow exact printer product links and exclude filament, spares, upgrades and STL files.'
       },
       '3djake.uk': {
         label: '3DJake UK retailer',
@@ -131,10 +138,12 @@ export function buildWebsiteSearchRoutes(source, task) {
   // A historical direct product URL is not a search route. Never keep revisiting
   // it as the only route for every product in the category.
   if (configured && !/\/products?\/[^/]+/i.test(configured)) routes.push(fillRoute(configured, task));
-  for (const route of site?.routes || []) routes.push('https://' + domain + fillRoute(route, task));
+  const researchType = String(task?.research_type || '').toLowerCase();
+  const configuredRoutes = site?.routesByResearchType?.[researchType] || site?.routes || [];
+  for (const route of configuredRoutes) routes.push('https://' + domain + fillRoute(route, task));
   const root = 'https://' + domain;
   if (domain === 'ebay.co.uk') routes.push(root + '/sch/i.html?_nkw=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
   if (domain === 'amazon.co.uk') routes.push(root + '/s?k=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
-  routes.push(root + '/search?q=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  if (site?.genericSearchFallback !== false) routes.push(root + '/search?q=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
   return [...new Set(routes)].slice(0, 5);
 }

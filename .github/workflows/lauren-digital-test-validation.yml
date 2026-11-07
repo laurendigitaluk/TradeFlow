@@ -1,0 +1,49 @@
+name: Lauren Digital TEST homepage validation
+
+on:
+  push:
+    branches: [fix/lauren-digital-parent-links-20261027]
+  pull_request:
+    branches: [test/stripe-connect-test-mode-repair-20261020]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-parent-home:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify product cards and links
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import assert from 'node:assert/strict';
+          const html = readFileSync('lauren-digital-home.html', 'utf8');
+          for (const product of ['tradeflow', 'pageflow', 'studioflow']) {
+            assert.match(html, new RegExp('data-product-card="' + product + '"'), 'missing ' + product + ' card');
+          }
+          assert.doesNotMatch(html, /data-product-card="businessflow"/, 'BusinessFlow must not be a parent product card');
+          assert.match(html, /https:\/\/tradeflow\.laurendigital\.co\.uk\//);
+          assert.match(html, /https:\/\/pageflow\.laurendigital\.co\.uk\//);
+          assert.match(html, /https:\/\/studioflow\.laurendigital\.co\.uk\//);
+          assert.match(html, /StudioFlow — coming soon/);
+          assert.doesNotMatch(html, /gxsrajtqzdjvmceqcpgv\.supabase\.co/, 'parent static page must not call LIVE Supabase directly');
+          assert.doesNotMatch(html, /platform_product_pages/, 'parent static page must not issue the removed direct database query');
+          console.log('Parent product cards, links, planned StudioFlow state, and no-direct-LIVE-query checks passed.');
+          JS
+      - name: Verify TEST root route is guarded by TEST environment
+        run: |
+          node --input-type=module <<'JS'
+          import { readFileSync } from 'node:fs';
+          import assert from 'node:assert/strict';
+          const worker = readFileSync('worker/index.js', 'utf8');
+          assert.match(worker, /env\.TRADEFLOW_ENV === "test" && hostname === "tradeflow-test\.leannelaurenlowe\.workers\.dev"/);
+          assert.match(worker, /cleanRoutes\["\/"\] = "\/lauren-digital-home\.html"/);
+          assert.match(worker, /env\.TRADEFLOW_ENV === "test" && hostname === "tradeflow-test\.leannelaurenlowe\.workers\.dev"\)\s*\)\s*\{/);
+          console.log('TEST hostname homepage route and fallback guard verified.');
+          JS

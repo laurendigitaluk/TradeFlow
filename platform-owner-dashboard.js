@@ -382,7 +382,7 @@ $('ai-settings-form').onsubmit=saveAiSettings;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -429,4 +429,5 @@ async function submitGemmaTask(e){
 }
 $('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
 $('gemma-queue-refresh')?.addEventListener('click',()=>{loadGemmaQueue();loadGemmaTasks()});
+$('gemma-task-refresh')?.addEventListener('click',loadGemmaTasks);
 $('gemma-task-form')?.addEventListener('submit',submitGemmaTask);

@@ -17,6 +17,8 @@ The AI Research Centre is operated centrally by TradeFlow. Subscribers do not co
 
 Gemma searches approved UK sources for exact products and returns candidate evidence for review. ChatGPT/Platform Owner validation remains required before catalogue or evidence records are imported. A research result or Common Room message is not an approval.
 
+For an incomplete candidate, use **Research again** to request a fresh UK new-and-used research task. The button must queue the task before changing the candidate's status. If the button only flashes and no task appears under **Queued and completed tasks**, do not keep clicking it; refresh the queue and wait for the corrected dashboard release.
+
 ## AI Agent Common Room
 The Common Room is an internal Platform Owner workspace for:
 - **Instruction** — direction from the Platform Owner.
@@ -28,7 +30,7 @@ The Common Room is an internal Platform Owner workspace for:
 
 Messages can be grouped by thread/category and associated with task keys. The Platform Owner can read the same history and post instructions. Subscribers cannot access this internal workspace. ChatGPT participates when actively supervising a session; it is not represented as a continuously running independent service.
 
-**Availability:** the LIVE database migration is installed, but the dashboard release, Research PC update/restart and end-to-end message round-trip are still release gates. Do not describe the feature as live until that test passes.
+**Availability:** the Research PC worker has successfully claimed and completed a controlled LIVE task and returned a handover to the Common Room. Cloudflare deployment/browser acceptance and a separate owner-instruction delivery test remain outstanding. The Research Again button correction is in a release branch and is not yet available in the deployed dashboard.
 
 ## Environment safety
 TEST Supabase is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv. The retired project twfbmjwwqzxdxvclxbun must not be used. Keep tenant/customer/order/payment/domain ownership and Stripe data isolated between environments.
@@ -2454,3 +2456,7 @@ The public How It Works page is maintained directly in `how-it-works.html` and `
 ## Current AI agent workspace availability — 7 November 2026
 
 The AI Agent Common Room is being prepared for release. The LIVE database and security functions are installed; the dashboard page and Research PC worker are still under review and are not yet available in the live website. Subscribers do not access this internal tool. The How It Works public page is source-managed as agreed.
+
+
+## Research Again behaviour — 7 November 2026
+Research Again requests more UK new and used evidence for the same exact product/package. A new task should appear in Gemma Control Centre → Queued and completed tasks. The candidate is not approved or imported by requesting more research. If no task appears, stop clicking and report the issue to the platform maintainer.

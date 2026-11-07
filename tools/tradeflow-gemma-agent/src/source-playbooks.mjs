@@ -63,7 +63,7 @@ const playbooks = {
       },
       'gumtree.com': {
         label: 'Gumtree UK used marketplace',
-        routes: ['/uk/srpsearch%2B{query}', '/for-sale/uk/srpsearch%2B{query}'],
+        routes: ['/uk/srpsearch%2B{slug}', '/for-sale/uk/srpsearch%2B{slug}'],
         navigation: 'Search UK advertisements for the exact model. Open individual adverts, verify seller asking price, location, condition and availability. Exclude wanted ads, accessories, parts and expired listings.'
       },
       'secondhand.org.uk': {
@@ -86,11 +86,14 @@ const playbooks = {
 };
 
 function fillRoute(route, task) {
-  const query = encodeURIComponent([task.manufacturer, task.model].filter(Boolean).join(' '));
+  const searchText = [task.manufacturer, task.model].filter(Boolean).join(' ');
+  const query = encodeURIComponent(searchText);
+  const slug = searchText.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return String(route)
     .replaceAll('{query}', query)
     .replaceAll('{model}', encodeURIComponent(task.model || ''))
-    .replaceAll('{manufacturer}', encodeURIComponent(task.manufacturer || ''));
+    .replaceAll('{manufacturer}', encodeURIComponent(task.manufacturer || ''))
+    .replaceAll('{slug}', slug);
 }
 
 export function getCategoryWebsitePlaybook(categorySlug) {

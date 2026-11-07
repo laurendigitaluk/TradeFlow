@@ -1,0 +1,11 @@
+# Project memory — Owner Dashboard dropdown sections — 7 November 2026
+
+The user asked to make every major Platform Owner dashboard section a consistent collapsible dropdown tile to reduce scrolling, while preserving all existing functions. Branch `feature/owner-dashboard-dropdown-sections-20261107` was created from the latest `production` commit.
+
+Eight sections are wrapped in native details accordions: product details (name/headline/tagline), subscriber businesses, domain connection requests, TradeFlow plan/pricing, Public Website Pages, Gemma Control Centre, complimentary subscriber accounts and platform email settings. Overview metrics remain visible. Sidebar hash navigation expands the matching section. Existing IDs, handlers, RPCs and workflows are preserved.
+
+Current production Gemma controls are retained: LIVE category/branch selection, evidence coverage filters, UK-new/UK-used/both research operations, specialist-agent selection, individual/batch product selection, task queue, candidate review and category-specific website assignments. Candidate approval is not an automatic catalogue/evidence import. The owner dashboard has no platform AI provider settings panel or handler. `platform_ai_settings` remains a disabled compatibility table; do not drop it as part of UI cleanup.
+
+How It Works is already a source-managed ten-section text-only accordion page in `how-it-works.html` / `how-it-works.css`. The old `platform_public_pages` How It Works JSON remains in TEST/LIVE but does not render the public static guide. The legacy owner editor still exposes that database row, so editing it does not update the published guide. The dashboard now displays a warning. Examples remains editable through the public-page CMS.
+
+No database, RLS, Edge Function, tenant/customer/order/payment/Stripe, domain ownership, Research PC secrets or Cloudflare deployment changes were made. Browser acceptance and deployment remain pending. The LIVE public schema has no project-memory/checkpoint table; this checkpoint and the matching file in `PROJECT-MEMORY/` are the persistent records for this increment.

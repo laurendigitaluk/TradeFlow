@@ -155,3 +155,7 @@ Production `platform-owner-dashboard.js` → `reviewGemmaCandidate()` called onl
 - Cloudflare deployment and browser acceptance remain pending.
 - No Supabase schema or data changes were made for this repair.
 - Next: source/static validation, review PR, deploy LIVE dashboard asset, click Research again once, confirm a new queued task and automatic worker completion, then verify new candidates remain pending review.
+
+
+## LIVE source registry update — 7 November 2026
+After the Gemma Research Again worker test, LIVE `platform_research_sources` was expanded with seven category-specific 3D-printer sources: Gumtree UK, Uni3Dverse, 3DGBIRE, SecondHand.org.uk, 123-3D UK, iDig3DPrinting UK and 3DFLO UK. New/used scopes are separated and all seven have only `3d-printers-equipment` in `category_slugs`. Amazon UK and eBay UK remain existing universal sources. No TEST rows were copied and no schema, worker code, secrets or evidence approvals were changed. Source presence is not yet proof of fetch/extraction success. Follow-up: validate each source route; correct Creality's K1-only search URL; design a reusable category/source matrix for all agents, with manufacturer-specific official sources (e.g. Canon→Canon, DJI→DJI), designated new/used retailers, shared Amazon/eBay, and carefully bounded social discovery.

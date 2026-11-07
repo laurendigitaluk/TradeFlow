@@ -11,10 +11,10 @@ $Updater = Join-Path $env:TEMP 'Update-TradeFlow-Gemma.ps1'
 Invoke-WebRequest -UseBasicParsing -Uri 'https://raw.githubusercontent.com/laurendigitaluk/TradeFlow/production/tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1' -OutFile $Updater
 ```
 
-The current Research PC TradeFlow installation is already in its dedicated folder. Update it in place using the existing TradeFlow `.env` in that same folder. Do not point this at the separate GearCashOut configuration or source folders.
+The current Research PC TradeFlow installation is already in its dedicated folder. Update it in place using the existing TradeFlow `.env` in that same folder. Do not point this at the separate GearCashOut configuration or source folders. The paths in the command below are the current confirmed TradeFlow paths; do not use `C:\GearCashOut-Config\.env`.
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File $Updater -InstallPath 'C:\TradeFlowGemmaAgent' -EnvFile 'D:\PATH\TO\YOUR\EXISTING\PRIVATE.env' -NewInstall
+powershell -ExecutionPolicy Bypass -File $Updater -InstallPath 'C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent' -EnvFile 'C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent\.env' -StartWorker
 ```
 
 The existing private TradeFlow environment file is `C:\\CTFGemma2\\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\\tools\\tradeflow-gemma-agent\\.env`. The separate `C:\\GearCashOut-Config\\.env` belongs to the old GearCashOut setup and must not be used or changed.

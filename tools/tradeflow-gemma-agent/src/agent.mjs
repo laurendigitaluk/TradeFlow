@@ -218,7 +218,7 @@ export function isCollectionDiscoveryPage(url, title = '') {
   try { u = new URL(url); } catch { return false; }
   if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
   const path = decodeURIComponent(u.pathname).toLowerCase();
-  if (!/\/(collections?|categories?)\//i.test(path)) return false;
+  if (!(/\\/(collections?|categories?)\\//i.test(path) || /\\/(used-3d-printers|reconditioned-3d-printers(?:-and-3d-scanners)?|second-hand-3d-printers)(?:\\/|$)/i.test(path))) return false;
   if (/facebook\.com/i.test(u.hostname)) return false;
   return true;
 }
@@ -565,7 +565,7 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
     const attempts = buildWebsiteSearchRoutes(source, task);
     await onProgress?.({
       stage: 'approved_source_probe_started', source: domain, total: attempts.length,
-      message: 'Probing ' + (sitePlaybook?.label || source.source_name || domain) + ' using its ' + attempts.length + ' configured search/discovery route(s)'
+      message: 'Probing ' + (sitePlaybook?.label || source.source_name || domain) + ' using its ' + attempts.length + ' configured route(s). ' + (sitePlaybook?.navigation || 'Follow exact-model product links; collection pages are discovery only.') 
     });
     for (const searchUrl of attempts) {
       try {

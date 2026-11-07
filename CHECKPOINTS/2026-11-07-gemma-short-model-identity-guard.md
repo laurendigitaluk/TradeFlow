@@ -58,3 +58,12 @@ Elegoo Neptune 4 Pro produced five search results in each lane but zero eligible
 - CI run 42416812188 passed: 24 tests, 24 passed, 0 failed.
 - PR #279 remains open and unmerged. PR #278 also remains open and unmerged; its latest Gemma Research Tests run 42412984353 passed.
 - Neither PR has been deployed to the Research PC. No LIVE review rows were approved or imported.
+
+
+## Additional ChatGPT source investigation
+
+- 123-3D's direct page confirms `Refurbished Grade A: Anycubic Kobra S1 Combo` at £370. It explicitly says second-hand/Grade A and identifies the ACE Pro Combo variant. Availability is contradictory on the page: “backordered and will ship as soon as it is back in stock” and “In stock / same-day dispatch” both appear. Treat it as a strong refurbished-price candidate with unresolved availability, not a clean in-stock observation. The LIVE source registry currently marks 123-3D `new_uk`; PR #278's used-lane isolation would exclude it from used searches. No source-registry change was made; the owner must decide whether this mixed new/refurb retailer should be `all` or separately represented.
+- Anycubic's official Kobra S1 page shows £319 sale versus £549 regular price; this is new retail, not used evidence. The Kobra S1 Max Combo page shows £857 versus £1,218.97 and is a distinct Max Combo package, not standard Kobra S1.
+- The Creality K1 eBay product page reports “currently sold out”. The £208.69 + £20 postage mention belongs to a related pre-owned item, not a confirmed active listing for the target page. Do not use it as current used asking-price evidence.
+- The Amazon direct K1 capture contains £299.00 in the fetched page text, but the live Amazon page returned HTTP 503 during ChatGPT inspection. Keep the raw capture for later re-check; do not mark the price as independently verified.
+- Creality's official K1 Max page currently shows £589 sale versus £729 previous, with separate package options including K1 MAX + CFS-C £799, K1 Max + PLA*2 £599, K1 Max + Ferret Pro £839, K1 Max + build plate/nozzle kit £609, and Sermoon S1 + K1 Max £2,599. These are K1 Max or bundle variants, not the requested standard K1. The page's package selector is useful variant evidence but must not be copied into the Standard Printer product.

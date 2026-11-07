@@ -4081,3 +4081,13 @@ The production Platform Owner dashboard has a proposed **Gemma Control Centre** 
 - Public page editor's nested groups and repeated items are now collapsed by default and can be expanded individually.
 - Subscriber-supplied AI providers were already rejected by `platform_owner_update_ai_settings` and the LIVE setting was already false. The dashboard no longer offers a subscriber provider selection or toggle and always submits `p_subscriber_provider_enabled=false`.
 - The LIVE migration `20261107150000_platform_owner_category_research_source_manager.sql` was applied and committed to production. Existing TEST catalogue, tenants and queues were not changed.
+
+
+## 7 November 2026 — LIVE Gemma batch research and owner dashboard controls
+
+- Replaced the single-item Gemma task form with a category/branch batch workflow. Owners can inspect products and active UK new/used evidence counts, filter coverage gaps, select products, choose new/used/both research, select a registered specialist agent where available, and queue batches of 10, 20, 50, 100 or all selected products.
+- The dashboard reads product coverage from LIVE master catalogue and LIVE shared market evidence only. It submits a single LIVE task containing multiple product subtasks. Existing worker code already supports processing a `tasks[]` payload sequentially.
+- Added owner-authenticated category and product coverage RPCs. Both check active platform membership; anonymous execute privileges are revoked. LIVE database function existence and grants were verified. Authenticated browser invocation and full Research PC processing remain to be verified.
+- Removed Platform AI provider settings from the owner dashboard UI. Subscriber-supplied AI remains disabled; the AI Research Centre is the intended platform differentiator. No subscriber-facing AI-provider control is to be reintroduced.
+- Corrected the How It Works owner editor so legacy screenshot/image-box and visual-layout data are not presented for that page. The public page remains the existing text-only accordion layout; no published page content was overwritten.
+- Production-branch code changes were committed directly to `production`, not a feature branch. Do not claim the Cloudflare deployment or authenticated browser acceptance is complete until verified.

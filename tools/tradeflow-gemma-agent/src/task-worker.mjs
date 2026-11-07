@@ -49,7 +49,7 @@ async function roomRpc(name,args){
  if(!response.ok)throw new Error('LIVE Common Room '+name+' returned HTTP '+response.status+': '+body.slice(0,500));
  return body?JSON.parse(body):null;
 }
-async function roomRead(agentKey,category,thread='general',limit=100){
+async function roomRead(agentKey,category,thread=null,limit=100){
  return roomRpc('platform_ai_agent_list_messages',{p_worker_id:workerId,p_agent_key:agentKey,p_thread_key:thread,p_category_slug:category||null,p_limit:limit,p_since:null});
 }
 async function roomPost(agent,messageType,title,body,details={}){
@@ -83,7 +83,7 @@ async function processClaim(claim){
    const taskKey=claim.task_key;
    await safeReport({...identity,status:'running',current_task:taskKey,event_type:'task_started',task_key:taskKey,message:'Started queued research task '+taskKey});
    await roomPost(identity,'status_update','Research task started', 'Started '+taskKey+' for '+identity.category+'.', {task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room start]',e.message));
-   const instructions=await roomRead(identity.agent_key,identity.category,'general',100).catch(e=>{console.error('[common room read]',e.message);return[]});
+   const instructions=await roomRead(identity.agent_key,identity.category,null,100).catch(e=>{console.error('[common room read]',e.message);return[]});
    const relevantInstructions=instructions.filter(m=>m.message_type==='instruction'||m.message_type==='handover'||m.message_type==='learning_note');
    task.common_room_context=relevantInstructions.map(m=>({type:m.message_type,sender:m.sender_kind||m.sender_name||'agent',title:m.title||'',body:m.body||''})).slice(0,10);
    if(relevantInstructions.length) console.log('[common room] passing',task.common_room_context.length,'bounded notes into Gemma extraction for',identity.agent_key);

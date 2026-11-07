@@ -134,12 +134,17 @@ async function processClaim(claim){
  const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
- const heartbeat=setInterval(()=>rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message)),45000);
+ let activeIdentity=null,activeStage='task_started';
+ const heartbeat=setInterval(async()=>{
+  await rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message));
+  if(activeIdentity)await safeReport({...activeIdentity,status:'running',current_task:claim.task_key,event_type:'heartbeat',task_key:claim.task_key,message:'Research worker heartbeat while processing queued subtasks.',details:{stage:activeStage,heartbeat:true,queue_task_id:claim.id,worker_id:workerId}});
+ },45000);
  const inboxHeartbeat=setInterval(()=>{if(tasks.some(task=>agentIdentity(task).agent_key===FIRST_AGENT_KEY))checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));},Math.max(30000,pollMs*2));
  try{
   for(const task of tasks){
    if(stopping)throw new Error('Worker stopping before all subtasks completed.');
    const identity=agentIdentity(task);
+   activeIdentity=identity; activeStage='task_started';
    const taskKey=claim.task_key;
    if(identity.agent_key===FIRST_AGENT_KEY) await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
    await safeReport({...identity,status:'running',current_task:taskKey,event_type:'task_started',task_key:taskKey,message:'Started queued research task '+taskKey});
@@ -150,7 +155,10 @@ async function processClaim(claim){
    if(relevantInstructions.length) console.log('[common room] passing',task.common_room_context.length,'bounded notes into Gemma extraction for',identity.agent_key);
    const result=await runTask(task,env,{
     enqueue:true,
-    onProgress:async p=>safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id}})
+    onProgress:async p=>{
+     activeStage=p.stage||activeStage;
+     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id}});
+    }
    });
    outputs.push(result);
    const findingCount=(result.candidates||[]).length;

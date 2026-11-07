@@ -18,7 +18,7 @@ Documentation updated in branch: System Handbook, Human User Manual, Backend Use
 
  
 ## Follow-up implementation — 7 November 2026
-The Gemma worker now passes up to ten bounded Common Room instruction/handover/learning notes into the Ollama extraction prompt. The prompt treats them as untrusted operational guidance and preserves all hard-coded product identity, approved source, evidence validation and review constraints. This closes the previous gap where the worker read and logged notes without supplying them to Gemma.
+The Gemma worker now passes up to ten bounded Common Room instruction/handover/finding/question/learning notes into the Ollama extraction prompt. The prompt treats them as untrusted operational guidance and preserves all hard-coded product identity, approved source, evidence validation and review constraints. This closes the previous gap where the worker read and logged notes without supplying them to Gemma.
 
 The Owner Dashboard has nine consistent native collapsible sections, including the Common Room and Gemma Control Centre; overview metrics remain visible and sidebar anchors expand the matching section. Owner Dashboard diagnostic roadmap added at docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-OWNER-DASHBOARD.md.
 

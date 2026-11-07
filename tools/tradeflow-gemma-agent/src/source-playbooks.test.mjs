@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -168,4 +168,80 @@ test('GBP price capture preserves multiple visible prices and their context', ()
   const prices = extractVisibleGbpPriceMentions('Machine £549.00; 4-colour combo £749.00; 8-colour combo £935.00');
   assert.deepEqual(prices.map(item => item.amount), [549, 749, 935]);
   assert.match(prices[2].context, /8-colour combo/);
+});
+
+
+const laneSources = [
+  { source_name: '3D Prima UK', domain: '3dprima.co.uk', source_kind: 'retailer', country_code: 'GB', research_scope: 'new_uk', category_slugs: ['3d-printers-equipment'] },
+  { source_name: 'eBay UK', domain: 'ebay.co.uk', source_kind: 'marketplace', country_code: 'GB', research_scope: 'used_uk', category_slugs: ['*'] },
+  { source_name: 'Anycubic UK Official Store', domain: 'uk.anycubic3d.com', source_kind: 'manufacturer', country_code: 'GB', research_scope: 'official', category_slugs: ['3d-printers-equipment'] },
+  { source_name: 'Amazon UK', domain: 'amazon.co.uk', source_kind: 'retailer', country_code: 'GB', research_scope: 'all', category_slugs: ['*'] }
+];
+
+test('new and used research tasks only search their assigned UK source lane', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_new' };
+  const usedTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_used' };
+  const bothTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_both' };
+
+  assert.equal(getResearchSourceLane(laneSources[0]), 'uk_new');
+  assert.equal(getResearchSourceLane(laneSources[1]), 'uk_used');
+  assert.equal(getResearchSourceLane(laneSources[2]), 'uk_new');
+  assert.equal(getResearchSourceLane(laneSources[3]), 'uk_new');
+
+  assert.equal(isApprovedSourceForTask(laneSources[0], newTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[1], newTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[2], newTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[3], newTask), true);
+
+  assert.equal(isApprovedSourceForTask(laneSources[0], usedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[1], usedTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[2], usedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[3], usedTask), false);
+
+  assert.ok(isApprovedSourceForTask(laneSources[0], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[1], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[2], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[3], bothTask));
+});
+
+test('category-scoped web search and host validation obey the new/used lane', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_new' };
+  const usedTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_used' };
+  const newQuery = buildCategoryScopedSearchQuery('Anycubic Kobra S1', laneSources, newTask);
+  const usedQuery = buildCategoryScopedSearchQuery('Anycubic Kobra S1 used', laneSources, usedTask);
+
+  assert.match(newQuery, /site:3dprima\.co\.uk/);
+  assert.match(newQuery, /site:uk\.anycubic3d\.com/);
+  assert.match(newQuery, /site:amazon\.co\.uk/);
+  assert.doesNotMatch(newQuery, /site:ebay\.co\.uk/);
+  assert.match(usedQuery, /site:ebay\.co\.uk/);
+  assert.doesNotMatch(usedQuery, /site:3dprima\.co\.uk/);
+  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, newTask), false);
+  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, usedTask), true);
+});
+
+test('3D printer web search defaults to 30 results without changing other categories', () => {
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, {}), 30);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '24' }), 24);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '80' }), 30);
+  assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, {}), 18);
+  assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, { SEARCH_RESULTS_PER_TASK: '12' }), 12);
+});
+
+test('GBP price extraction recognises HTML pound entities after page text normalisation', () => {
+  const pageText = extractRelevantPageText(
+    '<main>Bambu Lab printer current price &pound;1,079.00; previous price &#163;1,179.00</main>',
+    { manufacturer: 'Bambu Lab', model: 'A1' }
+  );
+  const prices = extractVisibleGbpPriceMentions(pageText);
+  assert.deepEqual(prices.map(item => item.amount), [1079, 1179]);
+  assert.match(prices[0].display, /^GBP /);
+  assert.match(prices[0].context, /current price/);
+});
+
+test('eBay bot challenge URLs are identified and never treated as product pages', () => {
+  const challenge = 'https://www.ebay.co.uk/splashui/challenge?ap=1&ru=https%3A%2F%2Fwww.ebay.co.uk%2Fitm%2F1234567890';
+  assert.equal(isChallengePage(challenge), true);
+  assert.equal(isEligibleProductPage(challenge, 'eBay'), false);
+  assert.equal(isEligibleProductPage('https://www.ebay.co.uk/itm/1234567890', 'Anycubic Kobra S1 3D Printer'), true);
 });

@@ -30,7 +30,7 @@ The Common Room is an internal Platform Owner workspace for:
 
 Messages can be grouped by thread/category and associated with task keys. The Platform Owner can read the same history and post instructions. Subscribers cannot access this internal workspace. ChatGPT participates when actively supervising a session; it is not represented as a continuously running independent service.
 
-**Availability:** the Research PC worker has successfully claimed and completed a controlled LIVE task and returned a handover to the Common Room. Cloudflare deployment/browser acceptance and a separate owner-instruction delivery test remain outstanding. The Research Again button correction is in a release branch and is not yet available in the deployed dashboard.
+**Availability:** the Research PC worker has successfully claimed and completed a controlled LIVE task and returned a handover to the Common Room. Cloudflare deployment/browser acceptance and a separate owner-instruction delivery test remain outstanding. The Research Again button correction has been merged to the LIVE source branch; it is not yet available in the deployed dashboard until Cloudflare publishes the updated asset.
 
 ## Environment safety
 TEST Supabase is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv. The retired project twfbmjwwqzxdxvclxbun must not be used. Keep tenant/customer/order/payment/domain ownership and Stripe data isolated between environments.

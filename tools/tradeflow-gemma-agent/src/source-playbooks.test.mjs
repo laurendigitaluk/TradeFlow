@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -67,6 +67,8 @@ test('model matching ignores search query terms so accessories are not mistaken 
   const accessory = 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V?keywords=Creality+K1';
   assert.equal(matchesTaskModel('Creality Leveling Extruder Filament', accessory, task), false);
   assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);
+  assert.equal(matchesTaskModel('Creality K1 Max Combo 8-Color Printer', 'https://store.creality.com/uk/products/k1-max-combo', task), true);
+  assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), true);
 });
 
 test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product URL', () => {
@@ -123,24 +125,47 @@ test('3D printer branch rules distinguish printer machines from accessories', ()
 });
 
 
-test('Gemma extraction prompt retains ambiguous exact-model pages for ChatGPT review', () => {
+test('Gemma extraction prompt is capture-first and retains every supplied page', () => {
   const prompt = buildExtractionPrompt({
     ...task, branch_slug: '3d-printers', research_type: 'uk_both',
-    package_name: 'Printer only'
+    package_name: '8-Color Combo'
   }, [{
-    source_id: 'S1', title: 'Creality K1 3D Printer',
-    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
-    text: 'Creality K1 Speedy 3D Printer £299. Availability data conflicts.'
+    source_id: 'S1', title: 'Kobra S1 Max',
+    url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
+    text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00'
   }]);
-  assert.match(prompt, /Do NOT omit a direct individual product\/listing page/i);
-  assert.match(prompt, /machine-only and combo\/bundle offers separate/i);
-  assert.match(prompt, /ChatGPT inspection only/i);
+  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
+  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
+  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
   assert.match(prompt, /S1/);
-  assert.match(prompt, /Printer only/);
-  assert.doesNotMatch(prompt, /If condition is ambiguous, omit the source/i);
+  assert.match(prompt, /8-Color Combo/);
+  assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
 });
 
 test('Gemma extraction uses a larger output budget without increasing the 4k context', () => {
   assert.equal(ollamaOptions({}).num_ctx, 4096);
   assert.equal(ollamaOptions({}).num_predict, 1024);
+});
+
+
+test('Gemma reports observations rather than deciding whether evidence is usable', () => {
+  const prompt = buildExtractionPrompt({
+    ...task, branch_slug: '3d-printers', research_type: 'uk_both',
+    package_name: '8-Color Combo'
+  }, [
+    { source_id: 'S1', title: 'Kobra S1 Max', url: 'https://uk.anycubic3d.com/products/kobra-s1-max', text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00' },
+    { source_id: 'S2', title: 'Kobra S1 Max used', url: 'https://www.ebay.co.uk/itm/1234567890', text: 'Used Kobra S1 Max £400 collection only' }
+  ]);
+  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
+  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
+  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
+  assert.match(prompt, /S1/);
+  assert.match(prompt, /S2/);
+  assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
+});
+
+test('GBP price capture preserves multiple visible prices and their context', () => {
+  const prices = extractVisibleGbpPriceMentions('Machine £549.00; 4-colour combo £749.00; 8-colour combo £935.00');
+  assert.deepEqual(prices.map(item => item.amount), [549, 749, 935]);
+  assert.match(prices[2].context, /8-colour combo/);
 });

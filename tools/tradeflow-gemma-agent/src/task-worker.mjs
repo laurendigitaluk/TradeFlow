@@ -153,20 +153,20 @@ async function processClaim(claim){
     onProgress:async p=>safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id}})
    });
    outputs.push(result);
-   const findingCount=(result.candidates||[]).filter(x=>x.evidence_type).length;
-   const stagedCount=(result.writes||[]).filter(x=>x.status==='queued-for-chatgpt-review').length;
+   const findingCount=(result.candidates||[]).length;
+   const stagedCount=(result.writes||[]).filter(x=>x.status==='capture-queued-for-chatgpt-review').length;
    await roomPost(identity,'handover','Research task handover',[
     'Task: '+taskKey,
     'Research category: '+identity.category,
-    'Candidates found: '+findingCount,
-    'Candidates staged for owner review: '+stagedCount,
+    'Pages captured for ChatGPT review: '+findingCount,
+    'Page captures staged: '+stagedCount,
     'Summary: '+String(result.summary||result.message||'Research run finished.'),
     'Review gate: candidate rows are staged for ChatGPT/owner validation; no catalogue or shared evidence import is authorised by this handover.'
    ].join('\n'),{task_key:taskKey,thread_key:'research',metadata:{queue_task_id:claim.id,subtask_count:tasks.length,staged:stagedCount}}).catch(e=>console.error('[common room handover]',e.message));
-   const candidates=(result.candidates||[]).filter(x=>x.evidence_type).length;
-   const queued=(result.writes||[]).filter(x=>x.status==='queued-for-chatgpt-review').length;
-   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' candidates; '+queued+' staged for owner review.',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queued,details:{queue_task_id:claim.id,mode:'background-queue'}});
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+'. '+candidates+' candidates; '+queued+' staged for owner review.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   const candidates=(result.candidates||[]).length;
+   const queued=(result.writes||[]).filter(x=>x.status==='capture-queued-for-chatgpt-review').length;
+   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+queued+' staged for ChatGPT review.',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queued,details:{queue_task_id:claim.id,mode:'background-queue'}});
+   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+'. '+candidates+' page captures; '+queued+' staged for ChatGPT review.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
   }
   await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);

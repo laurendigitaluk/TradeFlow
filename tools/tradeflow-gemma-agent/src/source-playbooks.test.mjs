@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -24,6 +24,55 @@ test('manufacturer-specific playbook builds UK search and collection routes', ()
   const routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, task);
   assert.ok(routes.some(url => url.includes('/uk/search?q=Creality%20K1')));
   assert.ok(routes.some(url => url.includes('/uk/collections/3d-printers')));
+});
+
+test('verified 123-3D collections route new and refurbished searches separately', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  const bothTask = { ...newTask, research_type: 'uk_both' };
+
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, newTask),
+    ['https://123-3d.co.uk/collections/3d-printers']
+  );
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, usedTask),
+    ['https://123-3d.co.uk/collections/refurbished-printers']
+  );
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, bothTask),
+    [
+      'https://123-3d.co.uk/collections/3d-printers',
+      'https://123-3d.co.uk/collections/refurbished-printers'
+    ]
+  );
+});
+
+test('3DFLO and iDig use their verified WordPress 3D-printer category routes', () => {
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: '3dflo.com' }, task),
+    ['https://3dflo.com/product-category/3d-printers/']
+  );
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: 'idig3dprinting.co.uk' }, task),
+    ['https://idig3dprinting.co.uk/product-category/3d-printers/']
+  );
+});
+
+test('WordPress printer categories are discovery pages and their individual product links are followed', () => {
+  const base = 'https://www.3dflo.com/product-category/3d-printers/';
+  const idig = 'https://www.idig3dprinting.co.uk/product-category/3d-printers/';
+  for (const url of [base, idig]) {
+    assert.equal(isCollectionDiscoveryPage(url, '3D Printers'), true);
+    assert.equal(isEligibleProductPage(url, '3D Printers'), false);
+  }
+  const links = extractCollectionProductLinks(
+    '<a href="/product/anycubic-kobra-s1/">Anycubic Kobra S1 3D Printer</a>',
+    base,
+    { ...task, manufacturer: 'Anycubic', model: 'Kobra S1' },
+    5
+  );
+  assert.deepEqual(links.map(item => item.url), ['https://www.3dflo.com/product/anycubic-kobra-s1/']);
 });
 
 test('eBay and Amazon use their own search routes, not generic guessed paths only', () => {

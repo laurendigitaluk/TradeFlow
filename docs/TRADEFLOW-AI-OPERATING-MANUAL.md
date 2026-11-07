@@ -4284,3 +4284,8 @@ Production now contains all-route probing, bounded search/collection pagination,
 - Existing queue schema supports this without migration: `evidence_type`, `observed_price`, `item_condition` and `availability` remain nullable; `needs_research` is an allowed status. No Supabase schema change was made.
 - Scope: only the 3D-printer agent/category `3d-printers-equipment`, branch `3d-printers`. Do not start other category agents until the controlled test passes.
 - Next: update/restart the Research PC using the existing updater (preserve its private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`), then run a small controlled batch and confirm every fetched page is staged, including multi-price bundles and extraction failures. ChatGPT will inspect the full captures and open source pages as needed before any catalogue decision.
+
+
+## 7 November 2026 — short model identity collision guard (PR #279)
+
+LIVE review found that the short model identifier `A1` allowed Audi A1 car pages to match Bambu Lab A1 printer research. The 3D-printer branch now requires manufacturer tokens or explicit 3D-printer context for model identifiers of two characters or fewer and rejects clearly automotive routes. Genuine generic A1 3D-printer listings remain eligible for ChatGPT review. Other categories and longer model IDs retain their existing matching behaviour. Regression tests cover the false-positive car page, genuine Bambu Lab A1 Combo, generic A1 printer page and cross-category non-interference. This is a discovery guard only: all captured evidence remains in `needs_research` until ChatGPT/owner review; no automatic approval or import.

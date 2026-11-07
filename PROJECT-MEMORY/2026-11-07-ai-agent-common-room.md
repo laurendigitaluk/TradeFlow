@@ -46,3 +46,9 @@ LIVE migrations 20261107160000_fix_common_room_agent_routing and 20261107161000_
 - Clarified that subscribers use TradeFlow's centrally operated research capability and do not connect their own AI provider.
 - Clarified the manual shipping model: the customer pays the selected carrier directly; TradeFlow does not collect shipping charges or book courier services.
 - Replaced the obsolete GearCashOut public example panel with a link to TradeFlow Examples. The published page remains source-managed; no legacy How It Works CMS record is used.
+
+
+## Shipping responsibility documentation correction — 7 November 2026
+- Corrected the current shipping architecture in the System Handbook, Human User Manual, AI Operating Manual, Backend User Manual, Backend Operations Manual, Subscriber Website Manual and public How It Works page.
+- The customer pays the selected carrier directly. TradeFlow does not collect shipping charges, add postage to the accepted buying offer, pay the carrier or book courier services. The subscriber configures supported services and manages the handoff; subscriber or customer may upload label/QR as the handoff requires; the customer adds tracking and confirms dispatch; the subscriber confirms physical receipt.
+- The earlier 21 September 2026 statement that the subscriber paid shipping is now explicitly marked superseded in the Human User Manual.

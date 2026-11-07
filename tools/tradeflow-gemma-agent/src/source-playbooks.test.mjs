@@ -259,3 +259,31 @@ test('Gemma JSON parser accepts recognised finding arrays and a single source fi
   assert.deepEqual(extractGemmaFindingRows(row), [row]);
   assert.equal(extractGemmaFindingRows({ summary: 'done', candidates: [] }), null);
 });
+
+
+test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-page price mentions', () => {
+  const notes = Array.from({ length: 12 }, (_, index) => ({
+    type: 'learning_note',
+    sender: 'test',
+    title: 'note-' + index,
+    body: 'NOTE-' + index + ' ' + 'N'.repeat(1800)
+  }));
+  const longPage = 'A'.repeat(5000) + ' Current listed price £999.00';
+  const prompt = buildExtractionPrompt({
+    ...task,
+    branch_slug: '3d-printers',
+    research_type: 'uk_new',
+    common_room_context: notes
+  }, [
+    { source_id: 'S1', title: 'Printer page', url: 'https://www.3dprima.co.uk/printer', text: longPage },
+    { source_id: 'S2', title: 'Second page', url: 'https://www.3djake.uk/printer', text: 'B'.repeat(5000) }
+  ]);
+
+  assert.ok(prompt.length < 18000, 'bounded prompt length: ' + prompt.length);
+  assert.match(prompt, /NOTE-11/);
+  assert.doesNotMatch(prompt, /NOTE-0 /);
+  assert.match(prompt, /£999\.00/);
+  assert.match(prompt, /visible_gbp_price_context/);
+  assert.ok(prompt.includes('A'.repeat(2200)));
+  assert.ok(!prompt.includes('A'.repeat(2201)));
+});

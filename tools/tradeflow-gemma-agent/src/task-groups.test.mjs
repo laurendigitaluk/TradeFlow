@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normaliseProductResearchTasks } from './task-groups.mjs';
+import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
 
 test('returns no tasks for non-array input', () => {
   assert.deepEqual(normaliseProductResearchTasks(null), []);
@@ -35,4 +35,16 @@ test('keeps distinct package, category, branch, agent and research-type tasks', 
     { ...base, research_type: 'uk_used' }
   ];
   assert.equal(normaliseProductResearchTasks(variants).length, 6);
+});
+
+
+test('counts new and enriched review rows as staged without counting duplicates', () => {
+  assert.deepEqual(getReviewQueueWriteCounts([
+    { status: 'capture-queued-for-chatgpt-review' },
+    { status: 'capture-enriched-for-chatgpt-review' },
+    { status: 'capture-enriched-for-chatgpt-review' },
+    { status: 'duplicate-skipped' },
+    { status: 'capture-dry-run-ready' }
+  ]), { queued: 1, enriched: 2, staged: 3 });
+  assert.deepEqual(getReviewQueueWriteCounts(null), { queued: 0, enriched: 0, staged: 0 });
 });

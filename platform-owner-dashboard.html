@@ -21,7 +21,6 @@
       <a href="#plans">Plans</a>
       <a href="#public-pages">Public Website Pages</a>
       <a href="#gemma-control-centre">AI Research Centre</a>
-      <a href="#ai-settings">Platform AI settings</a>
       <div class="nav-section" style="margin-top:18px">Documentation</div>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Handbook</a>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-HUMAN-USER-MANUAL.md" target="_blank" rel="noopener">Human User Manual</a>
@@ -102,17 +101,20 @@
 <div class="panel-head"><div><div class="eyebrow">Research operations · LIVE telemetry</div><h2>Gemma Control Centre</h2></div><button id="gemma-refresh" type="button">Refresh activity</button></div>
 <p class="muted">LIVE research operations. Submit work, monitor the Research PC, and review discoveries here. TEST remains for software regression only.</p>
 <div class="gemma-subpanel gemma-task-form">
-<h3>Queue a research task</h3>
-<form id="gemma-task-form" class="gemma-task-fields">
-<label>Category slug<input id="gemma-task-category" required placeholder="3d-printers-equipment"></label>
-<label>Manufacturer<input id="gemma-task-manufacturer" required placeholder="Creality"></label>
-<label>Model<input id="gemma-task-model" required placeholder="K1"></label>
-<label>Package key<input id="gemma-task-package" required placeholder="standard"></label>
-<label>Package name<input id="gemma-task-package-name" required placeholder="Standard package"></label>
-<label>Research type<select id="gemma-task-type"><option value="uk_both">UK new and used</option><option value="uk_new">UK new</option><option value="uk_used">UK used</option></select></label>
-<label class="wide">Search query<input id="gemma-task-query" required placeholder="Creality K1 UK price"></label>
-<div class="wide"><button id="gemma-task-submit" type="submit">Submit research task to LIVE queue</button><span id="gemma-task-status" class="muted" role="status" aria-live="polite"></span></div>
-</form>
+<h3>Build a category research batch</h3>
+<p class="muted">Choose a category, branch and evidence gap. Select individual products or use a batch size to queue several products together.</p>
+<div class="gemma-task-fields">
+<label>Category<select id="gemma-task-category" required></select></label>
+<label>Branch<select id="gemma-task-branch"><option value="">All branches</option></select></label>
+<label>Products to show<select id="gemma-task-limit"><option value="20">20 products</option><option value="50">50 products</option><option value="100" selected>100 products</option><option value="250">250 products</option><option value="500">All (up to 500)</option></select></label>
+<label>Evidence coverage<select id="gemma-task-filter"><option value="any">All products</option><option value="missing_new">Missing new evidence</option><option value="missing_used">Missing used evidence</option><option value="missing_both">Missing either new or used</option><option value="has_new">Has new evidence</option><option value="has_used">Has used evidence</option></select></label>
+<label>Research operation<select id="gemma-task-type"><option value="uk_both">Search new and used</option><option value="uk_new">Search new evidence only</option><option value="uk_used">Search used evidence only</option></select></label>
+<label>Research agent<select id="gemma-task-agent"><option value="">Automatically use category researcher</option></select></label>
+<label>Batch size<select id="gemma-task-batch"><option value="10">10 products</option><option value="20" selected>20 products</option><option value="50">50 products</option><option value="100">100 products</option><option value="all">All selected products</option></select></label>
+</div>
+<div class="gemma-batch-toolbar"><span id="gemma-product-count">Loading catalogue coverage…</span><span><button type="button" id="gemma-select-visible">Select visible</button> <button type="button" id="gemma-clear-selection">Clear selection</button> <button type="button" id="gemma-load-products">Refresh products</button></span></div>
+<div id="gemma-product-list" class="table-wrap">Loading LIVE catalogue coverage…</div>
+<div class="gemma-batch-submit"><span id="gemma-task-status" class="muted" role="status" aria-live="polite"></span><button id="gemma-task-submit" type="button">Queue selected products in LIVE</button></div>
 </div>
 <div class="gemma-subpanel"><div class="panel-head"><h3>Queued and completed tasks</h3><button id="gemma-task-refresh" type="button">Refresh tasks</button></div><div id="gemma-task-list" class="table-wrap">Loading task queue…</div></div>
 <div class="gemma-subpanel"><div class="panel-head"><h3>Research queue</h3><button id="gemma-queue-refresh" type="button">Refresh queue</button></div><div id="gemma-queue-list" class="table-wrap">Loading queue…</div></div>
@@ -133,12 +135,10 @@
 </div>
 <details class="gemma-diagnostics"><summary>Agent diagnostics and supervisor activity</summary><div class="gemma-grid"><div class="gemma-subpanel"><div class="panel-head"><h3>All registered agents</h3></div><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Category</th><th>Status</th><th>Current task</th><th>Completed</th><th>Candidates</th><th>Last heartbeat</th></tr></thead><tbody id="gemma-agent-rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div><div class="gemma-subpanel"><div class="panel-head"><h3>Supervisor activity</h3><span class="muted">Latest 60 events</span></div><div id="gemma-activity" class="gemma-activity"><p class="muted">Loading activity…</p></div></div></div></details>
 </section>
-<section id="ai-settings" class="panel"><div class="eyebrow">Platform configuration</div><h2>Platform AI provider settings</h2><p>These are separate from Gemma catalogue research. Provider credentials remain server-side.</p><details class="owner-settings-accordion"><summary>Advanced TradeFlow Assistant provider settings</summary><div class="note"><strong>Assistant provider permissions</strong><p>Manage centrally approved providers and whether subscriber-supplied providers are permitted. This does not control the Gemma research agents.</p></div><form id="ai-settings-form" style="max-width:760px"><label>Active platform provider<select id="ai-active-provider"><option value="none">None — knowledge-only mode</option><option value="gemma">Gemma</option><option value="openai">OpenAI</option><option value="anthropic">Anthropic</option><option value="google">Google</option></select></label><div style="margin-top:16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px"><label><input id="ai-gemma" type="checkbox"> Allow Gemma</label><label><input id="ai-openai" type="checkbox"> Allow OpenAI</label><label><input id="ai-anthropic" type="checkbox"> Allow Anthropic</label><label><input id="ai-google" type="checkbox"> Allow Google</label></div><p class="note">AI providers are managed centrally by Lauren Digital. Subscribers cannot add or connect their own AI provider.</p><div class="plan-editor-foot" style="margin-top:16px"><span id="ai-settings-status" class="muted" aria-live="polite">Loading AI settings…</span><button type="submit">Save AI settings</button></div></form></details></section>
-
 </section>
   </section>
 </main>
-<script src="platform-owner-dashboard.js?v=19" defer></script>
+<script src="platform-owner-dashboard.js?v=20" defer></script>
 <script src="platform-public-pages-editor.js?v=2" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=1" defer></script>
 </body>

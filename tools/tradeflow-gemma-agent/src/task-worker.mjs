@@ -68,7 +68,7 @@ async function safeReport(record){
 const FIRST_AGENT_KEY='3d-printers-equipment';
 const firstAgentIdentity={agent_key:FIRST_AGENT_KEY,agent_name:'Gemma — 3D Printers & Equipment',category:FIRST_AGENT_KEY};
 async function draftCommonRoomAnswer(agent,message){
- const base=(env.OLLAMA_BASE_URL||'http://127.0.0.1:11434').replace(/\/$/,'');
+ const base=(env.OLLAMA_BASE_URL||'http://127.0.0.1:11434').replace(/\$/,'');
  const model=env.OLLAMA_MODEL||'gemma3:4b';
  const response=await fetch(base+'/api/chat',{
   method:'POST',headers:{'Content-Type':'application/json'},

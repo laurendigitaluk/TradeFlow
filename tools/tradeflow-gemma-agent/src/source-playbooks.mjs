@@ -33,6 +33,7 @@ const playbooks = {
       },
       '3dgbire.com': {
         label: '3DGBIRE reconditioned',
+        collectionApi: 'shopify',
         routes: ['/search?q={query}', '/collections/reconditioned-3d-printers-and-3d-scanners'],
         navigation: 'Inspect the reconditioned/ex-demo collection as well as site search. Open the individual product page and retain reconditioned or ex-demo condition; do not classify as new.'
       },
@@ -43,6 +44,7 @@ const playbooks = {
       },
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
+        collectionApi: 'shopify',
         routes: ['/search?q={query}', '/?s={query}'],
         navigation: 'Search exact model and inspect the individual printer product page. Separate machine-only and package bundles.'
       },

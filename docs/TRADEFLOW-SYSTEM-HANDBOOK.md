@@ -20,7 +20,7 @@ This front section supersedes older descriptions below where they conflict. Olde
 
 ## Release and environment status
 - TEST Supabase: nnsshnfkjcflucjrftzi. LIVE Supabase: gxsrajtqzdjvmceqcpgv. Retired project twfbmjwwqzxdxvclxbun must never be used.
-- The Common Room schema/security migration is installed on LIVE. Dashboard, worker and documentation changes are in feature PR #267; Owner Dashboard accordion work is being combined into that same branch. Neither PR merge nor Git commit proves Cloudflare deployment.
+- The Common Room schema plus four additive routing/security migrations are installed on LIVE. All four owner/agent SECURITY DEFINER RPCs use an empty search_path with role-specific grants and the appropriate owner-membership or service-role check. Dashboard, worker and documentation changes are in feature PR #267; Owner Dashboard accordion work is being combined into that same branch. Neither PR merge nor Git commit proves Cloudflare deployment.
 - The Research PC has not yet been updated/restarted. Do not report the Common Room round-trip as operational until the PC worker reads a controlled owner instruction, posts a handover, and the owner dashboard displays it.
 - Preserve the Research PC's existing dedicated .env, secrets and TRADEFLOW_GEMMA_ENV_FILE path during any update. Never commit or replace local credentials.
 

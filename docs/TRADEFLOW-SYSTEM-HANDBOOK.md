@@ -3579,3 +3579,14 @@ The Platform Owner dashboard has a proposed Gemma Control Centre section on bran
 - This branch is a feature build, not a production deployment. The dashboard UI, worker changes and LIVE migration must pass CI and browser acceptance before promotion.
 - LIVE category source routing remains fail-closed: the source registry must contain a matching category scope (or explicit universal *); no matching approved sources means no research is dispatched to an unscoped source.
 - Do not copy TEST tenant/customer/order/domain/ownership/Stripe data. Do not change LIVE Stripe settings as part of this work.
+
+
+## Category research source manager and editor usability — 7 November 2026
+
+- LIVE Platform Owner dashboard category cards now open a category-specific website manager. Owners can list current sources, add an HTTPS website to the selected category, and enable/disable a source's category assignment. Universal `*` sources (Amazon UK and eBay UK) are shown as universal and cannot be accidentally removed from one category through this control.
+- Source management uses owner-authenticated RPCs: `platform_owner_list_research_sources(text)`, `platform_owner_add_research_source(text,text,text,text,text,text)`, and `platform_owner_set_research_source_category(uuid,text,boolean)`. Functions verify an active `platform_memberships` row and validate the category/source fields.
+- LIVE `catalogue_master_categories` already has one canonical 3D category: `3d-printers-equipment` / “3D Printers & Equipment”. The apparent duplicate cards came from two agent status records (`3d-printers` and `3d-printers-equipment`). Dashboard groups both records into one category card without deleting either agent or its history.
+- LIVE already contains `pokemon-trading-cards` / “Pokémon Trading Cards”. It remains unlinked to research sources and no Pokémon research agent is created. It is displayed as a reserved category in the research centre.
+- Public page editor's nested groups and repeated items are now collapsed by default and can be expanded individually.
+- Subscriber-supplied AI providers were already rejected by `platform_owner_update_ai_settings` and the LIVE setting was already false. The dashboard no longer offers a subscriber provider selection or toggle and always submits `p_subscriber_provider_enabled=false`.
+- The LIVE migration `20261107150000_platform_owner_category_research_source_manager.sql` was applied and committed to production. Existing TEST catalogue, tenants and queues were not changed.

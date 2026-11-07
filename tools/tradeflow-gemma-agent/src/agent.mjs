@@ -908,69 +908,105 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     fetched.push(...pages.filter(Boolean));
   }
 
+  let extractionMetrics = { batches: 0, failures: [] };
   if (fetched.length) {
     await onProgress?.({
       stage: 'batch_extracting', total: fetched.length,
-      message: 'Sending ' + fetched.length + ' individual product page(s) to Gemma for verified or borderline evidence extraction'
+      message: 'Capturing all ' + fetched.length + ' fetched product pages for ChatGPT review; Gemma may add observations but cannot reject pages or decide suitability.'
     });
     try {
-      const extracted = await extractBatch(task, fetched, env), byId = new Map(fetched.map(item => [item.source_id, item]));
-      for (const evidence of extracted.evidence) {
-        const source = byId.get(evidence.source_id), validation = validate(evidence, task, source.text);
-        if (validation.valid) candidates.push(evidence);
-        else {
-          const notes = 'BORDERLINE — ChatGPT inspection required. The page matched the exact product, but automated validation found: ' + validation.errors.join('; ');
-          candidates.push({ review_classification: 'borderline', source_id: evidence.source_id, source_name: new URL(source.url).hostname.replace(/^www\./, ''),
-            source_url: source.url, sales_channel: new URL(source.url).hostname, evidence_type: null, observed_price: null, price_currency: null,
-            item_condition: null, availability: null, source_excerpt: source.text.slice(0, 2500), notes });
-          await onProgress?.({ stage: 'validation_borderline', source: source.url, message: notes });
+      const extracted = await extractBatch(task, fetched, env);
+      extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [] };
+      for (const finding of extracted.findings || []) {
+        const source = fetched.find(item => item.source_id === finding.source_id);
+        if (!source) continue;
+        const price = Number(finding.observed_price);
+        const hasPrice = Number.isFinite(price) && price > 0 && hasVisibleUkPrice(source.text);
+        const validationInput = {
+          ...finding,
+          source_url: source.url,
+          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\\./, ''),
+          price_currency: hasPrice ? 'GBP' : null,
+          sales_channel: new URL(source.url).hostname,
+          observed_price: hasPrice ? price : null,
+          evidence_type: ['uk_new','uk_used'].includes(finding.evidence_type) ? finding.evidence_type : null,
+          item_condition: finding.item_condition || finding.item_condition_text || null,
+          availability: finding.availability || finding.availability_text || null
+        };
+        const diagnostics = validationInput.evidence_type && hasPrice
+          ? validate(validationInput, task, source.text).errors
+          : ['Captured for ChatGPT review; one or more evidence fields have not yet been established.'];
+        candidates.push({
+          ...finding,
+          ...validationInput,
+          review_classification: 'unverified_capture',
+          notes: [
+            finding.notes || '',
+            'UNVERIFIED RESEARCH CAPTURE — ChatGPT decides what is relevant and usable.',
+            diagnostics.length ? 'Checks to perform: ' + diagnostics.join('; ') : 'Automated field checks passed; still requires ChatGPT verification.'
+          ].filter(Boolean).join(' '),
+          source_excerpt: source.text.slice(0, 10000),
+          page_capture: finding.page_capture || {
+            title: source.title, url: source.url,
+            gbp_price_mentions: extractVisibleGbpPriceMentions(source.text),
+            captured_text: source.text.slice(0, 10000)
+          }
+        });
+        await onProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });
+      }
+      const returned = new Set((extracted.findings || []).map(item => item.source_id));
+      for (const source of fetched) {
+        if (returned.has(source.source_id)) continue;
+        candidates.push(fallbackPageCapture(task, source, 'No structured finding returned; preserving complete fetched page for ChatGPT.'));
+      }
+      for (const failure of extractionMetrics.failures) {
+        await onProgress?.({ stage: 'batch_capture_fallback', message: 'Gemma extraction issue; original page captures retained for ChatGPT: ' + failure.error });
+      }
+    } catch (error) {
+      await onProgress?.({ stage: 'batch_error', message: 'Gemma extraction failed; retaining fetched pages without model classification: ' + error.message });
+      for (const source of fetched) {
+        if (!candidates.some(item => item.source_url === source.url)) {
+          candidates.push(fallbackPageCapture(task, source, 'Gemma extraction failed: ' + error.message));
         }
       }
-      for (const borderline of extracted.borderline) {
-        const source = byId.get(borderline.source_id);
-        if (!source || !matchesTaskModel(source.title, source.url, task) || candidates.some(item => item.review_classification === 'borderline' && item.source_url === source.url)) continue;
-        borderline.review_classification = 'borderline'; borderline.evidence_type = null; borderline.observed_price = null; borderline.price_currency = null;
-        borderline.notes = 'BORDERLINE — ChatGPT inspection required. ' + String(borderline.reason || 'One or more evidence fields are incomplete or ambiguous.').slice(0, 500);
-        candidates.push(borderline);
-        await onProgress?.({ stage: 'borderline_candidate', source: source.url, message: borderline.notes });
-      }
-      const returned = new Set([...extracted.evidence, ...extracted.borderline].map(item => item.source_id));
-      for (const source of fetched) if (!returned.has(source.source_id)) await onProgress?.({ stage: 'gemma_rejected', source: source.url, message: 'Gemma found neither complete evidence nor a useful borderline finding on this page' });
-    } catch (error) {
-      await onProgress?.({ stage: 'batch_error', message: 'Gemma batch extraction failed: ' + error.message });
     }
   } else {
-    await onProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; Gemma was not called' });
+    await onProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
-
   await onProgress?.({ stage: 'handoff', message: 'Research complete; verified candidates and clearly labelled borderline findings are staged in the LIVE owner review queue. Borderline findings require ChatGPT inspection and cannot be approved from the dashboard.' });
   const writes = [];
   for (const evidence of candidates) {
-    const key = sourceKey(evidence.source_url, evidence.evidence_type, evidence.observed_price);
-    const dedupeKey = 'review-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, key].join('|')).digest('hex').slice(0, 32);
-    const borderline = evidence.review_classification === 'borderline';
+    const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0, 32);
+    const rawPrice = Number(evidence.observed_price);
+    const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 && hasVisibleUkPrice(evidence.source_excerpt || '');
     const row = {
-      record_type: 'evidence_candidate', status: borderline ? 'needs_research' : 'pending_review',
-      dedupe_key: borderline ? 'borderline-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0,32) : dedupeKey,
-      agent_name: 'Gemma-' + (borderline ? 'borderline' : evidence.evidence_type), task_key: task.task_key || null,
+      record_type: 'evidence_candidate', status: 'needs_research', dedupe_key: captureKey,
+      agent_name: 'Gemma-raw-capture', task_key: task.task_key || null,
       category_slug: task.category_slug, branch_slug: task.branch_slug || null,
       manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
-      package_name: task.package_name, evidence_type: borderline ? null : evidence.evidence_type,
-      source_name: evidence.source_name, source_url: evidence.source_url,
-      observed_price: borderline ? null : Number(evidence.observed_price), price_currency: borderline ? null : 'GBP',
-      item_condition: borderline ? null : evidence.item_condition, sales_channel: evidence.sales_channel,
-      availability: borderline ? null : evidence.availability, source_record_key: key,
-      source_excerpt: evidence.source_excerpt || null, research_notes: evidence.notes || null,
-      raw_payload: { task, evidence, review_classification: borderline ? 'borderline' : 'verified', handoff: borderline ? 'ChatGPT inspection required; not approval-ready' : 'ChatGPT verification; TEST/LIVE catalogue writes disabled' }
+      package_name: task.package_name, evidence_type: ['uk_new','uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
+      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\\./, ''),
+      source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
+      price_currency: usablePrice ? 'GBP' : null,
+      item_condition: evidence.item_condition || evidence.item_condition_text || null,
+      sales_channel: evidence.sales_channel || new URL(evidence.source_url).hostname,
+      availability: evidence.availability || evidence.availability_text || null,
+      source_record_key: captureKey, source_excerpt: evidence.source_excerpt || null,
+      research_notes: evidence.notes || 'Raw page capture retained for ChatGPT review.',
+      raw_payload: {
+        task, evidence, page_capture: evidence.page_capture || null,
+        review_classification: 'unverified_capture',
+        handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
+      }
     };
-    if (!enqueue) { writes.push({ environment: 'LIVE_REVIEW_QUEUE_DRY_RUN', status: 'dry-run-ready-for-verification', row }); continue; }
+    if (!enqueue) { writes.push({ environment: 'LIVE_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target('LIVE', env);
-    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id&dedupe_key=eq.' + encodeURIComponent(dedupeKey));
+    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id&dedupe_key=eq.' + encodeURIComponent(captureKey));
     if (existing.length) { writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: existing[0].id }); continue; }
     const inserted = await db(liveTarget, 'platform_catalogue_research_queue', {
       method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
     });
-    writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: dedupeKey });
+    writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
   }
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,
@@ -979,9 +1015,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       search_results: searchResults.length, eligible_urls: eligible.length,
       discovered_product_pages: allDirectPages.length, inspected_product_pages: fetched.length,
       fetched_price_pages: fetched.filter(item => hasVisibleUkPrice(item.text)).length,
-      gemma_calls: fetched.length ? 1 : 0,
-      accepted_candidates: candidates.filter(item => item.review_classification !== 'borderline').length,
-      borderline_candidates: candidates.filter(item => item.review_classification === 'borderline').length
+      gemma_calls: extractionMetrics.batches,
+      gemma_batch_failures: extractionMetrics.failures.length,
+      captured_pages: candidates.length,
+      accepted_candidates: 0,
+      borderline_candidates: candidates.length
     }
   };
 }

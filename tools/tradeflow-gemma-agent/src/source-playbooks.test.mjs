@@ -65,6 +65,22 @@ test('3DFLO and iDig use their verified WordPress 3D-printer category routes', (
     ['https://www.3dflo.com/product-category/3d-printers/']
   );
 });
+test('ELEGOO UK uses separate FDM and pre-owned collections for new and used lanes', () => {
+  const newTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  const bothTask = { ...newTask, research_type: 'uk_both' };
+  const fdm = 'https://uk.elegoo.com/collections/fdm-printers';
+  const preOwned = 'https://uk.elegoo.com/collections/pre-owned-3d-printer';
+
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.elegoo.com' }, newTask), [fdm]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.elegoo.com' }, usedTask), [preOwned]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.elegoo.com' }, bothTask), [fdm, preOwned]);
+  assert.equal(isCollectionDiscoveryPage(fdm, 'ELEGOO FDM 3D Printers'), true);
+  assert.equal(isEligibleProductPage(fdm, 'ELEGOO FDM 3D Printers'), false);
+  assert.equal(isCollectionDiscoveryPage(preOwned, 'ELEGOO Pre-owned 3D Printers'), true);
+  assert.equal(isEligibleProductPage(preOwned, 'ELEGOO Pre-owned 3D Printers'), false);
+});
+
 
 test('WordPress printer categories are discovery pages and their individual product links are followed', () => {
   const base = 'https://www.3dflo.com/product-category/3d-printers/';

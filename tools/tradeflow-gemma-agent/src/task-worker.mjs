@@ -2,8 +2,8 @@ import os from 'node:os';
 import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runTask } from './agent.mjs';
-import { normaliseProductResearchTasks } from './task-groups.mjs';
+import { runTask, is3dPrinterResearchTask } from './agent.mjs';
+import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
@@ -146,6 +146,7 @@ async function processClaim(claim){
    const identity=agentIdentity(task);
    activeIdentity=identity; activeStage='task_started';
    const taskKey=claim.task_key;
+   if(is3dPrinterResearchTask(task)) task.task_key=task.task_key||taskKey;
    if(identity.agent_key===FIRST_AGENT_KEY) await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
    await safeReport({...identity,status:'running',current_task:taskKey,event_type:'task_started',task_key:taskKey,message:'Started queued research task '+taskKey});
    await roomPost(identity,'status_update','Research task started', 'Started '+taskKey+' for '+identity.category+'.', {task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room start]',e.message));
@@ -157,12 +158,12 @@ async function processClaim(claim){
     enqueue:true,
     onProgress:async p=>{
      activeStage=p.stage||activeStage;
-     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id}});
+     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id,...(is3dPrinterResearchTask(task)?{research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug}: {})}});
     }
    });
    outputs.push(result);
    const findingCount=(result.candidates||[]).length;
-   const stagedCount=(result.writes||[]).filter(x=>x.status==='capture-queued-for-chatgpt-review').length;
+   const {queued:queuedCount,enriched:enrichedCount,staged:stagedCount}=getReviewQueueWriteCounts(result.writes||[]);
    const metrics=result.research_metrics||{};
    const routeMetrics=result.route_metrics||{};
    const routeFailures=Array.isArray(result.route_failures)?result.route_failures:[];
@@ -174,7 +175,7 @@ async function processClaim(claim){
     'Individual product pages: '+(metrics.discovered_product_pages??0)+' discovered; '+(metrics.inspected_product_pages??0)+' fetched',
     'Pages with visible GBP: '+(metrics.fetched_price_pages??0),
     'Gemma extraction: '+(metrics.gemma_calls??0)+' batches; '+(metrics.gemma_batch_failures??0)+' batch failures',
-    'Review captures: '+findingCount+' retained; '+stagedCount+' staged',
+    'Review captures: '+findingCount+' retained; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched)',
     'Other route issues: '+(routeMetrics.pagination_errors??0)+' pagination; '+(routeMetrics.product_page_fetch_errors??0)+' page fetch; '+(routeMetrics.collection_errors??0)+' collection; '+(routeMetrics.challenge_pages_skipped??0)+' bot challenges skipped',
     'Opposite-lane sources skipped: '+(routeMetrics.opposite_lane_sources_skipped??0)
    ];
@@ -189,16 +190,18 @@ async function processClaim(claim){
     ...(gemmaFailureLines.length?['Gemma extraction issues:',...gemmaFailureLines]:['Gemma extraction issues: none recorded']),
     'Review gate: candidate rows are staged for ChatGPT/owner validation; no catalogue or shared evidence import is authorised by this handover.'
    ].join('\n'),{task_key:taskKey,thread_key:'research',metadata:{
-    queue_task_id:claim.id,subtask_count:tasks.length,staged:stagedCount,
-    research_type:task.research_type,research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
+    queue_task_id:claim.id,subtask_count:tasks.length,staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
+    research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug,
+    research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }}).catch(e=>console.error('[common room handover]',e.message));
    const candidates=(result.candidates||[]).length;
-   const queued=(result.writes||[]).filter(x=>x.status==='capture-queued-for-chatgpt-review').length;
-   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+queued+' staged for ChatGPT review.',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queued,details:{
+   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+stagedCount+' staged for ChatGPT review ('+queuedCount+' new, '+enrichedCount+' enriched).',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queuedCount,details:{
     queue_task_id:claim.id,mode:'background-queue',research_type:task.research_type,
+    manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug,
+    staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }});
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+queued+' staged. Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
   }
   await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);

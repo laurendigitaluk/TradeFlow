@@ -8,6 +8,7 @@
 - Gemma receives bounded Common Room guidance in the extraction prompt; exact task identity, approved category sources, evidence validation and human review rules remain authoritative.
 - How It Works is source-managed in how-it-works.html / how-it-works.css; the legacy JSON draft is not its published source. Examples remains owner-CMS editable.
 - The Owner Dashboard now has nine consistent collapsible management sections; its overview statistics remain visible.
+- Shipping is manual: the subscriber selects supported services and manages the handoff, while the customer pays the selected carrier directly. TradeFlow does not collect shipping charges or book courier services.
 
 ---
 

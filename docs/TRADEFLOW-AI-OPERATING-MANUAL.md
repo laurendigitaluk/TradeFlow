@@ -21,7 +21,7 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 - Messages are not task dispatch, catalogue records, evidence rows, valuation inputs or customer communications.
 
 ## Continuity and release state
-The LIVE Common Room database migration and four additive routing/security migrations are installed. PR #267 merged to production as `45049f5c4a1b131d95b701b2603fe0a351c392bd`. The Research PC worker was updated and one controlled LIVE research task completed with owner-visible handover and completion messages. The Research Again correction from PR #268 is merged to `production` as `a76cf1e3d0ea5e9c068f05a9242cab98d5839f3e`; Cloudflare deployment/browser acceptance and a separate owner-authored instruction-delivery test remain pending.
+The LIVE Common Room database migration and four additive routing/security migrations are installed. PR #267 merged to production as `45049f5c4a1b131d95b701b2603fe0a351c392bd`. The Research PC worker was updated and one controlled LIVE research task completed with owner-visible handover and completion messages. The Research Again correction from PR #268 is merged to `production` as `a76cf1e3d0ea5e9c068f05a9242cab98d5839f3e`; PR #269 merged the dashboard cache-bust to `?v=27` (`fa14ebaad62039b413962a09a466bc7d36b92912`). Cloudflare deployment/browser acceptance and a separate owner-authored instruction-delivery test remain pending.
 
 Preserve the Research PC's dedicated .env and TRADEFLOW_GEMMA_ENV_FILE path. Never commit secrets. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
 

@@ -306,10 +306,19 @@ export function extractShopifyCollectionProducts(payload, baseUrl, task = {}, li
   return rows;
 }
 
+export function isChallengePage(url, title = '') {
+  let u;
+  try { u = new URL(url); } catch { return false; }
+  let path;
+  try { path = decodeURIComponent(u.pathname).toLowerCase(); } catch { path = u.pathname.toLowerCase(); }
+  return /(?:^|\/)(?:splashui\/challenge|challenge|captcha|robotcheck|robot-check|blocked)(?:\/|$)/i.test(path) ||
+    /robot check|verify you are human|security challenge|captcha/i.test(String(title || ''));
+}
+
 export function isEligibleProductPage(url, title = '') {
   let u;
   try { u = new URL(url); } catch { return false; }
-  if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname)) return false;
+  if (!['https:', 'http:'].includes(u.protocol) || u.username || u.password || !ukHost(u.hostname, u.pathname) || isChallengePage(url, title)) return false;
   let path;
   try { path = decodeURIComponent(u.pathname).toLowerCase(); } catch { return false; }
   const host = u.hostname.toLowerCase();
@@ -422,33 +431,49 @@ export function ollamaOptions(env = {}) {
 }
 
 export function extractVisibleGbpPriceMentions(text) {
+  const source = String(text || '')
+    .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
+    .replace(/\u00a0/g, ' ');
   const matches = [];
-  const re = /£\s*((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})?)/g;
+  const re = /(£\s*|GBP\s*)((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})?)/gi;
   let match;
-  while ((match = re.exec(String(text || '')))) {
-    const raw = '£' + match[1];
-    const amount = Number(match[1].replace(/,/g, ''));
+  while ((match = re.exec(source))) {
+    const currency = match[1].trim().toUpperCase() === 'GBP' ? 'GBP ' : '£';
+    const raw = currency + match[2];
+    const amount = Number(match[2].replace(/,/g, ''));
     if (Number.isFinite(amount) && amount > 0 && !matches.some(item => item.amount === amount)) {
-      matches.push({ display: raw, amount, context: String(text).slice(Math.max(0, match.index - 100), Math.min(String(text).length, match.index + match[0].length + 140)) });
+      matches.push({ display: raw, amount, context: source.slice(Math.max(0, match.index - 100), Math.min(source.length, match.index + match[0].length + 140)) });
     }
   }
   return matches;
 }
 
 export function buildExtractionPrompt(task, pages) {
-  const sourcePack = pages.map(item => ({
-    source_id: item.source_id, title: item.title, url: item.url,
-    visible_gbp_prices: extractVisibleGbpPriceMentions(item.text).map(price => price.display),
-    page_content: item.text.slice(0, 3500)
-  }));
+  const sourcePack = pages.map(item => {
+    const priceMentions = extractVisibleGbpPriceMentions(item.text);
+    return {
+      source_id: item.source_id,
+      title: String(item.title || '').slice(0, 180),
+      url: String(item.url || '').slice(0, 500),
+      visible_gbp_prices: priceMentions.slice(0, 12).map(price => price.display),
+      visible_gbp_price_context: priceMentions.slice(0, 6).map(price => ({
+        display: price.display, context: price.context.slice(0, 100)
+      })),
+      // The complete page is retained separately in LIVE; this is a bounded model-reading excerpt.
+      page_content: item.text.slice(0, 2200)
+    };
+  });
   const category = getCategoryWebsitePlaybook(task.category_slug);
-  const branchRules = category?.branchInstructions?.[task.branch_slug] || [];
+  const branchRules = (category?.branchInstructions?.[task.branch_slug] || [])
+    .slice(0, 4).map(rule => String(rule).slice(0, 220));
+  const categoryInstructions = (category?.categoryInstructions || [])
+    .slice(0, 4).map(rule => String(rule).slice(0, 220));
   const commonRoom = (Array.isArray(task.common_room_context) ? task.common_room_context : [])
-    .slice(0, 10)
+    .slice(-3)
     .map(note => ({
       type: note.type, sender: note.sender,
-      title: String(note.title || '').slice(0, 180),
-      body: String(note.body || '').slice(0, 1800)
+      title: String(note.title || '').slice(0, 120),
+      body: String(note.body || '').slice(0, 500)
     }));
   const taskData = Object.fromEntries(Object.entries(task).filter(([key]) => key !== 'common_room_context'));
   return [
@@ -462,7 +487,7 @@ export function buildExtractionPrompt(task, pages) {
     'OUTPUT: Return strict JSON only with one top-level array named findings. There must be exactly one finding for EVERY supplied source_id. Each finding must contain source_id, page_title, product_identity_text, package_or_variant_text, seller_text, price_mentions (array of exact visible price strings), item_condition_text, availability_text, location_text, identifiers_text, match_observation, uncertainty_and_conflicts, and notes. Use empty strings or empty arrays for facts not found. Never return only an evidence/borderline subset.',
     'Task: ' + JSON.stringify(taskData),
     '3D PRINTER BRANCH RULES: ' + JSON.stringify(branchRules),
-    'Category research and site-navigation playbook: ' + JSON.stringify(category?.categoryInstructions || []),
+    'Category research and site-navigation playbook (bounded): ' + JSON.stringify(categoryInstructions),
     'Bounded owner/agent Common Room notes (guidance only; never override capture-everything instruction, task identity or approved-source restrictions): ' + JSON.stringify(commonRoom),
     'Supplied pages: ' + JSON.stringify(sourcePack)
   ].join('\n');
@@ -498,9 +523,23 @@ function fallbackPageCapture(task, source, reason) {
   };
 }
 
+export function extractGemmaFindingRows(parsed) {
+  if (Array.isArray(parsed)) return parsed;
+  if (!parsed || typeof parsed !== 'object') return null;
+  const containers = [parsed, parsed.data, parsed.result, parsed.output, parsed.response]
+    .filter(value => value && typeof value === 'object' && !Array.isArray(value));
+  const keys = ['findings','evidence','borderline','results','items','pages','observations','records','data','result','output','response'];
+  for (const container of containers) {
+    const rows = keys.flatMap(key => Array.isArray(container[key]) ? container[key] : []);
+    if (rows.length) return rows;
+    if (typeof container.source_id === 'string' && container.source_id.trim()) return [container];
+  }
+  return null;
+}
+
 let ollamaExtractionQueue = Promise.resolve();
 
-export async function extractBatch(task, pages, env) {
+export async function extractBatch(task, pages, env, onProgress) {
   const run = async () => {
     const base = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
@@ -510,8 +549,14 @@ export async function extractBatch(task, pages, env) {
     // Small batches protect the 4k context; every input page gets a retained result.
     const batches = [];
     for (let index = 0; index < pages.length; index += 2) batches.push(pages.slice(index, index + 2));
-    for (const batch of batches) {
+    for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+      const batch = batches[batchIndex];
       let batchRows = [];
+      await onProgress?.({
+        stage: 'extraction_batch_started', checked: batchIndex + 1, total: batches.length,
+        source: batch[0]?.url,
+        message: 'Gemma extraction batch ' + (batchIndex + 1) + ' of ' + batches.length + ': reading ' + batch.length + ' fetched page(s).'
+      });
       try {
         const prompt = buildExtractionPrompt(task, batch);
         const response = await fetch(base + '/api/chat', {
@@ -529,21 +574,31 @@ export async function extractBatch(task, pages, env) {
         const result = JSON.parse(raw);
         if (!result.message?.content) throw new Error('Ollama returned no content');
         const parsed = JSON.parse(result.message.content);
-        if (Array.isArray(parsed)) batchRows = parsed;
-        else if (Array.isArray(parsed.findings)) batchRows = parsed.findings;
-        else if (Array.isArray(parsed.evidence) || Array.isArray(parsed.borderline)) batchRows = [...(parsed.evidence || []), ...(parsed.borderline || [])];
-        else throw new Error('Gemma returned JSON without a findings array');
+        const extractedRows = extractGemmaFindingRows(parsed);
+        if (extractedRows) batchRows = extractedRows;
+        else {
+          const shape = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+            ? Object.keys(parsed).slice(0, 20).join(', ')
+            : typeof parsed;
+          throw new Error('Gemma returned JSON without a recognised findings array (top-level shape: ' + shape + ')');
+        }
       } catch (error) {
         failures.push({ source_ids: batch.map(item => item.source_id), error: error.message });
+        await onProgress?.({
+          stage: 'extraction_batch_failed', checked: batchIndex + 1, total: batches.length,
+          source: batch[0]?.url, message: 'Gemma extraction batch ' + (batchIndex + 1) + ' failed; raw page captures will be retained: ' + error.message
+        });
       }
       const byId = new Map(batch.map(item => [item.source_id, item]));
       const returned = new Map();
       for (const row of batchRows) {
         if (row && byId.has(row.source_id) && !returned.has(row.source_id)) returned.set(row.source_id, row);
       }
+      let structuredFindings = 0;
       for (const source of batch) {
         const host = new URL(source.url).hostname.replace(/^www\./, '');
         const row = returned.get(source.source_id);
+        if (row) structuredFindings++;
         let finding;
         if (!row) {
           const failure = failures.find(item => item.source_ids.includes(source.source_id));
@@ -583,6 +638,12 @@ export async function extractBatch(task, pages, env) {
         }
         if (!seen.has(source.url)) { seen.add(source.url); findings.push(finding); }
       }
+      await onProgress?.({
+        stage: 'extraction_batch_completed', checked: batchIndex + 1, total: batches.length,
+        source: batch[0]?.url, structured_findings: structuredFindings,
+        fallback_pages: batch.length - structuredFindings,
+        message: 'Gemma extraction batch ' + (batchIndex + 1) + ' of ' + batches.length + ' completed: ' + structuredFindings + ' structured observation(s), ' + (batch.length - structuredFindings) + ' raw fallback capture(s).'
+      });
     }
     return { findings, failures, batches: batches.length };
   };
@@ -618,8 +679,33 @@ export function isCategoryAllowedSource(source, task) {
   return Boolean(category && (configured.includes('*') || configured.includes(category)));
 }
 
+export function getResearchSourceLane(source) {
+  const scope = String(source?.research_scope || '').toLowerCase();
+  const kind = String(source?.source_kind || '').toLowerCase();
+  if (['all','both','uk_both'].includes(scope)) return 'both';
+  if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'uk_used';
+  if (scope === 'official' || kind === 'manufacturer') return 'uk_new';
+  if (scope === 'new_uk' || kind === 'retailer') return 'uk_new';
+  return null;
+}
+
+export function is3dPrinterResearchTask(task) {
+  return String(task?.category_slug || '').toLowerCase() === '3d-printers-equipment' &&
+    String(task?.branch_slug || '').toLowerCase() === '3d-printers';
+}
+
+export function isResearchTypeAllowedSource(source, task) {
+  if (!is3dPrinterResearchTask(task)) return true;
+  const researchType = String(task?.research_type || '').toLowerCase();
+  if (!['uk_new','uk_used'].includes(researchType)) return true;
+  const sourceLane = getResearchSourceLane(source);
+  return sourceLane === 'both' || sourceLane === researchType;
+}
+
 export function isApprovedSourceForTask(source, task) {
-  return isCategoryAllowedSource(source, task) && isRelevantApprovedSource(source, task);
+  return isCategoryAllowedSource(source, task) &&
+    isRelevantApprovedSource(source, task) &&
+    isResearchTypeAllowedSource(source, task);
 }
 
 function normaliseSourceDomain(value) {
@@ -674,26 +760,35 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {
-    const scope = String(source.research_scope || '').toLowerCase();
-    const kind = String(source.source_kind || '').toLowerCase();
-    const country = String(source.country_code || '').toUpperCase();
-    if (country !== 'GB') return null; // UK evidence only; overseas remains excluded.
-    if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'used_uk';
-    if (scope === 'official' || kind === 'manufacturer') return 'official';
-    if (scope === 'new_uk' || kind === 'retailer') return 'new_uk';
-    return null;
+    if (String(source.country_code || '').toUpperCase() !== 'GB') return null;
+    if (!is3dPrinterResearchTask(task)) {
+      const scope = String(source.research_scope || '').toLowerCase();
+      const kind = String(source.source_kind || '').toLowerCase();
+      if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'used_uk';
+      if (scope === 'official' || kind === 'manufacturer') return 'official';
+      if (scope === 'new_uk' || kind === 'retailer') return 'new_uk';
+      return null;
+    }
+    const lane = getResearchSourceLane(source);
+    if (lane === 'both') return task.research_type === 'uk_used' ? 'used_uk' : 'new_uk';
+    return lane === 'uk_used' ? 'used_uk' : lane === 'uk_new'
+      ? (String(source.research_scope || '').toLowerCase() === 'official' || String(source.source_kind || '').toLowerCase() === 'manufacturer' ? 'official' : 'new_uk')
+      : null;
   };
   // GearCashOut's balanced source rotation: do not let new/official sources
   // consume the whole probe budget before used-market sources are reached.
   const relevantSources = (sources || []).filter(source => {
     const categoryRelevant = isCategoryAllowedSource(source, task);
     const manufacturerRelevant = isRelevantApprovedSource(source, task);
+    const laneRelevant = isResearchTypeAllowedSource(source, task);
     if (!categoryRelevant) {
       onProgress?.({ stage: 'approved_source_skipped', source: source.domain, message: 'Skipped source ' + source.domain + ': not configured for category ' + task.category_slug });
     } else if (!manufacturerRelevant && String(source.source_kind || '').toLowerCase() === 'manufacturer') {
       onProgress?.({ stage: 'approved_source_skipped', source: source.domain, message: 'Skipped manufacturer source ' + source.domain + ': it does not match requested manufacturer ' + task.manufacturer });
+    } else if (!laneRelevant) {
+      onProgress?.({ stage: 'research_lane_skipped', source: source.domain, message: 'Skipped ' + source.domain + ' for ' + task.research_type + ': source is assigned to the opposite new/used research lane.' });
     }
-    return categoryRelevant && manufacturerRelevant;
+    return categoryRelevant && manufacturerRelevant && laneRelevant;
   });
   const groups = new Map(['new_uk','used_uk','official'].map(key => [key, relevantSources.filter(source => bucket(source) === key)]));
   const selected = [];
@@ -782,36 +877,52 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
   return {environment:'TEST_QUEUE',status:'queued-for-chatgpt-review',id:inserted?.[0]?.id,dedupe_key:dedupeKey};
 }
 
+export function searchResultsLimitForTask(task, env = {}) {
+  const isPrinterResearch = is3dPrinterResearchTask(task);
+  const configured = isPrinterResearch ? env.GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK : env.SEARCH_RESULTS_PER_TASK;
+  const fallback = isPrinterResearch ? 30 : 18;
+  const numeric = Number(configured);
+  if (!Number.isFinite(numeric) || numeric <= 0) return fallback;
+  return Math.max(1, Math.min(30, Math.floor(numeric)));
+}
+
 export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   if (!task.category_slug || !task.manufacturer || !task.model || !task.package_key || !task.package_name || !task.search_query || !['uk_new', 'uk_used', 'uk_both'].includes(task.research_type)) throw new Error('incomplete task definition');
   const candidates = [];
-  const sourceRows = await loadApprovedResearchSources(env, onProgress);
+  const progressEvents = [];
+  const trackProgress = async event => {
+    if (event && typeof event === 'object') progressEvents.push(event);
+    if (typeof onProgress === 'function') await onProgress(event);
+  };
+  const sourceRows = await loadApprovedResearchSources(env, trackProgress);
   const categorySources = sourceRows.filter(source =>
     String(source?.country_code || '').toUpperCase() === 'GB' &&
     isApprovedSourceForTask(source, task)
   );
-  await onProgress?.({
+  await trackProgress?.({
     stage: 'searching',
     message: 'Searching UK-approved websites for ' + task.category_slug + ': ' + task.manufacturer + ' ' + task.model,
     total: categorySources.length
   });
   const scopedSearchQuery = buildCategoryScopedSearchQuery(task.search_query, categorySources, task);
-  const rawWebResults = scopedSearchQuery ? await search(scopedSearchQuery, env) : [];
+  const searchLimit = searchResultsLimitForTask(task, env);
+  const searchEnv = { ...env, SEARCH_RESULTS_PER_TASK: String(searchLimit) };
+  const rawWebResults = scopedSearchQuery ? await search(scopedSearchQuery, searchEnv) : [];
   const webResults = rawWebResults.filter(item => {
     const allowed = isAllowedSourceHost(item.url, categorySources, task);
-    if (!allowed) onProgress?.({
+    if (!allowed) trackProgress?.({
       stage: 'category_source_skipped', source: item.url,
       message: 'Search result excluded: its website is not approved for category ' + task.category_slug + ' — ' + item.url
     });
     return allowed;
   });
-  const approvedResults = await probeApprovedResearchSources(task, env, onProgress, sourceRows);
+  const approvedResults = await probeApprovedResearchSources(task, env, trackProgress, sourceRows);
   const searchResults = [...new Map([...webResults, ...approvedResults].map(item => [item.url, item])).values()];
   const providerCounts = Object.fromEntries(['google', 'duckduckgo', 'bing', 'mojeek', 'approved_source', 'unknown'].map(name => [
     name,
     searchResults.filter(item => (item.provider || 'unknown') === name).length
   ]));
-  await onProgress?.({
+  await trackProgress?.({
     stage: 'search_complete', total: searchResults.length, provider_counts: providerCounts,
     message: 'Search finished; ' + searchResults.length + ' candidate source(s) found (' +
       Object.entries(providerCounts).filter(([name, count]) => name !== 'unknown' && count > 0)
@@ -824,8 +935,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   }).filter(item => {
     const approved = isAllowedSourceHost(item.url, categorySources, task);
     const eligible = approved && isEligibleProductPage(item.url, item.title) && matchesTaskModel(item.title, item.url, task);
-    if (!eligible) onProgress?.({ stage: 'seed_url_skipped', source: item.url, message: 'Previous product source was not eligible for this category, model or direct product-page rules' });
-    else onProgress?.({ stage: 'seed_url_added', source: item.url, message: 'Rechecking previous exact-model product source before broader discovery' });
+    if (!eligible) trackProgress?.({ stage: 'seed_url_skipped', source: item.url, message: 'Previous product source was not eligible for this category, model or direct product-page rules' });
+    else trackProgress?.({ stage: 'seed_url_added', source: item.url, message: 'Rechecking previous exact-model product source before broader discovery' });
     return eligible;
   });
   const eligible = [];
@@ -833,11 +944,17 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   for (const source of [...seedResults, ...searchResults]) {
     if (isEligibleProductPage(source.url, source.title)) eligible.push(source);
     else if (isCollectionDiscoveryPage(source.url, source.title)) collections.push(source);
-    else await onProgress?.({
-      stage: 'prefilter_skipped', source: source.url,
-      message: 'Skipped before fetching [' + (source.provider || 'unknown') + ']: not an eligible UK product or collection discovery page — ' +
-        (source.title || '(untitled)') + ' — ' + source.url
-    });
+    else {
+      const challengePage = isChallengePage(source.url, source.title);
+      await trackProgress?.({
+        stage: challengePage ? 'source_challenge_skipped' : 'prefilter_skipped',
+        source: source.url,
+        message: challengePage
+          ? 'Search returned an anti-bot challenge/captcha page, not a product listing; it was recorded as blocked and skipped.'
+          : 'Skipped before fetching [' + (source.provider || 'unknown') + ']: not an eligible UK product or collection discovery page — ' +
+            (source.title || '(untitled)') + ' — ' + source.url
+      });
+    }
   }
 
   // Collection pages are discovery hubs, not evidence. Fetch them to enumerate
@@ -845,12 +962,12 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const collectionProducts = [];
   for (const source of collections.slice(0, 12)) {
     try {
-      await onProgress?.({ stage: 'collection_discovery', source: source.url, message: 'Opening collection and following pagination to discover individual product listings: ' + source.url });
+      await trackProgress?.({ stage: 'collection_discovery', source: source.url, message: 'Opening collection and following pagination to discover individual product listings: ' + source.url });
       const first = await collectionPage(source.url), collectionPages = [first], seen = new Set([first.url]);
       for (const nextUrl of extractCollectionPaginationLinks(first.html, first.url, 3)) {
         if (seen.has(nextUrl)) continue; seen.add(nextUrl);
-        try { const next = await collectionPage(nextUrl); collectionPages.push(next); await onProgress?.({ stage: 'collection_page_discovered', source: next.url, total: collectionPages.length, message: 'Followed collection pagination page ' + collectionPages.length }); }
-        catch (error) { await onProgress?.({ stage: 'collection_pagination_error', source: nextUrl, message: 'Could not open collection pagination page: ' + error.message }); }
+        try { const next = await collectionPage(nextUrl); collectionPages.push(next); await trackProgress?.({ stage: 'collection_page_discovered', source: next.url, total: collectionPages.length, message: 'Followed collection pagination page ' + collectionPages.length }); }
+        catch (error) { await trackProgress?.({ stage: 'collection_pagination_error', source: nextUrl, message: 'Could not open collection pagination page: ' + error.message }); }
       }
       let totalLinks = 0;
       for (const result of collectionPages) {
@@ -865,39 +982,39 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
           } else method = 'site HTML only; no API fallback configured';
         }
         collectionProducts.push(...links.map(item => ({ ...item, provider: 'collection_discovery' }))); totalLinks += links.length;
-        await onProgress?.({ stage: 'collection_discovered', source: result.url, total: links.length, method, message: 'Collection page yielded ' + links.length + ' exact-model product link(s) via ' + method });
+        await trackProgress?.({ stage: 'collection_discovered', source: result.url, total: links.length, method, message: 'Collection page yielded ' + links.length + ' exact-model product link(s) via ' + method });
       }
-      await onProgress?.({ stage: 'collection_sweep_complete', source: source.url, total: collectionPages.length, total_links: totalLinks, message: 'Finished ' + collectionPages.length + ' collection page(s); discovered ' + totalLinks + ' matching product page(s).' });
-    } catch (error) { await onProgress?.({ stage: 'collection_error', source: source.url, message: 'Collection discovery skipped: ' + error.message }); }
+      await trackProgress?.({ stage: 'collection_sweep_complete', source: source.url, total: collectionPages.length, total_links: totalLinks, message: 'Finished ' + collectionPages.length + ' collection page(s); discovered ' + totalLinks + ' matching product page(s).' });
+    } catch (error) { await trackProgress?.({ stage: 'collection_error', source: source.url, message: 'Collection discovery skipped: ' + error.message }); }
   }
   const allDirectPages = [...new Map([...eligible, ...collectionProducts]
     .filter(item => {
       const matches = matchesTaskModel(item.title, item.url, task);
-      if (!matches) onProgress?.({ stage: 'model_variant_skipped', source: item.url, message: 'Skipped unrelated model variant or accessory; requested exact model is ' + task.manufacturer + ' ' + task.model });
+      if (!matches) trackProgress?.({ stage: 'model_variant_skipped', source: item.url, message: 'Skipped unrelated model variant or accessory; requested exact model is ' + task.manufacturer + ' ' + task.model });
       return matches;
     })
     .map(item => [item.url, item])).values()];
   const directPages = allDirectPages.slice(0, 30);
-  if (allDirectPages.length > directPages.length) await onProgress?.({ stage: 'page_inspection_limit', total: allDirectPages.length, inspected_limit: directPages.length, message: 'Found ' + allDirectPages.length + ' exact-model page links; inspecting first 30 and retaining remaining count for follow-up.' });
+  if (allDirectPages.length > directPages.length) await trackProgress?.({ stage: 'page_inspection_limit', total: allDirectPages.length, inspected_limit: directPages.length, message: 'Found ' + allDirectPages.length + ' exact-model page links; inspecting first 30 and retaining remaining count for follow-up.' });
   const fetched = [];
   for (let offset = 0; offset < directPages.length; offset += 4) {
     const batch = directPages.slice(offset, offset + 4);
     const pages = await Promise.all(batch.map(async (source, batchIndex) => {
       const index = offset + batchIndex;
-      await onProgress?.({
+      await trackProgress?.({
         stage: 'fetching_page', source: source.url, checked: index + 1, total: directPages.length,
         message: 'Fetching eligible product page ' + (index + 1) + ' of ' + directPages.length + ': ' + source.url
       });
       try {
         const result = await page(source.url, task);
         if (!matchesTaskModel(result.title, result.url, task)) {
-          await onProgress?.({ stage: 'model_variant_skipped', source: result.url, message: 'Fetched page is not the requested exact model; rejected before price extraction' });
+          await trackProgress?.({ stage: 'model_variant_skipped', source: result.url, message: 'Fetched page is not the requested exact model; rejected before price extraction' });
           return null;
         }
-        if (!hasVisibleUkPrice(result.text)) await onProgress?.({ stage: 'borderline_page_sent_to_gemma', source: result.url, message: 'Exact-model page has no visible GBP price in extracted text; sending to Gemma for borderline assessment rather than discarding it.' });
+        if (!hasVisibleUkPrice(result.text)) await trackProgress?.({ stage: 'borderline_page_sent_to_gemma', source: result.url, message: 'Exact-model page has no visible GBP price in extracted text; sending to Gemma for borderline assessment rather than discarding it.' });
         return { ...result, title: result.title || source.title || '', source_id: 'S' + (index + 1) };
       } catch (error) {
-        await onProgress?.({ stage: 'source_error', source: source.url, message: 'Source skipped: ' + error.message });
+        await trackProgress?.({ stage: 'source_error', source: source.url, message: 'Source skipped: ' + error.message });
         return null;
       }
     }));
@@ -906,12 +1023,12 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
 
   let extractionMetrics = { batches: 0, failures: [] };
   if (fetched.length) {
-    await onProgress?.({
+    await trackProgress?.({
       stage: 'batch_extracting', total: fetched.length,
       message: 'Capturing all ' + fetched.length + ' fetched product pages for ChatGPT review; Gemma may add observations but cannot reject pages or decide suitability.'
     });
     try {
-      const extracted = await extractBatch(task, fetched, env);
+      const extracted = await extractBatch(task, fetched, env, trackProgress);
       extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [] };
       for (const finding of extracted.findings || []) {
         const source = fetched.find(item => item.source_id === finding.source_id);
@@ -948,7 +1065,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
             captured_text: source.text.slice(0, 10000)
           }
         });
-        await onProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });
+        await trackProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });
       }
       const returned = new Set((extracted.findings || []).map(item => item.source_id));
       for (const source of fetched) {
@@ -956,10 +1073,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         candidates.push(fallbackPageCapture(task, source, 'No structured finding returned; preserving complete fetched page for ChatGPT.'));
       }
       for (const failure of extractionMetrics.failures) {
-        await onProgress?.({ stage: 'batch_capture_fallback', message: 'Gemma extraction issue; original page captures retained for ChatGPT: ' + failure.error });
+        await trackProgress?.({ stage: 'batch_capture_fallback', message: 'Gemma extraction issue; original page captures retained for ChatGPT: ' + failure.error });
       }
     } catch (error) {
-      await onProgress?.({ stage: 'batch_error', message: 'Gemma extraction failed; retaining fetched pages without model classification: ' + error.message });
+      await trackProgress?.({ stage: 'batch_error', message: 'Gemma extraction failed; retaining fetched pages without model classification: ' + error.message });
       for (const source of fetched) {
         if (!candidates.some(item => item.source_url === source.url)) {
           candidates.push(fallbackPageCapture(task, source, 'Gemma extraction failed: ' + error.message));
@@ -967,9 +1084,9 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       }
     }
   } else {
-    await onProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
+    await trackProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
-  await onProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
+  await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const writes = [];
   for (const evidence of candidates) {
     const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0, 32);
@@ -1004,15 +1121,37 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     });
     writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
   }
+  const countStage = stage => progressEvents.filter(event => event.stage === stage).length;
+  const routeFailureStages = new Set(['approved_source_error','approved_source_pagination_error','source_error','collection_error','collection_pagination_error']);
+  const routeFailures = progressEvents.filter(event => routeFailureStages.has(event.stage)).map(event => ({
+    stage: event.stage, source: event.source || null, message: event.message || ''
+  })).slice(0, 20);
+  const routeMetrics = {
+    approved_sources_probed: countStage('approved_source_probe_started'),
+    approved_source_route_attempts: countStage('approved_source_route_attempt'),
+    approved_source_routes_found: countStage('approved_source_route_found'),
+    approved_source_routes_empty: countStage('approved_source_empty'),
+    approved_source_route_errors: countStage('approved_source_error'),
+    pagination_pages_followed: countStage('approved_source_pagination'),
+    pagination_errors: countStage('approved_source_pagination_error'),
+    product_page_fetch_errors: countStage('source_error'),
+    collection_errors: countStage('collection_error'),
+    challenge_pages_skipped: countStage('source_challenge_skipped'),
+    opposite_lane_sources_skipped: countStage('research_lane_skipped')
+  };
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,
     worker: task.research_type, enqueue, candidates, writes,
+    route_metrics: routeMetrics,
+    route_failures: routeFailures,
     research_metrics: {
+      search_result_limit: searchLimit,
       search_results: searchResults.length, eligible_urls: eligible.length,
       discovered_product_pages: allDirectPages.length, inspected_product_pages: fetched.length,
       fetched_price_pages: fetched.filter(item => hasVisibleUkPrice(item.text)).length,
       gemma_calls: extractionMetrics.batches,
       gemma_batch_failures: extractionMetrics.failures.length,
+      gemma_failure_details: extractionMetrics.failures.slice(0, 10),
       captured_pages: candidates.length,
       accepted_candidates: 0,
       borderline_candidates: candidates.length

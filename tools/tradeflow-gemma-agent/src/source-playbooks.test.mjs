@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel, ollamaOptions } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
+  branch_slug: '3d-printers',
   manufacturer: 'Creality',
   model: 'K1',
   search_query: 'Creality K1 UK new and used price'
@@ -168,4 +169,135 @@ test('GBP price capture preserves multiple visible prices and their context', ()
   const prices = extractVisibleGbpPriceMentions('Machine £549.00; 4-colour combo £749.00; 8-colour combo £935.00');
   assert.deepEqual(prices.map(item => item.amount), [549, 749, 935]);
   assert.match(prices[2].context, /8-colour combo/);
+});
+
+
+const laneSources = [
+  { source_name: '3D Prima UK', domain: '3dprima.co.uk', source_kind: 'retailer', country_code: 'GB', research_scope: 'new_uk', category_slugs: ['3d-printers-equipment'] },
+  { source_name: 'eBay UK', domain: 'ebay.co.uk', source_kind: 'marketplace', country_code: 'GB', research_scope: 'used_uk', category_slugs: ['*'] },
+  { source_name: 'Anycubic UK Official Store', domain: 'uk.anycubic3d.com', source_kind: 'manufacturer', country_code: 'GB', research_scope: 'official', category_slugs: ['3d-printers-equipment'] },
+  { source_name: 'Amazon UK', domain: 'amazon.co.uk', source_kind: 'retailer', country_code: 'GB', research_scope: 'all', category_slugs: ['*'] }
+];
+
+test('new and used research tasks only search their assigned UK source lane', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_new' };
+  const usedTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_used' };
+  const bothTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_both' };
+
+  assert.equal(getResearchSourceLane(laneSources[0]), 'uk_new');
+  assert.equal(getResearchSourceLane(laneSources[1]), 'uk_used');
+  assert.equal(getResearchSourceLane(laneSources[2]), 'uk_new');
+  assert.equal(getResearchSourceLane(laneSources[3]), 'both');
+
+  assert.equal(isApprovedSourceForTask(laneSources[0], newTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[1], newTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[2], newTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[3], newTask), true);
+
+  assert.equal(isApprovedSourceForTask(laneSources[0], usedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[1], usedTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[2], usedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[3], usedTask), true);
+
+  assert.ok(isApprovedSourceForTask(laneSources[0], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[1], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[2], bothTask));
+  assert.ok(isApprovedSourceForTask(laneSources[3], bothTask));
+});
+
+test('category-scoped web search and host validation obey the new/used lane', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_new' };
+  const usedTask = { ...task, manufacturer: 'Anycubic', research_type: 'uk_used' };
+  const newQuery = buildCategoryScopedSearchQuery('Anycubic Kobra S1', laneSources, newTask);
+  const usedQuery = buildCategoryScopedSearchQuery('Anycubic Kobra S1 used', laneSources, usedTask);
+
+  assert.match(newQuery, /site:3dprima\.co\.uk/);
+  assert.match(newQuery, /site:uk\.anycubic3d\.com/);
+  assert.match(newQuery, /site:amazon\.co\.uk/);
+  assert.doesNotMatch(newQuery, /site:ebay\.co\.uk/);
+  assert.match(usedQuery, /site:ebay\.co\.uk/);
+  assert.doesNotMatch(usedQuery, /site:3dprima\.co\.uk/);
+  assert.match(usedQuery, /site:amazon\.co\.uk/);
+  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, newTask), false);
+  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, usedTask), true);
+  assert.equal(isAllowedSourceHost('https://www.amazon.co.uk/dp/B000000000', laneSources, usedTask), true);
+});
+
+test('3D printer web search defaults to 30 results only for the 3D Printers branch', () => {
+  const printerTask = { category_slug: '3d-printers-equipment', branch_slug: '3d-printers' };
+  assert.equal(is3dPrinterResearchTask(printerTask), true);
+  assert.equal(searchResultsLimitForTask(printerTask, {}), 30);
+  assert.equal(searchResultsLimitForTask(printerTask, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '24' }), 24);
+  assert.equal(searchResultsLimitForTask(printerTask, { GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK: '80' }), 30);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment', branch_slug: 'other' }, {}), 18);
+  assert.equal(searchResultsLimitForTask({ category_slug: '3d-printers-equipment' }, {}), 18);
+  assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, {}), 18);
+  assert.equal(searchResultsLimitForTask({ category_slug: 'mobile-phones' }, { SEARCH_RESULTS_PER_TASK: '12' }), 12);
+});
+
+test('new/used lane routing does not change other catalogue categories', () => {
+  const mobileUsedTask = { ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones', research_type: 'uk_used' };
+  assert.equal(is3dPrinterResearchTask(mobileUsedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[1], mobileUsedTask), true);
+  assert.equal(isApprovedSourceForTask(laneSources[3], mobileUsedTask), true);
+});
+
+test('GBP price extraction recognises HTML pound entities after page text normalisation', () => {
+  const pageText = extractRelevantPageText(
+    '<main>Bambu Lab printer current price &pound;1,079.00; previous price &#163;1,179.00</main>',
+    { manufacturer: 'Bambu Lab', model: 'A1' }
+  );
+  const prices = extractVisibleGbpPriceMentions(pageText);
+  assert.deepEqual(prices.map(item => item.amount), [1079, 1179]);
+  assert.match(prices[0].display, /^GBP /);
+  assert.match(prices[0].context, /current price/);
+});
+
+test('eBay bot challenge URLs are identified and never treated as product pages', () => {
+  const challenge = 'https://www.ebay.co.uk/splashui/challenge?ap=1&ru=https%3A%2F%2Fwww.ebay.co.uk%2Fitm%2F1234567890';
+  assert.equal(isChallengePage(challenge), true);
+  assert.equal(isEligibleProductPage(challenge, 'eBay'), false);
+  assert.equal(isEligibleProductPage('https://www.ebay.co.uk/itm/1234567890', 'Anycubic Kobra S1 3D Printer'), true);
+});
+
+
+test('Gemma JSON parser accepts recognised finding arrays and a single source finding', () => {
+  const row = { source_id: 'S1', page_title: 'Kobra S1', observed_price: 249 };
+  assert.deepEqual(extractGemmaFindingRows([row]), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ findings: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ evidence: [row], borderline: [{ source_id: 'S2' }] }), [row, { source_id: 'S2' }]);
+  assert.deepEqual(extractGemmaFindingRows({ results: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ output: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ response: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ data: { pages: [row] } }), [row]);
+  assert.deepEqual(extractGemmaFindingRows(row), [row]);
+  assert.equal(extractGemmaFindingRows({ summary: 'done', candidates: [] }), null);
+});
+
+
+test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-page price mentions', () => {
+  const notes = Array.from({ length: 12 }, (_, index) => ({
+    type: 'learning_note',
+    sender: 'test',
+    title: 'note-' + index,
+    body: 'NOTE-' + index + ' ' + 'N'.repeat(1800)
+  }));
+  const longPage = 'A'.repeat(5000) + ' Current listed price £999.00';
+  const prompt = buildExtractionPrompt({
+    ...task,
+    branch_slug: '3d-printers',
+    research_type: 'uk_new',
+    common_room_context: notes
+  }, [
+    { source_id: 'S1', title: 'Printer page', url: 'https://www.3dprima.co.uk/printer', text: longPage },
+    { source_id: 'S2', title: 'Second page', url: 'https://www.3djake.uk/printer', text: 'B'.repeat(5000) }
+  ]);
+
+  assert.ok(prompt.length < 18000, 'bounded prompt length: ' + prompt.length);
+  assert.match(prompt, /NOTE-11/);
+  assert.doesNotMatch(prompt, /NOTE-0 /);
+  assert.match(prompt, /£999\.00/);
+  assert.match(prompt, /visible_gbp_price_context/);
+  assert.ok(prompt.includes('A'.repeat(2200)));
+  assert.ok(!prompt.includes('A'.repeat(2201)));
 });

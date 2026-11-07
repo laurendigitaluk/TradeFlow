@@ -3601,3 +3601,6 @@ The Platform Owner dashboard has a proposed Gemma Control Centre section on bran
 - The old Platform AI provider settings panel and navigation link have been removed from the Platform Owner dashboard. Subscriber-supplied AI remains disabled; the product positioning is the centrally operated TradeFlow AI Research Centre.
 - The public TradeFlow How It Works page remains the text-only accordion page. The owner page editor now hides legacy `screenshots` and `visual_layout` image-box data for How It Works. The Examples visual editor no longer overrides the How It Works page editor's loader.
 - The database functions were applied directly to LIVE and verified in `pg_proc`; anon cannot execute and authenticated can execute subject to the in-function owner membership check. The versioned SQL migration was added to production GitHub. The authenticated browser flow and Cloudflare production deployment still require live browser verification.
+
+
+Batch-control safety note (7 November 2026): Pokémon Trading Cards remains a reserved master category and is deliberately excluded from the Gemma batch category selector until the owner explicitly links research sources and agents. The selector preserves unqueued selections when a smaller batch is submitted, so a 50-product selection can be worked through in successive 10/20-product batches without losing the remainder. 

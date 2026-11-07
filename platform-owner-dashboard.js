@@ -404,4 +404,21 @@ async function loadGemmaControlCentre(){
   $('gemma-updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
  }catch(e){error.textContent=e.message||String(e);rows.innerHTML='<tr><td colspan="7">Unable to load agent telemetry.</td></tr>';activity.innerHTML='<p class="muted">Activity unavailable.</p>'}
 }
+async function loadGemmaQueue(){
+ const target=$('gemma-queue-list');if(!target)return;target.textContent='Loading LIVE research queue…';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'all',p_limit:100})});
+  const items=Array.isArray(rows)?rows:[];
+  target.innerHTML=items.length?'<table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Source</th><th>Status</th><th>Received</th></tr></thead><tbody>'+items.map(x=>'<tr><td><strong>'+escapeHtml(x.manufacturer+' '+x.model)+'</strong><small>'+escapeHtml(x.package_name||'')+'</small></td><td>'+escapeHtml(x.category_slug||'—')+'</td><td>'+(x.observed_price==null?'—':'£'+Number(x.observed_price).toFixed(2))+'</td><td>'+(x.source_url?'<a href="'+escapeHtml(x.source_url)+'" target="_blank" rel="noopener">Open source</a>':'—')+'</td><td>'+escapeHtml(x.status||'—')+'</td><td>'+gemmaDate(x.created_at)+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No research candidates are waiting in LIVE.</p>';
+ }catch(e){target.textContent='Queue unavailable: '+(e.message||String(e))}
+}
+async function submitGemmaTask(e){
+ e.preventDefault();const status=$('gemma-task-status'),button=$('gemma-task-submit');button.disabled=true;status.textContent='Submitting to LIVE…';
+ const task={task_key:'owner-'+Date.now(),category_slug:$('gemma-task-category').value.trim(),manufacturer:$('gemma-task-manufacturer').value.trim(),model:$('gemma-task-model').value.trim(),package_key:$('gemma-task-package').value.trim(),package_name:$('gemma-task-package-name').value.trim(),research_type:$('gemma-task-type').value,search_query:$('gemma-task-query').value.trim()};
+ try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:task.task_key,p_payload:{tasks:[task]},p_priority:50})});status.textContent='Queued in LIVE: '+(result?.task_key||task.task_key);$('gemma-task-form').reset();await loadGemmaQueue();await loadGemmaControlCentre()}
+ catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
 $('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
+$('gemma-queue-refresh')?.addEventListener('click',loadGemmaQueue);
+$('gemma-task-form')?.addEventListener('submit',submitGemmaTask);

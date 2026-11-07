@@ -49,3 +49,25 @@
 .ai-room-compose-foot button{border:0;border-radius:7px;background:#c65b22;color:#fff;padding:11px 16px;font-weight:750;cursor:pointer}
 .ai-room-compose-foot button:disabled{opacity:.55;cursor:wait}
 @media(max-width:760px){.ai-room-toolbar,.ai-room-compose-grid{grid-template-columns:1fr}.ai-room-message header{display:block}.ai-room-message time{display:block;margin-top:5px}}
+
+
+/* Consistent collapsible sections in the Platform Owner dashboard */
+.owner-accordion-panel{padding:0;overflow:hidden;scroll-margin-top:92px}
+.owner-section-accordion{display:block}
+.owner-section-accordion>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:19px 24px;min-height:86px;cursor:pointer;list-style:none}
+.owner-section-accordion>summary::-webkit-details-marker{display:none}
+.owner-section-accordion>summary:focus-visible{outline:3px solid rgba(198,91,34,.42);outline-offset:-4px}
+.owner-accordion-copy{display:grid;gap:4px;min-width:0}
+.owner-accordion-copy .eyebrow{font-size:.68rem}
+.owner-accordion-copy strong{font-size:1.02rem;line-height:1.35;color:#17202a}
+.owner-accordion-copy small{font-size:.82rem;line-height:1.45;color:#65707a}
+.owner-accordion-icon{position:relative;display:block;flex:0 0 29px;width:29px;height:29px;border:1px solid #d3dbe2;border-radius:50%;background:#fff}
+.owner-accordion-icon:before,.owner-accordion-icon:after{content:"";position:absolute;left:7px;right:7px;top:13px;height:2px;border-radius:2px;background:#c65b22}
+.owner-accordion-icon:after{transform:rotate(90deg);transition:transform .18s ease}
+.owner-section-accordion[open]>summary{background:#fbfcfd;border-bottom:1px solid #e7eaed}
+.owner-section-accordion[open] .owner-accordion-icon:after{transform:rotate(0)}
+.owner-section-content{padding:0 24px 24px}
+.owner-section-content>.panel-head>div:first-child,.owner-section-content>.eyebrow:first-child,.owner-section-content>h2:first-of-type{display:none}
+.owner-section-content>.panel-head{margin-top:16px}
+.owner-section-content>.panel-head:empty{display:none}
+@media(max-width:650px){.owner-section-accordion>summary{padding:16px;min-height:76px;gap:12px}.owner-accordion-copy strong{font-size:.94rem}.owner-accordion-copy small{font-size:.76rem}.owner-section-content{padding:0 15px 18px}}

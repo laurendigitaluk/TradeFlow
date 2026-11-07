@@ -682,6 +682,7 @@ export function isCategoryAllowedSource(source, task) {
 export function getResearchSourceLane(source) {
   const scope = String(source?.research_scope || '').toLowerCase();
   const kind = String(source?.source_kind || '').toLowerCase();
+  if (['all','both','uk_both'].includes(scope)) return 'both';
   if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'uk_used';
   if (scope === 'official' || kind === 'manufacturer') return 'uk_new';
   if (scope === 'new_uk' || kind === 'retailer') return 'uk_new';
@@ -691,7 +692,8 @@ export function getResearchSourceLane(source) {
 export function isResearchTypeAllowedSource(source, task) {
   const researchType = String(task?.research_type || '').toLowerCase();
   if (!['uk_new','uk_used'].includes(researchType)) return true;
-  return getResearchSourceLane(source) === researchType;
+  const sourceLane = getResearchSourceLane(source);
+  return sourceLane === 'both' || sourceLane === researchType;
 }
 
 export function isApprovedSourceForTask(source, task) {
@@ -754,6 +756,7 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
   const bucket = source => {
     if (String(source.country_code || '').toUpperCase() !== 'GB') return null;
     const lane = getResearchSourceLane(source);
+    if (lane === 'both') return task.research_type === 'uk_used' ? 'used_uk' : 'new_uk';
     return lane === 'uk_used' ? 'used_uk' : lane === 'uk_new'
       ? (String(source.research_scope || '').toLowerCase() === 'official' || String(source.source_kind || '').toLowerCase() === 'manufacturer' ? 'official' : 'new_uk')
       : null;

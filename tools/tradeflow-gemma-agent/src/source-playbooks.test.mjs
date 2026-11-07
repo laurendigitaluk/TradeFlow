@@ -33,17 +33,17 @@ test('verified 123-3D collections route new and refurbished searches separately'
 
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, newTask),
-    ['https://123-3d.co.uk/collections/3d-printers']
+    ['https://www.123-3d.co.uk/collections/3d-printers']
   );
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, usedTask),
-    ['https://123-3d.co.uk/collections/refurbished-printers']
+    ['https://www.123-3d.co.uk/collections/refurbished-printers']
   );
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, bothTask),
     [
-      'https://123-3d.co.uk/collections/3d-printers',
-      'https://123-3d.co.uk/collections/refurbished-printers'
+      'https://www.123-3d.co.uk/collections/3d-printers',
+      'https://www.123-3d.co.uk/collections/refurbished-printers'
     ]
   );
 });
@@ -51,11 +51,18 @@ test('verified 123-3D collections route new and refurbished searches separately'
 test('3DFLO and iDig use their verified WordPress 3D-printer category routes', () => {
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '3dflo.com' }, task),
-    ['https://3dflo.com/product-category/3d-printers/']
+    ['https://www.3dflo.com/product-category/3d-printers/']
   );
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: 'idig3dprinting.co.uk' }, task),
-    ['https://idig3dprinting.co.uk/product-category/3d-printers/']
+    ['https://www.idig3dprinting.co.uk/product-category/3d-printers/']
+  );
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({
+      domain: '3dflo.com',
+      search_url_template: 'https://www.3dflo.com/product-category/3d-printers/'
+    }, task),
+    ['https://www.3dflo.com/product-category/3d-printers/']
   );
 });
 

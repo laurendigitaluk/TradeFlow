@@ -569,7 +569,9 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
       stage: 'approved_source_probe_started', source: domain, total: attempts.length,
       message: 'Probing ' + (sitePlaybook?.label || source.source_name || domain) + ' using its ' + attempts.length + ' configured route(s). ' + (sitePlaybook?.navigation || 'Follow exact-model product links; collection pages are discovery only.') 
     });
-    for (const searchUrl of attempts) {
+    for (let routeIndex = 0; routeIndex < attempts.length; routeIndex++) {
+      const searchUrl = attempts[routeIndex];
+      await onProgress?.({ stage: 'approved_source_route_attempt', source: domain, checked: routeIndex + 1, total: attempts.length, message: 'Trying route ' + (routeIndex + 1) + ' of ' + attempts.length + ' on ' + domain + ': ' + searchUrl });
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 8000);
         const matches = [];

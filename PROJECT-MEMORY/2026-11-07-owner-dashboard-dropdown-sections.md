@@ -1,6 +1,6 @@
 # Project memory — Owner Dashboard dropdown sections — 7 November 2026
 
-The user asked to make every major Platform Owner dashboard section a consistent collapsible dropdown tile to reduce scrolling, while preserving all existing functions. Branch `feature/owner-dashboard-dropdown-sections-20261107` was created from the latest `production` commit.
+The user asked to make every major Platform Owner dashboard section a consistent collapsible dropdown tile to reduce scrolling, while preserving all existing functions. Branch `feature/owner-dashboard-dropdown-sections-20261107` was created from the latest `production` commit. Pull request [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266) is open against `production`.
 
 Eight sections are wrapped in native details accordions: product details (name/headline/tagline), subscriber businesses, domain connection requests, TradeFlow plan/pricing, Public Website Pages, Gemma Control Centre, complimentary subscriber accounts and platform email settings. Overview metrics remain visible. Sidebar hash navigation expands the matching section. Existing IDs, handlers, RPCs and workflows are preserved.
 

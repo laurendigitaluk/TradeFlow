@@ -1,6 +1,6 @@
 # TradeFlow Platform Owner Dashboard — Developer Diagnostic Roadmap
 Updated: 7 November 2026
-Status: UI layout implemented on `feature/owner-dashboard-dropdown-sections-20261107` (PR [#266](https://github.com/laurendigitaluk/TradeFlow/pull/266)); browser acceptance and deployment pending.
+Status: nine-section layout and Common Room implemented on `feature/ai-agent-common-room-20261107` (PR [#267](https://github.com/laurendigitaluk/TradeFlow/pull/267)); browser acceptance and deployment pending.
 
 ## Scope and boundaries
 The Platform Owner dashboard is a platform-level control surface, not a subscriber tenant workspace. It uses the separate `platform_memberships` authorization boundary. The current UI has nine collapsible management sections; the overview metrics remain visible.
@@ -32,6 +32,7 @@ The Platform Owner dashboard is a platform-level control surface, not a subscrib
 | Domain connection requests | `loadDomainActions()`, `prepareCloudflareConnection()` | `platform_owner_list_domain_actions()`, `platform_owner_update_domain_action(...)` → `platform_owner_domain_actions`, `tenant_domains`; Step 2 calls protected `platform-prepare-custom-domain` and Cloudflare |
 | TradeFlow plan | `loadPlans()`, `savePlan()` | `platform_owner_get_plans()`, `platform_owner_update_plan(...)` → `plans`, `plan_features` and Stripe product/price identifiers |
 | Public Website Pages | `platform-public-pages-editor.js` | `platform_owner_get_public_pages()`, `platform_owner_save_public_page(...)`, `platform_owner_publish_public_page(...)` → `platform_public_pages` |
+| AI Agent Common Room | `loadAiAgentCommonRoom()`, `postAiAgentCommonRoom()` | Owner list/post RPCs; service-role-only agent read/post RPCs → `platform_ai_agent_messages` |
 | Gemma Control Centre | `loadGemmaControlCentre()`, `loadGemmaSources()`, `loadGemmaBatchCategories()`, `loadGemmaBatchProducts()`, `submitGemmaBatch()`, `loadGemmaTasks()`, `loadGemmaQueue()`, `reviewGemmaCandidate()` | Owner RPCs for telemetry, source assignments, category/product coverage, task enqueue/list, candidate queue/review. Tables: `platform_ai_agent_status`, `platform_ai_agent_activity`, `platform_ai_agent_tasks`, `platform_catalogue_research_queue`, `platform_research_sources`, `catalogue_master_categories`, `catalogue_master_branches`, `catalogue_master_products`, `shared_market_evidence` |
 | Complimentary subscriber accounts | `createComplimentarySubscriber()` | Protected `platform-create-complimentary-subscriber` Edge Function → tenant, owner invitation and complimentary subscription workflow |
 | Platform email settings | `loadPlatformEmail()`, `savePlatformEmail()` | `platform_owner_get_email()`, `platform_owner_save_email(...)` → `platform_email_settings` |
@@ -74,4 +75,4 @@ The layout uses native `details.owner-section-accordion` wrappers in `platform-o
 - ChatGPT is a supervisory participant during active ChatGPT sessions, not a continuously running independent service. A persistent ChatGPT agent requires a separately deployed integration.
 
 ## Change state
-This increment changes only dashboard HTML/CSS/JS, documentation and repository checkpoint files. No Supabase schema/data, RLS, Edge Functions, tenants, customers, orders, payment records, Stripe configuration, domain ownership, Research PC secrets or Cloudflare deployment are changed.
+This increment changes dashboard HTML/CSS/JS, Gemma worker prompt integration, documentation and repository checkpoint files. No Supabase schema/data, RLS, Edge Functions, tenants, customers, orders, payment records, Stripe configuration, domain ownership, Research PC secrets or Cloudflare deployment are changed.

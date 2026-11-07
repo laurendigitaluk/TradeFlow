@@ -443,7 +443,7 @@ async function loadGemmaControlCentre(){
   $('gemma-candidate-count').textContent=agents.reduce((n,a)=>n+Number(a.candidates_found||0),0);
   $('gemma-evidence-count').textContent=agents.reduce((n,a)=>n+Number(a.evidence_queued||0),0);
   rows.innerHTML=agents.length?agents.map(a=>'<tr><td><strong>'+escapeHtml(a.agent_name||a.agent_key)+'</strong>'+(a.last_error?'<small class="gemma-error-text">'+escapeHtml(a.last_error)+'</small>':'')+'</td><td>'+escapeHtml(a.category||'—')+'</td><td>'+gemmaStatus(a)+'</td><td>'+escapeHtml(a.current_task||'—')+'</td><td>'+Number(a.tasks_completed||0)+'</td><td>'+Number(a.candidates_found||0)+'</td><td>'+gemmaDate(a.last_heartbeat)+'</td></tr>').join(''):'<tr><td colspan="7">No agent telemetry has been reported yet.</td></tr>';
-  renderGemmaResearcherCards(agents);
+  renderGemmaResearcherCards(agents);await loadGemmaBatchBranches();
   activity.innerHTML=events.length?events.map(e=>'<article class="gemma-event"><div class="gemma-event-head"><strong>'+escapeHtml(e.agent_name||e.agent_key||'Agent')+'</strong><time>'+gemmaDate(e.created_at)+'</time></div><div>'+escapeHtml(e.message||e.event_type||'Activity')+'</div><small>'+escapeHtml(e.event_type||'event')+(e.task_key?' · '+escapeHtml(e.task_key):'')+'</small></article>').join(''):'<p class="muted">No activity has been reported yet.</p>';
   $('gemma-updated').textContent='Updated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
  }catch(e){error.textContent=e.message||String(e);rows.innerHTML='<tr><td colspan="7">Unable to load agent telemetry.</td></tr>';activity.innerHTML='<p class="muted">Activity unavailable.</p>'}

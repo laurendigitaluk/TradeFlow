@@ -88,3 +88,13 @@ The Research PC has not yet been updated/restarted with this code. Verify the co
 The worker reads across all threads (p_thread_key = null), not just General. It supplies its category slug so the RPC returns global messages with category_slug null plus messages for the matching category. Recipient matching supports null/all/*, the exact p_agent_key, p_worker_id, gemma-task-worker and research-agents. Messages addressed only to chatgpt-supervisor or engineering-agents are not delivered to the Gemma worker.
 
 The final LIVE platform_ai_agent_list_messages and platform_ai_agent_post_message functions use an empty search_path, validate auth.jwt()->>'role' = 'service_role', revoke execution from public/anon/authenticated and grant only service_role. The owner list/post RPCs also use an empty search_path, require an active platform_memberships row and are executable only by authenticated owners. The additive routing/security migrations were applied and verified. No test messages remain. This is source/database verification only; the Research PC still needs code update/restart and an end-to-end owner instruction → worker read → handover → owner feed test.
+
+ 
+## Post-merge worker bootstrap fix and PC updater — 7 November 2026
+- PR #267 merged to production as 45049f5c4a1b131d95b701b2603fe0a351c392bd.
+- A production-source check found task-worker.mjs imported ./task-groups.mjs, but that module was absent from the production tree. The worker would fail at module resolution before it could poll the queue.
+- Fixed the worker to import src/task-groups.mjs and added normaliseProductResearchTasks(), which filters malformed queue entries and deduplicates identical product/category/branch/agent/package/research-type tasks while retaining distinct products and research types.
+- Added src/task-groups.test.mjs using Node's built-in test runner. Four local tests passed for invalid inputs, malformed rows, duplicate removal and distinct task preservation.
+- Added tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 and README.md. The updater downloads only the reviewed source/test files, checks Node 18+, validates approved TEST/LIVE URLs in the supplied private .env, runs node --check and node --test before installation, backs up old source files, and replaces only src files.
+- The updater never prints, copies, backs up or overwrites the private .env. It accepts the existing path and sets TRADEFLOW_GEMMA_ENV_FILE before starting the worker. For first install it supports a new dedicated TradeFlow folder, separate from the retired GearCashOut source.
+- The updater has not been run on the Research PC. Local path, Ollama availability, worker start and Common Room round-trip remain unverified.

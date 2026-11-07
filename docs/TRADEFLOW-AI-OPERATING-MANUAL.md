@@ -4091,3 +4091,6 @@ The production Platform Owner dashboard has a proposed **Gemma Control Centre** 
 - Removed Platform AI provider settings from the owner dashboard UI. Subscriber-supplied AI remains disabled; the AI Research Centre is the intended platform differentiator. No subscriber-facing AI-provider control is to be reintroduced.
 - Corrected the How It Works owner editor so legacy screenshot/image-box and visual-layout data are not presented for that page. The public page remains the existing text-only accordion layout; no published page content was overwritten.
 - Production-branch code changes were committed directly to `production`, not a feature branch. Do not claim the Cloudflare deployment or authenticated browser acceptance is complete until verified.
+
+
+Batch-control safety note: Pokémon Trading Cards is not available in the Gemma batch selector while research remains unlinked. Do not dispatch Pokémon tasks until sources are explicitly assigned and verified. When a batch smaller than the current selection is queued, only the submitted products are removed from selection; remaining products stay selected for the next batch. 

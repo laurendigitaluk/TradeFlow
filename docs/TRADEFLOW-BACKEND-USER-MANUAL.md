@@ -24,7 +24,7 @@ This block supersedes older conflicting operating instructions below; dated mate
 - The Research PC has not yet been updated/restarted. Verify owner instruction → worker read → handover post → owner-visible message before calling the integration operational.
 
 ## Release boundary
-The Common Room migration is installed and PR #267 is merged to production. The Research PC worker has completed a controlled LIVE task and posted a handover. The Research Again fix is in `fix/gemma-research-again-enqueue-20261107`; it is not yet merged/deployed. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
+The Common Room migration is installed and PR #267 is merged to production. The Research PC worker has completed a controlled LIVE task and posted a handover. The Research Again fix from PR #268 is merged to `production` as `a76cf1e3d0ea5e9c068f05a9242cab98d5839f3e`; Cloudflare deployment/browser acceptance remain pending. Verify Cloudflare LIVE HTML/CSS/JS and authenticated desktop/mobile behaviour after release. TEST is nnsshnfkjcflucjrftzi; LIVE is gxsrajtqzdjvmceqcpgv; retired twfbmjwwqzxdxvclxbun is forbidden.
 
 ---
 
@@ -1936,4 +1936,4 @@ LIVE migration is applied. `platform_ai_agent_messages` exists with RLS on and n
 
 
 ## Research Again failure and repair — 7 November 2026
-Observed LIVE failure: `reviewGemmaCandidate()` called only the candidate-review RPC. The candidate status changed to `needs_research`, but no new `platform_ai_agent_tasks` row was created. The fix uses the existing authenticated owner enqueue RPC before the status update. It retains the original candidate row and existing evidence; subsequent findings are separately deduplicated/staged in the LIVE review queue. Do not expose service-role credentials or write directly to task tables from the browser.
+Observed LIVE failure: `reviewGemmaCandidate()` called only the candidate-review RPC. The candidate status changed to `needs_research`, but no new `platform_ai_agent_tasks` row was created. The merged fix uses the existing authenticated owner enqueue RPC before the status update. It retains the original candidate row and existing evidence; subsequent findings are separately deduplicated/staged in the LIVE review queue. Do not expose service-role credentials or write directly to task tables from the browser.

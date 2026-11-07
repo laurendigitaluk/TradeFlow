@@ -272,3 +272,7 @@ This section supersedes older environment references above where they conflict.
 - AI Agent Common Room migration is applied to LIVE; table is RLS-protected with no direct anon/authenticated access. Owner RPC is authenticated with active owner check; agent RPCs are service-role-only.
 - Dashboard and worker Common Room code are in feature branch `feature/ai-agent-common-room-20261107`; not yet released. Research PC update/restart and owner-instruction → worker-read → handover → owner-view round-trip remain outstanding.
 - Preserve the PC's existing .env file and `TRADEFLOW_GEMMA_ENV_FILE` setting. Do not copy service-role keys into code/browser.
+
+ 
+## Gemma Research PC update — 7 November 2026
+The production worker source is under tools/tradeflow-gemma-agent/src. Use tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 to update/install the local worker. Supply the existing private environment file path explicitly; the updater validates approved TEST/LIVE URLs, tests Node source, backs up source files and changes only the dedicated src directory. It must not replace, print, copy or move the private .env, Ollama configuration or other local secrets. For a new install, use a dedicated TradeFlow folder, not the retired GearCashOut source directory. Set TRADEFLOW_GEMMA_ENV_FILE to the exact existing private .env path before starting src/task-worker.mjs.

@@ -689,7 +689,13 @@ export function getResearchSourceLane(source) {
   return null;
 }
 
+export function is3dPrinterResearchTask(task) {
+  return String(task?.category_slug || '').toLowerCase() === '3d-printers-equipment' &&
+    String(task?.branch_slug || '').toLowerCase() === '3d-printers';
+}
+
 export function isResearchTypeAllowedSource(source, task) {
+  if (!is3dPrinterResearchTask(task)) return true;
   const researchType = String(task?.research_type || '').toLowerCase();
   if (!['uk_new','uk_used'].includes(researchType)) return true;
   const sourceLane = getResearchSourceLane(source);
@@ -755,6 +761,14 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {
     if (String(source.country_code || '').toUpperCase() !== 'GB') return null;
+    if (!is3dPrinterResearchTask(task)) {
+      const scope = String(source.research_scope || '').toLowerCase();
+      const kind = String(source.source_kind || '').toLowerCase();
+      if (scope === 'used_uk' || ['marketplace','used_dealer','auction'].includes(kind)) return 'used_uk';
+      if (scope === 'official' || kind === 'manufacturer') return 'official';
+      if (scope === 'new_uk' || kind === 'retailer') return 'new_uk';
+      return null;
+    }
     const lane = getResearchSourceLane(source);
     if (lane === 'both') return task.research_type === 'uk_used' ? 'used_uk' : 'new_uk';
     return lane === 'uk_used' ? 'used_uk' : lane === 'uk_new'
@@ -864,7 +878,7 @@ async function enqueueCandidate(testTarget, products, task, e, enqueue) {
 }
 
 export function searchResultsLimitForTask(task, env = {}) {
-  const isPrinterResearch = String(task?.category_slug || '').toLowerCase() === '3d-printers-equipment';
+  const isPrinterResearch = is3dPrinterResearchTask(task);
   const configured = isPrinterResearch ? env.GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK : env.SEARCH_RESULTS_PER_TASK;
   const fallback = isPrinterResearch ? 30 : 18;
   const numeric = Number(configured);

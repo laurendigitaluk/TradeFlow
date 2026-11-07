@@ -49,3 +49,12 @@ The worker requires the existing LIVE and TEST service-role credentials in that 
 ## Common Room behaviour
 
 Gemma reads owner instructions and relevant agent handovers, findings, questions and learning notes across all threads, with category matching. These messages are bounded research guidance, not task overrides. Gemma posts task start, handover, completion and failure messages. A handover is not approval to import candidate evidence.
+
+
+## First category rollout: 3D Printers & Equipment
+
+The first category-specific website playbook is `src/source-playbooks.mjs`. It gives the 3D-printer agent per-site search routes and navigation rules for manufacturer stores, new retailers, used/refurbished dealers, Gumtree, SecondHand, eBay and Amazon. Search/category/collection pages are discovery only; the worker follows exact-model product links and validates each individual listing before evidence can enter the LIVE owner review queue. The worker now rotates through every approved source for the category rather than stopping after twelve, and tries the configured site-specific routes (up to five per site). A historical direct product URL in `search_url_template` is ignored as a search route.
+
+The first Common Room inbox rollout is deliberately limited to the `3d-printers-equipment` agent. It checks the LIVE AI Common Room at worker startup, before that agent's research tasks, and during idle queue polling. It replies in a thread to the owner's welcome message, acknowledges owner instructions, and uses local Ollama to answer unanswered questions; replies are linked with `parent_message_id` to prevent repeats. Other category agents are not enabled until this first agent has been tested. Message content is treated as untrusted context and cannot override exact-model checks, approved-source rules, privacy constraints or the owner review gate.
+
+After this change is merged, update the Research PC using the reviewed updater. It retains the existing TradeFlow `.env` path and never reads or changes the separate GearCashOut configuration. Stop the old worker cleanly before replacing source files, then restart and verify the 3D Printer Gemma greeting appears as a reply to the owner's Welcome message in AI Common Room. Cloud/PC deployment is not complete until that round-trip is visible.

@@ -1899,3 +1899,7 @@ Verified both environments: 285 active gaming products, 277 visible, 409 active 
 
 ### Rollout state
 Feature branch: `feature/ai-agent-common-room-20261107`. Migration, UI and worker code are versioned in that branch; not applied to LIVE, merged, deployed or confirmed on the PC at this checkpoint. Preserve local `.env`; update only source files and restart with the original env-file path. Verify worker startup, owner instruction visibility, agent handover insertion and owner feed visibility. Existing Gemma queue and evidence review must remain intact.
+
+## AI Agent Common Room LIVE database verification — 7 November 2026
+
+LIVE migration is applied. `platform_ai_agent_messages` exists with RLS on and no anon/authenticated table policies. Owner RPC authenticated execution is granted with active platform owner check; service-role-only agent list/post RPCs reject anon and authenticated roles. No data was seeded. Front-end and worker release remain pending.

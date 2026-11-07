@@ -54,7 +54,7 @@ Read-only checks:
 
  
 ## Follow-up implementation — 7 November 2026
-- Gemma now passes up to ten bounded Common Room notes (instructions, handovers and learning notes) into the Ollama extraction prompt.
+- Gemma now passes up to ten bounded Common Room notes (instructions, handovers, findings, questions and learning notes) into the Ollama extraction prompt.
 - The prompt labels Common Room notes as untrusted operational guidance and explicitly prevents them overriding exact task identity, research type, category-approved source restrictions, UK/GBP/direct-product-page rules, evidence validation, privacy and review gates.
 - The owner dashboard now has nine consistent collapsible sections, including the new Common Room and Gemma Control Centre. Overview metrics remain visible; sidebar hash navigation opens the matching panel.
 - Added the Owner Dashboard Developer Diagnostic Roadmap.

@@ -340,7 +340,8 @@ test('duplicate enrichment appends unverified extraction history without changin
         item_condition_text: 'New', availability_text: 'In stock',
         package_or_variant_text: 'Kobra S1 Standard Printer',
         product_identity_text: 'Anycubic Kobra S1', match_observation: 'Exact model title match',
-        notes: 'Structured observation for ChatGPT review.'
+        notes: 'Structured observation for ChatGPT review.',
+        page_capture: { url: 'https://store.anycubic.com/products/kobra-s1', title: 'Anycubic Kobra S1', captured_text: 'Latest page text with visible price £319.00' }
       }
     }
   };
@@ -350,6 +351,7 @@ test('duplicate enrichment appends unverified extraction history without changin
   assert.equal(patch.raw_payload.enrichment_history.length, 1);
   assert.equal(patch.raw_payload.enrichment_history[0].task_key, 'task-20261107');
   assert.equal(patch.raw_payload.enrichment_history[0].gemma_observed_price, 319);
+  assert.match(patch.raw_payload.enrichment_history[0].page_capture_excerpt.captured_text, /Latest page text/);
   assert.match(patch.research_notes, /unverified Gemma extraction/i);
   assert.equal(patch.updated_at, '2026-11-07T22:50:00.000Z');
   assert.equal('status' in patch, false);

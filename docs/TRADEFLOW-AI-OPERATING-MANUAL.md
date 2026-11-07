@@ -4152,3 +4152,7 @@ Migration `20261107190000_platform_ai_agent_common_room.sql`, dashboard section 
 ## AI Agent Common Room LIVE database deployment — 7 November 2026
 
 The LIVE Common Room migration is applied and its table/RPC grants verified. The UI/worker integration remains on feature branch and requires merge/deployment and a controlled PC restart. A full owner-instruction → worker-read → agent-handover → owner-view round trip is still pending.
+
+ 
+## Research PC worker release instructions — 7 November 2026
+The merged production worker now includes the Common Room prompt context and task normalisation module. The production import dependency has been added and four built-in Node tests cover task filtering/deduplication. Use tools/tradeflow-gemma-agent/README.md and Update-TradeFlow-Gemma.ps1 to update the Research PC. Preserve the existing private .env and explicitly set TRADEFLOW_GEMMA_ENV_FILE to its current path. The updater runs Node syntax checks and task tests before copying source. Do not claim worker availability until it is run on the PC and a controlled Common Room round-trip succeeds.

@@ -229,3 +229,14 @@ Production now contains all-route probing, bounded search/collection pagination,
 - Existing queue schema supports this without migration: `evidence_type`, `observed_price`, `item_condition` and `availability` remain nullable; `needs_research` is an allowed status. No Supabase schema change was made.
 - Scope: only the 3D-printer agent/category `3d-printers-equipment`, branch `3d-printers`. Do not start other category agents until the controlled test passes.
 - Next: update/restart the Research PC using the existing updater (preserve its private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`), then run a small controlled batch and confirm every fetched page is staged, including multi-price bundles and extraction failures. ChatGPT will inspect the full captures and open source pages as needed before any catalogue decision.
+
+
+## 7 November follow-up — short model identity collisions
+
+LIVE review of the Bambu Lab A1 used pass found four structured queue captures whose source pages were Audi A1 car adverts. The existing broad matcher checked only the short model token `A1`, so unrelated automotive pages could be presented under the Bambu Lab A1 product. These records remained `needs_research`; no catalogue/evidence approval or import occurred.
+
+A 3D-printer-branch-only discovery guard now applies when the model identifier is two characters or shorter: require the manufacturer tokens or explicit “3D printer” context, and reject clearly automotive URL categories. This retains genuine generic printer listings for ChatGPT review and leaves all other categories unchanged.
+
+ChatGPT also inspected two later Gumtree captures directly: a Bambu A1 used listing at £150 (Loughor, collection only, visible condition “As good as new”, additional nozzles/PLA) and a Bambu Lab A1 Combo with AMS Lite at £250 (Nottingham, 134 print hours, visible condition “As good as new”, posted 12 hours before inspection). The second page's offer suggestions (£225/£212.50/£200) are not the advertised asking price. Its visible condition wording conflicts with captured structured markup saying NewCondition; the page wording takes precedence for review. The Combo is not the Standard Printer package.
+
+All captures remain in the LIVE review queue at `needs_research`. The guard is discovery disambiguation only; it does not approve, reject or import evidence. Regression tests cover Audi A1 rejection, Bambu A1 Combo acceptance, generic A1 3D-printer acceptance, and unchanged matching outside this branch.

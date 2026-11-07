@@ -21,7 +21,7 @@ const playbooks = {
         routes: ['/search?q={query}', '/collections/3d-printers'],
         navigation: 'Use Shopify storefront search, then the 3D printer collection. Open the exact model product page; distinguish standalone printer from Combo/bundle packages.'
       },
-      'uk.anycubic.com': {
+      'uk.anycubic3d.com': {
         label: 'Anycubic UK official store',
         routes: ['/search?type=product&q={query}', '/collections/3d-printers'],
         navigation: 'Use product search and the 3D printer collection. Open the exact model page and keep printer-only and bundle variants separate.'

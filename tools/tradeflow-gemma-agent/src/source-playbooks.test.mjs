@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { decodeSearchRedirect, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
+import { decodeSearchRedirect, extractCollectionPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -79,4 +79,25 @@ test('Shopify collection API fallback is enabled only on sources that declare su
   assert.equal(getWebsiteInstructions(task.category_slug, '3dgbire.com').collectionApi, 'shopify');
   assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, undefined);
   assert.equal(getWebsiteInstructions(task.category_slug, 'uni3dverse.co.uk').collectionApi, undefined);
+});
+
+test('3D printer instructions require category-to-product traversal and retain borderline findings', () => {
+  const instructions = getCategoryWebsitePlaybook(task.category_slug).categoryInstructions.join(' ').toLowerCase();
+  assert.match(instructions, /category.*branch.*product family.*manufacturer/);
+  assert.match(instructions, /do not stop after the first successful route/);
+  assert.match(instructions, /borderline.*chatgpt inspection/);
+});
+
+test('collection pagination follows same-site next pages only and is bounded', () => {
+  const html = [
+    '<a rel="next" href="/collections/3d-printers?page=2">Next</a>',
+    '<a href="https://outside.example/collections/3d-printers?page=3">Next</a>',
+    '<a href="/collections/3d-printers?page=4">4</a>',
+    '<a href="/products/creality-k1">Product</a>'
+  ].join('');
+  const links = extractCollectionPaginationLinks(html, 'https://store.creality.com/uk/collections/3d-printers', 3);
+  assert.deepEqual(links, [
+    'https://store.creality.com/collections/3d-printers?page=2',
+    'https://store.creality.com/collections/3d-printers?page=4'
+  ]);
 });

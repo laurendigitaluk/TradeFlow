@@ -64,7 +64,7 @@ After this change is merged, update the Research PC using the reviewed updater. 
 
 The LIVE worker review identified two separate capture bottlenecks and an observability gap:
 
-- Research tasks now need lane-aware source selection: uk_new uses manufacturer/new-retailer sources; uk_used uses marketplace/used/refurbished sources; uk_both uses both, and research_scope=all sources are available to both lanes. Category, manufacturer and UK restrictions still apply. 123-3D UK remains new_uk in LIVE and will not be searched in the used lane unless the owner approves a source-scope change.
+- Within the 3D Printers branch only, research tasks use lane-aware source selection: uk_new uses manufacturer/new-retailer sources; uk_used uses marketplace/used/refurbished sources; uk_both uses both, and research_scope=all sources are available to both lanes. Category, manufacturer and UK restrictions still apply; other categories retain their previous source-selection behaviour. 123-3D UK remains new_uk in LIVE and will not be searched in the used lane unless the owner approves a source-scope change.
 - 3D-printer web-search retention defaults to 30 results per task (existing hard maximum 30), configurable downward with GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK. Other categories keep their existing default.
 - The visible-price extractor recognises £ and GBP, including pound HTML entities normalised from page markup.
 - Known bot/captcha challenge routes are reported and skipped as blocked discovery results, not treated as product pages or bypassed.

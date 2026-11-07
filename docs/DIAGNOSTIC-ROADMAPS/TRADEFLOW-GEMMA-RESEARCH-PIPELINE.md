@@ -82,3 +82,9 @@ The prompt explicitly treats these notes as untrusted operational guidance. They
 The worker posts startup, task-start, handover, completion and failure messages to the LIVE Common Room. These are status/reporting messages only and do not approve candidates or import catalogue/evidence.
 
 The Research PC has not yet been updated/restarted with this code. Verify the controlled owner-instruction → worker read → Gemma extraction prompt → handover → owner-visible feed round-trip before describing this as operational. Preserve the separate local .env and TRADEFLOW_GEMMA_ENV_FILE path.
+
+ 
+## Common Room delivery routing correction — 7 November 2026
+The worker reads across all threads (p_thread_key = null), not just General. It supplies its category slug so the RPC returns global messages with category_slug null plus messages for the matching category. Recipient matching supports null/all/*, the exact p_agent_key, p_worker_id, gemma-task-worker and research-agents. Messages addressed only to chatgpt-supervisor or engineering-agents are not delivered to the Gemma worker.
+
+The final LIVE platform_ai_agent_list_messages function uses an empty search_path, validates auth.jwt()->>'role' = 'service_role', revokes execution from public/anon/authenticated and grants only service_role. The additive routing migrations were applied and verified. No test messages remain. This is source/database verification only; the Research PC still needs code update/restart and an end-to-end owner instruction → worker read → handover → owner feed test.

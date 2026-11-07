@@ -812,7 +812,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         if (validation.valid) candidates.push(evidence);
         else {
           const notes = 'BORDERLINE — ChatGPT inspection required. The page matched the exact product, but automated validation found: ' + validation.errors.join('; ');
-          candidates.push({ review_classification: 'borderline', source_id: evidence.source_id, source_name: new URL(source.url).hostname.replace(/^www\\./, ''),
+          candidates.push({ review_classification: 'borderline', source_id: evidence.source_id, source_name: new URL(source.url).hostname.replace(/^www\./, ''),
             source_url: source.url, sales_channel: new URL(source.url).hostname, evidence_type: null, observed_price: null, price_currency: null,
             item_condition: null, availability: null, source_excerpt: source.text.slice(0, 2500), notes });
           await onProgress?.({ stage: 'validation_borderline', source: source.url, message: notes });

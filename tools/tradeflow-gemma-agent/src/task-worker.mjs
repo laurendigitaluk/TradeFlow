@@ -84,7 +84,7 @@ async function processClaim(claim){
    await safeReport({...identity,status:'running',current_task:taskKey,event_type:'task_started',task_key:taskKey,message:'Started queued research task '+taskKey});
    await roomPost(identity,'status_update','Research task started', 'Started '+taskKey+' for '+identity.category+'.', {task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room start]',e.message));
    const instructions=await roomRead(identity.agent_key,identity.category,null,100).catch(e=>{console.error('[common room read]',e.message);return[]});
-   const relevantInstructions=instructions.filter(m=>m.message_type==='instruction'||m.message_type==='handover'||m.message_type==='learning_note');
+   const relevantInstructions=instructions.filter(m=>m.message_type==='instruction'||m.message_type==='handover'||m.message_type==='finding'||m.message_type==='question'||m.message_type==='learning_note');
    task.common_room_context=relevantInstructions.map(m=>({type:m.message_type,sender:m.sender_kind||m.sender_name||'agent',title:m.title||'',body:m.body||''})).slice(0,10);
    if(relevantInstructions.length) console.log('[common room] passing',task.common_room_context.length,'bounded notes into Gemma extraction for',identity.agent_key);
    const result=await runTask(task,env,{

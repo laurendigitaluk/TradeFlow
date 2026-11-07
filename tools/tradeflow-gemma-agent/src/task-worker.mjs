@@ -150,7 +150,7 @@ async function processClaim(claim){
    if(relevantInstructions.length) console.log('[common room] passing',task.common_room_context.length,'bounded notes into Gemma extraction for',identity.agent_key);
    const result=await runTask(task,env,{
     enqueue:true,
-    onProgress:async p=>safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:'Checking source '+p.checked+' of '+p.total+': '+p.source,details:{stage:p.stage,checked:p.checked,total:p.total,queue_task_id:claim.id}})
+    onProgress:async p=>safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id}})
    });
    outputs.push(result);
    const findingCount=(result.candidates||[]).filter(x=>x.evidence_type).length;

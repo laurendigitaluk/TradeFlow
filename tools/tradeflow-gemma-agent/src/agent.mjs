@@ -796,10 +796,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       await onProgress?.({ stage: 'batch_error', message: 'Gemma batch extraction failed: ' + error.message });
     }
   } else {
-    await onProgress?.({ stage: 'no_eligible_pages', message: 'No fetched product pages contained a visible GBP price; Gemma was not called' });
+    await onProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; Gemma was not called' });
   }
 
-  await onProgress?.({ stage: 'handoff', message: 'Research complete; validated candidates are staged in the LIVE owner review queue. No automatic catalogue or evidence approval.' });
+  await onProgress?.({ stage: 'handoff', message: 'Research complete; verified candidates and clearly labelled borderline findings are staged in the LIVE owner review queue. Borderline findings require ChatGPT inspection and cannot be approved from the dashboard.' });
   const writes = [];
   for (const evidence of candidates) {
     const key = sourceKey(evidence.source_url, evidence.evidence_type, evidence.observed_price);

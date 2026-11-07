@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask } from './agent.mjs';
+import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -244,4 +244,16 @@ test('eBay bot challenge URLs are identified and never treated as product pages'
   assert.equal(isChallengePage(challenge), true);
   assert.equal(isEligibleProductPage(challenge, 'eBay'), false);
   assert.equal(isEligibleProductPage('https://www.ebay.co.uk/itm/1234567890', 'Anycubic Kobra S1 3D Printer'), true);
+});
+
+
+test('Gemma JSON parser accepts recognised finding arrays and a single source finding', () => {
+  const row = { source_id: 'S1', page_title: 'Kobra S1', observed_price: 249 };
+  assert.deepEqual(extractGemmaFindingRows([row]), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ findings: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ evidence: [row], borderline: [{ source_id: 'S2' }] }), [row, { source_id: 'S2' }]);
+  assert.deepEqual(extractGemmaFindingRows({ results: [row] }), [row]);
+  assert.deepEqual(extractGemmaFindingRows({ data: { pages: [row] } }), [row]);
+  assert.deepEqual(extractGemmaFindingRows(row), [row]);
+  assert.equal(extractGemmaFindingRows({ summary: 'done', candidates: [] }), null);
 });

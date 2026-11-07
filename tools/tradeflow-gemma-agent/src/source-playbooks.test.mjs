@@ -186,7 +186,7 @@ test('new and used research tasks only search their assigned UK source lane', ()
   assert.equal(getResearchSourceLane(laneSources[0]), 'uk_new');
   assert.equal(getResearchSourceLane(laneSources[1]), 'uk_used');
   assert.equal(getResearchSourceLane(laneSources[2]), 'uk_new');
-  assert.equal(getResearchSourceLane(laneSources[3]), 'uk_new');
+  assert.equal(getResearchSourceLane(laneSources[3]), 'both');
 
   assert.equal(isApprovedSourceForTask(laneSources[0], newTask), true);
   assert.equal(isApprovedSourceForTask(laneSources[1], newTask), false);
@@ -196,7 +196,7 @@ test('new and used research tasks only search their assigned UK source lane', ()
   assert.equal(isApprovedSourceForTask(laneSources[0], usedTask), false);
   assert.equal(isApprovedSourceForTask(laneSources[1], usedTask), true);
   assert.equal(isApprovedSourceForTask(laneSources[2], usedTask), false);
-  assert.equal(isApprovedSourceForTask(laneSources[3], usedTask), false);
+  assert.equal(isApprovedSourceForTask(laneSources[3], usedTask), true);
 
   assert.ok(isApprovedSourceForTask(laneSources[0], bothTask));
   assert.ok(isApprovedSourceForTask(laneSources[1], bothTask));
@@ -215,9 +215,9 @@ test('category-scoped web search and host validation obey the new/used lane', ()
   assert.match(newQuery, /site:amazon\.co\.uk/);
   assert.doesNotMatch(newQuery, /site:ebay\.co\.uk/);
   assert.match(usedQuery, /site:ebay\.co\.uk/);
-  assert.doesNotMatch(usedQuery, /site:3dprima\.co\.uk/);
+  assert.doesNotMatch(usedQuery, /site:3dprima\.co\.uk/);\n  assert.match(usedQuery, /site:amazon\.co\.uk/);
   assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, newTask), false);
-  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, usedTask), true);
+  assert.equal(isAllowedSourceHost('https://www.ebay.co.uk/itm/1234567890', laneSources, usedTask), true);\n  assert.equal(isAllowedSourceHost('https://www.amazon.co.uk/dp/B000000000', laneSources, usedTask), true);
 });
 
 test('3D printer web search defaults to 30 results without changing other categories', () => {

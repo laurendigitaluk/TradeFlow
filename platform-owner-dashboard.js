@@ -378,11 +378,11 @@ $('complimentary-subscriber-form')?.addEventListener('submit',createComplimentar
 
 $('refresh').onclick=loadTenants;$('refresh-domain-actions').onclick=loadDomainActions;$('refresh-product-pages')?.addEventListener('click',loadProductPages);
 $('platform-email-form').onsubmit=savePlatformEmail;
-$('ai-settings-form').onsubmit=saveAiSettings;
+
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadAiSettings(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadGemmaControlCentre(),loadGemmaTasks(),loadGemmaQueue(),loadGemmaBatchCategories(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -436,7 +436,7 @@ async function loadGemmaControlCentre(){
  error.textContent='';rows.innerHTML='<tr><td colspan="7">Refreshing…</td></tr>';
  try{
   const data=await request('/rest/v1/rpc/platform_owner_get_ai_agent_control_centre',{method:'POST',body:JSON.stringify({p_activity_limit:60})});
-  const agents=Array.isArray(data?.agents)?data.agents:[],events=Array.isArray(data?.activity)?data.activity:[];
+  const agents=Array.isArray(data?.agents)?data.agents:[],events=Array.isArray(data?.activity)?data.activity:[];window.gemmaLastAgents=agents;
   $('gemma-agent-count').textContent=agents.length;
   $('gemma-running-count').textContent=agents.filter(a=>a.status==='running'&&a.last_heartbeat&&Date.now()-new Date(a.last_heartbeat).getTime()<120000).length;
   $('gemma-task-count').textContent=agents.reduce((n,a)=>n+Number(a.tasks_completed||0),0);
@@ -470,17 +470,47 @@ async function reviewGemmaCandidate(id,decision){
  catch(e){$('gemma-error').textContent=e.message||String(e)}
 }
 $('gemma-queue-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-gemma-review]');if(b){b.disabled=true;reviewGemmaCandidate(b.dataset.id,b.dataset.gemmaReview)}});
-async function submitGemmaTask(e){
- e.preventDefault();const status=$('gemma-task-status'),button=$('gemma-task-submit');button.disabled=true;status.textContent='Submitting to LIVE…';
- const task={task_key:'owner-'+Date.now(),category_slug:$('gemma-task-category').value.trim(),manufacturer:$('gemma-task-manufacturer').value.trim(),model:$('gemma-task-model').value.trim(),package_key:$('gemma-task-package').value.trim(),package_name:$('gemma-task-package-name').value.trim(),research_type:$('gemma-task-type').value,search_query:$('gemma-task-query').value.trim()};
- try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:task.task_key,p_payload:{tasks:[task]},p_priority:50})});status.textContent='Queued in LIVE: '+(result?.task_key||task.task_key);$('gemma-task-form').reset();await loadGemmaQueue();await loadGemmaTasks();await loadGemmaControlCentre()}
- catch(err){status.textContent=err.message||String(err)}
- finally{button.disabled=false}
+let gemmaBatchProducts=[],gemmaSelectedProducts=new Set();
+async function loadGemmaBatchCategories(){
+ const category=$('gemma-task-category');if(!category)return;
+ try{const rows=await request('/rest/v1/rpc/platform_owner_list_gemma_research_categories',{method:'POST',body:'{}'});const current=category.value;
+ category.innerHTML=(rows||[]).map(x=>'<option value="'+escapeHtml(x.slug)+'">'+escapeHtml(x.name)+'</option>').join('');
+ if(current&&[...category.options].some(o=>o.value===current))category.value=current;
+ await loadGemmaBatchBranches();await loadGemmaBatchProducts();
+ }catch(e){$('gemma-product-list').textContent='Unable to load LIVE catalogue categories: '+(e.message||String(e))}
 }
+async function loadGemmaBatchBranches(){
+ const category=$('gemma-task-category')?.value,branch=$('gemma-task-branch');if(!category||!branch)return;
+ const rows=await request('/rest/v1/rpc/platform_owner_list_gemma_research_categories',{method:'POST',body:'{}'}),selected=(rows||[]).find(x=>x.slug===category),current=branch.value;
+ branch.innerHTML='<option value="">All branches</option>'+((selected?.branches)||[]).map(x=>'<option value="'+escapeHtml(x.slug)+'">'+escapeHtml(x.name)+'</option>').join('');
+ if(current&&[...branch.options].some(o=>o.value===current))branch.value=current;
+ const agents=window.gemmaLastAgents||[],team=agents.filter(a=>String(a.category||'').toLowerCase().replace(/[^a-z0-9]+/g,'-')===category||String(a.agent_key||'')===category||(/3d-printers/.test(category)&&/3d-printers/.test(String(a.agent_key||''))));
+ const agent=$('gemma-task-agent');if(agent)agent.innerHTML='<option value="">Automatically use category researcher</option>'+team.map(a=>'<option value="'+escapeHtml(a.agent_key)+'">'+escapeHtml(a.agent_name||a.agent_key)+'</option>').join('');
+}
+async function loadGemmaBatchProducts(){
+ const category=$('gemma-task-category')?.value;if(!category)return;
+ const host=$('gemma-product-list'),status=$('gemma-product-count');host.textContent='Checking LIVE catalogue and evidence…';
+ try{const rows=await request('/rest/v1/rpc/platform_owner_list_gemma_research_products',{method:'POST',body:JSON.stringify({p_category_slug:category,p_branch_slug:$('gemma-task-branch').value||null,p_evidence_filter:$('gemma-task-filter').value,p_limit:Number($('gemma-task-limit').value)})});
+ gemmaBatchProducts=Array.isArray(rows)?rows:[];gemmaSelectedProducts=new Set([...gemmaSelectedProducts].filter(id=>gemmaBatchProducts.some(x=>x.product_id===id)));
+ status.textContent=gemmaBatchProducts.length+' matching products · '+gemmaSelectedProducts.size+' selected';
+ host.innerHTML=gemmaBatchProducts.length?'<table><thead><tr><th>Select</th><th>Product</th><th>Branch</th><th>New evidence</th><th>Used evidence</th></tr></thead><tbody>'+gemmaBatchProducts.map(x=>'<tr><td><input type="checkbox" data-gemma-product="'+escapeHtml(x.product_id)+'" '+(gemmaSelectedProducts.has(x.product_id)?'checked':'')+'></td><td><strong>'+escapeHtml(x.manufacturer||'')+' '+escapeHtml(x.model)+'</strong><small>'+escapeHtml(x.package_name||x.package_key||'')+'</small></td><td>'+escapeHtml(x.branch_name||'—')+'</td><td>'+Number(x.new_evidence_count||0)+'</td><td>'+Number(x.used_evidence_count||0)+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No products match this category and evidence filter.</p>';
+ host.querySelectorAll('[data-gemma-product]').forEach(el=>el.onchange=()=>{if(el.checked)gemmaSelectedProducts.add(el.dataset.gemmaProduct);else gemmaSelectedProducts.delete(el.dataset.gemmaProduct);status.textContent=gemmaBatchProducts.length+' matching products · '+gemmaSelectedProducts.size+' selected'});
+ }catch(e){host.textContent='Catalogue coverage unavailable: '+(e.message||String(e))}
+}
+async function submitGemmaBatch(){
+ const status=$('gemma-task-status'),button=$('gemma-task-submit'),selected=gemmaBatchProducts.filter(x=>gemmaSelectedProducts.has(x.product_id));
+ if(!selected.length){status.textContent='Select at least one product first.';return}
+ const batch=$('gemma-task-batch').value,chosen=selected.slice(0,batch==='all'?selected.length:Number(batch)),type=$('gemma-task-type').value,category=$('gemma-task-category').value,agent=$('gemma-task-agent').value;
+ const tasks=chosen.map(x=>({category_slug:category,branch_slug:x.branch_slug||null,agent_key:agent||category,manufacturer:x.manufacturer,model:x.model,package_key:x.package_key||'standard',package_name:x.package_name||'Standard package',research_type:type,search_query:[x.manufacturer,x.model,x.package_name,'UK',type==='uk_new'?'new price':type==='uk_used'?'used price':'new and used price'].filter(Boolean).join(' ')}));
+ const taskKey='owner-'+category+'-'+Date.now();button.disabled=true;status.textContent='Submitting '+tasks.length+' products to LIVE…';
+ try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks},p_priority:50})});status.textContent='Queued '+tasks.length+' products in LIVE: '+(result?.task_key||taskKey);gemmaSelectedProducts.clear();await loadGemmaBatchProducts();await loadGemmaTasks();await loadGemmaQueue();await loadGemmaControlCentre()}
+ catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
+}
+
 $('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
 $('gemma-queue-refresh')?.addEventListener('click',()=>{loadGemmaQueue();loadGemmaTasks()});
 $('gemma-task-refresh')?.addEventListener('click',loadGemmaTasks);
-$('gemma-task-form')?.addEventListener('submit',submitGemmaTask);
+$('gemma-task-submit')?.addEventListener('click',submitGemmaBatch);$('gemma-task-category')?.addEventListener('change',async()=>{await loadGemmaBatchBranches();await loadGemmaBatchProducts()});$('gemma-task-branch')?.addEventListener('change',loadGemmaBatchProducts);$('gemma-task-filter')?.addEventListener('change',loadGemmaBatchProducts);$('gemma-task-limit')?.addEventListener('change',loadGemmaBatchProducts);$('gemma-select-visible')?.addEventListener('click',()=>{gemmaBatchProducts.forEach(x=>gemmaSelectedProducts.add(x.product_id));loadGemmaBatchProducts()});$('gemma-clear-selection')?.addEventListener('click',()=>{gemmaSelectedProducts.clear();loadGemmaBatchProducts()});$('gemma-load-products')?.addEventListener('click',loadGemmaBatchProducts);
 $('gemma-researcher-cards')?.addEventListener('click',e=>{const b=e.target.closest('[data-manage-sources]');if(b)loadGemmaSources(b.dataset.manageSources)});
 $('gemma-source-close')?.addEventListener('click',()=>$('gemma-source-manager').hidden=true);
 $('gemma-source-form')?.addEventListener('submit',addGemmaResearchSource);

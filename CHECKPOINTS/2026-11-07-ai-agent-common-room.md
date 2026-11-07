@@ -119,3 +119,11 @@ The updater has not been run on the Research PC. Its real path, Ollama service, 
  
 ## Queue task validation refinement — 7 November 2026
 The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.
+
+ 
+## Confirmed Research PC local paths — 7 November 2026
+- Existing TradeFlow worker folder: `C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent`.
+- Existing TradeFlow private environment file: `C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent\.env`.
+- The existing folder contains the TradeFlow .env; the updater should run in-place and explicitly pass that same .env path.
+- Do not use, modify or overwrite the separate legacy `C:\GearCashOut-Config\.env`, GearCashOut source folders or old launcher.
+- The current update command is documented in tools/tradeflow-gemma-agent/README.md. Local update/restart has not yet been performed.

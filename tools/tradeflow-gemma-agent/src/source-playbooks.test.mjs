@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { decodeSearchRedirect, extractCollectionPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
+import { decodeSearchRedirect, extractCollectionPaginationLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, matchesTaskModel } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -99,5 +99,18 @@ test('collection pagination follows same-site next pages only and is bounded', (
   assert.deepEqual(links, [
     'https://store.creality.com/collections/3d-printers?page=2',
     'https://store.creality.com/collections/3d-printers?page=4'
+  ]);
+});
+
+test('website search pagination follows same-host next and page links only', () => {
+  const html = [
+    '<a rel="next" href="/search?q=Creality%20K1&page=2">Next</a>',
+    '<a href="https://outside.example/search?page=3">Next</a>',
+    '<a href="/search?q=Creality%20K1&page=4">4</a>',
+    '<a href="/products/creality-k1">Product</a>'
+  ].join('');
+  assert.deepEqual(extractSearchPaginationLinks(html, 'https://store.creality.com/uk/search?q=Creality%20K1', 2), [
+    'https://store.creality.com/search?q=Creality%20K1&page=2',
+    'https://store.creality.com/search?q=Creality%20K1&page=4'
   ]);
 });

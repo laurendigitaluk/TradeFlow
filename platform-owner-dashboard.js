@@ -459,13 +459,37 @@ async function loadGemmaQueue(){
  try{
   const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'all',p_limit:100})});
   const items=Array.isArray(rows)?rows:[];
+  window.gemmaQueueItems=items;
   target.innerHTML=items.length?'<table><thead><tr><th>Product</th><th>Category</th><th>Price</th><th>Source</th><th>Status</th><th>Received</th><th>Owner review</th></tr></thead><tbody>'+items.map(x=>'<tr><td><strong>'+escapeHtml(x.manufacturer+' '+x.model)+'</strong><small>'+escapeHtml(x.package_name||'')+'</small></td><td>'+escapeHtml(x.category_slug||'—')+'</td><td>'+(x.observed_price==null?'—':'£'+Number(x.observed_price).toFixed(2))+'</td><td>'+(x.source_url?'<a href="'+escapeHtml(x.source_url)+'" target="_blank" rel="noopener">Open source</a>':'—')+'</td><td>'+escapeHtml(x.status||'—')+'</td><td>'+gemmaDate(x.created_at)+'</td><td>'+(x.status==='pending_review'||x.status==='needs_research'?'<button type="button" data-gemma-review="approved" data-id="'+escapeHtml(x.id)+'">Approve for import review</button> <button type="button" data-gemma-review="needs_research" data-id="'+escapeHtml(x.id)+'">Research again</button> <button type="button" data-gemma-review="rejected" data-id="'+escapeHtml(x.id)+'">Reject</button>':'Reviewed')+'</td></tr>').join('')+'</tbody></table>':'<p class="muted">No research candidates are waiting in LIVE.</p>';
  }catch(e){target.textContent='Queue unavailable: '+(e.message||String(e))}
 }
 async function reviewGemmaCandidate(id,decision){
  const notes=decision==='approved'?'Owner accepted candidate for subsequent verification/import review.':decision==='rejected'?'Owner rejected candidate.':'Candidate requires further research.';
- try{await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes})});await loadGemmaQueue()}
- catch(e){$('gemma-error').textContent=e.message||String(e)}
+ try{
+  if(decision==='needs_research'){
+   const candidate=(window.gemmaQueueItems||[]).find(item=>item.id===id);
+   if(!candidate)throw new Error('Research candidate details are unavailable. Refresh the research queue and try again.');
+   const task={
+    category_slug:candidate.category_slug,
+    branch_slug:candidate.branch_slug||null,
+    agent_key:candidate.category_slug,
+    manufacturer:candidate.manufacturer,
+    model:candidate.model,
+    package_key:candidate.package_key||'standard',
+    package_name:candidate.package_name||'Standard package',
+    research_type:'uk_both',
+    search_query:[candidate.manufacturer,candidate.model,candidate.package_name,'UK','new and used price'].filter(Boolean).join(' ')
+   };
+   const taskKey='owner-research-again-'+id+'-'+Date.now();
+   const queued=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks:[task]},p_priority:60})});
+   await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes+' Research task queued: '+(queued?.task_key||taskKey)})});
+   $('gemma-error').textContent='Further research queued for '+candidate.manufacturer+' '+candidate.model+'.';
+   await Promise.all([loadGemmaQueue(),loadGemmaTasks()]);
+   return;
+  }
+  await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:notes})});
+  await loadGemmaQueue();
+ }catch(e){$('gemma-error').textContent=e.message||String(e)}
 }
 $('gemma-queue-list')?.addEventListener('click',e=>{const b=e.target.closest('[data-gemma-review]');if(b){b.disabled=true;reviewGemmaCandidate(b.dataset.id,b.dataset.gemmaReview)}});
 let gemmaBatchProducts=[],gemmaSelectedProducts=new Set();

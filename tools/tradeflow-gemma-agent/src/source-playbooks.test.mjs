@@ -56,3 +56,9 @@ test('UK Gumtree individual adverts are accepted and second-hand category pages 
   assert.equal(isCollectionDiscoveryPage('https://www.secondhand.org.uk/second-hand-3d-printers'), true);
   assert.equal(isEligibleProductPage('https://www.gumtree.com/uk/srpsearch%2Bcreality-k1', 'Creality K1 search results'), false);
 });
+
+test('designated UK 3D printer retailer hosts accept individual product pages', () => {
+  for (const host of ['3dgbire.com','3dflo.com','bambu-lab-uk.myshopify.com','uk.anycubic.com','www.gumtree.com']) {
+    assert.equal(isEligibleProductPage('https://'+host+'/products/creality-k1', 'Creality K1 3D Printer'), true, host);
+  }
+});

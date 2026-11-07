@@ -437,3 +437,4 @@ $('gemma-refresh')?.addEventListener('click',loadGemmaControlCentre);
 $('gemma-queue-refresh')?.addEventListener('click',()=>{loadGemmaQueue();loadGemmaTasks()});
 $('gemma-task-refresh')?.addEventListener('click',loadGemmaTasks);
 $('gemma-task-form')?.addEventListener('submit',submitGemmaTask);
+setInterval(()=>{if(document.visibilityState==='visible'){loadGemmaControlCentre();loadGemmaTasks();loadGemmaQueue()}},20000);

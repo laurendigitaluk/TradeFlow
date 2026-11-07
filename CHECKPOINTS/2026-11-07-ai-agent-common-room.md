@@ -150,6 +150,6 @@ Production `platform-owner-dashboard.js` → `reviewGemmaCandidate()` called onl
 - Corrects the LIVE queue result label in `agent.mjs` from `TEST_REVIEW_QUEUE` to `LIVE_REVIEW_QUEUE` for the actual LIVE insert path; no data routing is changed.
 
 ### Release/verification state
-- Code committed to the repair branch; not yet merged or deployed to Cloudflare.
+- PR #268 merged to production as `a76cf1e3d0ea5e9c068f05a9242cab98d5839f3e`; Cloudflare deployment and browser acceptance remain pending.
 - No Supabase schema or data changes were made for this repair.
 - Next: source/static validation, review PR, deploy LIVE dashboard asset, click Research again once, confirm a new queued task and automatic worker completion, then verify new candidates remain pending review.

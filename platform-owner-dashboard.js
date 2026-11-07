@@ -474,7 +474,7 @@ let gemmaBatchProducts=[],gemmaSelectedProducts=new Set();
 async function loadGemmaBatchCategories(){
  const category=$('gemma-task-category');if(!category)return;
  try{const rows=await request('/rest/v1/rpc/platform_owner_list_gemma_research_categories',{method:'POST',body:'{}'});const current=category.value;
- category.innerHTML=(rows||[]).map(x=>'<option value="'+escapeHtml(x.slug)+'">'+escapeHtml(x.name)+'</option>').join('');
+ category.innerHTML=(rows||[]).filter(x=>x.slug!=='pokemon-trading-cards').map(x=>'<option value="'+escapeHtml(x.slug)+'">'+escapeHtml(x.name)+'</option>').join('');
  if(current&&[...category.options].some(o=>o.value===current))category.value=current;
  await loadGemmaBatchBranches();await loadGemmaBatchProducts();
  }catch(e){$('gemma-product-list').textContent='Unable to load LIVE catalogue categories: '+(e.message||String(e))}
@@ -503,7 +503,7 @@ async function submitGemmaBatch(){
  const batch=$('gemma-task-batch').value,chosen=selected.slice(0,batch==='all'?selected.length:Number(batch)),type=$('gemma-task-type').value,category=$('gemma-task-category').value,agent=$('gemma-task-agent').value;
  const tasks=chosen.map(x=>({category_slug:category,branch_slug:x.branch_slug||null,agent_key:agent||category,manufacturer:x.manufacturer,model:x.model,package_key:x.package_key||'standard',package_name:x.package_name||'Standard package',research_type:type,search_query:[x.manufacturer,x.model,x.package_name,'UK',type==='uk_new'?'new price':type==='uk_used'?'used price':'new and used price'].filter(Boolean).join(' ')}));
  const taskKey='owner-'+category+'-'+Date.now();button.disabled=true;status.textContent='Submitting '+tasks.length+' products to LIVE…';
- try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks},p_priority:50})});status.textContent='Queued '+tasks.length+' products in LIVE: '+(result?.task_key||taskKey);gemmaSelectedProducts.clear();await loadGemmaBatchProducts();await loadGemmaTasks();await loadGemmaQueue();await loadGemmaControlCentre()}
+ try{const result=await request('/rest/v1/rpc/platform_owner_enqueue_ai_agent_task',{method:'POST',body:JSON.stringify({p_task_key:taskKey,p_payload:{tasks},p_priority:50})});status.textContent='Queued '+tasks.length+' products in LIVE: '+(result?.task_key||taskKey);chosen.forEach(x=>gemmaSelectedProducts.delete(x.product_id));await loadGemmaBatchProducts();await loadGemmaTasks();await loadGemmaQueue();await loadGemmaControlCentre()}
  catch(e){status.textContent=e.message||String(e)}finally{button.disabled=false}
 }
 

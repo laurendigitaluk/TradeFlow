@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
+import { isCollectionDiscoveryPage, isEligibleProductPage } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -48,4 +49,10 @@ test('unknown categories do not inherit the 3D printer website playbook', () => 
 test('Gumtree uses its UK srpsearch slug route for marketplace discovery', () => {
   const routes = buildWebsiteSearchRoutes({ domain: 'gumtree.com' }, task);
   assert.ok(routes.some(url => url === 'https://gumtree.com/uk/srpsearch%2Bcreality-k1'));
+});
+
+test('UK Gumtree individual adverts are accepted and second-hand category pages remain discovery only', () => {
+  assert.equal(isEligibleProductPage('https://www.gumtree.com/p/printers-scanners/ender-3-good-condition/1804597701', 'Ender 3 3D Printer'), true);
+  assert.equal(isCollectionDiscoveryPage('https://www.secondhand.org.uk/second-hand-3d-printers'), true);
+  assert.equal(isEligibleProductPage('https://www.gumtree.com/uk/srpsearch%2Bcreality-k1', 'Creality K1 search results'), false);
 });

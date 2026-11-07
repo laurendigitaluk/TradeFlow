@@ -86,3 +86,7 @@ The task normaliser now rejects incomplete payload rows before calling runTask. 
 - The existing folder contains the TradeFlow .env; the updater should run in-place and explicitly pass that same .env path.
 - Do not use, modify or overwrite the separate legacy `C:\GearCashOut-Config\.env`, GearCashOut source folders or old launcher.
 - The current update command is documented in tools/tradeflow-gemma-agent/README.md. Local update/restart has not yet been performed.
+
+
+## Research Again repair — 7 November 2026
+LIVE verification showed the background worker is functioning: task `owner-3d-printers-equipment-1794069178464` completed once and posted task-start, handover and completion messages. The Creality K1 candidate remains unapproved in the LIVE research queue. The Research Again click changed its status to `needs_research` but did not create a task. Root cause: production `reviewGemmaCandidate()` called only the review RPC. Repair branch `fix/gemma-research-again-enqueue-20261107` now enqueues a new exact-product `uk_both` task through the existing owner enqueue RPC before updating review status. The branch also corrects the misleading `TEST_REVIEW_QUEUE` result label on the LIVE insert path. No DB schema/data or PC secrets changed. Cloudflare deployment and browser acceptance are pending.

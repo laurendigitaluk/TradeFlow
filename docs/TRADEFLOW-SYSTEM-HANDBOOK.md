@@ -3676,3 +3676,7 @@ Backend Operations Manual: `docs/TRADEFLOW-BACKEND-OPERATIONS-MANUAL.md`. Gemma 
 ## AI Agent Common Room architecture — current release boundary
 
 The LIVE Common Room table and security functions are installed. Dashboard/worker code is still on feature PR; deployment and PC round-trip tests remain pending. Do not treat message history as evidence approval or task dispatch.
+
+
+## Category-specific Gemma research sources — 7 November 2026
+LIVE `platform_research_sources` now includes seven additional 3D-printer sources, assigned only to `3d-printers-equipment`: Gumtree UK and SecondHand.org.uk (`used_uk` marketplaces); Uni3Dverse and 3DGBIRE (`used_uk` used/refurbished dealers); 123-3D, iDig3DPrinting and 3DFLO (`new_uk` retailers). Existing Creality UK, 3D Prima, 3DJake, Amazon UK and eBay UK assignments remain. This is a LIVE registry data change, not a schema change. Search coverage is not yet proven merely by enabling a source: worker route probing, exact-model matching, page extraction, GBP/condition/availability validation and review-queue handoff must be tested per source. Do not copy these category assignments into unrelated categories.

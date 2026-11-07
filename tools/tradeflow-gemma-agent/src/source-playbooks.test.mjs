@@ -135,6 +135,8 @@ test('Gemma extraction prompt retains ambiguous exact-model pages for ChatGPT re
   assert.match(prompt, /Do NOT omit a direct individual product\/listing page/i);
   assert.match(prompt, /machine-only and combo\/bundle offers separate/i);
   assert.match(prompt, /ChatGPT inspection only/i);
+  assert.match(prompt, /S1/);
+  assert.match(prompt, /Printer only/);
   assert.doesNotMatch(prompt, /If condition is ambiguous, omit the source/i);
 });
 

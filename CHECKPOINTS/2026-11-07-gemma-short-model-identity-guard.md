@@ -29,3 +29,32 @@ Production `matchesTaskModel` intentionally performs broad matching but checks o
 - Existing PR #278 remains open and unmerged for lane routing, parser compatibility and heartbeat/metrics work.
 - This change is submitted separately for review; CI must pass before it is considered verified.
 - Keep all evidence in `needs_research` until ChatGPT/owner review. No automatic approval or import.
+
+
+## Completed controlled run metrics (7 November 2026)
+
+The eight-subtask LIVE task completed at 21:38:26 UTC. The worker returned to idle; the queue lease was cleared. No duplicate task was created.
+
+| Metric | New lane | Used lane | Total |
+|---|---:|---:|---:|
+| Search results | 62 | 61 | 123 |
+| Product pages discovered | 42 | 41 | 83 |
+| Pages fetched with visible GBP | 30 | 21 | 51 |
+| Unique review captures staged | 30 | 6 | 36 |
+| Duplicate URL skips | 0 | 15 | 15 |
+| Gemma extraction calls | 16 | 11 | 27 |
+| Gemma batch failures | 14 | 6 | 20 |
+
+The 15 used-lane duplicate skips were confirmed from the stored task result: five Anycubic official-store pages, nine Gumtree Audi A1 car pages, and one Creality K1 Max official-store page. These were already captured by the new passes. They were not 15 unique useful listings lost; they demonstrate the confirmed new/used source-lane contamination that PR #278 addresses.
+
+The four structured queue observations all describe Audi A1 cars, not Bambu Lab A1 printers. The other 32 staged captures are raw fallback records. Every fetched page had visible GBP price mentions, but the 20 failed Gemma batches prevented reliable structured extraction for most pages.
+
+The 83 discovered versus 51 fetched page gap remains unclassified in the current production task result. Production handovers do not persist per-page fetch errors or post-fetch model-mismatch counts. PR #278 adds route and page-fetch telemetry; a future follow-up should also count post-fetch model-variant skips so this gap can be reconciled exactly.
+
+Elegoo Neptune 4 Pro produced five search results in each lane but zero eligible product pages, zero fetched pages and zero captures. Current production telemetry does not identify whether this was a source-route, page-eligibility or discovery failure.
+
+## CI and review
+- PR #279: https://github.com/laurendigitaluk/TradeFlow/pull/279
+- CI run 42416812188 passed: 24 tests, 24 passed, 0 failed.
+- PR #279 remains open and unmerged. PR #278 also remains open and unmerged; its latest Gemma Research Tests run 42412984353 passed.
+- Neither PR has been deployed to the Research PC. No LIVE review rows were approved or imported.

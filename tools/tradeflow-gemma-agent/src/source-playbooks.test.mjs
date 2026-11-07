@@ -73,3 +73,10 @@ test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product
   const wrapped = 'https://aax-eu-zaz.amazon.co.uk/x/c/token/https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin?keywords=Creality+K1';
   assert.equal(decodeSearchRedirect(wrapped), 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V/ref=sxin');
 });
+
+test('Shopify collection API fallback is enabled only on sources that declare support', () => {
+  assert.equal(getWebsiteInstructions(task.category_slug, '123-3d.co.uk').collectionApi, 'shopify');
+  assert.equal(getWebsiteInstructions(task.category_slug, '3dgbire.com').collectionApi, 'shopify');
+  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, undefined);
+  assert.equal(getWebsiteInstructions(task.category_slug, 'uni3dverse.co.uk').collectionApi, undefined);
+});

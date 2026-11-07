@@ -4312,3 +4312,8 @@ LIVE review found that the short model identifier `A1` allowed Audi A1 car pages
 - No merge, production deployment, Research PC update or worker restart was performed.
 - The LIVE worker remains on the existing active task. At 22:46 UTC it was still in the fourth extraction batch of the first Anycubic Kobra S1 / uk_new subtask, with a renewing heartbeat/lease. Batch 3 had failed JSON parsing and its two pages were retained as raw fallback captures. No completed subtask handover or queue rows from this active task had yet been committed.
 - All review captures remain unapproved and unimported. No TEST/LIVE crossover or secret changes occurred.
+
+
+## 7 November 2026 — canonical source URL de-duplication
+
+The LIVE source registry and site playbook both carry the verified 3DFLO/iDig category URLs. To avoid probing the same page twice through bare-host and www redirects, the playbook now stores the verified canonical www URLs and buildWebsiteSearchRoutes accepts absolute routes as well as relative paths. The same canonical-host treatment is used for 123-3D's new/refurbished collections. Regression coverage verifies that a configured search_url_template and its playbook route collapse to one URL. This remains confined to the 3D-printer source playbook; no other category route logic is changed.

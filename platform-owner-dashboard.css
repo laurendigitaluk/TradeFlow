@@ -24,3 +24,28 @@
 .cms-collapsible{display:block;border:1px solid #dce2e7;border-radius:8px;background:#fff;margin:9px 0;padding:0 12px}.cms-collapsible>summary{cursor:pointer;list-style:none;padding:12px 2px;font-weight:650;color:#25313b}.cms-collapsible>summary::-webkit-details-marker{display:none}.cms-collapsible>summary:after{content:'＋';float:right;color:#6b7782}.cms-collapsible[open]>summary:after{content:'−'}.cms-group-content{padding:0 0 12px}.cms-array-item{margin:8px 0 8px 10px;background:#f8fafb}.cms-array-item>.cms-array-head{display:flex;justify-content:flex-end;padding:0 0 8px}.cms-add-inline{font-size:.78rem;color:#6b7782;font-weight:400;margin-left:8px}.cms-add{margin:0 0 10px;padding:6px 10px}.gemma-source-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px;padding-top:14px;border-top:1px solid #e5e9ed}.gemma-source-form h4,.gemma-source-form button,.gemma-source-form span{grid-column:1/-1}.gemma-source-form label{display:flex;flex-direction:column;gap:5px;font-size:.85rem;font-weight:600}.gemma-source-form input,.gemma-source-form select{padding:9px;border:1px solid #cbd2d9;border-radius:6px;min-width:0}.gemma-manage-sources{margin-top:12px;width:100%;padding:9px;border:1px solid #d5dce2;border-radius:6px;background:#f7f9fa;cursor:pointer;font-weight:650}.gemma-source-toggle{white-space:nowrap}.gemma-universal-source{display:inline-block;padding:4px 8px;background:#eef3f7;border-radius:12px;font-size:.78rem}@media(max-width:650px){.gemma-source-form{grid-template-columns:1fr}}
 
 .gemma-batch-toolbar,.gemma-batch-submit{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0}.gemma-batch-toolbar button{border:1px solid #cbd5df;background:#fff;border-radius:7px;padding:8px 11px;cursor:pointer}.gemma-batch-submit{padding-top:14px;border-top:1px solid #e1e6eb}.gemma-batch-submit button{border:0;border-radius:7px;background:#c65b22;color:#fff;font-weight:750;padding:11px 16px;cursor:pointer}.gemma-batch-submit button:disabled{opacity:.55;cursor:wait}#gemma-product-list table{min-width:650px}#gemma-product-list td:first-child,#gemma-product-list th:first-child{width:55px}#gemma-product-list td:first-child input{width:18px;height:18px}#gemma-product-list td small{display:block;color:#65707a;margin-top:4px;font-size:.78rem}
+
+/* Shared AI Agent Common Room */
+.ai-room-toolbar,.ai-room-compose-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.ai-room-toolbar label,.ai-room-compose label{display:grid;gap:6px;color:#4d5964;font-size:.84rem;font-weight:650}
+.ai-room-toolbar input,.ai-room-toolbar select,.ai-room-compose input,.ai-room-compose select,.ai-room-compose textarea{width:100%;box-sizing:border-box;border:1px solid #ccd4dc;border-radius:7px;padding:10px;font:inherit;background:#fff;color:#17202a}
+.ai-room-feed{display:grid;gap:10px;max-height:680px;overflow:auto;padding:5px 2px}
+.ai-room-message{background:#fbfcfd;border:1px solid #e0e5ea;border-left:4px solid #9ba8b3;border-radius:9px;padding:14px 16px;min-width:0}
+.ai-room-message.instruction{border-left-color:#c65b22}
+.ai-room-message.handover{border-left-color:#4d779b}
+.ai-room-message.learning_note{border-left-color:#7e6b9b}
+.ai-room-message.finding{border-left-color:#638a70}
+.ai-room-message header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.ai-room-message header>div{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ai-room-message header strong{color:#17202a}
+.ai-room-message time,.ai-room-message small{font-size:.75rem;color:#77818a}
+.ai-room-badge{font-size:.7rem;font-weight:750;background:#edf1f4;color:#3f4c57;border-radius:20px;padding:4px 8px}
+.ai-room-meta{font-size:.76rem;color:#65707a;margin-top:6px}
+.ai-room-message p{color:#394650;font-size:.9rem;line-height:1.6;white-space:normal;margin:10px 0 0;overflow-wrap:anywhere}
+.ai-room-compose{border-top:1px solid #e2e6ea;margin-top:20px;padding-top:18px}
+.ai-room-compose h3{margin:0 0 12px}
+.ai-room-compose>label{margin-top:12px}
+.ai-room-compose-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+.ai-room-compose-foot button{border:0;border-radius:7px;background:#c65b22;color:#fff;padding:11px 16px;font-weight:750;cursor:pointer}
+.ai-room-compose-foot button:disabled{opacity:.55;cursor:wait}
+@media(max-width:760px){.ai-room-toolbar,.ai-room-compose-grid{grid-template-columns:1fr}.ai-room-message header{display:block}.ai-room-message time{display:block;margin-top:5px}}

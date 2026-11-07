@@ -253,7 +253,7 @@ Production now contains all-route probing, bounded search/collection pagination,
 - Branch: feature/gemma-3d-printer-lanes-metrics-20261107.
 - Changes: research-type-aware source lane filtering in the category web-search allow-list, host validator and approved-source probe; 3D-printer search-result default increased from 18 to 30 (hard maximum 30, configurable downward); GBP/HTML-entity price extraction; explicit challenge-page skip/report; recognised JSON-envelope parser with top-level shape diagnostics; per-batch Ollama progress; periodic worker heartbeat telemetry during long model calls; route/page/extraction metrics in task results, telemetry and Common Room handovers.
 - Regression tests cover new/used/both lane routing, category-scoped search and host validation, 3D-only search limit, HTML pound entities, challenge routes and common Gemma JSON wrappers.
-- GitHub Actions Gemma Research Tests run 42411454578 passed. Lane/parser test runs 42411512585, 42411518602, 42411597295 and 42411603001 passed. Run 42411615477 is the latest telemetry/handover change and must be checked before declaring CI complete.
+- GitHub Actions Gemma Research Tests runs 42411454578, 42411512585, 42411518602, 42411597295, 42411603001, 42411615477, 42411650325, 42411660316, 42411686018, 42411719991, 42411824125 and 42411844905 all passed syntax and regression tests.
 - No Supabase schema, source registry, catalogue or evidence changes are included. The Research PC has not been updated from this branch. Do not merge or deploy without explicit owner approval and a successful controlled acceptance test.
 
 ### Post-merge acceptance plan (3D branch only)

@@ -1,49 +1,41 @@
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
 
 Updated: 7 November 2026
-Status: LIVE control plane and dashboard task/review UI implemented on feature branch; Research PC rollout and end-to-end acceptance pending.
 
 ## Operating boundary
 - LIVE project gxsrajtqzdjvmceqcpgv is the only authoritative research task and evidence-review queue.
-- TEST project nnsshnfkjcflucjrftzi remains for software development, migrations and regression fixtures. Existing TEST records remain untouched.
+- TEST project nnsshnfkjcflucjrftzi remains for software development, migrations and regression fixtures. Existing TEST data remains untouched.
 - Gemma discovers candidate UK market evidence. Owner/ChatGPT verifies; no autonomous approval or master catalogue/evidence write is permitted.
 
-## User action and entry points
-- Platform Owner dashboard: platform-owner-dashboard.html → Gemma Control Centre.
-- Task submission: platform-owner-dashboard.js → platform_owner_enqueue_ai_agent_task.
-- Task list: platform_owner_list_ai_agent_tasks.
-- Candidate review list: platform_owner_list_catalogue_research_queue.
-- Candidate decision: platform_owner_review_catalogue_research_item.
-- Research PC worker: tools/tradeflow-gemma-agent/src/task-worker.mjs.
-- Research and evidence extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
-- Telemetry: tools/tradeflow-gemma-agent/src/agent-telemetry.mjs → platform_ai_agent_report_event.
+## Dashboard entry points
+- Platform Owner dashboard: platform-owner-dashboard.html.
+- Category research team cards: platform-owner-dashboard.js → renderGemmaResearcherCards.
+- Category source manager: loadGemmaSources / addGemmaResearchSource.
+- Owner source RPCs: platform_owner_list_research_sources(text), platform_owner_add_research_source(text,text,text,text,text,text), platform_owner_set_research_source_category(uuid,text,boolean).
+- How It Works / Examples editor: platform-public-pages-editor.js → node/render/save.
+- Platform AI provider settings: platform-owner-dashboard.html / platform-owner-dashboard.js → platform_owner_get_ai_settings and platform_owner_update_ai_settings.
 
-## Data path
-1. Platform owner submits a task through authenticated dashboard RPC.
-2. LIVE platform_ai_agent_tasks stores the task; only service-role worker RPCs can claim, heartbeat, complete or fail it.
-3. Research PC worker polls LIVE. It reports worker/task progress to LIVE telemetry.
-4. Agent reads enabled platform_research_sources from LIVE. Category scope and source host checks remain fail-closed.
-5. Candidate evidence is validated for exact product, direct UK source URL, visible GBP price, condition and evidence type.
-6. Candidate is deduplicated and staged in LIVE platform_catalogue_research_queue.
-7. Owner reviews candidate. Approval in this queue is a review decision only; it does not itself write shared_market_evidence or create a catalogue product.
+## Category and source model
+- Canonical LIVE 3D category is 3d-printers-equipment / “3D Printers & Equipment”.
+- Two existing telemetry agent keys (3d-printers, 3d-printers-equipment) are grouped into one UI team card. Both records and their history are preserved.
+- Pokémon master category already exists as pokemon-trading-cards. It is displayed as a reserved category but has no source assignment or research agent linkage.
+- Category sources live in platform_research_sources.category_slugs. * means universal; current Amazon UK and eBay UK remain universal.
+- Owner source RPCs validate active platform membership and active category. Universal sources are read-only from category-specific toggles.
+- Research worker continues to filter enabled sources by category slug and manufacturer; no matching approved sources means fail closed.
 
-## Supabase tables, functions and security
-- LIVE tables: platform_ai_agent_tasks, platform_catalogue_research_queue, platform_ai_agent_status, platform_ai_agent_activity, platform_research_sources, catalogue_master_products, shared_market_evidence.
-- Queue tables have RLS enabled; direct public/anon/authenticated table privileges revoked. Worker task RPCs are service-role-only.
-- Owner RPCs check auth.uid() against active platform_memberships.
-- No browser service-role key. Existing Research PC local environment is still holding TEST and LIVE credentials; do not copy secrets into dashboard or expose them in browser code.
+## How It Works editor
+- Nested objects and arrays in public-page draft JSON are rendered as collapsed details sections, expanded individually by the owner.
+- Save/publish RPCs and existing draft/published workflow remain unchanged.
 
-## Failure points and diagnostics
-- No fresh worker heartbeat: Research PC has not installed/started the current worker or LIVE URL/key is invalid.
-- Task remains queued: worker polling/credentials/network or LIVE claim RPC issue.
-- Task failed: inspect platform_ai_agent_tasks.last_error and matching LIVE platform_ai_agent_activity.
-- No candidate rows: inspect source registry category_slugs, search provider output, direct-page eligibility, visible GBP price and extraction validation events.
-- Queue candidate duplicate: dedupe_key unique constraint intentionally suppresses duplicate source/evidence rows.
-- Category absent in LIVE master category registry: do not enqueue that category until the master data discrepancy is resolved.
+## AI provider boundary
+- Subscribers cannot supply their own AI provider.
+- Owner dashboard no longer exposes a subscriber-provider option. Its save call always sends p_subscriber_provider_enabled=false.
+- LIVE update RPC already rejects subscriber-supplied providers and persists false.
 
-## Known limitations / next acceptance gates
-- Research PC has not yet been updated/restarted with this branch.
-- Dashboard browser sign-in, task submit, worker claim, heartbeat, completion and candidate handoff must be tested as one end-to-end run.
-- The first controlled task should be Creality K1. Confirm only 3D-printer-approved sources plus explicit universal Amazon UK/eBay UK are used; exclude gaming, drone and camera sources.
-- Review queue approval is not an evidence import. A separately audited trusted server-side import workflow is required before shared_market_evidence writes.
-- No production deployment claim until PR merge and the production Cloudflare Worker commit/runtime are independently verified.
+## Verification and known limitations
+- LIVE category/source table and telemetry inspected before change.
+- LIVE owner source RPC migration applied; verify RPC signatures and category source data after deployment.
+- The browser owner dashboard must be refreshed after the Cloudflare static asset deployment.
+- Pokémon has no category-specific sources and is not to be dispatched.
+- LIVE laptops agent status exists but its master category was previously missing; don't attach laptop sources until master category reconciliation.
+- Full browser acceptance for adding/toggling a source, collapsible editor interactions and public publish workflow remains required.

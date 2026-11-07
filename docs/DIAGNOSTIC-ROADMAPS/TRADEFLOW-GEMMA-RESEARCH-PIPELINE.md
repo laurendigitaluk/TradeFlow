@@ -102,3 +102,23 @@ The final LIVE platform_ai_agent_list_messages and platform_ai_agent_post_messag
  
 ## Queue task validation refinement — 7 November 2026
 The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.
+
+
+## Research Again retry path — 7 November 2026
+
+### User action and front-end
+- Entry: Owner Dashboard → Gemma Control Centre → Research queue → **Research again**.
+- Front end: `platform-owner-dashboard.js` → `loadGemmaQueue()` stores the loaded LIVE candidate rows in `window.gemmaQueueItems`; `reviewGemmaCandidate(id, 'needs_research')` resolves the exact candidate and builds one product-level task.
+- Task fields: `category_slug`, optional `branch_slug`, `agent_key`, `manufacturer`, `model`, `package_key`, `package_name`, `research_type: uk_both`, `search_query`.
+
+### Dispatch and data flow
+`Research again` → authenticated `platform_owner_enqueue_ai_agent_task(p_task_key, p_payload, p_priority)` → `platform_ai_agent_tasks` (LIVE) → `platform_ai_agent_claim_task(p_worker_id, p_lease_seconds)` → Research PC `task-worker.mjs` → `normaliseProductResearchTasks()` → `runTask()` → `platform_catalogue_research_queue` (LIVE) → owner/ChatGPT review.
+
+The UI must enqueue first. Only after enqueue succeeds does it call `platform_owner_review_catalogue_research_item(p_id, 'needs_research', p_notes)`. If enqueue fails, the candidate status is left unchanged. The new task key is unique per retry; the existing candidate and prior evidence are retained. No direct browser writes to task tables and no service-role key in the dashboard.
+
+### Failure found and repair
+- LIVE candidate `b94e2225-c07b-4001-8dfa-cd045bf962fd` (Creality K1) was changed to `needs_research` at 16:38:30 UTC.
+- The old production handler called only `platform_owner_review_catalogue_research_item`; the task queue had no new task row. The brief button flash was therefore consistent with the handler's actual behaviour.
+- The correction is on `fix/gemma-research-again-enqueue-20261107`. It also retains the owner review gate and requests `uk_both` so both new and used evidence can be sought.
+- Production worker remains unchanged; it already polls LIVE and claims tasks. One controlled task was claimed/completed and a handover/completion message was confirmed in `platform_ai_agent_messages`.
+- Cloudflare LIVE deployment and browser acceptance of the corrected button remain pending. Do not claim the fix is live until the dashboard asset is deployed and a new task appears after clicking Research again.

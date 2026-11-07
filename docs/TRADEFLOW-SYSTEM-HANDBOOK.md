@@ -3556,3 +3556,14 @@ Baseline read-only counts: LIVE 28,387 active master products / 28,363 visible; 
 shared_market_evidence requires server-side trusted writes; unique key is (source_name, source_record_key). New service must keep service-role credentials off the PC, use a dedicated authenticated server-side API, write each environment independently, and verify each write. Used evidence remains reference-only and cannot alter automatic buying valuations. UK evidence GBP only; preserve exact package/model, source URL, observed_at, availability, condition and price-basis notes. Ambiguous matches go to review.
 
 A Developer Diagnostic Roadmap was created at docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md (commit b523fc661e1fa6e07531a1a46795a325108f940a). This is architecture/preflight only: no schema, RLS, Edge Function, application, valuation, tenant, customer, order, payment, Stripe, Worker or deployment changes have been made.
+
+
+## Gemma Control Centre — 7 November 2026
+The Platform Owner dashboard has a proposed Gemma Control Centre section on branch `feature/gemma-owner-control-centre-20261107`.
+
+- UI files: `platform-owner-dashboard.html`, `platform-owner-dashboard.js`, `platform-owner-dashboard.css`.
+- It reads LIVE telemetry through `platform_owner_get_ai_agent_control_centre(integer)` and displays agents, heartbeat freshness, task/candidate/evidence totals and activity events.
+- The RPC checks for an active `platform_memberships` record; authenticated can execute, anon cannot.
+- This first increment is deliberately read-only. LIVE has agent status/activity tables and the owner telemetry RPC, but does not have the task queue table or worker queue RPCs. TEST has those objects and the current Research PC worker polls TEST. Do not add task submission/pause controls to the LIVE dashboard until the worker control plane is migrated and verified.
+- No database or production deployment changes were made in this increment. Branch is pending review.
+

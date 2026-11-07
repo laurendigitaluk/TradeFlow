@@ -4156,3 +4156,7 @@ The LIVE Common Room migration is applied and its table/RPC grants verified. The
  
 ## Research PC worker release instructions — 7 November 2026
 The merged production worker now includes the Common Room prompt context and task normalisation module. The production import dependency has been added and four built-in Node tests cover task filtering/deduplication. Use tools/tradeflow-gemma-agent/README.md and Update-TradeFlow-Gemma.ps1 to update the Research PC. Preserve the existing private .env and explicitly set TRADEFLOW_GEMMA_ENV_FILE to its current path. The updater runs Node syntax checks and task tests before copying source. Do not claim worker availability until it is run on the PC and a controlled Common Room round-trip succeeds.
+
+ 
+## Queue task validation refinement — 7 November 2026
+The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.

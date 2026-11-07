@@ -74,3 +74,7 @@ PR #267 merged to production as 45049f5c4a1b131d95b701b2603fe0a351c392bd. Post-m
 Added tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 and README.md. The updater downloads only reviewed source/test files, validates the supplied private .env against approved TEST/LIVE project URLs, runs syntax checks and tests before installation, backs up existing source files and replaces only the dedicated src folder. It never prints, copies, backs up or overwrites the .env and sets TRADEFLOW_GEMMA_ENV_FILE to the exact supplied path. It supports first install into a separate dedicated TradeFlow folder.
 
 The updater has not been run on the Research PC. Its real path, Ollama service, worker startup and Common Room round-trip remain unverified. No Cloudflare deployment was made; this repo has no GitHub Actions deployment workflow and no Cloudflare connector is available in the current tool connections.
+
+ 
+## Queue task validation refinement — 7 November 2026
+The task normaliser now rejects incomplete payload rows before calling runTask. It requires category_slug, manufacturer, model, package_key, package_name, search_query and a research_type of uk_new, uk_used or uk_both. The Owner Dashboard's production task builder supplies these fields. Tests cover incomplete payload rejection as well as valid rows, malformed rows, duplicate removal and preservation of distinct task definitions. Four tests pass.

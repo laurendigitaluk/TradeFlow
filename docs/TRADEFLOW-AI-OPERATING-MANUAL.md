@@ -4788,3 +4788,23 @@ Existing Sony UK, Wex Photo Video and CVP UK sources remain. NEEWER UK and Atomo
 Verified source counts after update: Audio 20; Audio & Video 19; Professional Audio 17; Video Production Equipment 14; Camera Accessories 23; Phone Photography 4. Manufacturer pages without explicit GBP prices are identity/specification sources only; price evidence must come from UK GBP retailer listings. Where ex-VAT and inc-VAT are both shown, use inc-VAT for the consumer price. Distinguish new, used, nearly-new, B-stock and ex-demo.
 
 No product/evidence rows changed, no research tasks queued and no worker restarted. LIVE remains authoritative; TEST remains software/regression only.
+
+
+## 8 November 2026 — LIVE Cameras source coverage expansion
+
+LIVE remains the authoritative shared product/evidence catalogue; TEST was not modified. Cameras contains 722 active products, of which 305 currently have no active market-evidence row. The enabled category-scoped source count is now 21.
+
+Added seven official manufacturer sources to LIVE platform_research_sources, each explicitly scoped to cameras (not universal):
+- Nikon UK Official — nikon.co.uk, https://www.nikon.co.uk/en_GB/product/cameras/mirrorless.
+- Canon UK Store — canon.co.uk, https://www.canon.co.uk/store/cameras/.
+- FUJIFILM UK Official eShop — eshop.fujifilm-x.com, https://eshop.fujifilm-x.com/uk/cameras.html.
+- Panasonic UK Store — uk.store.eu.panasonic.com, https://uk.store.eu.panasonic.com/cameras-and-camcorders.
+- OM SYSTEM UK Official — explore.omsystem.com, https://explore.omsystem.com/gb/en/cameras/om-d.
+- Polaroid UK Official Store — polaroid.com, https://www.polaroid.com/en_gb/cameras.
+- Z CAM Official — z-cam.com, https://www.z-cam.com/products/professional-cameras/.
+
+Official manufacturer pages are authoritative for model identity, exact configuration, specifications and release/discontinuation status. Capture prices only when a visible UK GBP offer is present. Z CAM is a global specification source, not a UK price source. For retailer prices, use approved UK product pages and select the inc-VAT GBP consumer amount where both ex-VAT and inc-VAT are shown. Keep camera bodies, lens kits, instant-camera sets, film and accessories distinct; do not infer bundle contents or collapse package variants.
+
+Existing Sony UK, Camera Price Buster (discovery only), Jessops, Park Cameras, Production Gear UK, Wex Photo Video, Clifton Cameras, Harrison Cameras, Castle Cameras, MPB UK, London Camera Exchange, Ffordes, Used Lens and CeX UK source assignments remain unchanged.
+
+Post-write verification: 7 source rows inserted; 21 enabled sources scoped to Cameras; 722 active camera products; 305 active products still without active evidence. No product or evidence rows changed, no research task was queued, no worker was restarted, and TEST was not modified. Source coverage is not evidence coverage; this update does not claim that the 305 products now have prices.

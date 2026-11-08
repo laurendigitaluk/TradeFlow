@@ -1656,9 +1656,9 @@ The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIV
 
 **8 November LIVE processing**
 - 65 3D-printer rows reviewed.
-- 9 linked to existing LIVE master products and imported into shared_market_evidence.
-- 56 marked processed/rejected with explanatory notes; raw page capture remains stored.
-- Verified queue status counts: imported 9, rejected 56; no remaining open rows for 3d-printers-equipment.
+- 28 linked to existing LIVE master products and imported into shared_market_evidence.
+- 37 marked processed/rejected with explanatory notes; raw page capture remains stored.
+- Verified queue status counts: imported 28, rejected 37; no remaining open rows for 3d-printers-equipment.
 - The RPC supports imported/rejected views for completed history.
 
 **Category-specific source routing**

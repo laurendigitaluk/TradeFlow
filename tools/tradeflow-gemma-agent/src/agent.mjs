@@ -1104,10 +1104,23 @@ export function buildCategoryScopedSearchQuery(query, sources, task) {
   return String(query || '').trim() + ' (' + domains.map(domain => 'site:' + domain).join(' OR ') + ')';
 }
 
-async function loadApprovedResearchSources(env, onProgress) {
+export function buildApprovedResearchSourcesPath(task) {
+  const category = String(task?.category_slug || '').trim().toLowerCase();
+  if (!/^[a-z0-9-]+$/.test(category)) {
+    throw new Error('A valid category_slug is required to load approved research sources');
+  }
+  // PostgREST array overlap selects only this category plus explicitly universal sources.
+  // This prevents every agent from downloading and logging the entire cross-category registry.
+  const categoryFilter = encodeURIComponent('ov.{' + category + ',*}');
+  return 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority,category_slugs'
+    + '&enabled=eq.true&country_code=eq.GB&category_slugs=' + categoryFilter
+    + '&order=priority.asc&limit=100';
+}
+
+async function loadApprovedResearchSources(env, task, onProgress) {
   try {
     const control = target(resolveControlPlane(env).name, env);
-    return await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority,category_slugs&enabled=eq.true&order=priority.asc&limit=100');
+    return await db(control, buildApprovedResearchSourcesPath(task));
   } catch (error) {
     await onProgress?.({ stage: 'approved_source_registry_error', message: 'Approved source registry could not be read: ' + error.message });
     return [];
@@ -1115,7 +1128,7 @@ async function loadApprovedResearchSources(env, onProgress) {
 }
 
 async function probeApprovedResearchSources(task, env, onProgress, sourceRows = null) {
-  const sources = Array.isArray(sourceRows) ? sourceRows : await loadApprovedResearchSources(env, onProgress);
+  const sources = Array.isArray(sourceRows) ? sourceRows : await loadApprovedResearchSources(env, task, onProgress);
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {

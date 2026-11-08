@@ -599,3 +599,11 @@ A focused code change is on branch `fix/creality-dynamic-printer-discovery-20261
 ### Validation status
 
 Automated CI and the next single controlled TEST run are still required. Do not claim the repair is complete until CI passes and the TEST worker captures the individual product page. Do not approve/import the capture. LIVE remains untouched.
+
+
+### 8 November 2026 validation update
+
+- PR #305 merged into `production` after the first CI run exposed two stale/missing test assertions; both were corrected, and the rerun passed all 69 tests (67 in the main Gemma/playbook suite? CI reports 69 tests total for the full command; zero failures).
+- Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
+- The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
+- No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.

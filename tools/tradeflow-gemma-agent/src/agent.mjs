@@ -597,33 +597,61 @@ export function buildExtractionPrompt(task, pages) {
   return instructions.join('\n');
 }
 
-function fallbackPageCapture(task, source, reason) {
+export function fallbackPageCapture(task, source, reason) {
   const host = new URL(source.url).hostname.replace(/^www\./, '');
+  const prices = extractVisibleGbpPriceMentions(source.text);
+  const printerCapture = is3dPrinterResearchTask(task);
+  const conditions = printerCapture
+    ? extractObservationSnippets(source.text, /\b(?:new(?:\s+and\s+unused)?|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened(?:\s*[-–]\s*never\s*used)?|sealed|grade\s*[a-f])\b/gi, 8)
+    : [];
+  const availabilityNotes = printerCapture
+    ? extractObservationSnippets(source.text, /\b(?:in stock|out of stock|sold out|currently sold out|only\s+\d+\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery)\b/gi, 8)
+    : [];
+  const packageNotes = printerCapture
+    ? extractObservationSnippets(source.text, /\b(?:combo|\d+[- ]?colou?rs?|filament|machine only|standard printer|without\s+(?:ace|ams|cfs)|include machine|bundle|printer only)\b/gi, 10)
+    : [];
+  const locationNotes = printerCapture
+    ? extractObservationSnippets(source.text, /\b(?:UK|United Kingdom|GB VAT|VAT included|local warehouse|free UK shipping|UK delivery)\b/gi, 5)
+    : [];
+  const uniquePrice = prices.length === 1 ? prices[0].amount : null;
+  const title = source.title || '';
+  const productIdentity = printerCapture ? [title, String(source.text || '').slice(0, 500)].filter(Boolean).join(' — ') : '';
   return {
     source_id: source.source_id,
-    page_title: source.title || '',
-    product_identity_text: '',
-    package_or_variant_text: '',
+    page_title: title,
+    product_identity_text: productIdentity,
+    package_or_variant_text: packageNotes.join(' | '),
     seller_text: host,
-    price_mentions: extractVisibleGbpPriceMentions(source.text).map(item => item.display),
-    item_condition_text: '',
-    availability_text: '',
-    location_text: '',
+    price_mentions: prices.map(item => item.display),
+    price_contexts: prices.slice(0, 12).map(item => item.context),
+    item_condition_text: conditions.join(' | '),
+    availability_text: availabilityNotes.join(' | '),
+    location_text: locationNotes.join(' | '),
     identifiers_text: '',
-    match_observation: matchesTaskModel(source.title || '', source.url, task) ? 'Title or URL matches the requested model; page content requires ChatGPT inspection.' : 'Page was fetched from an approved source; exact product match requires ChatGPT inspection.',
+    match_observation: matchesTaskModel(title, source.url, task) ? 'Title or URL matches the requested model; exact package and offer require ChatGPT inspection.' : 'Page was fetched from an approved source; exact product identity requires ChatGPT inspection.',
     uncertainty_and_conflicts: reason,
-    notes: 'RAW PAGE CAPTURE — retained for ChatGPT review; Gemma did not make an evidence suitability decision.',
+    notes: 'RAW PAGE OBSERVATIONS — retained for ChatGPT review. Gemma extraction did not complete; price, package, condition and availability snippets were collected from the fetched page without an evidence suitability decision.',
     review_classification: 'unverified_capture',
     evidence_type: null,
-    observed_price: null,
-    price_currency: null,
+    observed_price: uniquePrice,
+    price_currency: prices.length ? 'GBP' : null,
     item_condition: null,
-    availability: null,
+    availability: availabilityNotes.join(' | ') || null,
     source_name: host,
     source_url: source.url,
     sales_channel: host,
     source_excerpt: source.text.slice(0, 10000),
-    page_capture: { title: source.title || '', url: source.url, gbp_price_mentions: extractVisibleGbpPriceMentions(source.text), captured_text: source.text.slice(0, 10000) }
+    page_capture: {
+      title, url: source.url, gbp_price_mentions: prices,
+      captured_text: source.text.slice(0, 10000),
+      deterministic_observations: printerCapture ? {
+        product_identity_text: productIdentity,
+        package_or_variant_text: packageNotes,
+        condition_text: conditions,
+        availability_text: availabilityNotes,
+        location_text: locationNotes
+      } : null
+    }
   };
 }
 

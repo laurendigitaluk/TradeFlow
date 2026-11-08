@@ -1,3 +1,9 @@
+## 8 November 2026 — PR #300 CI passed; local schema validation is next
+
+PR #300 passed GitHub Actions run #219 at head `f8fe6f78ebf77c971526d650293a7f0d22951207`. All Gemma research tests and syntax checks passed. It remains draft/open and is not deployed.
+
+The proposed updater supports explicit `-SourceBranch`, defaulting to `production`, so the Research PC can install the draft branch for a controlled local Ollama compatibility check. Existing backup, test, TEST/LIVE target validation and private .env preservation remain. Use the dedicated TradeFlow Gemma install folder and existing private .env path; do not start the worker until the local tests and model response check pass. Do not merge/deploy without owner approval.
+
 ## 8 November 2026 — Gemma 3D-printer LIVE benchmark and reliability follow-up
 
 The two-page batching change is runtime-verified: LIVE task `owner-3d-printers-speed-benchmark-20261108-1645` took 25m 17s versus 70m 49s previously (64.3% faster). However, 5 of 7 Gemma calls failed JSON extraction. Eleven fetched pages were retained for ChatGPT review, with deterministic GBP observations preserved; none was approved or imported. Gemma inference accounts for about 92% of measured subtask time, so search-route changes are not the next optimisation.

@@ -1658,3 +1658,31 @@ The correction is in `platform-owner-dashboard.js` and migration `20261108223000
 LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
 
 The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests workflow and was merged to production (merge commit c62bc4b47a64a2de1dadb50106ce4b6dae150e3d), and the migration was applied to TradeFlow LIVE. Both RPC signatures and authenticated execute grants were verified. Cloudflare Worker/static asset deployment and browser verification remain outstanding. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.
+
+
+## 8 November 2026 — Gaming category data flow and parity
+
+**Category slug:** `gaming-consoles-accessories`
+
+**Verified LIVE and TEST state:** 285 total product rows / 284 active products; 411 active evidence rows (246 UK-new, 165 UK-used); 20 branches; 24 manufacturers; 12 enabled category-assigned sources; zero open queue rows; zero active gaming tasks. All 285 product rows and all 411 active evidence rows match across the two environments. One inactive Xbox Series X Digital historical evidence record remains in TEST only and is not copied to LIVE.
+
+**Tables**
+- `public.catalogue_master_products`: canonical products, package keys, branch/category, active/customer visibility.
+- `public.catalogue_master_product_package_aliases`: alternate package names; “Single Charging Grip” maps to canonical Nintendo Switch 2 Joy-Con 2 Charging Grip.
+- `public.shared_market_evidence`: UK-new and UK-used observations linked by `master_product_id`; duplicate observations remain as inactive history, not deleted.
+- `public.platform_catalogue_research_queue`: raw Gemma page captures and ChatGPT review status.
+- `public.platform_research_sources`: enabled source registry; `category_slugs` controls which specialist can use each source.
+- `public.platform_ai_agent_tasks`: queued/running/completed/failed task history.
+
+**Research worker**
+- `tools/tradeflow-gemma-agent/src/agent.mjs`: category/manufacturer/lane filtering, approved source loading, page probing and raw capture.
+- `tools/tradeflow-gemma-agent/src/task-worker.mjs`: Research PC queue worker.
+- `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1`: validated Research PC source updater. It preserves the private .env, validates approved TEST/LIVE project URLs, backs up existing files and runs syntax/tests before installation.
+- `tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs`: verifies category-specific source query, universal UK marketplaces and fail-closed category validation.
+- GitHub workflow `.github/workflows/gemma-research-tests.yml` runs source-selection tests.
+
+**Source routing repair**
+- Current production loader fetches the entire enabled registry globally, then filters category afterwards.
+- PR #310 changes the PostgREST query to category-array overlap plus universal `*` sources, `enabled=true` and `country_code=GB`.
+- Only Amazon UK and eBay UK are explicitly universal; Vinted has no category assignment and US sources are excluded.
+- Do not add new manufacturer source rows until the new loader is installed on the Research PC. Test with one gaming task in TEST, inspect loaded sources and evidence, then use LIVE.

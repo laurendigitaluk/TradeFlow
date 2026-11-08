@@ -238,7 +238,12 @@ export function matchesTaskModel(title, url, task = {}) {
   try { const parsed = new URL(urlIdentity); urlIdentity = parsed.hostname + ' ' + decodeURIComponent(parsed.pathname); } catch { /* Keep plain URL text for non-URL identifiers. */ }
   // Ignore query strings: search terms and tracking parameters are not product identity.
   const titleIdentity = String(title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  const pathIdentity = urlIdentity.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  // Retailer slugs sometimes concatenate bundle labels with the model (for example
+  // essential-combok1-max-hyper-pla-2). Restore the boundary before token matching.
+  const pathIdentity = urlIdentity.toLowerCase()
+    .replace(/combo(?=[a-z0-9])/g, 'combo ')
+    .replace(/(?:^|[^a-z0-9])(?:ams|ace|cfs)(?=[a-z0-9])/g, match => match + ' ')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
   const identity = ' ' + (titleIdentity + ' ' + pathIdentity).trim() + ' ';
   if (!identity.includes(' ' + model + ' ')) return false;
 

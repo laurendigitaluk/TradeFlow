@@ -843,8 +843,40 @@ export async function extractBatch(task, pages, env, onProgress) {
         failures.push({ source_ids: batch.map(item => item.source_id), error: error.message });
         await onProgress?.({
           stage: 'extraction_batch_failed', checked: batchIndex + 1, total: batches.length,
-          source: batch[0]?.url, message: 'Gemma extraction batch ' + (batchIndex + 1) + ' failed; raw page captures will be retained: ' + error.message
+          source: batch[0]?.url, message: 'Gemma extraction batch ' + (batchIndex + 1) + ' failed; attempting isolated single-page recovery: ' + error.message
         });
+        // A malformed/truncated two-page response must not force both pages to raw fallback.
+        // Retry each page independently with a shorter excerpt and smaller output budget.
+        if (is3dPrinterResearchTask(task) && batch.length > 1) {
+          for (const source of batch) {
+            try {
+              const retrySource = { ...source, text: buildDeepPageExcerpt(source.text, task, 1600) };
+              const retryResponse = await fetch(base + '/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  model, stream: false, format: buildGemmaFindingSchema(1), keep_alive: '10m',
+                  options: { ...ollamaOptions(env), num_predict: 1024 },
+                  messages: [{ role: 'user', content: buildExtractionPrompt(task, [retrySource]) }]
+                }),
+                signal: AbortSignal.timeout(timeoutMs)
+              });
+              const retryRaw = await retryResponse.text();
+              if (!retryResponse.ok) throw new Error('Ollama HTTP ' + retryResponse.status + ': ' + retryRaw.slice(0, 200));
+              const retryResult = JSON.parse(retryRaw);
+              if (!retryResult.message?.content) throw new Error('Ollama returned no retry content');
+              if (retryResult.done_reason === 'length') throw new Error('Single-page retry reached output token limit');
+              const retryParsed = JSON.parse(retryResult.message.content);
+              const retryRows = extractGemmaFindingRows(retryParsed);
+              if (!retryRows || retryRows.length !== 1 || retryRows[0]?.source_id !== source.source_id) {
+                throw new Error('Single-page retry did not return the requested source_id');
+              }
+              batchRows.push(retryRows[0]);
+            } catch (retryError) {
+              failures.push({ source_ids: [source.source_id], error: 'Single-page recovery failed: ' + retryError.message });
+            }
+          }
+        }
       }
       const byId = new Map(batch.map(item => [item.source_id, item]));
       const returned = new Map();

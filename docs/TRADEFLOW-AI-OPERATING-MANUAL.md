@@ -2,6 +2,16 @@
 
 This section is authoritative over older descriptions below.
 
+## 8 November 2026 — 3D-printer multi-subtask completion telemetry correction (PR #289)
+
+- LIVE parent task `owner-3d-printers-exact-identity-acceptance-20261108-0032` completed eight subtasks: 85 search results, 15 product pages discovered, 6 fetched, 4 Gemma extraction calls, 2 failures, 6 captures, 4 new review rows and 2 existing rows enriched.
+- Production emitted `task_completed` inside the subtask loop. The final Common Room/activity message described only the last Bambu A1 Combo used subtask (zero captures), while the parent task result contained all eight subtask results and six captures. This is a reporting defect, not a lost queue write.
+- PR #289 labels per-product completions `subtask_completed` only for multi-subtask batches wholly scoped to category `3d-printers-equipment` and branch `3d-printers`. After the parent task queue completion succeeds, it emits one aggregate `task_completed` telemetry event and Common Room handover with summed search, discovery, fetch, GBP, extraction, route, failure, capture and review-write metrics.
+- Per-subtask counter deltas remain unchanged. The aggregate event adds no counter deltas, preventing double counting. Non-3D categories and single-task runs retain their existing completion behaviour.
+- Regression tests cover 3D-only batch detection, mixed-category/branch isolation, aggregate metrics, per-subtask search-limit handling, route/extraction failures and new/enriched/duplicate write counts.
+- The existing Research PC updater already installs and tests `task-worker.mjs`, `task-groups.mjs` and `task-groups.test.mjs`. No updater or private configuration change is required. No database, task/queue/source/catalogue data, TEST data, credentials, private .env or local worker state changed. No task was queued and no evidence was approved/imported.
+
+
 ## Platform AI strategy
 TradeFlow's AI research capability is a centrally operated platform feature. Subscriber-provided AI providers are not part of the product offering and the Owner Dashboard must not expose Platform Configuration or subscriber AI-provider settings. Keep any legacy compatibility tables disabled unless a separately reviewed migration is approved.
 

@@ -45,3 +45,8 @@ Manufacturer sources are for exact identity, configuration, specifications and r
 
 ## Next step
 Continue LIVE-only manufacturer/UK retailer source coverage using the measured evidence gap, then perform the coordinated Gemma agent/updater acceptance. Do not queue research during source preparation. Keep used and new evidence separate, GBP only, and never feed used-market references into automatic valuation.
+
+
+## Follow-up: Blackmagic Design UK source
+
+Added Blackmagic Design UK Official (blackmagicdesign.com, https://www.blackmagicdesign.com/uk/products) as an official GB manufacturer source scoped only to cameras. It is suitable for exact camera model identity/specifications and visible UK GBP offers; separate camera bodies from accessories. Post-change verification: 22 enabled camera-scoped sources, 722 active camera products, 305 still without active evidence. No product/evidence rows or TEST data changed. Supabase activity record owner-live-camera-source-coverage-blackmagic-20261108 verified.

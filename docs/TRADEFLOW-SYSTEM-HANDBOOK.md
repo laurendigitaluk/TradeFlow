@@ -4171,3 +4171,24 @@ Final verification:
 - Inactive evidence history: LIVE 17, TEST 21. The four-row difference is retained audit history, not active catalogue drift.
 
 Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 54/54, but installed Research PC/Ollama structured-output acceptance is not yet verified. No worker was started/restarted and no new research task was queued. Complete the remaining category reconciliation and source-selection checks first, then update all Gemma workers/agents and run the controlled full research cycle.
+
+## 8 November 2026 — Laptops category created and aligned
+
+The TEST-only Laptops category was reviewed before syncing. LIVE had no laptops category; TEST had 8 seed models with generic “Base Configuration” packages and no market evidence. The category and branch have now been established in both environments:
+- Category: Laptops (slug laptops), sort order 92.
+- Branch: Laptops & Notebooks (slug laptops-notebooks).
+- 8 matching product records in each environment, with configuration-specific package keys/names and product_type Laptop.
+- Products: Apple MacBook Air M1, M2 and M3; Dell Latitude 5440 and XPS 13 9315; HP EliteBook 840 G10; Lenovo ThinkPad T14 Gen 3 and Gen 4.
+- Each product package identifies the CPU/RAM/SSD configuration evidenced. No broad model-level price is inferred across other configurations.
+
+Added one active UK-used evidence record per product in both LIVE and TEST (8 each). Evidence links directly to eBay UK listings. Where the search result exposed a buyer-protection fee, that fee was excluded from observed_price; where it did not expose the fee breakdown, the recorded value is explicitly described as buyer-facing total, not seller proceeds. One M3 record is a current used asking listing, not a completed sale. Evidence types are all uk_used; no current UK-new prices were verified for these specific legacy configurations. Used evidence is reference-only and must not affect automatic valuation.
+
+Final verification: 8 products, 8 active products, 8 visible products, 8 active used evidence rows, zero UK-new evidence, zero active products without evidence in each environment. Product metadata and evidence source keys match between LIVE and TEST.
+
+Added official UK laptop manufacturer sources to both source registries:
+- Dell UK — dell.com, official UK laptop catalogue.
+- HP UK — hp.com, official UK laptop catalogue.
+- Lenovo UK — lenovo.com, official UK laptop catalogue.
+Apple UK and Samsung UK were already approved for laptops; eBay UK and CeX UK were already approved used-market sources. Retailer sources Argos, Currys, John Lewis and Very were already category-scoped.
+
+Category-wide audit after this work: both databases have 38 categories. Remaining evidence-count drift exists in several older categories, notably Drones (542 LIVE vs 618 TEST), Lenses (538 vs 606), Cameras (573 vs 614), and Camera Accessories (210 vs 244). The 3D printer and Mobile Phones active evidence counts now match; product totals differ only by documented inactive TEST audit rows. Do not start the full Gemma sweep until the remaining intended categories and source-selection routes are checked.

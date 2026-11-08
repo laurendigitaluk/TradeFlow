@@ -23,25 +23,25 @@ export function canonicalCaptureSourceUrl(sourceUrl, task = {}) {
     url.protocol === 'https:' &&
     host === 'store.creality.com' &&
     /^\/uk\/products\/[^/]+\/?$/i.test(url.pathname);
-  if (!isCrealityUkProduct) {
-    // Amazon UK can return the same ASIN with a trailing search-attribution
-    // path segment (for example /ref=sxin_14_sbv_search_btf). The ASIN is the
-    // product identity; this suffix does not identify a different offer.
-    const amazonProductPath = url.pathname.match(/^(.*\\/dp\\/[A-Z0-9]{10})(?:\\/ref=[^/]+)?\\/?$/i);
-    if (url.protocol === 'https:' && host === 'amazon.co.uk' && amazonProductPath) {
-      url.pathname = amazonProductPath[1];
-      return url.toString();
+  if (isCrealityUkProduct) {
+    const countries = url.searchParams.getAll('country');
+    const currencies = url.searchParams.getAll('currency');
+    if (countries.length === 1 && countries[0].toUpperCase() === 'GB' &&
+        currencies.length === 1 && currencies[0].toUpperCase() === 'GBP') {
+      url.searchParams.delete('country');
+      url.searchParams.delete('currency');
     }
-    return original;
+    return url.toString();
   }
 
-  const countries = url.searchParams.getAll('country');
-  const currencies = url.searchParams.getAll('currency');
-  if (countries.length === 1 && countries[0].toUpperCase() === 'GB' &&
-      currencies.length === 1 && currencies[0].toUpperCase() === 'GBP') {
-    url.searchParams.delete('country');
-    url.searchParams.delete('currency');
+  // Amazon UK can return the same ASIN with a trailing search-attribution
+  // path segment (for example /ref=sxin_14_sbv_search_btf). The ASIN is the
+  // product identity; this suffix does not identify a different offer.
+  const amazonProductPath = url.pathname.match(/^(.*\/dp\/[A-Z0-9]{10})(?:\/ref=[^/]+)?\/?$/i);
+  if (url.protocol === 'https:' && host === 'amazon.co.uk' && amazonProductPath) {
+    url.pathname = amazonProductPath[1];
+    return url.toString();
   }
 
-  return url.toString();
+  return original;
 }

@@ -3889,3 +3889,8 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - The updater is corrected to download, back up and install `agent-identity.mjs` and `agent-identity.test.mjs`, and to run the identity test suite both before installation and after installation.
 - Existing safeguards remain: validate the private .env targets without printing values; preserve the .env file; install only reviewed src files; back up existing source; run syntax/tests before replacing files; no Supabase schema/data changes.
 - This updater correction must be merged before asking the Research PC to update. Then run the production updater in place, verify the worker heartbeat, and only then queue the next controlled 3D-printer search task.
+
+
+### CI verification — 8 November 2026, 05:48 UTC
+- PR #289 GitHub Actions run [42452189126](https://github.com/laurendigitaluk/TradeFlow/actions/runs/42452189126) completed successfully: **47 tests passed, 0 failed**. Gemma source syntax and Owner Dashboard JavaScript syntax checks also passed.
+- The green run verifies the PR branch's aggregation helper, 3D-only batch predicate, cross-category isolation and existing source/agent tests. It does not verify a Research PC installation or LIVE runtime. PR remains open and unmerged; no deployment or research task was started.

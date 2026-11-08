@@ -4614,3 +4614,20 @@ The correction is in `platform-owner-dashboard.js` and migration `20261108223000
 LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
 
 The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests workflow and was merged to production (merge commit c62bc4b47a64a2de1dadb50106ce4b6dae150e3d), and the migration was applied to TradeFlow LIVE. Both RPC signatures and authenticated execute grants were verified. Front-end Cloudflare asset deployment/browser verification remains outstanding. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.
+
+
+## 8 November 2026 — Gaming Consoles & Accessories LIVE/TEST reconciliation
+
+Completed a direct comparison of the `gaming-consoles-accessories` master catalogue in TradeFlow LIVE and TEST. Both databases now contain the same 285 master products across 20 branches and 24 manufacturers. The product identity set and all compared master-product fields (model, package key/name, branch, catalogue/main category, product type, notes, active and customer-visible flags) now match exactly. No products were inserted or deleted during this reconciliation.
+
+Reconciled the small set of metadata drift found in Xbox/Nintendo controller entries, preserving the more informative verified notes and using the same canonical category/product-type values in both environments. The earlier spelling/package variations for the Hyperkin Competitor Silver and Microsoft Carbon Black controller are retained as active package aliases in both databases (2 aliases per environment); aliases do not create duplicate products.
+
+Evidence verification after reconciliation:
+- Both environments have 413 active evidence rows: 248 UK new and 165 UK used.
+- All 285 master products have at least one active evidence row in both environments.
+- LIVE retains 12 inactive historical evidence rows; TEST retains 13. The extra TEST row is inactive historical data and was not deleted or copied. Active evidence counts align, but evidence records are not byte-for-byte identical: independently captured source keys, timestamps, URL variants and notes remain. Do not blindly overwrite source evidence merely to make raw row counts or hashes match; preserve source provenance and review record-level differences when evidence parity is specifically required.
+- Both environments have 2 active product-package aliases for this category.
+
+The initial dashboard-list repair is separate: PR #309 merged and its LIVE RPC migration was applied, but the Cloudflare dashboard asset deployment/browser refresh still needs independent confirmation. No Gemma workers were started or restarted as part of this catalogue reconciliation.
+
+Next workflow: continue preparing the remaining product categories. Once the category catalogues are ready and reconciled between LIVE and TEST, perform the full Gemma worker/agent update and controlled research run, then gather results across the agents.

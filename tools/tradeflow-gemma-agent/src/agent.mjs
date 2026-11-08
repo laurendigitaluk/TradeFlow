@@ -536,6 +536,19 @@ export function extractionBatchSizeForTask(task) {
   return is3dPrinterResearchTask(task) ? 1 : 2;
 }
 
+function extractObservationSnippets(text, pattern, limit = 8) {
+  const source = String(text || '');
+  const matches = [];
+  const seen = new Set();
+  pattern.lastIndex = 0;
+  let match;
+  while ((match = pattern.exec(source)) && matches.length < limit) {
+    const snippet = source.slice(Math.max(0, match.index - 100), Math.min(source.length, match.index + match[0].length + 150)).replace(/\s+/g, ' ').trim();
+    if (snippet && !seen.has(snippet)) { seen.add(snippet); matches.push(snippet); }
+  }
+  return matches;
+}
+
 export function buildExtractionPrompt(task, pages) {
   const sourcePack = pages.map(item => {
     const priceMentions = extractVisibleGbpPriceMentions(item.text);

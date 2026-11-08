@@ -38,7 +38,7 @@ test('3D printer extraction prompt requests one findings-array row for every sup
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /REQUIRED POPULATION/i);
   assert.match(prompt, /Never leave these fields blank/i);
-  assert.match(prompt, /copy that exact value into price_mentions/i);
+  assert.match(prompt, /copy nearby_context exactly from the matching visible_gbp_price_context entry/i);
   assert.match(prompt, /"source_id":"S1"/);
   assert.match(prompt, /"source_id":"S2"/);
   assert.match(prompt, /Bambu Lab A1 3D Printer/);

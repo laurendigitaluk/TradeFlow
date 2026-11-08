@@ -96,6 +96,10 @@ test('3D printer queue batch blocks eBay after the first HTTP 403 and skips it f
         .reduce((sum, event) => sum + event.skipped_routes, 0),
       15
     );
+    const nextQueueBatch = new Set();
+    await probeApprovedResearchSources(printerTask, {}, event => events.push(event), [ebaySource], nextQueueBatch);
+    assert.equal(calls.length, 2, 'a new queue batch starts with a fresh source-block set');
+    assert.ok(nextQueueBatch.has('ebay.co.uk'));
   } finally {
     globalThis.fetch = originalFetch;
   }

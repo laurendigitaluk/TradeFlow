@@ -164,6 +164,11 @@ test('short 3D printer model IDs are disambiguated without losing generic printe
   );
   assert.equal(
     matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1Task),
+    false
+  );
+  const a1ComboTask = { ...a1Task, package_key: 'combo-ams-lite', package_name: 'Combo with AMS Lite' };
+  assert.equal(
+    matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1ComboTask),
     true
   );
   assert.equal(

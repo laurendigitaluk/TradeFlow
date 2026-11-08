@@ -33,7 +33,7 @@ const playbooks = {
       },
       'bambu-lab-uk.myshopify.com': {
         label: 'Bambu Lab UK official store',
-        routes: ['/search?q={query}', '/collections/3d-printers'],
+        routes: ['/search?q={query}', '/collections/3d-printer'],
         navigation: 'Use Shopify storefront search, then the 3D printer collection. Open the exact model product page; distinguish standalone printer from Combo/bundle packages.'
       },
       'uk.anycubic3d.com': {

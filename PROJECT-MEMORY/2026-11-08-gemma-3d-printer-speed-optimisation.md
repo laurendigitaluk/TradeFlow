@@ -1,5 +1,10 @@
 # Project Memory — Gemma 3D Printer Extraction Performance
 
+## 8 November 2026 — PR #298 merged
+
+PR #298 is now merged into `production` (merge commit `3417c5dced183fedcf13a7af266c67c2dd697d0a`). GitHub Actions validation passed 53/53 tests. This is not yet installed on the Research PC and has not been runtime-benchmarked. Next: use the existing updater with the correct dedicated install folder, preserving the separate private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`; verify installed commit/heartbeat before queuing a controlled 3D-printer batch. Do not change other agent branches or import/approval controls.
+
+
 Date: 8 November 2026
 Scope: TradeFlow LIVE 3D Printers research pipeline only.
 

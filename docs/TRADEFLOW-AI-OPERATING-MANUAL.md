@@ -1,3 +1,7 @@
+## 8 November 2026 — Research PC updater path handling simplified
+
+The owner was repeatedly blocked by path prompts even though PowerShell was already in the existing Gemma folder and File Explorer showed `.env` there. The updater now auto-detects the current directory if it contains `src/agent.mjs`, auto-selects the adjacent `.env` if it exists, and strips surrounding quotes from manually supplied paths. Do not ask the owner to copy paths again. Wait for latest PR CI, then provide one launch command; still do not use `-StartWorker`.
+
 ## 8 November 2026 — Updater parser failure and repair
 
 Do not rerun the earlier updater download. The first attempt failed at PowerShell parse time; no installation occurred. The updater in PR #300 was rebuilt from the production baseline with a single `-SourceBranch` parameter and one environment validation section. A PowerShell parser check has been added to CI. Wait for that run to complete successfully before providing the owner with a replacement command. Preserve the existing private `.env`, do not use `-StartWorker`, and verify local Ollama schema support before queuing any research.

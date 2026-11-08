@@ -4151,3 +4151,33 @@ Final verification:
 - Market-evidence records were not bulk-copied or overwritten. Counts match, but individual evidence provenance remains independent between environments.
 
 The next full category reconciliation should account for remaining category-level drift observed in the database: 3D Printers & Equipment currently shows 208 LIVE vs 209 TEST products and 260 vs 232 active evidence rows; Laptops exists in TEST with 8 products and no active evidence but is not yet present in LIVE. Do not launch the full Gemma worker/agent sweep until all intended categories are reconciled and their source-selection configuration is verified.
+
+
+## 8 November 2026 — Gaming catalogue parity and duplicate reconciliation
+
+The Gaming Consoles & Accessories category was compared independently in TradeFlow LIVE and TEST. Do not copy IDs or rows between environments; apply independently verified canonical values in each project.
+
+Verified final state in both environments:
+- 285 total master-product rows, of which 284 are active and one duplicate package row is retained inactive.
+- 411 active market-evidence rows: 246 UK-new and 165 UK-used.
+- 20 branches, 24 manufacturers and 12 enabled category-assigned research sources.
+- Zero open research queue rows and zero active/failed gaming research tasks.
+- Exact parity across all 285 product rows and all 411 active evidence records (product identity, package key/name, branch/category fields, source, URL, price, currency, condition, availability and notes).
+- TEST retains one additional inactive historical Xbox Series X Digital listing record. It is inactive and was not copied into LIVE.
+
+The Nintendo Switch 2 Joy-Con 2 Charging Grip had duplicate master-product package keys `single-charging-grip` and `nintendo-switch2-joycon2-charging-grip`. Both environments now use the latter as the sole active canonical product. The duplicate product row remains inactive for audit, the old name is a package alias, the unique used eBay observation was attached to the canonical product, and duplicate Argos/Smyths observations were retained inactive. No records were deleted.
+
+Gaming evidence reconciliation also standardised Hyperkin Silver and PowerA Fire Red product keys, source names, Atari condition wording, and exact retailer/product URLs for Nintendo Joy-Con pairs, Sony DualSense colour editions and GTA VI limited editions. New and used evidence remain separate. Completed-sale totals and buyer-protection fees remain explicitly distinguished in notes.
+
+## 8 November 2026 — Category-scoped Gemma source loading
+
+The worker previously downloaded up to 100 enabled research-source rows globally, then filtered category/manufacturer/lane afterwards. This caused every specialist agent to read and log unrelated suppliers.
+
+PR #310 (`fix/gemma-category-scoped-source-loading-20261108c`) changes source loading to query only:
+- `category_slugs` array overlap with the task's exact `category_slug`
+- explicitly universal UK sources marked with `*` (currently Amazon UK and eBay UK)
+- enabled rows with `country_code='GB'`
+
+The category is validated and the loader fails closed when it is missing or malformed. Existing manufacturer filtering, 3D-printer new/used lane checks, host validation, and raw-capture hand-off remain in place.
+
+The source-selection test is included in both GitHub CI and `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1`, so the Research PC updater runs the same test before and after installation. Do not add new manufacturer source rows or start the next category's worker until PR #310 passes CI, is merged, and the Research PC has been updated from `production`. Run one controlled gaming task in TEST before LIVE.

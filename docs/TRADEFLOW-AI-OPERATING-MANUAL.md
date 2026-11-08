@@ -4519,14 +4519,14 @@ Added/updated tests to ensure a single visible printer price is never promoted b
 
 Important integration boundary: the inspected TradeFlow research worker stages raw captures in platform_catalogue_research_queue for ChatGPT review; no direct OpenAI/ChatGPT API call was found in this worker. ChatGPT analysis is therefore a downstream review/handoff, not an automatic API stage in this code path. Do not describe it as automatically analysed until a separate, explicitly configured analysis integration exists.
 
-PR #302 remains draft and unmerged. The Research PC has the draft installed, but the worker has not been restarted. Do not start the worker until this capture-only change passes CI and the updated launcher/source is installed. No LIVE or TEST queue rows were changed by this code edit; no task was started, approved or imported. Current CI run #312 (42518986367) is pending at the time of this documentation update.
+PR #302 remains draft and unmerged. The Research PC has the draft installed, but the worker has not been restarted. Do not start the worker until this capture-only change passes CI and the updated launcher/source is installed. No LIVE or TEST queue rows were changed by this code edit; no task was started, approved or imported. Current CI run #313 (42518986367) is pending at the time of this documentation update.
 
 Next gate: complete CI, install the updated capture-only branch on the Research PC without starting the worker, then run one controlled 3D-printer capture-only task. Verify fast page capture, all visible prices/contexts in the LIVE review queue, null top-level price/evidence type, and no Ollama inference or timeout. ChatGPT then reviews the retained page.
 
 
 ## 8 November 2026 — capture-only implementation CI verification
 
-The capture-first 3D-printer change passed GitHub Actions run #312 (run ID 42518986367) on implementation commit 48eec9d682aa0d8ff6ecdb5f3ee0463a98a46596. Result: 61 tests passed, 0 failed. PowerShell updater/launcher syntax, all Gemma source syntax checks and Owner Dashboard JavaScript syntax also passed. PR #302 remains draft and unmerged; current branch head after documentation commits is 6763e76dbce6ef37cbffaab74b3e5a6fdaff6904.
+The capture-first 3D-printer change passed GitHub Actions run #313 (run ID 42518986367) on implementation commit 48eec9d682aa0d8ff6ecdb5f3ee0463a98a46596. Result: 61 tests passed, 0 failed. PowerShell updater/launcher syntax, all Gemma source syntax checks and Owner Dashboard JavaScript syntax also passed. PR #302 remains draft and unmerged; current branch head after documentation commits is 6763e76dbce6ef37cbffaab74b3e5a6fdaff6904.
 
 The Research PC still has the earlier draft version installed. It must be updated again to this capture-only branch before a controlled task is run. Do not start the worker until the user has installed the latest branch and we have verified the installed source. No research task or queue write has been performed by this code verification.
 
@@ -4676,8 +4676,8 @@ For 3D-printer tasks only, extractRelevantPageText now places matching JSON-LD P
 
 This is capture quality improvement only. Gemma preserves raw page data and uncertainty; ChatGPT performs exact product/package matching and decides whether evidence is suitable. No automatic valuation or customer buying price is changed.
 
-PR #312 also filters the approved source registry at load time to the task category plus explicitly universal UK marketplaces, enabled GB rows. Only Amazon UK and eBay UK are universal. The loader fails closed without a valid category slug. The category-selection regression test is included in CI and in the Research PC updater.
+PR #313 also filters the approved source registry at load time to the task category plus explicitly universal UK marketplaces, enabled GB rows. Only Amazon UK and eBay UK are universal. The loader fails closed without a valid category slug. The category-selection regression test is included in CI and in the Research PC updater.
 
 Gaming Consoles & Accessories has 284 active products and 411 active evidence records in each environment, with exact parity across all product rows and active evidence. It has 12 category-specific sources plus the 2 universal UK marketplaces. Other source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 both, drones 8 both, laptops 9 both, metal detectors 8 both and mobile phones 13 both. The 3D-printer source registry remains a separate parity issue to reconcile.
 
-Do not start the next gaming research task or add the candidate manufacturer websites until PR #312 passes CI, is merged and the Research PC is updated from production. First run one controlled gaming task in TEST, review the loaded source list and raw capture, then queue LIVE.
+Do not start the next gaming research task or add the candidate manufacturer websites until PR #313 passes CI, is merged and the Research PC is updated from production. First run one controlled gaming task in TEST, review the loaded source list and raw capture, then queue LIVE.

@@ -18,7 +18,7 @@ Code inspection established:
 - Search fans five query variants across four providers concurrently; approved source routes are probed separately in groups of four per source. Request counts alone do not establish wall-clock cost.
 
 Performance branch: perf/gemma-3d-printer-two-page-extraction-20261108.
-The proposed change batches two 3D-printer pages per Ollama call, changes the prompt contract to a findings array with one row per source_id, reduces model excerpts to 2,800 characters per page while retaining price strings and compact nearby contexts, and records per-stage durations. Full page text remains preserved for ChatGPT. Other categories are unchanged.
+The merged production change batches two 3D-printer pages per Ollama call, changes the prompt contract to a findings array with one row per source_id, reduces model excerpts to 2,800 characters per page while retaining price strings and compact nearby contexts, and records per-stage durations. Full page text remains preserved for ChatGPT. Other categories are unchanged.
 
 GitHub Actions run 42497005002 passed 53/53 tests and all syntax checks. This is code-level verification only; the change is not runtime-verified. Research PC Ollama acceptance is pending. PR #298 is merged and CI passed, but the Research PC source remains unverified. The worker `DESKTOP-LVASEUB-80488` started at 16:12:56 UTC and stopped cleanly at 16:15:29 UTC without claiming a task. Do not deploy or queue another LIVE task without explicit owner approval. Preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE. No approval/import behaviour may change.
 

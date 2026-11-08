@@ -251,9 +251,9 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
     url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
     text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00'
   }]);
-  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
-  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
-  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
+  assert.match(prompt, /CAPTURE, DO NOT DECIDE/i);
+  assert.match(prompt, /exactly ONE compact JSON object/i);
+  assert.match(prompt, /Capture the machine-only price separately from Combo/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);

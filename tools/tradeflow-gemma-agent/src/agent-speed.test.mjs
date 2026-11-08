@@ -64,3 +64,11 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.ok(schema.properties.findings.items.properties.price_contexts.maxItems <= 5);
   assert.ok(schema.properties.findings.items.properties.notes.maxLength <= 180);
 });
+
+test('single-page recovery schema requests exactly one compact finding', () => {
+  const schema = buildGemmaFindingSchema(1);
+  assert.equal(schema.properties.findings.minItems, 1);
+  assert.equal(schema.properties.findings.maxItems, 1);
+  assert.ok(schema.properties.findings.items.properties.price_contexts.maxItems <= 5);
+  assert.ok(schema.properties.findings.items.properties.uncertainty_and_conflicts.maxLength <= 180);
+});

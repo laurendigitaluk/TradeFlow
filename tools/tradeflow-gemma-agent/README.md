@@ -93,4 +93,7 @@ PR #292 changes only the first 3D-printer agent:
 - all multiple package prices retained with context, without guessing the price for the requested package;
 - all results remain unverified for ChatGPT review; no automatic catalogue import.
 
-Other category agents retain their existing extraction settings. CI run 42477880080 passed 50/50 tests. PR #292 is open and not deployed. Do not update the Research PC until the PR is reviewed and merged. After merge, use the existing updater in place and preserve the private TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE.
+Other category agents retain their existing extraction settings. CI run 42477880080 passed 50/50 tests. PR #292 was merged into production with squash commit 65730838d5f32cbf923973d5a32a87f8454a0c07 after explicit owner approval. The post-merge production CI run is pending; the Research PC has not yet been updated. Do not update the Research PC until post-merge production CI succeeds. After merge, use the existing updater in place and preserve the private TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE.
+
+
+Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.

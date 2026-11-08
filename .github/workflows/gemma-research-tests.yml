@@ -36,6 +36,10 @@ jobs:
           $errors = $null
           [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
           if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
       - name: Check Gemma source syntax
         shell: bash
         run: |

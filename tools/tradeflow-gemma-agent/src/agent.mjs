@@ -626,7 +626,7 @@ export function fallbackPageCapture(task, source, reason) {
   const locationNotes = printerCapture
     ? extractObservationSnippets(source.text, /\b(?:UK|United Kingdom|GB VAT|VAT included|local warehouse|free UK shipping|UK delivery)\b/gi, 5)
     : [];
-  const uniquePrice = prices.length === 1 && matchesTaskModel(source.title || '', source.url, task) && !/(?:per\\s*kg|\\/kg|filament|gift\\s*card|accessor(?:y|ies)|nozzle|build\\s*plate|shipping\\s*cost|delivery\\s*fee|postage)/i.test(prices[0].context) ? prices[0].amount : null;
+  const uniquePrice = prices.length === 1 && matchesTaskModel(source.title || '', source.url, task) && !/(?:per\s*kg|\/kg|filament|gift\s*card|accessor(?:y|ies)|nozzle|build\s*plate|shipping\s*cost|delivery\s*fee|postage)/i.test(prices[0].context) ? prices[0].amount : null;
   const title = source.title || '';
   const productIdentity = printerCapture ? [title, String(source.text || '').slice(0, 500)].filter(Boolean).join(' — ') : '';
   return {

@@ -25,4 +25,4 @@ Base: PR #287 branch \`fix/gemma-combo-slug-package-detection-20261108\` (stacke
 - No existing LIVE rows are rewritten or removed.
 
 ## Verification / safety
-CI is expected from the PR after opening; no local Research PC or LIVE runtime retest is possible without the approved updater. PR #287 must be merged before PR #290 is retargeted to production. No merge/deploy, queue changes, source changes, task enqueue, approvals/imports, TEST/LIVE crossover, secret or private environment changes occurred.
+GitHub Actions run 42465620424 passed 52/52 tests with zero failures, including syntax checks. This verifies the PR branch only; no local Research PC or LIVE runtime retest is possible without the approved updater. PR #287 must be merged before PR #290 is retargeted to production. No merge/deploy, queue changes, source changes, task enqueue, approvals/imports, TEST/LIVE crossover, secret or private environment changes occurred.

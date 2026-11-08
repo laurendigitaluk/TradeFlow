@@ -4192,3 +4192,16 @@ Added official UK laptop manufacturer sources to both source registries:
 Apple UK and Samsung UK were already approved for laptops; eBay UK and CeX UK were already approved used-market sources. Retailer sources Argos, Currys, John Lewis and Very were already category-scoped.
 
 Category-wide audit after this work: both databases have 38 categories. Remaining evidence-count drift exists in several older categories, notably Drones (542 LIVE vs 618 TEST), Lenses (538 vs 606), Cameras (573 vs 614), and Camera Accessories (210 vs 244). The 3D printer and Mobile Phones active evidence counts now match; product totals differ only by documented inactive TEST audit rows. Do not start the full Gemma sweep until the remaining intended categories and source-selection routes are checked.
+
+
+## 8 November 2026 — 3D-printer structured GBP capture and category-scoped Gemma routing
+
+For 3D-printer tasks only, the Gemma page extractor now places matching JSON-LD Product/Offer facts before long flattened page text. Manufacturer/model identity must match the task. GBP offers are emitted with an explicit GBP prefix so the deterministic price parser can recognise the amount; non-GBP currencies remain distinct and are never relabelled. Other categories retain their existing content-first page-text ordering.
+
+The worker now loads approved sources using a server-side PostgREST array-overlap filter: task category plus explicitly universal UK sources, restricted to enabled rows with country_code GB. Only Amazon UK and eBay UK are universal. Missing/malformed category fails closed. Existing manufacturer filtering, 3D-printer new/used lane checks, URL validation and raw-capture hand-off remain.
+
+The regression tests are included in GitHub CI and Update-TradeFlow-Gemma.ps1. Do not update/restart the Research PC until the combined PR passes CI and merges.
+
+Gaming category parity is verified: 284 active products and 411 active evidence rows in each LIVE and TEST; zero product-field differences and zero active-evidence differences. Gaming has 12 category-specific sources plus 2 universal UK sources (14 loadable sources).
+
+Current enabled UK source counts (category-specific plus universal): 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 12 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry remains a separate LIVE/TEST parity gap; do not blindly copy source rows between environments.

@@ -40,9 +40,9 @@ test('3D printer capture retains structured GBP offers before long page text and
 
   assert.ok(text.startsWith('Product: ELEGOO Neptune 4 Pro FDM 3D Printer'));
   assert.ok(text.indexOf('Product:') < text.indexOf('Navigation and product detail text.'));
-  assert.match(text, /Price: GBP 169\\.00 Currency: GBP/);
-  assert.match(text, /Availability: https:\\/\\/schema\\.org\\/InStock/);
-  assert.match(text, /Condition: https:\\/\\/schema\\.org\\/NewCondition/);
+  assert.ok(text.includes('Price: GBP 169.00 Currency: GBP'));
+  assert.ok(text.includes('Availability: https://schema.org/InStock'));
+  assert.ok(text.includes('Condition: https://schema.org/NewCondition'));
   assert.ok(text.length <= 10000);
   assert.ok(extractVisibleGbpPriceMentions(text).some(price => price.amount === 169));
 });

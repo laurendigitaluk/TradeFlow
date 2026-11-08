@@ -55,3 +55,34 @@ test('returns malformed URLs unchanged', () => {
   const url = 'not a url?country=GB&currency=GBP';
   assert.equal(canonicalCaptureSourceUrl(url, printerTask), url);
 });
+
+
+test('canonicalises an Amazon UK ASIN with and without a trailing search-attribution ref segment', () => {
+  const plain = 'https://www.amazon.co.uk/Bambu-Combo-Lamp-Multi-Color-Printing-Grey/dp/B0GQMN8VLS';
+  const tracked = plain + '/ref=sxin_14_sbv_search_btf';
+  assert.equal(canonicalCaptureSourceUrl(tracked, printerTask), plain);
+  assert.equal(canonicalCaptureSourceUrl(plain, printerTask), plain);
+  assert.equal(canonicalCaptureSourceUrl(tracked, printerTask), canonicalCaptureSourceUrl(plain, printerTask));
+});
+
+test('Amazon capture identity keeps product selection query parameters and distinct ASINs', () => {
+  const base = 'https://www.amazon.co.uk/Bambu-Combo-Lamp-Multi-Color-Printing-Grey/dp/B0GQMN8VLS';
+  const selected = base + '/ref=sxin_14_sbv_search_btf?th=1&psc=1';
+  assert.equal(
+    canonicalCaptureSourceUrl(selected, printerTask),
+    base + '?th=1&psc=1'
+  );
+  assert.notEqual(
+    canonicalCaptureSourceUrl(base, printerTask),
+    canonicalCaptureSourceUrl('https://www.amazon.co.uk/Bambu-A1/dp/B0D17TMWFB/ref=sxin_14_sbv_search_btf', printerTask)
+  );
+});
+
+test('Amazon tracking-path normalisation is restricted to direct Amazon UK product pages and the 3D printer branch', () => {
+  const search = 'https://www.amazon.co.uk/s?k=Bambu+A1/ref=sxin_14_sbv_search_btf';
+  const otherDomain = 'https://www.amazon.com/Bambu-Combo/dp/B0GQMN8VLS/ref=sxin_14_sbv_search_btf';
+  const otherBranch = 'https://www.amazon.co.uk/Bambu-Combo/dp/B0GQMN8VLS/ref=sxin_14_sbv_search_btf';
+  assert.equal(canonicalCaptureSourceUrl(search, printerTask), search);
+  assert.equal(canonicalCaptureSourceUrl(otherDomain, printerTask), otherDomain);
+  assert.equal(canonicalCaptureSourceUrl(otherBranch, { ...printerTask, branch_slug: '3d-printer-equipment-accessories' }), otherBranch);
+});

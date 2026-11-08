@@ -4100,3 +4100,19 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+## 8 November 2026 — Gemma evidence backlog and category-scoped source routing
+
+The LIVE 3D-printer review backlog contained 65 research captures. ChatGPT reviewed the raw page observations against the LIVE master catalogue and public.shared_market_evidence:
+
+- 9 captures were matched to existing master products and imported as UK GBP evidence.
+- 56 captures were marked processed without importing them into valuation evidence. Reasons include unrelated search results, accessory pages, duplicate captures, or no sufficiently unambiguous exact-product UK GBP offer.
+- No raw research capture was deleted. The original queue rows, URLs, excerpts and payloads remain available for audit/history.
+- The queue now has zero pending_review or needs_research records for 3d-printers-equipment.
+
+Imported evidence includes Bambu Lab A1 AMS Lite Combo (new £315.00 from 3D Prima; new £305.83 from 3DJake; used £250.00 from Gumtree), Anycubic Kobra S1 Max standard (£549.00 Anycubic UK; £619.00 3D Prima, out of stock), Anycubic Kobra S1 Max 4-colour Combo (£749.00 Anycubic UK; £819.00 3D Prima), Creality K1 (£299.00 Creality UK) and Creality K1 Max (£589.00 Creality UK). New and used evidence remain separate. These are market observations, not automatic buying valuations.
+
+The owner queue RPC is public.platform_owner_list_catalogue_research_queue(p_status,p_limit); supported states include pending_review, needs_research, approved, rejected, imported and all. The default pending_review view therefore becomes empty after the backlog is processed. Imported and rejected rows remain available as completed history; do not delete them to clear the outstanding-work list.
+
+The LIVE source registry already has category-specific UK assignments: 13 sources for 3D printers, 14 for cameras, 6 for drones, 12 for gaming consoles, 7 for laptops, 6 for metal detectors and 11 for mobile phones, plus explicitly universal marketplace sources. PR #308 proposes changing the worker to query only the requested category plus universal sources at source-load time. It is a draft and is not deployed; CI and review are required before updating the Research PC.

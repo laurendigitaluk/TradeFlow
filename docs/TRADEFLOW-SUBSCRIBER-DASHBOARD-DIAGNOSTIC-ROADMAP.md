@@ -1641,3 +1641,20 @@ The Selling editor now saves title, description, asking price, currency and list
 The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
 
 The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.
+
+
+## 8 November 2026 — Gemma dashboard shows outstanding work only
+
+The owner dashboard previously loaded historical rows into its live work lists:
+- `loadGemmaQueue()` explicitly called `platform_owner_list_catalogue_research_queue` with `p_status: 'all'`, showing imported and rejected research captures beside items awaiting review.
+- `loadGemmaTasks()` called `platform_owner_list_ai_agent_tasks` without a status filter; the RPC returned the latest 50 records regardless of status, including completed tasks.
+
+The correction is in `platform-owner-dashboard.js` and migration `20261108223000_gemma_dashboard_active_only_lists.sql`:
+- Research queue default view is `open`: pending_review, needs_research and approved. Imported/rejected records remain stored and can be retrieved with the `completed` or `all` filters, but are not rendered in the active dashboard list.
+- Task default view is `active`: queued, running and failed. Completed/cancelled tasks remain in the task table but do not clutter the live task list. Failed tasks remain visible until resolved or cancelled.
+- Dashboard section labels now read “Outstanding research tasks” and “Research awaiting review”. Empty states explain that completed records are retained in database history.
+- No research queue rows or task rows are deleted or rewritten by this change.
+
+LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
+
+The SQL migration was syntax-checked inside a transaction and rolled back. It has not been applied to LIVE yet. The dashboard code is on PR #309, awaiting review/merge and deployment. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.

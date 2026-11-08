@@ -4100,3 +4100,20 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+## 8 November 2026 — Gemma dashboard shows outstanding work only
+
+The owner dashboard previously loaded historical rows into its live work lists:
+- `loadGemmaQueue()` explicitly called `platform_owner_list_catalogue_research_queue` with `p_status: 'all'`, showing imported and rejected research captures beside items awaiting review.
+- `loadGemmaTasks()` called `platform_owner_list_ai_agent_tasks` without a status filter; the RPC returned the latest 50 records regardless of status, including completed tasks.
+
+The correction is in `platform-owner-dashboard.js` and migration `20261108223000_gemma_dashboard_active_only_lists.sql`:
+- Research queue default view is `open`: pending_review, needs_research and approved. Imported/rejected records remain stored and can be retrieved with the `completed` or `all` filters, but are not rendered in the active dashboard list.
+- Task default view is `active`: queued, running and failed. Completed/cancelled tasks remain in the task table but do not clutter the live task list. Failed tasks remain visible until resolved or cancelled.
+- Dashboard section labels now read “Outstanding research tasks” and “Research awaiting review”. Empty states explain that completed records are retained in database history.
+- No research queue rows or task rows are deleted or rewritten by this change.
+
+LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
+
+The SQL migration was syntax-checked inside a transaction and rolled back. It has not been applied to LIVE yet. The dashboard code is on PR #309, awaiting review/merge and deployment. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.

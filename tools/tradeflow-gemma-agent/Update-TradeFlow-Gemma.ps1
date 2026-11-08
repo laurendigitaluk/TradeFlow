@@ -9,7 +9,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $Repository = 'laurendigitaluk/TradeFlow'
 $RawBase = "https://raw.githubusercontent.com/$Repository/production/tools/tradeflow-gemma-agent"
-$SourceFiles = @('agent.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
+$SourceFiles = @('agent.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'capture-identity.mjs', 'capture-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
 
 if ([string]::IsNullOrWhiteSpace($InstallPath)) {
     $InstallPath = Read-Host 'Enter the dedicated TradeFlow Gemma agent folder (the folder containing src)'
@@ -76,7 +76,7 @@ try {
         & node --check (Join-Path $DownloadPath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs')
+    & node --test (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs') (Join-Path $DownloadPath 'capture-identity.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Gemma task normalisation or website playbook tests failed; no files were installed.' }
 
     $BackupPath = Join-Path $InstallPath ('backups\before-common-room-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
@@ -96,7 +96,7 @@ try {
         & node --check (Join-Path $SourcePath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Installed Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs')
+    & node --test (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs') (Join-Path $SourcePath 'capture-identity.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Installed Gemma task or website playbook tests failed.' }
 
     Write-Host ''

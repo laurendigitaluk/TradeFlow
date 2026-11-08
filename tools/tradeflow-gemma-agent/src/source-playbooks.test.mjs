@@ -180,6 +180,12 @@ test('short 3D printer model IDs are disambiguated without losing generic printe
     matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1ComboTask),
     true
   );
+
+  const capturedAccessoryTitle = 'YIBEICO Screw Set For Bambu Lab A1 AMS lite and Stiffener C Clamp';
+  const capturedAccessoryUrl = 'https://www.amazon.co.uk/YIBEICO-Screw-Bambu-Stiffener-Clamp/dp/B0D6VQWVJ1';
+  assert.equal(isEligibleProductPage(capturedAccessoryUrl, capturedAccessoryTitle), true);
+  assert.equal(matchesTaskModel(capturedAccessoryTitle, capturedAccessoryUrl, a1ComboTask), false);
+
   assert.equal(
     matchesTaskModel('A1 3D Printer Used', 'https://www.gumtree.com/p/printers-scanners/a1-3d-printer/123', a1Task),
     true

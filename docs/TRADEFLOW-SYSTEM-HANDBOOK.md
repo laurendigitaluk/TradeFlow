@@ -4188,3 +4188,11 @@ Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 5
 - Final code/test/documentation head `37008a124160afa4ebdd3b91b36da3c7f952e959` passed GitHub Actions run #382: 73 tests passed, 0 failed.
 - PowerShell updater syntax, Node source syntax and Owner Dashboard JavaScript syntax all passed.
 - PR #312 is open, ready for review and mergeable. It is not merged or deployed. CI does not establish Research PC runtime compatibility; owner-authorised TEST replay remains outstanding.
+
+
+
+### Final current-production PR #312 verification — 8 November 2026, 22:43 UTC
+
+- Final branch head `62882b16dbcdf22a0bf50c40fc840ae66a84c21f` passed GitHub Actions run #384: 73 tests passed, 0 failed.
+- PowerShell updater syntax, Node source syntax and Owner Dashboard JavaScript syntax all passed on this final branch head.
+- PR #312 is open and ready for review. It is not merged or deployed. Research PC TEST installation/replay remains outstanding and requires owner authorisation.

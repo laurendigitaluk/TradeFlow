@@ -44,7 +44,8 @@ test('3D printer capture retains structured GBP offers before long page text and
   assert.ok(text.includes('Availability: https://schema.org/InStock'));
   assert.ok(text.includes('Condition: https://schema.org/NewCondition'));
   assert.ok(text.length <= 10000);
-  assert.ok(extractVisibleGbpPriceMentions(text).some(price => price.amount === 169));
+  assert.equal(extractVisibleGbpPriceMentions('Price: 169.00 Currency: GBP').length, 0);
+  assert.equal(extractVisibleGbpPriceMentions(text).filter(price => price.amount === 169).length, 1);
 });
 
 test('structured arrays preserve each GBP offer while excluding non-GBP variants', () => {

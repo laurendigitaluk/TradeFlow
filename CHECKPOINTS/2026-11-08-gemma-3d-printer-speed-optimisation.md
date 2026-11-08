@@ -1,3 +1,7 @@
+## 8 November 2026 — Updater path handling simplified
+
+Research PC screenshots confirmed PowerShell was already in the installed Gemma folder and `.env` existed beside it. Updater now auto-detects current folder from `src/agent.mjs`, selects adjacent `.env`, and strips outer quotes on explicit paths. Wait for latest-head CI, then one launch command only; no manual path prompts expected. Do not start worker until installation and local Ollama schema test pass.
+
 ## 8 November 2026 — Updater parser failure repaired in PR #300
 
 Research PC attempt failed at PowerShell parse time; installation did not begin and existing `.env` was not changed. Root cause: truncated branch validation and duplicated updater body in PR branch. Rebuilt updater from production baseline with explicit `-SourceBranch` parameter, defaulting to production. Added PowerShell parser validation to Gemma CI. Await latest-head CI result, then request one controlled owner-side updater run with no worker start. Local Ollama JSON-schema acceptance is still the gate before further 3D-printer research.

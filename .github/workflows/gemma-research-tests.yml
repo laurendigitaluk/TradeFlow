@@ -49,6 +49,7 @@ jobs:
       - name: Run Gemma task and website playbook tests
         run: |
           node --test \
+            tools/tradeflow-gemma-agent/src/control-plane.test.mjs \
             tools/tradeflow-gemma-agent/src/task-groups.test.mjs \
             tools/tradeflow-gemma-agent/src/source-playbooks.test.mjs \
             tools/tradeflow-gemma-agent/src/agent-identity.test.mjs \

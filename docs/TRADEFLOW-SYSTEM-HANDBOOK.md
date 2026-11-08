@@ -4171,3 +4171,23 @@ Final verification:
 - Inactive evidence history: LIVE 17, TEST 21. The four-row difference is retained audit history, not active catalogue drift.
 
 Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 54/54, but installed Research PC/Ollama structured-output acceptance is not yet verified. No worker was started/restarted and no new research task was queued. Complete the remaining category reconciliation and source-selection checks first, then update all Gemma workers/agents and run the controlled full research cycle.
+
+
+## 8 November 2026 — 3D-printer structured GBP price capture
+
+The Gemma worker now promotes matching JSON-LD Product/Offer facts ahead of long flattened page text for 3D-printer tasks only. This addresses pages where the actual UK GBP offer price was placed beyond the extractor's useful text window or obscured by long product descriptions. Matching manufacturer/model identity is required before structured product facts are included.
+
+GBP structured offers are rendered as “GBP [amount]” so the deterministic visible-price parser can recognise them. Non-GBP currency is retained as a separate currency value and must never be relabelled as GBP. Other product categories retain their existing content-first page-text ordering; this is a 3D-printer-only ordering change.
+
+The result remains a raw Gemma capture. ChatGPT still matches the exact product/package, checks the price context, condition and availability, and approves or rejects evidence. No automatic valuation or buying-price rule is changed.
+
+## 8 November 2026 — Category-scoped Gemma source loading
+
+The worker previously downloaded up to 100 enabled source rows globally, then filtered category/manufacturer/lane afterwards. PR #312 changes source loading to query only:
+- category_slugs array overlap with the task's exact category_slug
+- explicitly universal UK sources marked with * (Amazon UK and eBay UK)
+- enabled rows with country_code='GB'
+
+Missing or malformed category fails closed. Existing manufacturer filtering, 3D-printer new/used lane checks, host validation and raw-capture hand-off remain in place. The new source-selection test is included in GitHub CI and Update-TradeFlow-Gemma.ps1.
+
+Gaming category parity is verified: 284 active products and 411 active evidence rows in each LIVE and TEST; 0 product-field differences and 0 active-evidence differences. Gaming has 12 category-specific sources plus 2 universal UK sources (14 loadable sources). The wider source audit found a separate 3D-printer source registry gap: LIVE 15 / TEST 5 loadable UK sources. Do not add more sources or start another agent until PR #312 passes CI, merges, and the Research PC updater has installed it from production.

@@ -820,3 +820,17 @@ Added ten category-scoped UK sources to LIVE mobile-phones:
 Manufacturer pages are for exact model identity, storage/RAM variants, specifications and current/discontinued status; capture prices only when a visible UK GBP offer exists. Ballicom and Clove are UK GBP retail sources for Fairphone; use inc-VAT consumer prices and exclude earbuds, cases, modules and cables. Fairphone's official global shop may display EUR, so do not treat it as UK GBP price evidence.
 
 Post-change verification: 21 enabled sources scoped to mobile-phones; 158 active products; 0 active products without active market evidence. No product/evidence rows changed, no research tasks queued, no worker restarted and TEST was not modified. Existing Apple, Google, Motorola, OPPO, Samsung, Argos, Currys, John Lewis, EE, Very and CeX sources remain unchanged.
+
+
+## 8 November 2026 — LIVE metal-detector source coverage expansion
+
+Added five UK sources scoped only to metal-detectors:
+- Nokta UK Store — https://www.noktauk.com/collections/metal-detectors; visible GBP prices and stock status.
+- LP Metal Detecting UK — https://www.lpmetaldetecting.com/; UK distributor/retailer with Nokta, Minelab, XP, Garrett and Quest ranges and GBP product pages.
+- Crawfords Metal Detectors UK — https://crawfordsmd.com/metal-detectors; UK retailer with XP, Nokta, Garrett, Quest, Teknetics and Minelab product pages and GBP prices.
+- Detecnicks UK Used Detectors — https://www.detecnicks.co.uk/Second-hand_Metal_Detectors.html; used-only lane with dated listings, condition context and GBP prices.
+- Detector Distribution UK — https://detector-distribution.co.uk/metal-detectors; UK authorised dealer with XP, Garrett and Nokta listings and GBP prices.
+
+Official dealer validation: Nokta's UK dealer directory lists LP Metal Detecting, Unearthed, Spin a Disc, Regton, Detecnicks and Crawfords; XP's official reseller network lists UK dealers including Crawfords, Detecnicks, Regton, Spin a Disc and others. Garrett identifies Regton as its UK & Ireland distributor. Keep new and used evidence separate; use the Detecnicks second-hand page only for explicitly used/ex-demo listings and confirm availability/condition before approval.
+
+Post-change verification: 11 enabled sources scoped to metal-detectors; 125 active products; 32 active products still without active market evidence. Evidence gap unchanged because only source registry rows changed. No product/evidence rows changed, no research task queued, no worker restarted and TEST was not modified. Existing Minelab UK, Regton, Spin a Disc, UK History Finders, Unearthed UK and Wolds Detecting source rows remain unchanged.

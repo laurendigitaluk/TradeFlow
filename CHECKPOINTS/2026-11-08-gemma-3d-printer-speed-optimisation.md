@@ -1,3 +1,7 @@
+## 8 November 2026 — Required extraction fields enforced
+
+Ollama schema acceptance alone was not sufficient: the real Gemma smoke test produced valid JSON with blank title and price fields. PR #300 now enforces non-empty core fields and directs exact copy of supplied title/visible GBP amounts. CI run #251 passed. Research PC must be updated to latest PR branch and one-page output retested before worker restart or research task.
+
 ## 8 November 2026 — Single-page recovery added
 
 PR #300 keeps two-page extraction for speed, but on malformed/truncated output retries the pages separately using a shorter excerpt, one-finding schema and 1,024-token budget. Each successful retry becomes structured data; only failed retries remain raw fallback. Run #244 passed all CI checks. Draft PR is not merged/deployed and local Ollama support is not yet proven.

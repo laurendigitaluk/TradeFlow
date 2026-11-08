@@ -607,3 +607,39 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+
+## 8 November 2026 — LIVE 3D-printer watch, review-backlog state and current-production price-capture correction
+
+Scope: category `3d-printers-equipment`, branch `3d-printers` only. Read-only LIVE audit at approximately 22:31 UTC. No research task was queued, no worker was restarted, and no evidence was approved or imported by this watch.
+
+### LIVE worker and task state
+
+- Category status row: idle; `current_task=null`; 81 tasks completed; 119 candidates found; `evidence_queued=65`; last recorded heartbeat/completion 2026-11-08 21:49:02 UTC; status-row worker identity `DESKTOP-LVASEUB-84452`; no last error.
+- No queued/running/pending rows were found in `platform_ai_agent_tasks` for this category/branch.
+- Latest registered platform task remains `owner-3d-printers-capture-only-smoke-20261108-2020`, worker `DESKTOP-LVASEUB-22608`, Anycubic Kobra S1 Max Standard, completed 20:18:57 UTC. Metrics: 10 search results; 1 product page discovered and fetched; 27 approved-source route attempts (10 matches, 11 empty, 6 errors); 4 collection pagination pages; 0 direct page-fetch errors; 0 Gemma calls; 1 existing LIVE review row enriched; 0 new rows; 20.796 seconds total.
+- A separate activity-only `K1` dry-run completed at 21:49:02 UTC. It found one Creality UK source, fetched the K1 Speedy page, ran one Gemma call and reported one candidate, but made zero TEST/LIVE catalogue writes or lookups. It is not a row in `platform_ai_agent_tasks`. The target was Creality K1 Standard; the page title is K1 Speedy 3D Printer, visible text indicates in-stock, while structured Offer availability says OutOfStock. Retain this as a conflicting/borderline observation, not accepted evidence.
+- Worker identities remain unreconciled: category status `DESKTOP-LVASEUB-84452`; capture-only platform task `DESKTOP-LVASEUB-22608`; generic worker identity previously recorded as `DESKTOP-LVASEUB-47588`. Do not infer multiple active processes from these stale/role-specific rows. Reconcile the installed Research PC process identity before restarting or running another batch.
+
+### Source discovery and route failures
+
+- The 3D-printer source registry currently has 13 enabled category rows. No registry change was made by this watch. PR #308 (category-scoped source loading) is closed unmerged; do not treat its proposed source changes as deployed.
+- The Kobra capture-only run had 6 route errors: Uni3Dverse 404; eBay UK 403 twice and 404 once; Amazon UK 404; SecondHand.org.uk 404. 11 routes were empty. The single discovered page was the official Anycubic page, not a used-market listing.
+- The later K1 dry-run found one Creality URL; 3D Prima and 3DJake search routes returned no exact-model product link; eBay routes returned 403/404; Amazon routes returned 404. Unrelated camera-category sources were correctly skipped.
+
+### Review queue — new state since the previous checkpoint
+
+A LIVE activity event at 22:08:30 UTC records a ChatGPT-supervisor evidence-backlog operation: 65 rows processed, 28 matched/imported, 37 processed without import, raw captures retained, zero open review rows. Current queue statuses are 28 `imported` and 37 `rejected`. The 28 linked `shared_market_evidence` records comprise 23 `uk_new` and 5 `uk_used`; all 28 have a GBP observed price. This watch did not perform that operation and did not modify queue/evidence rows.
+
+Audit caveat: all 28 imported queue rows have `approved_at` and `imported_at`, but only one has `reviewed_by` populated; 27 have no reviewer identity recorded. The activity event identifies the workflow as ChatGPT supervisor but does not establish the human authorisation. Preserve this as an audit gap; do not reverse, re-import, approve or otherwise alter these records without owner direction. The status-row `evidence_queued=65` predates this 22:08 processing event and is not the current open-row count.
+
+### First confirmed price-capture loss and correction
+
+Current production `extractRelevantPageText()` still appends matching JSON-LD Product/Offer text after flattened page content and formats offers as `Price: 549 Currency: GBP`. The deterministic GBP parser recognises `£549` or `GBP 549`, so structured GBP offer values are not parsed from that format. This is a post-fetch extraction loss; the page text itself is retained. The earlier 9,998-character capture predates PR #302's 100,000-character 3D-printer cap and must not be used to claim the new cap failed.
+
+PR #306 contains the fix and passed CI run #352 (73 tests), but its base is stale after PR #305 merged and GitHub reports it non-mergeable. The same focused change has been ported onto a fresh branch based on current production: `fix/gemma-3d-jsonld-gbp-capture-current-prod-20261108`. It formats GBP structured offers as `GBP <amount>`, places matching structured facts before long flattened text for 3D printers only, leaves other categories content-first, and adds four regression tests (long-page retention, multiple GBP offers/non-GBP exclusion, non-GBP-only exclusion, and non-3D ordering). CI is pending. No merge or deployment is authorised.
+
+### Next verification gate
+
+Wait for CI on the fresh current-production branch. If green, keep the PR for review. Research PC TEST installation and replay must be separately authorised and must preserve the existing private `.env`. Do not start LIVE research, enqueue duplicate tasks, change other categories, or approve/import evidence as part of the verification.

@@ -1,3 +1,7 @@
+## 8 November 2026 — Gemma 3D printer batch recovery
+
+When a two-page extraction batch fails, PR #300 now makes an isolated retry for each page using a shorter excerpt, one-item JSON schema and 1,024-token output cap. This avoids losing both structured observations because one batch response was malformed/truncated. The raw page capture remains the fallback if the isolated retry also fails. Run #244 passed all current CI gates. Do not claim local Ollama compatibility until this is tested on the Research PC; PR remains draft and unmerged.
+
 ## 8 November 2026 — Research PC updater path handling simplified
 
 The owner was repeatedly blocked by path prompts even though PowerShell was already in the existing Gemma folder and File Explorer showed `.env` there. The updater now auto-detects the current directory if it contains `src/agent.mjs`, auto-selects the adjacent `.env` if it exists, and strips surrounding quotes from manually supplied paths. Do not ask the owner to copy paths again. Wait for latest PR CI, then provide one launch command; still do not use `-StartWorker`.

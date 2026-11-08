@@ -1641,3 +1641,27 @@ The Selling editor now saves title, description, asking price, currency and list
 The editor normalises Manufacturer/Model/Package so identical Model and Package values are not repeated in the listing title. New public listing descriptions start blank instead of copying internal structured customer-submission fields. Script cache version: `selling-dashboard-fixed.js?v=92`.
 
 The migration was applied independently to TEST (`nnsshnfkjcflucjrftzi`) and LIVE (`gxsrajtqzdjvmceqcpgv`). Function existence and execute privileges were verified in both. No business data was copied between environments; existing LIVE GoPro listing data was not changed. Browser save/reload and Cloudflare deployment verification remain outstanding.
+
+
+## 8 November 2026 — Owner Gemma research queue / completed history
+
+**User-visible outcome:** once a research capture has been processed, it must leave the outstanding dashboard list. Keep completed records available as imported/rejected history; never delete raw captures to clear the dashboard.
+
+**Actual backend path**
+- Owner dashboard calls public.platform_owner_list_catalogue_research_queue(p_status,p_limit).
+- Default status is pending_review; supported values are pending_review, needs_research, approved, rejected, imported, and all.
+- Raw observations live in public.platform_catalogue_research_queue.
+- Approved market observations live in public.shared_market_evidence, linked through live_master_product_id and live_evidence_id.
+- public.platform_owner_review_catalogue_research_item changes review status but does not itself perform a product match or evidence import. The ChatGPT review/import step must write the evidence link and terminal status together.
+
+**8 November LIVE processing**
+- 65 3D-printer rows reviewed.
+- 9 linked to existing LIVE master products and imported into shared_market_evidence.
+- 56 marked processed/rejected with explanatory notes; raw page capture remains stored.
+- Verified queue status counts: imported 9, rejected 56; no remaining open rows for 3d-printers-equipment.
+- The RPC supports imported/rejected views for completed history.
+
+**Category-specific source routing**
+- Current registry assignments: 3D printers 13; cameras 14; camera equipment 14; drones 6; gaming consoles 12; laptops 7; metal detectors 6; mobile phones 11. Explicit universal marketplace sources are separate.
+- Current worker issue: it fetches up to 100 enabled rows globally and only filters by category afterwards. This produces noisy skipped-source events and downloads irrelevant category suppliers.
+- PR #308 (fix/gemma-category-scoped-source-loading-20261108b) adds a server-side category-array overlap filter plus UK/enabled filters and unit tests. Draft only; no Research PC update/deployment yet. Verify CI and review before merge.

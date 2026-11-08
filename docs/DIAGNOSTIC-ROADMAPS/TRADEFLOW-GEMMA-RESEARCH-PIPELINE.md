@@ -2,7 +2,7 @@
 
 - First confirmed code-level false positive in the 16:45 LIVE batch: Amazon UK YIBEICO “Screw Set For Bambu Lab A1 AMS lite and Stiffener C Clamp” was accepted under Bambu Lab A1 / AMS Lite Combo. The exact title contains both the short model token A1 and package marker AMS Lite; existing `matchesTaskModel()` accessory exclusions omitted screw sets, clamps and stiffeners.
 - It was fetched and staged as an unverified review capture with no printer observed_price/evidence_type. No approval/import occurred.
-- Follow-up branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds only title/path terms `screw set|screw kit|clamp|stiffener` to the 3D-printer accessory exclusion and tests the exact captured title/URL plus the positive valid AMS Lite Combo path. CI pending; not deployed.
+- Follow-up branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds only title/path terms `screw set|screw kit|clamp|stiffener` to the 3D-printer accessory exclusion and tests the exact captured title/URL plus the positive valid AMS Lite Combo path. GitHub Actions run 42505871429 (#216) passed 53/53 tests; Research PC runtime acceptance remains pending. Not deployed.
 - Do not duplicate PR #296: it already canonicalises Amazon UK direct-ASIN URLs with trailing search-attribution `/ref=...` segments. PR #300 remains the separate structured-output schema fix.
 - Runtime expectation for this exact run: one accessory URL removed from the Bambu A1 Combo candidate set (5 → 4 fetched candidates). The page count/call reduction is a code-level replay expectation only; no live retest or production deployment has occurred.
 

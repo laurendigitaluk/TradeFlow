@@ -910,9 +910,9 @@ export async function extractBatch(task, pages, env, onProgress) {
           const priceObservations = Array.isArray(row.price_observations) ? row.price_observations : [];
           const normalisedObservations = priceObservations.map(observation => {
             const text = String(observation?.price_text || '').trim();
-            const match = text.match(/(?:£\\s*|GBP\\s*)([0-9][0-9,]*(?:\\.[0-9]{1,2})?)/i);
+            const match = text.match(/(?:£\s*|GBP\s*)([0-9][0-9,]*(?:\.[0-9]{1,2})?)/i);
             const amount = match ? Number(match[1].replace(/,/g, '')) : null;
-            const suppliedContext = String(observation?.nearby_context || '').replace(/\\s+/g, ' ').trim().toLowerCase();
+            const suppliedContext = String(observation?.nearby_context || '').replace(/\s+/g, ' ').trim().toLowerCase();
             const visible = amount == null ? null : prices.find(price =>
               price.amount === amount &&
               suppliedContext.length >= 24 &&

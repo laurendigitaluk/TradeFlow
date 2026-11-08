@@ -486,3 +486,35 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
   assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);
 });
+
+
+test('ELEGOO UK manufacturer source with all scope is available in both printer lanes without leaking to other manufacturers', () => {
+  const source = {
+    source_name: 'ELEGOO UK',
+    domain: 'uk.elegoo.com',
+    source_kind: 'manufacturer',
+    country_code: 'GB',
+    research_scope: 'all',
+    enabled: true,
+    category_slugs: ['3d-printers-equipment']
+  };
+  const newTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  const otherManufacturerTask = { ...usedTask, manufacturer: 'Creality', model: 'K1' };
+  const otherCategoryTask = { ...usedTask, category_slug: 'drones', branch_slug: 'drones' };
+
+  assert.equal(getResearchSourceLane(source), 'both');
+  assert.equal(isApprovedSourceForTask({ ...source, research_scope: 'new_uk' }, usedTask), false);
+  assert.equal(isApprovedSourceForTask(source, newTask), true);
+  assert.equal(isApprovedSourceForTask(source, usedTask), true);
+  assert.equal(isApprovedSourceForTask(source, otherManufacturerTask), false);
+  assert.equal(isApprovedSourceForTask(source, otherCategoryTask), false);
+  assert.deepEqual(
+    buildWebsiteSearchRoutes(source, newTask),
+    ['https://uk.elegoo.com/collections/fdm-printers']
+  );
+  assert.deepEqual(
+    buildWebsiteSearchRoutes(source, usedTask),
+    ['https://uk.elegoo.com/collections/pre-owned-3d-printer']
+  );
+});

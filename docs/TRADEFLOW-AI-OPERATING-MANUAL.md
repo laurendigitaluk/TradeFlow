@@ -4597,3 +4597,24 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+## 8 November 2026 — Gemma hand-off and completed research history
+
+Operating responsibility is now explicit:
+
+1. Gemma collects raw product pages, prices, package details, specifications, condition, availability, identifiers and source links. It must preserve uncertainty and must not decide whether evidence is suitable.
+2. The research queue retains the raw capture and extraction observations.
+3. ChatGPT matches the capture to the LIVE master catalogue, resolves model aliases and package variants, distinguishes printer products from accessories, and decides whether the page supports a UK GBP market observation.
+4. Only a matched, sufficiently clear observation is written to public.shared_market_evidence. New and used records stay separate. A market observation does not itself change a tenant's buying price or automatic valuation rule.
+5. Processed queue rows become terminal imported or rejected records. Rejected means not imported into valuation evidence; it does not mean the raw capture is deleted.
+
+### Completed backlog — 8 November 2026
+
+The 65-row LIVE 3D-printer queue was processed: 9 matched/imported and 56 processed without import. Zero 3D-printer records remain in pending_review or needs_research. The queue RPC supports separate imported and rejected history views. Preserve these rows and their original payloads.
+
+### Category source routing
+
+The LIVE registry already contains category-scoped UK source assignments for cameras, drones, gaming consoles, laptops, metal detectors, mobile phones and 3D printers. Universal marketplaces are explicit entries, not a reason to load every category's suppliers. PR #308 changes the worker's source query to filter by the task's category_slug and universal * sources before download. PR #308 remains draft pending CI/review; do not deploy or restart the Research PC until verified.
+
+Do not copy TEST source or queue data into LIVE. The current processing described here was applied only to the LIVE master catalogue and LIVE research queue.

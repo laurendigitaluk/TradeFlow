@@ -1,3 +1,7 @@
+## 8 November 2026 — PR #300 CI and local test gate
+
+PR #300 passed GitHub Actions run #219 at head `f8fe6f78ebf77c971526d650293a7f0d22951207` (source syntax, Gemma research tests, Owner Dashboard JavaScript syntax). It remains draft/open and not deployed. Updater in the branch accepts `-SourceBranch` (default production) for controlled draft-branch installation, preserving backups, local test gates, TEST/LIVE target validation and private .env. Research PC installation and Ollama schema compatibility are still pending; do not start worker or queue new research until verified.
+
 ## 8 November 2026 — benchmark learning and reliability follow-up
 
 LIVE benchmark `owner-3d-printers-speed-benchmark-20261108-1645` completed in 25m 17s, compared with 70m 49s baseline (64.3% faster). Eleven pages were fetched using seven Gemma calls; five calls failed JSON extraction. All eleven raw captures and deterministic GBP observations remained in review-only queue; no approval/import. Gemma inference used about 92% of aggregate subtask runtime.

@@ -1,5 +1,8 @@
 [CmdletBinding()]
-param()
+param(
+    [ValidateSet('TEST','LIVE')]
+    [string]$Environment = 'TEST'
+)
 
 $ErrorActionPreference = 'Stop'
 $InstallPath = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -35,7 +38,8 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
-Write-Host 'Starting the TradeFlow LIVE Gemma queue worker. Press Ctrl+C to stop.'
+$env:TRADEFLOW_GEMMA_ENVIRONMENT = $Environment
+Write-Host "Starting the TradeFlow $Environment Gemma queue worker. Press Ctrl+C to stop."
 & node (Join-Path $SourcePath 'task-worker.mjs')
 if ($LASTEXITCODE -ne 0) {
     throw "Gemma worker exited with code $LASTEXITCODE"

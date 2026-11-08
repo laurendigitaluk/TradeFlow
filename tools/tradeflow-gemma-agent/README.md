@@ -99,3 +99,8 @@ Other category agents retain their existing extraction settings. CI run 42477880
 
 
 Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.
+
+
+## Idle worker heartbeat
+
+When the LIVE task queue is empty, the task worker reports its control-plane heartbeat every 60 seconds with its worker ID and 15-second poll interval. During an active research task, the category agent continues to report its existing 45-second heartbeat. A stale worker heartbeat should therefore be treated as a possible stopped/disconnected process, not as proof by itself; check the worker ID and recent activity events. Only one Research PC worker should poll the LIVE queue at a time.

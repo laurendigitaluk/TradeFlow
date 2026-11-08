@@ -450,7 +450,7 @@ test('historical Anycubic Kobra S1 Max capture retains standard, crossed-out, sa
   const capture = 'Anycubic Kobra S1 Max Regular price £549.00 Sale price £549.00 Regular price £849.00 Save £300.00 Kobra S1 Max £549.00 Kobra S1 Max Combo (4 Colors) £749.00 Kobra S1 Max Combo + ACE 2 Pro (8 Colors) £935.00 Kobra S1 Max Combo + ACE 2 Pro (16 Colors) £1,307.00';
   const prices = extractVisibleGbpPriceMentions(capture);
   assert.deepEqual(prices.map(item => item.amount), [549, 549, 849, 300, 549, 749, 935, 1307]);
-  assert.match(prices[5].context, /Combo \\(4 Colors\\)/);
+  assert.match(prices[5].context, /Combo \(4 Colors\)/);
   assert.match(prices[6].context, /8 Colors/);
   assert.match(prices[7].context, /16 Colors/);
 });

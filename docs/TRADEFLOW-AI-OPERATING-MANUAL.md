@@ -1,6 +1,37 @@
 # CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
 
+
+## 8 November 2026 — scheduled LIVE verification at 02:00 UTC
+
+- Current LIVE status for category `3d-printers-equipment`, branch `3d-printers`: idle, no active or pending task. Latest task `owner-3d-printers-exact-identity-acceptance-20261108-0032` completed 8/8 subtasks from 00:32:26 to 00:47:00 UTC.
+- Aggregate metrics: 85 search results; 15 product pages discovered; 6 fetched and captured; 4 Gemma extraction calls; 2 extraction failures; 114 approved-source route attempts; 32 route errors; 55 empty routes; 27 routes with matches; 40 opposite-lane source skips. Four new review rows were queued and two existing unreviewed rows enriched.
+- New lane: 32 searches, 7 discovered, 5 fetched/captured. Used lane: 53 searches, 8 discovered, 1 fetched/captured. The used-page loss remains at fetch: eBay listing requests returned HTTP 403 and other configured routes returned 404. No access-control bypass was attempted.
+- New-lane failures include Bambu Lab UK Shopify and Amazon HTTP 404, 3DFLO timeout, 123-3D redirect to an ineligible page and 3D Prima HTTP 404. The two Gemma extraction failures occurred after page fetch; raw captures were retained.
+- LIVE review queue now has 44 rows: 34 `uk_new`, 6 `uk_used`, 4 `uk_both`; 3 top-level observed prices, 2 append-only enrichment histories, 1 reviewer marker, 0 approvals and 0 imports. All rows remain `needs_research`.
+- The concatenated Creality slug `/products/essential-combok1-max-hyper-pla-2` is still incorrectly present as K1 Max Standard at £599.00. A second legacy K1 Standard row also references the same Combo URL. No queue rows were modified.
+- Worker status row is idle, with no error. Its last heartbeat is 00:47:00 UTC; the task-worker source only sends its heartbeat timer during an active claim, so an old idle heartbeat does not prove the PC is offline or online. The current Research PC process/Ollama state remains unverified.
+- PR #287 head `4c9c220fcb01066a56b2735db77c8aa0040ab9af` is still open and mergeable. GitHub Actions run **42436325135** completed successfully at 01:55 UTC: **45 tests passed, 0 failed**, including task-group, source-playbook and agent-identity suites plus syntax checks. No review submissions or review threads are present. The strengthened fixture tests the exact K1 Max Standard rejection and K1 Max Combo acceptance against the same captured URL/title.
+- This green CI result supersedes the earlier checkpoint statement that a run for the corrected fixture had not yet been observed. It verifies the PR branch only; it does not verify the Research PC installation or LIVE runtime. Do not merge, deploy, update the PC or queue another task without explicit owner approval and the required local updater/worker verification.
+- No task, queue, source registry, catalogue, TEST data, approval/import state, secret, private .env or Research PC runtime was changed during this scheduled check. No new research task was queued.
+
 This section is authoritative over older descriptions below.
+
+
+## 8 November 2026 — post-update Gemma acceptance and K1 Max Combo regression correction
+
+- The latest 3D-only LIVE task completed eight subtasks: 85 search results, 15 individual pages discovered, 6 fetched/captured, 4 Gemma extraction calls, 2 extraction failures, 4 new unverified review rows and 2 existing rows enriched. No evidence was approved or imported.
+- Bambu Lab A1 short-model disambiguation rejected all 9 Audi A1 car URLs before product-page fetching. The used A1 Standard pass found one candidate but eBay returned HTTP 403; do not bypass access controls.
+- The exact Creality K1 Max URL `/products/essential-combok1-max-hyper-pla-2` was captured as K1 Max Standard, title `K1 Max + PLA*2(White+Red)`, visible £599.00. PR #287 fixes the concatenated `combok1` token boundary. Its regression test now exercises K1 Max Standard rejection and matching K1 Max Combo acceptance on the exact same URL/title; the earlier base-K1 assertion was insufficient because sibling-model filtering could reject it first.
+- Worker is idle with no active/pending 3D task. Last heartbeat 00:47 UTC is stale by about 65 minutes; idle Supabase status does not prove the PC process is currently online. Preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE; verify the local worker before another task.
+- The LIVE review queue has 44 3D-branch rows, 2 enrichment histories, 1 reviewer marker, 0 approved and 0 imported. Captures remain unverified until ChatGPT/owner review.
+
+## 8 November 2026 — concatenated Combo URL identity correction
+
+- Controlled LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` showed the official Creality UK URL `/products/essential-combok1-max-hyper-pla-2` was captured under the K1 Max Standard task. Its title identified `K1 Max + PLA*2(White+Red)` and the page showed £599.00; this is a bundle, not the standalone Standard Printer.
+- Root cause: URL tokenisation split punctuation but did not restore the missing boundary between `combo` and the following model token in concatenated Shopify slugs (`combok1`). The package detector therefore failed to see the Combo marker even though the title/path contained the model identity.
+- Minimal fix: restore a token boundary after `combo` (and concatenated AMS/ACE/CFS labels) before exact model/package matching. Keep sibling-model rejection and standard-vs-combo enforcement unchanged. Add a regression fixture for the exact Creality URL/title so it is rejected from the K1 Max Standard task; the matching Combo task remains eligible.
+- This is limited to the 3D-printer branch. It changes no source allow-list, task dispatch, queue row, approval/import state, catalogue data, TEST data, credentials or Research PC runtime. Existing updater already includes `agent.mjs` and `source-playbooks.test.mjs`.
+- Validation required: run the Gemma research workflow and full Research PC updater tests, merge only after green CI, then rerun a small K1/K1 Max Standard-vs-Combo acceptance test. Review captured page text and exact package labels; no automatic approval/import.
 
 ## Platform AI strategy
 TradeFlow's AI research capability is a centrally operated platform feature. Subscriber-provided AI providers are not part of the product offering and the Owner Dashboard must not expose Platform Configuration or subscriber AI-provider settings. Keep any legacy compatibility tables disabled unless a separately reviewed migration is approved.
@@ -4368,3 +4399,12 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - The updater is corrected to download, back up and install `agent-identity.mjs` and `agent-identity.test.mjs`, and to run the identity test suite both before installation and after installation.
 - Existing safeguards remain: validate the private .env targets without printing values; preserve the .env file; install only reviewed src files; back up existing source; run syntax/tests before replacing files; no Supabase schema/data changes.
 - This updater correction must be merged before asking the Research PC to update. Then run the production updater in place, verify the worker heartbeat, and only then queue the next controlled 3D-printer search task.
+
+
+### Verification note — exact package matcher smoke test
+- Ran six focused assertions against the current PR branch matcher: K1 rejects K1 Max sibling; K1 Max Standard rejects the exact `essential-combok1-max-hyper-pla-2` bundle; K1 Max Combo accepts that same URL/title; standalone K1 Max remains accepted; Audi A1 car is rejected; genuine Bambu A1 Combo printer listing is accepted. Result: **6/6 passed**.
+- This is a focused matcher smoke test, not the full repository suite. GitHub Actions run 42433260646 passed before the strengthened K1 Max Standard/Combo fixture was committed. A new CI run for the corrected test commit has not yet been observed; do not merge until it passes.
+
+
+### Legacy false-positive queue items — manual review required
+- LIVE still contains two older Bambu Lab A1 / Standard / Used rows sourced from Audi A1 car adverts: Gumtree Stratford at £2,150 (row `86cdd9e5-4b1d-47e9-9aaa-3d2ae4b57f74`) and Narberth at £11,300 (row `a4ca1777-3887-4b4e-bfa5-9ef76e27400c`). Their page titles and `/cars-vans-motorbikes/cars/audi/a1/` URLs confirm they are not 3D-printer evidence. Both remain `needs_research`, unreviewed, unapproved and unimported. The updated A1 guard rejected all 9 Audi URLs in the latest controlled run, but it does not retroactively clean these older rows. Leave them for explicit ChatGPT/owner review; do not auto-delete, approve or import them.

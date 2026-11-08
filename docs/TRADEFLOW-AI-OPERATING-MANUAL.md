@@ -1,3 +1,9 @@
+## 8 November 2026 — Gemma 3D-printer LIVE benchmark and reliability follow-up
+
+The two-page batching change is runtime-verified: LIVE task `owner-3d-printers-speed-benchmark-20261108-1645` took 25m 17s versus 70m 49s previously (64.3% faster). However, 5 of 7 Gemma calls failed JSON extraction. Eleven fetched pages were retained for ChatGPT review, with deterministic GBP observations preserved; none was approved or imported. Gemma inference accounts for about 92% of measured subtask time, so search-route changes are not the next optimisation.
+
+A proposed branch `fix/gemma-3d-printer-json-reliability-20261108` constrains 3D-printer responses with a bounded JSON schema, checks exact source_id coverage and records output-token-limit termination. Await CI and controlled local Ollama acceptance before installing. Do not change other agent branches, Research PC secrets, raw-capture retention, or evidence approval/import controls.
+
 # CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
 
 ## 8 November 2026 — PR #298 merged

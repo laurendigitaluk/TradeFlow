@@ -1664,7 +1664,7 @@ The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests wo
 
 **Category slug:** `gaming-consoles-accessories`
 
-**Verified LIVE and TEST state:** 285 total product rows / 284 active products; 411 active evidence rows (246 UK-new, 165 UK-used); 20 branches; 24 manufacturers; 12 enabled category-assigned sources; zero open queue rows; zero active gaming tasks. All 285 product rows and all 411 active evidence rows match across the two environments. One inactive Xbox Series X Digital historical evidence record remains in TEST only and is not copied to LIVE.
+**Verified LIVE and TEST state:** 285 total product rows / 284 active products; 411 active evidence rows (246 UK-new, 165 UK-used); 20 branches; 24 manufacturers; 12 category-specific UK source assignments plus 2 universal UK marketplaces (Amazon UK and eBay UK), 14 loadable sources; zero open queue rows; zero active gaming tasks. All 285 product rows and all 411 active evidence rows match across the two environments. One inactive Xbox Series X Digital historical evidence record remains in TEST only and is not copied to LIVE.
 
 **Tables**
 - `public.catalogue_master_products`: canonical products, package keys, branch/category, active/customer visibility.
@@ -1685,4 +1685,4 @@ The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests wo
 - Current production loader fetches the entire enabled registry globally, then filters category afterwards.
 - PR #310 changes the PostgREST query to category-array overlap plus universal `*` sources, `enabled=true` and `country_code=GB`.
 - Only Amazon UK and eBay UK are explicitly universal; Vinted has no category assignment and US sources are excluded.
-- Do not add new manufacturer source rows until the new loader is installed on the Research PC. Test with one gaming task in TEST, inspect loaded sources and evidence, then use LIVE.
+- Do not add new manufacturer source rows until the new loader is installed on the Research PC. Test with one gaming task in TEST, inspect loaded sources and evidence, then use LIVE. Other enabled UK source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 in both, drones 8 in both, laptops 9 in both, metal detectors 8 in both and mobile phones 13 in both; reconcile the 3D-printer registry before the next 3D-printer run.

@@ -390,3 +390,8 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - Latest worker status is idle with no active/pending 3D task. Its last heartbeat is 00:47:00 UTC (65 minutes old at inspection); Supabase does not prove the Research PC process is currently online while idle. Do not queue another task until the PR is reviewed/merged and the local worker's current state is verified.
 - Source routing still records 32 approved-route errors across 114 route attempts, plus 9 direct product-page fetch errors. Main blockers include Bambu official Shopify and Amazon route 404s, 3DFLO timeout, eBay HTTP 403, Uni3Dverse and SecondHand HTTP 404, and 123-3D direct listing 404/redirects. Do not bypass access controls.
 - Queue now contains 44 3D-branch rows: 3 top-level prices, 2 enrichment histories, 1 reviewed marker, 0 approved and 0 imported. All new captures remain unverified review material.
+
+
+### Verification note — exact package matcher smoke test
+- Ran six focused assertions against the current PR branch matcher: K1 rejects K1 Max sibling; K1 Max Standard rejects the exact `essential-combok1-max-hyper-pla-2` bundle; K1 Max Combo accepts that same URL/title; standalone K1 Max remains accepted; Audi A1 car is rejected; genuine Bambu A1 Combo printer listing is accepted. Result: **6/6 passed**.
+- This is a focused matcher smoke test, not the full repository suite. GitHub Actions run 42433260646 passed before the strengthened K1 Max Standard/Combo fixture was committed. A new CI run for the corrected test commit has not yet been observed; do not merge until it passes.

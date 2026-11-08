@@ -1,3 +1,7 @@
+## 8 November 2026 — Structured-output smoke test finding
+
+Owner tested local Ollama 0.4.14 with `gemma3:4b`; strict JSON schema was accepted and response parsed, but title and price fields were blank despite supplied input. PR #300 updated core schema fields to require non-empty values and added explicit prompt rules to copy supplied page title and visible GBP prices. CI run #251 passed PowerShell parser, source syntax, Gemma tests and Owner Dashboard syntax. No worker restart or research task yet. Latest PR remains draft/unmerged; next controlled step is install current branch and verify a populated one-page response.
+
 ## 8 November 2026 — Gemma batch failure recovery
 
 Added isolated per-page recovery in PR #300 after failed 3D-printer multi-page extraction. Two-page batch remains the normal fast path. On failure, each page is retried separately with a compact excerpt, exact one-page schema and 1,024-token output cap. Successful retries are structured; only failed retries use raw fallback. Run #244 passed all CI gates. No research task was queued, no evidence approved/imported, and no LIVE database rows changed. PR remains draft/open; Research PC installation and Ollama schema compatibility are outstanding.

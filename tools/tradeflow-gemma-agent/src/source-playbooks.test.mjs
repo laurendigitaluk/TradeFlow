@@ -252,8 +252,8 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
     text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00'
   }]);
   assert.match(prompt, /CAPTURE, DO NOT DECIDE/i);
-  assert.match(prompt, /one top-level findings array/i);
-  assert.match(prompt, /exactly one compact finding for every supplied source_id/i);
+  assert.match(prompt, /supplied JSON schema exactly/i);
+  assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /Capture the machine-only price separately from Combo/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);

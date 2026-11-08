@@ -17,5 +17,5 @@ export function resolveControlPlane(env = {}) {
   if (parsed.protocol !== 'https:' || parsed.hostname !== TRADEFLOW_PROJECTS[name] + '.supabase.co') {
     throw new Error('Configured ' + name + ' URL does not match the approved TradeFlow ' + name + ' project.');
   }
-  return Object.freeze({ name, url: url.replace(/\\/$/, ''), key });
+  return Object.freeze({ name, url: url.replace(/\/+$/, ''), key });
 }

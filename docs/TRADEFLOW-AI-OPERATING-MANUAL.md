@@ -1,5 +1,14 @@
 # CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
 
+## 8 November 2026 — 3D-printer Gemma speed optimisation proposal (PR pending)
+
+- Baseline six-product LIVE task `owner-3d-printers-chatgpt-evidence-batch-20261108-1315` took 70m 49s. The six subtasks ran sequentially. Across them, 30 product pages were discovered, 18 fetched, 18 one-page Ollama calls made and 10 extraction failures recorded. Raw page captures were retained; zero evidence was approved or imported.
+- The production agent serialises Ollama work and uses one page per call for the 3D-printer branch. PR branch `perf/gemma-3d-printer-two-page-extraction-20261108` changes only this branch to two pages per call and requires a JSON `findings` array with one row per source ID. The selected excerpt is reduced to 2,800 characters per page; visible GBP price mentions and nearby price contexts remain in the prompt, and the complete page text remains in the LIVE raw capture.
+- The PR adds stage-duration metrics (web search, approved-source probes, collection discovery, page fetching, Gemma extraction, queue writes and total elapsed time) so the next controlled run can quantify where time is spent.
+- This is an optimisation under test, not a proven runtime improvement. The next gate is green CI, then owner approval to use the existing Research PC updater while preserving the private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`, followed by a small controlled 3D-only LIVE acceptance. Do not queue a new task before the installed worker version is verified.
+- Two-page extraction does not alter UK source allow-lists, model/package matching, evidence validation, raw capture retention, `needs_research` status, or ChatGPT/owner approval and import controls. Other categories retain their existing batch behaviour.
+
+
 
 ## 8 November 2026 — scheduled LIVE verification at 02:00 UTC
 

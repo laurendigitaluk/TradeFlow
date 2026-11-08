@@ -16,3 +16,4 @@ Telemetry identity finding: a Sigma lens task with category_slug=lenses and bran
 No task was queued; no queue/source/catalogue rows were changed; no approvals/imports, TEST/LIVE crossover, secret changes, Research PC update, restart, merge or deployment. Preserve the local .env and TRADEFLOW_GEMMA_ENV_FILE.
 
 Verification update — 8 November 2026 UTC: PR #284 CI run 42428499719 passed 45/45 tests with no failures. PR #282 and PR #283 were closed as superseded by PR #284. PR #284 remains open, mergeable, unmerged and undeployed pending review and explicit owner approval. A ChatGPT Supervisor learning note was added to LIVE Common Room as message 4973de75-bb2b-4c16-92bf-4af4bea6403e.
+- PR #279 was also closed as redundant after verifying that its short-model-ID guard and Audi A1/Bambu A1 regression test are already present in the current production branch.

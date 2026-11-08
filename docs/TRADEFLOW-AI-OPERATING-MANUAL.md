@@ -4063,3 +4063,32 @@ All 565 active evidence rows match by model, package/storage variant, evidence t
 The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. UK-used evidence remains reference-only and excluded from automatic valuation.
 
 No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment.
+
+
+## 8 November 2026 — Gemma 3D printer extraction prompt refinement
+
+### Observed LIVE behaviour
+
+The TradeFlow LIVE 3D Printers agent was running task `owner-3d-printers-deep-extraction-acceptance-20261108-1235`. Its K1 Max official UK product-page capture timed out during Gemma's structured extraction. The deterministic capture was retained and enriched onto the existing unreviewed queue row rather than discarded:
+
+- One direct product page fetched from 14 search results; three product pages discovered.
+- Gemma extraction: one call, one timeout.
+- One existing review row enriched; no new row, approval or catalogue import.
+- Raw page capture retained 17 visible GBP mentions, including the K1 Max standard price (£589), crossed-out price (£729), saving (£140), separate Combo/accessory offers and gift-card amounts. These are page observations, not 17 independent printer prices.
+- Queue status remains `needs_research`; no evidence was approved or imported.
+
+### Code change
+
+Production-branch PR #293 merged as commit `3b55d43acec4ad4abb5f8e5b9530f169d3c1d3f3` (source change commit `5fb1d10aa88b9bd8c7a76199224e383e6cbd0512`). The change is limited to the 3D-printer Gemma extraction prompt:
+
+- Keep up to 16 visible GBP amounts and compact nearby price contexts.
+- Keep only the three latest, bounded owner/agent guidance notes.
+- Tell Gemma to capture rather than decide; always return one compact structured observation for each supplied source ID.
+- Explicitly separate machine-only, Combo, bundle, crossed-out, saving, accessory, filament, gift-card and delivery amounts; preserve uncertainty and contradictions.
+- Preserve the existing raw-page fallback, enrichment-only behaviour and ChatGPT review gate.
+
+GitHub Actions run 42481289635 passed: 50 tests, 0 failures; source and Owner Dashboard syntax checks passed.
+
+### Deployment status and next action
+
+**Implemented in production GitHub; not yet installed on the Research PC.** The running local worker continues with its already-loaded source. Do not stop or restart it during an active task. Once the current task finishes, use the existing documented TradeFlow updater once to update the worker source in place, retaining its existing private TradeFlow `.env`. Do not edit PowerShell launcher logic, move/replace the `.env`, alter Ollama settings or touch the separate GearCashOut configuration. The next run must confirm that the new prompt is loaded and compare structured Gemma output against the raw page capture. Keep all captures unverified until ChatGPT/owner review.

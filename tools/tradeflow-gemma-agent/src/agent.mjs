@@ -501,7 +501,7 @@ export function buildDeepPageExcerpt(text, task = {}, maxChars = 6200) {
   const snippets = [];
   const seen = new Set();
   const add = value => {
-    const clean = String(value || '').replace(/\\s+/g, ' ').trim();
+    const clean = String(value || '').replace(/\s+/g, ' ').trim();
     if (clean && !seen.has(clean)) { seen.add(clean); snippets.push(clean); }
   };
   add(source.slice(0, 900));
@@ -512,7 +512,7 @@ export function buildDeepPageExcerpt(text, task = {}, maxChars = 6200) {
     const index = source.toLowerCase().indexOf(value.toLowerCase());
     if (index >= 0) add(source.slice(Math.max(0, index - 140), Math.min(source.length, index + value.length + 220)));
   }
-  const detailPattern = /(?:new(?:\\s+and\\s+unused)?|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened|sealed|condition|in stock|out of stock|sold out|currently sold out|only\\s+\\d+\\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery)/gi;
+  const detailPattern = /(?:new(?:\s+and\s+unused)?|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened|sealed|condition|in stock|out of stock|sold out|currently sold out|only\s+\d+\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery)/gi;
   let match, detailCount = 0;
   while ((match = detailPattern.exec(source)) && detailCount < 14) {
     add(source.slice(Math.max(0, match.index - 110), Math.min(source.length, match.index + match[0].length + 170)));
@@ -521,7 +521,7 @@ export function buildDeepPageExcerpt(text, task = {}, maxChars = 6200) {
   add(source.slice(-550));
   let output = '';
   for (const snippet of snippets) {
-    const next = (output ? '\\n[page detail] ' : '') + snippet;
+    const next = (output ? '\n[page detail] ' : '') + snippet;
     if (output.length + next.length > maxChars) {
       const remaining = maxChars - output.length;
       if (remaining > 120) output += next.slice(0, remaining);
@@ -594,7 +594,7 @@ export function buildExtractionPrompt(task, pages) {
     'Bounded owner/agent Common Room notes: ' + JSON.stringify(commonRoom),
     'Supplied pages: ' + JSON.stringify(sourcePack)
   ];
-  return instructions.join('\\n');
+  return instructions.join('\n');
 }
 
 function fallbackPageCapture(task, source, reason) {

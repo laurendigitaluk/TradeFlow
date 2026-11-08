@@ -1,5 +1,10 @@
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 
+## 8 November 2026 — PR #298 merged
+
+PR #298 is now merged into `production` (merge commit `3417c5dced183fedcf13a7af266c67c2dd697d0a`). GitHub Actions validation passed 53/53 tests. This is not yet installed on the Research PC and has not been runtime-benchmarked. Next: use the existing updater with the correct dedicated install folder, preserving the separate private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`; verify installed commit/heartbeat before queuing a controlled 3D-printer batch. Do not change other agent branches or import/approval controls.
+
+
 ## 8 November 2026 — 3D-printer Gemma extraction speed work (PR pending)
 
 - Baseline LIVE batch `owner-3d-printers-chatgpt-evidence-batch-20261108-1315` ran for 70m 49s across six sequential product subtasks. It discovered 30 product pages, fetched 18, made 18 one-page Ollama extraction calls and recorded 10 extraction failures. All fetched pages remained in the LIVE review queue; no approval or import occurred.

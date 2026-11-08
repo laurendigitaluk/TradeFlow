@@ -1,5 +1,7 @@
 # TradeFlow Gemma Research PC worker
 
+**PowerShell compatibility:** the updater runs in standard Windows PowerShell 5.1. PowerShell Core 7 is not required. Use the existing confirmed installation path and its existing `.env`; do not create a second installation or copy the private configuration.
+
 The Research PC worker polls the approved TradeFlow LIVE AI task queue and uses the existing local private environment file and Ollama installation.
 
 ## Update or install the worker

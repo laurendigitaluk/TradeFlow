@@ -29,6 +29,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Check Gemma updater PowerShell syntax
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
+          if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
       - name: Check Gemma source syntax
         shell: bash
         run: |

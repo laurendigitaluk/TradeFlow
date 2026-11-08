@@ -1,7 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -390,4 +391,82 @@ test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-
   assert.match(prompt, /visible_gbp_price_context/);
   assert.ok(prompt.includes('A'.repeat(2200)));
   assert.ok(!prompt.includes('A'.repeat(2201)));
+});
+
+
+test('duplicate enrichment appends unverified observations without changing top-level price or review state', () => {
+  const sourceUrl = 'https://uk.anycubic3d.com/products/kobra-s1';
+  const existing = {
+    id: 'queue-1', status: 'needs_research', dedupe_key: 'capture-abc',
+    category_slug: '3d-printers-equipment', branch_slug: '3d-printers',
+    manufacturer: 'Anycubic', model: 'Kobra S1', package_key: 'standard',
+    source_url: sourceUrl, observed_price: null, evidence_type: null,
+    reviewed_at: null, reviewed_by: null, approved_at: null, imported_at: null,
+    research_notes: 'Original raw capture retained.',
+    raw_payload: { review_classification: 'unverified_capture', page_capture: { url: sourceUrl, title: 'Original capture', captured_text: 'Original page text' } }
+  };
+  const incoming = {
+    ...existing, task_key: 'task-20261107', source_name: 'Anycubic UK',
+    raw_payload: {
+      review_classification: 'unverified_capture',
+      evidence: {
+        evidence_type: 'uk_new', observed_price: 319, price_currency: 'GBP',
+        item_condition_text: 'New', availability_text: 'In stock',
+        package_or_variant_text: 'Kobra S1 Standard Printer', product_identity_text: 'Anycubic Kobra S1',
+        match_observation: 'Exact model title match', notes: 'Structured observation for ChatGPT review.',
+        page_capture: { url: sourceUrl, title: 'Anycubic Kobra S1', captured_text: 'Latest page text with visible price £319.00', gbp_price_mentions: [{ amount: 319, display: '£319.00' }] }
+      }
+    }
+  };
+  const patch = buildCaptureEnrichmentPatch(existing, incoming, '2026-11-07T23:55:00.000Z');
+  assert.ok(patch);
+  assert.equal(patch.raw_payload.review_classification, 'unverified_capture');
+  assert.equal(patch.raw_payload.enrichment_history.length, 1);
+  assert.equal(patch.raw_payload.enrichment_history[0].task_key, 'task-20261107');
+  assert.equal(patch.raw_payload.enrichment_history[0].gemma_observed_price, 319);
+  assert.match(patch.raw_payload.enrichment_history[0].page_capture_excerpt.captured_text, /Latest page text/);
+  assert.match(patch.research_notes, /unverified Gemma extraction/i);
+  assert.equal(patch.updated_at, '2026-11-07T23:55:00.000Z');
+  assert.equal('status' in patch, false);
+  assert.equal('observed_price' in patch, false);
+  assert.equal('evidence_type' in patch, false);
+});
+
+test('duplicate enrichment refuses reviewed, approved, imported and mismatched rows', () => {
+  const existing = {
+    status: 'needs_research', dedupe_key: 'capture-abc',
+    category_slug: '3d-printers-equipment', branch_slug: '3d-printers',
+    manufacturer: 'Anycubic', model: 'Kobra S1', package_key: 'standard',
+    source_url: 'https://uk.anycubic3d.com/products/kobra-s1',
+    reviewed_at: null, reviewed_by: null, approved_at: null, imported_at: null,
+    raw_payload: { review_classification: 'unverified_capture' }
+  };
+  const incoming = {
+    ...existing, task_key: 'task-20261107',
+    raw_payload: { review_classification: 'unverified_capture', evidence: { evidence_type: 'uk_new', observed_price: 319, product_identity_text: 'Anycubic Kobra S1' } }
+  };
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, reviewed_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, reviewed_by: 'reviewer' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, approved_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, imported_at: '2026-11-07T22:00:00Z' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, status: 'approved' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, category_slug: 'mobile-phones' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, package_key: 'combo' }, incoming), null);
+  assert.equal(buildCaptureEnrichmentPatch({ ...existing, source_url: 'https://example.com/other' }, incoming), null);
+  const alreadyEnriched = { ...existing, raw_payload: { ...existing.raw_payload, enrichment_history: [{ task_key: 'task-20261107', source_url: existing.source_url }] } };
+  assert.equal(buildCaptureEnrichmentPatch(alreadyEnriched, incoming), null);
+});
+
+test('duplicate enrichment selects only columns present in the LIVE review queue schema', async () => {
+  const agentSource = await readFile(new URL('./agent.mjs', import.meta.url), 'utf8');
+  const selectMatch = agentSource.match(/platform_catalogue_research_queue\\?select=([^']+)/);
+  assert.ok(selectMatch, 'review-queue duplicate lookup must declare its selected columns');
+  const fields = selectMatch[1].split('&')[0].split(',');
+  assert.deepEqual(fields, [
+    'id','status','dedupe_key','category_slug','branch_slug','manufacturer','model',
+    'package_key','source_url','reviewed_at','reviewed_by','approved_at','imported_at',
+    'raw_payload','research_notes','updated_at'
+  ]);
+  assert.match(agentSource, /reviewed_at=is\\.null&reviewed_by=is\\.null&approved_at=is\\.null&imported_at=is\\.null/);
+  assert.doesNotMatch(agentSource, /approved_by|imported_by/);
 });

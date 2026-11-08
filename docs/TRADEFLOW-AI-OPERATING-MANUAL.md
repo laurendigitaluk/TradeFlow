@@ -4754,3 +4754,15 @@ Existing Wex Photo Video source assignments were retained. All new sources are c
 Verified LIVE source counts after update: Lighting 9; Continuous Lighting 6; Studio Lighting 9; Lighting Modifier 5; Lighting Support 5; Photography Lighting & Studio 5; Camera Flash 5; Video Production Equipment 8; Camera Accessories 21; Camera Rig 9; Tripods 6; Power & Batteries 8. Where UK retailers display ex-VAT and inc-VAT amounts, the agent must use the inc-VAT GBP consumer price for standard new-price evidence; never mistake ex-VAT as the retail total. Distinguish new, used, ex-demo and open-box condition.
 
 No product or evidence rows were changed in this source update. No research tasks were queued and no worker was restarted. LIVE remains the authoritative catalogue; TEST remains software/regression only.
+
+
+## 8 November 2026 — Completed research stays in history, not active dashboard lists
+
+The intended owner-dashboard behavior is implemented in production source and LIVE/TEST RPCs:
+- Outstanding research tasks: p_status='active' returns queued, running and failed only; completed/cancelled history is hidden.
+- Research awaiting review: p_status='open' returns pending_review, needs_research and approved only; imported/rejected history is hidden.
+- The frontend uses those filters and shows empty-state messages when no active/open rows exist. It does not delete completed records.
+
+Current LIVE state: 0 open queue rows, 20 completed agent tasks, 0 active tasks. Current TEST state: 0 open queue rows, 1 queued 3D-printer smoke test for Creality Ender-3 V3 KE, 1 completed task. The queued TEST smoke test remains pending and should not be cancelled without review.
+
+The screenshot still shows the older “Queued and completed tasks” heading and processed rows, while current production HTML/JS says “Outstanding research tasks” and “Research awaiting review”. Worker code sets no-store headers for these assets. This points to the Cloudflare Worker deployment, not a database filtering defect. Check and deploy the latest production assets to Worker tradeflow before further queue/data changes. No Cloudflare deployment was performed from this session.

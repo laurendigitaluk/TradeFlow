@@ -4689,3 +4689,14 @@ Added official UK laptop manufacturer sources to both source registries:
 Apple UK and Samsung UK were already approved for laptops; eBay UK and CeX UK were already approved used-market sources. Retailer sources Argos, Currys, John Lewis and Very were already category-scoped.
 
 Category-wide audit after this work: both databases have 38 categories. Remaining evidence-count drift exists in several older categories, notably Drones (542 LIVE vs 618 TEST), Lenses (538 vs 606), Cameras (573 vs 614), and Camera Accessories (210 vs 244). The 3D printer and Mobile Phones active evidence counts now match; product totals differ only by documented inactive TEST audit rows. Do not start the full Gemma sweep until the remaining intended categories and source-selection routes are checked.
+
+
+## 8 November 2026 — Gemma capture and source-selection rules
+
+For 3D-printer tasks only, extractRelevantPageText parses matching JSON-LD Product/Offer facts and places them before long flattened page text. Product identity must match task manufacturer/model. GBP amounts are emitted with explicit GBP prefix; non-GBP currency must never be relabelled. Other categories retain content-first ordering.
+
+The approved source loader now queries only enabled GB source rows whose category_slugs overlap the task category or the explicit universal * marker. Only Amazon UK and eBay UK are universal. Invalid/missing category fails closed. Manufacturer filtering and research-lane checks remain after source loading.
+
+The combined change is PR #314. It includes structured-capture and category-selection regression tests in GitHub CI and Update-TradeFlow-Gemma.ps1. Do not deploy or start the worker until CI passes and the PR merges. Update the Research PC from production without -StartWorker; then run one controlled gaming task in TEST before LIVE.
+
+Gaming Consoles & Accessories is reconciled: 284 active products, 411 active evidence rows, exact LIVE/TEST parity. Its registry has 12 category-specific UK sources plus 2 universal sources. Source counts across the other categories (category-specific plus universal): 3D printers LIVE 15 / TEST 5, cameras 16 both, drones 8 both, laptops 12 both, metal detectors 8 both, mobile phones 13 both. Reconcile the 3D-printer source registry separately before another run.

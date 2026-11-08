@@ -47,6 +47,27 @@ test('3D printer capture retains structured GBP offers before long page text and
   assert.ok(extractVisibleGbpPriceMentions(text).some(price => price.amount === 169));
 });
 
+test('structured non-GBP offers are not reported as GBP prices', () => {
+  const product = {
+    '@type': 'Product',
+    name: 'ELEGOO Neptune 4 Pro FDM 3D Printer',
+    brand: { name: 'ELEGOO' },
+    model: 'Neptune 4 Pro',
+    offers: { price: '169.00', priceCurrency: 'USD' }
+  };
+  const html = '<main>ELEGOO Neptune 4 Pro.</main>' +
+    '<script type="application/ld+json">' + JSON.stringify(product) + '</script>';
+  const text = extractRelevantPageText(html, {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro'
+  });
+
+  assert.ok(text.includes('Price: 169.00 Currency: USD'));
+  assert.equal(extractVisibleGbpPriceMentions(text).length, 0);
+});
+
 test('non-3D categories retain their existing page-content-first extraction order', () => {
   const product = {
     '@type': 'Product',

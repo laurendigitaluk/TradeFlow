@@ -9,7 +9,7 @@ test('approved source query is restricted to the requested category and universa
   assert.equal(params.get('enabled'), 'eq.true');
   assert.equal(params.get('country_code'), 'eq.GB');
   assert.equal(params.get('category_slugs'), 'ov.{3d-printers-equipment,*}');
-  assert.match(path, /order=priority\\.asc/);
+  assert.equal(params.get('order'), 'priority.asc');
 });
 
 test('each specialist category receives its own source filter', () => {

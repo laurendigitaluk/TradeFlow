@@ -27,5 +27,5 @@ The actual LIVE queue schema has reviewed_by, reviewed_at, approved_at and impor
 - Corrects the observed mismatched 3D agent key / explicit non-3D category telemetry attribution.
 
 ## Tests and safeguards
-Regression coverage includes append-only enrichment, review-state safeguards, identity mismatch, duplicate-history prevention, actual LIVE schema column selection, staged-count separation and five telemetry identity cases. The workflow now includes the identity test file; CI is pending at checkpoint creation.
+Regression coverage includes append-only enrichment, review-state safeguards, identity mismatch, duplicate-history prevention, actual LIVE schema column selection, staged-count separation and five telemetry identity cases. The workflow now includes the identity test file; GitHub Actions run 42428499719 passed on PR #284 head 96ad070d9377bac128f0d4dc4685e5b9765c5428: 45 tests passed, 0 failed; Gemma source syntax and Owner Dashboard JavaScript syntax checks passed.
 No queue rows, source rows, catalogue records or approvals/imports were changed. No task was queued. TEST/LIVE separation and all secrets/private .env paths are preserved. No Research PC update, restart, merge or deployment occurred.

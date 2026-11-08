@@ -4668,3 +4668,12 @@ Final verification:
 - Inactive evidence history: LIVE 17, TEST 21. The four-row difference is retained audit history, not active catalogue drift.
 
 Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 54/54, but installed Research PC/Ollama structured-output acceptance is not yet verified. No worker was started/restarted and no new research task was queued. Complete the remaining category reconciliation and source-selection checks first, then update all Gemma workers/agents and run the controlled full research cycle.
+
+
+
+## 8 November 2026 — Current-production PR #312 handoff
+
+- Production advanced five commits after the earlier PR #310 branch was created. GitHub compare reported `production` ahead/behind divergence (production 5 commits ahead of that branch), so PR #310 was closed as superseded; it was not merged.
+- Recreated the same narrowly scoped code/test change on a new branch based on the latest production commit `47eb3feac262c8c69e221f16991c8435888f7960`: `fix/gemma-3d-jsonld-gbp-capture-latest-production-20261108`.
+- Opened draft PR #312: https://github.com/laurendigitaluk/TradeFlow/pull/312. It contains only `agent.mjs` and `agent-speed.test.mjs` at this point; documentation updates are being added on this branch. Four regression tests cover long-page structured GBP retention, multiple GBP offers/non-GBP exclusion, non-GBP-only offers, and unchanged non-3D ordering. The long-page test explicitly checks that the old `Price: 169.00 Currency: GBP` format yields zero parsed prices while the corrected `Price: GBP 169.00` format yields one.
+- CI is pending on the new branch. No merge, deployment, worker restart, task enqueue, source-registry change, TEST/LIVE data change, evidence approval/import, or secret/private `.env` change has occurred.

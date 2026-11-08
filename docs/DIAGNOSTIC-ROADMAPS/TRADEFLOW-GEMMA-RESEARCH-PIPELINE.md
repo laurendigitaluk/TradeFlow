@@ -436,3 +436,6 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - PR #292: https://github.com/laurendigitaluk/TradeFlow/pull/292, branch fix/gemma-3d-deep-page-extraction-20261108, base production; open, not merged.
 - No LIVE/TEST database rows, source registry, catalogue, local secrets, Research PC files/process or Cloudflare deployment changed.
 - Post-merge acceptance: use existing updater in place; preserve the dedicated TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE; verify worker version/heartbeat; run one controlled new and one used multi-model 3D-printer batch; inspect structured observations and raw page captures; ChatGPT manually validates all candidates. Do not import automatically.
+
+
+Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.

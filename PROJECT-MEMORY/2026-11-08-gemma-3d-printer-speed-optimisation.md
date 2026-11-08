@@ -1,3 +1,7 @@
+## 8 November 2026 — Research PC updater path friction removed
+
+The Research PC was already in the correct installation folder and the `.env` file was visibly present there. Updated draft updater to auto-detect the current directory by `src/agent.mjs`, select sibling `.env`, and strip wrapping quotes if paths are explicitly supplied. This avoids asking owner to copy folder/file paths again. Await CI; then one command, no worker start. No LIVE data, tasks, approvals or imports changed.
+
 ## 8 November 2026 — Updater parser failure and corrected validation
 
 The owner attempted the PR #300 updater on Research PC; PowerShell parser errors stopped execution before installation. No source files were installed and private `.env` was not changed. Root cause: truncated `SourceBranch` validation line and duplicated updater body. Rebuilt updater from production baseline, retaining existing safeguards and adding one explicit branch parameter. Added a PowerShell AST parser check to GitHub Actions. Do not ask owner to rerun until latest-head CI succeeds. Next: corrected updater run without `-StartWorker`, then local Ollama schema test; only then controlled 3D-printer task. No task queued, approvals/imports unchanged.

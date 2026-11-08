@@ -549,6 +549,17 @@ function extractObservationSnippets(text, pattern, limit = 8) {
   return matches;
 }
 
+export function compactPrinterObservation(value, sourceText, kind, maxChars = 320) {
+  const raw = String(value || '').replace(/\s+/g, ' ').trim();
+  if (raw && raw.length <= maxChars) return raw;
+  const pattern = kind === 'condition'
+    ? /\b(?:brand\s+new|new(?:\s+and\s+unused)?|used|second[ -]?hand|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened(?:\s*[-–]\s*never\s*used)?|sealed|grade\s*[a-f])\b/gi
+    : /\b(?:in stock|out of stock|sold out|currently sold out|only\s+\d+\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery)\b/gi;
+  const fallback = extractObservationSnippets(sourceText, pattern, 6).join(' | ');
+  if (fallback) return fallback.slice(0, maxChars);
+  return raw.length <= maxChars ? raw : '';
+}
+
 export function buildExtractionPrompt(task, pages) {
   const sourcePack = pages.map(item => {
     const priceMentions = extractVisibleGbpPriceMentions(item.text);
@@ -590,7 +601,10 @@ export function buildExtractionPrompt(task, pages) {
     'IDENTITY AND PACKAGE: Copy the exact page title and identify manufacturer, exact model, standard/machine-only versus Combo, bundle contents, colour/AMS/ACE/CFS options, accessories and model/package mismatches. Do not assume the requested package matches the page.',
     'PRICES: Capture every visible GBP amount and its nearby wording. Capture the machine-only price separately from Combo, and distinguish crossed-out price, discount/saving, bundle, accessory, filament, gift-card and delivery amounts. Do not mistake per-kg filament prices, accessories, gift-card values, shipping or recommendations for the printer price. Never promote a saving or accessory price to the printer price. If association is unclear, say so.',
     'CONDITION, STOCK AND UK: Copy explicit new/used/refurbished/reconditioned/ex-demo/open-box/opened/sealed wording; in-stock/sold-out/backorder/dispatch/delivery wording; UK seller, UK delivery, VAT and location clues. Record missing facts as empty strings and contradictions explicitly.',
-    'OUTPUT CONTRACT: Return strict JSON with one top-level findings array and exactly one compact finding for every supplied source_id. Each finding must include source_id, page_title, product_identity_text, package_or_variant_text, seller_text, price_mentions (all exact GBP strings), price_contexts (short nearby excerpts for relevant prices), item_condition_text, availability_text, location_text, identifiers_text, match_observation, uncertainty_and_conflicts and notes. Use concise factual phrases; do not repeat page text verbatim. Never omit a page or source_id.',
+    'OUTPUT CONTRACT: Return strict JSON with one top-level findings array and exactly one finding for every supplied source_id. Each finding must include source_id, page_title, product_identity_text, package_or_variant_text, seller_text, evidence_type, observed_price, price_mentions, price_contexts, item_condition_text, availability_text, location_text, identifiers_text, match_observation, uncertainty_and_conflicts and notes. evidence_type must be exactly "uk_new", "uk_used" or null. observed_price must be a JSON number or null. Keep each text field at 320 characters or fewer; use short factual phrases, not page dumps, HTML or repeated page text. Never omit or reassign a source_id.',
+    'NEW/USED CLASSIFICATION: Set evidence_type to uk_new only when the exact requested printer/package is explicitly described as new, brand new or sealed. Set it to uk_used for explicit used, second-hand, pre-owned, refurbished, reconditioned, ex-demo, open-box or opened condition. If the exact product condition is absent, contradictory, or cannot be separated from other products on the page, use null. Do not copy the task research_type into evidence_type; a uk_both task still requires page-specific classification.',
+    'PRICE ASSIGNMENT: Set observed_price only to one current, payable GBP amount clearly associated with the exact requested printer and package. Do not select a crossed-out price, saving, accessory, filament, gift card, shipping charge or a different package. If the page shows multiple package prices, the exact package is unclear, or the listing is sold out/unavailable, use null and preserve all visible GBP amounts and their short contexts in price_mentions and price_contexts.',
+    'STRICT JSON SHAPE: {"findings":[{"source_id":"S1","page_title":"","product_identity_text":"","package_or_variant_text":"","seller_text":"","evidence_type":null,"observed_price":null,"price_mentions":[],"price_contexts":[],"item_condition_text":"","availability_text":"","location_text":"","identifiers_text":"","match_observation":"","uncertainty_and_conflicts":"","notes":""}]}',
     'Task: ' + JSON.stringify(taskData),
     'Branch rules: ' + JSON.stringify(branchRules),
     'Category rules: ' + JSON.stringify(categoryInstructions),
@@ -819,8 +833,12 @@ export async function extractBatch(task, pages, env, onProgress) {
             evidence_type: ['uk_new','uk_used'].includes(row.evidence_type) ? row.evidence_type : null,
             observed_price: visibleModelPrice ? modelAmount : (prices.length === 1 ? prices[0].amount : null),
             price_currency: prices.length ? 'GBP' : null,
-            item_condition: row.item_condition_text || row.item_condition || null,
-            availability: row.availability_text || row.availability || null,
+            item_condition: is3dPrinterResearchTask(task)
+              ? (compactPrinterObservation(row.item_condition_text || row.item_condition, source.text, 'condition') || null)
+              : (row.item_condition_text || row.item_condition || null),
+            availability: is3dPrinterResearchTask(task)
+              ? (compactPrinterObservation(row.availability_text || row.availability, source.text, 'availability') || null)
+              : (row.availability_text || row.availability || null),
             source_name: row.seller_text || host,
             source_url: source.url,
             sales_channel: host,

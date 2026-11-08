@@ -20,6 +20,7 @@ if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
 }
 
 $TestFiles = @(
+    'control-plane.test.mjs',
     'task-groups.test.mjs',
     'source-playbooks.test.mjs',
     'agent-identity.test.mjs',

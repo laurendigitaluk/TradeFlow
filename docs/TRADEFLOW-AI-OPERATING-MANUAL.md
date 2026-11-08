@@ -1,3 +1,7 @@
+## 8 November 2026 — Updater parser failure and repair
+
+Do not rerun the earlier updater download. The first attempt failed at PowerShell parse time; no installation occurred. The updater in PR #300 was rebuilt from the production baseline with a single `-SourceBranch` parameter and one environment validation section. A PowerShell parser check has been added to CI. Wait for that run to complete successfully before providing the owner with a replacement command. Preserve the existing private `.env`, do not use `-StartWorker`, and verify local Ollama schema support before queuing any research.
+
 ## 8 November 2026 — PR #300 CI passed; local schema validation is next
 
 PR #300 passed GitHub Actions run #219 at head `f8fe6f78ebf77c971526d650293a7f0d22951207`. All Gemma research tests and syntax checks passed. It remains draft/open and is not deployed.

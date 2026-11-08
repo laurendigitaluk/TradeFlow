@@ -1,3 +1,7 @@
+## 8 November 2026 — Single-page recovery added
+
+PR #300 keeps two-page extraction for speed, but on malformed/truncated output retries the pages separately using a shorter excerpt, one-finding schema and 1,024-token budget. Each successful retry becomes structured data; only failed retries remain raw fallback. Run #244 passed all CI checks. Draft PR is not merged/deployed and local Ollama support is not yet proven.
+
 ## 8 November 2026 — Updater path handling simplified
 
 Research PC screenshots confirmed PowerShell was already in the installed Gemma folder and `.env` existed beside it. Updater now auto-detects current folder from `src/agent.mjs`, selects adjacent `.env`, and strips outer quotes on explicit paths. Wait for latest-head CI, then one launch command only; no manual path prompts expected. Do not start worker until installation and local Ollama schema test pass.

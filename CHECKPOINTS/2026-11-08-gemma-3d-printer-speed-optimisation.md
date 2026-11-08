@@ -1,3 +1,7 @@
+## 8 November 2026 — Updater parser failure repaired in PR #300
+
+Research PC attempt failed at PowerShell parse time; installation did not begin and existing `.env` was not changed. Root cause: truncated branch validation and duplicated updater body in PR branch. Rebuilt updater from production baseline with explicit `-SourceBranch` parameter, defaulting to production. Added PowerShell parser validation to Gemma CI. Await latest-head CI result, then request one controlled owner-side updater run with no worker start. Local Ollama JSON-schema acceptance is still the gate before further 3D-printer research.
+
 ## 8 November 2026 — PR #300 CI passed
 
 PR #300 head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed GitHub Actions run #219, including source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax. PR remains draft/open and is not deployed. The branch updater now accepts `-SourceBranch` (default `production`) for controlled local installation of the draft branch; existing backups, Node test gates, TEST/LIVE URL checks and private .env preservation remain. Next gate: Research PC installation without starting worker, then Ollama schema compatibility check. No new task queued.

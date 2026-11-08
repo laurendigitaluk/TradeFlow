@@ -1,6 +1,8 @@
 # Gemma 3D Printer Extraction Performance Checkpoint
 ## 8 November 2026 — PR #303: preserve structured product offers
 
+Metric note: `eligible_urls` counts direct seed/search/approved-source URLs that pass product-page eligibility; `discovered_product_pages` also includes collection-discovered product links. In this run, `eligible_urls=0` but one page was discovered because the Elegoo pre-owned collection yielded the exact-model product URL. The same URL was also returned through the new FDM collection routes and deduplicated. This was one official product page, not a separate used-market listing.
+
 LIVE task `owner-3d-printers-extraction-smoke-20261108-1900` completed one Elegoo Neptune 4 Pro subtask on worker `DESKTOP-LVASEUB-84452` (18:57:24–19:01:33 UTC). Search 16; product pages discovered/fetched 1/1; Gemma calls 1; extraction failures 0; 1 existing review record enriched, 0 new rows. Stage timings: search 669 ms; source probes 10,003 ms; collection discovery 11,098 ms; page fetch 918 ms; Gemma 224,986 ms; queue write 327 ms; total 248,309 ms. Gemma was about 90.6% of total time.
 
 The capture is 9,998 characters and ends mid-text. Production appends matched JSON-LD Product/Offer text after flattened page content, then truncates at 10,000 characters. This can discard structured offers on long pages; the exact HTML was not retained, so the presence of JSON-LD in this particular response is unknown. The page contains multiple model, open-box and bundle price options; no safe single price or evidence type was assigned. Capture remains `needs_research`.

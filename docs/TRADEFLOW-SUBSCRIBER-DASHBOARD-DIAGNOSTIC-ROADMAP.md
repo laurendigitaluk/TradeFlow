@@ -1658,3 +1658,29 @@ The correction is in `platform-owner-dashboard.js` and migration `20261108223000
 LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
 
 The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests workflow and was merged to production (merge commit c62bc4b47a64a2de1dadb50106ce4b6dae150e3d), and the migration was applied to TradeFlow LIVE. Both RPC signatures and authenticated execute grants were verified. Cloudflare Worker/static asset deployment and browser verification remain outstanding. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.
+
+
+## 8 November 2026 — Gemma page capture and source selection diagnostic
+
+**3D-printer capture path**
+- Research PC worker: tools/tradeflow-gemma-agent/src/task-worker.mjs.
+- Task processing and source/page extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
+- Page HTML is fetched through page(url, task), then extractRelevantPageText(html, task, options) prepares the capture.
+- For 3D-printer tasks only, matching JSON-LD Product/Offer data is placed before long flattened content. Product identity must match task manufacturer/model. GBP is emitted as GBP plus amount; other currencies remain distinct.
+- The extraction tests live in tools/tradeflow-gemma-agent/src/agent-speed.test.mjs. Other categories retain content-first ordering.
+- The raw capture is handed to platform_catalogue_research_queue; ChatGPT matches the exact master product/package and creates shared_market_evidence only after review.
+
+**Category source loading path**
+- Approved source registry: public.platform_research_sources.
+- Category assignment: category_slugs text[]; universal sources are explicitly marked *.
+- New helper: buildApprovedResearchSourcesPath(task) in agent.mjs.
+- Query uses PostgREST array-overlap for task category plus *, enabled=true and country_code=GB. Missing/invalid category fails closed.
+- New regression test: tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs.
+- CI workflow: .github/workflows/gemma-research-tests.yml.
+- Research PC installer: tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 includes the source-selection test and runs it before/after installation.
+
+**Deployment gate**
+PR #312 combines the 3D-printer structured GBP capture fix and category-scoped source loading because both touch agent.mjs. Do not merge the individual stale PRs or overwrite either fix. Wait for the combined CI suite, merge PR #312, update the Research PC from production without starting the worker, verify the updater passes, then run one controlled gaming task in TEST.
+
+**Source registry parity**
+Current enabled UK source counts including universal marketplaces: 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 9 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry requires separate reconciliation; do not copy rows between environments without independent verification.

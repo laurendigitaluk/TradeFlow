@@ -661,7 +661,8 @@ export function fallbackPageCapture(task, source, reason) {
     notes: 'RAW PAGE OBSERVATIONS — retained for ChatGPT review. Gemma extraction did not complete; price, package, condition and availability snippets were collected from the fetched page without an evidence suitability decision.',
     review_classification: 'unverified_capture',
     evidence_type: null,
-    observed_price: uniquePrice,
+    // Raw 3D-printer captures are for ChatGPT analysis; never promote a page amount before review.
+    observed_price: printerCapture ? null : uniquePrice,
     price_currency: prices.length ? 'GBP' : null,
     item_condition: null,
     availability: availabilityNotes.join(' | ') || null,
@@ -1375,7 +1376,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
           await trackProgress?.({ stage: 'model_variant_skipped', source: result.url, message: 'Fetched page is not the requested exact model; rejected before price extraction' });
           return null;
         }
-        if (!hasVisibleUkPrice(result.text)) await trackProgress?.({ stage: 'borderline_page_sent_to_gemma', source: result.url, message: 'Exact-model page has no visible GBP price in extracted text; sending to Gemma for borderline assessment rather than discarding it.' });
+        if (!hasVisibleUkPrice(result.text)) await trackProgress?.({ stage: 'page_without_visible_gbp', source: result.url, message: 'Exact-model page has no visible GBP price in extracted text; retaining it for ChatGPT review rather than discarding it.' });
         return { ...result, title: result.title || source.title || '', source_id: 'S' + (index + 1) };
       } catch (error) {
         await trackProgress?.({ stage: 'source_error', source: source.url, message: 'Source skipped: ' + error.message });
@@ -1388,7 +1389,25 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   stageDurations.product_page_fetch_ms = Date.now() - pageFetchStartedAt;
   let extractionMetrics = { batches: 0, failures: [] };
   const extractionStartedAt = Date.now();
-  if (fetched.length) {
+  if (fetched.length && is3dPrinterResearchTask(task)) {
+    // 3D-printer research is capture-first: do not wait for Ollama/Gemma inference.
+    // The worker searches, fetches and preserves source facts; ChatGPT interprets them downstream.
+    await trackProgress?.({
+      stage: 'capture_only_started', total: fetched.length,
+      message: 'Capture-only mode: preserving all fetched 3D-printer pages and deterministic observations for ChatGPT; local Ollama inference is intentionally skipped.'
+    });
+    for (const source of fetched) {
+      candidates.push(fallbackPageCapture(task, source, 'Deterministic raw capture; ChatGPT analysis required.'));
+      await trackProgress?.({
+        stage: 'page_capture_retained', source: source.url,
+        message: 'Captured page text, visible GBP prices and contexts, package, condition, availability and location snippets for ChatGPT review.'
+      });
+    }
+    await trackProgress?.({
+      stage: 'capture_only_completed', total: fetched.length,
+      message: 'Capture-only stage complete. No Ollama timeout, model classification or automatic price promotion; all pages are staged for ChatGPT review.'
+    });
+  } else if (fetched.length) {
     await trackProgress?.({
       stage: 'batch_extracting', total: fetched.length,
       message: 'Capturing all ' + fetched.length + ' fetched product pages for ChatGPT review; Gemma may add observations but cannot reject pages or decide suitability.'
@@ -1404,7 +1423,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         const validationInput = {
           ...finding,
           source_url: source.url,
-          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\./, ''),
+          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\\./, ''),
           price_currency: hasPrice ? 'GBP' : null,
           sales_channel: new URL(source.url).hostname,
           observed_price: hasPrice ? price : null,
@@ -1452,7 +1471,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   } else {
     await trackProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
-  stageDurations.gemma_extraction_ms = Date.now() - extractionStartedAt;
+  stageDurations.gemma_extraction_ms = is3dPrinterResearchTask(task) ? 0 : Date.now() - extractionStartedAt;
   await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const queueWriteStartedAt = Date.now();
   const writes = [];

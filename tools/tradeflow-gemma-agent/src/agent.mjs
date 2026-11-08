@@ -533,7 +533,7 @@ export function buildDeepPageExcerpt(text, task = {}, maxChars = 6200) {
 }
 
 export function extractionBatchSizeForTask(task) {
-  return is3dPrinterResearchTask(task) ? 2 : 2;
+  return 2;
 }
 
 function extractObservationSnippets(text, pattern, limit = 8) {

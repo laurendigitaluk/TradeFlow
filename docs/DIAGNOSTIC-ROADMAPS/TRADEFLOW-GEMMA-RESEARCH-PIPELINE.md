@@ -4,25 +4,47 @@
 
 ## 8 November 2026 — LIVE 3D-printer audit and HTTP 403 source backoff
 
-- Latest LIVE task `owner-3d-printers-chatgpt-evidence-batch-20261108-1315`: 6 sequential subtasks, 70m 49s, 123 search results, 30 product pages discovered, 18 fetched, 18 one-page Ollama calls and 10 extraction failures (4 timeouts, 4 unterminated JSON responses, 2 unrecognised findings-array shapes).
-- All 18 fetched pages were preserved as review captures: 12 new queue rows and 6 existing rows enriched. LIVE queue now contains 64 3D-printer rows; all are `needs_research`, with zero approved and zero imported. Research-lane metadata in raw payload: 42 `uk_new`, 6 `uk_used`, 16 `uk_both`. The top-level `evidence_type` is null on 63/64 rows; the raw task lane remains available for ChatGPT review. Do not treat a raw capture as approved evidence.
-- First loss points: 12 of 30 discovered pages did not reach page capture (11 recorded direct-fetch errors); for pages successfully fetched, the first systematic loss of structured findings was Gemma extraction (10/18 failed). Raw page text and price contexts were retained, so this is a structured-extraction loss, not deletion of the source captures.
-- The six-product batch used `uk_both` for every subtask. Approved-source route probing made 159 attempts with 39 errors. eBay's three configured routes returned two HTTP 403s and one HTTP 404 for each product (18 repeated eBay route attempts); direct eBay listing fetches also returned HTTP 403. Do not bypass these blocks.
-- New review PR #299: [fix(gemma): stop 3D printer source retries after HTTP 403](https://github.com/laurendigitaluk/TradeFlow/pull/299), branch `fix/gemma-3d-printer-403-domain-block-20261108`. It scopes a blocked-host set to one claimed 3D-printer queue batch, probes eBay routes sequentially, stops after the first HTTP 403, skips eBay results for the remainder of that batch, and records blocked-domain/route/result metrics. The set resets for the next queue batch. 404s do not trigger a block. Other categories retain existing route behaviour. Regression tests model six subtasks: eBay route attempts fall from 18 to 1 (17 skipped; 94.4% fewer) when the first route returns 403. This is test-simulated, not a LIVE runtime benchmark; PR #299 is not merged or deployed. GitHub Actions Gemma Research Tests run #206 (run ID `42499597425`) passed `57/57` tests on PR head `67cd25b7500f5227222a7ad90f5fcbdef1eb015e`; source syntax checks and the full Gemma test suite passed. This is unit/CI verification only, not a LIVE Research PC benchmark.
-- No new research task was queued, no evidence approved/imported, and no source registry, TEST data, LIVE catalogue data, secrets or private environment file was changed by this audit.
+### Run comparison
 
+| LIVE task | Duration | Search results | Product pages discovered | Fetched | Ollama calls | Extraction failures |
+|---|---:|---:|---:|---:|---:|---:|
+| `owner-3d-printers-exact-identity-acceptance-20261108-0032` | 14m 35s | 85 | 15 | 6 | 4 | 2 |
+| `owner-3d-printers-deep-extraction-acceptance-20261108-1235` | 36m 56s | 86 | 19 | 11 | 11 | 9 |
+| `owner-3d-printers-chatgpt-evidence-batch-20261108-1315` | 70m 49s | 123 | 30 | 18 | 18 | 10 |
 
-PR #298 is now merged into `production` (merge commit `3417c5dced183fedcf13a7af266c67c2dd697d0a`). GitHub Actions validation passed 53/53 tests. This is not yet installed on the Research PC and has not been runtime-benchmarked. Next: use the existing updater with the correct dedicated install folder, preserving the separate private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`; verify installed commit/heartbeat before queuing a controlled 3D-printer batch. Do not change other agent branches or import/approval controls.
+Search/discovery improved in volume, but the latest batch still used one-page Ollama calls. PR #298's two-page extraction and stage-duration telemetry are in production; no post-merge task has yet verified them on the Research PC.
 
+### Latest LIVE batch and review queue
 
+- The latest six-product task completed 6 sequential subtasks in 70m 49s. It used `uk_both` for all six products.
+- The 18 fetched pages were retained as review captures: 12 new queue rows and 6 existing rows enriched. LIVE queue now contains 64 3D-printer rows; all are `needs_research`, with zero approved and zero imported.
+- Raw task-lane metadata across the queue: 42 `uk_new`, 6 `uk_used`, 16 `uk_both`. The top-level `evidence_type` is null on 63/64 rows; the raw task lane and captured page context remain available for ChatGPT review. Do not infer approval or a final new/used classification from a raw capture.
+- The first loss points are distinct: 12 of 30 discovered pages did not reach page capture (11 recorded direct-fetch errors); for pages successfully fetched, the first systematic loss of structured findings was Gemma extraction (10/18 failures: 4 timeouts, 4 unterminated JSON responses, 2 unrecognised findings-array shapes). Raw page text and price contexts were retained, so this is a structured-extraction loss, not deletion of source captures.
 
+### Failed and blocked source routes
 
-## 3D-printer HTTP 403 handling — current review branch
+- The batch made 159 approved-source route attempts with 39 route errors.
+- eBay's three configured routes returned HTTP 403, HTTP 403 and HTTP 404 for each product (18 repeated eBay route attempts); direct eBay listing fetches also returned HTTP 403. Do not bypass these blocks.
+- Other repeated route errors included Amazon UK route 2 (404), Uni3Dverse route 3 (404), SecondHand route 3 (404), and Bambu Lab's old Shopify host route 2 (404). A 404 remains route-specific; verify the actual current source route before changing the allow-list.
 
-- Entry point: `tools/tradeflow-gemma-agent/src/task-worker.mjs` `processClaim()` creates a fresh `blockedSourceHosts` set per claimed queue batch and passes it to each sequential product `runTask()`.
-- Probe path: `tools/tradeflow-gemma-agent/src/agent.mjs` `probeApprovedResearchSources()` marks a 3D-printer source host blocked after HTTP 403. eBay routes are probed sequentially so the first 403 stops remaining route variants. Later subtasks skip the blocked host; `filterBlockedSourceResults()` removes that host's web/seed results before page fetching.
-- Observability: `route_metrics` records newly blocked domains, already-blocked domains, routes skipped after 403 and blocked search results. HTTP 404 remains route-specific and does not block a domain. No anti-bot bypass is attempted.
-- Scope guard: applies only when category slug is `3d-printers-equipment` and branch slug is `3d-printers`. Regression tests assert other categories retain existing route behaviour. The review branch is not merged or deployed.
+### Review PR #299
+
+- [PR #299 — stop 3D-printer source retries after HTTP 403](https://github.com/laurendigitaluk/TradeFlow/pull/299), branch `fix/gemma-3d-printer-403-domain-block-20261108`.
+- It creates a blocked-host set per claimed queue batch, shares it across that batch's sequential product subtasks, probes eBay routes sequentially, stops after the first HTTP 403, and filters blocked-host web/seed results before page fetching. The set resets for the next queue task. HTTP 404 does not block. Other categories retain existing route behaviour; no anti-bot bypass is introduced.
+- Regression test for six subtasks: eBay route attempts fall from 18 to 1 (17 skipped; 94.4% fewer) when the first route returns 403. GitHub Actions Gemma Research Tests run #209 (run ID `42499775075`) passed 57/57 tests on PR head `12ebe76260aa610ad3231bebb4c217958b93f9dd`. This is CI verification, not a LIVE runtime benchmark. PR #299 remains open, unmerged and undeployed.
+
+### Research PC worker state and install reference
+
+- Worker `DESKTOP-LVASEUB-80488` started at 16:12:56 UTC and stopped cleanly at 16:15:29 UTC. Two later worker processes registered as polling LIVE: `DESKTOP-LVASEUB-78948` at 16:16:03 UTC and `DESKTOP-LVASEUB-72580` at 16:16:47 UTC; neither has a recorded stop event as of 16:25:58 UTC. No queued or running 3D-printer tasks exist; all 14 recorded tasks are completed.
+- The status row's last task heartbeat is 14:29:23 UTC. The worker sends task heartbeats while a task is claimed, not while idle; the two worker-start events show connection/polling starts but do not independently prove current process liveness. The claim RPC uses `FOR UPDATE SKIP LOCKED`, so two pollers cannot claim the same task row. Keep one poller unless parallel workers are intentional.
+- The existing installation is `C:\CTFGemma2\TradeFlow-feature-tradeflow-gemma-agent-foundation-20261105\tools\tradeflow-gemma-agent`; its private `.env` is in the same folder. Standard Windows PowerShell 5.1 runs the updater; PowerShell Core 7 is not required. Do not create a second installation or replace the private environment file.
+- No research task was queued, no evidence approved/imported, and no source registry, TEST data, LIVE catalogue data, secret or private environment file was changed by this audit.
+
+### Memory and checkpoint handling
+
+- The System Handbook, AI Operating Manual, diagnostic roadmap, GitHub project-memory file and checkpoint are updated in this review branch.
+- The LIVE public schema has no separate project-memory/checkpoint table. The Common Room learning-note write through the owner-only RPC was rejected with `Platform owner access required`; do not bypass that control or insert directly into the message table. The GitHub project-memory/checkpoint files are the versioned record until an owner-authorized Common Room write is available.
+
 
 ## 8 November 2026 — 3D-printer extraction performance investigation
 

@@ -4648,3 +4648,24 @@ Final verification:
 - Market-evidence records were not bulk-copied or overwritten. Counts match, but individual evidence provenance remains independent between environments.
 
 The next full category reconciliation should account for remaining category-level drift observed in the database: 3D Printers & Equipment currently shows 208 LIVE vs 209 TEST products and 260 vs 232 active evidence rows; Laptops exists in TEST with 8 products and no active evidence but is not yet present in LIVE. Do not launch the full Gemma worker/agent sweep until all intended categories are reconciled and their source-selection configuration is verified.
+
+
+## 8 November 2026 — Gaming catalogue reconciliation
+
+Gaming Consoles & Accessories has been reconciled independently between LIVE and TEST:
+- 284 active products in each environment (285 rows including one inactive duplicate package row).
+- 411 active evidence records in each (246 new, 165 used).
+- 20 branches, 24 manufacturers, 12 enabled category source assignments.
+- All active product fields and all active evidence fields match exactly.
+- No open gaming research rows or active gaming tasks.
+- One additional inactive historical Xbox Series X Digital listing remains in TEST only; preserve it as TEST history and do not copy it into LIVE.
+
+The duplicate Nintendo Switch 2 Joy-Con 2 Charging Grip package record was merged logically: one canonical active product, a retained inactive duplicate row, an active alias for “Single Charging Grip”, unique used evidence moved to the canonical product, and duplicate retailer captures retained inactive. No records were deleted. Hyperkin Silver and PowerA Fire Red keys and metadata were normalised; source names/URLs and Atari seller-condition wording were reconciled.
+
+## 8 November 2026 — Source routing rule for every Gemma specialist
+
+Do not let a specialist agent download the global source registry. PR #310 filters the source query server-side to the task category plus explicitly universal UK marketplaces (Amazon UK and eBay UK), and enabled GB rows. The worker still performs manufacturer and research-lane checks after loading. Missing/invalid category fails closed.
+
+The category-specific source registry currently assigns 12 sources to gaming, including 3 official manufacturer sources (Microsoft Xbox, Nintendo, PlayStation) and retailer/marketplace sources. Additional official UK candidates were identified (Atari, PowerA, Gioteck, HORI, Turtle Beach, Venom, SanDisk, Seagate and WD_BLACK). They are intentionally not added until the category-scoped loader is merged and installed on the Research PC; only GBP prices on UK pages may become UK market evidence.
+
+After PR #310 passes CI and is merged, update the Research PC using the repository's `Update-TradeFlow-Gemma.ps1` from `production`. The updater preserves the existing private `.env`, validates both approved TEST/LIVE Supabase URLs, backs up installed source files and runs syntax/unit tests before installing. First run one controlled gaming task in TEST; only then queue LIVE work.

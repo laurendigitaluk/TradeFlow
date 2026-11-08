@@ -4668,3 +4668,16 @@ Final verification:
 - Inactive evidence history: LIVE 17, TEST 21. The four-row difference is retained audit history, not active catalogue drift.
 
 Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 54/54, but installed Research PC/Ollama structured-output acceptance is not yet verified. No worker was started/restarted and no new research task was queued. Complete the remaining category reconciliation and source-selection checks first, then update all Gemma workers/agents and run the controlled full research cycle.
+
+
+## 8 November 2026 — Structured GBP capture and category source routing
+
+For 3D-printer tasks only, extractRelevantPageText now places matching JSON-LD Product/Offer facts before the flattened page text. It includes structured facts only when the product identity matches the task manufacturer and model. GBP offers are rendered as GBP followed by the amount so the deterministic parser can detect the correct price; non-GBP currencies must not be relabelled as GBP. Other categories remain content-first.
+
+This is capture quality improvement only. Gemma preserves raw page data and uncertainty; ChatGPT performs exact product/package matching and decides whether evidence is suitable. No automatic valuation or customer buying price is changed.
+
+PR #312 also filters the approved source registry at load time to the task category plus explicitly universal UK marketplaces, enabled GB rows. Only Amazon UK and eBay UK are universal. The loader fails closed without a valid category slug. The category-selection regression test is included in CI and in the Research PC updater.
+
+Gaming Consoles & Accessories has 284 active products and 411 active evidence records in each environment, with exact parity across all product rows and active evidence. It has 12 category-specific sources plus the 2 universal UK marketplaces. Other source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 both, drones 8 both, laptops 9 both, metal detectors 8 both and mobile phones 13 both. The 3D-printer source registry remains a separate parity issue to reconcile.
+
+Do not start the next gaming research task or add the candidate manufacturer websites until PR #312 passes CI, is merged and the Research PC is updated from production. First run one controlled gaming task in TEST, review the loaded source list and raw capture, then queue LIVE.

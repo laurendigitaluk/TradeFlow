@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
+import { resolveControlPlane } from './control-plane.mjs';
 
 const projects = { LIVE: 'gxsrajtqzdjvmceqcpgv', TEST: 'nnsshnfkjcflucjrftzi' };
 const ukSourceHosts = new Set(['gumtree.com','3dgbire.com','3dflo.com','bambu-lab-uk.myshopify.com','uk.anycubic3d.com','uk.elegoo.com']);
@@ -1105,7 +1106,7 @@ export function buildCategoryScopedSearchQuery(query, sources, task) {
 
 async function loadApprovedResearchSources(env, onProgress) {
   try {
-    const control = target('LIVE', env);
+    const control = target(resolveControlPlane(env).name, env);
     return await db(control, 'platform_research_sources?select=source_name,domain,homepage_url,search_url_template,source_kind,country_code,research_scope,enabled,priority,category_slugs&enabled=eq.true&order=priority.asc&limit=100');
   } catch (error) {
     await onProgress?.({ stage: 'approved_source_registry_error', message: 'Approved source registry could not be read: ' + error.message });
@@ -1474,7 +1475,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     await trackProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
   stageDurations.gemma_extraction_ms = is3dPrinterResearchTask(task) ? 0 : Date.now() - extractionStartedAt;
-  await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
+  await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the selected TradeFlow review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const queueWriteStartedAt = Date.now();
   const writes = [];
   for (const evidence of candidates) {
@@ -1501,8 +1502,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
       }
     };
-    if (!enqueue) { writes.push({ environment: 'LIVE_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
-    const liveTarget = target('LIVE', env);
+    if (!enqueue) { writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
+    const liveTarget = target(resolveControlPlane(env).name, env);
     const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
     if (existing.length) {
       const prior = existing[0];
@@ -1515,7 +1516,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
           method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(enrichmentPatch)
         });
         if (updated?.length) {
-          writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
+          writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
         } else {
           writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
         }
@@ -1529,7 +1530,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     });
     writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
   }
-  stageDurations.live_queue_write_ms = Date.now() - queueWriteStartedAt;
+  stageDurations.review_queue_write_ms = Date.now() - queueWriteStartedAt;
   stageDurations.total_elapsed_ms = Date.now() - runStartedAt;
   const countStage = stage => progressEvents.filter(event => event.stage === stage).length;
   const routeFailureStages = new Set(['approved_source_error','approved_source_pagination_error','source_error','collection_error','collection_pagination_error']);

@@ -3004,3 +3004,14 @@ All 565 active evidence rows match by model, package/storage variant, evidence t
 The four common used-evidence gaps remain: Motorola Edge 70 Plus 8GB/256GB; OPPO Find X10 12GB/256GB; OPPO Find X10 Pro Max 12GB/512GB; OPPO Reno16 F 5G 8GB/256GB. UK-used evidence remains reference-only and excluded from automatic valuation.
 
 No code, schema, valuation, RLS, RPC, Edge Function, Stripe, tenant/customer/order/payment/ownership or Cloudflare Worker changes. No deployment.
+
+
+## 8 November 2026 — Gemma 3D printer evidence-capture behaviour
+
+Gemma's 3D-printer research path separates page discovery, direct-page capture, local model extraction and ChatGPT review. A timeout in the local model must not discard a successfully fetched page: the worker retains the raw page text, visible GBP price mentions, identity/package snippets and stock/condition observations, and may append an unverified enrichment to an exact matching unreviewed queue row.
+
+On 8 November, the LIVE K1 Max official UK page returned 17 visible GBP mentions. The useful distinctions included £589 standard printer, £729 crossed-out price, £140 saving, and separate Combo/accessory/gift-card offers. These must not be treated as independent product prices. The extraction timed out; the raw page was retained and the row remained `needs_research`. No approval or catalogue import occurred.
+
+Production PR #293 (`3b55d43acec4ad4abb5f8e5b9530f169d3c1d3f3`) refined only the 3D-printer extraction prompt. It preserves compact price contexts and recent bounded guidance, requires one structured observation per page/source ID, and instructs Gemma to report machine-only versus Combo/bundle variants, price context, condition, stock, UK delivery and uncertainty without deciding evidence suitability. CI passed 50/50 tests.
+
+**Operational boundary:** the merge updates GitHub production source only. The Research PC's already-running worker does not hot-reload this file. Let its current task finish, then run the existing TradeFlow updater once against the confirmed TradeFlow installation and existing private TradeFlow `.env`. Do not alter PowerShell launcher logic, Ollama settings, credentials or the separate GearCashOut configuration. Verify the next run before marking the prompt change live on the PC.

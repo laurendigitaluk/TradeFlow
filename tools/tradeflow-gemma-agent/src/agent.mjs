@@ -812,7 +812,8 @@ export function selectSafeObservedPrice(observations = [], researchType = 'uk_bo
     const text = String(condition || '').toLowerCase().replace(/\s+/g, ' ').trim();
     if (!text) return false;
     const newCondition = /\b(?:brand new|new|sealed|unused|never used)\b/.test(text);
-    const usedCondition = /\b(?:used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened)\b/.test(text);
+    const usedText = text.replace(/\bnever\s+used\b/g, '');
+    const usedCondition = /\b(?:used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened)\b/.test(usedText);
     if (newCondition === usedCondition) return false;
     if (researchType === 'uk_new') return newCondition;
     if (researchType === 'uk_used') return usedCondition;

@@ -2,7 +2,7 @@
 
 LIVE task `owner-3d-printers-speed-benchmark-20261108-1645` completed in 25m 17s versus the previous six-product baseline of 70m 49s (64.3% faster). It made 7 Gemma calls for 11 fetched pages; 5 calls returned truncated/malformed JSON. All 11 page captures and deterministic GBP observations remained in the review queue; no evidence was approved or imported. Gemma inference consumed approximately 1,395 seconds of the 1,513-second aggregate subtask runtime.
 
-The production agent now has a proposed follow-up on branch `fix/gemma-3d-printer-json-reliability-20261108`: use a bounded JSON schema for 3D-printer output, cap free-text and price-context lengths, reject incomplete/mismatched source_id sets, and report Ollama output-token-limit termination explicitly. This is not deployed or accepted until tests and a controlled Research PC run pass. Keep raw capture retention, UK/GBP checks, exact package review and owner/ChatGPT approval/import gates unchanged.
+The production agent now has a proposed follow-up on branch `fix/gemma-3d-printer-json-reliability-20261108`: use a bounded JSON schema for 3D-printer output, cap free-text and price-context lengths, reject incomplete/mismatched source_id sets, and report Ollama output-token-limit termination explicitly. GitHub Actions run 42505764030 (#215) passed 54/54 tests. This is code-level verification only; local Research PC Ollama/schema compatibility is still unverified, and the change is not deployed or accepted until a controlled Research PC run passes. Keep raw capture retention, UK/GBP checks, exact package review and owner/ChatGPT approval/import gates unchanged.
 
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 

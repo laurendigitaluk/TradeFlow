@@ -310,7 +310,7 @@ test('3D printer fallback preserves structured price, package, condition and ava
     text: 'Creality K1 Speedy 3D Printer Standard Printer £299.00. Condition: New. Only 15 left in stock. UK VAT included.'
   };
   const finding = fallbackPageCapture({ ...task, research_type: 'uk_new' }, source, 'Ollama timeout');
-  assert.equal(finding.observed_price, 299);
+  assert.equal(finding.observed_price, null);
   assert.equal(finding.price_currency, 'GBP');
   assert.match(finding.product_identity_text, /Creality K1 Speedy/);
   assert.match(finding.package_or_variant_text, /Standard Printer/);
@@ -319,6 +319,22 @@ test('3D printer fallback preserves structured price, package, condition and ava
   assert.match(finding.location_text, /UK VAT included/);
   assert.equal(finding.evidence_type, null);
   assert.equal(finding.review_classification, 'unverified_capture');
+});
+
+test('3D printer raw capture never promotes a single visible price before ChatGPT review', () => {
+  const source = {
+    source_id: 'S4',
+    title: 'Anycubic Kobra S1 Max',
+    url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
+    text: 'Anycubic Kobra S1 Max Standard Printer £549.00. VAT included. Ships in 24 hours.'
+  };
+  const finding = fallbackPageCapture({ ...task, manufacturer: 'Anycubic', model: 'Kobra S1 Max', research_type: 'uk_new' }, source, 'Capture-only mode');
+  assert.equal(finding.observed_price, null);
+  assert.equal(finding.evidence_type, null);
+  assert.equal(finding.review_classification, 'unverified_capture');
+  assert.equal(finding.page_capture.captured_text, source.text);
+  assert.equal(finding.page_capture.gbp_price_mentions[0].amount, 549);
+  assert.match(finding.page_capture.gbp_price_mentions[0].context, /Standard Printer/);
 });
 
 test('3D printer fallback does not promote a filament unit price to the printer price', () => {

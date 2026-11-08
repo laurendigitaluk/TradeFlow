@@ -1,3 +1,7 @@
+## 8 November 2026 — Updater now auto-detects the current Gemma installation
+
+To avoid repeated path-entry errors on the Research PC, the PR #300 updater now detects the current directory when it contains `src/agent.mjs`, automatically selects the adjacent `.env` when present, and strips surrounding quotes from manually supplied paths. This matches the Research PC screenshot: PowerShell is already open in the existing Gemma installation directory and that directory visibly contains `.env`. Next owner step should be a single launch command from that directory; no path prompts should appear. This is still an unmerged draft-branch update and must pass the latest CI before use.
+
 ## 8 November 2026 — PR #300 updater repair and PowerShell CI gate
 
 The first Research PC updater attempt was stopped before installation: PowerShell reported parser errors. Investigation found the branch updater had a truncated `SourceBranch` validation line and duplicated script body. It has been rebuilt from the known production updater, adding only the validated `-SourceBranch` selector (default `production`). The existing `.env` remains untouched; no files were installed by the failed attempt. GitHub Actions now parses the updater with PowerShell before running Node checks. Latest validation is tracked on PR #300; Research PC install and local Ollama schema acceptance remain pending. Do not restart worker or queue research until those checks pass.

@@ -916,7 +916,7 @@ export async function extractBatch(task, pages, env, onProgress) {
             const visible = amount == null ? null : prices.find(price =>
               price.amount === amount &&
               suppliedContext.length >= 24 &&
-              price.context.slice(0, 100).replace(/\\s+/g, ' ').trim().toLowerCase() === suppliedContext
+              price.context.slice(0, 100).replace(/\s+/g, ' ').trim().toLowerCase() === suppliedContext
             );
             return {
               ...observation,

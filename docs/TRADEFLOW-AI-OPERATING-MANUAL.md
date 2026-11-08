@@ -2,7 +2,7 @@
 
 The latest LIVE 3D-printer batch staged an accessory-only Amazon page (YIBEICO screw set for Bambu Lab A1 AMS Lite) as a Bambu Lab A1 / AMS Lite Combo capture. The deterministic identity filter matched “A1” and “AMS lite” but did not recognise “screw set”, “clamp” or “stiffener” in the title. The false positive remained unverified in `needs_research`; it was not approved or imported.
 
-A separate 3D-printer-only branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds those terms to the title/path accessory exclusions and a regression test for the exact captured page, while preserving genuine A1 AMS Lite Combo listings. CI and runtime verification are pending. PR #296 separately covers Amazon UK tracking URL canonicalisation. Do not merge or install either change without their respective checks and approval.
+A separate 3D-printer-only branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds those terms to the title/path accessory exclusions and a regression test for the exact captured page, while preserving genuine A1 AMS Lite Combo listings. GitHub Actions run 42505871429 (#216) passed 53/53 tests. Research PC runtime verification remains pending. PR #296 separately covers Amazon UK tracking URL canonicalisation. Do not merge or install either change without their respective checks and approval.
 
 # CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
 

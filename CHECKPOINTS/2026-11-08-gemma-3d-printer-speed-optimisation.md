@@ -9,7 +9,7 @@ PR #303 branch `fix/gemma-3d-jsonld-priority-20261108` moves matching structured
 
 PR #302 is also open/draft; head `d0e283300e9bea94f828339f7e41bba48fa938ce` passed 60 CI tests and adds price observations, split-decimal parsing, repeated-context retention and condition-lane safety. Its new output contract is not yet verified on the Research PC; the 19:00 run emitted legacy `price_mentions`/`price_contexts`.
 
-No task was queued, no queue or catalogue row was changed by this checkpoint, no evidence was approved/imported, and no TEST data, secrets, private .env or worker runtime was changed. Next: verify PR #303 CI, then obtain owner approval for the existing updater and replay one retained 3D-printer page before another LIVE task.
+Current review queue: 65 records (42 `uk_new`, 6 `uk_used`, 17 `uk_both`), with top-level prices 2/0/1 by lane; 0 approved/imported. No task was queued, no queue or catalogue row was changed by this checkpoint, no evidence was approved/imported, and no TEST data, secrets, private .env or worker runtime was changed. Next: verify PR #303 CI, then obtain owner approval for the existing updater and replay one retained 3D-printer page before another LIVE task.
 
 
 ## 8 November 2026 — PR #298 merged

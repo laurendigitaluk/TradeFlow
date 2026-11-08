@@ -35,8 +35,8 @@ LIVE task: owner-3d-printers-chatgpt-evidence-batch-20261108-1315
 ## Verification status
 
 - Code and documentation changes committed to this branch.
-- CI is pending; no local Ollama inference or Research PC test has been run.
-- Two-page extraction is a hypothesis to benchmark, not a claimed speed improvement.
+- GitHub Actions run `42497005002` passed: 53 tests passed, 0 failed; all Gemma source syntax checks and Owner Dashboard JavaScript syntax passed. This verifies code/tests only; no local Ollama inference or Research PC test has been run.
+- PR #298 is draft/open and not merged. Two-page extraction remains a hypothesis to benchmark, not a claimed speed improvement.
 - Do not merge, deploy, update/restart the Research PC or enqueue another LIVE task until CI passes and the owner approves the existing updater workflow.
 - Preserve the dedicated private .env and TRADEFLOW_GEMMA_ENV_FILE.
 - Compare next-run wall time, per-stage durations, structured findings per page, extraction failures and raw fallback retention.

@@ -13,7 +13,7 @@
 - Source routes: 26 attempts; 11 matches; 9 empty; 6 errors (uni3dverse 404; eBay 403 twice/404; Amazon 404; SecondHand 404). No direct page-fetch errors. Do not bypass access controls.
 - The 19:00 run used the legacy `price_mentions`/`price_contexts` contract; PR #302's new `price_observations` schema has not yet been shown in a Research PC run. PR #302 head `d0e283300e9bea94f828339f7e41bba48fa938ce` passed 60 CI tests; PR #303 CI is pending.
 - After owner approval and a verified Research PC install, replay the retained Neptune page and compare: structured JSON-LD facts present in bounded capture; GBP offers found by deterministic parser; each price observation's product/variant/role/condition association; observed_price only when uniquely verified; Gemma duration and failure count. Do not queue a duplicate task or approve/import automatically.
-- Current LIVE status: idle; no active/queued 3D-printer task; last heartbeat/status update 19:01:33 UTC; worker online state remains unverified while idle. Review queue: 65 records, 64 null evidence type, 1 `uk_new`, 3 top-level prices, 0 approved, 0 imported.
+- Current LIVE status: idle; no active/queued 3D-printer task; last heartbeat/status update 19:01:33 UTC; worker online state remains unverified while idle. Review queue: 65 records (42 `uk_new`, 6 `uk_used`, 17 `uk_both`); top-level prices 2/0/1 by lane; one record has an evidence type; 0 approved, 0 imported. All remain `needs_research`.
 
 
 ## 8 November 2026 — PR #298 merged

@@ -3,7 +3,7 @@
 - LIVE task `owner-3d-printers-speed-benchmark-20261108-1645`: 25m 17s versus 70m 49s baseline (64.3% faster); 11 pages fetched; 7 Gemma calls; 5 JSON extraction failures. Gemma inference totalled about 1,395 seconds of 1,513 seconds aggregate subtask runtime.
 - First failure is at `extractBatch()`: Ollama response content is parsed with `JSON.parse`; malformed/truncated output is caught and immediately replaced with `fallbackPageCapture()`. Current request uses `format: 'json'`, `num_ctx: 4096`, and `num_predict: 1536`; the model prompt requests many descriptive fields for two pages.
 - Proposed follow-up branch `fix/gemma-3d-printer-json-reliability-20261108`: strict bounded JSON schema for printer calls; bounded field lengths and arrays; exact one-row-per-source_id validation; explicit `done_reason === 'length'` diagnostics; regression test for schema bounds.
-- Next verification: CI; inspect Ollama response metadata and local model compatibility; controlled 3D-only LIVE acceptance. Do not increase output token budget blindly. Keep raw captures and deterministic GBP mentions. No approval/import. Investigate Anycubic Kobra S1 Max Combo zero eligible pages separately after extraction reliability is resolved.
+- GitHub Actions run 42505764030 (#215) passed 54/54 tests. Next: inspect Ollama response metadata and verify schema compatibility on the installed local model, then controlled 3D-only LIVE acceptance. Do not increase output token budget blindly. Keep raw captures and deterministic GBP mentions. No approval/import. Investigate Anycubic Kobra S1 Max Combo zero eligible pages separately after extraction reliability is resolved.
 
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
 

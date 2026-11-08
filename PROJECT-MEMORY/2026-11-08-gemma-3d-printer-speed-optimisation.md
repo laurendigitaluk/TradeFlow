@@ -2,7 +2,7 @@
 
 LIVE benchmark `owner-3d-printers-speed-benchmark-20261108-1645` completed in 25m 17s, compared with 70m 49s baseline (64.3% faster). Eleven pages were fetched using seven Gemma calls; five calls failed JSON extraction. All eleven raw captures and deterministic GBP observations remained in review-only queue; no approval/import. Gemma inference used about 92% of aggregate subtask runtime.
 
-The failure is in `extractBatch()`: invalid/truncated model JSON is caught and immediately replaced by raw fallback. Follow-up branch `fix/gemma-3d-printer-json-reliability-20261108` adds a bounded JSON schema, source_id coverage validation, output-length termination diagnostics and regression coverage. This branch is a proposal only; CI and Research PC Ollama acceptance remain pending. Do not deploy or enqueue another full batch until verified. Preserve TEST/LIVE separation, private environment files and all owner/ChatGPT approval gates.
+The failure is in `extractBatch()`: invalid/truncated model JSON is caught and immediately replaced by raw fallback. Follow-up branch `fix/gemma-3d-printer-json-reliability-20261108` adds a bounded JSON schema, source_id coverage validation, output-length termination diagnostics and regression coverage. This branch is a proposal only; GitHub Actions run 42505764030 (#215) passed 54/54 tests; Research PC Ollama/schema acceptance remains pending. Do not deploy or enqueue another full batch until verified. Preserve TEST/LIVE separation, private environment files and all owner/ChatGPT approval gates.
 
 # Project Memory — Gemma 3D Printer Extraction Performance
 

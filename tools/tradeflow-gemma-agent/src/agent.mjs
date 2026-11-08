@@ -236,20 +236,44 @@ export function matchesTaskModel(title, url, task = {}) {
   if (!model) return false;
   let urlIdentity = String(url || '');
   try { const parsed = new URL(urlIdentity); urlIdentity = parsed.hostname + ' ' + decodeURIComponent(parsed.pathname); } catch { /* Keep plain URL text for non-URL identifiers. */ }
-  // This is intentionally a broad discovery match, not an approval filter.
-  // Keep Combo, Max/Plus/Pro, bundle and accessory references for ChatGPT to classify.
-  // Ignore query strings so search terms in tracking parameters do not create false matches.
-  const identity = ' ' + (String(title || '') + ' ' + urlIdentity).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() + ' ';
+  // Ignore query strings: search terms and tracking parameters are not product identity.
+  const titleIdentity = String(title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const pathIdentity = urlIdentity.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const identity = ' ' + (titleIdentity + ' ' + pathIdentity).trim() + ' ';
   if (!identity.includes(' ' + model + ' ')) return false;
 
-  // Very short model IDs (for example A1 or K1) collide with unrelated categories.
-  // In the 3D-printer branch only, require the manufacturer or explicit 3D-printer
-  // context, and reject clearly automotive listing routes. This remains a discovery
-  // guard: legitimate generic "A1 3D Printer" pages are retained for ChatGPT review.
   const is3dPrinterBranch =
     String(task?.category_slug || '').toLowerCase() === '3d-printers-equipment' &&
     String(task?.branch_slug || '').toLowerCase() === '3d-printers';
-  if (is3dPrinterBranch && model.length <= 2) {
+  if (!is3dPrinterBranch) return true;
+
+  // A base-model task must not absorb a different named model (K1 Max into K1),
+  // a printer accessory/upgrade, or a different machine package (Combo into Standard).
+  const modelTokens = model.split(/\s+/).filter(Boolean);
+  const siblingModelTokens = new Set(['max','plus','pro','ultra','neo','mini','se','mk2','mk3','v2','v3']);
+  const segments = [titleIdentity, pathIdentity].filter(Boolean);
+  for (const segment of segments) {
+    const tokens = segment.split(/\s+/);
+    for (let index = 0; index <= tokens.length - modelTokens.length; index++) {
+      if (!modelTokens.every((token, offset) => tokens[index + offset] === token)) continue;
+      const nextToken = tokens[index + modelTokens.length];
+      if (nextToken && siblingModelTokens.has(nextToken)) return false;
+    }
+  }
+
+  const accessoryPattern = /\b(accessories|accessory|upgrade|upgrades|spare|spares|replacement|hotend|extruder|build plate|nozzle|filament|resin|enclosure|feeder|dryer|maintenance kit|upgrade kit)\b/;
+  if (segments.some(segment => accessoryPattern.test(segment))) return false;
+
+  const comboPattern = /\b(combo|ams|ace|cfs|multi ?colou?r|[468] ?colou?r)\b/;
+  const isComboTask = /(?:combo|ams|ace|cfs|multi.?colou?r|[468].?colou?r)/i.test(
+    String(task.package_key || '') + ' ' + String(task.package_name || '')
+  );
+  const pageIsCombo = segments.some(segment => comboPattern.test(segment));
+  if (isComboTask !== pageIsCombo) return false;
+
+  // Very short model IDs (for example A1 or K1) collide with unrelated categories.
+  // Require the manufacturer or explicit 3D-printer context and reject automotive routes.
+  if (model.length <= 2) {
     const manufacturerTokens = String(task?.manufacturer || '')
       .toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(/\s+/).filter(token => token.length > 1);
     const manufacturerMatches = manufacturerTokens.length > 0 &&

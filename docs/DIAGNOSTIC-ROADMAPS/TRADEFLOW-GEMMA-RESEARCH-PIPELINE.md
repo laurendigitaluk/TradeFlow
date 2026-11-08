@@ -352,3 +352,12 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - No queue/source/catalogue data, approval/import state, task queue, TEST data, secrets, local .env, Research PC installation or runtime was changed. No duplicate task was queued.
 - PR #284 is open and unmerged. After CI/review and explicit owner approval, install the reviewed worker in place, preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE, verify the PC process/Ollama, then run one small 3D-only acceptance batch. Do not start another task before that acceptance step.
 - PR #279 was also closed as redundant after verifying that its short-model-ID guard and Audi A1/Bambu A1 regression test are already present in the current production branch.
+
+
+## 8 November 2026 — exact 3D-printer model and package matching
+
+- LIVE queue inspection found Creality K1 task captures from K1 Max pages and K1 accessory/upgrade URLs. The previous discovery matcher deliberately accepted sibling model names and package/accessory references for broad ChatGPT review, but those pages were being written under the requested Standard Printer task identity.
+- The 3D-printer matcher now rejects sibling model suffixes (Max, Plus, Pro, Ultra, Neo, Mini, SE, MK2/MK3 and V2/V3) when they are not part of the requested model; rejects printer accessories, replacement parts and upgrades; and enforces Standard versus Combo/AMS/ACE/CFS/multicolour package matching. A task for the exact sibling model or Combo package remains eligible.
+- This is limited to category `3d-printers-equipment`, branch `3d-printers`. Other catalogue categories retain their existing matching behaviour. Short-model manufacturer/3D-printer disambiguation remains in place.
+- Regression tests cover K1 versus K1 Max, standard versus Combo, valid exact K1, accessory/upgrade rejection and exact K1 Max task acceptance.
+- No LIVE queue rows, source registry, catalogue data, approvals/imports, task queue or TEST data were changed. No Research PC update, worker restart or deployment has occurred. Run CI and then deploy the reviewed agent to the Research PC before the next controlled task.

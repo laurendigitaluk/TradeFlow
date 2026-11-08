@@ -9,7 +9,9 @@ const task = {
   branch_slug: '3d-printers',
   manufacturer: 'Creality',
   model: 'K1',
-  search_query: 'Creality K1 UK new and used price'
+  search_query: 'Creality K1 UK new and used price',
+  package_key: 'standard',
+  package_name: 'Standard Printer'
 };
 
 test('3D printer playbook contains category-wide and individual website rules', () => {
@@ -137,12 +139,21 @@ test('designated UK 3D printer retailer hosts accept individual product pages', 
   }
 });
 
-test('model matching ignores search query terms so accessories are not mistaken for the requested printer', () => {
+test('3D printer matching rejects sibling models, accessories and package mismatches', () => {
   const accessory = 'https://www.amazon.co.uk/Creality-Leveling-Extruder-Filament/dp/B0GD12KF2V?keywords=Creality+K1';
   assert.equal(matchesTaskModel('Creality Leveling Extruder Filament', accessory, task), false);
   assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);
-  assert.equal(matchesTaskModel('Creality K1 Max Combo 8-Color Printer', 'https://store.creality.com/uk/products/k1-max-combo', task), true);
-  assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), true);
+  assert.equal(matchesTaskModel('Creality K1 Max 3D Printer', 'https://store.creality.com/uk/products/k1-max', task), false);
+  assert.equal(matchesTaskModel('Creality K1 Max Combo 8-Color Printer', 'https://store.creality.com/uk/products/k1-max-combo', task), false);
+  assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), false);
+  assert.equal(matchesTaskModel('Creality K1 Build Plate', 'https://store.creality.com/uk/products/k1-build-plate', task), false);
+
+  const comboTask = { ...task, package_key: 'combo-8-color', package_name: '8-Color Combo' };
+  assert.equal(matchesTaskModel('Creality K1 Combo 8-Color 3D Printer', 'https://store.creality.com/uk/products/k1-combo-8-color', comboTask), true);
+  assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer', comboTask), false);
+
+  const maxTask = { ...task, model: 'K1 Max' };
+  assert.equal(matchesTaskModel('Creality K1 Max 3D Printer', 'https://store.creality.com/uk/products/k1-max', maxTask), true);
 });
 
 test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
@@ -153,6 +164,11 @@ test('short 3D printer model IDs are disambiguated without losing generic printe
   );
   assert.equal(
     matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1Task),
+    false
+  );
+  const a1ComboTask = { ...a1Task, package_key: 'combo-ams-lite', package_name: 'Combo with AMS Lite' };
+  assert.equal(
+    matchesTaskModel('Bambu Lab A1 Combo 3D Printer with AMS Lite', 'https://www.gumtree.com/p/printers-scanners/bambu-lab-a1-combo/1804662526', a1ComboTask),
     true
   );
   assert.equal(

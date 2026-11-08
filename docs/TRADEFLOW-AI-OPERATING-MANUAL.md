@@ -4491,3 +4491,14 @@ The 3D-printer path alone uses one-page batches and deep excerpts. Other categor
 
 
 Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.
+
+
+## 8 November 2026 — idle worker heartbeat observability
+
+The LIVE `gemma-task-worker` status row previously received `worker_started` and `worker_stopped` events, but no periodic heartbeat while the queue was empty. The worker's 45-second heartbeat timer runs only inside a claimed task and updates the active category-agent row. Therefore an old task-worker `last_heartbeat` during an idle queue is not evidence that the PC process has stopped.
+
+The proposed worker-only correction sends a LIVE `gemma-task-worker` heartbeat at most once every 60 seconds while polling an empty queue. It records the worker ID and poll interval, leaves `current_task` null and status `idle`, and does not change category-agent counters, task leases, research dispatch, queue rows, approvals or imports. Active research keeps its existing category heartbeat. No schema migration or TEST/LIVE data change is required.
+
+Audit evidence at 16:30 UTC: the latest task-worker status heartbeat was 16:16:47 UTC. Two distinct `worker_started` events were recorded at 16:16:03 (`DESKTOP-LVASEUB-78948`) and 16:16:47 (`DESKTOP-LVASEUB-72580`), with no recorded stop for the first ID. This is a possible duplicate local poller, not proof that both processes are still alive. Check the Research PC process list and retain only one worker before dispatching another task.
+
+The change is isolated to the task-worker control-plane heartbeat, has deterministic unit tests, and is stacked on PR #299 so its HTTP 403 source-backoff changes remain a prerequisite. Do not merge or update the Research PC until the PR's CI passes and the owner approves. The updater allow-list and both pre/post-install test lists must include the new helper and test. No credentials or private `.env` values are read or changed.

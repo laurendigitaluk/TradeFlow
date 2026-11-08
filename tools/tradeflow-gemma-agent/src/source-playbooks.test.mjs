@@ -316,6 +316,18 @@ test('3D printer fallback preserves structured price, package, condition and ava
   assert.equal(finding.review_classification, 'unverified_capture');
 });
 
+test('3D printer fallback does not promote a filament unit price to the printer price', () => {
+  const source = {
+    source_id: 'S3',
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    text: 'Creality K1 Speedy 3D Printer. Compatible filament 1kg £17.99.'
+  };
+  const finding = fallbackPageCapture({ ...task, research_type: 'uk_new' }, source, 'Ollama timeout');
+  assert.equal(finding.observed_price, null);
+  assert.deepEqual(finding.price_mentions, ['£17.99']);
+});
+
 test('3D printer fallback preserves multiple package prices without guessing the printer price', () => {
   const source = {
     source_id: 'S2',

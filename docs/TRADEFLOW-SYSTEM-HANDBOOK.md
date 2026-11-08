@@ -1,3 +1,7 @@
+## 8 November 2026 — PR #300 updater repair and PowerShell CI gate
+
+The first Research PC updater attempt was stopped before installation: PowerShell reported parser errors. Investigation found the branch updater had a truncated `SourceBranch` validation line and duplicated script body. It has been rebuilt from the known production updater, adding only the validated `-SourceBranch` selector (default `production`). The existing `.env` remains untouched; no files were installed by the failed attempt. GitHub Actions now parses the updater with PowerShell before running Node checks. Latest validation is tracked on PR #300; Research PC install and local Ollama schema acceptance remain pending. Do not restart worker or queue research until those checks pass.
+
 ## 8 November 2026 — PR #300 CI and controlled install path
 
 PR #300 latest head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed Gemma Research Tests run #219: source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax all succeeded. PR remains draft/open and is not deployed.

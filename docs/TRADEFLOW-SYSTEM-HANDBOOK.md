@@ -2,6 +2,16 @@
 
 This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
 
+
+## 8 November 2026 — post-update Gemma acceptance and K1 Max Combo regression correction
+
+- The latest 3D-only LIVE task completed eight subtasks: 85 search results, 15 individual pages discovered, 6 fetched/captured, 4 Gemma extraction calls, 2 extraction failures, 4 new unverified review rows and 2 existing rows enriched. No evidence was approved or imported.
+- Bambu Lab A1 short-model disambiguation now rejects the 9 Audi A1 car URLs before product-page fetching. The used A1 Standard pass found one candidate but eBay returned HTTP 403.
+- The exact Creality K1 Max bundle URL `/products/essential-combok1-max-hyper-pla-2` was still captured as K1 Max Standard, with title `K1 Max + PLA*2(White+Red)` and visible £599.00. The same page also remains in an older K1 Standard review row. Both are unreviewed and untouched.
+- PR #287 corrects the concatenated Combo URL token boundary. Its first regression assertion was too weak because it used the base K1 task and could pass via sibling-model rejection. The feature branch now tests the same URL/title against K1 Max Standard (reject) and K1 Max Combo (accept), proving the package rule itself.
+- Worker is idle with no active/pending 3D task. Last heartbeat 00:47 UTC is stale by about 65 minutes; idle status alone cannot verify that the Research PC process is still online. Do not queue another task until PR review/merge, updater verification and an explicit worker check.
+- The LIVE review queue has 44 3D-branch rows, 2 enrichment histories, 1 reviewer marker, 0 approved and 0 imported. All captures remain subject to ChatGPT/owner review.
+
 ## 8 November 2026 — concatenated Combo URL identity correction
 
 - Controlled LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` showed the official Creality UK URL `/products/essential-combok1-max-hyper-pla-2` was captured under the K1 Max Standard task. Its title identified `K1 Max + PLA*2(White+Red)` and the page showed £599.00; this is a bundle, not the standalone Standard Printer.

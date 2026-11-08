@@ -7,7 +7,7 @@
 - The page exposes multiple model/condition/bundle prices; no safe unique price was assigned. Keep the row in `needs_research`; no approvals/imports.
 - PR #303 branch `fix/gemma-3d-jsonld-priority-20261108` prioritises matching structured offers for 3D printers, formats GBP offers so the deterministic parser can recognise them, and adds regression tests. Draft PR #303 open; GitHub Actions run #299 (run ID 42517043616) passed 55/55 tests and syntax checks on head d67416ea9433be5b8abf19a3bf9f8fe9b6db6a75. This verifies the regression fixture and code branch only; Research PC runtime remains unverified. Not merged/deployed.
 - PR #302 head `d0e283300e9bea94f828339f7e41bba48fa938ce` passed 60 CI tests; price-observation contract still needs Research PC verification. The 19:00 run used legacy `price_mentions`/`price_contexts`.
-- Current LIVE worker idle; no active/queued 3D tasks; last heartbeat 19:01:33 UTC (idle state does not prove PC connectivity). Review queue 65 rows; 64 null evidence type, 1 `uk_new`, 3 top-level prices, 0 approved/imported.
+- Current LIVE worker idle; no active/queued 3D tasks; last heartbeat 19:01:33 UTC (idle state does not prove PC connectivity). Review queue 65 rows: 42 `uk_new`, 6 `uk_used`, 17 `uk_both`; top-level prices 2/0/1 by lane; one record has an evidence type; 0 approved/imported.
 - No task, queue, catalogue, TEST data, secret, private .env, approval/import state or Research PC runtime was changed. Next gate: green CI and owner-approved updater/replay; no duplicate task.
 
 

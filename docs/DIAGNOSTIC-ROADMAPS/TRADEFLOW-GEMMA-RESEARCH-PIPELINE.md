@@ -1,5 +1,10 @@
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
 
+## 8 November 2026 — PR #298 merged
+
+PR #298 is now merged into `production` (merge commit `3417c5dced183fedcf13a7af266c67c2dd697d0a`). GitHub Actions validation passed 53/53 tests. This is not yet installed on the Research PC and has not been runtime-benchmarked. Next: use the existing updater with the correct dedicated install folder, preserving the separate private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`; verify installed commit/heartbeat before queuing a controlled 3D-printer batch. Do not change other agent branches or import/approval controls.
+
+
 ## 8 November 2026 — 3D-printer extraction performance investigation
 
 - Baseline task `owner-3d-printers-chatgpt-evidence-batch-20261108-1315`: six product subtasks executed sequentially by `task-worker.mjs`; wall time 70m 49s; 30 individual pages discovered, 18 fetched, 18 Ollama calls, 10 extraction failures. Product-page HTTP fetches already run in groups of four. `extractBatch()` serialises Ollama calls through `ollamaExtractionQueue`; 3D extraction was one page per call.

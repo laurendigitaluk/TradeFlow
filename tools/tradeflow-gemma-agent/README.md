@@ -93,4 +93,4 @@ PR #292 changes only the first 3D-printer agent:
 - all multiple package prices retained with context, without guessing the price for the requested package;
 - all results remain unverified for ChatGPT review; no automatic catalogue import.
 
-Other category agents retain their existing extraction settings. CI run 42477880080 passed 49/49 tests. PR #292 is open and not deployed. Do not update the Research PC until the PR is reviewed and merged. After merge, use the existing updater in place and preserve the private TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE.
+Other category agents retain their existing extraction settings. CI run 42477880080 passed 50/50 tests. PR #292 is open and not deployed. Do not update the Research PC until the PR is reviewed and merged. After merge, use the existing updater in place and preserve the private TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE.

@@ -1,3 +1,7 @@
+## 8 November 2026 — Updater parser failure and corrected validation
+
+The owner attempted the PR #300 updater on Research PC; PowerShell parser errors stopped execution before installation. No source files were installed and private `.env` was not changed. Root cause: truncated `SourceBranch` validation line and duplicated updater body. Rebuilt updater from production baseline, retaining existing safeguards and adding one explicit branch parameter. Added a PowerShell AST parser check to GitHub Actions. Do not ask owner to rerun until latest-head CI succeeds. Next: corrected updater run without `-StartWorker`, then local Ollama schema test; only then controlled 3D-printer task. No task queued, approvals/imports unchanged.
+
 ## 8 November 2026 — PR #300 CI and local test gate
 
 PR #300 passed GitHub Actions run #219 at head `f8fe6f78ebf77c971526d650293a7f0d22951207` (source syntax, Gemma research tests, Owner Dashboard JavaScript syntax). It remains draft/open and not deployed. Updater in the branch accepts `-SourceBranch` (default production) for controlled draft-branch installation, preserving backups, local test gates, TEST/LIVE target validation and private .env. Research PC installation and Ollama schema compatibility are still pending; do not start worker or queue new research until verified.

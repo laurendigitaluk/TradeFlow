@@ -196,8 +196,29 @@ test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product
 test('Shopify collection API fallback is enabled only on sources that declare support', () => {
   assert.equal(getWebsiteInstructions(task.category_slug, '123-3d.co.uk').collectionApi, 'shopify');
   assert.equal(getWebsiteInstructions(task.category_slug, '3dgbire.com').collectionApi, 'shopify');
-  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, undefined);
+  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, 'shopify');
   assert.equal(getWebsiteInstructions(task.category_slug, 'uni3dverse.co.uk').collectionApi, undefined);
+});
+
+test('Creality UK uses verified live printer collections and Shopify JSON to discover exact printer pages', () => {
+  const printerTask = { ...task, manufacturer: 'Creality', model: 'Ender-3 V3 KE', research_type: 'uk_new' };
+  const routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, printerTask);
+  assert.ok(routes.includes('https://store.creality.com/uk/collections/fdm-3d-printer'));
+  assert.ok(routes.includes('https://store.creality.com/uk/collections/ender-3-v3-series'));
+  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, 'shopify');
+
+  const products = extractShopifyCollectionProducts({
+    products: [
+      { title: 'Ender-3 V3 KE 3D Printer', handle: 'ender-3-v3-ke-3d-printer' },
+      { title: 'Ender-3 V3 SE 3D Printer', handle: 'ender-3-v3-se-3d-printer' },
+      { title: 'Ender-3 V3 KE Upgrade Kit', handle: 'ender-3-v3-ke-upgrade-kit' }
+    ]
+  }, 'https://store.creality.com/uk/collections/fdm-3d-printer', printerTask, 24);
+
+  assert.deepEqual(products.map(product => product.url), [
+    'https://store.creality.com/uk/products/ender-3-v3-ke-3d-printer'
+  ]);
+  assert.equal(isEligibleProductPage(products[0].url, products[0].title), true);
 });
 
 test('3D printer instructions require category-to-product traversal and retain borderline findings', () => {

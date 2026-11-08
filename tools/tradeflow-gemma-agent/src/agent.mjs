@@ -423,9 +423,16 @@ export function extractRelevantPageText(html, task = {}) {
       'Product: ' + (product.name || ''),
       'Brand: ' + (product.brand?.name || product.brand || ''),
       'Model: ' + (product.model || ''),
-      ...offers.filter(Boolean).map(offer => 'Price: ' + (offer.price ?? offer.lowPrice ?? '') +
-        ' Currency: ' + (offer.priceCurrency || '') + ' Availability: ' + (offer.availability || '') +
-        ' Condition: ' + (offer.itemCondition || ''))
+      ...offers.filter(Boolean).map(offer => {
+        const currency = String(offer.priceCurrency || '').toUpperCase();
+        const amount = offer.price ?? offer.lowPrice ?? '';
+        // Put GBP before the amount so the deterministic price parser can
+        // recognise the structured offer as well as the model prompt.
+        const visiblePrice = currency === 'GBP' ? 'GBP ' + amount : String(amount);
+        return 'Price: ' + visiblePrice + ' Currency: ' + currency +
+          ' Availability: ' + (offer.availability || '') +
+          ' Condition: ' + (offer.itemCondition || '');
+      })
     ].join(' ');
   });
   let content = source.replace(/<(script|style|noscript|svg)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ');
@@ -435,7 +442,13 @@ export function extractRelevantPageText(html, task = {}) {
     .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
     .replace(/&amp;/gi, '&').replace(/&nbsp;|&#160;/gi, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  return [content, ...structured].filter(Boolean).join(' ').slice(0, 10000);
+  // Long storefront pages can fill the 10k capture budget before the
+  // machine-readable Product/Offer facts appended below. Preserve those facts
+  // first for the 3D-printer branch; keep legacy ordering for other categories.
+  const orderedContent = is3dPrinterResearchTask(task)
+    ? [...structured, content]
+    : [content, ...structured];
+  return orderedContent.filter(Boolean).join(' ').slice(0, 10000);
 }
 
 async function collectionPage(url) {

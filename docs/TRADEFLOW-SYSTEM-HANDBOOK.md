@@ -1,4 +1,4 @@
-# CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
+# CURRENT AUTHORITATIVE SYSTEM POSITION — 8 NOVEMBER 2026
 
 This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
 
@@ -9,6 +9,11 @@ This front section supersedes older descriptions below where they conflict. Olde
 - Subscriber websites are tenant-specific. Website Builder controls design, branding, page text and visibility; Buying Catalogue and published Selling listings supply connected product data. Public TradeFlow marketing pages are separate from subscriber websites.
 - The Platform Owner Dashboard has nine consistent collapsible management sections: Product details; Subscriber businesses; Complimentary subscriber accounts; Domain connection requests; TradeFlow plan/pricing; Public Website Pages; Platform email; AI Agent Common Room; Gemma Control Centre. Overview metrics remain visible. Sidebar anchors open the matching section.
 - The Owner Dashboard has no Platform Configuration or subscriber AI-provider setup. AI research is a centrally operated TradeFlow capability; do not reintroduce subscriber-supplied AI configuration as a default.
+
+
+## 8 November 2026 — ELEGOO UK 3D-printer source scope (PR #291 proposed)
+
+The ELEGOO UK source is manufacturer-specific and assigned only to `3d-printers-equipment`. Its website playbook already separates new and pre-owned discovery routes. The LIVE source row is currently `new_uk`, which prevents used tasks from reaching the pre-owned route. PR #291 proposes changing that one existing row to `all`; the manufacturer and category filters still prevent cross-manufacturer or cross-category use. New tasks must use the FDM collection, used tasks the pre-owned collection. Both are discovery pages only: individual product pages, current availability, exact package, condition and GBP price must be inspected. No candidate becomes approved or imported automatically.
 
 ## AI Research Centre and agents
 - Gemma runs on the dedicated Research PC using the local Ollama model and the separate local environment file selected by TRADEFLOW_GEMMA_ENV_FILE.

@@ -26,3 +26,8 @@ The GitHub Actions Gemma Research Tests workflow is triggered by the PR. The Res
 
 ## Safeguards
 No Supabase schema/data, task queue, review queue, catalogue, source registry, TEST data, credentials, private .env or Research PC runtime changed. No research task was queued. No evidence was approved or imported.
+
+
+### CI verification — 8 November 2026, 05:48 UTC
+- PR #289 GitHub Actions run [42452189126](https://github.com/laurendigitaluk/TradeFlow/actions/runs/42452189126) completed successfully: **47 tests passed, 0 failed**. Gemma source syntax and Owner Dashboard JavaScript syntax checks also passed.
+- The green run verifies the PR branch's aggregation helper, 3D-only batch predicate, cross-category isolation and existing source/agent tests. It does not verify a Research PC installation or LIVE runtime. PR remains open and unmerged; no deployment or research task was started.

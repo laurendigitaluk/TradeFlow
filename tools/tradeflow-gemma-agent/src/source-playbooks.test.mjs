@@ -252,7 +252,8 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
     text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00'
   }]);
   assert.match(prompt, /CAPTURE, DO NOT DECIDE/i);
-  assert.match(prompt, /exactly ONE compact JSON object/i);
+  assert.match(prompt, /one top-level findings array/i);
+  assert.match(prompt, /EVERY supplied source_id/i);
   assert.match(prompt, /Capture the machine-only price separately from Combo/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
@@ -281,8 +282,8 @@ test('3D printer Gemma prompt returns one factual page observation for ChatGPT r
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
 });
 
-test('3D printer extraction uses one page per Gemma call while other agents retain two-page batches', () => {
-  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 1);
+test('3D printer extraction batches up to eight pages per Gemma call while other agents retain two-page batches', () => {
+  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 8);
   assert.equal(extractionBatchSizeForTask({ ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones' }), 2);
 });
 

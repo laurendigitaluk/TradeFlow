@@ -558,7 +558,7 @@ export function buildExtractionPrompt(task, pages) {
       url: String(item.url || '').slice(0, 500),
       visible_gbp_prices: priceMentions.slice(0, 16).map(price => price.display),
       // Keep compact contexts for Gemma's price-to-package matching.
-      visible_gbp_price_context: priceMentions.slice(0, 8).map(price => ({
+      visible_gbp_price_context: priceMentions.slice(0, 16).map(price => ({
         display: price.display, context: price.context.slice(0, 100)
       })),
       // 3D printer extraction reads selected sections from across the complete fetched page.
@@ -779,7 +779,7 @@ export function buildGemmaFindingSchema(expectedCount = 1) {
             product_identity_text: { ...boundedString(180), minLength: 1 },
             package_or_variant_text: boundedString(120),
             seller_text: boundedString(100),
-            price_observations: { type: 'array', maxItems: 12, items: priceObservation },
+            price_observations: { type: 'array', maxItems: 16, items: priceObservation },
             item_condition_text: boundedString(100),
             availability_text: boundedString(100),
             location_text: boundedString(100),

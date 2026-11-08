@@ -4840,3 +4840,22 @@ Added five category-scoped UK sources to LIVE for the drones category:
 - Drone Authority UK — https://www.droneauthority.co.uk/collections/pre-built. UK pre-built FPV listings including BetaFPV, EMAX and iFlight; exclude zero-price placeholders and parts-only listings.
 
 Post-change verification: 19 enabled sources scoped to drones; 541 active drone products; 306 active drone products without active market evidence. The evidence gap is unchanged because only the source registry was changed. Existing DJI, HOVERAir, Aetha/Skydio, Holy Stone/DMTL, FIMI/IT Drone Services, Flying Tech, Unmanned Tech, HobbyRC, CameraWorld, Wilko, MPB and DJI UK source rows remain unchanged. No product/evidence rows changed, no research task was queued, no worker restarted and TEST was not modified.
+
+
+## 8 November 2026 — LIVE mobile-phone source coverage expansion
+
+Added ten category-scoped UK sources to LIVE mobile-phones:
+- HONOR UK Official — https://www.honor.com/uk/phones/.
+- Xiaomi UK Official Store — https://www.mi.com/uk/product-list/phone/.
+- TCL UK Official — https://www.tcl.com/uk/en/mobile.
+- Doro UK Official — https://www.doro.com/en-gb/products/.
+- HMD UK Official — https://www.hmd.com/en_gb/smartphones.
+- realme UK Official — https://www.realme.com/uk/.
+- Nothing UK Official — https://nothing.tech/collections/phones.
+- OnePlus UK Official Store — https://www.oneplus.com/uk/store.
+- Ballicom UK — Fairphone smartphone catalogue, https://www.ballicom.co.uk/manufacturers/fairphone/.
+- Clove Technology UK — Fairphone smartphone catalogue, https://www.clove.co.uk/collections/smartphones-fairphone.
+
+Manufacturer pages are for exact model identity, storage/RAM variants, specifications and current/discontinued status; capture prices only when a visible UK GBP offer exists. Ballicom and Clove are UK GBP retail sources for Fairphone; use inc-VAT consumer prices and exclude earbuds, cases, modules and cables. Fairphone's official global shop may display EUR, so do not treat it as UK GBP price evidence.
+
+Post-change verification: 21 enabled sources scoped to mobile-phones; 158 active products; 0 active products without active market evidence. No product/evidence rows changed, no research tasks queued, no worker restarted and TEST was not modified. Existing Apple, Google, Motorola, OPPO, Samsung, Argos, Currys, John Lewis, EE, Very and CeX sources remain unchanged.

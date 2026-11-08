@@ -18,11 +18,11 @@ export function canonicalCaptureSourceUrl(sourceUrl, task = {}) {
     return original;
   }
 
-  const host = url.hostname.toLowerCase().replace(/^www\\./, '');
+  const host = url.hostname.toLowerCase().replace(/^www\./, '');
   const isCrealityUkProduct =
     url.protocol === 'https:' &&
     host === 'store.creality.com' &&
-    /^\\/uk\\/products\\/[^/]+\\/?$/i.test(url.pathname);
+    /^\/uk\/products\/[^/]+\/?$/i.test(url.pathname);
   if (!isCrealityUkProduct) return original;
 
   const countries = url.searchParams.getAll('country');

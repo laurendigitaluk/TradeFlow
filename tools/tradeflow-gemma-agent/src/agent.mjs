@@ -590,7 +590,7 @@ export function buildExtractionPrompt(task, pages) {
     'IDENTITY AND PACKAGE: Copy the exact page title and identify manufacturer, exact model, standard/machine-only versus Combo, bundle contents, colour/AMS/ACE/CFS options, accessories and model/package mismatches. Do not assume the requested package matches the page.',
     'PRICES: Capture every visible GBP amount and its nearby wording. Capture the machine-only price separately from Combo, and distinguish crossed-out price, discount/saving, bundle, accessory, filament, gift-card and delivery amounts. Do not mistake per-kg filament prices, accessories, gift-card values, shipping or recommendations for the printer price. Never promote a saving or accessory price to the printer price. If association is unclear, say so.',
     'CONDITION, STOCK AND UK: Copy explicit new/used/refurbished/reconditioned/ex-demo/open-box/opened/sealed wording; in-stock/sold-out/backorder/dispatch/delivery wording; UK seller, UK delivery, VAT and location clues. Record missing facts as empty strings and contradictions explicitly.',
-    'OUTPUT CONTRACT: Return the supplied JSON schema exactly. One compact finding per supplied source_id, no extra keys, no prose or markdown. Keep fields short; price_mentions are exact visible GBP strings and price_contexts are short nearby wording. Never omit or invent a source_id.',
+    'OUTPUT CONTRACT: Return the supplied JSON schema exactly. One compact finding per supplied source_id, no extra keys, no prose or markdown. REQUIRED POPULATION: page_title must copy the supplied page title (or the visible page heading); product_identity_text must state the printer/model shown or say unclear from page; match_observation must briefly state what the page shows. Never leave these three fields blank. For every supplied visible_gbp_prices value, copy that exact value into price_mentions; do not leave price_mentions empty when visible_gbp_prices is non-empty. price_contexts must copy short nearby wording from visible_gbp_price_context. Use empty strings/arrays only for facts genuinely absent from the page. Never omit or invent a source_id.',
     'Task: ' + JSON.stringify(taskData),
     'Branch rules: ' + JSON.stringify(branchRules),
     'Category rules: ' + JSON.stringify(categoryInstructions),
@@ -761,8 +761,8 @@ export function buildGemmaFindingSchema(expectedCount = 1) {
           ],
           properties: {
             source_id: boundedString(32),
-            page_title: boundedString(180),
-            product_identity_text: boundedString(180),
+            page_title: { ...boundedString(180), minLength: 1 },
+            product_identity_text: { ...boundedString(180), minLength: 1 },
             package_or_variant_text: boundedString(120),
             seller_text: boundedString(100),
             price_mentions: { type: 'array', maxItems: 8, items: boundedString(24) },
@@ -771,7 +771,7 @@ export function buildGemmaFindingSchema(expectedCount = 1) {
             availability_text: boundedString(100),
             location_text: boundedString(100),
             identifiers_text: boundedString(80),
-            match_observation: boundedString(120),
+            match_observation: { ...boundedString(120), minLength: 1 },
             uncertainty_and_conflicts: boundedString(180),
             notes: boundedString(180)
           }

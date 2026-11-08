@@ -807,11 +807,22 @@ export function buildGemmaFindingSchema(expectedCount = 1) {
   };
 }
 
-export function selectSafeObservedPrice(observations = []) {
+export function selectSafeObservedPrice(observations = [], researchType = 'uk_both') {
+  const conditionMatchesLane = condition => {
+    const text = String(condition || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+    if (!text) return false;
+    const newCondition = /\\b(?:brand new|new|sealed|unused|never used)\\b/.test(text);
+    const usedCondition = /\\b(?:used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened)\\b/.test(text);
+    if (newCondition === usedCondition) return false;
+    if (researchType === 'uk_new') return newCondition;
+    if (researchType === 'uk_used') return usedCondition;
+    return newCondition || usedCondition;
+  };
   const currentRequestedPrices = observations.filter(observation =>
     observation?.source_context_verified === true &&
     String(observation.association || '').toLowerCase() === 'requested_product' &&
-    String(observation.price_role || '').toLowerCase() === 'current'
+    String(observation.price_role || '').toLowerCase() === 'current' &&
+    conditionMatchesLane(observation.condition)
   );
   const uniqueAmounts = [...new Set(currentRequestedPrices
     .map(observation => Number(observation.amount))
@@ -951,7 +962,7 @@ export async function extractBatch(task, pages, env, onProgress) {
               nearby_context: String(observation?.nearby_context || '').slice(0, 180)
             };
           });
-          const safeObservedPrice = selectSafeObservedPrice(normalisedObservations);
+          const safeObservedPrice = selectSafeObservedPrice(normalisedObservations, task.research_type);
           finding = {
             ...row,
             review_classification: 'unverified_capture',

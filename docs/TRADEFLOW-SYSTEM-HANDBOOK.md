@@ -1,3 +1,9 @@
+## 8 November 2026 — PR #300 CI and controlled install path
+
+PR #300 latest head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed Gemma Research Tests run #219: source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax all succeeded. PR remains draft/open and is not deployed.
+
+The PR now also adjusts `Update-TradeFlow-Gemma.ps1` to accept an explicit `-SourceBranch` parameter (default remains `production`). This allows a controlled install of the draft branch for local Ollama compatibility testing without merging it. The updater retains its existing folder checks, backup, Node tests, TEST/LIVE URL validation and private .env preservation. Do not use `-StartWorker` for the first installation test; first verify installed source and run local tests. Do not run the updater until the PR branch head has passed CI.
+
 ## 8 November 2026 — LIVE 3D-printer benchmark and extraction reliability follow-up
 
 LIVE task `owner-3d-printers-speed-benchmark-20261108-1645` completed in 25m 17s versus the previous six-product baseline of 70m 49s (64.3% faster). It made 7 Gemma calls for 11 fetched pages; 5 calls returned truncated/malformed JSON. All 11 page captures and deterministic GBP observations remained in the review queue; no evidence was approved or imported. Gemma inference consumed approximately 1,395 seconds of the 1,513-second aggregate subtask runtime.

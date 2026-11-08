@@ -1,3 +1,7 @@
+## 8 November 2026 — PR #300 CI passed
+
+PR #300 head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed GitHub Actions run #219, including source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax. PR remains draft/open and is not deployed. The branch updater now accepts `-SourceBranch` (default `production`) for controlled local installation of the draft branch; existing backups, Node test gates, TEST/LIVE URL checks and private .env preservation remain. Next gate: Research PC installation without starting worker, then Ollama schema compatibility check. No new task queued.
+
 ## 8 November 2026 — LIVE benchmark and JSON reliability checkpoint
 
 - Two-page batching is runtime-verified by LIVE task `owner-3d-printers-speed-benchmark-20261108-1645`: 25m 17s vs 70m 49s baseline (64.3% faster).

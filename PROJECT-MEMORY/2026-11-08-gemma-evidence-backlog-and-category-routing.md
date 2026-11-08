@@ -6,11 +6,11 @@ The user has confirmed the operating model: Gemma gathers all useful page observ
 
 LIVE 3D-printer backlog processing:
 - 65 queue rows reviewed.
-- 9 exact product/package matches imported into shared_market_evidence.
-- 56 rows processed without import and marked rejected with notes.
+- 28 exact product/package matches imported into shared_market_evidence.
+- 37 rows processed without import and marked rejected with notes.
 - All raw queue records retained.
-- Queue verified at 9 imported / 56 rejected / 0 open (pending_review or needs_research) for category 3d-printers-equipment.
-- Imported evidence: Bambu Lab A1 AMS Lite Combo (new £315 3D Prima, new £305.83 3DJake, used £250 Gumtree); Anycubic Kobra S1 Max standard (new £549 Anycubic UK, £619 3D Prima out of stock); Kobra S1 Max 4-colour Combo (new £749 Anycubic UK, £819 3D Prima); Creality K1 (£299 new) and K1 Max (£589 new).
+- Queue verified at 28 imported / 37 rejected / 0 open (pending_review or needs_research) for category 3d-printers-equipment.
+- Imported evidence includes Bambu Lab A1 Combo and Standard; Bambu Lab H2S AMS 2 Pro Combo; Anycubic Kobra S1 Standard, 4-Color Combo and ACE 2 Pro 4-Color Combo; Anycubic Kobra S1 Max Standard, 4-, 8- and 16-Color Combos; ELEGOO Neptune 4 Pro; Creality K1 and K1 Max. New, used, refurbished, unavailable and conflicting stock states are explicitly recorded.
 - All were matched to existing LIVE master products. No TEST data was copied. Evidence does not change valuation rules.
 
 The owner queue RPC platform_owner_list_catalogue_research_queue supports separate imported and rejected completed-history filters; default is pending_review. Processed rows must leave the outstanding list but remain retrievable. Never delete raw captures to clear the dashboard.

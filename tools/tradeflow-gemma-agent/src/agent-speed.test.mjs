@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, selectSafeObservedPrice } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -84,11 +84,35 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.ok(finding.properties.price_observations.maxItems <= 16);
   const observation = finding.properties.price_observations.items;
   assert.equal(observation.additionalProperties, false);
+  assert.deepEqual(observation.properties.price_role.enum, ['current','crossed_out','saving','other_variant','accessory','filament','delivery','protection_plan','warranty','unknown']);
+  assert.deepEqual(observation.properties.association.enum, ['requested_product','other_variant','accessory','delivery','saving_or_reference','ambiguous']);
   for (const field of ['price_text','nearby_context','product_or_variant','price_role','association','condition','availability']) {
     assert.ok(observation.required.includes(field), 'price observation requires ' + field);
     assert.ok(observation.properties[field]);
   }
   assert.ok(finding.properties.notes.maxLength <= 180);
+});
+
+test('only one verified current price for the exact requested product can populate observed_price', () => {
+  const observations = [
+    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current' },
+    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out' },
+    { amount: 300, source_context_verified: true, association: 'saving_or_reference', price_role: 'saving' },
+    { amount: 749, source_context_verified: true, association: 'other_variant', price_role: 'current' },
+    { amount: 18.49, source_context_verified: true, association: 'accessory', price_role: 'protection_plan' },
+    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current' }
+  ];
+  assert.equal(selectSafeObservedPrice(observations), 549);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current' },
+    { amount: 749, source_context_verified: true, association: 'requested_product', price_role: 'current' }
+  ]), null);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out' }
+  ]), null);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current' }
+  ]), null);
 });
 
 test('single-page recovery schema requests exactly one compact finding', () => {

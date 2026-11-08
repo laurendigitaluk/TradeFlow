@@ -727,3 +727,25 @@ Existing Wex Photo Video source assignments were retained. All new sources are c
 Verified LIVE source counts after update: Lighting 9; Continuous Lighting 6; Studio Lighting 9; Lighting Modifier 5; Lighting Support 5; Photography Lighting & Studio 5; Camera Flash 5; Video Production Equipment 8; Camera Accessories 21; Camera Rig 9; Tripods 6; Power & Batteries 8. Where UK retailers display ex-VAT and inc-VAT amounts, the agent must use the inc-VAT GBP consumer price for standard new-price evidence; never mistake ex-VAT as the retail total. Distinguish new, used, ex-demo and open-box condition.
 
 No product or evidence rows were changed in this source update. No research tasks were queued and no worker was restarted. LIVE remains the authoritative catalogue; TEST remains software/regression only.
+
+## 8 November 2026 — LIVE Audio and Professional Audio source coverage
+
+Continued LIVE-only category preparation; TEST was not modified. Audio category contains 134 active products. Main uncovered groups are Shure (25), RØDE (19), Sennheiser (4), Atomos (4), Sony (6) and NEEWER (1); these figures are active products without active evidence, not manufacturer totals.
+
+Added category-scoped official UK manufacturer/product sources in LIVE:
+- RØDE UK (rode.com/en-gb): official UK product catalogue and authorised-dealer locator; use for exact model/specification/bundle/discontinued status, and obtain prices from UK dealers where no GBP price is shown.
+- Shure UK (shure.com/en-GB): official UK product pages with GBP recommended retail prices.
+- Sennheiser UK Pro Audio (sennheiser.com/en-gb): official professional audio product catalogue/specifications.
+- Sennheiser UK Official Store (sennheiser-hearing.com): official UK consumer store with GBP prices; scope only to products actually listed there.
+- Audio-Technica UK (audio-technica.com/en-gb): official product catalogue/specifications; use UK retailers for prices where none are shown.
+- Audient (audient.com): official audio interface/preamp catalogue; UK retailers for prices.
+- Zoom UK (zoomcorp.com/en/gb): official UK product catalogue for recorders, microphones and mixers.
+- Yamaha UK (uk.yamaha.com): official UK professional audio catalogue.
+
+Added UK retail sources in LIVE:
+- Andertons UK (andertons.co.uk), Gear4music UK (gear4music.com), GuitarGuitar UK (guitarguitar.co.uk). Their direct product listings show GBP prices and stock status for RØDE, Shure, Sennheiser and other audio brands.
+Existing Sony UK, Wex Photo Video and CVP UK sources remain. NEEWER UK and Atomos UK source assignments were extended to Audio/Audio & Video/Professional Audio where relevant. Amazon UK, eBay UK and CeX UK remain universal.
+
+Verified source counts after update: Audio 20; Audio & Video 19; Professional Audio 17; Video Production Equipment 14; Camera Accessories 23; Phone Photography 4. Manufacturer pages without explicit GBP prices are identity/specification sources only; price evidence must come from UK GBP retailer listings. Where ex-VAT and inc-VAT are both shown, use inc-VAT for the consumer price. Distinguish new, used, nearly-new, B-stock and ex-demo.
+
+No product/evidence rows changed, no research tasks queued and no worker restarted. LIVE remains authoritative; TEST remains software/regression only.

@@ -6,6 +6,7 @@ import { runTask, is3dPrinterResearchTask } from './agent.mjs';
 import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
+import { createIdleWorkerHeartbeatRecord, shouldReportIdleWorkerHeartbeat } from './idle-heartbeat.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -27,6 +28,7 @@ const workerId=(os.hostname()+'-'+process.pid).slice(0,120);
 const pollMs=Math.max(5000,Math.min(60000,Number(env.GEMMA_POLL_INTERVAL_MS)||15000));
 const leaseSeconds=600;
 let stopping=false;
+let lastIdleHeartbeatAt=Date.now();
 process.on('SIGINT',()=>{stopping=true;});
 process.on('SIGTERM',()=>{stopping=true;});
 
@@ -228,6 +230,13 @@ while(!stopping){
   if(task?.id){console.log('[claimed]',task.task_key,'attempt',task.attempts);await processClaim(task);}
   else {
    await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
+   const idleHeartbeatNow=Date.now();
+   if(shouldReportIdleWorkerHeartbeat(lastIdleHeartbeatAt,idleHeartbeatNow)){
+    lastIdleHeartbeatAt=idleHeartbeatNow;
+    // Refresh the task-worker control-plane row while the LIVE queue is idle.
+    // Active research continues to report its own 45-second category heartbeat.
+    void safeReport(createIdleWorkerHeartbeatRecord(workerId,pollMs));
+   }
    await new Promise(resolve=>setTimeout(resolve,pollMs));
   }
  }catch(error){

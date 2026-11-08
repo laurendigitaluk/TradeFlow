@@ -202,7 +202,7 @@ PR #306 changes only the 3D-printer branch:
 - Preserve content-first ordering for all other categories.
 - Add four regression tests: long-page structured GBP retention, multiple GBP offers with non-GBP exclusion, non-GBP-only exclusion, and non-3D compatibility.
 
-PR #306 is draft/open; CI is pending. No Research PC install, worker restart, research task, LIVE/TEST database change, source registry mutation, evidence approval/import, credential or private `.env` change has been made. Do not merge or deploy until CI and the post-install TEST replay are verified and the owner explicitly approves.
+PR #306 is draft/open; GitHub Actions run #349 completed successfully with 73/73 tests passing (0 failures), plus PowerShell, Node source and Owner Dashboard syntax checks. This verifies the code in CI only; Research PC installation and runtime replay remain pending. No Research PC install, worker restart, research task, LIVE/TEST database change, source registry mutation, evidence approval/import, credential or private `.env` change has been made. Do not merge or deploy until CI and the post-install TEST replay are verified and the owner explicitly approves.
 
 ### Diagnostic order for the next check
 

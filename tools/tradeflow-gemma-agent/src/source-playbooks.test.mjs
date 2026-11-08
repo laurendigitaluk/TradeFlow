@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -26,7 +26,7 @@ test('3D printer playbook contains category-wide and individual website rules', 
 test('manufacturer-specific playbook builds UK search and collection routes', () => {
   const routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, task);
   assert.ok(routes.some(url => url.includes('/uk/search?q=Creality%20K1')));
-  assert.ok(routes.some(url => url.includes('/uk/collections/3d-printers')));
+  assert.ok(routes.some(url => url.includes('/uk/collections/fdm-3d-printer')));
 });
 
 test('verified 123-3D collections route new and refurbished searches separately', () => {
@@ -196,8 +196,29 @@ test('Amazon AAX sponsored redirects are unwrapped to the canonical ASIN product
 test('Shopify collection API fallback is enabled only on sources that declare support', () => {
   assert.equal(getWebsiteInstructions(task.category_slug, '123-3d.co.uk').collectionApi, 'shopify');
   assert.equal(getWebsiteInstructions(task.category_slug, '3dgbire.com').collectionApi, 'shopify');
-  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, undefined);
+  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, 'shopify');
   assert.equal(getWebsiteInstructions(task.category_slug, 'uni3dverse.co.uk').collectionApi, undefined);
+});
+
+test('Creality UK uses verified live printer collections and Shopify JSON to discover exact printer pages', () => {
+  const printerTask = { ...task, manufacturer: 'Creality', model: 'Ender-3 V3 KE', research_type: 'uk_new' };
+  const routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, printerTask);
+  assert.ok(routes.includes('https://store.creality.com/uk/collections/fdm-3d-printer'));
+  assert.ok(routes.includes('https://store.creality.com/uk/collections/ender-3-v3-series'));
+  assert.equal(getWebsiteInstructions(task.category_slug, 'store.creality.com').collectionApi, 'shopify');
+
+  const products = extractShopifyCollectionProducts({
+    products: [
+      { title: 'Ender-3 V3 KE 3D Printer', handle: 'ender-3-v3-ke-3d-printer' },
+      { title: 'Ender-3 V3 SE 3D Printer', handle: 'ender-3-v3-se-3d-printer' },
+      { title: 'Ender-3 V3 KE Upgrade Kit', handle: 'ender-3-v3-ke-upgrade-kit' }
+    ]
+  }, 'https://store.creality.com/uk/collections/fdm-3d-printer', printerTask, 24);
+
+  assert.deepEqual(products.map(product => product.url), [
+    'https://store.creality.com/uk/products/ender-3-v3-ke-3d-printer'
+  ]);
+  assert.equal(isEligibleProductPage(products[0].url, products[0].title), true);
 });
 
 test('3D printer instructions require category-to-product traversal and retain borderline findings', () => {

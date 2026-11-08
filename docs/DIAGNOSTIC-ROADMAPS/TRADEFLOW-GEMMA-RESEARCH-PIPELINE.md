@@ -582,3 +582,20 @@ The owner explicitly required TEST-only verification and reported that Gemma sto
 Minimal TEST-only repair: installed `platform_owner_enqueue_ai_agent_task(text,jsonb,integer)` with the same owner-membership check, task-key idempotency, payload validation, priority bounds and authenticated grant as the existing production migration. No existing task, review queue, catalogue, source, customer, tenant or LIVE data was modified.
 
 A single bounded TEST task was then enqueued through that RPC using the active platform owner membership: `owner-test-3d-printer-creality-ender-3-v3-ke-uk-new-20261108-01`, for Creality Ender-3 V3 KE, Standard Printer, UK new-price research only. Queue task UUID: `b7b1463f-0f90-4f83-9b4b-d0e76780e587`. It is queued, not yet claimed; the Research PC worker was stopped by the owner before this task was enqueued. TEST currently has three enabled 3D-printer sources (Creality UK Official Store, 3D Prima UK, 3DJake UK). Next: restart the already-updated worker in its existing folder; it defaults to TEST and should claim this one task. Verify heartbeat, task claim, page captures and TEST review-queue rows. Do not use the dashboard, do not select LIVE, and do not approve/import any result.
+
+
+## 8 November 2026 — Creality dynamic product discovery repair (TEST investigation)
+
+### Reproduced failure
+
+The controlled TEST task `owner-test-3d-printer-creality-ender-3-v3-ke-uk-new-20261108-01` completed in 6.9 seconds but produced zero captures. Activity showed 11 search results, one approved-source collection candidate, zero HTML product links, and the explicit fallback message `site HTML only; no API fallback configured`. No product page was fetched and Gemma/Ollama calls remained zero. This isolated the current blocker to source discovery, not price extraction.
+
+### Evidence and minimal change
+
+The public Creality UK storefront exposes the individual Ender-3 V3 KE page at `https://store.creality.com/uk/products/ender-3-v3-ke-3d-printer` and category collections including `/uk/collections/fdm-3d-printer` and `/uk/collections/ender-3-v3-series`. The current playbook had an obsolete `/uk/collections/3d-printers` route and did not declare a supported collection API, so dynamically rendered product cards could not be enumerated.
+
+A focused code change is on branch `fix/creality-dynamic-printer-discovery-20261108`: enable the already-implemented Shopify collection JSON fallback for `store.creality.com`, replace the obsolete collection route with the two verified Creality UK collection routes, and add a regression test requiring the exact Ender-3 V3 KE product to be discovered while rejecting Ender-3 V3 SE and upgrade-kit results. No price extraction, task queue, review policy, or LIVE settings are changed.
+
+### Validation status
+
+Automated CI and the next single controlled TEST run are still required. Do not claim the repair is complete until CI passes and the TEST worker captures the individual product page. Do not approve/import the capture. LIVE remains untouched.

@@ -28,8 +28,9 @@ const playbooks = {
     sites: {
       'store.creality.com': {
         label: 'Creality UK official store',
-        routes: ['/uk/search?q={query}', '/uk/collections/3d-printers'],
-        navigation: 'Use the UK storefront search first. If it returns a brand/category page, open the 3D printer collection and follow the exact model card to its individual product page. Ignore accessories and upgrade kits.'
+        collectionApi: 'shopify',
+        routes: ['/uk/search?q={query}', '/uk/collections/fdm-3d-printer', '/uk/collections/ender-3-v3-series'],
+        navigation: 'Use the UK storefront search first, then the verified FDM 3D Printer and model-family collections. Creality UK exposes its public Shopify collection products JSON; use it when the HTML contains no product cards, then follow exact standalone printer product handles to their individual UK product pages. Ignore accessories, upgrade kits and sibling printer variants.'
       },
       'bambu-lab-uk.myshopify.com': {
         label: 'Bambu Lab UK official store',

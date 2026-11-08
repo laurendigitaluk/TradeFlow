@@ -4134,3 +4134,20 @@ Evidence verification after reconciliation:
 The initial dashboard-list repair is separate: PR #309 merged and its LIVE RPC migration was applied, but the Cloudflare dashboard asset deployment/browser refresh still needs independent confirmation. No Gemma workers were started or restarted as part of this catalogue reconciliation.
 
 Next workflow: continue preparing the remaining product categories. Once the category catalogues are ready and reconciled between LIVE and TEST, perform the full Gemma worker/agent update and controlled research run, then gather results across the agents.
+
+
+## 8 November 2026 — Mobile Phones LIVE/TEST reconciliation
+
+The mobile-phones category was compared by manufacturer, model, storage/package, branch and all product metadata. LIVE contained 158 products; TEST contained 160. The 158 shared product records have now been aligned to LIVE as the canonical master catalogue. For those 158 records, product identity and all compared metadata fields now match exactly, including package key/name, catalogue/main category, product type, notes, active and customer-visible state. TEST product_type was standardized to `Smartphone` to match the LIVE taxonomy.
+
+Two TEST-only records were retained as inactive, hidden audit/verification placeholders rather than copied to LIVE or deleted:
+- Apple iPhone 18 standard 256 GB: no official standard iPhone 18 model is confirmed in Apple's UK lineup; Apple's official announcement lists iPhone 18 Pro and Pro Max. The TEST placeholder is now inactive and hidden until the standard model is officially confirmed. <https://www.apple.com/uk/newsroom/2026/09/apple-debuts-iphone-18-pro-and-iphone-18-pro-max/>
+- Google Pixel 11 128 GB: already marked inactive in TEST because the 128 GB variant was invalid; retained for audit history.
+
+Final verification:
+- LIVE: 158 total/active products, 157 customer-visible, 0 active products without active evidence.
+- TEST: 160 total products, 158 active, 2 inactive retained placeholders, 157 customer-visible, 0 active products without active evidence.
+- Both environments: 567 active evidence rows (271 UK new, 296 UK used), with no active evidence attached to inactive products.
+- Market-evidence records were not bulk-copied or overwritten. Counts match, but individual evidence provenance remains independent between environments.
+
+The next full category reconciliation should account for remaining category-level drift observed in the database: 3D Printers & Equipment currently shows 208 LIVE vs 209 TEST products and 260 vs 232 active evidence rows; Laptops exists in TEST with 8 products and no active evidence but is not yet present in LIVE. Do not launch the full Gemma worker/agent sweep until all intended categories are reconciled and their source-selection configuration is verified.

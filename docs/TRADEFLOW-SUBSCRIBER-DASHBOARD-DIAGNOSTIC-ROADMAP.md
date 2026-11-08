@@ -1680,7 +1680,7 @@ The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests wo
 - Research PC installer: tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 includes the source-selection test and runs it before/after installation.
 
 **Deployment gate**
-PR #312 combines the 3D-printer structured GBP capture fix and category-scoped source loading because both touch agent.mjs. Do not merge the individual stale PRs or overwrite either fix. Wait for the combined CI suite, merge PR #312, update the Research PC from production without starting the worker, verify the updater passes, then run one controlled gaming task in TEST.
+PR #313 combines the 3D-printer structured GBP capture fix and category-scoped source loading because both touch agent.mjs. Do not merge the individual stale PRs or overwrite either fix. Wait for the combined CI suite, merge PR #313, update the Research PC from production without starting the worker, verify the updater passes, then run one controlled gaming task in TEST.
 
 **Source registry parity**
 Current enabled UK source counts including universal marketplaces: 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 9 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry requires separate reconciliation; do not copy rows between environments without independent verification.

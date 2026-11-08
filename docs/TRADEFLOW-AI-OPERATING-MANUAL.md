@@ -4738,3 +4738,19 @@ Gemma gates remain:
 - PR #300 remains draft/open, not merged; CI 54/54 passed.
 - Research PC installation, local Ollama structured-output acceptance and end-to-end LIVE batch verification remain outstanding.
 No research task was queued and no worker was restarted by this source-coverage change.
+
+## 8 November 2026 — LIVE lighting and production source coverage
+
+Continued LIVE-only category preparation; TEST was not modified. The main Lighting category has 200 active products and 18 without active evidence. Before any Gemma task submission, expanded category-scoped UK sources in LIVE:
+- NEEWER UK Official Store (uk.neewer.com): official UK GBP store for continuous lights, panels, ring lights, flashes, softboxes, stands, batteries, monitors and phone rigs. Assigned only to relevant lighting/rig/power/tripod categories.
+- Elinchrom UK Official Store (elinchrom.co.uk): official UK store and service centre for studio flash, LED lighting and accessories.
+- CVP UK (cvp.com): UK professional retailer for Aputure, amaran, Atomos, lighting, audio and production equipment. Retailer, not labelled as manufacturer-authorised.
+- Atomos UK Official Store (atomos.com, country=GB): official UK-filtered store for monitors, recorders, wireless sync and accessories.
+- Production Gear UK (productiongear.co.uk): UK retailer with Nanlite, Z CAM, SmallRig and production equipment; assigned to relevant lighting/video/camera categories.
+- Wilkinson Cameras UK (wilkinson.co.uk): UK retailer for SmallRig camera rigging, tripods and lighting accessories.
+- Essential Photo UK (essentialphoto.co.uk): UK retailer for SmallRig lighting, tripods and rigging.
+Existing Wex Photo Video source assignments were retained. All new sources are category-scoped in LIVE; universal Amazon UK and eBay UK remain universal.
+
+Verified LIVE source counts after update: Lighting 9; Continuous Lighting 6; Studio Lighting 9; Lighting Modifier 5; Lighting Support 5; Photography Lighting & Studio 5; Camera Flash 5; Video Production Equipment 8; Camera Accessories 21; Camera Rig 9; Tripods 6; Power & Batteries 8. Where UK retailers display ex-VAT and inc-VAT amounts, the agent must use the inc-VAT GBP consumer price for standard new-price evidence; never mistake ex-VAT as the retail total. Distinguish new, used, ex-demo and open-box condition.
+
+No product or evidence rows were changed in this source update. No research tasks were queued and no worker was restarted. LIVE remains the authoritative catalogue; TEST remains software/regression only.

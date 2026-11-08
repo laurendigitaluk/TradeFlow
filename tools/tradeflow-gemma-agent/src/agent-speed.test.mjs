@@ -47,6 +47,33 @@ test('3D printer capture retains structured GBP offers before long page text and
   assert.ok(extractVisibleGbpPriceMentions(text).some(price => price.amount === 169));
 });
 
+test('structured arrays preserve each GBP offer while excluding non-GBP variants', () => {
+  const product = {
+    '@type': 'Product',
+    name: 'ELEGOO Neptune 4 Pro FDM 3D Printer',
+    brand: { name: 'ELEGOO' },
+    model: 'Neptune 4 Pro',
+    offers: [
+      { '@type': 'Offer', price: '169.00', priceCurrency: 'GBP' },
+      { '@type': 'Offer', price: '179.00', priceCurrency: 'GBP' },
+      { '@type': 'Offer', price: '199.00', priceCurrency: 'USD' }
+    ]
+  };
+  const html = '<main>ELEGOO Neptune 4 Pro.</main>' +
+    '<script type="application/ld+json">' + JSON.stringify(product) + '</script>';
+  const text = extractRelevantPageText(html, {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro'
+  });
+  const amounts = extractVisibleGbpPriceMentions(text).map(price => price.amount);
+
+  assert.ok(amounts.includes(169));
+  assert.ok(amounts.includes(179));
+  assert.ok(!amounts.includes(199));
+});
+
 test('structured non-GBP offers are not reported as GBP prices', () => {
   const product = {
     '@type': 'Product',

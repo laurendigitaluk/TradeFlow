@@ -44,3 +44,20 @@ Finish the first Gemma agent (3D Printers & Equipment) so it returns useful fact
 
 
 Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.
+
+## Post-merge LIVE acceptance run — 8 November 2026, 12:21–13:12 UTC
+
+This section supersedes the earlier post-merge note that the Research PC had not yet exercised PR #292. The worker had been updated with PR #292 before the latest run; it had not yet loaded PR #293 when the task started.
+
+- Task: `owner-3d-printers-deep-extraction-acceptance-20261108-1235`; completed 6/6 subtasks at 13:04:33 UTC.
+- Worker: `DESKTOP-LVASEUB-80700`; started 12:27:37 UTC, emitted regular 45-second heartbeats, and stopped cleanly at 13:12:26 UTC. No active or pending 3D tasks remain.
+- PR #292 merged at 12:03:49 UTC. PR #293 merged at 12:40:19 UTC, after this worker process had started. The run therefore exercised #292 but not the #293 prompt. One Gemma call per fetched page (11 calls for 11 pages) confirms the #292 one-page path was active.
+- Totals: 86 searches, 19 product pages discovered, 11 fetched/captured, 11 Gemma calls, 9 extraction failures; 80 approved-source route attempts, 24 with matches, 39 empty, 17 route errors and 8 direct page-fetch errors.
+- New: 55 searches, 13 discovered, 11 fetched/captured; 8 new raw review rows and 3 existing rows enriched. Used: 31 searches, 6 discovered, 0 fetched/captured.
+- The 8 new rows retain 58 visible GBP price mentions across 41,015 captured characters. All 8 remain unverified, with no top-level `observed_price` or `evidence_type` set. Multiple package/option prices must remain contextual; do not infer a single printer price.
+- Queue total is 52 rows (42 new, 6 used, 4 combined), all `needs_research`; 3 top-level prices, 1 structured evidence type, 0 approved and 0 imported.
+- Used lane's first loss is before Gemma: all 6 discovered pages failed fetch; eBay returned 403/404 and other source routes returned 404. The 123-3D refurbished, 3DGBIRE reconditioned and SecondHand collections returned no exact-model links for the tested Neptune 4 Pro. ELEGOO UK remains `new_uk`, excluding its pre-owned route; PR #291 is open and its migration is not applied.
+- New-lane route failures include Amazon 404, 3DFLO timeout, 3D Prima 404 and 123-3D ineligible redirect. No access controls were bypassed.
+- The 9/11 extraction failures came from the pre-#293 prompt because the worker started before the #293 merge. Raw fallback retained all 11 fetched pages; the #293 prompt still needs an in-place Research PC update and a fresh acceptance run.
+- PR #289 remains open; the parent task result has all 6 subtask results, but Common Room completion still reports only the final `uk_used` subtask's zero captures. PR #288 and #290 remain open; PR #291 remains open and unapplied.
+- No source registry, task queue, review row, catalogue, approval/import state, TEST data, secrets, private `.env`, or Research PC file was changed by this monitoring run. No new task was queued.

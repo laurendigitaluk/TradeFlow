@@ -2,7 +2,7 @@
 
 LIVE task `owner-3d-printers-speed-benchmark-20261108-1645` captured an Amazon UK page titled “YIBEICO Screw Set For Bambu Lab A1 AMS lite and Stiffener C Clamp” under the Bambu Lab A1 / AMS Lite Combo product. The page was incorrectly accepted by `matchesTaskModel()` because it contained both “A1” and “AMS lite”; the existing accessory title exclusions did not include screw sets, clamps or stiffeners. It was staged as an unverified `needs_research` capture with no observed printer price or evidence type. No approval or import occurred.
 
-Follow-up branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds title/path-only exclusions for `screw set`, `screw kit`, `clamp` and `stiffener`, with a regression test for the exact captured URL/title. It preserves genuine A1 AMS Lite Combo product pages. PR/CI and runtime acceptance are pending; not deployed. The separate PR #296 already addresses Amazon tracking-path canonicalisation and must not be duplicated. Keep all raw capture, review and import gates unchanged.
+Follow-up branch `fix/gemma-3d-printer-accessory-page-filter-20261108` adds title/path-only exclusions for `screw set`, `screw kit`, `clamp` and `stiffener`, with a regression test for the exact captured URL/title. It preserves genuine A1 AMS Lite Combo product pages. GitHub Actions run 42505871429 (#216) passed 53/53 tests. Research PC runtime acceptance is pending; not deployed. The separate PR #296 already addresses Amazon tracking-path canonicalisation and must not be duplicated. Keep all raw capture, review and import gates unchanged.
 
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 

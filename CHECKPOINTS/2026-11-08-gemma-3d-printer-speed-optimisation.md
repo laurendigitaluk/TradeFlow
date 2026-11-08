@@ -27,15 +27,15 @@ LIVE task: owner-3d-printers-chatgpt-evidence-batch-20261108-1315
 - Ollama extraction is serialised by ollamaExtractionQueue.
 - 3D-printer extraction used one page per Ollama call. The 3D prompt required a single observation object.
 
-## Proposed optimisation in this branch
+## Merged production optimisation (PR #298)
 
-- Change only the 3D-printer extraction batch size to two pages per Ollama call.
+- Production code changes only the 3D-printer extraction batch size to two pages per Ollama call.
 - Change the 3D prompt to require one top-level findings array with exactly one finding per supplied source_id.
 - Reduce each model page excerpt from 6,200 to 2,800 characters; retain up to eight compact nearby GBP price contexts and the visible GBP amount list.
 - Keep the complete fetched page text, all deterministic price mentions and fallback captures in the LIVE review queue.
 - Raise the 3D call output budget to 1,536 tokens for two concise observations.
 - Add stage duration metrics: web search, approved-source probing, collection discovery, direct page fetch, Gemma extraction, LIVE queue write and total elapsed time.
-- Add prompt/batch regression tests and include them in GitHub Actions and the existing Research PC updater.
+- Prompt/batch regression tests are included in GitHub Actions and the existing Research PC updater; the local worker has not yet produced a post-merge runtime result.
 
 ## Verification status
 

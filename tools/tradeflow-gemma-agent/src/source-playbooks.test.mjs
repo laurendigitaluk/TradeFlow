@@ -459,7 +459,7 @@ test('duplicate enrichment refuses reviewed, approved, imported and mismatched r
 
 test('duplicate enrichment selects only columns present in the LIVE review queue schema', async () => {
   const agentSource = await readFile(new URL('./agent.mjs', import.meta.url), 'utf8');
-  const selectMatch = agentSource.match(/platform_catalogue_research_queue\\?select=([^']+)/);
+  const selectMatch = agentSource.match(/platform_catalogue_research_queue\?select=([^']+)/);
   assert.ok(selectMatch, 'review-queue duplicate lookup must declare its selected columns');
   const fields = selectMatch[1].split('&')[0].split(',');
   assert.deepEqual(fields, [
@@ -467,6 +467,6 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
     'package_key','source_url','reviewed_at','reviewed_by','approved_at','imported_at',
     'raw_payload','research_notes','updated_at'
   ]);
-  assert.match(agentSource, /reviewed_at=is\\.null&reviewed_by=is\\.null&approved_at=is\\.null&imported_at=is\\.null/);
+  assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);
 });

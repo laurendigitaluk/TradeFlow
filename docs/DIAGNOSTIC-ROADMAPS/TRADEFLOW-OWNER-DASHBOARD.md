@@ -137,3 +137,20 @@ PR #272, `Fix Gemma research navigation and exact-model filtering`, was merged t
 PR #273, “Deepen Gemma category research and capture borderline findings”, was merged into production as commit 7e8e2d4ba6e634fa788ec78b345ac6047e54aee7. GitHub Actions Gemma Research Tests run 42403829606 completed successfully: all Gemma source syntax checks passed, the task-group and website-playbook test suites passed (19 tests, 0 failures), and Owner Dashboard JavaScript syntax passed. The first test run exposed a collection-pagination fixture that dropped the Creality UK locale path; the fixture was corrected to retain /uk/, and the subsequent complete CI run passed.
 
 Production now contains all-route probing, bounded search/collection pagination, branch-specific printer/accessory rules, direct-page borderline assessment, validation-failure borderline handoff, approval suppression for borderline queue rows, expanded research coverage metrics, and Owner Dashboard cache reference v29. This confirms GitHub source and CI only; it does not yet confirm Cloudflare's production deployment or Research PC installation. The Research PC must be updated with the production updater, then the owner dashboard must be checked for v29, and exactly one controlled Creality K1 task run before any wider batch is dispatched.
+
+
+## 8 November 2026 — Active queue/task list behavior and deployment verification
+
+**Current production frontend**
+- HTML: platform-owner-dashboard.html; current headings are “Outstanding research tasks” and “Research awaiting review”.
+- JS: platform-owner-dashboard.js, loadGemmaTasks() calls platform_owner_list_ai_agent_tasks with p_status='active'; loadGemmaQueue() calls platform_owner_list_catalogue_research_queue with p_status='open'.
+- RPCs: platform_owner_list_ai_agent_tasks(p_limit,p_status) maps active to queued/running/failed; platform_owner_list_catalogue_research_queue(p_status,p_limit) maps open to pending_review/needs_research/approved and completed to imported/rejected.
+- Completed task/evidence history remains in the database; the default dashboard lists do not display it.
+- worker/index.js sets Cache-Control: no-store on platform-owner-dashboard.html and JavaScript assets.
+
+**Database status at 8 November 2026**
+- LIVE: 65 3D-printer queue rows, 28 imported and 37 rejected; zero open queue rows across all categories; 20 completed agent tasks; zero active tasks.
+- TEST: zero open queue rows; one queued 3D-printer smoke test (Creality Ender-3 V3 KE) and one completed task. Keep the queued test until it is deliberately processed or cancelled.
+
+**Observed deployment mismatch**
+The screenshot shows the old heading “Queued and completed tasks” and processed records. Current production HTML/JS and RPC definitions do not produce that view. The likely first failure is the Cloudflare Worker asset deployment. Worker name from wrangler.jsonc is tradeflow; repository has no GitHub Actions deploy workflow. Verify Cloudflare Workers & Pages > tradeflow > Deployments and deploy the latest production commit. Do not delete queue rows or rewrite statuses to compensate for stale frontend assets. After deployment, hard-refresh the owner dashboard and confirm empty states.

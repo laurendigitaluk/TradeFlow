@@ -4828,3 +4828,15 @@ Current worker state: no active task; the Gemma task worker is idle and its last
 A further manufacturer gap was closed in LIVE: added Blackmagic Design UK Official (blackmagicdesign.com, https://www.blackmagicdesign.com/uk/products) as a manufacturer/official GB source scoped only to cameras. Its UK product catalogue exposes camera product pages and GBP prices; use the Professional Cameras family and exact model pages, and keep camera bodies separate from viewfinders, recorders, mounts, grips and accessories.
 
 Verification after this addition: 22 enabled Cameras-scoped sources; 722 active camera products; 305 active camera products still without active market evidence. The 305 gap is unchanged because only the source registry was changed. No product/evidence rows or TEST data were modified. Supabase activity record owner-live-camera-source-coverage-blackmagic-20261108 was inserted and verified.
+
+
+## 8 November 2026 — LIVE drone UK source coverage expansion
+
+Added five category-scoped UK sources to LIVE for the drones category:
+- Modus Brands UK — Autel Robotics UK distributor reference, https://www.modusbrands.com/brands-trust-us/autel-robotics-drone-distributor/. Use for official distribution/model context; it is not automatically a consumer price source.
+- Leicester Drones UK — https://www.leicesterdrones.com/. UK authorised retailer for DJI, Parrot and Yuneec; use exact product pages and visible GBP offers.
+- Quadcopters UK — https://www.quadcopters.co.uk/. UK retailer and distributor for BetaFPV/Yuneec; distinguish complete drones from FPV parts and accessories.
+- Whoop Store UK — https://www.whoopstore.uk/collections/drones-by-geprc. UK GEPRC listings with GBP prices; distinguish complete drones from components.
+- Drone Authority UK — https://www.droneauthority.co.uk/collections/pre-built. UK pre-built FPV listings including BetaFPV, EMAX and iFlight; exclude zero-price placeholders and parts-only listings.
+
+Post-change verification: 19 enabled sources scoped to drones; 541 active drone products; 306 active drone products without active market evidence. The evidence gap is unchanged because only the source registry was changed. Existing DJI, HOVERAir, Aetha/Skydio, Holy Stone/DMTL, FIMI/IT Drone Services, Flying Tech, Unmanned Tech, HobbyRC, CameraWorld, Wilko, MPB and DJI UK source rows remain unchanged. No product/evidence rows changed, no research task was queued, no worker restarted and TEST was not modified.

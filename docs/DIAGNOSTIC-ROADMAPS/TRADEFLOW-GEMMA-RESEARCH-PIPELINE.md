@@ -673,3 +673,41 @@ PR #314 combines the structured 3D-printer GBP capture fix and category-scoped s
 
 ### Category source registry audit
 Enabled UK loadable sources (category-specific plus universal): 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 12 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry has a known LIVE/TEST parity gap; reconcile separately after the worker filter is deployed.
+
+## 8 November 2026 — LIVE drone category source coverage preparation
+
+Followed the 7 November operating decision: LIVE is the sole authoritative product/research queue and evidence environment; TEST is retained for software development and regression. No further routine catalogue/evidence copying to TEST. Existing TEST records are preserved.
+
+LIVE Drones audit:
+- 541 active products across 18 manufacturers.
+- 542 active evidence rows.
+- 306 active products have no active evidence; 235 have at least one active evidence row.
+- No outstanding Drones research queue items.
+- Largest uncovered manufacturers: Skydio 46, Hubsan 44, Potensic 32, Walkera 24, Parrot 21, BetaFPV 20, Holy Stone 18, Autel 16, PowerVision 16, FIMI 15, iFlight 12, Freefly 11, Yuneec 11, GEPRC 5, EMAX 3. CaddxFPV has no uncovered active products.
+
+Added category-scoped sources to LIVE only, for Drones and/or Drone Accessories:
+- HOVERAir UK Official Store (uk.hoverair.com): official UK store, product and accessory prices in GBP.
+- Holy Stone UK Distributor — DMTL (dmtl.co.uk): listed by Holy Stone Europe as its UK distributor; use only direct verifiable product pages and GBP prices.
+- Flying Tech UK (flyingtech.co.uk): UK specialist retailer with BetaFPV, CaddxFPV, EMAX, GEPRC, iFlight and related FPV equipment. Retailer, not represented as manufacturer-authorised.
+- Unmanned Tech UK (unmannedtechshop.co.uk): UK retailer with BetaFPV, Caddx, EMAX, GEPRC, Hubsan and iFlight products.
+- IT Drone Services UK (itdroneservices.co.uk): UK FIMI store with GBP product listings.
+- CameraWorld UK (cameraworld.co.uk): existing source assignment extended to Drones and Drone Accessories; listings include Potensic and DJI.
+- Wilko UK (wilko.com): Potensic Atom 2 drone listings.
+- Aetha UK (aetha.global): Skydio X10D UK exclusive drone solutions service provider; source kind recorded as other and notes prohibit inferring prices when quote-only.
+
+Existing LIVE DJI UK, Heliguy, HobbyRC, DJI Retail UK, DJI Store and MPB UK assignments remain. Universal Amazon UK and eBay UK remain universal sources.
+
+Manufacturer-source exclusions/gaps were deliberately retained rather than guessed:
+- Autel UK website is for automotive diagnostic equipment, not Autel Robotics drones; no Autel UK drone source added.
+- Parrot's official reseller finder currently shows Dronivo in Germany, not a UK reseller; no UK official Parrot source added.
+- Yuneec UK says service has closed and web orders are open for spare parts; not treated as a new drone source.
+- Freefly, PowerVision and Walkera have no verified UK public pricing source in this review. Skydio/Aetha may be quote-only.
+- Potensic's official authorised-dealer page did not show a UK authorised dealer; CameraWorld and Wilko are recorded only as UK retailers, not authorised distributors.
+
+Verified production agent source routing in tools/tradeflow-gemma-agent/src/agent.mjs: isCategoryAllowedSource and isResearchTypeAllowedSource are applied by isApprovedSourceForTask before source probing. Category-specific sources therefore remain scoped to their assigned category; universal Amazon/eBay remain available. The Research PC has not yet been updated, so do not start/restart a worker or enqueue tasks until the approved local updater and Ollama acceptance checks are completed.
+
+Gemma gates remain:
+- PR #312 is open/ready for review, not merged; CI 73/73 passed. It changes 3D-printer structured GBP extraction.
+- PR #300 remains draft/open, not merged; CI 54/54 passed.
+- Research PC installation, local Ollama structured-output acceptance and end-to-end LIVE batch verification remain outstanding.
+No research task was queued and no worker was restarted by this source-coverage change.

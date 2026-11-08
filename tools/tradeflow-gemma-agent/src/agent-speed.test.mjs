@@ -93,28 +93,39 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.ok(finding.properties.notes.maxLength <= 180);
 });
 
-test('only one verified current price for the exact requested product can populate observed_price', () => {
+test('only one verified current price for the exact requested product and condition lane can populate observed_price', () => {
   const observations = [
-    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current' },
-    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out' },
-    { amount: 300, source_context_verified: true, association: 'saving_or_reference', price_role: 'saving' },
-    { amount: 749, source_context_verified: true, association: 'other_variant', price_role: 'current' },
-    { amount: 18.49, source_context_verified: true, association: 'accessory', price_role: 'protection_plan' },
-    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current' }
+    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Brand New' },
+    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out', condition: 'Brand New' },
+    { amount: 300, source_context_verified: true, association: 'saving_or_reference', price_role: 'saving', condition: 'Brand New' },
+    { amount: 749, source_context_verified: true, association: 'other_variant', price_role: 'current', condition: 'Brand New' },
+    { amount: 18.49, source_context_verified: true, association: 'accessory', price_role: 'protection_plan', condition: 'N/A' },
+    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current', condition: 'Brand New' }
   ];
-  assert.equal(selectSafeObservedPrice(observations), 549);
+  assert.equal(selectSafeObservedPrice(observations, 'uk_new'), 549);
   assert.equal(selectSafeObservedPrice([
-    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current' },
-    { amount: 749, source_context_verified: true, association: 'requested_product', price_role: 'current' }
-  ]), null);
+    { amount: 164, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Open-box' }
+  ], 'uk_new'), null);
   assert.equal(selectSafeObservedPrice([
-    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out' }
-  ]), null);
+    { amount: 164, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Open-box' }
+  ], 'uk_used'), 164);
   assert.equal(selectSafeObservedPrice([
-    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current' }
-  ]), null);
+    { amount: 299, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Never used' }
+  ], 'uk_new'), 299);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 299, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Opened - Never Used' }
+  ], 'uk_new'), null);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 549, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Brand New' },
+    { amount: 749, source_context_verified: true, association: 'requested_product', price_role: 'current', condition: 'Brand New' }
+  ], 'uk_new'), null);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 849, source_context_verified: true, association: 'requested_product', price_role: 'crossed_out', condition: 'Brand New' }
+  ], 'uk_new'), null);
+  assert.equal(selectSafeObservedPrice([
+    { amount: 345, source_context_verified: false, association: 'requested_product', price_role: 'current', condition: 'Brand New' }
+  ], 'uk_new'), null);
 });
-
 test('single-page recovery schema requests exactly one compact finding', () => {
   const schema = buildGemmaFindingSchema(1);
   assert.equal(schema.properties.findings.minItems, 1);

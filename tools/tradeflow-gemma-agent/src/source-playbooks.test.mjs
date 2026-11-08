@@ -29,6 +29,18 @@ test('manufacturer-specific playbook builds UK search and collection routes', ()
   assert.ok(routes.some(url => url.includes('/uk/collections/3d-printers')));
 });
 
+test('Bambu Lab UK uses its verified singular 3D-printer collection route', () => {
+  const bambuTask = { ...task, manufacturer: 'Bambu Lab', model: 'A1', research_type: 'uk_new' };
+  const routes = buildWebsiteSearchRoutes({ domain: 'bambu-lab-uk.myshopify.com' }, bambuTask);
+  const collection = 'https://bambu-lab-uk.myshopify.com/collections/3d-printer';
+
+  assert.ok(routes.includes('https://bambu-lab-uk.myshopify.com/search?q=Bambu%20Lab%20A1'));
+  assert.ok(routes.includes(collection));
+  assert.ok(!routes.includes('https://bambu-lab-uk.myshopify.com/collections/3d-printers'));
+  assert.equal(isCollectionDiscoveryPage(collection, 'Shop 3D Printers at Bambu Lab UK'), true);
+  assert.equal(isEligibleProductPage(collection, 'Shop 3D Printers at Bambu Lab UK'), false);
+});
+
 test('verified 123-3D collections route new and refurbished searches separately', () => {
   const newTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_new' };
   const usedTask = { ...newTask, research_type: 'uk_used' };

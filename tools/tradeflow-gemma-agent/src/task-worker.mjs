@@ -131,6 +131,9 @@ async function processClaim(claim){
  const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
+ // Keep HTTP 403 source blocks scoped to this claimed queue batch only.
+ // A later queue task gets a fresh set and can retry the source normally.
+ const blockedSourceHosts=new Set();
  let activeIdentity=null,activeStage='task_started';
  const heartbeat=setInterval(async()=>{
   await rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message));
@@ -153,9 +156,10 @@ async function processClaim(claim){
    if(relevantInstructions.length) console.log('[common room] passing',task.common_room_context.length,'bounded notes into Gemma extraction for',identity.agent_key);
    const result=await runTask(task,env,{
     enqueue:true,
+    blockedSourceHosts,
     onProgress:async p=>{
      activeStage=p.stage||activeStage;
-     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id,...(is3dPrinterResearchTask(task)?{research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug}: {})}});
+     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,skipped_routes:p.skipped_routes,source:p.source,queue_task_id:claim.id,...(is3dPrinterResearchTask(task)?{research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug}: {})}});
     }
    });
    outputs.push(result);
@@ -169,6 +173,7 @@ async function processClaim(claim){
     'Search results: '+(metrics.search_results??0)+' / '+(metrics.search_result_limit??'n/a'),
     'Approved sources probed: '+(routeMetrics.approved_sources_probed??0),
     'Approved source routes: '+(routeMetrics.approved_source_route_attempts??0)+' attempted; '+(routeMetrics.approved_source_routes_found??0)+' found matches; '+(routeMetrics.approved_source_routes_empty??0)+' empty; '+(routeMetrics.approved_source_route_errors??0)+' failed',
+    'HTTP 403 source blocks: '+(routeMetrics.approved_source_domains_blocked??0)+' new; '+(routeMetrics.approved_source_domains_skipped??0)+' already blocked; '+(routeMetrics.approved_source_routes_skipped_after_403??0)+' routes skipped; '+(routeMetrics.blocked_source_results_skipped??0)+' search results skipped',
     'Individual product pages: '+(metrics.discovered_product_pages??0)+' discovered; '+(metrics.inspected_product_pages??0)+' fetched',
     'Pages with visible GBP: '+(metrics.fetched_price_pages??0),
     'Gemma extraction: '+(metrics.gemma_calls??0)+' batches; '+(metrics.gemma_batch_failures??0)+' batch failures',

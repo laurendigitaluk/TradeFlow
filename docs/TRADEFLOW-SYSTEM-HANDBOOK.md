@@ -1,5 +1,15 @@
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 
+## 8 November 2026 — 3D-printer multi-subtask completion telemetry correction (PR #289)
+
+- LIVE task `owner-3d-printers-exact-identity-acceptance-20261108-0032` completed eight 3D-printer subtasks. Its stored parent result aggregates 85 searches, 15 product pages discovered, 6 fetched, 4 Gemma extraction batches, 2 extraction failures, 6 captures, 4 new review rows and 2 existing rows enriched.
+- The final per-subtask activity/Common Room completion event described only the last Bambu A1 Combo used subtask (9 Audi A1 car URLs rejected; 0 captures), so the latest status message appeared to report 0 captures even though the parent result contained 6. Production `task-worker.mjs` emitted `task_completed` inside the subtask loop and did not publish a distinct aggregate parent completion event.
+- PR #289 changes this only for multi-subtask batches where every task is explicitly category `3d-printers-equipment`, branch `3d-printers`: per-product events become `subtask_completed`; after the parent queue task completes, the worker aggregates research/route metrics, captures, new/enriched writes, route failures and extraction failures into one parent `task_completed` event and Common Room batch handover.
+- Counter semantics are preserved: task/candidate/new-row counters still increment once per subtask/write as before; the aggregate event adds no counter deltas. Other categories, single-task runs, source routing, model matching, queue writes and approval/import gates are unchanged.
+- Regression tests cover 3D-only multi-subtask detection, cross-category/branch isolation, aggregate metric sums, search-limit handling, route/extraction failures and new/enriched/duplicate write counts.
+- No Supabase schema/data, task queue, review queue, catalogue, source registry, TEST data, secrets, private .env or Research PC runtime changed. No new research task was queued. Merge/deploy only after CI/review and explicit approval; then update the Research PC in place with its existing updater, preserve `TRADEFLOW_GEMMA_ENV_FILE`, and confirm the parent summary on a controlled 3D-only acceptance task.
+
+
 This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
 
 ## Product and site architecture

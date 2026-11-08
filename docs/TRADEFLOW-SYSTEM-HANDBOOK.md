@@ -4327,3 +4327,10 @@ A historical queue metadata inconsistency was identified on the enriched/importe
 The production branch agent contains the capture-first 3D-printer path. The open PR #300 branch contains a different extraction path, so the installed Research PC source branch/commit must be verified before assuming it matches production. Supabase telemetry does not currently record a reliable installed commit fingerprint. PR #300 remains draft/open (54 tests passed); PR #312 remains open/ready for review (73 tests passed). A previous local Ollama structured-output smoke test is not equivalent to full acceptance of the installed branch, source discovery, category routing, capture handoff and queue write together.
 
 Current worker state: no active task; the Gemma task worker is idle and its last recorded heartbeat is 2026-11-08 20:28 UTC. Do not restart it or launch a full run until the installed source commit is identified and one controlled exact-model test verifies source routing, page capture, package separation, UK GBP extraction and ChatGPT handoff. No product/evidence records were deleted, no TEST data was changed and no full research run was started.
+
+
+## Camera source coverage follow-up — Blackmagic Design
+
+A further manufacturer gap was closed in LIVE: added Blackmagic Design UK Official (blackmagicdesign.com, https://www.blackmagicdesign.com/uk/products) as a manufacturer/official GB source scoped only to cameras. Its UK product catalogue exposes camera product pages and GBP prices; use the Professional Cameras family and exact model pages, and keep camera bodies separate from viewfinders, recorders, mounts, grips and accessories.
+
+Verification after this addition: 22 enabled Cameras-scoped sources; 722 active camera products; 305 active camera products still without active market evidence. The 305 gap is unchanged because only the source registry was changed. No product/evidence rows or TEST data were modified. Supabase activity record owner-live-camera-source-coverage-blackmagic-20261108 was inserted and verified.

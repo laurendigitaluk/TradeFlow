@@ -4618,3 +4618,17 @@ The 65-row LIVE 3D-printer queue was processed: 28 matched/imported and 37 proce
 The LIVE registry already contains category-scoped UK source assignments for cameras, camera equipment, drones, gaming consoles, laptops, metal detectors, mobile phones and 3D printers. Universal marketplaces are explicit entries, not a reason to load every category's suppliers. PR #308 changes the worker's source query to filter by the task's category_slug and universal * sources before download. PR #308 remains draft pending CI/review; do not deploy or restart the Research PC until verified.
 
 Do not copy TEST source or queue data into LIVE. The current processing described here was applied only to the LIVE master catalogue and LIVE research queue.
+
+
+## Manufacturer-source coverage gaps identified 8 November 2026
+
+The enabled source registry has 16 manufacturer-source rows overall. Category-specific official manufacturer coverage is materially narrower than the master catalogue manufacturer list:
+- Cameras: Sony official source only, while the catalogue also contains Canon, Nikon, Fujifilm, Panasonic, OM SYSTEM, Blackmagic Design, Leica, Casio, Polaroid and others.
+- Drones: DJI official source only; the catalogue also contains Autel, BetaFPV, FIMI, Freefly, GEPRC, Holy Stone, HoverAir, Hubsan, iFlight, Parrot, Potensic, PowerVision, Skydio, Walkera and Yuneec.
+- Gaming: Sony PlayStation, Nintendo and Microsoft Xbox official sources are present; Atari and Sega product families also exist in the catalogue.
+- Metal detectors: Minelab official source only; the catalogue also contains Garrett, Nokta, Fisher, Quest, Teknetics and XP.
+- Mobile phones: Apple, Google, Motorola, OPPO and Samsung official sources are present; the catalogue also contains Doro, Fairphone, HMD, HONOR, Nothing, OnePlus, realme, TCL and Xiaomi.
+- 3D printers: Anycubic, Bambu Lab, Creality and ELEGOO official sources are present; the catalogue also contains Artillery, Flashforge, FLSUN, Formlabs, Geeetech, Phrozen, Prusa, QIDI, Raise3D, Snapmaker, Sovol, Ultimaker and others. Specialist UK retailers already cover some of these brands.
+- Laptops: the source registry has a laptops slug and retailer/Apple/Samsung assignments, but the current master-catalogue category query did not find a matching laptops category. Verify the category model before adding more laptop sources.
+
+Do not add this next wave of source rows until the category-scoped worker query in PR #308 is merged and deployed. Otherwise the current global source loader will download the new rows for unrelated agents and recreate the noisy skipped-source logs. Add verified UK official stores and authorised UK distributors first; global manufacturer sites may be used for identity/specification checks but must not be treated as UK GBP price evidence unless the page actually displays UK pricing.

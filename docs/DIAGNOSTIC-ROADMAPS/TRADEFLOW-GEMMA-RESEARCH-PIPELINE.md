@@ -1,3 +1,7 @@
+## 8 November 2026 — Gemma output population failure and fix
+
+Failure observed on Research PC: Ollama 0.4.14 / `gemma3:4b` accepted the strict JSON schema, returned valid JSON and one finding, but left page title and price empty although both were explicit in prompt input. Thus schema compatibility is proven but useful extraction is not. PR #300 updates schema `minLength: 1` for `page_title`, `product_identity_text`, `match_observation`; 3D printer prompt now explicitly requires page title copy, identity statement, match observation and exact copy of all supplied visible GBP price strings into `price_mentions`. Unit tests assert prompt and schema constraints. Run #251 passed all CI steps. Next gate is installing latest PR head and repeating a controlled single-page extraction; no worker restart or new queue task before output fields are populated.
+
 ## 8 November 2026 — Extraction failure recovery path
 
 `extractBatch()` now retains the existing two-page fast path. If a 3D-printer batch fails JSON parsing, hits the output limit, or fails exact source-ID validation, it retries each page separately with a compact 1,600-character selected excerpt, strict one-page schema and 1,024-token output cap. Structured successes are retained per page; failed individual retries fall back to deterministic raw capture. The original batch error remains in diagnostics. Run #244 passed CI. Research PC install and local Ollama structured-output compatibility remain unverified; no worker restart or new task authorized.

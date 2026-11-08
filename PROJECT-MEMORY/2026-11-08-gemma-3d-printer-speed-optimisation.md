@@ -171,3 +171,12 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+
+## 8 November 2026 — Current-production PR #312 handoff
+
+- Production advanced five commits after the earlier PR #310 branch was created. GitHub compare reported `production` ahead/behind divergence (production 5 commits ahead of that branch), so PR #310 was closed as superseded; it was not merged.
+- Recreated the same narrowly scoped code/test change on a new branch based on the latest production commit `47eb3feac262c8c69e221f16991c8435888f7960`: `fix/gemma-3d-jsonld-gbp-capture-latest-production-20261108`.
+- Opened draft PR #312: https://github.com/laurendigitaluk/TradeFlow/pull/312. It contains only `agent.mjs` and `agent-speed.test.mjs` at this point; documentation updates are being added on this branch. Four regression tests cover long-page structured GBP retention, multiple GBP offers/non-GBP exclusion, non-GBP-only offers, and unchanged non-3D ordering. The long-page test explicitly checks that the old `Price: 169.00 Currency: GBP` format yields zero parsed prices while the corrected `Price: GBP 169.00` format yields one.
+- CI is pending on the new branch. No merge, deployment, worker restart, task enqueue, source-registry change, TEST/LIVE data change, evidence approval/import, or secret/private `.env` change has occurred.

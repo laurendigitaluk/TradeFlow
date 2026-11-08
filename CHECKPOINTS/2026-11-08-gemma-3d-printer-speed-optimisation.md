@@ -4,7 +4,7 @@
 - 11 pages fetched; 7 Gemma calls; 5 extraction failures. All 11 captures and deterministic GBP observations remained available for review; 0 approvals/imports.
 - Gemma extraction took approximately 1,395s of 1,513s aggregate subtask time (~92%).
 - Root failure path: malformed/truncated Ollama content fails JSON.parse and immediately falls back to raw capture. Existing 4,096 context and 1,536 output token budget; don't blindly raise either.
-- Follow-up branch `fix/gemma-3d-printer-json-reliability-20261108` proposes strict bounded JSON schema, exact source_id set validation, output-length diagnostics and regression tests. CI and local Ollama acceptance pending. Not deployed.
+- Follow-up branch `fix/gemma-3d-printer-json-reliability-20261108` proposes strict bounded JSON schema, exact source_id set validation, output-length diagnostics and regression tests. GitHub Actions run 42505764030 (#215) passed 54/54 tests; local Ollama/schema acceptance remains pending. Not deployed.
 - Next: validate schema support on installed Ollama/Gemma; run CI; then controlled 3D-only test. Investigate Kobra S1 Max Combo no-eligible-page gap independently. Preserve private .env, `TRADEFLOW_GEMMA_ENV_FILE`, raw page retention and review gates.
 
 # Gemma 3D Printer Extraction Performance Checkpoint

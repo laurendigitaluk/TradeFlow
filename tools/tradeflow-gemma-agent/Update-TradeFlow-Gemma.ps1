@@ -3,6 +3,8 @@ param(
     [string]$InstallPath,
     [string]$EnvFile,
     [string]$SourceBranch = 'production',
+    [ValidateSet('TEST','LIVE')]
+    [string]$Environment = 'TEST',
     [switch]$NewInstall,
     [switch]$StartWorker
 )
@@ -11,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $Repository = 'laurendigitaluk/TradeFlow'
 if ($SourceBranch -notmatch '^[A-Za-z0-9._/-]+$') { throw 'SourceBranch contains unsupported characters.' }
 $RawBase = "https://raw.githubusercontent.com/$Repository/$SourceBranch/tools/tradeflow-gemma-agent"
-$SourceFiles = @('agent.mjs', 'agent-speed.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
+$SourceFiles = @('control-plane.mjs', 'control-plane.test.mjs', 'agent.mjs', 'agent-speed.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
 $LauncherName = 'Start-TradeFlow-Gemma.ps1'
 
 if ([string]::IsNullOrWhiteSpace($InstallPath)) {
@@ -106,7 +108,7 @@ try {
         & node --check (Join-Path $DownloadPath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs') (Join-Path $DownloadPath 'agent-speed.test.mjs')
+    & node --test (Join-Path $DownloadPath 'control-plane.test.mjs') (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs') (Join-Path $DownloadPath 'agent-speed.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Gemma task normalisation or website playbook tests failed; no files were installed.' }
 
     $BackupPath = Join-Path $InstallPath ('backups\before-common-room-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
@@ -131,7 +133,7 @@ try {
         & node --check (Join-Path $SourcePath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Installed Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs') (Join-Path $SourcePath 'agent-speed.test.mjs')
+    & node --test (Join-Path $SourcePath 'control-plane.test.mjs') (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs') (Join-Path $SourcePath 'agent-speed.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Installed Gemma task or website playbook tests failed.' }
 
     Write-Host ''
@@ -150,7 +152,8 @@ try {
 
     if ($StartWorker) {
         $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
-        Write-Host 'Starting the LIVE queue worker. Press Ctrl+C to stop it.'
+        $env:TRADEFLOW_GEMMA_ENVIRONMENT = $Environment
+        Write-Host "Starting the $Environment queue worker. Press Ctrl+C to stop it."
         & node (Join-Path $SourcePath 'task-worker.mjs')
         if ($LASTEXITCODE -ne 0) { throw "Gemma worker exited with code $LASTEXITCODE" }
     }

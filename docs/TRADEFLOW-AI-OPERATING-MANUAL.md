@@ -4611,10 +4611,10 @@ Operating responsibility is now explicit:
 
 ### Completed backlog — 8 November 2026
 
-The 65-row LIVE 3D-printer queue was processed: 9 matched/imported and 56 processed without import. Zero 3D-printer records remain in pending_review or needs_research. The queue RPC supports separate imported and rejected history views. Preserve these rows and their original payloads.
+The 65-row LIVE 3D-printer queue was processed: 28 matched/imported and 37 processed without import. Zero 3D-printer records remain in pending_review or needs_research. The queue RPC supports separate imported and rejected history views. Preserve these rows and their original payloads.
 
 ### Category source routing
 
-The LIVE registry already contains category-scoped UK source assignments for cameras, drones, gaming consoles, laptops, metal detectors, mobile phones and 3D printers. Universal marketplaces are explicit entries, not a reason to load every category's suppliers. PR #308 changes the worker's source query to filter by the task's category_slug and universal * sources before download. PR #308 remains draft pending CI/review; do not deploy or restart the Research PC until verified.
+The LIVE registry already contains category-scoped UK source assignments for cameras, camera equipment, drones, gaming consoles, laptops, metal detectors, mobile phones and 3D printers. Universal marketplaces are explicit entries, not a reason to load every category's suppliers. PR #308 changes the worker's source query to filter by the task's category_slug and universal * sources before download. PR #308 remains draft pending CI/review; do not deploy or restart the Research PC until verified.
 
 Do not copy TEST source or queue data into LIVE. The current processing described here was applied only to the LIVE master catalogue and LIVE research queue.

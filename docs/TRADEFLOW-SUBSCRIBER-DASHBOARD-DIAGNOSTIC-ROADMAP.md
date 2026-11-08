@@ -1601,3 +1601,14 @@ Verification state: Code repaired and live return RPC applied; browser verificat
 A fresh customer valuation submission is live and correctly creates a submitted Buying Request/Item. The first substantive gap is catalogue binding: the public customer selling submission does not populate `buying_items.buying_product_id`, so `calculate_buying_item_valuation` correctly falls back to manual/product_not_selected. The public condition vocabulary also needs reconciliation with valuation rules. Later server-side workflow boundaries (offer acceptance, shipping, receipt, inspection, payment, acquisition and Inventory creation) have live evidence, but a fresh browser walk through every stage remains open. Subscriber localStorage session fallbacks remain a multi-tab isolation risk, and notification delivery remains queued/unverified.
 
 Audit checkpoint: `CHECKPOINTS/2026-09-28-end-to-end-customer-to-sales-audit.md`.
+
+
+## Gemma 3D-printer research — extraction and review hand-off (8 November 2026)
+
+**Trace:** approved source registry and task search query → direct product-page discovery → eligible URL/page fetch → `buildDeepPageExcerpt` and visible GBP extraction → `buildExtractionPrompt` → local Ollama/Gemma → unverified queue capture/enrichment → ChatGPT/owner review. Relevant source file: `tools/tradeflow-gemma-agent/src/agent.mjs`.
+
+**Observed failure point:** the LIVE K1 Max official UK product page fetched successfully, but Gemma's extraction call timed out. The deterministic fallback retained the raw page and 17 GBP mentions and appended an unverified observation to the existing `needs_research` row. It did not set top-level evidence price/type, change review status, approve evidence or import catalogue data.
+
+**Prompt refinement:** production PR #293 merged (`3b55d43acec4ad4abb5f8e5b9530f169d3c1d3f3`), with 50/50 tests passing. It removes oversized/duplicated context while retaining compact price contexts and three recent bounded guidance notes, and clarifies capture-first structured output and price/package separation.
+
+**Verification still required:** current local Research PC worker is running old loaded code; no hot reload or restart was performed. After the active task completes, use the existing TradeFlow updater with the existing TradeFlow `.env`, then confirm the next run emits structured Gemma observations. Keep raw captures unverified pending ChatGPT/owner review. Do not change PowerShell launcher behaviour or local secrets as part of this prompt refinement.

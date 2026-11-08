@@ -52,6 +52,21 @@ async function json(url, options={}) {
 function searchHost(url) {
   try { return new URL(url).hostname.replace(/^www\./, '').toLowerCase(); } catch { return ''; }
 }
+
+export function filterBlockedSourceResults(results, task, blockedSourceHosts = new Set(), onProgress) {
+  const blockedHosts = blockedSourceHosts instanceof Set ? blockedSourceHosts : new Set();
+  return (Array.isArray(results) ? results : []).filter(item => {
+    const host = searchHost(item?.url);
+    if (is3dPrinterResearchTask(task) && host && blockedHosts.has(host)) {
+      onProgress?.({
+        stage: 'blocked_source_result_skipped', source: item.url,
+        message: 'Skipped ' + item.url + ' because ' + host + ' returned HTTP 403 earlier in this 3D-printer queue batch. No bypass attempted.'
+      });
+      return false;
+    }
+    return true;
+  });
+}
 function stripSearchHtml(value) {
   return String(value || '').replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
@@ -958,8 +973,9 @@ async function loadApprovedResearchSources(env, onProgress) {
   }
 }
 
-async function probeApprovedResearchSources(task, env, onProgress, sourceRows = null) {
+export async function probeApprovedResearchSources(task, env, onProgress, sourceRows = null, blockedSourceHosts = new Set()) {
   const sources = Array.isArray(sourceRows) ? sourceRows : await loadApprovedResearchSources(env, onProgress);
+  const blockedHosts = blockedSourceHosts instanceof Set ? blockedSourceHosts : new Set();
   const name = [task.manufacturer, task.model].filter(Boolean).join(' ');
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const bucket = source => {
@@ -1008,8 +1024,16 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
     const sourceUrl = new URL(/^https?:\/\//i.test(String(source.domain)) ? String(source.domain) : 'https://' + String(source.domain));
     const domain = sourceUrl.hostname.replace(/^www\./i, '').toLowerCase();
     const sitePlaybook = getWebsiteInstructions(task.category_slug, domain), attempts = buildWebsiteSearchRoutes(source, task);
-    await onProgress?.({ stage: 'approved_source_probe_started', source: domain, total: attempts.length, message: 'Deep-searching ' + (sitePlaybook?.label || source.source_name || domain) + ': checking every configured route, not stopping at the first match. ' + (sitePlaybook?.navigation || 'Follow category branches to exact-model product pages; collections are discovery only.') });
-    const routeResults = await Promise.all(attempts.map(async (searchUrl, routeIndex) => {
+    if (is3dPrinterResearchTask(task) && blockedHosts.has(domain)) {
+      await onProgress?.({
+        stage: 'approved_source_domain_skipped', source: domain, total: attempts.length,
+        skipped_routes: attempts.length,
+        message: 'Skipped ' + domain + ': HTTP 403 already blocked this source for the remainder of this 3D-printer queue batch. No retry or bypass attempted.'
+      });
+      return [];
+    }
+    await onProgress?.({ stage: 'approved_source_probe_started', source: domain, total: attempts.length, message: 'Deep-searching ' + (sitePlaybook?.label || source.source_name || domain) + ': checking configured routes unless this queue batch has already received an HTTP 403. ' + (sitePlaybook?.navigation || 'Follow category branches to exact-model product pages; collections are discovery only.') });
+    const probeRoute = async (searchUrl, routeIndex) => {
       await onProgress?.({ stage: 'approved_source_route_attempt', source: domain, checked: routeIndex + 1, total: attempts.length, message: 'Checking route ' + (routeIndex + 1) + ' of ' + attempts.length + ' on ' + domain + ': ' + searchUrl });
       try {
         const pageResult = await fetchSearchHtml(searchUrl, 8000), matches = [], searchPages = [pageResult];
@@ -1033,15 +1057,49 @@ async function probeApprovedResearchSources(task, env, onProgress, sourceRows = 
             matches.push({ ...item, provider: 'approved_source', description: 'Approved source: ' + (source.source_name || domain) });
           }
         }
-        await onProgress?.({ stage: matches.length ? 'approved_source_route_found' : 'approved_source_empty', source: domain, checked: routeIndex + 1, total: attempts.length, total_matches: matches.length, message: matches.length ? 'Route ' + (routeIndex + 1) + ' found ' + matches.length + ' matching link(s); continuing through remaining routes.' : 'Route ' + (routeIndex + 1) + ' returned no matching links: ' + searchUrl });
-        return matches;
+        await onProgress?.({ stage: matches.length ? 'approved_source_route_found' : 'approved_source_empty', source: domain, checked: routeIndex + 1, total: attempts.length, total_matches: matches.length, message: matches.length ? 'Route ' + (routeIndex + 1) + ' found ' + matches.length + ' matching link(s); continuing through remaining accessible routes.' : 'Route ' + (routeIndex + 1) + ' returned no matching links: ' + searchUrl });
+        return { matches, forbidden: false };
       } catch (error) {
         await onProgress?.({ stage: 'approved_source_error', source: domain, checked: routeIndex + 1, total: attempts.length, message: 'Route ' + (routeIndex + 1) + ' failed: ' + error.message });
-        return [];
+        return { matches: [], forbidden: /\bHTTP 403\b/i.test(String(error?.message || error)) };
       }
-    }));
-    const all = [...new Map(routeResults.flat().map(item => [item.url, item])).values()];
-    await onProgress?.({ stage: 'approved_source_probe_complete', source: domain, total: attempts.length, total_matches: all.length, message: 'Completed all ' + attempts.length + ' routes on ' + domain + '; retained ' + all.length + ' unique URLs.' });
+    };
+    let routeResults = [];
+    if (is3dPrinterResearchTask(task) && domain === 'ebay.co.uk') {
+      // eBay returns HTTP 403 to the Research PC's normal page fetches. Probe
+      // its routes sequentially so a 403 stops the remaining routes immediately.
+      for (let routeIndex = 0; routeIndex < attempts.length; routeIndex++) {
+        const result = await probeRoute(attempts[routeIndex], routeIndex);
+        routeResults.push(result);
+        if (result.forbidden) {
+          blockedHosts.add(domain);
+          await onProgress?.({
+            stage: 'approved_source_domain_blocked', source: domain, checked: routeIndex + 1,
+            total: attempts.length, skipped_routes: attempts.length - routeIndex - 1,
+            message: 'eBay returned HTTP 403; remaining routes skipped for the rest of this 3D-printer queue batch. No bypass attempted.'
+          });
+          break;
+        }
+      }
+    } else {
+      routeResults = await Promise.all(attempts.map(probeRoute));
+      if (is3dPrinterResearchTask(task) && routeResults.some(result => result.forbidden)) {
+        blockedHosts.add(domain);
+        await onProgress?.({
+          stage: 'approved_source_domain_blocked', source: domain, checked: attempts.length,
+          total: attempts.length, skipped_routes: 0,
+          message: 'HTTP 403 returned by ' + domain + '; blocked for remaining 3D-printer subtasks in this queue batch. No bypass attempted.'
+        });
+      }
+    }
+    const blocked = is3dPrinterResearchTask(task) && blockedHosts.has(domain);
+    const all = blocked ? [] : [...new Map(routeResults.flatMap(result => result.matches).map(item => [item.url, item])).values()];
+    const skippedRoutes = attempts.length - routeResults.length;
+    await onProgress?.({
+      stage: 'approved_source_probe_complete', source: domain, total: attempts.length,
+      checked: routeResults.length, skipped_routes: skippedRoutes, total_matches: all.length,
+      message: 'Completed ' + routeResults.length + ' of ' + attempts.length + ' routes on ' + domain + '; ' + skippedRoutes + ' skipped after HTTP 403; retained ' + all.length + ' unique URLs.'
+    });
     return all;
   };
   const results = [];
@@ -1089,7 +1147,8 @@ export function searchResultsLimitForTask(task, env = {}) {
   return Math.max(1, Math.min(30, Math.floor(numeric)));
 }
 
-export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
+export async function runTask(task, env, { enqueue = false, onProgress, blockedSourceHosts = new Set() } = {}) {
+  const blockedHosts = blockedSourceHosts instanceof Set ? blockedSourceHosts : new Set();
   if (!task.category_slug || !task.manufacturer || !task.model || !task.package_key || !task.package_name || !task.search_query || !['uk_new', 'uk_used', 'uk_both'].includes(task.research_type)) throw new Error('incomplete task definition');
   const runStartedAt = Date.now();
   const stageDurations = {};
@@ -1124,9 +1183,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     return allowed;
   });
   const sourceProbeStartedAt = Date.now();
-  const approvedResults = await probeApprovedResearchSources(task, env, trackProgress, sourceRows);
+  const approvedResults = await probeApprovedResearchSources(task, env, trackProgress, sourceRows, blockedHosts);
   stageDurations.approved_source_probe_ms = Date.now() - sourceProbeStartedAt;
-  const searchResults = [...new Map([...webResults, ...approvedResults].map(item => [item.url, item])).values()];
+  const unblockedWebResults = filterBlockedSourceResults(webResults, task, blockedHosts, trackProgress);
+  const unblockedApprovedResults = filterBlockedSourceResults(approvedResults, task, blockedHosts, trackProgress);
+  const searchResults = [...new Map([...unblockedWebResults, ...unblockedApprovedResults].map(item => [item.url, item])).values()];
   const providerCounts = Object.fromEntries(['google', 'duckduckgo', 'bing', 'mojeek', 'approved_source', 'unknown'].map(name => [
     name,
     searchResults.filter(item => (item.provider || 'unknown') === name).length
@@ -1138,10 +1199,10 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         .map(([name, count]) => name + ': ' + count).join(', ') + ')'
   });
 
-  const seedResults = (Array.isArray(task.seed_urls) ? task.seed_urls : []).map(seed => {
+  const seedResults = filterBlockedSourceResults((Array.isArray(task.seed_urls) ? task.seed_urls : []).map(seed => {
     const item = typeof seed === 'string' ? { url: seed } : (seed || {});
     return { title: item.title || task.manufacturer + ' ' + task.model, url: String(item.url || ''), description: 'Owner-provided previous product source; re-verify before use', provider: 'owner_seed' };
-  }).filter(item => {
+  }), task, blockedHosts, trackProgress).filter(item => {
     const approved = isAllowedSourceHost(item.url, categorySources, task);
     const eligible = approved && isEligibleProductPage(item.url, item.title) && matchesTaskModel(item.title, item.url, task);
     if (!eligible) trackProgress?.({ stage: 'seed_url_skipped', source: item.url, message: 'Previous product source was not eligible for this category, model or direct product-page rules' });
@@ -1374,7 +1435,13 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     product_page_fetch_errors: countStage('source_error'),
     collection_errors: countStage('collection_error'),
     challenge_pages_skipped: countStage('source_challenge_skipped'),
-    opposite_lane_sources_skipped: countStage('research_lane_skipped')
+    opposite_lane_sources_skipped: countStage('research_lane_skipped'),
+    approved_source_domains_blocked: countStage('approved_source_domain_blocked'),
+    approved_source_domains_skipped: countStage('approved_source_domain_skipped'),
+    approved_source_routes_skipped_after_403: progressEvents
+      .filter(event => event.stage === 'approved_source_domain_blocked' || event.stage === 'approved_source_domain_skipped')
+      .reduce((total, event) => total + Math.max(0, Number(event.skipped_routes) || 0), 0),
+    blocked_source_results_skipped: countStage('blocked_source_result_skipped')
   };
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,

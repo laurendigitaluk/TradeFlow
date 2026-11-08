@@ -5,7 +5,7 @@ LIVE task `owner-3d-printers-extraction-smoke-20261108-1900` completed one Elego
 
 The capture is 9,998 characters and ends mid-text. Production appends matched JSON-LD Product/Offer text after flattened page content, then truncates at 10,000 characters. This can discard structured offers on long pages; the exact HTML was not retained, so the presence of JSON-LD in this particular response is unknown. The page contains multiple model, open-box and bundle price options; no safe single price or evidence type was assigned. Capture remains `needs_research`.
 
-PR #303 branch `fix/gemma-3d-jsonld-priority-20261108` moves matching structured Product/Offer facts before flattened text only for the 3D-printer branch, formats GBP offers as `GBP <amount>`, and adds long-page and non-3D regression tests. Draft PR #303 is open; CI pending; not merged/deployed/installed.
+PR #303 branch `fix/gemma-3d-jsonld-priority-20261108` moves matching structured Product/Offer facts before flattened text only for the 3D-printer branch, formats GBP offers as `GBP <amount>`, and adds long-page and non-3D regression tests. Draft PR #303 is open; GitHub Actions run #299 (run ID 42517043616) passed 55/55 tests and syntax checks on head d67416ea9433be5b8abf19a3bf9f8fe9b6db6a75. This verifies the regression fixture and code branch only; Research PC runtime remains unverified. It is not merged/deployed/installed.
 
 PR #302 is also open/draft; head `d0e283300e9bea94f828339f7e41bba48fa938ce` passed 60 CI tests and adds price observations, split-decimal parsing, repeated-context retention and condition-lane safety. Its new output contract is not yet verified on the Research PC; the 19:00 run emitted legacy `price_mentions`/`price_contexts`.
 

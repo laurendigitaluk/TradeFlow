@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -251,9 +251,9 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
     url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
     text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00'
   }]);
-  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
-  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
-  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
+  assert.match(prompt, /CAPTURE, DO NOT DECIDE/i);
+  assert.match(prompt, /exactly ONE compact JSON object/i);
+  assert.match(prompt, /Capture the machine-only price separately from Combo/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
@@ -265,20 +265,81 @@ test('Gemma extraction uses a larger output budget without increasing the 4k con
 });
 
 
-test('Gemma reports observations rather than deciding whether evidence is usable', () => {
+test('3D printer Gemma prompt returns one factual page observation for ChatGPT review', () => {
   const prompt = buildExtractionPrompt({
     ...task, branch_slug: '3d-printers', research_type: 'uk_both',
     package_name: '8-Color Combo'
   }, [
-    { source_id: 'S1', title: 'Kobra S1 Max', url: 'https://uk.anycubic3d.com/products/kobra-s1-max', text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00' },
-    { source_id: 'S2', title: 'Kobra S1 Max used', url: 'https://www.ebay.co.uk/itm/1234567890', text: 'Used Kobra S1 Max £400 collection only' }
+    { source_id: 'S1', title: 'Kobra S1 Max', url: 'https://uk.anycubic3d.com/products/kobra-s1-max', text: 'Kobra S1 Max £549.00 Combo 4 colours £749.00 8 colours £935.00' }
   ]);
-  assert.match(prompt, /YOUR JOB IS CAPTURE, NOT DECISION/i);
-  assert.match(prompt, /exactly one finding for EVERY supplied source_id/i);
-  assert.match(prompt, /Do not choose one price if a page shows several package prices/i);
+  assert.match(prompt, /CAPTURE, DO NOT DECIDE/i);
+  assert.match(prompt, /exactly ONE compact JSON object/i);
+  assert.match(prompt, /price_contexts/i);
+  assert.match(prompt, /Do not mistake per-kg filament prices/i);
   assert.match(prompt, /S1/);
-  assert.match(prompt, /S2/);
+  assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
+});
+
+test('3D printer extraction uses one page per Gemma call while other agents retain two-page batches', () => {
+  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 1);
+  assert.equal(extractionBatchSizeForTask({ ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones' }), 2);
+});
+
+test('3D printer deep-page excerpt includes price and offer details found below the opening text', () => {
+  const longPage = 'Opening product description. '.repeat(100) +
+    'Machine only £549.00. Kobra S1 Max Combo 8 colours £935.00. Condition: Refurbished - Grade A. Currently in stock for UK delivery.';
+  const excerpt = buildDeepPageExcerpt(longPage, { manufacturer: 'Anycubic', model: 'Kobra S1 Max', package_name: '8-Color Combo' });
+  assert.ok(excerpt.length <= 6200);
+  assert.match(excerpt, /£549\.00/);
+  assert.match(excerpt, /£935\.00/);
+  assert.match(excerpt, /Refurbished - Grade A/);
+  assert.match(excerpt, /Currently in stock/);
+});
+
+test('3D printer fallback preserves structured price, package, condition and availability observations', () => {
+  const source = {
+    source_id: 'S1',
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    text: 'Creality K1 Speedy 3D Printer Standard Printer £299.00. Condition: New. Only 15 left in stock. UK VAT included.'
+  };
+  const finding = fallbackPageCapture({ ...task, research_type: 'uk_new' }, source, 'Ollama timeout');
+  assert.equal(finding.observed_price, 299);
+  assert.equal(finding.price_currency, 'GBP');
+  assert.match(finding.product_identity_text, /Creality K1 Speedy/);
+  assert.match(finding.package_or_variant_text, /Standard Printer/);
+  assert.match(finding.item_condition_text, /New/);
+  assert.match(finding.availability_text, /Only 15 left in stock/);
+  assert.match(finding.location_text, /UK VAT included/);
+  assert.equal(finding.evidence_type, null);
+  assert.equal(finding.review_classification, 'unverified_capture');
+});
+
+test('3D printer fallback does not promote a filament unit price to the printer price', () => {
+  const source = {
+    source_id: 'S3',
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    text: 'Creality K1 Speedy 3D Printer. Compatible filament 1kg £17.99.'
+  };
+  const finding = fallbackPageCapture({ ...task, research_type: 'uk_new' }, source, 'Ollama timeout');
+  assert.equal(finding.observed_price, null);
+  assert.deepEqual(finding.price_mentions, ['£17.99']);
+});
+
+test('3D printer fallback preserves multiple package prices without guessing the printer price', () => {
+  const source = {
+    source_id: 'S2',
+    title: 'Anycubic Kobra S1 Max',
+    url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
+    text: 'Kobra S1 Max machine only £549.00; 4 colour Combo £749.00; 8 colour Combo £935.00'
+  };
+  const finding = fallbackPageCapture({ ...task, manufacturer: 'Anycubic', model: 'Kobra S1 Max', research_type: 'uk_new' }, source, 'Gemma JSON parse failure');
+  assert.equal(finding.observed_price, null);
+  assert.equal(finding.price_mentions.length, 3);
+  assert.equal(finding.price_contexts.length, 3);
+  assert.match(finding.package_or_variant_text, /Combo/);
 });
 
 test('GBP price capture preserves multiple visible prices and their context', () => {
@@ -391,22 +452,21 @@ test('Gemma JSON parser accepts recognised finding arrays and a single source fi
 });
 
 
-test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-page price mentions', () => {
+test('3D printer extraction prompt stays bounded and includes deep-page price context plus recent guidance', () => {
   const notes = Array.from({ length: 12 }, (_, index) => ({
     type: 'learning_note',
     sender: 'test',
     title: 'note-' + index,
     body: 'NOTE-' + index + ' ' + 'N'.repeat(1800)
   }));
-  const longPage = 'A'.repeat(5000) + ' Current listed price £999.00';
+  const longPage = 'A'.repeat(5000) + ' Current listed price £999.00; Condition: New; only 4 left in stock.';
   const prompt = buildExtractionPrompt({
     ...task,
     branch_slug: '3d-printers',
     research_type: 'uk_new',
     common_room_context: notes
   }, [
-    { source_id: 'S1', title: 'Printer page', url: 'https://www.3dprima.co.uk/printer', text: longPage },
-    { source_id: 'S2', title: 'Second page', url: 'https://www.3djake.uk/printer', text: 'B'.repeat(5000) }
+    { source_id: 'S1', title: 'Printer page', url: 'https://www.3dprima.co.uk/printer', text: longPage }
   ]);
 
   assert.ok(prompt.length < 18000, 'bounded prompt length: ' + prompt.length);
@@ -414,8 +474,8 @@ test('Gemma extraction prompt stays bounded and keeps recent guidance plus full-
   assert.doesNotMatch(prompt, /NOTE-0 /);
   assert.match(prompt, /£999\.00/);
   assert.match(prompt, /visible_gbp_price_context/);
-  assert.ok(prompt.includes('A'.repeat(2200)));
-  assert.ok(!prompt.includes('A'.repeat(2201)));
+  assert.match(prompt, /only 4 left in stock/i);
+  assert.ok(!prompt.includes('A'.repeat(5000)));
 });
 
 

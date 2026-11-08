@@ -4408,3 +4408,23 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 
 ### Legacy false-positive queue items — manual review required
 - LIVE still contains two older Bambu Lab A1 / Standard / Used rows sourced from Audi A1 car adverts: Gumtree Stratford at £2,150 (row `86cdd9e5-4b1d-47e9-9aaa-3d2ae4b57f74`) and Narberth at £11,300 (row `a4ca1777-3887-4b4e-bfa5-9ef76e27400c`). Their page titles and `/cars-vans-motorbikes/cars/audi/a1/` URLs confirm they are not 3D-printer evidence. Both remain `needs_research`, unreviewed, unapproved and unimported. The updated A1 guard rejected all 9 Audi URLs in the latest controlled run, but it does not retroactively clean these older rows. Leave them for explicit ChatGPT/owner review; do not auto-delete, approve or import them.
+
+
+## 8 November 2026 — Gemma 3D Printer extraction acceptance and repair
+
+The 3D Printer agent must return factual page observations for ChatGPT to assess; Gemma must not approve, reject or import evidence.
+
+LIVE diagnostic:
+- 44 3D-printer review rows existed.
+- Only 1 had a top-level observed price; 43 were raw/unstructured captures.
+- Recorded extraction issues: 21 responses without a recognised findings envelope, 14 Ollama timeouts, 2 malformed/truncated JSON responses and 4 other/misclassified observations.
+- The fetcher had retained full page text, but the Gemma prompt only supplied the first 2,200 characters. This was insufficient for pages where package options, prices, stock or condition details appear further down.
+
+PR #292 (fix/gemma-3d-deep-page-extraction-20261108) proposes a 3D-branch-only correction:
+1. Process one fetched page per Ollama call and request one compact JSON observation object.
+2. Build the model excerpt from selected sections across the fetched page, prioritising every visible GBP price context, exact model/package terms, condition, availability and UK-location wording.
+3. On extraction timeout or malformed response, preserve structured deterministic page observations (price mentions and context, package wording, condition, availability and location) alongside the complete page capture.
+4. Preserve all multiple prices and their contexts; do not infer which option price belongs to the catalogue package.
+5. Keep all rows unverified and in the ChatGPT review queue. No automatic approval or catalogue import.
+
+The 3D-printer path alone uses one-page batches and deep excerpts. Other category agents keep their existing extraction settings until the first agent has passed LIVE acceptance. GitHub Actions run 42477880080 passed 50/50 tests. PR #292 is open and not deployed. After owner review/merge, update the existing Research PC installation with the current updater, preserve the TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE, verify the worker heartbeat, and run a small multi-model new/used acceptance batch before expanding the 3D branch.

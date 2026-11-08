@@ -1,5 +1,15 @@
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 
+## 8 November 2026 — 3D-printer Gemma extraction speed work (PR pending)
+
+- Baseline LIVE batch `owner-3d-printers-chatgpt-evidence-batch-20261108-1315` ran for 70m 49s across six sequential product subtasks. It discovered 30 product pages, fetched 18, made 18 one-page Ollama extraction calls and recorded 10 extraction failures. All fetched pages remained in the LIVE review queue; no approval or import occurred.
+- Confirmed execution path: `task-worker.mjs` processes product subtasks sequentially; each `runTask` performs web discovery, approved-source route probing, collection discovery, page fetch, Ollama extraction and LIVE queue writes. Product-page fetching is already concurrent in groups of four. Ollama calls are serialised by `ollamaExtractionQueue`.
+- Proposed 3D-only optimisation in PR branch `perf/gemma-3d-printer-two-page-extraction-20261108`: process two fetched pages per Ollama call, change the 3D prompt to require a `findings` array with one result per `source_id`, reduce each model excerpt to 2,800 characters while retaining visible price strings and compact nearby contexts, and retain the complete fetched page in the raw review capture.
+- Added per-subtask elapsed-time metrics for web search, approved-source probing, collection discovery, product-page fetching, Gemma extraction, LIVE queue writes and total duration. These metrics are required to establish the next real bottleneck rather than guessing.
+- Regression tests and the Research PC updater/CI test lists include the new two-page prompt contract. GitHub Actions run `42497005002` passed 53/53 tests and syntax checks. Local Ollama acceptance remains pending. This is not yet merged, deployed or installed on the Research PC; do not queue another LIVE run until the PR passes review and the existing updater is explicitly approved and run.
+- No source registry, task queue, review rows, catalogue, TEST data, approval/import state, credentials, private `.env`, Research PC installation or runtime was changed. The review gate remains unchanged.
+
+
 
 ## 8 November 2026 — scheduled LIVE verification at 02:00 UTC
 

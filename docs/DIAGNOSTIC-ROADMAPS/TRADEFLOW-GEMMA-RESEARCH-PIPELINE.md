@@ -1,5 +1,14 @@
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
 
+## 8 November 2026 — 3D-printer extraction performance investigation
+
+- Baseline task `owner-3d-printers-chatgpt-evidence-batch-20261108-1315`: six product subtasks executed sequentially by `task-worker.mjs`; wall time 70m 49s; 30 individual pages discovered, 18 fetched, 18 Ollama calls, 10 extraction failures. Product-page HTTP fetches already run in groups of four. `extractBatch()` serialises Ollama calls through `ollamaExtractionQueue`; 3D extraction was one page per call.
+- Search stage: `searchWebResults()` fans five query variants out to four providers concurrently (up to 20 requests per product). Approved-source probing separately executes the configured website routes in groups of four per source. These request counts are not additive wall-clock timings; stage timings are now being added to distinguish slow search/probe/fetch/model work.
+- PR branch `perf/gemma-3d-printer-two-page-extraction-20261108` changes 3D extraction to two pages per Ollama call, requires a `findings` array with one result for every supplied `source_id`, limits model excerpts to 2,800 characters per page while retaining GBP amounts and compact price contexts, and adds per-stage duration metrics. Full page captures remain stored unchanged for ChatGPT.
+- Files: `tools/tradeflow-gemma-agent/src/agent.mjs`; new `agent-speed.test.mjs`; `.github/workflows/gemma-research-tests.yml`; `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1`.
+- Verification gate: CI regression tests first; then explicit owner approval for the existing updater; preserve private `.env` and `TRADEFLOW_GEMMA_ENV_FILE`; verify worker version/heartbeat; run a small 3D-only LIVE batch and compare stage timings, structured rows, extraction failures and raw fallback retention. Do not merge/deploy or enqueue a new task before this gate.
+
+
 Updated: 7 November 2026
 
 ## Operating boundary

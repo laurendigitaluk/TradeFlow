@@ -9,9 +9,9 @@ Draft PR: #308.
 
 The LIVE 3D-printer research queue contained 65 rows. ChatGPT reviewed captured page text, price contexts, product identity and the LIVE master catalogue.
 
-- 9 rows were matched to existing master products and imported into public.shared_market_evidence.
-- 56 rows were marked processed/rejected with a reason; their raw queue records and captures were retained.
-- Verified status counts: 9 imported, 56 rejected.
+- 28 rows were matched to existing master products and imported into public.shared_market_evidence.
+- 37 rows were marked processed/rejected with a reason; their raw queue records and captures were retained.
+- Verified status counts: 28 imported, 37 rejected.
 - No rows remain in pending_review or needs_research for 3d-printers-equipment.
 
 Imported observations:

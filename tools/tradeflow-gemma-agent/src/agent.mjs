@@ -488,17 +488,17 @@ export function extractVisibleGbpPriceMentions(text) {
   // Accept the split decimal, but collapse only an adjacent duplicate rendering.
   // The same amount elsewhere on the page may belong to a different variant and
   // must retain its own context for the observation contract.
-  const re = /(£\\s*|GBP\\s*)((?:\\d{1,3}(?:,\\d{3})+|\\d+)(?:\\s*\\.\\s*\\d{2})?)/gi;
+  const re = /(£\s*|GBP\s*)((?:\d{1,3}(?:,\d{3})+|\d+)(?:\s*\.\s*\d{2})?)/gi;
   let match;
   while ((match = re.exec(source))) {
     const currency = match[1].trim().toUpperCase() === 'GBP' ? 'GBP ' : '£';
-    const amountText = match[2].replace(/[\\s,]/g, '');
+    const amountText = match[2].replace(/[\s,]/g, '');
     const amount = Number(amountText);
     if (!Number.isFinite(amount) || amount <= 0) continue;
     const previousIndex = lastOccurrenceByAmount.get(amount);
     if (previousIndex != null && match.index - previousIndex <= 12) continue;
     lastOccurrenceByAmount.set(amount, match.index);
-    const displayAmount = match[2].replace(/\\s*\\.\\s*/g, '.').replace(/\\s+/g, '');
+    const displayAmount = match[2].replace(/\s*\.\s*/g, '.').replace(/\s+/g, '');
     matches.push({
       display: currency + displayAmount,
       amount,

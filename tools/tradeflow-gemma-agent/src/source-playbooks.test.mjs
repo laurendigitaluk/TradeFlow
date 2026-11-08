@@ -321,6 +321,28 @@ test('3D printer fallback preserves structured price, package, condition and ava
   assert.equal(finding.review_classification, 'unverified_capture');
 });
 
+test('3D printer raw capture retains the complete fetched page beyond 10k characters', () => {
+  const longText = 'Anycubic Kobra S1 Max Standard Printer £549.00. ' + 'SPECIFICATION '.repeat(1200);
+  const source = {
+    source_id: 'S5',
+    title: 'Anycubic Kobra S1 Max',
+    url: 'https://uk.anycubic3d.com/products/kobra-s1-max',
+    text: longText
+  };
+  const finding = fallbackPageCapture({ ...task, manufacturer: 'Anycubic', model: 'Kobra S1 Max' }, source, 'Capture-only mode');
+  assert.equal(finding.source_excerpt, longText);
+  assert.equal(finding.page_capture.captured_text, longText);
+  assert.ok(finding.page_capture.captured_text.length > 10000);
+});
+
+test('3D printer HTML text extraction supports a larger capture limit without changing the default', () => {
+  const html = '<main>' + 'Anycubic Kobra S1 Max specification. '.repeat(500) + '</main>';
+  const defaultText = extractRelevantPageText(html, { manufacturer: 'Anycubic', model: 'Kobra S1 Max' });
+  const fullText = extractRelevantPageText(html, { manufacturer: 'Anycubic', model: 'Kobra S1 Max' }, { maxChars: 100000 });
+  assert.equal(defaultText.length, 10000);
+  assert.ok(fullText.length > 10000);
+});
+
 test('3D printer raw capture never promotes a single visible price before ChatGPT review', () => {
   const source = {
     source_id: 'S4',

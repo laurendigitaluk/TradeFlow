@@ -4259,3 +4259,16 @@ Existing Wex Photo Video source assignments were retained. All new sources are c
 Verified LIVE source counts after update: Lighting 9; Continuous Lighting 6; Studio Lighting 9; Lighting Modifier 5; Lighting Support 5; Photography Lighting & Studio 5; Camera Flash 5; Video Production Equipment 8; Camera Accessories 21; Camera Rig 9; Tripods 6; Power & Batteries 8. Where UK retailers display ex-VAT and inc-VAT amounts, the agent must use the inc-VAT GBP consumer price for standard new-price evidence; never mistake ex-VAT as the retail total. Distinguish new, used, ex-demo and open-box condition.
 
 No product or evidence rows were changed in this source update. No research tasks were queued and no worker was restarted. LIVE remains the authoritative catalogue; TEST remains software/regression only.
+
+
+## 8 November 2026 — Owner dashboard active-list deployment gate
+
+The LIVE research queue is fully processed: 65 3D-printer rows are terminal (28 imported, 37 rejected), with zero open research rows across all categories. LIVE has 20 completed AI-agent tasks and zero queued/running/failed tasks. TEST has zero open research rows and one queued 3D-printer smoke-test task (Creality Ender-3 V3 KE), plus one completed task; do not cancel the queued test without review.
+
+The current production frontend is already configured to hide completed work:
+- platform-owner-dashboard.html labels the panels “Outstanding research tasks” and “Research awaiting review”.
+- platform-owner-dashboard.js calls platform_owner_list_ai_agent_tasks with p_status='active' (queued/running/failed only) and platform_owner_list_catalogue_research_queue with p_status='open' (pending_review/needs_research/approved only).
+- The LIVE RPC definitions implement those filters correctly; completed tasks and imported/rejected research records remain in database history.
+- worker/index.js serves the owner dashboard HTML and JavaScript with Cache-Control: no-store.
+
+The user's screenshot still shows the older “Queued and completed tasks” panel and processed records. That is not the current production HTML/JS or RPC behavior; the deployed Cloudflare Worker named tradeflow has not been verified and is likely serving an older asset bundle. There is no GitHub Actions deployment workflow in the repository. Verify Cloudflare Workers & Pages > tradeflow > Deployments and deploy the latest production commit before changing database rows or queue statuses again. Do not delete completed history to make the dashboard look clear.

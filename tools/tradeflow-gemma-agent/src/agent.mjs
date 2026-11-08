@@ -809,10 +809,10 @@ export function buildGemmaFindingSchema(expectedCount = 1) {
 
 export function selectSafeObservedPrice(observations = [], researchType = 'uk_both') {
   const conditionMatchesLane = condition => {
-    const text = String(condition || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+    const text = String(condition || '').toLowerCase().replace(/\s+/g, ' ').trim();
     if (!text) return false;
-    const newCondition = /\\b(?:brand new|new|sealed|unused|never used)\\b/.test(text);
-    const usedCondition = /\\b(?:used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened)\\b/.test(text);
+    const newCondition = /\b(?:brand new|new|sealed|unused|never used)\b/.test(text);
+    const usedCondition = /\b(?:used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened)\b/.test(text);
     if (newCondition === usedCondition) return false;
     if (researchType === 'uk_new') return newCondition;
     if (researchType === 'uk_used') return usedCondition;

@@ -2,7 +2,7 @@
 
 Date: 8 November 2026 (UTC)
 Branch: fix/gemma-dashboard-active-only-lists-20261108
-PR: #309 (draft, not deployed)
+PR: #309 (merged to production; LIVE RPC migration applied)
 Environment audited: TradeFlow LIVE.
 
 ## Root cause confirmed from current production code
@@ -15,7 +15,7 @@ Environment audited: TradeFlow LIVE.
 
 - Research queue: 65 3D-printer records, 28 imported and 37 rejected, zero pending_review/needs_research/approved rows.
 - Agent task table: 20 tasks, all status completed.
-- No queue rows or task rows were deleted.
+- No queue rows or task rows were deleted. Cloudflare Worker/static asset deployment is not independently confirmed.
 
 ## Intended dashboard contract
 
@@ -32,12 +32,12 @@ Environment audited: TradeFlow LIVE.
 - platform-owner-dashboard.html updates the two section headings.
 - Migration supabase/migrations/20261108223000_gemma_dashboard_active_only_lists.sql replaces the owner task-list RPC with a status-filtered version and extends the research-queue RPC with open/completed views.
 - Migration preserves the owner-membership authorization check and authenticated execution grants.
-- SQL syntax checked by running the DDL in a transaction and rolling back. No LIVE database changes applied yet.
+- SQL DDL syntax-checked in a rollback transaction, then applied to LIVE after PR #309 passed CI and merged. Both new RPC signatures and authenticated execute grants verified.
 - No records deleted, no worker restarted, no TEST/LIVE data copied.
 
 ## Deployment verification
 
-After PR review/merge and LIVE migration:
+After front-end deployment/browser refresh:
 1. Confirm Research Queue active view is empty while 28 imported and 37 rejected remain retrievable.
 2. Confirm Outstanding research tasks is empty while all 20 completed tasks remain stored.
 3. Queue one controlled task; verify queued/running/failed remains visible as appropriate and disappears only after terminal completion.

@@ -1518,7 +1518,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         if (updated?.length) {
           writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
         } else {
-          writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
+          writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
         }
       } else {
         writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
@@ -1528,7 +1528,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     const inserted = await db(liveTarget, 'platform_catalogue_research_queue', {
       method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
     });
-    writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
+    writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
   }
   stageDurations.review_queue_write_ms = Date.now() - queueWriteStartedAt;
   stageDurations.total_elapsed_ms = Date.now() - runStartedAt;

@@ -1,5 +1,18 @@
 # CURRENT AUTHORITATIVE SYSTEM POSITION — 7 NOVEMBER 2026
 
+## 8 November 2026 — 3D-printer duplicate capture caused by Creality locale parameters (PR #290)
+
+- LIVE review identified two separate \`needs_research\` rows for the same Creality K1 Max standard product page: one URL included \`?country=GB&currency=GBP\` and one did not. Both captures had the same title, identical 2,327-character captured text (MD5 \`243fb8ad8cf142264ff4ff8c86edb824\`), and the same 17 visible GBP price mentions. Their exact-URL capture hashes differed, so both were inserted.
+- Production root cause: \`agent.mjs\` derives the raw-capture dedupe key from the unnormalised \`evidence.source_url\`. The URL query selectors are locale-only for this verified Creality UK product route, not a different model/package.
+- PR #290 adds a narrowly scoped canonicaliser for exact \`3d-printers-equipment / 3d-printers\` tasks and \`https://store.creality.com/uk/products/{slug}\` only. It removes the pair only when there is exactly one \`country=GB\` and one \`currency=GBP\` parameter. Other query parameters, other values, hosts, routes, categories and branches remain unchanged.
+- The queue's top-level \`source_url\` and capture dedupe key use the canonical URL. The original fetched URL remains in \`raw_payload.original_source_url\`, \`raw_payload.evidence.source_url\` and the page-capture URL so ChatGPT retains the exact source used.
+- No existing LIVE rows are merged, deleted or rewritten. The two historical duplicate rows remain for manual review. Future equivalent captures should share one dedupe key and enrich the existing unreviewed row instead of creating another row.
+- Regression coverage includes identical locale/non-locale URLs, preservation of product variant parameters, non-GB/GBP values, partial/duplicate locale selectors, other hosts/routes, non-3D categories/branches and malformed URLs.
+- The updater now downloads, backs up, syntax-checks and tests the new helper/test alongside the existing Gemma files. The GitHub workflow also runs the new test. The private \`.env\` and \`TRADEFLOW_GEMMA_ENV_FILE\` are not read or changed by this code.
+- LIVE queue at inspection: 44 rows (34 \`uk_new\`, 6 \`uk_used\`, 4 \`uk_both\`), all \`needs_research\`; 0 approved and 0 imported. No task was queued and no evidence was approved/imported.
+- PR #290 is stacked on open PR #287 because both changes touch \`agent.mjs\`. Review/merge #287 first; then retarget/rebase #290 to \`production\`. Neither PR is merged or deployed. No LIVE/TEST data, source registry, task queue, catalogue, secrets or Research PC runtime changed.
+
+
 
 ## 8 November 2026 — scheduled LIVE verification at 02:00 UTC
 

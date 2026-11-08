@@ -6,6 +6,7 @@ import { runTask, is3dPrinterResearchTask } from './agent.mjs';
 import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
+import { resolveControlPlane } from './control-plane.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -15,14 +16,8 @@ for(const line of envText.split(/\r?\n/)){
  const m=line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/);
  if(m&&env[m[1]]===undefined)env[m[1]]=m[2].replace(/^['"]|['"]$/g,'');
 }
-const testUrl=env.TRADEFLOW_TEST_URL;
-const testKey=env.TRADEFLOW_TEST_SERVICE_ROLE_KEY;
-const liveUrl=env.TRADEFLOW_LIVE_URL;
-const liveKey=env.TRADEFLOW_LIVE_SERVICE_ROLE_KEY;
-if(!testUrl||!testKey||!liveUrl||!liveKey)throw new Error('TradeFlow TEST and LIVE URLs and service-role keys must be configured in the local .env file.');
-if(new URL(testUrl).hostname!=='nnsshnfkjcflucjrftzi.supabase.co')throw new Error('TEST URL does not match the approved TradeFlow TEST project.');
-if(new URL(liveUrl).hostname!=='gxsrajtqzdjvmceqcpgv.supabase.co')throw new Error('LIVE URL does not match the approved TradeFlow LIVE project.');
-const db={url:liveUrl.replace(/\/$/,''),key:liveKey};
+const controlPlane=resolveControlPlane(env);
+const db={url:controlPlane.url,key:controlPlane.key};
 const workerId=(os.hostname()+'-'+process.pid).slice(0,120);
 const pollMs=Math.max(5000,Math.min(60000,Number(env.GEMMA_POLL_INTERVAL_MS)||15000));
 const leaseSeconds=600;
@@ -37,7 +32,7 @@ async function rpc(name,args){
   body:JSON.stringify(args),signal:AbortSignal.timeout(20000)
  });
  const body=await response.text();
- if(!response.ok)throw new Error('LIVE task queue '+name+' returned HTTP '+response.status+': '+body.slice(0,500));
+ if(!response.ok)throw new Error(controlPlane.name+' task queue '+name+' returned HTTP '+response.status+': '+body.slice(0,500));
  return body?JSON.parse(body):null;
 }
 async function roomRpc(name,args){
@@ -47,7 +42,7 @@ async function roomRpc(name,args){
   body:JSON.stringify(args),signal:AbortSignal.timeout(20000)
  });
  const body=await response.text();
- if(!response.ok)throw new Error('LIVE Common Room '+name+' returned HTTP '+response.status+': '+body.slice(0,500));
+ if(!response.ok)throw new Error(controlPlane.name+' Common Room '+name+' returned HTTP '+response.status+': '+body.slice(0,500));
  return body?JSON.parse(body):null;
 }
 async function roomRead(agentKey,category,thread=null,limit=100){
@@ -214,8 +209,8 @@ console.log('[TradeFlow Gemma] background worker started');
 await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Gemma worker connected to Common Room','The Research PC worker is connected to the LIVE AI Agent Common Room and can read owner instructions and post research handovers.',{thread_key:'general'}).catch(e=>console.error('[common room startup]',e.message));
 await checkFirstAgentCommonRoom().catch(e=>console.error('[common room first-agent greeting]',e.message));
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
-console.log('[TradeFlow Gemma] control plane: LIVE only; TEST retained for software regression.');
-await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_started',message:'Persistent TradeFlow Gemma worker connected and polling LIVE task queue.',details:{worker_id:workerId,poll_interval_ms:pollMs}});
+console.log('[TradeFlow Gemma] control plane: '+controlPlane.name+' only; other environment is isolated.');
+await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_started',message:'Persistent TradeFlow Gemma worker connected and polling '+controlPlane.name+' task queue.',details:{worker_id:workerId,poll_interval_ms:pollMs}});
 while(!stopping){
  try{
   const claimed=await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});

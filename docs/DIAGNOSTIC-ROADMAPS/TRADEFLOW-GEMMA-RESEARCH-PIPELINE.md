@@ -380,3 +380,8 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - The Research PC updater already installs `task-worker.mjs`, `task-groups.mjs` and `task-groups.test.mjs`, and runs the task-groups suite before and after installation. No updater or private configuration change is required for these files.
 - Scope is limited to multi-subtask 3D-printer batches. Non-3D and single-task completion behaviour is unchanged. No database, task/queue/source/catalogue data, TEST data, secrets, private .env, or local worker state changed. Do not queue another task until PR review/approval, deployment and local worker verification.
 
+
+
+### CI verification — 8 November 2026, 05:48 UTC
+- PR #289 GitHub Actions run [42452189126](https://github.com/laurendigitaluk/TradeFlow/actions/runs/42452189126) completed successfully: **47 tests passed, 0 failed**. Gemma source syntax and Owner Dashboard JavaScript syntax checks also passed.
+- The green run verifies the PR branch's aggregation helper, 3D-only batch predicate, cross-category isolation and existing source/agent tests. It does not verify a Research PC installation or LIVE runtime. PR remains open and unmerged; no deployment or research task was started.

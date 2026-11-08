@@ -75,3 +75,8 @@ LIVE diagnostic: the first Anycubic Kobra S1 subtask staged 9 individual pages. 
 The following uk_used pass found 8 candidates and staged 3 new records; two were new official Anycubic pages and one was a refurbished Grade A 123-3D listing. This confirms the live lane leak. One Ollama extraction timed out and two responses lacked a findings array; raw captures and visible GBP mentions were retained.
 
 PR #278: https://github.com/laurendigitaluk/TradeFlow/pull/278. Gemma Research Tests run 42412711661 passed; the all-scope lane regression fixture was corrected and the subsequent lane, extraction, heartbeat and bounded-prompt checks are green. This is not in production and has not been installed on the Research PC. After review/merge, use the existing updater in place, preserve the existing private .env and TRADEFLOW_GEMMA_ENV_FILE path, and run a controlled LIVE test. Do not merge/deploy or approve/import evidence without the owner's review.
+
+
+## 8 November 2026 — updater compatibility with current production worker
+
+The production worker now imports `src/agent-identity.mjs` and has a dedicated `src/agent-identity.test.mjs` regression suite. The safe updater downloads, backs up and installs both files and runs the identity tests before and after installation. Use the current production updater after the reviewed search-matching changes are merged. It continues to preserve the existing private TradeFlow `.env` and `TRADEFLOW_GEMMA_ENV_FILE` configuration.

@@ -3871,3 +3871,11 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - This is limited to category `3d-printers-equipment`, branch `3d-printers`. Other catalogue categories retain their existing matching behaviour. Short-model manufacturer/3D-printer disambiguation remains in place.
 - Regression tests cover K1 versus K1 Max, standard versus Combo, valid exact K1, accessory/upgrade rejection and exact K1 Max task acceptance.
 - No LIVE queue rows, source registry, catalogue data, approvals/imports, task queue or TEST data were changed. No Research PC update, worker restart or deployment has occurred. Run CI and then deploy the reviewed agent to the Research PC before the next controlled task.
+
+
+## 8 November 2026 — Research PC updater compatibility
+
+- The current production `task-worker.mjs` imports `agent-identity.mjs` and the identity resolver has a dedicated regression test. The previous PowerShell updater source-file allow-list did not include either file; running that updater against the current worker would leave the new import missing locally and omit its tests.
+- The updater is corrected to download, back up and install `agent-identity.mjs` and `agent-identity.test.mjs`, and to run the identity test suite both before installation and after installation.
+- Existing safeguards remain: validate the private .env targets without printing values; preserve the .env file; install only reviewed src files; back up existing source; run syntax/tests before replacing files; no Supabase schema/data changes.
+- This updater correction must be merged before asking the Research PC to update. Then run the production updater in place, verify the worker heartbeat, and only then queue the next controlled 3D-printer search task.

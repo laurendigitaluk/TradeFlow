@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, selectSafeObservedPrice } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -12,6 +12,62 @@ const printerTask = {
   package_name: 'Standard Printer',
   search_query: 'Bambu Lab A1 3D printer UK'
 };
+
+test('3D printer capture retains structured GBP offers before long page text and makes the price parseable', () => {
+  const product = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: 'ELEGOO Neptune 4 Pro FDM 3D Printer',
+    brand: { '@type': 'Brand', name: 'ELEGOO' },
+    model: 'Neptune 4 Pro',
+    offers: {
+      '@type': 'Offer',
+      price: '169.00',
+      priceCurrency: 'GBP',
+      availability: 'https://schema.org/InStock',
+      itemCondition: 'https://schema.org/NewCondition'
+    }
+  };
+  const longPage = 'Navigation and product detail text. '.repeat(500);
+  const html = '<main>' + longPage + '</main>' +
+    '<script type="application/ld+json">' + JSON.stringify(product) + '</script>';
+  const text = extractRelevantPageText(html, {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro'
+  });
+
+  assert.ok(text.startsWith('Product: ELEGOO Neptune 4 Pro FDM 3D Printer'));
+  assert.ok(text.indexOf('Product:') < text.indexOf('Navigation and product detail text.'));
+  assert.match(text, /Price: GBP 169\\.00 Currency: GBP/);
+  assert.match(text, /Availability: https:\\/\\/schema\\.org\\/InStock/);
+  assert.match(text, /Condition: https:\\/\\/schema\\.org\\/NewCondition/);
+  assert.ok(text.length <= 10000);
+  assert.ok(extractVisibleGbpPriceMentions(text).some(price => price.amount === 169));
+});
+
+test('non-3D categories retain their existing page-content-first extraction order', () => {
+  const product = {
+    '@type': 'Product',
+    name: 'ELEGOO Neptune 4 Pro FDM 3D Printer',
+    brand: { name: 'ELEGOO' },
+    model: 'Neptune 4 Pro',
+    offers: { price: '169.00', priceCurrency: 'GBP' }
+  };
+  const longPage = 'Legacy category page content. '.repeat(500);
+  const html = '<main>' + longPage + '</main>' +
+    '<script type="application/ld+json">' + JSON.stringify(product) + '</script>';
+  const text = extractRelevantPageText(html, {
+    category_slug: 'drones',
+    branch_slug: 'drones',
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro'
+  });
+
+  assert.ok(text.startsWith('Legacy category page content.'));
+  assert.ok(!text.includes('Product: ELEGOO Neptune 4 Pro'));
+});
 
 test('3D printer extraction batches two pages while other categories retain two-page batches', () => {
   assert.equal(extractionBatchSizeForTask(printerTask), 2);

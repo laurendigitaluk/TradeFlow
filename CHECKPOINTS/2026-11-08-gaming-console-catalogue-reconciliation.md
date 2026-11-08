@@ -13,7 +13,7 @@ Both projects independently reconciled; no IDs or rows copied from one project t
 - 285 total product rows in each environment.
 - 284 active products in each; one inactive duplicate product row retained for audit.
 - 411 active evidence rows in each: 246 UK-new, 165 UK-used.
-- 20 branches, 24 manufacturers, 12 enabled category-assigned sources.
+- 20 branches, 24 manufacturers, 12 category-specific UK source assignments plus 2 universal UK marketplaces (Amazon UK and eBay UK), 14 loadable sources.
 - Zero open research queue records and zero active/failed gaming tasks in each.
 - Final programmatic comparison: 0 product field differences across all 285 product rows; 0 active evidence field differences across all 411 active evidence rows.
 - TEST has one additional inactive historical Xbox Series X Digital listing evidence row; it remains inactive and was not copied to LIVE. Total inactive evidence: LIVE 14, TEST 15.
@@ -40,11 +40,10 @@ Two product rows represented the same single charging grip:
 
 ## Gaming source registry
 
-Both environments have the same 12 enabled source assignments:
-Argos UK, Amazon UK (universal), Cash Converters, CeX, eBay UK (universal), GAME, The Game Collection, Microsoft Xbox, Nintendo, PlayStation, Smyths Toys and Very.
-Only three manufacturer source assignments currently exist: Microsoft Xbox, Nintendo and PlayStation.
+Both environments have the same 12 category-specific source assignments plus 2 universal UK marketplaces (14 loadable sources): Argos UK, CeX UK, Currys UK, EE UK, GAME UK, John Lewis UK, Microsoft Xbox UK, Nintendo UK, Selfridges UK, Smyths Toys UK, Sony PlayStation UK and Very UK, plus Amazon UK and eBay UK universal.
+Only three manufacturer source assignments currently exist: Microsoft Xbox, Nintendo and PlayStation; the other nine category-specific sources are retailers.
 
-Candidate official UK sources identified but not yet inserted: Atari UK, PowerA UK, Gioteck, HORI Europe UK, Turtle Beach UK, Venom UK, SanDisk UK, Seagate UK and WD_BLACK UK. Add only after category-scoped worker loading is deployed. For all candidates, accept UK market-price evidence only when the product page actually displays GBP. Do not treat USD/EUR pages as UK evidence.
+Candidate official UK sources identified but not yet inserted: Atari UK, PowerA UK, Gioteck, HORI Europe UK, Turtle Beach UK, Venom UK, SanDisk UK, Seagate UK and WD_BLACK UK. Other enabled UK source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 in both, drones 8 in both, laptops 9 in both, metal detectors 8 in both and mobile phones 13 in both. The 3D-printer source registry remains a parity gap. Add only after category-scoped worker loading is deployed. For all candidates, accept UK market-price evidence only when the product page actually displays GBP. Do not treat USD/EUR pages as UK evidence.
 
 ## Category-scoped source loader repair
 

@@ -3920,3 +3920,13 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 
 ### Legacy false-positive queue items — manual review required
 - LIVE still contains two older Bambu Lab A1 / Standard / Used rows sourced from Audi A1 car adverts: Gumtree Stratford at £2,150 (row `86cdd9e5-4b1d-47e9-9aaa-3d2ae4b57f74`) and Narberth at £11,300 (row `a4ca1777-3887-4b4e-bfa5-9ef76e27400c`). Their page titles and `/cars-vans-motorbikes/cars/audi/a1/` URLs confirm they are not 3D-printer evidence. Both remain `needs_research`, unreviewed, unapproved and unimported. The updated A1 guard rejected all 9 Audi URLs in the latest controlled run, but it does not retroactively clean these older rows. Leave them for explicit ChatGPT/owner review; do not auto-delete, approve or import them.
+
+
+## 8 November 2026 — 3D Printer Gemma deep-page extraction repair (PR #292)
+
+- LIVE review-queue inspection found 44 3D-printer captures: 1 row with a top-level price and 43 without structured evidence fields. Recorded failure reasons: 21 unrecognised Gemma JSON findings envelopes, 14 Ollama timeouts, 2 malformed/truncated JSON outputs, and 4 other/misclassified observations; 3 rows had no extraction error detail.
+- Confirmed extraction-depth limitation: production passed only the first 2,200 characters of each fetched product page to Gemma, although the full fetched text was retained in the review capture. Product option prices, package details, condition and availability later in the page could therefore be missed.
+- PR #292 changes only the 3d-printers-equipment / 3d-printers extraction path: one fetched page per Ollama call; a compact single-object JSON observation contract; selected excerpts from across the fetched page with all visible GBP price contexts and package/condition/availability/location clues; deterministic structured observations on model timeout or malformed output.
+- Multiple package prices are retained with nearby context. The fallback does not guess a single printer price where multiple prices appear, does not classify evidence as approved, and leaves evidence_type unverified for ChatGPT review.
+- Other categories retain the existing two-page extraction batch and opening-page excerpt. No other agent was changed.
+- CI run 42477880080 passed: 49 tests, 0 failures. PR #292 remains open pending owner review. No LIVE queue, source registry, catalogue, TEST data, local .env, Research PC process or Cloudflare deployment was changed. Do not update the Research PC until PR review/merge and then use the existing updater in place.

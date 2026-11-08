@@ -369,3 +369,13 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - The updater is corrected to download, back up and install `agent-identity.mjs` and `agent-identity.test.mjs`, and to run the identity test suite both before installation and after installation.
 - Existing safeguards remain: validate the private .env targets without printing values; preserve the .env file; install only reviewed src files; back up existing source; run syntax/tests before replacing files; no Supabase schema/data changes.
 - This updater correction must be merged before asking the Research PC to update. Then run the production updater in place, verify the worker heartbeat, and only then queue the next controlled 3D-printer search task.
+
+
+## 8 November 2026 — concatenated Combo URL identity correction
+
+- Controlled LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` showed the official Creality UK URL `/products/essential-combok1-max-hyper-pla-2` was captured under the K1 Max Standard task. Its title identified `K1 Max + PLA*2(White+Red)` and the page showed £599.00; this is a bundle, not the standalone Standard Printer.
+- Root cause: URL tokenisation split punctuation but did not restore the missing boundary between `combo` and the following model token in concatenated Shopify slugs (`combok1`). The package detector therefore failed to see the Combo marker even though the title/path contained the model identity.
+- Minimal fix: restore a token boundary after `combo` (and concatenated AMS/ACE/CFS labels) before exact model/package matching. Keep sibling-model rejection and standard-vs-combo enforcement unchanged. Add a regression fixture for the exact Creality URL/title so it is rejected from the K1 Max Standard task; the matching Combo task remains eligible.
+- This is limited to the 3D-printer branch. It changes no source allow-list, task dispatch, queue row, approval/import state, catalogue data, TEST data, credentials or Research PC runtime. Existing updater already includes `agent.mjs` and `source-playbooks.test.mjs`.
+- Validation required: run the Gemma research workflow and full Research PC updater tests, merge only after green CI, then rerun a small K1/K1 Max Standard-vs-Combo acceptance test. Review captured page text and exact package labels; no automatic approval/import.
+

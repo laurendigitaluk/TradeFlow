@@ -215,3 +215,11 @@ Wait for CI on the fresh current-production branch. If green, keep the PR for re
 - The previous non-mergeable PR #306 was closed as superseded; it was not merged.
 - Its reviewed code and regression tests were ported onto the fresh current-production branch `fix/gemma-3d-jsonld-gbp-capture-current-prod-20261108` and opened as draft PR #310: https://github.com/laurendigitaluk/TradeFlow/pull/310.
 - PR #310 CI has not yet appeared in the commit workflow-run listing. Do not call it tested or mergeable until the current head receives a green CI run. No deployment or Research PC install has occurred.
+
+
+
+### Final PR #310 verification — 8 November 2026, 22:39 UTC
+
+- Final code/test head `e07f456339bf3c9021b8b89005918e91860c82f6` passed GitHub Actions run #371: 73 tests passed, 0 failed; PowerShell updater syntax, Node source syntax and Owner Dashboard JavaScript syntax also passed.
+- The long-page regression explicitly checks the before/after parser result: old `Price: 169.00 Currency: GBP` rendering returns 0 recognised GBP prices; the corrected structured rendering returns exactly 1. The multi-offer fixture recognises two GBP offers and excludes the USD offer.
+- PR #310 is open, ready for review and mergeable. It remains unmerged and undeployed. CI is not Research PC runtime verification; owner-authorised TEST installation/replay remains the next gate.

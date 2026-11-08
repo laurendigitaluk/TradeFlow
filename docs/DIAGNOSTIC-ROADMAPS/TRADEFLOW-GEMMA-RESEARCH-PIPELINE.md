@@ -607,3 +607,23 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+## 8 November 2026 — 3D Printers & Equipment LIVE/TEST reconciliation
+
+Rechecked the category against the 4–5 November catalogue checkpoints before changing data. The original Creality reconciliation checkpoint explicitly identifies the canonical records and the duplicate audit rows. A later parallel insertion had reversed the active/visible flags on three Creality duplicate rows. Restored the previously documented arrangement in both environments:
+- SPARKX i7: canonical standard package active/visible; duplicate printer-only row inactive/hidden.
+- HALOT-MAGE S 14K: canonical standard package active/visible; duplicate printer-only row inactive/hidden.
+- HALOT-R6: canonical standard package active/visible; duplicate printer-only row inactive/hidden.
+- Canonical evidence rows were reactivated; duplicate evidence rows, including later parallel duplicate captures in TEST, were set inactive. All rows remain stored.
+
+The shared 208-product identity set now has exact matching product metadata in LIVE and TEST, including model, package key/name, category fields, product type, notes and active/customer-visible flags. TEST retains one additional inactive/hidden Ender-3 V3 Neo / Printer only duplicate for audit; it is not a customer-visible or active product.
+
+Reconciled the active market-evidence set in TEST against LIVE by product identity, source name and source record key. Seven equivalent TEST observations were updated to the LIVE observation keys/values, 21 missing active observations were inserted, and seven additional older source-key observations present in LIVE were added. No LIVE evidence was changed and no evidence rows were deleted. Three existing notes remain slightly more descriptive in TEST; these are retained rather than shortened.
+
+Final verification:
+- LIVE: 208 products, 201 active/customer-visible, 7 inactive; 2 branches, 18 manufacturers.
+- TEST: 209 products, 201 active/customer-visible, 8 inactive; 2 branches, 18 manufacturers. The sole extra product is the known inactive Ender-3 V3 Neo duplicate.
+- Both: 260 active evidence rows (239 UK-new, 21 UK-used); zero active products missing evidence; zero invalid active evidence; zero duplicate active source-key groups.
+- Inactive evidence history: LIVE 17, TEST 21. The four-row difference is retained audit history, not active catalogue drift.
+
+Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 54/54, but installed Research PC/Ollama structured-output acceptance is not yet verified. No worker was started/restarted and no new research task was queued. Complete the remaining category reconciliation and source-selection checks first, then update all Gemma workers/agents and run the controlled full research cycle.

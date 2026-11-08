@@ -21,7 +21,7 @@ PR #290 adds \`capture-identity.mjs\` and tests. For the exact 3D-printer catego
 
 The queue top-level URL and dedupe key use the canonical URL. The exact fetched URL remains preserved in raw payload fields, including \`original_source_url\`, \`evidence.source_url\` and page-capture URL. No historical LIVE rows are automatically merged, deleted or rewritten.
 
-Regression tests cover equivalent URLs, variant parameter preservation, non-GB/GBP values, partial/duplicate selectors, other hosts/routes, non-3D scope and malformed URLs. The updater and GitHub workflow now include the new module and test.
+Regression tests cover equivalent URLs, variant parameter preservation, non-GB/GBP values, partial/duplicate selectors, other hosts/routes, non-3D scope and malformed URLs. GitHub Actions run 42465620424 passed 52/52 tests with zero failures, including source syntax and Owner Dashboard JavaScript syntax checks. This is PR-branch verification only, not Research PC or LIVE runtime verification. The updater and GitHub workflow now include the new module and test.
 
 ## Release dependency
 

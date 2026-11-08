@@ -1,3 +1,7 @@
+## 8 November 2026 — Gemma batch failure recovery
+
+Added isolated per-page recovery in PR #300 after failed 3D-printer multi-page extraction. Two-page batch remains the normal fast path. On failure, each page is retried separately with a compact excerpt, exact one-page schema and 1,024-token output cap. Successful retries are structured; only failed retries use raw fallback. Run #244 passed all CI gates. No research task was queued, no evidence approved/imported, and no LIVE database rows changed. PR remains draft/open; Research PC installation and Ollama schema compatibility are outstanding.
+
 ## 8 November 2026 — Research PC updater path friction removed
 
 The Research PC was already in the correct installation folder and the `.env` file was visibly present there. Updated draft updater to auto-detect the current directory by `src/agent.mjs`, select sibling `.env`, and strip wrapping quotes if paths are explicitly supplied. This avoids asking owner to copy folder/file paths again. Await CI; then one command, no worker start. No LIVE data, tasks, approvals or imports changed.

@@ -145,7 +145,7 @@ test('3D printer matching rejects sibling models, accessories and package mismat
   assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer?ref=search', task), true);
   assert.equal(matchesTaskModel('Creality K1 Max 3D Printer', 'https://store.creality.com/uk/products/k1-max', task), false);
   assert.equal(matchesTaskModel('Creality K1 Max Combo 8-Color Printer', 'https://store.creality.com/uk/products/k1-max-combo', task), false);
-  assert.equal(matchesTaskModel('K1 Max + PLA*2(White+Red)', 'https://store.creality.com/uk/products/essential-combok1-max-hyper-pla-2', task), false);
+
   assert.equal(matchesTaskModel('Creality K1 Printer Upgrade Kit', 'https://store.creality.com/uk/products/k1-upgrade-kit', task), false);
   assert.equal(matchesTaskModel('Creality K1 Build Plate', 'https://store.creality.com/uk/products/k1-build-plate', task), false);
 
@@ -154,6 +154,14 @@ test('3D printer matching rejects sibling models, accessories and package mismat
   assert.equal(matchesTaskModel('Creality K1 Speedy 3D Printer', 'https://store.creality.com/uk/products/k1-speedy-3d-printer', comboTask), false);
 
   const maxTask = { ...task, model: 'K1 Max' };
+  const comboSlug = 'https://store.creality.com/uk/products/essential-combok1-max-hyper-pla-2';
+  const comboTitle = 'K1 Max + PLA*2(White+Red)';
+  // This exact captured page must be rejected for K1 Max Standard because the
+  // concatenated URL slug contains a Combo package marker.
+  assert.equal(matchesTaskModel(comboTitle, comboSlug, maxTask), false);
+  // The same page remains eligible for the exact matching K1 Max Combo task.
+  const maxComboTask = { ...maxTask, package_key: 'combo-2-pla', package_name: 'Combo with two PLA rolls' };
+  assert.equal(matchesTaskModel(comboTitle, comboSlug, maxComboTask), true);
   assert.equal(matchesTaskModel('Creality K1 Max 3D Printer', 'https://store.creality.com/uk/products/k1-max', maxTask), true);
 });
 

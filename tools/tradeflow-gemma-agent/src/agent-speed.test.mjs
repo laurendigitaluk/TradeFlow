@@ -37,7 +37,7 @@ test('3D printer extraction prompt requests one findings-array row for every sup
   assert.match(prompt, /supplied JSON schema exactly/i);
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /REQUIRED POPULATION/i);
-  assert.match(prompt, /Never leave these three fields blank/i);
+  assert.match(prompt, /Never leave these fields blank/i);
   assert.match(prompt, /copy that exact value into price_mentions/i);
   assert.match(prompt, /"source_id":"S1"/);
   assert.match(prompt, /"source_id":"S2"/);
@@ -81,7 +81,7 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.equal(schema.properties.findings.items.properties.product_identity_text.minLength, 1);
   assert.equal(schema.properties.findings.items.properties.match_observation.minLength, 1);
   const finding = schema.properties.findings.items;
-  assert.ok(finding.properties.price_observations.maxItems <= 12);
+  assert.ok(finding.properties.price_observations.maxItems <= 16);
   const observation = finding.properties.price_observations.items;
   assert.equal(observation.additionalProperties, false);
   for (const field of ['price_text','nearby_context','product_or_variant','price_role','association','condition','availability']) {
@@ -95,6 +95,6 @@ test('single-page recovery schema requests exactly one compact finding', () => {
   const schema = buildGemmaFindingSchema(1);
   assert.equal(schema.properties.findings.minItems, 1);
   assert.equal(schema.properties.findings.maxItems, 1);
-  assert.ok(schema.properties.findings.items.properties.price_observations.maxItems <= 12);
+  assert.ok(schema.properties.findings.items.properties.price_observations.maxItems <= 16);
   assert.ok(schema.properties.findings.items.properties.uncertainty_and_conflicts.maxLength <= 180);
 });

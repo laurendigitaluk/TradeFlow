@@ -1,6 +1,17 @@
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
 
-Updated: 7 November 2026
+Updated: 8 November 2026
+
+
+## 8 November 2026 — ELEGOO UK pre-owned route excluded by source scope (PR #291)
+
+- LIVE source registry contains one enabled ELEGOO UK manufacturer row scoped only to category `3d-printers-equipment`, country GB, and `research_scope='new_uk'`. Production `getResearchSourceLane()` therefore excludes it from `uk_used` tasks before route discovery.
+- The existing 3D-printer website playbook already defines separate ELEGOO routes: `uk_new` → `/collections/fdm-printers`; `uk_used` → `/collections/pre-owned-3d-printer`. Existing route tests prove this separation.
+- Fresh public inspection of the UK pre-owned collection found 27 products, UK/GBP context and displayed prices from £39 to £370. Some cards are explicitly sold out. The collection remains discovery only: follow individual printer product pages and validate current availability, exact model/package, condition and GBP price; do not treat collection-card prices as evidence.
+- The proposed PR #291 migration changes only the existing enabled ELEGOO UK manufacturer row for this exact category from `new_uk` to `all`. The category filter still limits it to 3D Printers; `isRelevantApprovedSource()` still requires the requested manufacturer to match ELEGOO; `routesByResearchType` continues to choose the FDM or pre-owned collection for the correct lane.
+- LIVE currently has 15 relevant sources (13 category-assigned plus the two universal eBay/Amazon rows). Production source loading allows up to 100 rows and the probe rotates through all lane-relevant sources in batches of four; the historical 12-source cap is no longer present.
+- TEST currently has no ELEGOO UK source row. The migration is an update-only statement and is a no-op there; it does not copy LIVE source data into TEST.
+- Regression coverage verifies new and used eligibility, the existing lane-specific route selection, and rejection for other manufacturers/categories. No LIVE source row has been changed yet; no task was queued and no evidence was approved or imported.
 
 ## Operating boundary
 - LIVE project gxsrajtqzdjvmceqcpgv is the only authoritative research task and evidence-review queue.

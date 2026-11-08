@@ -22,7 +22,7 @@ Gaming sources in both environments: 12 category-specific UK sources (Argos UK, 
 
 Category source-loading repair:
 - Current worker loads enabled sources globally before filtering.
-- PR #310 branch fix/gemma-category-scoped-source-loading-20261108c adds server-side category-array overlap filter plus universal * sources, enabled GB rows, fail-closed category validation.
+- PR #311 branch fix/gemma-category-scoped-source-loading-20261108c adds server-side category-array overlap filter plus universal * sources, enabled GB rows, fail-closed category validation.
 - Test file tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs added to CI and Research PC updater.
 - PR #308 draft was closed as stale/conflicted; it was not merged.
-- Do not start gaming research or add source rows until PR #310 passes CI, merges, and Research PC updater is run from production. Update worker without starting; run one controlled TEST gaming task first, then LIVE.
+- Do not start gaming research or add source rows until PR #311 passes CI, merges, and Research PC updater is run from production. Update worker without starting; run one controlled TEST gaming task first, then LIVE.

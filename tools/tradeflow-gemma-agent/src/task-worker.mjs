@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask, is3dPrinterResearchTask } from './agent.mjs';
-import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
+import { normaliseProductResearchTasks, getReviewQueueWriteCounts, is3dPrinterResearchBatch, summariseResearchBatch } from './task-groups.mjs';
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 
@@ -131,6 +131,7 @@ async function processClaim(claim){
  const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
  const outputs=[];
+ const aggregate3dBatch=is3dPrinterResearchBatch(tasks);
  let activeIdentity=null,activeStage='task_started';
  const heartbeat=setInterval(async()=>{
   await rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message));
@@ -179,7 +180,7 @@ async function processClaim(claim){
    const failureLines=routeFailures.slice(0,8).map(item=>'['+item.stage+'] '+(item.source||'unknown source')+' — '+item.message);
    const gemmaFailureLines=(Array.isArray(metrics.gemma_failure_details)?metrics.gemma_failure_details:[]).slice(0,5)
     .map(item=>'[Gemma extraction] '+(item.source_ids||[]).join(', ')+' — '+item.error);
-   await roomPost(identity,'handover','Research task handover',[
+   await roomPost(identity,'handover',aggregate3dBatch?'Research subtask handover':'Research task handover',[
     'Task: '+taskKey,
     'Research category: '+identity.category,
     ...metricLines,
@@ -192,15 +193,49 @@ async function processClaim(claim){
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }}).catch(e=>console.error('[common room handover]',e.message));
    const candidates=(result.candidates||[]).length;
-   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+stagedCount+' staged for ChatGPT review ('+queuedCount+' new, '+enrichedCount+' enriched).',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queuedCount,details:{
+   await safeReport({...identity,status:'idle',current_task:null,event_type:aggregate3dBatch?'subtask_completed':'task_completed',task_key:taskKey,message:(aggregate3dBatch?'Completed subtask for ':'Completed ')+taskKey+': '+candidates+' page captures; '+stagedCount+' staged for ChatGPT review ('+queuedCount+' new, '+enrichedCount+' enriched).',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queuedCount,details:{
     queue_task_id:claim.id,mode:'background-queue',research_type:task.research_type,
     manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug,
     staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }});
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   await roomPost(identity,'status_update',aggregate3dBatch?'Research subtask completed':'Research task completed',(aggregate3dBatch?'Completed subtask for ':'Completed ')+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
   }
   await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
+  if(aggregate3dBatch){
+   const summary=summariseResearchBatch(outputs);
+   const batchIdentity=resolveAgentIdentity(tasks[0]);
+   const metrics=summary.research_metrics;
+   const routes=summary.route_metrics;
+   const summaryLines=[
+    'Parent task: '+claim.task_key,
+    'Completed subtasks: '+summary.subtasks,
+    'Search results: '+metrics.search_results+' (limit '+(metrics.search_result_limit||'n/a')+' per subtask)',
+    'Individual product pages: '+metrics.discovered_product_pages+' discovered; '+metrics.inspected_product_pages+' fetched; '+metrics.fetched_price_pages+' with visible GBP',
+    'Gemma extraction: '+metrics.gemma_calls+' batches; '+metrics.gemma_batch_failures+' failures',
+    'Review captures: '+summary.candidates+' retained; '+summary.staged+' staged ('+summary.queued+' new, '+summary.enriched+' enriched)',
+    'Approved source routes: '+routes.approved_source_route_attempts+' attempted; '+routes.approved_source_routes_found+' with matches; '+routes.approved_source_routes_empty+' empty; '+routes.approved_source_route_errors+' failed',
+    'Page fetch errors: '+routes.product_page_fetch_errors+'; pagination errors: '+routes.pagination_errors+'; collection errors: '+routes.collection_errors,
+    'Review gate: every capture remains unverified for ChatGPT/owner review; no catalogue or shared evidence import is authorised.'
+   ];
+   const failureLines=summary.route_failures.slice(0,12).map(item=>'['+item.stage+'] '+(item.source||'unknown source')+' — '+item.message);
+   const gemmaFailureLines=summary.gemma_failure_details.slice(0,8).map(item=>'[Gemma extraction] '+(item.source_ids||[]).join(', ')+' — '+item.error);
+   await safeReport({...batchIdentity,status:'idle',current_task:null,event_type:'task_completed',task_key:claim.task_key,
+    message:'Completed '+claim.task_key+': '+summary.subtasks+' subtasks; '+summary.candidates+' captures; '+summary.staged+' staged ('+summary.queued+' new, '+summary.enriched+' enriched). Search '+metrics.search_results+', discovered '+metrics.discovered_product_pages+', fetched '+metrics.inspected_product_pages+'.',
+    details:{queue_task_id:claim.id,mode:'background-queue',branch_slug:'3d-printers',subtask_count:summary.subtasks,
+     candidates:summary.candidates,staged:summary.staged,queued:summary.queued,enriched:summary.enriched,
+     research_metrics:metrics,route_metrics:routes,route_failures:summary.route_failures,gemma_failure_details:summary.gemma_failure_details}
+   });
+   await roomPost(batchIdentity,'handover','Research batch handover',[
+    ...summaryLines,
+    ...(failureLines.length?['Route failures:',...failureLines]:['Route failures: none recorded']),
+    ...(gemmaFailureLines.length?['Gemma extraction issues:',...gemmaFailureLines]:['Gemma extraction issues: none recorded'])
+   ].join('\\n'),{task_key:claim.task_key,thread_key:'research',metadata:{
+    queue_task_id:claim.id,branch_slug:'3d-printers',subtask_count:summary.subtasks,
+    candidates:summary.candidates,staged:summary.staged,queued:summary.queued,enriched:summary.enriched,
+    research_metrics:metrics,route_metrics:routes,route_failures:summary.route_failures,gemma_failure_details:summary.gemma_failure_details
+   }}).catch(e=>console.error('[common room batch handover]',e.message));
+  }
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);
  }catch(error){
   await rpc('platform_ai_agent_fail_task',{p_task_id:claim.id,p_worker_id:workerId,p_error:error.message}).catch(e=>console.error('[queue failure report]',e.message));

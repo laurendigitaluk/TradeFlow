@@ -1,4 +1,14 @@
 # CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
+## 8 November 2026 — 3D-printer page extraction rule and LIVE follow-up (PR #303)
+
+- Treat page HTML structure as evidence, not just flattened text. For 3D-printer pages, preserve matching JSON-LD Product/Offer facts before the bounded page-text excerpt so a long page cannot consume the full 10,000-character budget and silently discard structured identity, GBP price, availability and condition facts.
+- Structured GBP offers must be emitted in a parser-recognisable form (`GBP <amount>`). Other currencies must not be re-labelled or converted.
+- This does not make a price authoritative. Where one page exposes several printer models, standard/open-box conditions or bundles, preserve each observation and leave `observed_price` unset unless the source context identifies exactly one current price for the requested product and the research condition lane.
+- LIVE smoke task `owner-3d-printers-extraction-smoke-20261108-1900`: 16 search results, 1 page discovered/fetched, 1 Gemma call, 0 extraction failures, 1 existing review capture enriched, 0 new rows. Gemma took 224,986 ms of 248,309 ms total (about 90.6%). The worker finished idle; no active/queued 3D tasks and no approvals/imports.
+- Production capture length was 9,998 characters and ended mid-text. The source function appends JSON-LD after flattened content before truncating at 10,000, so structured facts can be lost on long pages. The exact source HTML was not retained; the specific response's JSON-LD presence is not confirmed.
+- PR #303 adds a 3D-only structured-data-first ordering and GBP formatting with regression tests. PR #302 has 60/60 CI tests on head `d0e283300e9bea94f828339f7e41bba48fa938ce`, but its new price-observation contract has not been demonstrated by the 19:00 worker run, which still emitted the legacy `price_mentions`/`price_contexts` shape.
+- Do not infer a price, auto-approve evidence, import catalogue data, change source routes, or bypass HTTP 403/404 responses. Keep every capture in the ChatGPT/owner review gate. Do not install/restart/queue until the relevant PR is verified and the owner approves the updater.
+
 
 ## 8 November 2026 — PR #298 merged
 

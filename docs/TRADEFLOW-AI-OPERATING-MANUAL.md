@@ -4677,3 +4677,11 @@ Gemma remains gated. PR #300 is still draft/open and not merged; its CI passed 5
 - Recreated the same narrowly scoped code/test change on a new branch based on the latest production commit `47eb3feac262c8c69e221f16991c8435888f7960`: `fix/gemma-3d-jsonld-gbp-capture-latest-production-20261108`.
 - Opened draft PR #312: https://github.com/laurendigitaluk/TradeFlow/pull/312. It contains only `agent.mjs` and `agent-speed.test.mjs` at this point; documentation updates are being added on this branch. Four regression tests cover long-page structured GBP retention, multiple GBP offers/non-GBP exclusion, non-GBP-only offers, and unchanged non-3D ordering. The long-page test explicitly checks that the old `Price: 169.00 Currency: GBP` format yields zero parsed prices while the corrected `Price: GBP 169.00` format yields one.
 - CI is pending on the new branch. No merge, deployment, worker restart, task enqueue, source-registry change, TEST/LIVE data change, evidence approval/import, or secret/private `.env` change has occurred.
+
+
+
+### PR #312 final CI verification — 8 November 2026, 22:42 UTC
+
+- Final code/test/documentation head `37008a124160afa4ebdd3b91b36da3c7f952e959` passed GitHub Actions run #382: 73 tests passed, 0 failed.
+- PowerShell updater syntax, Node source syntax and Owner Dashboard JavaScript syntax all passed.
+- PR #312 is open, ready for review and mergeable. It is not merged or deployed. CI does not establish Research PC runtime compatibility; owner-authorised TEST replay remains outstanding.

@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { canonicalCaptureSourceUrl } from './capture-identity.mjs';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
 
 const projects = { LIVE: 'gxsrajtqzdjvmceqcpgv', TEST: 'nnsshnfkjcflucjrftzi' };
@@ -1192,7 +1193,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the LIVE review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const writes = [];
   for (const evidence of candidates) {
-    const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0, 32);
+    const captureSourceUrl = canonicalCaptureSourceUrl(evidence.source_url, task);
+    const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, captureSourceUrl].join('|')).digest('hex').slice(0, 32);
     const rawPrice = Number(evidence.observed_price);
     const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 && hasVisibleUkPrice(evidence.source_excerpt || '');
     const row = {
@@ -1202,7 +1204,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
       package_name: task.package_name, evidence_type: ['uk_new','uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
       source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\./, ''),
-      source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
+      source_url: captureSourceUrl, observed_price: usablePrice ? rawPrice : null,
       price_currency: usablePrice ? 'GBP' : null,
       item_condition: evidence.item_condition || evidence.item_condition_text || null,
       sales_channel: evidence.sales_channel || new URL(evidence.source_url).hostname,
@@ -1210,7 +1212,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       source_record_key: captureKey, source_excerpt: evidence.source_excerpt || null,
       research_notes: evidence.notes || 'Raw page capture retained for ChatGPT review.',
       raw_payload: {
-        task, evidence, page_capture: evidence.page_capture || null,
+        task, evidence, original_source_url: evidence.source_url, page_capture: evidence.page_capture || null,
         review_classification: 'unverified_capture',
         handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
       }

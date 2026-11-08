@@ -1,3 +1,7 @@
+## 8 November 2026 — Schema-valid but empty Gemma output addressed
+
+Research PC smoke test on Ollama 0.4.14 with `gemma3:4b` proved schema support and valid JSON parsing, but the model returned empty title and price fields despite being given them. PR #300 now requires non-empty page title, product identity and match observation, and explicitly directs Gemma to copy supplied title and GBP price strings. Tests cover the requirements. CI run #251 passed. The branch is still unmerged. Before any worker restart, update Research PC to latest branch and rerun one isolated realistic JSON extraction test, confirming fields are populated and source ID is preserved.
+
 ## 8 November 2026 — Gemma 3D printer batch recovery
 
 When a two-page extraction batch fails, PR #300 now makes an isolated retry for each page using a shorter excerpt, one-item JSON schema and 1,024-token output cap. This avoids losing both structured observations because one batch response was malformed/truncated. The raw page capture remains the fallback if the isolated retry also fails. Run #244 passed all current CI gates. Do not claim local Ollama compatibility until this is tested on the Research PC; PR remains draft and unmerged.

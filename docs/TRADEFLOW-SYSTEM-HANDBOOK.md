@@ -2,6 +2,15 @@
 
 This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
 
+## 8 November 2026 — Bambu Lab UK collection route correction (PR #288)
+
+- The latest LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` completed 8/8. Its Bambu A1 Standard `uk_new` subtask returned 3 search results but discovered 0 product pages; the Bambu A1 Combo `uk_new` subtask returned 0 search results. The Bambu official source recorded an HTTP 404 on its second route.
+- Production playbook inspection showed the route was `/collections/3d-printers` (plural). The official Bambu Lab UK storefront's own “All 3D Printers” navigation resolves to `https://bambu-lab-uk.myshopify.com/collections/3d-printer` (singular). The collection page and its individual A1 product link are reachable. This is a verified route typo, not a general Bambu host outage.
+- New branch `fix/gemma-bambu-uk-collection-route-20261108` changes only the 3D-printer Bambu playbook route to the singular path. It adds a regression test that requires the singular collection URL, rejects the obsolete plural URL, and keeps the collection classified as discovery-only rather than direct evidence.
+- Scope is limited to category `3d-printers-equipment`, branch `3d-printers`. No LIVE source registry, queue, catalogue, approvals/imports, task queue, TEST data, credentials, private .env or Research PC runtime was changed. No new task was queued.
+- Verification required: focused route test and full Gemma workflow CI. After review/merge, update the Research PC in place using the existing updater, preserving `TRADEFLOW_GEMMA_ENV_FILE`, then confirm the Bambu route produces individual A1 product links before widening research. Do not auto-approve/import captures.
+
+
 ## Product and site architecture
 - Lauren Digital is the parent brand. TradeFlow is the SaaS platform.
 - The public **How It Works** guide is source-managed in how-it-works.html and how-it-works.css. It is a ten-section, text-only native accordion page; its AI Research Centre explanation, customer-paid shipping guidance and TradeFlow Examples link were refreshed on 7 November 2026. The legacy platform_public_pages How It Works draft is retained but does not drive the published page. Request source changes when its wording/process needs updating.

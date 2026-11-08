@@ -4173,11 +4173,11 @@ Gaming evidence reconciliation also standardised Hyperkin Silver and PowerA Fire
 
 The worker previously downloaded up to 100 enabled research-source rows globally, then filtered category/manufacturer/lane afterwards. This caused every specialist agent to read and log unrelated suppliers.
 
-PR #310 (`fix/gemma-category-scoped-source-loading-20261108c`) changes source loading to query only:
+PR #311 (`fix/gemma-category-scoped-source-loading-20261108c`) changes source loading to query only:
 - `category_slugs` array overlap with the task's exact `category_slug`
 - explicitly universal UK sources marked with `*` (currently Amazon UK and eBay UK)
 - enabled rows with `country_code='GB'`
 
 The category is validated and the loader fails closed when it is missing or malformed. Existing manufacturer filtering, 3D-printer new/used lane checks, host validation, and raw-capture hand-off remain in place. Gaming has 12 category-specific UK sources plus 2 universal UK marketplaces (Amazon UK and eBay UK), 14 loadable sources in both LIVE and TEST. Other enabled UK source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 in both, drones 8 in both, laptops 9 in both, metal detectors 8 in both and mobile phones 13 in both. The 3D-printer source registry remains a separate LIVE/TEST parity gap.
 
-The source-selection test is included in both GitHub CI and `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1`, so the Research PC updater runs the same test before and after installation. Do not add new manufacturer source rows or start the next category's worker until PR #310 passes CI, is merged, and the Research PC has been updated from `production`. Run one controlled gaming task in TEST before LIVE.
+The source-selection test is included in both GitHub CI and `tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1`, so the Research PC updater runs the same test before and after installation. Do not add new manufacturer source rows or start the next category's worker until PR #311 passes CI, is merged, and the Research PC has been updated from `production`. Run one controlled gaming task in TEST before LIVE.

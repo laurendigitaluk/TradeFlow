@@ -397,7 +397,7 @@ export function hasVisibleUkPrice(text = '') {
   return false;
 }
 
-export function extractRelevantPageText(html, task = {}) {
+export function extractRelevantPageText(html, task = {}, options = {}) {
   const source = String(html || '');
   const products = [];
   for (const match of source.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
@@ -435,7 +435,9 @@ export function extractRelevantPageText(html, task = {}) {
     .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
     .replace(/&amp;/gi, '&').replace(/&nbsp;|&#160;/gi, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  return [content, ...structured].filter(Boolean).join(' ').slice(0, 10000);
+  const combined = [content, ...structured].filter(Boolean).join(' ');
+  const maxChars = Number.isFinite(options.maxChars) && options.maxChars > 0 ? Math.floor(options.maxChars) : 10000;
+  return combined.slice(0, maxChars);
 }
 
 async function collectionPage(url) {
@@ -464,7 +466,7 @@ async function page(url, task = {}) {
   const html = await r.text();
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
   const title = titleMatch ? stripSearchHtml(titleMatch[1]) : '';
-  const text = extractRelevantPageText(html, task);
+  const text = extractRelevantPageText(html, task, { maxChars: is3dPrinterResearchTask(task) ? 100000 : 10000 });
   return { url: final.toString(), title, text };
 }
 export function ollamaOptions(env = {}) {
@@ -669,10 +671,10 @@ export function fallbackPageCapture(task, source, reason) {
     source_name: host,
     source_url: source.url,
     sales_channel: host,
-    source_excerpt: source.text.slice(0, 10000),
+    source_excerpt: printerCapture ? source.text : source.text.slice(0, 10000),
     page_capture: {
       title, url: source.url, gbp_price_mentions: prices,
-      captured_text: source.text.slice(0, 10000),
+      captured_text: printerCapture ? source.text : source.text.slice(0, 10000),
       deterministic_observations: printerCapture ? {
         product_identity_text: productIdentity,
         package_or_variant_text: packageNotes,
@@ -696,7 +698,7 @@ export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new
   if (existingPayload.review_classification !== 'unverified_capture' || incomingPayload.review_classification !== 'unverified_capture') return null;
   const evidence = incomingPayload.evidence && typeof incomingPayload.evidence === 'object' ? incomingPayload.evidence : {};
   const pageCapture = evidence.page_capture && typeof evidence.page_capture === 'object' ? evidence.page_capture : {};
-  const capturedText = String(pageCapture.captured_text || evidence.source_excerpt || incoming.source_excerpt || '').slice(0, 4000);
+  const capturedText = String(pageCapture.captured_text || evidence.source_excerpt || incoming.source_excerpt || '');
   const observation = {
     task_key: incoming.task_key || incomingPayload.task?.task_key || null,
     source_url: incoming.source_url || null,
@@ -1443,11 +1445,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
             'UNVERIFIED RESEARCH CAPTURE — ChatGPT decides what is relevant and usable.',
             diagnostics.length ? 'Checks to perform: ' + diagnostics.join('; ') : 'Automated field checks passed; still requires ChatGPT verification.'
           ].filter(Boolean).join(' '),
-          source_excerpt: source.text.slice(0, 10000),
+          source_excerpt: is3dPrinterResearchTask(task) ? source.text : source.text.slice(0, 10000),
           page_capture: finding.page_capture || {
             title: source.title, url: source.url,
             gbp_price_mentions: extractVisibleGbpPriceMentions(source.text),
-            captured_text: source.text.slice(0, 10000)
+            captured_text: is3dPrinterResearchTask(task) ? source.text : source.text.slice(0, 10000)
           }
         });
         await trackProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });

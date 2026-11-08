@@ -31,13 +31,16 @@ Finish the first Gemma agent (3D Printers & Equipment) so it returns useful fact
 - First CI attempt exposed three test/helper issues; corrected.
 - GitHub Actions run 42477880080: 50 passed, 0 failed.
 - Source syntax and owner dashboard JavaScript syntax passed.
-- PR #292 is open, not merged. No Research PC update or LIVE queue write performed by this PR work.
+- PR #292 was merged into production with squash commit 65730838d5f32cbf923973d5a32a87f8454a0c07 after explicit owner approval. Post-merge production CI is pending; Research PC update has not yet happened. No Research PC update or LIVE queue write performed by this PR work.
 
 ## Deployment and acceptance
-1. Owner review/merge PR #292.
+1. PR #292 is merged. Confirm post-merge production CI succeeds.
 2. Update existing Research PC installation using the current production updater. Preserve the existing TradeFlow .env, TRADEFLOW_GEMMA_ENV_FILE, Ollama installation and GearCashOut config. Do not paste or change secrets.
 3. Verify the running worker version and fresh heartbeat.
 4. Run a controlled 3D-only batch across several printer models, including both new and used tasks.
 5. Compare pages discovered, fetched, Gemma calls, extraction failures, structured observation fields and fallback captures.
 6. Confirm page captures show exact product title/model, package/Combo options, all GBP price contexts, condition, availability and source URL.
 7. ChatGPT manually reviews each candidate. No automatic catalogue/evidence approval or import.
+
+
+Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.

@@ -483,16 +483,29 @@ export function extractVisibleGbpPriceMentions(text) {
     .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
     .replace(/\u00a0/g, ' ');
   const matches = [];
-  const re = /(£\s*|GBP\s*)((?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d{2})?)/gi;
+  const lastOccurrenceByAmount = new Map();
+  // Some UK storefronts render the same price twice, e.g. "£13.99 £ 13 . 99".
+  // Accept the split decimal, but collapse only an adjacent duplicate rendering.
+  // The same amount elsewhere on the page may belong to a different variant and
+  // must retain its own context for the observation contract.
+  const re = /(£\\s*|GBP\\s*)((?:\\d{1,3}(?:,\\d{3})+|\\d+)(?:\\s*\\.\\s*\\d{2})?)/gi;
   let match;
   while ((match = re.exec(source))) {
     const currency = match[1].trim().toUpperCase() === 'GBP' ? 'GBP ' : '£';
-    const raw = currency + match[2];
-    const amount = Number(match[2].replace(/,/g, ''));
-    if (Number.isFinite(amount) && amount > 0 && !matches.some(item => item.amount === amount)) {
-      matches.push({ display: raw, amount, context: source.slice(Math.max(0, match.index - 100), Math.min(source.length, match.index + match[0].length + 140)) });
-    }
+    const amountText = match[2].replace(/[\\s,]/g, '');
+    const amount = Number(amountText);
+    if (!Number.isFinite(amount) || amount <= 0) continue;
+    const previousIndex = lastOccurrenceByAmount.get(amount);
+    if (previousIndex != null && match.index - previousIndex <= 12) continue;
+    lastOccurrenceByAmount.set(amount, match.index);
+    const displayAmount = match[2].replace(/\\s*\\.\\s*/g, '.').replace(/\\s+/g, '');
+    matches.push({
+      display: currency + displayAmount,
+      amount,
+      context: source.slice(Math.max(0, match.index - 100), Math.min(source.length, match.index + match[0].length + 140))
+    });
   }
+
   return matches;
 }
 

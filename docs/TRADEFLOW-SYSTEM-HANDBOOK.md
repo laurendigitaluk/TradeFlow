@@ -1,3 +1,7 @@
+## 8 November 2026 — Isolated-page recovery after malformed batch output
+
+PR #300 now retries each page individually when a multi-page 3D-printer Gemma batch fails JSON parsing, returns a truncated response, or fails source-ID validation. Each retry uses a shortened 1,600-character selected page excerpt, the strict one-finding schema, and a 1,024-token output budget. Successful page retries are retained as structured findings; only pages whose individual retry also fails use the existing raw-page fallback. Initial batch failure remains recorded for diagnostics. GitHub Actions run #244 passed PowerShell parser, Node syntax, Gemma tests and Owner Dashboard syntax. This remains draft PR code, not merged or installed on the Research PC.
+
 ## 8 November 2026 — Updater now auto-detects the current Gemma installation
 
 To avoid repeated path-entry errors on the Research PC, the PR #300 updater now detects the current directory when it contains `src/agent.mjs`, automatically selects the adjacent `.env` when present, and strips surrounding quotes from manually supplied paths. This matches the Research PC screenshot: PowerShell is already open in the existing Gemma installation directory and that directory visibly contains `.env`. Next owner step should be a single launch command from that directory; no path prompts should appear. This is still an unmerged draft-branch update and must pass the latest CI before use.

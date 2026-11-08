@@ -441,7 +441,7 @@ test('GBP price extraction collapses adjacent split-decimal duplicates without d
   assert.deepEqual(prices.map(item => item.amount), [13.99, 16.99, 52.27]);
   assert.deepEqual(prices.map(item => item.display), ['£13.99', '£16.99', '£52.27']);
 
-  const distinctProducts = extractVisibleGbpPriceMentions('Machine A £299.00. Machine B £299.00.');
+  const distinctProducts = extractVisibleGbpPriceMentions('Machine A £299.00. ' + 'A'.repeat(160) + ' Machine B £299.00.');
   assert.deepEqual(distinctProducts.map(item => item.amount), [299, 299]);
   assert.notEqual(distinctProducts[0].context, distinctProducts[1].context);
 });

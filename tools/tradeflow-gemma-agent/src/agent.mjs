@@ -590,7 +590,7 @@ export function buildExtractionPrompt(task, pages) {
     'IDENTITY AND PACKAGE: Copy the exact page title and identify manufacturer, exact model, standard/machine-only versus Combo, bundle contents, colour/AMS/ACE/CFS options, accessories and model/package mismatches. Do not assume the requested package matches the page.',
     'PRICES: Capture every visible GBP amount and its nearby wording. Capture the machine-only price separately from Combo, and distinguish crossed-out price, discount/saving, bundle, accessory, filament, gift-card and delivery amounts. Do not mistake per-kg filament prices, accessories, gift-card values, shipping or recommendations for the printer price. Never promote a saving or accessory price to the printer price. If association is unclear, say so.',
     'CONDITION, STOCK AND UK: Copy explicit new/used/refurbished/reconditioned/ex-demo/open-box/opened/sealed wording; in-stock/sold-out/backorder/dispatch/delivery wording; UK seller, UK delivery, VAT and location clues. Record missing facts as empty strings and contradictions explicitly.',
-    'OUTPUT CONTRACT: Return strict JSON with one top-level findings array and exactly one compact finding for every supplied source_id. Each finding must include source_id, page_title, product_identity_text, package_or_variant_text, seller_text, price_mentions (all exact GBP strings), price_contexts (short nearby excerpts for relevant prices), item_condition_text, availability_text, location_text, identifiers_text, match_observation, uncertainty_and_conflicts and notes. Use concise factual phrases; do not repeat page text verbatim. Never omit a page or source_id.',
+    'OUTPUT CONTRACT: Return the supplied JSON schema exactly. One compact finding per supplied source_id, no extra keys, no prose or markdown. Keep fields short; price_mentions are exact visible GBP strings and price_contexts are short nearby wording. Never omit or invent a source_id.',
     'Task: ' + JSON.stringify(taskData),
     'Branch rules: ' + JSON.stringify(branchRules),
     'Category rules: ' + JSON.stringify(categoryInstructions),
@@ -739,6 +739,48 @@ export function extractGemmaFindingRows(parsed) {
   return null;
 }
 
+export function buildGemmaFindingSchema(expectedCount = 1) {
+  const boundedString = maxLength => ({ type: 'string', maxLength });
+  return {
+    type: 'object',
+    additionalProperties: false,
+    required: ['findings'],
+    properties: {
+      findings: {
+        type: 'array',
+        minItems: expectedCount,
+        maxItems: expectedCount,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          required: [
+            'source_id', 'page_title', 'product_identity_text', 'package_or_variant_text',
+            'seller_text', 'price_mentions', 'price_contexts', 'item_condition_text',
+            'availability_text', 'location_text', 'identifiers_text', 'match_observation',
+            'uncertainty_and_conflicts', 'notes'
+          ],
+          properties: {
+            source_id: boundedString(32),
+            page_title: boundedString(180),
+            product_identity_text: boundedString(180),
+            package_or_variant_text: boundedString(120),
+            seller_text: boundedString(100),
+            price_mentions: { type: 'array', maxItems: 8, items: boundedString(24) },
+            price_contexts: { type: 'array', maxItems: 5, items: boundedString(140) },
+            item_condition_text: boundedString(100),
+            availability_text: boundedString(100),
+            location_text: boundedString(100),
+            identifiers_text: boundedString(80),
+            match_observation: boundedString(120),
+            uncertainty_and_conflicts: boundedString(180),
+            notes: boundedString(180)
+          }
+        }
+      }
+    }
+  };
+}
+
 let ollamaExtractionQueue = Promise.resolve();
 
 export async function extractBatch(task, pages, env, onProgress) {
@@ -766,7 +808,7 @@ export async function extractBatch(task, pages, env, onProgress) {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model, stream: false, format: 'json', keep_alive: '10m',
+            model, stream: false, format: is3dPrinterResearchTask(task) ? buildGemmaFindingSchema(batch.length) : 'json', keep_alive: '10m',
             options: { ...ollamaOptions(env), num_predict: is3dPrinterResearchTask(task) ? 1536 : 1536 },
             messages: [{ role: 'user', content: prompt }]
           }),
@@ -776,9 +818,21 @@ export async function extractBatch(task, pages, env, onProgress) {
         if (!response.ok) throw new Error('Ollama HTTP ' + response.status + ': ' + raw.slice(0, 300));
         const result = JSON.parse(raw);
         if (!result.message?.content) throw new Error('Ollama returned no content');
+        if (is3dPrinterResearchTask(task) && result.done_reason === 'length') {
+          throw new Error('Gemma response reached the output token limit (eval_count=' + (result.eval_count ?? 'unknown') + ').');
+        }
         const parsed = JSON.parse(result.message.content);
         const extractedRows = extractGemmaFindingRows(parsed);
-        if (extractedRows) batchRows = extractedRows;
+        if (extractedRows) {
+          if (is3dPrinterResearchTask(task)) {
+            const expectedIds = batch.map(item => item.source_id).sort();
+            const actualIds = extractedRows.map(item => item?.source_id).filter(Boolean).sort();
+            if (actualIds.length !== expectedIds.length || actualIds.some((id, index) => id !== expectedIds[index])) {
+              throw new Error('Gemma findings did not contain exactly one row for each requested source_id.');
+            }
+          }
+          batchRows = extractedRows;
+        }
         else {
           const shape = parsed && typeof parsed === 'object' && !Array.isArray(parsed)
             ? Object.keys(parsed).slice(0, 20).join(', ')

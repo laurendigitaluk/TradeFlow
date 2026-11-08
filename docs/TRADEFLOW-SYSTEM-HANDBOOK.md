@@ -2,6 +2,14 @@
 
 This front section supersedes older descriptions below where they conflict. Older dated material is retained as implementation history, not current operating instructions.
 
+## 8 November 2026 — concatenated Combo URL identity correction
+
+- Controlled LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` showed the official Creality UK URL `/products/essential-combok1-max-hyper-pla-2` was captured under the K1 Max Standard task. Its title identified `K1 Max + PLA*2(White+Red)` and the page showed £599.00; this is a bundle, not the standalone Standard Printer.
+- Root cause: URL tokenisation split punctuation but did not restore the missing boundary between `combo` and the following model token in concatenated Shopify slugs (`combok1`). The package detector therefore failed to see the Combo marker even though the title/path contained the model identity.
+- Minimal fix: restore a token boundary after `combo` (and concatenated AMS/ACE/CFS labels) before exact model/package matching. Keep sibling-model rejection and standard-vs-combo enforcement unchanged. Add a regression fixture for the exact Creality URL/title so it is rejected from the K1 Max Standard task; the matching Combo task remains eligible.
+- This is limited to the 3D-printer branch. It changes no source allow-list, task dispatch, queue row, approval/import state, catalogue data, TEST data, credentials or Research PC runtime. Existing updater already includes `agent.mjs` and `source-playbooks.test.mjs`.
+- Validation required: run the Gemma research workflow and full Research PC updater tests, merge only after green CI, then rerun a small K1/K1 Max Standard-vs-Combo acceptance test. Review captured page text and exact package labels; no automatic approval/import.
+
 ## Product and site architecture
 - Lauren Digital is the parent brand. TradeFlow is the SaaS platform.
 - The public **How It Works** guide is source-managed in how-it-works.html and how-it-works.css. It is a ten-section, text-only native accordion page; its AI Research Centre explanation, customer-paid shipping guidance and TradeFlow Examples link were refreshed on 7 November 2026. The legacy platform_public_pages How It Works draft is retained but does not drive the published page. Request source changes when its wording/process needs updating.

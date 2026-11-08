@@ -14,10 +14,29 @@ $RawBase = "https://raw.githubusercontent.com/$Repository/$SourceBranch/tools/tr
 $SourceFiles = @('agent.mjs', 'agent-speed.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
 
 if ([string]::IsNullOrWhiteSpace($InstallPath)) {
-    $InstallPath = Read-Host 'Enter the dedicated TradeFlow Gemma agent folder (the folder containing src)'
+    # When launched from the installed Gemma folder, use it automatically.
+    $CurrentFolder = (Get-Location).Path
+    if (Test-Path -LiteralPath (Join-Path $CurrentFolder 'src/agent.mjs') -PathType Leaf) {
+        $InstallPath = $CurrentFolder
+    } else {
+        $InstallPath = Read-Host 'Enter the dedicated TradeFlow Gemma agent folder (the folder containing src)'
+    }
+}
+# Copy-Path in Windows may include surrounding quotes; remove only those wrappers.
+if (-not [string]::IsNullOrWhiteSpace($InstallPath)) {
+    $InstallPath = $InstallPath.Trim().Trim('"').Trim("'")
 }
 if ([string]::IsNullOrWhiteSpace($EnvFile)) {
-    $EnvFile = Read-Host 'Enter the FULL PATH to the existing private .env file (it will not be changed)'
+    # Prefer the existing private .env beside the installed source; prompt only if absent.
+    $CandidateEnvFile = Join-Path $InstallPath '.env'
+    if (Test-Path -LiteralPath $CandidateEnvFile -PathType Leaf) {
+        $EnvFile = $CandidateEnvFile
+    } else {
+        $EnvFile = Read-Host 'Enter the FULL PATH to the existing private .env file (it will not be changed)'
+    }
+}
+if (-not [string]::IsNullOrWhiteSpace($EnvFile)) {
+    $EnvFile = $EnvFile.Trim().Trim('"').Trim("'")
 }
 if (-not (Test-Path -LiteralPath $InstallPath -PathType Container)) {
     if (-not $NewInstall) { throw "Install folder does not exist. Use -NewInstall for a dedicated new TradeFlow Gemma folder: $InstallPath" }

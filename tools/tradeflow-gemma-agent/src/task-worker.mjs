@@ -206,7 +206,7 @@ async function processClaim(claim){
 }
 
 console.log('[TradeFlow Gemma] background worker started');
-await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Gemma worker connected to Common Room','The Research PC worker is connected to the LIVE AI Agent Common Room and can read owner instructions and post research handovers.',{thread_key:'general'}).catch(e=>console.error('[common room startup]',e.message));
+await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Gemma worker connected to Common Room','The Research PC worker is connected to the '+controlPlane.name+' AI Agent Common Room and can read owner instructions and post research handovers.',{thread_key:'general'}).catch(e=>console.error('[common room startup]',e.message));
 await checkFirstAgentCommonRoom().catch(e=>console.error('[common room first-agent greeting]',e.message));
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
 console.log('[TradeFlow Gemma] control plane: '+controlPlane.name+' only; other environment is isolated.');

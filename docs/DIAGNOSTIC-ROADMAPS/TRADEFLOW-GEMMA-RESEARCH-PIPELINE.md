@@ -1,3 +1,10 @@
+## 8 November 2026 — PR #300 CI and Research PC validation route
+
+- PR #300 head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed GitHub Actions run #219; source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax passed.
+- PR remains draft/open, not merged/deployed.
+- Updater `Update-TradeFlow-Gemma.ps1` in the PR branch now accepts `-SourceBranch` (default `production`) to install a specific branch. It preserves the existing dedicated install folder, backups, Node test gates, TEST/LIVE Supabase URL validation and private .env file. This enables draft-branch local validation without merging.
+- Controlled next step: on Research PC, run updater with `-SourceBranch fix/gemma-3d-printer-json-reliability-20261108`, using the existing install folder and private .env path; do not use `-StartWorker`. Verify tests and Ollama schema acceptance, then report installed commit/worker heartbeat before any research task is queued.
+
 ## 8 November 2026 — LIVE benchmark and structured-output failure point
 
 - LIVE task `owner-3d-printers-speed-benchmark-20261108-1645`: 25m 17s versus 70m 49s baseline (64.3% faster); 11 pages fetched; 7 Gemma calls; 5 JSON extraction failures. Gemma inference totalled about 1,395 seconds of 1,513 seconds aggregate subtask runtime.

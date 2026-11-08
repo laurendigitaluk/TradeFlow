@@ -4684,3 +4684,11 @@ PR #306 contains the fix and passed CI run #352 (73 tests), but its base is stal
 ### Next verification gate
 
 Wait for CI on the fresh current-production branch. If green, keep the PR for review. Research PC TEST installation and replay must be separately authorised and must preserve the existing private `.env`. Do not start LIVE research, enqueue duplicate tasks, change other categories, or approve/import evidence as part of the verification.
+
+
+
+### PR handoff correction — 8 November 2026, 22:38 UTC
+
+- The previous non-mergeable PR #306 was closed as superseded; it was not merged.
+- Its reviewed code and regression tests were ported onto the fresh current-production branch `fix/gemma-3d-jsonld-gbp-capture-current-prod-20261108` and opened as draft PR #310: https://github.com/laurendigitaluk/TradeFlow/pull/310.
+- PR #310 CI has not yet appeared in the commit workflow-run listing. Do not call it tested or mergeable until the current head receives a green CI run. No deployment or Research PC install has occurred.

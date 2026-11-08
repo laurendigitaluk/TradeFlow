@@ -7,7 +7,7 @@
 - The page has multiple model/condition/bundle price options. Gemma returned one structured factual observation without extraction failure, but no single safe price/evidence type was populated. Keep it unverified for ChatGPT.
 ### Repair
 - PR #303 branch `fix/gemma-3d-jsonld-priority-20261108`: for the exact 3D-printer category/branch, place matched Product/Offer facts before flattened text; format GBP amounts as `GBP <amount>` so `extractVisibleGbpPriceMentions()` can recognise them. Other categories retain legacy ordering.
-- Regression tests cover a long page with a matching Product JSON-LD Offer, price parser recognition, offer availability/condition retention, 10,000-character bound and non-3D content-first compatibility.
+- Regression tests cover a long page with a matching Product JSON-LD Offer, price parser recognition, offer availability/condition retention, 10,000-character bound and non-3D content-first compatibility. GitHub Actions run #299 (run ID 42517043616) passed 55/55 tests and syntax checks on head d67416ea9433be5b8abf19a3bf9f8fe9b6db6a75. This verifies the regression fixture and code branch only; Research PC runtime remains unverified.
 ### Runtime and next diagnostic steps
 - Latest task timings: search 669 ms; source probes 10,003 ms; collection discovery 11,098 ms; page fetch 918 ms; Gemma 224,986 ms; queue write 327 ms; total 248,309 ms. Gemma is about 90.6% of this single-page runtime.
 - Source routes: 26 attempts; 11 matches; 9 empty; 6 errors (uni3dverse 404; eBay 403 twice/404; Amazon 404; SecondHand 404). No direct page-fetch errors. Do not bypass access controls.

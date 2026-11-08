@@ -19,7 +19,7 @@ Branch: `fix/gemma-3d-printer-accessory-page-filter-20261108`
 - No source registry, task, queue, price, approval or import changes.
 
 ## Verification
-GitHub CI pending. Not merged, not installed on the Research PC, and not deployed. No LIVE runtime retest was queued. Expected replay effect: exclude one accessory-only page from the five fetched Bambu A1 Combo candidates; this is not yet a measured production result.
+GitHub Actions run 42505871429 (#216) passed 53/53 tests. Not merged, not installed on the Research PC, and not deployed. No LIVE runtime retest was queued. Expected replay effect: exclude one accessory-only page from the five fetched Bambu A1 Combo candidates; this is not yet a measured production result.
 
 ## Related fixes
 PR #296 separately handles Amazon UK ASIN URLs with tracking-path suffixes; do not duplicate its canonicalisation change. PR #300 separately addresses Gemma structured-output reliability. Preserve the private Research PC .env and `TRADEFLOW_GEMMA_ENV_FILE`, TEST/LIVE separation, full raw page retention and owner/ChatGPT review gate.

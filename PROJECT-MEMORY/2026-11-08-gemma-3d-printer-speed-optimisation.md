@@ -79,3 +79,20 @@ Historical capture fixtures are based on retained LIVE pages:
 GitHub Actions run #293 (42516334199) passed on code commit 13feb193c6cd7741c0fc50092b0ffb8189532dfb: 60 tests passed, 0 failed; PowerShell syntax, Gemma source syntax and Owner Dashboard JavaScript syntax passed. PR #302 remains draft and unmerged. production remains the PR base (a0cf801a809e9428f66254ec66fc43ba52a77647); compare reports the draft branch ahead 88, behind 0. No Research PC installation, Ollama runtime test, new task, LIVE/TEST queue mutation, approval or import has occurred. No 3D-printer tasks are currently non-terminal in platform_ai_agent_tasks; the last recorded agent status was idle at 19:01 UTC, so its heartbeat is historical rather than a current liveness claim.
 
 Next gate: inspect the PR preview/source contract, then install the verified draft on the Research PC using the versioned updater without starting the worker. Test local Ollama schema output with one retained page before any controlled review-only task. Keep PR #301 accessory filtering separate and retain all review/import gates.
+
+
+## 8 November 2026 — restore capture-first research architecture
+
+Owner confirmed the intended division: Gemma should collect as much source information as possible in the shortest time; ChatGPT should interpret and decide evidence suitability. Review of the current implementation showed the 3D-printer worker still called extractBatch() and waited for local Ollama structured generation before it could use fallbackPageCapture(). A timeout therefore delayed the exact raw capture that was already available.
+
+Changed the 3D-printer path so it bypasses Ollama/Gemma inference entirely after source discovery and page fetch. It now immediately retains each fetched page through deterministic capture: title, URL, extracted page text, all visible GBP observations and contexts, package/variant snippets, condition snippets, availability snippets and UK/location clues. It records capture_only_started, page_capture_retained and capture_only_completed; the 3D-printer gemma_extraction_ms metric is zero and no Ollama extraction is called. Other research categories retain their existing extraction path.
+
+For 3D-printer captures, observed_price is always null and evidence_type remains null until ChatGPT review. A page containing only one price is not enough to promote that amount to a product price. The raw page and its price context are retained for ChatGPT to determine the correct product/package/condition. All detected price contexts are preserved rather than limiting the context array to the first 12. The queue remains needs_research / unverified_capture; no approval or import is authorised.
+
+Added/updated tests to ensure a single visible printer price is never promoted before review, the page text and price observation remain available, and the prior fallback test now expects a null top-level price.
+
+Important integration boundary: the inspected TradeFlow research worker stages raw captures in platform_catalogue_research_queue for ChatGPT review; no direct OpenAI/ChatGPT API call was found in this worker. ChatGPT analysis is therefore a downstream review/handoff, not an automatic API stage in this code path. Do not describe it as automatically analysed until a separate, explicitly configured analysis integration exists.
+
+PR #302 remains draft and unmerged. The Research PC has the draft installed, but the worker has not been restarted. Do not start the worker until this capture-only change passes CI and the updated launcher/source is installed. No LIVE or TEST queue rows were changed by this code edit; no task was started, approved or imported. Current CI run #312 (42518986367) is pending at the time of this documentation update.
+
+Next gate: complete CI, install the updated capture-only branch on the Research PC without starting the worker, then run one controlled 3D-printer capture-only task. Verify fast page capture, all visible prices/contexts in the LIVE review queue, null top-level price/evidence type, and no Ollama inference or timeout. ChatGPT then reviews the retained page.

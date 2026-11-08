@@ -2,7 +2,7 @@
 ## 8 November 2026 — Structured Product/Offer truncation diagnostic (PR #303)
 
 ### First failure point
-- Latest task `owner-3d-printers-extraction-smoke-20261108-1900` fetched one direct Elegoo Neptune 4 Pro page successfully (16 search results; 1 discovered; 1 fetched; 1 Gemma call; 0 extraction failures).
+- Latest task `owner-3d-printers-extraction-smoke-20261108-1900` fetched one direct Elegoo Neptune 4 Pro page successfully (16 search results; 1 discovered; 1 fetched; 1 Gemma call; 0 extraction failures). Metric note: `eligible_urls` counts direct seed/search/approved-source URLs that pass product-page eligibility; `discovered_product_pages` also includes collection-discovered product links. In this run, `eligible_urls=0` but one page was discovered because the Elegoo pre-owned collection yielded the exact-model product URL. The same URL was also returned through the new FDM collection routes and deduplicated. This was one official product page, not a separate used-market listing.
 - The page capture is 9,998 characters and ends mid-text. Production `extractRelevantPageText(html, task)` parses matching JSON-LD Product records, formats them into `structured`, then returns `[content, ...structured].join(' ').slice(0, 10000)`. The flattened page content is therefore allowed to consume the limit before structured Product/Offer data. The stored capture contains no `Product:`/`Currency:` markers. Original HTML is not retained, so the presence of JSON-LD on this exact response is unknown.
 - The page has multiple model/condition/bundle price options. Gemma returned one structured factual observation without extraction failure, but no single safe price/evidence type was populated. Keep it unverified for ChatGPT.
 ### Repair

@@ -1683,6 +1683,6 @@ The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests wo
 
 **Source routing repair**
 - Current production loader fetches the entire enabled registry globally, then filters category afterwards.
-- PR #310 changes the PostgREST query to category-array overlap plus universal `*` sources, `enabled=true` and `country_code=GB`.
+- PR #311 changes the PostgREST query to category-array overlap plus universal `*` sources, `enabled=true` and `country_code=GB`.
 - Only Amazon UK and eBay UK are explicitly universal; Vinted has no category assignment and US sources are excluded.
 - Do not add new manufacturer source rows until the new loader is installed on the Research PC. Test with one gaming task in TEST, inspect loaded sources and evidence, then use LIVE. Other enabled UK source counts (category-specific plus universal) are 3D printers LIVE 15 / TEST 5, cameras 16 in both, drones 8 in both, laptops 9 in both, metal detectors 8 in both and mobile phones 13 in both; reconcile the 3D-printer registry before the next 3D-printer run.

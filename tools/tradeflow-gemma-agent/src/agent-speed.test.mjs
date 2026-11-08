@@ -57,6 +57,19 @@ test('two-page 3D prompt keeps both pages within the reduced per-page excerpt bu
   assert.ok(prompt.length < 18000, 'two-page prompt should remain compact for the 4k context');
 });
 
+test('3D printer prompt requires one observation per visible GBP price and forbids inferred price association', () => {
+  const prompt = buildExtractionPrompt(printerTask, [{
+    source_id: 'S1',
+    title: 'Elegoo Neptune 4 Pro',
+    url: 'https://example.co.uk/products/neptune-4-pro',
+    text: 'Elegoo Neptune 4 Pro £290.00 Standard Printer. Open-box £164.00. Bundle £409.90.'
+  }]);
+  assert.match(prompt, /one price_observations entry for every visible GBP price/i);
+  assert.match(prompt, /never infer association from proximity alone/i);
+  assert.match(prompt, /ambiguous/i);
+  assert.match(prompt, /requested_product/i);
+});
+
 test('3D printer extraction uses a bounded strict JSON schema for the exact page count', () => {
   const schema = buildGemmaFindingSchema(2);
   assert.equal(schema.type, 'object');
@@ -67,14 +80,21 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.equal(schema.properties.findings.items.properties.page_title.minLength, 1);
   assert.equal(schema.properties.findings.items.properties.product_identity_text.minLength, 1);
   assert.equal(schema.properties.findings.items.properties.match_observation.minLength, 1);
-  assert.ok(schema.properties.findings.items.properties.price_contexts.maxItems <= 5);
-  assert.ok(schema.properties.findings.items.properties.notes.maxLength <= 180);
+  const finding = schema.properties.findings.items;
+  assert.ok(finding.properties.price_observations.maxItems <= 12);
+  const observation = finding.properties.price_observations.items;
+  assert.equal(observation.additionalProperties, false);
+  for (const field of ['price_text','nearby_context','product_or_variant','price_role','association','condition','availability']) {
+    assert.ok(observation.required.includes(field), 'price observation requires ' + field);
+    assert.ok(observation.properties[field]);
+  }
+  assert.ok(finding.properties.notes.maxLength <= 180);
 });
 
 test('single-page recovery schema requests exactly one compact finding', () => {
   const schema = buildGemmaFindingSchema(1);
   assert.equal(schema.properties.findings.minItems, 1);
   assert.equal(schema.properties.findings.maxItems, 1);
-  assert.ok(schema.properties.findings.items.properties.price_contexts.maxItems <= 5);
+  assert.ok(schema.properties.findings.items.properties.price_observations.maxItems <= 12);
   assert.ok(schema.properties.findings.items.properties.uncertainty_and_conflicts.maxLength <= 180);
 });

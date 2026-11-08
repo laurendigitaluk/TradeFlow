@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, extractionBatchSizeForTask } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -52,4 +52,15 @@ test('two-page 3D prompt keeps both pages within the reduced per-page excerpt bu
   assert.match(prompt, /"source_id":"S1"/);
   assert.match(prompt, /"source_id":"S2"/);
   assert.ok(prompt.length < 18000, 'two-page prompt should remain compact for the 4k context');
+});
+
+test('3D printer extraction uses a bounded strict JSON schema for the exact page count', () => {
+  const schema = buildGemmaFindingSchema(2);
+  assert.equal(schema.type, 'object');
+  assert.equal(schema.additionalProperties, false);
+  assert.equal(schema.properties.findings.minItems, 2);
+  assert.equal(schema.properties.findings.maxItems, 2);
+  assert.equal(schema.properties.findings.items.additionalProperties, false);
+  assert.ok(schema.properties.findings.items.properties.price_contexts.maxItems <= 5);
+  assert.ok(schema.properties.findings.items.properties.notes.maxLength <= 180);
 });

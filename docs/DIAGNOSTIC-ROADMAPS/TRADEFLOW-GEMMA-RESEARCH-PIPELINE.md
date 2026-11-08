@@ -1,3 +1,7 @@
+## 8 November 2026 — Extraction failure recovery path
+
+`extractBatch()` now retains the existing two-page fast path. If a 3D-printer batch fails JSON parsing, hits the output limit, or fails exact source-ID validation, it retries each page separately with a compact 1,600-character selected excerpt, strict one-page schema and 1,024-token output cap. Structured successes are retained per page; failed individual retries fall back to deterministic raw capture. The original batch error remains in diagnostics. Run #244 passed CI. Research PC install and local Ollama structured-output compatibility remain unverified; no worker restart or new task authorized.
+
 ## 8 November 2026 — Research PC path handling correction
 
 The PowerShell prompt loop was unnecessary: screenshot shows current working directory is the existing Gemma installation and `.env` is in that same directory. Updater now uses current directory automatically when `src/agent.mjs` exists, defaults private env to adjacent `.env`, and trims surrounding quotes from explicit paths. This removes manual path entry from the normal Research PC flow. Latest CI must validate parser syntax before requesting a single launch command.

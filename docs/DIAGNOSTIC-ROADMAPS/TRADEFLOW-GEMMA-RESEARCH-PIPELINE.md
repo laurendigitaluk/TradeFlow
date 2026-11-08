@@ -1,3 +1,7 @@
+## 8 November 2026 — Research PC path handling correction
+
+The PowerShell prompt loop was unnecessary: screenshot shows current working directory is the existing Gemma installation and `.env` is in that same directory. Updater now uses current directory automatically when `src/agent.mjs` exists, defaults private env to adjacent `.env`, and trims surrounding quotes from explicit paths. This removes manual path entry from the normal Research PC flow. Latest CI must validate parser syntax before requesting a single launch command.
+
 ## 8 November 2026 — Research PC updater parser fault
 
 Failure point: downloaded `Update-TradeFlow-Gemma.ps1` failed PowerShell parsing before prompting for install paths. Root cause in the PR branch was a truncated `SourceBranch` validation statement and duplicated updater body. Repair: rebuild from production updater, add a single `-SourceBranch` parameter (default production), validate the branch string, and add a PowerShell AST parser step to `.github/workflows/gemma-research-tests.yml`. The failed attempt did not install source or modify `.env`. Next gate: CI success on latest PR head, then owner runs corrected updater without `-StartWorker`; verify installed source/tests and Ollama schema acceptance before any worker restart or research task.

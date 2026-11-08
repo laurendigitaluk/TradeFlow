@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -26,7 +26,7 @@ test('3D printer playbook contains category-wide and individual website rules', 
 test('manufacturer-specific playbook builds UK search and collection routes', () => {
   const routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, task);
   assert.ok(routes.some(url => url.includes('/uk/search?q=Creality%20K1')));
-  assert.ok(routes.some(url => url.includes('/uk/collections/3d-printers')));
+  assert.ok(routes.some(url => url.includes('/uk/collections/fdm-3d-printer')));
 });
 
 test('verified 123-3D collections route new and refurbished searches separately', () => {

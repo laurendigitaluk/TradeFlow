@@ -424,9 +424,16 @@ export function extractRelevantPageText(html, task = {}, options = {}) {
       'Product: ' + (product.name || ''),
       'Brand: ' + (product.brand?.name || product.brand || ''),
       'Model: ' + (product.model || ''),
-      ...offers.filter(Boolean).map(offer => 'Price: ' + (offer.price ?? offer.lowPrice ?? '') +
-        ' Currency: ' + (offer.priceCurrency || '') + ' Availability: ' + (offer.availability || '') +
-        ' Condition: ' + (offer.itemCondition || ''))
+      ...offers.filter(Boolean).map(offer => {
+        const currency = String(offer.priceCurrency || '').toUpperCase();
+        const amount = offer.price ?? offer.lowPrice ?? '';
+        // The deterministic GBP parser recognises currency before the amount.
+        // Keep the currency after non-GBP amounts so they are never mislabelled.
+        const visiblePrice = currency === 'GBP' ? 'GBP ' + amount : String(amount);
+        return 'Price: ' + visiblePrice + ' Currency: ' + currency +
+          ' Availability: ' + (offer.availability || '') +
+          ' Condition: ' + (offer.itemCondition || '');
+      })
     ].join(' ');
   });
   let content = source.replace(/<(script|style|noscript|svg)\b[^>]*>[\s\S]*?<\/\1>/gi, ' ');
@@ -436,9 +443,13 @@ export function extractRelevantPageText(html, task = {}, options = {}) {
     .replace(/&pound;|&#163;|&#xA3;/gi, ' GBP ')
     .replace(/&amp;/gi, '&').replace(/&nbsp;|&#160;/gi, ' ')
     .replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  const combined = [content, ...structured].filter(Boolean).join(' ');
+  // For 3D printers, structured Product/Offer facts must survive long page text.
+  // Keep legacy content-first ordering for every other category.
+  const orderedContent = is3dPrinterResearchTask(task)
+    ? [...structured, content]
+    : [content, ...structured];
   const maxChars = Number.isFinite(options.maxChars) && options.maxChars > 0 ? Math.floor(options.maxChars) : 10000;
-  return combined.slice(0, maxChars);
+  return orderedContent.filter(Boolean).join(' ').slice(0, maxChars);
 }
 
 async function collectionPage(url) {

@@ -1,3 +1,7 @@
+## 8 November 2026 — Research PC updater parser fault
+
+Failure point: downloaded `Update-TradeFlow-Gemma.ps1` failed PowerShell parsing before prompting for install paths. Root cause in the PR branch was a truncated `SourceBranch` validation statement and duplicated updater body. Repair: rebuild from production updater, add a single `-SourceBranch` parameter (default production), validate the branch string, and add a PowerShell AST parser step to `.github/workflows/gemma-research-tests.yml`. The failed attempt did not install source or modify `.env`. Next gate: CI success on latest PR head, then owner runs corrected updater without `-StartWorker`; verify installed source/tests and Ollama schema acceptance before any worker restart or research task.
+
 ## 8 November 2026 — PR #300 CI and Research PC validation route
 
 - PR #300 head `f8fe6f78ebf77c971526d650293a7f0d22951207` passed GitHub Actions run #219; source syntax, Gemma task/playbook tests and Owner Dashboard JavaScript syntax passed.

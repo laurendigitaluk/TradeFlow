@@ -435,6 +435,34 @@ test('GBP price extraction recognises HTML pound entities after page text normal
   assert.match(prices[0].context, /current price/);
 });
 
+test('GBP price extraction collapses adjacent split-decimal duplicates without dropping separate price contexts', () => {
+  const amazonCapture = 'Printer £13.99 £ 13 . 99; accessory £16.99 £ 16 . 99; extruder £52.27 £ 52 . 27';
+  const prices = extractVisibleGbpPriceMentions(amazonCapture);
+  assert.deepEqual(prices.map(item => item.amount), [13.99, 16.99, 52.27]);
+  assert.deepEqual(prices.map(item => item.display), ['£13.99', '£16.99', '£52.27']);
+
+  const distinctProducts = extractVisibleGbpPriceMentions('Machine A £299.00. Machine B £299.00.');
+  assert.deepEqual(distinctProducts.map(item => item.amount), [299, 299]);
+  assert.notEqual(distinctProducts[0].context, distinctProducts[1].context);
+});
+
+test('historical Anycubic Kobra S1 Max capture retains standard, crossed-out, saving and combo prices independently', () => {
+  const capture = 'Anycubic Kobra S1 Max Regular price £549.00 Sale price £549.00 Regular price £849.00 Save £300.00 Kobra S1 Max £549.00 Kobra S1 Max Combo (4 Colors) £749.00 Kobra S1 Max Combo + ACE 2 Pro (8 Colors) £935.00 Kobra S1 Max Combo + ACE 2 Pro (16 Colors) £1,307.00';
+  const prices = extractVisibleGbpPriceMentions(capture);
+  assert.deepEqual(prices.map(item => item.amount), [549, 549, 849, 300, 549, 749, 935, 1307]);
+  assert.match(prices[5].context, /Combo \\(4 Colors\\)/);
+  assert.match(prices[6].context, /8 Colors/);
+  assert.match(prices[7].context, /16 Colors/);
+});
+
+test('historical Amazon A1 Combo capture parses a split-decimal printer price once and keeps protection-plan prices separate', () => {
+  const capture = '2-year product care £18.49; protection cover from £300 to £349.99; 3-year product care £25.49; Buy New £345.00 £ 345 . 00 FREE delivery';
+  const prices = extractVisibleGbpPriceMentions(capture);
+  assert.deepEqual(prices.map(item => item.amount), [18.49, 300, 349.99, 25.49, 345]);
+  assert.equal(prices.at(-1).display, '£345.00');
+  assert.match(prices.at(-1).context, /Buy New/);
+});
+
 test('eBay bot challenge URLs are identified and never treated as product pages', () => {
   const challenge = 'https://www.ebay.co.uk/splashui/challenge?ap=1&ru=https%3A%2F%2Fwww.ebay.co.uk%2Fitm%2F1234567890';
   assert.equal(isChallengePage(challenge), true);

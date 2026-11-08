@@ -80,3 +80,17 @@ PR #278: https://github.com/laurendigitaluk/TradeFlow/pull/278. Gemma Research T
 ## 8 November 2026 — updater compatibility with current production worker
 
 The production worker now imports `src/agent-identity.mjs` and has a dedicated `src/agent-identity.test.mjs` regression suite. The safe updater downloads, backs up and installs both files and runs the identity tests before and after installation. Use the current production updater after the reviewed search-matching changes are merged. It continues to preserve the existing private TradeFlow `.env` and `TRADEFLOW_GEMMA_ENV_FILE` configuration.
+
+
+## 8 November 2026 — 3D Printer deep-page extraction repair (PR #292)
+
+LIVE review found 44 3D-printer capture rows: 1 with a top-level price and 43 without structured evidence fields. Failures included 21 unrecognised Gemma JSON envelopes, 14 Ollama timeouts and 2 malformed/truncated JSON responses. The production prompt supplied only the first 2,200 characters of each fetched page even though the complete page was stored.
+
+PR #292 changes only the first 3D-printer agent:
+- one page per Ollama extraction call, returning one compact JSON observation object;
+- a bounded deep-page excerpt built from price contexts, model/package wording, condition, availability and location clues across the fetched page;
+- structured deterministic observations retained when Gemma times out or returns malformed output;
+- all multiple package prices retained with context, without guessing the price for the requested package;
+- all results remain unverified for ChatGPT review; no automatic catalogue import.
+
+Other category agents retain their existing extraction settings. CI run 42477880080 passed 49/49 tests. PR #292 is open and not deployed. Do not update the Research PC until the PR is reviewed and merged. After merge, use the existing updater in place and preserve the private TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE.

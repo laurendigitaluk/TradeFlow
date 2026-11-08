@@ -66,6 +66,8 @@ test('3D printer prompt requires one observation per visible GBP price and forbi
   }]);
   assert.match(prompt, /one price_observations entry for every visible GBP price/i);
   assert.match(prompt, /never infer association from proximity alone/i);
+  assert.match(prompt, /copy condition from the same price\/variant context/i);
+  assert.match(prompt, /only label a price as requested_product\/current when its own condition matches/i);
   assert.match(prompt, /ambiguous/i);
   assert.match(prompt, /requested_product/i);
 });

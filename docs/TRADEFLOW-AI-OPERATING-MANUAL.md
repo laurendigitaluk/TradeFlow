@@ -13,7 +13,7 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 5. **Platform Owner/approved import workflow** decides whether validated evidence is accepted into the master catalogue. Neither a message nor a Gemma candidate automatically approves or imports data.
 
 ## 3D Printer research lanes and observability — PR #278 merged to production
-- Within the 3D Printers branch, 123-3D UK is configured research_scope=all; the lane-specific routes keep the new-printer and refurbished-printer collections separate.
+- Within the 3D Printers branch, a uk_new task must search only its approved UK new-retailer and manufacturer sources. A uk_used task must search only its approved UK marketplace and used/refurbished-dealer sources. uk_both may use both; a source explicitly configured with research_scope=all is also available to both lanes. Other catalogue categories retain their existing source-selection behaviour. Category, UK country and manufacturer-specific restrictions still apply. 123-3D UK is configured research_scope=all; its lane-specific routes separate the new-printer and refurbished-printer collections.
 - The 3D Printers branch retains up to 30 search results per task by default (previous default 18; hard maximum 30). GEMMA_3D_PRINTER_SEARCH_RESULTS_PER_TASK can set a lower per-task limit. Other categories and branches are unchanged.
 - Price extraction must handle visible £ values and GBP values produced when HTML pound entities are normalised. Keep all visible price mentions and context; do not choose the correct bundle price automatically.
 - Anti-bot challenge/captcha pages are blocked discovery results, not product pages. Do not bypass access controls.

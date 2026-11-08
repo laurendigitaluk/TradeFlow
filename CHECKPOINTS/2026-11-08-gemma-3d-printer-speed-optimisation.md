@@ -202,3 +202,42 @@ Automated CI and the next single controlled TEST run are still required. Do not 
 - Merge commit: `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`.
 - The Research PC still needs the production-branch updater applied before runtime verification. The next controlled TEST task must confirm that the Creality collection API fallback discovers the individual Ender-3 V3 KE page, captures its full page, and stages an unverified review record. The current earlier test task is completed with zero captures and must not be counted as success.
 - No LIVE research task, database write, catalogue import or production worker restart was performed as part of this change.
+
+
+## 8 November 2026 — LIVE 3D-printer capture follow-up and structured GBP offer fix (PR #306)
+
+Scope remains category `3d-printers-equipment`, branch `3d-printers` only.
+
+### Current LIVE state
+
+The latest completed LIVE task remains `owner-3d-printers-capture-only-smoke-20261108-2020` (Anycubic Kobra S1 Max, Standard, UK new+used lane). It completed at 20:18:57 UTC with 10 search results, 1 individual product page discovered, 1 fetched, 0 Ollama/Gemma calls, 1 existing review row enriched, 0 new rows, and 20.796 seconds total runtime. Approved-source routing: 27 attempts, 10 matched, 11 empty, 6 failed; 4 collection pagination pages; 0 direct product-page fetch errors. Failed routes: Uni3Dverse 404; eBay 403 twice and 404 once; Amazon UK 404; SecondHand.org.uk 404. The 3D category status row is idle, with no current task, 80 tasks completed, 118 candidates and 65 review records; last heartbeat 20:18:57 UTC. No newer task or worker heartbeat is present in the current LIVE database snapshot. Treat the Research PC connection as unconfirmed while idle.
+
+The latest Anycubic queue row remains `needs_research`, with no top-level observed_price or evidence_type. Its source_excerpt is 9,998 characters and ends with structured offers rendered as `Price: 549 Currency: GBP`, `Price: 588 Currency: GBP`, and `Price: 593 Currency: GBP`. The deterministic parser recognises `£549` or `GBP 549`, not that structured rendering. The offers are therefore present in the retained capture but absent from deterministic GBP mentions. This run predates PR #302's 100,000-character capture path and cannot verify that merged change.
+
+Review queue: 65 records, all `needs_research`; one record has `uk_new` evidence_type and an observed price; 64 records have null evidence_type, two of which have an observed price. Overall 3 records have a top-level observed price; 0 approved and 0 imported. No new used-market listing was captured by the latest run.
+
+### Production changes since previous checkpoint
+
+PR #305 merged to production at merge commit `5b967ee7bba50ac5319a097d2d3555cb6149aaf8`; its final CI run #344 passed 69 tests. It enables the verified Shopify collection JSON fallback for Creality UK and replaces the obsolete collection route with the verified FDM and Ender-3 V3 Series routes. It fixes dynamic Creality product-page discovery, but has not yet been verified by a post-merge Research PC TEST run.
+
+PR #304 remains non-mergeable after production advanced. Its focused code/test change has been ported onto a fresh branch based on current production: `fix/gemma-3d-jsonld-gbp-capture-v2-20261108`, PR #306.
+
+### PR #306 — pending CI and review
+
+Production `extractRelevantPageText()` currently appends matching JSON-LD Product/Offer facts after flattened page text, then truncates the combined content. On long pages, structured offers can be cut off. It also renders GBP structured offers as `Price: 549 Currency: GBP`, which the deterministic GBP parser does not recognise.
+
+PR #306 changes only the 3D-printer branch:
+- Render structured GBP offers as `GBP <amount>` so the existing parser can recognise them.
+- Place matching Product/Offer facts before long flattened page text, within the existing capture limit.
+- Keep non-GBP prices labelled with their original currency, so they are not counted as GBP.
+- Preserve content-first ordering for all other categories.
+- Add four regression tests: long-page structured GBP retention, multiple GBP offers with non-GBP exclusion, non-GBP-only exclusion, and non-3D compatibility.
+
+PR #306 is draft/open; CI is pending. No Research PC install, worker restart, research task, LIVE/TEST database change, source registry mutation, evidence approval/import, credential or private `.env` change has been made. Do not merge or deploy until CI and the post-install TEST replay are verified and the owner explicitly approves.
+
+### Diagnostic order for the next check
+
+1. Confirm the worker process identity, installed branch/commit and explicit environment without exposing or overwriting private configuration.
+2. Verify PR #305's Creality collection API fallback on TEST using the already queued bounded Creality Ender-3 V3 KE task; do not enqueue a duplicate.
+3. Verify PR #306's structured GBP offer ordering/parser on TEST using the retained Anycubic/Neptune fixtures or a captured page. Check that all offers and their contexts survive the capture limit and that USD remains excluded from GBP.
+4. Only after those checks, consider one owner-authorised LIVE replay. Keep all captures in the ChatGPT review queue. Never auto-promote a price, approve evidence or import catalogue evidence.

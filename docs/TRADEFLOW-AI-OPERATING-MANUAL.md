@@ -2,6 +2,15 @@
 
 This section is authoritative over older descriptions below.
 
+
+## 8 November 2026 — post-update Gemma acceptance and K1 Max Combo regression correction
+
+- The latest 3D-only LIVE task completed eight subtasks: 85 search results, 15 individual pages discovered, 6 fetched/captured, 4 Gemma extraction calls, 2 extraction failures, 4 new unverified review rows and 2 existing rows enriched. No evidence was approved or imported.
+- Bambu Lab A1 short-model disambiguation rejected all 9 Audi A1 car URLs before product-page fetching. The used A1 Standard pass found one candidate but eBay returned HTTP 403; do not bypass access controls.
+- The exact Creality K1 Max URL `/products/essential-combok1-max-hyper-pla-2` was captured as K1 Max Standard, title `K1 Max + PLA*2(White+Red)`, visible £599.00. PR #287 fixes the concatenated `combok1` token boundary. Its regression test now exercises K1 Max Standard rejection and matching K1 Max Combo acceptance on the exact same URL/title; the earlier base-K1 assertion was insufficient because sibling-model filtering could reject it first.
+- Worker is idle with no active/pending 3D task. Last heartbeat 00:47 UTC is stale by about 65 minutes; idle Supabase status does not prove the PC process is currently online. Preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE; verify the local worker before another task.
+- The LIVE review queue has 44 3D-branch rows, 2 enrichment histories, 1 reviewer marker, 0 approved and 0 imported. Captures remain unverified until ChatGPT/owner review.
+
 ## 8 November 2026 — concatenated Combo URL identity correction
 
 - Controlled LIVE acceptance task `owner-3d-printers-exact-identity-acceptance-20261108-0032` showed the official Creality UK URL `/products/essential-combok1-max-hyper-pla-2` was captured under the K1 Max Standard task. Its title identified `K1 Max + PLA*2(White+Red)` and the page showed £599.00; this is a bundle, not the standalone Standard Printer.

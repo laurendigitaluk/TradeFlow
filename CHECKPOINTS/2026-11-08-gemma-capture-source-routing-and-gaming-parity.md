@@ -2,7 +2,7 @@
 
 Date: 8 November 2026 (UTC)
 Branch: fix/gemma-3d-price-capture-and-category-source-routing-20261108
-PR: #312
+PR: #313
 Scope: 3D-printer structured GBP page capture + category-scoped approved-source loading.
 
 ## Combined code changes
@@ -19,7 +19,7 @@ Scope: 3D-printer structured GBP page capture + category-scoped approved-source 
 - PR #310 was the original 3D-printer structured GBP capture fix.
 - PR #311 was the original category-source filter.
 - Both modified agent.mjs and conflicted. PR #311 was closed as superseded; PR #310 was not merged because its base had become stale.
-- PR #312 is the clean combined branch from current production. Do not merge either stale PR separately.
+- PR #313 is the clean combined branch from current production. Do not merge either stale PR separately.
 
 ## Gaming catalogue parity already completed
 
@@ -48,4 +48,4 @@ Only Amazon UK and eBay UK are explicitly universal. Vinted has no category assi
 
 ## Deployment gate
 
-PR #312 must pass the combined CI workflow and merge. Then run Update-TradeFlow-Gemma.ps1 on the Research PC from production without -StartWorker. Verify its syntax and both test suites. Start one controlled gaming task in TEST, inspect source list/raw capture/evidence, then queue LIVE. No worker restart/deployment has occurred yet.
+PR #313 must pass the combined CI workflow and merge. Then run Update-TradeFlow-Gemma.ps1 on the Research PC from production without -StartWorker. Verify its syntax and both test suites. Start one controlled gaming task in TEST, inspect source list/raw capture/evidence, then queue LIVE. No worker restart/deployment has occurred yet.

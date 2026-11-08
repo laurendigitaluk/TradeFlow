@@ -4,7 +4,7 @@ Date: 8 November 2026 (UTC)
 Projects: TradeFlow LIVE gxsrajtqzdjvmceqcpgv and TEST nnsshnfkjcflucjrftzi.
 Research category: gaming-consoles-accessories.
 Code branch: fix/gemma-category-scoped-source-loading-20261108c.
-Planned PR: #310 (category-scoped source loading).
+Planned PR: #311 (category-scoped source loading).
 
 ## Final LIVE / TEST parity
 
@@ -49,10 +49,10 @@ Candidate official UK sources identified but not yet inserted: Atari UK, PowerA 
 
 Current production worker loads up to 100 enabled source rows globally, then filters by category/manufacturer/lane. This creates irrelevant supplier downloads and skip logs.
 
-PR #310 branch changes loadApprovedResearchSources to use PostgREST array-overlap on category_slugs for the task category plus explicit universal * sources, restricted to enabled GB sources. Only Amazon UK and eBay UK currently use *; Vinted has no category assignment and US sources are excluded. Missing/malformed category fails closed.
+PR #311 branch changes loadApprovedResearchSources to use PostgREST array-overlap on category_slugs for the task category plus explicit universal * sources, restricted to enabled GB sources. Only Amazon UK and eBay UK currently use *; Vinted has no category assignment and US sources are excluded. Missing/malformed category fails closed.
 
 Tests are added in agent.source-selection.test.mjs, included in .github/workflows/gemma-research-tests.yml and Update-TradeFlow-Gemma.ps1.
 
 ## Research PC deployment gate
 
-No worker was restarted or deployed during this reconciliation. PR #310 must pass CI and merge first. Then run the repository's updater on the Research PC from production without -StartWorker, confirm the updater's syntax and tests pass, and start one controlled gaming task in TEST. Inspect source logs and raw captures before queueing LIVE research. Do not add the candidate manufacturer sources until the updated worker is installed.
+No worker was restarted or deployed during this reconciliation. PR #311 must pass CI and merge first. Then run the repository's updater on the Research PC from production without -StartWorker, confirm the updater's syntax and tests pass, and start one controlled gaming task in TEST. Inspect source logs and raw captures before queueing LIVE research. Do not add the candidate manufacturer sources until the updated worker is installed.

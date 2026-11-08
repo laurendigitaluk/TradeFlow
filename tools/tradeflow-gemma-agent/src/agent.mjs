@@ -266,7 +266,7 @@ export function matchesTaskModel(title, url, task = {}) {
     }
   }
 
-  const accessoryPattern = /\b(accessories|accessory|upgrade|upgrades|spare|spares|replacement|hotend|extruder|build plate|nozzle|filament|resin|enclosure|feeder|dryer|maintenance kit|upgrade kit)\b/;
+  const accessoryPattern = /\b(accessories|accessory|upgrade|upgrades|spare|spares|replacement|hotend|extruder|build plate|nozzle|filament|resin|enclosure|feeder|dryer|maintenance kit|upgrade kit|screw set|screw kit|clamp|stiffener)\b/;
   if (segments.some(segment => accessoryPattern.test(segment))) return false;
 
   const comboPattern = /\b(combo|ams|ace|cfs|multi ?colou?r|[468] ?colou?r)\b/;

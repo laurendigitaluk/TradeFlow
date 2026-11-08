@@ -1,6 +1,7 @@
 # Project Memory — Gemma 3D Printer Extraction Performance
 ## 8 November 2026 — LIVE follow-up and structured Product/Offer truncation
 
+- Metric note: `eligible_urls` counts direct seed/search/approved-source URLs that pass product-page eligibility; `discovered_product_pages` also includes collection-discovered product links. In this run, `eligible_urls=0` but one page was discovered because the Elegoo pre-owned collection yielded the exact-model product URL. The same URL was also returned through the new FDM collection routes and deduplicated. This was one official product page, not a separate used-market listing.
 - Latest task `owner-3d-printers-extraction-smoke-20261108-1900` completed one Elegoo Neptune 4 Pro subtask: 16 search results, 1 product page discovered/fetched, 1 Gemma call, 0 extraction failures, 1 existing review record enriched and 0 new rows. Worker `DESKTOP-LVASEUB-84452`; completed 19:01:33 UTC.
 - Gemma took 224,986 ms of 248,309 ms total (about 90.6%). Route probing: 26 attempts, 11 found, 9 empty, 6 failed; failures were uni3dverse 404, eBay 403 twice/404, Amazon 404 and SecondHand 404.
 - The stored page capture is 9,998 characters and ends mid-text. Production `extractRelevantPageText()` appends matched JSON-LD Product/Offer text after flattened page text before truncating to 10,000 characters. Structured offers can therefore be lost on long pages. The original HTML was not retained; whether the exact response contained matching JSON-LD is unconfirmed.

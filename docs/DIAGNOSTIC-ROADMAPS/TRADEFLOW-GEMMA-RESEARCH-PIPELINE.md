@@ -324,3 +324,31 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - Added ELEGOO lane-specific collection routing and tests for new, used and combined tasks, collection discovery-only classification, and direct Neptune 4 Pro product-page eligibility.
 - Focused Node.js checks for the eight route/host assertions passed: 8 passed, 0 failed. The last available GitHub Actions run for PR #281 (42422365717) passed 35/35 before the ELEGOO additions; a new CI run covering these additions has not yet been observed. PR remains open and unmerged.
 - LIVE ELEGOO source scope remains `new_uk`; the used collection is recorded but intentionally not enabled for used-lane research until after reviewed/deployed route code.
+
+## 7 November 2026 — post-PR #281 LIVE review and schema-safe follow-up
+
+### Current release and source routing
+- Production head at the start of the follow-up: bae3c4145bc0fd78de9ac803e81cd9077ba0c930. PR #278 and #281 are merged. Production source playbooks include dedicated 3DFLO and iDig WordPress printer-category routes, 123-3D new/refurbished collections, and ELEGOO FDM/pre-owned collections.
+- LIVE source registry: 3DFLO and iDig are new_uk; 123-3D is all; ELEGOO remains new_uk. The ELEGOO used collection is present in code but not eligible while the source scope is new_uk. Do not widen it before the Research PC has the reviewed route-aware worker.
+
+### Latest genuine 3D research and loss point
+- No active/pending 3D printer task exists. Latest genuine task owner-3d-printers-controlled-rerun-20261107-2225 completed 8/8 at 22:54:46 UTC: 31 search results, 13 product pages discovered, 8 fetched, 5 Gemma calls, 2 extraction failures, 8 captures and 8 duplicate skips; 0 new review rows.
+- Previous run owner-3d-printers-new-used-capture-20261107-2016 completed 8/8: 123 search results, 83 pages discovered, 51 fetched, 27 Gemma calls, 20 extraction failures, 51 captures, 15 duplicate skips and 36 unique rows staged.
+- Latest source errors include eBay HTTP 403 on used item pages, 404s on Amazon and old retailer routes, and 3DFLO timeouts. The new route definitions were merged after the controlled task had loaded its source rows; the Research PC has not yet been updated, so these routes remain unverified on the local runtime.
+- LIVE queue: 40 rows (30 uk_new, 6 uk_used, 4 uk_both); 3 top-level prices, 1 evidence type, 1 reviewer marker, 0 approved, 0 imported, 0 enriched. The first confirmed post-extraction loss remains duplicate handling: five structured Anycubic observations and three other captures were duplicate-skipped.
+
+### LIVE schema correction to the enrichment proposal
+- Actual queue review columns are reviewed_by, reviewed_at, approved_at and imported_at. There are no approved_by or imported_by columns. The original PR #282 SELECT and PATCH filters referenced both nonexistent columns and would fail against LIVE PostgREST.
+- PR #284 replaces the stale enrichment proposal on the current production base. It uses only verified columns; exact category/branch/product/package/source identity; status needs_research; raw_payload.review_classification=unverified_capture; null actual review markers; and updated_at optimistic concurrency.
+- Only raw_payload.enrichment_history, research_notes and updated_at are patched. Top-level observed_price, evidence_type, condition, availability, status, reviewer notes, approval/import fields and catalogue records remain unchanged. Enriched records count as staged for ChatGPT review; evidence_queued still counts only new unique rows.
+- Regression tests cover append-only enrichment, reviewer/approval/import safeguards, exact identity mismatch, repeated history, actual LIVE schema columns and new/enriched staged counts.
+
+### Telemetry identity and heartbeat interpretation
+- Sigma lens task owner-sigma-105-dg-dn-macro-art-new-used-20261107-2332 carried category_slug=lenses and branch_slug=photography-lenses but supplied agent_key=3d-printers-equipment. The previous worker trusted the supplied key and attributed two lens subtasks to the 3D status counter (49 to 51). PR #284 resolves only this mismatch to the explicit category.
+- The 3D status row is idle with current_task null and last_error null. Its 23:31:38 UTC heartbeat was refreshed by the misattributed lens task. The worker emits status heartbeat during active claims, not idle polling; the stale idle timestamp cannot establish whether the Research PC process is online.
+- PR #284 includes five identity tests and adds that test file to the explicit GitHub Actions workflow.
+
+### Safety and next action
+- No queue/source/catalogue data, approval/import state, task queue, TEST data, secrets, local .env, Research PC installation or runtime was changed. No duplicate task was queued.
+- PR #284 is open and unmerged. After CI/review and explicit owner approval, install the reviewed worker in place, preserve the private .env and TRADEFLOW_GEMMA_ENV_FILE, verify the PC process/Ollama, then run one small 3D-only acceptance batch. Do not start another task before that acceptance step.
+- PR #279 was also closed as redundant after verifying that its short-model-ID guard and Audi A1/Bambu A1 regression test are already present in the current production branch.

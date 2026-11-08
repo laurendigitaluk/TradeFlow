@@ -3853,3 +3853,12 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - Added ELEGOO lane-specific collection routing and tests for new, used and combined tasks, collection discovery-only classification, and direct Neptune 4 Pro product-page eligibility.
 - Focused Node.js checks for the eight route/host assertions passed: 8 passed, 0 failed. The last available GitHub Actions run for PR #281 (42422365717) passed 35/35 before the ELEGOO additions; a new CI run covering these additions has not yet been observed. PR remains open and unmerged.
 - LIVE ELEGOO source scope remains `new_uk`; the used collection is recorded but intentionally not enabled for used-lane research until after reviewed/deployed route code.
+
+## 7 November 2026 — Gemma post-route-merge review and schema correction
+
+- Production release state: PR #278 merged as fece19063a4101b449fa3cc120a652c9acd66d15; PR #281 merged as bae3c4145bc0fd78de9ac803e81cd9077ba0c930. The verified 3DFLO, iDig3DPrinting, 123-3D and ELEGOO UK route definitions are now in production source. The Research PC runtime still requires a reviewed in-place update and acceptance test.
+- LIVE review queue schema has reviewed_by, reviewed_at, approved_at and imported_at; it has no approved_by or imported_by. The original PR #282 implementation referenced those nonexistent columns and must not be merged unchanged.
+- PR #284 proposes 3D-branch-only, exact-identity, append-only enrichment of unreviewed needs_research raw captures. It writes only raw_payload.enrichment_history, research_notes and updated_at; preserves top-level price/evidence/status/reviewer fields; repeats the actual review-marker checks in the PATCH filter; and uses optimistic concurrency.
+- PR #284 also corrects the observed telemetry identity mismatch where a Sigma lens task carried the 3D Printers agent key. The explicit non-3D category wins only for that mismatched 3D key; correctly assigned 3D and other agent identities remain unchanged.
+- No LIVE data, approvals/imports, task queue, TEST data, secrets, local .env, Research PC installation or runtime was changed. PR #284 is open for CI/review only.
+- PR #279 was also closed as redundant after verifying that its short-model-ID guard and Audi A1/Bambu A1 regression test are already present in the current production branch.

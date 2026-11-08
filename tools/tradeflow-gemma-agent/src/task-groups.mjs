@@ -23,3 +23,11 @@ export function normaliseProductResearchTasks(tasks) {
     return true;
   });
 }
+
+
+export function getReviewQueueWriteCounts(writes) {
+  const rows = Array.isArray(writes) ? writes : [];
+  const queued = rows.filter(item => item?.status === 'capture-queued-for-chatgpt-review').length;
+  const enriched = rows.filter(item => item?.status === 'capture-enriched-for-chatgpt-review').length;
+  return { queued, enriched, staged: queued + enriched };
+}

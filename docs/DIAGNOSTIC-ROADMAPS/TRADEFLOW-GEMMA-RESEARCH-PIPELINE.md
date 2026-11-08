@@ -1,4 +1,20 @@
 # TradeFlow Gemma Research Pipeline — Diagnostic Roadmap
+## 8 November 2026 — Structured Product/Offer truncation diagnostic (PR #303)
+
+### First failure point
+- Latest task `owner-3d-printers-extraction-smoke-20261108-1900` fetched one direct Elegoo Neptune 4 Pro page successfully (16 search results; 1 discovered; 1 fetched; 1 Gemma call; 0 extraction failures).
+- The page capture is 9,998 characters and ends mid-text. Production `extractRelevantPageText(html, task)` parses matching JSON-LD Product records, formats them into `structured`, then returns `[content, ...structured].join(' ').slice(0, 10000)`. The flattened page content is therefore allowed to consume the limit before structured Product/Offer data. The stored capture contains no `Product:`/`Currency:` markers. Original HTML is not retained, so the presence of JSON-LD on this exact response is unknown.
+- The page has multiple model/condition/bundle price options. Gemma returned one structured factual observation without extraction failure, but no single safe price/evidence type was populated. Keep it unverified for ChatGPT.
+### Repair
+- PR #303 branch `fix/gemma-3d-jsonld-priority-20261108`: for the exact 3D-printer category/branch, place matched Product/Offer facts before flattened text; format GBP amounts as `GBP <amount>` so `extractVisibleGbpPriceMentions()` can recognise them. Other categories retain legacy ordering.
+- Regression tests cover a long page with a matching Product JSON-LD Offer, price parser recognition, offer availability/condition retention, 10,000-character bound and non-3D content-first compatibility.
+### Runtime and next diagnostic steps
+- Latest task timings: search 669 ms; source probes 10,003 ms; collection discovery 11,098 ms; page fetch 918 ms; Gemma 224,986 ms; queue write 327 ms; total 248,309 ms. Gemma is about 90.6% of this single-page runtime.
+- Source routes: 26 attempts; 11 matches; 9 empty; 6 errors (uni3dverse 404; eBay 403 twice/404; Amazon 404; SecondHand 404). No direct page-fetch errors. Do not bypass access controls.
+- The 19:00 run used the legacy `price_mentions`/`price_contexts` contract; PR #302's new `price_observations` schema has not yet been shown in a Research PC run. PR #302 head `d0e283300e9bea94f828339f7e41bba48fa938ce` passed 60 CI tests; PR #303 CI is pending.
+- After owner approval and a verified Research PC install, replay the retained Neptune page and compare: structured JSON-LD facts present in bounded capture; GBP offers found by deterministic parser; each price observation's product/variant/role/condition association; observed_price only when uniquely verified; Gemma duration and failure count. Do not queue a duplicate task or approve/import automatically.
+- Current LIVE status: idle; no active/queued 3D-printer task; last heartbeat/status update 19:01:33 UTC; worker online state remains unverified while idle. Review queue: 65 records, 64 null evidence type, 1 `uk_new`, 3 top-level prices, 0 approved, 0 imported.
+
 
 ## 8 November 2026 — PR #298 merged
 

@@ -1,4 +1,4 @@
-# CURRENT AI OPERATING MODEL — 7 NOVEMBER 2026
+# CURRENT AI OPERATING MODEL — 8 NOVEMBER 2026
 
 This section is authoritative over older descriptions below.
 
@@ -11,6 +11,11 @@ TradeFlow's AI research capability is a centrally operated platform feature. Sub
 3. **Research again** is a task-dispatch action, not just a review status: the Owner Dashboard must enqueue a new `catalogue_research` task via `platform_owner_enqueue_ai_agent_task` using the candidate's exact product identity and `uk_both`, then mark the candidate `needs_research`. Enqueue must succeed before the review-state update. The LIVE worker claims the task automatically. The candidate remains subject to owner/ChatGPT review.
 4. **ChatGPT supervisor** can inspect agent messages and staged research when actively working in a ChatGPT session, validate source/product fit and report issues. ChatGPT is not a continuously running background process.
 5. **Platform Owner/approved import workflow** decides whether validated evidence is accepted into the master catalogue. Neither a message nor a Gemma candidate automatically approves or imports data.
+
+
+## 8 November 2026 — ELEGOO UK new/used lane scope (PR #291 proposed)
+
+The ELEGOO UK manufacturer source must be eligible for both 3D-printer research lanes because its category playbook already supplies lane-specific routes: `uk_new` uses `/collections/fdm-printers`; `uk_used` uses `/collections/pre-owned-3d-printer`. The proposed source-registry scope is `all`, but this does not mean all categories or manufacturers: `category_slugs` remains limited to `3d-printers-equipment`, and the manufacturer identity filter still restricts it to ELEGOO tasks. For `uk_both`, both discovery routes may be inspected. Collection pages are never direct evidence; follow exact individual listings and retain sold-out/condition caveats. No approval or catalogue import is automatic.
 
 ## 3D Printer research lanes and observability — PR #278 merged to production
 - Within the 3D Printers branch, a uk_new task must search only its approved UK new-retailer and manufacturer sources. A uk_used task must search only its approved UK marketplace and used/refurbished-dealer sources. uk_both may use both; a source explicitly configured with research_scope=all is also available to both lanes. Other catalogue categories retain their existing source-selection behaviour. Category, UK country and manufacturer-specific restrictions still apply. 123-3D UK is configured research_scope=all; its lane-specific routes separate the new-printer and refurbished-printer collections.

@@ -439,3 +439,39 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 
 
 Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.
+
+## 8 November 2026 — post-PR #293 LIVE deep-page acceptance (12:21–13:12 UTC)
+
+### Runtime and release boundary
+- Production head: `3b55d43acec4ad4abb5f8e5b9530f169d3c1d3f3`. PR #292 merged at 12:03:49 UTC; PR #293 merged at 12:40:19 UTC.
+- LIVE parent task `owner-3d-printers-deep-extraction-acceptance-20261108-1235` completed 6/6 subtasks at 13:04:33 UTC. Worker `DESKTOP-LVASEUB-80700` started at 12:27:37 UTC (before PR #293 merged), emitted 45-second heartbeats, then stopped cleanly at 13:12:26 UTC. No active or pending 3D tasks remain.
+- Because the process loaded before the #293 merge, its extraction output is from the previous prompt. This run confirms the #292 one-page-per-page extraction and deterministic fallback were installed, but does not measure the #293 prompt improvement. The K1 Max Combo pages were captured under `package_key=combo`, confirming #287 was active.
+
+### Measured pipeline results
+| Metric | Total | New lane | Used lane |
+|---|---:|---:|---:|
+| Search results | 86 | 55 | 31 |
+| Product pages discovered | 19 | 13 | 6 |
+| Pages fetched/captured | 11 | 11 | 0 |
+| Gemma calls | 11 | 11 | 0 |
+| Gemma failures | 9 | 9 | 0 |
+| Approved-source route attempts | 80 | 46 | 34 |
+| Routes with matches | 24 | 12 | 12 |
+| Empty routes | 39 | 29 | 10 |
+| Route errors | 17 | 5 | 12 |
+| Direct page-fetch errors | 8 | 2 | 6 |
+| Opposite-lane source skips | 30 | 20 | 10 |
+
+- New lane staged 8 new raw rows and enriched 3 existing unreviewed rows. The 8 new rows contain 58 visible GBP price mentions across 41,015 captured characters (2–14 mentions per page). No top-level price/evidence type was inferred after extraction failures; raw page text and price contexts remain available.
+- Used lane staged no captures. Six discovered URLs were not fetched; eBay item routes returned HTTP 403/404 and other source routes returned 404. 123-3D refurbished, 3DGBIRE reconditioned and SecondHand collection checks returned zero exact-model product links for the tested Neptune 4 Pro. ELEGOO UK pre-owned remains unavailable to `uk_used` because its LIVE source row is still `new_uk`.
+- Other new-lane route failures: Amazon UK HTTP 404, 3DFLO timeout, 3D Prima listing HTTP 404, and a 123-3D direct listing redirect to an ineligible page. No access-control bypass was attempted.
+
+### Review queue and first loss point
+- Queue total: 52 rows — 42 `uk_new`, 6 `uk_used`, 4 `uk_both`; 3 top-level prices; 1 structured evidence type; 0 approved; 0 imported. All rows remain `needs_research`.
+- The first used-lane loss is source eligibility/discovery and then direct fetch, before Gemma. The first new-lane loss is extraction structure: 9 of 11 calls failed, but deterministic fallback retained all 11 fetched pages. The 9 failures do not test PR #293 because the worker loaded the old prompt before that PR merged.
+- Parent task result contains all 6 subtask outputs, but Common Room still emits per-subtask handovers/completions and the last completion says 0 captures for the final used subtask. PR #289 remains open to fix aggregate parent reporting.
+
+### Current open fixes and next action
+- Open: PR #288 Bambu UK singular collection route; #289 aggregate parent completion; #290 Creality UK locale URL dedupe (still based on the merged #287 branch and requires retarget/rebase); #291 ELEGOO used-source scope migration (not applied; LIVE row remains `new_uk`).
+- Merged: #287 exact Combo matching; #292 deep-page extraction; #293 prompt refinement.
+- After explicit approval, use the existing production updater in place, preserve the private TradeFlow `.env` and `TRADEFLOW_GEMMA_ENV_FILE`, verify the worker and Ollama start, then run one controlled 3D-only acceptance using the #293 prompt. Do not queue duplicate research before the update. No evidence approval/import is automatic.

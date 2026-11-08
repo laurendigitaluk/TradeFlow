@@ -648,3 +648,28 @@ Added official UK laptop manufacturer sources to both source registries:
 Apple UK and Samsung UK were already approved for laptops; eBay UK and CeX UK were already approved used-market sources. Retailer sources Argos, Currys, John Lewis and Very were already category-scoped.
 
 Category-wide audit after this work: both databases have 38 categories. Remaining evidence-count drift exists in several older categories, notably Drones (542 LIVE vs 618 TEST), Lenses (538 vs 606), Cameras (573 vs 614), and Camera Accessories (210 vs 244). The 3D printer and Mobile Phones active evidence counts now match; product totals differ only by documented inactive TEST audit rows. Do not start the full Gemma sweep until the remaining intended categories and source-selection routes are checked.
+
+
+## 8 November 2026 — Extraction and source routing repair
+
+### Page capture flow
+- Research PC queue polling: tools/tradeflow-gemma-agent/src/task-worker.mjs.
+- Task orchestration, source registry loading, page fetch, extraction and queue hand-off: tools/tradeflow-gemma-agent/src/agent.mjs.
+- extractRelevantPageText(html, task, options) reads JSON-LD Product/Offer objects and flattened HTML.
+- For 3D-printer tasks only, matching manufacturer/model structured facts are placed before long page text. GBP price is emitted with explicit GBP; non-GBP remains distinct. Other categories retain content-first order.
+- Regression coverage: agent-speed.test.mjs.
+
+### Source routing flow
+- Registry: public.platform_research_sources, category_slugs text[].
+- buildApprovedResearchSourcesPath(task) applies PostgREST array-overlap for task category plus universal * entries, enabled=true and country_code=GB.
+- Only Amazon UK and eBay UK are universal; Vinted has no category assignment and US sources are excluded.
+- Invalid/missing task category fails closed.
+- Regression coverage: agent.source-selection.test.mjs.
+- The updater tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 downloads both regression suites, validates syntax and tests before/after installation.
+- CI workflow: .github/workflows/gemma-research-tests.yml.
+
+### Deployment gate
+PR #314 combines the structured 3D-printer GBP capture fix and category-scoped source filter. Do not merge old separate PRs #310/#311/#313. After PR #314 passes CI and merges, run updater from production without -StartWorker, verify tests, then run one controlled gaming task in TEST. Inspect loaded source list and raw captures before queueing LIVE.
+
+### Category source registry audit
+Enabled UK loadable sources (category-specific plus universal): 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 12 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry has a known LIVE/TEST parity gap; reconcile separately after the worker filter is deployed.

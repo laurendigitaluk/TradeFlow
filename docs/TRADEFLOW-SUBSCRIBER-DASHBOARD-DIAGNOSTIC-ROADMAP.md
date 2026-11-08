@@ -1658,3 +1658,27 @@ The correction is in `platform-owner-dashboard.js` and migration `20261108223000
 LIVE state inspected on 8 November: all 65 3D-printer research rows are terminal (28 imported, 37 rejected); there are zero open research rows. All 20 AI agent tasks currently stored are completed. Therefore after this UI/RPC change is deployed, both lists should be empty until new outstanding work arrives.
 
 The SQL migration was syntax-checked, PR #309 passed the Gemma Research Tests workflow and was merged to production (merge commit c62bc4b47a64a2de1dadb50106ce4b6dae150e3d), and the migration was applied to TradeFlow LIVE. Both RPC signatures and authenticated execute grants were verified. Cloudflare Worker/static asset deployment and browser verification remain outstanding. Verify the LIVE dashboard after deployment and confirm the two active lists show empty states while underlying history counts remain unchanged.
+
+
+## 8 November 2026 — Gemma extraction and source-loading repair
+
+**3D-printer page extraction**
+- Worker: tools/tradeflow-gemma-agent/src/task-worker.mjs.
+- Page fetch and extraction: tools/tradeflow-gemma-agent/src/agent.mjs.
+- extractRelevantPageText parses matching JSON-LD Product/Offer facts and places them before long page text for 3D-printer tasks only.
+- Manufacturer/model identity must match the task. GBP is emitted explicitly; non-GBP is not relabelled. Other categories remain content-first.
+- Regression tests: tools/tradeflow-gemma-agent/src/agent-speed.test.mjs.
+
+**Approved source loading**
+- Registry: public.platform_research_sources.
+- Category array: category_slugs; explicit universal marker: *.
+- buildApprovedResearchSourcesPath(task) in agent.mjs uses array overlap, enabled=true and country_code=GB. Missing/malformed category fails closed.
+- Universal sources are Amazon UK and eBay UK only.
+- Regression test: tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs.
+- CI: .github/workflows/gemma-research-tests.yml.
+- Research PC updater: tools/tradeflow-gemma-agent/Update-TradeFlow-Gemma.ps1 includes both test suites and validates before/after installation.
+
+PR #314 combines the 3D-printer structured GBP capture and category-scoped source-loading changes because both modify agent.mjs. Older separate PRs #310, #311 and #313 were superseded and must not be merged independently. Wait for combined CI, merge PR #314, update the Research PC from production without starting the worker, then run one controlled gaming task in TEST before LIVE.
+
+**Source registry parity**
+Current enabled UK sources including universal: 3D printers LIVE 15 / TEST 5; cameras 16 both; drones 8 both; gaming 14 both; laptops 12 both; metal detectors 8 both; mobile phones 13 both. The 3D-printer source registry is the outstanding parity gap; do not copy rows between environments without independently verifying each website.

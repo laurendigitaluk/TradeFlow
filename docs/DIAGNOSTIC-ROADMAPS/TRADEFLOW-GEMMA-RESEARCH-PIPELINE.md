@@ -413,3 +413,26 @@ The LIVE source registry and site playbook both carry the verified 3DFLO/iDig ca
 - PR #287 head `4c9c220fcb01066a56b2735db77c8aa0040ab9af` is still open and mergeable. GitHub Actions run **42436325135** completed successfully at 01:55 UTC: **45 tests passed, 0 failed**, including task-group, source-playbook and agent-identity suites plus syntax checks. No review submissions or review threads are present. The strengthened fixture tests the exact K1 Max Standard rejection and K1 Max Combo acceptance against the same captured URL/title.
 - This green CI result supersedes the earlier checkpoint statement that a run for the corrected fixture had not yet been observed. It verifies the PR branch only; it does not verify the Research PC installation or LIVE runtime. Do not merge, deploy, update the PC or queue another task without explicit owner approval and the required local updater/worker verification.
 - No task, queue, source registry, catalogue, TEST data, approval/import state, secret, private .env or Research PC runtime was changed during this scheduled check. No new research task was queued.
+
+
+## 8 November 2026 — 3D Printer deep-page extraction repair (PR #292)
+
+### Confirmed first failure point
+- LIVE platform_catalogue_research_queue, category 3d-printers-equipment: 44 needs_research evidence-candidate rows.
+- 1 row had a top-level observed_price; 43 had evidence_type = null.
+- raw_payload.evidence.uncertainty_and_conflicts counts: 21 Gemma returned JSON without a findings array; 14 The operation was aborted due to timeout; 2 malformed/truncated JSON outputs; 4 non-product/miscategorised observations; 3 rows with no extraction issue string.
+- Search and fetch were not the only issue: the fetched page text was preserved, but buildExtractionPrompt() supplied only item.text.slice(0, 2200) to Gemma. Relevant prices and package options later in the product page were not in the model input.
+
+### Proposed 3D-only repair
+- buildDeepPageExcerpt(text, task, maxChars=6200) composes bounded excerpts from the page opening, all visible GBP price contexts (up to 12), task identity/package terms, condition/availability phrases and the page tail.
+- extractionBatchSizeForTask(task) returns 1 only for 3d-printers-equipment / 3d-printers; other agents retain batches of 2.
+- 3D prompt requests one compact JSON observation object for the one supplied page, rather than a findings array for multiple pages. It instructs Gemma to capture machine-only, Combo, colour-count and bundle prices separately and never choose a package price.
+- If Gemma fails, fallbackPageCapture() records deterministic 3D observations: visible GBP prices and context, package/variant snippets, condition wording, availability wording, UK/location clues, plus the complete fetched page. A single top-level price is retained only when unique; multiple prices remain contextual observations and are not guessed.
+- All output remains needs_research / unverified. No approval/import path changed. Other categories keep existing prompts and batching.
+
+### Validation and deployment
+- Regression tests cover deep-page excerpt selection, one-page 3D calls, unchanged non-3D two-page batching, factual single-object prompt, structured fallback and multiple-price preservation.
+- GitHub Actions run 42477880080: 49 passed, 0 failed.
+- PR #292: https://github.com/laurendigitaluk/TradeFlow/pull/292, branch fix/gemma-3d-deep-page-extraction-20261108, base production; open, not merged.
+- No LIVE/TEST database rows, source registry, catalogue, local secrets, Research PC files/process or Cloudflare deployment changed.
+- Post-merge acceptance: use existing updater in place; preserve the dedicated TradeFlow .env and TRADEFLOW_GEMMA_ENV_FILE; verify worker version/heartbeat; run one controlled new and one used multi-model 3D-printer batch; inspect structured observations and raw page captures; ChatGPT manually validates all candidates. Do not import automatically.

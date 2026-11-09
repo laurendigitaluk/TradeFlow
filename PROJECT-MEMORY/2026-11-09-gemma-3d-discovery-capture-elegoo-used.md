@@ -24,7 +24,7 @@ Correct master category ID for `3d-printers-equipment`: `ab8b13b0-cc9e-45a6-8c8e
 ## Proposed current-production fixes
 1. Full-page retention: `shouldRetainFullPageCapture(task)` retains full page text for 3D printers and existing Gaming capture path, while other categories keep the 10,000-character cap. A 40,642-character fixture improves from 10,000 retained (24.6%) to 40,642 (100%), +30,642 characters.
 2. Creality route scope: the Ender-3 V3 collection is selected only when the model contains `ender-3 v3`; K1 Max no longer probes that unrelated route. Ender-3 V3 KE keeps the route. This does not claim the Shopify JSON 404 is fixed.
-3. ELEGOO used lane: exact existing LIVE ELEGOO UK source remains `research_scope='new_uk'`, while the existing playbook already has FDM new and pre-owned used routes. Add an update-only migration changing that exact source to `all`; do not apply it without explicit approval. TEST has no matching row per prior checkpoint; no data is copied.
+3. ELEGOO used lane: exact existing LIVE ELEGOO UK source remains `research_scope='new_uk'`, while the existing playbook already has FDM new and pre-owned used routes. Add ordered update-only migration `20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql` changing that exact source to `all`; do not apply it without explicit approval. TEST has no matching row per prior checkpoint; no data is copied.
 
 ## Regression tests
 Four new tests cover full-page category retention, successful mocked Gemma extraction with a long page, Creality model-specific route selection, and ELEGOO lane eligibility while preserving manufacturer/category boundaries. Collection pages remain discovery only; no automatic evidence approval or import.

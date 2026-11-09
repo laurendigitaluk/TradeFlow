@@ -1,3 +1,15 @@
+## 9 November 2026 — 3D-printer raw fallback queue mapping (PR #343)
+
+When a 3D-printer Gemma batch times out, the deterministic fallback retains the complete page and contextual condition/availability snippets for ChatGPT. Those snippets are observations, not normalized condition or availability values. Do not copy item_condition_text / availability_text into the top-level item_condition / availability columns for the 3D-printer branch.
+
+PR #343 introduces a 3D-only queue-field mapper: only explicit concise normalized values (maximum 100 characters) populate those columns; otherwise they remain null. The original snippets and complete page stay in the raw review payload. The existing mapping for other categories is unchanged. Regression tests cover raw-page preservation, concise values, overlong values and non-3D compatibility. PR #343 is open and unmerged; no LIVE queue row was repaired or approved by the code change.
+
+The 9 November eight-product Anycubic batch produced 44 search results, 9 discovered product pages, 5 fetched pages and 5 retained captures. Four bounded Gemma batches timed out, but raw captures were preserved. All eight product subtasks completed and review writes persisted; the parent completion RPC then returned PGRST102. Treat that parent task as failed and retain its subtask evidence; do not repeat it automatically.
+
+Before another 3D-printer task, verify the Research PC's isolated 3D worker and the remaining generic worker scope. LIVE shows both idle pollers, but does not expose the generic worker's enabled category list. Do not assume that the generic worker has 3D disabled.
+
+
+
 ## 8 November 2026 — Launcher/test-suite mismatch corrected in PR #300
 
 After the Research PC accepted the strict JSON schema and returned populated Bambu Lab A1 Standard fields (source TEST02, £289.00, Brand new, In stock), starting the worker failed safely: the locally retained legacy launcher ran stale `test/agent.test.mjs` and `test/collection-discovery.test.mjs`, which import the removed `combineProductResearchTasks` export. The PR updater had only replaced `src` files and did not replace the root launcher, so its own 55 source tests passed while the stale launcher gate failed. Corrected PR #300 by adding a version-controlled `Start-TradeFlow-Gemma.ps1` that runs exactly the four current source test files before starting `src/task-worker.mjs`, and updating `Update-TradeFlow-Gemma.ps1` to download, back up and install this matching launcher alongside source files, with PowerShell parser validation. GitHub Actions now syntax-checks both updater and launcher. This correction is still in PR #300 and has not been installed or deployed. Next: wait for CI on the latest PR head; if green, ask owner to run updater once (worker remains stopped), verify updated launcher is installed, then start worker and run one controlled review-only task. Do not manually delete legacy tests or bypass tests. No database, approvals, imports, or LIVE catalogue data changed.

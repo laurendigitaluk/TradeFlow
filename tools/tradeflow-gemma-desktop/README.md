@@ -33,7 +33,7 @@ There is one persistent local queue supervisor and one Gemma/Ollama execution la
 
 ## Website research configuration
 
-The existing LIVE source registry is retained; this change does not duplicate source rows. At the 9 November 2026 audit it contained 119 UK source records, of which 116 were enabled. Category coverage (including shared universal sources) was:
+The existing LIVE source registry is retained; this change does not duplicate source rows. At the 9 November 2026 audit it contained 119 records in total: 116 GB-coded and 3 US-coded; all 119 were enabled. UK category coverage (including shared universal sources) was:
 
 | Category | Enabled sources |
 |---|---:|

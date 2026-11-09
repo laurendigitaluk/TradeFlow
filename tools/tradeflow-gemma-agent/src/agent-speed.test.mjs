@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, buildReviewQueueObservationFields, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, fallbackPageCapture, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -394,4 +394,63 @@ test('same product can retain multiple evidence captures of the same type from d
     buildEvidenceCaptureDedupeKey(task, marketplace),
     'a second source/listing for the same product is a separate evidence capture'
   );
+});
+
+
+test('3D-printer raw fallback snippets stay in the capture and do not populate normalized queue fields', () => {
+  const sourceText = Array.from({ length: 12 }, (_, index) =>
+    'Section ' + index + ': Brand new. In stock. ' +
+    ('Detailed product specification section ' + index + ' ').repeat(100)
+  ).join('\\n');
+  assert.ok(sourceText.length > 10000);
+
+  const capture = fallbackPageCapture(printerTask, {
+    source_id: 'S1',
+    title: 'Bambu Lab A1 3D Printer',
+    url: 'https://example.co.uk/products/bambu-a1',
+    text: sourceText
+  }, 'Gemma extraction timed out');
+
+  assert.ok(capture.item_condition_text.length > 100);
+  assert.ok(capture.availability_text.length > 100);
+  assert.equal(capture.item_condition, null);
+  assert.equal(capture.availability, null);
+  assert.deepEqual(buildReviewQueueObservationFields(printerTask, capture), {
+    item_condition: null,
+    availability: null
+  });
+  assert.equal(capture.source_excerpt, sourceText);
+  assert.equal(capture.page_capture.captured_text, sourceText);
+  assert.equal(capture.evidence_type, null);
+});
+
+test('3D-printer queue columns accept only concise normalized condition and availability values', () => {
+  assert.deepEqual(buildReviewQueueObservationFields(printerTask, {
+    item_condition: 'New',
+    availability: 'In stock'
+  }), {
+    item_condition: 'New',
+    availability: 'In stock'
+  });
+
+  assert.deepEqual(buildReviewQueueObservationFields(printerTask, {
+    item_condition: 'New '.repeat(30),
+    availability: 'In stock '.repeat(20)
+  }), {
+    item_condition: null,
+    availability: null
+  });
+});
+
+test('non-3D queue condition and availability mapping remains unchanged', () => {
+  assert.deepEqual(buildReviewQueueObservationFields({
+    category_slug: 'drones',
+    branch_slug: 'drones'
+  }, {
+    item_condition_text: 'Used - Good',
+    availability_text: 'In stock'
+  }), {
+    item_condition: 'Used - Good',
+    availability: 'In stock'
+  });
 });

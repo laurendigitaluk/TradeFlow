@@ -7,6 +7,7 @@ import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 import { resolveControlPlane } from './control-plane.mjs';
+import { buildIdleWorkerHeartbeatRecord, idleHeartbeatIntervalMs, shouldEmitIdleWorkerHeartbeat } from './worker-heartbeat.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -22,6 +23,10 @@ const workerId=(os.hostname()+'-'+process.pid).slice(0,120);
 const pollMs=Math.max(5000,Math.min(60000,Number(env.GEMMA_POLL_INTERVAL_MS)||15000));
 const leaseSeconds=600;
 let stopping=false;
+let taskInProgress=false;
+let pollInProgress=false;
+let lastPollSucceeded=true;
+let idleHeartbeatInProgress=false;
 process.on('SIGINT',()=>{stopping=true;});
 process.on('SIGTERM',()=>{stopping=true;});
 
@@ -211,19 +216,37 @@ await checkFirstAgentCommonRoom().catch(e=>console.error('[common room first-age
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
 console.log('[TradeFlow Gemma] VERIFIED control plane: '+controlPlane.name+' ('+controlPlane.url.replace(/^https:\/\//,'').replace(/\.supabase\.co\/?$/,'')+'); other environment is isolated.');
 await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_started',message:'Persistent TradeFlow Gemma worker connected and polling '+controlPlane.name+' task queue.',details:{worker_id:workerId,poll_interval_ms:pollMs}});
+const idleHeartbeatTimer=setInterval(async()=>{
+ if(!shouldEmitIdleWorkerHeartbeat({stopping,taskInProgress,pollInProgress,heartbeatInProgress:idleHeartbeatInProgress,lastPollSucceeded}))return;
+ idleHeartbeatInProgress=true;
+ try{await safeReport(buildIdleWorkerHeartbeatRecord(workerId,pollMs));}
+ finally{idleHeartbeatInProgress=false;}
+},idleHeartbeatIntervalMs(pollMs));
+idleHeartbeatTimer.unref?.();
 while(!stopping){
  try{
-  const claimed=await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+  pollInProgress=true;
+  let claimed;
+  try{
+   claimed=await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+   lastPollSucceeded=true;
+  }finally{pollInProgress=false;}
   const task=Array.isArray(claimed)?claimed[0]:claimed;
-  if(task?.id){console.log('[claimed]',task.task_key,'attempt',task.attempts);await processClaim(task);}
+  if(task?.id){
+   console.log('[claimed]',task.task_key,'attempt',task.attempts);
+   taskInProgress=true;
+   try{await processClaim(task);}finally{taskInProgress=false;}
+  }
   else {
    await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
    await new Promise(resolve=>setTimeout(resolve,pollMs));
   }
  }catch(error){
+  lastPollSucceeded=false;
   console.error('[poll error]',error.message);
   await new Promise(resolve=>setTimeout(resolve,Math.min(60000,pollMs*2)));
  }
 }
+clearInterval(idleHeartbeatTimer);
 await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_stopped',message:'TradeFlow Gemma worker stopped cleanly.',details:{worker_id:workerId}});
 console.log('[TradeFlow Gemma] worker stopped');

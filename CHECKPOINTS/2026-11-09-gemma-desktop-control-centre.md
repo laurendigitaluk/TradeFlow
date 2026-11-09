@@ -1,37 +1,44 @@
 # Checkpoint — Gemma Desktop Control Centre (9 November 2026)
 
 ## Baseline
-- Production branch: `production`
-- Production base commit: `e81ede671bfc03e73dc16169638011372b5b6117`
-- Feature branch: `feature/gemma-desktop-control-centre-20261109`
-- Pull request: #325 (open, ready for review)
-- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
-- TEST Supabase: `nnsshnfkjcflucjrftzi`
+- Production branch: production
+- Production base commit: e81ede671bfc03e73dc16169638011372b5b6117
+- Feature branch: feature/gemma-desktop-control-centre-20261109
+- Pull request: #325 (open, unmerged, mergeable)
+- Code/test head: 14da7fa38fec9a75cf95137985a49d20a2208abb
+- Latest code CI: GitHub Actions run #472 passed all steps, including 92 Gemma tests (0 failures), PowerShell syntax, Node syntax and Owner Dashboard JavaScript syntax.
+- LIVE Supabase: gxsrajtqzdjvmceqcpgv
+- TEST Supabase: nnsshnfkjcflucjrftzi
 
-## Files added/changed in PR
-- `tools/tradeflow-gemma-desktop/agents.json`
-- `tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1`
-- `tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1`
-- `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1`
-- `tools/tradeflow-gemma-desktop/README.md`
-- `tools/tradeflow-gemma-agent/src/desktop-control.mjs` and test
-- `tools/tradeflow-gemma-agent/src/task-worker.mjs` (optional scoped mode only; legacy mode unchanged when no desktop config path is set)
-- `tools/tradeflow-gemma-agent/src/source-playbooks.mjs` and tests (new categories only; 3D/Gaming blocks preserved)
-- updater, launcher, CI workflow and both manuals
-- `supabase/migrations/20261109150000_gemma_agent_scoped_task_claim.sql`
+## Implementation
+- Windows Control Centre and seven specialist shortcuts under tools/tradeflow-gemma-desktop.
+- One sign-in background supervisor and one queue worker/Ollama execution lane.
+- Seven switches: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops, Cameras. Gaming is one switch for PlayStation/Xbox/Nintendo branches; legacy agent keys are aliases.
+- Desktop config is local and contains no credentials. Existing private .env path is reused and not copied, printed or overwritten.
+- Worker claims through service-role-only platform_ai_agent_claim_task_for_agents(text,text[],integer). Every subtask must belong to an enabled agent. Desktop mode has no fallback to the legacy unscoped claim.
+- Disable prevents new claims; active task finishes. Global stop is graceful. Missing RPC stops with requires_migration.
+- Installer refuses to overwrite an active worker and creates the supervisor scheduled task plus Control Centre and seven specialist shortcuts.
+
+## Website configuration
+- LIVE registry: 119 UK source records, 116 enabled. Category coverage including universal sources: 3D Printers 15, Gaming 17, Drones 21, Metal Detectors 13, Mobile Phones 23, Laptops 12, Cameras 24.
+- No source registry rows changed in LIVE or TEST.
+- 3D-printer playbook/extraction unchanged. Gaming capture-only handoff unchanged; gaming discovery routes completed for verified UK retailers and console manufacturer sites.
+- New/missing source-domain entries and homepage/category routes completed for Drones, Metal Detectors, Mobile Phones and Cameras; Laptops routes retained.
+- Approved global sources accept UK locale path segments uk, gb, en-uk, en_uk, en-gb, en_gb and gb-en only when the host matches an approved source record.
+- store.dji.com is skipped because it redirects to sign-in. Discovery routes never count as evidence; exact individual product/listing pages are required.
 
 ## Restore/safety notes
-- No production files changed; PR is not merged.
-- No Supabase migration applied.
-- No LIVE/TEST queue, source, catalogue, evidence, approvals or imports changed.
+- No production code merged; PR #325 remains unmerged.
+- No Supabase migration applied to LIVE or TEST.
+- No LIVE/TEST queue, task, source registry, catalogue, evidence, approval or import rows changed.
 - No Research PC update/restart/start performed.
-- Existing private .env was not accessed outside read-only target validation logic in the installer code; it remains untouched on the PC.
-- Do not start desktop service until the migration is deployed to LIVE.
-- If the scoped RPC is missing, desktop worker stops with `requires_migration` and does not use the generic queue claim.
-- Existing 3D-printer and Gaming behaviour must remain unchanged.
+- Existing private .env remains untouched on the PC.
+- Desktop supervisor is LIVE-only; TEST remains separate.
+- LIVE schema inspection found no dedicated project-memory/checkpoint table; repository docs/checkpoints are the durable record.
 
-## Verification update
-- Final reviewed feature head: `4acc456eff89d971981ad69766395a801e83df0d`.
-- GitHub Actions run #448 passed all workflow steps, including Node tests, PowerShell parser checks and Owner Dashboard JavaScript syntax.
-- PR remains unmerged; no migration has been applied to LIVE or TEST.
-- TEST source registry was read-only checked: 51 enabled UK records. It was not modified; desktop runtime targets LIVE only.
+## Next steps
+1. Obtain owner approval to merge PR #325.
+2. Apply the additive scoped-claim migration to LIVE only after merge/approval.
+3. Install on Research PC from production; stop any old manual worker cleanly before installation.
+4. Verify supervisor and seven switches; run one bounded LIVE review-only acceptance task.
+5. Confirm raw capture appears in the existing LIVE review queue; no automatic approval/import.

@@ -157,3 +157,8 @@ CI must parse the dashboard PowerShell script. PC installation and visible accep
 ## Installer correction — 9 November 2026
 
 The first local run of the combined dashboard installer reached its dashboard-download step but failed because the script referenced an undefined `$RawBase` variable. This was a script defect, not a PC/network issue. Corrected production `tools/gemma-agent-isolation/Install-Gemma-Agents.ps1` to use the explicit raw GitHub URL for `Gemma-Control-Centre.ps1` (commit `54d1aee479364eb14c048e3911717f69befc16ec`). Re-running the installer is safe: the installer skips existing category clone folders, does not restart/stop workers, and refreshes the shared dashboard script and its two desktop shortcuts. The owner has not yet rerun the corrected installer; dashboard installation is still pending.
+
+
+## 9 Nov 2026 — desktop dashboard header overlap recurrence
+
+User screenshot showed top worker rows hidden behind header/toolbar in the new seven-agent WinForms dashboard. This is the known Windows Forms `DockStyle.Fill` and child z-order bug previously corrected in the legacy Research Control Centre; it is NOT missing agents or a worker process failure. Minimal production fix `ac293cd7e48bf0d334a0c3c0e14d37b32f40d4ae` adds `$form.Controls.SetChildIndex($grid, 0)` after all docked controls are added in `tools/gemma-agent-isolation/Gemma-Control-Centre.ps1`, ensuring header, toolbar and footer reserve layout space. No worker code, branches, ENV, Supabase or research queue changed. Installation of the updated dashboard script on the Research PC and visual verification of all seven rows remain pending.

@@ -644,7 +644,9 @@ export function fallbackPageCapture(task, source, reason) {
   const prices = extractVisibleGbpPriceMentions(source.text);
   const printerCapture = is3dPrinterResearchTask(task);
   const gamingCapture = isGamingConsoleResearchTask(task);
-  const captureOnly = isCaptureOnlyResearchTask(task);
+  // Preserve the established deterministic raw fallback for 3D printers when
+  // Gemma extraction fails; only Gaming bypasses Gemma entirely.
+  const captureOnly = printerCapture || gamingCapture;
   const conditions = captureOnly
     ? extractObservationSnippets(source.text, /\b(?:new(?:\s+and\s+unused)?|brand new|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened(?:\s*[-–]\s*never\s*used)?|sealed|grade\s*[a-f])\b/gi, 10)
     : [];
@@ -1073,7 +1075,9 @@ export function isGamingConsoleResearchTask(task) {
 }
 
 export function isCaptureOnlyResearchTask(task) {
-  return is3dPrinterResearchTask(task) || isGamingConsoleResearchTask(task);
+  // Capture-only handoff is a Gaming-specific requirement. 3D-printer research
+  // retains its established Gemma/Ollama extraction and raw-capture fallback path.
+  return isGamingConsoleResearchTask(task);
 }
 
 export function isResearchTypeAllowedSource(source, task) {

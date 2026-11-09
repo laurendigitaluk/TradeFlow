@@ -58,3 +58,12 @@ Owner screenshot confirmed duplicate dashboard windows and visible PowerShell co
 - Existing dashboard refreshes shared agent config every three seconds, so a shortcut can enable a specialist without opening another dashboard.
 - New CI run was not yet visible at checkpoint time; do not claim the fix has passed CI.
 - Research PC has not yet received these updated files/shortcuts. Stop the service after current task, rerun production installer from the existing Gemma folder, then verify one dashboard/no console.
+
+
+## Final launcher correction — 9 November 2026
+
+The extra tab was identified by the owner as `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`, confirming a second PowerShell console session. The earlier `-WindowStyle Hidden` shortcut option was not sufficient in the owner's Windows Terminal environment.
+
+Production installer now downloads `Launch-TradeFlow-Control-Centre.vbs`; all eight shortcuts target `wscript.exe`, which launches the PowerShell WinForms UI invisibly (WScript.Run window style 0). Specialist arguments are forwarded to the same script. The named mutex continues to enforce one dashboard, and the single scheduled supervisor/worker is unchanged.
+
+The Research PC installation shown by the owner was performed before this WScript-host correction. It must be rerun after safely stopping the background service. CI has not yet reported a workflow run for this latest launcher change; do not describe it as CI-verified.

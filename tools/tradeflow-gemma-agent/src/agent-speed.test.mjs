@@ -582,14 +582,15 @@ test('legacy imported and rejected captures remain idempotent when the page snap
     reviewed_at: '2026-11-08T22:01:06.564Z',
     approved_at: '2026-11-08T22:07:33.163Z',
     imported_at: '2026-11-08T22:07:33.163Z',
-    raw_payload: { task, evidence, page_capture: pageCapture, review_classification: 'unverified_capture' }
+    raw_payload: { task, evidence, page_capture: pageCapture, review_classification: null }
   };
   const rejected = {
     ...legacy,
     status: 'rejected',
     dedupe_key: 'borderline-legacy-rejected-key',
     approved_at: null,
-    imported_at: null
+    imported_at: null,
+    raw_payload: { ...legacy.raw_payload, review_classification: 'borderline' }
   };
   const before = JSON.stringify([legacy, rejected]);
 
@@ -687,4 +688,53 @@ test('unreviewed legacy pending captures can be safely enriched without changing
   assert.equal(pending.dedupe_key, 'borderline-legacy-pending-key');
   assert.equal(patch.reviewed_by, undefined);
   assert.equal(patch.approved_at, undefined);
+});
+
+
+test('legacy exact-snapshot match wins over a newer changed row for the same source identity', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Anycubic',
+    model: 'Kobra S1 Max',
+    package_key: 'combo-8-color'
+  };
+  const url = 'https://uk.anycubic3d.com/products/kobra-s1-max';
+  const pageCapture = {
+    title: 'Anycubic Kobra S1 Max',
+    url,
+    captured_text: 'Anycubic Kobra S1 Max £699.00 in stock. '.repeat(25),
+    gbp_price_mentions: [{ amount: 699, display: '£699.00', context: 'Anycubic Kobra S1 Max £699.00 in stock' }]
+  };
+  const evidence = {
+    ...task, source_url: url, page_title: pageCapture.title,
+    source_excerpt: pageCapture.captured_text, page_capture: pageCapture,
+    item_condition_text: 'Brand new', availability_text: 'In stock'
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const exactLegacy = {
+    ...task, source_url: url, status: 'imported', dedupe_key: 'borderline-older-exact',
+    reviewed_at: '2026-11-08T22:01:06.564Z', approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { evidence, page_capture: pageCapture, review_classification: 'borderline' }
+  };
+  const changedLegacy = {
+    ...exactLegacy,
+    status: 'rejected',
+    dedupe_key: 'borderline-newer-changed',
+    raw_payload: {
+      ...exactLegacy.raw_payload,
+      evidence: {
+        ...evidence,
+        page_capture: {
+          ...pageCapture,
+          gbp_price_mentions: [{ amount: 649, display: '£649.00', context: 'Anycubic Kobra S1 Max £649.00 in stock' }]
+        }
+      }
+    }
+  };
+
+  const selected = selectExistingEvidenceCaptureRecord([changedLegacy, exactLegacy], fingerprint);
+  assert.equal(selected.action, 'duplicate');
+  assert.equal(selected.record, exactLegacy);
 });

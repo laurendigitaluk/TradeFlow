@@ -1,7 +1,7 @@
 export function idleHeartbeatIntervalMs(pollIntervalMs) {
   const parsed = Number(pollIntervalMs);
   const safePollMs = Number.isFinite(parsed) && parsed >= 5000
-    ? Math.min(60000, Math.floor(parsed))
+    ? Math.floor(parsed)
     : 15000;
   return Math.max(60000, Math.min(300000, safePollMs * 4));
 }

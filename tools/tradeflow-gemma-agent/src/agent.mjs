@@ -643,21 +643,26 @@ export function fallbackPageCapture(task, source, reason) {
   const host = new URL(source.url).hostname.replace(/^www\./, '');
   const prices = extractVisibleGbpPriceMentions(source.text);
   const printerCapture = is3dPrinterResearchTask(task);
-  const conditions = printerCapture
-    ? extractObservationSnippets(source.text, /\b(?:new(?:\s+and\s+unused)?|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened(?:\s*[-–]\s*never\s*used)?|sealed|grade\s*[a-f])\b/gi, 8)
+  const gamingCapture = isGamingConsoleResearchTask(task);
+  const captureOnly = isCaptureOnlyResearchTask(task);
+  const conditions = captureOnly
+    ? extractObservationSnippets(source.text, /\b(?:new(?:\s+and\s+unused)?|brand new|used|pre[ -]?owned|refurbished|reconditioned|ex[ -]?demo|open[ -]?box|opened(?:\s*[-–]\s*never\s*used)?|sealed|grade\s*[a-f])\b/gi, 10)
     : [];
-  const availabilityNotes = printerCapture
-    ? extractObservationSnippets(source.text, /\b(?:in stock|out of stock|sold out|currently sold out|only\s+\d+\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery)\b/gi, 8)
+  const availabilityNotes = captureOnly
+    ? extractObservationSnippets(source.text, /\b(?:in stock|out of stock|sold out|currently sold out|only\s+\d+\s+left|back[ -]?order(?:ed)?|available|notify me|ships? in|dispatch(?:ed)?|delivery|pre[ -]?order)\b/gi, 10)
     : [];
-  const packageNotes = printerCapture
-    ? extractObservationSnippets(source.text, /\b(?:combo|\d+[- ]?colou?rs?|filament|machine only|standard printer|without\s+(?:ace|ams|cfs)|include machine|bundle|printer only)\b/gi, 10)
+  const printerPackagePattern = /\b(?:combo|\d+[- ]?colou?rs?|filament|machine only|standard printer|without\s+(?:ace|ams|cfs)|include machine|bundle|printer only)\b/gi;
+  const gamingPackagePattern = /\b(?:\d{2,4}\s?gb|\d(?:\.\d)?\s?tb|disc(?:\s+edition)?|digital(?:\s+edition)?|slim|pro|carbon black|standard console|console only|bundle|bundled|with\s+(?:game|controller|headset|dock)|single controller|controller pair|joy[ -]?con|limited edition|special edition|wireless|wired|vr2?)\b/gi;
+  const packagePattern = printerCapture ? printerPackagePattern : gamingCapture ? gamingPackagePattern : null;
+  const packageNotes = packagePattern
+    ? extractObservationSnippets(source.text, packagePattern, 12)
     : [];
-  const locationNotes = printerCapture
-    ? extractObservationSnippets(source.text, /\b(?:UK|United Kingdom|GB VAT|VAT included|local warehouse|free UK shipping|UK delivery)\b/gi, 5)
+  const locationNotes = captureOnly
+    ? extractObservationSnippets(source.text, /\b(?:UK|United Kingdom|GB VAT|VAT included|local warehouse|free UK shipping|UK delivery|ships? to UK)\b/gi, 6)
     : [];
   const uniquePrice = prices.length === 1 && matchesTaskModel(source.title || '', source.url, task) && !/(?:per\s*kg|\/kg|filament|gift\s*card|accessor(?:y|ies)|nozzle|build\s*plate|shipping\s*cost|delivery\s*fee|postage)/i.test(prices[0].context) ? prices[0].amount : null;
   const title = source.title || '';
-  const productIdentity = printerCapture ? [title, String(source.text || '').slice(0, 500)].filter(Boolean).join(' — ') : '';
+  const productIdentity = captureOnly ? [title, String(source.text || '').slice(0, 700)].filter(Boolean).join(' — ') : '';
   return {
     source_id: source.source_id,
     page_title: title,
@@ -672,22 +677,21 @@ export function fallbackPageCapture(task, source, reason) {
     identifiers_text: '',
     match_observation: matchesTaskModel(title, source.url, task) ? 'Title or URL matches the requested model; exact package and offer require ChatGPT inspection.' : 'Page was fetched from an approved source; exact product identity requires ChatGPT inspection.',
     uncertainty_and_conflicts: reason,
-    notes: 'RAW PAGE OBSERVATIONS — retained for ChatGPT review. The 3D-printer worker uses fast deterministic capture; no local model classification or evidence suitability decision is performed.',
+    notes: 'RAW PAGE OBSERVATIONS — retained for ChatGPT review. No local model classification, evidence suitability decision, approval or product matching is performed.',
     review_classification: 'unverified_capture',
     evidence_type: null,
-    // Raw 3D-printer captures are for ChatGPT analysis; never promote a page amount before review.
-    observed_price: printerCapture ? null : uniquePrice,
+    observed_price: captureOnly ? null : uniquePrice,
     price_currency: prices.length ? 'GBP' : null,
     item_condition: null,
     availability: availabilityNotes.join(' | ') || null,
     source_name: host,
     source_url: source.url,
     sales_channel: host,
-    source_excerpt: printerCapture ? source.text : source.text.slice(0, 10000),
+    source_excerpt: captureOnly ? source.text : source.text.slice(0, 10000),
     page_capture: {
       title, url: source.url, gbp_price_mentions: prices,
-      captured_text: printerCapture ? source.text : source.text.slice(0, 10000),
-      deterministic_observations: printerCapture ? {
+      captured_text: captureOnly ? source.text : source.text.slice(0, 10000),
+      deterministic_observations: captureOnly ? {
         product_identity_text: productIdentity,
         package_or_variant_text: packageNotes,
         condition_text: conditions,
@@ -697,7 +701,6 @@ export function fallbackPageCapture(task, source, reason) {
     }
   };
 }
-
 
 export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new Date().toISOString()) {
   if (!existing || !incoming || existing.status !== 'needs_research') return null;
@@ -1064,8 +1067,17 @@ export function is3dPrinterResearchTask(task) {
     String(task?.branch_slug || '').toLowerCase() === '3d-printers';
 }
 
+export function isGamingConsoleResearchTask(task) {
+  return String(task?.category_slug || '').toLowerCase() === 'gaming-consoles-accessories' &&
+    Boolean(String(task?.branch_slug || '').trim());
+}
+
+export function isCaptureOnlyResearchTask(task) {
+  return is3dPrinterResearchTask(task) || isGamingConsoleResearchTask(task);
+}
+
 export function isResearchTypeAllowedSource(source, task) {
-  if (!is3dPrinterResearchTask(task)) return true;
+  if (!is3dPrinterResearchTask(task) && !isGamingConsoleResearchTask(task)) return true;
   const researchType = String(task?.research_type || '').toLowerCase();
   if (!['uk_new','uk_used'].includes(researchType)) return true;
   const sourceLane = getResearchSourceLane(source);
@@ -1416,12 +1428,12 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   stageDurations.product_page_fetch_ms = Date.now() - pageFetchStartedAt;
   let extractionMetrics = { batches: 0, failures: [] };
   const extractionStartedAt = Date.now();
-  if (fetched.length && is3dPrinterResearchTask(task)) {
-    // 3D-printer research is capture-first: do not wait for Ollama/Gemma inference.
+  if (fetched.length && isCaptureOnlyResearchTask(task)) {
+    // 3D-printer and gaming-console research are capture-first: do not wait for Ollama/Gemma inference.
     // The worker searches, fetches and preserves source facts; ChatGPT interprets them downstream.
     await trackProgress?.({
       stage: 'capture_only_started', total: fetched.length,
-      message: 'Capture-only mode: preserving all fetched 3D-printer pages and deterministic observations for ChatGPT; local Ollama inference is intentionally skipped.'
+      message: 'Capture-only mode: preserving all fetched category pages and deterministic observations for ChatGPT; local Ollama inference is intentionally skipped.'
     });
     for (const source of fetched) {
       candidates.push(fallbackPageCapture(task, source, 'Deterministic raw capture; ChatGPT analysis required.'));
@@ -1470,11 +1482,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
             'UNVERIFIED RESEARCH CAPTURE — ChatGPT decides what is relevant and usable.',
             diagnostics.length ? 'Checks to perform: ' + diagnostics.join('; ') : 'Automated field checks passed; still requires ChatGPT verification.'
           ].filter(Boolean).join(' '),
-          source_excerpt: is3dPrinterResearchTask(task) ? source.text : source.text.slice(0, 10000),
+          source_excerpt: isCaptureOnlyResearchTask(task) ? source.text : source.text.slice(0, 10000),
           page_capture: finding.page_capture || {
             title: source.title, url: source.url,
             gbp_price_mentions: extractVisibleGbpPriceMentions(source.text),
-            captured_text: is3dPrinterResearchTask(task) ? source.text : source.text.slice(0, 10000)
+            captured_text: isCaptureOnlyResearchTask(task) ? source.text : source.text.slice(0, 10000)
           }
         });
         await trackProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });
@@ -1498,7 +1510,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   } else {
     await trackProgress?.({ stage: 'no_eligible_pages', message: 'No eligible individual product pages could be fetched; there are no page captures to hand to ChatGPT.' });
   }
-  stageDurations.gemma_extraction_ms = is3dPrinterResearchTask(task) ? 0 : Date.now() - extractionStartedAt;
+  stageDurations.gemma_extraction_ms = isCaptureOnlyResearchTask(task) ? 0 : Date.now() - extractionStartedAt;
   await trackProgress?.({ stage: 'handoff', message: 'Research complete; every fetched page and its available observations are staged in the selected TradeFlow review queue for ChatGPT. Gemma does not decide whether a finding is usable, and no catalogue import is authorised.' });
   const queueWriteStartedAt = Date.now();
   const writes = [];

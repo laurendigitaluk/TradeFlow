@@ -4379,3 +4379,14 @@ Added five UK sources scoped only to metal-detectors:
 Official dealer validation: Nokta's UK dealer directory lists LP Metal Detecting, Unearthed, Spin a Disc, Regton, Detecnicks and Crawfords; XP's official reseller network lists UK dealers including Crawfords, Detecnicks, Regton, Spin a Disc and others. Garrett identifies Regton as its UK & Ireland distributor. Keep new and used evidence separate; use the Detecnicks second-hand page only for explicitly used/ex-demo listings and confirm availability/condition before approval.
 
 Post-change verification: 11 enabled sources scoped to metal-detectors; 125 active products; 32 active products still without active market evidence. Evidence gap unchanged because only source registry rows changed. No product/evidence rows changed, no research task queued, no worker restarted and TEST was not modified. Existing Minelab UK, Regton, Spin a Disc, UK History Finders, Unearthed UK and Wolds Detecting source rows remain unchanged.
+
+
+## 9 November 2026 — Gaming Consoles & Accessories Gemma rollout (first category after 3D printers)
+
+The 3D-printer workflow remains the proven pilot. The next category is Gaming Consoles & Accessories, following the merged PR #314 rollout sequence. LIVE is authoritative; TEST is used only for controlled software/regression validation. No existing product, evidence, tenant or customer data is to be copied, deleted or overwritten.
+
+LIVE baseline verified before this rollout: 284 active gaming products and 411 active linked market-evidence rows (246 UK-new, 165 UK-used). The evidence is already present and is not a target for re-import. Drones (541 products / 542 active evidence rows), Cameras (722 / 573), and Mobile Phones (158 / 567) were also verified as having existing linked evidence and must be preserved when their agents are rolled out.
+
+The gaming implementation is being prepared on feature branch `feat/gemma-gaming-capture-rollout-20261109`. It extends the 3D-printer capture-first handoff to the gaming agent only: preserve full page captures, all visible GBP price mentions and contexts, exact console/accessory variant details, condition, availability and location; leave evidence type, price approval and master-product matching to ChatGPT. UK-new and UK-used source lanes are filtered separately. Category/branch playbooks cover consoles, handhelds, controllers, headsets, VR and accessories.
+
+Current gate: CI and code review first; then update the Research PC from production without starting a worker, verify the installed test suites, and run one controlled Gaming task in TEST. An older queued TEST 3D-printer smoke task was marked cancelled (not deleted) to prevent it being claimed during the gaming rollout; the task row and history remain. No gaming task has yet been queued and no worker has been restarted.

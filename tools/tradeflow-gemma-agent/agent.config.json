@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "serviceEnabled": true,
+  "autoStart": false,
+  "enabledAgentKeys": [
+    "cameras"
+  ],
+  "agentKey": "cameras",
+  "agentLabel": "Gemma Cameras",
+  "categorySlug": "cameras",
+  "branchSlug": "cameras",
+  "sourceBranch": "gemma/cameras"
+}

@@ -4,7 +4,7 @@ Date: 9 November 2026 UTC
 Repository: `laurendigitaluk/TradeFlow`
 Base: production `de1b8d4e12edf0102cea28f935a763826ff1c06b`
 Feature branch: `fix/gemma-3d-discovery-capture-elegoo-used-20261109`
-PR: pending creation
+PR #332: https://github.com/laurendigitaluk/TradeFlow/pull/332
 
 ## LIVE baseline
 Scope is only category `3d-printers-equipment`, branch `3d-printers`, LIVE project `gxsrajtqzdjvmceqcpgv`.
@@ -34,3 +34,7 @@ No task queued, no worker restarted, no LIVE/TEST data copied, no source row cha
 
 ## Acceptance
 After review/approval, install current-production-based code while preserving private .env; apply the update-only migration only through approved release; run one bounded 3D-printer verification and confirm exact page discovery, Gemma extraction, full capture handoff, and new/used separation.
+
+
+## Verification
+GitHub Actions Gemma Research Tests run #504 passed on code/test head `4e0f13230de6833f6e4f0fe11e64a70f6f1458ed`. PowerShell updater syntax, Node syntax, the full Gemma test command (including full-page, Creality route and ELEGOO lane regressions), and Owner Dashboard JavaScript syntax passed. Both Workers Builds checks (`tradeflow` and `tradeflow-test`) passed. PR #332 is ready for review and mergeable; the ordered migration remains unapplied and no deployment was performed.

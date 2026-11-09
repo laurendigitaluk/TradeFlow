@@ -1,3 +1,5 @@
+> **Legacy architecture notice — 9 November 2026:** This Control Centre implements one persistent supervisor and one shared Node/Gemma execution lane with multiple category switches. That is not the owner's required architecture for category development. New category Gemmas must run from separate Git branches and independent local clones/folders, with one category key per worker. Do not use this multi-switch supervisor to update or develop the isolated Gemma folders. The existing installation is left untouched until the owner switches over deliberately.
+
 # TradeFlow Research Control Centre (Windows)
 
 The Control Centre is a Windows desktop application for the existing TradeFlow Gemma Research PC installation. It is designed to be installed alongside the current worker, not as a replacement for the Research PC environment.

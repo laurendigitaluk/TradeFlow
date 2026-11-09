@@ -62,3 +62,12 @@ Fix committed to production:
 - Category launcher updates the shared config and starts the same supervisor; if a dashboard already exists, it exits and the existing dashboard picks up the config on its three-second refresh.
 - New CI run had not appeared at time of update; validation pending.
 - Research PC not yet updated. Stop the service after current task and rerun production installer before retesting.
+
+
+## Second PowerShell console diagnosis and correction — 9 November 2026
+
+Owner clarified that the extra tab title is the full executable path `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`. This confirms a second PowerShell console session, not a keyboard shortcut. The previous shortcut `-WindowStyle Hidden` flag was insufficient in the owner's Windows Terminal environment.
+
+Production now includes `tools/tradeflow-gemma-desktop/Launch-TradeFlow-Control-Centre.vbs`. The installer downloads this file and creates the main dashboard and seven specialist shortcuts with `wscript.exe` as TargetPath. The hidden VBS launcher starts PowerShell using WScript.Run window style 0, passing the UI script and optional specialist arguments. The UI remains visible as a WinForms window; the PowerShell console should not. The single-instance mutex and one background supervisor remain unchanged.
+
+The owner installed the prior build before this launcher correction. The Research PC still needs one more installer run after stopping the service safely. No LIVE/TEST research queue, source registry, evidence, approval/import, or .env changes are required.

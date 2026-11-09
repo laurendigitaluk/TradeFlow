@@ -8,6 +8,18 @@ $ErrorActionPreference = 'Stop'
 $InstallPath = Split-Path -Parent $MyInvocation.MyCommand.Path
 $SourcePath = Join-Path $InstallPath 'src'
 $EnvFile = Join-Path $InstallPath '.env'
+$DesktopRoot = Join-Path $env:LOCALAPPDATA 'TradeFlow\ResearchControlCentre'
+$DesktopServicePath = Join-Path $DesktopRoot 'service.json'
+if (Test-Path -LiteralPath $DesktopServicePath -PathType Leaf) {
+    try {
+        $DesktopService = Get-Content -LiteralPath $DesktopServicePath -Raw | ConvertFrom-Json
+        if ([IO.Path]::GetFullPath([string]$DesktopService.installPath) -eq [IO.Path]::GetFullPath($InstallPath)) {
+            $EnvFile = [string]$DesktopService.envFile
+        }
+    } catch {
+        throw 'The desktop service configuration is invalid. Re-run the Control Centre installer before starting Gemma.'
+    }
+}
 
 if (-not (Test-Path -LiteralPath (Join-Path $SourcePath 'task-worker.mjs') -PathType Leaf)) {
     throw "Gemma worker source is missing: $SourcePath"

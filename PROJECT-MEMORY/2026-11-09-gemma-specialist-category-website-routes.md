@@ -6,15 +6,11 @@ The Windows Research Control Centre exposes one independently switchable Gemma s
 The seven specialists share one persistent queue supervisor and one Ollama execution lane. Do not run seven competing Node workers. The desktop config defaults to all seven specialist switches enabled, with per-agent disable/enable controls and individual desktop shortcuts.
 
 ## Website research
-LIVE source registry audit: 119 UK source records, 116 enabled. Existing source records are retained; no duplicate source rows are inserted. The category coverage counts overlap where a source is shared.
+LIVE source registry audit: 119 UK source records, 116 enabled. Existing source records are retained; no duplicate source rows are inserted. Category coverage counts overlap where sources are shared.
 
-The specialist playbooks now include explicit site entries for all previously uncovered registered domains:
-- Drones: hobbyrc.co.uk, heliguy.com, dji-retail.co.uk, dmtl.co.uk, leicesterdrones.com, quadcopters.co.uk.
-- Mobile phones: argos.co.uk, currys.co.uk, johnlewis.com, ee.co.uk, very.co.uk, oppo.com, realme.com.
-- Cameras: sony.co.uk, jessops.com, parkcameras.com, cliftoncameras.co.uk, harrisoncameras.co.uk, camerapricebuster.co.uk, castlecameras.co.uk, productiongear.co.uk.
-- Metal detectors: explicit Amazon UK and eBay UK category instructions, retaining the existing dedicated marketplace search URL patterns.
+A full re-read of the category-specific source-playbook blocks confirmed the additional registered UK domains already had specialist site definitions. The earlier route-count script used an incorrect block boundary and falsely reported those entries as missing. No source registry rows or website definitions were added or changed in this follow-up.
 
-A regression test checks the added domains' category instructions, homepage discovery routes, generic model-search fallback and metal-detector Amazon/eBay route patterns. Discovery pages are not evidence; Gemma must follow exact product/listing links and capture the individual page for ChatGPT review. No autonomous approval/import is introduced.
+A regression test now protects the existing specialist definitions for the additional drone, mobile-phone and camera websites, plus Amazon UK and eBay UK marketplace search patterns for metal detectors. Discovery pages are not evidence; Gemma must follow exact product/listing links and capture the individual page for ChatGPT review. No autonomous approval/import is introduced.
 
 ## Deployment gates and safety
 Code and documentation changes are on feature/gemma-desktop-control-centre-20261109, PR #325. The latest source-route/test commit is 74705aebb170487b8d3015cd654d466430be2727; documentation updates follow it. Re-check the PR's CI against the final head before merge.

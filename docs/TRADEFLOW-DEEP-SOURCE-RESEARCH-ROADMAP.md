@@ -121,3 +121,19 @@ H. Update operator instructions and diagnostic roadmap; only then retire old Gea
 4. Confirm one worker process only and that status shows all enabled specialists waiting without active research tasks.
 5. Submit one bounded TEST task per representative specialist only after the installation is fingerprinted; verify disabled specialist tasks remain queued and enabled tasks are claimed only when enabled.
 6. Run one controlled LIVE acceptance task only after TEST and source-route acceptance. Confirm raw captures appear in review queue; no automatic approval/import.
+
+
+## Post-merge rollout state — 9 November 2026
+
+- PR #325 merged to production: `b20123fd8f832388011589ac8e7f9e602bb98f08`.
+- Production CI run #473 passed all Gemma checks: PowerShell/Node syntax, 92 tests with zero failures, Owner Dashboard JavaScript syntax.
+- LIVE RPC `platform_ai_agent_claim_task_for_agents(text,text[],integer)` exists. Permission audit: service_role can execute; authenticated cannot; SECURITY DEFINER enabled.
+- TEST does not contain the scoped RPC and remains separate.
+- Installer is available at `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1` on production.
+- Research PC installation has not happened. No local worker restart, stop, task dispatch or evidence capture was performed as part of this deployment verification.
+
+### Next operator action
+
+On the Research PC, open PowerShell in the existing Gemma folder containing `src\task-worker.mjs`, download and run the production installer using the command in `tools/tradeflow-gemma-desktop/README.md`. Stop any active old worker cleanly with Ctrl+C before running it. Reuse the existing private .env path; never copy or disclose its contents.
+
+After installation, verify the single background supervisor and seven switches. All seven are enabled by default and wait for matching website-originated work. Desktop icons enable the corresponding specialist and open the Control Centre. Then run one bounded LIVE review-only acceptance task and verify raw capture in `platform_catalogue_research_queue`; no automatic approval/import. Do not use TEST for this desktop service.

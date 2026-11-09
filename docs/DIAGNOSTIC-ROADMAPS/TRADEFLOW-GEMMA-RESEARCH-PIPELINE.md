@@ -1007,3 +1007,11 @@ PR #338 adds 3D-printer-only counters for fetch attempts, successful fetches, pr
 - Active shared evidence: 239 UK-new, 21 UK-used; 17 UK-new inactive. No shared evidence was created after 20:00 UTC.
 - Category heartbeat 21:21:16 UTC; generic worker heartbeat 21:17:16 UTC. No current task. Generic idle heartbeat remains stale; PR #331 is still open.
 - Next step is an explicitly approved in-place Research PC update using the current production updater, which validates both environment URLs and preserves the private `.env` and specialist config. Do not run it, restart the worker or queue a test without explicit owner approval.
+
+## 9 November 2026 — 21:43 UTC ChatGPT review of Kobra 4 Standard
+
+The pending Anycubic Kobra 4 / Standard Printer capture was validated against the direct official UK page. The page separately lists:
+- Standard Kobra 4: £159.00 GBP; GB VAT included; ships in 24 hours.
+- Kobra 4 Combo (4 colors): £259.00 GBP; separate package and not the Standard Printer price.
+
+The existing LIVE queue row `5c951409-c951-4f35-be87-884eba7968cc` was enriched as `uk_new`, £159 GBP, New, with availability and notes that explicitly exclude the Combo price. Status remains `needs_research`; no reviewer identity/timestamp, approval, import or shared-evidence insert was made. Original page capture length remains 12,909 characters.

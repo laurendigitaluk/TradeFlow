@@ -15,8 +15,9 @@ test('rejects a multi-agent shared worker configuration', () => {
   assert.throws(() => normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: true, enabledAgentKeys: ['3d-printers-equipment', 'gaming-consoles-accessories'] }), /exactly one/);
 });
 
-test('rejects disabled or unknown agents', () => {
-  assert.throws(() => normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: false, enabledAgentKeys: ['3d-printers-equipment'] }), /disabled/);
+test('preserves the local stop switch and rejects unknown agents', () => {
+  const stopped = normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: false, enabledAgentKeys: ['3d-printers-equipment'] });
+  assert.equal(stopped.serviceEnabled, false);
   assert.throws(() => normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: true, enabledAgentKeys: ['unknown-category'] }), /Unknown isolated/);
 });
 

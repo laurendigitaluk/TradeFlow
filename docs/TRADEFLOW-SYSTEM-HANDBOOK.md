@@ -4505,3 +4505,32 @@ The owner clarified that the second visible tab was titled with the executable p
 The production installer now downloads `Launch-TradeFlow-Control-Centre.vbs` and creates the main Control Centre and seven specialist shortcuts with `wscript.exe` as the target. The VBScript starts the PowerShell WinForms UI with window style 0 (hidden) and passes through the optional specialist arguments. The WinForms Control Centre remains visible. The existing named mutex still enforces one dashboard instance, and the existing scheduled supervisor remains the only background research worker.
 
 The owner installed the previous build before this WScript-host correction was added. The PC must be updated by rerunning the production installer once more after the background service has been stopped safely. This is a launcher-only correction; do not change the worker, .env, LIVE queue, or TEST configuration.
+
+
+## 9 November 2026 — 3D-printer discovery, full-page capture and ELEGOO used-lane repair (review PR #332)
+
+Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`. The feature branch is based on current production `de1b8d4e12edf0102cea28f935a763826ff1c06b`. It consolidates the stale PR #327 full-page/Creality-route correction and PR #323 ELEGOO used-lane correction onto current production; those earlier PRs are to be closed as superseded only after this replacement passes CI.
+
+### LIVE evidence and first loss points
+- Exact branch task history: 19 registered task rows, 56 product subtasks; 19 completed, 0 queued/running/failed. Latest task completed 01:56:42 UTC.
+- Latest Ender-3 V3 KE: 11 search results, 0 exact individual product pages discovered/fetched, 0 Gemma calls; 28 approved-source route attempts (11 route candidates, 11 empty, 6 errors), plus two Creality collection JSON 404s.
+- Latest K1 Max: 11 search results, 1 exact page discovered/fetched, 0 Gemma calls because the task predates PR #320's production merge, 1 raw candidate and queue write `duplicate-skipped` against the existing imported K1 Max record. It also probed the unrelated Ender-3 V3 family collection and received one 404.
+- Repeated route failures include Uni3Dverse 404, eBay UK 403/404, Amazon UK 404 and SecondHand.org.uk 404. No direct individual-page fetch error occurred in the latest K1 Max task.
+- The earliest measurable loss remains search-to-exact-product-page discovery. The subsequent successful-page loss is the 10,000-character truncation after Gemma extraction.
+
+### Current category evidence and review audit
+The correct master category is `3d-printers-equipment` (category ID `ab8b13b0-cc9e-45a6-8c8e-5a0d4f6bb0a1`). It contains 208 master products (201 active/customer-visible) and 277 linked shared-evidence rows: 260 active (239 UK-new, 21 UK-used) and 17 inactive. This is separate from the ChatGPT review queue:
+- 65 historical queue rows: 28 imported, 37 rejected, 0 open.
+- 28 queue rows link to active shared evidence: 23 `uk_new`, 5 `uk_used`, all GBP-priced.
+- 62 queue records contain page captures; current stored `captured_text` and `source_excerpt` maximum is 10,000 characters, and none exceeds that boundary.
+- Audit gap: 64/65 queue rows lack `reviewed_by`; 8 imported rows also lack `reviewed_at`; 64/65 queue rows lack top-level `evidence_type`. Linked shared evidence carries its new/used type. Do not infer reviewer identities or rewrite historical decisions.
+
+### Code changes proposed
+1. **Full-page retention after successful Gemma extraction.** Add `shouldRetainFullPageCapture(task)` so 3D-printer and existing Gaming paths retain the complete fetched page in both structured `source_excerpt` and `page_capture.captured_text`; other categories retain the existing 10,000-character cap. A 40,642-character regression fixture changes retention from 10,000/40,642 (24.6%) to 40,642/40,642 (100%), recovering 30,642 characters. The LIVE queue's 62 existing captures remain unchanged; this is not retroactive.
+2. **Creality model-family routing.** Keep the general FDM collection for Creality printers, but probe `/uk/collections/ender-3-v3-series` only when the requested model contains `ender-3 v3`. K1 Max therefore avoids one unrelated collection probe/404; Ender-3 V3 KE retains the model-family route. This does not claim the collection JSON 404 is fixed.
+3. **ELEGOO used-lane eligibility.** LIVE's exact existing ELEGOO UK manufacturer source is GB, enabled, assigned to this category and currently `research_scope='new_uk'`. Production already has the FDM new route and pre-owned used route, but the source scope excludes it from `uk_used` before route selection. Add an update-only migration changing only that exact existing row from `new_uk` to `all`. The migration is not applied. TEST has no matching source row according to the existing checkpoint; the update is a no-op where no row matches and copies no data.
+
+### Regression coverage and release gate
+Four regression tests cover full-page retention by category, successful mocked Gemma extraction with a 40,642-character page, Creality model-specific collection selection, and ELEGOO new/used lane eligibility with manufacturer/category/route boundaries. No source route is promoted to evidence; collection pages remain discovery only. No evidence is approved or imported automatically.
+
+Current production Gemma extraction restoration PR #320 is already merged. The worker's post-merge runtime remains unverified. The proposed capture/routing/source-scope changes are code and migration review only: do not apply the migration, modify LIVE source rows, queue a research task, approve/import evidence, or deploy without explicit owner approval. After review and approval, install the code preserving the private `.env`; apply the source migration only through the approved release process; then run one bounded 3D-printer check and verify exact page discovery, Gemma calls, full capture retention and new/used review separation.

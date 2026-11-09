@@ -1,7 +1,7 @@
 # TradeFlow Gemma — isolated category-agent architecture
 
 Date: 2026-11-09
-Status: implementation branch prepared; CI and Research PC installation/acceptance pending.
+Status: architecture branch and seven category branches prepared; Gemma Research Tests CI passed on 2026-11-09 (run 42716626875); Research PC installation/acceptance pending.
 Architecture branch: `feature/gemma-isolated-agent-foundation-20261109`
 Production base commit: `9b2027528243735a2fff35f9abc671673f864032`
 

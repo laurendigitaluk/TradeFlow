@@ -1,3 +1,21 @@
+## 9 November 2026 23:32 UTC — confirmed generic worker identity race
+
+LIVE activity now records:
+- 23:16:18 — generic worker_started, DESKTOP-LVASEUB-129276.
+- 23:20:07 — isolated 3D worker_started, DESKTOP-LVASEUB-3d-printers-equipment-128700.
+- 23:23:00 — a second generic worker_started, DESKTOP-LVASEUB-108588.
+- 23:30:32 — isolated 3D worker_stopped, DESKTOP-LVASEUB-3d-printers-equipment-128700.
+- 23:31:33 — generic worker_stopped, DESKTOP-LVASEUB-129276.
+No worker_stopped event is recorded for the newer generic worker 108588.
+
+The generic status row now points back to 129276 and says idle because the older worker's stop event updated it after the newer 108588 start. The isolated 3D status row points to 128700 and says idle after its clean stop. There are no active 3D-printer parent tasks. Supabase status therefore cannot prove whether 108588 is still alive; its start event has no matching stop and its identity was overwritten by the older stop event.
+
+The LIVE RPC platform_ai_agent_report_event was inspected. Its ON CONFLICT(agent_key) update does not compare p_details.worker_id with the current metadata worker_id. A late stop/heartbeat from an older process can overwrite a newer process's status and metadata. PR #331 adds idle heartbeat cadence but does not add this worker-identity guard. Do not merge PR #331 until the lifecycle race is addressed or local process state is reconciled.
+
+This is shared worker telemetry, not a safe 3D-only code change. No RPC/migration or other-category worker change was made. Before another 3D task, reconcile the Research PC process list and shared/isolated configs; do not infer that the generic worker is stopped from the current status row.
+
+
+
 ## 9 November 2026 23:32 UTC — isolated 3D PR now combines queue-field and retailer-matcher fixes
 
 PR #344 has been extended to carry both the raw-fallback observation-field correction and the 3DJake retailer-parent-taxonomy matcher correction into gemma/3d-printers. It now changes only agent.mjs, agent-speed.test.mjs and source-playbooks.test.mjs on the isolated 3D branch. Updated CI run #42721156282 passed 110/110 tests with zero failures. PR #344 is open/mergeable, unmerged and undeployed.

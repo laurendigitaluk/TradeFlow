@@ -37,11 +37,12 @@ $EnvFile = (Resolve-Path -LiteralPath $EnvFile).Path
 $task = Get-ScheduledTask -TaskName 'TradeFlow Gemma Research Supervisor' -ErrorAction SilentlyContinue
 $taskInfo = if ($task) { Get-ScheduledTaskInfo -TaskName 'TradeFlow Gemma Research Supervisor' -ErrorAction SilentlyContinue } else { $null }
 $desktopTaskRunning = $taskInfo -and $taskInfo.State -eq 'Running'
-if (-not $desktopTaskRunning) {
-    $legacy = Get-CimInstance Win32_Process -Filter "name='node.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -match 'task-worker\.mjs' }
-    if ($legacy) { throw 'A Gemma task-worker process is already running outside the desktop supervisor. Stop it cleanly with Ctrl+C before installing; this installer will not terminate it.' }
+if ($desktopTaskRunning) {
+    throw 'The desktop supervisor is already running. In the Control Centre choose Stop after current task, wait until the service shows stopped, then rerun the installer. This installer will not update worker files while a task may be active.'
 }
+$legacy = Get-CimInstance Win32_Process -Filter "name='node.exe'" -ErrorAction SilentlyContinue |
+    Where-Object { $_.CommandLine -match 'task-worker\.mjs' }
+if ($legacy) { throw 'A Gemma task-worker process is already running outside the desktop supervisor. Stop it cleanly with Ctrl+C before installing; this installer will not terminate it.' }
 
 # Read only to validate approved project targets. Secret values are never printed or copied.
 $envValues = @{}

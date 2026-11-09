@@ -3,7 +3,7 @@
 Date: 9 November 2026 (UTC)
 Branch: feat/gemma-gaming-capture-rollout-20261109
 Base: production after PR #314
-Status: PR #316 merged into production (merge commit 5023a95c22ae027f299ded124819d74db6b7a078); GitHub Actions passed 79/79 tests. Research PC installation and runtime acceptance remain pending.
+Status: PR #316 merged into production (merge commit 5023a95c22ae027f299ded124819d74db6b7a078); GitHub Actions passed 79/79 tests. TEST task owner-gaming-xbox-series-s-512gb-new-used-20261109-01 is queued; Research PC installation and runtime acceptance remain pending.
 
 ## Preservation baseline (TradeFlow LIVE)
 
@@ -25,7 +25,7 @@ Status: PR #316 merged into production (merge commit 5023a95c22ae027f299ded12481
 ## Source and task state
 
 - LIVE gaming source registry: 14 loadable UK sources (12 category-scoped plus universal Amazon UK and eBay UK).
-- No gaming research task queued; no LIVE or TEST catalogue/evidence writes performed.
+- One controlled TEST-only Xbox Series S 512GB Standard research task is queued with separate UK-new and UK-used subtasks. No LIVE research task is queued. No catalogue/evidence imports or changes have been made.
 - The older queued TEST 3D-printer smoke task (owner-test-3d-printer-creality-ender-3-v3-ke-uk-new-20261108-02) has been marked cancelled; its task row and history remain. It will not be claimed during the gaming test.
 - Research PC updater/runtime verification is still required. Do not claim a Gemma test has run until the worker is installed and telemetry confirms a completed gaming task.
 
@@ -34,5 +34,5 @@ Status: PR #316 merged into production (merge commit 5023a95c22ae027f299ded12481
 1. CI passed 79/79 and PR #316 is merged to production.
 2. Update Research PC from production using the version-controlled updater, without starting the worker; preserve existing .env, backups, tasks and logs.
 3. The stale TEST 3D-printer task is cancelled, with its history retained.
-4. Queue and run one controlled Xbox Series S task in TEST (new and used lanes), inspect every source and raw capture, then run the category in LIVE only after the test passes.
+4. Run the already queued Xbox Series S TEST task (new and used lanes), inspect every source and raw capture, then run the category in LIVE only after the test passes.
 5. ChatGPT reviews raw captures and decides which evidence is relevant and which existing master product it belongs to. No autonomous import.

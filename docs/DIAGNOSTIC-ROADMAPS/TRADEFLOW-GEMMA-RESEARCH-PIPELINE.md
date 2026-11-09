@@ -878,3 +878,21 @@ The Research PC worker is connected to LIVE Common Room, but the Gaming agent is
 PR #316 unintentionally broadened `isCaptureOnlyResearchTask()` from the 3D-printer-specific fast-capture handling to include all 3D-printer tasks as capture-only. This bypassed `extractBatch()` and Ollama/Gemma for 3D-printer research. LIVE K1 Max task `0ce88391-e5c2-45c4-adf9-149d364c702c` explicitly logged `Capture-only mode ... local Ollama inference is intentionally skipped`; its page was retained as raw capture but not enriched by Gemma. This contradicted the pre-rollout 3D workflow, whose task metrics showed Gemma extraction calls and structured observations. Ender-3 V3 KE task `5b3e53b0-b857-4f0b-89a0-e255596afd3c` independently found no eligible page, so source discovery remains a separate issue and must not be conflated with the extraction regression.
 
 Correction in PR #320 scopes `isCaptureOnlyResearchTask()` to Gaming only. 3D-printer tasks therefore return to the established `extractBatch()` / Ollama path, retaining the existing deterministic raw fallback when extraction fails. Gaming remains capture-only. A regression test explicitly asserts this separation. No Research PC installation, source registry, LIVE/TEST database records, queue records, approvals or imports are changed by the code correction. After CI passes and the fix is merged, verify a single small 3D-printer LIVE task reaches `extraction_batch_started` and records `gemma_calls > 0`; do not change the working 3D-printer source settings. Separately diagnose any model/source discovery failures using route telemetry.
+
+## 9 November 2026 — Bound 3D-printer recovery after an Ollama timeout
+
+LIVE post-merge task `owner-live-3d-printers-worker-check-neptune4pro-20261109-1445` confirms the restored 3D-printer Gemma path is running on worker `DESKTOP-LVASEUB-78412`:
+- 29 search results; 6 exact product pages discovered; 3 inspected/fetched; 3 product-page fetch errors.
+- 26 approved-source route attempts: 11 matches, 9 empty, 6 route errors; 3 pagination pages followed.
+- 3 page captures; 2 extraction batches; 3 extraction failures; 0 accepted candidates; 3 borderline raw/structured captures.
+- Gemma extraction consumed 1,129,543 ms (18m49s) of a 1,155,676 ms task (19m16s).
+- The first two-page batch timed out after five minutes. Production then serially retried both pages with the same timeout; both retries failed (one output-token limit, one timeout). This consumed another 9m21s and produced no structured observation for either page. The final one-page batch succeeded with one structured observation in about 4m27s.
+- The task retained all three fetched page captures, but all three queue writes were `duplicate-skipped` against already imported records. Result: 0 new, 0 enriched, 0 staged for ChatGPT review. Existing imported evidence and review decisions were not changed.
+
+PR #333 adds a 3D-printer-only timeout branch: when a multi-page Gemma batch itself times out, skip serial per-page retries and immediately retain the original full raw captures for ChatGPT. Non-timeout failures (including output-token-limit/invalid JSON) keep the existing isolated single-page recovery. It also adds `gemma_http_requests` (actual Ollama HTTP requests) and `gemma_recovery_skipped` metrics while retaining the existing `gemma_calls` batch-count field for compatibility.
+
+Measured replay estimate from the latest task: skipping the 9m21s serial-recovery interval would reduce the 19m16s run to approximately 9m54s if the later stages take the same time. This is a deterministic estimate from recorded stage timestamps, not a LIVE retest. Regression tests cover timeout fallback, full raw-page retention, continued token-limit recovery and actual request counting.
+
+The older PR #297 proposes a global 30–90 second extraction timeout but is stale/unmergeable and would also shorten normal single-page extraction; the successful final page in this LIVE task required about 4m27s. PR #333 does not reduce the normal extraction timeout or change other categories.
+
+No research task was queued, no worker restarted, no source registry/migration/review/evidence/catalogue row changed, and no approval/import occurred. TEST/LIVE separation and private configuration remain untouched. Research PC installation and runtime verification remain separate approval gates.

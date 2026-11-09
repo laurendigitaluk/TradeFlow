@@ -5206,3 +5206,12 @@ The three legacy queue rows are: one imported Creality K1 row with a `review-` k
 CI history on PR #335: runs #549 and #553 failed before scheduling jobs (zero jobs). Run #556 executed 110 tests: 109 passed and one existing source-playbook schema assertion failed because it still expected the old local variable name `existing` after the code renamed it to `exactExisting`. Run #558 executed 110 tests and had one failure in the new assertion because it included the `?select=` prefix in the selected-column comparison. The five new legacy-key regression tests passed. Both test assertions were corrected; Gemma Research Tests run #560 on code/test commit `eff09502183075c3bab334afb45328ba2c947fdd` passed **110/110**. The default `main` branch does not contain the Gemma workflow, but that absence is not established as the cause of the zero-job runs because #556 and #560 executed successfully. No change was made to `main`.
 
 The subsequent commits on this feature branch are documentation-only. The `tradeflow` Cloudflare preview build passed on the tested head; the `tradeflow-test` preview build was still running at the time of this correction. No production deployment occurred.
+
+
+## Final verification — 9 November 2026 18:34 UTC
+
+The corrected legacy-key schema assertion and the five new compatibility regressions are now verified. Gemma Research Tests run #565 completed successfully on current PR #335 head `084c87206323d5a981600ce5a7ad2ef791884ce2`: **110 tests, 110 passed, 0 failed**. The code/test commit `eff09502183075c3bab334afb45328ba2c947fdd` also passed both Cloudflare Workers Builds preview checks (`tradeflow` and `tradeflow-test`); subsequent changes were documentation-only.
+
+PR #335 remains open, mergeable, based on production, and unmerged/undeployed. PR #334 was closed unmerged as superseded by the consolidated PR #335. PR #331 remains open for the separate generic idle-heartbeat correction. No Research PC installation or runtime verification was performed; do not merge/deploy until the owner approves and the Research PC acceptance gate is completed.
+
+The LIVE task/queue baseline is unchanged: 20 exact task rows, 57 subtasks, all completed; zero active/queued/failed tasks; latest completion 15:03:59 UTC; queue 65 rows (28 imported, 37 rejected, zero open), no new/updated queue rows since the latest task. No source, migration, task, queue or evidence record was changed. No evidence was approved or imported. No TEST/LIVE copy or secret/configuration change occurred.

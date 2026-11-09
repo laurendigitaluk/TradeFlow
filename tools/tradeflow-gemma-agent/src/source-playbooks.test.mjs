@@ -29,6 +29,23 @@ test('manufacturer-specific playbook builds UK search and collection routes', ()
   assert.ok(routes.some(url => url.includes('/uk/collections/fdm-3d-printer')));
 });
 
+test('Anycubic UK routes include both direct Kobra 3 Max V2 packages and exact model routes', () => {
+  const source = {
+    domain: 'uk.anycubic3d.com',
+    search_url_template: 'https://uk.anycubic3d.com/search?type=product&q={query}'
+  };
+  const maxTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra 3 Max V2', research_type: 'uk_both' };
+  const kobra4Task = { ...task, manufacturer: 'Anycubic', model: 'Kobra 4', research_type: 'uk_both' };
+  const s1Task = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_both' };
+  const maxRoutes = buildWebsiteSearchRoutes(source, maxTask);
+  assert.ok(maxRoutes.includes('https://uk.anycubic3d.com/products/kobra-3-max-v2-3d-printer'));
+  assert.ok(maxRoutes.includes('https://uk.anycubic3d.com/products/kobra-3-max-v2-ace-2-pro-combo'));
+  assert.ok(maxRoutes.some(url => url.includes('/collections/3d-printers')));
+  assert.ok(maxRoutes.some(url => url.includes('/search?type=product&q=Anycubic%20Kobra%203%20Max%20V2')));
+  assert.ok(buildWebsiteSearchRoutes(source, kobra4Task).includes('https://uk.anycubic3d.com/products/kobra-4-3d-printer'));
+  assert.ok(buildWebsiteSearchRoutes(source, s1Task).some(url => url.includes('/products/kobra-s1-ace-2-pro-combo')));
+});
+
 test('verified 123-3D collections route new and refurbished searches separately', () => {
   const newTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_new' };
   const usedTask = { ...newTask, research_type: 'uk_used' };

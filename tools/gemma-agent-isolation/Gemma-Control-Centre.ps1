@@ -89,7 +89,8 @@ function Save-AgentConfig($Runtime,[bool]$Enabled) {
     $config | ConvertTo-Json -Depth 8 | Set-Content -LiteralPath $Runtime.Paths.Config -Encoding UTF8
 }
 function Start-Agent($Agent) {
-    $runtime = Get-AgentRuntime $Agent
+    $processSnapshot = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue)
+    $runtime = Get-AgentRuntime $Agent $processSnapshot $true
     if (-not $runtime.Installed) { throw "$($Agent.Label) is not installed." }
     if ($runtime.Branch -ne $Agent.Branch) { throw "Branch mismatch for $($Agent.Label). Expected $($Agent.Branch), found $($runtime.Branch). No worker started." }
     if ($runtime.Process) { throw "$($Agent.Label) is already running. No duplicate worker was started." }
@@ -103,12 +104,14 @@ function Start-Agent($Agent) {
     Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $runtime.Paths.Install -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog | Out-Null
 }
 function Stop-Agent($Agent) {
-    $runtime = Get-AgentRuntime $Agent
+    $processSnapshot = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue)
+    $runtime = Get-AgentRuntime $Agent $processSnapshot 
     if (-not $runtime.Installed) { throw "$($Agent.Label) is not installed." }
     Save-AgentConfig $runtime $false
 }
 function Update-Agent($Agent) {
-    $runtime = Get-AgentRuntime $Agent
+    $processSnapshot = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue)
+    $runtime = Get-AgentRuntime $Agent $processSnapshot $true
     if (-not $runtime.Installed) { throw "$($Agent.Label) is not installed." }
     if ($runtime.Branch -ne $Agent.Branch) { throw "Branch mismatch for $($Agent.Label). Update cancelled." }
     if ($runtime.Process) { throw "Stop $($Agent.Label) after its current task has finished before updating it." }

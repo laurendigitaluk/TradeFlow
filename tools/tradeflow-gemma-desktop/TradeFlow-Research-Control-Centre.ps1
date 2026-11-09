@@ -213,8 +213,9 @@ foreach ($agent in $Agents) {
     $check.Location = New-Object System.Drawing.Point(12,76)
     $check.AutoSize = $true
     $check.Add_CheckedChanged({
-        if ($this.Tag) {
-            try { Set-AgentEnabled ([string]$this.Tag) ([bool]$this.Checked); Update-Display }
+        param($sender,$eventArgs)
+        if ($sender.Tag) {
+            try { Set-AgentEnabled ([string]$sender.Tag) ([bool]$sender.Checked); Update-Display }
             catch { [System.Windows.Forms.MessageBox]::Show($_.Exception.Message,'TradeFlow') }
         }
     }.GetNewClosure())

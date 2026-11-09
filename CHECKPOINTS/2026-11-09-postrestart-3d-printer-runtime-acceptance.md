@@ -57,3 +57,11 @@ LIVE Research PC worker and the 3D-printers branch only. No TEST, source registr
 - The approved production updater validates both existing LIVE and TEST project URLs, backs up installed source, runs syntax/tests before and after installation, and does not edit the private `.env` or specialist `config.json`. Do not run it, restart the Research PC or queue an acceptance task without explicit owner approval.
 - No task was queued, no worker was restarted, no source row or migration was changed, no evidence was approved/imported, and no TEST/LIVE data was copied. No secrets or private configuration were accessed.
 
+## 9 November 2026 — 21:43 UTC ChatGPT review enrichment (LIVE queue only)
+
+- Reviewed LIVE queue row `5c951409-c951-4f35-be87-884eba7968cc` for Anycubic Kobra 4 / Standard Printer against the direct official Anycubic UK product page.
+- The official page identifies the Standard Kobra 4 option at **£159.00 GBP**, states GB VAT is included and says the Kobra 4 ships in 24 hours. The separate Kobra 4 Combo (4 colors) option is **£259.00** and was explicitly excluded from the Standard Printer price.
+- The queue row was enriched with `evidence_type=uk_new`, `observed_price=159.00`, `price_currency=GBP`, `item_condition=New` and package-specific availability/research notes. The original 12,909-character source capture remains intact.
+- The row remains `needs_research`. `reviewed_by`, `reviewed_at`, `approved_at` and `imported_at` remain null. No owner approval, catalogue import or `shared_market_evidence` write occurred.
+- The other open row, Bambu Lab A1 / 3D Prima, remains `uk_new` at £215.00 GBP and `needs_research`; it is a refreshed stock observation against an existing same-URL £215 active evidence record.
+- The review queue remains 67 rows: 28 imported, 37 rejected, 2 pending. No used-market capture was added in this batch.

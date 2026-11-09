@@ -118,8 +118,8 @@ test('direct product detail template is not reused as a search route', () => {
 });
 
 test('unknown categories do not inherit the 3D printer website playbook', () => {
-  assert.equal(getCategoryWebsitePlaybook('mobile-phones'), null);
-  assert.deepEqual(getWebsiteInstructions('mobile-phones', 'store.creality.com'), null);
+  assert.equal(getCategoryWebsitePlaybook('unknown-catalogue-category'), null);
+  assert.deepEqual(getWebsiteInstructions('unknown-catalogue-category', 'store.creality.com'), null);
 });
 test('gaming category playbook preserves console and accessory identity for ChatGPT review', () => {
   const category = 'gaming-consoles-accessories';

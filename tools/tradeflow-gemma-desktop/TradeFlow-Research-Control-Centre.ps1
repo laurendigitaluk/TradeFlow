@@ -203,6 +203,9 @@ $listHost.Dock = 'Fill'
 $listHost.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $listHost.Padding = New-Object System.Windows.Forms.Padding(8,6,8,6)
 $form.Controls.Add($listHost)
+# WinForms docks controls in z-order. Put the Fill host behind all Top-docked controls,
+# otherwise it claims the full client area first and the header hides the first card rows.
+$form.Controls.SetChildIndex($listHost, $form.Controls.Count - 1)
 
 $AgentControls = @{}
 $agentIndex = 0

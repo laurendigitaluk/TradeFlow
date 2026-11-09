@@ -33,17 +33,20 @@ const playbooks = {
         routesByModel: [
           { modelIncludes: ['ender-3 v3'], routes: ['/uk/collections/ender-3-v3-series'] }
         ],
-        navigation: 'Use the UK storefront search first, then the verified FDM 3D Printer and model-family collections. Creality UK exposes its public Shopify collection products JSON; use it when the HTML contains no product cards, then follow exact standalone printer product handles to their individual UK product pages. Ignore accessories, upgrade kits and sibling printer variants.'
+        genericSearchFallback: false,
+        navigation: 'Use the UK storefront search and the verified FDM 3D Printer collection. Only add the Ender-3 V3 family collection when the requested model is in that family; never probe it for K1/K1 Max/K2 models. Creality exposes public Shopify collection products JSON: enumerate matching collection cards, then fetch the exact standalone printer product page. Ignore accessories, upgrade kits and sibling variants; keep machine-only and Combo packages separate.'
       },
       'bambu-lab-uk.myshopify.com': {
         label: 'Bambu Lab UK official store',
         routes: ['/search?q={query}', '/collections/3d-printers'],
-        navigation: 'Use Shopify storefront search, then the 3D printer collection. Open the exact model product page; distinguish standalone printer from Combo/bundle packages.'
+        genericSearchFallback: false,
+        navigation: 'Use Bambu Lab UK storefront search and the 3D printer collection as discovery only. Follow the exact product handle to its UK product page. Bambu pages can show standalone printer and Combo/AMS variants together: read the selected option, current GBP amount and stock state separately. Never transfer a Combo price to the standalone printer or infer a package from a collection card.'
       },
       'uk.anycubic3d.com': {
         label: 'Anycubic UK official store',
-        routes: ['/search?type=product&q={query}', '/collections/3d-printers'],
-        navigation: 'Use product search and the 3D printer collection. Open the exact model page and keep printer-only and bundle variants separate.'
+        routes: ['/collections/3d-printers', '/search?type=product&q={query}'],
+        genericSearchFallback: false,
+        navigation: 'Start with the UK 3D Printers collection and use the exact product-search route only as a second discovery route. Follow the exact printer product page; inspect the selected machine-only versus Combo/ACE bundle option, GBP price, stock and UK delivery. The same product page can contain multiple package prices; retain each package as a separate catalogue product/evidence context.'
       },
       'uk.elegoo.com': {
         label: 'ELEGOO UK official store',
@@ -58,19 +61,22 @@ const playbooks = {
       },
       'uni3dverse.co.uk': {
         label: 'Uni3Dverse used and refurbished',
-        routes: ['/used-3d-printers?search={query}', '/used-3d-printers'],
-        navigation: 'Start in the used/refurbished printer catalogue. Open each matching listing and preserve the stated used/refurbished grade and warranty status.'
+        routes: ['/used-3d-printers?search={query}'],
+        genericSearchFallback: false,
+        navigation: 'This is a curated used/refurbished stock catalogue, not a broad new-retail search engine. Use the printer-category search once, follow each exact individual listing and capture the current seller asking price, condition/grade, stock, included accessories, repair/service history, UK collection/delivery and stated warranty. Treat an empty catalogue as no current qualifying stock; do not invent a fallback route.'
       },
       '3dgbire.com': {
         label: '3DGBIRE reconditioned',
         collectionApi: 'shopify',
-        routes: ['/search?q={query}', '/collections/reconditioned-3d-printers-and-3d-scanners'],
-        navigation: 'Inspect the reconditioned/ex-demo collection as well as site search. Open the individual product page and retain reconditioned or ex-demo condition; do not classify as new.'
+        routes: ['/collections/reconditioned-3d-printers'],
+        genericSearchFallback: false,
+        navigation: 'Use the dedicated reconditioned 3D-printer collection as discovery, then open each individual printer page. Preserve reconditioned, refurbished or ex-demo grade as used evidence, and capture its current GBP price, stock, warranty/guarantee, included parts and delivery. Do not use the wider scanner/3D-scanner collection as a printer match; reject scanner stations, consumables and parts.'
       },
       '3dprima.co.uk': {
         label: '3D Prima UK retailer',
-        routes: ['/search?query={query}', '/search?q={query}'],
-        navigation: 'Search exact manufacturer and model. From any category results, follow the exact printer product card and exclude consumables and accessories.'
+        routes: ['/search?query={query}'],
+        genericSearchFallback: false,
+        navigation: 'Use the retailer search with the exact manufacturer plus full model name, then follow the direct product URL (the product path contains the manufacturer and product slug/ID). The direct page is the evidence: capture its current GBP price, VAT treatment, in-stock count, selected package, SKU/EAN and delivery charge context. Do not treat search snippets, crossed-out prices or the lowest-30-day reference as the current asking price.'
       },
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
@@ -81,13 +87,13 @@ const playbooks = {
           uk_used: ['https://www.123-3d.co.uk/collections/refurbished-printers']
         },
         genericSearchFallback: false,
-        navigation: 'Use the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used. Keep the routes lane-specific, follow exact individual product pages, and preserve refurbished grade/condition and package variants.'
+        navigation: 'Use only the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used; never scan both lanes for a single-lane task. The collection has brand/type filters and pagination: follow pagination, filter exact manufacturer/model and follow each individual printer page. Capture GBP/VAT price, stock, machine-only/Combo package and, for refurbished stock, exact grade/condition and warranty. Collection/search-card prices are discovery clues, not final evidence.'
       },
       'idig3dprinting.co.uk': {
         label: 'iDig3DPrinting UK retailer',
         routes: ['https://www.idig3dprinting.co.uk/product-category/3d-printers/'],
         genericSearchFallback: false,
-        navigation: 'Use the dedicated WordPress 3D Printers product category as a discovery page. Follow pagination and exact individual printer product links; do not use the general shop/search routes as evidence.'
+        navigation: 'This is a WordPress/WooCommerce product category with paginated product cards (16 products per page). Read the printer category only, follow its pagination and exact individual printer links, then capture the direct product page GBP amount, stock, condition and package. Do not use the general shop/search results as evidence; exclude filament, spare parts, hotends and scanner accessories.'
       },
       '3dflo.com': {
         label: '3DFLO UK retailer',

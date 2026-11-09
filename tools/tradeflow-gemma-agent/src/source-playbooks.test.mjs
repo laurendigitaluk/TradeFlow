@@ -257,6 +257,23 @@ test('3D printer matching rejects sibling models, accessories and package mismat
   assert.equal(matchesTaskModel('Creality K1 Max 3D Printer', 'https://store.creality.com/uk/products/k1-max', maxTask), true);
 });
 
+test('exact printer pages are not rejected because a manufacturer title describes a hotend feature', () => {
+  const kobraTask = {
+    ...task, manufacturer: 'Anycubic', model: 'Kobra 3 Max V2',
+    package_key: 'standard', package_name: 'Standard Printer'
+  };
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2: 88L Giant Volume & Full-Metal Hotend',
+      'https://uk.anycubic3d.com/products/kobra-3-max-v2-3d-printer', kobraTask),
+    true
+  );
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2 Replacement Hotend',
+      'https://uk.anycubic3d.com/products/kobra-3-max-v2-replacement-hotend', kobraTask),
+    false
+  );
+});
+
 test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
   const a1Task = { ...task, category_slug: '3d-printers-equipment', branch_slug: '3d-printers', manufacturer: 'Bambu Lab', model: 'A1' };
   assert.equal(

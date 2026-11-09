@@ -47,15 +47,15 @@ The existing LIVE source registry is retained; this change does not duplicate so
 
 Counts overlap because some sources serve multiple categories and universal sources are shared.
 
-The existing 3D-printer and gaming playbooks are preserved. Dedicated website navigation and exact-product rules have been added for drones, metal detectors, mobile phones, laptops and cameras. Routes are discovery only: Gemma must follow matching product links to individual pages and capture the raw page evidence for ChatGPT review. No autonomous approval or catalogue/evidence import is introduced.
+The 3D-printer playbook and extraction path are unchanged. Gaming retains its capture-only handoff and console-branch identity rules; its UK retailer and console-manufacturer discovery routes have been completed. Dedicated website navigation and exact-product rules are included for drones, metal detectors, mobile phones, laptops and cameras. Routes are discovery only: Gemma must follow matching product links to individual pages and capture the raw page evidence for ChatGPT review. No autonomous approval or catalogue/evidence import is introduced.
 
 ## Installation gate
 
-The agent-scoped SQL migration must be merged and applied to TradeFlow LIVE before the desktop service can claim work. Until that RPC exists, the worker stops with a `requires_migration` status and does not use the legacy unscoped claim.
+The agent-scoped claim RPC is now present in TradeFlow LIVE and has been verified as service-role executable and unavailable to authenticated users. TEST remains separate and does not have this RPC. If the LIVE RPC is ever missing, the worker stops with a `requires_migration` status and does not use the legacy unscoped claim.
 
-No Research PC installation, worker restart, or LIVE database migration is performed by this code change. The existing private `.env` remains in its original location and is never copied, printed or overwritten by the installer.
+The PR is merged and the LIVE scoped-claim RPC is present. The Research PC has not yet been installed or restarted. The existing private `.env` remains in its original location and is never copied, printed or overwritten by the installer.
 
-## Install after the feature is merged to production
+## Install from production
 
 Open PowerShell in the existing Gemma installation folder (the folder containing `src\task-worker.mjs`) and run:
 

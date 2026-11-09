@@ -141,8 +141,8 @@ test('3D printer extraction prompt requests one findings-array row for every sup
 
   assert.match(prompt, /supplied JSON schema exactly/i);
   assert.match(prompt, /One compact finding per supplied source_id/i);
-  assert.match(prompt, /REQUIRED POPULATION/i);
-  assert.match(prompt, /Never leave these fields blank/i);
+  assert.match(prompt, /Populate page_title, product_identity_text and match_observation/i);
+  assert.match(prompt, /Use empty values only when facts are genuinely absent/i);
   assert.match(prompt, /copy nearby_context exactly from the matching visible_gbp_price_context entry/i);
   assert.match(prompt, /"source_id":"S1"/);
   assert.match(prompt, /"source_id":"S2"/);
@@ -169,10 +169,10 @@ test('3D printer prompt requires one observation per visible GBP price and forbi
     url: 'https://example.co.uk/products/neptune-4-pro',
     text: 'Elegoo Neptune 4 Pro £290.00 Standard Printer. Open-box £164.00. Bundle £409.90.'
   }]);
-  assert.match(prompt, /one price_observations entry for every visible GBP price/i);
-  assert.match(prompt, /never infer association from proximity alone/i);
-  assert.match(prompt, /copy condition from the same price\/variant context/i);
-  assert.match(prompt, /only label a price as requested_product\/current when its own condition matches/i);
+  assert.match(prompt, /price_observations field with up to eight distinct relevant options/i);
+  assert.match(prompt, /do not infer association from proximity alone/i);
+  assert.match(prompt, /Copy condition from the same option/i);
+  assert.match(prompt, /only mark a price requested_product\/current when that same option matches the requested new or used lane/i);
   assert.match(prompt, /ambiguous/i);
   assert.match(prompt, /requested_product/i);
 });

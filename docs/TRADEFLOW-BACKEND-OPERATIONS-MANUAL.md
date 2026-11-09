@@ -363,3 +363,8 @@ Desktop UI defects must be isolated from worker defects. First inspect the seven
 The seven-agent UI uses a vertical scrollable list with specialist name, state and individual checkbox, plus enabled/active counts. If only a subset appears, inspect the installed local UI script version and layout before changing configuration. A UI-only update should replace only %LOCALAPPDATA%\TradeFlow\ResearchControlCentre\TradeFlow-Research-Control-Centre.ps1; do not rerun the full installer for a display-only change because it also invokes the Gemma worker updater. Closing the visible Control Centre does not stop the scheduled background supervisor. Preserve the existing private .env and service.json paths.
 
 Windows Terminal can capture a hidden PowerShell session on some Windows 11 configurations even when the VBS launcher uses WScript.Run window style 0. On the affected Research PC, selecting System > Advanced > Terminal > Windows Console Host stopped the extra console. This is a local OS preference and should not be treated as a backend or worker change.
+
+
+### Specialist card clipping / no vertical scroll — 9 November 2026
+
+First failure point is the WinForms card container in TradeFlow-Research-Control-Centre.ps1, not Supabase, the queue worker or the agent definitions. The initial FlowLayoutPanel TopDown/WrapContents=false layout clipped the first two cards in the owner's narrow side-by-side window. Production commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces it with a standard Panel using AutoScroll, explicit Y positions, AutoScrollMinSize and responsive card widths. For deployment replace only the local UI script; do not rerun the installer or touch the worker. Verify the list from first to seventh card by vertical scrolling.

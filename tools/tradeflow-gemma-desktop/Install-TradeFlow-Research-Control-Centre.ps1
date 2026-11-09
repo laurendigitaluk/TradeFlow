@@ -107,7 +107,7 @@ try {
     $desktop = [Environment]::GetFolderPath('Desktop')
     $shortcut = $shell.CreateShortcut((Join-Path $desktop 'TradeFlow Research Control Centre.lnk'))
     $shortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-    $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '"'
+    $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '"'
     $shortcut.WorkingDirectory = $AppRoot
     $shortcut.Save()
 
@@ -115,7 +115,7 @@ try {
         $safeLabel = [regex]::Replace([string]$agent.shortLabel,'[^A-Za-z0-9 -]','').Trim()
         $agentShortcut = $shell.CreateShortcut((Join-Path $desktop ('Gemma - ' + $safeLabel + '.lnk')))
         $agentShortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-        $agentShortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '" -AgentKey "' + $agent.agentKey + '" -EnableAgent'
+        $agentShortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '" -AgentKey "' + $agent.agentKey + '" -EnableAgent'
         $agentShortcut.WorkingDirectory = $AppRoot
         $agentShortcut.Save()
     }

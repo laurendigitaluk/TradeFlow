@@ -9,14 +9,14 @@ const env = {
   TRADEFLOW_LIVE_SERVICE_ROLE_KEY: 'live-secret'
 };
 
-test('Gemma worker defaults to the approved TEST control plane', () => {
-  assert.equal(resolveControlPlane(env).name, 'TEST');
-  assert.equal(resolveControlPlane(env).url, env.TRADEFLOW_TEST_URL);
-  assert.equal(resolveControlPlane(env).key, 'test-secret');
+test('Gemma worker defaults to the approved LIVE control plane', () => {
+  assert.equal(resolveControlPlane(env).name, 'LIVE');
+  assert.equal(resolveControlPlane(env).url, env.TRADEFLOW_LIVE_URL);
+  assert.equal(resolveControlPlane(env).key, 'live-secret');
 });
 
-test('Gemma worker selects LIVE only after an explicit LIVE setting', () => {
-  assert.equal(resolveControlPlane({ ...env, TRADEFLOW_GEMMA_ENVIRONMENT: 'LIVE' }).name, 'LIVE');
+test('Gemma worker selects TEST only after an explicit TEST setting', () => {
+  assert.equal(resolveControlPlane({ ...env, TRADEFLOW_GEMMA_ENVIRONMENT: 'TEST' }).name, 'TEST');
 });
 
 test('Gemma worker rejects unknown or unsafe environment names', () => {
@@ -28,5 +28,5 @@ test('Gemma worker rejects a URL that does not match the selected project', () =
 });
 
 test('Gemma worker refuses to start when selected environment credentials are missing', () => {
-  assert.throws(() => resolveControlPlane({}), /TRADEFLOW_TEST_URL and service-role key are required/);
+  assert.throws(() => resolveControlPlane({}), /TRADEFLOW_LIVE_URL and service-role key are required/);
 });

@@ -998,3 +998,12 @@ No LIVE queue row, catalogue product, shared evidence row, source registry entry
 The production-style fingerprint was replayed against the actual three latest Neptune 4 Pro task captures and their matching imported LIVE queue rows. All 3/3 fingerprints changed: 3DJake 10,000→14,328 chars (4→7 unique price/context observations); ELEGOO UK 9,998→42,206 chars (14→52); 3D Prima 3,493→3,506 chars (2→8). Each would create a new `needs_research` revision; exact repeats remain idempotent. This was a read-only calculation: zero queue rows were inserted or modified.
 
 Latest verification: GitHub Actions run #538 passed 105/105 tests on the current PR head `ef1e753dd5621508f610937e473f85531d839d26`. PR #334 remains open, mergeable, unmerged and undeployed.
+
+
+## 9 November 2026 — Legacy 3D-printer review-key compatibility (stacked PR #335)
+
+LIVE audit found 65 exact-branch review rows: 62 use the current `capture-` dedupe prefix, one imported Creality K1 row uses the legacy `review-` prefix, and two Anycubic Kobra S1 Max rows use the older `borderline-` prefix (one imported, one rejected). PR #334's new lookup first checks the current `capture-` base key. Without a fallback, those three older rows would not be found, so an unchanged page could be inserted again after rollout.
+
+The correction is isolated to `3d-printers-equipment` / `3d-printers`: when the current base-key lookup misses, query by exact record type, category, branch, manufacturer, model, package and source URL, ordered by most recently updated. Compare snapshot fingerprints across the returned legacy rows: any exact snapshot remains duplicate-skipped; an unreviewed `needs_research` capture may use the existing guarded enrichment path; changed terminal records produce a new unverified snapshot. Imported/rejected rows remain immutable. The optimistic update still requires the same row identity, no reviewer/approval/import fields and the previously observed `updated_at`.
+
+Regression coverage verifies exact identity filters, unchanged legacy imported/rejected snapshots, changed legacy snapshots, and guarded enrichment of an unreviewed legacy pending row. This is stacked on PR #334's review-snapshot work; no LIVE queue writes, source changes, migration, approval or import were performed. The new branch is not installed or deployed. After CI, review PR #334 and then the stacked compatibility PR before any Research PC rollout.

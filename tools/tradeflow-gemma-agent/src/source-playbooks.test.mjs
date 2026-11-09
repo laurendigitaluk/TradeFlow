@@ -132,6 +132,9 @@ test('gaming category playbook preserves console and accessory identity for Chat
   assert.ok(getWebsiteInstructions(category, 'nintendo.com'));
   assert.ok(getWebsiteInstructions(category, 'playstation.com'));
   assert.ok(getWebsiteInstructions(category, 'ebay.co.uk'));
+  assert.ok(getWebsiteInstructions(category, 'cashconverters.co.uk'));
+  assert.ok(getWebsiteInstructions(category, 'cashexp.co.uk'));
+  assert.ok(getWebsiteInstructions(category, 'gumtree.com'));
   const routes = buildWebsiteSearchRoutes({ domain: 'xbox.com' }, {
     manufacturer: 'Microsoft', model: 'Xbox Series S'
   });

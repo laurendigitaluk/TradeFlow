@@ -121,3 +121,48 @@ H. Update operator instructions and diagnostic roadmap; only then retire old Gea
 4. Confirm one worker process only and that status shows all enabled specialists waiting without active research tasks.
 5. Submit one bounded TEST task per representative specialist only after the installation is fingerprinted; verify disabled specialist tasks remain queued and enabled tasks are claimed only when enabled.
 6. Run one controlled LIVE acceptance task only after TEST and source-route acceptance. Confirm raw captures appear in review queue; no automatic approval/import.
+
+
+## Current specialist website routing and desktop rollout — 9 November 2026
+
+### Entry points and data flow
+
+1. Website/Owner Dashboard submits catalogue research work into `public.platform_ai_agent_tasks`.
+2. Windows UI: `tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1`.
+3. Background supervisor: `tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1`, registered at user sign-in by the installer.
+4. Local config: `%LOCALAPPDATA%\TradeFlow\ResearchControlCentre\config.json`; it contains service state and enabled canonical specialist keys, not credentials.
+5. Worker: existing `tools/tradeflow-gemma-agent/src/task-worker.mjs`; desktop selection and aliases are in `desktop-control.mjs`.
+6. Claim RPC: `public.platform_ai_agent_claim_task_for_agents(text,text[],integer)`, service-role-only. It claims a task only if every subtask resolves to an enabled specialist key.
+7. Source registry: `public.platform_research_sources`; category instructions/routes: `source-playbooks.mjs`.
+8. Ollama remains a single local execution lane. Captured raw page observations flow to `public.platform_catalogue_research_queue` for ChatGPT/owner review. No autonomous approval/import is introduced.
+
+### Tables and failure points
+
+- Queue: `platform_ai_agent_tasks` — status, attempts, worker_id, lease_expires_at, payload.tasks.
+- Agent telemetry: `platform_ai_agent_status`, `platform_ai_agent_activity`.
+- Approved sources: `platform_research_sources`; candidate evidence handoff: `platform_catalogue_research_queue`.
+- Local status/logs: `status.json`, `logs\supervisor.log`, worker stdout/stderr under the Control Centre app root.
+- Disabled agent: no new claims for its canonical key or legacy alias.
+- Mixed-agent task: remains queued until all included agent keys are enabled.
+- Empty selection: worker stays idle and claims nothing.
+- Missing scoped RPC: `requires_migration`; never fall back to the legacy unscoped claim in desktop mode.
+- Old manual worker active: installer refuses to overwrite it; stop it cleanly with Ctrl+C before rerunning installer.
+- Missing Node.js, missing private .env or invalid LIVE project URL: supervisor reports an error and does not start research.
+- Website route failures (403/429/404, redirect, sign-in wall, empty search page): retain telemetry; do not bypass blocks or promote discovery pages as evidence. DJI Store sign-in route is intentionally skipped.
+- Approved global domains require a UK locale path (`uk`, `gb`, `en-uk`, `en_uk`, `en-gb`, `en_gb`, `gb-en`) or an approved UK host. The host must still be present in the source registry.
+
+### Source coverage snapshot
+
+LIVE registry: 119 UK records, 116 enabled. Enabled source counts including universal/shared sources: 3D Printers 15; Gaming 17; Drones 21; Metal Detectors 13; Mobile Phones 23; Laptops 12; Cameras 24. Counts overlap.
+
+- 3D Printers: existing routes and extraction path unchanged.
+- Gaming: capture-only remains unchanged; explicit routes cover major UK retailer and console manufacturer pages; Amazon/eBay use dedicated marketplace search URLs; Gumtree uses UK slug search.
+- Drones: includes UK dealer/distributor discovery; MPB uses `/en-uk`; DJI Store sign-in is skipped.
+- Metal Detectors: Regton uses `/metal-detectors`; other approved dealers use their homepage discovery routes; Amazon/eBay use dedicated search routes.
+- Mobile Phones, Laptops and Cameras: category playbooks provide exact-model/variant guidance and registered UK source navigation. Where no verified internal search path exists, use homepage discovery rather than guessed `/search?q=`.
+
+### Verification and rollout gate
+
+PR #325 code/test head `14da7fa38fec9a75cf95137985a49d20a2208abb`; GitHub Actions run #472 passed (92 tests, zero failures, PowerShell/Node syntax and Owner Dashboard JS syntax). PR remains open and unmerged. Migration is not applied to LIVE or TEST. No queue tasks, source rows, evidence, approvals/imports or Research PC processes were changed.
+
+After owner approval: merge PR #325, apply the additive scoped-claim migration to LIVE only, install from production on the Research PC, verify one supervisor/one worker and the seven switches, then run one bounded LIVE review-only acceptance task. Do not start a broad research batch as an installation test. TEST remains separate; the desktop supervisor is LIVE-only.

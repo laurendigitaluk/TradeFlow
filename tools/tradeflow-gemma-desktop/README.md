@@ -87,3 +87,8 @@ If updating an existing PC that already has the hidden VBS launcher and correcte
 ### Follow-up: fixed vertical scrolling — 9 November 2026
 
 The initial seven-card FlowLayoutPanel did not reliably display all specialists on the owner's narrow, side-by-side desktop layout; the first two cards were clipped and scrolling was unavailable. Production commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces it with a standard WinForms Panel using AutoScroll, explicit vertical card coordinates, a calculated AutoScrollMinSize, and responsive card widths on resize. This is a UI-only change. Update only the local TradeFlow-Research-Control-Centre.ps1; do not rerun the full installer or restart the worker. Verify all seven specialists by scrolling from the top to the bottom.
+
+
+### Deterministic specialist scrolling follow-up — 9 November 2026
+
+The Panel AutoScroll implementation did not resolve the owner's clipping report. The next UI revision uses a dedicated WinForms VScrollBar next to a non-scrolling card surface. Card Y positions are calculated from each agent index and the scrollbar offset; the scrollbar range is computed from the actual viewport height and content height; card widths respond to viewport resize. This avoids dependence on WinForms Panel AutoScroll behaviour. Update only the local UI script and verify the first and seventh specialists are reachable using the visible scrollbar.

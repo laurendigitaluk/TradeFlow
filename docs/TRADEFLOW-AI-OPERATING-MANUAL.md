@@ -5080,7 +5080,7 @@ The activity log shows worker starts at 12:14:25, 12:34:18, 12:35:53 and 12:39:5
 Production branch base for the correction: `de1b8d4e12edf0102cea28f935a763826ff1c06b`. The earlier PR #322 was based on `e81ede671bfc03e73dc16169638011372b5b6117` and its worker diff predates the merged desktop-control-centre change. The replacement implementation retains the current desktop configuration and the service-role-only `platform_ai_agent_claim_task_for_agents` path; it does not restore the old unscoped claim logic.
 
 The new generic-only heartbeat:
-- runs after successful queue polls while idle;
+- runs after a successful queue poll, or a valid no-agent idle configuration, while idle;
 - uses a bounded cadence of at least 60 seconds and at most five minutes;
 - is suppressed during a queue poll, task processing, shutdown, an overlapping heartbeat, or after an unsuccessful poll;
 - writes only `gemma-task-worker` / `Task control` telemetry, never a product-category heartbeat.

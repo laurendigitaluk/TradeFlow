@@ -97,3 +97,8 @@ The screenshot confirms the PC still displays the old broken result; the new com
 ### CI verification for explicit-bounds repair — 9 November 2026
 
 GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed successfully for UI commit c0b9f980b164f7eacc76f0974e921562d9ccfe32. This verifies the repository's automated checks for that commit; it does not constitute visual acceptance on the owner's Windows PC. Local PC deployment and screenshot verification remain outstanding.
+
+
+## Scrollbar failure closed out with fixed seven-agent grid — 9 November 2026
+
+The owner confirmed that the installed explicit-bounds VScrollBar build still displayed only five specialists and no usable scrollbar. Local diagnostics showed the installed UI source contained the dedicated VScrollBar/SetBounds implementation, while the visible dashboard remained clipped. Repeatedly replacing scrollbar variants is not an acceptable repair. The UI has therefore been redesigned as a fixed two-column, four-row grid of compact named specialist cards. All seven specialists are rendered from the canonical agents.json list; each retains its independent checkbox and status. The grid recalculates card positions and widths on resize and does not use AutoScroll, VScrollBar, or scrollbar z-order. This is a desktop presentation-only change. It preserves config.json, status.json, the scheduled supervisor, worker, private .env, LIVE queue, source registry, and product/evidence data. Verify all seven names at once in the owner's side-by-side window, test each switch independently, and confirm enabled/active counts and background service status. Do not rerun the full installer.

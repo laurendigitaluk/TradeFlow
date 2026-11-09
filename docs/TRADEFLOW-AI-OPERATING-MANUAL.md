@@ -5147,3 +5147,16 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - Regression coverage adds bounded timeout calculation, one-call/no-retry timeout behaviour, full raw page fallback for every page, page-specific website navigation in the prompt, route-count/no-generic-fallback tests, and distinct source URL keys for the same product.
 - PR #332 remains an open repair branch. Its CI must pass before merge. No LIVE source row, migration, review queue, catalogue or shared evidence was changed by this code work.
 - Deployment remains a separate step: merge only after CI/review; apply the ordered ELEGOO scope migration through the approved release process; install/update the single Research Control Centre worker while preserving its existing private \`.env\`; then run one bounded LIVE 3D-printer smoke test and verify it hands off raw captures, frees the shared queue and shows multiple independent source records in Research awaiting review.
+
+## 9 November 2026 — 3D-printer evidence snapshot rule
+
+The 3D-printer review queue now has a proposed versioned-snapshot rule. The established base dedupe key (manufacturer, model, package key, exact source URL) remains stable. A normalised fingerprint additionally records material page observations: GBP price amounts and contexts, product title, package, condition, availability, location, and a coarse full-page-size bucket.
+
+- An identical fingerprint is still a duplicate and is not queued again.
+- A changed fingerprint against an imported/rejected/reviewed capture creates a separate `needs_research` revision record. The previous reviewed/imported/rejected row is immutable.
+- A changed fingerprint against a genuinely unreviewed pending row may be appended to its guarded enrichment history.
+- New revision records remain `unverified_capture`; evidence classification remains subject to review, and no research worker may approve or import catalogue evidence.
+
+This addresses a measured LIVE handoff loss: three Neptune 4 Pro page captures (42,206, 14,328 and 3,506 characters) were retained in the task result but all three writes were duplicate-skipped against imported queue rows whose stored captures were shorter (9,998, 10,000 and 3,493 characters). The newer price/availability context was therefore not staged for ChatGPT.
+
+Research metrics also distinguish `gemma_calls` (batches) from `gemma_http_requests` (actual Ollama requests) and `gemma_recovery_skipped` (pages retained as raw fallback after a failed batch). The current 45-second 3D-printer timeout is a code proposal only; do not treat it as runtime-verified until the Research PC is updated and a controlled smoke test is approved.

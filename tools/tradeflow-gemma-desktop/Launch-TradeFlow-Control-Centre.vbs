@@ -21,7 +21,7 @@ For i = 1 To WScript.Arguments.Count - 1
     command = command & " """ & Replace(arg, """", """""") & """"
 Next
 
-' WScript.Run with window style 0 prevents a console window being shown.
+' WScript.Run with window style 0 keeps the PowerShell console invisible.
 ' The Control Centre itself is a WinForms window and remains visible.
 shell.CurrentDirectory = fso.GetParentFolderName(scriptPath)
 shell.Run command, 0, False

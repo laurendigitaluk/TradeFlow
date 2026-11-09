@@ -1,6 +1,33 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture, summarizeProductPageFlow } from './agent.mjs';
+
+
+test('3D-printer page-flow metrics distinguish successful fetches rejected by the exact-model/package guard', () => {
+  const metrics = summarizeProductPageFlow([
+    { stage: 'model_variant_skipped', phase: 'prefilter' },
+    { stage: 'fetching_page' },
+    { stage: 'product_page_fetched' },
+    { stage: 'model_variant_skipped', phase: 'postfetch' },
+    { stage: 'fetching_page' },
+    { stage: 'source_error' }
+  ], 0);
+
+  assert.deepEqual(metrics, {
+    product_page_fetch_attempts: 2,
+    product_pages_fetched: 1,
+    model_variant_prefilter_rejections: 1,
+    model_variant_postfetch_rejections: 1,
+    eligible_product_pages: 0
+  });
+
+  const accepted = summarizeProductPageFlow([
+    { stage: 'fetching_page' },
+    { stage: 'product_page_fetched' }
+  ], 1);
+  assert.equal(accepted.product_pages_fetched, 1);
+  assert.equal(accepted.eligible_product_pages, 1);
+});
 
 const printerTask = {
   category_slug: '3d-printers-equipment',

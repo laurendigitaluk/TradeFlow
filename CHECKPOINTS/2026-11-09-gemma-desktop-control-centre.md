@@ -29,3 +29,9 @@
 - Do not start desktop service until the migration is deployed to LIVE.
 - If the scoped RPC is missing, desktop worker stops with `requires_migration` and does not use the generic queue claim.
 - Existing 3D-printer and Gaming behaviour must remain unchanged.
+
+## Verification update
+- Final reviewed feature head: `4acc456eff89d971981ad69766395a801e83df0d`.
+- GitHub Actions run #448 passed all workflow steps, including Node tests, PowerShell parser checks and Owner Dashboard JavaScript syntax.
+- PR remains unmerged; no migration has been applied to LIVE or TEST.
+- TEST source registry was read-only checked: 51 enabled UK records. It was not modified; desktop runtime targets LIVE only.

@@ -741,7 +741,7 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
   const legacyValueStart = legacySelectStart + "return '".length;
   const legacyValueEnd = agentSource.indexOf("'", legacyValueStart);
   const legacySelectPath = agentSource.slice(legacyValueStart, legacyValueEnd);
-  assert.deepEqual(legacySelectPath.split('&')[0].split(','), fields);
+  assert.deepEqual(legacySelectPath.split('?select=')[1].split('&')[0].split(','), fields);
   assert.match(agentSource, /const legacyExisting = !exactExisting\.length && snapshotFingerprint/);
   assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);

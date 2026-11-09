@@ -5027,3 +5027,8 @@ For a desktop-only UI correction, update only tools/tradeflow-gemma-desktop/Trad
 ### Desktop UI scroll container rule — 9 November 2026
 
 Use a standard WinForms Panel with AutoScroll, explicit vertical child locations and AutoScrollMinSize for the seven specialist cards. Do not use a FlowLayoutPanel with TopDown/WrapContents=false for this screen: the owner's narrow side-by-side window exposed clipping of the first two cards and no usable vertical scroll. Resize card widths with the scroll panel's ClientSize. A UI-only correction replaces only TradeFlow-Research-Control-Centre.ps1; preserve the supervisor, worker, config and .env.
+
+
+### Deterministic seven-card scrolling
+
+If WinForms Panel.AutoScroll fails to expose all seven cards, use the dedicated VScrollBar layout in the production Control Centre script. Keep the card canvas non-scrolling; calculate card top positions from index * 108 minus current scrollbar value. Set LargeChange before Maximum; the valid maximum value is Maximum - LargeChange + 1. Guard ValueChanged while programmatically updating Value to prevent recursive layout updates. Recompute content range and card widths on viewport resize. Keep this UI-only; do not touch worker or queue state.

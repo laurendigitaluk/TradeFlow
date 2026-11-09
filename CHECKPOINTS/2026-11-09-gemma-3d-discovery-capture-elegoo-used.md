@@ -14,7 +14,7 @@ Scope is only category `3d-printers-equipment`, branch `3d-printers`, LIVE proje
 - First loss: search to exact individual product page. Next loss after a successful page: structured Gemma output and final review handoff cap the page at 10,000 characters.
 
 ## Category and evidence counts
-Correct master category ID for `3d-printers-equipment`: `ab8b13b0-cc9e-45a6-8c8e-5a0d4f6bb0a1`.
+Correct master category ID for `3d-printers-equipment`: `ab8b13b0-b070-4534-838b-3ebd4d7261e5`.
 - 208 master products, 201 active/customer-visible.
 - 277 shared evidence rows: 260 active (239 UK-new, 21 UK-used), 17 inactive.
 - Review queue: 65 historical rows (28 imported, 37 rejected, 0 open). 28 queue rows link to active evidence (23 new, 5 used), all GBP.
@@ -73,3 +73,19 @@ Task \`owner-live-3d-printers-worker-check-neptune4pro-20261109-1445\` (UUID \`2
 - **Research PC installation remains pending.** Merging to GitHub and applying the LIVE database migration do not update the local Node worker already running on the PC. The connected Control Centre must be stopped after the current task, then the current production \`Update-TradeFlow-Gemma.ps1\` run against the existing paths in \`%LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre\\service.json\`. This updater validates both LIVE/TEST targets in the existing private \`.env\`, backs up installed source, downloads production code, runs Node syntax and test suites, and does not edit the private \`.env\` or specialist selection in \`config.json\`.
 - After local update, restart the existing Control Centre background service and confirm it connects to LIVE. Then run a single bounded 3D-printer acceptance task. Acceptance requires a short extraction stage, full page captures whether Gemma succeeds or times out, evidence records from distinct qualifying source pages, preservation of multiple UK-new/UK-used records for one product, and completion/release of the shared queue so it can claim the next category task.
 - No TEST project schema, data, queue, sources or customer/tenant rows were changed by the production migration.
+
+
+## 9 November 2026 — post-PR #332 LIVE review handoff and snapshot revision checkpoint
+
+- Current production base: `3e0f712d5c3c93fa5c6e9b9aa2828716247e75ef` (PR #332 merged at 19:30:46 UTC).
+- LIVE migration `20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql` is applied as version `20261109193254`; the one existing ELEGOO UK source row is enabled with `research_scope='all'`. The FDM new route and pre-owned used route remain lane-specific. TEST has no matching ELEGOO row and was not changed.
+- Correct LIVE master category ID for `3d-printers-equipment`: `ab8b13b0-b070-4534-838b-3ebd4d7261e5`. The earlier ID recorded in this checkpoint was incorrect and is corrected here.
+- Exact branch task count: 20 registered tasks, 57 product subtasks; 20 completed, 0 running, 0 queued, 0 failed. Latest task completion: 2026-11-09 15:03:59 UTC.
+- Latest Neptune 4 Pro run: 29 search results; 6 exact pages discovered; 3 fetched; 3 page-fetch errors (all three individual eBay URLs returned HTTP 403); 26 approved-source route attempts across 12 sources (11 matches, 9 empty, 6 errors); 3 full captures retained; two Gemma batches; three extraction failures; 18m49s in Gemma; all three queue writes were duplicate-skipped.
+- LIVE review queue remains 65 exact-branch rows: 28 imported, 37 rejected, 0 open; 62 contain page captures. 64/65 lack queue-level reviewer ID, eight imported rows also lack review timestamp, and 64/65 lack queue-level evidence_type. Do not infer reviewer identity or rewrite historical decisions.
+- Category-wide shared evidence: 239 active UK-new rows, 21 active UK-used rows, 17 inactive UK-new rows; all GBP. Master catalogue: 208 products, 201 active. The queue's missing evidence_type must not be used as a substitute for linked shared-evidence classification.
+- PR #336 adds snapshot-aware same-URL review revisions and legacy `review-` / `borderline-` key compatibility. An unchanged snapshot remains duplicate-skipped. A materially changed snapshot for an imported/rejected/reviewed row becomes a new `needs_research` / `unverified_capture` review row; the old terminal row is immutable. Only an unreviewed pending row can use guarded enrichment.
+- Read-only replay of the three latest Neptune captures detected 3/3 as materially changed against their existing imported captures. Before: 3 captures, 0 new/0 enriched review rows. Proposed after: 3 new review revisions, 0 existing rows modified. This is a dry-run comparison, not a LIVE write.
+- PR #336 also exposes actual Ollama HTTP requests, skipped timeout recovery, new snapshot revisions, enrichment and duplicate-skip counts separately. No approval/import is introduced.
+- Repeated eBay HTTP 403 handling remains a separate outstanding 3D-printer fix in PR #299; it is not silently folded into this snapshot-only change. The current production worker still has no batch-scoped 403 block.
+- No research task queued, no worker restarted, no LIVE review/evidence/catalogue row modified, no TEST data copied, and no private configuration or secrets accessed.

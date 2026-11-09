@@ -109,8 +109,12 @@ if (-not (Test-Path -LiteralPath $CanonicalLauncher -PathType Leaf)) {
 Write-Host "Starting TradeFlow Gemma through the canonical $Environment queue-worker launcher."
 & $CanonicalLauncher -Environment $Environment
 if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with code $LASTEXITCODE" }
- '@ -Encoding UTF8
+'@ -Encoding UTF8
     if (-not (Test-Path -LiteralPath $LauncherDownload -PathType Leaf)) { throw 'Current Gemma launcher download failed.' }
+    $LegacyTokens = $null
+    $LegacyErrors = $null
+    [System.Management.Automation.Language.Parser]::ParseFile($LegacyShortcutLauncherDownload, [ref]$LegacyTokens, [ref]$LegacyErrors) | Out-Null
+    if ($LegacyErrors.Count -gt 0) { throw 'Generated desktop-shortcut compatibility launcher has PowerShell syntax errors.' }
     $LauncherTokens = $null
     $LauncherErrors = $null
     [System.Management.Automation.Language.Parser]::ParseFile($LauncherDownload, [ref]$LauncherTokens, [ref]$LauncherErrors) | Out-Null

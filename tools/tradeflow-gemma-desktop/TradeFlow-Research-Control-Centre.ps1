@@ -200,20 +200,26 @@ $listHost.Dock = 'Fill'
 $listHost.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Controls.Add($listHost)
 
+# Use explicit sibling bounds instead of WinForms DockStyle.Fill + DockStyle.Right.
+# Dock z-order was allowing the fill canvas to cover the scrollbar on the owner's display.
 $cards = New-Object System.Windows.Forms.Panel
-$cards.Dock = 'Fill'
+$cards.Dock = 'None'
+$cards.Location = New-Object System.Drawing.Point(0,0)
+$cards.Size = New-Object System.Drawing.Size(1,1)
 $cards.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $cards.TabStop = $true
 $listHost.Controls.Add($cards)
 
 $agentScroll = New-Object System.Windows.Forms.VScrollBar
-$agentScroll.Dock = 'Right'
-$agentScroll.Width = 22
+$agentScroll.Dock = 'None'
+$agentScroll.Width = 24
 $agentScroll.Minimum = 0
-$agentScroll.SmallChange = 36
+$agentScroll.SmallChange = 54
 $agentScroll.LargeChange = 180
-$agentScroll.Visible = $false
+$agentScroll.Visible = $true
+$agentScroll.TabStop = $true
 $listHost.Controls.Add($agentScroll)
+$agentScroll.BringToFront()
 
 $AgentControls = @{}
 $agentIndex = 0
@@ -264,34 +270,53 @@ foreach ($agent in $Agents) {
 
 $script:AgentListContentHeight = 16 + ($Agents.Count * 108)
 $script:AgentListOffset = 0
+$script:UpdatingAgentScroll = $false
+$script:UpdatingAgentLayout = $false
 $script:UpdateAgentListViewport = {
-    $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
-    $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
-    $agentScroll.Visible = $true
-    $agentScroll.Enabled = ($maxOffset -gt 0)
-    $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
-    $agentScroll.SmallChange = 54
-    $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
-    if ($script:AgentListOffset -gt $maxOffset) { $script:AgentListOffset = $maxOffset }
-    $script:UpdatingAgentScroll = $true
-    try { $agentScroll.Value = [Math]::Min($agentScroll.Maximum - $agentScroll.LargeChange + 1, $script:AgentListOffset) }
-    finally { $script:UpdatingAgentScroll = $false }
-    $width = [Math]::Max(300, $cards.ClientSize.Width - 16)
-    foreach ($item in $AgentControls.Values) {
-        $item.Card.Width = $width
-        $item.Card.Location = New-Object System.Drawing.Point(8, (8 + ($item.Index * 108) - $script:AgentListOffset))
+    if ($script:UpdatingAgentLayout) { return }
+    $script:UpdatingAgentLayout = $true
+    try {
+        # Position the two sibling controls explicitly. Do not rely on Dock ordering.
+        $hostWidth = [Math]::Max(1, $listHost.ClientSize.Width)
+        $hostHeight = [Math]::Max(1, $listHost.ClientSize.Height)
+        $scrollWidth = 24
+        $cardsWidth = [Math]::Max(1, $hostWidth - $scrollWidth)
+        $cards.SetBounds(0, 0, $cardsWidth, $hostHeight)
+        $agentScroll.SetBounds($cardsWidth, 0, $scrollWidth, $hostHeight)
+        $agentScroll.Visible = $true
+        $agentScroll.BringToFront()
+
+        $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
+        $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
+        $agentScroll.Enabled = ($maxOffset -gt 0)
+        $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
+        $agentScroll.SmallChange = 54
+        $agentScroll.Minimum = 0
+        $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
+        $script:AgentListOffset = [Math]::Max(0, [Math]::Min($maxOffset, $script:AgentListOffset))
+        $script:UpdatingAgentScroll = $true
+        try { $agentScroll.Value = $script:AgentListOffset }
+        finally { $script:UpdatingAgentScroll = $false }
+
+        $width = [Math]::Max(1, $cards.ClientSize.Width - 16)
+        foreach ($item in $AgentControls.Values) {
+            $item.Card.Width = $width
+            $item.Card.Location = New-Object System.Drawing.Point(8, (8 + ($item.Index * 108) - $script:AgentListOffset))
+        }
+    } finally {
+        $script:UpdatingAgentLayout = $false
     }
 }.GetNewClosure()
 
 $agentScroll.Add_ValueChanged({
-    if (-not $script:UpdatingAgentScroll) {
+    if (-not $script:UpdatingAgentScroll -and -not $script:UpdatingAgentLayout) {
         $script:AgentListOffset = $agentScroll.Value
         & $script:UpdateAgentListViewport
     }
 }.GetNewClosure())
 
-$cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
 $listHost.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
+$cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
 $form.Add_Shown({
     $script:AgentListOffset = 0
     $form.BeginInvoke([Action]{ & $script:UpdateAgentListViewport }) | Out-Null

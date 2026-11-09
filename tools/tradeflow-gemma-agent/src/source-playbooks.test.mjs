@@ -393,7 +393,7 @@ test('3D printer Gemma prompt returns findings-array observations for ChatGPT re
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /price_observations/i);
   assert.match(prompt, /association/i);
-  assert.match(prompt, /Do not calculate, convert or invent prices/i);
+  assert.match(prompt, /Never calculate, convert or invent prices/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);

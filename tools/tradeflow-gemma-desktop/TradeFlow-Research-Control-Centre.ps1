@@ -195,19 +195,31 @@ $note.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $note.ForeColor = [System.Drawing.Color]::FromArgb(70,82,94)
 $form.Controls.Add($note)
 
+$listHost = New-Object System.Windows.Forms.Panel
+$listHost.Dock = 'Fill'
+$listHost.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
+$form.Controls.Add($listHost)
+
 $cards = New-Object System.Windows.Forms.Panel
 $cards.Dock = 'Fill'
-$cards.AutoScroll = $true
-$cards.Padding = New-Object System.Windows.Forms.Padding(0)
-$cards.TabStop = $true
 $cards.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
-$form.Controls.Add($cards)
+$cards.TabStop = $true
+$listHost.Controls.Add($cards)
+
+$agentScroll = New-Object System.Windows.Forms.VScrollBar
+$agentScroll.Dock = 'Right'
+$agentScroll.Width = 22
+$agentScroll.Minimum = 0
+$agentScroll.SmallChange = 36
+$agentScroll.LargeChange = 180
+$agentScroll.Visible = $false
+$listHost.Controls.Add($agentScroll)
 
 $AgentControls = @{}
 $agentIndex = 0
 foreach ($agent in $Agents) {
     $card = New-Object System.Windows.Forms.Panel
-    $card.Width = [Math]::Max(300, $cards.ClientSize.Width - 36)
+    $card.Width = [Math]::Max(300, $cards.ClientSize.Width - 16)
     $card.Height = 92
     $card.Location = New-Object System.Drawing.Point(8, (8 + ($agentIndex * 108)))
     $card.Anchor = 'Top,Left,Right'
@@ -246,15 +258,36 @@ foreach ($agent in $Agents) {
     $card.Controls.Add($check)
 
     $cards.Controls.Add($card)
-    $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state; Card=$card }
+    $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state; Card=$card; Index=$agentIndex }
     $agentIndex++
 }
-$cards.AutoScrollMinSize = New-Object System.Drawing.Size(0, (16 + ($Agents.Count * 108)))
-$cards.Add_Resize({
-    $width = [Math]::Max(300, $cards.ClientSize.Width - 36)
-    foreach ($item in $AgentControls.Values) { $item.Card.Width = $width }
+
+$script:AgentListContentHeight = 16 + ($Agents.Count * 108)
+$script:AgentListOffset = 0
+$script:UpdateAgentListViewport = {
+    $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
+    $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
+    $agentScroll.Visible = ($maxOffset -gt 0)
+    $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
+    $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
+    $agentScroll.SmallChange = 54
+    if ($script:AgentListOffset -gt $maxOffset) { $script:AgentListOffset = $maxOffset }
+    $agentScroll.Value = [Math]::Min($agentScroll.Maximum, $script:AgentListOffset)
+    $width = [Math]::Max(300, $cards.ClientSize.Width - 16)
+    foreach ($item in $AgentControls.Values) {
+        $item.Card.Width = $width
+        $item.Card.Location = New-Object System.Drawing.Point(8, (8 + ($item.Index * 108) - $script:AgentListOffset))
+    }
+}.GetNewClosure()
+
+$agentScroll.Add_ValueChanged({
+    $script:AgentListOffset = $agentScroll.Value
+    & $script:UpdateAgentListViewport
 }.GetNewClosure())
-$cards.AutoScrollPosition = New-Object System.Drawing.Point(0,0)
+
+$cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
+$listHost.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
+$form.Add_Shown({ & $script:UpdateAgentListViewport }.GetNewClosure())
 
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 3000

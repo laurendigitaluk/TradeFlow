@@ -33,7 +33,7 @@ The test is already included in `.github/workflows/gemma-research-tests.yml` and
 
 ## Safety and verification
 
-- CI pending on PR #324's final head; do not merge or deploy without explicit owner approval.
+- GitHub Actions Gemma Research Tests run #431 (run ID 42593779100) passed on code/test commit 745f9f439bee4efac4e6d666819f75851823b028. The subsequent PR commits only update documentation; no code or test file changed after that run. The PR remains open and unmerged. Do not merge or deploy without explicit owner approval.
 - No research task was queued.
 - No Research PC installation/restart, Supabase mutation, source registry change, queue/evidence change, approval or import was performed.
 - TEST/LIVE separation, private `.env` and all secrets remain untouched.

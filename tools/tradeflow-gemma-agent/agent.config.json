@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "serviceEnabled": true,
+  "autoStart": false,
+  "enabledAgentKeys": [
+    "3d-printers-equipment"
+  ],
+  "agentKey": "3d-printers-equipment",
+  "agentLabel": "Gemma 3D Printers",
+  "categorySlug": "3d-printers-equipment",
+  "branchSlug": "3d-printers",
+  "sourceBranch": "gemma/3d-printers"
+}

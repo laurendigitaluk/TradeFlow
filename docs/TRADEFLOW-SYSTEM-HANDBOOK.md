@@ -4440,7 +4440,7 @@ The Windows desktop Control Centre is a separate local application for the exist
 - The local config contains enabled agent keys and service state only; the existing private `.env` remains at its existing path and is not copied, printed or overwritten.
 
 ### Website research configuration
-The LIVE `platform_research_sources` registry was audited, not rebuilt. On 9 November it held 119 UK source records, 116 enabled. Enabled category coverage including shared universal sources: 3D printers 15, gaming 17, drones 21, metal detectors 13, mobile phones 23, laptops 12, cameras 24. Counts overlap where one source serves several categories.
+The LIVE `platform_research_sources` registry was audited, not rebuilt. On 9 November it held 119 source records total (116 GB-coded and 3 US-coded; all 119 enabled). Enabled category coverage including shared universal sources: 3D printers 15, gaming 17, drones 21, metal detectors 13, mobile phones 23, laptops 12, cameras 24. Counts overlap where one source serves several categories.
 
 Existing 3D-printer and gaming playbooks were preserved. Dedicated website navigation and exact-model/variant rules were added for drones, metal detectors, mobile phones, laptops and cameras in `source-playbooks.mjs`. Discovery routes are not evidence: the worker must follow exact product/listing links and retain individual page captures for ChatGPT/owner review.
 
@@ -4477,3 +4477,7 @@ The Windows installer is available from the production branch at `tools/tradeflo
 The LIVE source registry remains 119 UK records / 116 enabled. No source registry rows, tasks, review-queue rows, catalogue/evidence, approvals or imports were changed during the merge/migration verification. The existing private `.env` remains on the Research PC.
 
 Current next step: owner installs from production on the Research PC. Open PowerShell in the existing Gemma folder, download the production installer, and run it. If the old manual worker is active, stop it cleanly with Ctrl+C first. Never paste or disclose the private `.env` contents.
+
+ 
+### Live worker snapshot before Research PC installation — 11:57 UTC
+The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.

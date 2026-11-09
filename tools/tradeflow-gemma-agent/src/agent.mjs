@@ -1073,7 +1073,9 @@ export function isGamingConsoleResearchTask(task) {
 }
 
 export function isCaptureOnlyResearchTask(task) {
-  return is3dPrinterResearchTask(task) || isGamingConsoleResearchTask(task);
+  // Capture-only handoff is a Gaming-specific requirement. 3D-printer research
+  // retains its established Gemma/Ollama extraction and raw-capture fallback path.
+  return isGamingConsoleResearchTask(task);
 }
 
 export function isResearchTypeAllowedSource(source, task) {

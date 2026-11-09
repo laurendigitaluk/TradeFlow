@@ -5004,3 +5004,12 @@ Owner testing found that every category shortcut opened a new PowerShell console
 The change is in production commits `af867edd067422adfd8a371cecb4f939ae231268` and `a1376bbefde726543b47606064f60486fbafea0d`. CI had not yet reported a new run at the time of this note.
 
 The Research PC must be updated before the fix takes effect. In the existing Control Centre choose **Stop after current task** and wait until the service is stopped. Then rerun the production installer from the existing Gemma folder, using the existing private .env. Do not close or terminate an active research task. The installer refuses to overwrite a running supervisor/worker. After reinstall, open one category shortcut and verify that no console appears, no duplicate dashboard opens, and the existing dashboard shows the selected category enabled.
+
+
+## Final shortcut launcher correction — 9 November 2026
+
+The owner identified the second visible tab as `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`. This is a second PowerShell console session, not a keyboard shortcut. The previous `-WindowStyle Hidden` setting did not hide it in the owner's Windows Terminal environment.
+
+The installer now downloads `Launch-TradeFlow-Control-Centre.vbs`. All eight shortcuts (main dashboard plus seven category launchers) target `wscript.exe`; the VBS invokes PowerShell with window style 0 and passes the script path and specialist arguments. The Control Centre WinForms window remains visible. The named mutex continues to prevent duplicate dashboards. The background supervisor and queue worker architecture is unchanged.
+
+The owner installed the previous build before this correction. Rerun the production installer after the background service has stopped safely. Do not manually delete shortcuts or modify the private .env.

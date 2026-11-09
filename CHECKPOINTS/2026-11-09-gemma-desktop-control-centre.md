@@ -67,3 +67,14 @@ The extra tab was identified by the owner as `C:\Windows\System32\WindowsPowerSh
 Production installer now downloads `Launch-TradeFlow-Control-Centre.vbs`; all eight shortcuts target `wscript.exe`, which launches the PowerShell WinForms UI invisibly (WScript.Run window style 0). Specialist arguments are forwarded to the same script. The named mutex continues to enforce one dashboard, and the single scheduled supervisor/worker is unchanged.
 
 The Research PC installation shown by the owner was performed before this WScript-host correction. It must be rerun after safely stopping the background service. CI has not yet reported a workflow run for this latest launcher change; do not describe it as CI-verified.
+
+
+## Seven-agent display correction — 9 November 2026
+
+After the WScript shortcut correction, the owner confirmed the black console stopped appearing when Windows default terminal was changed to Windows Console Host. The Control Centre remained open and reported Background service connected / waiting for website tasks. The Gaming shortcut reached the existing Control Centre without creating a second dashboard.
+
+Local diagnostics confirmed seven canonical definitions and all seven canonical keys enabled. The local active-agent list was empty at inspection, so none was actively processing at that moment. LIVE status contains historical alias rows; these are not additional desktop specialists. LIVE queue and evidence data were not changed.
+
+Production UI script update: commit c720c245fed72174957a1a2d93fed5fc3e9668f8. It changes the agent cards to a single vertical scrollable list, uses explicit status wording, labels each checkbox Enabled within the named specialist card, and adds enabled/active counts. This preserves the one-instance mutex, three-second config/status refresh, shared config, single supervisor and single worker.
+
+PC deployment is pending. Do not run the full installer for this UI-only update. Close the visible Control Centre only (background service remains running), replace the local TradeFlow-Research-Control-Centre.ps1 with the production file, then reopen the existing Control Centre shortcut. Acceptance checks: all seven named cards visible by scrolling; each checkbox toggles only its own canonical key; enabled count matches config; active count/status matches local status; no new console; scheduled supervisor remains the same.

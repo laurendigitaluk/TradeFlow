@@ -791,10 +791,40 @@ export function getEvidenceCaptureRepeatAction(existing, incomingSnapshotFingerp
   return isUnreviewedPending ? 'enrich' : 'new_snapshot';
 }
 
+export function buildLegacyEvidenceCaptureLookupPath(task, evidence) {
+  const exact = value => encodeURIComponent(String(value ?? ''));
+  const branchFilter = task.branch_slug
+    ? 'branch_slug=eq.' + exact(task.branch_slug)
+    : 'branch_slug=is.null';
+  return 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at' +
+    '&record_type=eq.evidence_candidate' +
+    '&category_slug=eq.' + exact(task.category_slug) +
+    '&' + branchFilter +
+    '&manufacturer=eq.' + exact(task.manufacturer) +
+    '&model=eq.' + exact(task.model) +
+    '&package_key=eq.' + exact(task.package_key) +
+    '&source_url=eq.' + exact(evidence.source_url) +
+    '&order=updated_at.desc&limit=50';
+}
+
+export function selectExistingEvidenceCaptureRecord(rows, incomingSnapshotFingerprint) {
+  const records = Array.isArray(rows) ? rows : [];
+  if (!records.length) return { action: 'insert', record: null };
+  const assessed = records.map(record => ({
+    record,
+    action: getEvidenceCaptureRepeatAction(record, incomingSnapshotFingerprint)
+  }));
+  const duplicate = assessed.find(item => item.action === 'duplicate');
+  if (duplicate) return duplicate;
+  const pending = assessed.find(item => item.action === 'enrich');
+  if (pending) return pending;
+  return { action: 'new_snapshot', record: assessed[0].record };
+}
+
 export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new Date().toISOString()) {
   if (!existing || !incoming || existing.status !== 'needs_research') return null;
   if (existing.reviewed_at || existing.reviewed_by || existing.approved_at || existing.imported_at) return null;
-  const sameIdentity = ['dedupe_key','category_slug','branch_slug','manufacturer','model','package_key','source_url']
+  const sameIdentity = ['category_slug','branch_slug','manufacturer','model','package_key','source_url']
     .every(field => String(existing[field] ?? '') === String(incoming[field] ?? ''));
   if (!sameIdentity) return null;
   const existingPayload = existing.raw_payload && typeof existing.raw_payload === 'object' && !Array.isArray(existing.raw_payload) ? existing.raw_payload : {};
@@ -1631,11 +1661,18 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     };
     if (!enqueue) { writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target(resolveControlPlane(env).name, env);
-    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
-    if (existing.length) {
-      const prior = existing[0];
+    const exactExisting = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
+    const legacyExisting = !exactExisting.length && snapshotFingerprint
+      ? await db(liveTarget, buildLegacyEvidenceCaptureLookupPath(task, evidence))
+      : [];
+    const existing = exactExisting.length ? exactExisting : legacyExisting;
+    const selectedExisting = snapshotFingerprint
+      ? selectExistingEvidenceCaptureRecord(existing, snapshotFingerprint)
+      : { action: existing.length ? 'duplicate' : 'insert', record: existing[0] || null };
+    if (selectedExisting.record) {
+      const prior = selectedExisting.record;
       if (snapshotFingerprint) {
-        const repeatAction = getEvidenceCaptureRepeatAction(prior, snapshotFingerprint);
+        const repeatAction = selectedExisting.action;
         if (repeatAction === 'duplicate') {
           writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id, dedupe_key: captureKey });
           continue;

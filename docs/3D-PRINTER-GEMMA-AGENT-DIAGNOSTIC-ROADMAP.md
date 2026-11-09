@@ -1,3 +1,13 @@
+## 9 November 2026 23:38 UTC — exact pending queue-field audit
+
+The current LIVE queue has 70 rows: 28 imported, 37 rejected and 5 needs_research. The five pending rows are:
+- Anycubic Kobra 4 Standard Printer: UK-new, £159 GBP, item_condition length 3, availability length 222, page capture 12,909 characters.
+- Bambu Lab A1 Standard Printer: UK-new, £215 GBP, item_condition length 3, availability length 150, page capture 5,220 characters.
+- Three unclassified Kobra 3 Max V2 Combo raw captures: full pages 19,514 / 16,120 / 16,285 characters; normalized item_condition lengths 1,282 / 1,281 / 1,282; availability lengths 780 / 1,040 / 1,040.
+All five remain needs_research; reviewed_at, approved_at and imported_at are null. There is no pending UK-used capture. PR #343/#346 caps normalized 3D-printer values at 100 characters and leaves raw fallback snippets in the retained raw payload; existing rows are not backfilled or changed.
+
+
+
 ## 9 November 2026 23:37 UTC — production isolation merge and stale promotion PR
 
 GitHub now records PR #342 (independent category-agent/control-centre foundation) as merged at 23:36:54 UTC, producing production commit 1f72b6d199cae9f19639f3ae1dd6c662ffc105e8. This merge was not performed by this watch. Production now contains the isolation guard, category launcher/updater and control-centre code. No Research PC process was started/stopped by this watch, and no Cloudflare or Research PC deployment was performed here.

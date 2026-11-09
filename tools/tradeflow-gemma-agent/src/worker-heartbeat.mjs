@@ -21,7 +21,7 @@ export function buildIdleWorkerHeartbeatRecord(workerId, pollIntervalMs) {
     category: 'Task control',
     status: 'idle',
     event_type: 'heartbeat',
-    message: 'Persistent TradeFlow Gemma worker is alive and polling the task queue.',
+    message: 'Persistent TradeFlow Gemma worker is alive and idle.',
     details: {
       worker_id: String(workerId || '').slice(0, 120),
       poll_interval_ms: Number(pollIntervalMs) || 15000,

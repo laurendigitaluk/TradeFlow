@@ -30,3 +30,12 @@ The regression test is added to the current production test file. CI will run on
 
 ## Related open correction
 PR #327 independently fixes full-page retention after successful Gemma extraction and removes the unrelated Ender-3 V3 collection route from K1 Max. It is open/unmerged and now needs a production rebase before merge.
+
+
+## Verification update — 9 November 2026, 13:13 UTC
+
+- Rebased code/test head: `dd396989be673df0184b0afdfbff5e4e019dea93`, built from production `b47bff3f7b6e370e20ffdb2f3a87a82dafbf8631`.
+- GitHub Actions Gemma Research Tests run #492 (ID `42623521038`) completed successfully; the workflow's single job passed. The run metadata does not expose the test count, so no numerical count is claimed here.
+- Current production has advanced to `5be5ed7cd1e26a63cb88ca0b73d09bf88ac7eb71`; GitHub reports PR #323 mergeable against the current production branch.
+- The migration remains unapplied; LIVE ELEGOO scope remains `new_uk`; TEST still has no matching source row. No research task, source row, review record, evidence, approval or import was changed.
+- No merge, deployment or Research PC restart was performed.

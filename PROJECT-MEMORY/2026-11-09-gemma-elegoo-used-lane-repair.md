@@ -44,3 +44,12 @@ Generic queue worker idle; worker ID `DESKTOP-LVASEUB-78412`, last status update
 
 ## Safety and release gate
 No migration applied, no LIVE source row changed, no task queued, no worker restarted, no queue/evidence/catalogue/review row changed, no evidence approved/imported. TEST has no source row and no data was copied. No private .env or secrets accessed or changed. After PR review and explicit owner approval, apply the migration through the normal deployment process, then run one bounded ELEGOO uk_used task. Do not merge/deploy or queue work without approval.
+
+
+## Verification update — 9 November 2026, 13:13 UTC
+
+- Rebased code/test head: `dd396989be673df0184b0afdfbff5e4e019dea93`, built from production `b47bff3f7b6e370e20ffdb2f3a87a82dafbf8631`.
+- GitHub Actions Gemma Research Tests run #492 (ID `42623521038`) completed successfully; the workflow's single job passed. The run metadata does not expose the test count, so no numerical count is claimed here.
+- Current production has advanced to `5be5ed7cd1e26a63cb88ca0b73d09bf88ac7eb71`; GitHub reports PR #323 mergeable against the current production branch.
+- The migration remains unapplied; LIVE ELEGOO scope remains `new_uk`; TEST still has no matching source row. No research task, source row, review record, evidence, approval or import was changed.
+- No merge, deployment or Research PC restart was performed.

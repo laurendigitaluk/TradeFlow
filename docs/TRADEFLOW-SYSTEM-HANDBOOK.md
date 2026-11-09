@@ -4540,3 +4540,12 @@ A regression test proves:
 The source-playbook routes themselves are unchanged. Review/CI only: do not apply the migration, change the LIVE row, queue a research task, or approve/import evidence without explicit owner approval. After approval and normal migration deployment, verify one bounded ELEGOO `uk_used` task reaches only the pre-owned collection, follows exact individual pages and stages raw observations for ChatGPT review.
 
 Related independent review: PR #327 is based on the earlier production commit and proposes full 3D-printer page retention after successful Gemma extraction plus model-specific Creality collection routing. It remains open/unmerged and now needs a production rebase before merge; its fixture improves retention from 10,000/40,642 (24.6%) to 40,642/40,642 (100%). Do not treat that as deployed or runtime-verified.
+
+
+## Verification update — 9 November 2026, 13:13 UTC
+
+- Rebased code/test head: `dd396989be673df0184b0afdfbff5e4e019dea93`, built from production `b47bff3f7b6e370e20ffdb2f3a87a82dafbf8631`.
+- GitHub Actions Gemma Research Tests run #492 (ID `42623521038`) completed successfully; the workflow's single job passed. The run metadata does not expose the test count, so no numerical count is claimed here.
+- Current production has advanced to `5be5ed7cd1e26a63cb88ca0b73d09bf88ac7eb71`; GitHub reports PR #323 mergeable against the current production branch.
+- The migration remains unapplied; LIVE ELEGOO scope remains `new_uk`; TEST still has no matching source row. No research task, source row, review record, evidence, approval or import was changed.
+- No merge, deployment or Research PC restart was performed.

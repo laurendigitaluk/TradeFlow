@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "serviceEnabled": true,
+  "autoStart": false,
+  "enabledAgentKeys": [
+    "laptops"
+  ],
+  "agentKey": "laptops",
+  "agentLabel": "Gemma Laptops",
+  "categorySlug": "laptops",
+  "branchSlug": "laptops",
+  "sourceBranch": "gemma/laptops"
+}

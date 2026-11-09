@@ -1631,8 +1631,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     };
     if (!enqueue) { writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target(resolveControlPlane(env).name, env);
-    const selectExisting = 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.';
-    const existing = await db(liveTarget, selectExisting + encodeURIComponent(captureKey));
+    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
     if (existing.length) {
       const prior = existing[0];
       if (snapshotFingerprint) {
@@ -1671,7 +1670,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
             capture_revision: true
           }
         };
-        const revisionExisting = await db(liveTarget, selectExisting + encodeURIComponent(snapshotKey));
+        const revisionExisting = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(snapshotKey));
         if (revisionExisting.length) {
           const revisionPrior = revisionExisting[0];
           const revisionAction = getEvidenceCaptureRepeatAction(revisionPrior, snapshotFingerprint);

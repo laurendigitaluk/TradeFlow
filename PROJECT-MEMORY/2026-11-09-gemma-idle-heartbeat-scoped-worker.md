@@ -21,10 +21,10 @@ PR #322 was based on older production commit `e81ede671bfc03e73dc16169638011372b
 - the existing unscoped claim only for the legacy non-desktop launcher;
 - all category task, source, extraction, evidence and review behaviour.
 
-The helper emits a generic `gemma-task-worker` / `Task control` heartbeat after successful idle polls, at a bounded cadence (minimum 60 seconds, maximum five minutes). It suppresses heartbeats during polling, task processing, shutdown, overlapping telemetry and after an unsuccessful poll. It does not write category-specific status.
+The helper suppresses the initial heartbeat until the first successful queue poll or a valid no-agent idle configuration, then emits a generic `gemma-task-worker` / `Task control` heartbeat at a bounded cadence (minimum 60 seconds, maximum five minutes). It suppresses heartbeats during polling, task processing, shutdown, overlapping telemetry and after an unsuccessful poll. It does not write category-specific status.
 
 ## Regression tests
-Four tests cover cadence bounds, invalid poll intervals, healthy-idle suppression, and generic-only telemetry. The canonical launcher, updater and GitHub Actions workflow include the test. CI is pending.
+Four tests cover cadence bounds, invalid poll intervals, healthy-idle suppression, and generic-only telemetry. The canonical launcher, updater and GitHub Actions workflow include the test. The current code/test head passed Gemma Research Tests run #509.
 
 ## Data and safety
 No research task was queued; no worker was restarted; no source registry row, migration, task, queue, evidence, approval or import was changed. No TEST data was read or copied. No private `.env` or secret value was accessed, printed or changed. The LIVE desktop-scoped claim migration remains as already deployed.
@@ -34,4 +34,4 @@ After review/merge and explicit owner approval, update the existing Research PC 
 
 
 ## Verification
-GitHub Actions Gemma Research Tests run #503 passed on code/test head `24f5b68095a80b932c0641be1711e6845de44f85`. PowerShell updater syntax, Node syntax, the full Gemma test command (including four idle-heartbeat regressions), and Owner Dashboard JavaScript syntax passed. Both Workers Builds checks (`tradeflow` and `tradeflow-test`) passed. PR #331 is ready for review and mergeable; it remains unmerged and no deployment was performed.
+GitHub Actions Gemma Research Tests run #509 passed on current head `5e25a8360fd58a4045e09b9c0cb61005ce572d09`. PowerShell updater syntax, Node syntax, the full Gemma test command (including four idle-heartbeat regressions), and Owner Dashboard JavaScript syntax passed. Both Workers Builds checks (`tradeflow` and `tradeflow-test`) passed. PR #331 is ready for review and mergeable; it remains unmerged and no deployment was performed.

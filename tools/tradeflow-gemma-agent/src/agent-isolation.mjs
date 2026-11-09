@@ -20,5 +20,7 @@ export function normalizeIsolatedAgentConfig(value) {
 
 export function assertTaskGroupBelongsToAgent(tasks, agentKey, resolveAgentIdentity) {
   if (!Array.isArray(tasks) || !agentKey || typeof resolveAgentIdentity !== 'function') return false;
-  return tasks.length > 0 && tasks.every(task => resolveAgentIdentity(task).agent_key === agentKey);
+  const definition = DESKTOP_RESEARCH_AGENTS.find(item => item.agent_key === agentKey);
+  const allowed = new Set([agentKey, ...(definition?.aliases || [])]);
+  return tasks.length > 0 && tasks.every(task => allowed.has(resolveAgentIdentity(task).agent_key));
 }

@@ -4,7 +4,7 @@
 - Production branch: `production`
 - Production base commit: `e81ede671bfc03e73dc16169638011372b5b6117`
 - Feature branch: `feature/gemma-desktop-control-centre-20261109`
-- Pull request: #325 (draft/open)
+- Pull request: #325 (open, ready for review)
 - LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
 - TEST Supabase: `nnsshnfkjcflucjrftzi`
 

@@ -30,7 +30,7 @@ let activeTaskKey=null;
 let stopping=false;
 let taskInProgress=false;
 let pollInProgress=false;
-let lastPollSucceeded=true;
+let lastPollSucceeded=false;
 let idleHeartbeatInProgress=false;
 
 async function readDesktopConfig(){
@@ -273,6 +273,7 @@ while(!stopping){
   }
   const scopedArgs=desktopConfigPath?buildAgentClaimArgs(desktopConfig,workerId,leaseSeconds):null;
   if(desktopConfigPath&&!scopedArgs){
+   lastPollSucceeded=true;
    await writeDesktopStatus('waiting_no_agents');
    await new Promise(resolve=>setTimeout(resolve,pollMs));
    continue;

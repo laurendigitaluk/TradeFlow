@@ -107,3 +107,16 @@ GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed succe
 ## Correct WinForms docking order — 9 November 2026
 
 The latest owner screenshot showed only the last three specialists. The prior correction was wrong: Fill host SetChildIndex to the last control index makes it lay out before Top-docked controls. Correct value is index 0. A PowerShell validation error in the owner's terminal was followed by later copy commands, so output text alone did not prove validation gating. New branch `fix/gemma-control-centre-fill-dock-order-20261109` makes the one-line change; CI then merge, followed by one guarded deployment block to the PC. No worker or LIVE data changes.
+
+
+## Final Research PC acceptance — 9 November 2026
+
+The owner has now installed the merged production Control Centre script and supplied a confirming screenshot. The screenshot shows all seven canonical specialists simultaneously in a two-column grid: 3D Printers & Equipment, Gaming Consoles & Accessories, Drones, Metal Detectors, Mobile Phones, Laptops & Computers, and Cameras & Lenses. Each has its own visible Enabled checkbox and WAITING status. The toolbar reports Specialists enabled: 7 / 7 and Active research tasks: 0. The header reports the background service connected / waiting for website tasks. The separate PowerShell window shows the final guarded deployment completed with CORRECTED CONTROL CENTRE INSTALLED and a SHA256 hash.
+
+Final production UI source was rechecked after merge: it renders cards by iterating the canonical seven-agent $Agents list, uses the two-column grid ($columns = 2), contains the correct WinForms docking order ($form.Controls.SetChildIndex($listHost, 0)), and contains neither VScrollBar nor AutoScroll. This confirms the final layout no longer depends on a scrollbar. The local backup TradeFlow-Research-Control-Centre.ps1.backup-verified was created by the final deployment block.
+
+Root cause was the WinForms docking order: the Fill-docked list host had been moved to the wrong z-order, allowing it to claim the full client area and be overlaid by the Top-docked header/toolbar/note. The correct fix is to put the Fill host at control index 0 so the top-docked controls reserve their area first. Previous scrollbar/AutoScroll implementations and the reversed dock-order change are failed approaches and must not be reintroduced.
+
+Acceptance is complete for the desktop display. No LIVE worker, supervisor, local agent configuration, private .env, research queue, sources, product catalogue, evidence or Supabase data was changed by this final UI repair. LIVE remains separate from TEST. The only observed runtime state at acceptance was all seven specialists enabled, zero currently active research tasks, and the background service connected/waiting; WAITING does not mean a research task is running.
+
+Supabase LIVE schema inspection found no public project-memory/checkpoint table. The authoritative project record for this repair is maintained in the repository's PROJECT-MEMORY, CHECKPOINTS, both operating manuals, backend operations manual and diagnostic roadmap.

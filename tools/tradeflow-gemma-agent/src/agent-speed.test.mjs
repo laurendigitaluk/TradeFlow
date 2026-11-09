@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -240,3 +240,79 @@ test('single-page recovery schema requests exactly one compact finding', () => {
   assert.ok(schema.properties.findings.items.properties.price_observations.maxItems <= 16);
   assert.ok(schema.properties.findings.items.properties.uncertainty_and_conflicts.maxLength <= 180);
 });
+
+test('3D-printer batch timeout skips serial single-page retries and preserves every raw page', async () => {
+  const originalFetch = globalThis.fetch;
+  const pages = [
+    { source_id: 'S1', title: 'Bambu Lab A1', url: 'https://example.co.uk/a1', text: 'Bambu Lab A1 printer £289.00. Brand new. In stock. '.repeat(240) },
+    { source_id: 'S2', title: 'Bambu Lab A1 Combo', url: 'https://example.co.uk/a1-combo', text: 'Bambu Lab A1 Combo £399.00. Brand new. In stock. '.repeat(240) }
+  ];
+  const progress = [];
+  let requests = 0;
+  globalThis.fetch = async () => {
+    requests += 1;
+    const error = new Error('The operation was aborted due to timeout');
+    error.name = 'TimeoutError';
+    throw error;
+  };
+
+  try {
+    const result = await extractBatch(printerTask, pages, { OLLAMA_TIMEOUT_MS: '60000' }, event => progress.push(event));
+    assert.equal(requests, 1, 'a timed-out batch must not trigger serial page retries');
+    assert.equal(result.requests, 1);
+    assert.equal(result.batches, 1);
+    assert.equal(result.recoverySkipped, 2);
+    assert.equal(result.failures.length, 1);
+    assert.equal(result.findings.length, 2);
+    assert.equal(result.findings[0].page_capture.captured_text, pages[0].text);
+    assert.equal(result.findings[1].page_capture.captured_text, pages[1].text);
+    assert.ok(progress.some(event => event.stage === 'extraction_recovery_skipped'));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('3D-printer output-limit failures retain the existing per-page recovery and count every Ollama request', async () => {
+  const originalFetch = globalThis.fetch;
+  const pages = [
+    { source_id: 'S1', title: 'Bambu Lab A1', url: 'https://example.co.uk/a1', text: 'Bambu Lab A1 printer £289.00. Brand new. In stock.' },
+    { source_id: 'S2', title: 'Bambu Lab A1 Combo', url: 'https://example.co.uk/a1-combo', text: 'Bambu Lab A1 Combo £399.00. Brand new. In stock.' }
+  ];
+  let requests = 0;
+  globalThis.fetch = async () => {
+    requests += 1;
+    if (requests === 1) {
+      return { ok: true, text: async () => JSON.stringify({ done_reason: 'length', message: { content: '{}' } }) };
+    }
+    const sourceId = requests === 2 ? 'S1' : 'S2';
+    const finding = {
+      source_id: sourceId,
+      page_title: sourceId === 'S1' ? 'Bambu Lab A1' : 'Bambu Lab A1 Combo',
+      product_identity_text: sourceId === 'S1' ? 'Bambu Lab A1' : 'Bambu Lab A1 Combo',
+      match_observation: 'Requested model identity is visible on this page.',
+      price_observations: [],
+      notes: 'Identity retained for ChatGPT review.'
+    };
+    return {
+      ok: true,
+      text: async () => JSON.stringify({
+        done_reason: 'stop',
+        message: { content: JSON.stringify({ findings: [finding] }) }
+      })
+    };
+  };
+
+  try {
+    const result = await extractBatch(printerTask, pages, { OLLAMA_TIMEOUT_MS: '60000' });
+    assert.equal(requests, 3, 'one batch call plus two isolated recovery calls');
+    assert.equal(result.requests, 3);
+    assert.equal(result.batches, 1);
+    assert.equal(result.recoverySkipped, 0);
+    assert.equal(result.failures.length, 1);
+    assert.equal(result.findings.length, 2);
+    assert.ok(result.findings.every(finding => finding.review_classification === 'unverified_capture'));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+

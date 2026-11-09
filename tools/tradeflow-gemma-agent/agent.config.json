@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "serviceEnabled": true,
+  "autoStart": false,
+  "enabledAgentKeys": [
+    "gaming-consoles-accessories"
+  ],
+  "agentKey": "gaming-consoles-accessories",
+  "agentLabel": "Gemma Gaming",
+  "categorySlug": "gaming-consoles-accessories",
+  "branchSlug": "gaming-consoles",
+  "sourceBranch": "gemma/gaming"
+}

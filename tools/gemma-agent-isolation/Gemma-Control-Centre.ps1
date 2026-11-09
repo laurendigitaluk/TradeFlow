@@ -284,6 +284,10 @@ $footer.Text = 'Stop after current task = finish the active queued batch, then s
 $footer.ForeColor = [System.Drawing.Color]::FromArgb(70,82,94)
 $footer.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Controls.Add($footer)
+# WinForms docking is evaluated in z-order. Keep the fill grid at the front
+# so the top header, toolbar and bottom footer reserve their own space.
+# This is the same fix used for the earlier Research Control Centre overlap.
+$form.Controls.SetChildIndex($grid, 0)
 
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 2500

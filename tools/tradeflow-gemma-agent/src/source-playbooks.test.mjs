@@ -291,6 +291,48 @@ test('exact printer pages are not rejected because a manufacturer title describe
   );
 });
 
+test('3D printer matching ignores retailer accessory taxonomy while preserving exact package and accessory rejection', () => {
+  const comboTask = {
+    ...task,
+    manufacturer: 'Anycubic',
+    model: 'Kobra 3 Max V2',
+    package_key: 'combo-4-color',
+    package_name: '4-Color Combo'
+  };
+  const comboUrl = 'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-combo';
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2 Combo, 1 Set', comboUrl, comboTask),
+    true
+  );
+
+  const standardTask = { ...comboTask, package_key: 'standard', package_name: 'Standard Printer' };
+  const standardUrl = 'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2';
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2', standardUrl, standardTask),
+    true
+  );
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2', standardUrl, comboTask),
+    false
+  );
+  assert.equal(
+    matchesTaskModel(
+      'Anycubic Kobra 3 Max V2 Replacement Hotend',
+      'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-replacement-hotend',
+      standardTask
+    ),
+    false
+  );
+  assert.equal(
+    matchesTaskModel(
+      'Anycubic Kobra 3 Max V2 Nozzle',
+      'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-nozzle',
+      standardTask
+    ),
+    false
+  );
+});
+
 test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
   const a1Task = { ...task, category_slug: '3d-printers-equipment', branch_slug: '3d-printers', manufacturer: 'Bambu Lab', model: 'A1' };
   assert.equal(

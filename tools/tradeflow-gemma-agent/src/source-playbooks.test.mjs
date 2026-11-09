@@ -156,6 +156,15 @@ test('gaming research lanes keep UK-new and UK-used sources separate', () => {
   assert.equal(isResearchTypeAllowedSource(universal, { ...base, research_type: 'uk_used' }), true);
 });
 
+test('3D-printer tasks retain the established Gemma extraction path; only Gaming is capture-only', () => {
+  const printerTask = { ...task, research_type: 'uk_both' };
+  const gamingTask = { category_slug: 'gaming-consoles-accessories', branch_slug: 'playstation-consoles' };
+  assert.equal(is3dPrinterResearchTask(printerTask), true);
+  assert.equal(isCaptureOnlyResearchTask(printerTask), false);
+  assert.equal(isGamingConsoleResearchTask(gamingTask), true);
+  assert.equal(isCaptureOnlyResearchTask(gamingTask), true);
+});
+
 test('gaming category tasks use capture-only handoff and preserve the full raw page', () => {
   const gamingTask = {
     category_slug: 'gaming-consoles-accessories', branch_slug: 'xbox-consoles',

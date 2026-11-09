@@ -3,7 +3,7 @@
 Date: 9 November 2026 (UTC)
 Branch: feat/gemma-gaming-capture-rollout-20261109
 Base: production after PR #314
-Status: implementation and tests prepared; CI / Research PC runtime gate pending. This file is the structured project-memory record for the rollout.
+Status: PR #316 merged into production (merge commit 5023a95c22ae027f299ded124819d74db6b7a078); GitHub Actions passed 79/79 tests. Research PC installation and runtime acceptance remain pending. This file is the structured project-memory record for the rollout.
 
 ## Preservation baseline (TradeFlow LIVE)
 
@@ -14,7 +14,7 @@ Status: implementation and tests prepared; CI / Research PC runtime gate pending
 - These counts were read from catalogue_master_products joined to shared_market_evidence; they are existing evidence and must not be re-imported or removed as part of agent rollout.
 - TEST gaming parity remains 284 active products and 411 active evidence rows. No data was copied between environments.
 
-## Code changes prepared
+## Code changes merged to production
 
 - Added a Gaming Consoles & Accessories category playbook with branch-specific rules for PlayStation, Xbox, Nintendo, Sega, Atari, controllers, handhelds, headsets, VR and accessories.
 - Added gaming capture-only mode: raw page content and GBP observations are retained for ChatGPT; no local model evidence classification, price promotion, approval or master-product matching.
@@ -31,8 +31,8 @@ Status: implementation and tests prepared; CI / Research PC runtime gate pending
 
 ## Next gate
 
-1. Review CI for this branch.
+1. CI passed 79/79 and PR #316 is merged to production.
 2. Update Research PC from production using the version-controlled updater, without starting the worker; preserve existing .env, backups, tasks and logs.
-3. The stale queued TEST 3D-printer task is already cancelled, with its history retained.
-4. Run one controlled Xbox Series S task in TEST (new and used lanes), inspect every source and raw capture, then run the category in LIVE only after the test passes.
-5. ChatGPT reviews the raw captures and decides which evidence is relevant and which existing master product it belongs to. No autonomous import.
+3. The stale TEST 3D-printer task is cancelled, with its history retained.
+4. Queue and run one controlled Xbox Series S task in TEST (new and used lanes), inspect every source and raw capture, then run the category in LIVE only after the test passes.
+5. ChatGPT reviews raw captures and decides which evidence is relevant and which existing master product it belongs to. No autonomous import.

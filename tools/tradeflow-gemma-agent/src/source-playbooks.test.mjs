@@ -368,8 +368,8 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
   assert.match(prompt, /supplied JSON schema exactly/i);
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /Do not choose one page price/i);
-  assert.match(prompt, /one price_observations entry for every visible GBP price/i);
-  assert.match(prompt, /never infer association from proximity alone/i);
+  assert.match(prompt, /price_observations field with up to eight distinct relevant options/i);
+  assert.match(prompt, /do not infer association from proximity alone/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
@@ -393,7 +393,7 @@ test('3D printer Gemma prompt returns findings-array observations for ChatGPT re
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /price_observations/i);
   assert.match(prompt, /association/i);
-  assert.match(prompt, /Do not calculate, convert or invent prices/i);
+  assert.match(prompt, /Never calculate, convert or invent prices/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
@@ -850,4 +850,90 @@ test('DJI Store sign-in page is not treated as a public drone search route', () 
   const task = { category_slug: 'drones', manufacturer: 'DJI', model: 'Mini 5 Pro' };
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'store.dji.com' }, task), []);
   assert.match(getWebsiteInstructions('drones', 'store.dji.com')?.navigation || '', /sign-in|sign in/i);
+});
+
+
+test('Creality model-family collections are probed only for matching printer models', () => {
+  const k1MaxTask = { ...task, model: 'K1 Max' };
+  const enderTask = { ...task, model: 'Ender-3 V3 KE' };
+  const k1Routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, k1MaxTask);
+  const enderRoutes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, enderTask);
+
+  assert.ok(k1Routes.some(url => url.includes('/uk/collections/fdm-3d-printer')));
+  assert.ok(!k1Routes.some(url => url.includes('/uk/collections/ender-3-v3-series')));
+  assert.ok(enderRoutes.some(url => url.includes('/uk/collections/ender-3-v3-series')));
+});
+
+test('ELEGOO UK source scope supports both printer lanes while preserving manufacturer, category and route boundaries', () => {
+  const source = {
+    source_name: 'ELEGOO UK',
+    domain: 'uk.elegoo.com',
+    source_kind: 'manufacturer',
+    country_code: 'GB',
+    research_scope: 'all',
+    enabled: true,
+    category_slugs: ['3d-printers-equipment']
+  };
+  const newTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  const bothTask = { ...newTask, research_type: 'uk_both' };
+  const otherManufacturerTask = { ...usedTask, manufacturer: 'Creality', model: 'K1' };
+  const otherCategoryTask = { ...usedTask, category_slug: 'drones', branch_slug: 'drones' };
+
+  assert.equal(getResearchSourceLane(source), 'both');
+  assert.equal(isApprovedSourceForTask({ ...source, research_scope: 'new_uk' }, usedTask), false);
+  assert.equal(isApprovedSourceForTask(source, newTask), true);
+  assert.equal(isApprovedSourceForTask(source, usedTask), true);
+  assert.equal(isApprovedSourceForTask(source, bothTask), true);
+  assert.equal(isApprovedSourceForTask(source, otherManufacturerTask), false);
+  assert.equal(isApprovedSourceForTask(source, otherCategoryTask), false);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, newTask), ['https://uk.elegoo.com/collections/fdm-printers']);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, usedTask), ['https://uk.elegoo.com/collections/pre-owned-3d-printer']);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, bothTask), [
+    'https://uk.elegoo.com/collections/fdm-printers',
+    'https://uk.elegoo.com/collections/pre-owned-3d-printer'
+  ]);
+});
+
+
+test('3D-printer sites use one deliberate UK discovery route per source instead of duplicated generic fallbacks', () => {
+  const siteTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_both' };
+  const expected = [
+    ['uni3dverse.co.uk', ['https://uni3dverse.co.uk/used-3d-printers?search=Elegoo%20Neptune%204%20Pro']],
+    ['3dgbire.com', ['https://3dgbire.com/collections/reconditioned-3d-printers']],
+    ['3dprima.co.uk', ['https://3dprima.co.uk/search?query=Elegoo%20Neptune%204%20Pro']],
+    ['idig3dprinting.co.uk', ['https://www.idig3dprinting.co.uk/product-category/3d-printers/']],
+    ['3dflo.com', ['https://www.3dflo.com/product-category/3d-printers/']],
+    ['3djake.uk', ['https://3djake.uk/search?query=Elegoo%20Neptune%204%20Pro']],
+    ['gumtree.com', ['https://gumtree.com/uk/srpsearch%2Belegoo-neptune-4-pro']],
+    ['secondhand.org.uk', ['https://secondhand.org.uk/second-hand-3d-printers?search=Elegoo%20Neptune%204%20Pro']],
+    ['ebay.co.uk', ['https://ebay.co.uk/sch/i.html?_nkw=Elegoo%20Neptune%204%20Pro&_sacat=0']],
+    ['amazon.co.uk', ['https://amazon.co.uk/s?k=Elegoo%20Neptune%204%20Pro']]
+  ];
+  for (const [domain, routes] of expected) {
+    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, siteTask), routes, domain);
+    assert.ok(!routes.some(url => /\/search\?q=/i.test(url)), domain + ' must not receive a generic guessed search fallback');
+  }
+});
+
+test('3D-printer manufacturer routes keep exact model/package and new-versus-used guidance', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, newTask), [
+    'https://uk.anycubic3d.com/collections/3d-printers',
+    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%20S1'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'bambu-lab-uk.myshopify.com' }, {
+    ...newTask, manufacturer: 'Bambu Lab', model: 'A1'
+  }), [
+    'https://bambu-lab-uk.myshopify.com/search?q=Bambu%20Lab%20A1',
+    'https://bambu-lab-uk.myshopify.com/collections/3d-printers'
+  ]);
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation.includes('Combo/ACE bundle option'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'bambu-lab-uk.myshopify.com').navigation.includes('standalone printer and Combo/AMS variants'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', '3dgbire.com').navigation.includes('warranty/guarantee'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation.includes('16 products per page'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'gumtree.com').navigation.includes('individual active adverts'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation.includes('direct ASIN product page'));
+  assert.ok(usedTask);
 });

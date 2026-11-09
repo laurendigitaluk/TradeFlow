@@ -29,18 +29,24 @@ const playbooks = {
       'store.creality.com': {
         label: 'Creality UK official store',
         collectionApi: 'shopify',
-        routes: ['/uk/search?q={query}', '/uk/collections/fdm-3d-printer', '/uk/collections/ender-3-v3-series'],
-        navigation: 'Use the UK storefront search first, then the verified FDM 3D Printer and model-family collections. Creality UK exposes its public Shopify collection products JSON; use it when the HTML contains no product cards, then follow exact standalone printer product handles to their individual UK product pages. Ignore accessories, upgrade kits and sibling printer variants.'
+        routes: ['/uk/search?q={query}', '/uk/collections/fdm-3d-printer'],
+        routesByModel: [
+          { modelIncludes: ['ender-3 v3'], routes: ['/uk/collections/ender-3-v3-series'] }
+        ],
+        genericSearchFallback: false,
+        navigation: 'Use the UK storefront search and the verified FDM 3D Printer collection. Only add the Ender-3 V3 family collection when the requested model is in that family; never probe it for K1/K1 Max/K2 models. Creality exposes public Shopify collection products JSON: enumerate matching collection cards, then fetch the exact standalone printer product page. Ignore accessories, upgrade kits and sibling variants; keep machine-only and Combo packages separate.'
       },
       'bambu-lab-uk.myshopify.com': {
         label: 'Bambu Lab UK official store',
         routes: ['/search?q={query}', '/collections/3d-printers'],
-        navigation: 'Use Shopify storefront search, then the 3D printer collection. Open the exact model product page; distinguish standalone printer from Combo/bundle packages.'
+        genericSearchFallback: false,
+        navigation: 'Use Bambu Lab UK storefront search and the 3D printer collection as discovery only. Follow the exact product handle to its UK product page. Bambu pages can show standalone printer and Combo/AMS variants together: read the selected option, current GBP amount and stock state separately. Never transfer a Combo price to the standalone printer or infer a package from a collection card.'
       },
       'uk.anycubic3d.com': {
         label: 'Anycubic UK official store',
-        routes: ['/search?type=product&q={query}', '/collections/3d-printers'],
-        navigation: 'Use product search and the 3D printer collection. Open the exact model page and keep printer-only and bundle variants separate.'
+        routes: ['/collections/3d-printers', '/search?type=product&q={query}'],
+        genericSearchFallback: false,
+        navigation: 'Start with the UK 3D Printers collection and use the exact product-search route only as a second discovery route. Follow the exact printer product page; inspect the selected machine-only versus Combo/ACE bundle option, GBP price, stock and UK delivery. The same product page can contain multiple package prices; retain each package as a separate catalogue product/evidence context.'
       },
       'uk.elegoo.com': {
         label: 'ELEGOO UK official store',
@@ -55,19 +61,22 @@ const playbooks = {
       },
       'uni3dverse.co.uk': {
         label: 'Uni3Dverse used and refurbished',
-        routes: ['/used-3d-printers?search={query}', '/used-3d-printers'],
-        navigation: 'Start in the used/refurbished printer catalogue. Open each matching listing and preserve the stated used/refurbished grade and warranty status.'
+        routes: ['/used-3d-printers?search={query}'],
+        genericSearchFallback: false,
+        navigation: 'This is a curated used/refurbished stock catalogue, not a broad new-retail search engine. Use the printer-category search once, follow each exact individual listing and capture the current seller asking price, condition/grade, stock, included accessories, repair/service history, UK collection/delivery and stated warranty. Treat an empty catalogue as no current qualifying stock; do not invent a fallback route.'
       },
       '3dgbire.com': {
         label: '3DGBIRE reconditioned',
         collectionApi: 'shopify',
-        routes: ['/search?q={query}', '/collections/reconditioned-3d-printers-and-3d-scanners'],
-        navigation: 'Inspect the reconditioned/ex-demo collection as well as site search. Open the individual product page and retain reconditioned or ex-demo condition; do not classify as new.'
+        routes: ['/collections/reconditioned-3d-printers'],
+        genericSearchFallback: false,
+        navigation: 'Use the dedicated reconditioned 3D-printer collection as discovery, then open each individual printer page. Preserve reconditioned, refurbished or ex-demo grade as used evidence, and capture its current GBP price, stock, warranty/guarantee, included parts and delivery. Do not use the wider scanner/3D-scanner collection as a printer match; reject scanner stations, consumables and parts.'
       },
       '3dprima.co.uk': {
         label: '3D Prima UK retailer',
-        routes: ['/search?query={query}', '/search?q={query}'],
-        navigation: 'Search exact manufacturer and model. From any category results, follow the exact printer product card and exclude consumables and accessories.'
+        routes: ['/search?query={query}'],
+        genericSearchFallback: false,
+        navigation: 'Use the retailer search with the exact manufacturer plus full model name, then follow the direct product URL (the product path contains the manufacturer and product slug/ID). The direct page is the evidence: capture its current GBP price, VAT treatment, in-stock count, selected package, SKU/EAN and delivery charge context. Do not treat search snippets, crossed-out prices or the lowest-30-day reference as the current asking price.'
       },
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
@@ -78,44 +87,49 @@ const playbooks = {
           uk_used: ['https://www.123-3d.co.uk/collections/refurbished-printers']
         },
         genericSearchFallback: false,
-        navigation: 'Use the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used. Keep the routes lane-specific, follow exact individual product pages, and preserve refurbished grade/condition and package variants.'
+        navigation: 'Use only the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used; never scan both lanes for a single-lane task. The collection has brand/type filters and pagination: follow pagination, filter exact manufacturer/model and follow each individual printer page. Capture GBP/VAT price, stock, machine-only/Combo package and, for refurbished stock, exact grade/condition and warranty. Collection/search-card prices are discovery clues, not final evidence.'
       },
       'idig3dprinting.co.uk': {
         label: 'iDig3DPrinting UK retailer',
         routes: ['https://www.idig3dprinting.co.uk/product-category/3d-printers/'],
         genericSearchFallback: false,
-        navigation: 'Use the dedicated WordPress 3D Printers product category as a discovery page. Follow pagination and exact individual printer product links; do not use the general shop/search routes as evidence.'
+        navigation: 'This is a WordPress/WooCommerce product category with paginated product cards (16 products per page). Read the printer category only, follow its pagination and exact individual printer links, then capture the direct product page GBP amount, stock, condition and package. Do not use the general shop/search results as evidence; exclude filament, spare parts, hotends and scanner accessories.'
       },
       '3dflo.com': {
         label: '3DFLO UK retailer',
         routes: ['https://www.3dflo.com/product-category/3d-printers/'],
         genericSearchFallback: false,
-        navigation: 'Use the dedicated 3D Printers product category as a discovery page. Follow exact printer product links and exclude filament, spares, upgrades and STL files.'
+        navigation: 'Use only the WordPress 3D Printers product category; do not use the broad shop catalogue, which mixes printers with filament, STL files, spares and upgrades. Follow each exact printer product link and capture the individual page GBP price, stock, condition and selected package. Exact-model matching is mandatory because the category has a small printer-only subset.'
       },
       '3djake.uk': {
         label: '3DJake UK retailer',
-        routes: ['/search?query={query}', '/search?q={query}'],
-        navigation: 'Use the search function and 3D printer category filters. Open the exact product page and verify UK GBP pricing, not another locale.'
+        routes: ['/search?query={query}'],
+        genericSearchFallback: false,
+        navigation: 'Use the UK storefront search once with the exact manufacturer and model, then follow the direct product page. Confirm the UK locale and GBP amount, selected package/variant, availability and condition on the detail page. Do not accept another locale, search-card price or similarly named accessory as evidence.'
       },
       'gumtree.com': {
         label: 'Gumtree UK used marketplace',
-        routes: ['/uk/srpsearch%2B{slug}', '/for-sale/uk/srpsearch%2B{slug}'],
-        navigation: 'Search UK advertisements for the exact model. Open individual adverts, verify seller asking price, location, condition and availability. Exclude wanted ads, accessories, parts and expired listings.'
+        routes: ['/uk/srpsearch%2B{slug}'],
+        genericSearchFallback: false,
+        navigation: 'Search the UK marketplace once for the exact manufacturer and full model. Open individual active adverts only and capture the seller asking price, posting location, condition, date, stock/availability, included accessories and collection/delivery. Exclude wanted ads, expired/sold listings, parts, filament and accessory-only adverts. Do not retry alternate broad routes after a clear block/403.'
       },
       'secondhand.org.uk': {
         label: 'SecondHand UK marketplace',
-        routes: ['/second-hand-3d-printers?search={query}', '/second-hand-3d-printers'],
-        navigation: 'Use the second-hand 3D printer category as a discovery page, then open each exact-model listing and verify the current asking price and condition.'
+        routes: ['/second-hand-3d-printers?search={query}'],
+        genericSearchFallback: false,
+        navigation: 'Use the dedicated second-hand 3D-printer category and its model search once. Open each direct live listing and capture current GBP asking price, exact model/package, condition, UK location, seller, date and availability. Category pages are discovery only; exclude accessories, wanted adverts and inactive listings.'
       },
       'ebay.co.uk': {
         label: 'eBay UK marketplace',
         routes: ['/sch/i.html?_nkw={query}&_sacat=0'],
-        navigation: 'Search exact manufacturer/model. Open individual active item pages only. Ignore sold/completed listings for current asking-price evidence; separate used, refurbished and new conditions.'
+        genericSearchFallback: false,
+        navigation: 'Use one exact manufacturer/model UK search route. Follow only individual active item pages; capture current seller asking price (not sold/completed price), condition, item location, postage, listing date/status and exact machine/package. Separate new, used, refurbished and ex-demo. Treat 403/blocked listings as unavailable; do not retry alternate routes or infer the price from the result card.'
       },
       'amazon.co.uk': {
         label: 'Amazon UK marketplace',
         routes: ['/s?k={query}'],
-        navigation: 'Use search results only to discover products. Follow a matching result to its direct ASIN product page (/dp/ or /gp/product/), verify the exact model, selected seller/offer, GBP price and availability. Do not use search-result prices as evidence.'
+        genericSearchFallback: false,
+        navigation: 'Use one exact manufacturer/model UK search route for discovery only. Follow a matching result to its direct ASIN product page (/dp/ or /gp/product/). On that page verify the exact model and selected machine/package option, the currently selected seller/offer, GBP price, condition, stock and delivery. Never use search-result prices or an unselected variant. If Amazon blocks the direct page, preserve the discovery URL as a blocked source note and continue with other approved sources.'
       }
     }
   },
@@ -379,13 +393,24 @@ export function buildWebsiteSearchRoutes(source, task) {
   if (configured && !/\/products?\/[^/]+/i.test(configured)) routes.push(fillRoute(configured, task));
   const researchType = String(task?.research_type || '').toLowerCase();
   const configuredRoutes = site?.routesByResearchType?.[researchType] || site?.routes || [];
-  for (const route of configuredRoutes) {
+  const modelText = String(task?.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const modelRoutes = (site?.routesByModel || [])
+    .filter(rule => (rule.modelIncludes || []).some(value => {
+      const token = String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      return token && modelText.includes(token);
+    }))
+    .flatMap(rule => Array.isArray(rule.routes) ? rule.routes : []);
+  for (const route of [...configuredRoutes, ...modelRoutes]) {
     const filledRoute = fillRoute(route, task);
     routes.push(/^https?:\/\//i.test(filledRoute) ? filledRoute : 'https://' + domain + filledRoute);
   }
   const root = 'https://' + domain;
-  if (domain === 'ebay.co.uk') routes.push(root + '/sch/i.html?_nkw=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
-  if (domain === 'amazon.co.uk') routes.push(root + '/s?k=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  if (domain === 'ebay.co.uk' && !routes.some(url => /\/sch\/i\.html\?_nkw=/i.test(url))) {
+    routes.push(root + '/sch/i.html?_nkw=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  }
+  if (domain === 'amazon.co.uk' && !routes.some(url => /\/s\?k=/i.test(url))) {
+    routes.push(root + '/s?k=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  }
   if (site?.genericSearchFallback !== false) routes.push(root + '/search?q=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
   return [...new Set(routes)].slice(0, 5);
 }

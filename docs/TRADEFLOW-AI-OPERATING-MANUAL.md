@@ -5069,3 +5069,81 @@ Root cause was the WinForms docking order: the Fill-docked list host had been mo
 Acceptance is complete for the desktop display. No LIVE worker, supervisor, local agent configuration, private .env, research queue, sources, product catalogue, evidence or Supabase data was changed by this final UI repair. LIVE remains separate from TEST. The only observed runtime state at acceptance was all seven specialists enabled, zero currently active research tasks, and the background service connected/waiting; WAITING does not mean a research task is running.
 
 Supabase LIVE schema inspection found no public project-memory/checkpoint table. The authoritative project record for this repair is maintained in the repository's PROJECT-MEMORY, CHECKPOINTS, both operating manuals, backend operations manual and diagnostic roadmap.
+
+
+## 9 November 2026 — 3D-printer discovery, full-page capture and ELEGOO used-lane repair (review PR #332)
+
+Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`. The feature branch is based on current production `de1b8d4e12edf0102cea28f935a763826ff1c06b`. It consolidates the stale PR #327 full-page/Creality-route correction and PR #323 ELEGOO used-lane correction onto current production; those earlier PRs are to be closed as superseded only after this replacement passes CI.
+
+### LIVE evidence and first loss points
+- Exact branch task history: 19 registered task rows, 56 product subtasks; 19 completed, 0 queued/running/failed. Latest task completed 01:56:42 UTC.
+- Latest Ender-3 V3 KE: 11 search results, 0 exact individual product pages discovered/fetched, 0 Gemma calls; 28 approved-source route attempts (11 route candidates, 11 empty, 6 errors), plus two Creality collection JSON 404s.
+- Latest K1 Max: 11 search results, 1 exact page discovered/fetched, 0 Gemma calls because the task predates PR #320's production merge, 1 raw candidate and queue write `duplicate-skipped` against the existing imported K1 Max record. It also probed the unrelated Ender-3 V3 family collection and received one 404.
+- Repeated route failures include Uni3Dverse 404, eBay UK 403/404, Amazon UK 404 and SecondHand.org.uk 404. No direct individual-page fetch error occurred in the latest K1 Max task.
+- The earliest measurable loss remains search-to-exact-product-page discovery. The subsequent successful-page loss is the 10,000-character truncation after Gemma extraction.
+
+### Current category evidence and review audit
+The correct master category is `3d-printers-equipment` (category ID `ab8b13b0-cc9e-45a6-8c8e-5a0d4f6bb0a1`). It contains 208 master products (201 active/customer-visible) and 277 linked shared-evidence rows: 260 active (239 UK-new, 21 UK-used) and 17 inactive. This is separate from the ChatGPT review queue:
+- 65 historical queue rows: 28 imported, 37 rejected, 0 open.
+- 28 queue rows link to active shared evidence: 23 `uk_new`, 5 `uk_used`, all GBP-priced.
+- 62 queue records contain page captures; current stored `captured_text` and `source_excerpt` maximum is 10,000 characters, and none exceeds that boundary.
+- Audit gap: 64/65 queue rows lack `reviewed_by`; 8 imported rows also lack `reviewed_at`; 64/65 queue rows lack top-level `evidence_type`. Linked shared evidence carries its new/used type. Do not infer reviewer identities or rewrite historical decisions.
+
+### Code changes proposed
+1. **Full-page retention after successful Gemma extraction.** Add `shouldRetainFullPageCapture(task)` so 3D-printer and existing Gaming paths retain the complete fetched page in both structured `source_excerpt` and `page_capture.captured_text`; other categories retain the existing 10,000-character cap. A 40,642-character regression fixture changes retention from 10,000/40,642 (24.6%) to 40,642/40,642 (100%), recovering 30,642 characters. The LIVE queue's 62 existing captures remain unchanged; this is not retroactive.
+2. **Creality model-family routing.** Keep the general FDM collection for Creality printers, but probe `/uk/collections/ender-3-v3-series` only when the requested model contains `ender-3 v3`. K1 Max therefore avoids one unrelated collection probe/404; Ender-3 V3 KE retains the model-family route. This does not claim the collection JSON 404 is fixed.
+3. **ELEGOO used-lane eligibility.** LIVE's exact existing ELEGOO UK manufacturer source is GB, enabled, assigned to this category and currently `research_scope='new_uk'`. Production already has the FDM new route and pre-owned used route, but the source scope excludes it from `uk_used` before route selection. Add the ordered update-only migration `20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql`, changing only that exact existing row from `new_uk` to `all`. Its version `20261109140000` is later than LIVE's latest applied migration `20261109115602`; the earlier draft timestamp is not reused. The migration is not applied. TEST has no matching source row according to the existing checkpoint; the update is a no-op where no row matches and copies no data.
+
+### Regression coverage and release gate
+Four regression tests cover full-page retention by category, successful mocked Gemma extraction with a 40,642-character page, Creality model-specific collection selection, and ELEGOO new/used lane eligibility with manufacturer/category/route boundaries. No source route is promoted to evidence; collection pages remain discovery only. No evidence is approved or imported automatically.
+
+Current production Gemma extraction restoration PR #320 is already merged. The worker's post-merge runtime remains unverified. The proposed capture/routing/source-scope changes are code and migration review only: do not apply the migration, modify LIVE source rows, queue a research task, approve/import evidence, or deploy without explicit owner approval. After review and approval, install the code preserving the private `.env`; apply the source migration only through the approved release process; then run one bounded 3D-printer check and verify exact page discovery, Gemma calls, full capture retention and new/used review separation.
+
+
+## 2026-11-09 LIVE 3D-printer worker latency, raw-capture and evidence-multiplicity repair
+
+### Observed LIVE failure and first failure point
+- Controlled task: \`owner-live-3d-printers-worker-check-neptune4pro-20261109-1445\`, task ID \`2d5f202f-d37e-4180-ba54-7274d99f4c98\`, Elegoo Neptune 4 Pro / Standard Printer / \`uk_both\`.
+- LIVE worker: \`DESKTOP-LVASEUB-78412\`; one task attempt, completed, no queue exception.
+- End-to-end elapsed: 1,156.5 seconds (19 minutes 16.5 seconds).
+- Discovery was functioning: 29 search results, 12 approved source domains probed, six exact product-page candidates found; three direct product pages fetched successfully. Three eBay product fetches returned HTTP 403. The route stage recorded 26 attempts (11 found, 9 empty, 6 errors).
+- First failure point was local Ollama/Gemma extraction, not queue claim or source search. The two-page first batch timed out at the 300,000 ms request timeout. The old recovery path then tried each page individually, sequentially, with the same five-minute timeout; one retry hit the output-token limit and another timed out. The final one-page batch returned a structured observation.
+- Full raw pages were in the task result. All three review writes were correctly duplicate-skipped against existing imported captures for the same source URL. Therefore this run found evidence, but added zero new review rows; that is not proof that the search returned nothing.
+- LIVE status/index checks: the review queue is unique on \`dedupe_key\`; shared market evidence is unique on \`(source_name, source_record_key)\`, not on product/evidence_type. It has a non-unique \`(master_product_id, evidence_type, observed_at DESC) WHERE is_active\` index. A LIVE aggregate showed maximum active same-type records per product of 10 UK-new and 20 UK-used. Do not add a product/type uniqueness constraint or collapse records.
+
+### Repair in this branch (not yet deployed)
+- Preserve the 3D-printer Gemma/Ollama path. Do not change \`isCaptureOnlyResearchTask\`: Gaming is capture-only; 3D printers continue to use Gemma as in the restored PR #320 behaviour.
+- New \`getGemmaExtractionTimeoutMs(task, env)\`: 3D printer calls default to 45,000 ms and are capped at 45,000 ms; an optional \`GEMMA_3D_EXTRACTION_TIMEOUT_MS\` can only reduce or retain the bounded maximum. Non-3D categories retain their existing \`OLLAMA_TIMEOUT_MS\` handling.
+- Remove sequential per-page retry after a 3D batch timeout/invalid response. Each batch receives one bounded attempt; every input page immediately becomes a full raw fallback capture on failure, then extraction proceeds to the next batch and the shared task can hand off.
+- Keep the existing two-page 3D batch size. Model output budget is reduced to 768 tokens, the prompt page excerpt to 1,800 characters, and Gemma's structured \`price_observations\` to at most eight compact distinct observations. The supplied visible-price preview is limited to 12 items to reduce prompt size. The complete fetched page, all deterministic visible GBP amounts and their contexts remain in the raw ChatGPT capture; the compact Gemma pass is supplementary, not authoritative.
+- The full source text must remain in both \`source_excerpt\` and \`page_capture.captured_text\` for 3D printers, whether Gemma succeeds or fails. ChatGPT must receive the raw page even when local extraction fails.
+- Gemma is the local fetched-page reader, not the web crawler. The single worker performs deterministic approved-source discovery using \`source-playbooks.mjs\`; each fetched page now carries that site's approved navigation note into the Gemma prompt. Gemma must not browse, invent URLs, decide suitability or reject a page. ChatGPT decides evidence relevance and product/package allocation.
+
+### 3D-printer website routes and page-reading instructions
+- Creality UK (\`store.creality.com\`): UK search plus verified FDM 3D-printer collection. Only the Ender-3 V3 model family gets the Ender-3 V3 collection route; K1/K1 Max/K2 must not probe it. Use Shopify collection JSON only for discovery and fetch exact individual machine pages.
+- Bambu Lab UK (\`bambu-lab-uk.myshopify.com\`): UK storefront search and 3D-printer collection; direct exact product page is evidence. Read selected standalone versus Combo/AMS options and their prices separately.
+- Anycubic UK (\`uk.anycubic3d.com\`): UK 3D-printer collection first, exact product search second; read the selected standalone versus Combo/ACE configuration, GBP amount and stock separately.
+- ELEGOO UK (\`uk.elegoo.com\`): new tasks use \`/collections/fdm-printers\`; used tasks use \`/collections/pre-owned-3d-printer\`. Both are discovery pages only; follow direct product pages and preserve stock/condition. The LIVE source row remains \`research_scope=new_uk\`; migration \`20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql\` is included in this PR but remains unapplied. Apply only through the approved release sequence.
+- Uni3Dverse (\`uni3dverse.co.uk\`): one curated used/refurbished printer search route; capture asking price, grade, stock, accessories, repair history, UK location/delivery and warranty. No generic fallback.
+- 3DGBIRE (\`3dgbire.com\`): dedicated \`/collections/reconditioned-3d-printers\`; retain reconditioned/refurbished/ex-demo condition, GBP price, stock and warranty. Exclude scanner stations, parts and consumables.
+- 3D Prima (\`3dprima.co.uk\`): one exact manufacturer/model retailer search route; follow the direct product path and inspect price, VAT, stock, selected package and SKU/EAN. Do not treat crossed-out/30-day reference values as current asking price.
+- 123-3D UK (\`123-3d.co.uk\`): lane-specific printer or refurbished-printer collection only, with collection pagination, exact brand/model matching and direct product-page verification.
+- iDig3DPrinting (\`idig3dprinting.co.uk\`): WordPress/WooCommerce 3D-printer product category only; paginate and follow exact printer product pages. Do not use broad shop/search results.
+- 3DFLO (\`3dflo.com\`): dedicated 3D-printer product category only; avoid broad shop pages that mix printers with filament, STL files, spare parts and upgrades.
+- 3DJake UK (\`3djake.uk\`): one UK search route then the direct product page; verify UK GBP, selected package, stock and condition.
+- Gumtree UK (\`gumtree.com\`): one exact-model UK advert search; use active individual adverts only and retain price, condition, location, date and included accessories. Exclude wanted, sold/expired, parts and consumables.
+- SecondHand.org.uk (\`secondhand.org.uk\`): dedicated second-hand 3D-printer category/search and direct live listings; capture asking price, condition, seller/location and availability.
+- eBay UK (\`ebay.co.uk\`): one exact-model listing search; only current active individual listings, not sold/completed comps. A 403 means unavailable; do not spend time on duplicate route variants.
+- Amazon UK (\`amazon.co.uk\`): one exact-model search; evidence only from direct ASIN page with selected seller/offer, configuration, GBP price, condition and stock. Do not use result-card prices.
+- Duplicate generic \`/search?q=\` fallback routes have been disabled for these explicit 3D-printer website playbooks. Route failures should not be retried through a list of equivalent generic paths.
+
+### Evidence multiplicity and deduplication contract
+- Keep the established capture key formula: SHA-256 over manufacturer, model, package key and exact source URL. Same page/product/package is idempotent on repeat; another retailer, marketplace or listing URL generates a separate review capture for that same product.
+- Do not dedupe on product ID + evidence type. Distinct source pages must be allowed to create multiple UK-new or multiple UK-used observations for one catalogue product.
+- One fetched page may itself contain multiple price options (machine-only, Combo, crossed-out, open-box, accessory, shipping, etc.). Preserve the entire page, all raw GBP mentions and price contexts together; Gemma's compact output is supplementary and ChatGPT allocates the valid option to the exact package/condition.
+- Review rows remain unverified raw captures until ChatGPT review. No research job may approve or import catalogue evidence automatically.
+
+### Test and deployment gate
+- Regression coverage adds bounded timeout calculation, one-call/no-retry timeout behaviour, full raw page fallback for every page, page-specific website navigation in the prompt, route-count/no-generic-fallback tests, and distinct source URL keys for the same product.
+- PR #332 remains an open repair branch. Its CI must pass before merge. No LIVE source row, migration, review queue, catalogue or shared evidence was changed by this code work.
+- Deployment remains a separate step: merge only after CI/review; apply the ordered ELEGOO scope migration through the approved release process; install/update the single Research Control Centre worker while preserving its existing private \`.env\`; then run one bounded LIVE 3D-printer smoke test and verify it hands off raw captures, frees the shared queue and shows multiple independent source records in Research awaiting review.

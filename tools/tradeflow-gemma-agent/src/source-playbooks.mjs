@@ -45,8 +45,15 @@ const playbooks = {
       'uk.anycubic3d.com': {
         label: 'Anycubic UK official store',
         routes: ['/collections/3d-printers', '/search?type=product&q={query}'],
+        // Verified UK product routes supplement collection/search discovery. Never
+        // infer a price from the URL; open the page and inspect selected variants.
+        routesByModel: [
+          { modelIncludes: ['kobra 3 max v2'], routes: ['/products/kobra-3-max-v2-3d-printer', '/products/kobra-3-max-v2-ace-2-pro-combo'] },
+          { modelIncludes: ['kobra 4'], routes: ['/products/kobra-4-3d-printer'] },
+          { modelIncludes: ['kobra s1'], routes: ['/products/kobra-s1-ace-2-pro-combo', '/products/kobra-s1-ace-2-pro-combo-3d-printer'] }
+        ],
         genericSearchFallback: false,
-        navigation: 'Start with the UK 3D Printers collection and use the exact product-search route only as a second discovery route. Follow the exact printer product page; inspect the selected machine-only versus Combo/ACE bundle option, GBP price, stock and UK delivery. The same product page can contain multiple package prices; retain each package as a separate catalogue product/evidence context.'
+        navigation: 'Start with the UK 3D Printers collection, then the exact product-search route, then verified model-specific direct product routes. For Kobra 3 Max V2, check both the printer-only page and ACE 2 Pro Combo page. For Kobra 4, the printer-only and Combo options share one product page: inspect the selected machine variant, not merely the page title. For Kobra S1, distinguish ACE 2 Pro Combo from the older ACE Pro Combo and from extra-filament/accessory bundles. Keep exact model, selected variant, GBP price, stock and UK delivery separately; a collection card, crossed-out price or add-on price is never final evidence. If the page has both variants, preserve the raw variant context for ChatGPT review rather than assigning a price from the page headline.'
       },
       'uk.elegoo.com': {
         label: 'ELEGOO UK official store',

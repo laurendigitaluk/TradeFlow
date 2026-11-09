@@ -120,44 +120,45 @@ if (-not $script:UiMutex.WaitOne(0, $false)) {
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'TradeFlow Research Control Centre'
 $form.StartPosition = 'CenterScreen'
-$form.Size = New-Object System.Drawing.Size(960,780)
-$form.MinimumSize = New-Object System.Drawing.Size(860,640)
+$form.Size = New-Object System.Drawing.Size(1040,780)
+$form.MinimumSize = New-Object System.Drawing.Size(860,560)
 $form.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Font = New-Object System.Drawing.Font('Segoe UI',9)
 $form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
 
 $header = New-Object System.Windows.Forms.Panel
 $header.Dock = 'Top'
-$header.Height = 104
+$header.Height = 86
 $header.BackColor = [System.Drawing.Color]::FromArgb(28,42,58)
 $form.Controls.Add($header)
 
 $title = New-Object System.Windows.Forms.Label
 $title.Text = 'TRADEFLOW  |  RESEARCH CONTROL CENTRE'
 $title.ForeColor = [System.Drawing.Color]::White
-$title.Font = New-Object System.Drawing.Font('Segoe UI Semibold',16,[System.Drawing.FontStyle]::Bold)
-$title.Location = New-Object System.Drawing.Point(22,16)
+$title.Font = New-Object System.Drawing.Font('Segoe UI Semibold',15,[System.Drawing.FontStyle]::Bold)
+$title.Location = New-Object System.Drawing.Point(22,12)
 $title.AutoSize = $true
 $header.Controls.Add($title)
 
 $ServiceLabel = New-Object System.Windows.Forms.Label
 $ServiceLabel.Text = 'Background service: checking…'
 $ServiceLabel.ForeColor = [System.Drawing.Color]::FromArgb(225,232,239)
-$ServiceLabel.Location = New-Object System.Drawing.Point(24,58)
+$ServiceLabel.Location = New-Object System.Drawing.Point(24,52)
 $ServiceLabel.AutoSize = $true
 $header.Controls.Add($ServiceLabel)
 
 $buttonPanel = New-Object System.Windows.Forms.FlowLayoutPanel
 $buttonPanel.Dock = 'Top'
-$buttonPanel.Height = 54
-$buttonPanel.Padding = New-Object System.Windows.Forms.Padding(18,10,10,6)
+$buttonPanel.Height = 48
+$buttonPanel.Padding = New-Object System.Windows.Forms.Padding(14,7,8,5)
 $buttonPanel.BackColor = [System.Drawing.Color]::White
+$buttonPanel.WrapContents = $false
 $form.Controls.Add($buttonPanel)
 
 $startButton = New-Object System.Windows.Forms.Button
 $startButton.Text = 'Start background service'
-$startButton.Width = 190
-$startButton.Height = 32
+$startButton.Width = 180
+$startButton.Height = 30
 $startButton.FlatStyle = 'Flat'
 $startButton.BackColor = [System.Drawing.Color]::FromArgb(33,112,82)
 $startButton.ForeColor = [System.Drawing.Color]::White
@@ -166,93 +167,72 @@ $buttonPanel.Controls.Add($startButton)
 
 $stopButton = New-Object System.Windows.Forms.Button
 $stopButton.Text = 'Stop after current task'
-$stopButton.Width = 170
-$stopButton.Height = 32
+$stopButton.Width = 165
+$stopButton.Height = 30
 $stopButton.FlatStyle = 'Flat'
 $stopButton.Add_Click({ Stop-BackgroundService; Update-Display }.GetNewClosure())
 $buttonPanel.Controls.Add($stopButton)
 
 $logsButton = New-Object System.Windows.Forms.Button
 $logsButton.Text = 'Open logs'
-$logsButton.Width = 100
-$logsButton.Height = 32
+$logsButton.Width = 90
+$logsButton.Height = 30
 $logsButton.Add_Click({ New-Item -ItemType Directory -Path $LogPath -Force | Out-Null; Invoke-Item $LogPath }.GetNewClosure())
 $buttonPanel.Controls.Add($logsButton)
 
 $AgentSummary = New-Object System.Windows.Forms.Label
 $AgentSummary.Text = 'Specialists enabled: checking…'
 $AgentSummary.AutoSize = $true
-$AgentSummary.Margin = New-Object System.Windows.Forms.Padding(18,8,8,4)
+$AgentSummary.Margin = New-Object System.Windows.Forms.Padding(12,8,4,4)
 $AgentSummary.ForeColor = [System.Drawing.Color]::FromArgb(45,58,72)
 $buttonPanel.Controls.Add($AgentSummary)
 
 $note = New-Object System.Windows.Forms.Label
-$note.Text = 'Enable the agents you want available. They wait quietly until matching work arrives from TradeFlow LIVE. Closing this window does not stop the background service.'
+$note.Text = 'Each specialist has an independent switch. Enabled specialists wait for matching TradeFlow LIVE work; only an active task shows RUNNING.'
 $note.Dock = 'Top'
-$note.Height = 48
-$note.Padding = New-Object System.Windows.Forms.Padding(22,12,20,8)
+$note.Height = 38
+$note.Padding = New-Object System.Windows.Forms.Padding(18,9,12,5)
 $note.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $note.ForeColor = [System.Drawing.Color]::FromArgb(70,82,94)
 $form.Controls.Add($note)
 
+# A fixed two-column grid deliberately replaces scrolling. Four compact rows fit
+# the seven named specialists in the owner's side-by-side desktop window.
 $listHost = New-Object System.Windows.Forms.Panel
 $listHost.Dock = 'Fill'
 $listHost.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
+$listHost.Padding = New-Object System.Windows.Forms.Padding(8,6,8,6)
 $form.Controls.Add($listHost)
-
-# Use explicit sibling bounds instead of WinForms DockStyle.Fill + DockStyle.Right.
-# Dock z-order was allowing the fill canvas to cover the scrollbar on the owner's display.
-$cards = New-Object System.Windows.Forms.Panel
-$cards.Dock = 'None'
-$cards.Location = New-Object System.Drawing.Point(0,0)
-$cards.Size = New-Object System.Drawing.Size(1,1)
-$cards.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
-$cards.TabStop = $true
-$listHost.Controls.Add($cards)
-
-$agentScroll = New-Object System.Windows.Forms.VScrollBar
-$agentScroll.Dock = 'None'
-$agentScroll.Width = 24
-$agentScroll.Minimum = 0
-$agentScroll.SmallChange = 54
-$agentScroll.LargeChange = 180
-$agentScroll.Visible = $true
-$agentScroll.TabStop = $true
-$listHost.Controls.Add($agentScroll)
-$agentScroll.BringToFront()
 
 $AgentControls = @{}
 $agentIndex = 0
 foreach ($agent in $Agents) {
     $card = New-Object System.Windows.Forms.Panel
-    $card.Width = [Math]::Max(300, $cards.ClientSize.Width - 16)
-    $card.Height = 92
-    $card.Location = New-Object System.Drawing.Point(8, (8 + ($agentIndex * 108)))
-    $card.Anchor = 'Top,Left,Right'
-    $card.Margin = New-Object System.Windows.Forms.Padding(0)
-    $card.Padding = New-Object System.Windows.Forms.Padding(12)
+    $card.Height = 78
+    $card.Margin = New-Object System.Windows.Forms.Padding(4)
+    $card.Padding = New-Object System.Windows.Forms.Padding(8)
     $card.BackColor = [System.Drawing.Color]::White
     $card.BorderStyle = 'FixedSingle'
 
     $name = New-Object System.Windows.Forms.Label
     $name.Text = [string]$agent.label
-    $name.Font = New-Object System.Drawing.Font('Segoe UI Semibold',11,[System.Drawing.FontStyle]::Bold)
-    $name.Location = New-Object System.Drawing.Point(12,8)
+    $name.Font = New-Object System.Drawing.Font('Segoe UI Semibold',10,[System.Drawing.FontStyle]::Bold)
+    $name.Location = New-Object System.Drawing.Point(10,7)
     $name.AutoSize = $true
     $card.Controls.Add($name)
 
     $state = New-Object System.Windows.Forms.Label
     $state.Text = 'Checking…'
-    $state.Location = New-Object System.Drawing.Point(12,34)
-    $state.Width = 760
-    $state.Height = 22
+    $state.Location = New-Object System.Drawing.Point(10,31)
+    $state.Width = 420
+    $state.Height = 20
     $state.ForeColor = [System.Drawing.Color]::DarkSlateBlue
     $card.Controls.Add($state)
 
     $check = New-Object System.Windows.Forms.CheckBox
     $check.Text = 'Enabled'
     $check.Tag = [string]$agent.agentKey
-    $check.Location = New-Object System.Drawing.Point(12,60)
+    $check.Location = New-Object System.Drawing.Point(10,52)
     $check.AutoSize = $true
     $check.Add_CheckedChanged({
         param($sender,$eventArgs)
@@ -263,68 +243,45 @@ foreach ($agent in $Agents) {
     }.GetNewClosure())
     $card.Controls.Add($check)
 
-    $cards.Controls.Add($card)
+    $listHost.Controls.Add($card)
     $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state; Card=$card; Index=$agentIndex }
     $agentIndex++
 }
 
-$script:AgentListContentHeight = 16 + ($Agents.Count * 108)
-$script:AgentListOffset = 0
-$script:UpdatingAgentScroll = $false
-$script:UpdatingAgentLayout = $false
-$script:UpdateAgentListViewport = {
-    if ($script:UpdatingAgentLayout) { return }
-    $script:UpdatingAgentLayout = $true
+$script:UpdatingAgentGrid = $false
+$script:UpdateAgentGrid = {
+    if ($script:UpdatingAgentGrid) { return }
+    $script:UpdatingAgentGrid = $true
     try {
-        # Position the two sibling controls explicitly. Do not rely on Dock ordering.
         $hostWidth = [Math]::Max(1, $listHost.ClientSize.Width)
         $hostHeight = [Math]::Max(1, $listHost.ClientSize.Height)
-        $scrollWidth = 24
-        $cardsWidth = [Math]::Max(1, $hostWidth - $scrollWidth)
-        $cards.SetBounds(0, 0, $cardsWidth, $hostHeight)
-        $agentScroll.SetBounds($cardsWidth, 0, $scrollWidth, $hostHeight)
-        $agentScroll.Visible = $true
-        $agentScroll.BringToFront()
-
-        $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
-        $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
-        $agentScroll.Enabled = ($maxOffset -gt 0)
-        $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
-        $agentScroll.SmallChange = 54
-        $agentScroll.Minimum = 0
-        $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
-        $script:AgentListOffset = [Math]::Max(0, [Math]::Min($maxOffset, $script:AgentListOffset))
-        $script:UpdatingAgentScroll = $true
-        try { $agentScroll.Value = $script:AgentListOffset }
-        finally { $script:UpdatingAgentScroll = $false }
-
-        $width = [Math]::Max(1, $cards.ClientSize.Width - 16)
+        $columns = 2
+        $gap = 8
+        $outer = 8
+        $cardWidth = [Math]::Max(280, [int](($hostWidth - (2 * $outer) - $gap) / 2))
+        $cardHeight = [Math]::Max(66, [Math]::Min(78, [int](($hostHeight - (4 * $outer)) / 4) - 6))
         foreach ($item in $AgentControls.Values) {
-            $item.Card.Width = $width
-            $item.Card.Location = New-Object System.Drawing.Point(8, (8 + ($item.Index * 108) - $script:AgentListOffset))
+            $column = $item.Index % $columns
+            $row = [Math]::Floor($item.Index / $columns)
+            $x = $outer + ($column * ($cardWidth + $gap))
+            $y = $outer + ($row * ($cardHeight + $gap))
+            $item.Card.SetBounds($x, $y, $cardWidth, $cardHeight)
+            $item.State.Width = [Math]::Max(180, $cardWidth - 24)
         }
     } finally {
-        $script:UpdatingAgentLayout = $false
+        $script:UpdatingAgentGrid = $false
     }
 }.GetNewClosure()
 
-$agentScroll.Add_ValueChanged({
-    if (-not $script:UpdatingAgentScroll -and -not $script:UpdatingAgentLayout) {
-        $script:AgentListOffset = $agentScroll.Value
-        & $script:UpdateAgentListViewport
-    }
-}.GetNewClosure())
-
-$listHost.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
-$cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
+$listHost.Add_Resize({ & $script:UpdateAgentGrid }.GetNewClosure())
 $form.Add_Shown({
-    $script:AgentListOffset = 0
-    $form.BeginInvoke([Action]{ & $script:UpdateAgentListViewport }) | Out-Null
+    $form.BeginInvoke([Action]{ & $script:UpdateAgentGrid }) | Out-Null
+    Update-Display
+    $timer.Start()
 }.GetNewClosure())
 
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 3000
 $timer.Add_Tick({ Update-Display }.GetNewClosure())
-$form.Add_Shown({ Update-Display; $timer.Start() }.GetNewClosure())
 $form.Add_FormClosed({ $timer.Stop(); try { $script:UiMutex.ReleaseMutex() } catch {}; $script:UiMutex.Dispose() }.GetNewClosure())
 [void]$form.ShowDialog()

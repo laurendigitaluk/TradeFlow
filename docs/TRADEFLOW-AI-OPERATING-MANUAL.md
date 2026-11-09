@@ -5046,3 +5046,8 @@ The screenshot confirms the PC still displays the old broken result; the new com
 ### CI verification for explicit-bounds repair — 9 November 2026
 
 GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed successfully for UI commit c0b9f980b164f7eacc76f0974e921562d9ccfe32. This verifies the repository's automated checks for that commit; it does not constitute visual acceptance on the owner's Windows PC. Local PC deployment and screenshot verification remain outstanding.
+
+
+### Fixed-grid Control Centre layout — 9 November 2026
+
+The owner-confirmed dedicated VScrollBar implementation still clipped the first two specialists on the Research PC. Do not repeat scrollbar, Panel.AutoScroll, or Dock z-order variants. The replacement UI uses a fixed two-column/four-row grid of seven compact cards, generated from canonical agents.json. Every card keeps its own Enabled checkbox and status; the toolbar keeps enabled/active counts. The grid recalculates positions and widths on resize and has no scroll container or scrollbar. This is UI-only: preserve config.json, status.json, scheduled supervisor, worker, .env, LIVE queue and research data. Deploy only the updated TradeFlow-Research-Control-Centre.ps1 after closing the visible dashboard; then reopen the existing Control Centre shortcut and verify all seven cards are simultaneously visible.

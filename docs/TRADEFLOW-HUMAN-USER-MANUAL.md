@@ -2556,3 +2556,8 @@ The screenshot confirms the PC still displays the old broken result; the new com
 ### CI verification for explicit-bounds repair — 9 November 2026
 
 GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed successfully for UI commit c0b9f980b164f7eacc76f0974e921562d9ccfe32. This verifies the repository's automated checks for that commit; it does not constitute visual acceptance on the owner's Windows PC. Local PC deployment and screenshot verification remain outstanding.
+
+
+### Fixed seven-specialist dashboard layout — 9 November 2026
+
+The specialist dashboard uses a fixed two-column grid with four compact rows. All seven named specialists are displayed together; no scrollbar is required. Each card retains its own Enabled checkbox and live RUNNING/WAITING/DISABLED state. The enabled and active counters remain in the toolbar. Resizing the window recalculates card positions and widths. This change affects only the desktop display; it does not change the research worker, scheduled supervisor, LIVE queue, or specialist configuration.

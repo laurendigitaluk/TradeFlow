@@ -4,7 +4,7 @@ export const TRADEFLOW_PROJECTS = Object.freeze({
 });
 
 export function resolveControlPlane(env = {}) {
-  const name = String(env.TRADEFLOW_GEMMA_ENVIRONMENT || 'TEST').trim().toUpperCase();
+  const name = String(env.TRADEFLOW_GEMMA_ENVIRONMENT || 'LIVE').trim().toUpperCase();
   if (!Object.hasOwn(TRADEFLOW_PROJECTS, name)) {
     throw new Error('TRADEFLOW_GEMMA_ENVIRONMENT must be TEST or LIVE; refusing to start.');
   }

@@ -4496,3 +4496,12 @@ Production was corrected:
 The change is committed to production in commits `af867edd067422adfd8a371cecb4f939ae231268` and `a1376bbefde726543b47606064f60486fbafea0d`. The new code was inspected after commit. A new production CI run had not appeared at the time of this checkpoint, so do not describe the correction as CI-verified yet.
 
 The Research PC still has the previous installed copies of these scripts and shortcut arguments. To apply the fix, stop the background service after any current task finishes, then rerun the production installer from the existing Gemma folder. The installer will refuse to overwrite an active supervisor or legacy worker. After installation, verify one Control Centre window and no PowerShell console when opening a specialist shortcut.
+
+
+## Hidden shortcut launcher correction — 9 November 2026
+
+The owner clarified that the second visible tab was titled with the executable path `C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe`. This is a second PowerShell console session, not a keyboard shortcut. The prior `-WindowStyle Hidden` shortcut setting did not prevent Windows Terminal/PowerShell from presenting the launcher console on the owner's PC.
+
+The production installer now downloads `Launch-TradeFlow-Control-Centre.vbs` and creates the main Control Centre and seven specialist shortcuts with `wscript.exe` as the target. The VBScript starts the PowerShell WinForms UI with window style 0 (hidden) and passes through the optional specialist arguments. The WinForms Control Centre remains visible. The existing named mutex still enforces one dashboard instance, and the existing scheduled supervisor remains the only background research worker.
+
+The owner installed the previous build before this WScript-host correction was added. The PC must be updated by rerunning the production installer once more after the background service has been stopped safely. This is a launcher-only correction; do not change the worker, .env, LIVE queue, or TEST configuration.

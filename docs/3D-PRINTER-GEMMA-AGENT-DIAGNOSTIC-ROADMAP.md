@@ -2,6 +2,34 @@
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.
 
+## 9 November 2026 — latest eight-product Anycubic batch and fallback field mapping
+
+### LIVE task/worker state
+- Exact branch parent tasks: 29 total; 28 completed, 1 failed; 0 queued/running.
+- Failed parent: owner-3d-printers-equipment-1794264123497. All 8 product subtasks emitted task_completed events and their queue writes persisted, then platform_ai_agent_complete_task returned HTTP 400 / PGRST102. The parent result is absent. Do not treat the parent as completed or queue a duplicate automatically.
+- Isolated 3D worker event: 23:20:07 UTC, worker DESKTOP-LVASEUB-3d-printers-equipment-128700, status idle, no active task.
+- Generic worker event: 23:16:18 UTC, worker DESKTOP-LVASEUB-129276, status idle, no active task. The category row reflects the isolated worker; the generic worker's enabled scope is not present in telemetry. Both pollers are currently idle, but verify local legacy config.json / enabledAgentKeys before another 3D task. Production shared worker can use the unscoped claim RPC when no desktop config path is set; otherwise it uses the configured category list.
+- The new isolated worker ID and isolated_agent_key match the isolation implementation in PR #342. The exact installed source SHA is not exposed, and PR #342 remains a draft; do not assume its branch commit without checking the Research PC.
+
+### Latest eight-product task metrics
+- 44 search results; 112 approved-source route attempts; 24 route matches; 80 empty routes; 8 failed routes (one eBay UK HTTP 403 per subtask); 12 approved sources probed per subtask; 24 pagination pages followed; no collection or product-page HTTP fetch errors.
+- 9 exact product pages discovered; 5 inspected/fetched; 5 raw captures retained; 4 Gemma extraction batches, all 4 timed out at the 45-second bound. Raw fallbacks were retained.
+- Four subtasks returned zero search results. Kobra 3 Max V2 Standard found one page but the exact-model guard rejected the Anycubic page before price extraction. 3DJake Kobra 3 Max V2 Combo pages were rejected because the retailer's parent URL path contains the word accessories; PR #341 addresses that separate matcher defect and remains open.
+- Compared with the prior five-product repeat (18 search results, 3 pages discovered, 1 fetched/captured), this eight-product batch improved to 44 search results, 9 discovered, 5 fetched and 5 captured.
+
+### Review queue and first post-capture defect
+- Queue: 70 rows; 28 imported, 37 rejected, 5 needs_research. Of the five pending rows, 2 are labelled uk_new (Kobra 4 Standard £159 and Bambu Lab A1 £215) and 3 are unclassified raw Kobra 3 Max V2 Combo captures. No pending uk_used capture from this batch.
+- The three unclassified raw captures have full page lengths 19,514 / 16,120 / 16,285 characters, but their top-level item_condition lengths are 1,282 / 1,281 / 1,282 and availability lengths 780 / 1,040 / 1,040. They remain needs_research, with no review, approval or import timestamps.
+- Root cause confirmed in production agent.mjs: fallbackPageCapture() stores up to ten context snippets in item_condition_text and availability_text; the queue row builder copied those raw snippets into normalized item_condition and availability fields.
+- PR #343 adds a 3D-only mapper that accepts only concise explicit normalized values up to 100 characters. Raw snippets and full page stay in raw_payload.evidence / page_capture. Non-3D category mapping remains unchanged. Three regression tests cover the boundary. PR #343 is open; no LIVE rows were modified.
+- Earliest losses remain at search for four product/package subtasks (zero results), then exact-model matching for Kobra 3 Max V2 Standard and the 3DJake Combo parent-category false positive. Gemma timeouts occur later; raw capture is retained. The parent PGRST102 is a separate post-subtask completion failure and remains unexplained without local request-body/log evidence.
+
+### Open review items
+- PR #341: 3DJake retailer parent-path matcher correction, open/mergeable.
+- PR #342: independent category-agent architecture, draft; CI passed. It is broader than this 3D-only diagnostic and has not been merged. Runtime now shows an isolated 3D worker, so update the PR's stale statement that no isolated clone is installed only after the owner confirms the Research PC install.
+- PR #343: 3D-printer fallback field separation, open; CI pending at checkpoint creation.
+- Do not stop either worker, enqueue another task, change source registry, or alter other categories as part of this repair. No approvals/imports or TEST/LIVE data transfers.
+
 ## Boundaries
 - Do not rewrite Gemma Desktop, the shared `task-worker.mjs`, desktop launcher, environment files, control plane, other category agents or their source lists.
 - The 3D Printer agent must use its own category-scoped instructions and only LIVE-approved sources. Never enable other categories or copy TEST state to LIVE.

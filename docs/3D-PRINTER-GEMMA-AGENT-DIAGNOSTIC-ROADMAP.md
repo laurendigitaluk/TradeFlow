@@ -78,3 +78,6 @@ PR #341 branch fix/3d-printer-retailer-taxonomy-matcher-20261109 changes accesso
 The same task logged only the two generic Anycubic collection/search routes. It did not log the model-specific direct routes added by merged PR #339. The current production playbook contains those routes, so the Research PC installation/process has not yet demonstrated that it loaded the merged playbook. Do not infer its local commit from worker ID. After explicit approval for the existing updater, verify both direct-route attempts and the matcher regression in one bounded Kobra 3 Max V2 Combo task.
 
 No source registry, migration, review approval, shared evidence or catalogue import was changed. TEST remains untouched.
+
+
+Verification follow-up: PR #341 final code/test head passed GitHub Actions run #594 (104/104 tests). The test specifically accepts the exact 3DJake Kobra 3 Max V2 Combo product page under the retailer's accessory taxonomy while preserving Standard/Combo mismatch and replacement/nozzle rejection. PR remains open and unmerged; Research PC runtime verification remains pending.

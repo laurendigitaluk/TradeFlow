@@ -38,3 +38,25 @@ After review/approval, install current-production-based code while preserving pr
 
 ## Verification
 GitHub Actions Gemma Research Tests run #504 passed on code/test head `4e0f13230de6833f6e4f0fe11e64a70f6f1458ed`. PowerShell updater syntax, Node syntax, the full Gemma test command (including full-page, Creality route and ELEGOO lane regressions), and Owner Dashboard JavaScript syntax passed. Both Workers Builds checks (`tradeflow` and `tradeflow-test`) passed. PR #332 is ready for review and mergeable; the ordered migration remains unapplied and no deployment was performed.
+
+
+## LIVE latency and evidence-multiplicity follow-up — 9 November 2026
+
+### Controlled LIVE finding (pre-fix baseline)
+Task \`owner-live-3d-printers-worker-check-neptune4pro-20261109-1445\` (UUID \`2d5f202f-d37e-4180-ba54-7274d99f4c98\`) completed on the single LIVE worker in 1,156.5 seconds. It found 29 search results, checked 12 approved sources, identified six direct-page candidates, successfully fetched three pages and received three eBay HTTP 403 responses. The first two-page Gemma request timed out at five minutes; the old implementation then performed sequential single-page retries with the same timeout. Three raw page captures were retained, but all three were duplicate-skipped against existing imported captures for the same source URL. This demonstrated a queue-blocking extraction timeout and an idempotent duplicate hand-off, not a discovery failure.
+
+### Repair made on the PR #332 branch
+- 3D printers continue to use Gemma/Ollama; do not revert to capture-only mode (the PR #320 restoration of the 3D Gemma path remains intentional).
+- Added \`getGemmaExtractionTimeoutMs\`: default 45 seconds for 3D-printer batches, hard-capped at 45 seconds; optional \`GEMMA_3D_EXTRACTION_TIMEOUT_MS\` can lower/retain that limit. Other categories retain their established \`OLLAMA_TIMEOUT_MS\` behaviour.
+- Removed sequential 3D per-page retries. A timeout or invalid Gemma response immediately yields full raw captures for every fetched page in that batch and continues the hand-off, so the shared queue is not held for repeated five-minute waits.
+- Reduced the 3D model output budget to 768 tokens, source excerpt to 1,800 characters, structured price observation limit to eight, and the input price preview to 12 entries. Full page text and the full deterministic GBP price/context list remain in raw captures for ChatGPT.
+- Each source page now passes its approved website navigation note into the Gemma prompt. The worker, not Gemma, discovers pages through the approved source playbooks. Gemma is told not to browse, invent URLs, approve/reject evidence or decide suitability.
+- Tightened 3D-printer website routes and instructions for Creality, Bambu Lab, Anycubic, ELEGOO, Uni3Dverse, 3DGBIRE, 3D Prima, 123-3D, iDig3DPrinting, 3DFLO, 3DJake, Gumtree, SecondHand, eBay and Amazon; removed redundant generic search fallbacks. Creality Ender-3-family collection remains model-specific.
+- Extracted \`buildEvidenceCaptureDedupeKey\` without changing the existing hash tuple. Same product/package/source URL remains idempotent; distinct source URLs create separate captures.
+- LIVE index/schema verification: \`platform_catalogue_research_queue\` is unique on \`dedupe_key\`; \`shared_market_evidence\` is unique on \`(source_name, source_record_key)\` and has a non-unique product/type/date index. LIVE currently contains active products with up to 10 UK-new and 20 UK-used records of the same type per product. No database uniqueness change is needed.
+
+### Release status / safeguards
+- Code and regression tests are on this PR branch only; not deployed to the Research PC and not merged to production.
+- The LIVE ELEGOO UK source is still \`research_scope=new_uk\`. PR #332 carries the update-only migration \`20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql\`; it has not been applied.
+- No LIVE source, evidence, catalogue, customer, tenant, website, ownership or Stripe data was modified. No worker restarted and no private \`.env\` or local PC settings were changed.
+- Current CI run must pass before merge. After review/merge, apply the ELEGOO source-scope migration only through the approved release process, update the single installed Research Control Centre worker preserving its private environment, then run one bounded LIVE 3D-printer task. Acceptance requires: a completed task within the bounded extraction envelope, raw full-page captures present for Gemma success and failure, all qualifying distinct source pages retained in Research awaiting review, multiple same-type source records for one product preserved, and the shared queue proceeds to the next task.

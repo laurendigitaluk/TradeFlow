@@ -171,6 +171,156 @@ const playbooks = {
       'gumtree.com': { label: 'Gumtree UK used marketplace', navigation: 'Search UK adverts for the exact model and storage. Open individual live adverts and capture asking price, seller location, condition, included controller/cables/box, posting date and availability. Exclude wanted ads, accessories, parts, expired/sold adverts and duplicates; do not treat collection-only as nationwide delivery.' }
     }
   },
+
+  'drones': {
+    categoryInstructions: [
+      'Research the exact complete drone or drone package requested. Preserve manufacturer, model generation, controller, camera/sensor configuration, region and package contents.',
+      'Keep standard, Fly More, Creator, enterprise, FPV and other bundle variants separate. Do not treat a battery, controller, propeller, camera gimbal, frame or spare part as a complete drone.',
+      'A manufacturer catalogue, collection or retailer category is discovery only. Follow each matching product card to the individual product page and verify the exact model, visible GBP price and availability there.',
+      'For used drones, inspect the individual live seller listing. Capture condition, crash/repair history if stated, battery count/cycle information if stated, included controller and batteries, seller location and asking price. Exclude sold, expired, wanted and parts-only listings.',
+      'Keep UK-new and UK-used lanes separate. Official manufacturer pages are useful for identity/specification and discontinued status; use UK GBP retail pages for price when the manufacturer does not publish one.',
+      'Preserve regulatory/region variants and exact controller or camera bundles. Never infer that a package includes a controller, batteries, charging hub or carrying case unless the page states it.'
+    ],
+    branchInstructions: {
+      'camera-drones': ['Research complete camera drones only. Preserve exact aircraft model, camera/sensor, controller, transmission generation, standard/Fly More/Creator package and included batteries.'],
+      'underwater-drones': ['Research complete underwater ROV/drone units only. Preserve exact model, camera/lighting configuration, tether length, controller, battery and package contents.'],
+      'water-drones': ['Research complete surface/water drones only. Preserve exact model, payload/camera configuration, controller, battery and included accessories.']
+    },
+    sites: {
+      'cameraworld.co.uk': { label: 'CameraWorld UK drones', routes: ['/videography-products/drones/drones.html'], genericSearchFallback: false, navigation: 'Use the dedicated Drones category as a discovery page, follow exact product links and inspect each individual product page for the current UK GBP price and stock.' },
+      'droneauthority.co.uk': { label: 'Drone Authority UK', routes: ['/collections/pre-built'], genericSearchFallback: false, navigation: 'Use the pre-built drone collection as a discovery page. Follow exact model/configuration links and reject frames, parts and zero-price configuration placeholders.' },
+      'unmannedtechshop.co.uk': { label: 'Unmanned Tech UK complete drones', routes: ['/collections/complete-drones-ready-to-fly-kits'], genericSearchFallback: false, navigation: 'Use the Complete Drones / Ready-to-Fly Kits collection. Open exact model/configuration pages and preserve kit contents; exclude components and parts.' },
+      'flyingtech.co.uk': { label: 'Flying Tech UK', routes: ['/shop/'], navigation: 'Search the UK shop for the exact model, then open the individual product page. Separate complete aircraft from replacement parts and accessories.' },
+      'wilko.com': { label: 'Wilko UK drone category', routes: ['/en-uk/toys-sports/outdoor-toys/drone/c/2416'], genericSearchFallback: false, navigation: 'Use the UK drone category as a discovery page and follow exact individual product pages. Verify the current UK price and stock.' },
+      'uk.hoverair.com': { label: 'HOVERAir UK official store', routes: ['/collections/all'], navigation: 'Use the UK collection and exact product pages. Preserve X1, X1 Pro/Pro Max, AQUA and bundle differences; capture GBP and availability.' },
+      'itdroneservices.co.uk': { label: 'IT Drone Services UK', routes: ['https://shop.itdroneservices.co.uk/collections/fimi-store'], genericSearchFallback: false, navigation: 'Use the FIMI collection as a discovery page, then follow exact product pages and preserve model and package contents.' },
+      'whoopstore.uk': { label: 'Whoop Store UK', routes: ['/collections/drones-by-geprc'], genericSearchFallback: false, navigation: 'Use the GEPRC drone collection for discovery. Follow the exact drone model and configuration page; exclude frames, motors and other components.' },
+      'dji.com': { label: 'DJI UK official', routes: ['/uk'], navigation: 'Use the UK DJI product catalogue for model identity, specifications and package differences. Official pages are not automatically price evidence; follow UK GBP retail offers where required.' },
+      'modusbrands.com': { label: 'Modus Brands UK Autel distributor', routes: ['/brands-trust-us/autel-robotics-drone-distributor/'], genericSearchFallback: false, navigation: 'Use the listed Autel distributor page for brand/product identity and availability context. Do not infer a GBP price when the page is quote-only.' },
+      'aetha.global': { label: 'Aetha UK Skydio provider', navigation: 'Use the UK Skydio solutions pages for exact model identity and availability context. Record quote-only pricing as no published price, never estimate.' },
+      'mpb.com': { label: 'MPB UK used dealer', routes: ['/en-uk'], navigation: 'Use the UK used inventory for exact drone listings. Preserve condition grade, included accessories and the individual GBP asking price.' },
+      'amazon.co.uk': { label: 'Amazon UK', navigation: 'Search results are discovery only. Open the direct ASIN page and verify the selected seller, exact model/package, GBP price and stock.' },
+      'ebay.co.uk': { label: 'eBay UK', navigation: 'Inspect individual active UK listings only. Capture seller asking price, condition, location and included equipment; exclude sold/completed listings from current asking-price evidence.' }
+    }
+  },
+  'metal-detectors': {
+    categoryInstructions: [
+      'Research the exact metal detector model and package requested. Preserve manufacturer, model, search frequency/technology, coil configuration, control unit and included accessories.',
+      'Keep complete detector units separate from search coils, headphones, shafts, batteries, pinpointers, covers and replacement parts. Do not treat an accessory listing as a detector.',
+      'Distinguish standard packages from bundles containing extra coils, headphones, pinpointers or carry bags. Record each exact package as a separate variant only where the listing clearly identifies its contents.',
+      'A brand or retailer category is discovery only. Follow the exact product card to an individual product page and verify the visible GBP price, stock and package contents.',
+      'For used detectors, inspect individual active listings and preserve stated condition, faults, coil(s), accessories, warranty and seller location. Exclude sold, expired, wanted and parts-only listings.',
+      'Use official manufacturer pages for exact model identity and specifications; use UK retailers/dealers for current GBP pricing when the manufacturer page has no price.'
+    ],
+    branchInstructions: {
+      'metal-detectors': ['Research complete metal detector units only. Preserve exact model, operating technology/frequency, standard or bundle package and included coil/accessories.'],
+      'metal-detector-equipment-accessories': ['Research the exact detector accessory or equipment item requested. Record part/model number and stated compatible detector models; never infer compatibility or substitute a similar coil/part.']
+    },
+    sites: {
+      'crawfordsmd.com': { label: 'Crawfords Metal Detectors UK', routes: ['/metal-detectors'], genericSearchFallback: false, navigation: 'Use the dedicated Metal Detectors category for discovery, then follow exact product pages and verify visible GBP price and stock.' },
+      'detector-distribution.co.uk': { label: 'Detector Distribution UK', routes: ['/metal-detectors'], genericSearchFallback: false, navigation: 'Use the Metal Detectors category as a discovery page. Open exact individual detector pages and preserve model and package details.' },
+      'detecnicks.co.uk': { label: 'Detecnicks UK used detectors', routes: ['/Second-hand_Metal_Detectors.html'], genericSearchFallback: false, navigation: 'Use the second-hand detector listing page. Inspect each individual live listing and retain its exact condition, included coil/accessories and GBP asking price.' },
+      'noktauk.com': { label: 'Nokta UK Store', routes: ['/collections/metal-detectors'], genericSearchFallback: false, navigation: 'Use the UK Metal Detectors collection, then follow exact model product pages. Keep detector bundles and accessory products separate.' },
+      'minelab.com': { label: 'Minelab UK official', routes: ['https://uk.minelab.com/'], navigation: 'Use the UK storefront for exact model identity, specifications and available packages. Follow direct UK product pages for any published GBP price.' },
+      'regton.com': { label: 'Regton Metal Detectors UK', navigation: 'Search the UK detector retailer for the exact model, then open individual product pages. Preserve package contents, GBP price and stock.' },
+      'spinadiscmetaldetectors.com': { label: 'Spin A Disc Metal Detectors', navigation: 'Search the UK detector catalogue for the exact model and package. Follow individual product pages and verify visible GBP pricing.' },
+      'uk-historyfinders.co.uk': { label: 'UK History Finders', navigation: 'Search the UK detector catalogue for the exact model and package. Treat category pages as discovery only and verify the individual product page.' },
+      'uneartheduk.co.uk': { label: 'Unearthed UK', navigation: 'Search the UK detector catalogue for the exact model and package. Open individual product pages and retain coil and bundle details.' },
+      'woldsdetecting.co.uk': { label: 'Wolds Detecting', navigation: 'Search the UK detector catalogue for the exact model. Follow the exact product page and capture current GBP price and availability.' },
+      'lpmetaldetecting.com': { label: 'LP Metal Detecting UK', navigation: 'Search for the exact detector model and package. Open the individual product page; keep accessories separate from complete detector units.' }
+    }
+  },
+  'mobile-phones': {
+    categoryInstructions: [
+      'Match the exact phone model and configuration. Preserve manufacturer, model generation, RAM, internal storage, colour, region, SIM/eSIM configuration and network variant where stated.',
+      'Do not merge base, Plus, Pro, Pro Max, Ultra, FE or Lite models. Storage and RAM configurations are separate variants when the catalogue identifies them separately.',
+      'A manufacturer product-family page is discovery/identity evidence only unless it displays a current UK GBP price. Follow exact UK retailer product pages for price and stock.',
+      'Keep contract, monthly finance, trade-in, network plan and handset-only prices separate. Only record a handset price as such when the page clearly identifies the price basis.',
+      'For used phones, inspect individual live listings and preserve grade, battery health where stated, faults, lock/network status, storage, condition, warranty and seller location. Exclude sold, expired, wanted and parts-only listings.',
+      'Keep UK-new and UK-used lanes separate. Do not use overseas prices, foreign currency or imported variants as UK GBP evidence.'
+    ],
+    branchInstructions: {
+      'mobile-phones': ['Research complete mobile phone handsets only. Preserve exact model, RAM/storage, colour, region and SIM/network configuration; reject cases, chargers, screens and other accessories.']
+    },
+    sites: {
+      'mi.com': { label: 'Xiaomi UK phone catalogue', routes: ['/uk/product-list/phone/'], genericSearchFallback: false, navigation: 'Use the UK phone product list for Xiaomi, Redmi and POCO discovery. Follow exact model/configuration pages and capture UK GBP handset price.' },
+      'honor.com': { label: 'HONOR UK phones', routes: ['/uk/phones/'], navigation: 'Use the UK phones catalogue, then follow exact model and storage variants to individual product pages.' },
+      'hmd.com': { label: 'HMD UK smartphones', routes: ['/en_gb/smartphones'], navigation: 'Use the UK smartphone catalogue for exact model identity and configuration. Follow UK retailer product pages for price where needed.' },
+      'doro.com': { label: 'Doro UK phones', routes: ['/en-gb/products/'], navigation: 'Use the UK products catalogue and identify exact handset models. Exclude accessories and non-phone products.' },
+      'nothing.tech': { label: 'Nothing UK phones', routes: ['/collections/phones'], genericSearchFallback: false, navigation: 'Use the Phones collection and follow exact handset pages. Preserve model generation and storage/colour variants.' },
+      'clove.co.uk': { label: 'Clove Technology UK Fairphone', routes: ['/collections/smartphones-fairphone'], genericSearchFallback: false, navigation: 'Use the UK Fairphone smartphone collection. Open exact handset SKU pages and exclude Fairbuds and accessories.' },
+      'ballicom.co.uk': { label: 'Ballicom UK Fairphone', routes: ['/manufacturers/fairphone/'], genericSearchFallback: false, navigation: 'Use the Fairphone manufacturer listing for discovery. Verify the exact handset SKU and use the inc-VAT GBP price, not ex-VAT.' },
+      'tcl.com': { label: 'TCL UK mobile catalogue', routes: ['/uk/en/mobile'], genericSearchFallback: false, navigation: 'Use the UK mobile catalogue for model identity and specifications. Use a UK retailer page for price when the official page does not publish one.' },
+      'apple.com': { label: 'Apple UK', routes: ['/uk/'], navigation: 'Use the UK Apple storefront for iPhone model and configuration identity. Follow handset-only UK pricing; exclude monthly finance and trade-in offsets.' },
+      'samsung.com': { label: 'Samsung UK', routes: ['/uk/'], navigation: 'Use the UK Samsung storefront for exact Galaxy model and storage/colour variants. Distinguish handset-only price from contract and finance offers.' },
+      'motorola.com': { label: 'Motorola UK', routes: ['/gb/en/'], navigation: 'Use the UK Motorola catalogue for exact model identity, RAM/storage and colour. Verify price on an individual UK product page.' },
+      'oneplus.com': { label: 'OnePlus UK Store', routes: ['/uk/store'], navigation: 'Use the UK store for exact handset and configuration pages. Preserve model and storage variants.' },
+      'store.google.com': { label: 'Google Store UK', routes: ['/gb/'], navigation: 'Use the UK Google Store for Pixel model identity and configuration. Follow exact handset pages and capture visible GBP price.' },
+      'webuy.com': { label: 'CeX UK used phones', routes: ['/'], navigation: 'Use CeX search/category discovery, then inspect the exact handset item page. Capture grade, storage, network lock status, warranty and current GBP price.' },
+      'amazon.co.uk': { label: 'Amazon UK', navigation: 'Search results are discovery only. Follow each matching result to the direct ASIN page and verify exact storage/colour, seller, handset-only GBP price and availability.' },
+      'ebay.co.uk': { label: 'eBay UK', navigation: 'Inspect individual active UK handset listings. Capture storage, condition, lock status, battery health if stated, seller location and asking price; exclude sold/completed listings.' }
+    }
+  },
+  'laptops': {
+    categoryInstructions: [
+      'Match the exact laptop model and hardware configuration. Preserve manufacturer, model family, generation, CPU, RAM, SSD capacity, GPU, screen size/resolution, operating system and manufacturer SKU/part number where available.',
+      'Different CPU, RAM, storage, GPU, screen or chassis configurations are not interchangeable. Do not use a generic family page or a different configuration as exact price evidence.',
+      'Use official manufacturer UK catalogues for model/configuration identity and current/discontinued status. Follow exact configuration or retailer product pages for current UK GBP pricing.',
+      'A laptop category or search-results page is discovery only. Open individual product pages and capture the selected configuration, visible GBP price, stock and delivery status.',
+      'For used laptops, inspect individual active listings and preserve condition grade, battery/charger status if stated, faults, specification, warranty and seller location. Exclude sold, expired, wanted and parts-only listings.',
+      'Separate new, refurbished, ex-display and used condition. Do not treat ex-VAT prices, monthly finance or contract amounts as the consumer handset/laptop price.'
+    ],
+    branchInstructions: {
+      'laptops-notebooks': ['Research complete laptop/notebook computers only. Match CPU generation, RAM, SSD, GPU and display configuration exactly; exclude docks, chargers, batteries, screens and other accessories.']
+    },
+    sites: {
+      'dell.com': { label: 'Dell UK laptop catalogue', routes: ['/en-gb/shop/dell-laptops/scr/laptop'], genericSearchFallback: false, navigation: 'Use the UK laptop catalogue, select the exact model/configuration and follow its direct page. Record CPU, RAM, SSD, GPU and visible GBP price.' },
+      'hp.com': { label: 'HP UK laptop catalogue', routes: ['/gb-en/shop/listings/laptops'], genericSearchFallback: false, navigation: 'Use the UK laptop listings and follow exact model/configuration pages. Preserve CPU, RAM, SSD, graphics and stock.' },
+      'lenovo.com': { label: 'Lenovo UK laptop catalogue', routes: ['/gb/en/laptops/subseries-results/'], genericSearchFallback: false, navigation: 'Use the UK laptop catalogue and exact machine type/configuration pages. Do not substitute another CPU, RAM or SSD configuration.' },
+      'apple.com': { label: 'Apple UK Mac', routes: ['/uk/'], navigation: 'Use the UK Apple storefront for exact MacBook family and chip/configuration identity. Follow the exact product configuration for current GBP pricing.' },
+      'samsung.com': { label: 'Samsung UK laptops', routes: ['/uk/'], navigation: 'Use the UK Samsung storefront for exact Galaxy Book model and configuration. Preserve processor, RAM, storage and screen size.' },
+      'webuy.com': { label: 'CeX UK used laptops', routes: ['/'], navigation: 'Use CeX search/category discovery, then inspect the exact laptop item page. Capture specification, grade, charger, warranty and current GBP price.' },
+      'currys.co.uk': { label: 'Currys UK laptops', routes: ['/'], navigation: 'Search the UK retailer for the exact laptop SKU/configuration and open its individual product page. Capture the selected specification and GBP price.' },
+      'argos.co.uk': { label: 'Argos UK laptops', routes: ['/'], navigation: 'Search UK laptop listings and follow the exact product page. Preserve model/configuration, current GBP price and stock.' },
+      'johnlewis.com': { label: 'John Lewis UK laptops', routes: ['/'], navigation: 'Search the UK laptop range and open the exact model page. Preserve specification and visible GBP price.' },
+      'very.co.uk': { label: 'Very UK laptops', routes: ['/'], navigation: 'Search UK laptop listings and follow exact model/configuration pages. Distinguish outright price from finance.' },
+      'amazon.co.uk': { label: 'Amazon UK', navigation: 'Search results are discovery only. Follow the exact ASIN page and verify CPU, RAM, SSD, GPU, seller, GBP price and stock.' },
+      'ebay.co.uk': { label: 'eBay UK', navigation: 'Inspect individual active UK laptop listings only. Capture exact specification, condition, battery/charger, seller location and asking price; exclude sold/completed listings.' }
+    }
+  },
+  'cameras': {
+    categoryInstructions: [
+      'Match the exact camera model, generation and kit configuration. Preserve sensor format/resolution, mount, body-only versus lens kit, included lens model, colour and regional SKU where stated.',
+      'Keep film cameras, mirrorless cameras, compact cameras, cinema cameras and other camera types in their assigned master-catalogue branches. Do not substitute a similar body or a different mount.',
+      'A manufacturer catalogue or retailer category is discovery only. Follow the exact individual product page and verify visible UK GBP price, selected kit/bundle and availability.',
+      'For used camera listings, preserve condition grade, shutter count where stated, sensor/optical condition, included battery/charger/box, warranty and seller location. Do not infer shutter count or condition.',
+      'Separate body-only, kit lens, multi-lens bundles and special editions. Never attribute a kit price to the body-only master product or vice versa.',
+      'Use official manufacturer pages for exact model, specifications and discontinued status; use UK retailer/dealer pages for current GBP prices. Used marketplace sold prices are not current asking-price evidence.'
+    ],
+    branchInstructions: {
+      'film-cameras': ['Research film cameras only. Preserve exact camera model, format, lens mount, lens included, operating condition and any stated light-meter/shutter faults.'],
+      'photography-cameras': ['Research digital photography cameras only. Preserve exact body model, sensor, mount, body-only versus kit lens and package contents. Keep cinema/video cameras in their own master branch.']
+    },
+    sites: {
+      'canon.co.uk': { label: 'Canon UK camera store', routes: ['/store/cameras/'], genericSearchFallback: false, navigation: 'Use the UK camera store category for discovery, then follow the exact camera body or kit product page.' },
+      'nikon.co.uk': { label: 'Nikon UK cameras', routes: ['/en_GB/product/cameras/mirrorless'], genericSearchFallback: false, navigation: 'Use the UK mirrorless camera catalogue and follow exact body/kit pages. Preserve mount and kit-lens differences.' },
+      'eshop.fujifilm-x.com': { label: 'FUJIFILM UK eShop', routes: ['/uk/cameras.html'], genericSearchFallback: false, navigation: 'Use the UK cameras catalogue and follow exact model pages. Preserve X/GFX model, lens kit and colour variants.' },
+      'explore.omsystem.com': { label: 'OM SYSTEM UK cameras', routes: ['/gb/en/cameras/om-d'], genericSearchFallback: false, navigation: 'Use the UK camera catalogue and follow exact OM SYSTEM body and kit pages.' },
+      'uk.store.eu.panasonic.com': { label: 'Panasonic UK cameras', routes: ['/cameras-and-camcorders'], genericSearchFallback: false, navigation: 'Use the UK cameras and camcorders catalogue, then follow exact model and kit pages.' },
+      'polaroid.com': { label: 'Polaroid UK cameras', routes: ['/en_gb/cameras'], genericSearchFallback: false, navigation: 'Use the UK cameras catalogue. Keep instant camera models separate from film, bundles and accessories.' },
+      'blackmagicdesign.com': { label: 'Blackmagic Design UK', routes: ['/uk/products'], genericSearchFallback: false, navigation: 'Use the UK products catalogue for exact cinema camera model identity and specifications. Follow direct product/retailer pages for GBP price.' },
+      'z-cam.com': { label: 'Z CAM official', routes: ['/products/professional-cameras/'], genericSearchFallback: false, navigation: 'Use the professional camera catalogue for exact model identity and configuration. Do not infer UK price from a global product page.' },
+      'mpb.com': { label: 'MPB UK used camera dealer', routes: ['/en-uk'], navigation: 'Search UK used inventory and open exact individual body/lens kit listings. Preserve grade, shutter count if stated, accessories and GBP asking price.' },
+      'webuy.com': { label: 'CeX UK used cameras', routes: ['/'], navigation: 'Use CeX search/category discovery, then open the exact item page. Capture grade, included accessories, warranty and current GBP price.' },
+      'usedlens.co.uk': { label: 'Used Lens UK', routes: ['/'], navigation: 'Use the UK used-camera and lens catalogue. Open exact individual listings and preserve condition and included accessories.' },
+      'ffordes.com': { label: 'Ffordes Photographic', routes: ['/'], navigation: 'Search the UK used/dealer inventory and inspect individual exact-model pages. Preserve condition grade and visible GBP price.' },
+      'lcegroup.co.uk': { label: 'London Camera Exchange', routes: ['/'], navigation: 'Search the UK camera inventory and inspect individual used listings. Preserve exact model, condition, shutter count if stated and price.' },
+      'wexphotovideo.com': { label: 'Wex Photo Video UK', routes: ['/'], navigation: 'Search the UK camera catalogue and open the exact model/kit product page. Capture selected configuration, GBP price and stock.' },
+      'amazon.co.uk': { label: 'Amazon UK', navigation: 'Search results are discovery only. Follow the exact ASIN page and verify body/kit configuration, seller, GBP price and availability.' },
+      'ebay.co.uk': { label: 'eBay UK', navigation: 'Inspect individual active UK camera listings. Preserve body/kit, mount, condition, shutter count if stated and asking price; exclude sold/completed listings.' }
+    }
+  },
+
 };
 
 function fillRoute(route, task) {

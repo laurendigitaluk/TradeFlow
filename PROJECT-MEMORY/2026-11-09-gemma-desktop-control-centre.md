@@ -152,3 +152,8 @@ The dashboard uses each isolated clone's own `agent.config.json`, `status.json`,
 The dashboard is local Windows UI; it does not need to change Supabase schema, queue rows, source registry, evidence or credentials. The LIVE status table remains useful for remote verification, while per-agent local status files provide immediate process control. A one-instance mutex prevents duplicate dashboard windows. The installer skips existing clone folders and does not stop or overwrite running workers; it updates only the shared dashboard script/shortcuts and verifies the shared ENV pointer.
 
 CI must parse the dashboard PowerShell script. PC installation and visible acceptance remain pending until the owner reruns the updated installer from the architecture branch after CI passes. The current independent 3D Printer worker must not be stopped merely to install the dashboard; installation is designed to leave existing workers alone.
+
+
+## Installer correction — 9 November 2026
+
+The first local run of the combined dashboard installer reached its dashboard-download step but failed because the script referenced an undefined `$RawBase` variable. This was a script defect, not a PC/network issue. Corrected production `tools/gemma-agent-isolation/Install-Gemma-Agents.ps1` to use the explicit raw GitHub URL for `Gemma-Control-Centre.ps1` (commit `54d1aee479364eb14c048e3911717f69befc16ec`). Re-running the installer is safe: the installer skips existing category clone folders, does not restart/stop workers, and refreshes the shared dashboard script and its two desktop shortcuts. The owner has not yet rerun the corrected installer; dashboard installation is still pending.

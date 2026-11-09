@@ -368,7 +368,7 @@ test('Gemma extraction prompt is capture-first and retains every supplied page',
   assert.match(prompt, /supplied JSON schema exactly/i);
   assert.match(prompt, /One compact finding per supplied source_id/i);
   assert.match(prompt, /Do not choose one page price/i);
-  assert.match(prompt, /one price_observations entry for every visible GBP price/i);
+  assert.match(prompt, /price_observations field with up to eight distinct relevant options/i);
   assert.match(prompt, /never infer association from proximity alone/i);
   assert.match(prompt, /S1/);
   assert.match(prompt, /8-Color Combo/);

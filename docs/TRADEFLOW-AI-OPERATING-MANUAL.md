@@ -5176,3 +5176,12 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK discovery instructions (proposed, not yet deployed)
 For 3D Printers branch tasks, use official UK collection and search routes, followed by verified direct model URLs in source-playbooks.mjs. Kobra 3 Max V2 has separate standard and ACE 2 Pro Combo URLs. Kobra 4 Standard and Combo can share a page, so never assign the page headline price to a package without checking the selected machine option. Kobra S1 ACE 2 Pro Combo is distinct from older ACE Pro packages and extra-filament/accessory bundles. Preserve URL, selected option, GBP price, condition, stock and timestamp for ChatGPT review. Do not bypass blocked websites. Existing Gemma timeout remains a separate unresolved issue; retain raw capture for review rather than fabricate extracted evidence.
+
+
+### 9 November 2026 — 3D-printer matcher precision
+
+For 3D-printer tasks, retailer taxonomy/breadcrumb segments are not product identity. A retailer may place genuine printer products under a parent category containing the word "accessories" (verified example: 3DJake's /anycubic-3d-printer-and-accessories/). Do not reject an exact printer product because of that parent path. Apply accessory rejection to the page title and terminal product slug while retaining exact model, sibling-model and package checks. A regression must accept the 3DJake Kobra 3 Max V2 Combo URL, reject its Standard sibling for a Combo task, and continue rejecting replacement/nozzle pages.
+
+Latest LIVE task owner-3d-printers-equipment-1794263685224 completed 22:35:50 UTC: 6 search results, 14 approved-source routes (0 found, 13 empty, one eBay 403), one page fetched, one 48.4-second Gemma timeout, and one 16,285-character raw capture. The capture is pending ChatGPT review only. No price/type/condition was auto-assigned.
+
+The task did not attempt the Anycubic model-specific direct routes already present in merged production PR #339; only the two generic Anycubic routes appeared in activity. Treat the Research PC's loaded playbook as unverified until the approved production updater is run and a controlled task logs both direct routes. Do not restart or update the Research PC without explicit approval.

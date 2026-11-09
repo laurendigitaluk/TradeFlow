@@ -4448,3 +4448,21 @@ Existing 3D-printer and gaming playbooks were preserved. Dedicated website navig
 The feature is developed on `feature/gemma-desktop-control-centre-20261109`, PR #325, based on production commit `e81ede671bfc03e73dc16169638011372b5b6117`. The SQL migration is part of the PR only. No LIVE/TEST migration, source-row change, queue write, research run, PC update or worker restart has been performed. Do not install or enable the desktop supervisor until PR review/merge and the agent-scoped RPC migration has been applied to LIVE. If the RPC is absent, the desktop worker must stop with `requires_migration` and must not use the generic claim path.
 
 See `tools/tradeflow-gemma-desktop/README.md` for the install workflow and `docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md` for the diagnostic path.
+
+
+## Gemma specialist source-route completion — 9 November 2026
+
+Follow-up to PR #325: the LIVE research-source registry was compared with the specialist website playbooks. The registry already had enabled UK sources; the gap was that some registered domains did not have a category-specific playbook entry, leaving the worker to rely on its generic /search?q= fallback.
+
+Added explicit specialist website entries for the previously uncovered registered domains:
+
+- Drones: HobbyRC, Heliguy, DJI Retail, DMTL, Leicester Drones and Quadcopters.
+- Mobile phones: Argos, Currys, John Lewis, EE, Very, OPPO and realme.
+- Cameras: Sony UK, Jessops, Park Cameras, Clifton Cameras, Harrison Cameras, Camera Price Buster, Castle Cameras and Production Gear.
+- Metal detectors: Amazon UK and eBay UK now have explicit category navigation instructions; the existing Amazon ASIN and eBay active-listing search routes remain in use.
+
+A regression test now asserts the additional specialist domains produce category instructions, homepage discovery routes and model-search fallbacks, and that metal-detector marketplace routes use the correct Amazon/eBay patterns.
+
+The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
+
+Status: source-playbook and regression-test changes are committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The new post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.

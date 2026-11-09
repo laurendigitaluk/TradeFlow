@@ -15,6 +15,7 @@ if ($SourceBranch -notmatch '^[A-Za-z0-9._/-]+$') { throw 'SourceBranch contains
 $RawBase = "https://raw.githubusercontent.com/$Repository/$SourceBranch/tools/tradeflow-gemma-agent"
 $SourceFiles = @('control-plane.mjs', 'control-plane.test.mjs', 'agent.mjs', 'agent-speed.test.mjs', 'agent.source-selection.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
 $LauncherName = 'Start-TradeFlow-Gemma.ps1'
+$LegacyShortcutLauncherName = 'Start-Gemma-Worker.ps1'
 
 if ([string]::IsNullOrWhiteSpace($InstallPath)) {
     # When launched from the installed Gemma folder, use it automatically.
@@ -88,9 +89,27 @@ if (([uri]$EnvValues['TRADEFLOW_LIVE_URL']).Host -ne 'gxsrajtqzdjvmceqcpgv.supab
 $TempRoot = Join-Path ([IO.Path]::GetTempPath()) ('tradeflow-gemma-update-' + [guid]::NewGuid().ToString('N'))
 $DownloadPath = Join-Path $TempRoot 'src'
 $LauncherDownload = Join-Path $TempRoot $LauncherName
+$LegacyShortcutLauncherDownload = Join-Path $TempRoot $LegacyShortcutLauncherName
 New-Item -ItemType Directory -Path $DownloadPath -Force | Out-Null
 try {
     Invoke-WebRequest -UseBasicParsing -Uri "$RawBase/$LauncherName" -OutFile $LauncherDownload
+    Set-Content -LiteralPath $LegacyShortcutLauncherDownload -Value @'
+[CmdletBinding()]
+param(
+    [ValidateSet('TEST','LIVE')]
+    [string]$Environment = 'LIVE'
+)
+
+$ErrorActionPreference = 'Stop'
+$InstallPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$CanonicalLauncher = Join-Path $InstallPath 'Start-TradeFlow-Gemma.ps1'
+if (-not (Test-Path -LiteralPath $CanonicalLauncher -PathType Leaf)) {
+    throw "Canonical TradeFlow Gemma launcher is missing: $CanonicalLauncher. Run Update-TradeFlow-Gemma.ps1 first."
+}
+Write-Host "Starting TradeFlow Gemma through the canonical $Environment queue-worker launcher."
+& $CanonicalLauncher -Environment $Environment
+if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with code $LASTEXITCODE" }
+ '@ -Encoding UTF8
     if (-not (Test-Path -LiteralPath $LauncherDownload -PathType Leaf)) { throw 'Current Gemma launcher download failed.' }
     $LauncherTokens = $null
     $LauncherErrors = $null
@@ -114,6 +133,10 @@ try {
     $BackupPath = Join-Path $InstallPath ('backups\before-common-room-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
     New-Item -ItemType Directory -Path $BackupPath -Force | Out-Null
     $ExistingLauncher = Join-Path $InstallPath $LauncherName
+    $ExistingLegacyLauncher = Join-Path $InstallPath $LegacyShortcutLauncherName
+    if (Test-Path -LiteralPath $ExistingLegacyLauncher -PathType Leaf) {
+        Copy-Item -LiteralPath $ExistingLegacyLauncher -Destination (Join-Path $BackupPath $LegacyShortcutLauncherName) -Force
+    }
     if (Test-Path -LiteralPath $ExistingLauncher -PathType Leaf) {
         Copy-Item -LiteralPath $ExistingLauncher -Destination (Join-Path $BackupPath $LauncherName) -Force
     }
@@ -128,6 +151,7 @@ try {
         Copy-Item -LiteralPath (Join-Path $DownloadPath $Name) -Destination (Join-Path $SourcePath $Name) -Force
     }
     Copy-Item -LiteralPath $LauncherDownload -Destination (Join-Path $InstallPath $LauncherName) -Force
+    Copy-Item -LiteralPath $LegacyShortcutLauncherDownload -Destination (Join-Path $InstallPath $LegacyShortcutLauncherName) -Force
 
     foreach ($Name in $SourceFiles | Where-Object { $_ -like '*.mjs' }) {
         & node --check (Join-Path $SourcePath $Name)
@@ -138,6 +162,11 @@ try {
 
     Write-Host ''
     $InstalledLauncher = Join-Path $InstallPath $LauncherName
+    $InstalledLegacyLauncher = Join-Path $InstallPath $LegacyShortcutLauncherName
+    $LegacyTokens = $null
+    $LegacyErrors = $null
+    [System.Management.Automation.Language.Parser]::ParseFile($InstalledLegacyLauncher, [ref]$LegacyTokens, [ref]$LegacyErrors) | Out-Null
+    if ($LegacyErrors.Count -gt 0) { throw 'Installed legacy desktop-shortcut compatibility launcher has PowerShell syntax errors.' }
     $LauncherTokens = $null
     $LauncherErrors = $null
     [System.Management.Automation.Language.Parser]::ParseFile($InstalledLauncher, [ref]$LauncherTokens, [ref]$LauncherErrors) | Out-Null

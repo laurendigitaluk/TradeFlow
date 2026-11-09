@@ -4593,3 +4593,10 @@ A changed source snapshot is inserted as a new `platform_catalogue_research_queu
 The fingerprint is not an evidence decision. It only detects whether the page has materially changed. GBP amounts/contexts, package, condition, availability, location, title and full-page-size bucket are retained for review. The queue row remains unverified and no reviewer, approval, import, or evidence classification is fabricated. Unreviewed pending captures continue to use the existing compare-and-swap enrichment-history path.
 
 The same scoped repair adds `gemma_http_requests` and `gemma_recovery_skipped` telemetry while retaining `gemma_calls` as the existing batch counter. No database migration is required; the fingerprint and revision metadata are stored in the existing JSONB `raw_payload` field. The change is under review on a branch stacked on the current 3D-printer repair; it has not been deployed.
+
+### Final review record — PR #334
+- Consolidated production-based PR: https://github.com/laurendigitaluk/TradeFlow/pull/334
+- Current code head at CI verification: `a01b3caa7f2bcbe4aaa128c3a1d2ce50e88c4e3e`.
+- GitHub Actions run #537 passed: 105 tests passed, 0 failed; PowerShell, Node and Owner Dashboard syntax checks passed.
+- PR #332 and PR #333 were closed as superseded by #334 to prevent competing versions. PR #331 remains the separate generic idle-heartbeat proposal.
+- PR #334 remains open, unmerged and undeployed. The Research PC 45-second timeout and changed-snapshot queue handoff still require a controlled runtime acceptance test after explicit approval.

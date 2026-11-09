@@ -68,3 +68,6 @@ The code also adds `gemma_http_requests` and `gemma_recovery_skipped` metrics wh
 - GitHub Actions run #537 passed: 105 tests passed, 0 failed; PowerShell, Node and Owner Dashboard syntax checks passed.
 - PR #332 and PR #333 were closed as superseded by #334 to prevent competing versions. PR #331 remains the separate generic idle-heartbeat proposal.
 - PR #334 remains open, unmerged and undeployed. The Research PC 45-second timeout and changed-snapshot queue handoff still require a controlled runtime acceptance test after explicit approval.
+
+## Read-only snapshot replay result
+The production-style fingerprint was replayed against the actual three latest Neptune 4 Pro task captures and their matching imported LIVE queue rows. All 3/3 fingerprints changed: 3DJake 10,000→14,328 chars (4→7 unique price/context observations); ELEGOO UK 9,998→42,206 chars (14→52); 3D Prima 3,493→3,506 chars (2→8). Each would create a new `needs_research` revision; exact repeats remain idempotent. This was a read-only calculation: zero queue rows were inserted or modified.

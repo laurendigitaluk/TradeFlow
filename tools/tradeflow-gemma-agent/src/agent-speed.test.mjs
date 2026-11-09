@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -121,6 +121,70 @@ test('non-3D categories retain their existing page-content-first extraction orde
 test('3D printer extraction batches two pages while other categories retain two-page batches', () => {
   assert.equal(extractionBatchSizeForTask(printerTask), 2);
   assert.equal(extractionBatchSizeForTask({ ...printerTask, category_slug: 'drones', branch_slug: 'drones' }), 2);
+});
+
+test('full-page review retention includes 3D printers and Gaming but leaves other categories bounded', () => {
+  assert.equal(shouldRetainFullPageCapture(printerTask), true);
+  assert.equal(shouldRetainFullPageCapture({
+    category_slug: 'gaming-consoles-accessories',
+    branch_slug: 'playstation-consoles'
+  }), true);
+  assert.equal(shouldRetainFullPageCapture({
+    category_slug: 'drones',
+    branch_slug: 'drones'
+  }), false);
+});
+
+test('successful 3D-printer Gemma extraction preserves the complete fetched page for ChatGPT', async () => {
+  const originalFetch = globalThis.fetch;
+  const sourceText = ('Bambu Lab A1 3D printer product detail. £289.00 in stock. ').repeat(600);
+  assert.ok(sourceText.length > 10000);
+  const finding = {
+    source_id: 'S1',
+    page_title: 'Bambu Lab A1 3D Printer',
+    product_identity_text: 'Bambu Lab A1 3D printer',
+    package_or_variant_text: 'Standard Printer',
+    seller_text: 'example.co.uk',
+    price_observations: [],
+    item_condition_text: 'New',
+    availability_text: 'In stock',
+    location_text: 'UK',
+    identifiers_text: '',
+    match_observation: 'Exact requested model page',
+    uncertainty_and_conflicts: '',
+    notes: ''
+  };
+  globalThis.fetch = async () => ({
+    ok: true,
+    text: async () => JSON.stringify({
+      message: { content: JSON.stringify({ findings: [finding] }) },
+      done_reason: 'stop'
+    })
+  });
+  try {
+    const source = {
+      source_id: 'S1',
+      title: 'Bambu Lab A1 3D Printer',
+      url: 'https://example.co.uk/products/bambu-a1',
+      text: sourceText
+    };
+    const env = { OLLAMA_BASE_URL: 'http://127.0.0.1:11434', OLLAMA_MODEL: 'gemma3:4b' };
+    const printerResult = await extractBatch(printerTask, [source], env, async () => {});
+    assert.equal(printerResult.failures.length, 0);
+    assert.equal(printerResult.findings.length, 1);
+    assert.equal(printerResult.findings[0].source_excerpt, sourceText);
+    assert.equal(printerResult.findings[0].page_capture.captured_text, sourceText);
+
+    const otherResult = await extractBatch({
+      ...printerTask,
+      category_slug: 'drones',
+      branch_slug: 'drones'
+    }, [source], env, async () => {});
+    assert.equal(otherResult.findings[0].source_excerpt, sourceText.slice(0, 10000));
+    assert.equal(otherResult.findings[0].page_capture.captured_text, sourceText.slice(0, 10000));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test('3D printer extraction prompt requests one findings-array row for every supplied page', () => {

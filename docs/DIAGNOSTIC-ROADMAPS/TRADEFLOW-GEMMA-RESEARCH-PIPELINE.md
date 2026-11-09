@@ -986,3 +986,10 @@ The loss occurs after page fetch and raw capture, at the review-queue idempotenc
 
 ### Safety and deployment
 No LIVE queue row, catalogue product, shared evidence row, source registry entry, migration, or worker setting was changed while preparing this repair. The change is stacked on the current 3D-printer repair branch and requires its parent PR plus this review PR to be reviewed and approved before installation. The 45-second 3D-printer Gemma timeout remains unverified on the Research PC; complete raw page fallback is the safety path if Gemma does not finish within the bound.
+
+### Final review record — PR #334
+- Consolidated production-based PR: https://github.com/laurendigitaluk/TradeFlow/pull/334
+- Current code head at CI verification: `a01b3caa7f2bcbe4aaa128c3a1d2ce50e88c4e3e`.
+- GitHub Actions run #537 passed: 105 tests passed, 0 failed; PowerShell, Node and Owner Dashboard syntax checks passed.
+- PR #332 and PR #333 were closed as superseded by #334 to prevent competing versions. PR #331 remains the separate generic idle-heartbeat proposal.
+- PR #334 remains open, unmerged and undeployed. The Research PC 45-second timeout and changed-snapshot queue handoff still require a controlled runtime acceptance test after explicit approval.

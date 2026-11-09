@@ -117,6 +117,30 @@ test('direct product detail template is not reused as a search route', () => {
   assert.ok(!routes.some(url => url.includes('/uk/products/k1-speedy-3d-printer')));
 });
 
+test('every additional LIVE source domain has a specialist discovery route', () => {
+  const cases = [
+    ['drones', ['hobbyrc.co.uk','heliguy.com','dji-retail.co.uk','dmtl.co.uk','leicesterdrones.com','quadcopters.co.uk']],
+    ['mobile-phones', ['argos.co.uk','currys.co.uk','johnlewis.com','ee.co.uk','very.co.uk','oppo.com','realme.com']],
+    ['cameras', ['sony.co.uk','jessops.com','parkcameras.com','cliftoncameras.co.uk','harrisoncameras.co.uk','camerapricebuster.co.uk','castlecameras.co.uk','productiongear.co.uk']]
+  ];
+  for (const [category_slug, domains] of cases) {
+    for (const domain of domains) {
+      const routes = buildWebsiteSearchRoutes({ domain }, {
+        category_slug, manufacturer: 'Example', model: 'Exact Model', research_type: 'uk_both'
+      });
+      assert.ok(routes.some(url => url === 'https://' + domain + '/'), category_slug + ': ' + domain + ' homepage route');
+      assert.ok(routes.some(url => url.includes('/search?q=Example%20Exact%20Model')), category_slug + ': ' + domain + ' model-search fallback');
+      assert.ok(getWebsiteInstructions(category_slug, domain), category_slug + ': ' + domain + ' site instructions');
+    }
+  }
+  const metalTask = { category_slug: 'metal-detectors', manufacturer: 'Minelab', model: 'Equinox 900', research_type: 'uk_both' };
+  for (const domain of ['amazon.co.uk','ebay.co.uk']) {
+    const routes = buildWebsiteSearchRoutes({ domain }, metalTask);
+    assert.ok(routes.some(url => url.includes(domain === 'amazon.co.uk' ? '/s?k=' : '/sch/i.html?_nkw=')), domain + ' marketplace search route');
+    assert.ok(getWebsiteInstructions('metal-detectors', domain), domain + ' site instructions');
+  }
+});
+
 test('unknown categories do not inherit the 3D printer website playbook', () => {
   assert.equal(getCategoryWebsitePlaybook('unknown-catalogue-category'), null);
   assert.deepEqual(getWebsiteInstructions('unknown-catalogue-category', 'store.creality.com'), null);

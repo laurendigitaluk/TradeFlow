@@ -4583,3 +4583,13 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - Regression coverage adds bounded timeout calculation, one-call/no-retry timeout behaviour, full raw page fallback for every page, page-specific website navigation in the prompt, route-count/no-generic-fallback tests, and distinct source URL keys for the same product.
 - PR #332 remains an open repair branch. Its CI must pass before merge. No LIVE source row, migration, review queue, catalogue or shared evidence was changed by this code work.
 - Deployment remains a separate step: merge only after CI/review; apply the ordered ELEGOO scope migration through the approved release process; install/update the single Research Control Centre worker while preserving its existing private \`.env\`; then run one bounded LIVE 3D-printer smoke test and verify it hands off raw captures, frees the shared queue and shows multiple independent source records in Research awaiting review.
+
+## 9 November 2026 — 3D-printer review queue snapshot revisions
+
+The LIVE review queue enforces a unique `dedupe_key`; imported/rejected rows must not be overwritten to refresh a source page. For 3D-printer research, the first capture continues to use the established product/package/source-URL key. The proposed snapshot revision path adds a second deterministic key derived from that base key and a material-observation fingerprint.
+
+A changed source snapshot is inserted as a new `platform_catalogue_research_queue` row with `status='needs_research'`, `record_type='evidence_candidate'`, and `raw_payload.capture_revision=true`. The raw payload retains the base key and snapshot fingerprint. The source record key uses the revision key, allowing the existing shared-evidence uniqueness rule (`source_name, source_record_key`) to distinguish later reviewed snapshots without changing the old evidence row.
+
+The fingerprint is not an evidence decision. It only detects whether the page has materially changed. GBP amounts/contexts, package, condition, availability, location, title and full-page-size bucket are retained for review. The queue row remains unverified and no reviewer, approval, import, or evidence classification is fabricated. Unreviewed pending captures continue to use the existing compare-and-swap enrichment-history path.
+
+The same scoped repair adds `gemma_http_requests` and `gemma_recovery_skipped` telemetry while retaining `gemma_calls` as the existing batch counter. No database migration is required; the fingerprint and revision metadata are stored in the existing JSONB `raw_payload` field. The change is under review on a branch stacked on the current 3D-printer repair; it has not been deployed.

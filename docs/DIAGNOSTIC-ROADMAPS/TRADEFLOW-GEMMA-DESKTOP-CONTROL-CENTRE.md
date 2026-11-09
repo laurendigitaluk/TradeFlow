@@ -71,3 +71,10 @@ Scope: Windows Research PC desktop launcher, seven specialist switches, visible 
 - All seven canonical keys enabled locally; no active agent keys at the diagnostic instant.
 - Production UI display correction committed as c720c245fed72174957a1a2d93fed5fc3e9668f8.
 - Updated UI script has not yet been copied to the Research PC; PC acceptance remains pending.
+
+
+## Follow-up UI failure — first two cards clipped / no scroll
+
+Observed in the owner's screenshot after the FlowLayoutPanel implementation: only the last five canonical cards were visible in a narrow side-by-side Control Centre window. The first two (3D Printers and Gaming) were clipped and vertical scrolling was unavailable. Agent definitions/config were already verified to contain all seven keys; this is a WinForms layout/container failure, not a task-claim or Supabase problem.
+
+Corrected production file: tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1, commit 55bba312db21fe1e0a667a4c38cd82d63cad2add. It now uses a standard Panel with AutoScroll=true, explicit vertical card positions spaced 108 pixels apart, AutoScrollMinSize calculated from the seven-agent count, responsive card widths and a reset to the top scroll position. Deployment remains pending on the Research PC. Close only the visible dashboard, replace only the UI script, reopen the existing shortcut, and verify all seven cards by scrolling. Do not rerun the full installer, stop the supervisor, alter config, or touch LIVE queue/evidence/source data for this UI defect.

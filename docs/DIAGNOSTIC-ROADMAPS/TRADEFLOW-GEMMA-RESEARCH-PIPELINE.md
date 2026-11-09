@@ -905,7 +905,7 @@ Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`.
 - Branch: `fix/gemma-3d-capture-and-model-route-scope-20261109-current-base`.
 - PR: https://github.com/laurendigitaluk/TradeFlow/pull/327
 - Code/test commit: `ef2de8dd825b995c28bfe02a4ee4243fb321cc26`; base is current production `1b76e6e4dfb56c32049171741cb00499ab6946a1`.
-- CI run #480 (ID `42620432059`) passed all workflow steps: PowerShell updater syntax, Node source syntax, Gemma/website playbook tests and Owner Dashboard JavaScript syntax.
+- CI run #484 (ID `42620594593`) passed all workflow steps: PowerShell updater syntax, Node source syntax, Gemma/website playbook tests and Owner Dashboard JavaScript syntax.
 - Structured 3D-printer Gemma output and final review handoff now retain the full fetched page up to the existing 100,000-character fetch limit. Gaming keeps its existing full-page capture; other categories remain capped at 10,000 characters.
 - Regression fixture: previous structured path retained 10,000 / 40,642 characters (24.6%); corrected path retains 40,642 / 40,642 (100%), recovering 30,642 characters.
 - Creality Ender-3 V3 collection route is now model-specific: Ender-3 V3 tasks retain it; K1/K1 Max tasks no longer probe that unrelated family route.

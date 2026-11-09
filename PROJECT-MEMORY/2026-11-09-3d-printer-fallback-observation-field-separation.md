@@ -1,3 +1,9 @@
+## Supabase memory-write limitation — 9 November 2026
+
+The LIVE schema inspection found no dedicated public project-memory or checkpoint table; the shared agent message store is the Common Room table. Its posting RPC platform_ai_agent_post_message explicitly requires a service_role JWT. The available SQL connector was rejected with "Service role required". No attempt was made to bypass that permission. No Common Room message or other Supabase write was made. The System Handbook, AI Operating Manual, 3D-printer diagnostic roadmap, project-memory file and checkpoint were updated on this review branch instead.
+
+
+
 ## 9 November 2026 23:32 UTC — confirmed generic worker identity race
 
 LIVE activity now records:

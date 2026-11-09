@@ -65,3 +65,16 @@ The paths below are site-specific discovery routes, not verified evidence pages.
 
 ## Verification gate
 Before a wider batch: one controlled 3D Printer LIVE task must show direct-route attempts, individual product page inspection and raw capture or a specific logged failure. Verify no unrelated category settings, workers or queues were modified. Update this roadmap and the project's canonical manuals/memory checkpoint when a material runtime fix is made.
+
+
+## 9 November 2026 — 3DJake retailer-taxonomy false positive
+
+LIVE task owner-3d-printers-equipment-1794263685224 completed at 22:35:50 UTC for Anycubic Kobra 3 Max V2 / 4-Color Combo. It returned 6 search results, 14 approved-source route attempts (0 matching, 13 empty, 1 eBay HTTP 403), 1 exact product page discovered and fetched, 1 Gemma batch timeout at 48.4 seconds, and 1 full raw capture (16,285 characters) handed to the LIVE review queue. The new row remains needs_research, unverified_capture, with no evidence type, price, reviewer, approval or import.
+
+The activity log also shows the exact 3DJake Kobra 3 Max V2 Combo page and its Standard sibling rejected as model_variant_skipped. The Combo URL is https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-combo; its title is an exact printer/Combo listing. The matcher applied the accessory keyword "accessories" to the entire URL path, so the retailer's parent taxonomy segment anycubic-3d-printer-and-accessories falsely disqualified a genuine printer product page. The page is discovery/capture only; its search-result price is not accepted as evidence.
+
+PR #341 branch fix/3d-printer-retailer-taxonomy-matcher-20261109 changes accessory rejection to inspect the page title and terminal product slug, not unrelated parent taxonomy segments. Regression coverage verifies that the 3DJake Combo is accepted, its Standard sibling is rejected for a Combo task, and replacement/nozzle pages remain rejected. This is a 3D-printer-only matcher correction; no other category changes.
+
+The same task logged only the two generic Anycubic collection/search routes. It did not log the model-specific direct routes added by merged PR #339. The current production playbook contains those routes, so the Research PC installation/process has not yet demonstrated that it loaded the merged playbook. Do not infer its local commit from worker ID. After explicit approval for the existing updater, verify both direct-route attempts and the matcher regression in one bounded Kobra 3 Max V2 Combo task.
+
+No source registry, migration, review approval, shared evidence or catalogue import was changed. TEST remains untouched.

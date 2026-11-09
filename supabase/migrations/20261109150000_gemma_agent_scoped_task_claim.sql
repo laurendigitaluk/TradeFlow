@@ -39,21 +39,22 @@ begin
   select t.id
   from public.platform_ai_agent_tasks t
   where t.attempts < t.max_attempts
+   and t.task_type='catalogue_research'
    and (t.status='queued' or (t.status='running' and t.lease_expires_at < now()))
    and jsonb_typeof(t.payload->'tasks')='array'
    and jsonb_array_length(t.payload->'tasks') > 0
    and exists (
     select 1
-    from jsonb_array_elements(t.payload->'tasks') item
+    from jsonb_array_elements(t.payload->'tasks') as item(value)
     cross join lateral (
      select case
-      when lower(trim(coalesce(item->>'agent_key','')))='3d-printers-equipment'
-       and nullif(trim(item->>'category_slug'),'') is not null
-       and lower(trim(item->>'category_slug')) <> '3d-printers-equipment'
-      then regexp_replace(lower(trim(item->>'category_slug')),'[^a-z0-9]+','-','g')
+      when lower(trim(coalesce(item.value->>'agent_key','')))='3d-printers-equipment'
+       and nullif(trim(item.value->>'category_slug'),'') is not null
+       and lower(trim(item.value->>'category_slug')) <> '3d-printers-equipment'
+      then regexp_replace(lower(trim(item.value->>'category_slug')),'[^a-z0-9]+','-','g')
       else coalesce(
-       nullif(regexp_replace(lower(trim(item->>'agent_key')),'[^a-z0-9]+','-','g'),''),
-       nullif(regexp_replace(lower(trim(item->>'category_slug')),'[^a-z0-9]+','-','g'),'')
+       nullif(regexp_replace(lower(trim(item.value->>'agent_key')),'[^a-z0-9]+','-','g'),''),
+       nullif(regexp_replace(lower(trim(item.value->>'category_slug')),'[^a-z0-9]+','-','g'),'')
       )
      end as resolved_agent_key
     ) identity
@@ -61,16 +62,16 @@ begin
    )
    and not exists (
     select 1
-    from jsonb_array_elements(t.payload->'tasks') item
+    from jsonb_array_elements(t.payload->'tasks') as item(value)
     cross join lateral (
      select case
-      when lower(trim(coalesce(item->>'agent_key','')))='3d-printers-equipment'
-       and nullif(trim(item->>'category_slug'),'') is not null
-       and lower(trim(item->>'category_slug')) <> '3d-printers-equipment'
-      then regexp_replace(lower(trim(item->>'category_slug')),'[^a-z0-9]+','-','g')
+      when lower(trim(coalesce(item.value->>'agent_key','')))='3d-printers-equipment'
+       and nullif(trim(item.value->>'category_slug'),'') is not null
+       and lower(trim(item.value->>'category_slug')) <> '3d-printers-equipment'
+      then regexp_replace(lower(trim(item.value->>'category_slug')),'[^a-z0-9]+','-','g')
       else coalesce(
-       nullif(regexp_replace(lower(trim(item->>'agent_key')),'[^a-z0-9]+','-','g'),''),
-       nullif(regexp_replace(lower(trim(item->>'category_slug')),'[^a-z0-9]+','-','g'),'')
+       nullif(regexp_replace(lower(trim(item.value->>'agent_key')),'[^a-z0-9]+','-','g'),''),
+       nullif(regexp_replace(lower(trim(item.value->>'category_slug')),'[^a-z0-9]+','-','g'),'')
       )
      end as resolved_agent_key
     ) identity

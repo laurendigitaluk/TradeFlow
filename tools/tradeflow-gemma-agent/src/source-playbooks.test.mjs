@@ -894,3 +894,46 @@ test('ELEGOO UK source scope supports both printer lanes while preserving manufa
     'https://uk.elegoo.com/collections/pre-owned-3d-printer'
   ]);
 });
+
+
+test('3D-printer sites use one deliberate UK discovery route per source instead of duplicated generic fallbacks', () => {
+  const task = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_both' };
+  const expected = [
+    ['uni3dverse.co.uk', ['https://uni3dverse.co.uk/used-3d-printers?search=Elegoo%20Neptune%204%20Pro']],
+    ['3dgbire.com', ['https://3dgbire.com/collections/reconditioned-3d-printers']],
+    ['3dprima.co.uk', ['https://3dprima.co.uk/search?query=Elegoo%20Neptune%204%20Pro']],
+    ['idig3dprinting.co.uk', ['https://www.idig3dprinting.co.uk/product-category/3d-printers/']],
+    ['3dflo.com', ['https://www.3dflo.com/product-category/3d-printers/']],
+    ['3djake.uk', ['https://3djake.uk/search?query=Elegoo%20Neptune%204%20Pro']],
+    ['gumtree.com', ['https://gumtree.com/uk/srpsearch%2Belegoo-neptune-4-pro']],
+    ['secondhand.org.uk', ['https://secondhand.org.uk/second-hand-3d-printers?search=Elegoo%20Neptune%204%20Pro']],
+    ['ebay.co.uk', ['https://ebay.co.uk/sch/i.html?_nkw=Elegoo%20Neptune%204%20Pro&_sacat=0']],
+    ['amazon.co.uk', ['https://amazon.co.uk/s?k=Elegoo%20Neptune%204%20Pro']]
+  ];
+  for (const [domain, routes] of expected) {
+    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, task), routes, domain);
+    assert.ok(!routes.some(url => /\\/search\\?q=/i.test(url)), domain + ' must not receive a generic guessed search fallback');
+  }
+});
+
+test('3D-printer manufacturer routes keep exact model/package and new-versus-used guidance', () => {
+  const newTask = { ...task, manufacturer: 'Anycubic', model: 'Kobra S1', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, newTask), [
+    'https://uk.anycubic3d.com/collections/3d-printers',
+    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%20S1'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'bambu-lab-uk.myshopify.com' }, {
+    ...newTask, manufacturer: 'Bambu Lab', model: 'A1'
+  }), [
+    'https://bambu-lab-uk.myshopify.com/search?q=Bambu%20Lab%20A1',
+    'https://bambu-lab-uk.myshopify.com/collections/3d-printers'
+  ]);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation, /Combo\\/ACE bundle option/);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', 'bambu-lab-uk.myshopify.com').navigation, /standalone printer and Combo\\/AMS variants/);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', '3dgbire.com').navigation, /warranty\\/guarantee/);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation, /16 products per page/);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', 'gumtree.com').navigation, /individual active adverts/);
+  assert.match(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation, /direct ASIN product page/);
+  assert.ok(usedTask);
+});

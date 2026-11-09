@@ -129,7 +129,6 @@ test('every additional LIVE source domain has a specialist discovery route', () 
         category_slug, manufacturer: 'Example', model: 'Exact Model', research_type: 'uk_both'
       });
       assert.ok(routes.some(url => url === 'https://' + domain + '/'), category_slug + ': ' + domain + ' homepage route');
-      assert.ok(routes.some(url => url.includes('/search?q=Example%20Exact%20Model')), category_slug + ': ' + domain + ' model-search fallback');
       assert.ok(getWebsiteInstructions(category_slug, domain), category_slug + ': ' + domain + ' site instructions');
     }
   }

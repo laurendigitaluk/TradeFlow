@@ -75,3 +75,10 @@ If an old manual `task-worker.mjs` process is already running, the installer ref
 - `service.json`: existing Gemma install path, private environment-file path and LIVE environment name; contains no credentials.
 - `status.json`: local runtime status for the desktop UI.
 - `logs\`: supervisor and worker stdout/stderr logs.
+
+
+### Control Centre display and specialist status
+
+The current desktop UI displays the seven canonical specialists in a single vertical, scrollable list. Each row shows the specialist name, its live local state, and an individual Enabled checkbox. The toolbar shows the enabled-specialist count and active research-task count. States are explicit: RUNNING, WAITING, DISABLED, SERVICE STOPPED, BACKEND UPDATE REQUIRED, or ERROR. Enabled means eligible to claim matching new work; it does not mean a task is currently running. One supervisor and one worker serve all seven switches.
+
+If updating an existing PC that already has the hidden VBS launcher and corrected shortcuts, update only TradeFlow-Research-Control-Centre.ps1; do not rerun the full installer merely to update the UI, because the full installer also invokes the Gemma worker updater. Close the visible Control Centre window (this does not stop the background service), replace the local UI script from the production branch, then reopen the existing Control Centre shortcut. Verify seven named rows and statuses. Keep the Windows default terminal preference on Windows Console Host on machines where Windows Terminal captures hidden PowerShell sessions.

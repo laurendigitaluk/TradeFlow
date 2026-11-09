@@ -89,45 +89,19 @@ foreach ($Agent in $Agents) {
     $Results += [pscustomobject]@{ Agent=$Agent.Label; Result='Installed — separate clone, branch and shortcut; not started'; Folder=$Target }
 }
 
-$Switchboard = Join-Path $SharedRoot 'Gemma-Switchboard.ps1'
-$SwitchboardContent = @'
-$ErrorActionPreference = 'Stop'
-$BasePath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Agents = @(
- @{ Label='Gemma 3D Printers'; Folder='Gemma-3D-Printers' },
- @{ Label='Gemma Gaming'; Folder='Gemma-Gaming' },
- @{ Label='Gemma Cameras'; Folder='Gemma-Cameras' },
- @{ Label='Gemma Drones'; Folder='Gemma-Drones' },
- @{ Label='Gemma Metal Detectors'; Folder='Gemma-Metal-Detectors' },
- @{ Label='Gemma Mobile Phones'; Folder='Gemma-Mobile-Phones' },
- @{ Label='Gemma Laptops'; Folder='Gemma-Laptops' }
-)
-while ($true) {
- Clear-Host
- Write-Host 'TRADEFLOW — SELECT AN INDEPENDENT GEMMA'
- Write-Host ''
- for ($i=0; $i -lt $Agents.Count; $i++) { Write-Host ("{0}. {1}" -f ($i+1),$Agents[$i].Label) }
- Write-Host '0. Exit'
- Write-Host ''
- $Choice = Read-Host 'Select the Gemma to start'
- if ($Choice -eq '0') { break }
- $Index = -1
- if ([int]::TryParse($Choice,[ref]$Index) -and $Index -ge 1 -and $Index -le $Agents.Count) {
-  $AgentRoot = Join-Path (Join-Path $BasePath $Agents[$Index-1].Folder) 'tools	radeflow-gemma-agent'
-  $Launcher = Join-Path $AgentRoot 'Start-Gemma-Agent.ps1'
-  if (Test-Path -LiteralPath $Launcher) {
-   Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList @('-NoExit','-NoProfile','-ExecutionPolicy','Bypass','-File',('"' + $Launcher + '"'),'-Environment','LIVE') -WorkingDirectory $AgentRoot
-  } else { Write-Host 'This Gemma has not been installed yet.'; Start-Sleep -Seconds 2 }
- }
+$ControlCentre = Join-Path $SharedRoot 'Gemma-Control-Centre.ps1'
+Invoke-WebRequest -UseBasicParsing -Uri "$RawBase/tools/gemma-agent-isolation/Gemma-Control-Centre.ps1" -OutFile $ControlCentre
+if (-not (Test-Path -LiteralPath $ControlCentre -PathType Leaf)) { throw 'Unified Gemma Control Centre download failed.' }
+
+$WshShell = New-Object -ComObject WScript.Shell
+foreach ($ShortcutName in @('Gemma Control Centre.lnk','Gemma Switchboard.lnk')) {
+    $ControlShortcut = $WshShell.CreateShortcut((Join-Path $Desktop $ShortcutName))
+    $ControlShortcut.TargetPath = $PowerShell
+    $ControlShortcut.Arguments = '-WindowStyle Hidden -STA -NoProfile -ExecutionPolicy Bypass -File "' + $ControlCentre + '"'
+    $ControlShortcut.WorkingDirectory = $SharedRoot
+    $ControlShortcut.Description = 'Manage all seven independent TradeFlow Gemma workers'
+    $ControlShortcut.Save()
 }
-'@
-Set-Content -LiteralPath $Switchboard -Value $SwitchboardContent -Encoding UTF8
-$SwitchShortcut = $WshShell.CreateShortcut((Join-Path $Desktop 'Gemma Switchboard.lnk'))
-$SwitchShortcut.TargetPath = $PowerShell
-$SwitchShortcut.Arguments = '-NoExit -NoProfile -ExecutionPolicy Bypass -File "' + $Switchboard + '"'
-$SwitchShortcut.WorkingDirectory = $SharedRoot
-$SwitchShortcut.Description = 'Choose which independent Gemma to start'
-$SwitchShortcut.Save()
 
 Write-Host ''
 Write-Host 'ISOLATED GEMMA FOLDER INSTALLATION FINISHED'

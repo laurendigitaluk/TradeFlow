@@ -5176,3 +5176,14 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK discovery instructions (proposed, not yet deployed)
 For 3D Printers branch tasks, use official UK collection and search routes, followed by verified direct model URLs in source-playbooks.mjs. Kobra 3 Max V2 has separate standard and ACE 2 Pro Combo URLs. Kobra 4 Standard and Combo can share a page, so never assign the page headline price to a package without checking the selected machine option. Kobra S1 ACE 2 Pro Combo is distinct from older ACE Pro packages and extra-filament/accessory bundles. Preserve URL, selected option, GBP price, condition, stock and timestamp for ChatGPT review. Do not bypass blocked websites. Existing Gemma timeout remains a separate unresolved issue; retain raw capture for review rather than fabricate extracted evidence.
+
+
+## 9 November 2026 — 3D Printer batch-completion hardening
+
+The 3D Printer worker previously sent the full `outputs` array to `platform_ai_agent_complete_task`. For block-sized jobs, those outputs include full raw page captures and long excerpts that are already separately persisted in the review queue. The 8-product LIVE task failed at the completion RPC with PostgREST `PGRST102 Empty or invalid json` after its product research work. The exact parser failure cause was not proven, but the oversized/redundant completion payload was a credible risk and has been removed from the 3D Printer branch.
+
+The 3D Printer worker now uses `src/task-result-summary.mjs` to submit a compact task result: product identity, candidate count, direct capture URLs, review classification, observed GBP amount/currency, review-queue write references, route metrics and bounded route failures. Raw page bodies and long excerpts remain in the review queue and are not duplicated into the task completion JSON. It logs the compact JSON byte count before submitting. Regression tests verify raw page capture text is excluded and the task result remains small.
+
+Anycubic route regression coverage now verifies the UK collection/search routes and direct Kobra 3 Max V2 machine-only and ACE 2 Pro Combo URLs, plus Kobra 4 and Kobra S1 model-specific routes. Gemma Research Tests run `42720630028` passed on 9 November 2026. Changes are isolated to branch `gemma/3d-printers`; do not merge them into other category branches.
+
+This code is committed to GitHub but has not yet been installed on the Research PC. The running 3D Printer worker must be stopped cleanly before running its folder-local `Update-Gemma-Agent.ps1`, then restarted from the same Gemma 3D Printers shortcut. Only after the updated worker completes a controlled block task without a completion RPC error can the 3D Printer branch be locked as accepted.

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -188,7 +188,7 @@ test('3D printer extraction uses a bounded strict JSON schema for the exact page
   assert.equal(schema.properties.findings.items.properties.product_identity_text.minLength, 1);
   assert.equal(schema.properties.findings.items.properties.match_observation.minLength, 1);
   const finding = schema.properties.findings.items;
-  assert.ok(finding.properties.price_observations.maxItems <= 16);
+  assert.equal(finding.properties.price_observations.maxItems, 8);
   const observation = finding.properties.price_observations.items;
   assert.equal(observation.additionalProperties, false);
   assert.deepEqual(observation.properties.price_role.enum, ['current','crossed_out','saving','other_variant','accessory','filament','delivery','protection_plan','warranty','unknown']);
@@ -237,7 +237,7 @@ test('single-page recovery schema requests exactly one compact finding', () => {
   const schema = buildGemmaFindingSchema(1);
   assert.equal(schema.properties.findings.minItems, 1);
   assert.equal(schema.properties.findings.maxItems, 1);
-  assert.ok(schema.properties.findings.items.properties.price_observations.maxItems <= 16);
+  assert.equal(schema.properties.findings.items.properties.price_observations.maxItems, 8);
   assert.ok(schema.properties.findings.items.properties.uncertainty_and_conflicts.maxLength <= 180);
 });
 
@@ -304,4 +304,70 @@ test('successful 3D-printer Gemma extraction preserves the complete fetched page
   } finally {
     globalThis.fetch = originalFetch;
   }
+});
+
+
+test('3D-printer Gemma inference is capped at 45 seconds; other agents retain their configured timeout', () => {
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, {}), 45000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { OLLAMA_TIMEOUT_MS: 300000 }), 45000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 30000 }), 30000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 999999 }), 45000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 5000 }), 15000);
+  assert.equal(getGemmaExtractionTimeoutMs({ ...printerTask, category_slug: 'drones', branch_slug: 'drones' }, { OLLAMA_TIMEOUT_MS: 300000 }), 300000);
+});
+
+test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw evidence without per-page retries', async () => {
+  const originalFetch = globalThis.fetch;
+  let requests = 0;
+  const events = [];
+  const sources = [
+    {
+      source_id: 'S1',
+      title: 'Bambu Lab A1 UK product page',
+      url: 'https://www.bambulab.com/uk/products/a1',
+      text: 'Bambu Lab A1 standard printer £289.00 in stock. ' + 'Full product page text. '.repeat(550)
+    },
+    {
+      source_id: 'S2',
+      title: 'Bambu Lab A1 Combo UK product page',
+      url: 'https://www.bambulab.com/uk/products/a1-combo',
+      text: 'Bambu Lab A1 Combo printer £399.00 in stock. ' + 'Full Combo product page text. '.repeat(550)
+    }
+  ];
+  globalThis.fetch = async () => {
+    requests++;
+    throw new Error('The operation was aborted due to timeout');
+  };
+  try {
+    const result = await extractBatch(printerTask, sources, {
+      OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
+      OLLAMA_MODEL: 'gemma3:4b'
+    }, event => events.push(event));
+    assert.equal(requests, 1, 'a failed 3D batch must not trigger sequential single-page retries');
+    assert.equal(result.batches, 1);
+    assert.equal(result.failures.length, 1);
+    assert.equal(result.findings.length, 2);
+    assert.equal(result.findings[0].source_excerpt, sources[0].text);
+    assert.equal(result.findings[1].source_excerpt, sources[1].text);
+    assert.equal(result.findings[0].page_capture.captured_text, sources[0].text);
+    assert.equal(result.findings[1].page_capture.captured_text, sources[1].text);
+    assert.equal(result.findings[0].review_classification, 'unverified_capture');
+    assert.equal(result.findings[1].review_classification, 'unverified_capture');
+    assert.ok(events.some(event => event.stage === 'extraction_batch_failed'));
+    assert.ok(events.some(event => event.stage === 'extraction_batch_completed' && event.fallback_pages === 2));
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test('3D-printer Gemma prompt includes the approved website navigation note but still preserves full-page source evidence', () => {
+  const prompt = buildExtractionPrompt(printerTask, [{
+    source_id: 'S1',
+    title: 'ELEGOO Neptune 4 Pro',
+    url: 'https://uk.elegoo.com/products/elegoo-neptune-4-pro-fdm-3d-printer',
+    text: 'ELEGOO Neptune 4 Pro Standard Printer £189.00 New. In stock.'
+  }]);
+  assert.match(prompt, /SOURCE-SPECIFIC SITE NOTES/);
+  assert.match(prompt, /dedicated Pre-owned 3D Printers collection/);
+  assert.match(prompt, /do not attempt new browsing or invent URLs/i);
 });

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildEvidenceCaptureSnapshotDedupeKey, buildEvidenceCaptureSnapshotFingerprint, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getEvidenceCaptureRepeatAction, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildCaptureEnrichmentPatch, buildEvidenceCaptureDedupeKey, buildEvidenceCaptureSnapshotDedupeKey, buildEvidenceCaptureSnapshotFingerprint, buildExtractionPrompt, buildGemmaFindingSchema, buildLegacyEvidenceCaptureLookupPath, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getEvidenceCaptureRepeatAction, getGemmaExtractionTimeoutMs, selectExistingEvidenceCaptureRecord, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -524,4 +524,167 @@ test('repeat research of the same changed snapshot is idempotent even when revie
     raw_payload: { evidence, page_capture: evidence.page_capture, snapshot_fingerprint: fingerprint }
   };
   assert.equal(getEvidenceCaptureRepeatAction(revision, fingerprint), 'duplicate');
+});
+
+
+test('3D-printer legacy review lookup is constrained to exact category, branch, product, package and source URL', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const evidence = { source_url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer' };
+  const path = buildLegacyEvidenceCaptureLookupPath(task, evidence);
+
+  assert.match(path, /record_type=eq\.evidence_candidate/);
+  assert.match(path, /category_slug=eq\.3d-printers-equipment/);
+  assert.match(path, /branch_slug=eq\.3d-printers/);
+  assert.match(path, /manufacturer=eq\.Creality/);
+  assert.match(path, /model=eq\.K1/);
+  assert.match(path, /package_key=eq\.standard/);
+  assert.ok(path.includes('source_url=eq.https%3A%2F%2Fstore.creality.com%2Fuk%2Fproducts%2Fk1-speedy-3d-printer'));
+  assert.match(path, /order=updated_at\.desc&limit=50/);
+});
+
+test('legacy imported and rejected captures remain idempotent when the page snapshot is unchanged', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const pageCapture = {
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    captured_text: 'Creality K1 Speedy 3D Printer £299.00 Brand new In stock. '.repeat(30),
+    gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'Creality K1 Speedy 3D Printer £299.00 Brand new' }]
+  };
+  const evidence = {
+    ...task,
+    source_url: pageCapture.url,
+    page_title: pageCapture.title,
+    evidence_type: null,
+    package_or_variant_text: 'Standard printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    source_excerpt: pageCapture.captured_text,
+    page_capture: pageCapture
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const legacy = {
+    ...task,
+    source_url: pageCapture.url,
+    status: 'imported',
+    dedupe_key: 'review-legacy-imported-key',
+    reviewed_at: '2026-11-08T22:01:06.564Z',
+    approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { task, evidence, page_capture: pageCapture, review_classification: 'unverified_capture' }
+  };
+  const rejected = {
+    ...legacy,
+    status: 'rejected',
+    dedupe_key: 'borderline-legacy-rejected-key',
+    approved_at: null,
+    imported_at: null
+  };
+  const before = JSON.stringify([legacy, rejected]);
+
+  const selected = selectExistingEvidenceCaptureRecord([legacy, rejected], fingerprint);
+  assert.equal(selected.action, 'duplicate');
+  assert.ok([legacy, rejected].includes(selected.record));
+  assert.equal(JSON.stringify([legacy, rejected]), before);
+});
+
+test('materially changed capture beside a legacy terminal row becomes a new snapshot without changing history', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const pageCapture = {
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    captured_text: 'Creality K1 Speedy 3D Printer £299.00 Brand new In stock. '.repeat(30),
+    gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'Creality K1 Speedy 3D Printer £299.00 Brand new' }]
+  };
+  const oldEvidence = {
+    ...task, source_url: pageCapture.url, page_title: pageCapture.title,
+    package_or_variant_text: 'Standard printer', item_condition_text: 'Brand new',
+    availability_text: 'In stock', source_excerpt: pageCapture.captured_text, page_capture: pageCapture
+  };
+  const oldFingerprint = buildEvidenceCaptureSnapshotFingerprint(oldEvidence);
+  const legacy = {
+    ...task, source_url: pageCapture.url, status: 'imported', dedupe_key: 'review-legacy-imported-key',
+    reviewed_at: '2026-11-08T22:01:06.564Z', approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { task, evidence: oldEvidence, page_capture: pageCapture, review_classification: 'unverified_capture' }
+  };
+  const changedPage = {
+    ...pageCapture,
+    gbp_price_mentions: [{ amount: 279, display: '£279.00', context: 'Creality K1 Speedy 3D Printer £279.00 Brand new' }]
+  };
+  const changedEvidence = {
+    ...oldEvidence,
+    page_capture: changedPage,
+    source_excerpt: changedPage.captured_text,
+    observed_price: null
+  };
+  const changedFingerprint = buildEvidenceCaptureSnapshotFingerprint(changedEvidence);
+  const before = JSON.stringify(legacy);
+
+  assert.notEqual(changedFingerprint, oldFingerprint);
+  const selected = selectExistingEvidenceCaptureRecord([legacy], changedFingerprint);
+  assert.equal(selected.action, 'new_snapshot');
+  assert.equal(selected.record, legacy);
+  assert.equal(JSON.stringify(legacy), before);
+  assert.notEqual(
+    buildEvidenceCaptureSnapshotDedupeKey(task, changedEvidence, changedFingerprint),
+    buildEvidenceCaptureSnapshotDedupeKey(task, oldEvidence, oldFingerprint)
+  );
+});
+
+test('unreviewed legacy pending captures can be safely enriched without changing their legacy dedupe key', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const url = 'https://store.creality.com/uk/products/k1-speedy-3d-printer';
+  const oldEvidence = {
+    page_title: 'Creality K1 Speedy 3D Printer',
+    source_url: url,
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    package_or_variant_text: 'Standard printer',
+    page_capture: { title: 'Creality K1', url, captured_text: 'K1 £299.00 in stock', gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'K1 £299.00' }] }
+  };
+  const changedEvidence = {
+    ...oldEvidence,
+    page_capture: { ...oldEvidence.page_capture, captured_text: 'K1 £279.00 in stock', gbp_price_mentions: [{ amount: 279, display: '£279.00', context: 'K1 £279.00' }] }
+  };
+  const pending = {
+    ...task, source_url: url, status: 'needs_research', dedupe_key: 'borderline-legacy-pending-key',
+    reviewed_by: null, reviewed_at: null, approved_at: null, imported_at: null,
+    raw_payload: { evidence: oldEvidence, page_capture: oldEvidence.page_capture, review_classification: 'unverified_capture' }
+  };
+  const incoming = {
+    ...task, source_url: url, dedupe_key: 'capture-new-base-key',
+    raw_payload: { task, evidence: changedEvidence, page_capture: changedEvidence.page_capture, review_classification: 'unverified_capture' }
+  };
+  const patch = buildCaptureEnrichmentPatch(pending, incoming, '2026-11-09T18:00:00.000Z');
+
+  assert.ok(patch);
+  assert.equal(patch.raw_payload.enrichment_history.length, 1);
+  assert.equal(patch.raw_payload.enrichment_history[0].snapshot_fingerprint, buildEvidenceCaptureSnapshotFingerprint(changedEvidence));
+  assert.equal(pending.dedupe_key, 'borderline-legacy-pending-key');
+  assert.equal(patch.reviewed_by, undefined);
+  assert.equal(patch.approved_at, undefined);
 });

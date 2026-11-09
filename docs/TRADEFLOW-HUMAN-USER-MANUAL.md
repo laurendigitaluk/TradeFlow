@@ -2561,3 +2561,8 @@ GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed succe
 ### Fixed seven-specialist dashboard layout — 9 November 2026
 
 The specialist dashboard uses a fixed two-column grid with four compact rows. All seven named specialists are displayed together; no scrollbar is required. Each card retains its own Enabled checkbox and live RUNNING/WAITING/DISABLED state. The enabled and active counters remain in the toolbar. Resizing the window recalculates card positions and widths. This change affects only the desktop display; it does not change the research worker, scheduled supervisor, LIVE queue, or specialist configuration.
+
+
+### WinForms grid docking correction — 9 November 2026
+
+The specialist grid uses a Fill-docked content panel beneath the header, service controls and explanatory note. Windows Forms docking is ordered by control z-order. The Fill panel must be at index 0 in the form control collection so the Top-docked controls reserve their space first. The correct statement is `$form.Controls.SetChildIndex($listHost, 0)`. Do not move the Fill panel to the last index; that causes the first grid rows to be covered by the header and toolbar. This fix changes only the desktop display.

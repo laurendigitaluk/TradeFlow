@@ -26,13 +26,13 @@ Status: implementation and tests prepared; CI / Research PC runtime gate pending
 
 - LIVE gaming source registry: 14 loadable UK sources (12 category-scoped plus universal Amazon UK and eBay UK).
 - No gaming research task queued; no LIVE or TEST catalogue/evidence writes performed.
-- TEST contains one older queued 3D-printer smoke task (owner-test-3d-printer-creality-ender-3-v3-ke-uk-new-20261108-02). Do not start the TEST worker until this is resolved; it would be claimed before a gaming task.
+- The older queued TEST 3D-printer smoke task (owner-test-3d-printer-creality-ender-3-v3-ke-uk-new-20261108-02) has been marked cancelled; its task row and history remain. It will not be claimed during the gaming test.
 - Research PC updater/runtime verification is still required. Do not claim a Gemma test has run until the worker is installed and telemetry confirms a completed gaming task.
 
 ## Next gate
 
 1. Review CI for this branch.
 2. Update Research PC from production using the version-controlled updater, without starting the worker; preserve existing .env, backups, tasks and logs.
-3. Resolve the stale queued TEST 3D-printer task without deleting its history.
+3. The stale queued TEST 3D-printer task is already cancelled, with its history retained.
 4. Run one controlled Xbox Series S task in TEST (new and used lanes), inspect every source and raw capture, then run the category in LIVE only after the test passes.
 5. ChatGPT reviews the raw captures and decides which evidence is relevant and which existing master product it belongs to. No autonomous import.

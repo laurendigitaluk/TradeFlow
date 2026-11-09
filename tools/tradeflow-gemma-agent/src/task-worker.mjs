@@ -209,7 +209,7 @@ console.log('[TradeFlow Gemma] background worker started');
 await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Gemma worker connected to Common Room','The Research PC worker is connected to the '+controlPlane.name+' AI Agent Common Room and can read owner instructions and post research handovers.',{thread_key:'general'}).catch(e=>console.error('[common room startup]',e.message));
 await checkFirstAgentCommonRoom().catch(e=>console.error('[common room first-agent greeting]',e.message));
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
-console.log('[TradeFlow Gemma] control plane: '+controlPlane.name+' only; other environment is isolated.');
+console.log('[TradeFlow Gemma] VERIFIED control plane: '+controlPlane.name+' ('+controlPlane.url.replace(/^https:\/\//,'').replace(/\.supabase\.co\/?$/,'')+'); other environment is isolated.');
 await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_started',message:'Persistent TradeFlow Gemma worker connected and polling '+controlPlane.name+' task queue.',details:{worker_id:workerId,poll_interval_ms:pollMs}});
 while(!stopping){
  try{

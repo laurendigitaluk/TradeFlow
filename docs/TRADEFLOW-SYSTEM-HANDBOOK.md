@@ -4616,3 +4616,9 @@ PR #337 is merged to production at `6c305f145b8fa18c1b827e152d28013387c933d1` (2
 The same task staged one full 12,909-character Anycubic Kobra 4 Standard raw capture after Gemma timed out at 45.4 seconds. It remains `needs_research`, with price and evidence type unset because the page exposes multiple package/price options. The latest review queue has 67 records: 28 imported, 37 rejected, two pending; active linked shared evidence remains 239 UK-new and 21 UK-used, with 17 inactive UK-new rows. No shared evidence was added by this task.
 
 PR #338 adds 3D-printer-only telemetry to distinguish discovered pages, fetch attempts, successful fetches, pre-fetch variant skips, post-fetch exact-model/package rejections and pages eligible for extraction. This is observability only; it does not change research or review decisions. Do not merge, deploy, restart the Research PC or queue a verification task without explicit owner approval.
+
+## 9 November 2026 — ChatGPT review of Anycubic Kobra 4 Standard
+
+The LIVE Anycubic Kobra 4 / Standard Printer raw capture was checked against the direct official UK page. The Standard Kobra 4 option is £159.00 GBP, with GB VAT included and dispatch stated as within 24 hours. The separate Kobra 4 Combo (4 colors) option is £259.00 and must not be attributed to the Standard Printer package.
+
+The LIVE review row was enriched with `uk_new`, £159 GBP, New condition and package-specific availability. It remains `needs_research`; reviewer identity/timestamp, approval and import fields remain unset. The full 12,909-character capture remains preserved. No shared-market-evidence or catalogue row was created.

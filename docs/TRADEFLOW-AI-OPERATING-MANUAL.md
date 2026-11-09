@@ -5147,3 +5147,16 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - Regression coverage adds bounded timeout calculation, one-call/no-retry timeout behaviour, full raw page fallback for every page, page-specific website navigation in the prompt, route-count/no-generic-fallback tests, and distinct source URL keys for the same product.
 - PR #332 remains an open repair branch. Its CI must pass before merge. No LIVE source row, migration, review queue, catalogue or shared evidence was changed by this code work.
 - Deployment remains a separate step: merge only after CI/review; apply the ordered ELEGOO scope migration through the approved release process; install/update the single Research Control Centre worker while preserving its existing private \`.env\`; then run one bounded LIVE 3D-printer smoke test and verify it hands off raw captures, frees the shared queue and shows multiple independent source records in Research awaiting review.
+
+
+## Release update — 9 November 2026 (PR #332 merged to LIVE production)
+
+- PR #332 was reopened at the owner's request and squash-merged into \`production\`.
+- Merge commit: \`5887f8fadae09a51cdb0048eaef67d8a23dcf0ca\`.
+- Production GitHub Actions run \`42684047133\` (“Gemma Research Tests”) completed successfully on the merge commit.
+- LIVE Supabase migration \`20261109140000_enable_elegoo_uk_3d_printer_used_lane.sql\` was applied via the approved Supabase migration path and recorded as migration version \`20261109193254\` / name \`enable_elegoo_uk_3d_printer_used_lane_20261109\`.
+- The existing LIVE ELEGOO UK source row is enabled with \`research_scope='all'\`; there is still only the existing source row, no duplicate.
+- The production repository now contains the bounded 45-second 3D-printer Gemma batch timeout, no sequential single-page timeout retries, full raw-page fallback, the compact extraction prompt and website-specific 3D-printer routes.
+- **Research PC installation remains pending.** Merging to GitHub and applying the LIVE database migration do not update the local Node worker already running on the PC. The connected Control Centre must be stopped after the current task, then the current production \`Update-TradeFlow-Gemma.ps1\` run against the existing paths in \`%LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre\\service.json\`. This updater validates both LIVE/TEST targets in the existing private \`.env\`, backs up installed source, downloads production code, runs Node syntax and test suites, and does not edit the private \`.env\` or specialist selection in \`config.json\`.
+- After local update, restart the existing Control Centre background service and confirm it connects to LIVE. Then run a single bounded 3D-printer acceptance task. Acceptance requires a short extraction stage, full page captures whether Gemma succeeds or times out, evidence records from distinct qualifying source pages, preservation of multiple UK-new/UK-used records for one product, and completion/release of the shared queue so it can claim the next category task.
+- No TEST project schema, data, queue, sources or customer/tenant rows were changed by the production migration.

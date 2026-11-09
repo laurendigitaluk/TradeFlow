@@ -991,7 +991,7 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - The official UK page currently identifies the standalone Kobra 3 Max V2 separately from the Combo. Do not weaken the exact model/package guard.
 
 ### Latest task group
-Task `owner-3d-printers-equipment-1794259145802` completed at 21:21:16 UTC with five subtasks. Aggregate: 18 search results, 3 product pages discovered, 1 page accepted after validation, 1 raw capture, 1 Gemma batch failure, 70 route attempts (16 found, 49 empty, 5 failed), no collection or HTTP page-fetch errors. The five per-product runtimes sum to 115.3 seconds.
+Task `owner-3d-printers-equipment-1794259145802` completed at 21:21:16 UTC with five subtasks. Aggregate: 18 search results, 3 product pages discovered, 2 successful HTTP fetches, 1 post-fetch model/package rejection, 1 page accepted for capture and 1 raw capture, 1 Gemma batch failure, 70 route attempts (16 found, 49 empty, 5 failed), no collection or HTTP page-fetch errors. The legacy inspected_product_pages counter reported 1 because it counts only pages accepted after validation. The five per-product runtimes sum to 115.3 seconds.
 - Kobra 3 Max V2 / Standard: 9 search results, 1 page discovered, HTTP fetch successful in 856 ms, then rejected by the exact-model/package guard.
 - Kobra 4 / Standard: 9 search results, 2 pages discovered, 1 fetched/captured; one Gemma batch timed out at 45.4 seconds. Full 12,909-character raw capture staged; queue price/type remain unset for ChatGPT package allocation.
 - Kobra 3 Max V2 Combo, Kobra 4 ACE 2 Pro Combo and Kobra S1 4-Color Combo: zero search results each; 14 routes per subtask, 13 empty and one eBay UK 403.

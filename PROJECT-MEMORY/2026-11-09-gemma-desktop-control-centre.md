@@ -93,3 +93,12 @@ Production UI correction committed as `c720c245fed72174957a1a2d93fed5fc3e9668f8`
 - Preserve the existing shared config, three-second refresh, one-instance mutex, one supervisor and one worker. No research queue, source registry, evidence, catalogue, approval/import, .env or Supabase data was changed by this UI commit.
 
 Deployment note: the new UI script is in production but has not yet been copied to the Research PC. Do not rerun the full installer (it updates the Gemma worker). Close only the Control Centre window, download the single updated UI script to a temporary file, replace the local `TradeFlow-Research-Control-Centre.ps1`, and reopen the existing Control Centre shortcut. Closing the UI does not stop the background supervisor. Verify seven named cards, per-agent checkboxes, status labels, enabled count and active-task count before calling this complete.
+
+
+## Owner screenshot: first two cards clipped; scroll correction — 9 November 2026
+
+After installing the first vertical FlowLayoutPanel UI build, the owner showed a narrow side-by-side Control Centre window. Only Drones, Metal Detectors, Mobile Phones, Laptops and Cameras were visible; 3D Printers and Gaming were clipped above the visible card region, and the owner could not scroll. The header itself remained visible; the defect was the FlowLayoutPanel's sizing/scroll behaviour in the constrained window, not missing agent definitions or disabled configuration.
+
+Production commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces the FlowLayoutPanel with a standard WinForms Panel. Seven cards receive explicit vertical Y positions (108-pixel spacing); AutoScroll is enabled with AutoScrollMinSize derived from the agent count; each card anchors left/right and resizes to the viewport; initial scroll position is reset to the top. No queue, source, evidence, worker, .env, Supabase or tenant data was changed.
+
+PC deployment is pending. Replace only the local TradeFlow-Research-Control-Centre.ps1 with the production version, after closing the visible Control Centre window. Do not run the full installer or stop/restart the background worker. Reopen the existing Control Centre shortcut and verify the first two cards are at the top, the last card is reachable at the bottom by scrolling, all seven checkboxes remain independent, and the background service stays connected.

@@ -716,3 +716,42 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
   assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);
 });
+
+
+test('all specialist research categories have exact-match and UK evidence playbooks', () => {
+  const categories = [
+    ['drones', 'camera-drones', 'cameraworld.co.uk'],
+    ['metal-detectors', 'metal-detectors', 'crawfordsmd.com'],
+    ['mobile-phones', 'mobile-phones', 'mi.com'],
+    ['laptops', 'laptops-notebooks', 'dell.com'],
+    ['cameras', 'photography-cameras', 'canon.co.uk']
+  ];
+  for (const [category, branch, domain] of categories) {
+    const playbook = getCategoryWebsitePlaybook(category);
+    assert.ok(playbook, category + ' playbook exists');
+    assert.ok(playbook.categoryInstructions.some(rule => rule.includes('individual') || rule.includes('exact')), category + ' requires individual exact pages');
+    assert.ok(playbook.branchInstructions[branch]?.length, category + ' has active branch instructions');
+    assert.ok(getWebsiteInstructions(category, domain), category + ' has a website-specific route');
+  }
+});
+
+test('new category playbooks build only the recorded UK discovery routes for specialist sources', () => {
+  const cases = [
+    [{ domain: 'cameraworld.co.uk' }, { category_slug: 'drones', manufacturer: 'DJI', model: 'Mini 5 Pro' }, 'videography-products/drones/drones.html'],
+    [{ domain: 'crawfordsmd.com' }, { category_slug: 'metal-detectors', manufacturer: 'Minelab', model: 'Manticore' }, '/metal-detectors'],
+    [{ domain: 'mi.com' }, { category_slug: 'mobile-phones', manufacturer: 'Xiaomi', model: '15 Ultra' }, '/uk/product-list/phone/'],
+    [{ domain: 'dell.com' }, { category_slug: 'laptops', manufacturer: 'Dell', model: 'XPS 14' }, '/en-gb/shop/dell-laptops/scr/laptop'],
+    [{ domain: 'canon.co.uk' }, { category_slug: 'cameras', manufacturer: 'Canon', model: 'EOS R7' }, '/store/cameras/']
+  ];
+  for (const [source, task, route] of cases) {
+    assert.ok(buildWebsiteSearchRoutes(source, task).some(url => url.includes(route)), task.category_slug + ' route is present');
+  }
+});
+
+test('specialist playbooks preserve the distinction between complete products and accessories', () => {
+  assert.ok(getCategoryWebsitePlaybook('drones').categoryInstructions.some(rule => rule.includes('spare part')));
+  assert.ok(getCategoryWebsitePlaybook('metal-detectors').branchInstructions['metal-detector-equipment-accessories']);
+  assert.ok(getCategoryWebsitePlaybook('mobile-phones').categoryInstructions.some(rule => rule.includes('SIM')));
+  assert.ok(getCategoryWebsitePlaybook('laptops').categoryInstructions.some(rule => rule.includes('CPU')));
+  assert.ok(getCategoryWebsitePlaybook('cameras').categoryInstructions.some(rule => rule.includes('body-only')));
+});

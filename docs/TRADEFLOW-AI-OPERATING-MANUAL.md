@@ -4992,3 +4992,15 @@ After installation, verify the service shows connected/waiting, all enabled spec
  
 ### Live worker snapshot before Research PC installation — 11:57 UTC
 The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.
+
+
+## Specialist shortcut behaviour correction — 9 November 2026
+
+Owner testing found that every category shortcut opened a new PowerShell console and a separate Control Centre window. The production code is corrected:
+- Shortcut launch arguments now include `-WindowStyle Hidden`.
+- The UI uses a per-user named mutex to enforce one visible Control Centre.
+- Each shortcut still enables its own specialist in the shared local config and starts the same scheduled background supervisor; if the Control Centre is already open, the new launcher exits and the existing dashboard refreshes its display.
+
+The change is in production commits `af867edd067422adfd8a371cecb4f939ae231268` and `a1376bbefde726543b47606064f60486fbafea0d`. CI had not yet reported a new run at the time of this note.
+
+The Research PC must be updated before the fix takes effect. In the existing Control Centre choose **Stop after current task** and wait until the service is stopped. Then rerun the production installer from the existing Gemma folder, using the existing private .env. Do not close or terminate an active research task. The installer refuses to overwrite a running supervisor/worker. After reinstall, open one category shortcut and verify that no console appears, no duplicate dashboard opens, and the existing dashboard shows the selected category enabled.

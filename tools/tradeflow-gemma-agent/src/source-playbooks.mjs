@@ -405,8 +405,12 @@ export function buildWebsiteSearchRoutes(source, task) {
     routes.push(/^https?:\/\//i.test(filledRoute) ? filledRoute : 'https://' + domain + filledRoute);
   }
   const root = 'https://' + domain;
-  if (domain === 'ebay.co.uk') routes.push(root + '/sch/i.html?_nkw=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
-  if (domain === 'amazon.co.uk') routes.push(root + '/s?k=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  if (domain === 'ebay.co.uk' && !routes.some(url => /\/sch\/i\.html\?_nkw=/i.test(url))) {
+    routes.push(root + '/sch/i.html?_nkw=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  }
+  if (domain === 'amazon.co.uk' && !routes.some(url => /\/s\?k=/i.test(url))) {
+    routes.push(root + '/s?k=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
+  }
   if (site?.genericSearchFallback !== false) routes.push(root + '/search?q=' + encodeURIComponent([task.manufacturer, task.model].join(' ')));
   return [...new Set(routes)].slice(0, 5);
 }

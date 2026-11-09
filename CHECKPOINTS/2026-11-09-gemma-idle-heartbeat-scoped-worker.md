@@ -4,7 +4,7 @@ Date: 9 November 2026 (UTC)
 Repository: `laurendigitaluk/TradeFlow`
 Base: production `de1b8d4e12edf0102cea28f935a763826ff1c06b`
 Feature branch: `fix/gemma-idle-heartbeat-scoped-worker-20261109`
-PR: pending creation
+PR #331: https://github.com/laurendigitaluk/TradeFlow/pull/331
 
 ## LIVE finding
 Scope checked: category `3d-printers-equipment`, branch `3d-printers`, LIVE project `gxsrajtqzdjvmceqcpgv` only.
@@ -31,3 +31,7 @@ No research task was queued; no worker was restarted; no source registry row, mi
 
 ## Acceptance gate
 After review/merge and explicit owner approval, update the existing Research PC installation without changing its private `.env`, run the installed test suite, and verify repeated idle heartbeats from the same LIVE worker ID. Do not queue a research task solely to test worker liveness.
+
+
+## Verification
+GitHub Actions Gemma Research Tests run #503 passed on code/test head `24f5b68095a80b932c0641be1711e6845de44f85`. PowerShell updater syntax, Node syntax, the full Gemma test command (including four idle-heartbeat regressions), and Owner Dashboard JavaScript syntax passed. Both Workers Builds checks (`tradeflow` and `tradeflow-test`) passed. PR #331 is ready for review and mergeable; it remains unmerged and no deployment was performed.

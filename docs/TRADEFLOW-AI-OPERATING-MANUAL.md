@@ -5069,3 +5069,24 @@ Root cause was the WinForms docking order: the Fill-docked list host had been mo
 Acceptance is complete for the desktop display. No LIVE worker, supervisor, local agent configuration, private .env, research queue, sources, product catalogue, evidence or Supabase data was changed by this final UI repair. LIVE remains separate from TEST. The only observed runtime state at acceptance was all seven specialists enabled, zero currently active research tasks, and the background service connected/waiting; WAITING does not mean a research task is running.
 
 Supabase LIVE schema inspection found no public project-memory/checkpoint table. The authoritative project record for this repair is maintained in the repository's PROJECT-MEMORY, CHECKPOINTS, both operating manuals, backend operations manual and diagnostic roadmap.
+
+
+## 9 November 2026 — Bounded idle heartbeat on the current scoped worker
+
+The LIVE 3D-printer queue remains idle: 19 registered task rows, 56 product subtasks, all completed; zero queued, running or failed. The latest 3D-printer task completed at 01:56:42 UTC. The generic worker status last updated at 12:39:53 UTC for worker `DESKTOP-LVASEUB-78412`, with no active task or reported error. Production previously wrote `worker_started` but did not refresh the generic heartbeat while idle, so that timestamp could not distinguish a healthy idle process from a stopped process.
+
+The activity log shows worker starts at 12:14:25, 12:34:18, 12:35:53 and 12:39:53 UTC. The previous clean stop was recorded at 12:12:42 UTC for a different worker ID. No clean stop event follows the later starts. This does not prove concurrent workers or establish why the processes ended; the Research PC supervisor/worker logs are required to distinguish restarts, forced termination and machine/session events.
+
+Production branch base for the correction: `de1b8d4e12edf0102cea28f935a763826ff1c06b`. The earlier PR #322 was based on `e81ede671bfc03e73dc16169638011372b5b6117` and its worker diff predates the merged desktop-control-centre change. The replacement implementation retains the current desktop configuration and the service-role-only `platform_ai_agent_claim_task_for_agents` path; it does not restore the old unscoped claim logic.
+
+The new generic-only heartbeat:
+- runs after successful queue polls while idle;
+- uses a bounded cadence of at least 60 seconds and at most five minutes;
+- is suppressed during a queue poll, task processing, shutdown, an overlapping heartbeat, or after an unsuccessful poll;
+- writes only `gemma-task-worker` / `Task control` telemetry, never a product-category heartbeat.
+
+Four regression tests cover cadence bounds, invalid intervals, healthy-idle suppression rules and generic-only telemetry. The launcher, updater and CI test lists include the new helper/test. This is a code-only observability change; it does not alter research routing, task payloads, category switches, evidence classification, approval or import behaviour.
+
+No research task was queued, no worker was restarted, no source row or migration was changed, and no LIVE/TEST data, private `.env` or secrets were changed. No dedicated Supabase project-memory/checkpoint table exists; repository project-memory and checkpoint files remain the durable record.
+
+Acceptance after review/merge and explicit owner approval: update the existing Research PC installation without replacing or printing its private `.env`; verify the installed tests; then confirm repeated idle heartbeats from the same LIVE worker ID. Do not queue a 3D-printer research task solely to test the heartbeat.

@@ -90,7 +90,8 @@ foreach ($Agent in $Agents) {
 }
 
 $ControlCentre = Join-Path $SharedRoot 'Gemma-Control-Centre.ps1'
-Invoke-WebRequest -UseBasicParsing -Uri "$RawBase/tools/gemma-agent-isolation/Gemma-Control-Centre.ps1" -OutFile $ControlCentre
+$ControlCentreUrl = 'https://raw.githubusercontent.com/laurendigitaluk/TradeFlow/production/tools/gemma-agent-isolation/Gemma-Control-Centre.ps1'
+Invoke-WebRequest -UseBasicParsing -Uri $ControlCentreUrl -OutFile $ControlCentre
 if (-not (Test-Path -LiteralPath $ControlCentre -PathType Leaf)) { throw 'Unified Gemma Control Centre download failed.' }
 
 $WshShell = New-Object -ComObject WScript.Shell

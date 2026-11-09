@@ -2537,3 +2537,8 @@ The seven desktop shortcuts are category selectors, not seven separate workers. 
 ### Control Centre scrolling correction — 9 November 2026
 
 The seven specialist cards now use a standard vertically scrollable panel. On narrow or side-by-side windows, scroll inside the specialist list to reach 3D Printers, Gaming, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. Card widths adapt when the window is resized. If the first or last specialist cannot be reached, update the local Control Centre UI script from production; do not reinstall or restart the background worker for this display-only repair.
+
+
+### Dedicated specialist scrollbar
+
+The Control Centre specialist list now has its own vertical scrollbar at the right edge of the list. Use it to move between all seven named specialists. This scrollbar is separate from the dashboard header and Windows window frame. The enabled/active counters remain at the top.

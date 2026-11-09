@@ -18,7 +18,7 @@ test('rejects a multi-agent shared worker configuration', () => {
 test('preserves the local stop switch and rejects unknown agents', () => {
   const stopped = normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: false, enabledAgentKeys: ['3d-printers-equipment'] });
   assert.equal(stopped.serviceEnabled, false);
-  assert.throws(() => normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: true, enabledAgentKeys: ['unknown-category'] }), /Unknown isolated/);
+  assert.throws(() => normalizeIsolatedAgentConfig({ schemaVersion: 1, serviceEnabled: true, enabledAgentKeys: ['unknown-category'] }), /Unknown research agent key/);
 });
 
 test('accepts homogeneous batches and rejects cross-category batches', () => {

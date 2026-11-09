@@ -2,7 +2,6 @@ import { DESKTOP_RESEARCH_AGENTS, normalizeDesktopConfig } from './desktop-contr
 
 export function normalizeIsolatedAgentConfig(value) {
   const config = normalizeDesktopConfig(value);
-  if (!config.serviceEnabled) throw new Error('This isolated Gemma agent is disabled.');
   if (config.enabledAgentKeys.length !== 1) {
     throw new Error('An isolated Gemma installation must enable exactly one category agent.');
   }

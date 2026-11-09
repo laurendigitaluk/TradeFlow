@@ -46,3 +46,7 @@ The owner wants a Windows desktop application to control each Gemma product-rese
 3. Verify one supervisor/one worker, all seven enabled specialists waiting, and disabled specialists not claiming tasks.
 4. Run one bounded LIVE review-only acceptance task and verify raw capture reaches the existing LIVE review queue. Do not start a broad research batch as an installation test.
 5. Keep TEST separate; desktop supervisor is LIVE-only.
+
+ 
+### Live worker snapshot before Research PC installation — 11:57 UTC
+The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.

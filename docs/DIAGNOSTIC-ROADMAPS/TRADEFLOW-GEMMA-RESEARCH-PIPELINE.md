@@ -984,3 +984,17 @@ Keep source discovery, page fetching, Gemma extraction, raw capture, snapshot ha
 Repeated eBay HTTP 403 attempts are still a separate outstanding issue; PR #299 contains a proposed batch-scoped 3D-printer block but is stale/unmergeable. Do not add proxy rotation, credentialed scraping or bypasses. The generic idle-heartbeat correction remains in PR #331 and is separate from this 3D-printer review change.
 
 PR #336 is based directly on current production and adds snapshot/legacy-key regression coverage. It is review-only. No LIVE queue, evidence, catalogue or TEST data is changed by this branch.
+
+
+## Verification update — 9 November 2026, 20:09 UTC (PR #336)
+
+- PR #336 is based directly on production `3e0f712d5c3c93fa5c6e9b9aa2828716247e75ef`, 8 commits ahead and 0 behind; it remains open, mergeable and unmerged.
+- First PR CI run #42689823144 exposed one stale source-playbook assertion: the queue lookup had been renamed from `existing` to `exactExisting`, and the test did not also inspect the legacy lookup's selected columns. The test was updated to validate both query paths against the LIVE schema; application code was not weakened.
+- Retest run #42690215260 passed **110/110** Gemma/source-playbook/task-group tests. PowerShell updater syntax, Node syntax and Owner Dashboard JavaScript syntax also passed.
+- Repeated the read-only snapshot replay using the actual three candidate captures and their exact LIVE imported queue rows. All three are terminal imported rows with review/approval/import timestamps, and all three incoming fingerprints differ from the historical fingerprints:
+  - ELEGOO UK: 10,000 → 42,207 captured characters; `new_snapshot`.
+  - 3DJake UK: 10,000 → 14,328 captured characters; `new_snapshot`.
+  - 3D Prima: 3,493 → 3,506 captured characters; `new_snapshot`.
+- Proposed outcome: 3 new unverified review revisions, 0 existing terminal rows modified. Actual LIVE inserts/updates remain **0**; this was a read-only replay.
+- Exact unchanged snapshots still select `duplicate`; the legacy compatibility tests cover old `review-` and `borderline-` keys. Only unreviewed pending rows can use guarded enrichment.
+- No evidence approval/import, research task, worker restart, source change, migration, TEST write, or secret/private-`.env` access occurred.

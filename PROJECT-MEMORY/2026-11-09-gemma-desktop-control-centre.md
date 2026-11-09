@@ -50,3 +50,15 @@ The owner wants a Windows desktop application to control each Gemma product-rese
  
 ### Live worker snapshot before Research PC installation — 11:57 UTC
 The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.
+
+
+## Owner-reported shortcut issue and correction — 9 November 2026
+
+Owner tested Gemma Gaming and Gemma 3D Printers shortcuts. Each opened a separate visible PowerShell console and a duplicate Control Centre window. Root cause was confirmed in production code: shortcut arguments lacked `-WindowStyle Hidden`, and the Control Centre had no single-instance guard.
+
+Fix committed to production:
+- `af867edd067422adfd8a371cecb4f939ae231268`: named per-user mutex ensures only one dashboard form.
+- `a1376bbefde726543b47606064f60486fbafea0d`: main and category shortcuts now use hidden PowerShell window style.
+- Category launcher updates the shared config and starts the same supervisor; if a dashboard already exists, it exits and the existing dashboard picks up the config on its three-second refresh.
+- New CI run had not appeared at time of update; validation pending.
+- Research PC not yet updated. Stop the service after current task and rerun production installer before retesting.

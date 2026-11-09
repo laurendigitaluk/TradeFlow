@@ -5173,3 +5173,17 @@ Latest LIVE baseline: 20 exact-branch task rows, 57 product subtasks, all comple
 Keep the separate failure stages visible: search-to-exact-page discovery is still the earliest loss (6/29), direct page fetch next (3/6, all eBay HTTP 403), then Gemma latency and review snapshot deduplication. Repeated eBay 403 blocking is a separate outstanding proposal in PR #299; do not bypass source restrictions or rotate proxies. PR #336 does not change other categories, source registry rows, approvals or imports.
 
 The correct LIVE category ID is `ab8b13b0-b070-4534-838b-3ebd4d7261e5`. The review queue remains 65 rows (28 imported, 37 rejected, 0 open); linked active evidence is 239 UK-new and 21 UK-used, with 17 inactive UK-new rows. Historical reviewer identity/timestamp gaps must not be guessed or rewritten.
+
+
+## Verification update — 9 November 2026, 20:09 UTC (PR #336)
+
+- PR #336 is based directly on production `3e0f712d5c3c93fa5c6e9b9aa2828716247e75ef`, 8 commits ahead and 0 behind; it remains open, mergeable and unmerged.
+- First PR CI run #42689823144 exposed one stale source-playbook assertion: the queue lookup had been renamed from `existing` to `exactExisting`, and the test did not also inspect the legacy lookup's selected columns. The test was updated to validate both query paths against the LIVE schema; application code was not weakened.
+- Retest run #42690215260 passed **110/110** Gemma/source-playbook/task-group tests. PowerShell updater syntax, Node syntax and Owner Dashboard JavaScript syntax also passed.
+- Repeated the read-only snapshot replay using the actual three candidate captures and their exact LIVE imported queue rows. All three are terminal imported rows with review/approval/import timestamps, and all three incoming fingerprints differ from the historical fingerprints:
+  - ELEGOO UK: 10,000 → 42,207 captured characters; `new_snapshot`.
+  - 3DJake UK: 10,000 → 14,328 captured characters; `new_snapshot`.
+  - 3D Prima: 3,493 → 3,506 captured characters; `new_snapshot`.
+- Proposed outcome: 3 new unverified review revisions, 0 existing terminal rows modified. Actual LIVE inserts/updates remain **0**; this was a read-only replay.
+- Exact unchanged snapshots still select `duplicate`; the legacy compatibility tests cover old `review-` and `borderline-` keys. Only unreviewed pending rows can use guarded enrichment.
+- No evidence approval/import, research task, worker restart, source change, migration, TEST write, or secret/private-`.env` access occurred.

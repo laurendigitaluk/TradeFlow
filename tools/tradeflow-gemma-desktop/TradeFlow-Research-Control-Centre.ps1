@@ -14,6 +14,7 @@ $LogPath = Join-Path $AppRoot 'logs'
 $TaskName = 'TradeFlow Gemma Research Supervisor'
 $AgentsPath = Join-Path $AppRoot 'agents.json'
 $Agents = (Get-Content -LiteralPath $AgentsPath -Raw | ConvertFrom-Json).agents
+$script:UpdatingUI = $false
 
 function Read-Config {
     if (-not (Test-Path -LiteralPath $ConfigPath -PathType Leaf)) {
@@ -76,6 +77,7 @@ function Get-AgentState([string]$Key,$Config,$Status) {
     return 'Enabled · waiting for website tasks'
 }
 function Update-Display {
+    $script:UpdatingUI = $true
     $config = Read-Config
     $status = Read-Status
     if (-not $config.serviceEnabled) {
@@ -96,6 +98,7 @@ function Update-Display {
         $ui.State.Text = Get-AgentState $agent.agentKey $config $status
         $ui.State.ForeColor = if (-not $config.serviceEnabled -or -not $enabled) { [System.Drawing.Color]::DimGray } elseif ($status -and $status.activeAgentKeys -contains $agent.agentKey) { [System.Drawing.Color]::ForestGreen } else { [System.Drawing.Color]::DarkSlateBlue }
     }
+    $script:UpdatingUI = $false
 }
 
 if ($AgentKey -and $EnableAgent) {
@@ -214,7 +217,7 @@ foreach ($agent in $Agents) {
     $check.AutoSize = $true
     $check.Add_CheckedChanged({
         param($sender,$eventArgs)
-        if ($sender.Tag) {
+        if (-not $script:UpdatingUI -and $sender.Tag) {
             try { Set-AgentEnabled ([string]$sender.Tag) ([bool]$sender.Checked); Update-Display }
             catch { [System.Windows.Forms.MessageBox]::Show($_.Exception.Message,'TradeFlow') }
         }

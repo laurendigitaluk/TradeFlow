@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isResearchTypeAllowedSource, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, isGamingConsoleResearchTask, isCaptureOnlyResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isResearchTypeAllowedSource, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, validate, searchResultsLimitForTask, is3dPrinterResearchTask, isGamingConsoleResearchTask, isCaptureOnlyResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -797,5 +797,27 @@ test('every enabled specialist source domain has an explicit site entry or unive
       assert.ok(routes.length > 0, category + ' has no route for ' + domain);
       assert.ok(!routes.some(url => /\/search\?q=/i.test(url)), category + ' generated a guessed /search route for ' + domain);
     }
+  }
+});
+
+
+test('approved international sources with UK locale paths pass the UK storefront guard', () => {
+  const task = { manufacturer: 'Example', model: 'Exact Model', research_type: 'uk_new' };
+  const urls = [
+    'https://store.google.com/gb/product/exact-model',
+    'https://www.motorola.com/gb/en/phones/exact-model',
+    'https://www.dell.com/en-gb/shop/exact-model',
+    'https://www.hp.com/gb-en/shop/exact-model',
+    'https://www.hmd.com/en_gb/smartphones/exact-model',
+    'https://www.doro.com/en-gb/products/exact-model',
+    'https://www.mpb.com/en-uk/shop/cameras/exact-model',
+    'https://www.nintendo.com/en-gb/hardware/exact-model'
+  ];
+  for (const source_url of urls) {
+    const result = validate({
+      source_url, evidence_type: 'uk_new', price_currency: 'GBP', observed_price: 1,
+      source_name: 'Example UK source', item_condition: 'New', sales_channel: 'retailer', availability: 'In stock'
+    }, task, 'Example Exact Model £1.00 New In stock');
+    assert.equal(result.errors.includes('source is not an eligible UK storefront'), false, source_url);
   }
 });

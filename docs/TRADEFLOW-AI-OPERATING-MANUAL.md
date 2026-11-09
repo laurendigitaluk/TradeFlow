@@ -5160,3 +5160,10 @@ The 3D-printer review queue now has a proposed versioned-snapshot rule. The esta
 This addresses a measured LIVE handoff loss: three Neptune 4 Pro page captures (42,206, 14,328 and 3,506 characters) were retained in the task result but all three writes were duplicate-skipped against imported queue rows whose stored captures were shorter (9,998, 10,000 and 3,493 characters). The newer price/availability context was therefore not staged for ChatGPT.
 
 Research metrics also distinguish `gemma_calls` (batches) from `gemma_http_requests` (actual Ollama requests) and `gemma_recovery_skipped` (pages retained as raw fallback after a failed batch). The current 45-second 3D-printer timeout is a code proposal only; do not treat it as runtime-verified until the Research PC is updated and a controlled smoke test is approved.
+
+### Final review record — PR #334
+- Consolidated production-based PR: https://github.com/laurendigitaluk/TradeFlow/pull/334
+- Current code head at CI verification: `a01b3caa7f2bcbe4aaa128c3a1d2ce50e88c4e3e`.
+- GitHub Actions run #537 passed: 105 tests passed, 0 failed; PowerShell, Node and Owner Dashboard syntax checks passed.
+- PR #332 and PR #333 were closed as superseded by #334 to prevent competing versions. PR #331 remains the separate generic idle-heartbeat proposal.
+- PR #334 remains open, unmerged and undeployed. The Research PC 45-second timeout and changed-snapshot queue handoff still require a controlled runtime acceptance test after explicit approval.

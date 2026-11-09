@@ -717,20 +717,128 @@ export function buildEvidenceCaptureDedupeKey(task, evidence) {
     .digest('hex').slice(0, 32);
 }
 
+
+function normalizeCaptureFingerprintText(value) {
+  return String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase();
+}
+
+function normalizeCaptureFingerprintList(value) {
+  const values = Array.isArray(value) ? value : value == null ? [] : [value];
+  return [...new Set(values
+    .map(item => normalizeCaptureFingerprintText(typeof item === 'object' ? JSON.stringify(item) : item))
+    .filter(Boolean))]
+    .sort()
+    .slice(0, 16);
+}
+
+export function buildEvidenceCaptureSnapshotFingerprint(value) {
+  const payload = value?.raw_payload && typeof value.raw_payload === 'object' ? value.raw_payload : (value || {});
+  const evidence = payload.evidence && typeof payload.evidence === 'object' ? payload.evidence : payload;
+  const pageCapture = evidence.page_capture && typeof evidence.page_capture === 'object'
+    ? evidence.page_capture
+    : (payload.page_capture && typeof payload.page_capture === 'object' ? payload.page_capture : {});
+  const deterministic = pageCapture.deterministic_observations && typeof pageCapture.deterministic_observations === 'object'
+    ? pageCapture.deterministic_observations
+    : {};
+  const mentions = Array.isArray(pageCapture.gbp_price_mentions)
+    ? pageCapture.gbp_price_mentions
+    : (Array.isArray(evidence.price_mentions) ? evidence.price_mentions : []);
+  const prices = [...new Set(mentions.map(item => {
+    const amount = Number(item?.amount);
+    const display = normalizeCaptureFingerprintText(item?.display || '');
+    const context = normalizeCaptureFingerprintText(item?.context || '').slice(0, 180);
+    const amountKey = Number.isFinite(amount) && amount > 0 ? amount.toFixed(2) : display;
+    return amountKey ? amountKey + '|' + context : '';
+  }).filter(Boolean))].sort();
+  const capturedText = String(pageCapture.captured_text || evidence.source_excerpt || payload.source_excerpt || value?.source_excerpt || '');
+  const packageObservations = normalizeCaptureFingerprintList(evidence.package_or_variant_text || deterministic.package_or_variant_text);
+  const conditionObservations = normalizeCaptureFingerprintList(evidence.item_condition || evidence.item_condition_text || deterministic.condition_text);
+  const availabilityObservations = normalizeCaptureFingerprintList(evidence.availability || evidence.availability_text || deterministic.availability_text);
+  const locationObservations = normalizeCaptureFingerprintList(evidence.location_text || deterministic.location_text);
+  const fallbackContext = prices.length || packageObservations.length || conditionObservations.length || availabilityObservations.length
+    ? []
+    : [normalizeCaptureFingerprintText(capturedText.slice(0, 700)), normalizeCaptureFingerprintText(capturedText.slice(-300))];
+  const materialSnapshot = {
+    title: normalizeCaptureFingerprintText(evidence.page_title || pageCapture.title || evidence.product_identity_text).slice(0, 180),
+    evidence_type: ['uk_new', 'uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
+    prices,
+    package_observations: packageObservations,
+    condition_observations: conditionObservations,
+    availability_observations: availabilityObservations,
+    location_observations: locationObservations,
+    capture_size_bucket_kb: Math.floor(capturedText.length / 1024),
+    fallback_context: fallbackContext
+  };
+  return createHash('sha256').update(JSON.stringify(materialSnapshot)).digest('hex').slice(0, 20);
+}
+
+export function buildEvidenceCaptureSnapshotDedupeKey(task, evidence, snapshotFingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence)) {
+  const baseKey = buildEvidenceCaptureDedupeKey(task, evidence);
+  return 'capture-' + createHash('sha256')
+    .update([baseKey, snapshotFingerprint].join('|'))
+    .digest('hex').slice(0, 32);
+}
+
+export function getEvidenceCaptureRepeatAction(existing, incomingSnapshotFingerprint) {
+  if (!existing) return 'insert';
+  const payload = existing.raw_payload && typeof existing.raw_payload === 'object' && !Array.isArray(existing.raw_payload)
+    ? existing.raw_payload
+    : {};
+  const existingSnapshotFingerprint = payload.snapshot_fingerprint || buildEvidenceCaptureSnapshotFingerprint(payload);
+  if (existingSnapshotFingerprint === incomingSnapshotFingerprint) return 'duplicate';
+  const isUnreviewedPending = existing.status === 'needs_research' &&
+    !existing.reviewed_at && !existing.reviewed_by && !existing.approved_at && !existing.imported_at;
+  return isUnreviewedPending ? 'enrich' : 'new_snapshot';
+}
+
+export function buildLegacyEvidenceCaptureLookupPath(task, evidence) {
+  const exact = value => encodeURIComponent(String(value ?? ''));
+  const branchFilter = task.branch_slug
+    ? 'branch_slug=eq.' + exact(task.branch_slug)
+    : 'branch_slug=is.null';
+  return 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at' +
+    '&record_type=eq.evidence_candidate' +
+    '&category_slug=eq.' + exact(task.category_slug) +
+    '&' + branchFilter +
+    '&manufacturer=eq.' + exact(task.manufacturer) +
+    '&model=eq.' + exact(task.model) +
+    '&package_key=eq.' + exact(task.package_key) +
+    '&source_url=eq.' + exact(evidence.source_url) +
+    '&order=updated_at.desc&limit=50';
+}
+
+export function selectExistingEvidenceCaptureRecord(rows, incomingSnapshotFingerprint) {
+  const records = Array.isArray(rows) ? rows : [];
+  if (!records.length) return { action: 'insert', record: null };
+  const assessed = records.map(record => ({
+    record,
+    action: getEvidenceCaptureRepeatAction(record, incomingSnapshotFingerprint)
+  }));
+  const duplicate = assessed.find(item => item.action === 'duplicate');
+  if (duplicate) return duplicate;
+  const pending = assessed.find(item => item.action === 'enrich');
+  if (pending) return pending;
+  return { action: 'new_snapshot', record: assessed[0].record };
+}
+
 export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new Date().toISOString()) {
   if (!existing || !incoming || existing.status !== 'needs_research') return null;
   if (existing.reviewed_at || existing.reviewed_by || existing.approved_at || existing.imported_at) return null;
-  const sameIdentity = ['dedupe_key','category_slug','branch_slug','manufacturer','model','package_key','source_url']
+  const sameIdentity = ['category_slug','branch_slug','manufacturer','model','package_key','source_url']
     .every(field => String(existing[field] ?? '') === String(incoming[field] ?? ''));
   if (!sameIdentity) return null;
   const existingPayload = existing.raw_payload && typeof existing.raw_payload === 'object' && !Array.isArray(existing.raw_payload) ? existing.raw_payload : {};
   const incomingPayload = incoming.raw_payload && typeof incoming.raw_payload === 'object' && !Array.isArray(incoming.raw_payload) ? incoming.raw_payload : {};
+  const existingSnapshotFingerprint = existingPayload.snapshot_fingerprint || buildEvidenceCaptureSnapshotFingerprint(existingPayload);
+  const incomingSnapshotFingerprint = incomingPayload.snapshot_fingerprint || buildEvidenceCaptureSnapshotFingerprint(incomingPayload);
+  if (existingSnapshotFingerprint === incomingSnapshotFingerprint) return null;
   if (existingPayload.review_classification !== 'unverified_capture' || incomingPayload.review_classification !== 'unverified_capture') return null;
   const evidence = incomingPayload.evidence && typeof incomingPayload.evidence === 'object' ? incomingPayload.evidence : {};
   const pageCapture = evidence.page_capture && typeof evidence.page_capture === 'object' ? evidence.page_capture : {};
   const capturedText = String(pageCapture.captured_text || evidence.source_excerpt || incoming.source_excerpt || '');
   const observation = {
     task_key: incoming.task_key || incomingPayload.task?.task_key || null,
+    snapshot_fingerprint: incomingSnapshotFingerprint,
     source_url: incoming.source_url || null,
     source_name: incoming.source_name || null,
     gemma_evidence_type: evidence.evidence_type || null,
@@ -765,7 +873,7 @@ export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new
     'Latest page text and extraction are in raw_payload.enrichment_history. Top-level price/evidence fields and review status remain unchanged; ChatGPT review is required.'
   ].filter(Boolean).join(' ');
   return {
-    raw_payload: { ...existingPayload, enrichment_history: [...history.slice(-4), observation], last_enrichment_at: enrichedAt },
+    raw_payload: { ...existingPayload, snapshot_fingerprint: incomingSnapshotFingerprint, enrichment_history: [...history.slice(-4), observation], last_enrichment_at: enrichedAt },
     research_notes: [existing.research_notes, summary].filter(Boolean).join('\n\n').slice(-12000),
     updated_at: enrichedAt
   };
@@ -882,7 +990,7 @@ export async function extractBatch(task, pages, env, onProgress) {
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
     const timeoutMs = getGemmaExtractionTimeoutMs(task, env);
     const retainFullPageCapture = shouldRetainFullPageCapture(task);
-    const findings = [], failures = [];
+    const findings = [], failures = []; let gemmaHttpRequests = 0, gemmaRecoverySkipped = 0;
     const seen = new Set();
     // Small batches protect the 4k context; every input page gets a retained result.
     const batches = [];
@@ -898,6 +1006,7 @@ export async function extractBatch(task, pages, env, onProgress) {
       });
       try {
         const prompt = buildExtractionPrompt(task, batch);
+        gemmaHttpRequests += 1;
         const response = await fetch(base + '/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -935,6 +1044,7 @@ export async function extractBatch(task, pages, env, onProgress) {
         }
       } catch (error) {
         failures.push({ source_ids: batch.map(item => item.source_id), error: error.message });
+        if (is3dPrinterResearchTask(task)) gemmaRecoverySkipped += batch.length;
         await onProgress?.({
           stage: 'extraction_batch_failed', checked: batchIndex + 1, total: batches.length,
           source: batch[0]?.url,
@@ -1019,7 +1129,7 @@ export async function extractBatch(task, pages, env, onProgress) {
         message: 'Gemma extraction batch ' + (batchIndex + 1) + ' of ' + batches.length + ' completed: ' + structuredFindings + ' structured observation(s), ' + (batch.length - structuredFindings) + ' raw fallback capture(s).'
       });
     }
-    return { findings, failures, batches: batches.length };
+    return { findings, failures, batches: batches.length, gemmaHttpRequests, gemmaRecoverySkipped };
   };
   const pending = ollamaExtractionQueue.then(run, run);
   ollamaExtractionQueue = pending.then(() => undefined, () => undefined);
@@ -1435,7 +1545,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   }
 
   stageDurations.product_page_fetch_ms = Date.now() - pageFetchStartedAt;
-  let extractionMetrics = { batches: 0, failures: [] };
+  let extractionMetrics = { batches: 0, failures: [], httpRequests: 0, recoverySkipped: 0 };
   const extractionStartedAt = Date.now();
   if (fetched.length && isCaptureOnlyResearchTask(task)) {
     // 3D-printer and gaming-console research are capture-first: do not wait for Ollama/Gemma inference.
@@ -1462,7 +1572,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     });
     try {
       const extracted = await extractBatch(task, fetched, env, trackProgress);
-      extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [] };
+      extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [], httpRequests: extracted.gemmaHttpRequests || 0, recoverySkipped: extracted.gemmaRecoverySkipped || 0 };
       for (const finding of extracted.findings || []) {
         const source = fetched.find(item => item.source_id === finding.source_id);
         if (!source) continue;
@@ -1471,7 +1581,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         const validationInput = {
           ...finding,
           source_url: source.url,
-          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\\./, ''),
+          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\./, ''),
           price_currency: hasPrice ? 'GBP' : null,
           sales_channel: new URL(source.url).hostname,
           observed_price: hasPrice ? price : null,
@@ -1525,6 +1635,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const writes = [];
   for (const evidence of candidates) {
     const captureKey = buildEvidenceCaptureDedupeKey(task, evidence);
+    const snapshotFingerprint = is3dPrinterResearchTask(task) ? buildEvidenceCaptureSnapshotFingerprint(evidence) : null;
     const rawPrice = Number(evidence.observed_price);
     const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 && hasVisibleUkPrice(evidence.source_excerpt || '');
     const row = {
@@ -1544,36 +1655,104 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       raw_payload: {
         task, evidence, page_capture: evidence.page_capture || null,
         review_classification: 'unverified_capture',
-        handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
+        handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.',
+        ...(snapshotFingerprint ? { snapshot_fingerprint: snapshotFingerprint, base_capture_key: captureKey } : {})
       }
     };
     if (!enqueue) { writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target(resolveControlPlane(env).name, env);
-    const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
-    if (existing.length) {
-      const prior = existing[0];
-      const enrichmentPatch = is3dPrinterResearchTask(task) ? buildCaptureEnrichmentPatch(prior, row) : null;
-      if (enrichmentPatch) {
-        const updateFilter = 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(prior.id) +
-          '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&imported_at=is.null' +
-          (prior.updated_at ? '&updated_at=eq.' + encodeURIComponent(prior.updated_at) : '');
-        const updated = await db(liveTarget, updateFilter, {
-          method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(enrichmentPatch)
-        });
-        if (updated?.length) {
-          writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
-        } else {
-          writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
+    const exactExisting = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));
+    const legacyExisting = !exactExisting.length && snapshotFingerprint
+      ? await db(liveTarget, buildLegacyEvidenceCaptureLookupPath(task, evidence))
+      : [];
+    const existing = exactExisting.length ? exactExisting : legacyExisting;
+    const selectedExisting = snapshotFingerprint
+      ? selectExistingEvidenceCaptureRecord(existing, snapshotFingerprint)
+      : { action: existing.length ? 'duplicate' : 'insert', record: existing[0] || null };
+    if (selectedExisting.record) {
+      const prior = selectedExisting.record;
+      if (snapshotFingerprint) {
+        const repeatAction = selectedExisting.action;
+        if (repeatAction === 'duplicate') {
+          writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id, dedupe_key: captureKey });
+          continue;
         }
-      } else {
-        writes.push({ environment: 'LIVE_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
+        if (repeatAction === 'enrich') {
+          const enrichmentPatch = buildCaptureEnrichmentPatch(prior, row);
+          if (enrichmentPatch) {
+            const updateFilter = 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(prior.id) +
+              '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&imported_at=is.null' +
+              (prior.updated_at ? '&updated_at=eq.' + encodeURIComponent(prior.updated_at) : '');
+            const updated = await db(liveTarget, updateFilter, {
+              method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(enrichmentPatch)
+            });
+            if (updated?.length) {
+              writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: prior.id, dedupe_key: captureKey, enriched_fields: ['raw_payload', 'research_notes'] });
+              continue;
+            }
+            writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id, dedupe_key: captureKey, reason: 'pending_capture_changed_during_update' });
+            continue;
+          }
+        }
+
+        const snapshotKey = buildEvidenceCaptureSnapshotDedupeKey(task, evidence, snapshotFingerprint);
+        const snapshotRow = {
+          ...row,
+          dedupe_key: snapshotKey,
+          source_record_key: snapshotKey,
+          research_notes: [row.research_notes, 'Material source snapshot differs from the prior capture. This new unverified snapshot requires ChatGPT review; the earlier reviewed/imported/rejected record is unchanged.'].filter(Boolean).join(' '),
+          raw_payload: {
+            ...row.raw_payload,
+            base_capture_key: captureKey,
+            capture_revision: true
+          }
+        };
+        const revisionExisting = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(snapshotKey));
+        if (revisionExisting.length) {
+          const revisionPrior = revisionExisting[0];
+          const revisionAction = getEvidenceCaptureRepeatAction(revisionPrior, snapshotFingerprint);
+          if (revisionAction === 'enrich') {
+            const revisionPatch = buildCaptureEnrichmentPatch(revisionPrior, snapshotRow);
+            if (revisionPatch) {
+              const revisionUpdateFilter = 'platform_catalogue_research_queue?id=eq.' + encodeURIComponent(revisionPrior.id) +
+                '&status=eq.needs_research&reviewed_at=is.null&reviewed_by=is.null&approved_at=is.null&imported_at=is.null' +
+                (revisionPrior.updated_at ? '&updated_at=eq.' + encodeURIComponent(revisionPrior.updated_at) : '');
+              const revisionUpdated = await db(liveTarget, revisionUpdateFilter, {
+                method: 'PATCH', headers: { Prefer: 'return=representation' }, body: JSON.stringify(revisionPatch)
+              });
+              if (revisionUpdated?.length) {
+                writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-enriched-for-chatgpt-review', id: revisionPrior.id, dedupe_key: snapshotKey, enriched_fields: ['raw_payload', 'research_notes'] });
+              } else {
+                writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: revisionPrior.id, dedupe_key: snapshotKey, reason: 'pending_revision_changed_during_update' });
+              }
+            } else {
+              writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: revisionPrior.id, dedupe_key: snapshotKey });
+            }
+          } else {
+            writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: revisionPrior.id, dedupe_key: snapshotKey });
+          }
+          continue;
+        }
+        const revisionInserted = await db(liveTarget, 'platform_catalogue_research_queue', {
+          method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(snapshotRow)
+        });
+        writes.push({
+          environment: resolveControlPlane(env).name + '_REVIEW_QUEUE',
+          status: 'capture-revision-queued-for-chatgpt-review',
+          id: revisionInserted?.[0]?.id,
+          dedupe_key: snapshotKey,
+          base_capture_key: captureKey,
+          snapshot_fingerprint: snapshotFingerprint
+        });
+        continue;
       }
+      writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'duplicate-skipped', id: prior.id });
       continue;
     }
     const inserted = await db(liveTarget, 'platform_catalogue_research_queue', {
       method: 'POST', headers: { Prefer: 'return=representation' }, body: JSON.stringify(row)
     });
-    writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey });
+    writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE', status: 'capture-queued-for-chatgpt-review', id: inserted?.[0]?.id, dedupe_key: captureKey, snapshot_fingerprint: snapshotFingerprint });
   }
   stageDurations.review_queue_write_ms = Date.now() - queueWriteStartedAt;
   stageDurations.total_elapsed_ms = Date.now() - runStartedAt;
@@ -1607,6 +1786,12 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       discovered_product_pages: allDirectPages.length, inspected_product_pages: fetched.length,
       fetched_price_pages: fetched.filter(item => hasVisibleUkPrice(item.text)).length,
       gemma_calls: extractionMetrics.batches,
+      gemma_http_requests: extractionMetrics.httpRequests || 0,
+      gemma_recovery_skipped: extractionMetrics.recoverySkipped || 0,
+      capture_queued: writes.filter(write => write.status === 'capture-queued-for-chatgpt-review').length,
+      capture_revisions_queued: writes.filter(write => write.status === 'capture-revision-queued-for-chatgpt-review').length,
+      capture_enriched: writes.filter(write => write.status === 'capture-enriched-for-chatgpt-review').length,
+      duplicate_skipped: writes.filter(write => write.status === 'duplicate-skipped').length,
       gemma_batch_failures: extractionMetrics.failures.length,
       gemma_failure_details: extractionMetrics.failures.slice(0, 10),
       captured_pages: candidates.length,

@@ -1,3 +1,15 @@
+## 9 November 2026 23:28 UTC — compact parent-task result added on isolated 3D branch
+
+The independent gemma/3d-printers branch has advanced to ca38a0d2fbc706e1e48b259d992d83975c91537d. It now adds task-result-summary.mjs and task-result-summary.test.mjs; the isolated task-worker submits product identity, capture URLs, classification, price observations, queue-write references, metrics and bounded failures, but excludes raw page captures and long excerpts already persisted in the review queue. It logs the serialized summary byte count before the completion RPC.
+
+The regression fixture includes 100,000-character raw page captures and asserts that the compact task result remains below 5,000 characters. This is a targeted mitigation for the 8-product parent task's PGRST102 completion failure, but it is not yet a LIVE runtime retest. The isolated worker started at 23:20:07 UTC, before the compact-summary commits at 23:26 UTC; the current process must not be assumed to have loaded them.
+
+PR #345 is a draft/open promotion of the isolated 3D branch to production. GitHub Actions run #42720715939 was in progress at this checkpoint. Do not merge or deploy it without explicit approval. The branch also adds direct Anycubic route regression coverage and includes the compact-summary test in its workflow.
+
+The existing generic worker and isolated 3D worker both report idle. Generic worker scope remains unknown; no task should be queued until the Research PC process list and local configuration are reconciled. No worker was stopped/restarted by this check.
+
+
+
 # Checkpoint — 3D-printer fallback observation-field separation
 
 Date: 9 November 2026 UTC

@@ -689,7 +689,8 @@ export function fallbackPageCapture(task, source, reason) {
     observed_price: captureOnly ? null : uniquePrice,
     price_currency: prices.length ? 'GBP' : null,
     item_condition: null,
-    availability: availabilityNotes.join(' | ') || null,
+    // Raw printer availability snippets belong in the retained observation/page capture, not the normalized queue column.
+    availability: printerCapture ? null : availabilityNotes.join(' | ') || null,
     source_name: host,
     source_url: source.url,
     sales_channel: host,
@@ -705,6 +706,28 @@ export function fallbackPageCapture(task, source, reason) {
         location_text: locationNotes
       } : null
     }
+  };
+}
+
+export function buildReviewQueueObservationFields(task, evidence = {}) {
+  if (!is3dPrinterResearchTask(task)) {
+    // Preserve established mapping for every non-printer category.
+    return {
+      item_condition: evidence.item_condition || evidence.item_condition_text || null,
+      availability: evidence.availability || evidence.availability_text || null
+    };
+  }
+
+  // For 3D printers, *_text fields can contain concatenated raw-page snippets.
+  // Only concise normalized values may populate these two top-level columns;
+  // the original snippets and full page remain preserved in raw_payload.evidence.
+  const concise = value => {
+    const text = String(value ?? '').replace(/\\s+/g, ' ').trim();
+    return text && text.length <= 100 ? text : null;
+  };
+  return {
+    item_condition: concise(evidence.item_condition),
+    availability: concise(evidence.availability)
   };
 }
 
@@ -1536,9 +1559,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\./, ''),
       source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
       price_currency: usablePrice ? 'GBP' : null,
-      item_condition: evidence.item_condition || evidence.item_condition_text || null,
+      ...buildReviewQueueObservationFields(task, evidence),
       sales_channel: evidence.sales_channel || new URL(evidence.source_url).hostname,
-      availability: evidence.availability || evidence.availability_text || null,
       source_record_key: captureKey, source_excerpt: evidence.source_excerpt || null,
       research_notes: evidence.notes || 'Raw page capture retained for ChatGPT review.',
       raw_payload: {

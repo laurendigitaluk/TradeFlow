@@ -4423,3 +4423,28 @@ The Research PC worker is connected to LIVE Common Room, but the Gaming agent is
 PR #316 unintentionally broadened `isCaptureOnlyResearchTask()` from the 3D-printer-specific fast-capture handling to include all 3D-printer tasks as capture-only. This bypassed `extractBatch()` and Ollama/Gemma for 3D-printer research. LIVE K1 Max task `0ce88391-e5c2-45c4-adf9-149d364c702c` explicitly logged `Capture-only mode ... local Ollama inference is intentionally skipped`; its page was retained as raw capture but not enriched by Gemma. This contradicted the pre-rollout 3D workflow, whose task metrics showed Gemma extraction calls and structured observations. Ender-3 V3 KE task `5b3e53b0-b857-4f0b-89a0-e255596afd3c` independently found no eligible page, so source discovery remains a separate issue and must not be conflated with the extraction regression.
 
 Correction in PR #320 scopes `isCaptureOnlyResearchTask()` to Gaming only. 3D-printer tasks therefore return to the established `extractBatch()` / Ollama path, retaining the existing deterministic raw fallback when extraction fails. Gaming remains capture-only. A regression test explicitly asserts this separation. No Research PC installation, source registry, LIVE/TEST database records, queue records, approvals or imports are changed by the code correction. After CI passes and the fix is merged, verify a single small 3D-printer LIVE task reaches `extraction_batch_started` and records `gemma_calls > 0`; do not change the working 3D-printer source settings. Separately diagnose any model/source discovery failures using route telemetry.
+
+## Gemma Windows Research Control Centre — 9 November 2026
+
+The Windows desktop Control Centre is a separate local application for the existing Gemma Research PC. Its code lives in `tools/tradeflow-gemma-desktop/`; its worker integration lives in `tools/tradeflow-gemma-agent/src/desktop-control.mjs` and `task-worker.mjs`.
+
+### Operating architecture
+- One Windows Task Scheduler supervisor starts one persistent Node queue worker at user sign-in.
+- The seven controllable product-research specialists are 3D Printers & Equipment, Gaming Consoles & Accessories, Drones, Metal Detectors, Mobile Phones, Laptops & Computers, and Cameras & Lenses.
+- Legacy `3d-printers` and `gaming-consoles` status identities map to their canonical specialist switches.
+- The Catalogue Importer remains owner-approval-gated. Release Monitor is not yet connected to the catalogue product-research queue and is not exposed as an executable product-research switch.
+- The single worker polls the LIVE task queue and reads the local enabled-agent list before every claim. It does not start seven competing Node/Ollama processes.
+- `platform_ai_agent_claim_task_for_agents(text,text[],integer)` is the new service-role-only claim RPC. A queue task is claimable only when it contains at least one subtask and every subtask resolves to an enabled specialist key. Mixed-agent tasks remain queued until every included specialist is enabled.
+- The existing generic claim RPC is retained for backward compatibility. Desktop mode never falls back to it if the scoped RPC is missing.
+- Disabling a specialist prevents future claims for that specialist. A task already running is allowed to finish. Global stop also waits for the current task to finish.
+- The local config contains enabled agent keys and service state only; the existing private `.env` remains at its existing path and is not copied, printed or overwritten.
+
+### Website research configuration
+The LIVE `platform_research_sources` registry was audited, not rebuilt. On 9 November it held 119 UK source records, 116 enabled. Enabled category coverage including shared universal sources: 3D printers 15, gaming 17, drones 21, metal detectors 13, mobile phones 23, laptops 12, cameras 24. Counts overlap where one source serves several categories.
+
+Existing 3D-printer and gaming playbooks were preserved. Dedicated website navigation and exact-model/variant rules were added for drones, metal detectors, mobile phones, laptops and cameras in `source-playbooks.mjs`. Discovery routes are not evidence: the worker must follow exact product/listing links and retain individual page captures for ChatGPT/owner review.
+
+### Deployment boundary
+The feature is developed on `feature/gemma-desktop-control-centre-20261109`, PR #325, based on production commit `e81ede671bfc03e73dc16169638011372b5b6117`. The SQL migration is part of the PR only. No LIVE/TEST migration, source-row change, queue write, research run, PC update or worker restart has been performed. Do not install or enable the desktop supervisor until PR review/merge and the agent-scoped RPC migration has been applied to LIVE. If the RPC is absent, the desktop worker must stop with `requires_migration` and must not use the generic claim path.
+
+See `tools/tradeflow-gemma-desktop/README.md` for the install workflow and `docs/TRADEFLOW-DEEP-SOURCE-RESEARCH-ROADMAP.md` for the diagnostic path.

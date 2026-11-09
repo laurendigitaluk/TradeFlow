@@ -31,3 +31,7 @@ Provide complete website navigation/playbooks for the seven independently switch
 - The LIVE agent-scoped claim RPC is present and service-role-only; TEST does not have it.
 - On the Research PC, run the production installer from the existing Gemma folder, preserve the private .env, stop any old worker cleanly first, and verify one bounded LIVE review-only task reaches the existing review queue.
 - Do not start a broad research batch as an installation test. TEST remains separate; desktop runtime is LIVE-only.
+
+ 
+### Live worker snapshot before Research PC installation — 11:57 UTC
+The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.

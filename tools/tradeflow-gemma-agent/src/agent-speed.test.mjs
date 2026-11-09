@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildCaptureEnrichmentPatch, buildEvidenceCaptureDedupeKey, buildEvidenceCaptureSnapshotDedupeKey, buildEvidenceCaptureSnapshotFingerprint, buildExtractionPrompt, buildGemmaFindingSchema, buildLegacyEvidenceCaptureLookupPath, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getEvidenceCaptureRepeatAction, getGemmaExtractionTimeoutMs, selectExistingEvidenceCaptureRecord, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -344,6 +344,8 @@ test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw
       OLLAMA_MODEL: 'gemma3:4b'
     }, event => events.push(event));
     assert.equal(requests, 1, 'a failed 3D batch must not trigger sequential single-page retries');
+    assert.equal(result.gemmaHttpRequests, 1, 'count actual Ollama HTTP requests');
+    assert.equal(result.gemmaRecoverySkipped, 2, 'count both pages retained as raw fallback after the failed batch');
     assert.equal(result.batches, 1);
     assert.equal(result.failures.length, 1);
     assert.equal(result.findings.length, 2);
@@ -394,4 +396,345 @@ test('same product can retain multiple evidence captures of the same type from d
     buildEvidenceCaptureDedupeKey(task, marketplace),
     'a second source/listing for the same product is a separate evidence capture'
   );
+});
+
+
+test('3D-printer review snapshots are idempotent until material page observations change', () => {
+  const task = {
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro',
+    package_key: 'standard',
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers'
+  };
+  const original = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    evidence_type: null,
+    package_or_variant_text: 'Standard Printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro standard printer £189.00. '.repeat(180),
+      gbp_price_mentions: [
+        { amount: 189, display: '£189.00', context: 'Elegoo Neptune 4 Pro standard printer £189.00' }
+      ]
+    }
+  };
+  const unchanged = JSON.parse(JSON.stringify(original));
+  const changedPrice = {
+    ...original,
+    page_capture: {
+      ...original.page_capture,
+      gbp_price_mentions: [
+        { amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro standard printer £169.00' }
+      ]
+    }
+  };
+  const expandedPage = {
+    ...original,
+    page_capture: {
+      ...original.page_capture,
+      captured_text: 'Elegoo Neptune 4 Pro standard printer £189.00. '.repeat(900)
+    }
+  };
+
+  const originalFingerprint = buildEvidenceCaptureSnapshotFingerprint(original);
+  assert.equal(buildEvidenceCaptureSnapshotFingerprint(unchanged), originalFingerprint);
+  assert.notEqual(buildEvidenceCaptureSnapshotFingerprint(changedPrice), originalFingerprint);
+  assert.notEqual(buildEvidenceCaptureSnapshotFingerprint(expandedPage), originalFingerprint);
+
+  const originalSnapshotKey = buildEvidenceCaptureSnapshotDedupeKey(task, original, originalFingerprint);
+  assert.equal(
+    buildEvidenceCaptureSnapshotDedupeKey(task, unchanged, buildEvidenceCaptureSnapshotFingerprint(unchanged)),
+    originalSnapshotKey
+  );
+  assert.notEqual(
+    buildEvidenceCaptureSnapshotDedupeKey(task, changedPrice, buildEvidenceCaptureSnapshotFingerprint(changedPrice)),
+    originalSnapshotKey
+  );
+});
+
+test('changed captures create a new review snapshot without modifying imported or rejected history', () => {
+  const evidence = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    evidence_type: null,
+    package_or_variant_text: 'Standard Printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro £189.00. '.repeat(400),
+      gbp_price_mentions: [{ amount: 189, display: '£189.00', context: 'Elegoo Neptune 4 Pro standard £189.00' }]
+    }
+  };
+  const changed = {
+    ...evidence,
+    page_capture: {
+      ...evidence.page_capture,
+      gbp_price_mentions: [{ amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro standard £169.00' }]
+    }
+  };
+  const incomingFingerprint = buildEvidenceCaptureSnapshotFingerprint(changed);
+  const oldPayload = {
+    task: { task_key: 'older-task' },
+    evidence,
+    page_capture: evidence.page_capture,
+    review_classification: 'unverified_capture'
+  };
+  const imported = { status: 'imported', raw_payload: oldPayload };
+  const rejected = { status: 'rejected', raw_payload: oldPayload };
+  const pending = {
+    status: 'needs_research',
+    reviewed_at: null,
+    reviewed_by: null,
+    approved_at: null,
+    imported_at: null,
+    raw_payload: oldPayload
+  };
+  const reviewedPending = { ...pending, reviewed_at: '2026-11-09T12:00:00Z' };
+
+  const importedBefore = JSON.stringify(imported);
+  const rejectedBefore = JSON.stringify(rejected);
+  assert.equal(getEvidenceCaptureRepeatAction(imported, buildEvidenceCaptureSnapshotFingerprint(evidence)), 'duplicate');
+  assert.equal(getEvidenceCaptureRepeatAction(imported, incomingFingerprint), 'new_snapshot');
+  assert.equal(getEvidenceCaptureRepeatAction(rejected, incomingFingerprint), 'new_snapshot');
+  assert.equal(getEvidenceCaptureRepeatAction(pending, incomingFingerprint), 'enrich');
+  assert.equal(getEvidenceCaptureRepeatAction(reviewedPending, incomingFingerprint), 'new_snapshot');
+  assert.equal(JSON.stringify(imported), importedBefore, 'the imported evidence row is never mutated');
+  assert.equal(JSON.stringify(rejected), rejectedBefore, 'the rejected history is never mutated');
+});
+
+test('repeat research of the same changed snapshot is idempotent even when reviewer metadata is absent', () => {
+  const evidence = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro £169.00 in stock. '.repeat(400),
+      gbp_price_mentions: [{ amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro £169.00 in stock' }]
+    }
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const revision = {
+    status: 'needs_research',
+    reviewed_by: null,
+    reviewed_at: null,
+    approved_at: null,
+    imported_at: null,
+    raw_payload: { evidence, page_capture: evidence.page_capture, snapshot_fingerprint: fingerprint }
+  };
+  assert.equal(getEvidenceCaptureRepeatAction(revision, fingerprint), 'duplicate');
+});
+
+
+test('3D-printer legacy review lookup is constrained to exact category, branch, product, package and source URL', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const evidence = { source_url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer' };
+  const path = buildLegacyEvidenceCaptureLookupPath(task, evidence);
+
+  assert.match(path, /record_type=eq\.evidence_candidate/);
+  assert.match(path, /category_slug=eq\.3d-printers-equipment/);
+  assert.match(path, /branch_slug=eq\.3d-printers/);
+  assert.match(path, /manufacturer=eq\.Creality/);
+  assert.match(path, /model=eq\.K1/);
+  assert.match(path, /package_key=eq\.standard/);
+  assert.ok(path.includes('source_url=eq.https%3A%2F%2Fstore.creality.com%2Fuk%2Fproducts%2Fk1-speedy-3d-printer'));
+  assert.match(path, /order=updated_at\.desc&limit=50/);
+});
+
+test('legacy imported and rejected captures remain idempotent when the page snapshot is unchanged', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const pageCapture = {
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    captured_text: 'Creality K1 Speedy 3D Printer £299.00 Brand new In stock. '.repeat(30),
+    gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'Creality K1 Speedy 3D Printer £299.00 Brand new' }]
+  };
+  const evidence = {
+    ...task,
+    source_url: pageCapture.url,
+    page_title: pageCapture.title,
+    evidence_type: null,
+    package_or_variant_text: 'Standard printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    source_excerpt: pageCapture.captured_text,
+    page_capture: pageCapture
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const legacy = {
+    ...task,
+    source_url: pageCapture.url,
+    status: 'imported',
+    dedupe_key: 'review-legacy-imported-key',
+    reviewed_at: '2026-11-08T22:01:06.564Z',
+    approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { task, evidence, page_capture: pageCapture, review_classification: null }
+  };
+  const rejected = {
+    ...legacy,
+    status: 'rejected',
+    dedupe_key: 'borderline-legacy-rejected-key',
+    approved_at: null,
+    imported_at: null,
+    raw_payload: { ...legacy.raw_payload, review_classification: 'borderline' }
+  };
+  const before = JSON.stringify([legacy, rejected]);
+
+  const selected = selectExistingEvidenceCaptureRecord([legacy, rejected], fingerprint);
+  assert.equal(selected.action, 'duplicate');
+  assert.ok([legacy, rejected].includes(selected.record));
+  assert.equal(JSON.stringify([legacy, rejected]), before);
+});
+
+test('materially changed capture beside a legacy terminal row becomes a new snapshot without changing history', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const pageCapture = {
+    title: 'Creality K1 Speedy 3D Printer',
+    url: 'https://store.creality.com/uk/products/k1-speedy-3d-printer',
+    captured_text: 'Creality K1 Speedy 3D Printer £299.00 Brand new In stock. '.repeat(30),
+    gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'Creality K1 Speedy 3D Printer £299.00 Brand new' }]
+  };
+  const oldEvidence = {
+    ...task, source_url: pageCapture.url, page_title: pageCapture.title,
+    package_or_variant_text: 'Standard printer', item_condition_text: 'Brand new',
+    availability_text: 'In stock', source_excerpt: pageCapture.captured_text, page_capture: pageCapture
+  };
+  const oldFingerprint = buildEvidenceCaptureSnapshotFingerprint(oldEvidence);
+  const legacy = {
+    ...task, source_url: pageCapture.url, status: 'imported', dedupe_key: 'review-legacy-imported-key',
+    reviewed_at: '2026-11-08T22:01:06.564Z', approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { task, evidence: oldEvidence, page_capture: pageCapture, review_classification: 'unverified_capture' }
+  };
+  const changedPage = {
+    ...pageCapture,
+    gbp_price_mentions: [{ amount: 279, display: '£279.00', context: 'Creality K1 Speedy 3D Printer £279.00 Brand new' }]
+  };
+  const changedEvidence = {
+    ...oldEvidence,
+    page_capture: changedPage,
+    source_excerpt: changedPage.captured_text,
+    observed_price: null
+  };
+  const changedFingerprint = buildEvidenceCaptureSnapshotFingerprint(changedEvidence);
+  const before = JSON.stringify(legacy);
+
+  assert.notEqual(changedFingerprint, oldFingerprint);
+  const selected = selectExistingEvidenceCaptureRecord([legacy], changedFingerprint);
+  assert.equal(selected.action, 'new_snapshot');
+  assert.equal(selected.record, legacy);
+  assert.equal(JSON.stringify(legacy), before);
+  assert.notEqual(
+    buildEvidenceCaptureSnapshotDedupeKey(task, changedEvidence, changedFingerprint),
+    buildEvidenceCaptureSnapshotDedupeKey(task, oldEvidence, oldFingerprint)
+  );
+});
+
+test('unreviewed legacy pending captures can be safely enriched without changing their legacy dedupe key', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Creality',
+    model: 'K1',
+    package_key: 'standard'
+  };
+  const url = 'https://store.creality.com/uk/products/k1-speedy-3d-printer';
+  const oldEvidence = {
+    page_title: 'Creality K1 Speedy 3D Printer',
+    source_url: url,
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    package_or_variant_text: 'Standard printer',
+    page_capture: { title: 'Creality K1', url, captured_text: 'K1 £299.00 in stock', gbp_price_mentions: [{ amount: 299, display: '£299.00', context: 'K1 £299.00' }] }
+  };
+  const changedEvidence = {
+    ...oldEvidence,
+    page_capture: { ...oldEvidence.page_capture, captured_text: 'K1 £279.00 in stock', gbp_price_mentions: [{ amount: 279, display: '£279.00', context: 'K1 £279.00' }] }
+  };
+  const pending = {
+    ...task, source_url: url, status: 'needs_research', dedupe_key: 'borderline-legacy-pending-key',
+    reviewed_by: null, reviewed_at: null, approved_at: null, imported_at: null,
+    raw_payload: { evidence: oldEvidence, page_capture: oldEvidence.page_capture, review_classification: 'unverified_capture' }
+  };
+  const incoming = {
+    ...task, source_url: url, dedupe_key: 'capture-new-base-key',
+    raw_payload: { task, evidence: changedEvidence, page_capture: changedEvidence.page_capture, review_classification: 'unverified_capture' }
+  };
+  const patch = buildCaptureEnrichmentPatch(pending, incoming, '2026-11-09T18:00:00.000Z');
+
+  assert.ok(patch);
+  assert.equal(patch.raw_payload.enrichment_history.length, 1);
+  assert.equal(patch.raw_payload.enrichment_history[0].snapshot_fingerprint, buildEvidenceCaptureSnapshotFingerprint(changedEvidence));
+  assert.equal(pending.dedupe_key, 'borderline-legacy-pending-key');
+  assert.equal(patch.reviewed_by, undefined);
+  assert.equal(patch.approved_at, undefined);
+});
+
+
+test('legacy exact-snapshot match wins over a newer changed row for the same source identity', () => {
+  const task = {
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers',
+    manufacturer: 'Anycubic',
+    model: 'Kobra S1 Max',
+    package_key: 'combo-8-color'
+  };
+  const url = 'https://uk.anycubic3d.com/products/kobra-s1-max';
+  const pageCapture = {
+    title: 'Anycubic Kobra S1 Max',
+    url,
+    captured_text: 'Anycubic Kobra S1 Max £699.00 in stock. '.repeat(25),
+    gbp_price_mentions: [{ amount: 699, display: '£699.00', context: 'Anycubic Kobra S1 Max £699.00 in stock' }]
+  };
+  const evidence = {
+    ...task, source_url: url, page_title: pageCapture.title,
+    source_excerpt: pageCapture.captured_text, page_capture: pageCapture,
+    item_condition_text: 'Brand new', availability_text: 'In stock'
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const exactLegacy = {
+    ...task, source_url: url, status: 'imported', dedupe_key: 'borderline-older-exact',
+    reviewed_at: '2026-11-08T22:01:06.564Z', approved_at: '2026-11-08T22:07:33.163Z',
+    imported_at: '2026-11-08T22:07:33.163Z',
+    raw_payload: { evidence, page_capture: pageCapture, review_classification: 'borderline' }
+  };
+  const changedLegacy = {
+    ...exactLegacy,
+    status: 'rejected',
+    dedupe_key: 'borderline-newer-changed',
+    raw_payload: {
+      ...exactLegacy.raw_payload,
+      evidence: {
+        ...evidence,
+        page_capture: {
+          ...pageCapture,
+          gbp_price_mentions: [{ amount: 649, display: '£649.00', context: 'Anycubic Kobra S1 Max £649.00 in stock' }]
+        }
+      }
+    }
+  };
+
+  const selected = selectExistingEvidenceCaptureRecord([changedLegacy, exactLegacy], fingerprint);
+  assert.equal(selected.action, 'duplicate');
+  assert.equal(selected.record, exactLegacy);
 });

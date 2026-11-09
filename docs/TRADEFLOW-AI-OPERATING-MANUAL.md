@@ -1,3 +1,15 @@
+## 9 November 2026 23:37 UTC — production isolation merge and stale promotion PR
+
+GitHub now records PR #342 (independent category-agent/control-centre foundation) as merged at 23:36:54 UTC, producing production commit 1f72b6d199cae9f19639f3ae1dd6c662ffc105e8. This merge was not performed by this watch. Production now contains the isolation guard, category launcher/updater and control-centre code. No Research PC process was started/stopped by this watch, and no Cloudflare or Research PC deployment was performed here.
+
+The gemma/3d-printers branch remains at b95513d34fb5f55114788a869d07f6f461dedcc9. Compared with new production head 1f72b6, it is 27 commits ahead and 1 behind. Draft PR #345 is now mergeable_state=dirty because the production isolation foundation was merged while the 3D promotion branch remained based on the older 9b2027 commit. Do not merge PR #345 until it is rebased/reconciled against current production and reverified.
+
+PR #346 remains clean/mergeable against gemma/3d-printers and passed 110/110 tests. PR #343 remains clean/mergeable against production and its code/test commit passed 106/106. PR #344 is closed without merge as superseded. PR #341's mergeability is currently recalculating/unknown.
+
+LIVE worker state has not changed: isolated 3D worker 128700 stopped cleanly at 23:30:32; generic worker 129276 stopped at 23:31:33; generic worker 108588 has a start event at 23:23 and no stop event. The generic status row is stale due the worker-identity upsert race documented below. There are zero active exact-branch tasks.
+
+
+
 ## 9 November 2026 23:36 UTC — isolated PR refreshed against current 3D branch
 
 PR #346 replaces PR #344, which was closed without merge because its base branch had advanced. PR #346 is based on the current gemma/3d-printers head b95513d34fb5f55114788a869d07f6f461dedcc9 and combines the 3D-only fallback-field correction with the 3DJake retailer-parent-taxonomy matcher correction. Its combined GitHub Actions run #42721655690 passed 110/110 tests with zero failures, including the current base's compact task-result-summary and direct Anycubic route tests.

@@ -844,3 +844,10 @@ test('approved international sources with UK locale paths pass the UK storefront
     assert.equal(result.errors.includes('source is not an eligible UK storefront'), false, source_url);
   }
 });
+
+
+test('DJI Store sign-in page is not treated as a public drone search route', () => {
+  const task = { category_slug: 'drones', manufacturer: 'DJI', model: 'Mini 5 Pro' };
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'store.dji.com' }, task), []);
+  assert.match(getWebsiteInstructions('drones', 'store.dji.com'), /sign-in|sign in/i);
+});

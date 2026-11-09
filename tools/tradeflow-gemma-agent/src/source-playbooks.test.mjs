@@ -938,7 +938,20 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
   const usedTask = { ...newTask, research_type: 'uk_used' };
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, newTask), [
     'https://uk.anycubic3d.com/collections/3d-printers',
-    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%20S1'
+    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%20S1',
+    'https://uk.anycubic3d.com/products/kobra-s1-ace-2-pro-combo',
+    'https://uk.anycubic3d.com/products/kobra-s1-ace-2-pro-combo-3d-printer'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, { ...newTask, model: 'Kobra 3 Max V2' }), [
+    'https://uk.anycubic3d.com/collections/3d-printers',
+    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%203%20Max%20V2',
+    'https://uk.anycubic3d.com/products/kobra-3-max-v2-3d-printer',
+    'https://uk.anycubic3d.com/products/kobra-3-max-v2-ace-2-pro-combo'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, { ...newTask, model: 'Kobra 4' }), [
+    'https://uk.anycubic3d.com/collections/3d-printers',
+    'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%204',
+    'https://uk.anycubic3d.com/products/kobra-4-3d-printer'
   ]);
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'bambu-lab-uk.myshopify.com' }, {
     ...newTask, manufacturer: 'Bambu Lab', model: 'A1'
@@ -946,7 +959,7 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
     'https://bambu-lab-uk.myshopify.com/search?q=Bambu%20Lab%20A1',
     'https://bambu-lab-uk.myshopify.com/collections/3d-printers'
   ]);
-  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation.includes('Combo/ACE bundle option'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation.includes('selected machine variant'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'bambu-lab-uk.myshopify.com').navigation.includes('standalone printer and Combo/AMS variants'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', '3dgbire.com').navigation.includes('warranty/guarantee'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation.includes('16 products per page'));

@@ -34,6 +34,7 @@ async function readDesktopConfig(){
  return normalizeIsolatedAgentConfig(JSON.parse(raw.replace(/^\uFEFF/,'')));
 }
 const startupDesktopConfig=desktopConfigPath?await readDesktopConfig():null;
+if(desktopConfigPath&&!startupDesktopConfig.serviceEnabled)throw new Error('This isolated Gemma agent is disabled in its own agent.config.json.');
 const isolatedAgentKey=startupDesktopConfig?.agentKey||null;
 const isolatedAgentIdentity=startupDesktopConfig?.agentIdentity||null;
 const workerId=(os.hostname()+'-'+(isolatedAgentKey||'legacy')+'-'+process.pid).slice(0,120);

@@ -26,7 +26,7 @@ There is one persistent local queue supervisor and one Gemma/Ollama execution la
 - The new service-role-only `platform_ai_agent_claim_task_for_agents` RPC claims a task only when every subtask belongs to an enabled specialist.
 - A disabled specialist cannot claim new work. If it is disabled during a running task, that task is allowed to finish before the worker stops claiming it.
 - If no specialists are enabled, the worker remains idle and claims nothing.
-- Desktop shortcuts enable their corresponding specialist and open the Control Centre.
+- Desktop shortcuts use Windows Script Host (`wscript.exe`) to run a small hidden launcher, which starts PowerShell with no visible console. The launcher enables its corresponding specialist and opens the single Control Centre; it does not create another research worker.
 - Closing the Control Centre window does not stop the background service.
 - Stopping the global service lets the current task finish, then stops the worker.
 - A missing agent-scoped RPC is a hard stop. The worker does not fall back to the old unscoped queue claim.
@@ -65,7 +65,7 @@ Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/laurendigitaluk/TradeF
 powershell -ExecutionPolicy Bypass -File $Installer
 ```
 
-The installer detects the current folder and adjacent `.env` where possible. If the private `.env` is stored elsewhere, it asks for its existing path. It first runs the reviewed Gemma updater and tests, then installs the desktop app under `%LOCALAPPDATA%\TradeFlow\ResearchControlCentre`, registers the logon task, and creates one Control Centre shortcut plus seven specialist shortcuts on the Windows desktop.
+The installer detects the current folder and adjacent `.env` where possible. If the private `.env` is stored elsewhere, it asks for its existing path. It first runs the reviewed Gemma updater and tests, then installs the desktop app under `%LOCALAPPDATA%\TradeFlow\ResearchControlCentre`, including the hidden `Launch-TradeFlow-Control-Centre.vbs` launcher, registers the logon task, and creates one Control Centre shortcut plus seven specialist shortcuts targeting `wscript.exe` rather than PowerShell directly.
 
 If an old manual `task-worker.mjs` process is already running, the installer refuses to overwrite the active worker. Stop that process cleanly with Ctrl+C and rerun the installer. It never terminates an active research task.
 

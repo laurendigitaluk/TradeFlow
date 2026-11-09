@@ -41,18 +41,17 @@ function Read-AgentJson([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $null }
     try { return Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json } catch { return $null }
 }
-function Get-AgentRuntime($Agent) {
+function Get-AgentRuntime($Agent,$ProcessSnapshot=$null,[bool]$VerifyBranch=$false) {
     $paths = Get-AgentPaths $Agent
     if (-not (Test-Path -LiteralPath $paths.Config -PathType Leaf) -or -not (Test-Path -LiteralPath $paths.Worker -PathType Leaf)) {
         return [pscustomobject]@{ Installed=$false; Paths=$paths; Config=$null; Status=$null; Process=$null; Branch='—'; State='NOT INSTALLED'; Task=''; Updated=''; Error='Agent folder or worker file is missing.' }
     }
     $config = Read-AgentJson $paths.Config
     $status = Read-AgentJson $paths.Status
-    $branch = 'unknown'
-    try { $branch = (& git -C $paths.Clone branch --show-current 2>$null).Trim() } catch {}
-    $workerProcess = Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue |
-        Where-Object { $_.CommandLine -and $_.CommandLine.IndexOf($paths.Worker,[StringComparison]::OrdinalIgnoreCase) -ge 0 } |
-        Select-Object -First 1
+    $branch = $Agent.Branch
+    if ($VerifyBranch) { try { $branch = (& git -C $paths.Clone branch --show-current 2>$null).Trim() } catch { $branch = 'unknown' } }
+    $workerProcess = $null
+    if ($ProcessSnapshot) { $workerProcess = $ProcessSnapshot | Where-Object { $_.CommandLine -and $_.CommandLine.IndexOf($paths.Worker,[StringComparison]::OrdinalIgnoreCase) -ge 0 } | Select-Object -First 1 }
     $updateProcess = $script:UpdateProcesses[$Agent.Key]
     $isUpdating = $false
     if ($updateProcess) {

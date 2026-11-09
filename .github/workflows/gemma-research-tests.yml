@@ -14,6 +14,7 @@ on:
       - production
     paths:
       - 'tools/tradeflow-gemma-agent/**'
+      - 'tools/tradeflow-gemma-desktop/**'
       - 'platform-owner-dashboard.js'
       - 'platform-owner-dashboard.html'
       - '.github/workflows/gemma-research-tests.yml'

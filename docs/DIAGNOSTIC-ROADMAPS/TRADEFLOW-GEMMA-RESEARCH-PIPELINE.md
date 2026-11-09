@@ -969,3 +969,18 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - **Research PC installation remains pending.** Merging to GitHub and applying the LIVE database migration do not update the local Node worker already running on the PC. The connected Control Centre must be stopped after the current task, then the current production \`Update-TradeFlow-Gemma.ps1\` run against the existing paths in \`%LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre\\service.json\`. This updater validates both LIVE/TEST targets in the existing private \`.env\`, backs up installed source, downloads production code, runs Node syntax and test suites, and does not edit the private \`.env\` or specialist selection in \`config.json\`.
 - After local update, restart the existing Control Centre background service and confirm it connects to LIVE. Then run a single bounded 3D-printer acceptance task. Acceptance requires a short extraction stage, full page captures whether Gemma succeeds or times out, evidence records from distinct qualifying source pages, preservation of multiple UK-new/UK-used records for one product, and completion/release of the shared queue so it can claim the next category task.
 - No TEST project schema, data, queue, sources or customer/tenant rows were changed by the production migration.
+
+
+## LIVE snapshot handoff follow-up — 9 November 2026
+
+Production is now at `3e0f712d5c3c93fa5c6e9b9aa2828716247e75ef`. PR #332 merged at 19:30:46 UTC and its update-only ELEGOO migration is recorded in LIVE as version `20261109193254`; the existing ELEGOO UK source is `research_scope='all'`. Do not reapply the migration or create a duplicate source. The correct LIVE category UUID is `ab8b13b0-b070-4534-838b-3ebd4d7261e5`.
+
+The latest exact-branch task remains the Neptune 4 Pro run completed 15:03:59 UTC: 29 search results, six exact pages discovered, three fetched, three eBay page fetches blocked with HTTP 403, 26 approved-source route attempts (11 found, 9 empty, 6 errors), three full raw captures, two Gemma batches, three extraction failures and 18m49s in extraction. All three review writes were duplicate-skipped against imported same-URL captures.
+
+The next loss after full capture is review deduplication: same URL + same product/package remains idempotent, but a changed page at the same URL must be presented to ChatGPT again without rewriting an imported/rejected row. PR #336 adds a deterministic snapshot fingerprint, current-key fast path, exact-identity legacy-key fallback, immutable terminal history and guarded enrichment only for unreviewed pending captures. Read-only replay detected 3/3 latest Neptune captures as changed and would stage three new unverified review revisions; actual LIVE queue writes remain zero until PR review/approval and deployment.
+
+Keep source discovery, page fetching, Gemma extraction, raw capture, snapshot handoff and owner review as separate stages. Gemma never approves or imports. The queue remains 65 records (28 imported, 37 rejected, 0 open), while linked category evidence is 239 active UK-new and 21 active UK-used, plus 17 inactive UK-new. Do not interpret missing queue-level `evidence_type` as missing linked evidence.
+
+Repeated eBay HTTP 403 attempts are still a separate outstanding issue; PR #299 contains a proposed batch-scoped 3D-printer block but is stale/unmergeable. Do not add proxy rotation, credentialed scraping or bypasses. The generic idle-heartbeat correction remains in PR #331 and is separate from this 3D-printer review change.
+
+PR #336 is based directly on current production and adds snapshot/legacy-key regression coverage. It is review-only. No LIVE queue, evidence, catalogue or TEST data is changed by this branch.

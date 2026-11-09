@@ -1,5 +1,5 @@
 import os from 'node:os';
-import { readFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { runTask, is3dPrinterResearchTask } from './agent.mjs';
@@ -7,6 +7,7 @@ import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 import { resolveControlPlane } from './control-plane.mjs';
+import { buildAgentClaimArgs, normalizeDesktopConfig } from './desktop-control.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -21,7 +22,40 @@ const db={url:controlPlane.url,key:controlPlane.key};
 const workerId=(os.hostname()+'-'+process.pid).slice(0,120);
 const pollMs=Math.max(5000,Math.min(60000,Number(env.GEMMA_POLL_INTERVAL_MS)||15000));
 const leaseSeconds=600;
+const desktopConfigPath=process.env.TRADEFLOW_GEMMA_AGENT_CONFIG||'';
+const desktopStatusPath=desktopConfigPath?resolve(dirname(desktopConfigPath),'status.json'):'';
+let activeAgentKeys=new Set();
+let activeTaskKey=null;
 let stopping=false;
+
+async function readDesktopConfig(){
+ if(!desktopConfigPath)return null;
+ const raw=await readFile(desktopConfigPath,'utf8');
+ return normalizeDesktopConfig(JSON.parse(raw.replace(/^\uFEFF/,'')));
+}
+async function writeDesktopStatus(state,details={}){
+ if(!desktopConfigPath)return;
+ try{
+  const config=await readDesktopConfig();
+  const status={
+   schemaVersion:1,
+   updatedAt:new Date().toISOString(),
+   state,
+   environment:process.env.TRADEFLOW_GEMMA_ENVIRONMENT||'LIVE',
+   controlPlane:controlPlane.name,
+   workerId,
+   serviceEnabled:config.serviceEnabled,
+   autoStart:config.autoStart,
+   enabledAgentKeys:config.enabledAgentKeys,
+   activeAgentKeys:[...activeAgentKeys],
+   activeTaskKey,
+   lastError:details.lastError||null
+  };
+  await writeFile(desktopStatusPath,JSON.stringify(status,null,2),'utf8');
+ }catch(error){
+  console.error('[desktop status]',error.message);
+ }
+}
 process.on('SIGINT',()=>{stopping=true;});
 process.on('SIGTERM',()=>{stopping=true;});
 
@@ -125,6 +159,9 @@ async function processClaim(claim){
  if(claim.task_type!=='catalogue_research')throw new Error('Unsupported task type: '+claim.task_type);
  const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
+ activeTaskKey=claim.task_key;
+ for(const task of tasks)activeAgentKeys.add(resolveAgentIdentity(task).agent_key);
+ await writeDesktopStatus('processing');
  const outputs=[];
  let activeIdentity=null,activeStage='task_started';
  const heartbeat=setInterval(async()=>{
@@ -136,7 +173,9 @@ async function processClaim(claim){
   for(const task of tasks){
    if(stopping)throw new Error('Worker stopping before all subtasks completed.');
    const identity=resolveAgentIdentity(task);
+   activeAgentKeys.add(identity.agent_key);
    activeIdentity=identity; activeStage='task_started';
+   await writeDesktopStatus('processing');
    const taskKey=claim.task_key;
    if(is3dPrinterResearchTask(task)) task.task_key=task.task_key||taskKey;
    if(identity.agent_key===FIRST_AGENT_KEY) await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
@@ -194,6 +233,8 @@ async function processClaim(claim){
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }});
    await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   activeAgentKeys.delete(identity.agent_key);
+   await writeDesktopStatus('processing');
   }
   await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);
@@ -202,7 +243,7 @@ async function processClaim(claim){
   await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'error',current_task:claim.task_key,event_type:'task_failed',task_key:claim.task_key,message:'Queued task failed: '+error.message,last_error:error.message,details:{queue_task_id:claim.id}});
   await roomPost({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'},'status_update','Research task failed','Task '+claim.task_key+' failed: '+error.message,{task_key:claim.task_key,thread_key:'engineering'}).catch(e=>console.error('[common room failure]',e.message));
   console.error('[failed]',claim.task_key,error.stack||error.message);
- }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);}
+ }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);activeAgentKeys.clear();activeTaskKey=null;await writeDesktopStatus('waiting');}
 }
 
 console.log('[TradeFlow Gemma] background worker started');
@@ -213,15 +254,38 @@ console.log('[TradeFlow Gemma] VERIFIED control plane: '+controlPlane.name+' ('+
 await safeReport({agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control',status:'idle',event_type:'worker_started',message:'Persistent TradeFlow Gemma worker connected and polling '+controlPlane.name+' task queue.',details:{worker_id:workerId,poll_interval_ms:pollMs}});
 while(!stopping){
  try{
-  const claimed=await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+  const desktopConfig=desktopConfigPath?await readDesktopConfig():null;
+  if(desktopConfigPath&&!desktopConfig.serviceEnabled){
+   await writeDesktopStatus('stopped');
+   break;
+  }
+  const scopedArgs=desktopConfigPath?buildAgentClaimArgs(desktopConfig,workerId,leaseSeconds):null;
+  if(desktopConfigPath&&!scopedArgs){
+   await writeDesktopStatus('waiting_no_agents');
+   await new Promise(resolve=>setTimeout(resolve,pollMs));
+   continue;
+  }
+  const claimed=desktopConfigPath
+   ?await rpc('platform_ai_agent_claim_task_for_agents',scopedArgs)
+   :await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
   const task=Array.isArray(claimed)?claimed[0]:claimed;
-  if(task?.id){console.log('[claimed]',task.task_key,'attempt',task.attempts);await processClaim(task);}
-  else {
+  if(task?.id){
+   console.log('[claimed]',task.task_key,'attempt',task.attempts);
+   await processClaim(task);
+   await writeDesktopStatus('waiting');
+  }else{
+   await writeDesktopStatus('waiting');
    await checkFirstAgentCommonRoom().catch(e=>console.error('[common room inbox]',e.message));
    await new Promise(resolve=>setTimeout(resolve,pollMs));
   }
  }catch(error){
   console.error('[poll error]',error.message);
+  if(desktopConfigPath&&/platform_ai_agent_claim_task_for_agents.*HTTP 404|HTTP 404.*platform_ai_agent_claim_task_for_agents|function .*platform_ai_agent_claim_task_for_agents.*does not exist/i.test(error.message)){
+   await writeDesktopStatus('requires_migration',{lastError:error.message});
+   console.error('[desktop] Agent-scoped queue RPC is not installed. Worker is stopping safely; no unscoped queue fallback will be used.');
+   break;
+  }
+  await writeDesktopStatus('error',{lastError:error.message});
   await new Promise(resolve=>setTimeout(resolve,Math.min(60000,pollMs*2)));
  }
 }

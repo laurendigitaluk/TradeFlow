@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isResearchTypeAllowedSource, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, isGamingConsoleResearchTask, isCaptureOnlyResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isResearchTypeAllowedSource, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, validate, searchResultsLimitForTask, is3dPrinterResearchTask, isGamingConsoleResearchTask, isCaptureOnlyResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -117,9 +117,32 @@ test('direct product detail template is not reused as a search route', () => {
   assert.ok(!routes.some(url => url.includes('/uk/products/k1-speedy-3d-printer')));
 });
 
+test('every additional LIVE source domain has a specialist discovery route', () => {
+  const cases = [
+    ['drones', ['hobbyrc.co.uk','heliguy.com','dji-retail.co.uk','dmtl.co.uk','leicesterdrones.com','quadcopters.co.uk']],
+    ['mobile-phones', ['argos.co.uk','currys.co.uk','johnlewis.com','ee.co.uk','very.co.uk','oppo.com','realme.com']],
+    ['cameras', ['sony.co.uk','jessops.com','parkcameras.com','cliftoncameras.co.uk','harrisoncameras.co.uk','camerapricebuster.co.uk','castlecameras.co.uk','productiongear.co.uk']]
+  ];
+  for (const [category_slug, domains] of cases) {
+    for (const domain of domains) {
+      const routes = buildWebsiteSearchRoutes({ domain }, {
+        category_slug, manufacturer: 'Example', model: 'Exact Model', research_type: 'uk_both'
+      });
+      assert.ok(routes.some(url => url === 'https://' + domain + '/'), category_slug + ': ' + domain + ' homepage route');
+      assert.ok(getWebsiteInstructions(category_slug, domain), category_slug + ': ' + domain + ' site instructions');
+    }
+  }
+  const metalTask = { category_slug: 'metal-detectors', manufacturer: 'Minelab', model: 'Equinox 900', research_type: 'uk_both' };
+  for (const domain of ['amazon.co.uk','ebay.co.uk']) {
+    const routes = buildWebsiteSearchRoutes({ domain }, metalTask);
+    assert.ok(routes.some(url => url.includes(domain === 'amazon.co.uk' ? '/s?k=' : '/sch/i.html?_nkw=')), domain + ' marketplace search route');
+    assert.ok(getWebsiteInstructions('metal-detectors', domain), domain + ' site instructions');
+  }
+});
+
 test('unknown categories do not inherit the 3D printer website playbook', () => {
-  assert.equal(getCategoryWebsitePlaybook('mobile-phones'), null);
-  assert.deepEqual(getWebsiteInstructions('mobile-phones', 'store.creality.com'), null);
+  assert.equal(getCategoryWebsitePlaybook('unknown-catalogue-category'), null);
+  assert.deepEqual(getWebsiteInstructions('unknown-catalogue-category', 'store.creality.com'), null);
 });
 test('gaming category playbook preserves console and accessory identity for ChatGPT review', () => {
   const category = 'gaming-consoles-accessories';
@@ -715,4 +738,116 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
   ]);
   assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);
+});
+
+
+test('all specialist research categories have exact-match and UK evidence playbooks', () => {
+  const categories = [
+    ['drones', 'camera-drones', 'cameraworld.co.uk'],
+    ['metal-detectors', 'metal-detectors', 'crawfordsmd.com'],
+    ['mobile-phones', 'mobile-phones', 'mi.com'],
+    ['laptops', 'laptops-notebooks', 'dell.com'],
+    ['cameras', 'photography-cameras', 'canon.co.uk']
+  ];
+  for (const [category, branch, domain] of categories) {
+    const playbook = getCategoryWebsitePlaybook(category);
+    assert.ok(playbook, category + ' playbook exists');
+    assert.ok(playbook.categoryInstructions.some(rule => rule.includes('individual') || rule.includes('exact')), category + ' requires individual exact pages');
+    assert.ok(playbook.branchInstructions[branch]?.length, category + ' has active branch instructions');
+    assert.ok(getWebsiteInstructions(category, domain), category + ' has a website-specific route');
+  }
+});
+
+test('new category playbooks build only the recorded UK discovery routes for specialist sources', () => {
+  const cases = [
+    [{ domain: 'cameraworld.co.uk' }, { category_slug: 'drones', manufacturer: 'DJI', model: 'Mini 5 Pro' }, 'videography-products/drones/drones.html'],
+    [{ domain: 'crawfordsmd.com' }, { category_slug: 'metal-detectors', manufacturer: 'Minelab', model: 'Manticore' }, '/metal-detectors'],
+    [{ domain: 'mi.com' }, { category_slug: 'mobile-phones', manufacturer: 'Xiaomi', model: '15 Ultra' }, '/uk/product-list/phone/'],
+    [{ domain: 'dell.com' }, { category_slug: 'laptops', manufacturer: 'Dell', model: 'XPS 14' }, '/en-gb/shop/dell-laptops/scr/laptop'],
+    [{ domain: 'canon.co.uk' }, { category_slug: 'cameras', manufacturer: 'Canon', model: 'EOS R7' }, '/store/cameras/']
+  ];
+  for (const [source, task, route] of cases) {
+    assert.ok(buildWebsiteSearchRoutes(source, task).some(url => url.includes(route)), task.category_slug + ' route is present');
+  }
+});
+
+test('specialist playbooks preserve the distinction between complete products and accessories', () => {
+  assert.ok(getCategoryWebsitePlaybook('drones').categoryInstructions.some(rule => rule.includes('spare part')));
+  assert.ok(getCategoryWebsitePlaybook('metal-detectors').branchInstructions['metal-detector-equipment-accessories']);
+  assert.ok(getCategoryWebsitePlaybook('mobile-phones').categoryInstructions.some(rule => rule.includes('SIM')));
+  assert.ok(getCategoryWebsitePlaybook('laptops').categoryInstructions.some(rule => rule.includes('CPU')));
+  assert.ok(getCategoryWebsitePlaybook('cameras').categoryInstructions.some(rule => rule.includes('body-only')));
+});
+
+
+test('Gaming agents use verified UK category routes instead of guessed generic search URLs', () => {
+  const task = { category_slug: 'gaming-consoles-accessories', branch_slug: 'playstation-consoles', manufacturer: 'Sony', model: 'PlayStation 5' };
+  const cases = [
+    ['argos.co.uk', 'https://argos.co.uk/browse/technology/video-games-and-consoles/c:29952/'],
+    ['currys.co.uk', 'https://currys.co.uk/gaming/consoles'],
+    ['smythstoys.com', 'https://smythstoys.com/uk/en-gb/video-games'],
+    ['very.co.uk', 'https://very.co.uk/browse/gaming-consoles'],
+    ['cashconverters.co.uk', 'https://cashconverters.co.uk/shop'],
+    ['cashexp.co.uk', 'https://cashexp.co.uk/product-category/video-games-consoles/'],
+    ['xbox.com', 'https://xbox.com/en-GB/consoles'],
+    ['playstation.com', 'https://playstation.com/en-gb/ps5'],
+    ['nintendo.com', 'https://nintendo.com/en-gb/'],
+    ['gumtree.com', 'https://gumtree.com/uk/srpsearch%2Bsony-playstation-5']
+  ];
+  for (const [domain, expected] of cases) {
+    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, task), [expected], domain);
+  }
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'amazon.co.uk' }, task), [
+    'https://amazon.co.uk/s?k=Sony%20PlayStation%205'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, task), [
+    'https://ebay.co.uk/sch/i.html?_nkw=Sony%20PlayStation%205'
+  ]);
+});
+
+test('every enabled specialist source domain has an explicit site entry or universal marketplace route', () => {
+  const cases = {
+    drones: ['aetha.global','hobbyrc.co.uk','heliguy.com','dji-retail.co.uk','dmtl.co.uk','leicesterdrones.com','quadcopters.co.uk'],
+    'metal-detectors': ['regton.com','spinadiscmetaldetectors.com','uk-historyfinders.co.uk','uneartheduk.co.uk','woldsdetecting.co.uk','lpmetaldetecting.com','amazon.co.uk','ebay.co.uk'],
+    'mobile-phones': ['argos.co.uk','currys.co.uk','johnlewis.com','ee.co.uk','very.co.uk','oppo.com','realme.com'],
+    laptops: ['dell.com','hp.com','lenovo.com','currys.co.uk','argos.co.uk','johnlewis.com','very.co.uk'],
+    cameras: ['sony.co.uk','jessops.com','parkcameras.com','cliftoncameras.co.uk','harrisoncameras.co.uk','camerapricebuster.co.uk','castlecameras.co.uk','productiongear.co.uk']
+  };
+  for (const [category, domains] of Object.entries(cases)) {
+    const task = { category_slug: category, manufacturer: 'Example', model: 'Exact Model' };
+    for (const domain of domains) {
+      const routes = buildWebsiteSearchRoutes({ domain }, task);
+      assert.ok(routes.length > 0, category + ' has no route for ' + domain);
+      assert.ok(!routes.some(url => /\/search\?q=/i.test(url)), category + ' generated a guessed /search route for ' + domain);
+    }
+  }
+});
+
+
+test('approved international sources with UK locale paths pass the UK storefront guard', () => {
+  const task = { manufacturer: 'Example', model: 'Exact Model', research_type: 'uk_new' };
+  const urls = [
+    'https://store.google.com/gb/product/exact-model',
+    'https://www.motorola.com/gb/en/phones/exact-model',
+    'https://www.dell.com/en-gb/shop/exact-model',
+    'https://www.hp.com/gb-en/shop/exact-model',
+    'https://www.hmd.com/en_gb/smartphones/exact-model',
+    'https://www.doro.com/en-gb/products/exact-model',
+    'https://www.mpb.com/en-uk/shop/cameras/exact-model',
+    'https://www.nintendo.com/en-gb/hardware/exact-model'
+  ];
+  for (const source_url of urls) {
+    const result = validate({
+      source_url, evidence_type: 'uk_new', price_currency: 'GBP', observed_price: 1,
+      source_name: 'Example UK source', item_condition: 'New', sales_channel: 'retailer', availability: 'In stock'
+    }, task, 'Example Exact Model £1.00 New In stock');
+    assert.equal(result.errors.includes('source is not an eligible UK storefront'), false, source_url);
+  }
+});
+
+
+test('DJI Store sign-in page is not treated as a public drone search route', () => {
+  const task = { category_slug: 'drones', manufacturer: 'DJI', model: 'Mini 5 Pro' };
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'store.dji.com' }, task), []);
+  assert.match(getWebsiteInstructions('drones', 'store.dji.com')?.navigation || '', /sign-in|sign in/i);
 });

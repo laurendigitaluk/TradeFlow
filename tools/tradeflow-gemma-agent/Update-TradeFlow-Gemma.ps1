@@ -13,7 +13,7 @@ $ErrorActionPreference = 'Stop'
 $Repository = 'laurendigitaluk/TradeFlow'
 if ($SourceBranch -notmatch '^[A-Za-z0-9._/-]+$') { throw 'SourceBranch contains unsupported characters.' }
 $RawBase = "https://raw.githubusercontent.com/$Repository/$SourceBranch/tools/tradeflow-gemma-agent"
-$SourceFiles = @('control-plane.mjs', 'control-plane.test.mjs', 'agent.mjs', 'agent-speed.test.mjs', 'agent.source-selection.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs')
+$SourceFiles = @('control-plane.mjs', 'control-plane.test.mjs', 'agent.mjs', 'agent-speed.test.mjs', 'agent.source-selection.test.mjs', 'agent-identity.mjs', 'agent-identity.test.mjs', 'agent-telemetry.mjs', 'task-worker.mjs', 'task-groups.mjs', 'task-groups.test.mjs', 'source-playbooks.mjs', 'source-playbooks.test.mjs', 'desktop-control.mjs', 'desktop-control.test.mjs')
 $LauncherName = 'Start-TradeFlow-Gemma.ps1'
 $LegacyShortcutLauncherName = 'Start-Gemma-Worker.ps1'
 
@@ -131,7 +131,7 @@ if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with
         & node --check (Join-Path $DownloadPath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $DownloadPath 'control-plane.test.mjs') (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs') (Join-Path $DownloadPath 'agent-speed.test.mjs') (Join-Path $DownloadPath 'agent.source-selection.test.mjs')
+    & node --test (Join-Path $DownloadPath 'control-plane.test.mjs') (Join-Path $DownloadPath 'task-groups.test.mjs') (Join-Path $DownloadPath 'source-playbooks.test.mjs') (Join-Path $DownloadPath 'agent-identity.test.mjs') (Join-Path $DownloadPath 'agent-speed.test.mjs') (Join-Path $DownloadPath 'agent.source-selection.test.mjs') (Join-Path $DownloadPath 'desktop-control.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Gemma task normalisation or website playbook tests failed; no files were installed.' }
 
     $BackupPath = Join-Path $InstallPath ('backups\before-common-room-' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
@@ -161,7 +161,7 @@ if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with
         & node --check (Join-Path $SourcePath $Name)
         if ($LASTEXITCODE -ne 0) { throw "Installed Node syntax check failed: $Name" }
     }
-    & node --test (Join-Path $SourcePath 'control-plane.test.mjs') (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs') (Join-Path $SourcePath 'agent-speed.test.mjs') (Join-Path $SourcePath 'agent.source-selection.test.mjs')
+    & node --test (Join-Path $SourcePath 'control-plane.test.mjs') (Join-Path $SourcePath 'task-groups.test.mjs') (Join-Path $SourcePath 'source-playbooks.test.mjs') (Join-Path $SourcePath 'agent-identity.test.mjs') (Join-Path $SourcePath 'agent-speed.test.mjs') (Join-Path $SourcePath 'agent.source-selection.test.mjs') (Join-Path $SourcePath 'desktop-control.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Installed Gemma task or website playbook tests failed.' }
 
     Write-Host ''
@@ -186,6 +186,10 @@ if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with
     if ($StartWorker) {
         $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
         $env:TRADEFLOW_GEMMA_ENVIRONMENT = $Environment
+        $DesktopConfigPath = Join-Path $env:LOCALAPPDATA 'TradeFlow\ResearchControlCentre\config.json'
+        if (Test-Path -LiteralPath $DesktopConfigPath -PathType Leaf) {
+            $env:TRADEFLOW_GEMMA_AGENT_CONFIG = $DesktopConfigPath
+        }
         Write-Host "Starting the $Environment queue worker. Press Ctrl+C to stop it."
         & node (Join-Path $SourcePath 'task-worker.mjs')
         if ($LASTEXITCODE -ne 0) { throw "Gemma worker exited with code $LASTEXITCODE" }

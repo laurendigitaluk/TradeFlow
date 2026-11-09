@@ -4917,3 +4917,46 @@ The Research PC worker is connected to LIVE Common Room, but the Gaming agent is
 PR #316 unintentionally broadened `isCaptureOnlyResearchTask()` from the 3D-printer-specific fast-capture handling to include all 3D-printer tasks as capture-only. This bypassed `extractBatch()` and Ollama/Gemma for 3D-printer research. LIVE K1 Max task `0ce88391-e5c2-45c4-adf9-149d364c702c` explicitly logged `Capture-only mode ... local Ollama inference is intentionally skipped`; its page was retained as raw capture but not enriched by Gemma. This contradicted the pre-rollout 3D workflow, whose task metrics showed Gemma extraction calls and structured observations. Ender-3 V3 KE task `5b3e53b0-b857-4f0b-89a0-e255596afd3c` independently found no eligible page, so source discovery remains a separate issue and must not be conflated with the extraction regression.
 
 Correction in PR #320 scopes `isCaptureOnlyResearchTask()` to Gaming only. 3D-printer tasks therefore return to the established `extractBatch()` / Ollama path, retaining the existing deterministic raw fallback when extraction fails. Gaming remains capture-only. A regression test explicitly asserts this separation. No Research PC installation, source registry, LIVE/TEST database records, queue records, approvals or imports are changed by the code correction. After CI passes and the fix is merged, verify a single small 3D-printer LIVE task reaches `extraction_batch_started` and records `gemma_calls > 0`; do not change the working 3D-printer source settings. Separately diagnose any model/source discovery failures using route telemetry.
+
+## Gemma Research Control Centre — operator instructions (9 November 2026)
+
+The Windows Control Centre is intended to keep the Gemma queue supervisor available in the background while letting the owner enable or disable each specialist independently.
+
+### Specialist switches
+- 3D Printers & Equipment
+- Gaming Consoles & Accessories
+- Drones
+- Metal Detectors
+- Mobile Phones
+- Laptops & Computers
+- Cameras & Lenses
+
+The 3D-printers and gaming-consoles legacy keys are aliases behind their canonical switches. The Catalogue Importer is not a research switch: it remains owner-approval-gated. Release Monitor is not yet queue-integrated and is intentionally not exposed as a runnable product-research worker.
+
+### How to operate it
+- Windows Task Scheduler starts the background supervisor at sign-in.
+- Enabled specialists wait for matching work in TradeFlow LIVE; they do not initiate research just because the service is running.
+- Individual desktop shortcuts enable the matching specialist and open the Control Centre.
+- Closing the Control Centre window does not stop the background service.
+- Turning off a specialist prevents new tasks for that specialist. If it is already processing a task, let that task finish.
+- Global Stop means stop after the current task, not forcibly terminate Node or Ollama.
+- Open Logs to inspect supervisor and worker stdout/stderr.
+- All research captures remain in the existing ChatGPT/owner review queue. No automatic catalogue import or evidence approval is introduced.
+
+### Security and installation
+The app uses the existing local private `.env` path and the existing LIVE worker credentials. It must never copy, print, back up or overwrite the `.env`. Local `config.json` contains only enabled keys and service state; `service.json` contains install and env-file paths, not secrets.
+
+The scoped queue RPC migration must be deployed to LIVE before the desktop worker can claim work. If it is missing, the desktop worker reports `requires_migration`, exits safely and does not fall back to the old unscoped queue claim. Do not start a second legacy/manual worker alongside the desktop supervisor.
+
+Install instructions are in `tools/tradeflow-gemma-desktop/README.md`. The installer runs the reviewed Gemma updater and tests first, refuses to overwrite a legacy worker that is already running, creates the Control Centre and specialist desktop shortcuts, and registers the sign-in supervisor. No PC installation or worker restart has yet occurred in PR #325.
+
+
+## Gemma specialist source-route audit — 9 November 2026
+
+Follow-up to PR #325: the LIVE research-source registry was compared against the existing category-specific website playbooks. The earlier route-count comparison was based on an incorrect block boundary and falsely reported missing websites. Re-inspection of the complete category blocks confirmed the registered domains already have category-specific playbook entries; no new source rows or website definitions were needed. Existing UK source registry and playbook entries have been retained unchanged.
+
+A regression test was added to protect the website coverage already configured for the additional specialist domains: HobbyRC, Heliguy, DJI Retail, DMTL, Leicester Drones, Quadcopters; Argos, Currys, John Lewis, EE, Very, OPPO, realme; Sony UK, Jessops, Park Cameras, Clifton Cameras, Harrison Cameras, Camera Price Buster, Castle Cameras, Production Gear; plus Amazon UK and eBay UK marketplace routes for metal detectors. The test checks category-specific instructions and homepage discovery routes, plus the dedicated Amazon ASIN and eBay active-listing search patterns. The first run exposed Aetha UK's missing route; that was fixed by adding its homepage route, and the test is being rerun against the corrected branch head.
+
+The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
+
+Status: the regression-test change is committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The latest post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.

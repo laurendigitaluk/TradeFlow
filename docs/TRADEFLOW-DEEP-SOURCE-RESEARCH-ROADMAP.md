@@ -70,3 +70,54 @@ H. Update operator instructions and diagnostic roadmap; only then retire old Gea
 - Do not use broad full-catalogue reads repeatedly; use branch-scoped bounded queries and aggregated evidence summaries.
 - Do not confuse tenant_buying_research with shared_market_evidence.
 - Do not infer additional nested levels from names. Current master schema explicitly exposes categories and branches; inspect any other website taxonomy source separately if it adds further levels.
+
+## Windows Gemma Research Control Centre — Developer Diagnostic Roadmap (9 November 2026)
+
+### User action and local entry points
+- Owner opens `TradeFlow-Research-Control-Centre.ps1` or one of the generated `Gemma - <specialist>.lnk` shortcuts.
+- UI writes only local `%LOCALAPPDATA%\TradeFlow\ResearchControlCentre\config.json`.
+- `Run-TradeFlow-Gemma-Supervisor.ps1` is launched by Windows Task Scheduler at user sign-in.
+- Supervisor reads `service.json` (existing Gemma install path and private .env path), starts the existing `src\task-worker.mjs`, and restarts unexpected exits with a delay.
+- Worker receives `TRADEFLOW_GEMMA_AGENT_CONFIG`, `TRADEFLOW_GEMMA_ENV_FILE`, and `TRADEFLOW_GEMMA_ENVIRONMENT=LIVE`. It writes non-secret `status.json` for the UI and stdout/stderr logs under the app's `logs\` directory.
+
+### Task and data flow
+1. Website/owner dashboard queues work through `platform_owner_enqueue_ai_agent_task` into LIVE `platform_ai_agent_tasks`.
+2. Desktop worker reads enabled canonical specialist keys from local config.
+3. It calls `platform_ai_agent_claim_task_for_agents` with its worker ID and enabled key set.
+4. SQL checks every subtask in `payload.tasks`, resolves the effective agent identity (including the legacy 3D identity rule), and claims only tasks whose subtasks all belong to enabled agents.
+5. Existing `task-worker.mjs` and `agent.mjs` execute the task; category-specific approved UK sources are loaded from `platform_research_sources`.
+6. Raw product-page captures continue through the existing `platform_catalogue_research_queue` review flow. ChatGPT/owner approval remains required before any catalogue/evidence import.
+
+### Relevant code and database surfaces
+- Desktop UI: `tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1`
+- Supervisor: `tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1`
+- Installer: `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1`
+- Specialist roster: `tools/tradeflow-gemma-desktop/agents.json`
+- Local policy helpers: `tools/tradeflow-gemma-agent/src/desktop-control.mjs`
+- Queue worker: `tools/tradeflow-gemma-agent/src/task-worker.mjs`
+- Website routes: `tools/tradeflow-gemma-agent/src/source-playbooks.mjs`
+- Existing worker identity: `src/agent-identity.mjs`
+- LIVE queue table: `public.platform_ai_agent_tasks`
+- LIVE status/activity: `public.platform_ai_agent_status`, `public.platform_ai_agent_activity`
+- LIVE website registry: `public.platform_research_sources`
+- LIVE review destination: `public.platform_catalogue_research_queue`
+- New migration in PR #325: `supabase/migrations/20261109150000_gemma_agent_scoped_task_claim.sql`
+- Existing owner dashboard website controls: `platform-owner-dashboard.js` and `platform_owner_list_research_sources`, `platform_owner_add_research_source`, `platform_owner_set_research_source_category`.
+
+### Known constraints and failure points
+- Desktop mode must never fall back to `platform_ai_agent_claim_task`; missing scoped RPC means `requires_migration` and stop.
+- One shared Node/Ollama execution lane is intentional; do not spawn one Node worker per category or increase parallelism without memory/runtime tests.
+- Mixed-agent queue payloads remain queued until every subtask's specialist is enabled.
+- Disabling a specialist during a running task is applied before the next queue claim; do not kill a task mid-flight.
+- The `.env` is private and stays in its original path. Never store service-role key values in desktop config or status.
+- Existing manual workers must be stopped cleanly before desktop install. Installer refuses to overwrite a process that is already running.
+- Preserve 3D-printer extraction/capture behaviour and Gaming capture-only behaviour; neither is modified by this feature.
+- `catalogue-importer` remains approval-gated. `release-monitor` is not yet compatible with this catalogue queue worker.
+
+### Acceptance gates
+1. CI passes Node tests and PowerShell parser checks for the desktop scripts.
+2. Review and merge PR #325; apply the new RPC migration to LIVE only after owner approval.
+3. On the Research PC, run the installer in the existing Gemma folder; verify it preserves the .env, creates seven specialist shortcuts, and registers the sign-in task.
+4. Confirm one worker process only and that status shows all enabled specialists waiting without active research tasks.
+5. Submit one bounded TEST task per representative specialist only after the installation is fingerprinted; verify disabled specialist tasks remain queued and enabled tasks are claimed only when enabled.
+6. Run one controlled LIVE acceptance task only after TEST and source-route acceptance. Confirm raw captures appear in review queue; no automatic approval/import.

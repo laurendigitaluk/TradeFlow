@@ -69,12 +69,12 @@ function Read-Status {
     try { return (Get-Content -LiteralPath $StatusPath -Raw | ConvertFrom-Json) } catch { return $null }
 }
 function Get-AgentState([string]$Key,$Config,$Status) {
-    if (-not $Config.serviceEnabled) { return 'Service stopped' }
-    if (@($Config.enabledAgentKeys) -notcontains $Key) { return 'Disabled' }
-    if ($Status -and $Status.state -eq 'requires_migration') { return 'Backend update required' }
-    if ($Status -and @($Status.activeAgentKeys) -contains $Key) { return 'Running a research task' }
-    if ($Status -and $Status.state -eq 'error') { return 'Worker error — see logs' }
-    return 'Enabled · waiting for website tasks'
+    if (-not $Config.serviceEnabled) { return 'SERVICE STOPPED' }
+    if (@($Config.enabledAgentKeys) -notcontains $Key) { return 'DISABLED' }
+    if ($Status -and $Status.state -eq 'requires_migration') { return 'BACKEND UPDATE REQUIRED' }
+    if ($Status -and @($Status.activeAgentKeys) -contains $Key) { return 'RUNNING — processing a research task' }
+    if ($Status -and $Status.state -eq 'error') { return 'ERROR — see logs' }
+    return 'WAITING — enabled; no matching task is currently assigned'
 }
 function Update-Display {
     $UiState.Updating = $true
@@ -91,6 +91,9 @@ function Update-Display {
     } else {
         $ServiceLabel.Text = 'Background service: connected / waiting for website tasks'
     }
+    $enabledCount = @($config.enabledAgentKeys).Count
+    $activeCount = if ($status -and $status.activeAgentKeys) { @($status.activeAgentKeys).Count } else { 0 }
+    $AgentSummary.Text = "Specialists enabled: $enabledCount / $($Agents.Count)    |    Active research tasks: $activeCount"
     foreach ($agent in $Agents) {
         $ui = $AgentControls[$agent.agentKey]
         $enabled = @($config.enabledAgentKeys) -contains $agent.agentKey
@@ -117,8 +120,8 @@ if (-not $script:UiMutex.WaitOne(0, $false)) {
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'TradeFlow Research Control Centre'
 $form.StartPosition = 'CenterScreen'
-$form.Size = New-Object System.Drawing.Size(900,720)
-$form.MinimumSize = New-Object System.Drawing.Size(820,620)
+$form.Size = New-Object System.Drawing.Size(960,780)
+$form.MinimumSize = New-Object System.Drawing.Size(860,640)
 $form.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Font = New-Object System.Drawing.Font('Segoe UI',9)
 $form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
@@ -176,6 +179,13 @@ $logsButton.Height = 32
 $logsButton.Add_Click({ New-Item -ItemType Directory -Path $LogPath -Force | Out-Null; Invoke-Item $LogPath }.GetNewClosure())
 $buttonPanel.Controls.Add($logsButton)
 
+$AgentSummary = New-Object System.Windows.Forms.Label
+$AgentSummary.Text = 'Specialists enabled: checking…'
+$AgentSummary.AutoSize = $true
+$AgentSummary.Margin = New-Object System.Windows.Forms.Padding(18,8,8,4)
+$AgentSummary.ForeColor = [System.Drawing.Color]::FromArgb(45,58,72)
+$buttonPanel.Controls.Add($AgentSummary)
+
 $note = New-Object System.Windows.Forms.Label
 $note.Text = 'Enable the agents you want available. They wait quietly until matching work arrives from TradeFlow LIVE. Closing this window does not stop the background service.'
 $note.Dock = 'Top'
@@ -188,7 +198,8 @@ $form.Controls.Add($note)
 $cards = New-Object System.Windows.Forms.FlowLayoutPanel
 $cards.Dock = 'Fill'
 $cards.AutoScroll = $true
-$cards.WrapContents = $true
+$cards.WrapContents = $false
+$cards.FlowDirection = 'TopDown'
 $cards.Padding = New-Object System.Windows.Forms.Padding(14,8,14,14)
 $cards.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Controls.Add($cards)
@@ -196,8 +207,8 @@ $form.Controls.Add($cards)
 $AgentControls = @{}
 foreach ($agent in $Agents) {
     $card = New-Object System.Windows.Forms.Panel
-    $card.Width = 400
-    $card.Height = 112
+    $card.Width = 820
+    $card.Height = 92
     $card.Margin = New-Object System.Windows.Forms.Padding(8)
     $card.Padding = New-Object System.Windows.Forms.Padding(12)
     $card.BackColor = [System.Drawing.Color]::White
@@ -206,22 +217,22 @@ foreach ($agent in $Agents) {
     $name = New-Object System.Windows.Forms.Label
     $name.Text = [string]$agent.label
     $name.Font = New-Object System.Drawing.Font('Segoe UI Semibold',11,[System.Drawing.FontStyle]::Bold)
-    $name.Location = New-Object System.Drawing.Point(12,12)
+    $name.Location = New-Object System.Drawing.Point(12,8)
     $name.AutoSize = $true
     $card.Controls.Add($name)
 
     $state = New-Object System.Windows.Forms.Label
     $state.Text = 'Checking…'
-    $state.Location = New-Object System.Drawing.Point(12,43)
-    $state.Width = 350
-    $state.Height = 24
+    $state.Location = New-Object System.Drawing.Point(12,34)
+    $state.Width = 760
+    $state.Height = 22
     $state.ForeColor = [System.Drawing.Color]::DarkSlateBlue
     $card.Controls.Add($state)
 
     $check = New-Object System.Windows.Forms.CheckBox
-    $check.Text = 'Agent enabled'
+    $check.Text = 'Enabled'
     $check.Tag = [string]$agent.agentKey
-    $check.Location = New-Object System.Drawing.Point(12,76)
+    $check.Location = New-Object System.Drawing.Point(12,60)
     $check.AutoSize = $true
     $check.Add_CheckedChanged({
         param($sender,$eventArgs)
@@ -233,7 +244,7 @@ foreach ($agent in $Agents) {
     $card.Controls.Add($check)
 
     $cards.Controls.Add($card)
-    $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state }
+    $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state; Card=$card }
 }
 
 $timer = New-Object System.Windows.Forms.Timer

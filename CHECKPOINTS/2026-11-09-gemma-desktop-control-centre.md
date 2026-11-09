@@ -69,9 +69,9 @@ Production installer now downloads `Launch-TradeFlow-Control-Centre.vbs`; all ei
 The Research PC installation shown by the owner was performed before this WScript-host correction. It must be rerun after safely stopping the background service. CI has not yet reported a workflow run for this latest launcher change; do not describe it as CI-verified.
 
 
-## 9 November 2026 — LIVE 3D-printer capture and route-scope correction (PR #326)
+## 9 November 2026 — LIVE 3D-printer capture and route-scope correction (PR #327)
 
-Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`. Production base for this repair: `292fe9c4ae7cf896d9568abf5cab3267597f0713`.
+Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`. Production base for this repair: `1b76e6e4dfb56c32049171741cb00499ab6946a1`.
 
 ### LIVE task and worker snapshot
 - Exactly 19 registered tasks match the category/branch, containing 56 product subtasks: 19 completed, 0 running, 0 queued, 0 failed. Latest 3D-printer task completed at 2026-11-09 01:56:42 UTC. No later 3D-printer task or review capture is recorded.
@@ -90,15 +90,15 @@ Scope is limited to LIVE category `3d-printers-equipment`, branch `3d-printers`.
 - Repeated failures include Uni3Dverse HTTP 404, eBay UK HTTP 403/404, Amazon UK HTTP 404, SecondHand.org.uk HTTP 404, and Creality Shopify collection products JSON HTTP 404.
 - The public Creality UK FDM collection page is accessible and currently renders 11 products, including K1 Max; the Ender-3 V3 collection renders three different models (SE, Mega, Neo). The worker's raw HTML parser found no product anchors, then its Shopify `/products.json?limit=50` fallback returned 404. The rendered web page does not prove the Research PC raw fetch can parse the same links. Do not invent an alternative endpoint; verify raw HTML and endpoint behaviour before changing it.
 
-### PR #326 — current-production repair
-- Branch: `fix/gemma-3d-capture-and-model-route-scope-20261109`.
-- PR: https://github.com/laurendigitaluk/TradeFlow/pull/326
-- Code/test commit: `a49413970c6576e5422688d9f8f847195cb40c75`; base is current production `292fe9c4ae7cf896d9568abf5cab3267597f0713`.
-- CI run #474 (ID `42619554386`) passed all workflow steps: PowerShell updater syntax, Node source syntax, Gemma/website playbook tests and Owner Dashboard JavaScript syntax.
+### PR #327 — current-production repair
+- Branch: `fix/gemma-3d-capture-and-model-route-scope-20261109-current-base`.
+- PR: https://github.com/laurendigitaluk/TradeFlow/pull/327
+- Code/test commit: `ef2de8dd825b995c28bfe02a4ee4243fb321cc26`; base is current production `1b76e6e4dfb56c32049171741cb00499ab6946a1`.
+- CI run #480 (ID `42620432059`) passed all workflow steps: PowerShell updater syntax, Node source syntax, Gemma/website playbook tests and Owner Dashboard JavaScript syntax.
 - Structured 3D-printer Gemma output and final review handoff now retain the full fetched page up to the existing 100,000-character fetch limit. Gaming keeps its existing full-page capture; other categories remain capped at 10,000 characters.
 - Regression fixture: previous structured path retained 10,000 / 40,642 characters (24.6%); corrected path retains 40,642 / 40,642 (100%), recovering 30,642 characters.
 - Creality Ender-3 V3 collection route is now model-specific: Ender-3 V3 tasks retain it; K1/K1 Max tasks no longer probe that unrelated family route.
-- PR #324 contains the earlier version of the full-page fix but is based on the older `e81ede...` production base and is now stale/unmergeable. PR #326 is the current-production replacement. Do not merge/deploy without explicit owner approval.
+- PR #324 contains the earlier version of the full-page fix but is based on the older `e81ede...` production base and is now stale/unmergeable. PR #327 is the current-production replacement. Do not merge/deploy without explicit owner approval.
 
 ### Review queue and source registry
 - Exact branch review queue: 65 rows (28 imported, 37 rejected, 0 open). Linked active shared evidence: 23 `uk_new` and 5 `uk_used`; all 28 are GBP-priced.

@@ -4459,3 +4459,21 @@ A regression test was added to protect the website coverage already configured f
 The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
 
 Status: the regression-test change is committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The latest post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.
+
+
+## Post-merge deployment verification — Gemma Control Centre (9 November 2026)
+
+PR #325 was merged to `production` as commit `b20123fd8f832388011589ac8e7f9e602bb98f08`. Production GitHub Actions run #473 passed the Gemma research workflow, including PowerShell syntax, Node syntax, all 92 Gemma tests and Owner Dashboard JavaScript syntax.
+
+The LIVE database now contains `public.platform_ai_agent_claim_task_for_agents(text,text[],integer)`. Read-only permission checks confirmed:
+- `service_role` can execute it.
+- `authenticated` cannot execute it.
+- The function is SECURITY DEFINER with `search_path=public, private`.
+
+The same RPC is absent from TradeFlow TEST. This is intentional: the desktop supervisor is LIVE-only and TEST remains separate. No TEST data has been copied to LIVE.
+
+The Windows installer is available from the production branch at `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1`. The installer has not yet been run on the Research PC; no local worker was stopped, restarted or installed by this verification. Do not claim the desktop app is operational on the PC until the owner runs the installer and a bounded LIVE review-only acceptance task confirms raw capture in the existing review queue.
+
+The LIVE source registry remains 119 UK records / 116 enabled. No source registry rows, tasks, review-queue rows, catalogue/evidence, approvals or imports were changed during the merge/migration verification. The existing private `.env` remains on the Research PC.
+
+Current next step: owner installs from production on the Research PC. Open PowerShell in the existing Gemma folder, download the production installer, and run it. If the old manual worker is active, stop it cleanly with Ctrl+C first. Never paste or disclose the private `.env` contents.

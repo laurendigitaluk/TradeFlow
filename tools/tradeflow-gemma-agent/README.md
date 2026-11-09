@@ -1,3 +1,5 @@
+> **Architecture notice — 9 November 2026:** The owner has moved to independent category Gemma installations. For these, use the branch-specific `agent.config.json`, `Start-Gemma-Agent.ps1` and `Update-Gemma-Agent.ps1`. Each category runs from its own Git branch and independent PC clone/folder, sharing only the existing private ENV by path and the local Ollama service. The older single-worker/shared Control Centre instructions below describe the legacy installation and must not be used to develop or update another category's Gemma. See `docs/GEMMA-ISOLATED-AGENT-ARCHITECTURE.md` on the architecture branch.
+
 # TradeFlow Gemma Research PC worker
 
 The Research PC worker polls the approved TradeFlow LIVE AI task queue and uses the existing local private environment file and Ollama installation.

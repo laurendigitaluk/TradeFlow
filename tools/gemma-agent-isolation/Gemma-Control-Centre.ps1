@@ -162,35 +162,18 @@ function Refresh-Grid {
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'TradeFlow — Independent Gemma Control Centre'
 $form.StartPosition = 'CenterScreen'
-$form.Size = New-Object System.Drawing.Size(1180,650)
-$form.MinimumSize = New-Object System.Drawing.Size(980,560)
+$form.Size = New-Object System.Drawing.Size(1280,700)
+$form.MinimumSize = New-Object System.Drawing.Size(1100,620)
 $form.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Font = New-Object System.Drawing.Font('Segoe UI',9)
 $form.AutoScaleMode = [System.Windows.Forms.AutoScaleMode]::Dpi
 
-$header = New-Object System.Windows.Forms.Panel
-$header.Dock = 'Top'
-$header.Height = 86
-$header.BackColor = [System.Drawing.Color]::FromArgb(28,42,58)
-$form.Controls.Add($header)
-$title = New-Object System.Windows.Forms.Label
-$title.Text = 'TRADEFLOW  |  INDEPENDENT GEMMA CONTROL CENTRE'
-$title.ForeColor = [System.Drawing.Color]::White
-$title.Font = New-Object System.Drawing.Font('Segoe UI Semibold',15,[System.Drawing.FontStyle]::Bold)
-$title.Location = New-Object System.Drawing.Point(22,12)
-$title.AutoSize = $true
-$header.Controls.Add($title)
-$subtitle = New-Object System.Windows.Forms.Label
-$subtitle.Text = 'Each specialist runs from its own Git branch and installation. Stop is graceful; the current research task is allowed to finish.'
-$subtitle.ForeColor = [System.Drawing.Color]::FromArgb(225,232,239)
-$subtitle.Location = New-Object System.Drawing.Point(24,51)
-$subtitle.AutoSize = $true
-$header.Controls.Add($subtitle)
-
+# Explicit anchored positions avoid WinForms Fill/Top docking overlap.
 $toolbar = New-Object System.Windows.Forms.FlowLayoutPanel
-$toolbar.Dock = 'Top'
-$toolbar.Height = 48
-$toolbar.Padding = New-Object System.Windows.Forms.Padding(14,7,8,5)
+$toolbar.Location = New-Object System.Drawing.Point(0,0)
+$toolbar.Size = New-Object System.Drawing.Size(1264,42)
+$toolbar.Anchor = 'Top,Left,Right'
+$toolbar.Padding = New-Object System.Windows.Forms.Padding(14,6,8,4)
 $toolbar.BackColor = [System.Drawing.Color]::White
 $toolbar.WrapContents = $false
 $form.Controls.Add($toolbar)
@@ -198,7 +181,6 @@ $refreshButton = New-Object System.Windows.Forms.Button
 $refreshButton.Text = 'Refresh status'
 $refreshButton.Width = 112
 $refreshButton.Height = 30
-$refreshButton.Add_Click({ Refresh-Grid })
 $toolbar.Controls.Add($refreshButton)
 $openRootButton = New-Object System.Windows.Forms.Button
 $openRootButton.Text = 'Open logs folder'
@@ -217,8 +199,30 @@ $lastRefreshLabel.Margin = New-Object System.Windows.Forms.Padding(12,8,4,4)
 $lastRefreshLabel.ForeColor = [System.Drawing.Color]::DimGray
 $toolbar.Controls.Add($lastRefreshLabel)
 
+$header = New-Object System.Windows.Forms.Panel
+$header.Location = New-Object System.Drawing.Point(0,42)
+$header.Size = New-Object System.Drawing.Size(1264,76)
+$header.Anchor = 'Top,Left,Right'
+$header.BackColor = [System.Drawing.Color]::FromArgb(28,42,58)
+$form.Controls.Add($header)
+$title = New-Object System.Windows.Forms.Label
+$title.Text = 'TRADEFLOW  |  INDEPENDENT GEMMA CONTROL CENTRE'
+$title.ForeColor = [System.Drawing.Color]::White
+$title.Font = New-Object System.Drawing.Font('Segoe UI Semibold',15,[System.Drawing.FontStyle]::Bold)
+$title.Location = New-Object System.Drawing.Point(22,10)
+$title.AutoSize = $true
+$header.Controls.Add($title)
+$subtitle = New-Object System.Windows.Forms.Label
+$subtitle.Text = 'Each specialist runs from its own Git branch and installation. Stop is graceful; the current research task is allowed to finish.'
+$subtitle.ForeColor = [System.Drawing.Color]::FromArgb(225,232,239)
+$subtitle.Location = New-Object System.Drawing.Point(24,48)
+$subtitle.AutoSize = $true
+$header.Controls.Add($subtitle)
+
 $grid = New-Object System.Windows.Forms.DataGridView
-$grid.Dock = 'Fill'
+$grid.Location = New-Object System.Drawing.Point(0,118)
+$grid.Size = New-Object System.Drawing.Size(1264,500)
+$grid.Anchor = 'Top,Bottom,Left,Right'
 $grid.AllowUserToAddRows = $false
 $grid.AllowUserToDeleteRows = $false
 $grid.AllowUserToResizeRows = $false
@@ -232,8 +236,8 @@ $grid.BorderStyle = 'FixedSingle'
 $grid.EnableHeadersVisualStyles = $false
 $grid.ColumnHeadersDefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(232,237,242)
 $grid.ColumnHeadersDefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(35,48,60)
-$grid.ColumnHeadersHeight = 34
-$grid.RowTemplate.Height = 42
+$grid.ColumnHeadersHeight = 36
+$grid.RowTemplate.Height = 48
 $grid.Columns.Add('Agent','Gemma specialist') | Out-Null
 $grid.Columns.Add('Branch','Git branch') | Out-Null
 $grid.Columns.Add('State','Current state') | Out-Null
@@ -261,7 +265,7 @@ foreach ($agent in $Agents) {
 }
 $grid.Add_CellContentClick({
     param($sender,$eventArgs)
-    if ($eventArgs.RowIndex -lt 0) { return }
+    if ($eventArgs.RowIndex -lt 0 -or $eventArgs.ColumnIndex -lt 0) { return }
     $key = [string]$sender.Rows[$eventArgs.RowIndex].Tag
     $agent = $Agents | Where-Object { $_.Key -eq $key } | Select-Object -First 1
     if (-not $agent) { return }
@@ -271,6 +275,7 @@ $grid.Add_CellContentClick({
             'Stop' { Stop-Agent $agent }
             'Update' { Update-Agent $agent }
             'Logs' { Show-AgentLogs $agent }
+            default { return }
         }
         Refresh-Grid
     } catch {
@@ -279,23 +284,17 @@ $grid.Add_CellContentClick({
 }.GetNewClosure())
 $form.Controls.Add($grid)
 $footer = New-Object System.Windows.Forms.Label
-$footer.Dock = 'Bottom'
-$footer.Height = 34
+$footer.Location = New-Object System.Drawing.Point(0,620)
+$footer.Size = New-Object System.Drawing.Size(1264,34)
+$footer.Anchor = 'Bottom,Left,Right'
 $footer.Padding = New-Object System.Windows.Forms.Padding(16,8,8,4)
-$footer.Text = 'Stop after current task = finish the active queued batch, then stop claiming new work. Update is disabled while that Gemma is running.'
+$footer.Text = 'Refresh is manual to keep the control window responsive. Stop after current task finishes the active batch before stopping.'
 $footer.ForeColor = [System.Drawing.Color]::FromArgb(70,82,94)
 $footer.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Controls.Add($footer)
-# WinForms docking is evaluated in z-order. Keep the fill grid at the front
-# so the top header, toolbar and bottom footer reserve their own space.
-# This is the same fix used for the earlier Research Control Centre overlap.
-$form.Controls.SetChildIndex($grid, 0)
+$refreshButton.Add_Click({ Refresh-Grid })
+$form.Add_Shown({ Refresh-Grid })
 
-$timer = New-Object System.Windows.Forms.Timer
-$timer.Interval = 2500
-$timer.Add_Tick({ Refresh-Grid })
-$form.Add_Shown({ Refresh-Grid; $timer.Start() })
-$form.Add_FormClosed({ $timer.Stop() })
 [void]$form.ShowDialog()
 try { $script:DashboardMutex.ReleaseMutex() } catch {}
 $script:DashboardMutex.Dispose()

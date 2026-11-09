@@ -60,3 +60,8 @@ PR #334 remains open as the separately tested parent version until the consolida
 The Gemma Research Tests workflow exists on `production` but is absent from the repository's default `main` branch (which currently contains only `.github/workflows/businessflow-test-release.yml`). PR #335 attempts #549 and #553 both completed as failures before creating any jobs (zero jobs); neither executed the test suite. The latest head's Cloudflare Workers Builds for both `tradeflow` and `tradeflow-test` passed, but these are build/preview checks and do not run the Gemma regression suite.
 
 The previous PR #334 head passed Gemma run #548 (105 tests), but that does not cover the five new legacy-key tests. Do not treat the current PR as test-verified. No change was made to `main`: it is the repository default branch and not the production branch, and changing its CI configuration is outside the authorised 3D-printer production change. A separate, explicitly approved CI-default-branch change or another authorised test runner is required before merge.
+
+
+## Correction — legacy row attribution and CI verification
+
+one imported Creality K1 row uses `review-`, one rejected Creality K1 row uses `borderline-`, and one imported Anycubic Kobra S1 Max combo-8-color row uses `borderline-`. PR #335 run #560 passed 110/110 tests after two test-assertion corrections; runs #549 and #553 had zero jobs, run #556 had 109/110, and run #558 had 109/110. The default-branch workflow absence is observed but is not established as the cause of the zero-job runs. The latest `tradeflow` preview build passed; the `tradeflow-test` preview build was still running at this update.

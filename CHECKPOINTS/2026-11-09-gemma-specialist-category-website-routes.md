@@ -8,7 +8,7 @@ Prepare one independently switchable Gemma specialist for each of the seven Trad
 - Seven independent switches: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops, Cameras.
 - One Ollama execution lane; no seven-process concurrency.
 - LIVE UK source registry: 119 records, 116 enabled; existing records retained.
-- Re-audited the full source-playbook category blocks. The earlier missing-domain count was caused by an incorrect block boundary; all registered domains already had site definitions except Aetha UK (aetha.global), whose entry lacked a discovery route. Added its verified UK homepage route. No source registry rows were changed.
+- Re-audited the full source-playbook category blocks. The earlier missing-domain count was caused by an incorrect block boundary; all registered domains already had site definitions except Aetha UK (aetha.global), whose entry lacked a discovery route. Added its verified UK homepage route. CI also exposed six metal-detector retailer entries without homepage routes; added homepage routes for Regton, Spin A Disc, UK History Finders, Unearthed UK, Wolds Detecting and LP Metal Detecting. No source registry rows were changed.
 - Added regression coverage to protect existing category site instructions, homepage discovery routes and dedicated Amazon/eBay metal-detector search patterns. First CI run exposed the Aetha route gap; the fix is committed and CI must pass against the final head.
 - Updated system handbook, AI operating manual and project memory.
 

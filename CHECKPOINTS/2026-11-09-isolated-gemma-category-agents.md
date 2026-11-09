@@ -23,3 +23,6 @@ Status: GitHub foundation and seven branch refs created; Research PC install not
 
 ## Restore / isolation rule
 Never run the isolated updater against the old shared installation. Each new folder must update only from its own `agent.config.json.sourceBranch`. Never merge Gaming, Cameras, Drones or another category branch into the locked 3D Printer branch. Shared Ollama and shared ENV are not shared code.
+
+
+Current 3D Printer batch status (9 Nov 2026): task `owner-3d-printers-equipment-1794264123497` ended with status `failed` during `platform_ai_agent_complete_task`, HTTP 400 `PGRST102` / `Empty or invalid json`. It had recorded 296 progress events, 8 individual product-page fetches and 7 extraction batches before the completion RPC error. No task result JSON was stored. Do not claim the eight-product batch completed; inspect whether its individual review captures were staged before switching the 3D Printer runtime. The worker process itself was not stopped by this architecture work.

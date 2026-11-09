@@ -68,7 +68,7 @@ try {
 
     $AppRoot = Join-Path $env:LOCALAPPDATA 'TradeFlow\ResearchControlCentre'
     New-Item -ItemType Directory -Path $AppRoot -Force | Out-Null
-    $DesktopFiles = @('agents.json','TradeFlow-Research-Control-Centre.ps1','Run-TradeFlow-Gemma-Supervisor.ps1')
+    $DesktopFiles = @('agents.json','TradeFlow-Research-Control-Centre.ps1','Run-TradeFlow-Gemma-Supervisor.ps1','Launch-TradeFlow-Control-Centre.vbs')
     foreach ($name in $DesktopFiles) {
         Invoke-WebRequest -UseBasicParsing -Uri "$RawBase/tools/tradeflow-gemma-desktop/$name" -OutFile (Join-Path $AppRoot $name)
     }
@@ -106,16 +106,16 @@ try {
     $shell = New-Object -ComObject WScript.Shell
     $desktop = [Environment]::GetFolderPath('Desktop')
     $shortcut = $shell.CreateShortcut((Join-Path $desktop 'TradeFlow Research Control Centre.lnk'))
-    $shortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-    $shortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '"'
+    $shortcut.TargetPath = "$env:SystemRoot\System32\wscript.exe"
+    $shortcut.Arguments = '"' + (Join-Path $AppRoot 'Launch-TradeFlow-Control-Centre.vbs') + '" "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '"'
     $shortcut.WorkingDirectory = $AppRoot
     $shortcut.Save()
 
     foreach ($agent in $agents.agents) {
         $safeLabel = [regex]::Replace([string]$agent.shortLabel,'[^A-Za-z0-9 -]','').Trim()
         $agentShortcut = $shell.CreateShortcut((Join-Path $desktop ('Gemma - ' + $safeLabel + '.lnk')))
-        $agentShortcut.TargetPath = "$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe"
-        $agentShortcut.Arguments = '-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '" -AgentKey "' + $agent.agentKey + '" -EnableAgent'
+        $agentShortcut.TargetPath = "$env:SystemRoot\System32\wscript.exe"
+        $agentShortcut.Arguments = '"' + (Join-Path $AppRoot 'Launch-TradeFlow-Control-Centre.vbs') + '" "' + (Join-Path $AppRoot 'TradeFlow-Research-Control-Centre.ps1') + '" -AgentKey "' + $agent.agentKey + '" -EnableAgent'
         $agentShortcut.WorkingDirectory = $AppRoot
         $agentShortcut.Save()
     }

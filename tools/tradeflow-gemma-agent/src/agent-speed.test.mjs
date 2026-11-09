@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -370,4 +370,28 @@ test('3D-printer Gemma prompt includes the approved website navigation note but 
   assert.match(prompt, /SOURCE-SPECIFIC SITE NOTES/);
   assert.match(prompt, /dedicated Pre-owned 3D Printers collection/);
   assert.match(prompt, /do not attempt new browsing or invent URLs/i);
+});
+
+
+test('same product can retain multiple evidence captures of the same type from distinct source listings', () => {
+  const task = {
+    manufacturer: 'Bambu Lab',
+    model: 'A1',
+    package_key: 'standard',
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers'
+  };
+  const retailer = { source_url: 'https://retailer-a.co.uk/products/bambu-a1' };
+  const marketplace = { source_url: 'https://www.ebay.co.uk/itm/123456789' };
+  const sameRetailerPage = { source_url: retailer.source_url };
+  assert.equal(
+    buildEvidenceCaptureDedupeKey(task, retailer),
+    buildEvidenceCaptureDedupeKey(task, sameRetailerPage),
+    'repeat research of one exact page remains idempotent'
+  );
+  assert.notEqual(
+    buildEvidenceCaptureDedupeKey(task, retailer),
+    buildEvidenceCaptureDedupeKey(task, marketplace),
+    'a second source/listing for the same product is a separate evidence capture'
+  );
 });

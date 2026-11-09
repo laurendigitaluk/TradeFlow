@@ -30,3 +30,6 @@ No LIVE or TEST database migration, source registry, task queue, catalogue, evid
 - PR #341 fixes this by applying accessory rejection to page title and terminal product slug only. It preserves exact model, sibling and package checks. Tests accept the 3DJake Combo, reject the Standard sibling for a Combo task, and reject replacement/nozzle pages.
 - The latest task logged only the two generic Anycubic collection/search routes, not the model-specific direct routes merged in PR #339. Research PC loaded playbook remains unverified; updater and runtime reload are separate. No restart/update was performed.
 - No TEST/LIVE crossover, source registry change, migration, evidence import, approval, secret or private .env access occurred.
+
+
+Verification: PR #341 GitHub Actions run #594 passed 104/104 tests on the final code/test head. The branch remains open and unmerged. Research PC direct-route loading is still unverified.

@@ -83,3 +83,8 @@ PC deployment is pending. Do not run the full installer for this UI-only update.
 ## Owner screenshot: clipped first two cards and no scroll — 9 November 2026
 
 Owner screenshot after the first UI update showed only five cards (Drones through Cameras); 3D Printers and Gaming were not reachable, and vertical scrolling did not work. The issue was isolated to the FlowLayoutPanel layout in the narrow side-by-side window. Production UI commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces it with a standard AutoScroll Panel, explicit card Y positions, computed AutoScrollMinSize and responsive card widths. This is a UI-only change; no worker or LIVE data touched. PC update and screenshot acceptance are still pending. Replace only the local UI script; do not rerun the full installer or stop the service.
+
+
+## Dedicated scrollbar correction — 9 November 2026
+
+The owner reported no visible change after installing the Panel AutoScroll build and reopening the Control Centre. The second attempt is not accepted as fixed. Production now uses a dedicated vertical scrollbar and manual card positioning, with calculated scroll range and resize handling; a follow-up commit corrects VScrollBar range ordering and guards programmatic ValueChanged recursion. Commits: 1871ec0d062377ff5fff96fedbfa45eda9e828a7 and ab2df7866072b0e21d69db5fd4522e18613ba610. Local PC update and visual acceptance still pending. Do not ask for repeated close/reopen until the updated script has been copied. UI-only update; leave background worker and LIVE data untouched.

@@ -61,3 +61,10 @@ The code also adds `gemma_http_requests` and `gemma_recovery_skipped` metrics wh
 - No private `.env` or secrets were accessed or changed.
 - The branch is stacked on PR #332 and must be reviewed together with its parent. No merge or deployment without explicit approval.
 - The 45-second 3D-printer Gemma timeout in PR #332 remains unverified on the Research PC. Raw full-page fallback is retained if Gemma times out.
+
+### Final review record — PR #334
+- Consolidated production-based PR: https://github.com/laurendigitaluk/TradeFlow/pull/334
+- Current code head at CI verification: `a01b3caa7f2bcbe4aaa128c3a1d2ce50e88c4e3e`.
+- GitHub Actions run #537 passed: 105 tests passed, 0 failed; PowerShell, Node and Owner Dashboard syntax checks passed.
+- PR #332 and PR #333 were closed as superseded by #334 to prevent competing versions. PR #331 remains the separate generic idle-heartbeat proposal.
+- PR #334 remains open, unmerged and undeployed. The Research PC 45-second timeout and changed-snapshot queue handoff still require a controlled runtime acceptance test after explicit approval.

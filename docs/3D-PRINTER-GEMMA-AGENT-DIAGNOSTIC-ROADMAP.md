@@ -1,3 +1,9 @@
+## Supabase memory-write limitation — 9 November 2026
+
+The LIVE schema inspection found no dedicated public project-memory or checkpoint table; the shared agent message store is the Common Room table. Its posting RPC platform_ai_agent_post_message explicitly requires a service_role JWT. The available SQL connector was rejected with "Service role required". No attempt was made to bypass that permission. No Common Room message or other Supabase write was made. The System Handbook, AI Operating Manual, 3D-printer diagnostic roadmap, project-memory file and checkpoint were updated on this review branch instead.
+
+
+
 # 3D Printer Gemma — website navigation and desktop alignment roadmap
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.

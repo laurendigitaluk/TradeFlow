@@ -35,3 +35,12 @@ No LIVE or TEST database migration, source registry, task queue, catalogue, evid
 Verification: PR #341 GitHub Actions run #594 passed 104/104 tests on the final code/test head. The branch remains open and unmerged. Research PC direct-route loading is still unverified.
 
 Runtime verification clarification: Both the 21:54 five-product batch and the 22:34 Kobra 3 Max V2 Combo task logged only the two generic Anycubic routes. Current production maps Kobra 3 Max V2 to two additional model-specific direct routes for every package, but neither task attempted them. The 21:54 Standard subtask also fetched the official Standard product page in 890 ms and then rejected it as model_variant_skipped, although the current production matcher test accepts the known title/URL fixture. The runtime event does not record the exact title supplied to the matcher and worker telemetry has no installed source SHA, so the local installation is not verified and a stale matcher is likely, but the exact local commit is unknown. After explicit approval, use the existing updater and verify both direct routes plus the Standard matcher in separate bounded tasks. Do not restart or update the Research PC without approval.
+
+
+### 9 November 2026 — 22:42 multi-product batch
+
+The eight-subtask Anycubic batch ran 22:42:14–22:46:56 UTC. Activity logs show 44 per-product search results, 112 approved-source route attempts (24 matching, 80 empty, 8 eBay HTTP 403), 37 collection inspections, 7 exact links, 9 fetch attempts, 12 model skips, 8 Gemma batches (4 complete, 4 timeout), and 5 retained captures. Two new unclassified Kobra 3 Max V2 Combo raw captures were staged; one is explicitly ACE 2 Pro Combo and must be package-checked against the task's 4-Color Combo label. No used capture or shared-evidence import occurred.
+
+All eight product subtasks emitted handoff/completion events, but the parent task failed at platform_ai_agent_complete_task with HTTP 400 PGRST102 Empty or invalid JSON. Queue writes remain persisted; the parent result is empty and status is failed. Current production task-worker serializes the completion args as JSON and the LIVE RPC signature matches; the failure occurs at PostgREST request parsing. Do not patch or requeue until the Research PC installed version and local request body are verified.
+
+The same task still logged only generic Anycubic routes, not the two model-specific routes in current production. The local playbook/matcher remains unverified. Explicit approval is required before updating/restarting the Research PC.

@@ -4459,3 +4459,40 @@ A regression test was added to protect the website coverage already configured f
 The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
 
 Status: the regression-test change is committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The latest post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.
+
+
+## Gemma Control Centre and specialist website route verification — 9 November 2026
+
+This addendum supersedes earlier same-day source-route notes where the category website coverage was described as already complete without recording the final route corrections.
+
+### Control Centre implementation
+
+- PR #325: `feature/gemma-desktop-control-centre-20261109`; code/test head `14da7fa38fec9a75cf95137985a49d20a2208abb`.
+- GitHub Actions run #472 passed: PowerShell syntax, Node source syntax, all 92 Gemma tests, and Owner Dashboard JavaScript syntax.
+- Seven independent switches are provided: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops, Cameras. Gaming is one specialist switch covering PlayStation, Xbox and Nintendo branches; those branches are not separate desktop switches.
+- Runtime uses one persistent supervisor and one Ollama queue execution lane. The local config determines which specialist keys the worker may claim. The scoped RPC requires every subtask in a task payload to belong to an enabled specialist. Mixed-agent tasks remain queued until all their specialist keys are enabled.
+- A specialist disabled during an active task is prevented from claiming subsequent work; the current task is allowed to finish. Global stop is graceful. No enabled specialists means no task claims.
+- The desktop worker does not fall back to the legacy unscoped claim RPC. Missing migration produces `requires_migration` and a safe stop.
+- The installer reuses the existing Research PC worker folder and private `.env`, runs the reviewed updater, refuses to overwrite an active worker, creates the Control Centre and seven specialist shortcuts, and registers the supervisor at sign-in. Closing the UI does not stop the background supervisor.
+
+### Website route configuration
+
+LIVE source registry audit: 119 UK records, 116 enabled. Enabled category coverage including shared universal sources: 3D Printers 15, Gaming 17, Drones 21, Metal Detectors 13, Mobile Phones 23, Laptops 12, Cameras 24. These counts overlap. No LIVE or TEST source registry rows were added, removed or changed by PR #325.
+
+- 3D Printers: existing source playbook, extraction path and settings are unchanged.
+- Gaming: capture-only behaviour and branch identity rules are unchanged. Discovery routes now include verified UK paths for Argos, Currys, Smyths, Very, Cash Converters, Cash Express, Xbox, PlayStation and Nintendo; Gumtree uses its UK search slug; Amazon and eBay use their dedicated marketplace search paths. Other mapped retailers use homepage discovery rather than a guessed generic `/search?q=` URL.
+- Drones: mapped HobbyRC, Heliguy, DJI Retail, DMTL, Leicester Drones and Quadcopters alongside the existing sources. MPB uses its UK `/en-uk` route. Aetha is homepage discovery only. DJI Store's sign-in-only page is explicitly skipped.
+- Metal Detectors: Regton uses its verified `/metal-detectors` category. Spin A Disc, UK History Finders, Unearthed UK, Wolds Detecting and LP Metal Detecting use homepage discovery. Amazon and eBay use dedicated marketplace search routes.
+- Mobile Phones and Cameras: missing source-domain playbook entries were added for the approved UK retailers and manufacturers; verified category paths are used where available, otherwise the worker starts from the registered site homepage and follows site navigation.
+- Laptops: existing UK manufacturer and retailer routes are retained.
+
+For approved international source domains, the UK storefront guard now recognises locale path segments `uk`, `gb`, `en-uk`, `en_uk`, `en-gb`, `en_gb` and `gb-en`. The host must still match an approved source record. This allows UK regional product pages such as Google Store `/gb/`, Dell `/en-gb/`, HP `/gb-en/`, HMD `/en_gb/` and MPB `/en-uk/` without allowing arbitrary unregistered domains.
+
+All discovery pages remain non-evidence. Gemma must follow to an individual exact-product/listing page and retain raw page evidence for ChatGPT/owner review. A route definition does not guarantee a successful fetch: 403/429 blocks, redirects, empty results and unavailable pages remain observable failure outcomes and must not be bypassed or represented as captured evidence.
+
+### Deployment boundary
+
+- PR #325 is open and unmerged. The scoped-claim migration is included in the PR but has not been applied to LIVE or TEST.
+- No research task was queued, no LIVE/TEST task or review-queue rows were changed, and no Research PC installation/restart occurred.
+- The desktop supervisor is LIVE-only. Do not point it at TEST or copy TEST data into LIVE.
+- After owner approval, merge PR #325, apply the additive scoped-claim migration to LIVE, then install on the Research PC. Verify with one bounded LIVE review-only task before any broader research batch. The Catalogue Importer remains owner-approval-gated; Release Monitor is not yet connected to this queue and is not exposed as a desktop research switch.

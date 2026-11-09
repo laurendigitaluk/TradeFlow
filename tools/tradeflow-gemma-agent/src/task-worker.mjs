@@ -30,8 +30,8 @@ let stopping=false;
 
 async function readDesktopConfig(){
  if(!desktopConfigPath)return null;
- const raw=JSON.parse(await readFile(desktopConfigPath,'utf8'));
- return normalizeDesktopConfig(raw);
+ const raw=await readFile(desktopConfigPath,'utf8');
+ return normalizeDesktopConfig(JSON.parse(raw.replace(/^\\uFEFF/,'')));
 }
 async function writeDesktopStatus(state,details={}){
  if(!desktopConfigPath)return;

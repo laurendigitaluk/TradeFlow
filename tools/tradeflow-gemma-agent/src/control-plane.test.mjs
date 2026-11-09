@@ -24,7 +24,7 @@ test('Gemma worker rejects unknown or unsafe environment names', () => {
 });
 
 test('Gemma worker rejects a URL that does not match the selected project', () => {
-  assert.throws(() => resolveControlPlane({ ...env, TRADEFLOW_TEST_URL: env.TRADEFLOW_LIVE_URL }), /does not match the approved TradeFlow TEST project/);
+  assert.throws(() => resolveControlPlane({ ...env, TRADEFLOW_LIVE_URL: env.TRADEFLOW_TEST_URL }), /does not match the approved TradeFlow LIVE project/);
 });
 
 test('Gemma worker refuses to start when selected environment credentials are missing', () => {

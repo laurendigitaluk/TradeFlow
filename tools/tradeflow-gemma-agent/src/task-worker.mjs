@@ -7,7 +7,8 @@ import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task
 import { resolveAgentIdentity } from './agent-identity.mjs';
 import { reportAgent } from './agent-telemetry.mjs';
 import { resolveControlPlane } from './control-plane.mjs';
-import { buildAgentClaimArgs, normalizeDesktopConfig, DESKTOP_RESEARCH_AGENTS } from './desktop-control.mjs';
+import { buildAgentClaimArgs } from './desktop-control.mjs';
+import { normalizeIsolatedAgentConfig, assertTaskGroupBelongsToAgent } from './agent-isolation.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -30,15 +31,11 @@ let stopping=false;
 async function readDesktopConfig(){
  if(!desktopConfigPath)return null;
  const raw=await readFile(desktopConfigPath,'utf8');
- const config=normalizeDesktopConfig(JSON.parse(raw.replace(/^\uFEFF/,'')));
- if(config.enabledAgentKeys.length!==1)throw new Error('An isolated Gemma folder must enable exactly one category agent.');
- return config;
+ return normalizeIsolatedAgentConfig(JSON.parse(raw.replace(/^\uFEFF/,'')));
 }
 const startupDesktopConfig=desktopConfigPath?await readDesktopConfig():null;
-const isolatedAgentKey=startupDesktopConfig?.enabledAgentKeys[0]||null;
-const isolatedAgentDefinition=isolatedAgentKey?DESKTOP_RESEARCH_AGENTS.find(item=>item.agent_key===isolatedAgentKey):null;
-if(desktopConfigPath&&!isolatedAgentDefinition)throw new Error('Unknown isolated Gemma agent key: '+isolatedAgentKey);
-const isolatedAgentIdentity=isolatedAgentDefinition?{agent_key:isolatedAgentDefinition.agent_key,agent_name:'Gemma — '+isolatedAgentDefinition.label,category:isolatedAgentDefinition.agent_key}:null;
+const isolatedAgentKey=startupDesktopConfig?.agentKey||null;
+const isolatedAgentIdentity=startupDesktopConfig?.agentIdentity||null;
 const workerId=(os.hostname()+'-'+(isolatedAgentKey||'legacy')+'-'+process.pid).slice(0,120);
 async function writeDesktopStatus(state,details={}){
  if(!desktopConfigPath)return;
@@ -165,7 +162,7 @@ async function processClaim(claim){
  if(claim.task_type!=='catalogue_research')throw new Error('Unsupported task type: '+claim.task_type);
  const tasks=normaliseProductResearchTasks(Array.isArray(payload.tasks)?payload.tasks:(Array.isArray(payload)?payload:[payload]));
  if(!tasks.length)throw new Error('Task payload contains no research tasks.');
- if(isolatedAgentKey&&tasks.some(task=>resolveAgentIdentity(task).agent_key!==isolatedAgentKey))throw new Error('Category isolation guard rejected a task outside '+isolatedAgentKey+'.');
+ if(isolatedAgentKey&&!assertTaskGroupBelongsToAgent(tasks,isolatedAgentKey,resolveAgentIdentity))throw new Error('Category isolation guard rejected a task group outside '+isolatedAgentKey+'.');
  activeTaskKey=claim.task_key;
  for(const task of tasks)activeAgentKeys.add(resolveAgentIdentity(task).agent_key);
  await writeDesktopStatus('processing');

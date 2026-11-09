@@ -137,7 +137,7 @@ test('full-page review retention includes 3D printers and Gaming but leaves othe
 
 test('successful 3D-printer Gemma extraction preserves the complete fetched page for ChatGPT', async () => {
   const originalFetch = globalThis.fetch;
-  const sourceText = ('Bambu Lab A1 3D printer product detail. £289.00 in stock. ').repeat(600);
+  const sourceText = 'Bambu Lab A1 3D printer £289.00 in stock. ' + 'Detailed product specification and technical information. '.repeat(700);
   assert.ok(sourceText.length > 10000);
   const finding = {
     source_id: 'S1',

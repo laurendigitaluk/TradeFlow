@@ -1,3 +1,11 @@
+## 9 November 2026 23:36 UTC — isolated PR refreshed against current 3D branch
+
+PR #346 replaces PR #344, which was closed without merge because its base branch had advanced. PR #346 is based on current gemma/3d-printers head b95513d34fb5f55114788a869d07f6f461dedcc9 and combines the 3D-only fallback-field correction with the 3DJake retailer-parent-taxonomy matcher correction. Its combined GitHub Actions run #42721655690 passed 110/110 tests with zero failures, including the current base's compact task-result-summary and direct Anycubic route tests.
+
+Release ordering: review/merge PR #346 into gemma/3d-printers before promoting that branch through draft PR #345. Production counterparts PR #343 (fallback queue fields) and PR #341 (3DJake matcher) remain open for the shared production worker path. No merge/deployment has occurred.
+
+
+
 ## Supabase memory-write limitation — 9 November 2026
 
 The LIVE schema inspection found no dedicated public project-memory or checkpoint table; the shared agent message store is the Common Room table. Its posting RPC platform_ai_agent_post_message explicitly requires a service_role JWT. The available SQL connector was rejected with "Service role required". No attempt was made to bypass that permission. No Common Room message or other Supabase write was made. The System Handbook, AI Operating Manual, 3D-printer diagnostic roadmap, project-memory file and checkpoint were updated on this review branch instead.

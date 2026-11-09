@@ -42,3 +42,9 @@ The owner wants a Windows desktop application to control each Gemma product-rese
 4. Install on Research PC from production; preserve .env and stop any old worker cleanly first.
 5. Verify one background worker, all enabled specialists waiting, and disabled specialists not claiming tasks.
 6. Run bounded TEST acceptance before any controlled LIVE task. Verify raw capture handoff and no automatic catalogue import.
+
+## Verification update
+- GitHub Actions run #448 on final reviewed feature head `4acc456eff89d971981ad69766395a801e83df0d` passed.
+- Passed steps: PowerShell syntax checks for the updater and all desktop scripts; Node syntax checks; Gemma task and website playbook tests; Owner Dashboard JavaScript syntax check.
+- The PR remains unmerged. SQL migration is included but not applied to LIVE or TEST.
+- TEST source registry was inspected separately: 51 enabled UK records (3D printers 5, gaming 14, drones 8, metal detectors 8, mobile phones 13, laptops 12, cameras 16). It was left unchanged; the desktop supervisor is LIVE-only.

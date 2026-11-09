@@ -5176,3 +5176,38 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK discovery instructions (proposed, not yet deployed)
 For 3D Printers branch tasks, use official UK collection and search routes, followed by verified direct model URLs in source-playbooks.mjs. Kobra 3 Max V2 has separate standard and ACE 2 Pro Combo URLs. Kobra 4 Standard and Combo can share a page, so never assign the page headline price to a package without checking the selected machine option. Kobra S1 ACE 2 Pro Combo is distinct from older ACE Pro packages and extra-filament/accessory bundles. Preserve URL, selected option, GBP price, condition, stock and timestamp for ChatGPT review. Do not bypass blocked websites. Existing Gemma timeout remains a separate unresolved issue; retain raw capture for review rather than fabricate extracted evidence.
+
+
+## 9 November 2026 — Isolated category Gemma architecture (owner requirement)
+
+Do not implement category development as one Gemma Desktop supervisor with multiple category switches or one shared task-worker process. The owner explicitly requires one independent Gemma per product category. Each category receives its own Git branch and separate Git clone/folder on the Research PC, including its own complete worker source, tests, agent config, launcher and updater. Changes in one branch/folder must never be automatically copied, merged or deployed to another.
+
+Initial branches and canonical keys: 
+- `gemma/3d-printers` — `3d-printers-equipment`
+- `gemma/gaming` — `gaming-consoles-accessories`
+- `gemma/cameras` — `cameras`
+- `gemma/drones` — `drones`
+- `gemma/metal-detectors` — `metal-detectors`
+- `gemma/mobile-phones` — `mobile-phones`
+- `gemma/laptops` — `laptops`
+
+Local folders are `C:\CTFGemma2\Gemma-3D-Printers`, `Gemma-Gaming`, `Gemma-Cameras`, `Gemma-Drones`, `Gemma-Metal-Detectors`, `Gemma-Mobile-Phones` and `Gemma-Laptops`. These must be independent Git clones, not worktrees. Each clone has its own .git metadata and checks out only its branch/source tree. Branches share ancestry only; no automatic sync.
+
+Shared resources are limited to the existing local Ollama service and the existing private TradeFlow ENV file by path. The installer stores a pointer to the ENV file and does not copy, print, back up or edit secret values. Each per-folder `agent.config.json` enables exactly one category. The worker uses `TRADEFLOW_GEMMA_AGENT_CONFIG`, calls `platform_ai_agent_claim_task_for_agents` with one agent key, rejects mixed/out-of-scope task groups, and uses category-specific Common Room identity. The category updater reads the branch name from its own config and refuses to update a running instance.
+
+The previous Windows Research Control Centre multi-switch/single-worker architecture is superseded for isolated category development. Do not use its shared config or supervisor to run these independent agents. The new installer creates per-category folders and shortcuts but starts no workers. Existing shared installation, active 3D Printer task, queues, evidence, source registry, Supabase schema and private ENV must remain untouched until the owner explicitly switches to the isolated 3D Printer clone after the current task completes.
+
+Current implementation branch: `feature/gemma-isolated-agent-foundation-20261109`; draft PR #342 is open. Seven category branches have been created with single-key configs. Gemma Research Tests CI run 42716626875 passed, including PowerShell syntax, Node source syntax, isolation tests and existing Gemma regression tests. PC installation and runtime acceptance remain pending. Do not move to Gaming until Gemma 3D Printers is installed, tested in isolation, and locked at a restore point. See `docs/GEMMA-ISOLATED-AGENT-ARCHITECTURE.md` and `PROJECT-MEMORY/2026-11-09-isolated-gemma-category-agents.md`.
+
+
+## Unified local control dashboard — 9 November 2026
+
+The initial isolated-agent installer created only a text-mode Gemma Switchboard. That switchboard launches category workers but does not provide a dashboard, stop controls or updater controls. It is not a suitable ongoing management interface. The owner correctly reported that the former shared Research Control Centre does not control these independent installations; do not direct the owner back to that legacy dashboard.
+
+A new Windows Forms dashboard is provided at `tools/gemma-agent-isolation/Gemma-Control-Centre.ps1`. The isolated-agent installer now downloads it into `C:\CTFGemma2\Gemma-Shared\Gemma-Control-Centre.ps1` and creates both `Gemma Control Centre.lnk` and a compatibility `Gemma Switchboard.lnk` that open the same single-instance dashboard. Seven rows show the independent agent, expected Git branch, local status, current task and last update. Each row has Start, Stop, Update and Logs actions. Refresh runs every 2.5 seconds.
+
+The dashboard uses each isolated clone's own `agent.config.json`, `status.json`, `src\task-worker.mjs`, launcher and updater. Start launches only that category's local worker hidden and captures stdout/stderr in its own log folder. Stop sets only that agent's `serviceEnabled=false`; the worker checks the flag between queued tasks and finishes its active batch before stopping. It does not terminate Node or interrupt an active research task. Update is disabled while that agent's worker is running and invokes only its own `Update-Gemma-Agent.ps1` for its configured branch. Branch mismatch blocks start and update. No shared supervisor, global multi-category worker, or category-to-category code sync is introduced.
+
+The dashboard is local Windows UI; it does not need to change Supabase schema, queue rows, source registry, evidence or credentials. The LIVE status table remains useful for remote verification, while per-agent local status files provide immediate process control. A one-instance mutex prevents duplicate dashboard windows. The installer skips existing clone folders and does not stop or overwrite running workers; it updates only the shared dashboard script/shortcuts and verifies the shared ENV pointer.
+
+CI must parse the dashboard PowerShell script. PC installation and visible acceptance remain pending until the owner reruns the updated installer from the architecture branch after CI passes. The current independent 3D Printer worker must not be stopped merely to install the dashboard; installation is designed to leave existing workers alone.

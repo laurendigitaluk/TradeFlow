@@ -2579,3 +2579,16 @@ Root cause was the WinForms docking order: the Fill-docked list host had been mo
 Acceptance is complete for the desktop display. No LIVE worker, supervisor, local agent configuration, private .env, research queue, sources, product catalogue, evidence or Supabase data was changed by this final UI repair. LIVE remains separate from TEST. The only observed runtime state at acceptance was all seven specialists enabled, zero currently active research tasks, and the background service connected/waiting; WAITING does not mean a research task is running.
 
 Supabase LIVE schema inspection found no public project-memory/checkpoint table. The authoritative project record for this repair is maintained in the repository's PROJECT-MEMORY, CHECKPOINTS, both operating manuals, backend operations manual and diagnostic roadmap.
+
+
+## 9 November 2026 — Independent category Gemma installations
+
+The owner requires one separate Gemma per product category, not one shared Gemma worker with multiple enabled category switches. Each specialist must have its own Git branch, independent local Git clone/folder, complete worker source, category config, tests, launcher and updater. A code change in one category branch/folder must not change another category.
+
+The seven planned category branches are `gemma/3d-printers`, `gemma/gaming`, `gemma/cameras`, `gemma/drones`, `gemma/metal-detectors`, `gemma/mobile-phones` and `gemma/laptops`. Their planned PC folders are `C:\CTFGemma2\Gemma-3D-Printers`, `Gemma-Gaming`, `Gemma-Cameras`, `Gemma-Drones`, `Gemma-Metal-Detectors`, `Gemma-Mobile-Phones` and `Gemma-Laptops` respectively. Each is a separate Git clone, not a shared working tree.
+
+Only the existing private TradeFlow ENV file and local Ollama model service are shared. The installer stores the ENV file path only at `C:\CTFGemma2\Gemma-Shared\TradeFlow.env.path`; it never copies, prints or changes secret values. Each agent config contains exactly one canonical agent key and its own Git branch name. Each worker claims only its own category using the existing service-role-scoped RPC and checks the category identity again before processing.
+
+The old Windows Research Control Centre model (one supervisor and one shared Node/Gemma execution lane with seven switches) is not the target architecture for category development. The new isolated-agent installer creates seven separate folders and desktop shortcuts and does not start workers or change the existing installation. Do not use the shared Control Centre to develop category-specific code.
+
+Implementation is in progress on `feature/gemma-isolated-agent-foundation-20261109`; category branches have been created. The Research PC folders and shortcuts have not yet been installed. Existing shared worker, current 3D Printer eight-product task, existing local installation and private ENV remain untouched. Do not start a second 3D Printer process until the current task completes. See `docs/GEMMA-ISOLATED-AGENT-ARCHITECTURE.md` and the matching PROJECT-MEMORY/CHECKPOINTS entries for the branch/folder map and acceptance gates.

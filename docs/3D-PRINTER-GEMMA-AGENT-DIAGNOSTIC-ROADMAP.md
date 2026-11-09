@@ -65,3 +65,10 @@ The paths below are site-specific discovery routes, not verified evidence pages.
 
 ## Verification gate
 Before a wider batch: one controlled 3D Printer LIVE task must show direct-route attempts, individual product page inspection and raw capture or a specific logged failure. Verify no unrelated category settings, workers or queues were modified. Update this roadmap and the project's canonical manuals/memory checkpoint when a material runtime fix is made.
+
+
+## 9 November 2026 — separate Gemma installation boundary
+
+The owner has specified one independent Gemma per category. The 3D Printer implementation now has its own branch `gemma/3d-printers` and its own future local clone `C:\CTFGemma2\Gemma-3D-Printers`. It must not be developed or updated from a shared multi-category Control Centre worker. The isolated worker config enables only `3d-printers-equipment`; its queue claim and in-process guard reject tasks from other categories. The common private ENV is referenced by path only; source, instructions, tests and Git history are local to this Gemma folder/branch.
+
+The shared existing Research PC worker has not yet been replaced. Do not run both old and new 3D Printer instances against the same LIVE queue. The existing eight-product batch `owner-3d-printers-equipment-1794264123497` failed at the final task-completion RPC (HTTP 400, empty/invalid JSON) after 8 product-page fetches and 7 extraction batches; review-queue captures must be checked before switching. The isolated-agent CI passed in run `42716626875`; local PC installation and runtime acceptance remain pending. See `docs/GEMMA-ISOLATED-AGENT-ARCHITECTURE.md`.

@@ -755,3 +755,47 @@ test('specialist playbooks preserve the distinction between complete products an
   assert.ok(getCategoryWebsitePlaybook('laptops').categoryInstructions.some(rule => rule.includes('CPU')));
   assert.ok(getCategoryWebsitePlaybook('cameras').categoryInstructions.some(rule => rule.includes('body-only')));
 });
+
+
+test('Gaming agents use verified UK category routes instead of guessed generic search URLs', () => {
+  const task = { category_slug: 'gaming-consoles-accessories', branch_slug: 'playstation-consoles', manufacturer: 'Sony', model: 'PlayStation 5' };
+  const cases = [
+    ['argos.co.uk', 'https://argos.co.uk/browse/technology/video-games-and-consoles/c:29952/'],
+    ['currys.co.uk', 'https://currys.co.uk/gaming/consoles'],
+    ['smythstoys.com', 'https://smythstoys.com/uk/en-gb/video-games'],
+    ['very.co.uk', 'https://very.co.uk/browse/gaming-consoles'],
+    ['cashconverters.co.uk', 'https://cashconverters.co.uk/shop'],
+    ['cashexp.co.uk', 'https://cashexp.co.uk/product-category/video-games-consoles/'],
+    ['xbox.com', 'https://xbox.com/en-GB/consoles'],
+    ['playstation.com', 'https://playstation.com/en-gb/ps5'],
+    ['nintendo.com', 'https://nintendo.com/en-gb/'],
+    ['gumtree.com', 'https://gumtree.com/uk/srpsearch%2Bsony-playstation-5']
+  ];
+  for (const [domain, expected] of cases) {
+    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, task), [expected], domain);
+  }
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'amazon.co.uk' }, task), [
+    'https://amazon.co.uk/s?k=Sony%20PlayStation%205'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, task), [
+    'https://ebay.co.uk/sch/i.html?_nkw=Sony%20PlayStation%205'
+  ]);
+});
+
+test('every enabled specialist source domain has an explicit site entry or universal marketplace route', () => {
+  const cases = {
+    drones: ['aetha.global','hobbyrc.co.uk','heliguy.com','dji-retail.co.uk','dmtl.co.uk','leicesterdrones.com','quadcopters.co.uk'],
+    'metal-detectors': ['regton.com','spinadiscmetaldetectors.com','uk-historyfinders.co.uk','uneartheduk.co.uk','woldsdetecting.co.uk','lpmetaldetecting.com','amazon.co.uk','ebay.co.uk'],
+    'mobile-phones': ['argos.co.uk','currys.co.uk','johnlewis.com','ee.co.uk','very.co.uk','oppo.com','realme.com'],
+    laptops: ['dell.com','hp.com','lenovo.com','currys.co.uk','argos.co.uk','johnlewis.com','very.co.uk'],
+    cameras: ['sony.co.uk','jessops.com','parkcameras.com','cliftoncameras.co.uk','harrisoncameras.co.uk','camerapricebuster.co.uk','castlecameras.co.uk','productiongear.co.uk']
+  };
+  for (const [category, domains] of Object.entries(cases)) {
+    const task = { category_slug: category, manufacturer: 'Example', model: 'Exact Model' };
+    for (const domain of domains) {
+      const routes = buildWebsiteSearchRoutes({ domain }, task);
+      assert.ok(routes.length > 0, category + ' has no route for ' + domain);
+      assert.ok(!routes.some(url => /\/search\?q=/i.test(url)), category + ' generated a guessed /search route for ' + domain);
+    }
+  }
+});

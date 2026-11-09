@@ -268,11 +268,13 @@ $script:UpdateAgentListViewport = {
     $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
     $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
     $agentScroll.Visible = ($maxOffset -gt 0)
-    $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
     $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
     $agentScroll.SmallChange = 54
+    $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
     if ($script:AgentListOffset -gt $maxOffset) { $script:AgentListOffset = $maxOffset }
-    $agentScroll.Value = [Math]::Min($agentScroll.Maximum, $script:AgentListOffset)
+    $script:UpdatingAgentScroll = $true
+    try { $agentScroll.Value = [Math]::Min($agentScroll.Maximum - $agentScroll.LargeChange + 1, $script:AgentListOffset) }
+    finally { $script:UpdatingAgentScroll = $false }
     $width = [Math]::Max(300, $cards.ClientSize.Width - 16)
     foreach ($item in $AgentControls.Values) {
         $item.Card.Width = $width
@@ -281,8 +283,10 @@ $script:UpdateAgentListViewport = {
 }.GetNewClosure()
 
 $agentScroll.Add_ValueChanged({
-    $script:AgentListOffset = $agentScroll.Value
-    & $script:UpdateAgentListViewport
+    if (-not $script:UpdatingAgentScroll) {
+        $script:AgentListOffset = $agentScroll.Value
+        & $script:UpdateAgentListViewport
+    }
 }.GetNewClosure())
 
 $cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())

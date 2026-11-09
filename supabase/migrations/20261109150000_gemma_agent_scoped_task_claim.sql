@@ -25,7 +25,7 @@ begin
  end if;
  if exists (
   select 1 from unnest(v_allowed) k
-  where k not in (
+  where k is null or k not in (
    '3d-printers-equipment','3d-printers',
    'gaming-consoles-accessories','gaming-consoles',
    'drones','metal-detectors','mobile-phones','laptops','cameras'
@@ -41,11 +41,10 @@ begin
   where t.attempts < t.max_attempts
    and t.task_type='catalogue_research'
    and (t.status='queued' or (t.status='running' and t.lease_expires_at < now()))
-   and jsonb_typeof(t.payload->'tasks')='array'
-   and jsonb_array_length(t.payload->'tasks') > 0
+   and jsonb_array_length(case when jsonb_typeof(t.payload->'tasks')='array' then t.payload->'tasks' else '[]'::jsonb end) > 0
    and exists (
     select 1
-    from jsonb_array_elements(t.payload->'tasks') as item(value)
+    from jsonb_array_elements(case when jsonb_typeof(t.payload->'tasks')='array' then t.payload->'tasks' else '[]'::jsonb end) as item(value)
     cross join lateral (
      select case
       when lower(trim(coalesce(item.value->>'agent_key','')))='3d-printers-equipment'

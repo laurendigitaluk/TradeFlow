@@ -44,3 +44,12 @@ PR #334 checks the new `capture-` base key first. If no row matches, it previous
 Stacked on PR #334 head `3adcfd230a948f1187775eea3f72e305a284e891`. PR #334 remains open, unmerged and undeployed. This compatibility branch is not installed on the Research PC. CI for this new branch is pending at checkpoint creation.
 
 No research task queued; no worker restarted; no source registry or migration changed; no catalogue evidence approved/imported; no TEST/LIVE data copied; no private `.env` or secrets accessed or changed.
+
+
+## 9 November 2026 — PR #335 verification status update
+
+PR #335 now targets `production` and consolidates the full PR #334 3D-printer change set plus legacy review-key compatibility. Current head is `fbe7a44b5f404b21b3d613406cc5a6e18abedfcb`; the PR is open and GitHub reports it mergeable. Five new regression tests are present.
+
+Gemma Research Tests run #549 failed before scheduling any jobs (GitHub reported zero jobs), so it did not execute the suite. The prior PR #334 head passed run #548 with 105 tests, but that result does not cover the five new legacy-compatibility tests. Cloudflare Workers Builds for both `tradeflow` and `tradeflow-test` passed on the current PR #335 head; these are preview/build checks, not production deployment. Do not merge until the current Gemma test suite has executed successfully and the Research PC runtime acceptance has been completed.
+
+PR #334 remains open as the separately tested parent version until the consolidated PR's test suite is verified. No LIVE database write, source change, migration, task queueing, worker restart, evidence approval/import, TEST/LIVE copy or secret/configuration change occurred.

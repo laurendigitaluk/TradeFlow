@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildEvidenceCaptureDedupeKey, buildEvidenceCaptureSnapshotDedupeKey, buildEvidenceCaptureSnapshotFingerprint, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getEvidenceCaptureRepeatAction, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -344,6 +344,8 @@ test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw
       OLLAMA_MODEL: 'gemma3:4b'
     }, event => events.push(event));
     assert.equal(requests, 1, 'a failed 3D batch must not trigger sequential single-page retries');
+    assert.equal(result.gemmaHttpRequests, 1, 'count actual Ollama HTTP requests');
+    assert.equal(result.gemmaRecoverySkipped, 2, 'count both pages retained as raw fallback after the failed batch');
     assert.equal(result.batches, 1);
     assert.equal(result.failures.length, 1);
     assert.equal(result.findings.length, 2);
@@ -394,4 +396,132 @@ test('same product can retain multiple evidence captures of the same type from d
     buildEvidenceCaptureDedupeKey(task, marketplace),
     'a second source/listing for the same product is a separate evidence capture'
   );
+});
+
+
+test('3D-printer review snapshots are idempotent until material page observations change', () => {
+  const task = {
+    manufacturer: 'Elegoo',
+    model: 'Neptune 4 Pro',
+    package_key: 'standard',
+    category_slug: '3d-printers-equipment',
+    branch_slug: '3d-printers'
+  };
+  const original = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    evidence_type: null,
+    package_or_variant_text: 'Standard Printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro standard printer £189.00. '.repeat(180),
+      gbp_price_mentions: [
+        { amount: 189, display: '£189.00', context: 'Elegoo Neptune 4 Pro standard printer £189.00' }
+      ]
+    }
+  };
+  const unchanged = JSON.parse(JSON.stringify(original));
+  const changedPrice = {
+    ...original,
+    page_capture: {
+      ...original.page_capture,
+      gbp_price_mentions: [
+        { amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro standard printer £169.00' }
+      ]
+    }
+  };
+  const expandedPage = {
+    ...original,
+    page_capture: {
+      ...original.page_capture,
+      captured_text: 'Elegoo Neptune 4 Pro standard printer £189.00. '.repeat(900)
+    }
+  };
+
+  const originalFingerprint = buildEvidenceCaptureSnapshotFingerprint(original);
+  assert.equal(buildEvidenceCaptureSnapshotFingerprint(unchanged), originalFingerprint);
+  assert.notEqual(buildEvidenceCaptureSnapshotFingerprint(changedPrice), originalFingerprint);
+  assert.notEqual(buildEvidenceCaptureSnapshotFingerprint(expandedPage), originalFingerprint);
+
+  const originalSnapshotKey = buildEvidenceCaptureSnapshotDedupeKey(task, original, originalFingerprint);
+  assert.equal(
+    buildEvidenceCaptureSnapshotDedupeKey(task, unchanged, buildEvidenceCaptureSnapshotFingerprint(unchanged)),
+    originalSnapshotKey
+  );
+  assert.notEqual(
+    buildEvidenceCaptureSnapshotDedupeKey(task, changedPrice, buildEvidenceCaptureSnapshotFingerprint(changedPrice)),
+    originalSnapshotKey
+  );
+});
+
+test('changed captures create a new review snapshot without modifying imported or rejected history', () => {
+  const evidence = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    evidence_type: null,
+    package_or_variant_text: 'Standard Printer',
+    item_condition_text: 'Brand new',
+    availability_text: 'In stock',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro £189.00. '.repeat(400),
+      gbp_price_mentions: [{ amount: 189, display: '£189.00', context: 'Elegoo Neptune 4 Pro standard £189.00' }]
+    }
+  };
+  const changed = {
+    ...evidence,
+    page_capture: {
+      ...evidence.page_capture,
+      gbp_price_mentions: [{ amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro standard £169.00' }]
+    }
+  };
+  const incomingFingerprint = buildEvidenceCaptureSnapshotFingerprint(changed);
+  const oldPayload = {
+    task: { task_key: 'older-task' },
+    evidence,
+    page_capture: evidence.page_capture,
+    review_classification: 'unverified_capture'
+  };
+  const imported = { status: 'imported', raw_payload: oldPayload };
+  const rejected = { status: 'rejected', raw_payload: oldPayload };
+  const pending = {
+    status: 'needs_research',
+    reviewed_at: null,
+    reviewed_by: null,
+    approved_at: null,
+    imported_at: null,
+    raw_payload: oldPayload
+  };
+  const reviewedPending = { ...pending, reviewed_at: '2026-11-09T12:00:00Z' };
+
+  const importedBefore = JSON.stringify(imported);
+  const rejectedBefore = JSON.stringify(rejected);
+  assert.equal(getEvidenceCaptureRepeatAction(imported, buildEvidenceCaptureSnapshotFingerprint(evidence)), 'duplicate');
+  assert.equal(getEvidenceCaptureRepeatAction(imported, incomingFingerprint), 'new_snapshot');
+  assert.equal(getEvidenceCaptureRepeatAction(rejected, incomingFingerprint), 'new_snapshot');
+  assert.equal(getEvidenceCaptureRepeatAction(pending, incomingFingerprint), 'enrich');
+  assert.equal(getEvidenceCaptureRepeatAction(reviewedPending, incomingFingerprint), 'new_snapshot');
+  assert.equal(JSON.stringify(imported), importedBefore, 'the imported evidence row is never mutated');
+  assert.equal(JSON.stringify(rejected), rejectedBefore, 'the rejected history is never mutated');
+});
+
+test('repeat research of the same changed snapshot is idempotent even when reviewer metadata is absent', () => {
+  const evidence = {
+    page_title: 'Elegoo Neptune 4 Pro',
+    page_capture: {
+      title: 'Elegoo Neptune 4 Pro',
+      captured_text: 'Elegoo Neptune 4 Pro £169.00 in stock. '.repeat(400),
+      gbp_price_mentions: [{ amount: 169, display: '£169.00', context: 'Elegoo Neptune 4 Pro £169.00 in stock' }]
+    }
+  };
+  const fingerprint = buildEvidenceCaptureSnapshotFingerprint(evidence);
+  const revision = {
+    status: 'needs_research',
+    reviewed_by: null,
+    reviewed_at: null,
+    approved_at: null,
+    imported_at: null,
+    raw_payload: { evidence, page_capture: evidence.page_capture, snapshot_fingerprint: fingerprint }
+  };
+  assert.equal(getEvidenceCaptureRepeatAction(revision, fingerprint), 'duplicate');
 });

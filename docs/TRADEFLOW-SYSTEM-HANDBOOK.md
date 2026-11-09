@@ -4612,3 +4612,10 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK direct-route recovery (pending validation)
 The 21:19 LIVE five-printer test completed in 2m10s but only Kobra 4 Standard queued a raw capture. The other four tasks had no captures; Kobra 4 extraction timed out after ~45s. A production-based fix branch adds independently verified Anycubic UK product routes for Kobra 3 Max V2 Standard/ACE 2 Pro Combo, Kobra 4 and Kobra S1 ACE 2 Pro Combo. This change is discovery-only; do not assume source pages or prices have been accepted. Verify the exact model/package, selected variant, stock and GBP price on the detail page, then rerun a controlled LIVE task after merge and Research PC update. Do not alter Gaming or other worker configuration.
+
+
+### 9 November 2026 — 3DJake product-path taxonomy false positive
+
+A LIVE Kobra 3 Max V2 Combo task discovered and fetched the official Anycubic page, retained a 16,285-character raw capture after a 48.4-second Gemma timeout, and staged it as an unverified ChatGPT review record. The same task rejected a genuine 3DJake Kobra 3 Max V2 Combo product URL because the matcher searched the full URL path for accessory terms and mistook the retailer's parent category anycubic-3d-printer-and-accessories for an accessory product.
+
+The 3D-printer matcher correction is on PR #341. Accessory checks now target the product title and terminal product slug; package matching and explicit accessory/replacement checks remain in place. Regression tests cover the 3DJake Combo, its Standard sibling, replacement hotend and nozzle pages. The change is not merged or deployed. No source, catalogue, evidence, approval, TEST or secret data was changed.

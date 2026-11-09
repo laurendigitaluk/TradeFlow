@@ -118,7 +118,7 @@ const playbooks = {
         navigation: 'Use search results only to discover products. Follow a matching result to its direct ASIN product page (/dp/ or /gp/product/), verify the exact model, selected seller/offer, GBP price and availability. Do not use search-result prices as evidence.'
       }
     }
-  }
+  },
   'gaming-consoles-accessories': {
     categoryInstructions: [
       'Follow the master catalogue hierarchy: category → branch → product family → manufacturer/model → exact edition, storage, colour or bundle → individual product/listing page. A category, search page or collection is discovery only, never price evidence.',

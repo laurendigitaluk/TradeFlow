@@ -1,37 +1,46 @@
 # Checkpoint — Gemma Desktop Control Centre (9 November 2026)
 
-## Baseline
-- Production branch: `production`
-- Production base commit: `e81ede671bfc03e73dc16169638011372b5b6117`
-- Feature branch: `feature/gemma-desktop-control-centre-20261109`
-- Pull request: #325 (open, ready for review)
-- LIVE Supabase: `gxsrajtqzdjvmceqcpgv`
-- TEST Supabase: `nnsshnfkjcflucjrftzi`
+## Production baseline
+- Production branch: production
+- Merge commit: b20123fd8f832388011589ac8e7f9e602bb98f08
+- PR #325: merged
+- Production CI run #473: passed all steps, including 92 Gemma tests (0 failures), PowerShell syntax, Node syntax and Owner Dashboard JavaScript syntax.
+- LIVE Supabase: gxsrajtqzdjvmceqcpgv
+- TEST Supabase: nnsshnfkjcflucjrftzi
 
-## Files added/changed in PR
-- `tools/tradeflow-gemma-desktop/agents.json`
-- `tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1`
-- `tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1`
-- `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1`
-- `tools/tradeflow-gemma-desktop/README.md`
-- `tools/tradeflow-gemma-agent/src/desktop-control.mjs` and test
-- `tools/tradeflow-gemma-agent/src/task-worker.mjs` (optional scoped mode only; legacy mode unchanged when no desktop config path is set)
-- `tools/tradeflow-gemma-agent/src/source-playbooks.mjs` and tests (new categories only; 3D/Gaming blocks preserved)
-- updater, launcher, CI workflow and both manuals
-- `supabase/migrations/20261109150000_gemma_agent_scoped_task_claim.sql`
+## Implementation
+- Windows Control Centre and seven specialist shortcuts under tools/tradeflow-gemma-desktop.
+- One sign-in background supervisor and one queue worker/Ollama execution lane.
+- Seven switches: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops, Cameras. Gaming is one switch for PlayStation/Xbox/Nintendo branches; legacy agent keys are aliases.
+- Desktop config is local and contains no credentials. Existing private .env path is reused and not copied, printed or overwritten.
+- Worker claims through service-role-only platform_ai_agent_claim_task_for_agents(text,text[],integer). Every subtask must belong to an enabled agent. Desktop mode has no fallback to the legacy unscoped claim.
+- Disable prevents new claims; active task finishes. Global stop is graceful. Missing RPC stops with requires_migration.
+- Installer refuses to overwrite an active worker and creates the supervisor scheduled task plus Control Centre and seven specialist shortcuts.
 
-## Restore/safety notes
-- No production files changed; PR is not merged.
-- No Supabase migration applied.
-- No LIVE/TEST queue, source, catalogue, evidence, approvals or imports changed.
-- No Research PC update/restart/start performed.
-- Existing private .env was not accessed outside read-only target validation logic in the installer code; it remains untouched on the PC.
-- Do not start desktop service until the migration is deployed to LIVE.
-- If the scoped RPC is missing, desktop worker stops with `requires_migration` and does not use the generic queue claim.
-- Existing 3D-printer and Gaming behaviour must remain unchanged.
+## Website configuration
+- LIVE registry: 119 UK source records, 116 enabled. Category coverage including universal sources: 3D Printers 15, Gaming 17, Drones 21, Metal Detectors 13, Mobile Phones 23, Laptops 12, Cameras 24.
+- No LIVE or TEST source registry rows changed.
+- 3D-printer playbook/extraction unchanged. Gaming capture-only handoff unchanged; verified UK retailer/console discovery routes are included.
+- Drones, Metal Detectors, Mobile Phones and Cameras have complete source-domain playbooks; Laptops routes retained.
+- Approved international source hosts recognise UK locale path segments uk, gb, en-uk, en_uk, en-gb, en_gb and gb-en while requiring an approved source host.
+- store.dji.com is skipped because it redirects to sign-in. Discovery pages are not evidence.
 
-## Verification update
-- Final reviewed feature head: `4acc456eff89d971981ad69766395a801e83df0d`.
-- GitHub Actions run #448 passed all workflow steps, including Node tests, PowerShell parser checks and Owner Dashboard JavaScript syntax.
-- PR remains unmerged; no migration has been applied to LIVE or TEST.
-- TEST source registry was read-only checked: 51 enabled UK records. It was not modified; desktop runtime targets LIVE only.
+## Database verification
+- LIVE scoped RPC exists.
+- service_role can execute; authenticated cannot execute.
+- SECURITY DEFINER is enabled; search_path is public, private.
+- TEST scoped RPC is absent and TEST remains separate.
+- No LIVE/TEST queue, source, catalogue, evidence, approval or import rows were changed by this verification.
+
+## Installation status
+- Production installer is ready at tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1.
+- Research PC installation has NOT occurred. No local worker was stopped, restarted or installed by this verification.
+- Existing private .env remains untouched on the PC.
+- No dedicated project-memory/checkpoint table was found in the LIVE schema; repository docs/checkpoints are the durable record.
+
+## Next steps
+1. On the Research PC, open PowerShell in the existing Gemma folder containing src\task-worker.mjs.
+2. Run the production installer command in tools/tradeflow-gemma-desktop/README.md. If an old manual worker is active, stop it cleanly with Ctrl+C first.
+3. Verify supervisor and seven switches; all seven are enabled by default and wait for matching LIVE work. Disable any specialist as required.
+4. Run one bounded LIVE review-only acceptance task and confirm raw capture reaches the existing LIVE review queue. No automatic approval/import.
+5. Keep TEST separate; desktop runtime is LIVE-only.

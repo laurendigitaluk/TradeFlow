@@ -24,7 +24,9 @@ $TestFiles = @(
     'task-groups.test.mjs',
     'source-playbooks.test.mjs',
     'agent-identity.test.mjs',
-    'agent-speed.test.mjs'
+    'agent-speed.test.mjs',
+    'agent.source-selection.test.mjs',
+    'worker-heartbeat.test.mjs'
 )
 foreach ($Name in $TestFiles) {
     $Path = Join-Path $SourcePath $Name

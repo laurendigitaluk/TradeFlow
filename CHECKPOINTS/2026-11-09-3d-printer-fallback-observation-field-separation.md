@@ -11,7 +11,7 @@ PR #343: https://github.com/laurendigitaluk/TradeFlow/pull/343
 - Latest eight-product parent owner-3d-printers-equipment-1794264123497: eight task_completed subtask events; queue writes persisted; parent completion RPC failed with HTTP 400 / PGRST102. No aggregate result.
 - No active 3D-printer parent task.
 - Isolated 3D worker: DESKTOP-LVASEUB-3d-printers-equipment-128700, started 23:20:07 UTC, idle.
-- Generic worker: DESKTOP-LVASEUB-129276, started 23:16:18 UTC, idle. Generic enabled category scope is not visible; verify before another task to prevent overlapping 3D eligibility. No worker action taken.
+- Generic worker DESKTOP-LVASEUB-129276 started 23:16:18 UTC with no stop event; another generic worker_started event appeared at 23:23:00 UTC for DESKTOP-LVASEUB-108588. Isolated 3D worker DESKTOP-LVASEUB-3d-printers-equipment-128700 started at 23:20:07 UTC. Latest status rows are idle/current_task null. Idle timestamps are not periodic heartbeats; generic enabled category scope is not visible. Verify the Research PC process list and local configs before another task. No worker action taken.
 
 ## Latest batch metrics
 44 search results; 9 pages discovered; 5 fetched; 5 raw captures; 4 Gemma batches; 4 timeouts; 112 route attempts; 24 route matches; 80 empty; 8 eBay UK HTTP 403 failures; no collection/page-fetch errors. Four subtasks had zero search results. Kobra 3 Max V2 Standard was rejected by exact-model guard; 3DJake Combo pages were rejected by retailer parent-path accessory matching (PR #341).

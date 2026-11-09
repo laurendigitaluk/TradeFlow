@@ -102,3 +102,8 @@ The screenshot confirms the PC still displays the old broken result; the new com
 ### CI verification for explicit-bounds repair — 9 November 2026
 
 GitHub Actions workflow `Gemma Research Tests`, run 42624656405, completed successfully for UI commit c0b9f980b164f7eacc76f0974e921562d9ccfe32. This verifies the repository's automated checks for that commit; it does not constitute visual acceptance on the owner's Windows PC. Local PC deployment and screenshot verification remain outstanding.
+
+
+## Correct WinForms docking order — 9 November 2026
+
+The latest owner screenshot showed only the last three specialists. The prior correction was wrong: Fill host SetChildIndex to the last control index makes it lay out before Top-docked controls. Correct value is index 0. A PowerShell validation error in the owner's terminal was followed by later copy commands, so output text alone did not prove validation gating. New branch `fix/gemma-control-centre-fill-dock-order-20261109` makes the one-line change; CI then merge, followed by one guarded deployment block to the PC. No worker or LIVE data changes.

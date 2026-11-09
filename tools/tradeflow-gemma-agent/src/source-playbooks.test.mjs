@@ -897,7 +897,7 @@ test('ELEGOO UK source scope supports both printer lanes while preserving manufa
 
 
 test('3D-printer sites use one deliberate UK discovery route per source instead of duplicated generic fallbacks', () => {
-  const task = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_both' };
+  const siteTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_both' };
   const expected = [
     ['uni3dverse.co.uk', ['https://uni3dverse.co.uk/used-3d-printers?search=Elegoo%20Neptune%204%20Pro']],
     ['3dgbire.com', ['https://3dgbire.com/collections/reconditioned-3d-printers']],
@@ -911,7 +911,7 @@ test('3D-printer sites use one deliberate UK discovery route per source instead 
     ['amazon.co.uk', ['https://amazon.co.uk/s?k=Elegoo%20Neptune%204%20Pro']]
   ];
   for (const [domain, routes] of expected) {
-    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, task), routes, domain);
+    assert.deepEqual(buildWebsiteSearchRoutes({ domain }, siteTask), routes, domain);
     assert.ok(!routes.some(url => /\\/search\\?q=/i.test(url)), domain + ' must not receive a generic guessed search fallback');
   }
 });

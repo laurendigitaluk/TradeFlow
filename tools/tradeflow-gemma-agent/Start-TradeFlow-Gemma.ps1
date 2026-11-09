@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('TEST','LIVE')]
-    [string]$Environment = 'TEST'
+    [string]$Environment = 'LIVE'
 )
 
 $ErrorActionPreference = 'Stop'

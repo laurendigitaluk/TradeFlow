@@ -65,3 +65,12 @@ The previous PR #334 head passed Gemma run #548 (105 tests), but that does not c
 ## Correction — legacy row attribution and CI verification
 
 one imported Creality K1 row uses `review-`, one rejected Creality K1 row uses `borderline-`, and one imported Anycubic Kobra S1 Max combo-8-color row uses `borderline-`. PR #335 run #560 passed 110/110 tests after two test-assertion corrections; runs #549 and #553 had zero jobs, run #556 had 109/110, and run #558 had 109/110. The default-branch workflow absence is observed but is not established as the cause of the zero-job runs. The latest `tradeflow` preview build passed; the `tradeflow-test` preview build was still running at this update.
+
+
+## Correction — CI diagnosis and exact legacy-row attribution (9 November 2026)
+
+The three legacy queue rows are: one imported Creality K1 row with a `review-` key; one rejected Creality K1 row with a `borderline-` key; and one imported Anycubic Kobra S1 Max combo-8-color row with a `borderline-` key. The earlier wording that attributed both `borderline-` rows to Anycubic was incorrect.
+
+CI history on PR #335: runs #549 and #553 failed before scheduling jobs (zero jobs). Run #556 executed 110 tests: 109 passed and one existing source-playbook schema assertion failed because it still expected the old local variable name `existing` after the code renamed it to `exactExisting`. Run #558 executed 110 tests and had one failure in the new assertion because it included the `?select=` prefix in the selected-column comparison. The five new legacy-key regression tests passed. Both test assertions were corrected; Gemma Research Tests run #560 on code/test commit `eff09502183075c3bab334afb45328ba2c947fdd` passed **110/110**. The default `main` branch does not contain the Gemma workflow, but that absence is not established as the cause of the zero-job runs because #556 and #560 executed successfully. No change was made to `main`.
+
+The subsequent commits on this feature branch are documentation-only. The `tradeflow` Cloudflare preview build passed on the tested head; the `tradeflow-test` preview build was still running at the time of this correction. No production deployment occurred.

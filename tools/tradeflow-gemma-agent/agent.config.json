@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "serviceEnabled": true,
+  "autoStart": false,
+  "enabledAgentKeys": [
+    "mobile-phones"
+  ],
+  "agentKey": "mobile-phones",
+  "agentLabel": "Gemma Mobile Phones",
+  "categorySlug": "mobile-phones",
+  "branchSlug": "mobile-phones",
+  "sourceBranch": "gemma/mobile-phones"
+}

@@ -859,6 +859,7 @@ export async function extractBatch(task, pages, env, onProgress) {
     const base = (env.OLLAMA_BASE_URL || 'http://127.0.0.1:11434').replace(/\/$/, '');
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
     const timeoutMs = Math.max(60000, Math.min(300000, Number(env.OLLAMA_TIMEOUT_MS) || 180000));
+    const retainFullPageCapture = shouldRetainFullPageCapture(task);
     const findings = [], failures = [];
     const seen = new Set();
     // Small batches protect the 4k context; every input page gets a retained result.
@@ -997,7 +998,7 @@ export async function extractBatch(task, pages, env, onProgress) {
             source_name: row.seller_text || host,
             source_url: source.url,
             sales_channel: host,
-            source_excerpt: source.text.slice(0, 10000),
+            source_excerpt: retainFullPageCapture ? source.text : source.text.slice(0, 10000),
             notes: [
               row.notes || '',
               'RAW PAGE CAPTURE — ChatGPT decides whether this information is usable.',
@@ -1008,7 +1009,7 @@ export async function extractBatch(task, pages, env, onProgress) {
               url: source.url,
               gbp_price_mentions: prices,
               gemma_observations: row,
-              captured_text: source.text.slice(0, 10000)
+              captured_text: retainFullPageCapture ? source.text : source.text.slice(0, 10000)
             }
           };
         }
@@ -1079,6 +1080,12 @@ export function isCaptureOnlyResearchTask(task) {
   // Capture-only handoff is a Gaming-specific requirement. 3D-printer research
   // retains its established Gemma/Ollama extraction and raw-capture fallback path.
   return isGamingConsoleResearchTask(task);
+}
+
+export function shouldRetainFullPageCapture(task) {
+  // Preserve the complete fetched page for 3D-printer review, including after
+  // successful Gemma extraction. Gaming already uses full-page capture-only handoff.
+  return is3dPrinterResearchTask(task) || isCaptureOnlyResearchTask(task);
 }
 
 export function isResearchTypeAllowedSource(source, task) {
@@ -1487,11 +1494,11 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
             'UNVERIFIED RESEARCH CAPTURE — ChatGPT decides what is relevant and usable.',
             diagnostics.length ? 'Checks to perform: ' + diagnostics.join('; ') : 'Automated field checks passed; still requires ChatGPT verification.'
           ].filter(Boolean).join(' '),
-          source_excerpt: isCaptureOnlyResearchTask(task) ? source.text : source.text.slice(0, 10000),
+          source_excerpt: shouldRetainFullPageCapture(task) ? source.text : source.text.slice(0, 10000),
           page_capture: finding.page_capture || {
             title: source.title, url: source.url,
             gbp_price_mentions: extractVisibleGbpPriceMentions(source.text),
-            captured_text: isCaptureOnlyResearchTask(task) ? source.text : source.text.slice(0, 10000)
+            captured_text: shouldRetainFullPageCapture(task) ? source.text : source.text.slice(0, 10000)
           }
         });
         await trackProgress?.({ stage: 'page_capture_retained', source: source.url, message: 'Retained this fetched page and its available observations for ChatGPT; no Gemma suitability decision was applied.' });

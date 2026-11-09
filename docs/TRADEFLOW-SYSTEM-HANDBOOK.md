@@ -4622,3 +4622,6 @@ The 3D-printer matcher correction is on PR #341. Accessory checks now target the
 
 
 Verification follow-up — PR #341 passed GitHub Actions run #594 with 104/104 tests on the final code/test head. The correction is not merged or deployed. The Research PC still needs an explicitly approved update and one controlled runtime check.
+
+### Runtime installation clarification — 9 November 2026
+Both the 21:54 Standard and 22:34 Combo Kobra 3 Max V2 tasks logged only the two generic Anycubic routes, although current production maps the model to two additional direct URLs for both packages. The 21:54 Standard page was fetched in 890 ms and then rejected as model_variant_skipped; the current production matcher test accepts the known title/URL fixture. The activity record omits the exact runtime title, and worker telemetry has no installed source SHA. The Research PC's loaded code is therefore unverified and a stale matcher is likely, but the exact local commit is unknown. The update/restart must wait for explicit approval.

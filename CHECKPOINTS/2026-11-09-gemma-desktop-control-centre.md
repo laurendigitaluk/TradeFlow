@@ -48,3 +48,13 @@
  
 ### Live worker snapshot before Research PC installation — 11:57 UTC
 The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.
+
+
+## Shortcut correction — pending PC update
+
+Owner screenshot confirmed duplicate dashboard windows and visible PowerShell consoles from specialist shortcuts. Production fix committed:
+- `af867edd067422adfd8a371cecb4f939ae231268`: single-instance named mutex in the Control Centre UI.
+- `a1376bbefde726543b47606064f60486fbafea0d`: hidden PowerShell window style on main and specialist shortcuts.
+- Existing dashboard refreshes shared agent config every three seconds, so a shortcut can enable a specialist without opening another dashboard.
+- New CI run was not yet visible at checkpoint time; do not claim the fix has passed CI.
+- Research PC has not yet received these updated files/shortcuts. Stop the service after current task, rerun production installer from the existing Gemma folder, then verify one dashboard/no console.

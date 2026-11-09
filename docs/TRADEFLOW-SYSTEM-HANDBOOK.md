@@ -4474,7 +4474,7 @@ The same RPC is absent from TradeFlow TEST. This is intentional: the desktop sup
 
 The Windows installer is available from the production branch at `tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1`. The installer has not yet been run on the Research PC; no local worker was stopped, restarted or installed by this verification. Do not claim the desktop app is operational on the PC until the owner runs the installer and a bounded LIVE review-only acceptance task confirms raw capture in the existing review queue.
 
-The LIVE source registry remains 119 UK records / 116 enabled. No source registry rows, tasks, review-queue rows, catalogue/evidence, approvals or imports were changed during the merge/migration verification. The existing private `.env` remains on the Research PC.
+The LIVE source registry remains 119 records total (116 GB-coded and 3 US-coded; all 119 enabled). No source registry rows, tasks, review-queue rows, catalogue/evidence, approvals or imports were changed during the merge/migration verification. The existing private `.env` remains on the Research PC.
 
 Current next step: owner installs from production on the Research PC. Open PowerShell in the existing Gemma folder, download the production installer, and run it. If the old manual worker is active, stop it cleanly with Ctrl+C first. Never paste or disclose the private `.env` contents.
 

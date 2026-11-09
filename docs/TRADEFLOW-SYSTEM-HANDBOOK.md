@@ -4505,3 +4505,9 @@ The owner clarified that the second visible tab was titled with the executable p
 The production installer now downloads `Launch-TradeFlow-Control-Centre.vbs` and creates the main Control Centre and seven specialist shortcuts with `wscript.exe` as the target. The VBScript starts the PowerShell WinForms UI with window style 0 (hidden) and passes through the optional specialist arguments. The WinForms Control Centre remains visible. The existing named mutex still enforces one dashboard instance, and the existing scheduled supervisor remains the only background research worker.
 
 The owner installed the previous build before this WScript-host correction was added. The PC must be updated by rerunning the production installer once more after the background service has been stopped safely. This is a launcher-only correction; do not change the worker, .env, LIVE queue, or TEST configuration.
+
+## Gemma 3D-printer timeout recovery — 9 November 2026
+
+A post-merge LIVE Neptune 4 Pro run proved that 3D-printer Gemma extraction is active, but a timed-out two-page batch was followed by two serial single-page retries using the same full timeout. The initial timeout plus recovery interval consumed about 14m22s; the two retries returned no structured finding. PR #333 proposes skipping serial retries only after a 3D-printer batch timeout, retaining the complete raw page captures for ChatGPT, and recording actual Ollama HTTP requests separately from batch count. Token-limit and other non-timeout failures retain the existing single-page recovery. This is a code-review proposal only; it is not merged, deployed or installed.
+
+No evidence is approved/imported by the worker. Duplicate queue records already imported remain unchanged; the latest task's three duplicate-skipped captures were not staged as new review rows. Do not change this dedupe behaviour or historical review metadata in the timeout fix.

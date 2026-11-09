@@ -852,6 +852,12 @@ export function selectSafeObservedPrice(observations = [], researchType = 'uk_bo
   return uniqueAmounts.length === 1 ? uniqueAmounts[0] : null;
 }
 
+function isOllamaTimeoutError(error) {
+  const name = String(error?.name || '');
+  const message = String(error?.message || error || '');
+  return name === 'TimeoutError' || /timeout|timed out|aborted due to timeout/i.test(message);
+}
+
 let ollamaExtractionQueue = Promise.resolve();
 
 export async function extractBatch(task, pages, env, onProgress) {
@@ -860,6 +866,8 @@ export async function extractBatch(task, pages, env, onProgress) {
     const model = env.OLLAMA_MODEL || 'gemma3:4b';
     const timeoutMs = Math.max(60000, Math.min(300000, Number(env.OLLAMA_TIMEOUT_MS) || 180000));
     const findings = [], failures = [];
+    let requestCount = 0;
+    let recoverySkipped = 0;
     const seen = new Set();
     // Small batches protect the 4k context; every input page gets a retained result.
     const batches = [];
@@ -875,6 +883,7 @@ export async function extractBatch(task, pages, env, onProgress) {
       });
       try {
         const prompt = buildExtractionPrompt(task, batch);
+        requestCount += 1;
         const response = await fetch(base + '/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -918,10 +927,21 @@ export async function extractBatch(task, pages, env, onProgress) {
         });
         // A malformed/truncated two-page response must not force both pages to raw fallback.
         // Retry each page independently with a shorter excerpt and smaller output budget.
-        if (is3dPrinterResearchTask(task) && batch.length > 1) {
+        if (is3dPrinterResearchTask(task) && batch.length > 1 && isOllamaTimeoutError(error)) {
+          // A timed-out batch has already consumed the configured Ollama deadline.
+          // Serial per-page retries can multiply that wait without improving the raw
+          // capture, which is retained below for ChatGPT review.
+          recoverySkipped += batch.length;
+          await onProgress?.({
+            stage: 'extraction_recovery_skipped', checked: batchIndex + 1, total: batches.length,
+            source: batch[0]?.url,
+            message: 'Gemma batch timed out; skipped serial single-page retries and retained the original raw page captures to keep the 3D-printer task bounded.'
+          });
+        } else if (is3dPrinterResearchTask(task) && batch.length > 1) {
           for (const source of batch) {
             try {
               const retrySource = { ...source, text: buildDeepPageExcerpt(source.text, task, 1600) };
+              requestCount += 1;
               const retryResponse = await fetch(base + '/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -1021,7 +1041,7 @@ export async function extractBatch(task, pages, env, onProgress) {
         message: 'Gemma extraction batch ' + (batchIndex + 1) + ' of ' + batches.length + ' completed: ' + structuredFindings + ' structured observation(s), ' + (batch.length - structuredFindings) + ' raw fallback capture(s).'
       });
     }
-    return { findings, failures, batches: batches.length };
+    return { findings, failures, batches: batches.length, requests: requestCount, recoverySkipped };
   };
   const pending = ollamaExtractionQueue.then(run, run);
   ollamaExtractionQueue = pending.then(() => undefined, () => undefined);
@@ -1431,7 +1451,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   }
 
   stageDurations.product_page_fetch_ms = Date.now() - pageFetchStartedAt;
-  let extractionMetrics = { batches: 0, failures: [] };
+  let extractionMetrics = { batches: 0, failures: [], requests: 0, recoverySkipped: 0 };
   const extractionStartedAt = Date.now();
   if (fetched.length && isCaptureOnlyResearchTask(task)) {
     // 3D-printer and gaming-console research are capture-first: do not wait for Ollama/Gemma inference.
@@ -1458,7 +1478,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     });
     try {
       const extracted = await extractBatch(task, fetched, env, trackProgress);
-      extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [] };
+      extractionMetrics = { batches: extracted.batches || 0, failures: extracted.failures || [], requests: extracted.requests || 0, recoverySkipped: extracted.recoverySkipped || 0 };
       for (const finding of extracted.findings || []) {
         const source = fetched.find(item => item.source_id === finding.source_id);
         if (!source) continue;
@@ -1603,6 +1623,8 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       discovered_product_pages: allDirectPages.length, inspected_product_pages: fetched.length,
       fetched_price_pages: fetched.filter(item => hasVisibleUkPrice(item.text)).length,
       gemma_calls: extractionMetrics.batches,
+      gemma_http_requests: extractionMetrics.requests,
+      gemma_recovery_skipped: extractionMetrics.recoverySkipped,
       gemma_batch_failures: extractionMetrics.failures.length,
       gemma_failure_details: extractionMetrics.failures.slice(0, 10),
       captured_pages: candidates.length,

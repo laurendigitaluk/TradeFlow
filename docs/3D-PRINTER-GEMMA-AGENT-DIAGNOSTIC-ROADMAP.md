@@ -2,6 +2,15 @@
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.
 
+## 9 November 2026 23:32 UTC — isolated 3D correction set and release ordering
+
+- PR #344 now combines two isolated-branch corrections: raw fallback snippets remain out of normalized condition/availability fields, and 3DJake product matching ignores unrelated parent-category taxonomy. It changes agent.mjs, agent-speed.test.mjs and source-playbooks.test.mjs only on gemma/3d-printers.
+- GitHub Actions run #42721156282 passed 110/110 tests with zero failures. PR #344 is open/mergeable, unmerged and undeployed.
+- Production counterparts: PR #343 (queue-field mapping) and PR #341 (3DJake matcher) remain open. Draft PR #345 promotes gemma/3d-printers to production and contains compact task-result summary/direct-route tests, but does not yet include PR #344. Review/merge order must ensure PR #344 lands on gemma/3d-printers before the promotion PR is merged.
+- PR #345's compact summary test reduces a fixture with 100,000-character raw pages to a parent result below 5,000 characters. Run #42720715939 passed 106/106. This is not a LIVE completion retest.
+- Isolated 3D worker started 23:20:07 UTC, before compact-summary commits at 23:26 UTC. Do not assume the running process has loaded the new task-worker code. Verify local source SHA after explicit approval.
+- Generic worker and isolated 3D worker remain idle; generic scope is not visible. Do not queue another task until process/config scope is reconciled.
+
 ## 9 November 2026 23:28 UTC — compact parent completion summary on isolated branch
 
 - The isolated gemma/3d-printers branch advanced to ca38a0d2fbc706e1e48b259d992d83975c91537d. It adds src/task-result-summary.mjs and its regression test, and updates task-worker.mjs to submit a compact summary rather than the full outputs array.

@@ -851,3 +851,15 @@ test('DJI Store sign-in page is not treated as a public drone search route', () 
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'store.dji.com' }, task), []);
   assert.match(getWebsiteInstructions('drones', 'store.dji.com')?.navigation || '', /sign-in|sign in/i);
 });
+
+
+test('Creality model-family collections are probed only for matching printer models', () => {
+  const k1MaxTask = { ...task, model: 'K1 Max' };
+  const enderTask = { ...task, model: 'Ender-3 V3 KE' };
+  const k1Routes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, k1MaxTask);
+  const enderRoutes = buildWebsiteSearchRoutes({ domain: 'store.creality.com' }, enderTask);
+
+  assert.ok(k1Routes.some(url => url.includes('/uk/collections/fdm-3d-printer')));
+  assert.ok(!k1Routes.some(url => url.includes('/uk/collections/ender-3-v3-series')));
+  assert.ok(enderRoutes.some(url => url.includes('/uk/collections/ender-3-v3-series')));
+});

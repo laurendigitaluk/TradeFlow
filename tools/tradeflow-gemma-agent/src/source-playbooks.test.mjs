@@ -728,7 +728,7 @@ test('duplicate enrichment refuses reviewed, approved, imported and mismatched r
 
 test('duplicate enrichment selects only columns present in the LIVE review queue schema', async () => {
   const agentSource = await readFile(new URL('./agent.mjs', import.meta.url), 'utf8');
-  const selectMatch = agentSource.match(/const existing = await db\(liveTarget, 'platform_catalogue_research_queue\?select=([^']+)/);
+  const selectMatch = agentSource.match(/const exactExisting = await db\(liveTarget, 'platform_catalogue_research_queue\?select=([^']+)/);
   assert.ok(selectMatch, 'review-queue duplicate lookup must declare its selected columns');
   const fields = selectMatch[1].split('&')[0].split(',');
   assert.deepEqual(fields, [

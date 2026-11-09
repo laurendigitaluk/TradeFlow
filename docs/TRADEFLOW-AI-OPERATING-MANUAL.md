@@ -5185,3 +5185,6 @@ For 3D-printer tasks, retailer taxonomy/breadcrumb segments are not product iden
 Latest LIVE task owner-3d-printers-equipment-1794263685224 completed 22:35:50 UTC: 6 search results, 14 approved-source routes (0 found, 13 empty, one eBay 403), one page fetched, one 48.4-second Gemma timeout, and one 16,285-character raw capture. The capture is pending ChatGPT review only. No price/type/condition was auto-assigned.
 
 The task did not attempt the Anycubic model-specific direct routes already present in merged production PR #339; only the two generic Anycubic routes appeared in activity. Treat the Research PC's loaded playbook as unverified until the approved production updater is run and a controlled task logs both direct routes. Do not restart or update the Research PC without explicit approval.
+
+
+Verification follow-up — PR #341 passed GitHub Actions run #594 (104/104). The regression verifies the 3DJake Combo false-positive is removed without weakening package or accessory rejection. Do not merge or deploy until reviewed and explicitly approved; do not restart/update the Research PC without approval.

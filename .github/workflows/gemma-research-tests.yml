@@ -5,6 +5,7 @@ on:
     paths:
       - 'tools/tradeflow-gemma-agent/**'
       - 'tools/tradeflow-gemma-desktop/**'
+      - 'tools/gemma-agent-isolation/**'
       - 'supabase/migrations/*gemma_agent_scoped_task_claim*'
       - 'platform-owner-dashboard.js'
       - 'platform-owner-dashboard.html'
@@ -43,6 +44,12 @@ jobs:
           $errors = $null
           [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
           if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
+          foreach ($file in @('tools/tradeflow-gemma-agent/Start-Gemma-Agent.ps1','tools/tradeflow-gemma-agent/Update-Gemma-Agent.ps1','tools/gemma-agent-isolation/Install-Gemma-Agents.ps1')) {
+            $tokens = $null
+            $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
+          }
           foreach ($file in @(
             'tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1',
             'tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1',
@@ -66,6 +73,7 @@ jobs:
             tools/tradeflow-gemma-agent/src/task-groups.test.mjs \
             tools/tradeflow-gemma-agent/src/source-playbooks.test.mjs \
             tools/tradeflow-gemma-agent/src/agent-identity.test.mjs \
+            tools/tradeflow-gemma-agent/src/agent-isolation.test.mjs \
             tools/tradeflow-gemma-agent/src/agent-speed.test.mjs \
             tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs \
             tools/tradeflow-gemma-agent/src/desktop-control.test.mjs

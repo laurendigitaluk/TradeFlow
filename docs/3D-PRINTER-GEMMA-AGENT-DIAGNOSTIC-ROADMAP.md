@@ -2,6 +2,15 @@
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.
 
+## 9 November 2026 23:23 UTC — isolated and generic poller state
+
+- Generic worker_started at 23:16:18 UTC: DESKTOP-LVASEUB-129276.
+- Isolated 3D worker_started at 23:20:07 UTC: DESKTOP-LVASEUB-3d-printers-equipment-128700, isolated_agent_key=3d-printers-equipment.
+- A second generic worker_started event appeared at 23:23:00 UTC: DESKTOP-LVASEUB-108588. No worker_stopped event is recorded for 129276.
+- Current parent-task query: 0 queued/running exact-branch tasks; 28 completed parents, 1 failed parent. Both latest status rows report idle/current_task null.
+- These are startup/status timestamps, not periodic idle heartbeats. Generic enabledAgentKeys are not exposed in LIVE telemetry, so overlap with the isolated 3D poller cannot be ruled out. Do not queue another 3D task until the Research PC process list and both local configurations are checked. Do not stop/restart workers from this watch.
+
+
 ## 9 November 2026 — latest eight-product Anycubic batch and fallback field mapping
 
 ### LIVE task/worker state

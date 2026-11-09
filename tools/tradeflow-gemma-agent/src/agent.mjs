@@ -708,6 +708,15 @@ export function fallbackPageCapture(task, source, reason) {
   };
 }
 
+export function buildEvidenceCaptureDedupeKey(task, evidence) {
+  // Keep the established key tuple stable: one capture per exact source URL,
+  // while allowing multiple independent sources/listings for the same product
+  // and evidence type to be reviewed and imported separately.
+  return 'capture-' + createHash('sha256')
+    .update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|'))
+    .digest('hex').slice(0, 32);
+}
+
 export function buildCaptureEnrichmentPatch(existing, incoming, enrichedAt = new Date().toISOString()) {
   if (!existing || !incoming || existing.status !== 'needs_research') return null;
   if (existing.reviewed_at || existing.reviewed_by || existing.approved_at || existing.imported_at) return null;
@@ -1515,7 +1524,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const queueWriteStartedAt = Date.now();
   const writes = [];
   for (const evidence of candidates) {
-    const captureKey = 'capture-' + createHash('sha256').update([task.manufacturer, task.model, task.package_key, evidence.source_url].join('|')).digest('hex').slice(0, 32);
+    const captureKey = buildEvidenceCaptureDedupeKey(task, evidence);
     const rawPrice = Number(evidence.observed_price);
     const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 && hasVisibleUkPrice(evidence.source_excerpt || '');
     const row = {

@@ -851,3 +851,35 @@ test('DJI Store sign-in page is not treated as a public drone search route', () 
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'store.dji.com' }, task), []);
   assert.match(getWebsiteInstructions('drones', 'store.dji.com')?.navigation || '', /sign-in|sign in/i);
 });
+
+
+test('ELEGOO UK source scope supports both printer lanes while preserving manufacturer, category and route boundaries', () => {
+  const source = {
+    source_name: 'ELEGOO UK',
+    domain: 'uk.elegoo.com',
+    source_kind: 'manufacturer',
+    country_code: 'GB',
+    research_scope: 'all',
+    enabled: true,
+    category_slugs: ['3d-printers-equipment']
+  };
+  const newTask = { ...task, manufacturer: 'Elegoo', model: 'Neptune 4 Pro', research_type: 'uk_new' };
+  const usedTask = { ...newTask, research_type: 'uk_used' };
+  const bothTask = { ...newTask, research_type: 'uk_both' };
+  const otherManufacturerTask = { ...usedTask, manufacturer: 'Creality', model: 'K1' };
+  const otherCategoryTask = { ...usedTask, category_slug: 'drones', branch_slug: 'drones' };
+
+  assert.equal(getResearchSourceLane(source), 'both');
+  assert.equal(isApprovedSourceForTask({ ...source, research_scope: 'new_uk' }, usedTask), false);
+  assert.equal(isApprovedSourceForTask(source, newTask), true);
+  assert.equal(isApprovedSourceForTask(source, usedTask), true);
+  assert.equal(isApprovedSourceForTask(source, bothTask), true);
+  assert.equal(isApprovedSourceForTask(source, otherManufacturerTask), false);
+  assert.equal(isApprovedSourceForTask(source, otherCategoryTask), false);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, newTask), ['https://uk.elegoo.com/collections/fdm-printers']);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, usedTask), ['https://uk.elegoo.com/collections/pre-owned-3d-printer']);
+  assert.deepEqual(buildWebsiteSearchRoutes(source, bothTask), [
+    'https://uk.elegoo.com/collections/fdm-printers',
+    'https://uk.elegoo.com/collections/pre-owned-3d-printer'
+  ]);
+});

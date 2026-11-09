@@ -4505,3 +4505,38 @@ The owner clarified that the second visible tab was titled with the executable p
 The production installer now downloads `Launch-TradeFlow-Control-Centre.vbs` and creates the main Control Centre and seven specialist shortcuts with `wscript.exe` as the target. The VBScript starts the PowerShell WinForms UI with window style 0 (hidden) and passes through the optional specialist arguments. The WinForms Control Centre remains visible. The existing named mutex still enforces one dashboard instance, and the existing scheduled supervisor remains the only background research worker.
 
 The owner installed the previous build before this WScript-host correction was added. The PC must be updated by rerunning the production installer once more after the background service has been stopped safely. This is a launcher-only correction; do not change the worker, .env, LIVE queue, or TEST configuration.
+
+
+## 9 November 2026 — ELEGOO UK used-lane eligibility correction (current-production review PR #323)
+
+LIVE's existing enabled ELEGOO UK manufacturer source is assigned to `3d-printers-equipment`, country GB, but remains `research_scope='new_uk'`. Production `getResearchSourceLane()` maps that row to the new lane, so `isResearchTypeAllowedSource()` excludes it from a pure `uk_used` task before the already-configured pre-owned collection route can be probed. This is a source-eligibility defect, not a missing route.
+
+The existing production playbook already defines:
+- `uk_new`: `https://uk.elegoo.com/collections/fdm-printers`
+- `uk_used`: `https://uk.elegoo.com/collections/pre-owned-3d-printer`
+- `uk_both`: both routes.
+
+Collection pages are discovery only. Follow individual exact-model pages and retain package, condition, current availability and GBP price context. Sold-out listings must not become current used-price evidence. The proposed change primarily restores the dedicated `uk_used` lane; it does not weaken manufacturer or category matching.
+
+### LIVE baseline at 13:12 UTC
+- Exact category/branch task match: 19 registered tasks, 56 product subtasks; all 19 completed, zero queued/running/failed. Latest task completed 01:56:42 UTC.
+- Latest Ender-3 V3 KE: 11 search results, zero exact product pages discovered/fetched, zero Gemma calls; 28 approved-source route attempts (11 route matches, 11 empty, 6 errors), plus two Creality collection JSON 404s.
+- Latest K1 Max: 11 search results, one exact page discovered/fetched, zero Gemma calls because it predates PR #320's production merge, one raw capture, queue write `duplicate-skipped` against the existing imported K1 Max record.
+- Historical runs: 13:15 batch — 123 search results, 30 pages discovered, 18 fetched, 18 Gemma calls, 10 failures; 16:45 benchmark — 104 / 21 / 11 / 7 / 5; 20:16 new/used batch — 123 / 83 / 51 / 27 / 20. The latest first loss remains search-to-exact-page discovery.
+- Category status is idle, cumulative counters 85 completed / 122 candidates, last category heartbeat 01:56:42 UTC. Generic worker status is idle, worker ID `DESKTOP-LVASEUB-78412`, last update 12:39:53 UTC. Recent worker-start events at 12:14:25, 12:34:18, 12:35:53 and 12:39:53 have no matching stop event for the later IDs. This may be sequential restarts; telemetry does not prove concurrent workers. Research PC supervisor/worker logs are needed to diagnose exits. Production idle polling still does not refresh the generic heartbeat.
+- LIVE review queue: 65 rows (28 imported, 37 rejected, 0 open). Linked active shared evidence: 23 `uk_new`, 5 `uk_used`, all GBP. One new and one used record carry sold-out/unavailable notes. Queue excerpts and `page_capture.captured_text` remain capped at 10,000 characters in current production data.
+- Reviewer audit remains incomplete: 27/28 imported rows lack `reviewed_by`; 8 imported rows also lack `reviewed_at`; all 37 rejected rows lack `reviewed_by`. Do not infer reviewer identities or backfill historical decisions.
+
+### Proposed update-only migration
+Change only the exact existing enabled ELEGOO UK manufacturer row (name, domain, kind, GB country, category and current `new_uk` scope all match) to `research_scope='all'`. LIVE currently has that row; TEST project `nnsshnfkjcflucjrftzi` has no matching row, so the same migration is a no-op there and copies no source data. LIVE migration history does not contain version `20261108093000`; the migration remains unapplied.
+
+### Regression and release gate
+A regression test proves:
+- Existing `new_uk` scope is excluded from a pure `uk_used` task.
+- Scope `all` permits new, used and both lanes.
+- The exact FDM/pre-owned routes remain lane-specific.
+- Other manufacturers and other categories remain excluded.
+
+The source-playbook routes themselves are unchanged. Review/CI only: do not apply the migration, change the LIVE row, queue a research task, or approve/import evidence without explicit owner approval. After approval and normal migration deployment, verify one bounded ELEGOO `uk_used` task reaches only the pre-owned collection, follows exact individual pages and stages raw observations for ChatGPT review.
+
+Related independent review: PR #327 is based on the earlier production commit and proposes full 3D-printer page retention after successful Gemma extraction plus model-specific Creality collection routing. It remains open/unmerged and now needs a production rebase before merge; its fixture improves retention from 10,000/40,642 (24.6%) to 40,642/40,642 (100%). Do not treat that as deployed or runtime-verified.

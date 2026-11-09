@@ -878,3 +878,38 @@ The Research PC worker is connected to LIVE Common Room, but the Gaming agent is
 PR #316 unintentionally broadened `isCaptureOnlyResearchTask()` from the 3D-printer-specific fast-capture handling to include all 3D-printer tasks as capture-only. This bypassed `extractBatch()` and Ollama/Gemma for 3D-printer research. LIVE K1 Max task `0ce88391-e5c2-45c4-adf9-149d364c702c` explicitly logged `Capture-only mode ... local Ollama inference is intentionally skipped`; its page was retained as raw capture but not enriched by Gemma. This contradicted the pre-rollout 3D workflow, whose task metrics showed Gemma extraction calls and structured observations. Ender-3 V3 KE task `5b3e53b0-b857-4f0b-89a0-e255596afd3c` independently found no eligible page, so source discovery remains a separate issue and must not be conflated with the extraction regression.
 
 Correction in PR #320 scopes `isCaptureOnlyResearchTask()` to Gaming only. 3D-printer tasks therefore return to the established `extractBatch()` / Ollama path, retaining the existing deterministic raw fallback when extraction fails. Gaming remains capture-only. A regression test explicitly asserts this separation. No Research PC installation, source registry, LIVE/TEST database records, queue records, approvals or imports are changed by the code correction. After CI passes and the fix is merged, verify a single small 3D-printer LIVE task reaches `extraction_batch_started` and records `gemma_calls > 0`; do not change the working 3D-printer source settings. Separately diagnose any model/source discovery failures using route telemetry.
+
+
+## 9 November 2026 — ELEGOO UK used-lane eligibility correction (current-production review PR #323)
+
+LIVE's existing enabled ELEGOO UK manufacturer source is assigned to `3d-printers-equipment`, country GB, but remains `research_scope='new_uk'`. Production `getResearchSourceLane()` maps that row to the new lane, so `isResearchTypeAllowedSource()` excludes it from a pure `uk_used` task before the already-configured pre-owned collection route can be probed. This is a source-eligibility defect, not a missing route.
+
+The existing production playbook already defines:
+- `uk_new`: `https://uk.elegoo.com/collections/fdm-printers`
+- `uk_used`: `https://uk.elegoo.com/collections/pre-owned-3d-printer`
+- `uk_both`: both routes.
+
+Collection pages are discovery only. Follow individual exact-model pages and retain package, condition, current availability and GBP price context. Sold-out listings must not become current used-price evidence. The proposed change primarily restores the dedicated `uk_used` lane; it does not weaken manufacturer or category matching.
+
+### LIVE baseline at 13:12 UTC
+- Exact category/branch task match: 19 registered tasks, 56 product subtasks; all 19 completed, zero queued/running/failed. Latest task completed 01:56:42 UTC.
+- Latest Ender-3 V3 KE: 11 search results, zero exact product pages discovered/fetched, zero Gemma calls; 28 approved-source route attempts (11 route matches, 11 empty, 6 errors), plus two Creality collection JSON 404s.
+- Latest K1 Max: 11 search results, one exact page discovered/fetched, zero Gemma calls because it predates PR #320's production merge, one raw capture, queue write `duplicate-skipped` against the existing imported K1 Max record.
+- Historical runs: 13:15 batch — 123 search results, 30 pages discovered, 18 fetched, 18 Gemma calls, 10 failures; 16:45 benchmark — 104 / 21 / 11 / 7 / 5; 20:16 new/used batch — 123 / 83 / 51 / 27 / 20. The latest first loss remains search-to-exact-page discovery.
+- Category status is idle, cumulative counters 85 completed / 122 candidates, last category heartbeat 01:56:42 UTC. Generic worker status is idle, worker ID `DESKTOP-LVASEUB-78412`, last update 12:39:53 UTC. Recent worker-start events at 12:14:25, 12:34:18, 12:35:53 and 12:39:53 have no matching stop event for the later IDs. This may be sequential restarts; telemetry does not prove concurrent workers. Research PC supervisor/worker logs are needed to diagnose exits. Production idle polling still does not refresh the generic heartbeat.
+- LIVE review queue: 65 rows (28 imported, 37 rejected, 0 open). Linked active shared evidence: 23 `uk_new`, 5 `uk_used`, all GBP. One new and one used record carry sold-out/unavailable notes. Queue excerpts and `page_capture.captured_text` remain capped at 10,000 characters in current production data.
+- Reviewer audit remains incomplete: 27/28 imported rows lack `reviewed_by`; 8 imported rows also lack `reviewed_at`; all 37 rejected rows lack `reviewed_by`. Do not infer reviewer identities or backfill historical decisions.
+
+### Proposed update-only migration
+Change only the exact existing enabled ELEGOO UK manufacturer row (name, domain, kind, GB country, category and current `new_uk` scope all match) to `research_scope='all'`. LIVE currently has that row; TEST project `nnsshnfkjcflucjrftzi` has no matching row, so the same migration is a no-op there and copies no source data. LIVE migration history does not contain version `20261108093000`; the migration remains unapplied.
+
+### Regression and release gate
+A regression test proves:
+- Existing `new_uk` scope is excluded from a pure `uk_used` task.
+- Scope `all` permits new, used and both lanes.
+- The exact FDM/pre-owned routes remain lane-specific.
+- Other manufacturers and other categories remain excluded.
+
+The source-playbook routes themselves are unchanged. Review/CI only: do not apply the migration, change the LIVE row, queue a research task, or approve/import evidence without explicit owner approval. After approval and normal migration deployment, verify one bounded ELEGOO `uk_used` task reaches only the pre-owned collection, follows exact individual pages and stages raw observations for ChatGPT review.
+
+Related independent review: PR #327 is based on the earlier production commit and proposes full 3D-printer page retention after successful Gemma extraction plus model-specific Creality collection routing. It remains open/unmerged and now needs a production rebase before merge; its fixture improves retention from 10,000/40,642 (24.6%) to 40,642/40,642 (100%). Do not treat that as deployed or runtime-verified.

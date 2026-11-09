@@ -12,8 +12,11 @@ Status: GitHub foundation and seven branch refs created; Research PC install not
 - Per-agent start/update scripts and a seven-clone sparse-checkout installer have been added to the foundation branch.
 - Shared ENV is referenced by path only; installer does not copy or print secrets.
 
+## CI verification
+- Gemma Research Tests run 42716626875 passed: PowerShell syntax, Node source syntax, existing Gemma task/website tests, new isolation tests and Owner Dashboard JS syntax.
+- Initial run 42716552736 failed only because the new test expected different wording from the existing unknown-agent validator; the assertion was corrected and the rerun passed.
+
 ## Not yet verified
-- CI has not yet run against a pull request.
 - Local PC folders, independent Git clones, shortcuts and switchboard have not yet been created.
 - No isolated agent has been started.
 - Current shared worker/desktop installation remains untouched. Existing 3D Printer eight-product batch must finish before changing the active runtime.

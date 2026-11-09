@@ -736,9 +736,12 @@ test('duplicate enrichment selects only columns present in the LIVE review queue
     'package_key','source_url','reviewed_at','reviewed_by','approved_at','imported_at',
     'raw_payload','research_notes','updated_at'
   ]);
-  const legacySelectMatch = agentSource.match(/return 'platform_catalogue_research_queue\\?select=([^']+)'/);
-  assert.ok(legacySelectMatch, 'legacy review lookup must declare its selected columns');
-  assert.deepEqual(legacySelectMatch[1].split('&')[0].split(','), fields);
+  const legacySelectStart = agentSource.indexOf("return 'platform_catalogue_research_queue?select=");
+  assert.notEqual(legacySelectStart, -1, 'legacy review lookup must declare its selected columns');
+  const legacyValueStart = legacySelectStart + "return '".length;
+  const legacyValueEnd = agentSource.indexOf("'", legacyValueStart);
+  const legacySelectPath = agentSource.slice(legacyValueStart, legacyValueEnd);
+  assert.deepEqual(legacySelectPath.split('&')[0].split(','), fields);
   assert.match(agentSource, /const legacyExisting = !exactExisting\.length && snapshotFingerprint/);
   assert.match(agentSource, /reviewed_at=is\.null&reviewed_by=is\.null&approved_at=is\.null&imported_at=is\.null/);
   assert.doesNotMatch(agentSource, /approved_by|imported_by/);

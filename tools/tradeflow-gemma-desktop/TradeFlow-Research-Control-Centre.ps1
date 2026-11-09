@@ -195,21 +195,23 @@ $note.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $note.ForeColor = [System.Drawing.Color]::FromArgb(70,82,94)
 $form.Controls.Add($note)
 
-$cards = New-Object System.Windows.Forms.FlowLayoutPanel
+$cards = New-Object System.Windows.Forms.Panel
 $cards.Dock = 'Fill'
 $cards.AutoScroll = $true
-$cards.WrapContents = $false
-$cards.FlowDirection = 'TopDown'
-$cards.Padding = New-Object System.Windows.Forms.Padding(14,8,14,14)
+$cards.Padding = New-Object System.Windows.Forms.Padding(0)
+$cards.TabStop = $true
 $cards.BackColor = [System.Drawing.Color]::FromArgb(246,248,250)
 $form.Controls.Add($cards)
 
 $AgentControls = @{}
+$agentIndex = 0
 foreach ($agent in $Agents) {
     $card = New-Object System.Windows.Forms.Panel
-    $card.Width = 820
+    $card.Width = [Math]::Max(300, $cards.ClientSize.Width - 36)
     $card.Height = 92
-    $card.Margin = New-Object System.Windows.Forms.Padding(8)
+    $card.Location = New-Object System.Drawing.Point(8, (8 + ($agentIndex * 108)))
+    $card.Anchor = 'Top,Left,Right'
+    $card.Margin = New-Object System.Windows.Forms.Padding(0)
     $card.Padding = New-Object System.Windows.Forms.Padding(12)
     $card.BackColor = [System.Drawing.Color]::White
     $card.BorderStyle = 'FixedSingle'
@@ -245,7 +247,14 @@ foreach ($agent in $Agents) {
 
     $cards.Controls.Add($card)
     $AgentControls[[string]$agent.agentKey] = @{ Check=$check; State=$state; Card=$card }
+    $agentIndex++
 }
+$cards.AutoScrollMinSize = New-Object System.Drawing.Size(0, (16 + ($Agents.Count * 108)))
+$cards.Add_Resize({
+    $width = [Math]::Max(300, $cards.ClientSize.Width - 36)
+    foreach ($item in $AgentControls.Values) { $item.Card.Width = $width }
+}.GetNewClosure())
+$cards.AutoScrollPosition = New-Object System.Drawing.Point(0,0)
 
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 3000

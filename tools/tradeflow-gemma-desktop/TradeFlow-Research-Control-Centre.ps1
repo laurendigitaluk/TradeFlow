@@ -267,7 +267,8 @@ $script:AgentListOffset = 0
 $script:UpdateAgentListViewport = {
     $viewportHeight = [Math]::Max(1, $cards.ClientSize.Height)
     $maxOffset = [Math]::Max(0, $script:AgentListContentHeight - $viewportHeight)
-    $agentScroll.Visible = ($maxOffset -gt 0)
+    $agentScroll.Visible = $true
+    $agentScroll.Enabled = ($maxOffset -gt 0)
     $agentScroll.LargeChange = [Math]::Max(1, $viewportHeight)
     $agentScroll.SmallChange = 54
     $agentScroll.Maximum = [Math]::Max(0, $maxOffset + $agentScroll.LargeChange - 1)
@@ -291,7 +292,10 @@ $agentScroll.Add_ValueChanged({
 
 $cards.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
 $listHost.Add_Resize({ & $script:UpdateAgentListViewport }.GetNewClosure())
-$form.Add_Shown({ & $script:UpdateAgentListViewport }.GetNewClosure())
+$form.Add_Shown({
+    $script:AgentListOffset = 0
+    $form.BeginInvoke([Action]{ & $script:UpdateAgentListViewport }) | Out-Null
+}.GetNewClosure())
 
 $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 3000

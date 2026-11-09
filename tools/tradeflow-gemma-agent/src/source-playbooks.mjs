@@ -208,12 +208,6 @@ const playbooks = {
       'dmtl.co.uk': { label: 'DMTL UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK drone product navigation for complete aircraft and exact packages; distinguish aircraft from payloads and accessories.' },
       'leicesterdrones.com': { label: 'Leicester Drones UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK store navigation for complete drone models; inspect individual model and bundle pages.' },
       'quadcopters.co.uk': { label: 'Quadcopters UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK drone catalogue and exact model pages; keep complete aircraft separate from parts and accessories.' },
-      'hobbyrc.co.uk': { label: 'hobbyrc.co.uk', routes: ['/'], navigation: 'HobbyRC UK drone and RC catalogue.' },
-      'heliguy.com': { label: 'heliguy.com', routes: ['/'], navigation: 'Heliguy UK drone catalogue; follow exact aircraft and bundle pages.' },
-      'dji-retail.co.uk': { label: 'dji-retail.co.uk', routes: ['/'], navigation: 'DJI Retail UK; verify the exact model and UK GBP price.' },
-      'dmtl.co.uk': { label: 'dmtl.co.uk', routes: ['/'], navigation: 'DMTL UK distributor; verify exact Holy Stone model and package.' },
-      'leicesterdrones.com': { label: 'leicesterdrones.com', routes: ['/'], navigation: 'Leicester Drones UK; inspect individual complete-aircraft listings.' },
-      'quadcopters.co.uk': { label: 'quadcopters.co.uk', routes: ['/'], navigation: 'Quadcopters UK; distinguish complete drones from parts and accessories.' },
     }
   },
   'metal-detectors': {
@@ -243,8 +237,6 @@ const playbooks = {
       'lpmetaldetecting.com': { label: 'LP Metal Detecting UK', genericSearchFallback: false, navigation: 'Search for the exact detector model and package. Open the individual product page; keep accessories separate from complete detector units.' }
       'amazon.co.uk': { label: 'Amazon UK marketplace', routes: ['/'], genericSearchFallback: false, navigation: 'Search results are discovery only. Follow a matching result to a direct ASIN product page and verify the selected seller, exact model, GBP price and availability.' },
       'ebay.co.uk': { label: 'eBay UK marketplace', routes: ['/'], genericSearchFallback: false, navigation: 'Inspect individual active UK listings only. Capture exact detector model, coil/bundle contents, condition, seller location and asking price; exclude sold/completed listings.' },
-      'amazon.co.uk': { label: 'amazon.co.uk', routes: ['/'], navigation: 'Amazon UK; search exact detector model, follow the ASIN product page and verify selected seller, condition and GBP price.' },
-      'ebay.co.uk': { label: 'ebay.co.uk', routes: ['/'], navigation: 'eBay UK; inspect individual active UK detector listings, exclude sold/completed and parts-only listings.' },
     }
   },
   'mobile-phones': {
@@ -283,13 +275,6 @@ const playbooks = {
       'very.co.uk': { label: 'Very UK mobile phones', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK mobile-phone catalogue and exact handset product pages. Record outright GBP price separately from instalment plans.' },
       'oppo.com': { label: 'OPPO UK smartphones', routes: ['/'], genericSearchFallback: false, navigation: 'Use the verified UK Smartphones catalogue and follow exact Find, Reno or A-series handset pages.' },
       'realme.com': { label: 'realme UK phones', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK storefront navigation to find exact smartphone model and configuration pages; do not infer UK price from another region.' },
-      'argos.co.uk': { label: 'argos.co.uk', routes: ['/'], navigation: 'Argos UK handset listings; inspect exact storage and colour variant.' },
-      'currys.co.uk': { label: 'currys.co.uk', routes: ['/'], navigation: 'Currys UK handset listings; open exact model and configuration pages.' },
-      'johnlewis.com': { label: 'johnlewis.com', routes: ['/'], navigation: 'John Lewis UK handset listings; verify exact model, storage and GBP price.' },
-      'ee.co.uk': { label: 'ee.co.uk', routes: ['/'], navigation: 'EE UK handsets; separate outright device price from airtime and finance.' },
-      'very.co.uk': { label: 'very.co.uk', routes: ['/'], navigation: 'Very UK handsets; distinguish outright price from credit and monthly finance.' },
-      'oppo.com': { label: 'oppo.com', routes: ['/'], navigation: 'OPPO UK official phones; verify UK model and configuration.' },
-      'realme.com': { label: 'realme.com', routes: ['/'], navigation: 'realme UK official phones; verify UK model and configuration.' },
     }
   },
   'laptops': {
@@ -357,14 +342,6 @@ const playbooks = {
       'camerapricebuster.co.uk': { label: 'Camera Price Buster UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the camera model comparison pages for discovery only. Follow through to the original retailer product page before recording price evidence.' },
       'castlecameras.co.uk': { label: 'Castle Cameras UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the UK camera catalogue and exact model pages; preserve kit lens and body-only differences.' },
       'productiongear.co.uk': { label: 'Production Gear UK', routes: ['/'], genericSearchFallback: false, navigation: 'Use the camera and video equipment catalogue for exact camera products; exclude rigs, accessories and unrelated production equipment.' },
-      'sony.co.uk': { label: 'sony.co.uk', routes: ['/'], navigation: 'Sony UK camera catalogue; follow exact body and lens-kit product pages.' },
-      'jessops.com': { label: 'jessops.com', routes: ['/'], navigation: 'Jessops UK camera listings; inspect exact body, lens kit and GBP price.' },
-      'parkcameras.com': { label: 'parkcameras.com', routes: ['/'], navigation: 'Park Cameras UK; follow individual camera and kit pages.' },
-      'cliftoncameras.co.uk': { label: 'cliftoncameras.co.uk', routes: ['/'], navigation: 'Clifton Cameras UK; verify exact camera SKU and kit contents.' },
-      'harrisoncameras.co.uk': { label: 'harrisoncameras.co.uk', routes: ['/'], navigation: 'Harrison Cameras UK; inspect exact camera body and lens bundle.' },
-      'camerapricebuster.co.uk': { label: 'camerapricebuster.co.uk', routes: ['/'], navigation: 'Camera Price Buster UK price comparison; follow retailer links to live product pages.' },
-      'castlecameras.co.uk': { label: 'castlecameras.co.uk', routes: ['/'], navigation: 'Castle Cameras UK; inspect individual model and kit listings.' },
-      'productiongear.co.uk': { label: 'productiongear.co.uk', routes: ['/'], navigation: 'Production Gear UK; include only complete camera products, not rigs or production accessories.' },
     }
   },
 

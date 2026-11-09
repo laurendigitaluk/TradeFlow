@@ -2,6 +2,16 @@
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.
 
+## 9 November 2026 23:28 UTC — compact parent completion summary on isolated branch
+
+- The isolated gemma/3d-printers branch advanced to ca38a0d2fbc706e1e48b259d992d83975c91537d. It adds src/task-result-summary.mjs and its regression test, and updates task-worker.mjs to submit a compact summary rather than the full outputs array.
+- The summary retains product identity, source/capture URLs, review classification, price observations, queue-write references, research/route metrics and bounded failures. It excludes raw page captures and long excerpts already persisted in the review queue, and logs the serialized result byte count before the completion RPC.
+- The fixture includes 100,000-character raw captures and asserts a summary below 5,000 characters. This is a targeted mitigation for the previous parent PGRST102, not a LIVE runtime retest.
+- PR #345 (draft/open, base production, head gemma/3d-printers) promotes the isolated branch. GitHub Actions run #42720715939 was in progress at this checkpoint. No merge/deployment.
+- The isolated 3D worker started at 23:20:07 UTC, before the compact-summary commits at 23:26 UTC. It must not be assumed to have loaded the new task-worker code until the approved updater/restart is completed.
+- The branch also adds direct Anycubic UK route regression tests and includes task-result-summary.test.mjs in its workflow.
+- Generic worker and isolated 3D worker both report idle; generic enabled scope is not visible. No new task until the local process list/configuration is reconciled.
+
 ## 9 November 2026 23:23 UTC — isolated and generic poller state
 
 - Generic worker_started at 23:16:18 UTC: DESKTOP-LVASEUB-129276.

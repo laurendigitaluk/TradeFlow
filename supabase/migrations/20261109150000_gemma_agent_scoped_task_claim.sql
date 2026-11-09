@@ -61,7 +61,7 @@ begin
    )
    and not exists (
     select 1
-    from jsonb_array_elements(t.payload->'tasks') as item(value)
+    from jsonb_array_elements(case when jsonb_typeof(t.payload->'tasks')='array' then t.payload->'tasks' else '[]'::jsonb end) as item(value)
     cross join lateral (
      select case
       when lower(trim(coalesce(item.value->>'agent_key','')))='3d-printers-equipment'

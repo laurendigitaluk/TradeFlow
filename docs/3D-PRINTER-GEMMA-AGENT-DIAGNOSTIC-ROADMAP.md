@@ -2,6 +2,18 @@
 
 Status: 2026-11-09. Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`. This document is an investigation/navigation map, not a new desktop architecture or a replacement worker.
 
+## 9 November 2026 23:32 UTC — generic worker status identity race
+
+- 23:16:18 generic worker_started: DESKTOP-LVASEUB-129276.
+- 23:20:07 isolated 3D worker_started: DESKTOP-LVASEUB-3d-printers-equipment-128700.
+- 23:23:00 second generic worker_started: DESKTOP-LVASEUB-108588.
+- 23:30:32 isolated 3D worker_stopped: DESKTOP-LVASEUB-3d-printers-equipment-128700.
+- 23:31:33 generic worker_stopped: DESKTOP-LVASEUB-129276.
+- No worker_stopped event is recorded for generic worker 108588. The generic status row now points to 129276/idle because the older stop event overwrote it after the newer start. The isolated category row points to 128700/idle after its clean stop. There are 0 active exact-branch parent tasks.
+- Inspected LIVE RPC platform_ai_agent_report_event: ON CONFLICT(agent_key) updates status/metadata without comparing p_details.worker_id to the current metadata worker_id. A late event from an older process can overwrite a newer worker's status. The current status row cannot prove whether worker 108588 is still alive.
+- PR #331 adds bounded idle heartbeat but does not guard worker identity; do not merge it until this race is addressed or the local process list is reconciled.
+- This is shared worker telemetry, outside a safe 3D-only code change. No RPC/migration or other-category worker change was made. Verify the Research PC process list and shared/isolated configs before another 3D task.
+
 ## 9 November 2026 23:32 UTC — isolated 3D correction set and release ordering
 
 - PR #344 now combines two isolated-branch corrections: raw fallback snippets remain out of normalized condition/availability fields, and 3DJake product matching ignores unrelated parent-category taxonomy. It changes agent.mjs, agent-speed.test.mjs and source-playbooks.test.mjs only on gemma/3d-printers.

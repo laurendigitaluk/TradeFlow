@@ -929,11 +929,11 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
     'https://bambu-lab-uk.myshopify.com/search?q=Bambu%20Lab%20A1',
     'https://bambu-lab-uk.myshopify.com/collections/3d-printers'
   ]);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation, /Combo\\/ACE bundle option/);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', 'bambu-lab-uk.myshopify.com').navigation, /standalone printer and Combo\\/AMS variants/);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', '3dgbire.com').navigation, /warranty\\/guarantee/);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation, /16 products per page/);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', 'gumtree.com').navigation, /individual active adverts/);
-  assert.match(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation, /direct ASIN product page/);
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'uk.anycubic3d.com').navigation.includes('Combo/ACE bundle option'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'bambu-lab-uk.myshopify.com').navigation.includes('standalone printer and Combo/AMS variants'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', '3dgbire.com').navigation.includes('warranty/guarantee'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation.includes('16 products per page'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'gumtree.com').navigation.includes('individual active adverts'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation.includes('direct ASIN product page'));
   assert.ok(usedTask);
 });

@@ -2532,3 +2532,8 @@ The desktop Control Centre has seven independent specialist switches: 3D Printer
 The toolbar reports how many specialists are enabled and how many research tasks are active. RUNNING means the worker is processing a task for that specialist. WAITING means it is enabled but no matching task is currently assigned. DISABLED means its switch is off. SERVICE STOPPED means the global service is disabled. BACKEND UPDATE REQUIRED and ERROR require the owner to inspect the logs rather than repeatedly clicking shortcuts.
 
 The seven desktop shortcuts are category selectors, not seven separate workers. They update the shared specialist configuration and bring focus to the single Control Centre. The background supervisor and one queue worker are shared. Closing the visible Control Centre does not stop the background service. On the affected Windows 11 setup, selecting Windows Console Host under System > Advanced > Terminal prevents Windows Terminal from displaying the hidden PowerShell console.
+
+
+### Control Centre scrolling correction — 9 November 2026
+
+The seven specialist cards now use a standard vertically scrollable panel. On narrow or side-by-side windows, scroll inside the specialist list to reach 3D Printers, Gaming, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. Card widths adapt when the window is resized. If the first or last specialist cannot be reached, update the local Control Centre UI script from production; do not reinstall or restart the background worker for this display-only repair.

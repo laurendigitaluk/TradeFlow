@@ -4481,3 +4481,18 @@ Current next step: owner installs from production on the Research PC. Open Power
  
 ### Live worker snapshot before Research PC installation — 11:57 UTC
 The LIVE `platform_ai_agent_status` and activity records show one generic TradeFlow Gemma task worker connected and idle, polling every 15 seconds. The queue currently contains 24 completed tasks and no queued/running tasks. This is the existing legacy worker, not the new desktop supervisor. The installer will refuse to overwrite it while active. When installing on the Research PC, stop the existing worker cleanly with Ctrl+C first; do not terminate an active task or force-kill the process.
+
+
+## Gemma shortcut window correction — 9 November 2026
+
+The owner demonstrated that each new category shortcut opened both a new PowerShell console and another copy of the Research Control Centre. This was traced to the installer creating shortcuts without `-WindowStyle Hidden`, and the UI script having no single-instance guard.
+
+Production was corrected:
+- Both the main Control Centre shortcut and all seven specialist shortcuts now launch PowerShell with `-WindowStyle Hidden`.
+- The Control Centre now acquires a per-user named mutex before creating its form. Only one dashboard instance can remain open.
+- A specialist shortcut still writes its selected agent key to the shared config and starts the existing scheduled supervisor, then exits if the dashboard is already open. The existing dashboard refreshes from shared config every three seconds and displays the newly enabled specialist.
+- The mutex is released when the dashboard closes.
+
+The change is committed to production in commits `af867edd067422adfd8a371cecb4f939ae231268` and `a1376bbefde726543b47606064f60486fbafea0d`. The new code was inspected after commit. A new production CI run had not appeared at the time of this checkpoint, so do not describe the correction as CI-verified yet.
+
+The Research PC still has the previous installed copies of these scripts and shortcut arguments. To apply the fix, stop the background service after any current task finishes, then rerun the production installer from the existing Gemma folder. The installer will refuse to overwrite an active supervisor or legacy worker. After installation, verify one Control Centre window and no PowerShell console when opening a specialist shortcut.

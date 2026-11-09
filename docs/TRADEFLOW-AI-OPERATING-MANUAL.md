@@ -1,3 +1,13 @@
+## 9 November 2026 23:32 UTC — isolated 3D PR now combines queue-field and retailer-matcher fixes
+
+PR #344 has been extended to carry both the raw-fallback observation-field correction and the 3DJake retailer-parent-taxonomy matcher correction into gemma/3d-printers. It now changes only agent.mjs, agent-speed.test.mjs and source-playbooks.test.mjs on the isolated 3D branch. Updated CI run #42721156282 passed 110/110 tests with zero failures. PR #344 is open/mergeable, unmerged and undeployed.
+
+Production counterparts remain separate: PR #343 carries the queue-field correction to production; PR #341 carries the matcher correction to production. Draft PR #345 promotes the isolated 3D branch to production and contains the compact parent-task summary mitigation, but it does not yet contain PR #344's two corrections. Review/merge sequencing must preserve these changes; do not merge or deploy automatically.
+
+The latest isolated branch also contains the compact task-result summary (100,000-character fixture to below 5,000 characters) and direct Anycubic route regression tests. PR #345 CI run #42720715939 passed 106/106, but the compact summary has not been installed/runtime-tested. The isolated 3D worker started at 23:20:07 UTC before the summary commits at 23:26 UTC, so assume its running process has not loaded them until verified.
+
+
+
 ## 9 November 2026 23:28 UTC — compact parent-task result added on isolated 3D branch
 
 The independent gemma/3d-printers branch has advanced to ca38a0d2fbc706e1e48b259d992d83975c91537d. It now adds task-result-summary.mjs and task-result-summary.test.mjs; the isolated task-worker submits product identity, capture URLs, classification, price observations, queue-write references, metrics and bounded failures, but excludes raw page captures and long excerpts already persisted in the review queue. It logs the serialized summary byte count before the completion RPC.

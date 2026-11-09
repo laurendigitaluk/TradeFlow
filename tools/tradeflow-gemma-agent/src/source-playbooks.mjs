@@ -119,6 +119,55 @@ const playbooks = {
       }
     }
   }
+  'gaming-consoles-accessories': {
+    categoryInstructions: [
+      'Follow the master catalogue hierarchy: category → branch → product family → manufacturer/model → exact edition, storage, colour or bundle → individual product/listing page. A category, search page or collection is discovery only, never price evidence.',
+      'Capture every relevant individual UK listing and preserve its complete page text, visible GBP price occurrences and nearby contexts, seller, condition, availability, delivery/location clues, identifiers and uncertainty. Do not approve, reject, rank, classify suitability or match evidence to master products; ChatGPT does that.',
+      'Keep consoles, handhelds, controllers, headsets, VR equipment, games and accessories in their correct branches. Never treat an accessory as a complete console or merge different product types.',
+      'Preserve exact console generation and model, storage capacity, disc versus digital edition, Slim/Pro variants, colour, region, included controllers/games and bundle contents. Standard console, special edition and bundle packages remain separate.',
+      'For controllers and accessories, preserve exact manufacturer, model/part number, platform compatibility, wired/wireless connection, single/pair quantity, colour and edition. Do not infer compatibility from appearance or a broad platform label.',
+      'Keep UK-new and UK-used research lanes separate. For used listings capture the seller asking price, stated condition, completeness, faults, refurbishment grade, warranty and availability. Sold/completed prices are not current asking-price evidence.',
+      'Do not stop after the first successful route. Check all configured source routes, follow matching product links, pagination and load-more pages where accessible, and retain borderline or incomplete pages for ChatGPT review rather than discarding them.'
+    ],
+    branchInstructions: {
+      'playstation-consoles': ['Research complete PlayStation consoles only. Preserve PS generation, exact model/CUH code where shown, storage, disc/digital, Slim/Pro edition, colour and bundle contents.'],
+      'xbox-consoles': ['Research complete Xbox consoles only. Preserve Xbox generation, Series S/X, storage, disc/digital edition, colour/Carbon Black, refresh and bundle contents.'],
+      'nintendo-consoles': ['Research complete Nintendo home consoles only. Preserve exact generation, model, storage, region, included Joy-Con/controllers, dock and bundle contents.'],
+      'nintendo-home-consoles': ['Research complete Nintendo home consoles only. Keep console-only and bundles with games/accessories separate.'],
+      'nintendo-handheld-consoles': ['Research Nintendo handheld systems only. Preserve exact generation, screen/model revision, storage, colour and included accessories.'],
+      'playstation-handhelds': ['Research PlayStation handheld devices only. Preserve PSP/PS Vita/Portal generation, storage, model revision, connectivity and included accessories.'],
+      'playstation-vr': ['Research complete PlayStation VR headsets and sets. Preserve VR generation, headset revision, controller/camera bundle and compatibility.'],
+      'playstation-controllers': ['Research PlayStation controllers only. Preserve DualShock/DualSense generation, edition, colour, connection and single/pair quantity.'],
+      'xbox-controllers': ['Research Xbox controllers only. Preserve model generation, platform compatibility, wired/wireless, colour, special edition and bundle quantity.'],
+      'nintendo-controllers': ['Research Nintendo controllers only. Preserve Joy-Con left/right/pair, Pro Controller generation, colour, edition and included grip/straps.'],
+      'playstation-headsets': ['Research PlayStation-compatible gaming headsets only. Preserve exact model, wireless/wired, platform edition and included receiver/accessories.'],
+      'xbox-gaming-headsets': ['Research Xbox-compatible gaming headsets only. Preserve exact model, wireless/wired, Xbox compatibility and bundle contents.'],
+      'playstation-accessories': ['Research PlayStation accessories only. Identify exact accessory type, model and compatibility; do not substitute a console, controller or similar accessory.'],
+      'xbox-accessories': ['Research Xbox accessories only. Identify exact accessory type, model and compatibility; do not substitute a console or controller.'],
+      'nintendo-accessories': ['Research Nintendo accessories only. Identify exact accessory type, Switch generation compatibility, model and bundle contents.'],
+      'sega-home-consoles': ['Research complete Sega home consoles only. Preserve exact generation/model, region, storage/modification state and bundle contents.'],
+      'sega-console-add-ons': ['Research Sega console add-ons only. Identify exact add-on, console generation compatibility and package contents.'],
+      'sega-handheld-consoles': ['Research Sega handheld consoles only. Preserve exact model/generation, screen, storage, region and included accessories.'],
+      'atari-home-consoles': ['Research complete Atari home consoles only. Preserve exact model/generation, edition, region and bundle contents.'],
+      'atari-handheld-consoles': ['Research Atari handheld consoles only. Preserve exact model, screen/storage variant, edition and included accessories.']
+    },
+    sites: {
+      'xbox.com': { label: 'Microsoft Xbox UK official', navigation: 'Use the UK Xbox product catalogue and official console pages for exact model, storage, edition and bundle identity. Official pages are not automatically current price evidence; follow UK GBP retail offers where needed.' },
+      'nintendo.com': { label: 'Nintendo UK official', navigation: 'Use the UK Nintendo product catalogue and exact console/controller/accessory pages. Preserve generation, Joy-Con configuration, colour and bundle contents.' },
+      'playstation.com': { label: 'Sony PlayStation UK official', navigation: 'Use the UK PlayStation product pages for exact model, edition, accessories and compatibility. Keep console, controller, headset and VR product families separate.' },
+      'argos.co.uk': { label: 'Argos UK retailer', navigation: 'Use search/category results for discovery, then open each exact product detail page. Capture current GBP price, availability, delivery/collection and package contents.' },
+      'currys.co.uk': { label: 'Currys UK retailer', navigation: 'Use search results and gaming console/controller categories for discovery; follow exact product pages and capture the selected variant, GBP price and stock.' },
+      'johnlewis.com': { label: 'John Lewis UK retailer', navigation: 'Use UK gaming product search and follow exact console/controller/headset detail pages. Capture current GBP price, stock and delivery information.' },
+      'smythstoys.com': { label: 'Smyths Toys UK retailer', navigation: 'Use UK gaming and Nintendo/PlayStation/Xbox product categories as discovery pages; follow exact item pages and preserve bundles and platform variants.' },
+      'ee.co.uk': { label: 'EE UK retailer', navigation: 'Use UK gaming hardware product pages only. Distinguish device price from contract, finance, monthly payment or service plan amounts.' },
+      'game.co.uk': { label: 'GAME UK retailer', navigation: 'Use console, controller and accessory categories for discovery; inspect individual product pages and preserve new, pre-owned, refurbished and bundle distinctions.' },
+      'very.co.uk': { label: 'Very UK retailer', navigation: 'Use gaming product search and category pages for discovery; open exact item pages and capture GBP price, stock, condition and bundle contents.' },
+      'selfridges.com': { label: 'Selfridges UK retailer', navigation: 'Use UK gaming product listings for discovery; confirm UK GBP price and exact edition on the individual product page.' },
+      'amazon.co.uk': { label: 'Amazon UK marketplace', navigation: 'Search results are discovery only. Follow each matching result to a direct ASIN product page; capture the selected seller/offer, exact edition, GBP price and availability.' },
+      'ebay.co.uk': { label: 'eBay UK marketplace', navigation: 'Search exact manufacturer/model and inspect individual active UK item listings only. Capture asking price, condition, completeness, seller location and availability; exclude sold/completed items as current asking prices.' },
+      'webuy.com': { label: 'CeX UK used dealer', navigation: 'Use CeX search/category pages for discovery, then open the exact item page. Capture grade, tested/refurbished condition, warranty, store/online availability and current GBP price.' }
+    }
+  },
 };
 
 function fillRoute(route, task) {

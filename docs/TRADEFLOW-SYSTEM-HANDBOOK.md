@@ -4607,3 +4607,17 @@ The LIVE Neptune 4 Pro run completed at 15:03:59 UTC with 29 search results, six
 The ELEGOO UK used-lane migration was separately applied after PR #332 merged: migration version `20261109193254`; the existing source scope is now `all`. Its new and pre-owned routes remain separate. TEST was not changed. The correct LIVE category UUID is `ab8b13b0-b070-4534-838b-3ebd4d7261e5`.
 
 Current category counts: 208 master products (201 active); 239 active UK-new evidence rows, 21 active UK-used rows and 17 inactive UK-new rows. The review queue has 65 records (28 imported, 37 rejected, 0 open); historical reviewer metadata remains incomplete and must not be inferred or backfilled automatically.
+
+
+## Verification update — 9 November 2026, 20:09 UTC (PR #336)
+
+- PR #336 is based directly on production `3e0f712d5c3c93fa5c6e9b9aa2828716247e75ef`, 8 commits ahead and 0 behind; it remains open, mergeable and unmerged.
+- First PR CI run #42689823144 exposed one stale source-playbook assertion: the queue lookup had been renamed from `existing` to `exactExisting`, and the test did not also inspect the legacy lookup's selected columns. The test was updated to validate both query paths against the LIVE schema; application code was not weakened.
+- Retest run #42690215260 passed **110/110** Gemma/source-playbook/task-group tests. PowerShell updater syntax, Node syntax and Owner Dashboard JavaScript syntax also passed.
+- Repeated the read-only snapshot replay using the actual three candidate captures and their exact LIVE imported queue rows. All three are terminal imported rows with review/approval/import timestamps, and all three incoming fingerprints differ from the historical fingerprints:
+  - ELEGOO UK: 10,000 → 42,207 captured characters; `new_snapshot`.
+  - 3DJake UK: 10,000 → 14,328 captured characters; `new_snapshot`.
+  - 3D Prima: 3,493 → 3,506 captured characters; `new_snapshot`.
+- Proposed outcome: 3 new unverified review revisions, 0 existing terminal rows modified. Actual LIVE inserts/updates remain **0**; this was a read-only replay.
+- Exact unchanged snapshots still select `duplicate`; the legacy compatibility tests cover old `review-` and `borderline-` keys. Only unreviewed pending rows can use guarded enrichment.
+- No evidence approval/import, research task, worker restart, source change, migration, TEST write, or secret/private-`.env` access occurred.

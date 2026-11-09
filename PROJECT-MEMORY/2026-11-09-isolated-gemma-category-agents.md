@@ -15,6 +15,8 @@ Category branches created:
 
 Each branch has its own `tools/tradeflow-gemma-agent/agent.config.json` with exactly one enabled key and its own sourceBranch value. Branches were created as separate refs from the isolated-agent foundation; future branch changes do not propagate automatically.
 
+CI passed on 2026-11-09: Gemma Research Tests run 42716626875 passed PowerShell syntax checks, Node source syntax checks, the existing Gemma task/website tests, the new single-agent isolation tests and Owner Dashboard JavaScript syntax. The first run exposed only a test expectation mismatch against the existing unknown-agent validation text; the expectation was corrected and the rerun passed.
+
 Implementation in foundation branch:
 - Single-agent config validator and task-group isolation guard plus tests.
 - Task worker now uses the per-folder agent config, includes category in worker identity, rejects mixed/out-of-scope tasks and uses category-specific Common Room identity rather than a hard-coded 3D Printer identity.
@@ -24,4 +26,4 @@ Implementation in foundation branch:
 
 Existing local install, current running process, private ENV, Ollama service, LIVE/TEST Supabase data, research queue, source lists and evidence have not been changed by this GitHub work. Installer is not yet run; no new agent folders or shortcuts exist on the PC. Do not stop the existing worker while the eight-product batch is active. Do not start a second 3D Printer process until the current batch is complete.
 
-Next: finish CI and PR review; run installer once; verify folder/branch/config isolation; switch only 3D Printer runtime after active batch completion; test one 3D task then a block task; checkpoint/lock 3D before any Gaming changes.
+Next: review the open draft PR #342; run installer once; verify folder/branch/config isolation; switch only 3D Printer runtime after active batch completion; test one 3D task then a block task; checkpoint/lock 3D before any Gaming changes.

@@ -41,6 +41,11 @@ if ($LASTEXITCODE -ne 0) {
 
 $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
 $env:TRADEFLOW_GEMMA_ENVIRONMENT = $Environment
+$DesktopConfigPath = Join-Path $env:LOCALAPPDATA 'TradeFlow\ResearchControlCentre\config.json'
+if (Test-Path -LiteralPath $DesktopConfigPath -PathType Leaf) {
+    # When the desktop app is installed, manual starts still respect its per-agent switches.
+    $env:TRADEFLOW_GEMMA_AGENT_CONFIG = $DesktopConfigPath
+}
 Write-Host "Starting the TradeFlow $Environment Gemma queue worker. Press Ctrl+C to stop."
 & node (Join-Path $SourcePath 'task-worker.mjs')
 if ($LASTEXITCODE -ne 0) {

@@ -5069,3 +5069,13 @@ Root cause was the WinForms docking order: the Fill-docked list host had been mo
 Acceptance is complete for the desktop display. No LIVE worker, supervisor, local agent configuration, private .env, research queue, sources, product catalogue, evidence or Supabase data was changed by this final UI repair. LIVE remains separate from TEST. The only observed runtime state at acceptance was all seven specialists enabled, zero currently active research tasks, and the background service connected/waiting; WAITING does not mean a research task is running.
 
 Supabase LIVE schema inspection found no public project-memory/checkpoint table. The authoritative project record for this repair is maintained in the repository's PROJECT-MEMORY, CHECKPOINTS, both operating manuals, backend operations manual and diagnostic roadmap.
+
+## 9 November 2026 — 3D-printer Gemma timeout recovery
+
+For `3d-printers-equipment` / `3d-printers`, retain the configured normal Ollama timeout. If a multi-page Gemma batch times out, do not serially retry every page with the same full timeout: preserve the deterministic full raw page captures for ChatGPT and move on. Continue isolated single-page recovery for non-timeout batch failures such as output-token-limit or malformed structured output. This is proposed in PR #333 and is not deployed until reviewed, merged and installed with explicit approval.
+
+Telemetry keeps the existing `gemma_calls` batch-count field for compatibility and adds `gemma_http_requests` for actual Ollama requests plus `gemma_recovery_skipped` for pages deliberately left to raw capture after a timeout. A raw capture is unverified; it is not an evidence approval or catalogue import.
+
+Latest LIVE Neptune 4 Pro run (9 November 14:44:43–15:03:59 UTC): 29 search results, 6 pages discovered, 3 fetched, 3 page-fetch errors; 2 Gemma batches, 3 extraction failures, 3 retained captures and zero staged queue changes because all three source/model records already existed as imported rows. The first two-page batch timed out, and its two serial retries consumed a further 9m21s without a structured finding. Estimated replay with the proposed timeout branch is approximately 9m54s rather than 19m16s if later stages remain unchanged; this is not a runtime test.
+
+Do not change duplicate handling for already imported/reviewed rows as part of this fix. Do not create duplicate review rows or overwrite historical approvals. Research PC installation, LIVE worker verification and any migration remain separate owner-approved gates.

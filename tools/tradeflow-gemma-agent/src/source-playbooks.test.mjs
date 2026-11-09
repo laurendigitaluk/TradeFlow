@@ -912,7 +912,7 @@ test('3D-printer sites use one deliberate UK discovery route per source instead 
   ];
   for (const [domain, routes] of expected) {
     assert.deepEqual(buildWebsiteSearchRoutes({ domain }, siteTask), routes, domain);
-    assert.ok(!routes.some(url => /\\/search\\?q=/i.test(url)), domain + ' must not receive a generic guessed search fallback');
+    assert.ok(!routes.some(url => /\/search\?q=/i.test(url)), domain + ' must not receive a generic guessed search fallback');
   }
 });
 

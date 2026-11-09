@@ -368,3 +368,8 @@ Windows Terminal can capture a hidden PowerShell session on some Windows 11 conf
 ### Specialist card clipping / no vertical scroll — 9 November 2026
 
 First failure point is the WinForms card container in TradeFlow-Research-Control-Centre.ps1, not Supabase, the queue worker or the agent definitions. The initial FlowLayoutPanel TopDown/WrapContents=false layout clipped the first two cards in the owner's narrow side-by-side window. Production commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces it with a standard Panel using AutoScroll, explicit Y positions, AutoScrollMinSize and responsive card widths. For deployment replace only the local UI script; do not rerun the installer or touch the worker. Verify the list from first to seventh card by vertical scrolling.
+
+
+### Dedicated scrollbar fallback
+
+The owner reported that the standard Panel AutoScroll correction did not change the display. Production UI moved to an explicit VScrollBar control and manually positioned card canvas. This is the deterministic fallback for WinForms scroll issues. Ensure LargeChange is set before Maximum, calculate Maximum as content overflow plus LargeChange minus one, clamp Value to Maximum - LargeChange + 1, and guard ValueChanged during programmatic updates. Confirm all seven keys remain rendered; no backend changes are required.

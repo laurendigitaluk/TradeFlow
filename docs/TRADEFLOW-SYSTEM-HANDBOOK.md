@@ -4596,3 +4596,14 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - **Research PC installation remains pending.** Merging to GitHub and applying the LIVE database migration do not update the local Node worker already running on the PC. The connected Control Centre must be stopped after the current task, then the current production \`Update-TradeFlow-Gemma.ps1\` run against the existing paths in \`%LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre\\service.json\`. This updater validates both LIVE/TEST targets in the existing private \`.env\`, backs up installed source, downloads production code, runs Node syntax and test suites, and does not edit the private \`.env\` or specialist selection in \`config.json\`.
 - After local update, restart the existing Control Centre background service and confirm it connects to LIVE. Then run a single bounded 3D-printer acceptance task. Acceptance requires a short extraction stage, full page captures whether Gemma succeeds or times out, evidence records from distinct qualifying source pages, preservation of multiple UK-new/UK-used records for one product, and completion/release of the shared queue so it can claim the next category task.
 - No TEST project schema, data, queue, sources or customer/tenant rows were changed by the production migration.
+
+
+## 9 November 2026 — 3D-printer ChatGPT review snapshot handling
+
+The 3D-printer worker now has a proposed snapshot-versioned review handoff in PR #336, based on current production after PR #332 was merged. The established capture identity remains manufacturer + exact model + package + source URL. An unchanged snapshot is idempotent. A materially changed page at the same URL is a new unverified review revision; imported/rejected/reviewed rows are immutable. Only an unreviewed `needs_research` row can use the guarded enrichment path. No research worker may approve or import catalogue evidence.
+
+The LIVE Neptune 4 Pro run completed at 15:03:59 UTC with 29 search results, six exact pages discovered, three fetched, three raw captures and three duplicate-skipped review writes. A read-only snapshot replay detected all three captures as materially changed and would create three new review revisions without changing the existing rows. This remains a proposed behaviour until PR #336 is reviewed, merged and installed.
+
+The ELEGOO UK used-lane migration was separately applied after PR #332 merged: migration version `20261109193254`; the existing source scope is now `all`. Its new and pre-owned routes remain separate. TEST was not changed. The correct LIVE category UUID is `ab8b13b0-b070-4534-838b-3ebd4d7261e5`.
+
+Current category counts: 208 master products (201 active); 239 active UK-new evidence rows, 21 active UK-used rows and 17 inactive UK-new rows. The review queue has 65 records (28 imported, 37 rejected, 0 open); historical reviewer metadata remains incomplete and must not be inferred or backfilled automatically.

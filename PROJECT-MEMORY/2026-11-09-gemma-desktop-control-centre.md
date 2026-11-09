@@ -71,3 +71,25 @@ Owner clarified that the extra tab title is the full executable path `C:\Windows
 Production now includes `tools/tradeflow-gemma-desktop/Launch-TradeFlow-Control-Centre.vbs`. The installer downloads this file and creates the main dashboard and seven specialist shortcuts with `wscript.exe` as TargetPath. The hidden VBS launcher starts PowerShell using WScript.Run window style 0, passing the UI script and optional specialist arguments. The UI remains visible as a WinForms window; the PowerShell console should not. The single-instance mutex and one background supervisor remain unchanged.
 
 The owner installed the prior build before this launcher correction. The Research PC still needs one more installer run after stopping the service safely. No LIVE/TEST research queue, source registry, evidence, approval/import, or .env changes are required.
+
+
+## 9 November 2026 — seven-specialist Control Centre display correction
+
+The Research PC shortcut repair is now applied locally: all seven desktop specialist shortcuts target `wscript.exe` and preserve their canonical `-AgentKey` values. The Windows default terminal preference was changed by the owner from Windows Terminal/Let Windows decide to Windows Console Host; the recurring black terminal window then stopped appearing. The visible Control Centre remained open and reported the background service connected / waiting for website tasks.
+
+Local read-only diagnostics confirmed:
+- `agents.json` contains all seven canonical specialists: 3D Printers & Equipment, Gaming Consoles & Accessories, Drones, Metal Detectors, Mobile Phones, Laptops & Computers, Cameras & Lenses.
+- `config.json` contains all seven canonical keys in `enabledAgentKeys`.
+- `status.json` had no active agent keys at the time of inspection; this means no specialist was actively processing then, not that they were disabled.
+- The local desktop supervisor action remains hidden PowerShell against `Run-TradeFlow-Gemma-Supervisor.ps1`; it was not modified.
+
+The owner then reported that the visible Control Centre displayed only three generic “Agent enabled” checkboxes, without clear specialist names or individual running/waiting status. This is a desktop UI presentation defect. LIVE `platform_ai_agent_status` inspection shows canonical and historical alias rows (including legacy `3d-printers` and `gaming-consoles` keys); the seven local desktop switches remain the canonical set. Do not expose historic aliases as additional desktop switches.
+
+Production UI correction committed as `c720c245fed72174957a1a2d93fed5fc3e9668f8` to `tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1`:
+- Replace the multi-column wrapping card layout with a single vertical, scrollable list so all seven specialists can be found reliably on narrower or DPI-scaled displays.
+- Give each card its specialist name, explicit status text, and an individual “Enabled” checkbox.
+- Add an enabled-specialist and active-task count to the toolbar.
+- Use explicit RUNNING, WAITING, DISABLED, SERVICE STOPPED, BACKEND UPDATE REQUIRED and ERROR states.
+- Preserve the existing shared config, three-second refresh, one-instance mutex, one supervisor and one worker. No research queue, source registry, evidence, catalogue, approval/import, .env or Supabase data was changed by this UI commit.
+
+Deployment note: the new UI script is in production but has not yet been copied to the Research PC. Do not rerun the full installer (it updates the Gemma worker). Close only the Control Centre window, download the single updated UI script to a temporary file, replace the local `TradeFlow-Research-Control-Centre.ps1`, and reopen the existing Control Centre shortcut. Closing the UI does not stop the background supervisor. Verify seven named cards, per-agent checkboxes, status labels, enabled count and active-task count before calling this complete.

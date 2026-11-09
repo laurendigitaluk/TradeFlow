@@ -4,7 +4,7 @@
 Provide complete website navigation/playbooks for the seven independently switchable Gemma product-research specialists and deploy the Windows Control Centre safely.
 
 ## LIVE source registry baseline
-- 119 UK source records total; 116 enabled.
+- 119 source records total (116 GB-coded and 3 US-coded; all 119 enabled).
 - Enabled category coverage including shared universal sources: 3D Printers 15; Gaming Consoles 17; Drones 21; Metal Detectors 13; Mobile Phones 23; Laptops 12; Cameras 24.
 - Counts overlap because shared universal and multi-category sources are counted in each relevant category.
 - No LIVE or TEST source registry rows were added, removed or changed.

@@ -186,6 +186,10 @@ if ($LASTEXITCODE -ne 0) { throw "Canonical TradeFlow Gemma launcher exited with
     if ($StartWorker) {
         $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile
         $env:TRADEFLOW_GEMMA_ENVIRONMENT = $Environment
+        $DesktopConfigPath = Join-Path $env:LOCALAPPDATA 'TradeFlow\ResearchControlCentre\config.json'
+        if (Test-Path -LiteralPath $DesktopConfigPath -PathType Leaf) {
+            $env:TRADEFLOW_GEMMA_AGENT_CONFIG = $DesktopConfigPath
+        }
         Write-Host "Starting the $Environment queue worker. Press Ctrl+C to stop it."
         & node (Join-Path $SourcePath 'task-worker.mjs')
         if ($LASTEXITCODE -ne 0) { throw "Gemma worker exited with code $LASTEXITCODE" }

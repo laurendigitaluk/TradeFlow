@@ -30,7 +30,7 @@ The retailer page title identifies Anycubic Kobra 3 Max V2 Combo, 1 Set. The cur
 - agent.mjs: parse the terminal product slug separately; apply accessory-keyword rejection to title and terminal slug, not unrelated parent taxonomy segments.
 - source-playbooks.test.mjs: regression verifies the 3DJake Combo passes, the Standard sibling fails for a Combo task, and replacement/nozzle product pages still fail.
 - No changes to package matching, sibling-model protection, approved source selection, queue deduplication, Gemma timeout, extraction or evidence approval.
-- Branch based on current production. CI is required before review. Do not merge/deploy without verification and explicit approval.
+- Branch based on current production. CI run #594 passed 104/104 tests on final PR head 1221b1a1362c51134534398e108e372ee7d78fd6. Do not merge/deploy without review and explicit approval.
 
 ## Runtime discrepancy still open
 
@@ -39,3 +39,8 @@ Production PR #339 already added Anycubic model-specific direct routes. The late
 ## Safeguards
 
 No task queued. No worker restarted or updated. No Supabase source, migration, queue or catalogue row changed. No evidence approved or imported. TEST remains separate. No secrets or private .env accessed.
+
+
+## Verification result
+
+GitHub Actions run #594 (run ID 42713995378) passed 104/104 tests on final PR head 1221b1a1362c51134534398e108e372ee7d78fd6. PowerShell updater syntax, Node source syntax, the Gemma task/website playbook suite and Owner Dashboard JavaScript syntax all passed. PR #341 remains open, mergeable, unmerged and undeployed. No runtime retest was performed because the Research PC update requires explicit approval.

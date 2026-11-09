@@ -5013,3 +5013,12 @@ The owner identified the second visible tab as `C:\Windows\System32\WindowsPower
 The installer now downloads `Launch-TradeFlow-Control-Centre.vbs`. All eight shortcuts (main dashboard plus seven category launchers) target `wscript.exe`; the VBS invokes PowerShell with window style 0 and passes the script path and specialist arguments. The Control Centre WinForms window remains visible. The named mutex continues to prevent duplicate dashboards. The background supervisor and queue worker architecture is unchanged.
 
 The owner installed the previous build before this correction. Rerun the production installer after the background service has stopped safely. Do not manually delete shortcuts or modify the private .env.
+
+
+## Windows Gemma Research Control Centre — operational rules
+
+The desktop control plane exposes exactly seven canonical product-research switches: 3d-printers-equipment, gaming-consoles-accessories, drones, metal-detectors, mobile-phones, laptops, and cameras. Historic 3d-printers and gaming-consoles status identities are aliases and must not become extra UI switches. Catalogue Importer remains approval-gated; Release Monitor is not an executable product-research switch.
+
+The UI must render all seven named switches in a scrollable layout, each with its own enabled checkbox and an unambiguous state. Enabled is configuration, not runtime activity. RUNNING is based on status.json activeAgentKeys; WAITING means enabled with no active task; DISABLED means not present in enabledAgentKeys; SERVICE STOPPED reflects the global service flag; backend migration and worker errors must be surfaced distinctly. Show enabled and active counts. Never infer that every enabled specialist is concurrently running: there is one supervisor and one worker/Ollama execution lane.
+
+For a desktop-only UI correction, update only tools/tradeflow-gemma-desktop/TradeFlow-Research-Control-Centre.ps1 on the PC. Do not rerun the full installer, because it invokes the Gemma worker updater. Closing the WinForms Control Centre does not stop the scheduled supervisor. Preserve the local .env, shared config, scheduled task, and queue state. If hidden PowerShell sessions still appear under Windows Terminal, use Windows Console Host as the Windows default terminal on that PC; this is a local Windows preference, not a TradeFlow backend setting.

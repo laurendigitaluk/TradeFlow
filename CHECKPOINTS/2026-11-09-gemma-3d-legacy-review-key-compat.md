@@ -53,3 +53,10 @@ PR #335 now targets `production` and consolidates the full PR #334 3D-printer ch
 Gemma Research Tests run #549 failed before scheduling any jobs (GitHub reported zero jobs), so it did not execute the suite. The prior PR #334 head passed run #548 with 105 tests, but that result does not cover the five new legacy-compatibility tests. Cloudflare Workers Builds for both `tradeflow` and `tradeflow-test` passed on the current PR #335 head; these are preview/build checks, not production deployment. Do not merge until the current Gemma test suite has executed successfully and the Research PC runtime acceptance has been completed.
 
 PR #334 remains open as the separately tested parent version until the consolidated PR's test suite is verified. No LIVE database write, source change, migration, task queueing, worker restart, evidence approval/import, TEST/LIVE copy or secret/configuration change occurred.
+
+
+## CI workflow blocker found — 9 November 2026 18:26 UTC
+
+The Gemma Research Tests workflow exists on `production` but is absent from the repository's default `main` branch (which currently contains only `.github/workflows/businessflow-test-release.yml`). PR #335 attempts #549 and #553 both completed as failures before creating any jobs (zero jobs); neither executed the test suite. The latest head's Cloudflare Workers Builds for both `tradeflow` and `tradeflow-test` passed, but these are build/preview checks and do not run the Gemma regression suite.
+
+The previous PR #334 head passed Gemma run #548 (105 tests), but that does not cover the five new legacy-key tests. Do not treat the current PR as test-verified. No change was made to `main`: it is the repository default branch and not the production branch, and changing its CI configuration is outside the authorised 3D-printer production change. A separate, explicitly approved CI-default-branch change or another authorised test runner is required before merge.

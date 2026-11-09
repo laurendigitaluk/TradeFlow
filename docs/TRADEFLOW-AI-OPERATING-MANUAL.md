@@ -4960,3 +4960,32 @@ A regression test was added to protect the website coverage already configured f
 The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
 
 Status: the regression-test change is committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The latest post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.
+
+
+## Gemma Control Centre — current operating status and route rules (9 November 2026)
+
+This addendum supersedes earlier same-day route-audit notes. PR #325 is open and unmerged on `feature/gemma-desktop-control-centre-20261109`. Code/test head: `14da7fa38fec9a75cf95137985a49d20a2208abb`. GitHub Actions run #472 passed all steps, including 92 Gemma tests and PowerShell/Node syntax checks.
+
+### Specialist controls
+
+The Windows Control Centre exposes seven independent product-research switches: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. Gaming is one specialist for PlayStation, Xbox and Nintendo branches. Historic `3d-printers` and `gaming-consoles` keys are aliases of their canonical switches. Catalogue Importer is not a research worker and remains approval-gated. Release Monitor is not yet connected to the catalogue research queue.
+
+The supervisor runs one queue worker and one Ollama execution lane. Do not create seven competing Node/Ollama processes. The worker reads the local config before each claim and calls the service-role-only `platform_ai_agent_claim_task_for_agents` RPC with only enabled agent keys. The RPC rejects mixed-agent tasks unless every subtask is enabled. A disabled specialist cannot claim new work; an active task is allowed to finish. With no enabled specialists, no work is claimed.
+
+If the scoped RPC is missing, the worker must stop with `requires_migration`. Never restore an unscoped claim fallback in desktop mode. The installer must preserve the existing private `.env`, refuse to overwrite an active worker, and reuse the reviewed updater. Closing the UI does not stop the sign-in supervisor.
+
+### Website source instructions
+
+LIVE source registry: 119 UK records, 116 enabled. Enabled coverage (including shared universal sources): 3D Printers 15, Gaming 17, Drones 21, Metal Detectors 13, Mobile Phones 23, Laptops 12, Cameras 24. The registry itself was not changed by this PR.
+
+- Preserve the existing 3D-printer source playbook and extraction behaviour unchanged.
+- Preserve Gaming capture-only handoff and branch rules; use explicit verified routes for Argos, Currys, Smyths, Very, Cash Converters, Cash Express, Xbox, PlayStation and Nintendo. Use Gumtree's UK search slug and the dedicated Amazon/eBay marketplace paths. For mapped sources without a verified category path, start at the homepage; do not invent `/search?q=` endpoints.
+- Use the category playbooks for Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. Follow navigation to exact product pages. Distinguish complete products from accessories, body-only from camera kits, SIM-free handsets from contracts, detector bundles from coils/parts, and complete drones from components.
+- Skip `store.dji.com` when it redirects to account sign-in. Do not treat sign-in pages or category pages as product evidence.
+- The UK storefront guard accepts locale path segments `uk`, `gb`, `en-uk`, `en_uk`, `en-gb`, `en_gb` and `gb-en` only when the host also matches an approved source record. This supports regional manufacturer/storefront pages while preserving source allowlisting.
+
+A route is a discovery path, not evidence. Capture the individual product/listing page and its raw content for ChatGPT/owner review. Do not bypass 403/429 blocks, do not infer prices from category pages, and do not import or approve evidence automatically.
+
+### Rollout gate
+
+The scoped-claim migration is in PR #325 but has not been applied to LIVE or TEST. No Research PC install, worker restart or research task has been performed. After explicit owner approval: merge PR #325, apply the additive migration to LIVE only, install the Control Centre on the Research PC, confirm the background service and all enabled agents are waiting, then run one bounded LIVE review-only acceptance task. The desktop runtime is LIVE-only; keep TEST separate and do not copy TEST data into LIVE.

@@ -106,6 +106,14 @@ if ($AgentKey -and $EnableAgent) {
     Start-BackgroundService
 }
 
+# Keep one visible Control Centre. Specialist shortcuts update shared config above,
+# then exit if the existing dashboard already owns this per-user mutex.
+$script:UiMutex = New-Object System.Threading.Mutex($false, 'Local\TradeFlowResearchControlCentre')
+if (-not $script:UiMutex.WaitOne(0, $false)) {
+    $script:UiMutex.Dispose()
+    exit 0
+}
+
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'TradeFlow Research Control Centre'
 $form.StartPosition = 'CenterScreen'
@@ -232,5 +240,5 @@ $timer = New-Object System.Windows.Forms.Timer
 $timer.Interval = 3000
 $timer.Add_Tick({ Update-Display }.GetNewClosure())
 $form.Add_Shown({ Update-Display; $timer.Start() }.GetNewClosure())
-$form.Add_FormClosed({ $timer.Stop() }.GetNewClosure())
+$form.Add_FormClosed({ $timer.Stop(); try { $script:UiMutex.ReleaseMutex() } catch {}; $script:UiMutex.Dispose() }.GetNewClosure())
 [void]$form.ShowDialog()

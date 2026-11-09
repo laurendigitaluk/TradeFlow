@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { buildWebsiteSearchRoutes, getCategoryWebsitePlaybook, getWebsiteInstructions } from './source-playbooks.mjs';
-import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, extractGemmaFindingRows } from './agent.mjs';
+import { buildExtractionPrompt, buildDeepPageExcerpt, extractionBatchSizeForTask, fallbackPageCapture, buildCaptureEnrichmentPatch, extractVisibleGbpPriceMentions, extractRelevantPageText, decodeSearchRedirect, extractCollectionPaginationLinks, extractCollectionProductLinks, extractShopifyCollectionProducts, extractSearchPaginationLinks, isCollectionDiscoveryPage, isEligibleProductPage, isChallengePage, matchesTaskModel, ollamaOptions, getResearchSourceLane, isApprovedSourceForTask, buildCategoryScopedSearchQuery, isAllowedSourceHost, searchResultsLimitForTask, is3dPrinterResearchTask, isGamingConsoleResearchTask, isCaptureOnlyResearchTask, extractGemmaFindingRows } from './agent.mjs';
 
 const task = {
   category_slug: '3d-printers-equipment',
@@ -121,6 +121,63 @@ test('unknown categories do not inherit the 3D printer website playbook', () => 
   assert.equal(getCategoryWebsitePlaybook('mobile-phones'), null);
   assert.deepEqual(getWebsiteInstructions('mobile-phones', 'store.creality.com'), null);
 });
+test('gaming category playbook preserves console and accessory identity for ChatGPT review', () => {
+  const category = 'gaming-consoles-accessories';
+  const playbook = getCategoryWebsitePlaybook(category);
+  assert.ok(playbook);
+  assert.ok(playbook.categoryInstructions.some(rule => rule.includes('ChatGPT')));
+  assert.ok(playbook.categoryInstructions.some(rule => rule.includes('disc versus digital')));
+  assert.match(playbook.branchInstructions['xbox-consoles'].join(' '), /storage.*disc\/digital/i);
+  assert.ok(getWebsiteInstructions(category, 'xbox.com'));
+  assert.ok(getWebsiteInstructions(category, 'nintendo.com'));
+  assert.ok(getWebsiteInstructions(category, 'playstation.com'));
+  assert.ok(getWebsiteInstructions(category, 'ebay.co.uk'));
+  const routes = buildWebsiteSearchRoutes({ domain: 'xbox.com' }, {
+    manufacturer: 'Microsoft', model: 'Xbox Series S'
+  });
+  assert.ok(routes.some(url => url.includes('/search?q=Microsoft%20Xbox%20Series%20S')));
+});
+
+test('gaming research lanes keep UK-new and UK-used sources separate', () => {
+  const base = { category_slug: 'gaming-consoles-accessories', branch_slug: 'xbox-consoles' };
+  const official = { source_kind: 'manufacturer', research_scope: 'official' };
+  const newRetailer = { source_kind: 'retailer', research_scope: 'new_uk' };
+  const usedDealer = { source_kind: 'used_dealer', research_scope: 'used_uk' };
+  const universal = { source_kind: 'marketplace', research_scope: 'all' };
+  assert.equal(isResearchTypeAllowedSource(official, { ...base, research_type: 'uk_new' }), true);
+  assert.equal(isResearchTypeAllowedSource(newRetailer, { ...base, research_type: 'uk_new' }), true);
+  assert.equal(isResearchTypeAllowedSource(usedDealer, { ...base, research_type: 'uk_new' }), false);
+  assert.equal(isResearchTypeAllowedSource(official, { ...base, research_type: 'uk_used' }), false);
+  assert.equal(isResearchTypeAllowedSource(usedDealer, { ...base, research_type: 'uk_used' }), true);
+  assert.equal(isResearchTypeAllowedSource(universal, { ...base, research_type: 'uk_new' }), true);
+  assert.equal(isResearchTypeAllowedSource(universal, { ...base, research_type: 'uk_used' }), true);
+});
+
+test('gaming category tasks use capture-only handoff and preserve the full raw page', () => {
+  const gamingTask = {
+    category_slug: 'gaming-consoles-accessories', branch_slug: 'xbox-consoles',
+    manufacturer: 'Microsoft', model: 'Xbox Series S', package_key: '512gb-standard',
+    package_name: '512GB Standard Console', research_type: 'uk_both'
+  };
+  const longText = 'Microsoft Xbox Series S 512GB Standard Console. Brand new. Disc-free digital console. £249.99. In stock for UK delivery. ' + 'Console details '.repeat(900);
+  const source = {
+    source_id: 'G1', title: 'Microsoft Xbox Series S 512GB Standard Console',
+    url: 'https://www.xbox.com/en-GB/consoles/xbox-series-s', text: longText
+  };
+  const finding = fallbackPageCapture(gamingTask, source, 'Raw capture for ChatGPT review.');
+  assert.equal(isGamingConsoleResearchTask(gamingTask), true);
+  assert.equal(isCaptureOnlyResearchTask(gamingTask), true);
+  assert.equal(finding.observed_price, null);
+  assert.equal(finding.evidence_type, null);
+  assert.equal(finding.review_classification, 'unverified_capture');
+  assert.match(finding.product_identity_text, /Xbox Series S/);
+  assert.match(finding.package_or_variant_text, /512GB|digital/i);
+  assert.match(finding.item_condition_text, /Brand new/i);
+  assert.match(finding.availability_text, /In stock/i);
+  assert.equal(finding.source_excerpt, longText);
+  assert.equal(finding.page_capture.captured_text, longText);
+});
+
 
 test('Gumtree uses its UK srpsearch slug route for marketplace discovery', () => {
   const routes = buildWebsiteSearchRoutes({ domain: 'gumtree.com' }, task);

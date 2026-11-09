@@ -189,7 +189,7 @@ async function processClaim(claim){
     enqueue:true,
     onProgress:async p=>{
      activeStage=p.stage||activeStage;
-     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id,...(is3dPrinterResearchTask(task)?{research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug}: {})}});
+     await safeReport({...identity,status:'running',current_task:taskKey,event_type:'progress',task_key:taskKey,message:p.message||('Checking source '+(p.checked??'?')+' of '+(p.total??'?')+': '+(p.source||'approved website')),details:{stage:p.stage,phase:p.phase,checked:p.checked,total:p.total,source:p.source,queue_task_id:claim.id,...(is3dPrinterResearchTask(task)?{research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug}: {})}});
     }
    });
    outputs.push(result);
@@ -198,12 +198,15 @@ async function processClaim(claim){
    const metrics=result.research_metrics||{};
    const routeMetrics=result.route_metrics||{};
    const routeFailures=Array.isArray(result.route_failures)?result.route_failures:[];
+   const productPageLine=is3dPrinterResearchTask(task)
+    ? 'Product pages: '+(metrics.discovered_product_pages??0)+' discovered; '+(metrics.product_page_fetch_attempts??0)+' fetch attempts; '+(metrics.product_pages_fetched??0)+' fetched successfully; '+(metrics.model_variant_prefilter_rejections??0)+' pre-fetch model/package rejections; '+(metrics.model_variant_postfetch_rejections??0)+' post-fetch model/package rejections; '+(metrics.eligible_product_pages??metrics.inspected_product_pages??0)+' eligible for capture'
+    : 'Individual product pages: '+(metrics.discovered_product_pages??0)+' discovered; '+(metrics.inspected_product_pages??0)+' fetched';
    const metricLines=[
     'Research lane: '+task.research_type,
     'Search results: '+(metrics.search_results??0)+' / '+(metrics.search_result_limit??'n/a'),
     'Approved sources probed: '+(routeMetrics.approved_sources_probed??0),
     'Approved source routes: '+(routeMetrics.approved_source_route_attempts??0)+' attempted; '+(routeMetrics.approved_source_routes_found??0)+' found matches; '+(routeMetrics.approved_source_routes_empty??0)+' empty; '+(routeMetrics.approved_source_route_errors??0)+' failed',
-    'Individual product pages: '+(metrics.discovered_product_pages??0)+' discovered; '+(metrics.inspected_product_pages??0)+' fetched',
+    productPageLine,
     'Pages with visible GBP: '+(metrics.fetched_price_pages??0),
     'Gemma extraction: '+(metrics.gemma_calls??0)+' batches; '+(metrics.gemma_batch_failures??0)+' batch failures',
     'Review captures: '+findingCount+' retained; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched)',
@@ -232,7 +235,10 @@ async function processClaim(claim){
     staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }});
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+(metrics.inspected_product_pages??0)+'.',{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
+   const pageStatus=is3dPrinterResearchTask(task)
+    ? 'Product pages: '+(metrics.discovered_product_pages??0)+' discovered, '+(metrics.product_pages_fetched??0)+' fetched, '+(metrics.model_variant_postfetch_rejections??0)+' rejected after fetch, '+(metrics.eligible_product_pages??metrics.inspected_product_pages??0)+' eligible.'
+    : 'Discovered '+(metrics.discovered_product_pages??0)+' product pages; fetched '+(metrics.inspected_product_pages??0)+'.';
+   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results. '+pageStatus,{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
    activeAgentKeys.delete(identity.agent_key);
    await writeDesktopStatus('processing');
   }

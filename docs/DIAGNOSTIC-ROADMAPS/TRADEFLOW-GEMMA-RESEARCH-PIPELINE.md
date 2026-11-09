@@ -956,3 +956,33 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - Regression coverage adds bounded timeout calculation, one-call/no-retry timeout behaviour, full raw page fallback for every page, page-specific website navigation in the prompt, route-count/no-generic-fallback tests, and distinct source URL keys for the same product.
 - PR #332 remains an open repair branch. Its CI must pass before merge. No LIVE source row, migration, review queue, catalogue or shared evidence was changed by this code work.
 - Deployment remains a separate step: merge only after CI/review; apply the ordered ELEGOO scope migration through the approved release process; install/update the single Research Control Centre worker while preserving its existing private \`.env\`; then run one bounded LIVE 3D-printer smoke test and verify it hands off raw captures, frees the shared queue and shows multiple independent source records in Research awaiting review.
+
+## 9 November 2026 — 3D-printer review snapshot versioning
+
+### LIVE observation
+The latest scoped Neptune 4 Pro task, `owner-live-3d-printers-worker-check-neptune4pro-20261109-1445`, completed with 29 search results, 6 individual product pages discovered, 3 fetched, 2 Gemma batches, 3 extraction failures, and 3 complete page captures. All three queue writes returned `duplicate-skipped`.
+
+The three new task captures measured 42,206, 14,328 and 3,506 characters. The existing imported queue records for those exact URLs retained 9,998, 10,000 and 3,493 characters. The latest page observations also contained changed GBP price/context sets and updated availability observations. The task retained the newer captures, but they were not made available as new ChatGPT review items.
+
+### First loss
+The loss occurs after page fetch and raw capture, at the review-queue idempotency check. The base dedupe key is manufacturer + model + package key + exact source URL. Existing imported/rejected rows are terminal and intentionally immutable; therefore a materially changed page at the same URL was classified as a duplicate and not staged again.
+
+### Proposed correction — feature branch `fix/gemma-3d-review-snapshot-versioning-20261109`
+- Keep the established base capture key unchanged for the first capture.
+- Compute a deterministic snapshot fingerprint from GBP price amounts and contexts, title, package, condition, availability, UK/location observations, and a 1 KB capture-size bucket. When there are no structured observations, use a small normalised page-context fallback.
+- Same fingerprint remains idempotent.
+- A materially changed capture for an imported, rejected, or otherwise reviewed row creates a separate `needs_research` revision row with a snapshot-specific dedupe key. The previous row is never modified.
+- A changed capture for a genuinely unreviewed `needs_research` row may use the existing guarded enrichment-history path with compare-and-swap.
+- New revision rows retain `review_classification=unverified_capture`, leave `reviewed_by`, `reviewed_at`, `approved_at`, and `imported_at` unset, and require ChatGPT/owner review. No evidence type is inferred solely from the fingerprint; no approval or catalogue import is performed.
+- Actual Ollama HTTP requests and pages retained as raw fallback are now reported separately from the existing `gemma_calls` batch counter.
+
+### Acceptance tests
+- Identical page observations produce the same fingerprint and remain duplicate-skipped.
+- Changed price/context or materially longer full-page capture produces a different revision key.
+- Imported and rejected rows are immutable; a changed snapshot becomes a new review item.
+- Unreviewed pending rows use only the existing guarded enrichment path.
+- Repeated identical revision captures do not create another queue row.
+- A failed 3D-printer batch reports actual HTTP request count and raw-fallback page count.
+
+### Safety and deployment
+No LIVE queue row, catalogue product, shared evidence row, source registry entry, migration, or worker setting was changed while preparing this repair. The change is stacked on the current 3D-printer repair branch and requires its parent PR plus this review PR to be reviewed and approved before installation. The 45-second 3D-printer Gemma timeout remains unverified on the Research PC; complete raw page fallback is the safety path if Gemma does not finish within the bound.

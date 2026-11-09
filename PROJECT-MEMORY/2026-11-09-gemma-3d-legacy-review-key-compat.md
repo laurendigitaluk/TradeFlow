@@ -1,0 +1,46 @@
+# Project memory — 3D-printer legacy review-key compatibility
+
+Date: 9 November 2026 UTC
+Scope: LIVE category `3d-printers-equipment`, branch `3d-printers`.
+Parent: PR #334, `fix/gemma-3d-review-snapshot-versioning-20261109`.
+Feature branch: `fix/gemma-3d-legacy-review-key-compat-20261109`.
+
+## LIVE baseline inspected
+
+- Project: `gxsrajtqzdjvmceqcpgv`.
+- Exact-branch task rows: 20, all completed; 57 product subtasks; zero running, queued or failed.
+- Latest task: `owner-live-3d-printers-worker-check-neptune4pro-20261109-1445`, completed 15:03:59 UTC under `DESKTOP-LVASEUB-78412`.
+- Latest task metrics: 29 search results, 6 individual pages discovered, 3 fetched, 2 Gemma batches, 3 extraction failures, 3 raw captures; total 19m16s, Gemma stage 18m49s. All 3 review writes were duplicate-skipped.
+- Latest route metrics: 12 approved sources, 26 route attempts, 11 matches, 9 empty, 6 failed; 3 product-page fetch errors. Failures included Uni3Dverse 404, eBay 403 twice/404, Amazon 404, SecondHand 404; the three direct fetch failures were eBay 403.
+- Category status idle; last category heartbeat 15:03:59 UTC. Generic worker heartbeat 12:39:53 UTC. No fresh idle heartbeat is emitted by current production code.
+- Review queue: 65 rows (28 imported, 37 rejected, zero open); 62 have page captures; maximum stored capture/excerpt 10,000 characters. 27 imported rows lack reviewer ID; eight imported rows lack review timestamp; all 37 rejected rows lack reviewer ID; 64/65 have no top-level evidence_type.
+
+## New defect found in PR #334 review
+
+Current LIVE dedupe-key distribution for this exact branch:
+- 62 rows use `capture-`.
+- One imported Creality K1 row uses `review-`.
+- Two Anycubic Kobra S1 Max rows use `borderline-` (one imported, one rejected).
+
+PR #334 checks the new `capture-` base key first. If no row matches, it previously inserted a new capture without searching older keys. An unchanged page for any of these three legacy rows could therefore be duplicated after rollout.
+
+## Repair on this branch
+
+- Keep the current `capture-` lookup as the fast path.
+- Only when that lookup misses for a 3D-printer task, fall back to an exact identity query: record type, category, branch, manufacturer, model, package and source URL.
+- Compare the incoming fingerprint with all matching legacy rows. An exact match is duplicate-skipped. A changed terminal (imported/rejected/reviewed) row creates a separate unverified snapshot. A genuinely unreviewed `needs_research` row may be enriched only through the existing guarded optimistic update.
+- Imported/rejected history is never modified; no reviewer identity is inferred; no approval/import is performed.
+- The lookup is read-only. No LIVE queue row was inserted or updated.
+
+## Regression tests added
+
+1. Legacy lookup filters exact category/branch/product/package/source URL.
+2. Same snapshot against legacy imported/rejected rows remains idempotent.
+3. Materially changed snapshot creates a new snapshot while preserving terminal history.
+4. An unreviewed legacy pending capture can be enriched without changing its legacy dedupe key.
+
+## Release status
+
+Stacked on PR #334 head `3adcfd230a948f1187775eea3f72e305a284e891`. PR #334 remains open, unmerged and undeployed. This compatibility branch is not installed on the Research PC. CI for this new branch is pending at checkpoint creation.
+
+No research task queued; no worker restarted; no source registry or migration changed; no catalogue evidence approved/imported; no TEST/LIVE data copied; no private `.env` or secrets accessed or changed.

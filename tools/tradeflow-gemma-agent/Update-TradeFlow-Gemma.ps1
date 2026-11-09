@@ -4,7 +4,7 @@ param(
     [string]$EnvFile,
     [string]$SourceBranch = 'production',
     [ValidateSet('TEST','LIVE')]
-    [string]$Environment = 'TEST',
+    [string]$Environment = 'LIVE',
     [switch]$NewInstall,
     [switch]$StartWorker
 )

@@ -4,6 +4,8 @@ param()
 $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
+$script:DashboardMutex = New-Object System.Threading.Mutex($false, 'Local\TradeFlowIndependentGemmaControlCentre')
+if (-not $script:DashboardMutex.WaitOne(0, $false)) { $script:DashboardMutex.Dispose(); exit 0 }
 
 $SharedRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $BasePath = Split-Path -Parent $SharedRoot
@@ -289,3 +291,5 @@ $timer.Add_Tick({ Refresh-Grid })
 $form.Add_Shown({ Refresh-Grid; $timer.Start() })
 $form.Add_FormClosed({ $timer.Stop() })
 [void]$form.ShowDialog()
+try { $script:DashboardMutex.ReleaseMutex() } catch {}
+$script:DashboardMutex.Dispose()

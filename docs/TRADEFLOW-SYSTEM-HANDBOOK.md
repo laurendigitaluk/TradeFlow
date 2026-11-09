@@ -1,3 +1,11 @@
+## 9 November 2026 23:23 UTC — worker identity changed again; process scope unresolved
+
+A second generic worker_started event appeared at 23:23:00 UTC for DESKTOP-LVASEUB-108588. The preceding generic worker DESKTOP-LVASEUB-129276 started at 23:16:18 UTC and has no corresponding worker_stopped event in the activity log. The isolated 3D worker DESKTOP-LVASEUB-3d-printers-equipment-128700 started at 23:20:07 UTC. All three records currently have no active task; the latest generic and category status rows report idle.
+
+These timestamps are startup/status events, not proof of live process liveness: the current worker code does not publish a periodic idle heartbeat to Supabase. The generic worker's enabledAgentKeys are not included in its telemetry, so it is unknown whether it can also claim 3D-printer tasks. Do not enqueue another 3D task until the Research PC process list, shared Control Centre config and isolated agent config are reconciled. No worker was stopped/restarted by this check.
+
+
+
 ## 9 November 2026 — 3D-printer fallback observation fields separated (PR #343)
 
 The latest LIVE Anycubic batch (owner-3d-printers-equipment-1794264123497) processed eight product subtasks: 44 search results, 9 exact product pages discovered, 5 fetched and 5 raw captures retained. Four Gemma batches timed out; the full raw pages were retained. All eight product subtasks emitted completion events and their review writes persisted, but the parent task-completion RPC returned HTTP 400 / PGRST102 (empty or invalid JSON), leaving one failed parent task and no aggregate result. Do not infer the RPC cause without the Research PC request-body/log evidence.

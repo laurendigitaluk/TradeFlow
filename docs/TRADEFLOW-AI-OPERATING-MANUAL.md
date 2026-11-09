@@ -4960,3 +4960,31 @@ A regression test was added to protect the website coverage already configured f
 The seven desktop switches remain one per product category: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops and Cameras. They share one queue supervisor and one Ollama execution lane; this is deliberately not seven competing Node workers.
 
 Status: the regression-test change is committed to feature/gemma-desktop-control-centre-20261109 / PR #325. The latest post-change CI result must pass before merge. No LIVE/TEST source rows, queue rows, evidence, catalogue rows or approvals were changed. No SQL migration has been applied, and no Research PC worker has been installed, restarted or started. The scoped-claim migration remains a deployment gate before the Windows installer can start queue processing.
+
+
+## Post-merge Gemma Control Centre status — 9 November 2026
+
+PR #325 is merged to production (merge commit `b20123fd8f832388011589ac8e7f9e602bb98f08`). Production GitHub Actions run #473 passed: PowerShell syntax, Node syntax, 92 Gemma tests with zero failures, and Owner Dashboard JavaScript syntax.
+
+The LIVE scoped claim RPC `platform_ai_agent_claim_task_for_agents(text,text[],integer)` is present. Permission verification: service_role EXECUTE = true; authenticated EXECUTE = false; SECURITY DEFINER = true. TEST does not have this RPC and remains separate.
+
+The Control Centre is ready for installation, but the Research PC has not yet been updated. Do not state that the desktop service is running until the owner installs it and confirms the local status. The installer:
+- Reuses the existing Gemma worker directory and existing private `.env` path.
+- Does not copy, print or overwrite the private environment file.
+- Refuses to overwrite an active legacy worker; stop that worker cleanly with Ctrl+C first.
+- Registers one background supervisor at sign-in and creates the Control Centre plus seven specialist shortcuts.
+- Enables all seven specialists by default. Each can be disabled separately in the Control Centre.
+- Uses one queue worker/Ollama execution lane. Closing the UI leaves the background supervisor running.
+- Starts from LIVE only. Do not point it at TEST.
+
+When the owner is at the Research PC, open PowerShell in the existing Gemma installation folder (the folder containing `src\task-worker.mjs`) and run:
+
+```powershell
+$Installer = Join-Path $env:TEMP 'Install-TradeFlow-Research-Control-Centre.ps1'
+Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/laurendigitaluk/TradeFlow/production/tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1' -OutFile $Installer
+powershell -ExecutionPolicy Bypass -File $Installer
+```
+
+If the existing `.env` is not beside the worker folder, the installer asks for its path. Enter the path only; never paste its contents into chat. If it reports a worker already running, stop that process cleanly and rerun the installer.
+
+After installation, verify the service shows connected/waiting, all enabled specialists show waiting, and disabled specialists show disabled. Then run one bounded LIVE review-only task and confirm its raw capture reaches `platform_catalogue_research_queue`. Do not start a broad batch as an installation test. No automatic evidence approval or catalogue import is enabled.

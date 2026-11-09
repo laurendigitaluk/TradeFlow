@@ -23,6 +23,7 @@ test('preserves the local stop switch and rejects unknown agents', () => {
 
 test('accepts homogeneous batches and rejects cross-category batches', () => {
   assert.equal(assertTaskGroupBelongsToAgent([{ category_slug: '3d-printers-equipment' }, { category_slug: '3d-printers-equipment' }], '3d-printers-equipment', resolve), true);
+  assert.equal(assertTaskGroupBelongsToAgent([{ agent_key: '3d-printers' }], '3d-printers-equipment', resolve), true);
   assert.equal(assertTaskGroupBelongsToAgent([{ category_slug: '3d-printers-equipment' }, { category_slug: 'gaming-consoles-accessories' }], '3d-printers-equipment', resolve), false);
   assert.equal(assertTaskGroupBelongsToAgent([], '3d-printers-equipment', resolve), false);
 });

@@ -97,3 +97,11 @@ Other category agents retain their existing extraction settings. CI run 42477880
 
 
 Post-merge status (8 November 2026): Owner approved PR #292. Merged to production as `65730838d5f32cbf923973d5a32a87f8454a0c07`. Pull-request CI passed 50/50 tests. Production push CI run `42478484235` was queued/in progress at checkpoint update. Research PC source has not yet been updated; no LIVE worker restart has occurred.
+
+## Windows Research Control Centre
+
+A separate Windows desktop control application is available in `tools/tradeflow-gemma-desktop`. It provides seven specialist switches (3D printers, gaming, drones, metal detectors, mobile phones, laptops and cameras), a background supervisor, Windows sign-in startup and individual desktop shortcuts.
+
+The desktop worker uses the service-role-only `platform_ai_agent_claim_task_for_agents` RPC so it can claim tasks only for enabled specialist keys. This is intentionally a separate, scoped claim path: when the desktop configuration is present, a missing scoped RPC is a hard stop and the worker never falls back to `platform_ai_agent_claim_task`. Without a desktop config path, the existing manual worker mode remains unchanged for backwards compatibility.
+
+See `tools/tradeflow-gemma-desktop/README.md` for the installation command and migration gate. The app installer runs this updater first, preserves the existing private `.env`, and refuses to overwrite a worker process that is already running outside the desktop supervisor.

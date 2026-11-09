@@ -1007,3 +1007,12 @@ LIVE audit found 65 exact-branch review rows: 62 use the current `capture-` dedu
 The correction is isolated to `3d-printers-equipment` / `3d-printers`: when the current base-key lookup misses, query by exact record type, category, branch, manufacturer, model, package and source URL, ordered by most recently updated. Compare snapshot fingerprints across the returned legacy rows: any exact snapshot remains duplicate-skipped; an unreviewed `needs_research` capture may use the existing guarded enrichment path; changed terminal records produce a new unverified snapshot. Imported/rejected rows remain immutable. The optimistic update still requires the same row identity, no reviewer/approval/import fields and the previously observed `updated_at`.
 
 Regression coverage verifies exact identity filters, unchanged legacy imported/rejected snapshots, changed legacy snapshots, and guarded enrichment of an unreviewed legacy pending row. This is stacked on PR #334's review-snapshot work; no LIVE queue writes, source changes, migration, approval or import were performed. The new branch is not installed or deployed. After CI, review PR #334 and then the stacked compatibility PR before any Research PC rollout.
+
+
+## 9 November 2026 — PR #335 verification status update
+
+PR #335 now targets `production` and consolidates the full PR #334 3D-printer change set plus legacy review-key compatibility. Current head is `fbe7a44b5f404b21b3d613406cc5a6e18abedfcb`; the PR is open and GitHub reports it mergeable. Five new regression tests are present.
+
+Gemma Research Tests run #549 failed before scheduling any jobs (GitHub reported zero jobs), so it did not execute the suite. The prior PR #334 head passed run #548 with 105 tests, but that result does not cover the five new legacy-compatibility tests. Cloudflare Workers Builds for both `tradeflow` and `tradeflow-test` passed on the current PR #335 head; these are preview/build checks, not production deployment. Do not merge until the current Gemma test suite has executed successfully and the Research PC runtime acceptance has been completed.
+
+PR #334 remains open as the separately tested parent version until the consolidated PR's test suite is verified. No LIVE database write, source change, migration, task queueing, worker restart, evidence approval/import, TEST/LIVE copy or secret/configuration change occurred.

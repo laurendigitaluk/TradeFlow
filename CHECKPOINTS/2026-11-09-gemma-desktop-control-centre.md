@@ -78,3 +78,8 @@ Local diagnostics confirmed seven canonical definitions and all seven canonical 
 Production UI script update: commit c720c245fed72174957a1a2d93fed5fc3e9668f8. It changes the agent cards to a single vertical scrollable list, uses explicit status wording, labels each checkbox Enabled within the named specialist card, and adds enabled/active counts. This preserves the one-instance mutex, three-second config/status refresh, shared config, single supervisor and single worker.
 
 PC deployment is pending. Do not run the full installer for this UI-only update. Close the visible Control Centre only (background service remains running), replace the local TradeFlow-Research-Control-Centre.ps1 with the production file, then reopen the existing Control Centre shortcut. Acceptance checks: all seven named cards visible by scrolling; each checkbox toggles only its own canonical key; enabled count matches config; active count/status matches local status; no new console; scheduled supervisor remains the same.
+
+
+## Owner screenshot: clipped first two cards and no scroll — 9 November 2026
+
+Owner screenshot after the first UI update showed only five cards (Drones through Cameras); 3D Printers and Gaming were not reachable, and vertical scrolling did not work. The issue was isolated to the FlowLayoutPanel layout in the narrow side-by-side window. Production UI commit 55bba312db21fe1e0a667a4c38cd82d63cad2add replaces it with a standard AutoScroll Panel, explicit card Y positions, computed AutoScrollMinSize and responsive card widths. This is a UI-only change; no worker or LIVE data touched. PC update and screenshot acceptance are still pending. Replace only the local UI script; do not rerun the full installer or stop the service.

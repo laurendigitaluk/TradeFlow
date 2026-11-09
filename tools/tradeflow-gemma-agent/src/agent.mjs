@@ -719,7 +719,7 @@ export function buildEvidenceCaptureDedupeKey(task, evidence) {
 
 
 function normalizeCaptureFingerprintText(value) {
-  return String(value ?? '').normalize('NFKC').replace(/\\s+/g, ' ').trim().toLowerCase();
+  return String(value ?? '').normalize('NFKC').replace(/\s+/g, ' ').trim().toLowerCase();
 }
 
 function normalizeCaptureFingerprintList(value) {
@@ -1551,7 +1551,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
         const validationInput = {
           ...finding,
           source_url: source.url,
-          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\\./, ''),
+          source_name: finding.source_name || new URL(source.url).hostname.replace(/^www\./, ''),
           price_currency: hasPrice ? 'GBP' : null,
           sales_channel: new URL(source.url).hostname,
           observed_price: hasPrice ? price : null,
@@ -1614,7 +1614,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       category_slug: task.category_slug, branch_slug: task.branch_slug || null,
       manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
       package_name: task.package_name, evidence_type: ['uk_new','uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
-      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\\./, ''),
+      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\./, ''),
       source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
       price_currency: usablePrice ? 'GBP' : null,
       item_condition: evidence.item_condition || evidence.item_condition_text || null,

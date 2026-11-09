@@ -981,3 +981,29 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 - Gemma extraction still times out at roughly 45–50 seconds on these product pages. Full raw-page fallback and ChatGPT review hand-off are working. Do not change the model, context window or timeout defaults without a separate measured test.
 - No product catalogue or shared-market-evidence rows were imported or modified in this acceptance batch. The only review-queue change was ChatGPT enrichment of the new 3D Prima capture; its status remains `needs_research`. No source registry, RLS, migration, tenant, customer, TEST or Stripe data was changed.
 - Keep all other research categories waiting. Next steps: (1) complete and deploy the Anycubic matcher fix through the approved worker update process; (2) investigate Creality's redirect and Shopify collection 404 separately; (3) run one post-update Anycubic acceptance task and one Creality task; (4) only after those pass, repeat the established 3D-printer method for the next category.
+
+## 9 November 2026 — 21:31 UTC: post-PR #337 runtime and page-validation telemetry
+
+### Production and local worker distinction
+- Production HEAD is `6c305f145b8fa18c1b827e152d28013387c933d1`; PR #337 merged at 20:56:51 UTC and CI #42697121803 passed 103/103.
+- The Research PC process restarted as `DESKTOP-LVASEUB-129576` at approximately 21:17 UTC, but its 21:19 Kobra 3 Max V2 / Standard task still emitted `model_variant_skipped` after a successful 856 ms fetch of the exact official product URL.
+- The current production matcher no longer rejects the exact product title because it contains “Full-Metal Hotend”. This strongly indicates that the local source was not updated to PR #337; no local build SHA is present in worker telemetry, so the installed version cannot be proven from Supabase alone.
+- The official UK page currently identifies the standalone Kobra 3 Max V2 separately from the Combo. Do not weaken the exact model/package guard.
+
+### Latest task group
+Task `owner-3d-printers-equipment-1794259145802` completed at 21:21:16 UTC with five subtasks. Aggregate: 18 search results, 3 product pages discovered, 1 page accepted after validation, 1 raw capture, 1 Gemma batch failure, 70 route attempts (16 found, 49 empty, 5 failed), no collection or HTTP page-fetch errors. The five per-product runtimes sum to 115.3 seconds.
+- Kobra 3 Max V2 / Standard: 9 search results, 1 page discovered, HTTP fetch successful in 856 ms, then rejected by the exact-model/package guard.
+- Kobra 4 / Standard: 9 search results, 2 pages discovered, 1 fetched/captured; one Gemma batch timed out at 45.4 seconds. Full 12,909-character raw capture staged; queue price/type remain unset for ChatGPT package allocation.
+- Kobra 3 Max V2 Combo, Kobra 4 ACE 2 Pro Combo and Kobra S1 4-Color Combo: zero search results each; 14 routes per subtask, 13 empty and one eBay UK 403.
+- The other four product subtask results have no page capture.
+
+### Telemetry correction — PR #338
+The old `inspected_product_pages` value counts only pages that pass exact-model/package validation, not every successful HTTP page fetch. The task therefore reported 1 discovered / 0 fetched / 0 fetch errors even though activity recorded a successful fetch followed by a model rejection.
+
+PR #338 adds 3D-printer-only counters for fetch attempts, successful fetches, pre-fetch skips, post-fetch model/package rejections and pages eligible for capture. It preserves the existing `inspected_product_pages` field and does not change research behaviour. A regression test covers 1 discovered, 1 fetch attempt, 1 successful fetch, 1 post-fetch rejection and 0 eligible pages. Check CI on the current PR head before review.
+
+### Review queue and safeguards
+- Queue: 67 total (28 imported, 37 rejected, 2 `needs_research`). Pending rows: Bambu Lab A1 / 3D Prima (£215 GBP, New, in stock 50+, `uk_new`) and Anycubic Kobra 4 / Standard (12,909-character raw capture; price and evidence type unset).
+- Active shared evidence: 239 UK-new, 21 UK-used; 17 UK-new inactive. No shared evidence was created after 20:00 UTC.
+- Category heartbeat 21:21:16 UTC; generic worker heartbeat 21:17:16 UTC. No current task. Generic idle heartbeat remains stale; PR #331 is still open.
+- Next step is an explicitly approved in-place Research PC update using the current production updater, which validates both environment URLs and preserves the private `.env` and specialist config. Do not run it, restart the worker or queue a test without explicit owner approval.

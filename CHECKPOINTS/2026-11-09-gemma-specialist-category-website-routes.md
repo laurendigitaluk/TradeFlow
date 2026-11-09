@@ -8,8 +8,8 @@ Prepare one independently switchable Gemma specialist for each of the seven Trad
 - Seven independent switches: 3D Printers, Gaming Consoles, Drones, Metal Detectors, Mobile Phones, Laptops, Cameras.
 - One Ollama execution lane; no seven-process concurrency.
 - LIVE UK source registry: 119 records, 116 enabled; existing records retained.
-- Added missing site-specific playbook entries for 6 Drone, 7 Mobile Phone, 8 Camera and Amazon/eBay Metal Detector source routes.
-- Added regression coverage for route generation and category site instructions.
+- Re-audited the full source-playbook category blocks. The earlier missing-domain count was caused by an incorrect block boundary; all registered domains already had site definitions. No website definitions or registry rows were changed.
+- Added regression coverage to protect the existing category site instructions, homepage discovery routes and dedicated Amazon/eBay metal-detector search patterns.
 - Updated system handbook, AI operating manual and project memory.
 
 ## Key implementation files

@@ -92,3 +92,8 @@ The initial seven-card FlowLayoutPanel did not reliably display all specialists 
 ### Deterministic specialist scrolling follow-up — 9 November 2026
 
 The Panel AutoScroll implementation did not resolve the owner's clipping report. The next UI revision uses a dedicated WinForms VScrollBar next to a non-scrolling card surface. Card Y positions are calculated from each agent index and the scrollbar offset; the scrollbar range is computed from the actual viewport height and content height; card widths respond to viewport resize. This avoids dependence on WinForms Panel AutoScroll behaviour. Update only the local UI script and verify the first and seventh specialists are reachable using the visible scrollbar.
+
+
+### Docking order root cause and correction — 9 November 2026
+
+The Fill-docked specialist grid host must be index 0 in the form's Controls collection so the Top-docked header, toolbar and note reserve their space before the Fill area is sized. Correct code: `$form.Controls.SetChildIndex($listHost, 0)`. Do not set the Fill host to the last index: this makes it claim the full client area first and allows the top controls to cover the first rows. This is a UI-only repair; no installer or worker changes are needed.

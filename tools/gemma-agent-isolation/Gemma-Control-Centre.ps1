@@ -127,8 +127,12 @@ function Show-AgentLogs($Agent) {
     Start-Process explorer.exe -ArgumentList ('"' + $path + '"')
 }
 function Refresh-Grid {
+    # One WMI process query for the whole dashboard; never poll on a timer.
+    $processSnapshot = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue)
+    $active = 0
+    $installed = 0
     foreach ($agent in $Agents) {
-        $runtime = Get-AgentRuntime $agent
+        $runtime = Get-AgentRuntime $agent $processSnapshot
         $row = $script:Rows[$agent.Key]
         $row.Cells['Agent'].Value = $agent.Label
         $row.Cells['Branch'].Value = $runtime.Branch
@@ -139,23 +143,19 @@ function Refresh-Grid {
         $row.Cells['Stop'].Value = 'Stop'
         $row.Cells['Update'].Value = 'Update'
         $row.Cells['Logs'].Value = 'Logs'
-        $row.Cells['Start'].ReadOnly = [bool]($runtime.Process -or -not $runtime.Installed -or $runtime.Branch -ne $agent.Branch)
+        $row.Cells['Start'].ReadOnly = [bool]($runtime.Process -or -not $runtime.Installed)
         $row.Cells['Stop'].ReadOnly = [bool](-not $runtime.Process -or -not $runtime.Installed)
-        $row.Cells['Update'].ReadOnly = [bool]($runtime.Process -or -not $runtime.Installed -or $runtime.Branch -ne $agent.Branch)
+        $row.Cells['Update'].ReadOnly = [bool]($runtime.Process -or -not $runtime.Installed)
         $row.DefaultCellStyle.BackColor = if ($runtime.State -eq 'PROCESSING') { [System.Drawing.Color]::FromArgb(226,242,232) } elseif ($runtime.State -match 'ERROR|MISMATCH|REQUIRED') { [System.Drawing.Color]::FromArgb(252,232,232) } else { [System.Drawing.Color]::White }
         $row.Cells['State'].ToolTipText = $runtime.Error
         $row.Cells['Task'].ToolTipText = $runtime.Error
-    }
-    $active = 0
-    $installed = 0
-    foreach ($agent in $Agents) {
-        $runtime = Get-AgentRuntime $agent
         if ($runtime.Installed) { $installed++ }
         if ($runtime.State -eq 'PROCESSING') { $active++ }
     }
     $summaryLabel.Text = "Installed: $installed / 7    |    Actively researching: $active    |    LIVE"
     $lastRefreshLabel.Text = 'Last refreshed: ' + (Get-Date -Format 'HH:mm:ss')
 }
+
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'TradeFlow — Independent Gemma Control Centre'
 $form.StartPosition = 'CenterScreen'

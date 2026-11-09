@@ -29,7 +29,10 @@ const playbooks = {
       'store.creality.com': {
         label: 'Creality UK official store',
         collectionApi: 'shopify',
-        routes: ['/uk/search?q={query}', '/uk/collections/fdm-3d-printer', '/uk/collections/ender-3-v3-series'],
+        routes: ['/uk/search?q={query}', '/uk/collections/fdm-3d-printer'],
+        routesByModel: [
+          { modelIncludes: ['ender-3 v3'], routes: ['/uk/collections/ender-3-v3-series'] }
+        ],
         navigation: 'Use the UK storefront search first, then the verified FDM 3D Printer and model-family collections. Creality UK exposes its public Shopify collection products JSON; use it when the HTML contains no product cards, then follow exact standalone printer product handles to their individual UK product pages. Ignore accessories, upgrade kits and sibling printer variants.'
       },
       'bambu-lab-uk.myshopify.com': {
@@ -379,7 +382,14 @@ export function buildWebsiteSearchRoutes(source, task) {
   if (configured && !/\/products?\/[^/]+/i.test(configured)) routes.push(fillRoute(configured, task));
   const researchType = String(task?.research_type || '').toLowerCase();
   const configuredRoutes = site?.routesByResearchType?.[researchType] || site?.routes || [];
-  for (const route of configuredRoutes) {
+  const modelText = String(task?.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const modelRoutes = (site?.routesByModel || [])
+    .filter(rule => (rule.modelIncludes || []).some(value => {
+      const token = String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      return token && modelText.includes(token);
+    }))
+    .flatMap(rule => Array.isArray(rule.routes) ? rule.routes : []);
+  for (const route of [...configuredRoutes, ...modelRoutes]) {
     const filledRoute = fillRoute(route, task);
     routes.push(/^https?:\/\//i.test(filledRoute) ? filledRoute : 'https://' + domain + filledRoute);
   }

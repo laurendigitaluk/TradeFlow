@@ -233,6 +233,22 @@ export function isCollectionDiscoveryPage(url, title = '') {
   return true;
 }
 
+export function summarizeProductPageFlow(progressEvents = [], acceptedProductPages = 0) {
+  const events = Array.isArray(progressEvents) ? progressEvents : [];
+  const count = stage => events.filter(event => event?.stage === stage).length;
+  const countPhase = phase => events.filter(event =>
+    event?.stage === 'model_variant_skipped' && event?.phase === phase
+  ).length;
+  const accepted = Number(acceptedProductPages);
+  return {
+    product_page_fetch_attempts: count('fetching_page'),
+    product_pages_fetched: count('product_page_fetched'),
+    model_variant_prefilter_rejections: countPhase('prefilter'),
+    model_variant_postfetch_rejections: countPhase('postfetch'),
+    eligible_product_pages: Number.isFinite(accepted) ? Math.max(0, Math.floor(accepted)) : 0
+  };
+}
+
 export function matchesTaskModel(title, url, task = {}) {
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
@@ -1402,7 +1418,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const allDirectPages = [...new Map([...eligible, ...collectionProducts]
     .filter(item => {
       const matches = matchesTaskModel(item.title, item.url, task);
-      if (!matches) trackProgress?.({ stage: 'model_variant_skipped', source: item.url, message: 'Skipped unrelated model variant or accessory; requested exact model is ' + task.manufacturer + ' ' + task.model });
+      if (!matches) trackProgress?.({ stage: 'model_variant_skipped', phase: 'prefilter', source: item.url, message: 'Skipped unrelated model variant or accessory before fetching; requested exact model is ' + task.manufacturer + ' ' + task.model });
       return matches;
     })
     .map(item => [item.url, item])).values()];
@@ -1420,8 +1436,9 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
       });
       try {
         const result = await page(source.url, task);
+        await trackProgress?.({ stage: 'product_page_fetched', source: result.url, message: 'Product page fetched successfully; validating exact model and package before price extraction.' });
         if (!matchesTaskModel(result.title, result.url, task)) {
-          await trackProgress?.({ stage: 'model_variant_skipped', source: result.url, message: 'Fetched page is not the requested exact model; rejected before price extraction' });
+          await trackProgress?.({ stage: 'model_variant_skipped', phase: 'postfetch', source: result.url, message: 'Fetched page is not the requested exact model/package; rejected before price extraction' });
           return null;
         }
         if (!hasVisibleUkPrice(result.text)) await trackProgress?.({ stage: 'page_without_visible_gbp', source: result.url, message: 'Exact-model page has no visible GBP price in extracted text; retaining it for ChatGPT review rather than discarding it.' });
@@ -1595,12 +1612,16 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
     challenge_pages_skipped: countStage('source_challenge_skipped'),
     opposite_lane_sources_skipped: countStage('research_lane_skipped')
   };
+  const pageFlowMetrics = is3dPrinterResearchTask(task)
+    ? summarizeProductPageFlow(progressEvents, fetched.length)
+    : {};
   return {
     product: task.manufacturer + ' ' + task.model + ' / ' + task.package_name,
     worker: task.research_type, enqueue, candidates, writes,
     route_metrics: routeMetrics,
     route_failures: routeFailures,
     research_metrics: {
+      ...pageFlowMetrics,
       search_result_limit: searchLimit,
       stage_durations_ms: stageDurations,
       search_results: searchResults.length, eligible_urls: eligible.length,

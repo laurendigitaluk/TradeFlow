@@ -47,7 +47,7 @@ The existing LIVE source registry is retained; this change does not duplicate so
 
 Counts overlap because some sources serve multiple categories and universal sources are shared.
 
-The existing 3D-printer and gaming playbooks are preserved. Dedicated website navigation and exact-product rules have been added for drones, metal detectors, mobile phones, laptops and cameras. Routes are discovery only: Gemma must follow matching product links to individual pages and capture the raw page evidence for ChatGPT review. No autonomous approval or catalogue/evidence import is introduced.
+The 3D-printer playbook and extraction path are unchanged. Gaming retains its capture-only handoff and console-branch identity rules; its UK retailer and console-manufacturer discovery routes have been completed. Dedicated website navigation and exact-product rules are included for drones, metal detectors, mobile phones, laptops and cameras. Routes are discovery only: Gemma must follow matching product links to individual pages and capture the raw page evidence for ChatGPT review. No autonomous approval or catalogue/evidence import is introduced.
 
 ## Installation gate
 

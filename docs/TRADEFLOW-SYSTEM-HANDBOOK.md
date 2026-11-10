@@ -4612,3 +4612,10 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK direct-route recovery (pending validation)
 The 21:19 LIVE five-printer test completed in 2m10s but only Kobra 4 Standard queued a raw capture. The other four tasks had no captures; Kobra 4 extraction timed out after ~45s. A production-based fix branch adds independently verified Anycubic UK product routes for Kobra 3 Max V2 Standard/ACE 2 Pro Combo, Kobra 4 and Kobra S1 ACE 2 Pro Combo. This change is discovery-only; do not assume source pages or prices have been accepted. Verify the exact model/package, selected variant, stock and GBP price on the detail page, then rerun a controlled LIVE task after merge and Research PC update. Do not alter Gaming or other worker configuration.
+
+
+## 10 November 2026 — shared isolated-specialist idle heartbeat
+
+The isolated Gemma worker now has a category-scoped idle heartbeat. It reports the configured specialist key/name/category, worker ID, and `stage=idle_poll` only after a successful queue poll. The heartbeat is suppressed during task processing, active polling, failed polls, shutdown, overlapping telemetry and when no agent assignment is enabled. The existing active-task and queue-lease heartbeats are unchanged. The cadence is bounded from 60 seconds to five minutes (60 seconds for the 15-second queue poll).
+
+The helper and regression test are included in the canonical updater, launcher preflight and Gemma GitHub Actions suite. Keep each specialist's one-key `agent.config.json` and private LIVE `.env` isolated. Release acceptance requires repeated idle heartbeat events from the same worker ID; do not enqueue research merely to test liveness. No Supabase schema change is required.

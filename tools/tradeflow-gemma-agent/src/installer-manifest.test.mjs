@@ -6,11 +6,13 @@ import { fileURLToPath } from 'node:url';
 
 const sourceDir = dirname(fileURLToPath(import.meta.url));
 const updaterPath = process.env.TRADEFLOW_GEMMA_UPDATER_PATH || resolve(sourceDir, '..', 'Update-TradeFlow-Gemma.ps1');
+const categoryUpdaterPath = resolve(sourceDir, '..', 'Update-Gemma-Agent.ps1');
 const startPath = process.env.TRADEFLOW_GEMMA_START_PATH || resolve(sourceDir, '..', 'Start-TradeFlow-Gemma.ps1');
 
-const [workerSource, updaterSource, startSource] = await Promise.all([
+const [workerSource, updaterSource, categoryUpdaterSource, startSource] = await Promise.all([
   readFile(resolve(sourceDir, 'task-worker.mjs'), 'utf8'),
   readFile(updaterPath, 'utf8'),
+  readFile(categoryUpdaterPath, 'utf8'),
   readFile(startPath, 'utf8')
 ]);
 
@@ -40,6 +42,16 @@ test('category updater downloads and runs compact-result, telemetry and manifest
       assert.match(command, new RegExp(name.replace(/\./g, '\\.'), 'i'), 'node --test must include ' + name);
     }
   }
+});
+
+test('category updater refuses dirty worktrees before invoking the file updater', () => {
+  const statusCommand = categoryUpdaterSource.indexOf('status --porcelain=v1 --untracked-files=all');
+  const updaterInvocation = categoryUpdaterSource.indexOf('& $Updater');
+  assert.ok(statusCommand >= 0, 'category updater must inspect tracked, staged and untracked changes');
+  assert.ok(statusCommand < updaterInvocation, 'dirty-worktree check must run before the file updater');
+  assert.match(categoryUpdaterSource, /if\s*\(\$LASTEXITCODE\s*-ne\s*0\)\s*\{\s*throw 'Unable to inspect Git working tree\. Update cancelled\.'/s);
+  assert.match(categoryUpdaterSource, /if\s*\(\$WorkingTreeStatus\.Count\s*-gt\s*0\)/);
+  assert.match(categoryUpdaterSource, /Update cancelled to preserve local changes/);
 });
 
 test('category launcher preflight runs the same deployment-critical regression tests', () => {

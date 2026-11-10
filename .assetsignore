@@ -18,3 +18,7 @@ supabase/
 # Exclude transient Wrangler/npm installation from Worker static assets
 node_modules/
 **/node_modules/**
+
+.git/
+package.json
+package-lock.json

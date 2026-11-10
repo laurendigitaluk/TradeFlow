@@ -1,63 +1,47 @@
-# Checkpoint — Local research-agent retirement
+# Checkpoint — Research-worker platform retirement (final status)
 
 Date: 10 November 2026
 Repository: laurendigitaluk/TradeFlow
-Target environment: TradeFlow LIVE
+Environment: TradeFlow LIVE
 
-## Authorisation
-The owner explicitly instructed: “Okay, remove everything.” Scope includes the Windows local worker installation, desktop launchers and model, owner website controls, GitHub worker code/branches and dedicated backend runtime. Preserve TradeFlow catalogue, categories, product/evidence data, historical queue and audit history.
+## Owner instruction and scope
+The owner instructed that the local research-worker platform and its new-evidence lab-search workflow be removed from the website, PC and GitHub. The owner explicitly declined a local backup. This checkpoint records the completed retirement and remaining verification items. It does not authorise deleting TradeFlow catalogue or market-evidence data.
 
-## Recovery point
-- Production HEAD at checkpoint: 8907cfa3183addd50f1d391d8bbd420f2efa1f5f
-- Recovery branch: checkpoint-pre-gemma-retirement-20261110
-- Retirement work branch: retire-gemma-system-20261110
+## Confirmed website/GitHub changes
+- PR #352 merged with commit `78a62072e53f6ec121f218f2f16dbf8900df24ec`, removing owner-dashboard navigation and HTML sections for the AI research control centre and shared agent room, plus associated JavaScript polling, queue submission, telemetry, source-management, review and messaging UI.
+- Production `platform-owner-dashboard.html` and `platform-owner-dashboard.js` were read back and contained zero Gemma/agent-control/common-room references.
+- Removed all remaining Gemma and AI Agent Common Room selectors from production `platform-owner-dashboard.css` (commit `b1715b59cd599ff338f5ff502f3e7ec575fbac98`).
+- Removed the worker README, PowerShell updater and Node entrypoint from GitHub `main` in commits `8fee859e7c3175e5a8931b6739c8186144721f3c`, `8751c598891ed55ab52b1de2722526e6b91c04a3` and `bed23823c466756b408a39d7990f7538238e31d7`.
+- Production has no `tools/tradeflow-gemma-agent` or desktop worker runtime directory.
 
-## LIVE baseline captured read-only
+## LIVE Supabase retirement
+- Applied migration version `20261110173027`, `retire_research_agent_runtime_permissions_20261110`.
+- Read-only privilege verification confirmed the retired worker/control-plane RPC family is not executable by service_role, authenticated or anon.
+- Edge Function inventory contains no dedicated research-worker Edge Function.
+- No tables or rows were dropped or cleared. Historical queues, logs, messages and source registry remain for audit only.
+
+## Preserved LIVE data at verification
+- catalogue_master_products: 47,410
+- catalogue_master_categories: 38
+- shared_market_evidence: 4,542
+- tenant_catalogue_selections: 23,993
 - platform_ai_agent_tasks: 35
 - platform_ai_agent_status: 12
 - platform_ai_agent_activity: 14,808
 - platform_ai_agent_messages: 451
 - platform_catalogue_research_queue: 75
 - platform_research_sources: 119
-- 20 related RPC/function routines were present in information_schema.routines.
-- Seven related tables were identified, including tenant_buying_research; do not assume all seven are exclusively agent-owned.
 
-## Windows inventory supplied by owner
-- C:\\CTFGemma2: category folders and shared agent files.
-- C:\\TFGemma: earlier installation clone.
-- %LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre: dashboard, supervisor, config, logs and backups.
-- Scheduled tasks: TradeFlow Gemma Research Agent (Ready) and TradeFlow Gemma Research Supervisor (Disabled).
-- Startup entry: TradeFlow Gemma.lnk.
-- Nine desktop shortcuts, including seven category launchers, two control-centre launchers and one Chrome app shortcut.
-- Ollama contains gemma3:4b only; no other model was listed.
-- No matching Windows services or running worker processes were found in the supplied checks.
+## PC status from owner-supplied execution output
+- Removed and verified absent: `C:\\CTFGemma2`, `C:\\TFGemma`, and `%LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre`.
+- Removed: both scheduled tasks, all identified desktop worker/control-centre shortcuts, and the TradeFlow startup shortcut.
+- Model `gemma3:4b` removal was attempted; final `ollama list` verification is still outstanding.
+- Ollama application remains installed because no registered uninstaller was found.
+- Chrome Gemma Desktop web-app registration was identified in `chrome://apps`; final uninstall confirmation is outstanding.
+- No backup was created, as explicitly requested by the owner.
 
-## Work completed in retirement branch
-- Removed owner-dashboard navigation links to the agent control centre and common room.
-- Removed both corresponding HTML sections.
-- Removed associated JavaScript polling, worker queueing, telemetry, research-source management, review UI and common-room messaging code from the owner dashboard.
-- Appended this retirement and preservation boundary to the AI Operating Manual, System Handbook and both diagnostic roadmaps.
+## Remaining GitHub limitation
+The connected GitHub action set supports repository file deletion and branch creation/update but exposes no branch-ref deletion action. Therefore old specialist, archive, checkpoint and feature branch refs cannot be deleted directly through this connection. This does not leave a worker runtime on the production website or PC. Do not use a local GitHub CLI workaround unless the owner specifically requests it.
 
-## Not yet completed
-- Browser/Node syntax and dashboard regression tests.
-- PR review and production merge/deployment.
-- Dedicated GitHub worker code retirement and specialist branch archival/deletion.
-- Supabase RPC dependency audit and retirement migration. Do not delete historical tables or records.
-- Windows scheduled-task/startup/shortcut/model/application removal and final verification.
-
-## Explicit safety constraints
-Do not delete catalogue products, categories, evidence, research queue rows or historical agent activity/messages. Do not touch LIVE Stripe, tenant/customer records, domains or subscriber-published data. Do not inspect or use the separate GearCashOut project. Preserve the recovery branch and historical checkpoints.
-
-
-## Production retirement progress
-- PR #352 merged to production: commit 78a62072e53f6ec121f218f2f16dbf8900df24ec.
-- Gemma owner dashboard HTML and JS read back from production with zero matching system/UI/RPC namespace strings.
-- PR workflow gemma-research-tests passed.
-- LIVE migration `retire_research_agent_runtime_permissions_20261110` revoked execution of the worker runtime and retired owner dashboard RPCs from all standard roles including service_role.
-- Historical data counts verified unchanged: 35 tasks, 12 status rows, 14,808 activity rows, 451 messages, 75 catalogue research queue rows and 119 research sources.
-- No database tables or historical rows were deleted.
-- Not yet completed: local Windows removal, specialist branch archival/deletion, worker source cleanup and live CDN/browser verification.
-
-
-## Runtime source retirement update
-The production runtime directories and Gemma test workflow were removed after preserving each specialist branch head under a dated archive branch. Original specialist branch refs remain pending deletion because the connected GitHub action set does not provide branch deletion. A consolidated Windows removal script has been prepared for the owner to run locally; the local PC has not yet been changed by this chat.
+## Non-negotiable preservation rules
+Never delete catalogue products, categories, manufacturer/model/package data, existing market evidence, tenant/customer/subscriber data, Stripe settings, published websites or historical audit data as part of this retirement. Do not inspect or use the separate GearCashOut project. Keep the database migration history intact. Any future market research supplied for catalogue use is review-only until the owner/ChatGPT independently verifies it; no automatic approval or import.

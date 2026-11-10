@@ -45,3 +45,8 @@ The connected GitHub action set supports repository file deletion and branch cre
 
 ## Non-negotiable preservation rules
 Never delete catalogue products, categories, manufacturer/model/package data, existing market evidence, tenant/customer/subscriber data, Stripe settings, published websites or historical audit data as part of this retirement. Do not inspect or use the separate GearCashOut project. Keep the database migration history intact. Any future market research supplied for catalogue use is review-only until the owner/ChatGPT independently verifies it; no automatic approval or import.
+
+
+## GitHub branch cleanup addendum — 10 November 2026
+
+The seven specialist worker branches and seven dated archive branches were cleaned at their current heads. Removed the worker runtime directories and dedicated worker-test workflow from all 14 heads. This removed 35 files per branch, except the 3D-printer archive branch (36). The refs remain because the connected GitHub actions do not expose a branch-delete operation. Other historical feature/fix/checkpoint branches remain as non-deployed development history.

@@ -4679,3 +4679,14 @@ TEST remains separate from LIVE. No LIVE source registry, queue, evidence, produ
 ## Verification addendum — 10 November 2026 01:16 UTC
 
 Replacement PR #348 (`fix/gemma-research-route-extraction-all-seven-20261110`) now passes Gemma Research Tests run 42734356593. The same four shared worker/test files (`agent.mjs`, `source-playbooks.mjs`, `source-playbooks.test.mjs`, `agent-speed.test.mjs`) have been synchronised to all seven isolated category branches. Each branch's GitHub Actions Gemma Research Tests run passed: 3D Printers 42734464746; Gaming 42734492721; Cameras 42734504715; Drones 42734526964; Metal Detectors 42734537996; Mobile Phones 42734558108; Laptops 42734571922. The category-specific `agent.config.json` files were not changed. PR #348 remains open pending merge. The Research PC's Update all workers operation has not yet been run; no local worker process was stopped or restarted.
+
+
+## 10 November 2026 — Retirement of the local research-agent system
+
+The owner authorised retirement of the local category research workers and their owner-dashboard controls. The retirement is being performed in stages. The owner dashboard no longer exposes the worker control centre or shared agent room in the retirement branch. The corresponding JavaScript polling, queueing, source-management and message-feed UI code has been removed from that dashboard branch.
+
+Preservation boundary: do not delete catalogue products, categories, existing product/evidence records, or the historical research review queue. The LIVE database snapshot before retirement contained 35 task rows, 12 status rows, 14,808 activity rows, 451 agent-message rows, 75 catalogue research queue rows and 119 research-source rows. These are historical records and must remain available unless a separately authorised retention policy is agreed. Worker-specific functions and tables must not be dropped until all remaining callers, triggers, grants and RPC dependencies have been audited. Do not change Stripe, tenant data, customer data or published subscriber content.
+
+The PC installation still requires owner-side removal because this environment cannot directly operate the Windows desktop. The identified local roots are C:\\CTFGemma2, C:\\TFGemma and %LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre. Before removal, disable the scheduled tasks and startup shortcut, preserve an encrypted/local backup including private environment pointers, remove desktop shortcuts and the model, and verify no worker processes remain.
+
+The production branch has not yet been merged or deployed. The retirement branch is subject to syntax, dashboard regression and database dependency checks before production promotion. Keep this retirement record and historical checkpoints; removing the runtime does not mean erasing the audit trail.

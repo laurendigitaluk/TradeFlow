@@ -699,7 +699,7 @@ function parseManualAiReportTables(raw,prompt){
   if(!line.startsWith('|')){if(line)context.push(line);if(context.length>12)context.shift();continue;}
   const cells=line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim());
   if(cells.length<3||cells.every(x=>/^:?-{2,}:?$/.test(x)))continue;
-  if(cells.some(x=>/^(package|item|product|model)$/i.test(x))&&cells.some(x=>/price/i.test(x)))continue;
+  if(/^(package|item|product|model)$/i.test((cells[0]||'').replace(/\\*/g,'').trim())&&/price/i.test(cells[1]||''))continue;
   if(!section)continue;
   const packageName=cells[0]||'Package not stated';
   const priceDisplay=cells[1]||'';
@@ -707,6 +707,8 @@ function parseManualAiReportTables(raw,prompt){
   const notes=cells.slice(3).join(' | ');
   const prices=[...priceDisplay.matchAll(pricePattern)].map(m=>Number(m[1].replace(/,/g,'')));
   const uniquePrices=[...new Set(prices)];
+  const priceIsRange=/£?\\s*[0-9,.]+\\s*[–—-]\\s*£?\\s*[0-9,.]+/.test(priceDisplay);
+  const exactPrice=!priceIsRange&&uniquePrices.length?uniquePrices[0]:null;
   let product=null;
   const contextText=(context.slice(-8).join(' ')+' '+line).toLowerCase();
   if(snapshot.length===1)product=snapshot[0];
@@ -727,18 +729,18 @@ function parseManualAiReportTables(raw,prompt){
    const host=(url.match(/^https?:\/\/([^/]+)/i)||[])[1]||'';
    if(/ebay|amazon|gumtree|facebook|cex/i.test(host))return 'marketplace_listing';
    if(/pricespy|price.?spy|e-catalog|idealo|pricerunner/i.test(host))return 'price_aggregator';
-   return url?'reported_source':'source_not_linked';
+   if(/pricespy|price.?spy|e-catalog|idealo|pricerunner/i.test(host))return 'price_aggregator';\n   if(/supersales|wex|parkcameras|mpb|u-buy/i.test(host))return 'retailer_product_page';\n   return url?'reported_source':'source_not_linked';
   };
   for(const source of sources){
    refs.push({
     product_id:product.product_id,manufacturer:product.manufacturer,model:product.model,
     evidence_type:section,package_name:packageName,price_display:priceDisplay,
-    price_gbp:uniquePrices.length===1?uniquePrices[0]:null,
+    price_gbp:exactPrice,
     source_name:source.name||cleanedSource||'Source not identified',
     source_url:source.url||null,source_kind:kindFor(source.url||''),
     item_condition:section==='uk_new'?'New / condition stated in report':'Used / condition stated in report',
     availability:'Reported in comparison table; verify live listing',
-    table_row:line,notes:notes+(uniquePrices.length>1?' Price is a range; exact numeric price not assumed.':'')
+    table_row:line,notes:notes+(priceIsRange?' Price is a range; exact numeric price not assumed.':uniquePrices.length>1?' Multiple amounts are shown; main price needs source verification.':'')
    });
   }
  }

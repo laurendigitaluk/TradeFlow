@@ -98,7 +98,7 @@
 <label>Category slug<input name="category_slug" placeholder="e.g. 3d-printers"></label>
 <div style="grid-column:1/-1" class="cloud-ai-catalogue-picker">
  <label for="cloud-ai-catalogue-search">Find products in the TradeFlow master catalogue</label>
- <div style="display:flex;gap:8px;align-items:center"><input id="cloud-ai-catalogue-search" type="search" placeholder="Search manufacturer, model or package" style="flex:1"><button id="cloud-ai-catalogue-search-button" type="button">Search catalogue</button></div>
+ <label for="cloud-ai-catalogue-search">Enter several product searches, one per line</label><textarea id="cloud-ai-catalogue-search" rows="5" placeholder="Bambu Lab P1S&#10;Creality K1 Max&#10;Anycubic Kobra 3" style="width:100%"></textarea><p><button id="cloud-ai-catalogue-search-button" type="button">Search all terms</button></p>
  <div id="cloud-ai-catalogue-results" class="muted" aria-live="polite">Search the existing master catalogue and select products to add to the batch.</div>
  <p><button id="cloud-ai-catalogue-add-selected" type="button" disabled>Add selected to product list</button></p>
 </div>

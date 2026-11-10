@@ -47,7 +47,7 @@ $Results = @()
 foreach ($Agent in $Agents) {
     $Target = Join-Path $BasePath $Agent.Folder
     if (Test-Path -LiteralPath $Target) {
-        $Results += [pscustomobject]@{ Agent=$Agent.Label; Result='Skipped — folder already exists; nothing overwritten'; Folder=$Target }
+        $Results += [pscustomobject]@{ Agent=$Agent.Label; Result='Existing folder preserved; use Control Centre Update all workers to update it'; Folder=$Target }
         continue
     }
 

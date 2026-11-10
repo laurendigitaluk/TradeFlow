@@ -724,7 +724,7 @@ function parseManualAiReportTables(raw,prompt){
   }
   if(!product)continue;
   const links=[...sourceCell.matchAll(linkPattern)].map(m=>({name:m[1],url:m[2]}));
-  const rawUrls=[...sourceCell.matchAll(/https?:\\/\\/[^\\s)\\]]+/gi)].map(m=>m[0].replace(/[.,;]+$/,''));
+  const rawUrls=[...sourceCell.matchAll(/https?:\/\/[^\s)\]]+/gi)].map(m=>m[0].replace(/[.,;]+$/,''));
   if(!links.length&&rawUrls.length)links.push(...rawUrls.map(url=>({name:sourceCell.replace(url,'').trim()||'Source URL',url})));
   const cleanedSource=sourceCell.replace(linkPattern,'$1').replace(/\*\*/g,'').trim();
   const sourceNames=cleanedSource.split(/[,;](?=\s*(?:eBay|Amazon|MPB|Wex|Park Cameras|CeX|Gumtree|Facebook|PriceSpy|E-Catalog|u-buy|Supersales))/i).map(x=>x.trim()).filter(Boolean);

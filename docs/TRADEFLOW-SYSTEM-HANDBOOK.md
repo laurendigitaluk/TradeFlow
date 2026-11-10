@@ -4735,3 +4735,8 @@ Before modifying the Research PC, read `CHECKPOINTS/2026-11-10-gemma-research-pc
 ## 10 November 2026 — updater protection for owner-local changes
 
 The 3D Printer category updater previously had no dirty-worktree preflight. The supplied Research PC snapshot showed tracked modifications and untracked backups/files, so invoking the lower-level file updater before reconciling those changes could overwrite local work. PR #353 adds a fail-closed `git status --porcelain=v1 --untracked-files=all` check before the updater invocation and a regression test for its presence/order. No automatic stash/reset/clean/pull or private ENV change is performed. PR #353 targets `gemma/3d-printers`, is not merged, and is not a deployment. Preserve local work and reconcile it individually before any Research PC update.
+
+
+### PR #353 verification update — 10 November 2026, 17:39 UTC
+
+PR #353 head `d3942767c7cc47192aa909329654b7d608ac30f5` is open, mergeable and targets only `gemma/3d-printers`; it remains unmerged. GitHub Actions Gemma Research Tests run #789 (`42867112565`) completed successfully: the PowerShell updater syntax check, Node source syntax check, Gemma task/website-playbook test step (including the new dirty-worktree regression), and Owner Dashboard JavaScript syntax check all passed. The check-runs list contains only the Gemma Research Tests job; no Cloudflare preview check was created for PR #353. This verifies repository code/tests, not the Research PC runtime. The dirty local clone has not been updated, and no worker/task/evidence/database action was taken.

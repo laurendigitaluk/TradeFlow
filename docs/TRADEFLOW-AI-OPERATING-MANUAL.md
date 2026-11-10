@@ -5310,3 +5310,8 @@ The single source of truth for the active Research PC restoration is `CHECKPOINT
 ## 10 November 2026 — category updater fail-closed worktree check
 
 For the isolated 3D Printer clone, the category-local updater must preserve all local work. Its preflight now checks Git status using porcelain v1 with all untracked files included, after confirming the configured branch and before invoking the lower-level file updater. If Git status fails or reports any staged, unstaged or untracked path, the update is cancelled with a bounded path summary. The guard does not stash, reset, clean, pull, fast-forward, delete or alter the private ENV. The regression suite verifies the check precedes the updater call. See PR #353, which targets only `gemma/3d-printers` and remains review-only.
+
+
+### PR #353 verification update — 10 November 2026, 17:39 UTC
+
+PR #353 head `d3942767c7cc47192aa909329654b7d608ac30f5` is open, mergeable and targets only `gemma/3d-printers`; it remains unmerged. GitHub Actions Gemma Research Tests run #789 (`42867112565`) completed successfully: the PowerShell updater syntax check, Node source syntax check, Gemma task/website-playbook test step (including the new dirty-worktree regression), and Owner Dashboard JavaScript syntax check all passed. The check-runs list contains only the Gemma Research Tests job; no Cloudflare preview check was created for PR #353. This verifies repository code/tests, not the Research PC runtime. The dirty local clone has not been updated, and no worker/task/evidence/database action was taken.

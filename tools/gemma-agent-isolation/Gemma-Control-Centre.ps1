@@ -100,8 +100,16 @@ function Start-Agent($Agent) {
     $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
     $outLog = Join-Path $agentLogs "worker-$stamp.out.log"
     $errLog = Join-Path $agentLogs "worker-$stamp.err.log"
+    if (-not (Test-Path -LiteralPath $runtime.Paths.Launcher -PathType Leaf)) { throw "The 3D Printer launcher is missing: $($runtime.Paths.Launcher)" }
     $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $runtime.Paths.Launcher + '" -Environment LIVE'
-    Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $runtime.Paths.Install -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog | Out-Null
+    try {
+        $started = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $runtime.Paths.Install -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru -ErrorAction Stop
+        Add-Content -LiteralPath (Join-Path $agentLogs 'control-centre-actions.log') -Value ("{0} START requested; launcher PID={1}; branch={2}" -f (Get-Date -Format o),$started.Id,$Agent.Branch)
+        return $started.Id
+    } catch {
+        Add-Content -LiteralPath (Join-Path $agentLogs 'control-centre-actions.log') -Value ("{0} START failed: {1}" -f (Get-Date -Format o),$_.Exception.Message)
+        throw
+    }
 }
 function Stop-Agent($Agent) {
     $processSnapshot = @(Get-CimInstance Win32_Process -Filter "Name='node.exe'" -ErrorAction SilentlyContinue)
@@ -263,15 +271,19 @@ foreach ($agent in $Agents) {
     $row.Tag = $agent.Key
     $script:Rows[$agent.Key] = $row
 }
-$grid.Add_CellContentClick({
+$grid.Add_CellClick({
     param($sender,$eventArgs)
     if ($eventArgs.RowIndex -lt 0 -or $eventArgs.ColumnIndex -lt 0) { return }
     $key = [string]$sender.Rows[$eventArgs.RowIndex].Tag
     $agent = $Agents | Where-Object { $_.Key -eq $key } | Select-Object -First 1
     if (-not $agent) { return }
     try {
-        switch ($sender.Columns[$eventArgs.ColumnIndex].Name) {
-            'Start' { Start-Agent $agent }
+        $action = $sender.Columns[$eventArgs.ColumnIndex].Name
+        switch ($action) {
+            'Start' {
+                $pidStarted = Start-Agent $agent
+                [System.Windows.Forms.MessageBox]::Show("$($agent.Label) start request sent. Launcher process ID: $pidStarted. The worker will appear after it connects to LIVE.",'Gemma start requested',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information) | Out-Null
+            }
             'Stop' { Stop-Agent $agent }
             'Update' { Update-Agent $agent }
             'Logs' { Show-AgentLogs $agent }

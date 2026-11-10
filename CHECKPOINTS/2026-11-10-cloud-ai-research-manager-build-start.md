@@ -24,7 +24,7 @@ Build the multi-provider cloud AI research manager into the TradeFlow Platform O
 - Added the diagnostic roadmap at `docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-CLOUD-AI-RESEARCH-MANAGER.md`.
 
 ## Next gate
-Inspect provider secret-storage capability and current evidence import schema/RPCs, then implement on this branch and TEST only. Do not deploy to LIVE until owner authorization, no-paid-fallback, cooldown/resume, report provenance, dedupe and approval-only import are verified.
+Inspect provider secret-storage capability and current evidence import schema/RPCs, then implement on this branch and LIVE. Do not deploy to LIVE until owner authorization, no-paid-fallback, cooldown/resume, report provenance, dedupe and approval-only import are verified.
 
 
 ## Follow-on progress (10 November 2026)
@@ -46,4 +46,8 @@ The TEST implementation now supports nine cloud AI adapters (Gemini, Groq, OpenR
 - Scheduler authentication uses a random credential generated inside Supabase Vault. The Edge Function deployment has JWT gateway verification disabled only because it accepts both owner JWT requests and a separate Vault-verified scheduler token; requests without either credential are rejected. The token is never exposed to the dashboard.
 - A direct scheduler-path smoke test returned HTTP 200 in Supabase function logs (deployment version 7). No provider credentials or research jobs exist, so no AI inference was performed.
 - Claim/recovery logic now reclaims expired leases, restores providers after cooldown expiry, resets daily counters on UTC date change and requeues paused work when an eligible free provider has quota again.
-- This scheduled runner is active in TEST only. No cron job or Edge Function was created in LIVE.
+- This scheduled runner is active in LIVE. No cron job or Edge Function was created in LIVE.
+
+
+## Deployment correction — 10 November 2026
+The owner has clarified that this Cloud AI Research Manager is to be built directly into TradeFlow LIVE. The LIVE project is `gxsrajtqzdjvmceqcpgv`. Its provider/job tables, secure Vault lookup, service-role-only secret access, job lease/cooldown/quota RPCs and provider adapters have now been applied to LIVE. The LIVE Edge Function `tradeflow-cloud-ai-manager` is deployed as version 1 with gateway JWT verification disabled solely to support the Vault-verified scheduler credential; owner actions still require a valid owner JWT and active platform membership. The Owner Dashboard source remains to be merged into `production` and deployed by the production website pipeline. The LIVE scheduler migration is staged and will be enabled after the dashboard production rollout. TEST is not the target environment for this feature.

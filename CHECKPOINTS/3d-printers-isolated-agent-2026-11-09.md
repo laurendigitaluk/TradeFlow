@@ -65,3 +65,13 @@ The LIVE schema has no dedicated project-memory/checkpoint table in any schema; 
 5. Run one bounded 3D-printer LIVE acceptance only after approval. Confirm one page per Gemma call, 90-second bound, source-route attempts, exact model/package checks, compact parent completion, and normalized queue fields with raw text preserved.
 6. Inspect the ChatGPT review queue manually. No evidence approval/import is authorised by this checkpoint.
 7. Keep all other category workers/branches and TEST data untouched.
+
+
+
+### Correction — worker lifecycle and exact-branch counts (10 November 2026, 01:30 UTC)
+
+The earlier 01:21:21 status timestamp was the `worker_stopped` event for worker `DESKTOP-LVASEUB-3d-printers-equipment-132732`, not proof of an actively polling idle process. A later isolated process `DESKTOP-LVASEUB-3d-printers-equipment-133276` started at 01:29:56 and stopped cleanly at 01:30:43 without claiming a task. The category status row is `idle`, `current_task=null`, `last_error=null`; there is no active worker process at this check. Neither start nor stop was triggered by this watch. No post-PR #348 research task has run, and worker telemetry does not expose the installed commit SHA.
+
+The exact category-and-branch task filter now returns 30 parent tasks: 29 completed and 1 failed, representing 86 product subtasks (78 in completed parents and 8 in the failed parent). Broader category-only payload filtering includes an additional non-exact-branch row and must not be used for branch-specific reporting.
+
+The replacement PR is now open as [PR #349](https://github.com/laurendigitaluk/TradeFlow/pull/349), targeting only `gemma/3d-printers`. GitHub reports it mergeable; Gemma Research Tests run #698 passed. It contains the actual persisted-row mapping correction, heartbeat-stage separation, and the missing telemetry/installer regression files. It is not merged or deployed.

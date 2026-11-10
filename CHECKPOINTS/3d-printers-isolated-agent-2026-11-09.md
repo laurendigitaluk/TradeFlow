@@ -175,3 +175,8 @@ PR #345 is a draft, unmergeable branch-promotion PR to production (93 commits ah
 Safety improvement opened in PR #353 on feature branch `fix/3d-printer-updater-dirty-worktree-20261110`, based on `gemma/3d-printers`. The category updater now aborts before file installation when `git status --porcelain=v1 --untracked-files=all` reports any tracked/staged/untracked change or Git cannot inspect the worktree. Regression test verifies the guard runs before the updater call. PR #353 is not merged. No Research PC updater/restart, task enqueue, Supabase mutation, source change, evidence approval/import, TEST/LIVE transfer or secret access/change occurred.
 
 The Supabase schema has no structured project-memory/checkpoint table. Common Room posting requires service_role, which is not available through the read-only SQL connection; no direct-write bypass was attempted. This repository checkpoint and the canonical manuals/roadmaps carry the update.
+
+
+### PR #353 verification update — 10 November 2026, 17:39 UTC
+
+PR #353 head `d3942767c7cc47192aa909329654b7d608ac30f5` is open, mergeable and targets only `gemma/3d-printers`; it remains unmerged. GitHub Actions Gemma Research Tests run #789 (`42867112565`) completed successfully: the PowerShell updater syntax check, Node source syntax check, Gemma task/website-playbook test step (including the new dirty-worktree regression), and Owner Dashboard JavaScript syntax check all passed. The check-runs list contains only the Gemma Research Tests job; no Cloudflare preview check was created for PR #353. This verifies repository code/tests, not the Research PC runtime. The dirty local clone has not been updated, and no worker/task/evidence/database action was taken.

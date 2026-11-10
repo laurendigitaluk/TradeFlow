@@ -1035,3 +1035,15 @@ The merged 3D Printer worker, parent-result summary module and regression tests,
 ### Installation entry-point clarification — 10 November 2026
 
 The seven independent Windows clones use the branch-specific `Update-Gemma-Agent.ps1` and `Start-Gemma-Agent.ps1` entry points. `Update-Gemma-Agent.ps1` validates the one-key `agent.config.json`, the clone's Git branch and the shared private ENV pointer before invoking the lower-level `Update-TradeFlow-Gemma.ps1`. Fast-forward the local clone to its own `gemma/*` branch before running the category-local updater; that lower-level updater does not update the Git clone or its own script. Do not substitute the legacy shared Control Centre launcher for the isolated-agent launcher. The isolated launcher now preflights the lifecycle summary, heartbeat and installer-manifest tests as well as the existing isolation/control tests.
+
+
+## 10 November 2026 — Research PC local/remote comparison result
+
+Owner-provided read-only comparison for `C:\\CTFGemma2\\Gemma-3D-Printers`:
+- Local HEAD `0ffa1734d071440f18b8becbbfc039ced1605d5e`.
+- Remote `gemma/3d-printers` `90591adc2824263dbf0256df195b435456f96e46`.
+- GitHub compare confirms remote is exactly 74 commits ahead and 0 behind; local HEAD is the merge base/ancestor. Fast-forward is possible after preserving and reconciling the dirty working tree.
+- Six substantive tracked local diffs: `agent.config.json` (formatting/BOM only; same one-key identity), `agent.mjs` (product-terminal-slug accessory matching), `agent-speed.test.mjs`, `source-playbooks.mjs`, `source-playbooks.test.mjs`, `task-worker.mjs`. Inspect local-only changes against remote before deciding what to retain. Untracked launcher, backups, result-summary module and status file must be preserved.
+- No fast-forward or file overwrite has yet occurred. Exact output and next action are recorded in `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` on production.
+
+Canonical TradeFlow docs are `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` and `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`; canonical project-memory files are under `PROJECT-MEMORY/`. Do not use GearCashOut documentation or resources: GearCashOut is separate and out of scope.

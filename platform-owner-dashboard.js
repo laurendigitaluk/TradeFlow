@@ -399,7 +399,13 @@ initOwnerSectionAccordions();
 const cloudAiProviderDefaults=[
  {provider_key:'gemini',display_name:'Google Gemini',model_id:'gemini-2.5-flash'},
  {provider_key:'groq',display_name:'Groq',model_id:'llama-3.3-70b-versatile'},
- {provider_key:'openrouter',display_name:'OpenRouter',model_id:''}
+ {provider_key:'openrouter',display_name:'OpenRouter',model_id:''},
+ {provider_key:'cerebras',display_name:'Cerebras',model_id:'llama-3.3-70b'},
+ {provider_key:'sambanova',display_name:'SambaNova',model_id:'Meta-Llama-3.3-70B-Instruct'},
+ {provider_key:'nvidia_nim',display_name:'NVIDIA NIM',model_id:'meta/llama-3.3-70b-instruct'},
+ {provider_key:'mistral',display_name:'Mistral',model_id:'mistral-small-latest'},
+ {provider_key:'huggingface',display_name:'Hugging Face',model_id:'Qwen/Qwen2.5-72B-Instruct'},
+ {provider_key:'github_models',display_name:'GitHub Models',model_id:'openai/gpt-4.1-mini'}
 ];
 function renderCloudAiProviders(rows){
  const host=$('cloud-ai-providers');if(!host)return;

@@ -14,6 +14,11 @@ import {
  buildSubtaskCompletionReport,
  buildParentCompletionReport
 } from './task-result-summary.mjs';
+import {
+ buildSpecialistIdleHeartbeatRecord,
+ specialistIdleHeartbeatIntervalMs,
+ shouldEmitSpecialistIdleHeartbeat
+} from './specialist-idle-heartbeat.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -32,6 +37,10 @@ const leaseSeconds=600;
 let activeAgentKeys=new Set();
 let activeTaskKey=null;
 let stopping=false;
+let pollInProgress=false;
+let lastPollSucceeded=false;
+let idleHeartbeatInProgress=false;
+let idleHeartbeatPromise=Promise.resolve();
 
 async function readDesktopConfig(){
  if(!desktopConfigPath)return null;
@@ -104,6 +113,15 @@ async function roomPost(agent,messageType,title,body,details={}){
 }
 async function safeReport(record){
  try{await reportAgent(env,record);}catch(error){console.error('[telemetry]',error.message);}
+}
+async function emitSpecialistIdleHeartbeat(){
+ if(!shouldEmitSpecialistIdleHeartbeat({stopping,taskInProgress:Boolean(activeTaskKey),pollInProgress,heartbeatInProgress:idleHeartbeatInProgress,lastPollSucceeded}))return;
+ idleHeartbeatInProgress=true;
+ idleHeartbeatPromise=(async()=>{
+  try{await safeReport(buildSpecialistIdleHeartbeatRecord(startupIdentity,workerId,pollMs,isolatedAgentKey));}
+  finally{idleHeartbeatInProgress=false;}
+ })();
+ return idleHeartbeatPromise;
 }
 let commonRoomCheckRunning=false;
 async function draftCommonRoomAnswer(agent,message){
@@ -283,7 +301,7 @@ async function processClaim(claim){
   await safeReport({...failureIdentity,status:'error',current_task:claim.task_key,event_type:'task_failed',task_key:claim.task_key,message:'Queued task failed: '+error.message,last_error:error.message,details:{queue_task_id:claim.id}});
   await roomPost(failureIdentity,'status_update','Research task failed','Task '+claim.task_key+' failed: '+error.message,{task_key:claim.task_key,thread_key:'engineering'}).catch(e=>console.error('[common room failure]',e.message));
   console.error('[failed]',claim.task_key,error.stack||error.message);
- }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);activeAgentKeys.clear();activeTaskKey=null;await writeDesktopStatus('waiting');}
+ }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);activeAgentKeys.clear();activeTaskKey=null;lastPollSucceeded=false;await writeDesktopStatus('waiting');}
 }
 
 const startupIdentity=isolatedAgentIdentity||{agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'};
@@ -293,6 +311,8 @@ if(isolatedAgentIdentity)await checkAgentCommonRoom(isolatedAgentIdentity).catch
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
 console.log('[TradeFlow Gemma] VERIFIED control plane: '+controlPlane.name+' ('+controlPlane.url.replace(/^https:\/\//,'').replace(/\.supabase\.co\/?$/,'')+'); other environment is isolated.');
 await safeReport({...startupIdentity,status:'idle',event_type:'worker_started',message:startupIdentity.agent_name+' is connected and polling only its assigned category in '+controlPlane.name+'.',details:{worker_id:workerId,poll_interval_ms:pollMs,isolated_agent_key:isolatedAgentKey}});
+const idleHeartbeatTimer=setInterval(()=>{void emitSpecialistIdleHeartbeat();},specialistIdleHeartbeatIntervalMs(pollMs));
+idleHeartbeatTimer.unref?.();
 while(!stopping){
  try{
   const desktopConfig=desktopConfigPath?await readDesktopConfig():null;
@@ -306,9 +326,16 @@ while(!stopping){
    await new Promise(resolve=>setTimeout(resolve,pollMs));
    continue;
   }
-  const claimed=desktopConfigPath
-   ?await rpc('platform_ai_agent_claim_task_for_agents',scopedArgs)
-   :await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+  if(idleHeartbeatInProgress)await idleHeartbeatPromise;
+  pollInProgress=true;
+  lastPollSucceeded=false;
+  let claimed;
+  try{
+   claimed=desktopConfigPath
+    ?await rpc('platform_ai_agent_claim_task_for_agents',scopedArgs)
+    :await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+   lastPollSucceeded=true;
+  }finally{pollInProgress=false;}
   const task=Array.isArray(claimed)?claimed[0]:claimed;
   if(task?.id){
    console.log('[claimed]',task.task_key,'attempt',task.attempts);
@@ -330,5 +357,6 @@ while(!stopping){
   await new Promise(resolve=>setTimeout(resolve,Math.min(60000,pollMs*2)));
  }
 }
+clearInterval(idleHeartbeatTimer);
 await safeReport({...startupIdentity,status:'idle',event_type:'worker_stopped',message:startupIdentity.agent_name+' stopped cleanly.',details:{worker_id:workerId,isolated_agent_key:isolatedAgentKey}});
 console.log('[TradeFlow Gemma] worker stopped');

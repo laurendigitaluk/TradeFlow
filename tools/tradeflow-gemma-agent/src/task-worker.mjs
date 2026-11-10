@@ -322,6 +322,7 @@ while(!stopping){
   }
   const scopedArgs=desktopConfigPath?buildAgentClaimArgs(desktopConfig,workerId,leaseSeconds):null;
   if(desktopConfigPath&&!scopedArgs){
+   lastPollSucceeded=false;
    await writeDesktopStatus('waiting_no_agents');
    await new Promise(resolve=>setTimeout(resolve,pollMs));
    continue;

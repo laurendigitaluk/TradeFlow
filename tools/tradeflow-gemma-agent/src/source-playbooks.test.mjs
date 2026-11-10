@@ -465,8 +465,8 @@ test('3D printer Gemma prompt returns findings-array observations for ChatGPT re
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
 });
 
-test('3D printer extraction uses two pages per Gemma call', () => {
-  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 2);
+test('3D printer extraction uses one page per Gemma call while other categories keep two', () => {
+  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 1);
   assert.equal(extractionBatchSizeForTask({ ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones' }), 2);
 });
 
@@ -1017,6 +1017,14 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation.includes('direct ASIN product page'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', '3djake.uk').navigation.includes('brand catalogue'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'ebay.co.uk').navigation.includes('ANYCUBIC seller storefront'));
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, newTask), [
+    'https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014',
+    'https://ebay.co.uk/sch/i.html?_nkw=Anycubic%20Kobra%20S1&_sacat=0'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: '3djake.uk' }, newTask), [
+    'https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer',
+    'https://3djake.uk/search?query=Anycubic%20Kobra%20S1'
+  ]);
   const anycubicEbayRoutes = buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, newTask);
   assert.deepEqual(anycubicEbayRoutes, [
     'https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014',

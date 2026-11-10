@@ -172,3 +172,8 @@ The category-local `Update-Gemma-Agent.ps1` previously checked category isolatio
 PR #345 remains a draft, unmergeable promotion of the full specialist branch to production (93 commits ahead, 50 behind current production). Its current head `e18735f` adds four documentation-only commits after `90591adc`; Cloudflare automatically built `tradeflow` and `tradeflow-test` branch previews for that head. These are preview builds, not a custom-domain production release. No Gemma CI run is attached to `e18735f`; the source/test changes were checked by the individual PR #349/#350/#351 workflows before their promotion. No Research PC update, task enqueue, worker restart, Supabase write or evidence approval/import has occurred.
 
 The Supabase schema has no dedicated project-memory/checkpoint table. The Common Room post RPC requires service_role; no lower-privilege bypass or direct insert is attempted. This repository memory/checkpoint is the durable update for PR #353 review.
+
+
+### PR #353 verification update — 10 November 2026, 17:39 UTC
+
+PR #353 head `d3942767c7cc47192aa909329654b7d608ac30f5` is open, mergeable and targets only `gemma/3d-printers`; it remains unmerged. GitHub Actions Gemma Research Tests run #789 (`42867112565`) completed successfully: the PowerShell updater syntax check, Node source syntax check, Gemma task/website-playbook test step (including the new dirty-worktree regression), and Owner Dashboard JavaScript syntax check all passed. The check-runs list contains only the Gemma Research Tests job; no Cloudflare preview check was created for PR #353. This verifies repository code/tests, not the Research PC runtime. The dirty local clone has not been updated, and no worker/task/evidence/database action was taken.

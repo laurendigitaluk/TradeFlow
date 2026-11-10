@@ -94,7 +94,7 @@ async function processNextJob(admin:any):Promise<Response>{
     const res=await fetch(u.toString(),{redirect:"manual",headers:{"User-Agent":"TradeFlowResearchBot/1.0 (+https://owner.laurendigital.co.uk)","Accept":"text/html,application/xhtml+xml"},signal:AbortSignal.timeout(10000)});
     if(!res.ok||!((res.headers.get("content-type")||"").includes("text/html")))continue;
     const body=(await res.text()).slice(0,500000);
-    pages.push({source_name:source.source_name,url:u.toString(),text:cleanHtml(body)});
+    pages.push({source_name:source.source_name,research_scope:source.research_scope,url:u.toString(),text:cleanHtml(body)});
    }catch{}
    if(pages.length>=3)break;
   }
@@ -130,9 +130,13 @@ async function processNextJob(admin:any):Promise<Response>{
    const price=Number(finding.price_gbp);
    if(!sourcePage||!Number.isFinite(price)||price<=0||price>1000000)continue;
    if(!["uk_new","uk_used"].includes(finding.evidence_type))continue;
+   if(sourcePage.research_scope==="used_uk"&&finding.evidence_type!=="uk_used")continue;
+   if(["new_uk","official"].includes(sourcePage.research_scope)&&finding.evidence_type!=="uk_new")continue;
    if(!["exact","likely"].includes(finding.product_match))continue;
    const excerpt=String(finding.excerpt||"").slice(0,1000);
    if(excerpt.length<15||!sourcePage.text.toLowerCase().includes(excerpt.toLowerCase().slice(0,Math.min(50,excerpt.length))))continue;
+   const priceMatches=[...excerpt.matchAll(/(?:£|GBP)\\s*([\\d,]+(?:\\.\\d{1,2})?)/gi)].map((m:any)=>Number(m[1].replace(/,/g,"")));
+   if(!priceMatches.some((n:number)=>Math.abs(n-price)<0.011))continue;
    const canonical=sourcePage.url;
    const dedupe=await crypto.subtle.digest("SHA-256",new TextEncoder().encode([job.manufacturer,job.model,job.package_name||"",canonical,price,finding.evidence_type].join("|").toLowerCase()));
    const dedupeKey=Array.from(new Uint8Array(dedupe)).map(x=>x.toString(16).padStart(2,"0")).join("");

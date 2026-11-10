@@ -1047,3 +1047,8 @@ Owner-provided read-only comparison for `C:\\CTFGemma2\\Gemma-3D-Printers`:
 - No fast-forward or file overwrite has yet occurred. Exact output and next action are recorded in `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` on production.
 
 Canonical TradeFlow docs are `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` and `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`; canonical project-memory files are under `PROJECT-MEMORY/`. Do not use GearCashOut documentation or resources: GearCashOut is separate and out of scope.
+
+
+## 10 November 2026 — 3D Printer local updater safety
+
+Before any category-local updater runs, verify the repository working tree is clean. A clean branch name and correct one-key agent configuration do not prove that the folder contains no owner-local edits or untracked backups. The 3D Printer updater now checks `git status --porcelain=v1 --untracked-files=all` and stops before file installation if Git status fails or any changed path is present. Do not stash, reset, clean, overwrite or delete local changes as an automatic recovery. Reconcile and preserve them individually, then fast-forward the local clone to its own specialist branch before updating. This correction is proposed in PR #353 against `gemma/3d-printers`; it is not merged or deployed.

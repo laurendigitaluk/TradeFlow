@@ -47,6 +47,7 @@ jobs:
           [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
           if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
           foreach ($file in @('tools/tradeflow-gemma-agent/Start-Gemma-Agent.ps1','tools/tradeflow-gemma-agent/Update-Gemma-Agent.ps1','tools/gemma-agent-isolation/Install-Gemma-Agents.ps1','tools/gemma-agent-isolation/Gemma-Control-Centre.ps1','tools/gemma-agent-isolation/Update-All-Gemma-Agents.ps1')) {
+            if (-not (Test-Path $file)) { continue }
             $tokens = $null
             $errors = $null
             [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors) | Out-Null
@@ -57,6 +58,7 @@ jobs:
             'tools/tradeflow-gemma-desktop/Run-TradeFlow-Gemma-Supervisor.ps1',
             'tools/tradeflow-gemma-desktop/Install-TradeFlow-Research-Control-Centre.ps1'
           )) {
+            if (-not (Test-Path $file)) { continue }
             $tokens = $null
             $errors = $null
             [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors) | Out-Null

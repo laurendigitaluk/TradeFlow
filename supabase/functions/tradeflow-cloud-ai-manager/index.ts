@@ -1,7 +1,7 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const cors={ "Access-Control-Allow-Origin":"https://owner.laurendigital.co.uk", "Access-Control-Allow-Headers":"authorization, apikey, content-type", "Access-Control-Allow-Methods":"POST, OPTIONS" };
+const cors={ "Access-Control-Allow-Origin":"https://owner.laurendigital.co.uk", "Access-Control-Allow-Headers":"authorization, apikey, content-type, x-tradeflow-scheduler-token", "Access-Control-Allow-Methods":"POST, OPTIONS" };
 const json=(body:unknown,status=200)=>new Response(JSON.stringify(body),{status,headers:{...cors,"Content-Type":"application/json"}});
 Deno.serve(async(req:Request)=>{
  if(req.method==="OPTIONS")return new Response("ok",{headers:cors});
@@ -9,12 +9,20 @@ Deno.serve(async(req:Request)=>{
  const url=Deno.env.get("SUPABASE_URL"),anon=Deno.env.get("SUPABASE_ANON_KEY"),service=Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
  if(!url||!anon||!service)return json({error:"Server configuration incomplete"},500);
  const auth=req.headers.get("Authorization")||"";
- const userClient=createClient(url,anon,{global:{headers:{Authorization:auth}}});
- const {data:{user},error:userError}=await userClient.auth.getUser();
- if(userError||!user)return json({error:"Sign in required"},401);
  const admin=createClient(url,service);
- const {data:membership}=await admin.from("platform_memberships").select("id").eq("user_id",user.id).eq("status","active").limit(1).maybeSingle();
- if(!membership)return json({error:"Platform owner access required"},403);
+ const schedulerToken=req.headers.get("x-tradeflow-scheduler-token")||"";
+ let isScheduler=false;
+ if(schedulerToken){
+  const {data:validToken,error:tokenError}=await admin.rpc("verify_cloud_ai_scheduler_token",{p_token:schedulerToken});
+  if(tokenError||validToken!==true)return json({error:"Invalid scheduler credential"},401);
+  isScheduler=true;
+ }else{
+  const userClient=createClient(url,anon,{global:{headers:{Authorization:auth}}});
+  const {data:{user},error:userError}=await userClient.auth.getUser();
+  if(userError||!user)return json({error:"Sign in required"},401);
+  const {data:membership}=await admin.from("platform_memberships").select("id").eq("user_id",user.id).eq("status","active").limit(1).maybeSingle();
+  if(!membership)return json({error:"Platform owner access required"},403);
+ }
  let body:any;try{body=await req.json()}catch{return json({error:"Invalid JSON"},400)}
  if(body?.action==="process_next_job") return await processNextJob(admin);
  if(body?.action!=="test_provider"||!["gemini","groq","openrouter"].includes(body?.provider_key))return json({error:"Unsupported action"},400);

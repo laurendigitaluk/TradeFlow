@@ -9,7 +9,16 @@ import { reportAgent, buildWorkerHeartbeatDetails } from './agent-telemetry.mjs'
 import { resolveControlPlane } from './control-plane.mjs';
 import { buildAgentClaimArgs } from './desktop-control.mjs';
 import { normalizeIsolatedAgentConfig, assertTaskGroupBelongsToAgent } from './agent-isolation.mjs';
-import { summarizeTaskResults } from './task-result-summary.mjs';
+import {
+ summarizeTaskResults,
+ buildSubtaskCompletionReport,
+ buildParentCompletionReport
+} from './task-result-summary.mjs';
+import {
+ buildSpecialistIdleHeartbeatRecord,
+ specialistIdleHeartbeatIntervalMs,
+ shouldEmitSpecialistIdleHeartbeat
+} from './specialist-idle-heartbeat.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -28,6 +37,10 @@ const leaseSeconds=600;
 let activeAgentKeys=new Set();
 let activeTaskKey=null;
 let stopping=false;
+let pollInProgress=false;
+let lastPollSucceeded=false;
+let idleHeartbeatInProgress=false;
+let idleHeartbeatPromise=Promise.resolve();
 
 async function readDesktopConfig(){
  if(!desktopConfigPath)return null;
@@ -100,6 +113,15 @@ async function roomPost(agent,messageType,title,body,details={}){
 }
 async function safeReport(record){
  try{await reportAgent(env,record);}catch(error){console.error('[telemetry]',error.message);}
+}
+async function emitSpecialistIdleHeartbeat(){
+ if(!shouldEmitSpecialistIdleHeartbeat({stopping,taskInProgress:Boolean(activeTaskKey),pollInProgress,heartbeatInProgress:idleHeartbeatInProgress,lastPollSucceeded}))return;
+ idleHeartbeatInProgress=true;
+ idleHeartbeatPromise=(async()=>{
+  try{await safeReport(buildSpecialistIdleHeartbeatRecord(startupIdentity,workerId,pollMs,isolatedAgentKey));}
+  finally{idleHeartbeatInProgress=false;}
+ })();
+ return idleHeartbeatPromise;
 }
 let commonRoomCheckRunning=false;
 async function draftCommonRoomAnswer(agent,message){
@@ -176,7 +198,8 @@ async function processClaim(claim){
  },45000);
  const inboxHeartbeat=setInterval(()=>{if(isolatedAgentIdentity)checkAgentCommonRoom(isolatedAgentIdentity).catch(e=>console.error('[common room inbox]',e.message));},Math.max(30000,pollMs*2));
  try{
-  for(const task of tasks){
+  for(let taskIndex=0;taskIndex<tasks.length;taskIndex++){
+   const task=tasks[taskIndex];
    if(stopping)throw new Error('Worker stopping before all subtasks completed.');
    const identity=resolveAgentIdentity(task);
    activeAgentKeys.add(identity.agent_key);
@@ -223,44 +246,62 @@ async function processClaim(claim){
    const failureLines=routeFailures.slice(0,8).map(item=>'['+item.stage+'] '+(item.source||'unknown source')+' — '+item.message);
    const gemmaFailureLines=(Array.isArray(metrics.gemma_failure_details)?metrics.gemma_failure_details:[]).slice(0,5)
     .map(item=>'[Gemma extraction] '+(item.source_ids||[]).join(', ')+' — '+item.error);
-   await roomPost(identity,'handover','Research task handover',[
+   await roomPost(identity,'handover','Research subtask handover',[
     'Task: '+taskKey,
+    'Subtask: '+(taskIndex+1)+' of '+tasks.length,
     'Research category: '+identity.category,
     ...metricLines,
     ...(failureLines.length?['Route failures:',...failureLines]:['Route failures: none recorded']),
     ...(gemmaFailureLines.length?['Gemma extraction issues:',...gemmaFailureLines]:['Gemma extraction issues: none recorded']),
     'Review gate: candidate rows are staged for ChatGPT/owner validation; no catalogue or shared evidence import is authorised by this handover.'
    ].join('\n'),{task_key:taskKey,thread_key:'research',metadata:{
-    queue_task_id:claim.id,subtask_count:tasks.length,staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
+    queue_task_id:claim.id,subtask_index:taskIndex+1,subtask_count:tasks.length,staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
     research_type:task.research_type,manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug,
     research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
    }}).catch(e=>console.error('[common room handover]',e.message));
    const candidates=(result.candidates||[]).length;
-   await safeReport({...identity,status:'idle',current_task:null,event_type:'task_completed',task_key:taskKey,message:'Completed '+taskKey+': '+candidates+' page captures; '+stagedCount+' staged for ChatGPT review ('+queuedCount+' new, '+enrichedCount+' enriched).',tasks_completed_delta:1,candidates_found_delta:candidates,evidence_queued_delta:queuedCount,details:{
-    queue_task_id:claim.id,mode:'background-queue',research_type:task.research_type,
-    manufacturer:task.manufacturer,model:task.model,package_key:task.package_key,branch_slug:task.branch_slug,
-    staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
-    research_metrics:metrics,route_metrics:routeMetrics,route_failures:routeFailures
-   }});
-   const pageStatus=is3dPrinterResearchTask(task)
-    ? 'Product pages: '+(metrics.discovered_product_pages??0)+' discovered, '+(metrics.product_pages_fetched??0)+' fetched, '+(metrics.model_variant_postfetch_rejections??0)+' rejected after fetch, '+(metrics.eligible_product_pages??metrics.inspected_product_pages??0)+' eligible.'
-    : 'Discovered '+(metrics.discovered_product_pages??0)+' product pages; fetched '+(metrics.inspected_product_pages??0)+'.';
-   await roomPost(identity,'status_update','Research task completed','Completed '+taskKey+' ('+task.research_type+'): '+candidates+' page captures; '+stagedCount+' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+' results. '+pageStatus,{task_key:taskKey,thread_key:'research'}).catch(e=>console.error('[common room complete]',e.message));
-   activeAgentKeys.delete(identity.agent_key);
+   await safeReport(buildSubtaskCompletionReport({
+    identity,taskKey,queueTaskId:claim.id,task,
+    subtaskIndex:taskIndex+1,subtaskCount:tasks.length,
+    candidateCount:candidates,staged:stagedCount,queued:queuedCount,enriched:enrichedCount,
+    researchMetrics:metrics,routeMetrics,routeFailures
+   }));
+   const productName=[task.manufacturer,task.model,task.package_name||task.package_key].filter(Boolean).join(' ');
+   const subtaskMessage='Completed product subtask '+(taskIndex+1)+' of '+tasks.length+
+    (productName?': '+productName:'')+': '+candidates+' page captures; '+stagedCount+
+    ' staged ('+queuedCount+' new, '+enrichedCount+' enriched). Search '+(metrics.search_results??0)+
+    ' results, discovered '+(metrics.discovered_product_pages??0)+' product pages, fetched '+
+    (metrics.inspected_product_pages??0)+'.';
+   await roomPost(identity,'status_update','Research subtask completed',subtaskMessage,{
+    task_key:taskKey,thread_key:'research',
+    metadata:{subtask_index:taskIndex+1,subtask_count:tasks.length,branch_slug:task.branch_slug||null}
+   }).catch(e=>console.error('[common room subtask complete]',e.message));
    await writeDesktopStatus('processing');
   }
   const compactResult=summarizeTaskResults(claim.task_key,outputs);
+  const aggregate=compactResult.aggregate;
   const resultBytes=Buffer.byteLength(JSON.stringify(compactResult),'utf8');
   console.log('[completed] submitting compact task summary:',resultBytes,'bytes; raw captures remain in review queue');
-  await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:compactResult});
-  console.log('[completed]',claim.task_key,'subtasks:',outputs.length);
+  const completionConfirmed=await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:compactResult});
+  if(completionConfirmed!==true)throw new Error('LIVE task queue platform_ai_agent_complete_task did not confirm parent task completion.');
+  const completionIdentity=activeIdentity||isolatedAgentIdentity||resolveAgentIdentity(tasks[0]);
+  const parentCompletion=buildParentCompletionReport({
+   identity:completionIdentity,taskKey:claim.task_key,queueTaskId:claim.id,
+   branchSlug:tasks[0]?.branch_slug,aggregate
+  });
+  await safeReport(parentCompletion);
+  await roomPost(completionIdentity,'status_update','Research task completed',parentCompletion.message,{
+   task_key:claim.task_key,thread_key:'research',
+   metadata:{subtask_count:aggregate.subtasks,staged:aggregate.staged,queued:aggregate.queued,enriched:aggregate.enriched,branch_slug:tasks[0]?.branch_slug||null}
+  }).catch(e=>console.error('[common room parent complete]',e.message));
+  console.log('[completed]',claim.task_key,'subtasks:',outputs.length,'captures:',aggregate.candidate_count,'staged:',aggregate.staged);
  }catch(error){
   await rpc('platform_ai_agent_fail_task',{p_task_id:claim.id,p_worker_id:workerId,p_error:error.message}).catch(e=>console.error('[queue failure report]',e.message));
   const failureIdentity=isolatedAgentIdentity||{agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'};
   await safeReport({...failureIdentity,status:'error',current_task:claim.task_key,event_type:'task_failed',task_key:claim.task_key,message:'Queued task failed: '+error.message,last_error:error.message,details:{queue_task_id:claim.id}});
   await roomPost(failureIdentity,'status_update','Research task failed','Task '+claim.task_key+' failed: '+error.message,{task_key:claim.task_key,thread_key:'engineering'}).catch(e=>console.error('[common room failure]',e.message));
   console.error('[failed]',claim.task_key,error.stack||error.message);
- }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);activeAgentKeys.clear();activeTaskKey=null;await writeDesktopStatus('waiting');}
+ }finally{clearInterval(heartbeat);clearInterval(inboxHeartbeat);activeAgentKeys.clear();activeTaskKey=null;lastPollSucceeded=false;await writeDesktopStatus('waiting');}
 }
 
 const startupIdentity=isolatedAgentIdentity||{agent_key:'gemma-task-worker',agent_name:'Gemma Task Worker',category:'Task control'};
@@ -270,6 +311,8 @@ if(isolatedAgentIdentity)await checkAgentCommonRoom(isolatedAgentIdentity).catch
 console.log('[TradeFlow Gemma] worker:',workerId,'poll interval:',pollMs+'ms');
 console.log('[TradeFlow Gemma] VERIFIED control plane: '+controlPlane.name+' ('+controlPlane.url.replace(/^https:\/\//,'').replace(/\.supabase\.co\/?$/,'')+'); other environment is isolated.');
 await safeReport({...startupIdentity,status:'idle',event_type:'worker_started',message:startupIdentity.agent_name+' is connected and polling only its assigned category in '+controlPlane.name+'.',details:{worker_id:workerId,poll_interval_ms:pollMs,isolated_agent_key:isolatedAgentKey}});
+const idleHeartbeatTimer=setInterval(()=>{void emitSpecialistIdleHeartbeat();},specialistIdleHeartbeatIntervalMs(pollMs));
+idleHeartbeatTimer.unref?.();
 while(!stopping){
  try{
   const desktopConfig=desktopConfigPath?await readDesktopConfig():null;
@@ -279,13 +322,21 @@ while(!stopping){
   }
   const scopedArgs=desktopConfigPath?buildAgentClaimArgs(desktopConfig,workerId,leaseSeconds):null;
   if(desktopConfigPath&&!scopedArgs){
+   lastPollSucceeded=false;
    await writeDesktopStatus('waiting_no_agents');
    await new Promise(resolve=>setTimeout(resolve,pollMs));
    continue;
   }
-  const claimed=desktopConfigPath
-   ?await rpc('platform_ai_agent_claim_task_for_agents',scopedArgs)
-   :await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+  if(idleHeartbeatInProgress)await idleHeartbeatPromise;
+  pollInProgress=true;
+  lastPollSucceeded=false;
+  let claimed;
+  try{
+   claimed=desktopConfigPath
+    ?await rpc('platform_ai_agent_claim_task_for_agents',scopedArgs)
+    :await rpc('platform_ai_agent_claim_task',{p_worker_id:workerId,p_lease_seconds:leaseSeconds});
+   lastPollSucceeded=true;
+  }finally{pollInProgress=false;}
   const task=Array.isArray(claimed)?claimed[0]:claimed;
   if(task?.id){
    console.log('[claimed]',task.task_key,'attempt',task.attempts);
@@ -307,5 +358,6 @@ while(!stopping){
   await new Promise(resolve=>setTimeout(resolve,Math.min(60000,pollMs*2)));
  }
 }
+clearInterval(idleHeartbeatTimer);
 await safeReport({...startupIdentity,status:'idle',event_type:'worker_stopped',message:startupIdentity.agent_name+' stopped cleanly.',details:{worker_id:workerId,isolated_agent_key:isolatedAgentKey}});
 console.log('[TradeFlow Gemma] worker stopped');

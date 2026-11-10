@@ -5305,3 +5305,8 @@ The seven independent Windows clones use the branch-specific `Update-Gemma-Agent
 ## 10 November 2026 — Current Gemma restoration handover
 
 The single source of truth for the active Research PC restoration is `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` on production. Read that checkpoint and `docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-GEMMA-RESEARCH-PIPELINE.md` before asking the owner for further commands or making changes. Owner-confirmed local folder is `C:\\CTFGemma2\\Gemma-3D-Printers`, remote `laurendigitaluk/TradeFlow`, branch `gemma/3d-printers`. Local HEAD `0ffa1734d071440f18b8becbbfc039ced1605d5e` is 74 commits behind remote `90591adc2824263dbf0256df195b435456f96e46`, with zero commits unique to local. The working tree is dirty and contains valuable local changes/backups; do not reset, clean, pull blindly or overwrite. Inspect and preserve first. GearCashOut is a separate project and must not be used as a source or dependency; categories have already been brought into TradeFlow and evidence already created.
+
+
+## 10 November 2026 — category updater fail-closed worktree check
+
+For the isolated 3D Printer clone, the category-local updater must preserve all local work. Its preflight now checks Git status using porcelain v1 with all untracked files included, after confirming the configured branch and before invoking the lower-level file updater. If Git status fails or reports any staged, unstaged or untracked path, the update is cancelled with a bounded path summary. The guard does not stash, reset, clean, pull, fast-forward, delete or alter the private ENV. The regression suite verifies the check precedes the updater call. See PR #353, which targets only `gemma/3d-printers` and remains review-only.

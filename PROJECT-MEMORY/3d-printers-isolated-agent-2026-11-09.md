@@ -75,3 +75,9 @@ The latest task's activity log recorded 10 `fetching_page` events, 2 `source_err
 PR #349 now incorporates the 3D-printer-only page-flow telemetry correction previously proposed in PR #338: emit `product_page_fetched` after a successful HTTP fetch, label model/package skips with `phase=prefilter|postfetch`, report fetch attempts, successful fetches, pre/post validation rejections and pages eligible for capture, and include these metrics in the worker handover/parent result. The legacy `inspected_product_pages` field remains unchanged for compatibility. Regression coverage reproduces 2 attempts, 1 successful fetch, 1 prefilter rejection, 1 post-fetch rejection and 0 eligible pages.
 
 GitHub Actions run #702 passed all workflow steps on code/test commit `5f3f77d2af3d94290e63b7a6c266e7a4555f2d14` (PowerShell syntax, Node syntax, Gemma task/website tests and Owner Dashboard JavaScript). The subsequent documentation-only commits do not change source or tests. PR #349 remains open and unmerged, targeting only `gemma/3d-printers`; it supersedes the stale PR #338.
+
+
+
+### Supabase memory write limitation — 10 November 2026
+
+A schema-wide read-only inspection found no dedicated Supabase project-memory or checkpoint table. The category Common Room is stored in `public.platform_ai_agent_messages`; its `platform_ai_agent_post_message` RPC requires the `service_role`. The current connector does not expose that privilege, so no Common Room insert was attempted through a lower-level bypass. Existing Common Room records were read only. This repository project-memory/checkpoint update is included in PR #349 for owner review.

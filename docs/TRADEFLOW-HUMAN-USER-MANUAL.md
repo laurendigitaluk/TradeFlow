@@ -2592,3 +2592,12 @@ Only the existing private TradeFlow ENV file and local Ollama model service are 
 The old Windows Research Control Centre model (one supervisor and one shared Node/Gemma execution lane with seven switches) is not the target architecture for category development. The new isolated-agent installer creates seven separate folders and desktop shortcuts and does not start workers or change the existing installation. Do not use the shared Control Centre to develop category-specific code.
 
 Implementation is in progress on `feature/gemma-isolated-agent-foundation-20261109`; category branches have been created. The Research PC folders and shortcuts have not yet been installed. Existing shared worker, current 3D Printer eight-product task, existing local installation and private ENV remain untouched. Do not start a second 3D Printer process until the current task completes. See `docs/GEMMA-ISOLATED-AGENT-ARCHITECTURE.md` and the matching PROJECT-MEMORY/CHECKPOINTS entries for the branch/folder map and acceptance gates.
+
+
+## Manual AI research: evidence review is not evidence import — 10 November 2026
+
+The Platform Owner can retrieve the saved assistant report, inspect each comparison reference, and use the same-manufacturer/model catalogue matching workflow to identify the correct package. A source must be checked on its actual UK product/listing page before it can be treated as verified evidence. Aggregator, editorial, search/category and inaccessible pages remain comparisons or unresolved references.
+
+**Approving a research queue item does not add it to shared catalogue evidence.** The current review action changes the queue status only. Until a dedicated authorised import action is implemented and verified, do not describe an approved candidate as imported or as active shared-market evidence. New and used evidence remain separate; used-market prices are reference-only and do not affect automatic buying valuations.
+
+The AKASO 360 review outcome and current backend limitation are recorded in `CHECKPOINTS/2026-11-10-manual-ai-research-evidence-review.md`.

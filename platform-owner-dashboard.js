@@ -87,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await loadCloudAiReviewQueue();await window.loadPublicPages?.();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await loadCloudAiReviewQueue();await loadManualAiResearchBatches();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -380,7 +380,7 @@ $('platform-email-form').onsubmit=savePlatformEmail;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),loadCloudAiReviewQueue(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),loadCloudAiReviewQueue(),loadManualAiResearchBatches(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -571,6 +571,119 @@ async function enqueueCloudAiJob(e){
  }catch(err){status.textContent='Could not queue selected catalogue products: '+(err.message||String(err));}
  finally{button.disabled=false;}
 }
+
+async function loadManualAiResearchBatches(){
+ const host=$('manual-ai-batches');if(!host)return;
+ host.innerHTML='<p class="muted">Loading saved batches…</p>';
+ try{
+  const batches=await request('/rest/v1/rpc/platform_owner_list_manual_ai_research_batches',{method:'POST',body:JSON.stringify({p_limit:10})});
+  renderManualAiResearchBatches(Array.isArray(batches)?batches:[]);
+ }catch(err){host.innerHTML='<p class="error">'+escapeHtml(err.message||String(err))+'</p>';}
+}
+function renderManualAiResearchBatches(batches){
+ const host=$('manual-ai-batches');if(!host)return;
+ if(!batches.length){host.innerHTML='<p class="muted">No manual research batches yet. Select products above and generate your first prompts.</p>';return;}
+ host.innerHTML=batches.map(batch=>{
+  const prompts=Array.isArray(batch.prompts)?batch.prompts:[];
+  const complete=prompts.filter(p=>['completed','no_findings'].includes(p.status)).length;
+  return '<article class="plan-editor" style="margin-top:12px">'+
+   '<div class="plan-editor-head"><div><div class="eyebrow">Manual research batch · '+escapeHtml(formatDate(batch.created_at))+'</div><h3>'+escapeHtml(batch.assistant_name)+' · '+Number(batch.product_count||0).toLocaleString()+' products</h3><p class="muted">'+Number(batch.prompt_count||0)+' prompts · '+Number(batch.products_per_prompt||10)+' products per prompt</p></div><span class="plan-status">'+complete+'/'+prompts.length+' prompts completed · '+escapeHtml(batch.status)+'</span></div>'+
+   '<div style="height:7px;background:var(--border,#ddd);border-radius:10px;overflow:hidden;margin:8px 0 14px"><div style="height:7px;background:#16834a;width:'+(prompts.length?Math.round(complete/prompts.length*100):0)+'%"></div></div>'+
+   prompts.map(p=>{
+    const done=['completed','no_findings'].includes(p.status);
+    return '<section style="border-top:1px solid var(--border,#ddd);padding-top:12px;margin-top:12px">'+
+     '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><strong>Prompt '+p.prompt_number+' of '+prompts.length+' · '+Number(p.product_count||0)+' products</strong><span class="plan-status">'+escapeHtml(p.status.replace('_',' '))+'</span></div>'+
+     '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0"><button type="button" data-manual-copy="'+escapeHtml(p.id)+'">Copy research prompt</button><a href="'+escapeAttr(batch.assistant_url)+'" target="_blank" rel="noopener noreferrer">Open '+escapeHtml(batch.assistant_name)+' website ↗</a></div>'+
+     '<label>Generated research prompt<textarea id="manual-ai-prompt-'+escapeHtml(p.id)+'" rows="8" readonly style="width:100%;font-family:Consolas,monospace;font-size:12px;white-space:pre;overflow:auto">'+escapeHtml(p.prompt_text)+'</textarea></label>'+
+     (done
+      ? '<p class="note">Response submitted '+escapeHtml(p.response_submitted_at?formatDate(p.response_submitted_at):'')+'. '+Number(p.candidates_created||0)+' evidence candidate(s) created; '+Number(p.findings_rejected||0)+' finding(s) rejected by validation.</p>'
+      : '<label>Paste the complete AI response<textarea id="manual-ai-response-'+escapeHtml(p.id)+'" rows="9" maxlength="300000" placeholder="Paste the assistant JSON response here. Keep the product IDs, source URLs, prices and quoted source evidence intact.">'+escapeHtml(p.response_draft||'')+'</textarea></label>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" data-manual-save="'+escapeHtml(p.id)+'">Save response draft</button><button type="button" data-manual-submit="'+escapeHtml(p.id)+'">Validate and send to Evidence Awaiting Review</button></div>'+
+        '<p class="muted" id="manual-ai-prompt-status-'+escapeHtml(p.id)+'" role="status" aria-live="polite"></p>'
+     )+
+    '</section>';
+   }).join('')+
+  '</article>';
+ }).join('');
+ host.querySelectorAll('[data-manual-copy]').forEach(button=>button.addEventListener('click',()=>copyManualAiPrompt(button.dataset.manualCopy,button)));
+ host.querySelectorAll('[data-manual-save]').forEach(button=>button.addEventListener('click',()=>saveManualAiDraft(button.dataset.manualSave,button)));
+ host.querySelectorAll('[data-manual-submit]').forEach(button=>button.addEventListener('click',()=>submitManualAiResponse(button.dataset.manualSubmit,button)));
+}
+async function copyManualAiPrompt(promptId,button){
+ const field=$('manual-ai-prompt-'+promptId);if(!field)return;
+ try{
+  await navigator.clipboard.writeText(field.value);
+  const old=button.textContent;button.textContent='Copied';setTimeout(()=>{button.textContent=old;},1500);
+ }catch(err){
+  field.focus();field.select();
+  const copied=document.execCommand('copy');
+  if(copied){const old=button.textContent;button.textContent='Copied';setTimeout(()=>{button.textContent=old;},1500);}
+  else $('manual-ai-status').textContent='Copy was blocked by the browser. Select the prompt text and copy it manually.';
+ }
+}
+async function createManualAiResearchBatch(){
+ const button=$('manual-ai-create-batch'),status=$('manual-ai-status');
+ const productIds=[...cloudAiCatalogueSelection.keys()];
+ if(!productIds.length){status.textContent='Select one or more catalogue products first.';return;}
+ const assistant=$('manual-ai-assistant').value;
+ const batchSize=Number($('manual-ai-products-per-prompt').value||10);
+ button.disabled=true;status.textContent='Preparing deep-research prompts for '+productIds.length+' selected products…';
+ try{
+  const batch=await request('/rest/v1/rpc/platform_owner_create_manual_ai_research_batch',{method:'POST',body:JSON.stringify({
+   p_product_ids:productIds,p_assistant_key:assistant,p_products_per_prompt:batchSize,p_research_type:'price_evidence'
+  })});
+  cloudAiCatalogueSelection.clear();renderCloudAiCatalogueSelection();
+  status.textContent='Created '+batch.prompt_count+' saved prompt(s) for '+batch.product_count+' products. Copy the first prompt and open '+batch.assistant_name+' in a new tab.';
+  await loadManualAiResearchBatches();
+ }catch(err){status.textContent='Could not generate the research batch: '+(err.message||String(err));}
+ finally{button.disabled=false;renderCloudAiCatalogueSelection();}
+}
+async function saveManualAiDraft(promptId,button){
+ const textarea=$('manual-ai-response-'+promptId),status=$('manual-ai-prompt-status-'+promptId);
+ if(!textarea)return;
+ button.disabled=true;if(status)status.textContent='Saving response draft…';
+ try{
+  await request('/rest/v1/rpc/platform_owner_save_manual_ai_research_draft',{method:'POST',body:JSON.stringify({
+   p_prompt_id:promptId,p_response_draft:textarea.value
+  })});
+  if(status)status.textContent='Draft saved to TradeFlow. You can return to it later.';
+  await loadManualAiResearchBatches();
+ }catch(err){if(status)status.textContent='Could not save draft: '+(err.message||String(err));}
+ finally{button.disabled=false;}
+}
+function parseManualAiJsonReply(raw){
+ let clean=String(raw||'').trim();
+ clean=clean.replace(/^\u0060\u0060\u0060(?:json)?\s*/i,'').replace(/\s*\u0060\u0060\u0060$/,'').trim();
+ const start=clean.indexOf('{'),end=clean.lastIndexOf('}');
+ if(start<0||end<=start)throw new Error('No JSON object was found. Ask the assistant to return the JSON-only format included in the prompt.');
+ const data=JSON.parse(clean.slice(start,end+1));
+ if(data.schema_version!=='tradeflow_manual_research_v1'||!Array.isArray(data.findings)||!Array.isArray(data.not_found)){
+  throw new Error('The response does not match the TradeFlow research format. Ask the assistant: Return the complete JSON object using the exact schema_version, findings and not_found arrays from the prompt.');
+ }
+ return data;
+}
+async function submitManualAiResponse(promptId,button){
+ const textarea=$('manual-ai-response-'+promptId),status=$('manual-ai-prompt-status-'+promptId);
+ if(!textarea)return;
+ let parsed;
+ try{parsed=parseManualAiJsonReply(textarea.value);}
+ catch(err){if(status)status.textContent=err.message||String(err);return;}
+ if(!window.confirm('Validate this AI response and add valid findings to Evidence Awaiting Review? Nothing will be imported into the master evidence database automatically.'))return;
+ button.disabled=true;if(status)status.textContent='Checking product identities, UK prices, direct source links and quoted evidence…';
+ try{
+  const result=await request('/rest/v1/rpc/platform_owner_submit_manual_ai_research_response',{method:'POST',body:JSON.stringify({
+   p_prompt_id:promptId,p_response_text:JSON.stringify(parsed)
+  })});
+  if(status)status.textContent='Response checked. '+result.candidates_created+' candidate(s) staged for human review; '+result.duplicates_skipped+' duplicate(s) skipped; '+result.findings_rejected+' finding(s) rejected; '+result.not_found_count+' product(s) reported as not found.';
+  $('manual-ai-status').textContent='Manual AI response processed. Valid candidates are awaiting your review; none were imported automatically.';
+  await loadManualAiResearchBatches();
+  await loadCloudAiReviewQueue();
+ }catch(err){if(status)status.textContent='Response not submitted: '+(err.message||String(err));}
+ finally{button.disabled=false;}
+}
+$('manual-ai-create-batch')?.addEventListener('click',createManualAiResearchBatch);
+$('manual-ai-refresh')?.addEventListener('click',loadManualAiResearchBatches);
+
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);
 $('cloud-ai-enqueue-form')?.addEventListener('submit',enqueueCloudAiJob);

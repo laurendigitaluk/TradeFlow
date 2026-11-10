@@ -118,8 +118,8 @@ test('non-3D categories retain their existing page-content-first extraction orde
   assert.ok(!text.includes('Product: ELEGOO Neptune 4 Pro'));
 });
 
-test('3D printer extraction batches two pages while other categories retain two-page batches', () => {
-  assert.equal(extractionBatchSizeForTask(printerTask), 2);
+test('3D printer extraction batches one page while other categories retain two-page batches', () => {
+  assert.equal(extractionBatchSizeForTask(printerTask), 1);
   assert.equal(extractionBatchSizeForTask({ ...printerTask, category_slug: 'drones', branch_slug: 'drones' }), 2);
 });
 

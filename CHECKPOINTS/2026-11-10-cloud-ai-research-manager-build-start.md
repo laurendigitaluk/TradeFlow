@@ -86,3 +86,10 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - Owner Dashboard research enqueue now accepts up to 100 products per submission, one per line in `Manufacturer | Model | Package (optional)` format, with shared category and research type. Each product is enqueued through the existing owner-protected RPC; failures are reported per product. Jobs remain separate queue records and are processed individually by the existing scheduler. No catalogue/evidence import occurs at enqueue time.
 - Owner dashboard JS cache version bumped from v35 to v36. Public Worker deployment must be triggered/verified after these production commits before expecting the browser to load the new batch form.
 - No TEST changes. No API key re-entry, provider key rotation, paid provider use, catalogue mutation, evidence approval/import, tenant or Stripe changes.
+
+
+## Master catalogue picker added — 10 November 2026
+- LIVE-only owner RPC `platform_owner_search_cloud_ai_catalogue(p_search,p_category_slug,p_limit)` was added by migration `cloud_ai_owner_catalogue_picker`. It checks active `platform_memberships` through `platform_cloud_ai_owner_check`, searches active master products by manufacturer/model/package, optionally filters category slug, and caps results at 100. Execute is granted only to authenticated; anon/public are revoked.
+- Cloud AI queue form now includes a master-catalogue search and multi-select. Selected catalogue products populate the batch input as Manufacturer | Model | Package. Existing batch enqueue continues to create separate owner-authorized research jobs; no catalogue/evidence records are changed.
+- Dashboard JS cache query bumped to v37. Production Worker auto-deploy should run from the production commits; verify the Actions run and browser behaviour before claiming the picker is live.
+- The search is a selector over `catalogue_master_products`; it does not yet store the master product UUID on the research job. Job identity is retained by manufacturer/model/package. A future schema enhancement can add the explicit master_product_id link if needed.

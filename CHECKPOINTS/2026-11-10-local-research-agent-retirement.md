@@ -47,3 +47,13 @@ The owner explicitly instructed: “Okay, remove everything.” Scope includes t
 
 ## Explicit safety constraints
 Do not delete catalogue products, categories, evidence, research queue rows or historical agent activity/messages. Do not touch LIVE Stripe, tenant/customer records, domains or subscriber-published data. Do not inspect or use the separate GearCashOut project. Preserve the recovery branch and historical checkpoints.
+
+
+## Production retirement progress
+- PR #352 merged to production: commit 78a62072e53f6ec121f218f2f16dbf8900df24ec.
+- Gemma owner dashboard HTML and JS read back from production with zero matching system/UI/RPC namespace strings.
+- PR workflow gemma-research-tests passed.
+- LIVE migration `retire_research_agent_runtime_permissions_20261110` revoked execution of the worker runtime and retired owner dashboard RPCs from all standard roles including service_role.
+- Historical data counts verified unchanged: 35 tasks, 12 status rows, 14,808 activity rows, 451 messages, 75 catalogue research queue rows and 119 research sources.
+- No database tables or historical rows were deleted.
+- Not yet completed: local Windows removal, specialist branch archival/deletion, worker source cleanup and live CDN/browser verification.

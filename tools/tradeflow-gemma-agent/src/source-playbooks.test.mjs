@@ -36,7 +36,7 @@ test('verified 123-3D collections route new and refurbished searches separately'
 
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, newTask),
-    ['https://www.123-3d.co.uk/collections/3d-printers']
+    ['https://www.123-3d.co.uk/collections/anycubic-3d-printers', 'https://www.123-3d.co.uk/collections/3d-printers']
   );
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, usedTask),
@@ -45,9 +45,16 @@ test('verified 123-3D collections route new and refurbished searches separately'
   assert.deepEqual(
     buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, bothTask),
     [
+      'https://www.123-3d.co.uk/collections/anycubic-3d-printers',
       'https://www.123-3d.co.uk/collections/3d-printers',
       'https://www.123-3d.co.uk/collections/refurbished-printers'
     ]
+  );
+  const crealityTask = { ...newTask, manufacturer: 'Creality', model: 'K1', research_type: 'uk_new' };
+  assert.deepEqual(
+    buildWebsiteSearchRoutes({ domain: '123-3d.co.uk' }, crealityTask),
+    ['https://www.123-3d.co.uk/collections/3d-printers'],
+    'the Anycubic manufacturer collection must not be used for another brand'
   );
 });
 
@@ -274,6 +281,48 @@ test('exact printer pages are not rejected because a manufacturer title describe
   );
 });
 
+test('3D printer matching ignores retailer accessory taxonomy while preserving exact package and accessory rejection', () => {
+  const comboTask = {
+    ...task,
+    manufacturer: 'Anycubic',
+    model: 'Kobra 3 Max V2',
+    package_key: 'combo-4-color',
+    package_name: '4-Color Combo'
+  };
+  const comboUrl = 'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-combo';
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2 Combo, 1 Set', comboUrl, comboTask),
+    true
+  );
+
+  const standardTask = { ...comboTask, package_key: 'standard', package_name: 'Standard Printer' };
+  const standardUrl = 'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2';
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2', standardUrl, standardTask),
+    true
+  );
+  assert.equal(
+    matchesTaskModel('Anycubic Kobra 3 Max V2', standardUrl, comboTask),
+    false
+  );
+  assert.equal(
+    matchesTaskModel(
+      'Anycubic Kobra 3 Max V2 Replacement Hotend',
+      'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-replacement-hotend',
+      standardTask
+    ),
+    false
+  );
+  assert.equal(
+    matchesTaskModel(
+      'Anycubic Kobra 3 Max V2 Nozzle',
+      'https://www.3djake.uk/anycubic-3d-printer-and-accessories/kobra-3-max-v2-nozzle',
+      standardTask
+    ),
+    false
+  );
+});
+
 test('short 3D printer model IDs are disambiguated without losing generic printer listings', () => {
   const a1Task = { ...task, category_slug: '3d-printers-equipment', branch_slug: '3d-printers', manufacturer: 'Bambu Lab', model: 'A1' };
   assert.equal(
@@ -416,8 +465,8 @@ test('3D printer Gemma prompt returns findings-array observations for ChatGPT re
   assert.doesNotMatch(prompt, /VERIFIED EVIDENCE:/i);
 });
 
-test('3D printer extraction uses two pages per Gemma call', () => {
-  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 2);
+test('3D printer extraction uses one page per Gemma call while other categories keep two', () => {
+  assert.equal(extractionBatchSizeForTask({ ...task, branch_slug: '3d-printers' }), 1);
   assert.equal(extractionBatchSizeForTask({ ...task, category_slug: 'mobile-phones', branch_slug: 'mobile-phones' }), 2);
 });
 
@@ -951,7 +1000,8 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'uk.anycubic3d.com' }, { ...newTask, model: 'Kobra 4' }), [
     'https://uk.anycubic3d.com/collections/3d-printers',
     'https://uk.anycubic3d.com/search?type=product&q=Anycubic%20Kobra%204',
-    'https://uk.anycubic3d.com/products/kobra-4-3d-printer'
+    'https://uk.anycubic3d.com/products/kobra-4-3d-printer',
+    'https://uk.anycubic3d.com/products/kobra-4-combo-3d-printer'
   ]);
   assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'bambu-lab-uk.myshopify.com' }, {
     ...newTask, manufacturer: 'Bambu Lab', model: 'A1'
@@ -965,5 +1015,25 @@ test('3D-printer manufacturer routes keep exact model/package and new-versus-use
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'idig3dprinting.co.uk').navigation.includes('16 products per page'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'gumtree.com').navigation.includes('individual active adverts'));
   assert.ok(getWebsiteInstructions('3d-printers-equipment', 'amazon.co.uk').navigation.includes('direct ASIN product page'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', '3djake.uk').navigation.includes('brand catalogue'));
+  assert.ok(getWebsiteInstructions('3d-printers-equipment', 'ebay.co.uk').navigation.includes('ANYCUBIC seller storefront'));
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, newTask), [
+    'https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014',
+    'https://ebay.co.uk/sch/i.html?_nkw=Anycubic%20Kobra%20S1&_sacat=0'
+  ]);
+  assert.deepEqual(buildWebsiteSearchRoutes({ domain: '3djake.uk' }, newTask), [
+    'https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer',
+    'https://3djake.uk/search?query=Anycubic%20Kobra%20S1'
+  ]);
+  const anycubicEbayRoutes = buildWebsiteSearchRoutes({ domain: 'ebay.co.uk' }, newTask);
+  assert.deepEqual(anycubicEbayRoutes, [
+    'https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014',
+    'https://ebay.co.uk/sch/i.html?_nkw=Anycubic%20Kobra%20S1&_sacat=0'
+  ]);
+  const anycubicJakeRoutes = buildWebsiteSearchRoutes({ domain: '3djake.uk' }, newTask);
+  assert.deepEqual(anycubicJakeRoutes, [
+    'https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer',
+    'https://3djake.uk/search?query=Anycubic%20Kobra%20S1'
+  ]);
   assert.ok(usedTask);
 });

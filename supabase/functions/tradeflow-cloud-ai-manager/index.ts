@@ -45,8 +45,9 @@ Deno.serve(async(req:Request)=>{
   let data:any;try{data=JSON.parse(text)}catch{data={}};
   let models=Array.isArray(data.models)?data.models:(Array.isArray(data.data)?data.data:[]);
   const modelAvailable=models.some((m:any)=>m.name===("models/"+cfg.model_id)||m.id===cfg.model_id);
-  await admin.from("platform_cloud_ai_providers").update({status:"ready",cooldown_until:null,last_error:null,last_checked_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("provider_key",provider);
-  return json({ok:true,provider_key:provider,model_id:cfg.model_id,model_listed:modelAvailable,models_checked:models.length,note:modelAvailable?"Configured model appears in provider model list.":"Connection works, but the configured model was not found in the returned model list; check the exact model ID."});
+  const modelError=modelAvailable?null:`Configured model ${cfg.model_id} is not present in the active provider model list.`;
+  await admin.from("platform_cloud_ai_providers").update({status:modelAvailable?"ready":"error",cooldown_until:null,last_error:modelError,last_checked_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("provider_key",provider);
+  return json({ok:true,provider_key:provider,model_id:cfg.model_id,model_listed:modelAvailable,models_checked:models.length,error:modelError,note:modelAvailable?"Configured model appears in provider model list.":modelError});
  }catch(e){
   const message=e instanceof Error?e.message:"Provider connection failed";
   await admin.from("platform_cloud_ai_providers").update({status:"error",last_error:message.slice(0,500),last_checked_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq("provider_key",provider);

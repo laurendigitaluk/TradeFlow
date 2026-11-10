@@ -451,16 +451,28 @@ async function loadCloudAiJobs(){
 }
 async function enqueueCloudAiJob(e){
  e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]'),status=$('cloud-ai-status'),data=new FormData(form);
- button.disabled=true;status.textContent='Adding research job…';
+ const lines=String(data.get('products')||'').split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);
+ const products=lines.map((line,index)=>{const parts=line.split('|').map(x=>x.trim());return {line:index+1,manufacturer:parts[0]||'',model:parts[1]||'',package_name:parts.slice(2).join(' | ')||null};});
+ const invalid=products.filter(x=>!x.manufacturer||!x.model);
+ if(!products.length){status.textContent='Enter at least one product.';return;}
+ if(invalid.length){status.textContent='Line '+invalid[0].line+' must contain Manufacturer | Model.';return;}
+ if(products.length>100){status.textContent='Queue a maximum of 100 products per submission.';return;}
+ button.disabled=true;status.textContent='Queueing '+products.length+' product research jobs…';
+ let queued=0,failed=[];
  try{
-  await request('/rest/v1/rpc/platform_owner_enqueue_cloud_ai_research',{method:'POST',body:JSON.stringify({
-   p_category_slug:String(data.get('category_slug')||'').trim()||null,p_manufacturer:String(data.get('manufacturer')||'').trim(),
-   p_model:String(data.get('model')||'').trim(),p_package_name:String(data.get('package_name')||'').trim()||null,
-   p_task_type:String(data.get('task_type')||'price_evidence')
-  })});
-  status.textContent='Research job queued. The catalogue has not been changed.';form.reset();await loadCloudAiJobs();
- }catch(err){status.textContent=err.message||String(err)}
- finally{button.disabled=false}
+  for(const product of products){
+   try{
+    await request('/rest/v1/rpc/platform_owner_enqueue_cloud_ai_research',{method:'POST',body:JSON.stringify({
+     p_category_slug:String(data.get('category_slug')||'').trim()||null,p_manufacturer:product.manufacturer,
+     p_model:product.model,p_package_name:product.package_name,p_task_type:String(data.get('task_type')||'price_evidence')
+    })});
+    queued++;status.textContent='Queued '+queued+' of '+products.length+'…';
+   }catch(err){failed.push(product.manufacturer+' '+product.model+': '+(err.message||String(err)));}
+  }
+  status.textContent=queued+' of '+products.length+' research jobs queued.'+(failed.length?' Failed: '+failed.join('; '):' The catalogue has not been changed.');
+  if(queued)await loadCloudAiJobs();
+  if(!failed.length)form.reset();
+ }finally{button.disabled=false}
 }
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);

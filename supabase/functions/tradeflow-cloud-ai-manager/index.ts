@@ -93,15 +93,15 @@ async function processNextJob(admin:any):Promise<Response>{
    if(pages.length>=3)break;
   }
   if(!pages.length)throw new Error("No reachable approved UK source pages for this category. Add a verified search URL template or check the source sites.");
-  const {data:providers,error:providerError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,daily_request_limit,daily_requests_used").eq("enabled",true).eq("free_tier_confirmed",true).eq("status","ready").order("updated_at",{ascending:true});
+  const {data:providers,error:providerError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,daily_request_limit,daily_requests_used,daily_usage_date").eq("enabled",true).eq("free_tier_confirmed",true).eq("status","ready").order("updated_at",{ascending:true});
   if(providerError)throw new Error("Could not load eligible AI providers");
-  const eligible=(providers||[]).filter((p:any)=>p.daily_request_limit>0&&p.daily_requests_used<p.daily_request_limit);
+  const eligible=(providers||[]).filter((p:any)=>p.daily_request_limit>0&&(p.daily_usage_date!==new Date().toISOString().slice(0,10)||p.daily_requests_used<p.daily_request_limit));
   if(!eligible.length){await admin.rpc("platform_cloud_ai_finish_job",{p_job_id:job.id,p_status:"paused",p_error:"No enabled free provider has remaining configured daily request allowance."});return json({ok:true,processed:false,paused:true,job_id:job.id,message:"Job paused until a free provider has quota."});}
   let result:any=null,used:any=null,lastError="No provider completed the request";
   for(const provider of eligible){
    const {data:key}=await admin.rpc("get_cloud_ai_provider_secret",{p_provider_key:provider.provider_key});
    if(!key)continue;
-   await admin.from("platform_cloud_ai_providers").update({daily_requests_used:provider.daily_requests_used+1,updated_at:new Date().toISOString()}).eq("provider_key",provider.provider_key);
+   await admin.from("platform_cloud_ai_providers").update({daily_requests_used:(provider.daily_usage_date===new Date().toISOString().slice(0,10)?provider.daily_requests_used:0)+1,daily_usage_date:new Date().toISOString().slice(0,10),updated_at:new Date().toISOString()}).eq("provider_key",provider.provider_key);
    try{result=await modelResearch(provider,key,job,pages);used=provider;break;}
    catch(e:any){
     lastError=e?.message||"Provider request failed";

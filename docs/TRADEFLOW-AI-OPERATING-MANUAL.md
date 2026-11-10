@@ -5400,3 +5400,10 @@ A new isolated research handoff has been added for the owner's existing LM Studi
 - This connector is LIVE-only for the first acceptance pass. Do not sync TEST data or TEST reports into LIVE.
 - All submitted research remains `submitted_for_review`; ChatGPT/owner independently verifies source URLs, prices, package identity, condition and availability before any separate approved import process.
 - Historical Gemma tables, RPCs and Common Room are not re-enabled. Do not restore their permissions or UI.
+
+
+## Cloud AI Research Manager — operating direction (10 November 2026)
+
+The intended research control centre is the TradeFlow Platform Owner Dashboard. It will connect multiple cloud AI providers through adapters rather than depending on one model or the retired local Gemma worker. Only models confirmed to have free API access may be used automatically. Trial credits, unknown billing states and paid models are excluded by default. Quota/rate-limit responses must pause the provider, retain queued work and rotate only to another eligible free provider; no paid fallback is permitted.
+
+Each provider submits structured research with exact product/package identity, UK GBP price, new/used condition, source name, direct URL, observed date/time, availability and supporting excerpt. Reports remain unapproved in the existing research inbox/queue. ChatGPT/Platform Owner verification is required before catalogue/evidence import. AI submissions must not write directly to `shared_market_evidence`. Provider keys must remain server-side and must never appear in browser storage, public database rows, logs, Git or report payloads. The retired Gemma runtime and its task permissions are not to be re-enabled. Implementation and acceptance are isolated from LIVE; TEST is the validation environment. See the Cloud AI Research Manager diagnostic roadmap and 10 November build checkpoint.

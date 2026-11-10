@@ -14,3 +14,7 @@ supabase/
 .dev.vars*
 
 # Cloudflare TEST branch deployment trigger
+
+# Exclude transient Wrangler/npm installation from Worker static assets
+node_modules/
+**/node_modules/**

@@ -4720,3 +4720,8 @@ A read-only branch comparison confirmed all seven specialist branches currently 
 Owner authorised the release. PR #349 (evidence/telemetry), PR #350 (3D Printer parent completion and aggregate reporting), and PR #351 (isolated specialist idle heartbeat) were merged in that order. Merge commits: `c63fbba74c24b9caac40230ac5f8f6549a611ff1`, `36bb6e452719bece5ded6d4c412a2af899a01a06`, and `24fa2713c3040798f82ecf63fc5ac7023a884acf`.
 
 The merged 3D Printer worker, parent-result summary module and regression tests, specialist idle-heartbeat helper/test, updater, launcher preflight, GitHub Actions test list, manuals, diagnostic roadmaps, project memory and checkpoint have now been promoted onto `gemma/3d-printers`. The 3D Printer one-key `agent.config.json` was not modified. This is repository branch promotion only: the Research PC installation has not yet been updated or restarted, and LIVE runtime acceptance is still pending.
+
+
+### Installation entry-point clarification — 10 November 2026
+
+The seven independent Windows clones use the branch-specific `Update-Gemma-Agent.ps1` and `Start-Gemma-Agent.ps1` entry points. `Update-Gemma-Agent.ps1` validates the one-key `agent.config.json`, the clone's Git branch and the shared private ENV pointer before invoking the lower-level `Update-TradeFlow-Gemma.ps1`. Fast-forward the local clone to its own `gemma/*` branch before running the category-local updater; that lower-level updater does not update the Git clone or its own script. Do not substitute the legacy shared Control Centre launcher for the isolated-agent launcher. The isolated launcher now preflights the lifecycle summary, heartbeat and installer-manifest tests as well as the existing isolation/control tests.

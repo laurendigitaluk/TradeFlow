@@ -5187,3 +5187,12 @@ The 3D Printer worker now uses `src/task-result-summary.mjs` to submit a compact
 Anycubic route regression coverage now verifies the UK collection/search routes and direct Kobra 3 Max V2 machine-only and ACE 2 Pro Combo URLs, plus Kobra 4 and Kobra S1 model-specific routes. Gemma Research Tests run `42720630028` passed on 9 November 2026. Changes are isolated to branch `gemma/3d-printers`; do not merge them into other category branches.
 
 This code is committed to GitHub but has not yet been installed on the Research PC. The running 3D Printer worker must be stopped cleanly before running its folder-local `Update-Gemma-Agent.ps1`, then restarted from the same Gemma 3D Printers shortcut. Only after the updated worker completes a controlled block task without a completion RPC error can the 3D Printer branch be locked as accepted.
+
+
+## 9 November 2026 — 3D Printer updater package and heartbeat-stage hardening
+
+A review of the isolated `gemma/3d-printers` branch found that `task-worker.mjs` imports `task-result-summary.mjs`, but the category-local `Update-TradeFlow-Gemma.ps1` source manifest did not download that helper or its regression test. Its pre-install and post-install test lists also omitted the compact-result test. Running that updater from a clone with this manifest could therefore install a worker whose relative helper import is missing. The updater itself is not self-updating; the local clone must first be fast-forwarded to the current `gemma/3d-printers` branch before the folder-local updater is run.
+
+The 22:42–22:46 LIVE eight-product task also recorded four worker heartbeat events with `details.stage='extraction_batch_started'`. The activity table consequently counted eight `extraction_batch_started` stage events even though only four extraction batches actually started; the other four were heartbeat telemetry. The proposed correction assigns heartbeat events their own `stage='heartbeat'` and preserves the in-progress stage as `active_stage`.
+
+A category-only feature branch, `fix/3d-printer-updater-package-heartbeat-telemetry-20261109`, adds the missing updater files/tests, startup preflight coverage, a manifest regression test that checks every relative task-worker import is packaged, and the heartbeat-stage correction. This is pending review and CI. It has not been installed on the Research PC. No worker, source registry, queue, evidence, catalogue, migration, TEST data or secret was changed.

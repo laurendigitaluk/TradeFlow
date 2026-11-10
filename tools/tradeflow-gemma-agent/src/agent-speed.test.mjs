@@ -307,16 +307,18 @@ test('successful 3D-printer Gemma extraction preserves the complete fetched page
 });
 
 
-test('3D-printer Gemma inference is capped at 45 seconds; other agents retain their configured timeout', () => {
-  assert.equal(getGemmaExtractionTimeoutMs(printerTask, {}), 45000);
-  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { OLLAMA_TIMEOUT_MS: 300000 }), 45000);
-  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 30000 }), 30000);
-  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 999999 }), 45000);
+test('3D-printer Gemma uses single-page batches and a bounded 90-second inference window; other agents keep their settings', () => {
+  assert.equal(extractionBatchSizeForTask(printerTask), 1);
+  assert.equal(extractionBatchSizeForTask({ ...printerTask, category_slug: 'drones', branch_slug: 'drones' }), 2);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, {}), 90000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { OLLAMA_TIMEOUT_MS: 300000 }), 90000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 60000 }), 60000);
+  assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 999999 }), 90000);
   assert.equal(getGemmaExtractionTimeoutMs(printerTask, { GEMMA_3D_EXTRACTION_TIMEOUT_MS: 5000 }), 15000);
   assert.equal(getGemmaExtractionTimeoutMs({ ...printerTask, category_slug: 'drones', branch_slug: 'drones' }, { OLLAMA_TIMEOUT_MS: 300000 }), 300000);
 });
 
-test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw evidence without per-page retries', async () => {
+test('3D-printer Gemma makes one bounded inference attempt per page and preserves complete raw evidence on timeout', async () => {
   const originalFetch = globalThis.fetch;
   let requests = 0;
   const events = [];
@@ -343,9 +345,9 @@ test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw
       OLLAMA_BASE_URL: 'http://127.0.0.1:11434',
       OLLAMA_MODEL: 'gemma3:4b'
     }, event => events.push(event));
-    assert.equal(requests, 1, 'a failed 3D batch must not trigger sequential single-page retries');
-    assert.equal(result.batches, 1);
-    assert.equal(result.failures.length, 1);
+    assert.equal(requests, 2, 'each page receives one bounded inference attempt, without retries');
+    assert.equal(result.batches, 2);
+    assert.equal(result.failures.length, 2);
     assert.equal(result.findings.length, 2);
     assert.equal(result.findings[0].source_excerpt, sources[0].text);
     assert.equal(result.findings[1].source_excerpt, sources[1].text);
@@ -354,7 +356,8 @@ test('3D-printer Gemma timeout uses one bounded attempt and returns complete raw
     assert.equal(result.findings[0].review_classification, 'unverified_capture');
     assert.equal(result.findings[1].review_classification, 'unverified_capture');
     assert.ok(events.some(event => event.stage === 'extraction_batch_failed'));
-    assert.ok(events.some(event => event.stage === 'extraction_batch_completed' && event.fallback_pages === 2));
+    assert.equal(events.filter(event => event.stage === 'extraction_batch_failed').length, 2);
+    assert.equal(events.filter(event => event.stage === 'extraction_batch_completed' && event.fallback_pages === 1).length, 2);
   } finally {
     globalThis.fetch = originalFetch;
   }

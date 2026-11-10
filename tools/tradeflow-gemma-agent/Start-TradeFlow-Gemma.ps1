@@ -39,6 +39,7 @@ $TestFiles = @(
     'agent-speed.test.mjs',
     'desktop-control.test.mjs',
     'task-result-summary.test.mjs',
+    'specialist-idle-heartbeat.test.mjs',
     'agent-telemetry.test.mjs',
     'installer-manifest.test.mjs'
 )

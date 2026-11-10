@@ -93,18 +93,19 @@
 <p class="muted">Only enable a provider after confirming its API access is genuinely free for your account. Free-tier limits vary. When a provider reaches a limit, its work must pause; this manager must never switch to a paid model automatically. API keys are sent directly to a protected database function and stored in Supabase Vault, never in this page.</p>
 <div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
 <div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
-<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Queue several products together. Enter one product per line using Manufacturer | Model | Package (optional). This stages research jobs only; it does not change the catalogue.</p>
+<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Choose products directly from the TradeFlow master catalogue. Select a category, then a branch, then an individual product or the entire branch. No manual product entry is required.</p>
 <form id="cloud-ai-enqueue-form"><div class="plan-fields">
-<label>Category slug<input name="category_slug" placeholder="e.g. 3d-printers-equipment"></label>
-<div style="grid-column:1/-1" class="cloud-ai-catalogue-picker">
- <label for="cloud-ai-catalogue-search">Find products in the TradeFlow master catalogue</label>
- <label for="cloud-ai-catalogue-search">Enter several product searches, one per line</label><textarea id="cloud-ai-catalogue-search" rows="5" placeholder="Bambu Lab P1S&#10;Creality K1 Max&#10;Anycubic Kobra 3" style="width:100%"></textarea><p><button id="cloud-ai-catalogue-search-button" type="button">Search all terms</button></p>
- <div id="cloud-ai-catalogue-results" class="muted" aria-live="polite">Search the existing master catalogue and select products to add to the batch.</div>
- <p><button id="cloud-ai-catalogue-add-selected" type="button" disabled>Add selected to product list</button></p>
+<label>1. Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
+<label>2. Branch<select id="cloud-ai-branch" required disabled><option value="">Choose a category first…</option></select></label>
+<label style="grid-column:1/-1">3. Product / model<select id="cloud-ai-product" disabled><option value="">Choose a branch first…</option></select></label>
+<div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap"><button id="cloud-ai-add-product" type="button" disabled>Add selected product</button><button id="cloud-ai-add-branch" type="button" disabled>Add entire branch</button></div>
+<div id="cloud-ai-catalogue-picker-status" class="muted" style="grid-column:1/-1" role="status" aria-live="polite">Loading categories from the master catalogue…</div>
+<div style="grid-column:1/-1;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Selected products</strong><span id="cloud-ai-selected-count">0 products selected</span></div>
+ <div id="cloud-ai-selected-products" style="margin-top:8px"><p class="muted">No products selected yet.</p></div>
 </div>
-<label style="grid-column:1/-1">Products to research<textarea name="products" required rows="7" placeholder="Bambu Lab | P1S&#10;Creality | K1 Max&#10;Anycubic | Kobra 3 | Combo bundle"></textarea></label>
-<label>Research type<select name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
-</div><p><button type="submit">Queue all products</button></p></form></div>
+<label>Research type<select id="cloud-ai-task-type" name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
+</div><p><button id="cloud-ai-queue-selected" type="submit" disabled>Queue selected products</button></p></form></div>
 <div class="panel-head" style="margin-top:24px"><h3>Research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
 <div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
 <div class="panel-head" style="margin-top:24px"><h3>Evidence awaiting review</h3><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div><div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div><p class="note">AI findings are staged as pending review. Approving a candidate does not import it. Only a separate verified import operation may add a record to shared market evidence.</p>
@@ -123,7 +124,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=41" defer></script>
+<script src="platform-owner-dashboard.js?v=42" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

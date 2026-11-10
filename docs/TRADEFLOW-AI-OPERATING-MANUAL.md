@@ -5364,3 +5364,7 @@ The production catalogue page and stylesheet changes are committed to GitHub. Cl
 
 ### Separate TradeFlow Assistant provider state
 LIVE `platform_ai_settings` was read independently: `active_provider='none'`, `allowed_providers=['none']`, `gemma_enabled=false`, and `subscriber_provider_enabled=false`. The TradeFlow Assistant remains present but no AI provider, including Gemma, is enabled for it. This is separate from the retired local research-worker platform.
+
+
+### Open Gemma pull requests retired — 10 November 2026
+A read-only search of open pull requests found 20 Gemma/research-worker implementation or documentation PRs. All 20 were closed unmerged: #353, #345, #343, #335, #336, #331, #315, #300, #301, #299, #296, #294, #297, #290, #289, #288, #264, #262, #258 and #250. A follow-up search returned no remaining open PRs matching “Gemma”. Unrelated catalogue-data, subscriber shared-evidence, Cloudflare Worker routing, BusinessFlow and other TradeFlow PRs were left open.

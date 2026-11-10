@@ -1018,3 +1018,14 @@ Next pending owner-provided read-only comparison: local HEAD versus `git ls-remo
 Detailed operational state, owner instructions, exact pending command and preservation rules are recorded in `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` (checkpoint commit `ece4e1e14055a08865058cadedda6719930790e9`).
 
 Documentation discovery note: the expected historical manual paths `docs/GEARCASHOUT-AI-OPERATING-MANUAL.md` and `docs/GEARCASHOUT-SYSTEM-HANDBOOK.md` returned 404 on both `production` and `gemma/3d-printers` in this repository. Do not guess replacement paths; locate the canonical manuals/repository before editing.
+
+
+## 10 November 2026 — Retirement of the local research-agent system
+
+The owner authorised retirement of the local category research workers and their owner-dashboard controls. The retirement is being performed in stages. The owner dashboard no longer exposes the worker control centre or shared agent room in the retirement branch. The corresponding JavaScript polling, queueing, source-management and message-feed UI code has been removed from that dashboard branch.
+
+Preservation boundary: do not delete catalogue products, categories, existing product/evidence records, or the historical research review queue. The LIVE database snapshot before retirement contained 35 task rows, 12 status rows, 14,808 activity rows, 451 agent-message rows, 75 catalogue research queue rows and 119 research-source rows. These are historical records and must remain available unless a separately authorised retention policy is agreed. Worker-specific functions and tables must not be dropped until all remaining callers, triggers, grants and RPC dependencies have been audited. Do not change Stripe, tenant data, customer data or published subscriber content.
+
+The PC installation still requires owner-side removal because this environment cannot directly operate the Windows desktop. The identified local roots are C:\\CTFGemma2, C:\\TFGemma and %LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre. Before removal, disable the scheduled tasks and startup shortcut, preserve an encrypted/local backup including private environment pointers, remove desktop shortcuts and the model, and verify no worker processes remain.
+
+The production branch has not yet been merged or deployed. The retirement branch is subject to syntax, dashboard regression and database dependency checks before production promotion. Keep this retirement record and historical checkpoints; removing the runtime does not mean erasing the audit trail.

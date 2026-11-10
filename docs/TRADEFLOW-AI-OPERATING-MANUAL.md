@@ -5176,3 +5176,10 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK discovery instructions (proposed, not yet deployed)
 For 3D Printers branch tasks, use official UK collection and search routes, followed by verified direct model URLs in source-playbooks.mjs. Kobra 3 Max V2 has separate standard and ACE 2 Pro Combo URLs. Kobra 4 Standard and Combo can share a page, so never assign the page headline price to a package without checking the selected machine option. Kobra S1 ACE 2 Pro Combo is distinct from older ACE Pro packages and extra-filament/accessory bundles. Preserve URL, selected option, GBP price, condition, stock and timestamp for ChatGPT review. Do not bypass blocked websites. Existing Gemma timeout remains a separate unresolved issue; retain raw capture for review rather than fabricate extracted evidence.
+
+
+## 10 November 2026 — shared isolated-specialist idle heartbeat
+
+The isolated Gemma worker now has a category-scoped idle heartbeat. It reports the configured specialist key/name/category, worker ID, and `stage=idle_poll` only after a successful queue poll. The heartbeat is suppressed during task processing, active polling, failed polls, shutdown, overlapping telemetry and when no agent assignment is enabled. The existing active-task and queue-lease heartbeats are unchanged. The cadence is bounded from 60 seconds to five minutes (60 seconds for the 15-second queue poll).
+
+The helper and regression test are included in the canonical updater, launcher preflight and Gemma GitHub Actions suite. Keep each specialist's one-key `agent.config.json` and private LIVE `.env` isolated. Release acceptance requires repeated idle heartbeat events from the same worker ID; do not enqueue research merely to test liveness. No Supabase schema change is required.

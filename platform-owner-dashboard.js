@@ -596,8 +596,8 @@ function renderManualAiResearchBatches(batches){
      '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0"><button type="button" data-manual-copy="'+escapeHtml(p.id)+'">Copy research prompt</button><a href="'+escapeAttr(batch.assistant_url)+'" target="_blank" rel="noopener noreferrer">Open '+escapeHtml(batch.assistant_name)+' website ↗</a></div>'+
      '<label>Generated research prompt<textarea id="manual-ai-prompt-'+escapeHtml(p.id)+'" rows="8" readonly style="width:100%;font-family:Consolas,monospace;font-size:12px;white-space:pre;overflow:auto">'+escapeHtml(p.prompt_text)+'</textarea></label>'+
      (done
-      ? '<p class="note">Response submitted '+escapeHtml(p.response_submitted_at?formatDate(p.response_submitted_at):'')+'. '+Number(p.candidates_created||0)+' evidence candidate(s) created; '+Number(p.findings_rejected||0)+' finding(s) rejected by validation.</p>'
-      : '<label>Paste the complete AI response<textarea id="manual-ai-response-'+escapeHtml(p.id)+'" rows="9" maxlength="300000" placeholder="Paste the assistant JSON response here. Keep the product IDs, source URLs, prices and quoted source evidence intact.">'+escapeHtml(p.response_draft||'')+'</textarea></label>'+
+      ? '<p class="note">Response submitted '+escapeHtml(p.response_submitted_at?formatDate(p.response_submitted_at):'')+'. '+Number(p.candidates_created||0)+' reference/candidate record(s) created; '+Number(p.findings_rejected||0)+' finding(s) rejected by validation.</p>'+(p.response_text?'<details style="margin-top:8px"><summary><strong>View complete AI research report and price comparisons</strong></summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:620px;overflow:auto;padding:12px;background:var(--surface-secondary,#f6f6f6);border-radius:8px">'+escapeHtml(p.response_text)+'</pre></details>':'')
+      : '<label>Paste the complete AI response<textarea id="manual-ai-response-'+escapeHtml(p.id)+'" rows="9" maxlength="300000" placeholder="Paste the complete assistant reply here, including the readable price tables and final TradeFlow JSON code block.">'+escapeHtml(p.response_draft||'')+'</textarea></label>'+
         '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" data-manual-save="'+escapeHtml(p.id)+'">Save response draft</button><button type="button" data-manual-submit="'+escapeHtml(p.id)+'">Validate and send to Evidence Awaiting Review</button></div>'+
         '<p class="muted" id="manual-ai-prompt-status-'+escapeHtml(p.id)+'" role="status" aria-live="polite"></p>'
      )+
@@ -652,13 +652,19 @@ async function saveManualAiDraft(promptId,button){
  finally{button.disabled=false;}
 }
 function parseManualAiJsonReply(raw){
- let clean=String(raw||'').trim();
- clean=clean.replace(/^\u0060\u0060\u0060(?:json)?\s*/i,'').replace(/\s*\u0060\u0060\u0060$/,'').trim();
- const start=clean.indexOf('{'),end=clean.lastIndexOf('}');
- if(start<0||end<=start)throw new Error('No JSON object was found. Ask the assistant to return the JSON-only format included in the prompt.');
- const data=JSON.parse(clean.slice(start,end+1));
+ const text=String(raw||'').trim();
+ const fence=String.fromCharCode(96).repeat(3);
+ const pattern=new RegExp(fence+'\\s*json\\s*([\\s\\S]*?)\\s*'+fence,'i');
+ const match=text.match(pattern);
+ let clean=match?match[1].trim():text;
+ if(!match){
+  const start=clean.indexOf('{'),end=clean.lastIndexOf('}');
+  if(start<0||end<=start)throw new Error('No TradeFlow JSON block was found. Paste the complete research reply, including its final fenced JSON block.');
+  clean=clean.slice(start,end+1);
+ }
+ const data=JSON.parse(clean);
  if(data.schema_version!=='tradeflow_manual_research_v1'||!Array.isArray(data.findings)||!Array.isArray(data.not_found)){
-  throw new Error('The response does not match the TradeFlow research format. Ask the assistant: Return the complete JSON object using the exact schema_version, findings and not_found arrays from the prompt.');
+  throw new Error('The final JSON block does not match TradeFlow format. Make sure it contains schema_version, findings and not_found.');
  }
  return data;
 }
@@ -672,7 +678,7 @@ async function submitManualAiResponse(promptId,button){
  button.disabled=true;if(status)status.textContent='Checking product identities, UK prices, direct source links and quoted evidence…';
  try{
   const result=await request('/rest/v1/rpc/platform_owner_submit_manual_ai_research_response',{method:'POST',body:JSON.stringify({
-   p_prompt_id:promptId,p_response_text:JSON.stringify(parsed)
+   p_prompt_id:promptId,p_response_text:textarea.value
   })});
   if(status)status.textContent='Response checked. '+result.candidates_created+' candidate(s) staged for human review; '+result.duplicates_skipped+' duplicate(s) skipped; '+result.findings_rejected+' finding(s) rejected; '+result.not_found_count+' product(s) reported as not found.';
   $('manual-ai-status').textContent='Manual AI response processed. Valid candidates are awaiting your review; none were imported automatically.';
@@ -714,7 +720,12 @@ async function loadCloudAiReviewQueue(){
  try{
   const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'pending_review',p_limit:200})});
   const items=(Array.isArray(rows)?rows:[]).filter(x=>x.agent_name==='Cloud AI Research Manager'||String(x.agent_name||'').startsWith('Manual AI Research · '));
-  host.innerHTML=items.map(x=>'<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'candidate')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">Pending review</span></div><p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??'Not supplied')+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · <a href="'+escapeAttr(x.source_url||'#')+'" target="_blank" rel="noopener">Open evidence source</a></p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p><div class="plan-editor-foot"><button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve candidate</button><button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>').join('')||'<p class="muted">No AI evidence candidates are awaiting review.</p>';
+  host.innerHTML=items.map(x=>{
+   const meta=x.raw_payload||{},comparison=meta.evidence_role==='comparison_only'||!x.live_master_product_id;
+   const actualPackage=x.package_name?'<p><strong>Package found:</strong> '+escapeHtml(x.package_name)+'</p>':'';
+   const matchLabel=comparison?'Comparison only — not counted against catalogue evidence':'Exact package — eligible for evidence review';
+   return '<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'candidate')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">'+(comparison?'Comparison reference':'Pending review')+'</span></div><p><strong>'+escapeHtml(matchLabel)+'</strong></p>'+actualPackage+'<p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??'Not supplied')+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · <a href="'+escapeAttr(x.source_url||'#')+'" target="_blank" rel="noopener">Open source page</a></p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p><div class="plan-editor-foot">'+(comparison?'':'<button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve catalogue evidence</button>')+'<button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>';
+  }).join('')||'<p class="muted">No AI evidence candidates are awaiting review.</p>';
   host.querySelectorAll('[data-review-id]').forEach(b=>b.addEventListener('click',()=>reviewCloudAiCandidate(b.dataset.reviewId,b.dataset.decision,b)));
  }catch(e){host.innerHTML='<p class="error">'+escapeHtml(e.message||String(e))+'</p>'}
 }

@@ -664,37 +664,120 @@ async function saveManualAiDraft(promptId,button){
  }catch(err){if(status)status.textContent='Could not save draft: '+(err.message||String(err));}
  finally{button.disabled=false;}
 }
-function parseManualAiJsonReply(raw){
- const text=String(raw||'').trim();
+function normalizeManualAiSmartQuotes(value){
+ return String(value||'').replace(/[“”„‟]/g,'"').replace(/[‘’]/g,"'").replace(/\u00a0/g,' ');
+}
+function tryParseManualAiJsonReply(raw){
+ const text=normalizeManualAiSmartQuotes(raw).trim();
  const fence=String.fromCharCode(96).repeat(3);
  const pattern=new RegExp(fence+'\\s*json\\s*([\\s\\S]*?)\\s*'+fence,'i');
  const match=text.match(pattern);
  let clean=match?match[1].trim():text;
  if(!match){
   const start=clean.indexOf('{'),end=clean.lastIndexOf('}');
-  if(start<0||end<=start)throw new Error('No TradeFlow JSON block was found. Paste the complete research reply, including its final fenced JSON block.');
+  if(start<0||end<=start)return null;
   clean=clean.slice(start,end+1);
  }
- const data=JSON.parse(clean);
- if(data.schema_version!=='tradeflow_manual_research_v1'||!Array.isArray(data.findings)||!Array.isArray(data.not_found)){
-  throw new Error('The final JSON block does not match TradeFlow format. Make sure it contains schema_version, findings and not_found.');
+ try{
+  const data=JSON.parse(clean);
+  if(data.schema_version==='tradeflow_manual_research_v1'&&Array.isArray(data.findings)&&Array.isArray(data.not_found))return data;
+ }catch(err){}
+ return null;
+}
+function parseManualAiReportTables(raw,prompt){
+ const text=String(raw||'');
+ const snapshot=Array.isArray(prompt.products_snapshot)?prompt.products_snapshot:[];
+ const lines=text.split(/\r?\n/);
+ const refs=[];
+ let section=null,context=[];
+ const linkPattern=/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/gi;
+ const pricePattern=/£\s*([0-9][0-9,]*(?:\.[0-9]{1,2})?)/g;
+ for(let i=0;i<lines.length;i++){
+  const line=lines[i].trim();
+  if(/new prices|new price comparison|new \(uk|new retail/i.test(line))section='uk_new';
+  if(/used prices|used price comparison|second.hand prices|pre.owned prices/i.test(line))section='uk_used';
+  if(!line.startsWith('|')){if(line)context.push(line);if(context.length>12)context.shift();continue;}
+  const cells=line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim());
+  if(cells.length<3||cells.every(x=>/^:?-{2,}:?$/.test(x)))continue;
+  if(cells.some(x=>/^(package|item|product|model)$/i.test(x))&&cells.some(x=>/price/i.test(x)))continue;
+  if(!section)continue;
+  const packageName=cells[0]||'Package not stated';
+  const priceDisplay=cells[1]||'';
+  const sourceCell=cells[2]||'';
+  const notes=cells.slice(3).join(' | ');
+  const prices=[...priceDisplay.matchAll(pricePattern)].map(m=>Number(m[1].replace(/,/g,'')));
+  const uniquePrices=[...new Set(prices)];
+  let product=null;
+  const contextText=(context.slice(-8).join(' ')+' '+line).toLowerCase();
+  if(snapshot.length===1)product=snapshot[0];
+  else{
+   const exactPackage=snapshot.filter(p=>String(p.package_name||'').toLowerCase()===packageName.toLowerCase());
+   if(exactPackage.length===1)product=exactPackage[0];
+   if(!product){
+    const modelMatches=snapshot.filter(p=>contextText.includes(String(p.model||'').toLowerCase())||contextText.includes(String(p.manufacturer||'').toLowerCase()+' '+String(p.model||'').toLowerCase()));
+    if(modelMatches.length===1)product=modelMatches[0];
+   }
+  }
+  if(!product)continue;
+  const links=[...sourceCell.matchAll(linkPattern)].map(m=>({name:m[1],url:m[2]}));
+  const cleanedSource=sourceCell.replace(linkPattern,'$1').replace(/\*\*/g,'').trim();
+  const sourceNames=cleanedSource.split(/[,;](?=\s*(?:eBay|Amazon|MPB|Wex|Park Cameras|CeX|Gumtree|Facebook|PriceSpy|E-Catalog|u-buy|Supersales))/i).map(x=>x.trim()).filter(Boolean);
+  const sources=links.length?links:[{name:sourceNames[0]||cleanedSource||'Source not linked in report',url:''}];
+  const kindFor=url=>{
+   const host=(url.match(/^https?:\/\/([^/]+)/i)||[])[1]||'';
+   if(/ebay|amazon|gumtree|facebook|cex/i.test(host))return 'marketplace_listing';
+   if(/pricespy|price.?spy|e-catalog|idealo|pricerunner/i.test(host))return 'price_aggregator';
+   return url?'reported_source':'source_not_linked';
+  };
+  for(const source of sources){
+   refs.push({
+    product_id:product.product_id,manufacturer:product.manufacturer,model:product.model,
+    evidence_type:section,package_name:packageName,price_display:priceDisplay,
+    price_gbp:uniquePrices.length===1?uniquePrices[0]:null,
+    source_name:source.name||cleanedSource||'Source not identified',
+    source_url:source.url||null,source_kind:kindFor(source.url||''),
+    item_condition:section==='uk_new'?'New / condition stated in report':'Used / condition stated in report',
+    availability:'Reported in comparison table; verify live listing',
+    table_row:line,notes:notes+(uniquePrices.length>1?' Price is a range; exact numeric price not assumed.':'')
+   });
+  }
  }
- return data;
+ return refs;
 }
 async function submitManualAiResponse(promptId,button){
  const textarea=$('manual-ai-response-'+promptId),status=$('manual-ai-prompt-status-'+promptId);
  if(!textarea)return;
- let parsed;
- try{parsed=parseManualAiJsonReply(textarea.value);}
- catch(err){if(status)status.textContent=err.message||String(err);return;}
- if(!window.confirm('Validate this AI response and add valid findings to Evidence Awaiting Review? Nothing will be imported into the master evidence database automatically.'))return;
- button.disabled=true;if(status)status.textContent='Checking product identities, UK prices, direct source links and quoted evidence…';
+ const raw=textarea.value;
+ const batches=await request('/rest/v1/rpc/platform_owner_list_manual_ai_research_batches',{method:'POST',body:JSON.stringify({p_limit:20})});
+ const prompt=(Array.isArray(batches)?batches:[]).flatMap(b=>(b.prompts||[]).map(p=>({...p,batch_assistant:b.assistant_name}))).find(p=>p.id===promptId);
+ if(!prompt){if(status)status.textContent='Could not find the saved product selection for this prompt. Refresh the research batches and try again.';return;}
+ const json=tryParseManualAiJsonReply(raw);
+ let references=[];
+ if(!json){
+  references=parseManualAiReportTables(raw,prompt);
+  if(!references.length){
+   if(status)status.textContent='I could not find a TradeFlow JSON block or recognisable New prices / Used prices tables. You can still save the full reply as a draft; no evidence will be discarded.';
+   return;
+  }
+ }
+ const message=json
+  ?'Validate the structured AI findings and add valid exact-package evidence to review. Any non-exact sources are kept separately as comparisons.'
+  :'TradeFlow found '+references.length+' price-table reference(s). It will save the complete report and stage these as UNVERIFIED comparisons. You will then match each reference to the correct catalogue package and verify the source before approval. Nothing will be imported automatically.';
+ if(!window.confirm(message))return;
+ button.disabled=true;if(status)status.textContent=json?'Validating structured evidence…':'Extracting price tables and saving the full research report…';
  try{
-  const result=await request('/rest/v1/rpc/platform_owner_submit_manual_ai_research_response',{method:'POST',body:JSON.stringify({
-   p_prompt_id:promptId,p_response_text:textarea.value
-  })});
-  if(status)status.textContent='Response checked. '+result.catalogue_evidence_candidates+' exact-package evidence candidate(s); '+result.comparison_only_references+' same-model comparison reference(s); '+result.duplicates_skipped+' duplicate(s) skipped; '+result.findings_rejected+' finding(s) rejected; '+result.not_found_count+' product(s) with no UK results.';
-  $('manual-ai-status').textContent='Manual AI response processed. Valid candidates are awaiting your review; none were imported automatically.';
+  if(json){
+   const result=await request('/rest/v1/rpc/platform_owner_submit_manual_ai_research_response',{method:'POST',body:JSON.stringify({
+    p_prompt_id:promptId,p_response_text:normalizeManualAiSmartQuotes(raw)
+   })});
+   if(status)status.textContent='Structured reply checked. '+(result.catalogue_evidence_candidates||0)+' exact-package evidence candidate(s); '+(result.comparison_only_references||0)+' comparison reference(s); '+(result.findings_rejected||0)+' rejected.';
+  }else{
+   const result=await request('/rest/v1/rpc/platform_owner_stage_manual_ai_report',{method:'POST',body:JSON.stringify({
+    p_prompt_id:promptId,p_response_text:raw,p_references:references
+   })});
+   if(status)status.textContent='Complete report saved. '+result.references_created+' unverified comparison reference(s) staged. Match each reference to the right catalogue package and verify the source before approving.';
+  }
+  $('manual-ai-status').textContent='Research report captured in TradeFlow. Nothing has been imported into master evidence; source verification and catalogue matching are next.';
   await loadManualAiResearchBatches();
   await loadCloudAiReviewQueue();
  }catch(err){if(status)status.textContent='Response not submitted: '+(err.message||String(err));}

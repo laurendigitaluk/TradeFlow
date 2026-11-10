@@ -399,7 +399,7 @@ initOwnerSectionAccordions();
 const cloudAiProviderDefaults=[
  {provider_key:'gemini',display_name:'Google Gemini',model_id:'gemini-2.5-flash'},
  {provider_key:'groq',display_name:'Groq',model_id:'llama-3.3-70b-versatile'},
- {provider_key:'openrouter',display_name:'OpenRouter',model_id:'openrouter/free'}
+ {provider_key:'openrouter',display_name:'OpenRouter',model_id:''}
 ];
 function renderCloudAiProviders(rows){
  const host=$('cloud-ai-providers');if(!host)return;

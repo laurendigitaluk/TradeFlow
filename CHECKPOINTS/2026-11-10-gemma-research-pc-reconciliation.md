@@ -71,3 +71,8 @@ The expected historical manual paths docs/GEARCASHOUT-AI-OPERATING-MANUAL.md and
 ## Owner clarification — category/evidence source project is out of scope
 
 The separate attached project is not part of TradeFlow and is not required for the current Gemma restoration. It was used only as a source to bring product categories into TradeFlow; the evidence has already been created. Do not inspect, depend on, restore, sync, migrate or re-import anything from that separate project. Continue exclusively against the TradeFlow repository, the seven TradeFlow specialist folders/branches and TradeFlow LIVE Supabase. Preserve the existing TradeFlow categories and evidence; do not recreate or duplicate them.
+
+
+## Explicit project-boundary clarification — GearCashOut
+
+GearCashOut is a separate project and is not part of TradeFlow's Gemma restoration, architecture, runtime, codebase or database. It was used only as a source to bring product categories into TradeFlow. The relevant evidence has already been created in TradeFlow. Do not inspect GearCashOut, use its files or database, connect its runtime, copy code, sync data, re-import categories or recreate evidence. All further work for this objective is exclusively within TradeFlow: its GitHub repository and seven specialist branches/installations, its LIVE Supabase project, and its own documentation. Existing TradeFlow categories and evidence are to be preserved.

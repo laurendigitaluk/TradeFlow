@@ -86,7 +86,7 @@ class ProviderRouter:
         for provider in order:
             cfg = self.credentials.get(provider, {})
             key, model = cfg.get("key", "").strip(), cfg.get("model", "").strip()
-            if not key or not model or not self.is_free_model(provider, model):
+            if not key or not model or not cfg.get("free_only_confirmed", False) or not self.is_free_model(provider, model):
                 continue
             response = None
             try:

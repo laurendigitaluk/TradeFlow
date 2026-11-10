@@ -4825,3 +4825,11 @@ The isolated feature branch now contains the initial Owner Dashboard panel and T
 
 ## Research runner update (10 November 2026)
 The TEST branch now includes a manually invoked cloud research runner. It leases queued jobs, fetches up to three category-matched UK source pages from the approved registry, calls an eligible free-confirmed AI adapter, validates structured findings and stages candidates in `platform_catalogue_research_queue`. It never writes directly to `shared_market_evidence`. Provider adapters currently cover Gemini, Groq, OpenRouter, Cerebras, SambaNova, NVIDIA NIM, Mistral, Hugging Face Router and GitHub Models. A conservative configurable daily request cap and UTC reset are implemented. Many registered sources still lack product-specific search templates; coverage is therefore limited until source search is improved. The dashboard exposes manual run and evidence review controls. Approval only marks a candidate approved; it does not import it. No provider keys have been entered and no inference has run. See the cloud AI manager roadmap.
+
+
+## Scheduler and recovery implementation (10 November 2026)
+- TEST has an active pg_cron job `tradeflow-cloud-ai-runner` scheduled every 10 minutes. It invokes the TEST Edge Function and processes at most one queued job per tick.
+- Scheduler authentication uses a random credential generated inside Supabase Vault. The Edge Function deployment has JWT gateway verification disabled only because it accepts both owner JWT requests and a separate Vault-verified scheduler token; requests without either credential are rejected. The token is never exposed to the dashboard.
+- A direct scheduler-path smoke test returned HTTP 200 in Supabase function logs (deployment version 7). No provider credentials or research jobs exist, so no AI inference was performed.
+- Claim/recovery logic now reclaims expired leases, restores providers after cooldown expiry, resets daily counters on UTC date change and requeues paused work when an eligible free provider has quota again.
+- This scheduled runner is active in TEST only. No cron job or Edge Function was created in LIVE.

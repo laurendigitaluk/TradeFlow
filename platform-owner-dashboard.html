@@ -20,8 +20,7 @@
       <a href="#businesses">Subscriber businesses</a>
       <a href="#plans">Plans</a>
       <a href="#public-pages">Public Website Pages</a>
-      <a href="#gemma-control-centre">AI Research Centre</a>
-      <a href="#ai-agent-common-room">AI Agent Common Room</a>
+
       <div class="nav-section" style="margin-top:18px">Documentation</div>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Handbook</a>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-HUMAN-USER-MANUAL.md" target="_blank" rel="noopener">Human User Manual</a>
@@ -98,65 +97,7 @@
 <div id="platform-email-help" class="note">This setting records the platform sending address. It does not send a confirmation email. The sender must be authorised through the email provider/domain verification process before TradeFlow can send from it.</div>
 </div></details></section>
 
-<section id="ai-agent-common-room" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">AI OPERATIONS</span><strong>AI Agent Common Room</strong><small>Share instructions, handovers, findings and learning notes between agents.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
-<div class="panel-head"><div><div class="eyebrow">Shared AI operations workspace · LIVE</div><h2>AI Agent Common Room</h2></div><button id="ai-room-refresh" type="button">Refresh messages</button></div>
-<p class="muted">Shared instructions, handovers, findings, questions and learning notes for ChatGPT and Gemma agents. Messages are separate from product evidence and cannot approve or import catalogue data.</p>
-<div class="ai-room-toolbar">
- <label>Thread<select id="ai-room-thread"><option value="" selected>All threads</option><option value="general">General</option><option value="research">Research operations</option><option value="catalogue">Catalogue and evidence</option><option value="engineering">Engineering and fixes</option><option value="learning">Learning and methods</option></select></label>
- <label>Category<input id="ai-room-category" placeholder="All categories or exact slug"></label>
- <label>Show<select id="ai-room-limit"><option value="50">Latest 50</option><option value="100" selected>Latest 100</option><option value="200">Latest 200</option></select></label>
-</div>
-<div id="ai-room-feed" class="ai-room-feed" aria-live="polite"><p class="muted">Loading messages…</p></div>
-<div class="ai-room-compose">
- <h3>Post an instruction or message</h3>
- <div class="ai-room-compose-grid">
-  <label>Message type<select id="ai-room-type"><option value="instruction">Instruction</option><option value="handover">Handover</option><option value="question">Question</option><option value="finding">Finding</option><option value="learning_note">Learning note</option><option value="status_update">Status update</option></select></label>
-  <label>Recipient<select id="ai-room-recipient"><option value="all">All agents and supervisors</option><option value="gemma-task-worker">Gemma task worker</option><option value="chatgpt-supervisor">ChatGPT supervisor</option><option value="research-agents">Research agents</option><option value="engineering-agents">Engineering agents</option></select></label>
-  <label>Title<input id="ai-room-title" maxlength="180" placeholder="Brief subject"></label>
- </div>
- <label>Message<textarea id="ai-room-body" rows="5" maxlength="12000" placeholder="Write instructions, context, findings or a handover…"></textarea></label>
- <div class="ai-room-compose-foot"><span id="ai-room-status" class="muted" role="status" aria-live="polite">Visible to the shared LIVE agent workspace.</span><button id="ai-room-send" type="button">Post to Common Room</button></div>
-</div>
-</div></details></section>
-<section id="gemma-control-centre" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">AI RESEARCH OPERATIONS</span><strong>Gemma Control Centre</strong><small>Manage research teams, approved websites, batches, queues and evidence review.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
-<div class="panel-head"><div><div class="eyebrow">Research operations · LIVE telemetry</div><h2>Gemma Control Centre</h2></div><button id="gemma-refresh" type="button">Refresh activity</button></div>
-<p class="muted">LIVE research operations. Submit work, monitor the Research PC, and review discoveries here. TEST remains for software regression only.</p>
-<div class="gemma-subpanel gemma-task-form">
-<h3>Build a category research batch</h3>
-<p class="muted">Choose a category, branch and evidence gap. Select individual products or use a batch size to queue several products together.</p>
-<div class="gemma-task-fields">
-<label>Category<select id="gemma-task-category" required></select></label>
-<label>Branch<select id="gemma-task-branch"><option value="">All branches</option></select></label>
-<label>Products to show<select id="gemma-task-limit"><option value="20">20 products</option><option value="50">50 products</option><option value="100" selected>100 products</option><option value="250">250 products</option><option value="500">All (up to 500)</option></select></label>
-<label>Evidence coverage<select id="gemma-task-filter"><option value="any">All products</option><option value="missing_new">Missing new evidence</option><option value="missing_used">Missing used evidence</option><option value="missing_both">Missing both new and used</option><option value="missing_either">Missing either new or used</option><option value="has_new">Has new evidence</option><option value="has_used">Has used evidence</option></select></label>
-<label>Research operation<select id="gemma-task-type"><option value="uk_both">Search new and used</option><option value="uk_new">Search new evidence only</option><option value="uk_used">Search used evidence only</option></select></label>
-<label>Research agent<select id="gemma-task-agent"><option value="">Automatically use category researcher</option></select></label>
-<label>Batch size<select id="gemma-task-batch"><option value="10">10 products</option><option value="20" selected>20 products</option><option value="50">50 products</option><option value="100">100 products</option><option value="all">All selected products</option></select></label>
-</div>
-<div class="gemma-batch-toolbar"><span id="gemma-product-count">Loading catalogue coverage…</span><span><button type="button" id="gemma-select-visible">Select all products shown</button> <button type="button" id="gemma-clear-selection">Clear selection</button> <button type="button" id="gemma-load-products">Refresh products</button></span></div>
-<div id="gemma-product-list" class="table-wrap">Loading LIVE catalogue coverage…</div>
-<div class="gemma-batch-submit"><span id="gemma-task-status" class="muted" role="status" aria-live="polite"></span><button id="gemma-task-submit" type="button">Queue selected products in LIVE</button></div>
-</div>
-<div class="gemma-subpanel"><div class="panel-head"><h3>Outstanding research tasks</h3><button id="gemma-task-refresh" type="button">Refresh tasks</button></div><div id="gemma-task-list" class="table-wrap">Loading task queue…</div></div>
-<div class="gemma-subpanel"><div class="panel-head"><h3>Research awaiting review</h3><button id="gemma-queue-refresh" type="button">Refresh queue</button></div><div id="gemma-queue-list" class="table-wrap">Loading queue…</div></div>
-<div id="gemma-error" class="error" role="alert"></div>
-<div class="stats gemma-stats"><article><span>Registered agents</span><strong id="gemma-agent-count">—</strong></article><article><span>Running</span><strong id="gemma-running-count">—</strong></article><article><span>Tasks completed</span><strong id="gemma-task-count">—</strong></article><article><span>Candidates found</span><strong id="gemma-candidate-count">—</strong></article><article><span>Evidence staged</span><strong id="gemma-evidence-count">—</strong></article></div>
-<div class="gemma-subpanel"><div class="panel-head"><div><h3>Category research teams</h3><p class="muted">Each category has its own research view. New specialist Gemma agents can be added without changing the dashboard layout.</p></div><span id="gemma-updated" class="muted">Not refreshed yet</span></div><div id="gemma-researcher-cards" class="gemma-researcher-grid"><p class="muted">Loading category researchers…</p></div></div><div id="gemma-source-manager" class="gemma-subpanel" hidden>
- <div class="panel-head"><div><h3 id="gemma-source-title">Category research websites</h3><p class="muted">Choose which UK websites this category's Gemma researcher may search. Universal sources such as eBay UK and Amazon UK remain available across categories.</p></div><button type="button" id="gemma-source-close">Close</button></div>
- <div id="gemma-source-list" class="table-wrap">Choose a category to manage its websites.</div>
- <form id="gemma-source-form" class="gemma-source-form">
-  <h4>Add a website to this category</h4>
-  <label>Website name<input id="gemma-source-name" required placeholder="Example UK retailer"></label>
-  <label>Domain<input id="gemma-source-domain" required placeholder="example.co.uk"></label>
-  <label>Homepage URL<input id="gemma-source-url" type="url" required placeholder="https://www.example.co.uk/"></label>
-  <label>Source type<select id="gemma-source-kind"><option value="retailer">Retailer</option><option value="manufacturer">Manufacturer</option><option value="marketplace">Marketplace</option><option value="used_dealer">Used dealer</option><option value="auction">Auction</option><option value="other">Other</option></select></label>
-  <label>Research scope<select id="gemma-source-scope"><option value="new_uk">UK new</option><option value="used_uk">UK used</option><option value="official">Official manufacturer</option><option value="all">All UK listings</option><option value="discovered">Discovery only</option></select></label>
-  <button type="submit">Add website to category</button><span id="gemma-source-status" role="status" class="muted"></span>
- </form>
-</div>
-<details class="gemma-diagnostics"><summary>Agent diagnostics and supervisor activity</summary><div class="gemma-grid"><div class="gemma-subpanel"><div class="panel-head"><h3>All registered agents</h3></div><div class="table-wrap"><table><thead><tr><th>Agent</th><th>Category</th><th>Status</th><th>Current task</th><th>Completed</th><th>Candidates</th><th>Last heartbeat</th></tr></thead><tbody id="gemma-agent-rows"><tr><td colspan="7">Loading…</td></tr></tbody></table></div></div><div class="gemma-subpanel"><div class="panel-head"><h3>Supervisor activity</h3><span class="muted">Latest 60 events</span></div><div id="gemma-activity" class="gemma-activity"><p class="muted">Loading activity…</p></div></div></div></details>
-</div></details></section>
-  </section>
+</section>
 </main>
 <script src="platform-owner-dashboard.js?v=29" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>

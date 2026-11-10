@@ -451,7 +451,7 @@ async function loadCloudAiJobs(){
 }
 async function enqueueCloudAiJob(e){
  e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]'),status=$('cloud-ai-status'),data=new FormData(form);
- const lines=String(data.get('products')||'').split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);
+ const lines=String(data.get('products')||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  const products=lines.map((line,index)=>{const parts=line.split('|').map(x=>x.trim());return {line:index+1,manufacturer:parts[0]||'',model:parts[1]||'',package_name:parts.slice(2).join(' | ')||null};});
  const invalid=products.filter(x=>!x.manufacturer||!x.model);
  if(!products.length){status.textContent='Enter at least one product.';return;}
@@ -480,7 +480,7 @@ $('cloud-ai-enqueue-form')?.addEventListener('submit',enqueueCloudAiJob);
 const cloudAiCatalogueSelection=new Map();
 async function searchCloudAiCatalogue(){
  const input=$('cloud-ai-catalogue-search'),host=$('cloud-ai-catalogue-results'),button=$('cloud-ai-catalogue-search-button');
- const terms=String(input?.value||'').split(/\\r?\\n/).map(x=>x.trim()).filter(Boolean);
+ const terms=String(input?.value||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
  if(!terms.length||terms.some(x=>x.length<2)){host.textContent='Enter one or more search terms, each at least two characters long.';return;}
  if(terms.length>50){host.textContent='Search up to 50 product terms at a time.';return;}
  button.disabled=true;host.textContent='Searching '+terms.length+' catalogue terms…';
@@ -499,13 +499,13 @@ $('cloud-ai-catalogue-search-button')?.addEventListener('click',searchCloudAiCat
 $('cloud-ai-catalogue-search')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchCloudAiCatalogue();}});
 $('cloud-ai-catalogue-add-selected')?.addEventListener('click',()=>{
  const textarea=document.querySelector('#cloud-ai-enqueue-form [name="products"]');
- const existing=String(textarea.value||'').trim().split(/\\r?\\n/).filter(Boolean);
+ const existing=String(textarea.value||'').trim().split(/\r?\n/).filter(Boolean);
  const known=new Set(existing.map(x=>x.toLowerCase()));
  for(const p of cloudAiCatalogueSelection.values()){
   const line=p.manufacturer_name+' | '+p.model+(p.package_name?' | '+p.package_name:'');
   if(!known.has(line.toLowerCase()))existing.push(line);
  }
- textarea.value=existing.join('\\n');cloudAiCatalogueSelection.clear();
+ textarea.value=existing.join('\n');cloudAiCatalogueSelection.clear();
  $('cloud-ai-catalogue-results').textContent='Selected catalogue products added to the batch list.';
  $('cloud-ai-catalogue-add-selected').disabled=true;
 });

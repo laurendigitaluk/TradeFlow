@@ -21,3 +21,8 @@ The folders `C:\\CTFGemma2`, `C:\\TFGemma` and `%LOCALAPPDATA%\\TradeFlow\\Resea
 
 ## Remaining limitation
 The connected GitHub actions support file deletion and ref updates but do not expose a branch-ref deletion action. Existing worker-related feature/archive/checkpoint branch refs therefore remain. The production runtime is not present in the production branch tree, and the default-branch runtime files have been removed. Do not attempt to delete catalogue or historical data to compensate for the remaining Git branch refs.
+
+
+## Additional GitHub branch cleanup — 10 November 2026
+
+After the default-branch runtime files were removed, the seven active specialist branches and their seven dated archive branches were also cleaned. The worker runtime directories (`tools/tradeflow-gemma-agent`, `tools/tradeflow-gemma-desktop`, `tools/gemma-agent-isolation`, where present) and the dedicated `.github/workflows/gemma-research-tests.yml` workflow were deleted from those 14 branch heads. This removed 35 files from each specialist/archive branch (36 from the 3D-printer archive branch). The branch refs themselves remain because the connected GitHub actions do not expose branch deletion. Other old feature/fix/checkpoint refs remain historical development refs; they are not the production website runtime. Do not treat those refs as active workers.

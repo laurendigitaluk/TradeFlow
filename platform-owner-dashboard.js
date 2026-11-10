@@ -693,7 +693,7 @@ async function submitManualAiResponse(promptId,button){
   const result=await request('/rest/v1/rpc/platform_owner_submit_manual_ai_research_response',{method:'POST',body:JSON.stringify({
    p_prompt_id:promptId,p_response_text:textarea.value
   })});
-  if(status)status.textContent='Response checked. '+result.candidates_created+' candidate(s) staged for human review; '+result.duplicates_skipped+' duplicate(s) skipped; '+result.findings_rejected+' finding(s) rejected; '+result.not_found_count+' product(s) reported as not found.';
+  if(status)status.textContent='Response checked. '+result.catalogue_evidence_candidates+' exact-package evidence candidate(s); '+result.comparison_only_references+' same-model comparison reference(s); '+result.duplicates_skipped+' duplicate(s) skipped; '+result.findings_rejected+' finding(s) rejected; '+result.not_found_count+' product(s) with no UK results.';
   $('manual-ai-status').textContent='Manual AI response processed. Valid candidates are awaiting your review; none were imported automatically.';
   await loadManualAiResearchBatches();
   await loadCloudAiReviewQueue();

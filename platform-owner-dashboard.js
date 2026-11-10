@@ -699,7 +699,7 @@ function parseManualAiReportTables(raw,prompt){
   if(!line.startsWith('|')){if(line)context.push(line);if(context.length>12)context.shift();continue;}
   const cells=line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim());
   if(cells.length<3||cells.every(x=>/^:?-{2,}:?$/.test(x)))continue;
-  if(/^(package|item|product|model)$/i.test((cells[0]||'').replace(/\\*/g,'').trim())&&/price/i.test(cells[1]||''))continue;
+  if(/^(package|item|product|model)$/i.test((cells[0]||'').replace(/\*/g,'').trim())&&/price/i.test(cells[1]||''))continue;
   if(!section)continue;
   const packageName=cells[0]||'Package not stated';
   const priceDisplay=cells[1]||'';
@@ -707,7 +707,7 @@ function parseManualAiReportTables(raw,prompt){
   const notes=cells.slice(3).join(' | ');
   const prices=[...priceDisplay.matchAll(pricePattern)].map(m=>Number(m[1].replace(/,/g,'')));
   const uniquePrices=[...new Set(prices)];
-  const priceIsRange=/£?\\s*[0-9,.]+\\s*[–—-]\\s*£?\\s*[0-9,.]+/.test(priceDisplay);
+  const priceIsRange=/£?\s*[0-9,.]+\s*[–—-]\s*£?\s*[0-9,.]+/.test(priceDisplay);
   const exactPrice=!priceIsRange&&uniquePrices.length?uniquePrices[0]:null;
   let product=null;
   const contextText=(context.slice(-8).join(' ')+' '+line).toLowerCase();

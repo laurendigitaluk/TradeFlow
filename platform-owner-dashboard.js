@@ -87,7 +87,7 @@ async function signIn(){
   button.disabled=true;button.textContent='Signing in…';error.textContent='';
   try{
     session=await request('/auth/v1/token?grant_type=password',{method:'POST',body:JSON.stringify({email,password})});
-    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await window.loadPublicPages?.();
+    save();await establish();hideAuth();await loadTenants();await loadPlans();await loadPlatformEmail();await loadDomainActions();await loadProductPages();await loadCloudAiProviders();await loadCloudAiJobs();await loadCloudAiReviewQueue();await window.loadPublicPages?.();
   }catch(e){session=null;save();error.textContent=e.message||String(e)}
   finally{button.disabled=false;button.textContent='Sign in'}
 }
@@ -380,7 +380,7 @@ $('platform-email-form').onsubmit=savePlatformEmail;
 $('sign-out').onclick=()=>{session=null;save();location.reload()};
 
 (async()=>{
-  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),window.loadPublicPages?.()])}
+  try{if(!session?.access_token)throw Error('Sign in required');await establish();hideAuth();await Promise.allSettled([loadTenants(),loadPlans(),loadPlatformEmail(),loadDomainActions(),loadProductPages(),loadCloudAiProviders(),loadCloudAiJobs(),loadCloudAiReviewQueue(),window.loadPublicPages?.()])}
   catch(e){showAuth('')}
 })();
 
@@ -470,3 +470,29 @@ async function testCloudAiProvider(form){
  }catch(e){status.textContent=e.message||String(e)}
  finally{button.disabled=false}
 }
+
+async function processNextCloudAiJob(){
+ const button=$('cloud-ai-process-one'),status=$('cloud-ai-status');if(!button)return;
+ button.disabled=true;status.textContent='Running one research job…';
+ try{const result=await request('/functions/v1/tradeflow-cloud-ai-manager',{method:'POST',body:JSON.stringify({action:'process_next_job'})});
+  status.textContent=result?.processed?'Research completed. '+result.candidates_saved+' evidence candidate(s) submitted by '+result.provider+'.':(result?.message||result?.error||'No job was processed.');
+  await loadCloudAiJobs();await loadCloudAiReviewQueue();
+ }catch(e){status.textContent=e.message||String(e)}
+ finally{button.disabled=false}
+}
+async function loadCloudAiReviewQueue(){
+ const host=$('cloud-ai-review-list');if(!host)return;
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'pending_review',p_limit:200})});
+  const items=(Array.isArray(rows)?rows:[]).filter(x=>x.agent_name==='Cloud AI Research Manager');
+  host.innerHTML=items.map(x=>'<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'candidate')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">Pending review</span></div><p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??'Not supplied')+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · <a href="'+escapeAttr(x.source_url||'#')+'" target="_blank" rel="noopener">Open evidence source</a></p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p><div class="plan-editor-foot"><button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve candidate</button><button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>').join('')||'<p class="muted">No AI evidence candidates are awaiting review.</p>';
+  host.querySelectorAll('[data-review-id]').forEach(b=>b.addEventListener('click',()=>reviewCloudAiCandidate(b.dataset.reviewId,b.dataset.decision,b)));
+ }catch(e){host.innerHTML='<p class="error">'+escapeHtml(e.message||String(e))+'</p>'}
+}
+async function reviewCloudAiCandidate(id,decision,button){
+ button.disabled=true;
+ try{await request('/rest/v1/rpc/platform_owner_review_catalogue_research_item',{method:'POST',body:JSON.stringify({p_id:id,p_decision:decision,p_notes:'Reviewed in Cloud AI Research Manager.'})});await loadCloudAiReviewQueue();}
+ catch(e){alert(e.message||String(e));button.disabled=false}
+}
+$('cloud-ai-process-one')?.addEventListener('click',processNextCloudAiJob);
+$('cloud-ai-review-refresh')?.addEventListener('click',loadCloudAiReviewQueue);

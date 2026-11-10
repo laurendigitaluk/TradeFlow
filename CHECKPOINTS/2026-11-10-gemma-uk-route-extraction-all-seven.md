@@ -57,3 +57,19 @@ Keep each branch's isolated agent.config.json unchanged. After production merge 
 4. Run Update all workers from the existing Control Centre; check all seven per-agent logs and status.
 5. Run bounded six-product Anycubic LIVE acceptance and inspect structured evidence/raw captures, route metrics, timeout metrics and completion persistence.
 6. Keep all candidates unverified until ChatGPT/owner review. Do not import evidence as part of the repair.
+
+
+
+## Verification addendum — 10 November 2026 01:16 UTC
+
+- Replacement PR #348 passed Gemma Research Tests run 42734356593.
+- The four shared source/test files were synchronised to all seven isolated branches. Branch commits and passing CI:
+  - 3D Printers — 10c85a7bbeb60fc308c2c43cdbc584a4cb21e7b9 — run 42734464746
+  - Gaming — c8b3392604f75adb232f4ce7793f2890c8340e38 — run 42734492721
+  - Cameras — 6568a16132a745496ebeeacb90725a422531be9f — run 42734504715
+  - Drones — 8f76e5c127ad3c2617c3bde4a281ac78e23b058f — run 42734526964
+  - Metal Detectors — dd34d14b6644b0aaadfacb9851966e21ff5e1e04 — run 42734537996
+  - Mobile Phones — 42af7f33c621a43cd2315d2a34978b6511d17f7c — run 42734558108
+  - Laptops — 1dcb744f9e5ba8977dcbe93591c26853cb8c5405 — run 42734571922
+- All seven branch CI workflows passed. Each category's single-key agent.config.json was preserved.
+- PR #348 remains open pending merge. The Research PC Update all workers operation has not yet been run; local processes, ENV and runtime have not been changed.

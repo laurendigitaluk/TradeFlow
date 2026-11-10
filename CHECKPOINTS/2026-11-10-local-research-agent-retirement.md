@@ -57,3 +57,7 @@ Do not delete catalogue products, categories, evidence, research queue rows or h
 - Historical data counts verified unchanged: 35 tasks, 12 status rows, 14,808 activity rows, 451 messages, 75 catalogue research queue rows and 119 research sources.
 - No database tables or historical rows were deleted.
 - Not yet completed: local Windows removal, specialist branch archival/deletion, worker source cleanup and live CDN/browser verification.
+
+
+## Runtime source retirement update
+The production runtime directories and Gemma test workflow were removed after preserving each specialist branch head under a dated archive branch. Original specialist branch refs remain pending deletion because the connected GitHub action set does not provide branch deletion. A consolidated Windows removal script has been prepared for the owner to run locally; the local PC has not yet been changed by this chat.

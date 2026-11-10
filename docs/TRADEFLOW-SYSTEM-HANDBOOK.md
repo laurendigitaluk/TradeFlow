@@ -5009,3 +5009,11 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - No LIVE catalogue products, evidence rows, queue rows, research batches, tenant/customer data, TEST data, or Supabase schema were changed by this UI addition. No secrets were changed.
 - Follow-up required before the requested end-to-end review-and-add process can be completed: inspect the exact `shared_market_evidence` schema, constraints, RLS and existing trusted write paths, then design and test a narrow owner-authorised import RPC/migration. Do not bypass RLS or directly write evidence as a workaround.
 - GitHub project-memory/checkpoint tables were checked for names containing memory/checkpoint/project-note/project-knowledge and none were present in LIVE. The durable project checkpoint is therefore recorded in the repository checkpoint file.
+
+
+## Manual AI response-panel layout and completed-prompt compaction — 10 November 2026
+
+- Place the reusable **Copy ChatGPT evidence-review prompt** button inside every active manual research response panel, directly below the complete AI response textarea and before the save/validate controls. Do not put a second global copy panel at the bottom of the AI Research Centre.
+- Keep generated research prompt text visible only while the prompt is active. After successful submission, remove its prompt textarea and response controls from the active list and move the completed prompt/report into a collapsed **Completed research** history section. Preserve the original submitted report and metadata; this is a presentation change, not deletion or archival mutation.
+- The dashboard asset cache is v52. This frontend-only change does not alter the evidence approval/import boundary: queue review status is not proof of insertion into `shared_market_evidence`.
+- Deployment and a real signed-in browser test remain the acceptance checks. No Supabase or TEST data was changed by this layout update.

@@ -3116,3 +3116,12 @@ A new isolated research handoff has been added for the owner's existing LM Studi
 - This connector is LIVE-only for the first acceptance pass. Do not sync TEST data or TEST reports into LIVE.
 - All submitted research remains `submitted_for_review`; ChatGPT/owner independently verifies source URLs, prices, package identity, condition and availability before any separate approved import process.
 - Historical Gemma tables, RPCs and Common Room are not re-enabled. Do not restore their permissions or UI.
+
+
+## 10 November 2026 — TradeFlow AI Manager build (feature branch only)
+
+A separate Windows desktop manager is being developed on `feature/tradeflow-ai-manager-desktop-20261110`. It is not deployed to LIVE and does not reactivate the retired Gemma worker platform. The design uses free-only cloud provider routing, Windows Credential Manager for local secrets, a persistent local queue, resumable work, and the existing Research Inbox report-only MCP boundary. No provider may be used unless the owner confirms that the account is on a no-billing free plan; OpenRouter model IDs must end in `:free`. No automatic paid fallback is allowed.
+
+The initial desktop shell and provider/MCP connection components are committed on the feature branch. This is an early prototype, not yet a complete research runner or installable release. The current LIVE MCP has five deployed tools but lacks paginated full-catalogue enumeration and approved-source-registry listing. The deployed LIVE Edge Function source also differs from the GitHub production copy (five deployed tools versus three in the repository); reconcile this before modifying/redeploying the MCP. TEST currently has no Research MCP function. Do not enable full-catalogue scans or direct shared-evidence writes until these prerequisites are implemented and verified on TEST.
+
+See `docs/TRADEFLOW-AI-MANAGER-DIAGNOSTIC-ROADMAP.md` and `CHECKPOINTS/2026-11-10-tradeflow-ai-manager-build-start.md` for verified state, data boundaries, limitations and delivery stages. LIVE remains unchanged.

@@ -13,6 +13,7 @@ on:
   push:
     branches:
       - production
+      - 'gemma/**'
     paths:
       - 'tools/gemma-agent-isolation/**'
       - 'tools/tradeflow-gemma-agent/**'
@@ -45,7 +46,7 @@ jobs:
           $errors = $null
           [System.Management.Automation.Language.Parser]::ParseFile('tools/tradeflow-gemma-agent/Start-TradeFlow-Gemma.ps1', [ref]$tokens, [ref]$errors) | Out-Null
           if ($errors.Count -gt 0) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }
-          foreach ($file in @('tools/tradeflow-gemma-agent/Start-Gemma-Agent.ps1','tools/tradeflow-gemma-agent/Update-Gemma-Agent.ps1','tools/gemma-agent-isolation/Install-Gemma-Agents.ps1','tools/gemma-agent-isolation/Gemma-Control-Centre.ps1')) {
+          foreach ($file in @('tools/tradeflow-gemma-agent/Start-Gemma-Agent.ps1','tools/tradeflow-gemma-agent/Update-Gemma-Agent.ps1','tools/gemma-agent-isolation/Install-Gemma-Agents.ps1','tools/gemma-agent-isolation/Gemma-Control-Centre.ps1','tools/gemma-agent-isolation/Update-All-Gemma-Agents.ps1')) {
             $tokens = $null
             $errors = $null
             [System.Management.Automation.Language.Parser]::ParseFile($file, [ref]$tokens, [ref]$errors) | Out-Null
@@ -77,6 +78,7 @@ jobs:
             tools/tradeflow-gemma-agent/src/agent-isolation.test.mjs \
             tools/tradeflow-gemma-agent/src/agent-speed.test.mjs \
             tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs \
-            tools/tradeflow-gemma-agent/src/desktop-control.test.mjs
+            tools/tradeflow-gemma-agent/src/desktop-control.test.mjs \
+            tools/tradeflow-gemma-agent/src/task-result-summary.test.mjs
       - name: Check Owner Dashboard JavaScript syntax
         run: node --check platform-owner-dashboard.js

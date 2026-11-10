@@ -4619,3 +4619,8 @@ The 21:19 LIVE five-printer test completed in 2m10s but only Kobra 4 Standard qu
 The isolated Gemma worker now has a category-scoped idle heartbeat. It reports the configured specialist key/name/category, worker ID, and `stage=idle_poll` only after a successful queue poll. The heartbeat is suppressed during task processing, active polling, failed polls, shutdown, overlapping telemetry and when no agent assignment is enabled. The existing active-task and queue-lease heartbeats are unchanged. The cadence is bounded from 60 seconds to five minutes (60 seconds for the 15-second queue poll).
 
 The helper and regression test are included in the canonical updater, launcher preflight and Gemma GitHub Actions suite. Keep each specialist's one-key `agent.config.json` and private LIVE `.env` isolated. Release acceptance requires repeated idle heartbeat events from the same worker ID; do not enqueue research merely to test liveness. No Supabase schema change is required.
+
+
+### Installation entry-point clarification — 10 November 2026
+
+The seven independent Windows clones use the branch-specific `Update-Gemma-Agent.ps1` and `Start-Gemma-Agent.ps1` entry points. `Update-Gemma-Agent.ps1` validates the one-key `agent.config.json`, the clone's Git branch and the shared private ENV pointer before invoking the lower-level `Update-TradeFlow-Gemma.ps1`. Fast-forward the local clone to its own `gemma/*` branch before running the category-local updater; that lower-level updater does not update the Git clone or its own script. Do not substitute the legacy shared Control Centre launcher for the isolated-agent launcher. The isolated launcher now preflights the lifecycle summary, heartbeat and installer-manifest tests as well as the existing isolation/control tests.

@@ -20,7 +20,7 @@ const workerImports = [...workerSource.matchAll(/from\s+['"]\.\/([^'"]+\.mjs)['"
 const updaterTestCommands = [...updaterSource.matchAll(/& node --test ([^\r\n]+)/g)].map((match) => match[1]);
 const startBlock = startSource.match(/\$TestFiles\s*=\s*@\(([\s\S]*?)\)/)?.[1] || '';
 const startupTests = new Set([...startBlock.matchAll(/'([^']+\.test\.mjs)'/g)].map((match) => match[1]));
-const requiredTests = ['task-result-summary.test.mjs', 'agent-telemetry.test.mjs', 'installer-manifest.test.mjs'];
+const requiredTests = ['task-result-summary.test.mjs', 'specialist-idle-heartbeat.test.mjs', 'agent-telemetry.test.mjs', 'installer-manifest.test.mjs'];
 
 test('category updater packages every direct task-worker module import', () => {
   assert.ok(workerImports.length > 0, 'task-worker must have inspectable local imports');

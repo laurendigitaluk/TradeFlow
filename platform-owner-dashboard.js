@@ -393,3 +393,69 @@ function initOwnerSectionAccordions(){
  if(location.hash)openSection(decodeURIComponent(location.hash.slice(1)));
 }
 initOwnerSectionAccordions();
+
+
+/* Cloud AI Research Manager — owner-only controls backed by protected RPCs. */
+const cloudAiProviderDefaults=[
+ {provider_key:'gemini',display_name:'Google Gemini',model_id:'gemini-2.5-flash'},
+ {provider_key:'groq',display_name:'Groq',model_id:'llama-3.3-70b-versatile'},
+ {provider_key:'openrouter',display_name:'OpenRouter',model_id:'openrouter/free'}
+];
+function renderCloudAiProviders(rows){
+ const host=$('cloud-ai-providers');if(!host)return;
+ const byKey=new Map((rows||[]).map(x=>[x.provider_key,x]));
+ host.innerHTML=cloudAiProviderDefaults.map(d=>{
+  const p=byKey.get(d.provider_key)||{};
+  return '<form class="plan-editor cloud-ai-provider" data-provider="'+d.provider_key+'">'+
+   '<div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(d.provider_key)+'</div><h3>'+escapeHtml(d.display_name)+'</h3></div><label class="plan-live"><input name="enabled" type="checkbox" '+(p.enabled?'checked':'')+'> Enabled</label></div>'+
+   '<label>Model ID<input name="model_id" required maxlength="180" value="'+escapeAttr(p.model_id||d.model_id)+'"></label>'+
+   '<label>API key <input name="api_key" type="password" autocomplete="new-password" placeholder="'+(p.has_key?'Key saved securely — enter a new key to replace':'Paste provider API key')+'"></label>'+
+   '<label>Daily request cap<input name="daily_request_limit" type="number" min="0" max="10000" value="'+(p.daily_request_limit||0)+'"></label>'+
+   '<label class="plan-live"><input name="free_tier_confirmed" type="checkbox" '+(p.free_tier_confirmed?'checked':'')+'> I have verified this API/model is available without paid billing on my account</label>'+
+   '<div class="plan-editor-foot"><span class="plan-status">'+escapeHtml(p.status||'not configured')+(p.has_key?' · key stored in Vault':' · no key')+'</span><button type="submit">Save provider</button></div></form>';
+ }).join('');
+ host.querySelectorAll('form').forEach(f=>f.addEventListener('submit',saveCloudAiProvider));
+}
+async function loadCloudAiProviders(){
+ const host=$('cloud-ai-providers');if(!host)return;
+ try{const rows=await request('/rest/v1/rpc/platform_owner_list_cloud_ai_providers',{method:'POST',body:'{}'});renderCloudAiProviders(Array.isArray(rows)?rows:[])}
+ catch(e){host.innerHTML='<p class="error">'+escapeHtml(e.message||String(e))+'</p>'}
+}
+async function saveCloudAiProvider(e){
+ e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]'),status=form.querySelector('.plan-status'),data=new FormData(form);
+ button.disabled=true;status.textContent='Saving securely…';
+ try{
+  const result=await request('/rest/v1/rpc/platform_owner_save_cloud_ai_provider',{method:'POST',body:JSON.stringify({
+   p_provider_key:form.dataset.provider,p_model_id:String(data.get('model_id')||'').trim(),
+   p_enabled:form.elements.enabled.checked,p_free_tier_confirmed:form.elements.free_tier_confirmed.checked,
+   p_api_key:String(data.get('api_key')||'').trim()||null,p_daily_request_limit:Number(data.get('daily_request_limit')||0)
+  })});
+  status.textContent=result?.saved?'Saved. API key stored in Vault.':'Saved.';
+  form.elements.api_key.value='';await loadCloudAiProviders();
+ }catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
+async function loadCloudAiJobs(){
+ const body=$('cloud-ai-jobs');if(!body)return;
+ body.innerHTML='<tr><td colspan="6">Loading…</td></tr>';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_cloud_ai_jobs',{method:'POST',body:JSON.stringify({p_limit:100})});
+  body.innerHTML=(Array.isArray(rows)?rows:[]).map(j=>'<tr><td>'+escapeHtml(j.manufacturer+' '+j.model+(j.package_name?' · '+j.package_name:''))+'</td><td>'+escapeHtml(j.task_type)+'</td><td>'+escapeHtml(j.status)+'</td><td>'+escapeHtml(j.assigned_provider||'—')+'</td><td>'+escapeHtml(j.attempts+'/'+j.max_attempts)+'</td><td>'+escapeHtml(j.last_error||'—')+'</td></tr>').join('')||'<tr><td colspan="6">No research jobs queued.</td></tr>';
+ }catch(e){body.innerHTML='<tr><td colspan="6">'+escapeHtml(e.message||String(e))+'</td></tr>'}
+}
+async function enqueueCloudAiJob(e){
+ e.preventDefault();const form=e.currentTarget,button=form.querySelector('button[type="submit"]'),status=$('cloud-ai-status'),data=new FormData(form);
+ button.disabled=true;status.textContent='Adding research job…';
+ try{
+  await request('/rest/v1/rpc/platform_owner_enqueue_cloud_ai_research',{method:'POST',body:JSON.stringify({
+   p_category_slug:String(data.get('category_slug')||'').trim()||null,p_manufacturer:String(data.get('manufacturer')||'').trim(),
+   p_model:String(data.get('model')||'').trim(),p_package_name:String(data.get('package_name')||'').trim()||null,
+   p_task_type:String(data.get('task_type')||'price_evidence')
+  })});
+  status.textContent='Research job queued. The catalogue has not been changed.';form.reset();await loadCloudAiJobs();
+ }catch(err){status.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
+$('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
+$('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);
+$('cloud-ai-enqueue-form')?.addEventListener('submit',enqueueCloudAiJob);

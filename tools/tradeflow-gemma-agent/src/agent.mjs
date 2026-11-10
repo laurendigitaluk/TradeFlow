@@ -706,7 +706,7 @@ export function fallbackPageCapture(task, source, reason) {
     observed_price: captureOnly ? null : uniquePrice,
     price_currency: prices.length ? 'GBP' : null,
     item_condition: null,
-    availability: availabilityNotes.join(' | ') || null,
+    availability: printerCapture ? null : availabilityNotes.join(' | ') || null,
     source_name: host,
     source_url: source.url,
     sales_channel: host,
@@ -721,6 +721,68 @@ export function fallbackPageCapture(task, source, reason) {
         availability_text: availabilityNotes,
         location_text: locationNotes
       } : null
+    }
+  };
+}
+
+
+export function buildReviewQueueObservationFields(task, evidence = {}) {
+  if (!is3dPrinterResearchTask(task)) {
+    // Preserve the established mapping for every non-printer category.
+    return {
+      item_condition: evidence.item_condition || evidence.item_condition_text || null,
+      availability: evidence.availability || evidence.availability_text || null
+    };
+  }
+
+  // Raw *_text snippets stay in raw_payload.evidence/page_capture. Only explicit,
+  // concise normalized observations may populate the queue's dedicated columns.
+  const concise = value => {
+    const normalised = String(value ?? '').replace(/\s+/g, ' ').trim();
+    return normalised && normalised.length <= 100 ? normalised : null;
+  };
+  return {
+    item_condition: concise(evidence.item_condition),
+    availability: concise(evidence.availability)
+  };
+}
+
+export function buildReviewQueueRow(task, evidence, captureKey) {
+  const rawPrice = Number(evidence.observed_price);
+  const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 &&
+    hasVisibleUkPrice(evidence.source_excerpt || '');
+  const observationFields = buildReviewQueueObservationFields(task, evidence);
+  const sourceUrl = evidence.source_url;
+  const host = new URL(sourceUrl).hostname.replace(/^www\./, '');
+  return {
+    record_type: 'evidence_candidate',
+    status: 'needs_research',
+    dedupe_key: captureKey,
+    agent_name: 'Gemma-raw-capture',
+    task_key: task.task_key || null,
+    category_slug: task.category_slug,
+    branch_slug: task.branch_slug || null,
+    manufacturer: task.manufacturer,
+    model: task.model,
+    package_key: task.package_key,
+    package_name: task.package_name,
+    evidence_type: ['uk_new', 'uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
+    source_name: evidence.source_name || host,
+    source_url: sourceUrl,
+    observed_price: usablePrice ? rawPrice : null,
+    price_currency: usablePrice ? 'GBP' : null,
+    item_condition: observationFields.item_condition,
+    sales_channel: evidence.sales_channel || host,
+    availability: observationFields.availability,
+    source_record_key: captureKey,
+    source_excerpt: evidence.source_excerpt || null,
+    research_notes: evidence.notes || 'Raw page capture retained for ChatGPT review.',
+    raw_payload: {
+      task,
+      evidence,
+      page_capture: evidence.page_capture || null,
+      review_classification: 'unverified_capture',
+      handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
     }
   };
 }
@@ -1000,6 +1062,7 @@ export async function extractBatch(task, pages, env, onProgress) {
             };
           });
           const safeObservedPrice = selectSafeObservedPrice(normalisedObservations, task.research_type);
+          const printerObservationFields = buildReviewQueueObservationFields(task, row);
           finding = {
             ...row,
             review_classification: 'unverified_capture',
@@ -1007,8 +1070,8 @@ export async function extractBatch(task, pages, env, onProgress) {
             observed_price: safeObservedPrice,
             price_currency: prices.length ? 'GBP' : null,
             price_observations: normalisedObservations,
-            item_condition: row.item_condition_text || row.item_condition || null,
-            availability: row.availability_text || row.availability || null,
+            item_condition: is3dPrinterResearchTask(task) ? printerObservationFields.item_condition : (row.item_condition_text || row.item_condition || null),
+            availability: is3dPrinterResearchTask(task) ? printerObservationFields.availability : (row.availability_text || row.availability || null),
             source_name: row.seller_text || host,
             source_url: source.url,
             sales_channel: host,
@@ -1493,8 +1556,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
           sales_channel: new URL(source.url).hostname,
           observed_price: hasPrice ? price : null,
           evidence_type: ['uk_new','uk_used'].includes(finding.evidence_type) ? finding.evidence_type : null,
-          item_condition: finding.item_condition || finding.item_condition_text || null,
-          availability: finding.availability || finding.availability_text || null
+          ...buildReviewQueueObservationFields(task, finding)
         };
         const diagnostics = validationInput.evidence_type && hasPrice
           ? validate(validationInput, task, source.text).errors
@@ -1542,28 +1604,7 @@ export async function runTask(task, env, { enqueue = false, onProgress } = {}) {
   const writes = [];
   for (const evidence of candidates) {
     const captureKey = buildEvidenceCaptureDedupeKey(task, evidence);
-    const rawPrice = Number(evidence.observed_price);
-    const usablePrice = Number.isFinite(rawPrice) && rawPrice > 0 && hasVisibleUkPrice(evidence.source_excerpt || '');
-    const row = {
-      record_type: 'evidence_candidate', status: 'needs_research', dedupe_key: captureKey,
-      agent_name: 'Gemma-raw-capture', task_key: task.task_key || null,
-      category_slug: task.category_slug, branch_slug: task.branch_slug || null,
-      manufacturer: task.manufacturer, model: task.model, package_key: task.package_key,
-      package_name: task.package_name, evidence_type: ['uk_new','uk_used'].includes(evidence.evidence_type) ? evidence.evidence_type : null,
-      source_name: evidence.source_name || new URL(evidence.source_url).hostname.replace(/^www\./, ''),
-      source_url: evidence.source_url, observed_price: usablePrice ? rawPrice : null,
-      price_currency: usablePrice ? 'GBP' : null,
-      item_condition: evidence.item_condition || evidence.item_condition_text || null,
-      sales_channel: evidence.sales_channel || new URL(evidence.source_url).hostname,
-      availability: evidence.availability || evidence.availability_text || null,
-      source_record_key: captureKey, source_excerpt: evidence.source_excerpt || null,
-      research_notes: evidence.notes || 'Raw page capture retained for ChatGPT review.',
-      raw_payload: {
-        task, evidence, page_capture: evidence.page_capture || null,
-        review_classification: 'unverified_capture',
-        handoff: 'ChatGPT decides relevance and evidence suitability. Not approval-ready; no catalogue import.'
-      }
-    };
+    const row = buildReviewQueueRow(task, evidence, captureKey);
     if (!enqueue) { writes.push({ environment: resolveControlPlane(env).name + '_REVIEW_QUEUE_DRY_RUN', status: 'capture-dry-run-ready', row }); continue; }
     const liveTarget = target(resolveControlPlane(env).name, env);
     const existing = await db(liveTarget, 'platform_catalogue_research_queue?select=id,status,dedupe_key,category_slug,branch_slug,manufacturer,model,package_key,source_url,reviewed_at,reviewed_by,approved_at,imported_at,raw_payload,research_notes,updated_at&dedupe_key=eq.' + encodeURIComponent(captureKey));

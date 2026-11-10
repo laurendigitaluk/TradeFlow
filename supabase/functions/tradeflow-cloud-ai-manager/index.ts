@@ -165,7 +165,7 @@ async function processNextJob(admin:any):Promise<Response>{
    if(pages.length>=3)break;
   }
   if(!pages.length)throw new Error("No reachable approved UK source pages for this category. Add a verified search URL template or check the source sites.");
-  const {data:providers,error:providerError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,api_base_url,api_protocol,status,cooldown_until,daily_request_limit,daily_requests_used,daily_usage_date").eq("enabled",true).eq("free_tier_confirmed",true).order("updated_at",{ascending:true});
+  const {data:providers,error:providerError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,api_base_url,api_protocol,status,cooldown_until,last_error,daily_request_limit,daily_requests_used,daily_usage_date").eq("enabled",true).eq("free_tier_confirmed",true).order("updated_at",{ascending:true});
   if(providerError)throw new Error("Could not load eligible AI providers");
   const today=new Date().toISOString().slice(0,10);
   const eligible=(providers||[]).filter((p:any)=>p.status==="ready"&&p.daily_request_limit>0&&(p.daily_usage_date!==today||p.daily_requests_used<p.daily_request_limit));

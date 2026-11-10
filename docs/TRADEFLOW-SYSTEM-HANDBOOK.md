@@ -4725,3 +4725,8 @@ The merged 3D Printer worker, parent-result summary module and regression tests,
 ### Installation entry-point clarification — 10 November 2026
 
 The seven independent Windows clones use the branch-specific `Update-Gemma-Agent.ps1` and `Start-Gemma-Agent.ps1` entry points. `Update-Gemma-Agent.ps1` validates the one-key `agent.config.json`, the clone's Git branch and the shared private ENV pointer before invoking the lower-level `Update-TradeFlow-Gemma.ps1`. Fast-forward the local clone to its own `gemma/*` branch before running the category-local updater; that lower-level updater does not update the Git clone or its own script. Do not substitute the legacy shared Control Centre launcher for the isolated-agent launcher. The isolated launcher now preflights the lifecycle summary, heartbeat and installer-manifest tests as well as the existing isolation/control tests.
+
+
+## 10 November 2026 — Gemma Research PC state and safety boundary
+
+Before modifying the Research PC, read `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` on production and the Gemma research pipeline diagnostic roadmap. The owner-confirmed 3D clone is `C:\\CTFGemma2\\Gemma-3D-Printers`, connected to `https://github.com/laurendigitaluk/TradeFlow.git` on `gemma/3d-printers`. Its local commit is an ancestor of the remote branch (remote 74 commits ahead, zero behind), but the local working tree has six substantive tracked diffs and untracked backups/files. Preserve these and reconcile individually before any fast-forward or updater. Do not run `git reset --hard`, `git clean`, blind pull, or overwrite category config/private ENV. GearCashOut is an independent project and is outside the TradeFlow runtime, code and data scope.

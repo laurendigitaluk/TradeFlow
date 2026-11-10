@@ -24,7 +24,7 @@ Deno.serve(async(req:Request)=>{
  const {data:key,error:keyError}=await admin.rpc("get_cloud_ai_provider_secret",{p_provider_key:provider});
  if(keyError||!key)return json({error:"Provider key is not available in the server vault"},409);
  let endpoint="",headers:Record<string,string>={};
- if(provider==="gemini"){endpoint="https://generativelanguage.googleapis.com/v1beta/models?key="+encodeURIComponent(key);headers={};}
+ if(provider==="gemini"){endpoint="https://generativelanguage.googleapis.com/v1beta/models";headers={"x-goog-api-key":key};}
  if(provider==="groq"){endpoint="https://api.groq.com/openai/v1/models";headers={Authorization:"Bearer "+key};}
  if(provider==="openrouter"){endpoint="https://openrouter.ai/api/v1/models";headers={Authorization:"Bearer "+key};}
  try{

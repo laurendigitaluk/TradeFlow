@@ -112,3 +112,8 @@ Synchronise the shared agent source, source playbook and regression tests across
 
 ### Acceptance gate
 Run a bounded 3D Printer LIVE retest covering all six exact Anycubic identities. Confirm: Anycubic Kobra 4 Combo direct route attempted; 3DJake Anycubic brand catalogue inspected and exact product links followed; 123-3D new/refurbished lanes remain separate; eBay seller category attempted and 403s logged; 3DJake Combo passes matcher while Standard sibling fails for Combo task; one page per Gemma call with no 45-second false timeout; full captures and structured GBP observations are visible in the review queue. No approval/import is authorised by this acceptance. Then inspect all seven worker update logs and status rows. Only after these checks should the next product category proceed.
+
+
+## Verification addendum — 10 November 2026 01:16 UTC
+
+Replacement PR #348 passed the full Gemma Research Tests workflow (run 42734356593). Shared agent, playbook and regression-test files were synchronised to all seven category branches; each branch's CI passed: 3D Printers 42734464746, Gaming 42734492721, Cameras 42734504715, Drones 42734526964, Metal Detectors 42734537996, Mobile Phones 42734558108, Laptops 42734571922. The per-category `agent.config.json` files were preserved. This verifies branch source/tests, not local PC installation. PR #348 is awaiting merge; the Research PC all-worker update and bounded LIVE Anycubic retest remain pending.

@@ -593,7 +593,7 @@ function renderManualAiResearchBatches(batches){
     const done=['completed','no_findings'].includes(p.status);
     return '<section style="border-top:1px solid var(--border,#ddd);padding-top:12px;margin-top:12px">'+
      '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><strong>Prompt '+p.prompt_number+' of '+prompts.length+' · '+Number(p.product_count||0)+' products</strong><span class="plan-status">'+escapeHtml(p.status.replace('_',' '))+'</span></div>'+
-     '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0"><button type="button" data-manual-copy="'+escapeHtml(p.id)+'">Copy research prompt</button><a href="'+escapeAttr(batch.assistant_url)+'" target="_blank" rel="noopener noreferrer">Open '+escapeHtml(batch.assistant_name)+' website ↗</a></div>'+
+     '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:9px 0"><button type="button" data-manual-copy="'+escapeHtml(p.id)+'">Copy research prompt</button><a href="'+escapeAttr(batch.assistant_url)+'" target="_blank" rel="noopener noreferrer">Open '+escapeHtml(batch.assistant_name)+' website ↗</a>'+(p.status==='ready'&&!p.response_draft?'<button type="button" data-manual-refresh-prompt="'+escapeHtml(p.id)+'">Regenerate with improved research rules</button>':'')+'</div>'+
      '<label>Generated research prompt<textarea id="manual-ai-prompt-'+escapeHtml(p.id)+'" rows="8" readonly style="width:100%;font-family:Consolas,monospace;font-size:12px;white-space:pre;overflow:auto">'+escapeHtml(p.prompt_text)+'</textarea></label>'+
      (done
       ? '<p class="note">Response submitted '+escapeHtml(p.response_submitted_at?formatDate(p.response_submitted_at):'')+'. '+Number(p.candidates_created||0)+' reference/candidate record(s) created; '+Number(p.findings_rejected||0)+' finding(s) rejected by validation.</p>'+(p.response_text?'<details style="margin-top:8px"><summary><strong>View complete AI research report and price comparisons</strong></summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:620px;overflow:auto;padding:12px;background:var(--surface-secondary,#f6f6f6);border-radius:8px">'+escapeHtml(p.response_text)+'</pre></details>':'')
@@ -606,8 +606,21 @@ function renderManualAiResearchBatches(batches){
   '</article>';
  }).join('');
  host.querySelectorAll('[data-manual-copy]').forEach(button=>button.addEventListener('click',()=>copyManualAiPrompt(button.dataset.manualCopy,button)));
+ host.querySelectorAll('[data-manual-refresh-prompt]').forEach(button=>button.addEventListener('click',()=>refreshManualAiPrompt(button.dataset.manualRefreshPrompt,button)));
  host.querySelectorAll('[data-manual-save]').forEach(button=>button.addEventListener('click',()=>saveManualAiDraft(button.dataset.manualSave,button)));
  host.querySelectorAll('[data-manual-submit]').forEach(button=>button.addEventListener('click',()=>submitManualAiResponse(button.dataset.manualSubmit,button)));
+}
+async function refreshManualAiPrompt(promptId,button){
+ if(!window.confirm('Replace this unstarted saved prompt with the improved package-comparison research instructions? Any existing response draft or submitted response is protected and cannot be replaced.'))return;
+ button.disabled=true;
+ const status=$('manual-ai-status');
+ if(status)status.textContent='Regenerating research prompt…';
+ try{
+  const result=await request('/rest/v1/rpc/platform_owner_refresh_manual_ai_research_prompt',{method:'POST',body:JSON.stringify({p_prompt_id:promptId})});
+  if(status)status.textContent='Updated prompt for '+result.products+' selected product(s). Your product selection and assistant are unchanged.';
+  await loadManualAiResearchBatches();
+ }catch(err){if(status)status.textContent='Could not regenerate this prompt: '+(err.message||String(err));}
+ finally{button.disabled=false;}
 }
 async function copyManualAiPrompt(promptId,button){
  const field=$('manual-ai-prompt-'+promptId);if(!field)return;

@@ -1,0 +1,33 @@
+name: Build TradeFlow AI Manager (Windows)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/tradeflow-ai-manager-desktop-20261110
+    paths:
+      - "tools/tradeflow-ai-manager/**"
+      - ".github/workflows/tradeflow-ai-manager-windows.yml"
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/tradeflow-ai-manager/requirements.txt
+          pip install pyinstaller==6.16.0
+      - name: Build portable executable
+        run: |
+          pyinstaller --noconfirm --clean --onefile --windowed --name TradeFlowAIManager --paths tools/tradeflow-ai-manager tools/tradeflow-ai-manager/app.py
+      - name: Upload executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: TradeFlowAIManager-Windows-x64
+          path: dist/TradeFlowAIManager.exe
+          if-no-files-found: error

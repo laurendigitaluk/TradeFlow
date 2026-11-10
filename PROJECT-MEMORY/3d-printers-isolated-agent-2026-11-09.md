@@ -55,3 +55,13 @@ The LIVE schema has no dedicated project-memory/checkpoint table in any schema; 
 - The isolated `gemma/3d-printers` branch contains the route/extraction and compact-result code. The latest task result was 9,811 bytes and completed normally.
 - New branch `fix/3d-printer-review-row-heartbeat-installer-20261110` is confined to `gemma/3d-printers`; it corrects the actual review-row call sites and heartbeat/installer regression coverage. Existing PR #346's helper was not wired into the final row builder, and PR #347 is stale.
 - No Research PC update, restart, queue task, evidence approval or import was performed.
+
+
+
+### Correction — worker lifecycle and exact-branch counts (10 November 2026, 01:30 UTC)
+
+The earlier 01:21:21 status timestamp was the `worker_stopped` event for worker `DESKTOP-LVASEUB-3d-printers-equipment-132732`, not proof of an actively polling idle process. A later isolated process `DESKTOP-LVASEUB-3d-printers-equipment-133276` started at 01:29:56 and stopped cleanly at 01:30:43 without claiming a task. The category status row is `idle`, `current_task=null`, `last_error=null`; there is no active worker process at this check. Neither start nor stop was triggered by this watch. No post-PR #348 research task has run, and worker telemetry does not expose the installed commit SHA.
+
+The exact category-and-branch task filter now returns 30 parent tasks: 29 completed and 1 failed, representing 86 product subtasks (78 in completed parents and 8 in the failed parent). Broader category-only payload filtering includes an additional non-exact-branch row and must not be used for branch-specific reporting.
+
+The replacement PR is now open as [PR #349](https://github.com/laurendigitaluk/TradeFlow/pull/349), targeting only `gemma/3d-printers`. GitHub reports it mergeable; Gemma Research Tests run #698 passed. It contains the actual persisted-row mapping correction, heartbeat-stage separation, and the missing telemetry/installer regression files. It is not merged or deployed.

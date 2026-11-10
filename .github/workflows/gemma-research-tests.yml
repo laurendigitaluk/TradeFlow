@@ -81,6 +81,9 @@ jobs:
             tools/tradeflow-gemma-agent/src/agent-speed.test.mjs \
             tools/tradeflow-gemma-agent/src/agent.source-selection.test.mjs \
             tools/tradeflow-gemma-agent/src/desktop-control.test.mjs \
-            tools/tradeflow-gemma-agent/src/task-result-summary.test.mjs
+            tools/tradeflow-gemma-agent/src/task-result-summary.test.mjs \
+            tools/tradeflow-gemma-agent/src/specialist-idle-heartbeat.test.mjs \
+            tools/tradeflow-gemma-agent/src/agent-telemetry.test.mjs \
+            tools/tradeflow-gemma-agent/src/installer-manifest.test.mjs
       - name: Check Owner Dashboard JavaScript syntax
         run: node --check platform-owner-dashboard.js

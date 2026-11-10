@@ -88,31 +88,85 @@
     </div></details></section>
 
     
-<section id="cloud-ai-research" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">CATALOGUE RESEARCH</span><strong>Cloud AI Research Manager</strong><small>Connect multiple AI providers, queue product research and review submitted evidence.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
-<div class="panel-head"><div><div class="eyebrow">Cloud AI providers</div><h2>Provider connections</h2></div><button id="cloud-ai-refresh" type="button">Refresh</button></div>
-<p class="muted">Only enable a provider after confirming its API access is genuinely free for your account. Free-tier limits vary. When a provider reaches a limit, its work must pause; this manager must never switch to a paid model automatically. API keys are sent directly to a protected database function and stored in Supabase Vault, never in this page.</p>
-<div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
-<div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
-<div class="plan-editor" style="margin-top:20px"><h3>Catalogue research selection</h3><p class="muted">Choose a category and optionally a branch. The product checklist shows how much active UK new and used market evidence is already linked to each catalogue product. Tick any combination of products, use the quick selection buttons, or queue the whole branch/category.</p>
-<form id="cloud-ai-enqueue-form"><div class="plan-fields">
-<label>1. Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
-<label>2. Branch (optional)<select id="cloud-ai-branch" disabled><option value="">Choose a category first…</option></select></label>
-<div style="grid-column:1/-1;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
- <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Product checklist and existing evidence</strong><span id="cloud-ai-product-list-summary" class="muted">Choose a category to load products.</span></div>
- <div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;align-items:center"><span class="muted">Quick select:</span><button type="button" data-cloud-ai-select-count="1">1</button><button type="button" data-cloud-ai-select-count="2">2</button><button type="button" data-cloud-ai-select-count="3">3</button><button type="button" data-cloud-ai-select-count="5">5</button><button type="button" data-cloud-ai-select-count="10">10</button><button type="button" data-cloud-ai-select-count="100">100</button><button type="button" data-cloud-ai-select-count="500">500</button><button type="button" id="cloud-ai-clear-selection">Clear selection</button></div>
- <div id="cloud-ai-product-list" style="max-height:520px;overflow:auto;border:1px solid var(--border,#ddd);border-radius:6px"><p class="muted" style="padding:10px">Choose a category to load its products.</p></div>
- <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px"><button type="button" id="cloud-ai-product-prev" disabled>Previous 500</button><button type="button" id="cloud-ai-product-next" disabled>Next 500</button></div>
+<section id="cloud-ai-research" class="panel owner-accordion-panel"><details class="owner-section-accordion" open><summary><span class="owner-accordion-copy"><span class="eyebrow">CATALOGUE RESEARCH</span><strong>AI Research Centre</strong><small>Select catalogue products, choose an AI assistant, generate a deep-research prompt and return its findings for evidence review.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
+<div class="panel-head"><div><div class="eyebrow">Manual web research</div><h2>Catalogue research workspace</h2></div><button id="manual-ai-refresh" type="button">Refresh batches</button></div>
+<p class="muted">This workspace does not require an API key. TradeFlow writes the research instructions from the selected catalogue records and existing evidence, creates prompts in batches, and saves each pasted response. The assistant must search the live web and open the original product/listing pages; answers based on memory or search snippets are not accepted as evidence.</p>
+<div id="manual-ai-status" class="action-message" role="status" aria-live="polite"></div>
+
+<div class="plan-editor" style="margin-top:16px">
+ <h3>1. Choose the AI assistant and batch size</h3>
+ <div class="plan-fields">
+  <label>AI assistant
+   <select id="manual-ai-assistant">
+    <option value="chatgpt">ChatGPT</option>
+    <option value="gemini">Google Gemini</option>
+    <option value="grok">Grok</option>
+    <option value="claude">Claude</option>
+    <option value="perplexity">Perplexity</option>
+    <option value="mistral">Mistral Vibe (formerly Le Chat)</option>
+    <option value="deepseek">DeepSeek</option>
+    <option value="qwen">Qwen Chat</option>
+    <option value="copilot">Microsoft Copilot</option>
+    <option value="meta_ai">Meta AI</option>
+   </select>
+  </label>
+  <label>Products per prompt
+   <select id="manual-ai-products-per-prompt">
+    <option value="5">5 products</option>
+    <option value="10" selected>10 products (recommended)</option>
+    <option value="15">15 products</option>
+    <option value="20">20 products</option>
+   </select>
+  </label>
+ </div>
+ <p class="note">The assistant website opens in a separate tab. TradeFlow keeps the generated prompt and response box here. Free chat limits and web-search availability depend on the assistant account you use.</p>
 </div>
-<div style="grid-column:1/-1;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
- <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Research batch</strong><span id="cloud-ai-selected-count">0 individual products selected</span></div>
- <div id="cloud-ai-selected-products" class="muted" style="margin-top:8px">No individual products selected yet.</div>
- <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="submit" id="cloud-ai-queue-selected" disabled>Queue selected products</button><button type="button" id="cloud-ai-queue-branch" disabled>Queue entire branch</button><button type="button" id="cloud-ai-queue-category" disabled>Queue entire category</button></div>
+
+<div class="plan-editor" style="margin-top:16px">
+ <h3>2. Select products from the master catalogue</h3>
+ <p class="muted">Choose a category and optionally a branch. Each product displays its existing active UK new and used evidence counts. Tick products across pages; your selections remain together. Manual batches support up to 500 selected products.</p>
+ <div class="plan-fields">
+  <label>Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
+  <label>Branch (optional)<select id="cloud-ai-branch" disabled><option value="">Choose a category first…</option></select></label>
+ </div>
+ <div style="border:1px solid var(--border,#ddd);border-radius:8px;padding:12px;margin-top:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Product checklist and existing evidence</strong><span id="cloud-ai-product-list-summary" class="muted">Choose a category to load products.</span></div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;align-items:center"><span class="muted">Quick select:</span><button type="button" data-cloud-ai-select-count="1">1</button><button type="button" data-cloud-ai-select-count="2">2</button><button type="button" data-cloud-ai-select-count="3">3</button><button type="button" data-cloud-ai-select-count="5">5</button><button type="button" data-cloud-ai-select-count="10">10</button><button type="button" data-cloud-ai-select-count="100">100</button><button type="button" data-cloud-ai-select-count="500">500</button><button type="button" id="cloud-ai-clear-selection">Clear selection</button></div>
+  <div id="cloud-ai-product-list" style="max-height:520px;overflow:auto;border:1px solid var(--border,#ddd);border-radius:6px"><p class="muted" style="padding:10px">Choose a category to load its products.</p></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px"><button type="button" id="cloud-ai-product-prev" disabled>Previous 500</button><button type="button" id="cloud-ai-product-next" disabled>Next 500</button></div>
+ </div>
+ <div style="border:1px solid var(--border,#ddd);border-radius:8px;padding:12px;margin-top:12px">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Selected products</strong><span id="cloud-ai-selected-count">0 individual products selected</span></div>
+  <div id="cloud-ai-selected-products" class="muted" style="margin-top:8px">No individual products selected yet.</div>
+  <div style="margin-top:12px"><button id="manual-ai-create-batch" type="button" disabled>Generate research prompts for selected products</button></div>
+ </div>
+ <p id="cloud-ai-catalogue-picker-status" class="muted" role="status" aria-live="polite">Loading categories from the TradeFlow master catalogue…</p>
 </div>
-<label>Research type<select id="cloud-ai-task-type" name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
-</div></form><p id="cloud-ai-catalogue-picker-status" class="muted" role="status" aria-live="polite">Loading categories from the master catalogue…</p></div>
-<div class="panel-head" style="margin-top:24px"><h3>Research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
-<div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
-<div class="panel-head" style="margin-top:24px"><h3>Evidence awaiting review</h3><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div><div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div><p class="note">AI findings are staged as pending review. Approving a candidate does not import it. Only a separate verified import operation may add a record to shared market evidence.</p>
+
+<div class="panel-head" style="margin-top:24px"><div><div class="eyebrow">Generated prompts and returned research</div><h2>Manual research batches</h2></div></div>
+<p class="muted">Each prompt contains exact catalogue IDs, manufacturer/model/package details, current evidence counts and existing source references. Copy the prompt, open the selected AI website, run the requested web research, then paste its complete JSON reply into the matching response box. You can save a draft before submitting it.</p>
+<div id="manual-ai-batches" class="plan-admin-list"><p class="muted">Loading saved manual research batches…</p></div>
+
+<div class="panel-head" style="margin-top:28px"><div><div class="eyebrow">Human verification</div><h2>Evidence awaiting review</h2></div><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div>
+<div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div>
+<p class="note">Manual AI findings are staged as pending review. TradeFlow checks the product ID, exact catalogue identity, UK GBP price, source URL and quoted price text before creating a candidate. Nothing is imported into shared market evidence automatically. You must review and approve each candidate.</p>
+
+<details style="margin-top:24px;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
+ <summary><strong>Optional automatic API research and provider settings</strong><span class="muted"> — no paid fallback</span></summary>
+ <p class="muted">Use automatic research only when a provider has a confirmed free API allowance and is marked ready. API keys are stored in Supabase Vault. TradeFlow must never switch to a paid provider automatically.</p>
+ <div class="panel-head"><div><div class="eyebrow">Automatic API providers</div><h3>Provider connections</h3></div><button id="cloud-ai-refresh" type="button">Refresh providers</button></div>
+ <div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
+ <div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
+ <div class="plan-editor" style="margin-top:16px">
+  <h3>Queue selected catalogue products for API research</h3>
+  <form id="cloud-ai-enqueue-form"><div class="plan-fields">
+   <label>Research type<select id="cloud-ai-task-type" name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
+  </div><p><button type="submit" id="cloud-ai-queue-selected" disabled>Queue selected products via API</button></p></form>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button type="button" id="cloud-ai-queue-branch" disabled>Queue entire branch via API</button><button type="button" id="cloud-ai-queue-category" disabled>Queue entire category via API</button></div>
+ </div>
+ <div class="panel-head" style="margin-top:24px"><h3>Automatic API research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
+ <div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+</details>
 </div></details></section>
 
 <section id="public-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PUBLIC WEBSITE</span><strong>Public Website Pages</strong><small>Manage Examples and review the source-managed How It Works guide.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div class="note">How It Works is maintained as a source-managed, text-only accordion page in <code>how-it-works.html</code>. Its legacy database draft is retained for history and does not control the published guide. Examples remains editable through the public-page editor below.</div><div id="public-page-editor">Loading public page editor…</div></div></details></section>
@@ -128,7 +182,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=44" defer></script>
+<script src="platform-owner-dashboard.js?v=45" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

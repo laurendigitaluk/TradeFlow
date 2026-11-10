@@ -2000,3 +2000,19 @@ Observed LIVE failure: `reviewGemmaCandidate()` called only the candidate-review
 PR #273, “Deepen Gemma category research and capture borderline findings”, was merged into production as commit 7e8e2d4ba6e634fa788ec78b345ac6047e54aee7. GitHub Actions Gemma Research Tests run 42403829606 completed successfully: all Gemma source syntax checks passed, the task-group and website-playbook test suites passed (19 tests, 0 failures), and Owner Dashboard JavaScript syntax passed. The first test run exposed a collection-pagination fixture that dropped the Creality UK locale path; the fixture was corrected to retain /uk/, and the subsequent complete CI run passed.
 
 Production now contains all-route probing, bounded search/collection pagination, branch-specific printer/accessory rules, direct-page borderline assessment, validation-failure borderline handoff, approval suppression for borderline queue rows, expanded research coverage metrics, and Owner Dashboard cache reference v29. This confirms GitHub source and CI only; it does not yet confirm Cloudflare's production deployment or Research PC installation. The Research PC must be updated with the production updater, then the owner dashboard must be checked for v29, and exactly one controlled Creality K1 task run before any wider batch is dispatched.
+
+
+## Manual AI research evidence-import boundary — 10 November 2026
+
+The Manual AI Research response workflow has separate stages: save the full report, stage comparison candidates in `platform_catalogue_research_queue`, optionally match a same-manufacturer/model/category package, verify a direct source, and review the queue item. These stages must not be described as an evidence import.
+
+LIVE inspection confirms:
+- `platform_owner_review_catalogue_research_item(p_id,p_decision,p_notes)` only updates queue status/reviewer fields.
+- `platform_owner_verify_manual_ai_comparison(p_queue_id)` only stamps `raw_payload.source_verified` and reviewer metadata. It requires a mapped master product and a direct marketplace/retailer/manufacturer product source; aggregators, editorial pages, category/search pages are rejected.
+- `platform_owner_match_manual_ai_comparison` enforces the same manufacturer, exact model and category, then records the selected package. It does not write shared evidence.
+- No public function contains an INSERT into `public.shared_market_evidence`; no trigger on the research queue or shared evidence table performs an import.
+- `shared_market_evidence` grants authenticated users SELECT only; INSERT/UPDATE/DELETE are restricted to service_role/postgres. Do not use direct SQL writes or elevate a queue approval into an import.
+
+A dedicated owner-authorised importer is still required. It should validate approved status, explicit source verification, exact mapped product/package, direct HTTPS product/listing URL, GBP currency and positive price, evidence type, distinct condition, availability, observed date and source excerpt; deduplicate by source identity; insert one evidence record; and set the queue's evidence link/import timestamp atomically. UK-used evidence must remain reference-only and must not feed automatic buying valuation. Do not deploy an importer until its authorization, RLS/security-definer boundary, deduplication, rollback and read-after-write tests pass.
+
+The 10 November 2026 AKASO 360 review is recorded in `CHECKPOINTS/2026-11-10-manual-ai-research-evidence-review.md`. It reviewed 13 candidates from one completed Claude batch, found zero import-eligible direct sources and imported zero records. No code/database changes or deployment were made.

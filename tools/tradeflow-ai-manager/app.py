@@ -49,6 +49,8 @@ class ManagerApp(tk.Tk):
             providers.columnconfigure(0, weight=1)
             ttk.Label(frame, text=provider.title(), width=14).pack(side="left")
             key_var = tk.StringVar()
+            free_var = tk.BooleanVar(value=False)
+            self.free_confirm[provider] = free_var
             model_var = tk.StringVar(value=self.store.get_state(f"{provider}.model"))
             self.vars[f"{provider}.key"] = key_var
             self.vars[f"{provider}.model"] = model_var

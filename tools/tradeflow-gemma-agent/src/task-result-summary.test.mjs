@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import {
   summarizeTaskOutput,
   summarizeTaskResults,
@@ -146,4 +147,18 @@ test('compact parent result includes aggregate totals while retaining compact pe
   assert.equal(result.aggregate.enriched, 1);
   assert.equal(result.aggregate.research_metrics.search_results, 10);
   assert.equal(result.results.length, 2);
+});
+
+test('worker emits parent completion only after the parent completion RPC confirms success', async () => {
+  const worker = await readFile(new URL('./task-worker.mjs', import.meta.url), 'utf8');
+  const subtaskReport = worker.indexOf('await safeReport(buildSubtaskCompletionReport(');
+  const parentRpc = worker.indexOf("const completionConfirmed=await rpc('platform_ai_agent_complete_task'");
+  const completionGuard = worker.indexOf('if(completionConfirmed!==true)');
+  const parentReport = worker.indexOf('const parentCompletion=buildParentCompletionReport(');
+
+  assert.ok(subtaskReport >= 0);
+  assert.ok(parentRpc > subtaskReport);
+  assert.ok(completionGuard > parentRpc);
+  assert.ok(parentReport > completionGuard);
+  assert.doesNotMatch(worker, /status:'idle',current_task:null,event_type:'task_completed'/);
 });

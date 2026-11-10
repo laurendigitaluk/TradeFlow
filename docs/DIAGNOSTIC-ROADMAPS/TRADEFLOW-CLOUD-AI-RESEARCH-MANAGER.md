@@ -1,7 +1,7 @@
 # TradeFlow Cloud AI Research Manager — Developer Diagnostic Roadmap
 
 Updated: 10 November 2026
-Status: architecture and repository preflight completed; implementation is isolated on `feature/cloud-ai-research-manager-20261110`. Not deployed.
+Status: initial dashboard and TEST database foundation implemented; cloud execution and review/import remain outstanding. Implementation is isolated on `feature/cloud-ai-research-manager-20261110`. Not deployed.
 
 ## Purpose
 Provide a Platform Owner Dashboard control centre that can use multiple independently configured cloud AI providers to research UK catalogue products and submit structured findings. Providers are interchangeable adapters, not hard-coded workers. The system must pause/resume on free-tier limits and must never silently incur paid usage.

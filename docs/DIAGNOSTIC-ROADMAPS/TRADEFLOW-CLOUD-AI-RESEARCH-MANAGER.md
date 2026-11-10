@@ -68,3 +68,19 @@ Provide a Platform Owner Dashboard control centre that can use multiple independ
 - Report submission creates inbox records only.
 - Explicit approval/import is the only path that changes catalogue/evidence.
 - LIVE and TEST stay separate; retired Gemma settings remain disabled.
+
+
+## Implementation progress — 10 November 2026
+- Created the dashboard section in `platform-owner-dashboard.html` and owner-side controls in `platform-owner-dashboard.js`: provider configuration, provider connection test, research-job enqueue and queue list.
+- Added TEST migrations for `platform_cloud_ai_providers` and `platform_cloud_ai_research_jobs`, plus owner-only RPCs to save/list providers and enqueue/list jobs.
+- Provider API keys are written through a security-definer owner RPC into Supabase Vault. The dashboard receives only a has-key boolean and never reads the secret back.
+- Added a service-role-only secret lookup RPC and deployed `tradeflow-cloud-ai-manager` Edge Function to TEST (ACTIVE, verify_jwt=true, version 2). It verifies the owner JWT and active platform membership, then checks provider model-list endpoints. Gemini key is sent in an HTTP header, not the URL.
+- Enforced that enabled OpenRouter models must end in `:free`. Provider activation also requires explicit free-tier confirmation. HTTP 402/403/429 during provider test pauses that provider for one hour; no paid model fallback exists.
+- TEST schema inspection confirms both new tables and four owner RPCs exist; queue currently has zero jobs. No provider credentials have been entered and no provider inference/research has been run.
+
+## Remaining implementation gates
+1. Complete authenticated owner UI smoke test: list provider rows, save one key to Vault, confirm no secret is returned, run connection test and verify provider state.
+2. Implement a bounded research runner: lease queued job, fetch allowed UK source pages, call an eligible free model, validate structured findings, submit to review queue/report inbox, persist cooldown and resume state.
+3. Add approved-source selection, scheduled cadence, retry/backoff and evidence review/import workflow. Do not write directly to shared evidence.
+4. Deploy owner dashboard files and migrations to TEST hosting only after source-level checks; test all owner-only flows.
+5. Keep LIVE untouched until acceptance and explicit release decision.

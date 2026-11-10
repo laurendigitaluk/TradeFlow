@@ -412,9 +412,9 @@ function renderCloudAiProviders(rows){
    '<label>API key <input name="api_key" type="password" autocomplete="new-password" placeholder="'+(p.has_key?'Key saved securely — enter a new key to replace':'Paste provider API key')+'"></label>'+
    '<label>Daily request cap<input name="daily_request_limit" type="number" min="0" max="10000" value="'+(p.daily_request_limit||0)+'"></label>'+
    '<label class="plan-live"><input name="free_tier_confirmed" type="checkbox" '+(p.free_tier_confirmed?'checked':'')+'> I have verified this API/model is available without paid billing on my account</label>'+
-   '<div class="plan-editor-foot"><span class="plan-status">'+escapeHtml(p.status||'not configured')+(p.has_key?' · key stored in Vault':' · no key')+'</span><button type="submit">Save provider</button></div></form>';
+   '<div class="plan-editor-foot"><span class="plan-status">'+escapeHtml(p.status||'not configured')+(p.has_key?' · key stored in Vault':' · no key')+'</span><button type="submit">Save provider</button><button type="button" data-test-provider="'+d.provider_key+'">Test connection</button></div></form>';
  }).join('');
- host.querySelectorAll('form').forEach(f=>f.addEventListener('submit',saveCloudAiProvider));
+ host.querySelectorAll('form').forEach(f=>{f.addEventListener('submit',saveCloudAiProvider);f.querySelector('[data-test-provider]')?.addEventListener('click',()=>testCloudAiProvider(f));});
 }
 async function loadCloudAiProviders(){
  const host=$('cloud-ai-providers');if(!host)return;
@@ -459,3 +459,14 @@ async function enqueueCloudAiJob(e){
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);
 $('cloud-ai-enqueue-form')?.addEventListener('submit',enqueueCloudAiJob);
+
+
+async function testCloudAiProvider(form){
+ const button=form.querySelector('[data-test-provider]'),status=form.querySelector('.plan-status');
+ button.disabled=true;status.textContent='Testing provider connection…';
+ try{
+  const result=await request('/functions/v1/tradeflow-cloud-ai-manager',{method:'POST',body:JSON.stringify({action:'test_provider',provider_key:form.dataset.provider})});
+  status.textContent=result?.ok?'Connected · '+(result.model_listed?'model confirmed':'model ID needs checking')+' · '+result.models_checked+' models checked':(result?.error||'Connection check failed');
+ }catch(e){status.textContent=e.message||String(e)}
+ finally{button.disabled=false}
+}

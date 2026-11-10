@@ -237,7 +237,13 @@ export function matchesTaskModel(title, url, task = {}) {
   const model = String(task.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   if (!model) return false;
   let urlIdentity = String(url || '');
-  try { const parsed = new URL(urlIdentity); urlIdentity = parsed.hostname + ' ' + decodeURIComponent(parsed.pathname); } catch { /* Keep plain URL text for non-URL identifiers. */ }
+  let productSlugIdentity = '';
+  try {
+    const parsed = new URL(urlIdentity);
+    const pathname = decodeURIComponent(parsed.pathname);
+    urlIdentity = parsed.hostname + ' ' + pathname;
+    productSlugIdentity = pathname.split('/').filter(Boolean).at(-1) || '';
+  } catch { /* Keep plain URL text for non-URL identifiers. */ }
   // Ignore query strings: search terms and tracking parameters are not product identity.
   const titleIdentity = String(title || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   // Retailer slugs sometimes concatenate bundle labels with the model (for example
@@ -269,7 +275,16 @@ export function matchesTaskModel(title, url, task = {}) {
   }
 
   const accessoryPattern = /\b(accessories|accessory|upgrade|upgrades|spare|spares|replacement|extruder|build plate|nozzle|filament|resin|enclosure|feeder|dryer|maintenance kit|upgrade kit)\b/;
-  if (segments.some(segment => accessoryPattern.test(segment))) return false;
+  // Retailer taxonomy can say "printer and accessories" even when the terminal
+  // URL is a genuine printer product (for example 3DJake's Anycubic category).
+  // Apply accessory rejection to the product title and terminal product slug,
+  // not unrelated parent/category path segments.
+  const productSlug = productSlugIdentity.toLowerCase()
+    .replace(/combo(?=[a-z0-9])/g, 'combo ')
+    .replace(/(?:^|[^a-z0-9])(?:ams|ace|cfs)(?=[a-z0-9])/g, match => match + ' ')
+    .replace(/[^a-z0-9]+/g, ' ').trim();
+  const accessorySegments = [titleIdentity, productSlug].filter(Boolean);
+  if (accessorySegments.some(segment => accessoryPattern.test(segment))) return false;
 
   const comboPattern = /\b(combo|ams|ace|cfs|multi ?colou?r|[468] ?colou?r)\b/;
   const isComboTask = /(?:combo|ams|ace|cfs|multi.?colou?r|[468].?colou?r)/i.test(
@@ -561,7 +576,9 @@ export function buildDeepPageExcerpt(text, task = {}, maxChars = 6200) {
 }
 
 export function extractionBatchSizeForTask(task) {
-  return 2;
+  // One direct product page per inference call keeps Anycubic/retailer pages
+  // within the local Ollama latency budget and isolates malformed responses.
+  return is3dPrinterResearchTask(task) ? 1 : 2;
 }
 
 function extractObservationSnippets(text, pattern, limit = 8) {
@@ -870,8 +887,8 @@ export function getGemmaExtractionTimeoutMs(task, env = {}) {
   if (is3dPrinterResearchTask(task)) {
     const configured = Number(env.GEMMA_3D_EXTRACTION_TIMEOUT_MS);
     return Number.isFinite(configured) && configured > 0
-      ? Math.max(15000, Math.min(45000, configured))
-      : 45000;
+      ? Math.max(15000, Math.min(90000, configured))
+      : 90000;
   }
   return Math.max(60000, Math.min(300000, Number(env.OLLAMA_TIMEOUT_MS) || 180000));
 }

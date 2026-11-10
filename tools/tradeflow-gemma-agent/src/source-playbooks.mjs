@@ -49,7 +49,7 @@ const playbooks = {
         // infer a price from the URL; open the page and inspect selected variants.
         routesByModel: [
           { modelIncludes: ['kobra 3 max v2'], routes: ['/products/kobra-3-max-v2-3d-printer', '/products/kobra-3-max-v2-ace-2-pro-combo'] },
-          { modelIncludes: ['kobra 4'], routes: ['/products/kobra-4-3d-printer'] },
+          { modelIncludes: ['kobra 4'], routes: ['/products/kobra-4-3d-printer', '/products/kobra-4-combo-3d-printer'] },
           { modelIncludes: ['kobra s1'], routes: ['/products/kobra-s1-ace-2-pro-combo', '/products/kobra-s1-ace-2-pro-combo-3d-printer'] }
         ],
         genericSearchFallback: false,
@@ -88,13 +88,13 @@ const playbooks = {
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
         collectionApi: 'shopify',
-        routes: ['https://www.123-3d.co.uk/collections/3d-printers', 'https://www.123-3d.co.uk/collections/refurbished-printers'],
+        routes: ['https://www.123-3d.co.uk/collections/anycubic-3d-printers', 'https://www.123-3d.co.uk/collections/refurbished-printers'],
         routesByResearchType: {
-          uk_new: ['https://www.123-3d.co.uk/collections/3d-printers'],
+          uk_new: ['https://www.123-3d.co.uk/collections/anycubic-3d-printers'],
           uk_used: ['https://www.123-3d.co.uk/collections/refurbished-printers']
         },
         genericSearchFallback: false,
-        navigation: 'Use only the all-printers collection for uk_new and the dedicated refurbished-printers collection for uk_used; never scan both lanes for a single-lane task. The collection has brand/type filters and pagination: follow pagination, filter exact manufacturer/model and follow each individual printer page. Capture GBP/VAT price, stock, machine-only/Combo package and, for refurbished stock, exact grade/condition and warranty. Collection/search-card prices are discovery clues, not final evidence.'
+        navigation: 'For Anycubic new-printer tasks, start with the manufacturer-specific /collections/anycubic-3d-printers catalogue; the generic 3D-printers collection can omit the exact family. For uk_used use only the dedicated refurbished-printers collection. For uk_both inspect both routes. Follow pagination and individual product links. The collection contains similarly named but different machines: reject Kobra 3 Max when the task requests Kobra 3 Max V2, and reject Kobra 3 V2 when the task requests Kobra 3 Max V2. Refurbished Kobra S1 Combo currently listed as ACE Pro is not ACE 2 Pro. Capture direct-page GBP/VAT, stock, exact machine/package, grade/condition, warranty and delivery. Collection-card prices are discovery clues, not final evidence.'
       },
       'idig3dprinting.co.uk': {
         label: 'iDig3DPrinting UK retailer',
@@ -110,9 +110,9 @@ const playbooks = {
       },
       '3djake.uk': {
         label: '3DJake UK retailer',
-        routes: ['/search?query={query}'],
+        routes: ['https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer'],
         genericSearchFallback: false,
-        navigation: 'Use the UK storefront search once with the exact manufacturer and model, then follow the direct product page. Confirm the UK locale and GBP amount, selected package/variant, availability and condition on the detail page. Do not accept another locale, search-card price or similarly named accessory as evidence.'
+        navigation: 'For Anycubic tasks, start with the UK Anycubic 3D Printers brand catalogue at /anycubic-3d-printer-and-accessories/anycubic-3d-printer rather than the generic /search?query route, which can return no exact model links. Treat the brand catalogue as discovery only: use its 3D Printers & More section and pagination, follow each exact direct printer product URL, and reject the separate Spare Parts category. Capture the direct page title, exact model/package, selected variant, current GBP price, availability, delivery estimate and condition. Do not use catalogue-card or crossed-out prices as final evidence.'
       },
       'gumtree.com': {
         label: 'Gumtree UK used marketplace',
@@ -128,9 +128,9 @@ const playbooks = {
       },
       'ebay.co.uk': {
         label: 'eBay UK marketplace',
-        routes: ['/sch/i.html?_nkw={query}&_sacat=0'],
+        routes: ['https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014', '/sch/i.html?_nkw={query}&_sacat=0'],
         genericSearchFallback: false,
-        navigation: 'Use one exact manufacturer/model UK search route. Follow only individual active item pages; capture current seller asking price (not sold/completed price), condition, item location, postage, listing date/status and exact machine/package. Separate new, used, refurbished and ex-demo. Treat 403/blocked listings as unavailable; do not retry alternate routes or infer the price from the result card.'
+        navigation: 'For Anycubic tasks, inspect the approved ANYCUBIC seller storefront FDM 3D Printers category as an additional discovery route, then use the exact-model UK search route. Follow only individual active item pages; capture current seller asking price (not sold/completed price), condition, item location, postage, listing date/status and exact machine/package. Separate new, used, refurbished and ex-demo; the storefront category is discovery only. If a direct item page or search route returns HTTP 403, record it as blocked and continue with other approved sources; never bypass access controls or infer verified evidence from a result card.'
       },
       'amazon.co.uk': {
         label: 'Amazon UK marketplace',

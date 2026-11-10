@@ -999,3 +999,22 @@ The production Gemma Control Centre now has an **Update all workers** action bac
 
 
 Validation addendum — 10 November 2026: after correcting the CI parser to tolerate sparse category-branch checkouts, the full Gemma Research Tests workflow passed on all seven category branches (3D Printers, Gaming, Cameras, Drones, Metal Detectors, Mobile Phones and Laptops). Production run 42730089144 also passed PowerShell syntax checks for the all-worker updater and dashboard, Node syntax checks, compact task-result regression tests and dashboard JavaScript syntax. The earlier category-branch CI failures were caused by the workflow attempting to parse production-only desktop scripts absent from sparse branch checkouts; the workflow now skips only files not present in that checkout. This is a CI path correction, not a runtime worker change. Research PC deployment remains pending.
+
+
+## 10 November 2026 — Research PC reconciliation handover
+
+The owner confirmed the actual local 3D Printer repository from a fresh PowerShell session:
+- Folder: `C:\\CTFGemma2\\Gemma-3D-Printers`
+- Remote: `https://github.com/laurendigitaluk/TradeFlow.git`
+- Branch: `gemma/3d-printers`
+- Working tree contains modified and untracked files, including timestamped backups. Preserve all local changes; no updater, pull, reset, merge or overwrite has been run during this reconciliation.
+
+LIVE status read confirms 3D Printers idle with last heartbeat at 13:43:44 UTC; its previous run retained two captures but Gemma extraction timed out and accepted zero candidates. Gaming is idle; its last run found zero eligible URLs and several configured routes returned HTTP 403/404/400. Drones is idle. Cameras, Metal Detectors and Mobile Phones were absent from the status query results. These database rows alone do not prove local process liveness.
+
+All seven specialist branches exist. The 3D branch contains the merged specialist idle-heartbeat and task-result-summary changes, but Research PC installation/runtime acceptance remains unverified. The category-local updater and launcher validate the clone branch against its one-key `agent.config.json`; use these entry points rather than the legacy shared Control Centre launcher.
+
+Next pending owner-provided read-only comparison: local HEAD versus `git ls-remote origin refs/heads/gemma/3d-printers`, plus `git diff --stat` and focused diffs for the category config and worker. This command was provided once on 10 November; do not ask the owner to repeat earlier remote/status checks. After receiving it, preserve local-only changes, reconcile against the remote branch, then update and verify the 3D worker before applying shared fixes to the other six agents.
+
+Detailed operational state, owner instructions, exact pending command and preservation rules are recorded in `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` (checkpoint commit `ece4e1e14055a08865058cadedda6719930790e9`).
+
+Documentation discovery note: the expected historical manual paths `docs/GEARCASHOUT-AI-OPERATING-MANUAL.md` and `docs/GEARCASHOUT-SYSTEM-HANDBOOK.md` returned 404 on both `production` and `gemma/3d-printers` in this repository. Do not guess replacement paths; locate the canonical manuals/repository before editing.

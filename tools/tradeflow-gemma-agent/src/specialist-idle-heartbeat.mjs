@@ -1,0 +1,19 @@
+export function specialistIdleHeartbeatIntervalMs(pollIntervalMs) {
+  const parsed = Number(pollIntervalMs);
+  const safePollMs = Number.isFinite(parsed) && parsed >= 5000 ? Math.floor(parsed) : 15000;
+  return Math.max(60000, Math.min(300000, safePollMs * 4));
+}
+export function shouldEmitSpecialistIdleHeartbeat(state = {}) {
+  return state.stopping !== true && state.taskInProgress !== true && state.pollInProgress !== true && state.heartbeatInProgress !== true && state.lastPollSucceeded === true;
+}
+export function buildSpecialistIdleHeartbeatRecord(identity, workerId, pollIntervalMs, isolatedAgentKey = null) {
+  const agent = identity || {};
+  return {
+    agent_key: String(agent.agent_key || 'gemma-task-worker'),
+    agent_name: String(agent.agent_name || 'Gemma Task Worker'),
+    category: String(agent.category || 'Task control'),
+    status: 'idle', current_task: null, event_type: 'heartbeat',
+    message: String(agent.agent_name || 'Gemma specialist') + ' is alive and idle.',
+    details: { worker_id: String(workerId || '').slice(0, 120), poll_interval_ms: Number(pollIntervalMs) || 15000, stage: 'idle_poll', ...(isolatedAgentKey ? { isolated_agent_key: String(isolatedAgentKey) } : {}) }
+  };
+}

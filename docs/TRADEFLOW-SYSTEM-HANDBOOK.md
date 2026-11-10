@@ -4704,3 +4704,24 @@ Remaining work: remove/retire the local Windows installation, archive and remove
 ## Runtime source retirement — 10 November 2026
 
 After the owner-dashboard retirement merge and the LIVE RPC execution revocation, the production branch's dedicated local runtime assets were removed: `.github/workflows/gemma-research-tests.yml`, `tools/gemma-agent-isolation/`, `tools/tradeflow-gemma-agent/` and `tools/tradeflow-gemma-desktop/`. The seven specialist branch heads were preserved first as archive branches: `archive-gemma-3d-printers-20261110`, `archive-gemma-gaming-20261110`, `archive-gemma-cameras-20261110`, `archive-gemma-drones-20261110`, `archive-gemma-metal-detectors-20261110`, `archive-gemma-mobile-phones-20261110`, and `archive-gemma-laptops-20261110`. The original seven specialist branch refs still need deletion; the available GitHub connection does not expose a branch-delete action. Do not delete the archive branches or the production recovery branch.
+
+
+## 10 November 2026 — Final retirement status: local category research-worker platform
+
+The owner has retired the local category research-worker platform and its new-evidence lab-search/control-centre workflow. This is a completed retirement boundary, not a pause or an instruction to reinstall it.
+
+### Current system state
+- The TradeFlow LIVE owner dashboard no longer contains the AI research control-centre or shared agent-room navigation, HTML sections, polling, task-enqueue, source-management, review-queue or messaging UI. The remaining retired CSS selectors have also been removed from `platform-owner-dashboard.css`.
+- The local worker source and updater files have been removed from the GitHub `main` branch. The production branch contains no worker runtime directory.
+- LIVE execution permission for the worker and owner research RPC family has been revoked, including service-role execution. The migration source is recorded as `supabase/migrations/20261110173027_retire_research_agent_runtime_permissions_20261110.sql`.
+- On the Research PC, the owner ran the no-backup removal script. The confirmed local roots, scheduled tasks and worker shortcuts were removed. Ollama itself remains installed; model removal was attempted and the Chrome web-app registration remains a separate local verification item.
+
+### Preservation boundary — mandatory
+Do not delete or alter catalogue products, product categories, manufacturer/model/package metadata, existing market evidence, customer/subscriber data, Stripe configuration, published subscriber websites, or historical research/audit rows as part of this retirement. Do not clear the historical research queue, source registry, activity log or message history. These records are retained as historical data and are not an active worker service.
+
+LIVE read-only verification at retirement: master products 47,410; master categories 38; shared market evidence 4,542; tenant catalogue selections 23,993; historical worker tasks 35; status rows 12; activity rows 14,808; agent messages 451; catalogue research queue 75; research source registry 119. The worker RPC execution check returned false for service_role, authenticated and anon across the retired RPC family.
+
+### Git and deployment boundaries
+The production owner-dashboard HTML and JavaScript were checked for retired control-centre/common-room references and returned zero matches. The production stylesheet cleanup is committed. Worker runtime files are removed from the default `main` branch. Historical SQL migration files are retained because they are part of the applied database migration history; the retirement migration revokes runtime access without dropping tables or historical records. Existing historical checkpoints and migration records remain audit history, not executable worker installations.
+
+No new research findings are to be auto-approved or imported. Any future market-research output presented for catalogue use must first be independently reviewed by the owner/ChatGPT, with exact product/package matching and source evidence. This retired worker platform must not be restarted or rebuilt as part of ordinary catalogue maintenance.

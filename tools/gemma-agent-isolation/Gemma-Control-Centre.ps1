@@ -132,6 +132,16 @@ function Update-Agent($Agent) {
     $p = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $runtime.Paths.Install -WindowStyle Hidden -RedirectStandardOutput $outLog -RedirectStandardError $errLog -PassThru
     $script:UpdateProcesses[$Agent.Key] = $p.Id
 }
+function Update-AllAgents {
+    $scriptPath = Join-Path $SharedRoot 'Update-All-Gemma-Agents.ps1'
+    $url = 'https://raw.githubusercontent.com/laurendigitaluk/TradeFlow/production/tools/gemma-agent-isolation/Update-All-Gemma-Agents.ps1'
+    Invoke-WebRequest -UseBasicParsing -Uri $url -OutFile $scriptPath
+    if (-not (Test-Path -LiteralPath $scriptPath -PathType Leaf)) { throw 'Could not download the all-worker update controller.' }
+    $arguments = '-NoProfile -ExecutionPolicy Bypass -File "' + $scriptPath + '" -Environment LIVE'
+    $started = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $arguments -WorkingDirectory $SharedRoot -WindowStyle Hidden -PassThru
+    Add-Content -LiteralPath (Join-Path $LogRoot 'control-centre-actions.log') -Value ("{0} UPDATE ALL requested; controller PID={1}" -f (Get-Date -Format o),$started.Id)
+    return $started.Id
+}
 function Show-AgentLogs($Agent) {
     $path = Join-Path $LogRoot $Agent.Folder
     New-Item -ItemType Directory -Path $path -Force | Out-Null
@@ -196,6 +206,26 @@ $openRootButton.Width = 112
 $openRootButton.Height = 30
 $openRootButton.Add_Click({ Start-Process explorer.exe -ArgumentList ('"' + $LogRoot + '"') })
 $toolbar.Controls.Add($openRootButton)
+$updateAllButton = New-Object System.Windows.Forms.Button
+$updateAllButton.Text = 'Update all workers'
+$updateAllButton.Width = 142
+$updateAllButton.Height = 30
+$toolbar.Controls.Add($updateAllButton)
+$updateAllButton.Add_Click({
+    $answer = [System.Windows.Forms.MessageBox]::Show(
+        'This updates all seven isolated LIVE workers. Any running worker will be asked to finish its current task and stop cleanly. Updates run one at a time. Workers that were running will restart only after their own update succeeds; workers that were already stopped will remain stopped. Continue?',
+        'Update all Gemma workers',
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    )
+    if ($answer -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+    try {
+        $pidStarted = Update-AllAgents
+        [System.Windows.Forms.MessageBox]::Show("All-worker update controller started. Process ID: $pidStarted. Progress and results will be written to the shared logs folder.",'Update requested',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Information) | Out-Null
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message,'Update all failed',[System.Windows.Forms.MessageBoxButtons]::OK,[System.Windows.Forms.MessageBoxIcon]::Warning) | Out-Null
+    }
+}.GetNewClosure())
 $summaryLabel = New-Object System.Windows.Forms.Label
 $summaryLabel.AutoSize = $true
 $summaryLabel.Margin = New-Object System.Windows.Forms.Padding(18,8,4,4)

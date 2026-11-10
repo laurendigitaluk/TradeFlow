@@ -4107,3 +4107,49 @@ Preservation boundary: do not delete catalogue products, categories, manufacture
 The owner ran the no-backup PC removal script. The confirmed installation folders, scheduled tasks and worker shortcuts were removed. Ollama remains installed; final model-list verification and Chrome web-app uninstall confirmation are still outstanding. No local backup was created, as explicitly requested.
 
 Any future market research supplied for catalogue use remains review-only until the owner/ChatGPT independently verifies exact product/package identity, GBP price, condition, availability and direct source evidence. Do not automatically approve or import findings. The retired worker platform must not be restarted or rebuilt as part of ordinary catalogue maintenance.
+
+
+## 10 November 2026 — Gemma retirement reconciliation and preservation boundary
+
+The retired component is the local category research-worker platform, its desktop supervisor/control-centre, its shared agent-room runtime and the associated new-evidence lab workflow. It is not the core TradeFlow Cloudflare request router, the subscriber's manual research form, or the separate TradeFlow Assistant.
+
+### LIVE backend verification
+- TradeFlow LIVE project: `gxsrajtqzdjvmceqcpgv`, status ACTIVE_HEALTHY.
+- Migration `20261110173027_retire_research_agent_runtime_permissions_20261110` is present in LIVE migration history.
+- All 12 rows in `platform_ai_agent_status` are `idle`.
+- `platform_ai_agent_tasks`: 34 completed, 1 failed; no queued or running task rows in the current snapshot.
+- No EXECUTE grants were returned for the retired `platform_ai_agent_*` / `platform_owner_*research*` RPC family to PUBLIC, anon, authenticated or service_role.
+- No dedicated Gemma/research-worker Edge Function appears in the current LIVE Edge Function inventory. The separate `tradeflow-assistant` function remains; it is not the retired research worker.
+
+### Protected LIVE data — unchanged
+- Master catalogue products: 47,410.
+- Master categories: 38.
+- Shared market evidence: 4,542.
+- Tenant catalogue selections: 23,993.
+- Historical research tasks: 35.
+- Historical agent status rows: 12.
+- Historical agent activity: 14,808.
+- Historical agent messages: 451.
+- Historical catalogue research queue: 75.
+- Approved research-source registry rows: 119.
+
+No product, category, manufacturer/model/package record, evidence row, tenant selection, research history, customer/subscriber record, Stripe configuration, published website or transaction record was deleted or modified by this retirement reconciliation.
+
+### Code and website boundaries
+- `worker/index.js` and `wrangler.jsonc` are the core TradeFlow Cloudflare application router/environment configuration. The worker handles clean routes, subscriber login, runtime config and static asset delivery. They are not Gemma worker code and must remain.
+- `buying-research.html` / `.js` are the separate tenant-scoped manual Research Centre. They write `tenant_buying_research`; they are not the global Gemma research worker or shared-evidence ingestion workflow and remain unchanged.
+- The public catalogue browser remains available. Its public page copy and navigation have been changed from “Catalogue & AI Research” to “Product Catalogue”, and AI-assisted research promotion has been removed. Product browsing and source-evidence explanation remain.
+- The production branch's five retired Gemma/deep-source diagnostic and architecture roadmaps have been deleted. Historical checkpoints and project-memory records are retained as audit history.
+- Applied historical SQL migration files are retained to preserve the reproducible database migration chain. The retirement migration revokes the retired RPC execution surface without dropping tables or historical records.
+- The separate TradeFlow Assistant/provider configuration is not the local research-worker platform and has not been removed.
+
+### GitHub branch and deployment limitations
+The seven specialist branches and seven dated archive branch heads were previously cleaned of worker runtime directories and the dedicated Gemma test workflow. Other older Gemma feature/fix/checkpoint branch refs and historical commits remain visible. The connected GitHub operations do not expose branch-ref deletion or Git-history purging, so no claim is made that those refs or historical commits have been erased. They are not the production website runtime.
+
+The production catalogue page and stylesheet changes are committed to GitHub. Cloudflare-served browser verification remains pending; a production-branch commit alone is not proof that the public website has refreshed.
+
+### Next verification
+1. Verify the production catalogue page is served with “Product Catalogue” navigation and no AI-research promotion.
+2. Confirm the public catalogue browser and clean TradeFlow routes still load.
+3. Do not remove `worker/index.js`, `wrangler.jsonc`, the manual tenant Research Centre, historical migration files or protected catalogue/evidence data as part of this retirement.
+4. Do not restart, reinstall or rebuild the retired Gemma worker platform.

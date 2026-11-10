@@ -135,7 +135,7 @@ async function processNextJob(admin:any):Promise<Response>{
    if(!["exact","likely"].includes(finding.product_match))continue;
    const excerpt=String(finding.excerpt||"").slice(0,1000);
    if(excerpt.length<15||!sourcePage.text.toLowerCase().includes(excerpt.toLowerCase().slice(0,Math.min(50,excerpt.length))))continue;
-   const priceMatches=[...excerpt.matchAll(/(?:£|GBP)\\s*([\\d,]+(?:\\.\\d{1,2})?)/gi)].map((m:any)=>Number(m[1].replace(/,/g,"")));
+   const priceMatches=[...excerpt.matchAll(/(?:£|GBP)\s*([\d,]+(?:\.\d{1,2})?)/gi)].map((m:any)=>Number(m[1].replace(/,/g,"")));
    if(!priceMatches.some((n:number)=>Math.abs(n-price)<0.011))continue;
    const canonical=sourcePage.url;
    const dedupe=await crypto.subtle.digest("SHA-256",new TextEncoder().encode([job.manufacturer,job.model,job.package_name||"",canonical,price,finding.evidence_type].join("|").toLowerCase()));

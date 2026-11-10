@@ -5608,3 +5608,52 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - Active prompts retain their generated research prompt, response textarea and controls. Once a prompt is submitted (`completed` or `no_findings`), its generated research prompt textarea and active controls are removed from the main view. Completed items are retained in a collapsed **Completed research** history section, with the full submitted report available on demand. No saved reports or database records are deleted.
 - The reusable ChatGPT instruction remains the same and still directs ChatGPT to retrieve and verify the outstanding submissions. The JavaScript cache reference is v52.
 - This is a frontend-only LIVE change. No Supabase schema/data, TEST data, research batches, queue rows, catalogue products, evidence, tenant/customer or Stripe records were changed. The production deployment and signed-in browser layout/copy action still require verification before calling the UI change complete.
+
+
+## Manual AI evidence review — AKASO 360 report — 10 November 2026
+
+Target: LIVE Supabase project `gxsrajtqzdjvmceqcpgv`; repository branch `production`.
+
+### Retrieval and preserved source material
+- Retrieved the completed Claude batch `1b46e2ba-75ae-499f-83c5-05a07695edba`, prompt `3e633e82-d5c1-4804-b6e3-2b37f1ec83fc`, full original prompt, product snapshot and complete saved assistant response. The prompt selected AKASO 360 Cycling Combo (`b162fdc0-2b9b-4e6b-9a7a-5e3c9280c0aa`). Original report and URLs remain unchanged in Supabase.
+- LIVE has four saved manual batches: this Claude batch is completed and has 13 candidate rows; one ChatGPT and two Google Gemini prompts remain ready/unsubmitted with no saved response and no candidate rows. They were not treated as submissions.
+- Reviewed all 13 pending_review rows. All are associated with the same selected AKASO 360 product snapshot and are currently staged as comparison-only references with no `live_master_product_id`, no `live_evidence_id` and no `imported_at`.
+
+### Catalogue identity and source assessment
+- LIVE has seven active AKASO 360 package variants: Cycling Combo, Drone View Combo, Motorcycle Combo, Motorcycle Combo + 128GB MicroSD Card, Snow Adventure Combo, Creator Combo and Standard Combo. The master model is the same across these variants; package identity must still be checked independently.
+- There are 13 candidate rows but 12 distinct original source URLs: the Supersales category URL is repeated for two different package/price claims. No candidate was silently reassigned to another package.
+- Six of the 12 original URLs opened successfully (Supersales, E-Catalog, road.cc, PriceSpy, Visordown and the eBay search/category page). Six direct URLs were inaccessible/cache-missed (three eBay item URLs and two U-buy product URLs plus the remaining eBay item URL). One additional PriceSpy Creator Combo detail page was opened. No opened original source qualified as a direct retailer/manufacturer product page or an individually opened eBay listing with all required evidence fields.
+- Supersales' opened category page did not show the claimed AKASO 360 products; it showed other AKASO models. The same URL is used by two candidates.
+- E-Catalog's AKASO 360 page showed GBP comparison offers including £178.48 and package variants, but it is an aggregator, not the seller product page.
+- PriceSpy's opened AKASO 360 Creator Combo detail page showed £269.99 as the lowest price and another offer at £433.32; this does not substantiate the candidate's £428.22 figure. It remains aggregator-only.
+- road.cc's opened review dated 24 July 2026 quotes £199.99 for the AKASO 360 camera; this is editorial price context, not a direct retail offer.
+- Visordown's opened review dated 30 June 2026 quotes £299.99 for the Motorcycle Combo and describes its accessories. It is editorial price context, not a direct retail offer.
+- The eBay Motorcycle Combo item (candidate URL `https://www.ebay.co.uk/itm/168576244131`) was returned with detailed listing fields in search content: £346.17, New, manufacturer/model AKASO 360, style Motorcycle Combo with 128GB microSD card, seller location Worksop, UK. The listing says it will post to the United States, so it is not a verified UK-deliverable offer. The matching catalogue package variant is Motorcycle Combo + 128GB MicroSD Card, not the base Motorcycle Combo, but no queue mapping was applied.
+- The eBay opened-never-used category page currently shows a different live AKASO 360 listing at £158.33 plus £21.76 postage, not the candidate's £170. The linked individual listing URL was not accessible when opened, so the current category-page observation is not importable evidence.
+- Primehub, chi020, the eBay Creator Combo listing and both U-buy product pages could not be opened at their supplied direct URLs. Their reported prices remain unverified.
+- No exact duplicate evidence record was found for any candidate's product/source/price/type. One existing active UK-used record remains on the separate Standard Combo product at £378.72 from eBay item 168353588645; it is not one of these candidate URLs. Existing AKASO evidence was not changed.
+
+### Review totals and state
+- Candidates reviewed: 13.
+- Original source URLs: 12 (one repeated URL across two candidates).
+- Original URLs opened successfully: 6; additional linked PriceSpy product detail page opened: 1.
+- Original direct sources verified to the required import standard: 0.
+- Evidence records imported into `shared_market_evidence`: 0.
+- Existing evidence duplicates skipped: 0.
+- Repeated source URLs flagged: 1 URL group (two candidates).
+- Queue candidates formally rejected: 0; candidates eligible for import now: 0; all 13 remain pending_review as comparison/unresolved references. No approval was made as a substitute for import.
+- All 13 queue rows still have null import timestamp/evidence link. No candidate status or source/product mapping was changed.
+
+### Import boundary confirmed against LIVE
+- `platform_owner_review_catalogue_research_item` only changes the queue review status and reviewer metadata. It does not insert into `shared_market_evidence`.
+- `platform_owner_verify_manual_ai_comparison` only records a source-verification flag after owner checks; it does not insert evidence. It requires a matched master product and rejects aggregator, editorial, category and search pages.
+- `platform_owner_list_manual_ai_comparison_matches` and `platform_owner_match_manual_ai_comparison` support same-manufacturer/model/category package discovery and owner-selected mapping. No mapping was written during this review.
+- Current dashboard JavaScript uses the package-match and queue-review RPCs; it has no call to an evidence-import RPC or the source-verification RPC.
+- LIVE has no public function containing an INSERT into `shared_market_evidence`, no queue/evidence trigger that performs an import, and no authorised owner import RPC. The authenticated role has SELECT but no INSERT on `shared_market_evidence`; INSERT is granted to service_role and postgres. Do not bypass this boundary with direct table writes.
+- The required backend blocker is a narrow owner-authorised evidence importer, with validation of approved queue state, explicit source verification, exact mapped master product/package, direct source kind/URL, GBP price, new/used type, condition, availability, observed date, excerpt, deduplication and a queue-to-evidence link. It must preserve used evidence as reference-only and must not let UK-used prices feed automatic buying valuation (the current valuation path uses UK-new evidence only).
+
+### Change and deployment record
+- No application code, schema, queue status, catalogue product, evidence row, customer, tenant, subscription, Stripe, published site or TEST data was changed.
+- No backend importer was added or deployed; no tests or deployment were run because no code/database change was made.
+- LIVE Supabase migration history was inspected through `20261110233048`; current GitHub production dashboard and manuals were inspected. No Supabase project-memory/checkpoint table exists; this GitHub checkpoint is the durable record.
+- Follow-up: implement and test the dedicated owner-authorised importer before any of these references can become shared catalogue evidence. Re-open direct source pages and remap exact packages before import.

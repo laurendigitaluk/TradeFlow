@@ -818,12 +818,39 @@ async function loadCloudAiReviewQueue(){
   const items=(Array.isArray(rows)?rows:[]).filter(x=>x.agent_name==='Cloud AI Research Manager'||String(x.agent_name||'').startsWith('Manual AI Research · '));
   host.innerHTML=items.map(x=>{
    const meta=x.raw_payload||{},comparison=meta.evidence_role==='comparison_only'||!x.live_master_product_id;
+   const mapped=meta.evidence_role==='catalogue_match_assigned';
+   const matchLabel=comparison?'Unverified comparison — match to catalogue and verify':mapped?'Matched to catalogue — source still needs verification':'Exact package — eligible for evidence review';
    const actualPackage=x.package_name?'<p><strong>Package found:</strong> '+escapeHtml(x.package_name)+'</p>':'';
-   const matchLabel=comparison?'Comparison only — not counted against catalogue evidence':'Exact package — eligible for evidence review';
-   return '<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'candidate')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">'+(comparison?'Comparison reference':'Pending review')+'</span></div><p><strong>'+escapeHtml(matchLabel)+'</strong></p>'+actualPackage+'<p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??'Not supplied')+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · <a href="'+escapeAttr(x.source_url||'#')+'" target="_blank" rel="noopener">Open source page</a></p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p><div class="plan-editor-foot">'+(comparison?'':'<button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve catalogue evidence</button>')+'<button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>';
+   const source=x.source_url?'<a href="'+escapeAttr(x.source_url)+'" target="_blank" rel="noopener">Open source page</a>':'<span class="muted">No direct source URL was included in the report</span>';
+   const matchTools=comparison?'<div style="margin-top:12px;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><strong>Match this reference to a catalogue product</strong><div id="manual-ai-match-'+x.id+'" style="margin-top:8px"><button type="button" data-match-load="'+x.id+'">Find matching catalogue packages</button></div></div>':'';
+   return '<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'comparison')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">'+(comparison?'Comparison reference':mapped?'Matched · pending review':'Pending review')+'</span></div><p><strong>'+escapeHtml(matchLabel)+'</strong></p>'+actualPackage+'<p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??(meta.price_display||'Not stated'))+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · '+source+'</p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p>'+matchTools+'<div class="plan-editor-foot">'+(comparison?'':'<button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve after verification</button>')+'<button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>';
   }).join('')||'<p class="muted">No AI evidence candidates are awaiting review.</p>';
+  host.querySelectorAll('[data-match-load]').forEach(b=>b.addEventListener('click',()=>loadManualAiComparisonMatches(b.dataset.matchLoad,b)));
+  host.querySelectorAll('[data-match-save]').forEach(b=>b.addEventListener('click',()=>matchManualAiComparison(b.dataset.matchSave,b)));
   host.querySelectorAll('[data-review-id]').forEach(b=>b.addEventListener('click',()=>reviewCloudAiCandidate(b.dataset.reviewId,b.dataset.decision,b)));
  }catch(e){host.innerHTML='<p class="error">'+escapeHtml(e.message||String(e))+'</p>'}
+}
+async function loadManualAiComparisonMatches(queueId,button){
+ if(button)button.disabled=true;
+ const host=$('manual-ai-match-'+queueId);if(!host)return;
+ host.innerHTML='<span class="muted">Finding active catalogue products with the same manufacturer and model…</span>';
+ try{
+  const rows=await request('/rest/v1/rpc/platform_owner_list_manual_ai_comparison_matches',{method:'POST',body:JSON.stringify({p_queue_id:queueId})});
+  if(!Array.isArray(rows)||!rows.length){host.innerHTML='<p class="muted">No active same-model catalogue packages were found. Keep this as a comparison reference until the catalogue is checked.</p>';return;}
+  host.innerHTML='<label>Choose the correct catalogue package<select id="manual-ai-match-choice-'+queueId+'"><option value="">Select matching package…</option>'+rows.map(p=>'<option value="'+escapeHtml(p.product_id)+'">'+escapeHtml(p.manufacturer+' '+p.model+' — '+(p.package_name||'Package not named'))+'</option>').join('')+'</select></label><button type="button" data-match-save="'+queueId+'" style="margin-top:8px">Match selected catalogue package</button><p class="muted">Only the same manufacturer and model are listed. Check the actual bundle and source page before matching.</p>';
+  host.querySelector('[data-match-save]')?.addEventListener('click',()=>matchManualAiComparison(queueId,host.querySelector('[data-match-save]')));
+ }catch(err){host.innerHTML='<p class="error">'+escapeHtml(err.message||String(err))+'</p>';}
+ finally{if(button)button.disabled=false;}
+}
+async function matchManualAiComparison(queueId,button){
+ const choice=$('manual-ai-match-choice-'+queueId),productId=choice?.value;
+ if(!productId){alert('Choose the matching catalogue package first.');return;}
+ if(!window.confirm('Match this comparison reference to the selected catalogue package? It will remain pending verification; no evidence will be imported automatically.'))return;
+ button.disabled=true;
+ try{
+  await request('/rest/v1/rpc/platform_owner_match_manual_ai_comparison',{method:'POST',body:JSON.stringify({p_queue_id:queueId,p_product_id:productId})});
+  await loadCloudAiReviewQueue();
+ }catch(err){alert(err.message||String(err));button.disabled=false;}
 }
 async function reviewCloudAiCandidate(id,decision,button){
  button.disabled=true;

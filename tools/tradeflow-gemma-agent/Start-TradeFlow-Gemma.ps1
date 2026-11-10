@@ -37,7 +37,10 @@ $TestFiles = @(
     'source-playbooks.test.mjs',
     'agent-identity.test.mjs',
     'agent-speed.test.mjs',
-    'desktop-control.test.mjs'
+    'desktop-control.test.mjs',
+    'task-result-summary.test.mjs',
+    'agent-telemetry.test.mjs',
+    'installer-manifest.test.mjs'
 )
 foreach ($Name in $TestFiles) {
     $Path = Join-Path $SourcePath $Name

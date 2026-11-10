@@ -5600,3 +5600,11 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - No LIVE catalogue products, evidence rows, queue rows, research batches, tenant/customer data, TEST data, or Supabase schema were changed by this UI addition. No secrets were changed.
 - Follow-up required before the requested end-to-end review-and-add process can be completed: inspect the exact `shared_market_evidence` schema, constraints, RLS and existing trusted write paths, then design and test a narrow owner-authorised import RPC/migration. Do not bypass RLS or directly write evidence as a workaround.
 - GitHub project-memory/checkpoint tables were checked for names containing memory/checkpoint/project-note/project-knowledge and none were present in LIVE. The durable project checkpoint is therefore recorded in the repository checkpoint file.
+
+
+## Manual AI response-panel layout and completed-prompt compaction — 10 November 2026
+
+- The reusable **Copy ChatGPT evidence-review prompt** control is now rendered inside each active Manual AI Research response panel, directly below the complete AI response textarea and immediately before **Save response draft** and **Validate and send to Evidence Awaiting Review**. The previous standalone copy panel at the bottom of the whole AI Research Centre has been removed.
+- Active prompts retain their generated research prompt, response textarea and controls. Once a prompt is submitted (`completed` or `no_findings`), its generated research prompt textarea and active controls are removed from the main view. Completed items are retained in a collapsed **Completed research** history section, with the full submitted report available on demand. No saved reports or database records are deleted.
+- The reusable ChatGPT instruction remains the same and still directs ChatGPT to retrieve and verify the outstanding submissions. The JavaScript cache reference is v52.
+- This is a frontend-only LIVE change. No Supabase schema/data, TEST data, research batches, queue rows, catalogue products, evidence, tenant/customer or Stripe records were changed. The production deployment and signed-in browser layout/copy action still require verification before calling the UI change complete.

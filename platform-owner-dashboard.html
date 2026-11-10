@@ -93,19 +93,23 @@
 <p class="muted">Only enable a provider after confirming its API access is genuinely free for your account. Free-tier limits vary. When a provider reaches a limit, its work must pause; this manager must never switch to a paid model automatically. API keys are sent directly to a protected database function and stored in Supabase Vault, never in this page.</p>
 <div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
 <div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
-<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Choose products directly from the TradeFlow master catalogue. Select a category, then a branch, then an individual product or the entire branch. No manual product entry is required.</p>
+<div class="plan-editor" style="margin-top:20px"><h3>Catalogue research selection</h3><p class="muted">Choose a category and optionally a branch. The product checklist shows how much active UK new and used market evidence is already linked to each catalogue product. Tick any combination of products, use the quick selection buttons, or queue the whole branch/category.</p>
 <form id="cloud-ai-enqueue-form"><div class="plan-fields">
 <label>1. Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
-<label>2. Branch<select id="cloud-ai-branch" required disabled><option value="">Choose a category first…</option></select></label>
-<label style="grid-column:1/-1">3. Product / model<select id="cloud-ai-product" disabled><option value="">Choose a branch first…</option></select></label>
-<div style="grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap"><button id="cloud-ai-add-product" type="button" disabled>Add selected product</button><button id="cloud-ai-add-branch" type="button" disabled>Add entire branch</button></div>
-<div id="cloud-ai-catalogue-picker-status" class="muted" style="grid-column:1/-1" role="status" aria-live="polite">Loading categories from the master catalogue…</div>
+<label>2. Branch (optional)<select id="cloud-ai-branch" disabled><option value="">Choose a category first…</option></select></label>
 <div style="grid-column:1/-1;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
- <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Selected products</strong><span id="cloud-ai-selected-count">0 products selected</span></div>
- <div id="cloud-ai-selected-products" style="margin-top:8px"><p class="muted">No products selected yet.</p></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Product checklist and existing evidence</strong><span id="cloud-ai-product-list-summary" class="muted">Choose a category to load products.</span></div>
+ <div style="display:flex;gap:6px;flex-wrap:wrap;margin:12px 0;align-items:center"><span class="muted">Quick select:</span><button type="button" data-cloud-ai-select-count="1">1</button><button type="button" data-cloud-ai-select-count="2">2</button><button type="button" data-cloud-ai-select-count="3">3</button><button type="button" data-cloud-ai-select-count="5">5</button><button type="button" data-cloud-ai-select-count="10">10</button><button type="button" data-cloud-ai-select-count="100">100</button><button type="button" data-cloud-ai-select-count="500">500</button><button type="button" id="cloud-ai-clear-selection">Clear selection</button></div>
+ <div id="cloud-ai-product-list" style="max-height:520px;overflow:auto;border:1px solid var(--border,#ddd);border-radius:6px"><p class="muted" style="padding:10px">Choose a category to load its products.</p></div>
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px"><button type="button" id="cloud-ai-product-prev" disabled>Previous 500</button><button type="button" id="cloud-ai-product-next" disabled>Next 500</button></div>
+</div>
+<div style="grid-column:1/-1;border:1px solid var(--border,#ddd);border-radius:8px;padding:12px">
+ <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Research batch</strong><span id="cloud-ai-selected-count">0 individual products selected</span></div>
+ <div id="cloud-ai-selected-products" class="muted" style="margin-top:8px">No individual products selected yet.</div>
+ <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button type="submit" id="cloud-ai-queue-selected" disabled>Queue selected products</button><button type="button" id="cloud-ai-queue-branch" disabled>Queue entire branch</button><button type="button" id="cloud-ai-queue-category" disabled>Queue entire category</button></div>
 </div>
 <label>Research type<select id="cloud-ai-task-type" name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
-</div><p><button id="cloud-ai-queue-selected" type="submit" disabled>Queue selected products</button></p></form></div>
+</div></form><p id="cloud-ai-catalogue-picker-status" class="muted" role="status" aria-live="polite">Loading categories from the master catalogue…</p></div>
 <div class="panel-head" style="margin-top:24px"><h3>Research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
 <div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
 <div class="panel-head" style="margin-top:24px"><h3>Evidence awaiting review</h3><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div><div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div><p class="note">AI findings are staged as pending review. Approving a candidate does not import it. Only a separate verified import operation may add a record to shared market evidence.</p>
@@ -124,7 +128,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=42" defer></script>
+<script src="platform-owner-dashboard.js?v=43" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

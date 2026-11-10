@@ -518,7 +518,8 @@ async function onCloudAiBranchChange(){
 function renderCloudAiCatalogueSelection(){
  const count=cloudAiCatalogueSelection.size;
  $('cloud-ai-selected-count').textContent=count.toLocaleString()+' individual product'+(count===1?'':'s')+' selected';
- $('cloud-ai-queue-selected').disabled=!count;
+ if($('cloud-ai-queue-selected'))$('cloud-ai-queue-selected').disabled=!count;
+ if($('manual-ai-create-batch'))$('manual-ai-create-batch').disabled=!count;
  $('cloud-ai-selected-products').textContent=count?[...cloudAiCatalogueSelection.values()].slice(0,8).map(p=>p.manufacturer_name+' | '+p.model+(p.package_name?' | '+p.package_name:'')).join(' · ')+(count>8?' · and '+(count-8)+' more':''):'No individual products selected yet.';
 }
 function selectCloudAiFirst(count){

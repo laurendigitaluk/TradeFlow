@@ -517,7 +517,7 @@ async function testCloudAiProvider(form){
  button.disabled=true;status.textContent='Testing provider connection…';
  try{
   const result=await request('/functions/v1/tradeflow-cloud-ai-manager',{method:'POST',body:JSON.stringify({action:'test_provider',provider_key:form.dataset.provider})});
-  status.textContent=result?.ok?'Connected · '+(result.model_listed?'model confirmed':'model ID needs checking')+' · '+result.models_checked+' models checked':(result?.error||'Connection check failed');
+  status.textContent=result?.ok&&result.model_listed?'Connected · model confirmed · '+result.models_checked+' models checked':result?.ok?'Groq API reachable · configured model unavailable · '+result.models_checked+' models checked':(result?.error||'Connection check failed');
  }catch(e){status.textContent=e.message||String(e)}
  finally{button.disabled=false}
 }

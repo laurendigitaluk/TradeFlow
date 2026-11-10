@@ -477,6 +477,35 @@ async function enqueueCloudAiJob(e){
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);
 $('cloud-ai-enqueue-form')?.addEventListener('submit',enqueueCloudAiJob);
+const cloudAiCatalogueSelection=new Map();
+async function searchCloudAiCatalogue(){
+ const input=$('cloud-ai-catalogue-search'),host=$('cloud-ai-catalogue-results'),button=$('cloud-ai-catalogue-search-button');
+ const term=String(input?.value||'').trim();if(term.length<2){host.textContent='Enter at least two characters.';return;}
+ button.disabled=true;host.textContent='Searching the TradeFlow master catalogue…';
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_search_cloud_ai_catalogue',{method:'POST',body:JSON.stringify({p_search:term,p_category_slug:String(document.querySelector('#cloud-ai-enqueue-form [name="category_slug"]')?.value||'').trim()||null,p_limit:100})});
+  const rows=data?.products||[];
+  host.innerHTML=rows.length?rows.map(p=>'<label style="display:block;padding:6px 0"><input type="checkbox" data-catalogue-product="'+escapeHtml(p.product_id)+'" '+(cloudAiCatalogueSelection.has(p.product_id)?'checked':'')+'> '+escapeHtml(p.manufacturer_name)+' | '+escapeHtml(p.model)+(p.package_name?' | '+escapeHtml(p.package_name):'')+' <small>('+escapeHtml(p.category_name||p.category_slug||'')+')</small></label>').join(''):'No matching active master-catalogue products found.';
+  host.querySelectorAll('[data-catalogue-product]').forEach(box=>box.addEventListener('change',()=>{const row=rows.find(x=>x.product_id===box.dataset.catalogueProduct);if(box.checked&&row)cloudAiCatalogueSelection.set(row.product_id,row);else cloudAiCatalogueSelection.delete(box.dataset.catalogueProduct);$('cloud-ai-catalogue-add-selected').disabled=!cloudAiCatalogueSelection.size;}));
+  $('cloud-ai-catalogue-add-selected').disabled=!cloudAiCatalogueSelection.size;
+ }catch(err){host.textContent=err.message||String(err)}
+ finally{button.disabled=false}
+}
+$('cloud-ai-catalogue-search-button')?.addEventListener('click',searchCloudAiCatalogue);
+$('cloud-ai-catalogue-search')?.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();searchCloudAiCatalogue();}});
+$('cloud-ai-catalogue-add-selected')?.addEventListener('click',()=>{
+ const textarea=document.querySelector('#cloud-ai-enqueue-form [name="products"]');
+ const existing=String(textarea.value||'').trim().split(/\\r?\\n/).filter(Boolean);
+ const known=new Set(existing.map(x=>x.toLowerCase()));
+ for(const p of cloudAiCatalogueSelection.values()){
+  const line=p.manufacturer_name+' | '+p.model+(p.package_name?' | '+p.package_name:'');
+  if(!known.has(line.toLowerCase()))existing.push(line);
+ }
+ textarea.value=existing.join('\\n');cloudAiCatalogueSelection.clear();
+ $('cloud-ai-catalogue-results').textContent='Selected catalogue products added to the batch list.';
+ $('cloud-ai-catalogue-add-selected').disabled=true;
+});
+
 
 
 async function testCloudAiProvider(form){

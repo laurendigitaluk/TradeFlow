@@ -36,3 +36,7 @@ The seven specialist and seven dated archive branch heads were previously cleane
 
 ## Verification still pending
 Cloudflare-served browser verification of the updated public catalogue page and the public route smoke test. Production GitHub commits are not deployment proof. No local PC changes or backup were made in this reconciliation.
+
+
+### Separate TradeFlow Assistant provider state
+LIVE `platform_ai_settings` was read independently: `active_provider='none'`, `allowed_providers=['none']`, `gemma_enabled=false`, and `subscriber_provider_enabled=false`. The TradeFlow Assistant remains present but no AI provider, including Gemma, is enabled for it. This is separate from the retired local research-worker platform.

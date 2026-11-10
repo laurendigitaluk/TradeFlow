@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
+import { buildEvidenceCaptureDedupeKey, buildExtractionPrompt, buildGemmaFindingSchema, buildReviewQueueObservationFields, buildReviewQueueRow, extractionBatchSizeForTask, extractBatch, extractRelevantPageText, extractVisibleGbpPriceMentions, fallbackPageCapture, getGemmaExtractionTimeoutMs, selectSafeObservedPrice, shouldRetainFullPageCapture } from './agent.mjs';
 
 const printerTask = {
   category_slug: '3d-printers-equipment',
@@ -397,4 +397,104 @@ test('same product can retain multiple evidence captures of the same type from d
     buildEvidenceCaptureDedupeKey(task, marketplace),
     'a second source/listing for the same product is a separate evidence capture'
   );
+});
+
+
+test('3D-printer fallback row keeps raw condition and availability snippets out of normalized queue columns', () => {
+  const task = {
+    ...printerTask,
+    manufacturer: 'Bambu Lab',
+    model: 'A1',
+    package_key: 'standard',
+    package_name: 'Standard Printer',
+    task_key: 'review-field-map-regression'
+  };
+  const sourceText = Array.from({ length: 12 }, (_, index) =>
+    'Section ' + index + ': Brand new. In stock. ' +
+    ('Detailed product specification section ' + index + ' ').repeat(100)
+  ).join('\n');
+  const evidence = fallbackPageCapture(task, {
+    source_id: 'S1',
+    title: 'Bambu Lab A1 3D Printer',
+    url: 'https://example.co.uk/products/bambu-a1',
+    text: sourceText
+  }, 'Gemma extraction timed out');
+
+  assert.ok(evidence.item_condition_text.length > 100);
+  assert.ok(evidence.availability_text.length > 100);
+  assert.equal(evidence.item_condition, null);
+  assert.equal(evidence.availability, null);
+
+  const row = buildReviewQueueRow(task, evidence, 'capture-field-map');
+  assert.equal(row.item_condition, null);
+  assert.equal(row.availability, null);
+  assert.equal(row.evidence_type, null);
+  assert.equal(row.observed_price, null);
+  assert.equal(row.raw_payload.evidence.item_condition_text, evidence.item_condition_text);
+  assert.equal(row.raw_payload.evidence.availability_text, evidence.availability_text);
+  assert.equal(row.raw_payload.page_capture.captured_text, sourceText);
+  assert.equal(row.raw_payload.review_classification, 'unverified_capture');
+});
+
+test('3D-printer review row accepts concise explicit condition and availability only', () => {
+  const task = {
+    ...printerTask,
+    manufacturer: 'Anycubic',
+    model: 'Kobra 4',
+    package_key: 'standard',
+    package_name: 'Standard Printer'
+  };
+  const row = buildReviewQueueRow(task, {
+    source_url: 'https://example.co.uk/products/kobra-4',
+    source_name: 'example.co.uk',
+    sales_channel: 'example.co.uk',
+    source_excerpt: 'Anycubic Kobra 4 £159.00',
+    observed_price: 159,
+    price_currency: 'GBP',
+    evidence_type: 'uk_new',
+    item_condition: 'New',
+    availability: 'In stock',
+    item_condition_text: 'Brand new. ' + 'raw condition '.repeat(20),
+    availability_text: 'In stock. ' + 'raw stock note '.repeat(20),
+    page_capture: { captured_text: 'Anycubic Kobra 4 £159.00' }
+  }, 'capture-explicit-fields');
+
+  assert.equal(row.item_condition, 'New');
+  assert.equal(row.availability, 'In stock');
+  assert.equal(row.evidence_type, 'uk_new');
+  assert.equal(row.observed_price, 159);
+  assert.equal(row.price_currency, 'GBP');
+});
+
+test('non-3D review queue row mapping remains unchanged', () => {
+  const task = { ...printerTask, category_slug: 'drones', branch_slug: 'drones' };
+  const row = buildReviewQueueRow(task, {
+    source_url: 'https://example.co.uk/products/drone',
+    source_excerpt: 'Drone £100.00',
+    observed_price: 100,
+    evidence_type: 'uk_used',
+    item_condition_text: 'Used - Good',
+    availability_text: 'In stock'
+  }, 'capture-non-printer');
+
+  assert.equal(row.item_condition, 'Used - Good');
+  assert.equal(row.availability, 'In stock');
+  assert.equal(row.evidence_type, 'uk_used');
+  assert.equal(row.observed_price, 100);
+});
+
+test('3D-printer observation helper rejects raw or overlong text but accepts concise explicit values', () => {
+  const task = { ...printerTask, category_slug: '3d-printers-equipment', branch_slug: '3d-printers' };
+  assert.deepEqual(buildReviewQueueObservationFields(task, {
+    item_condition_text: 'New',
+    availability_text: 'In stock'
+  }), { item_condition: null, availability: null });
+  assert.deepEqual(buildReviewQueueObservationFields(task, {
+    item_condition: 'New',
+    availability: 'In stock'
+  }), { item_condition: 'New', availability: 'In stock' });
+  assert.deepEqual(buildReviewQueueObservationFields(task, {
+    item_condition: 'New '.repeat(30),
+    availability: 'In stock '.repeat(20)
+  }), { item_condition: null, availability: null });
 });

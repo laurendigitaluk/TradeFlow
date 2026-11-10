@@ -30,9 +30,10 @@ Place a reusable ChatGPT evidence-review prompt at the very bottom of the Manual
 - LIVE project memory/checkpoint table-name scan returned no matching tables. This repository checkpoint is the durable record.
 
 ## Deployment / verification status
-- HTML and JS changes are committed to production and the production workflow is configured to deploy on pushes affecting these assets.
-- GitHub combined commit status did not expose a deployment status for the JS commit at the time of this checkpoint; verify the relevant GitHub Actions deployment run and then hard-refresh the Owner Dashboard to confirm the button is visible and copies the prompt.
-- No browser interaction test has yet been performed.
+- HTML and JS changes are committed to production.
+- GitHub Actions LIVE deployment run **42924871267** for commit `1a31e01d167d94cd6c4dd6fdfe4cee33a12ad9f3` completed successfully. The `Deploy TradeFlow Worker and static assets` step also completed successfully.
+- Source verification confirms the button is at the bottom of the AI Research Centre, the dashboard JavaScript cache reference is v51, and the prompt text and click handler are present.
+- A real signed-in browser click/copy test has not yet been performed. Hard-refresh the Owner Dashboard and click **Copy ChatGPT evidence review prompt** to confirm clipboard access in the browser.
 
 ## Required next work
 1. Verify the production Worker deployment and browser copy action.

@@ -3076,3 +3076,7 @@ The production catalogue page and stylesheet changes are committed to GitHub. Cl
 2. Confirm the public catalogue browser and clean TradeFlow routes still load.
 3. Do not remove `worker/index.js`, `wrangler.jsonc`, the manual tenant Research Centre, historical migration files or protected catalogue/evidence data as part of this retirement.
 4. Do not restart, reinstall or rebuild the retired Gemma worker platform.
+
+
+### Separate TradeFlow Assistant provider state
+LIVE `platform_ai_settings` was read independently: `active_provider='none'`, `allowed_providers=['none']`, `gemma_enabled=false`, and `subscriber_provider_enabled=false`. The TradeFlow Assistant remains present but no AI provider, including Gemma, is enabled for it. This is separate from the retired local research-worker platform.

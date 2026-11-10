@@ -3015,3 +3015,18 @@ On 8 November, the LIVE K1 Max official UK page returned 17 visible GBP mentions
 Production PR #293 (`3b55d43acec4ad4abb5f8e5b9530f169d3c1d3f3`) refined only the 3D-printer extraction prompt. It preserves compact price contexts and recent bounded guidance, requires one structured observation per page/source ID, and instructs Gemma to report machine-only versus Combo/bundle variants, price context, condition, stock, UK delivery and uncertainty without deciding evidence suitability. CI passed 50/50 tests.
 
 **Operational boundary:** the merge updates GitHub production source only. The Research PC's already-running worker does not hot-reload this file. Let its current task finish, then run the existing TradeFlow updater once against the confirmed TradeFlow installation and existing private TradeFlow `.env`. Do not alter PowerShell launcher logic, Ollama settings, credentials or the separate GearCashOut configuration. Verify the next run before marking the prompt change live on the PC.
+
+
+## 10 November 2026 — Final retirement status: local research-worker platform
+
+The owner has retired the local category research-worker platform and its new-evidence lab-search workflow. This is a completed retirement boundary, not a pause or an instruction to reinstall it.
+
+The owner dashboard HTML, JavaScript and stylesheet on this branch contain no worker-control or common-room UI. The local worker README, updater and Node entry point have been deleted from this branch. On LIVE, the equivalent owner dashboard controls and polling/queue/source-management/message UI were removed, and the remaining retired CSS selectors were deleted.
+
+LIVE worker/control-plane RPC execution has been revoked for service_role, authenticated and anon. The applied retirement migration is recorded in `supabase/migrations/20261110173027_retire_research_agent_runtime_permissions_20261110.sql`. Historical migration files remain because they are required to reproduce the applied schema history.
+
+Preservation boundary: do not delete catalogue products, categories, manufacturer/model/package data, shared market evidence, tenant/customer/subscriber data, Stripe settings, published subscriber websites, historical task/activity/message rows, research queue rows or source registry rows. These historical records are retained for audit; they are not an active worker service. No database tables or historical rows were dropped as part of retirement.
+
+The owner ran the no-backup PC removal script. The confirmed installation folders, scheduled tasks and worker shortcuts were removed. Ollama remains installed; final model-list verification and Chrome web-app uninstall confirmation are still outstanding. No local backup was created, as explicitly requested.
+
+Any future market research supplied for catalogue use remains review-only until the owner/ChatGPT independently verifies exact product/package identity, GBP price, condition, availability and direct source evidence. Do not automatically approve or import findings. The retired worker platform must not be restarted or rebuilt as part of ordinary catalogue maintenance.

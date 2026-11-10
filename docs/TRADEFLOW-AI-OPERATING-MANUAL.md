@@ -5368,3 +5368,35 @@ LIVE `platform_ai_settings` was read independently: `active_provider='none'`, `a
 
 ### Open Gemma pull requests retired — 10 November 2026
 A read-only search of open pull requests found 20 Gemma/research-worker implementation or documentation PRs. All 20 were closed unmerged: #353, #345, #343, #335, #336, #331, #315, #300, #301, #299, #296, #294, #297, #290, #289, #288, #264, #262, #258 and #250. A follow-up search returned no remaining open PRs matching “Gemma”. Unrelated catalogue-data, subscriber shared-evidence, Cloudflare Worker routing, BusinessFlow and other TradeFlow PRs were left open.
+
+
+## 10 November 2026 — LM Studio Bionic Research Inbox connector
+
+A new isolated research handoff has been added for the owner's existing LM Studio Bionic desktop application. This is not a revival of Gemma, the retired local worker supervisor, or the former Common Room.
+
+### LIVE Supabase objects
+- New table: `public.platform_research_reports`.
+- New private Storage bucket: `tradeflow-research-inbox` (20 MiB object limit; Markdown, plain text and JSON only).
+- Table has RLS enabled and no grants to `anon` or `authenticated`; only `service_role` receives table privileges.
+- The table was empty at creation; no historical research, product, category, shared evidence, tenant or transaction rows were changed.
+- Reports carry a title, original prompt, category, source app/model, Markdown report, structured JSON, finding/source counts, file paths and review status. Initial status is `submitted_for_review`.
+
+### MCP Edge Function
+- Function: `tradeflow-research-mcp`, deployed ACTIVE to LIVE.
+- Source: `supabase/functions/tradeflow-research-mcp/index.ts`.
+- Endpoint: `https://gxsrajtqzdjvmceqcpgv.supabase.co/functions/v1/tradeflow-research-mcp`.
+- Gateway JWT verification is disabled because the function enforces its own bearer token check using the server-side secret `TRADEFLOW_RESEARCH_MCP_TOKEN`. The function returns 503 until this secret is set; missing/incorrect bearer token is rejected.
+- Supabase's injected `SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY` are used only inside the Edge Function; neither is sent to LM Studio or placed in browser code.
+- Exposed tools: `search_catalogue` (read-only active master products), `get_existing_evidence` (read-only active evidence for one master product), `submit_research_report` (stores Markdown + JSON in private Storage and a report row).
+- There is no MCP tool to create/update/delete products, approve evidence, or insert into `shared_market_evidence`.
+
+### Connection still pending
+- Set the production Edge Function secret `TRADEFLOW_RESEARCH_MCP_TOKEN` in Supabase Dashboard > Edge Function Secrets. Use a high-entropy token and do not put it in GitHub, chat, or any public frontend.
+- Then add a remote MCP entry in LM Studio's `mcp.json` using the endpoint above and an `Authorization: Bearer <token>` header.
+- LM Studio officially supports remote MCP entries in Cursor-style `mcpServers` configuration. Enable only this TradeFlow connector for the research model/chat.
+- End-to-end tests (catalogue search, evidence lookup, report submission, private file readback) are pending until the secret is configured.
+
+### Release and data boundaries
+- This connector is LIVE-only for the first acceptance pass. Do not sync TEST data or TEST reports into LIVE.
+- All submitted research remains `submitted_for_review`; ChatGPT/owner independently verifies source URLs, prices, package identity, condition and availability before any separate approved import process.
+- Historical Gemma tables, RPCs and Common Room are not re-enabled. Do not restore their permissions or UI.

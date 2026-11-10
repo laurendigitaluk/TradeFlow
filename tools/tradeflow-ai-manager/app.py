@@ -42,7 +42,7 @@ class ManagerApp(tk.Tk):
 
         providers = ttk.LabelFrame(root, text="Cloud providers — free plans only", padding=12)
         providers.pack(fill="x", pady=(0, 12))
-        self.provider_widgets = {}
+        self.provider_widgets = {}\n        self.free_confirm = {}
         for idx, provider in enumerate(PROVIDERS):
             frame = ttk.Frame(providers)
             frame.grid(row=idx, column=0, sticky="ew", pady=4)
@@ -58,7 +58,7 @@ class ManagerApp(tk.Tk):
             ttk.Label(frame, text="Model").pack(side="left")
             model_entry = ttk.Entry(frame, textvariable=model_var, width=34)
             model_entry.pack(side="left", padx=(6, 8), fill="x", expand=True)
-            ttk.Button(frame, text="Test", command=lambda p=provider: self._run_async(self._test_provider, p)).pack(side="left")
+            ttk.Checkbutton(frame, text="Free account; billing disabled", variable=free_var).pack(side="left", padx=(0, 6))\n            ttk.Button(frame, text="Test", command=lambda p=provider: self._run_async(self._test_provider, p)).pack(side="left")
             self.provider_widgets[provider] = (key_entry, model_entry)
 
         mcp = ttk.LabelFrame(root, text="TradeFlow Research MCP", padding=12)
@@ -135,7 +135,7 @@ class ManagerApp(tk.Tk):
                     key = keyring.get_password(SERVICE, f"{p}.api_key") or ""
                 except Exception:
                     key = ""
-            data[p] = {"key": key, "model": self.vars[f"{p}.model"].get().strip()}
+            data[p] = {"key": key, "model": self.vars[f"{p}.model"].get().strip(), "free_only_confirmed": self.free_confirm[p].get()}
         return data
 
     def _mcp(self):
@@ -151,7 +151,7 @@ class ManagerApp(tk.Tk):
                 result = fn(*args)
                 self.after(0, lambda: self.status.set(str(result)))
             except Exception as exc:
-                self.after(0, lambda: self.status.set(f"Check failed: {exc}"))
+                self.after(0, lambda err=str(exc): self.status.set(f"Check failed: {err}"))
         threading.Thread(target=runner, daemon=True).start()
 
     def _test_provider(self, provider):
@@ -176,9 +176,9 @@ class ManagerApp(tk.Tk):
         tools = self._mcp().connect_and_list_tools()
         missing = sorted(REQUIRED_RESEARCH_TOOLS - set(tools))
         if missing:
-            self.readiness_label.configure(text="Research readiness: MCP connected; full-catalogue mode is locked until missing tools are added.")
+            self.after(0, lambda: self.readiness_label.configure(text="Research readiness: MCP connected; full-catalogue mode is locked until missing tools are added."))
             return f"MCP connected. Tools: {', '.join(tools)}. Missing for full research: {', '.join(missing)}."
-        self.readiness_label.configure(text="Research readiness: MCP tools available; search layer still requires validation.")
+        self.after(0, lambda: self.readiness_label.configure(text="Research readiness: MCP tools available; search layer still requires validation."))
         return f"MCP connected. Available tools: {', '.join(tools)}."
 
     def _refresh_summary(self):

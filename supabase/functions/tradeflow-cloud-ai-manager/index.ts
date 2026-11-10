@@ -21,7 +21,7 @@ Deno.serve(async(req:Request)=>{
  const {data:cfg,error:cfgError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,enabled,free_tier_confirmed,status").eq("provider_key",provider).maybeSingle();
  if(cfgError||!cfg)return json({error:"Provider is not configured"},404);
  if(!cfg.enabled||!cfg.free_tier_confirmed)return json({error:"Provider is disabled or free-tier status has not been confirmed"},409);
- const {data:key,error:keyError}=await admin.rpc("get_cloud_ai_provider_secret",{p_provider_key:provider},{head:false});
+ const {data:key,error:keyError}=await admin.rpc("get_cloud_ai_provider_secret",{p_provider_key:provider});
  if(keyError||!key)return json({error:"Provider key is not available in the server vault"},409);
  let endpoint="",headers:Record<string,string>={};
  if(provider==="gemini"){endpoint="https://generativelanguage.googleapis.com/v1beta/models?key="+encodeURIComponent(key);headers={};}

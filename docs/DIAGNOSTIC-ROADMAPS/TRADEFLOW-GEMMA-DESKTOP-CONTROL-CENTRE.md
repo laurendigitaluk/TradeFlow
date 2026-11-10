@@ -246,3 +246,14 @@ The production Gemma Control Centre now has an **Update all workers** action bac
 
 
 Validation addendum — 10 November 2026: after correcting the CI parser to tolerate sparse category-branch checkouts, the full Gemma Research Tests workflow passed on all seven category branches (3D Printers, Gaming, Cameras, Drones, Metal Detectors, Mobile Phones and Laptops). Production run 42730089144 also passed PowerShell syntax checks for the all-worker updater and dashboard, Node syntax checks, compact task-result regression tests and dashboard JavaScript syntax. The earlier category-branch CI failures were caused by the workflow attempting to parse production-only desktop scripts absent from sparse branch checkouts; the workflow now skips only files not present in that checkout. This is a CI path correction, not a runtime worker change. Research PC deployment remains pending.
+
+
+## 10 November 2026 — Retirement of the local research-agent system
+
+The owner authorised retirement of the local category research workers and their owner-dashboard controls. The retirement is being performed in stages. The owner dashboard no longer exposes the worker control centre or shared agent room in the retirement branch. The corresponding JavaScript polling, queueing, source-management and message-feed UI code has been removed from that dashboard branch.
+
+Preservation boundary: do not delete catalogue products, categories, existing product/evidence records, or the historical research review queue. The LIVE database snapshot before retirement contained 35 task rows, 12 status rows, 14,808 activity rows, 451 agent-message rows, 75 catalogue research queue rows and 119 research-source rows. These are historical records and must remain available unless a separately authorised retention policy is agreed. Worker-specific functions and tables must not be dropped until all remaining callers, triggers, grants and RPC dependencies have been audited. Do not change Stripe, tenant data, customer data or published subscriber content.
+
+The PC installation still requires owner-side removal because this environment cannot directly operate the Windows desktop. The identified local roots are C:\\CTFGemma2, C:\\TFGemma and %LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre. Before removal, disable the scheduled tasks and startup shortcut, preserve an encrypted/local backup including private environment pointers, remove desktop shortcuts and the model, and verify no worker processes remain.
+
+The production branch has not yet been merged or deployed. The retirement branch is subject to syntax, dashboard regression and database dependency checks before production promotion. Keep this retirement record and historical checkpoints; removing the runtime does not mean erasing the audit trail.

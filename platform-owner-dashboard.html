@@ -167,6 +167,14 @@
  <div class="panel-head" style="margin-top:24px"><h3>Automatic API research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
  <div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
 </details>
+
+<div class="plan-editor" style="margin-top:24px">
+ <div class="eyebrow">Reusable ChatGPT instruction</div>
+ <h3>Review and add research evidence to the catalogue</h3>
+ <p class="muted">Copy this instruction and paste it into ChatGPT whenever you want the outstanding Manual AI Research submissions retrieved, checked against their original sources and processed for catalogue evidence. ChatGPT will inspect the current LIVE workflow before making any changes.</p>
+ <button type="button" id="copy-chatgpt-evidence-review-prompt">Copy ChatGPT evidence review prompt</button>
+ <p id="chatgpt-evidence-review-prompt-status" class="muted" role="status" aria-live="polite"></p>
+</div>
 </div></details></section>
 
 <section id="public-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PUBLIC WEBSITE</span><strong>Public Website Pages</strong><small>Manage Examples and review the source-managed How It Works guide.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div class="note">How It Works is maintained as a source-managed, text-only accordion page in <code>how-it-works.html</code>. Its legacy database draft is retained for history and does not control the published guide. Examples remains editable through the public-page editor below.</div><div id="public-page-editor">Loading public page editor…</div></div></details></section>
@@ -182,7 +190,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=50" defer></script>
+<script src="platform-owner-dashboard.js?v=51" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

@@ -86,3 +86,29 @@ The production Gemma Control Centre now has an **Update all workers** action bac
 
 
 Validation addendum — 10 November 2026: after correcting the CI parser to tolerate sparse category-branch checkouts, the full Gemma Research Tests workflow passed on all seven category branches (3D Printers, Gaming, Cameras, Drones, Metal Detectors, Mobile Phones and Laptops). Production run 42730089144 also passed PowerShell syntax checks for the all-worker updater and dashboard, Node syntax checks, compact task-result regression tests and dashboard JavaScript syntax. The earlier category-branch CI failures were caused by the workflow attempting to parse production-only desktop scripts absent from sparse branch checkouts; the workflow now skips only files not present in that checkout. This is a CI path correction, not a runtime worker change. Research PC deployment remains pending.
+
+
+## 10 November 2026 — Anycubic six-product independent cross-check and repair plan
+
+### LIVE task snapshot
+Task `owner-3d-printers-equipment-1794272051590` completed normally; worker returned idle. The payload contained five subtasks (Kobra 3 Max V2 Combo, Kobra 3 Max V2 Standard, Kobra 4 Standard, Kobra 4 ACE 2 Pro Combo, Kobra S1 ACE 2 Pro Combo). Kobra S1 Standard was not queued. Handover totals across five subtasks: 15, 22, 9, 0 and 2 search results respectively; six raw page captures retained/staged (three new, three enrichments); all four Gemma extraction batches timed out. The queue rows remain `needs_research`, with no structured observed price/evidence type on the new captures. No evidence approval/import occurred.
+
+### Confirmed website-route corrections
+- Anycubic UK: keep the existing model routes; add `https://uk.anycubic3d.com/products/kobra-4-combo-3d-printer` alongside the Kobra 4 Standard page.
+- 3DJake UK: replace generic Anycubic search as the primary discovery route with `https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer`. Follow the 3D Printers & More section, pagination and direct product pages. The brand catalogue is discovery only. A parent path containing `accessories` must not reject a real printer page.
+- 123-3D UK: Anycubic new stock route is `https://www.123-3d.co.uk/collections/anycubic-3d-printers`; used/refurbished remains `https://www.123-3d.co.uk/collections/refurbished-printers`. Preserve lane selection. Reject the Kobra 3 Max (not V2), Kobra 3 V2 and first-generation ACE Pro when the task requires a different model/package.
+- eBay UK: add the approved ANYCUBIC seller category `https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014` alongside exact-model search. Direct item pages must be opened. HTTP 403 is a blocked source, not permission to bypass access controls or accept card prices.
+
+### Confirmed matcher and extraction losses
+- The previous 3DJake matcher applied accessory keywords to the entire URL path. This incorrectly rejected the exact Kobra 3 Max V2 Combo and Standard product URLs because their parent taxonomy contains `accessories`. Fix applies accessory rejection to title and terminal product slug only; exact model, sibling and package checks remain.
+- LIVE Ollama telemetry showed a two-page extraction call taking 47,282 ms and timing out under the 45,000 ms limit. The new 3D-only extraction policy processes one direct product page per inference call with a 90,000 ms bounded timeout. Other category agents retain their existing batching/timeout. There are no per-page retries. Full raw captures remain the fallback and review source.
+- Kobra 4 ACE 2 Pro Combo returned zero discovery results because the dedicated official Combo URL was missing. The direct route is now added.
+
+### Code and regression scope
+Replacement branch: `fix/gemma-research-route-extraction-all-seven-20261110`, based on current production. It carries forward the PR #341 matcher correction, adds verified 3DJake/123-3D/eBay/Anycubic routes, changes 3D-only extraction batch size and timeout, and adds tests for exact routes, Standard/Combo separation, accessory rejection, single-page batching and bounded timeout. PR #341 itself is 22 commits ahead / 44 behind production and GitHub reported it as not mergeable; do not merge that stale branch. Close it only after the replacement PR is green and its code/docs are confirmed present.
+
+### Seven-specialist rollout
+Synchronise the shared agent source, source playbook and regression tests across all seven isolated branches: `gemma/3d-printers`, `gemma/gaming`, `gemma/cameras`, `gemma/drones`, `gemma/metal-detectors`, `gemma/mobile-phones`, `gemma/laptops`. Keep each branch's single-key `agent.config.json` and category-specific source instructions intact. After production merge and branch CI, use the production Control Centre **Update all workers** operation. It preflights all seven installs, waits for current tasks to finish without force-killing Node, updates each category-local clone from its own branch, and restarts only those previously running and successfully updated. Verify each update log, installed version and LIVE status before research resumes. Do not overwrite .env or use the legacy shared-worker installer.
+
+### Acceptance gate
+Run a bounded 3D Printer LIVE retest covering all six exact Anycubic identities. Confirm: Anycubic Kobra 4 Combo direct route attempted; 3DJake Anycubic brand catalogue inspected and exact product links followed; 123-3D new/refurbished lanes remain separate; eBay seller category attempted and 403s logged; 3DJake Combo passes matcher while Standard sibling fails for Combo task; one page per Gemma call with no 45-second false timeout; full captures and structured GBP observations are visible in the review queue. No approval/import is authorised by this acceptance. Then inspect all seven worker update logs and status rows. Only after these checks should the next product category proceed.

@@ -257,3 +257,12 @@ Preservation boundary: do not delete catalogue products, categories, existing pr
 The PC installation still requires owner-side removal because this environment cannot directly operate the Windows desktop. The identified local roots are C:\\CTFGemma2, C:\\TFGemma and %LOCALAPPDATA%\\TradeFlow\\ResearchControlCentre. Before removal, disable the scheduled tasks and startup shortcut, preserve an encrypted/local backup including private environment pointers, remove desktop shortcuts and the model, and verify no worker processes remain.
 
 The production branch has not yet been merged or deployed. The retirement branch is subject to syntax, dashboard regression and database dependency checks before production promotion. Keep this retirement record and historical checkpoints; removing the runtime does not mean erasing the audit trail.
+
+
+## Retirement progress — 10 November 2026, 17:35 UTC
+
+PR #352 was merged to production as commit 78a62072e53f6ec121f218f2f16dbf8900df24ec. Its `gemma-research-tests` check completed successfully. A read-back of production `platform-owner-dashboard.html` and `platform-owner-dashboard.js` confirmed zero remaining occurrences of the retired system names, navigation IDs, common-room IDs or worker RPC namespace in those two dashboard files. This confirms source merge, not yet independent browser/CDN deployment verification.
+
+A LIVE Supabase migration named `retire_research_agent_runtime_permissions_20261110` revoked EXECUTE from public, anon, authenticated and service_role for the worker claim/heartbeat/complete/fail/report functions and owner dashboard task enqueue, agent telemetry, agent message, category/product and research-source management RPCs. Read-back confirmed service_role and authenticated cannot execute the checked worker/task RPCs. No tables, rows, catalogue products, evidence, queue entries or source rows were deleted. Counts remain 35 tasks, 12 status rows, 14,808 activity rows, 451 messages, 75 research queue rows and 119 research sources.
+
+Remaining work: remove/retire the local Windows installation, archive and remove specialist GitHub branches and runtime source, verify public website deployment in browser/CDN, and complete a final Supabase caller/dependency audit before considering any further backend object removal. Do not delete historical records.

@@ -6,13 +6,14 @@ Branch changed: production (LIVE release branch)
 Scope: Platform Owner AI Research Centre UI only
 
 ## User requirement
-Place a reusable ChatGPT evidence-review prompt at the very bottom of the Manual AI Research Centre so the owner can copy it and paste it into ChatGPT whenever a manual research batch needs review.
+Place the reusable ChatGPT evidence-review prompt inside each active Manual AI Research response panel, directly below the complete AI response textarea and before the save/validate controls. Keep completed prompt history compact.
 
 ## Changes committed
-- Added a dedicated "Copy ChatGPT evidence review prompt" panel after Evidence Awaiting Review and the collapsed optional API research settings.
-- Added the reusable prompt text and clipboard copy handler to platform-owner-dashboard.js.
-- Advanced the dashboard JavaScript cache reference to v51 in platform-owner-dashboard.html.
-- Updated docs/TRADEFLOW-AI-OPERATING-MANUAL.md and docs/TRADEFLOW-SYSTEM-HANDBOOK.md with the new control and the verified import boundary.
+- Initially added a global copy panel, then replaced it with a per-response-panel **Copy ChatGPT evidence-review prompt** button directly below the complete AI response textarea and before Save/Validate.
+- Removed the global copy panel from the bottom of the AI Research Centre.
+- Active research prompts keep their generated prompt, response box and controls. After successful submission, the generated prompt box and active controls disappear from the main list; completed reports remain preserved in a collapsed **Completed research** history section.
+- Added clipboard copy handling to the per-response button and advanced the dashboard JavaScript cache reference to v52.
+- Updated both manuals with the new layout and preservation behavior.
 
 ## Verified implementation boundary
 - The current UI lists Manual AI Research submissions in Evidence Awaiting Review.
@@ -44,3 +45,12 @@ Place a reusable ChatGPT evidence-review prompt at the very bottom of the Manual
 
 ## Stop point
 The reusable prompt copy control is committed. The requested review-and-add workflow is not yet end-to-end complete because the current LIVE review action approves queue rows but does not import them into shared catalogue evidence.
+
+
+## Follow-up layout correction — 10 November 2026
+
+- User feedback on the deployed layout showed the global copy button was too far down the page and repeated completed research prompts made the workspace unnecessarily long.
+- Updated `platform-owner-dashboard.html` and `platform-owner-dashboard.js` on `production`: removed the global bottom-of-section copy panel; placed **Copy ChatGPT evidence-review prompt** in each active response panel immediately after the complete AI response textarea and before the save/validate buttons; advanced the script cache to v52.
+- The renderer now displays only active prompts in the main batch view. Submitted prompts are moved into a collapsed **Completed research** history section. Their complete AI reports and metadata remain stored and viewable; nothing is deleted from Supabase.
+- No database migration or Supabase write was performed. TEST and all catalogue/evidence/research/tenant/customer/Stripe data remain unchanged.
+- Commits: HTML `e6600a347c70c234a37755d2213d3e667a3a4a1e`; JavaScript `500f4ee0dda3e8743160eac79c2cb09957490f60`. The documentation updates are committed in the corresponding manual commits. Await the production Worker deployment and verify the signed-in browser layout and clipboard action before marking accepted.

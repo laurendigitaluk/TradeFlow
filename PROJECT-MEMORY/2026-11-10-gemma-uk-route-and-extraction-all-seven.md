@@ -1,0 +1,37 @@
+# Project Memory — Gemma Anycubic route and extraction repair
+
+Date: 10 November 2026 UTC  
+Scope: TradeFlow LIVE, 3D Printers & Equipment; shared runtime/test files for the seven isolated category specialists.
+
+The independent Anycubic cross-check of LIVE task owner-3d-printers-equipment-1794272051590 found that Gemma had five subtasks, not six. Kobra S1 Standard was omitted from the payload. Across the five actual subtasks, six raw captures were retained/staged (three new, three enrichments), but all four Gemma extraction batches timed out. New review rows remain needs_research with no structured observed_price or evidence_type. The parent task completed and the worker returned idle; this is not a parent completion RPC failure.
+
+Independent navigation of the same approved UK sites identified concrete missed routes:
+- 3DJake UK generic /search?query route yielded no useful exact Anycubic links. Use https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer, inspect its printer category and pagination, then follow direct exact product pages.
+- 123-3D generic /collections/3d-printers missed the manufacturer-specific Anycubic collection. For new Anycubic products use https://www.123-3d.co.uk/collections/anycubic-3d-printers; for used/refurbished use /collections/refurbished-printers. Preserve lane separation. Reject Kobra 3 Max (not V2), Kobra 3 V2 and first-generation ACE Pro when task identity differs.
+- eBay UK exact search returned HTTP 403. Add the approved ANYCUBIC FDM seller category https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014 as discovery. Direct item 403 remains blocked; do not bypass.
+- Anycubic UK Kobra 4 Combo page https://uk.anycubic3d.com/products/kobra-4-combo-3d-printer was missing from the model-specific direct routes.
+
+Matcher fault: the 3D-printer matcher searched accessory keywords across the full URL path and rejected a genuine 3DJake Kobra 3 Max V2 Combo page because its parent taxonomy contains "accessories". The fix applies accessory filtering to title and terminal product slug only, retaining exact model/package/sibling/accessory checks. The stale PR #341 branch is 22 commits ahead and 44 behind current production and GitHub marks it unmergeable. Its tested code correction is carried into a new branch based on current production: fix/gemma-research-route-extraction-all-seven-20261110.
+
+Extraction fault: LIVE telemetry showed 47,282 ms for a two-page Gemma inference call, while the 3D-specific timeout was 45,000 ms. The replacement uses one direct page per Gemma call and one bounded 90,000 ms attempt. No per-page retries. Other category agents keep their existing batch size and timeout. Full page captures and visible GBP contexts remain available for ChatGPT review on failure; no price is inferred or auto-approved.
+
+Seven isolated branches are:
+gemma/3d-printers, gemma/gaming, gemma/cameras, gemma/drones, gemma/metal-detectors, gemma/mobile-phones, gemma/laptops.
+The same shared worker and regression-test files must be synchronised to all seven while preserving each agent.config.json and source isolation. The production Control Centre Update all workers operation is designed to preflight all seven, wait for active tasks to finish without force-killing Node, update each category clone sequentially from its own branch, and restart only workers that were running before and updated successfully. Preserve the shared private ENV pointer and existing .env. Research PC rollout is not complete until all seven logs and LIVE telemetry have been checked.
+
+Canonical docs updated on the replacement feature branch: docs/TRADEFLOW-SYSTEM-HANDBOOK.md, docs/TRADEFLOW-AI-OPERATING-MANUAL.md, docs/3D-PRINTER-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md. No LIVE database source, schema, task queue, review queue, catalogue, evidence, approval/import, tenant/customer, Stripe or secret data was changed. TEST remains separate. All evidence remains review-only.
+
+
+
+## Verification addendum — 10 November 2026 01:16 UTC
+
+The replacement PR #348 passed Gemma Research Tests run 42734356593. The same four shared source/test files were synchronised to all seven isolated category branches, preserving each category-specific agent.config.json. All seven branch CI workflows passed:
+- gemma/3d-printers: commit 10c85a7bbeb60fc308c2c43cdbc584a4cb21e7b9, run 42734464746
+- gemma/gaming: commit c8b3392604f75adb232f4ce7793f2890c8340e38, run 42734492721
+- gemma/cameras: commit 6568a16132a745496ebeeacb90725a422531be9f, run 42734504715
+- gemma/drones: commit 8f76e5c127ad3c2617c3bde4a281ac78e23b058f, run 42734526964
+- gemma/metal-detectors: commit dd34d14b6644b0aaadfacb9851966e21ff5e1e04, run 42734537996
+- gemma/mobile-phones: commit 42af7f33c621a43cd2315d2a34978b6511d17f7c, run 42734558108
+- gemma/laptops: commit 1dcb744f9e5ba8977dcbe93591c26853cb8c5405, run 42734571922
+
+This confirms code/test synchronisation in GitHub, not installation on the Research PC. PR #348 remains open pending merge. The existing production Update all workers action is the required local rollout; no local worker has been stopped/restarted and no private ENV has been accessed. After merge, run the all-worker update and verify seven logs/statuses before queuing the six-product Anycubic LIVE acceptance task.

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Lauren Digital Owner Dashboard</title>
-<link rel="stylesheet" href="platform-owner-dashboard.css?v=10">
+<link rel="stylesheet" href="platform-owner-dashboard.css?v=11">
 <link rel="stylesheet" href="platform-public-pages-visual-editor.css?v=1">
 </head>
 <body>
@@ -20,6 +20,7 @@
       <a href="#businesses">Subscriber businesses</a>
       <a href="#plans">Plans</a>
       <a href="#public-pages">Public Website Pages</a>
+      <a href="#cloud-ai-research">AI Research Manager</a>
 
       <div class="nav-section" style="margin-top:18px">Documentation</div>
       <a href="https://github.com/laurendigitaluk/TradeFlow/blob/production/docs/TRADEFLOW-SYSTEM-HANDBOOK.md" target="_blank" rel="noopener">System Handbook</a>
@@ -86,7 +87,26 @@
       <p class="note">Stripe Product and Price IDs are already configured for LIVE subscriber billing. This dashboard only manages the saved TradeFlow plan details; Stripe secret keys are never stored here.</p>
     </div></details></section>
 
-    <section id="public-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PUBLIC WEBSITE</span><strong>Public Website Pages</strong><small>Manage Examples and review the source-managed How It Works guide.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div class="note">How It Works is maintained as a source-managed, text-only accordion page in <code>how-it-works.html</code>. Its legacy database draft is retained for history and does not control the published guide. Examples remains editable through the public-page editor below.</div><div id="public-page-editor">Loading public page editor…</div></div></details></section>
+    
+<section id="cloud-ai-research" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">CATALOGUE RESEARCH</span><strong>Cloud AI Research Manager</strong><small>Connect multiple AI providers, queue product research and review submitted evidence.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
+<div class="panel-head"><div><div class="eyebrow">Cloud AI providers</div><h2>Provider connections</h2></div><button id="cloud-ai-refresh" type="button">Refresh</button></div>
+<p class="muted">Only enable a provider after confirming its API access is genuinely free for your account. Free-tier limits vary. When a provider reaches a limit, its work must pause; this manager must never switch to a paid model automatically. API keys are sent directly to a protected database function and stored in Supabase Vault, never in this page.</p>
+<div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
+<div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
+<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Add a product to the research queue. This does not change the catalogue.</p>
+<form id="cloud-ai-enqueue-form"><div class="plan-fields">
+<label>Category slug<input name="category_slug" placeholder="e.g. 3d-printers"></label>
+<label>Manufacturer<input name="manufacturer" required placeholder="Manufacturer"></label>
+<label>Model / product<input name="model" required placeholder="Exact model"></label>
+<label>Package / bundle<input name="package_name" placeholder="Optional package details"></label>
+<label>Research type<select name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
+</div><p><button type="submit">Add research job</button></p></form></div>
+<div class="panel-head" style="margin-top:24px"><h3>Research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
+<div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+<div class="panel-head" style="margin-top:24px"><h3>Evidence awaiting review</h3><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div><div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div><p class="note">AI findings are staged as pending review. Approving a candidate does not import it. Only a separate verified import operation may add a record to shared market evidence.</p>
+</div></details></section>
+
+<section id="public-pages" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PUBLIC WEBSITE</span><strong>Public Website Pages</strong><small>Manage Examples and review the source-managed How It Works guide.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content"><div class="eyebrow">Public website</div><h2>Public Website Pages</h2><p>Edit the TradeFlow marketing pages How It Works and Examples independently of subscriber shop websites. Save a draft while you work, preview it, then publish when ready.</p><div class="note">How It Works is maintained as a source-managed, text-only accordion page in <code>how-it-works.html</code>. Its legacy database draft is retained for history and does not control the published guide. Examples remains editable through the public-page editor below.</div><div id="public-page-editor">Loading public page editor…</div></div></details></section>
 
     <section id="email-settings" class="panel owner-accordion-panel"><details class="owner-section-accordion"><summary><span class="owner-accordion-copy"><span class="eyebrow">PLATFORM EMAIL</span><strong>Platform email settings</strong><small>Set the sending address used by TradeFlow.</small></span><span class="owner-accordion-icon" aria-hidden="true"></span></summary><div class="owner-section-content">
 <div class="eyebrow">Platform email</div><h2>TradeFlow sending email</h2>
@@ -99,7 +119,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=29" defer></script>
+<script src="platform-owner-dashboard.js?v=35" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

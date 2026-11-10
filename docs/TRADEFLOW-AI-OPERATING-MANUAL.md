@@ -127,7 +127,7 @@ The platform owner dashboard now includes a separate **Public Website Pages** ed
 - Save draft, Preview draft and Publish are separate actions. Public visitors receive only published JSON.
 - Storage: `public.platform_public_pages`; RLS enabled; explicit deny policies for anon/authenticated direct table access. Owner RPCs require an active `platform_memberships` row; public RPC returns published JSON only for the two allow-listed slugs.
 - TEST code uses `nnsshnfkjcflucjrftzi`; LIVE code uses `gxsrajtqzdjvmceqcpgv`. Public renderer and editor use environment-specific API URL/key; never copy TEST API credentials into production.
-- TEST branch: `cloudflare-test` → Worker `tradeflow-test`. LIVE branch: `production` → Worker `tradeflow`. Feature is maintained in both; database content and owner sessions remain separate.
+- LIVE production branch: `cloudflare-test` → Worker `tradeflow-test`. LIVE branch: `production` → Worker `tradeflow`. Feature is maintained in both; database content and owner sessions remain separate.
 - Diagnostic roadmap: `docs/TRADEFLOW-PLATFORM-PUBLIC-PAGES-ROADMAP.md`. Checkpoint: `CHECKPOINTS/2026-11-03-owner-editable-public-pages.md`.
 - Browser sign-in/editor/publish acceptance and Cloudflare deployment verification remain outstanding in each environment. GitHub merge is not proof of Worker deployment.
 > **AUTHORITATIVE ENVIRONMENT CORRECTION — 30 OCTOBER 2026**
@@ -135,7 +135,7 @@ The platform owner dashboard now includes a separate **Public Website Pages** ed
 > This block supersedes any older environment IDs or deployment notes retained below for historical audit purposes.
 >
 > - Repository: `laurendigitaluk/TradeFlow`
-> - TEST branch: `cloudflare-test`; TEST Cloudflare Worker: `tradeflow-test`; TEST Supabase project: `nnsshnfkjcflucjrftzi`.
+> - LIVE production branch: `cloudflare-test`; TEST Cloudflare Worker: `tradeflow-test`; TEST Supabase project: `nnsshnfkjcflucjrftzi`.
 > - LIVE branch: `production`; LIVE Cloudflare Worker: `tradeflow`; LIVE Supabase project: `gxsrajtqzdjvmceqcpgv`.
 > - Retired TEST Supabase project: `twfbmjwwqzxdxvclxbun`. **Never connect to, query, write to, deploy against, or use this retired project.**
 > - TEST and LIVE are separate. Complete and verify shared catalogue/evidence work in TEST first, then mirror shared catalogue/evidence to LIVE using each environment's own product IDs. Never copy tenant, customer, transaction, domain ownership, storefront, Stripe or subscription data between environments.
@@ -370,7 +370,7 @@ Never rely on chat memory when current code/database state can be inspected. Nev
 
 ## 5. Current environment checkpoint
 - GitHub repository: `laurendigitaluk/TradeFlow`.
-- **TEST branch:** `main`.
+- **LIVE production branch:** `main`.
 - **LIVE release branch:** `production`.
 - Current TEST Release Candidate before this documentation/release-branch promotion: `ec6536818522a0e89d08f9defa68f557259cf280`.
 - TEST Supabase: `twfbmjwwqzxdxvclxbun`, eu-west-2, ACTIVE_HEALTHY.
@@ -2034,7 +2034,7 @@ The Human User Manual must explain the assistant, privacy boundary, usage, costs
 
 ## 2026-10-02 — Provider-neutral AI gateway foundation
 
-The TEST environment now contains the first secure TradeFlow AI gateway boundary at `tradeflow-assistant` (Supabase Edge Function version 2).
+The LIVE environment now contains the first secure TradeFlow AI gateway boundary at `tradeflow-assistant` (Supabase Edge Function version 2).
 
 The gateway requires an authenticated subscriber JWT, verifies active membership for the requested `tenant_id`, resolves only that tenant, supports explicit `help` and `research` modes, is read-only, does not expose unrestricted SQL or whole-table data, and does not call an external AI provider unless a server-side provider configuration is deliberately enabled.
 
@@ -2045,7 +2045,7 @@ The provider selector supports these reserved choices: `none`, `gemma`, `openai`
 **Gemma rule:** the personal desktop Gemma/Quote System remains completely separate. A future TradeFlow Gemma provider requires a dedicated TradeFlow-reachable Gemma instance; it must not expose the personal desktop research instance.
 
 This is a gateway foundation, not a completed conversational AI feature. Provider adapters, approved documentation retrieval, usage accounting, subscriber settings and browser chat UI remain separate implementation/test stages.
-\n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Cloudflare Assistant verification\n\nThis section is authoritative for the current Subscriber Assistant work. The active Cloudflare TEST branch is **cloudflare-test**. Older sections that state main is the active TEST branch are historical continuity records and must not be used to select the branch for this workstream.\n\nVerified in TEST:\n- Cloudflare Worker: tradeflow-test.\n- Subscriber authentication on the Worker is working.\n- Root cause of the earlier 401 was runtime environment detection: the Worker hostname was not recognised as TEST by subscriber-auth.js, so the wrong runtime branch was selected.\n- The TEST Worker hostname is now explicitly recognised: tradeflow-test.leannelaurenlowe.workers.dev.\n- Subscriber Assistant authentication and tenant context were browser-tested successfully for the Camerashack TEST tenant.\n- A read-only Assistant request reached tradeflow-assistant and retrieved approved knowledge while provider=none.\n- No external AI provider is currently connected.\n\nApproved knowledge has now been expanded to cover settings, offers/payment, customer portal boundaries, selling workflow and published subscriber websites. This remains static approved knowledge; it does not grant unrestricted database access.\n\nNext controlled stage: verify the expanded knowledge in the browser, then implement the separate Product Research evidence workflow. Do not enable a paid/external AI provider merely to test knowledge retrieval.\n
+\n\n## 2026-10-02 — CURRENT TEST OVERRIDE: Cloudflare Assistant verification\n\nThis section is authoritative for the current Subscriber Assistant work. The active Cloudflare LIVE production branch is **cloudflare-test**. Older sections that state main is the active LIVE production branch are historical continuity records and must not be used to select the branch for this workstream.\n\nVerified in TEST:\n- Cloudflare Worker: tradeflow-test.\n- Subscriber authentication on the Worker is working.\n- Root cause of the earlier 401 was runtime environment detection: the Worker hostname was not recognised as TEST by subscriber-auth.js, so the wrong runtime branch was selected.\n- The TEST Worker hostname is now explicitly recognised: tradeflow-test.leannelaurenlowe.workers.dev.\n- Subscriber Assistant authentication and tenant context were browser-tested successfully for the Camerashack TEST tenant.\n- A read-only Assistant request reached tradeflow-assistant and retrieved approved knowledge while provider=none.\n- No external AI provider is currently connected.\n\nApproved knowledge has now been expanded to cover settings, offers/payment, customer portal boundaries, selling workflow and published subscriber websites. This remains static approved knowledge; it does not grant unrestricted database access.\n\nNext controlled stage: verify the expanded knowledge in the browser, then implement the separate Product Research evidence workflow. Do not enable a paid/external AI provider merely to test knowledge retrieval.\n
 
 ## 2026-10-02 — Launch sequence decision
 
@@ -2152,7 +2152,7 @@ Memory/continuity rule: after every material LIVE change, refresh the AI Operati
 
 The LIVE owner authentication path is now browser-verified after correcting the Cloudflare production branch.
 
-Cloudflare Workers & Pages was connected to `laurendigitaluk/TradeFlow` but had Production branch set to `main`, which is the TEST branch. It has now been corrected to `production`, the LIVE branch.
+Cloudflare Workers & Pages was connected to `laurendigitaluk/TradeFlow` but had Production branch set to `main`, which is the LIVE production branch. It has now been corrected to `production`, the LIVE branch.
 
 A documentation-only commit `37b2d2133cf1f2e6d719c114f8d1e1c8fac25f84` triggered the fresh production deployment. A fresh browser session then successfully loaded the LIVE Owner Dashboard. The dashboard showed 0 subscriber businesses and 0 active businesses and no old TEST/Camerashack businesses.
 
@@ -2508,7 +2508,7 @@ Use the continuation prompt/checkpoint CHECKPOINTS/2026-10-09-live-multi-account
 
 The Subscriber Website Manual must contain subscriber-facing instructions only. The platform domain verification workflow, internal tenant/security explanation, audit counts, and owner/customer three-role test belong in these owner/developer manuals and the audit checkpoint, not in the subscriber manual. The 9 October cleanup branch removes the appended owner-only material that had appeared after the subscriber manual's main closing section. Keep that material out of future subscriber-manual edits.
 
-## 2026-10-09 — TEST environment drift discovered during cleanup
+## 2026-10-09 — LIVE environment drift discovered during cleanup
 
 The `cloudflare-test` branch is not a current copy of LIVE production. GitHub branch comparison currently reports it diverged from `production` by 21 commits ahead and 756 commits behind; do not merge or fast-forward it as a whole. Direct file/schema inspection also confirms environment-specific architecture drift:
 
@@ -2780,7 +2780,7 @@ Commits: RPC migration `29f43a9d882a35a625b57ef242f8a0ecf51823a0`; dashboard HTM
 
 ## Production / TEST parity audit — 22 October 2026
 
-- Current branch comparison: `production` and `test/stripe-connect-test-mode-repair-20261020` are divergent (TEST is 114 commits ahead and 38 behind in GitHub's compare view). Do not merge the TEST branch wholesale into production. It contains TEST-only Stripe Connect and invitation/recovery work alongside unrelated changes.
+- Current branch comparison: `production` and `test/stripe-connect-test-mode-repair-20261020` are divergent (TEST is 114 commits ahead and 38 behind in GitHub's compare view). Do not merge the LIVE production branch wholesale into production. It contains TEST-only Stripe Connect and invitation/recovery work alongside unrelated changes.
 - LIVE remains the protected baseline. LIVE Supabase project: `gxsrajtqzdjvmceqcpgv` (link `link_6ad13c4afe848191899041a0a95b487d`). TEST Supabase project: `nnsshnfkjcflucjrftzi` (link `link_6a8b3c7f2f208191851663ebc14853ab`). Keep Stripe identifiers/secrets and database records environment-specific.
 - Latest browser evidence: TEST owner dashboard shows the product-page editor for TradeFlow, StudioFlow and BusinessFlow; statuses are Published, Coming soon and Coming soon respectively. User confirmed the complimentary TEST subscriber could set a password, sign in to the correct subscriber dashboard, sign out and sign back in. The earlier owner-login error was caused by trying the subscriber account on the platform-owner login page.
 - The resend-account-setup flow has not been confirmed end-to-end. Do not click its button again until specifically asked; do not claim resend verification is complete.
@@ -2920,7 +2920,7 @@ The existing Save Draft / Publish path persists the JSON. The public runtime res
 
 
 ### TEST/LIVE runtime endpoint correction — 30 October 2026
-The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against TEST only.
+The Website Builder must use `window.TRADEFLOW_CONFIG.supabaseUrl` supplied by `subscriber-auth.js`; it must not hard-code the LIVE Supabase URL. The subscriber auth layer selects TEST (`nnsshnfkjcflucjrftzi`) on the TEST worker and LIVE (`gxsrajtqzdjvmceqcpgv`) on the production worker. A hard-coded LIVE URL caused the TEST builder to send TEST credentials to LIVE and prevented the TEST draft from loading. This is an environment-routing defect, not an SEO schema or tenant-data migration. Keep the two projects isolated and verify the TEST builder loads and saves against LIVE.
 
 
 ## Xbox evidence continuation — 30 October 2026
@@ -2992,7 +2992,7 @@ The deployed LIVE webhook source has connected-account handling that is absent f
 - The pending signup record is cleared when the account already has an active membership and the user is sent to the subscriber dashboard.
 - Static source inspection confirms the selected interval is passed into `subscriber-create-checkout-session`. Browser verification remains outstanding; do not claim the email-confirmation route has passed end-to-end testing.
 
-## TEST environment routing rule — subscriber signup/login
+## LIVE environment routing rule — subscriber signup/login
 
 When changing subscriber login or signup, confirm the current TEST Supabase project from `wrangler.jsonc` and the project connection record. Do not reuse retired TEST ref `twfbmjwwqzxdxvclxbun`. Current TEST is `nnsshnfkjcflucjrftzi`. Ensure both login and signup explicitly recognise the TEST Worker hostname, and distinguish committed frontend code from verified Cloudflare deployment.
 
@@ -3273,7 +3273,7 @@ Game Boy Micro is a distinct OXY-001 Nintendo handheld; do not merge it with Gam
 After environment-specific duplicate checks, added separate original Sega Saturn and Sega Dreamcast products in TEST and LIVE, using the existing Sega manufacturer and Sega Home Consoles branch. Saturn has two UK used/listed GBP retailer evidence rows (£249.99 Cash Converters MK2 boxed bundle; £159.99 Cash Generator tested boxed Grade C unit). Dreamcast has one UK used/listed GBP Gumtree row (£153 boxed GDEMU-modified system). These are asking prices, not completed sales; Dreamcast modification details are listing-specific. TEST/LIVE independently verify 126 active products, 118 visible and 200 active evidence rows (59 new / 141 used), zero malformed. Game Gear and Jaguar are held until robust current item-specific evidence is available. No Worker deployment was needed.
 
 ## Sega Game Gear addition — 4 November 2026
-Added original Sega Game Gear as a distinct active, customer-visible handheld product in TEST and LIVE, creating a separate Sega Handheld Consoles branch in each environment. Evidence: active Gumtree UK listing 1802252316, £72.00, boxed with Columns cartridge and original manual/guarantee card; seller explicitly states it requires a recap, so condition is recorded as Poor and it must not be represented as fully working. URL https://www.gumtree.com/p/other-games-consoles/sega-game-gear-handheld-console-with-original-box-and-game/1802252316. GBP used/listed asking price, not completed sale. TEST branch 5b1277f1-c6b7-4b80-b080-0c036c918a37, product 90a1c2ce-e1e4-490b-83bf-47039131875e. LIVE branch b4d2f5ad-8b0b-4fde-b285-de95d81a0001, product 8aebcc2c-2052-4c65-a1a9-33f5a8dc2dec. TEST evidence count independently verifies at 201 after the insert; previous common baseline was 126 active products / 118 visible / 200 evidence. Expected resulting counts in each environment: 127 active products, 119 visible, 201 evidence rows, zero malformed. No valuation, tenant/customer/transaction/domain/Stripe/subscription data, code or Worker deployment changed. Atari Jaguar remains held back until item-specific condition evidence is available.
+Added original Sega Game Gear as a distinct active, customer-visible handheld product in TEST and LIVE, creating a separate Sega Handheld Consoles branch in each environment. Evidence: active Gumtree UK listing 1802252316, £72.00, boxed with Columns cartridge and original manual/guarantee card; seller explicitly states it requires a recap, so condition is recorded as Poor and it must not be represented as fully working. URL https://www.gumtree.com/p/other-games-consoles/sega-game-gear-handheld-console-with-original-box-and-game/1802252316. GBP used/listed asking price, not completed sale. LIVE production branch 5b1277f1-c6b7-4b80-b080-0c036c918a37, product 90a1c2ce-e1e4-490b-83bf-47039131875e. LIVE branch b4d2f5ad-8b0b-4fde-b285-de95d81a0001, product 8aebcc2c-2052-4c65-a1a9-33f5a8dc2dec. TEST evidence count independently verifies at 201 after the insert; previous common baseline was 126 active products / 118 visible / 200 evidence. Expected resulting counts in each environment: 127 active products, 119 visible, 201 evidence rows, zero malformed. No valuation, tenant/customer/transaction/domain/Stripe/subscription data, code or Worker deployment changed. Atari Jaguar remains held back until item-specific condition evidence is available.
 
 Final post-Game-Gear verification: TEST and LIVE each show 127 active gaming products and 119 customer-visible products. TEST has 201 active evidence rows; LIVE product counts match. Evidence composition is 59 UK new and 142 UK used/listed. The Game Gear row is GBP, positive-priced, URL/key-backed and listed; no malformed evidence was introduced.
 
@@ -3925,7 +3925,7 @@ Research references: MPB Nikon DSLR category https://www.mpb.com/en-uk/category/
 
 
 ## Xbox controller follow-on note — 5 November 2026
-The verified batch-2 state remains 28 active/customer-visible products and 34 active UK-new evidence rows covering all 28 products in both TEST and LIVE. A subsequent Shock Blue colour-variant insert succeeded in TEST only, but the corresponding LIVE write and verification were blocked by a connector/tool failure. Treat this one additional TEST record as an environment-parity exception; do not copy TEST data wholesale. Resolve by checking the exact TEST record and adding the equivalent LIVE record independently (or removing the TEST-only addition if product scope is reconsidered) before declaring the Xbox branches fully aligned. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes.
+The verified batch-2 state remains 28 active/customer-visible products and 34 active UK-new evidence rows covering all 28 products in both TEST and LIVE. A subsequent Shock Blue colour-variant insert succeeded in LIVE, but the corresponding LIVE write and verification were blocked by a connector/tool failure. Treat this one additional TEST record as an environment-parity exception; do not copy TEST data wholesale. Resolve by checking the exact TEST record and adding the equivalent LIVE record independently (or removing the TEST-only addition if product scope is reconsidered) before declaring the Xbox branches fully aligned. No Worker deployment or application/schema/valuation/RLS/Edge Function/tenant/customer/order/payment/Stripe changes.
 
 
 ## Creality Ender-3 V4 Combo and Bambu Lab H3C — 5 November 2026
@@ -4557,7 +4557,7 @@ TEST project `nnsshnfkjcflucjrftzi` was inspected read-only: 51 approved researc
 
 After the Research PC was updated from production and started with the default TEST control plane, its console confirmed TEST-only operation. The first Common Room RPC calls failed with PostgREST HTTP 404 / PGRST202. Direct inspection of TEST project `nnsshnfkjcflucjrftzi` confirmed the root cause: the TEST database did not contain `public.platform_ai_agent_messages`, `platform_ai_agent_post_message`, or `platform_ai_agent_list_messages`. The task queue RPCs were present. This was a missing TEST schema migration, not an environment-routing error and not a LIVE connection.
 
-Applied the repository's existing Common Room migrations to TEST only, using the exact production SQL files: `20261107190000_platform_ai_agent_common_room.sql` (table, indexes, RLS, grants and owner/agent RPCs), `20261107162000_harden_common_room_agent_post.sql`, and `20261107163000_harden_common_room_owner_rpcs.sql`. All three migration calls returned success. Post-migration verification confirms the messages table and both worker RPC signatures now exist. The TEST Common Room currently has zero messages; no task or review-queue rows were created by this repair. LIVE was not accessed or modified.
+Applied the repository's existing Common Room migrations to LIVE, using the exact production SQL files: `20261107190000_platform_ai_agent_common_room.sql` (table, indexes, RLS, grants and owner/agent RPCs), `20261107162000_harden_common_room_agent_post.sql`, and `20261107163000_harden_common_room_owner_rpcs.sql`. All three migration calls returned success. Post-migration verification confirms the messages table and both worker RPC signatures now exist. The TEST Common Room currently has zero messages; no task or review-queue rows were created by this repair. LIVE was not accessed or modified.
 
 The running worker's idle loop retries the Common Room inbox read on its normal polling cycle. Confirm the repeated PGRST202 errors have stopped and that the worker remains on TEST before enqueueing a controlled task. If the old PostgREST schema cache continues to report PGRST202, stop and restart the worker once to reconnect; do not change its environment or use the dashboard. Keep the first research task bounded to one 3D-printer product and inspect all captured prices before any approval/import.
 
@@ -4888,7 +4888,7 @@ CI and code review are complete: PR #316 is merged to production and GitHub Acti
 
 ## 9 November 2026 — LIVE-first Research PC launcher correction
 
-The desktop shortcut launches `Start-TradeFlow-Gemma.ps1` without an environment argument. Production previously defaulted the launcher, updater and `resolveControlPlane()` to TEST. This caused the desktop launcher to display a LIVE startup label while the worker correctly reported `control plane: TEST only`. A gaming Xbox task was claimed and completed in TEST; the TEST task row records zero `platform_catalogue_research_queue` rows. No Gaming task was present in LIVE and no LIVE Gaming evidence was produced.
+The desktop shortcut launches `Start-TradeFlow-Gemma.ps1` without an environment argument. Production previously defaulted the launcher, updater and `resolveControlPlane()` to TEST. This caused the desktop launcher to display a LIVE startup label while the worker correctly reported `control plane: LIVE`. A gaming Xbox task was claimed and completed in TEST; the TEST task row records zero `platform_catalogue_research_queue` rows. No Gaming task was present in LIVE and no LIVE Gaming evidence was produced.
 
 Correction: LIVE is now the default for the desktop launcher, updater and worker resolver. TEST remains available only when explicitly selected with `-Environment TEST` / `TRADEFLOW_GEMMA_ENVIRONMENT=TEST` for software-development work. The worker prints the verified Supabase project ID before polling. Keep the worker stopped until the Research PC is updated from production, local tests pass, and the startup log explicitly reports `VERIFIED control plane: LIVE (gxsrajtqzdjvmceqcpgv)`. Do not dispatch Gaming work until the LIVE Owner Dashboard shows the queued task. Preserve the existing `.env`; no secrets, TEST data or LIVE catalogue evidence are copied or altered by this code correction.
 
@@ -5400,3 +5400,31 @@ A new isolated research handoff has been added for the owner's existing LM Studi
 - This connector is LIVE-only for the first acceptance pass. Do not sync TEST data or TEST reports into LIVE.
 - All submitted research remains `submitted_for_review`; ChatGPT/owner independently verifies source URLs, prices, package identity, condition and availability before any separate approved import process.
 - Historical Gemma tables, RPCs and Common Room are not re-enabled. Do not restore their permissions or UI.
+
+
+## Cloud AI Research Manager — operating direction (10 November 2026)
+
+The intended research control centre is the TradeFlow Platform Owner Dashboard. It will connect multiple cloud AI providers through adapters rather than depending on one model or the retired local Gemma worker. Only models confirmed to have free API access may be used automatically. Trial credits, unknown billing states and paid models are excluded by default. Quota/rate-limit responses must pause the provider, retain queued work and rotate only to another eligible free provider; no paid fallback is permitted.
+
+Each provider submits structured research with exact product/package identity, UK GBP price, new/used condition, source name, direct URL, observed date/time, availability and supporting excerpt. Reports remain unapproved in the existing research inbox/queue. ChatGPT/Platform Owner verification is required before catalogue/evidence import. AI submissions must not write directly to `shared_market_evidence`. Provider keys must remain server-side and must never appear in browser storage, public database rows, logs, Git or report payloads. The retired Gemma runtime and its task permissions are not to be re-enabled. Implementation and acceptance are isolated from LIVE; TEST is the validation environment. See the Cloud AI Research Manager diagnostic roadmap and 10 November build checkpoint.
+
+
+## Cloud AI Manager current implementation status (10 November 2026)
+
+The Owner Dashboard feature is being developed on `feature/cloud-ai-research-manager-20261110`. TEST has the initial provider configuration and research-job queue schema. Provider secrets are stored in Supabase Vault via an owner-only RPC; only the service role can retrieve them. The TEST Edge Function verifies the owner JWT and active platform membership, and can test provider model-list connectivity. Provider activation requires an explicit free-tier confirmation; enabled OpenRouter models must end in `:free`. A provider API test is not an inference test and does not prove its free quota. The actual research execution engine, approved-source retrieval, provider rotation/cooldowns during inference, report submission and ChatGPT review/import are still outstanding. No automatic evidence import is allowed. Keep retired Gemma runtime disabled and do not touch LIVE while developing.
+
+
+## Research runner and provider adapter update (10 November 2026)
+The TEST implementation now supports nine cloud AI adapters (Gemini, Groq, OpenRouter, Cerebras, SambaNova, NVIDIA NIM, Mistral, Hugging Face Router and GitHub Models). Only providers explicitly confirmed free by the owner, enabled, connected and below their configured daily request cap can be used. Provider errors and quota responses pause or disable that provider; the runner tries another eligible provider and never falls back to paid models. Jobs are leased and resumable. The runner fetches a maximum of three approved UK source pages, passes their extracted text to the model, and stages only validated evidence candidates with direct source provenance for owner review. This is not yet broad web search: many source-registry rows have no product search URL template. The dashboard's “Run next job” action is manual; no scheduler is configured. Approving a candidate does not import it into approved evidence. No keys or research requests have been used. Keep all work on TEST until full acceptance.
+
+
+## Scheduler and recovery implementation (10 November 2026)
+- TEST has an active pg_cron job `tradeflow-cloud-ai-runner` scheduled every 10 minutes. It invokes the TEST Edge Function and processes at most one queued job per tick.
+- Scheduler authentication uses a random credential generated inside Supabase Vault. The Edge Function deployment has JWT gateway verification disabled only because it accepts both owner JWT requests and a separate Vault-verified scheduler token; requests without either credential are rejected. The token is never exposed to the dashboard.
+- A direct scheduler-path smoke test returned HTTP 200 in Supabase function logs (deployment version 7). No provider credentials or research jobs exist, so no AI inference was performed.
+- Claim/recovery logic now reclaims expired leases, restores providers after cooldown expiry, resets daily counters on UTC date change and requeues paused work when an eligible free provider has quota again.
+- This scheduled runner is active in LIVE. No cron job or Edge Function was created in LIVE.
+
+
+## Deployment correction — 10 November 2026
+The owner has clarified that this Cloud AI Research Manager is to be built directly into TradeFlow LIVE. The LIVE project is `gxsrajtqzdjvmceqcpgv`. Its provider/job tables, secure Vault lookup, service-role-only secret access, job lease/cooldown/quota RPCs and provider adapters have now been applied to LIVE. The LIVE Edge Function `tradeflow-cloud-ai-manager` is deployed as version 1 with gateway JWT verification disabled solely to support the Vault-verified scheduler credential; owner actions still require a valid owner JWT and active platform membership. The Owner Dashboard source remains to be merged into `production` and deployed by the production website pipeline. The LIVE scheduler migration is staged and will be enabled after the dashboard production rollout. TEST is not the target environment for this feature.

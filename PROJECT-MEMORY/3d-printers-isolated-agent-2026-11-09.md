@@ -146,3 +146,8 @@ A read-only branch comparison confirmed all seven specialist branches currently 
 Owner authorised the release. PR #349 (evidence/telemetry), PR #350 (3D Printer parent completion and aggregate reporting), and PR #351 (isolated specialist idle heartbeat) were merged in that order. Merge commits: `c63fbba74c24b9caac40230ac5f8f6549a611ff1`, `36bb6e452719bece5ded6d4c412a2af899a01a06`, and `24fa2713c3040798f82ecf63fc5ac7023a884acf`.
 
 The merged 3D Printer worker, parent-result summary module and regression tests, specialist idle-heartbeat helper/test, updater, launcher preflight, GitHub Actions test list, manuals, diagnostic roadmaps, project memory and checkpoint have now been promoted onto `gemma/3d-printers`. The 3D Printer one-key `agent.config.json` was not modified. This is repository branch promotion only: the Research PC installation has not yet been updated or restarted, and LIVE runtime acceptance is still pending.
+
+
+## 10 November 2026 — Current Research PC handover
+
+Read `CHECKPOINTS/2026-11-10-gemma-research-pc-reconciliation.md` on production before continuing. The owner's local 3D clone is `C:\\CTFGemma2\\Gemma-3D-Printers`, remote `laurendigitaluk/TradeFlow`, branch `gemma/3d-printers`. Local HEAD `0ffa1734d071440f18b8becbbfc039ced1605d5e`; remote `90591adc2824263dbf0256df195b435456f96e46`; remote is 74 commits ahead, local 0 commits ahead. Local working tree is dirty: six tracked diffs plus untracked launcher, backups, result summary and status file. Preserve and reconcile before fast-forward; no reset/clean/blind pull. GearCashOut is a separate project, not part of TradeFlow; it only supplied category names, and TradeFlow evidence already exists. Do not inspect or use GearCashOut.

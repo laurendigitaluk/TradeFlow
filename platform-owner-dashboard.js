@@ -416,7 +416,7 @@ function renderCloudAiProviders(rows){
    '<div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(d.provider_key)+'</div><h3>'+escapeHtml(d.display_name)+'</h3></div><label class="plan-live"><input name="enabled" type="checkbox" '+(p.enabled?'checked':'')+'> Enabled</label></div>'+
    '<label>Model ID<input name="model_id" required maxlength="180" value="'+escapeAttr(p.model_id||d.model_id)+'"></label>'+
    '<label>API key <input name="api_key" type="password" autocomplete="new-password" placeholder="'+(p.has_key?'Key saved securely — enter a new key to replace':'Paste provider API key')+'"></label>'+
-   '<label>Daily request cap<input name="daily_request_limit" type="number" min="0" max="10000" value="'+(p.daily_request_limit||0)+'"></label>'+
+   '<label>Daily request cap<input name="daily_request_limit" type="number" min="0" max="10000" value="'+(p.daily_request_limit||20)+'"></label>'+
    '<label class="plan-live"><input name="free_tier_confirmed" type="checkbox" '+(p.free_tier_confirmed?'checked':'')+'> I have verified this API/model is available without paid billing on my account</label>'+
    '<div class="plan-editor-foot"><span class="plan-status">'+escapeHtml(p.status||'not configured')+(p.has_key?' · key stored in Vault':' · no key')+'</span><button type="submit">Save provider</button><button type="button" data-test-provider="'+d.provider_key+'">Test connection</button></div></form>';
  }).join('');

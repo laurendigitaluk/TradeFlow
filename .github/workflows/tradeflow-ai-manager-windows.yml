@@ -21,7 +21,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r tools/tradeflow-ai-manager/requirements.txt
-          pip install pyinstaller==6.16.0 pytest==8.4.2\n      - name: Run core tests\n        run: python -m pytest tools/tradeflow-ai-manager/tests -q
+          pip install pyinstaller==6.16.0 pytest==8.4.2
+      - name: Run core tests
+        run: python -m pytest tools/tradeflow-ai-manager/tests -q
       - name: Build portable executable
         run: |
           pyinstaller --noconfirm --clean --onefile --windowed --name TradeFlowAIManager --paths tools/tradeflow-ai-manager tools/tradeflow-ai-manager/app.py

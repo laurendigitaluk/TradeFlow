@@ -88,13 +88,18 @@ const playbooks = {
       '123-3d.co.uk': {
         label: '123-3D UK retailer',
         collectionApi: 'shopify',
-        routes: ['https://www.123-3d.co.uk/collections/anycubic-3d-printers', 'https://www.123-3d.co.uk/collections/refurbished-printers'],
+        routes: ['https://www.123-3d.co.uk/collections/3d-printers', 'https://www.123-3d.co.uk/collections/refurbished-printers'],
         routesByResearchType: {
-          uk_new: ['https://www.123-3d.co.uk/collections/anycubic-3d-printers'],
-          uk_used: ['https://www.123-3d.co.uk/collections/refurbished-printers']
+          uk_new: ['https://www.123-3d.co.uk/collections/3d-printers'],
+          uk_used: ['https://www.123-3d.co.uk/collections/refurbished-printers'],
+          uk_both: ['https://www.123-3d.co.uk/collections/3d-printers', 'https://www.123-3d.co.uk/collections/refurbished-printers']
         },
+        routesByModel: [
+          { modelIncludes: ['kobra'], researchTypes: ['uk_new', 'uk_both'], routes: ['https://www.123-3d.co.uk/collections/anycubic-3d-printers'] }
+        ],
+        modelRoutesFirst: true,
         genericSearchFallback: false,
-        navigation: 'For Anycubic new-printer tasks, start with the manufacturer-specific /collections/anycubic-3d-printers catalogue; the generic 3D-printers collection can omit the exact family. For uk_used use only the dedicated refurbished-printers collection. For uk_both inspect both routes. Follow pagination and individual product links. The collection contains similarly named but different machines: reject Kobra 3 Max when the task requests Kobra 3 Max V2, and reject Kobra 3 V2 when the task requests Kobra 3 Max V2. Refurbished Kobra S1 Combo currently listed as ACE Pro is not ACE 2 Pro. Capture direct-page GBP/VAT, stock, exact machine/package, grade/condition, warranty and delivery. Collection-card prices are discovery clues, not final evidence.'
+        navigation: 'Use the all-printers collection for general new-printer tasks and the dedicated refurbished-printers collection for used tasks. For Anycubic Kobra new tasks, first inspect the manufacturer-specific /collections/anycubic-3d-printers catalogue; for uk_both inspect it as well as the used/refurbished collection. Keep lane selection intact. Follow pagination and individual product links. The collection contains similarly named but different machines: reject Kobra 3 Max when the task requests Kobra 3 Max V2, and reject Kobra 3 V2 when the task requests Kobra 3 Max V2. Refurbished Kobra S1 Combo currently listed as ACE Pro is not ACE 2 Pro. Capture direct-page GBP/VAT, stock, exact machine/package, grade/condition, warranty and delivery. Collection-card prices are discovery clues, not final evidence.'
       },
       'idig3dprinting.co.uk': {
         label: 'iDig3DPrinting UK retailer',
@@ -110,9 +115,13 @@ const playbooks = {
       },
       '3djake.uk': {
         label: '3DJake UK retailer',
-        routes: ['https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer'],
+        routes: ['/search?query={query}'],
+        routesByModel: [
+          { modelIncludes: ['kobra'], routes: ['https://www.3djake.uk/anycubic-3d-printer-and-accessories/anycubic-3d-printer'] }
+        ],
+        modelRoutesFirst: true,
         genericSearchFallback: false,
-        navigation: 'For Anycubic tasks, start with the UK Anycubic 3D Printers brand catalogue at /anycubic-3d-printer-and-accessories/anycubic-3d-printer rather than the generic /search?query route, which can return no exact model links. Treat the brand catalogue as discovery only: use its 3D Printers & More section and pagination, follow each exact direct printer product URL, and reject the separate Spare Parts category. Capture the direct page title, exact model/package, selected variant, current GBP price, availability, delivery estimate and condition. Do not use catalogue-card or crossed-out prices as final evidence.'
+        navigation: 'Use the UK storefront search for general printer tasks. For Anycubic Kobra tasks, first inspect the Anycubic 3D Printers brand catalogue at /anycubic-3d-printer-and-accessories/anycubic-3d-printer, then use its 3D Printers & More section and pagination to follow exact direct printer product URLs. Reject the separate Spare Parts category and accessories based on the actual product title/terminal slug, not the parent taxonomy. Capture the direct page title, exact model/package, selected variant, current GBP price, availability, delivery estimate and condition. Do not use catalogue-card or crossed-out prices as final evidence.'
       },
       'gumtree.com': {
         label: 'Gumtree UK used marketplace',
@@ -128,9 +137,13 @@ const playbooks = {
       },
       'ebay.co.uk': {
         label: 'eBay UK marketplace',
-        routes: ['https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014', '/sch/i.html?_nkw={query}&_sacat=0'],
+        routes: ['/sch/i.html?_nkw={query}&_sacat=0'],
+        routesByModel: [
+          { modelIncludes: ['kobra'], routes: ['https://www.ebay.co.uk/str/anycubic/FDM-3D-Printers/_i.html?store_cat=39698507014'] }
+        ],
+        modelRoutesFirst: true,
         genericSearchFallback: false,
-        navigation: 'For Anycubic tasks, inspect the approved ANYCUBIC seller storefront FDM 3D Printers category as an additional discovery route, then use the exact-model UK search route. Follow only individual active item pages; capture current seller asking price (not sold/completed price), condition, item location, postage, listing date/status and exact machine/package. Separate new, used, refurbished and ex-demo; the storefront category is discovery only. If a direct item page or search route returns HTTP 403, record it as blocked and continue with other approved sources; never bypass access controls or infer verified evidence from a result card.'
+        navigation: 'Use the exact-model UK search route for general printer tasks. For Anycubic Kobra tasks, inspect the approved ANYCUBIC seller storefront FDM 3D Printers category first, then exact-model search. Follow only individual active item pages; capture current seller asking price (not sold/completed price), condition, item location, postage, listing date/status and exact machine/package. Separate new, used, refurbished and ex-demo; the storefront category is discovery only. If a direct item page or search route returns HTTP 403, record it as blocked and continue with other approved sources; never bypass access controls or infer verified evidence from a result card.'
       },
       'amazon.co.uk': {
         label: 'Amazon UK marketplace',
@@ -402,12 +415,17 @@ export function buildWebsiteSearchRoutes(source, task) {
   const configuredRoutes = site?.routesByResearchType?.[researchType] || site?.routes || [];
   const modelText = String(task?.model || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   const modelRoutes = (site?.routesByModel || [])
-    .filter(rule => (rule.modelIncludes || []).some(value => {
-      const token = String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      return token && modelText.includes(token);
-    }))
+    .filter(rule => {
+      const modelMatches = (rule.modelIncludes || []).some(value => {
+        const token = String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+        return token && modelText.includes(token);
+      });
+      const allowedResearchTypes = Array.isArray(rule.researchTypes) ? rule.researchTypes.map(value => String(value).toLowerCase()) : null;
+      return modelMatches && (!allowedResearchTypes || allowedResearchTypes.includes(researchType));
+    })
     .flatMap(rule => Array.isArray(rule.routes) ? rule.routes : []);
-  for (const route of [...configuredRoutes, ...modelRoutes]) {
+  const orderedRoutes = site?.modelRoutesFirst ? [...modelRoutes, ...configuredRoutes] : [...configuredRoutes, ...modelRoutes];
+  for (const route of orderedRoutes) {
     const filledRoute = fillRoute(route, task);
     routes.push(/^https?:\/\//i.test(filledRoute) ? filledRoute : 'https://' + domain + filledRoute);
   }

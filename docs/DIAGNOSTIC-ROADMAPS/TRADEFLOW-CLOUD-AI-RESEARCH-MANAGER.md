@@ -84,3 +84,15 @@ Provide a Platform Owner Dashboard control centre that can use multiple independ
 3. Add approved-source selection, scheduled cadence, retry/backoff and evidence review/import workflow. Do not write directly to shared evidence.
 4. Deploy owner dashboard files and migrations to TEST hosting only after source-level checks; test all owner-only flows.
 5. Keep LIVE untouched until acceptance and explicit release decision.
+
+## Research runner implementation — TEST only
+- Added service-role-only lease/claim, finish and provider-pause RPCs. Jobs have a five-minute lease; expired running jobs return to the queue.
+- Expanded adapter registry to Gemini, Groq, OpenRouter, Cerebras, SambaNova, NVIDIA NIM, Mistral, Hugging Face Router and GitHub Models. The provider endpoints are fixed server-side by provider key; no user-supplied arbitrary API base URL is accepted.
+- Provider API keys remain in Vault. The Edge Function now supports a manually invoked `process_next_job` action, checks only enabled providers with explicit free-tier confirmation and remaining daily request cap, and rotates to the next eligible provider after provider failures. 402/403/429 responses trigger cooldown; no paid fallback exists.
+- Each job fetches up to three HTTPS pages from enabled, category-matched, GB research sources. Redirects are not followed; source hostname must match the approved registry domain. HTML is reduced to text before model submission.
+- Model output is constrained to JSON. Candidate findings must cite one of the exact fetched URLs, have positive GBP price, supported evidence type, exact/likely product match and an excerpt present in fetched page text. Accepted candidates are inserted into existing `platform_catalogue_research_queue` as `evidence_candidate` / `pending_review`, with raw provider/model provenance. They are not inserted into `shared_market_evidence`.
+- Owner Dashboard now has a manual “Run next job” control and a pending evidence list with approve / needs-research / reject decisions using the existing owner RPC.
+- Enabled providers require a daily request cap (default 20, configurable) with UTC daily reset. This is an application-level ceiling, not a guarantee of provider-side billing; owner must still confirm that API billing is disabled or free tier is in effect.
+- TEST Edge Function `tradeflow-cloud-ai-manager` is ACTIVE, JWT verification enabled, version 4. No API keys have been entered and no inference request has been sent.
+- Source retrieval limitation: many existing source records only have a homepage URL and no product-search template. Those pages may not contain the target product; in that case the job will yield no price candidates. Do not claim comprehensive web search until a proper search adapter or verified per-source search URL templates are added.
+- Evidence “approve” only marks a queue candidate approved; it does not import it. The exact product/evidence import process must be inspected and implemented separately before automated database insertion.

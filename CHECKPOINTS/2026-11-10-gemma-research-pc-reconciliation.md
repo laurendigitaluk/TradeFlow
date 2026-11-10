@@ -66,3 +66,8 @@ Earlier local audit (from owner-provided PowerShell output):
 
 ## Documentation location warning
 The expected historical manual paths docs/GEARCASHOUT-AI-OPERATING-MANUAL.md and docs/GEARCASHOUT-SYSTEM-HANDBOOK.md returned 404 when checked on both production and gemma/3d-printers in this repository. Do not invent or create substitute manuals at guessed paths. Locate the actual canonical manual files/repository before editing them. The known existing research-pipeline roadmap is docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-GEMMA-RESEARCH-PIPELINE.md.
+
+
+## Owner clarification — category/evidence source project is out of scope
+
+The separate attached project is not part of TradeFlow and is not required for the current Gemma restoration. It was used only as a source to bring product categories into TradeFlow; the evidence has already been created. Do not inspect, depend on, restore, sync, migrate or re-import anything from that separate project. Continue exclusively against the TradeFlow repository, the seven TradeFlow specialist folders/branches and TradeFlow LIVE Supabase. Preserve the existing TradeFlow categories and evidence; do not recreate or duplicate them.

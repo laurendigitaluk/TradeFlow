@@ -536,7 +536,7 @@ async function queueCloudAiCatalogueScope(scope){
  const label=scope==='category'?'the entire category': 'the entire selected branch';
  const expected=scope==='category'?Number($('cloud-ai-category').selectedOptions[0]?.textContent.match(/\((\d+)\)/)?.[1]||cloudAiCatalogueTotal):Number(cloudAiCatalogueBranches.find(x=>x.id===branchId)?.product_count||cloudAiCatalogueTotal);
  if(!window.confirm('Queue research for '+label+' ('+expected.toLocaleString()+' products)? This will create research jobs only; it will not change catalogue products or existing evidence.'))return;
- const button=scope==='category'?$ ('cloud-ai-queue-category'):$('cloud-ai-queue-branch');
+ const button=scope==='category' ? $('cloud-ai-queue-category') : $('cloud-ai-queue-branch');
  button.disabled=true;$('cloud-ai-status').textContent='Queueing '+label+'…';
  try{
   const data=await request('/rest/v1/rpc/platform_owner_enqueue_cloud_ai_catalogue_scope',{method:'POST',body:JSON.stringify({

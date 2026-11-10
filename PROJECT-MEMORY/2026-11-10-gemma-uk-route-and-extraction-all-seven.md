@@ -20,3 +20,18 @@ gemma/3d-printers, gemma/gaming, gemma/cameras, gemma/drones, gemma/metal-detect
 The same shared worker and regression-test files must be synchronised to all seven while preserving each agent.config.json and source isolation. The production Control Centre Update all workers operation is designed to preflight all seven, wait for active tasks to finish without force-killing Node, update each category clone sequentially from its own branch, and restart only workers that were running before and updated successfully. Preserve the shared private ENV pointer and existing .env. Research PC rollout is not complete until all seven logs and LIVE telemetry have been checked.
 
 Canonical docs updated on the replacement feature branch: docs/TRADEFLOW-SYSTEM-HANDBOOK.md, docs/TRADEFLOW-AI-OPERATING-MANUAL.md, docs/3D-PRINTER-GEMMA-AGENT-DIAGNOSTIC-ROADMAP.md. No LIVE database source, schema, task queue, review queue, catalogue, evidence, approval/import, tenant/customer, Stripe or secret data was changed. TEST remains separate. All evidence remains review-only.
+
+
+
+## Verification addendum — 10 November 2026 01:16 UTC
+
+The replacement PR #348 passed Gemma Research Tests run 42734356593. The same four shared source/test files were synchronised to all seven isolated category branches, preserving each category-specific agent.config.json. All seven branch CI workflows passed:
+- gemma/3d-printers: commit 10c85a7bbeb60fc308c2c43cdbc584a4cb21e7b9, run 42734464746
+- gemma/gaming: commit c8b3392604f75adb232f4ce7793f2890c8340e38, run 42734492721
+- gemma/cameras: commit 6568a16132a745496ebeeacb90725a422531be9f, run 42734504715
+- gemma/drones: commit 8f76e5c127ad3c2617c3bde4a281ac78e23b058f, run 42734526964
+- gemma/metal-detectors: commit dd34d14b6644b0aaadfacb9851966e21ff5e1e04, run 42734537996
+- gemma/mobile-phones: commit 42af7f33c621a43cd2315d2a34978b6511d17f7c, run 42734558108
+- gemma/laptops: commit 1dcb744f9e5ba8977dcbe93591c26853cb8c5405, run 42734571922
+
+This confirms code/test synchronisation in GitHub, not installation on the Research PC. PR #348 remains open pending merge. The existing production Update all workers action is the required local rollout; no local worker has been stopped/restarted and no private ENV has been accessed. After merge, run the all-worker update and verify seven logs/statuses before queuing the six-product Anycubic LIVE acceptance task.

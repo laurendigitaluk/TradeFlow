@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { runTask, is3dPrinterResearchTask } from './agent.mjs';
 import { normaliseProductResearchTasks, getReviewQueueWriteCounts } from './task-groups.mjs';
 import { resolveAgentIdentity } from './agent-identity.mjs';
-import { reportAgent } from './agent-telemetry.mjs';
+import { reportAgent, buildWorkerHeartbeatDetails } from './agent-telemetry.mjs';
 import { resolveControlPlane } from './control-plane.mjs';
 import { buildAgentClaimArgs } from './desktop-control.mjs';
 import { normalizeIsolatedAgentConfig, assertTaskGroupBelongsToAgent } from './agent-isolation.mjs';
@@ -172,7 +172,7 @@ async function processClaim(claim){
  let activeIdentity=null,activeStage='task_started';
  const heartbeat=setInterval(async()=>{
   await rpc('platform_ai_agent_heartbeat_task',{p_task_id:claim.id,p_worker_id:workerId,p_lease_seconds:leaseSeconds}).catch(e=>console.error('[heartbeat]',e.message));
-  if(activeIdentity)await safeReport({...activeIdentity,status:'running',current_task:claim.task_key,event_type:'heartbeat',task_key:claim.task_key,message:'Research worker heartbeat while processing queued subtasks.',details:{stage:activeStage,heartbeat:true,queue_task_id:claim.id,worker_id:workerId}});
+  if(activeIdentity)await safeReport({...activeIdentity,status:'running',current_task:claim.task_key,event_type:'heartbeat',task_key:claim.task_key,message:'Research worker heartbeat while processing queued subtasks.',details:buildWorkerHeartbeatDetails({activeStage,queueTaskId:claim.id,workerId})});
  },45000);
  const inboxHeartbeat=setInterval(()=>{if(isolatedAgentIdentity)checkAgentCommonRoom(isolatedAgentIdentity).catch(e=>console.error('[common room inbox]',e.message));},Math.max(30000,pollMs*2));
  try{

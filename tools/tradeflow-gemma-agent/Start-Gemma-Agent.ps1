@@ -41,7 +41,7 @@ Push-Location $InstallPath
 try {
     & node --check $WorkerPath
     if ($LASTEXITCODE -ne 0) { throw 'Worker syntax check failed. No worker started.' }
-    & node --test (Join-Path $InstallPath 'src\agent-isolation.test.mjs') (Join-Path $InstallPath 'src\desktop-control.test.mjs')
+    & node --test (Join-Path $InstallPath 'src\agent-isolation.test.mjs') (Join-Path $InstallPath 'src\desktop-control.test.mjs') (Join-Path $InstallPath 'src\task-result-summary.test.mjs') (Join-Path $InstallPath 'src\specialist-idle-heartbeat.test.mjs') (Join-Path $InstallPath 'src\installer-manifest.test.mjs')
     if ($LASTEXITCODE -ne 0) { throw 'Agent isolation tests failed. No worker started.' }
 
     $env:TRADEFLOW_GEMMA_ENV_FILE = $EnvFile

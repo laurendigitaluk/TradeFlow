@@ -696,8 +696,10 @@ function parseManualAiReportTables(raw,prompt){
   const line=lines[i].trim();
   if(/new prices|new price comparison|new \(uk|new retail/i.test(line))section='uk_new';
   if(/used prices|used price comparison|second.hand prices|pre.owned prices/i.test(line))section='uk_used';
-  if(!line.startsWith('|')){if(line)context.push(line);if(context.length>12)context.shift();continue;}
-  const cells=line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim());
+  const isPipeTable=line.startsWith('|');
+  const isTabTable=!isPipeTable&&line.includes('\t')&&line.split('\t').length>=3;
+  if(!isPipeTable&&!isTabTable){if(line)context.push(line);if(context.length>12)context.shift();continue;}
+  const cells=isPipeTable?line.replace(/^\|/,'').replace(/\|$/,'').split('|').map(x=>x.trim()):line.split('\t').map(x=>x.trim());
   if(cells.length<3||cells.every(x=>/^:?-{2,}:?$/.test(x)))continue;
   if(/^(package|item|product|model)$/i.test((cells[0]||'').replace(/\*/g,'').trim())&&/price/i.test(cells[1]||''))continue;
   if(!section)continue;

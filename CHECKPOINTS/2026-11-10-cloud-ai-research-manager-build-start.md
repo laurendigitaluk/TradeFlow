@@ -25,3 +25,13 @@ Build the multi-provider cloud AI research manager into the TradeFlow Platform O
 
 ## Next gate
 Inspect provider secret-storage capability and current evidence import schema/RPCs, then implement on this branch and TEST only. Do not deploy to LIVE until owner authorization, no-paid-fallback, cooldown/resume, report provenance, dedupe and approval-only import are verified.
+
+
+## Follow-on progress (10 November 2026)
+- Added owner dashboard panel for provider setup, connection tests, manual research enqueue and queue visibility.
+- Applied TEST-only migrations creating provider settings and research jobs tables, with RLS enabled and direct anon/authenticated table privileges revoked.
+- Added owner-only RPCs; provider secrets stored in Supabase Vault, with secret retrieval restricted to service_role.
+- Deployed TEST Edge Function `tradeflow-cloud-ai-manager` version 2, JWT verification enabled. It checks owner membership and provider model-list connectivity only.
+- OpenRouter enabled model IDs are restricted to `:free`; provider enablement requires owner confirmation of free-tier API access. No paid fallback implemented.
+- No provider key has been supplied, no AI research has been run, and no product/evidence records have been inserted.
+- The dashboard code remains on the isolated feature branch; it has not been deployed to the live owner dashboard. The next build phase is the research runner and evidence-review pipeline.

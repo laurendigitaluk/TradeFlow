@@ -76,3 +76,23 @@ The separate attached project is not part of TradeFlow and is not required for t
 ## Explicit project-boundary clarification — GearCashOut
 
 GearCashOut is a separate project and is not part of TradeFlow's Gemma restoration, architecture, runtime, codebase or database. It was used only as a source to bring product categories into TradeFlow. The relevant evidence has already been created in TradeFlow. Do not inspect GearCashOut, use its files or database, connect its runtime, copy code, sync data, re-import categories or recreate evidence. All further work for this objective is exclusively within TradeFlow: its GitHub repository and seven specialist branches/installations, its LIVE Supabase project, and its own documentation. Existing TradeFlow categories and evidence are to be preserved.
+
+
+## Latest owner-provided local comparison — 10 November 2026
+
+The owner supplied the requested read-only output:
+- Local HEAD: `0ffa1734d071440f18b8becbbfc039ced1605d5e`
+- Remote `origin/gemma/3d-printers`: `90591adc2824263dbf0256df195b435456f96e46`
+- GitHub compare (local HEAD as base, remote as head): status `ahead`, `ahead_by=74`, `behind_by=0`. The remote branch is 74 commits ahead of local; local HEAD is an ancestor of remote. It is not diverged and is not 74 commits ahead of GitHub.
+- Working tree remains dirty. `git diff --stat`: six substantive tracked files, 156 insertions / 44 deletions. `agent.config.json` diff is formatting/BOM only and retains the same one-key 3D identity. `agent.mjs` includes a local terminal-product-slug accessory-matcher adjustment; inspect against remote before deciding if redundant or unique. `source-playbooks.mjs` and tests include local route/test changes; inspect before reconciliation. `task-worker.mjs` has a small local diff and needs review. CRLF/LF warnings are line-ending notices, not proof of functional faults.
+- Untracked: `Start-Gemma-Worker.ps1`, `backups/`, `src/task-result-summary.mjs`, `status.json`. Preserve and compare against remote; do not delete or overwrite.
+- The displayed diff command repeats config output because overlapping paths were supplied; do not interpret this as multiple distinct config changes.
+
+## Correct TradeFlow documentation paths and project boundary
+
+Canonical manuals are `docs/TRADEFLOW-AI-OPERATING-MANUAL.md` and `docs/TRADEFLOW-SYSTEM-HANDBOOK.md`; canonical project memory is under `PROJECT-MEMORY/`. These exact paths have now been updated on `gemma/3d-printers`, together with the research pipeline roadmap and `PROJECT-MEMORY/3d-printers-isolated-agent-2026-11-09.md`. Their commits are recorded in the repository history. Earlier guessed GEARCASHOUT manual paths were wrong and must not be used.
+
+GearCashOut is a separate project, not part of TradeFlow's code, runtime, database, docs or Gemma restoration. It was used only to bring category names into TradeFlow. Those categories and their evidence already exist in TradeFlow. Do not inspect, depend on, copy from, sync with, migrate from, or re-import from GearCashOut.
+
+## Current stopping point
+No local fast-forward, stash, commit, updater, reset, worker start/stop or evidence/database change has been made. Next action: inspect the local six-file diff against the remote branch and preserve local-only changes, then fast-forward only if safe. Do not ask the owner to repeat the completed comparison command.

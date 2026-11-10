@@ -42,7 +42,8 @@ class ManagerApp(tk.Tk):
 
         providers = ttk.LabelFrame(root, text="Cloud providers — free plans only", padding=12)
         providers.pack(fill="x", pady=(0, 12))
-        self.provider_widgets = {}\n        self.free_confirm = {}
+        self.provider_widgets = {}
+        self.free_confirm = {}
         for idx, provider in enumerate(PROVIDERS):
             frame = ttk.Frame(providers)
             frame.grid(row=idx, column=0, sticky="ew", pady=4)
@@ -60,7 +61,8 @@ class ManagerApp(tk.Tk):
             ttk.Label(frame, text="Model").pack(side="left")
             model_entry = ttk.Entry(frame, textvariable=model_var, width=34)
             model_entry.pack(side="left", padx=(6, 8), fill="x", expand=True)
-            ttk.Checkbutton(frame, text="Free account; billing disabled", variable=free_var).pack(side="left", padx=(0, 6))\n            ttk.Button(frame, text="Test", command=lambda p=provider: self._run_async(self._test_provider, p)).pack(side="left")
+            ttk.Checkbutton(frame, text="Free account; billing disabled", variable=free_var).pack(side="left", padx=(0, 6))
+            ttk.Button(frame, text="Test", command=lambda p=provider: self._run_async(self._test_provider, p)).pack(side="left")
             self.provider_widgets[provider] = (key_entry, model_entry)
 
         mcp = ttk.LabelFrame(root, text="TradeFlow Research MCP", padding=12)

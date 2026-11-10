@@ -45,3 +45,8 @@ The connected GitHub action set supports repository file deletion and branch cre
 
 ## Non-negotiable preservation rules
 Never delete catalogue products, categories, manufacturer/model/package data, existing market evidence, tenant/customer/subscriber data, Stripe settings, published websites or historical audit data as part of this retirement. Do not inspect or use the separate GearCashOut project. Keep the database migration history intact. Any future market research supplied for catalogue use is review-only until the owner/ChatGPT independently verifies it; no automatic approval or import.
+
+
+## Additional GitHub branch cleanup — 10 November 2026
+
+After the default-branch runtime files were removed, the seven active specialist branches and their seven dated archive branches were also cleaned. The worker runtime directories (`tools/tradeflow-gemma-agent`, `tools/tradeflow-gemma-desktop`, `tools/gemma-agent-isolation`, where present) and the dedicated `.github/workflows/gemma-research-tests.yml` workflow were deleted from those 14 branch heads. This removed 35 files from each specialist/archive branch (36 from the 3D-printer archive branch). The branch refs themselves remain because the connected GitHub actions do not expose branch deletion. Other old feature/fix/checkpoint refs remain historical development refs; they are not the production website runtime. Do not treat those refs as active workers.

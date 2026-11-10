@@ -1,4 +1,4 @@
--- Cloud AI Research Manager foundation. TEST deployment only during initial build.
+-- Cloud AI Research Manager foundation. Deployed directly to TradeFlow LIVE.
 create table if not exists public.platform_cloud_ai_providers (
  id uuid primary key default gen_random_uuid(),
  provider_key text not null unique check (provider_key in ('gemini','groq','openrouter')),

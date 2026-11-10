@@ -93,14 +93,12 @@
 <p class="muted">Only enable a provider after confirming its API access is genuinely free for your account. Free-tier limits vary. When a provider reaches a limit, its work must pause; this manager must never switch to a paid model automatically. API keys are sent directly to a protected database function and stored in Supabase Vault, never in this page.</p>
 <div id="cloud-ai-status" class="action-message" role="status" aria-live="polite"></div>
 <div id="cloud-ai-providers" class="plan-admin-list"><p class="muted">Loading provider settings…</p></div>
-<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Add a product to the research queue. This does not change the catalogue.</p>
+<div class="plan-editor" style="margin-top:20px"><h3>Queue product research</h3><p class="muted">Queue several products together. Enter one product per line using Manufacturer | Model | Package (optional). This stages research jobs only; it does not change the catalogue.</p>
 <form id="cloud-ai-enqueue-form"><div class="plan-fields">
 <label>Category slug<input name="category_slug" placeholder="e.g. 3d-printers"></label>
-<label>Manufacturer<input name="manufacturer" required placeholder="Manufacturer"></label>
-<label>Model / product<input name="model" required placeholder="Exact model"></label>
-<label>Package / bundle<input name="package_name" placeholder="Optional package details"></label>
+<label style="grid-column:1/-1">Products to research<textarea name="products" required rows="7" placeholder="Bambu Lab | P1S&#10;Creality | K1 Max&#10;Anycubic | Kobra 3 | Combo bundle"></textarea></label>
 <label>Research type<select name="task_type"><option value="price_evidence">UK price evidence</option><option value="product_discovery">Discover product candidates</option><option value="release_check">Release / discontinued check</option></select></label>
-</div><p><button type="submit">Add research job</button></p></form></div>
+</div><p><button type="submit">Queue all products</button></p></form></div>
 <div class="panel-head" style="margin-top:24px"><h3>Research queue</h3><div><button id="cloud-ai-process-one" type="button">Run next job</button> <button id="cloud-ai-jobs-refresh" type="button">Refresh queue</button></div></div>
 <div class="table-wrap"><table><thead><tr><th>Product</th><th>Type</th><th>Status</th><th>Provider</th><th>Attempts</th><th>Last error</th></tr></thead><tbody id="cloud-ai-jobs"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
 <div class="panel-head" style="margin-top:24px"><h3>Evidence awaiting review</h3><button id="cloud-ai-review-refresh" type="button">Refresh evidence</button></div><div id="cloud-ai-review-list" class="plan-admin-list"><p class="muted">Loading evidence submissions…</p></div><p class="note">AI findings are staged as pending review. Approving a candidate does not import it. Only a separate verified import operation may add a record to shared market evidence.</p>

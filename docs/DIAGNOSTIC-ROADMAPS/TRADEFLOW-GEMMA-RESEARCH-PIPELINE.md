@@ -1023,3 +1023,10 @@ Release gate:
 PR #351 is open and ready for review, stacked on PR #350 (which is stacked on PR #349). GitHub Actions Gemma Research Tests run #712 passed all seven workflow steps, including PowerShell syntax, all Gemma Node syntax checks, the full task/website/heartbeat/installer regression test command, and Owner Dashboard JavaScript syntax. The PR remains unmerged and no Research PC installation or worker restart has been performed.
 
 A read-only branch comparison confirmed all seven specialist branches currently have identical shared `task-worker.mjs`, updater and canonical launcher blobs. Their `agent.config.json` files are distinct and correctly retain exactly one category key each. This means the shared heartbeat implementation can be synchronised across the seven branches without replacing their category-specific configuration. The six non-3D branches have not yet been modified.
+
+
+## 10 November 2026 — merge and branch promotion completed
+
+Owner authorised the release. PR #349 (evidence/telemetry), PR #350 (3D Printer parent completion and aggregate reporting), and PR #351 (isolated specialist idle heartbeat) were merged in that order. Merge commits: `c63fbba74c24b9caac40230ac5f8f6549a611ff1`, `36bb6e452719bece5ded6d4c412a2af899a01a06`, and `24fa2713c3040798f82ecf63fc5ac7023a884acf`.
+
+The merged 3D Printer worker, parent-result summary module and regression tests, specialist idle-heartbeat helper/test, updater, launcher preflight, GitHub Actions test list, manuals, diagnostic roadmaps, project memory and checkpoint have now been promoted onto `gemma/3d-printers`. The 3D Printer one-key `agent.config.json` was not modified. This is repository branch promotion only: the Research PC installation has not yet been updated or restarted, and LIVE runtime acceptance is still pending.

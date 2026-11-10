@@ -985,3 +985,41 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### Anycubic UK discovery failure — 2026-11-09
 User action: LIVE owner dashboard selected five Anycubic printer/package products. Entry: 3D Printers research task queue. Worker: tools/tradeflow-gemma-agent/src/agent.mjs, probeApprovedResearchSources → buildWebsiteSearchRoutes (tools/tradeflow-gemma-agent/src/source-playbooks.mjs) → fetchSearchHtml/extractSearchLinks → matchesTaskModel → page fetch → Gemma extraction → LIVE review queue. Database: public.platform_ai_agent_tasks, platform_ai_agent_status, platform_ai_agent_activity and platform_research_sources. External: uk.anycubic3d.com; worker Ollama on Research PC. Observed first failure: approved-source route discovery yielded zero matching links for Kobra 3 Max V2 Combo, Kobra 4 ACE 2 Pro Combo and Kobra S1 Combo; Standard Kobra 3 Max V2 discovered one URL but inspected zero pages. Kobra 4 Standard captured one raw page and timed out in extraction. Known pitfalls: 20-link cap in generic HTML link extractor; exact contiguous model substring; combo detection based on page title/path even when package selection lives inside page. Fix branch adds independently verified direct product routes and tests only; matcher, 20-link cap and timeout remain follow-up work. Verification required: local node tests, merge, Research PC production updater, then LIVE controlled five-item retest with per-source route and capture counts. Never mark success solely from task completed status.
+
+
+## 10 November 2026 — category-scoped idle heartbeat correction (prepared, not deployed)
+
+The current isolated specialist worker reports `worker_started` and processing heartbeats, but has no recurring heartbeat after a successful idle queue poll. Therefore an idle specialist's `last_heartbeat` becomes stale even when its process is healthy. LIVE inspection confirmed the status RPC updates `platform_ai_agent_status.last_heartbeat`, `updated_at`, status and activity rows through `platform_ai_agent_report_event`; no schema change is required.
+
+LIVE baseline at this inspection:
+- Project: `gxsrajtqzdjvmceqcpgv`; specialist: `3d-printers-equipment`; branch: `gemma/3d-printers`.
+- Status: `idle`, `current_task=null`, `last_error=null`; last recorded worker ID: `DESKTOP-LVASEUB-3d-printers-equipment-10036`; last heartbeat/start: 13:43:44 UTC.
+- Queue: 16 completed and 1 failed task in the last 48 hours; 0 queued/claimed/processing/running tasks.
+- Three distinct `worker_started` events were recorded at 13:17:37, 13:24:46 and 13:43:44 UTC. The event log alone does not prove concurrent processes; local Research PC process/supervisor logs are required to establish whether earlier workers exited.
+- The latest Anycubic task completed with two page captures retained for review; Gemma extraction timed out for the two-source batch. No candidate was accepted from that batch.
+
+Correction prepared on `fix/gemma-specialist-idle-heartbeat-20261110`, stacked on the 3D Printer parent-lifecycle branch `fix/3d-printer-parent-completion-lifecycle-20261110` (PR #350):
+- Add `specialist-idle-heartbeat.mjs` with a 60-second minimum / five-minute maximum cadence derived from the 15-second queue poll.
+- Report the actual isolated specialist identity (agent key/name/category), worker ID, poll interval, `stage=idle_poll` and isolated key; do not mislabel a specialist as the generic `gemma-task-worker`.
+- Emit only after a successful queue poll and only while idle. Suppress during task processing, queue polling, failed polls, shutdown, and overlapping heartbeat telemetry. A new queue poll waits for any in-flight idle heartbeat to finish, preventing an idle report from racing a task claim.
+- Do not heartbeat when the specialist has no enabled agent assignment.
+- Keep the existing 45-second active-task heartbeat and queue lease heartbeat unchanged.
+- Package the helper and regression test through the updater; run the test in updater preflight/install verification, canonical launcher preflight and GitHub Actions.
+
+Regression tests cover bounded cadence, invalid poll fallback, healthy-idle-only emission, suppression during processing/poll/shutdown/overlap, and preservation of the specialist identity. No Supabase migration, queue mutation, research task enqueue, source-registry change, evidence approval/import, TEST/LIVE transfer, private .env change or Research PC restart is part of this code change.
+
+PR #331 is not a suitable substitute: it is open but GitHub reports it unmergeable, it targets the production generic queue worker and deliberately reports only `gemma-task-worker` / `Task control`. Do not merge it as the specialist fix.
+
+Release gate:
+1. CI must pass on this specialist-heartbeat branch.
+2. Review/merge the stacked 3D Printer lifecycle work in its recorded order, then promote the heartbeat change to `gemma/3d-printers`.
+3. Synchronise the same shared worker/helper/test/updater/launcher/CI files to all seven isolated specialist branches, preserving each branch's one-key `agent.config.json`.
+4. Run the existing updater against LIVE only, preserving each private .env; verify each worker's same-ID idle heartbeats at least twice before declaring liveness fixed.
+5. Do not enqueue a research task solely to test heartbeat. Once heartbeat acceptance passes, run a separately authorised bounded 3D Printer research acceptance and verify claim, active progress, parent completion and review-queue handover. Evidence remains unapproved pending owner/ChatGPT review.
+
+
+### Verification update — 10 November 2026
+
+PR #351 is open and ready for review, stacked on PR #350 (which is stacked on PR #349). GitHub Actions Gemma Research Tests run #712 passed all seven workflow steps, including PowerShell syntax, all Gemma Node syntax checks, the full task/website/heartbeat/installer regression test command, and Owner Dashboard JavaScript syntax. The PR remains unmerged and no Research PC installation or worker restart has been performed.
+
+A read-only branch comparison confirmed all seven specialist branches currently have identical shared `task-worker.mjs`, updater and canonical launcher blobs. Their `agent.config.json` files are distinct and correctly retain exactly one category key each. This means the shared heartbeat implementation can be synchronised across the seven branches without replacing their category-specific configuration. The six non-3D branches have not yet been modified.

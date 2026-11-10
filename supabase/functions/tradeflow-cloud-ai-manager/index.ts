@@ -49,7 +49,15 @@ Deno.serve(async(req:Request)=>{
 });
 
 function cleanHtml(input:string):string{
- return input.replace(/<script[\\s\\S]*?<\\/script>/gi," ").replace(/<style[\\s\\S]*?<\\/style>/gi," ").replace(/<noscript[\\s\\S]*?<\\/noscript>/gi," ").replace(/<!--([\\s\\S]*?)-->/g," ").replace(/<[^>]+>/g," ").replace(/&nbsp;|&#160;/g," ").replace(/&pound;/g,"£").replace(/&amp;/g,"&").replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'").replace(/\\s+/g," ").trim().slice(0,18000);
+ return input.replace(/<script[^>]*>[\s\S]*?<\/script>/gi," ")
+  .replace(/<style[^>]*>[\s\S]*?<\/style>/gi," ")
+  .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi," ")
+  .replace(/<!--[\s\S]*?-->/g," ")
+  .replace(/<[^>]+>/g," ")
+  .replace(/&nbsp;|&#160;/g," ")
+  .replace(/&pound;/g,"£").replace(/&amp;/g,"&")
+  .replace(/&quot;/g,'"').replace(/&#39;|&apos;/g,"'")
+  .replace(/\s+/g," ").trim().slice(0,18000);
 }
 function parseJsonText(text:string):any{
  const cleaned=text.trim().replace(/^\`\`\`(?:json)?/i,"").replace(/\`\`\`$/,"").trim();

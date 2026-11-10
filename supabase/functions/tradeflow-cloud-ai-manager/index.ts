@@ -25,7 +25,7 @@ Deno.serve(async(req:Request)=>{
  }
  let body:any;try{body=await req.json()}catch{return json({error:"Invalid JSON"},400)}
  if(body?.action==="process_next_job") return await processNextJob(admin);
- if(body?.action!=="test_provider"||!["gemini","groq","openrouter"].includes(body?.provider_key))return json({error:"Unsupported action"},400);
+ if(body?.action!=="test_provider"||!["gemini","groq","openrouter","cerebras","sambanova","nvidia_nim","mistral","huggingface","github_models"].includes(body?.provider_key))return json({error:"Unsupported action"},400);
  const provider=body.provider_key;
  const {data:cfg,error:cfgError}=await admin.from("platform_cloud_ai_providers").select("provider_key,model_id,api_base_url,api_protocol,enabled,free_tier_confirmed,status").eq("provider_key",provider).maybeSingle();
  if(cfgError||!cfg)return json({error:"Provider is not configured"},404);

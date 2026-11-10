@@ -4612,3 +4612,12 @@ Current production Gemma extraction restoration PR #320 is already merged. The w
 
 ### 2026-11-09 — Anycubic UK direct-route recovery (pending validation)
 The 21:19 LIVE five-printer test completed in 2m10s but only Kobra 4 Standard queued a raw capture. The other four tasks had no captures; Kobra 4 extraction timed out after ~45s. A production-based fix branch adds independently verified Anycubic UK product routes for Kobra 3 Max V2 Standard/ACE 2 Pro Combo, Kobra 4 and Kobra S1 ACE 2 Pro Combo. This change is discovery-only; do not assume source pages or prices have been accepted. Verify the exact model/package, selected variant, stock and GBP price on the detail page, then rerun a controlled LIVE task after merge and Research PC update. Do not alter Gaming or other worker configuration.
+
+
+## 9 November 2026 — 3D Printer updater package and heartbeat-stage hardening
+
+A review of the isolated `gemma/3d-printers` branch found that `task-worker.mjs` imports `task-result-summary.mjs`, but the category-local `Update-TradeFlow-Gemma.ps1` source manifest did not download that helper or its regression test. Its pre-install and post-install test lists also omitted the compact-result test. Running that updater from a clone with this manifest could therefore install a worker whose relative helper import is missing. The updater itself is not self-updating; the local clone must first be fast-forwarded to the current `gemma/3d-printers` branch before the folder-local updater is run.
+
+The 22:42–22:46 LIVE eight-product task also recorded four worker heartbeat events with `details.stage='extraction_batch_started'`. The activity table consequently counted eight `extraction_batch_started` stage events even though only four extraction batches actually started; the other four were heartbeat telemetry. The proposed correction assigns heartbeat events their own `stage='heartbeat'` and preserves the in-progress stage as `active_stage`.
+
+A category-only feature branch, `fix/3d-printer-updater-package-heartbeat-telemetry-20261109`, adds the missing updater files/tests, startup preflight coverage, a manifest regression test that checks every relative task-worker import is packaged, and the heartbeat-stage correction. This is pending review and CI. It has not been installed on the Research PC. No worker, source registry, queue, evidence, catalogue, migration, TEST data or secret was changed.

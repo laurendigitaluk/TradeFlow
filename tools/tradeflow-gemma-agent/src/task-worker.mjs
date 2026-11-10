@@ -9,6 +9,7 @@ import { reportAgent } from './agent-telemetry.mjs';
 import { resolveControlPlane } from './control-plane.mjs';
 import { buildAgentClaimArgs } from './desktop-control.mjs';
 import { normalizeIsolatedAgentConfig, assertTaskGroupBelongsToAgent } from './agent-isolation.mjs';
+import { summarizeTaskResults } from './task-result-summary.mjs';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const envPath=process.env.TRADEFLOW_GEMMA_ENV_FILE||resolve(root,'.env');
@@ -242,7 +243,10 @@ async function processClaim(claim){
    activeAgentKeys.delete(identity.agent_key);
    await writeDesktopStatus('processing');
   }
-  await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:{task_key:claim.task_key,subtasks:outputs.length,results:outputs}});
+  const compactResult=summarizeTaskResults(claim.task_key,outputs);
+  const resultBytes=Buffer.byteLength(JSON.stringify(compactResult),'utf8');
+  console.log('[completed] submitting compact task summary:',resultBytes,'bytes; raw captures remain in review queue');
+  await rpc('platform_ai_agent_complete_task',{p_task_id:claim.id,p_worker_id:workerId,p_result:compactResult});
   console.log('[completed]',claim.task_key,'subtasks:',outputs.length);
  }catch(error){
   await rpc('platform_ai_agent_fail_task',{p_task_id:claim.id,p_worker_id:workerId,p_error:error.message}).catch(e=>console.error('[queue failure report]',e.message));

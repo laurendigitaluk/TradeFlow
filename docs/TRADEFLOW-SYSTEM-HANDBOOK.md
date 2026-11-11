@@ -5073,3 +5073,13 @@ No boxes selected means all products. If multiple boxes are selected, products m
 The browser maps the checkbox selection to the server-side evidence filter and resets pagination on changes. The database RPC supports all, no_evidence, missing_new, missing_used and missing_any. Existing category, branch, manufacturer filters and product selection remain unchanged.
 
 Frontend asset: platform-owner-dashboard.js?v=55. Migration: 20261111000301_simplify_manual_research_evidence_checkbox_filters.sql. Verification on Cameras → Photography Cameras → Nikon returned: all 205; no evidence 109; missing new 189; missing used 111; missing either type 191. Verification ran in a rolled-back transaction; no product/evidence rows were changed.
+
+
+## Selective manual research prompt deletion — 11 November 2026
+
+- Each generated prompt now has a selection checkbox, including completed prompts inside the collapsed submitted-report history. Each batch has **Select all prompts**, **Delete selected (count)** and **Delete all prompts in this batch** controls. The owner can keep any prompt by leaving its checkbox clear and remove one, several or all prompts in that batch.
+- Deletion requires a browser confirmation. It permanently removes the selected prompt records, including their saved response drafts and submitted report text. It does **not** delete evidence candidates already created in Evidence Awaiting Review, nor does it delete shared market evidence. The dashboard explains this before deletion.
+- Owner-only RPC: `platform_owner_delete_manual_ai_research_prompts(uuid[])`. It checks platform-owner access and the authenticated batch owner, deletes only selected prompt IDs belonging to that owner, updates remaining batch prompt/product counters and status, and removes empty batch shells. Anonymous execution is revoked; authenticated execution is granted. It does not touch the research queue, catalogue or evidence tables.
+- Migrations: `20261111000004_manual_ai_research_selective_prompt_deletion` and `20261111000005_manual_ai_prompt_delete_updates_batch_counters`.
+- Dashboard JavaScript syntax and control wiring were checked; the LIVE database function and execute grants were read back. Asset cache reference advanced to v56. No prompt records were deleted during implementation; no existing batch, report, evidence candidate or catalogue row was changed.
+- The Manual AI Research Centre remains LIVE-only; TEST branch `main` and the TEST Supabase project were not changed.

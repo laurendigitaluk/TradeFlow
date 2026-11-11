@@ -30,3 +30,7 @@ Migration applied to LIVE and read back. Transaction preflight passed. Helper te
 - Human/Developer System Handbook: docs/TRADEFLOW-SYSTEM-HANDBOOK.md
 - AI Operating Manual: docs/TRADEFLOW-AI-OPERATING-MANUAL.md
 - Human User Manual: docs/TRADEFLOW-HUMAN-USER-MANUAL.md
+
+
+## Independent page spot-check
+The current Blackmagic Cinema Camera 6K product page displays £2,069 and states MSRP excludes VAT, versus £1,219 ex VAT in the report. Production Gear's Micro Studio Camera 4K G2 page displays £744 ex VAT / £892.80 inc VAT, versus £870 inc VAT in the report snippet. Wex and MPB sample URLs returned cache misses. This validates the V2 rule: snippet-only prices remain comparisons until a direct page is opened and checked. No evidence was imported.

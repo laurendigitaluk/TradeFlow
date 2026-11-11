@@ -612,7 +612,7 @@ function renderManualAiResearchBatches(batches){
   const completed=prompts.filter(p=>['completed','no_findings'].includes(p.status));
   const active=prompts.filter(p=>!['completed','no_findings'].includes(p.status));
   const complete=completed.length;
-  const header='<div class="plan-editor-head"><div><div class="eyebrow">Manual research batch · '+escapeHtml(formatDate(batch.created_at))+'</div><h3>'+escapeHtml(batch.assistant_name)+' · '+Number(batch.product_count||0).toLocaleString()+' products</h3><p class="muted">'+Number(batch.prompt_count||0)+' prompts · '+Number(batch.products_per_prompt||10)+' products per prompt</p></div><span class="plan-status">'+complete+'/'+prompts.length+' prompts completed · '+escapeHtml(batch.status)+'</span></div>';
+  const header='<div class="plan-editor-head"><div><div class="eyebrow">Manual research batch · '+escapeHtml(formatDate(batch.created_at))+'</div><h3>'+escapeHtml(batch.assistant_name)+' · '+Number(batch.product_count||0).toLocaleString()+' products</h3><p class="muted">'+Number(batch.prompt_count||0)+' prompts · '+Number(batch.products_per_prompt||20)+' products per prompt</p></div><span class="plan-status">'+complete+'/'+prompts.length+' prompts completed · '+escapeHtml(batch.status)+'</span></div>';
   const progress='<div style="height:7px;background:var(--border,#ddd);border-radius:10px;overflow:hidden;margin:8px 0 14px"><div style="height:7px;background:#16834a;width:'+(prompts.length?Math.round(complete/prompts.length*100):0)+'%"></div></div>';
   const activeMarkup=active.map(p=>{
    return '<section style="border-top:1px solid var(--border,#ddd);padding-top:12px;margin-top:12px">'+
@@ -664,7 +664,7 @@ async function createManualAiResearchBatch(){
  const productIds=[...cloudAiCatalogueSelection.keys()];
  if(!productIds.length){status.textContent='Select one or more catalogue products first.';return;}
  const assistant=$('manual-ai-assistant').value;
- const batchSize=Number($('manual-ai-products-per-prompt').value||10);
+ const batchSize=Number($('manual-ai-products-per-prompt').value||20);
  button.disabled=true;status.textContent='Preparing deep-research prompts for '+productIds.length+' selected products…';
  try{
   const batch=await request('/rest/v1/rpc/platform_owner_create_manual_ai_research_batch',{method:'POST',body:JSON.stringify({

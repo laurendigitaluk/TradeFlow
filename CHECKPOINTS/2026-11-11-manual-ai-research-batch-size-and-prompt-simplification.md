@@ -37,3 +37,12 @@ Increase manual AI research batches beyond ten products and simplify the generat
 
 - The dashboard has a separate regenerate RPC for unstarted saved prompts. It was also updated and deployed to LIVE in migration 20261111000003_manual_ai_refresh_uses_simplified_research_prompt, so newly generated and regenerated prompts use the same simplified instructions. The existing owner/status checks and draft/submission protection remain.
 - Migration file committed at bdda4bb9a8abf8793d12bc799a3aa19fa7a72a28.
+
+
+## Selective prompt deletion — 11 November 2026
+
+- Added checkbox selection to every active prompt and every completed prompt in the collapsed report history. Each batch now offers Select all prompts, Delete selected and Delete all prompts in this batch.
+- Added owner-only RPC `platform_owner_delete_manual_ai_research_prompts(uuid[])`, applied through migrations 20261111000004 and 20261111000005. It deletes only selected prompt records owned by the signed-in platform owner, updates remaining batch counts/status, and removes empty batch shells.
+- Deleting a submitted prompt removes the saved report text from this dashboard. Evidence candidates already sent to the review queue and shared market evidence are preserved. No prompt records were deleted during implementation.
+- Verified the function definition, authenticated EXECUTE grant and anon denial; JavaScript parses successfully; dashboard controls are present; asset cache is v56.
+- Manuals updated. TEST remains untouched because this workspace is not present in TEST.

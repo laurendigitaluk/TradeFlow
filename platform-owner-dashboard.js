@@ -632,45 +632,43 @@ function renderManualAiResearchBatches(batches){
   const history=completed.length?'<details style="margin-top:12px"><summary><strong>Completed research ('+completed.length+')</strong> · show submitted reports</summary>'+completed.map(p=>
    '<section style="border-top:1px solid var(--border,#ddd);padding-top:10px;margin-top:10px"><label style="display:flex;align-items:center;gap:7px"><input type="checkbox" data-manual-delete-select data-manual-delete-batch="'+escapeHtml(batch.id)+'" value="'+escapeHtml(p.id)+'"> <strong>Prompt '+p.prompt_number+' of '+prompts.length+' · '+Number(p.product_count||0)+' products</strong></label><p class="note">Response submitted '+escapeHtml(p.response_submitted_at?formatDate(p.response_submitted_at):'')+'. '+Number(p.candidates_created||0)+' reference/candidate record(s) created; '+Number(p.findings_rejected||0)+' finding(s) rejected by validation.</p>'+(p.response_text?'<details style="margin-top:8px"><summary><strong>View complete AI research report and price comparisons</strong></summary><pre style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:620px;overflow:auto;padding:12px;background:var(--surface-secondary,#f6f6f6);border-radius:8px">'+escapeHtml(p.response_text)+'</pre></details>':'')+'</section>'
   ).join('')+'</details>':'';
-  const deleteTools='<div data-manual-delete-tools="'+escapeHtml(batch.id)+'" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><button type="button" data-manual-select-all="'+escapeHtml(batch.id)+'">Select all prompts</button><button type="button" data-manual-delete-selected="'+escapeHtml(batch.id)+'" disabled>Delete selected (0)</button><button type="button" data-manual-delete-all="'+escapeHtml(batch.id)+'">Delete all prompts in this batch</button><span class="muted" style="font-size:12px">Submitted evidence candidates already sent to review are kept.</span></div>';
-   return '<article class="plan-editor" data-manual-batch-card="'+escapeHtml(batch.id)+'" style="margin-top:12px">'+header+progress+deleteTools+activeMarkup+history+'</article>';
+  return '<article class="plan-editor" data-manual-batch-card="'+escapeHtml(batch.id)+'" style="margin-top:12px">'+header+progress+activeMarkup+history+'</article>';
  }).join('');
+ host.insertAdjacentHTML('afterbegin','<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><button type="button" data-manual-select-all-global>Select all prompts across all batches</button><button type="button" data-manual-delete-selected-global disabled>Delete selected (0)</button><span class="muted">Tick only the prompts you want removed. Submitted evidence candidates already sent to review are kept.</span></div>');
  host.querySelectorAll('[data-manual-copy]').forEach(button=>button.addEventListener('click',()=>copyManualAiPrompt(button.dataset.manualCopy,button)));
  host.querySelectorAll('[data-manual-refresh-prompt]').forEach(button=>button.addEventListener('click',()=>refreshManualAiPrompt(button.dataset.manualRefreshPrompt,button)));
  host.querySelectorAll('[data-manual-copy-evidence-review]').forEach(button=>button.addEventListener('click',()=>copyChatGptEvidenceReviewPrompt(button)));
  host.querySelectorAll('[data-manual-save]').forEach(button=>button.addEventListener('click',()=>saveManualAiDraft(button.dataset.manualSave,button)));
  host.querySelectorAll('[data-manual-submit]').forEach(button=>button.addEventListener('click',()=>submitManualAiResponse(button.dataset.manualSubmit,button)));
- host.querySelectorAll('[data-manual-delete-select]').forEach(box=>box.addEventListener('change',()=>updateManualAiDeleteControls(box.dataset.manualDeleteBatch)));
- host.querySelectorAll('[data-manual-select-all]').forEach(button=>button.addEventListener('click',()=>toggleManualAiBatchSelection(button.dataset.manualSelectAll)));
- host.querySelectorAll('[data-manual-delete-selected]').forEach(button=>button.addEventListener('click',()=>deleteManualAiPrompts(button.dataset.manualDeleteSelected,false)));
- host.querySelectorAll('[data-manual-delete-all]').forEach(button=>button.addEventListener('click',()=>deleteManualAiPrompts(button.dataset.manualDeleteAll,true)));
+ host.querySelectorAll('[data-manual-delete-select]').forEach(box=>box.addEventListener('change',updateManualAiGlobalDeleteControls));
+ host.querySelector('[data-manual-select-all-global]')?.addEventListener('click',toggleManualAiGlobalSelection);
+ host.querySelector('[data-manual-delete-selected-global]')?.addEventListener('click',deleteSelectedManualAiPrompts);
 }
 
-function updateManualAiDeleteControls(batchId){
- const card=document.querySelector('[data-manual-batch-card="'+batchId+'"]');if(!card)return;
- const boxes=[...card.querySelectorAll('[data-manual-delete-select]')],selected=boxes.filter(box=>box.checked);
- const del=card.querySelector('[data-manual-delete-selected]'),all=card.querySelector('[data-manual-select-all]');
+function updateManualAiGlobalDeleteControls(){
+ const host=$('manual-ai-batches');if(!host)return;
+ const boxes=[...host.querySelectorAll('[data-manual-delete-select]')],selected=boxes.filter(box=>box.checked);
+ const del=host.querySelector('[data-manual-delete-selected-global]'),all=host.querySelector('[data-manual-select-all-global]');
  if(del){del.disabled=!selected.length;del.textContent='Delete selected ('+selected.length+')';}
- if(all)all.textContent=boxes.length&&selected.length===boxes.length?'Clear selection':'Select all prompts';
+ if(all)all.textContent=boxes.length&&selected.length===boxes.length?'Clear all selections':'Select all prompts across all batches';
 }
-function toggleManualAiBatchSelection(batchId){
- const card=document.querySelector('[data-manual-batch-card="'+batchId+'"]');if(!card)return;
- const boxes=[...card.querySelectorAll('[data-manual-delete-select]')],select=boxes.some(box=>!box.checked);
- boxes.forEach(box=>{box.checked=select;});updateManualAiDeleteControls(batchId);
+function toggleManualAiGlobalSelection(){
+ const host=$('manual-ai-batches');if(!host)return;
+ const boxes=[...host.querySelectorAll('[data-manual-delete-select]')],select=boxes.some(box=>!box.checked);
+ boxes.forEach(box=>{box.checked=select;});updateManualAiGlobalDeleteControls();
 }
-async function deleteManualAiPrompts(batchId,deleteAll){
- const card=document.querySelector('[data-manual-batch-card="'+batchId+'"]');if(!card)return;
- const boxes=[...card.querySelectorAll('[data-manual-delete-select]')],chosen=deleteAll?boxes:boxes.filter(box=>box.checked);
- const ids=chosen.map(box=>box.value).filter(Boolean);if(!ids.length)return;
- const message=deleteAll?'Delete all '+ids.length+' prompts in this batch? Saved drafts and submitted reports in these prompt boxes will be removed. Evidence candidates already sent to Evidence Awaiting Review will remain.':'Delete the '+ids.length+' selected prompt'+(ids.length===1?'':'s')+'? Saved drafts and submitted reports in these prompt boxes will be removed. Evidence candidates already sent to Evidence Awaiting Review will remain.';
- if(!window.confirm(message))return;
- const buttons=card.querySelectorAll('[data-manual-delete-selected],[data-manual-delete-all],[data-manual-select-all]');buttons.forEach(button=>button.disabled=true);
+async function deleteSelectedManualAiPrompts(){
+ const host=$('manual-ai-batches');if(!host)return;
+ const ids=[...host.querySelectorAll('[data-manual-delete-select]:checked')].map(box=>box.value).filter(Boolean);
+ if(!ids.length)return;
+ if(!window.confirm('Delete the '+ids.length+' selected prompt'+(ids.length===1?'':'s')+' across all research batches? Saved drafts and submitted reports will be removed. Evidence candidates already sent to Evidence Awaiting Review will remain.'))return;
+ const button=host.querySelector('[data-manual-delete-selected-global]');if(button)button.disabled=true;
  const status=$('manual-ai-status');if(status)status.textContent='Deleting selected research prompts…';
  try{
   const result=await request('/rest/v1/rpc/platform_owner_delete_manual_ai_research_prompts',{method:'POST',body:JSON.stringify({p_prompt_ids:ids})});
   if(status)status.textContent='Deleted '+Number(result.deleted_prompts||ids.length)+' prompt(s). Evidence candidates already in review were preserved.';
   await loadManualAiResearchBatches();
- }catch(err){if(status)status.textContent='Could not delete the selected prompts: '+(err.message||String(err));buttons.forEach(button=>button.disabled=false);}
+ }catch(err){if(status)status.textContent='Could not delete the selected prompts: '+(err.message||String(err));if(button)button.disabled=false;}
 }
 async function refreshManualAiPrompt(promptId,button){
  if(!window.confirm('Replace this unstarted saved prompt with the improved package-comparison research instructions? Any existing response draft or submitted response is protected and cannot be replaced.'))return;
@@ -883,17 +881,29 @@ async function processNextCloudAiJob(){
 async function loadCloudAiReviewQueue(){
  const host=$('cloud-ai-review-list');if(!host)return;
  try{
-  const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'pending_review',p_limit:200})});
+  const rows=await request('/rest/v1/rpc/platform_owner_list_catalogue_research_queue',{method:'POST',body:JSON.stringify({p_status:'all',p_limit:200})});
   const items=(Array.isArray(rows)?rows:[]).filter(x=>x.agent_name==='Cloud AI Research Manager'||String(x.agent_name||'').startsWith('Manual AI Research · '));
-  host.innerHTML=items.map(x=>{
-   const meta=x.raw_payload||{},comparison=meta.evidence_role==='comparison_only'||!x.live_master_product_id;
-   const mapped=meta.evidence_role==='catalogue_match_assigned';
+  const pending=items.filter(x=>x.status==='pending_review'),processed=items.filter(x=>x.status!=='pending_review');
+  const renderItem=x=>{
+   const meta=x.raw_payload||{},comparison=meta.evidence_role==='comparison_only'||!x.live_master_product_id,mapped=meta.evidence_role==='catalogue_match_assigned';
    const matchLabel=comparison?'Unverified comparison — match to catalogue and verify':mapped?'Matched to catalogue — source still needs verification':'Exact package — eligible for evidence review';
    const actualPackage=x.package_name?'<p><strong>Package found:</strong> '+escapeHtml(x.package_name)+'</p>':'';
    const source=x.source_url?'<a href="'+escapeAttr(x.source_url)+'" target="_blank" rel="noopener">Open source page</a>':'<span class="muted">No direct source URL was included in the report</span>';
-   const matchTools=comparison?'<div style="margin-top:12px;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><strong>Match this reference to a catalogue product</strong><div id="manual-ai-match-'+x.id+'" style="margin-top:8px"><button type="button" data-match-load="'+x.id+'">Find matching catalogue packages</button></div></div>':'';
-   return '<article class="plan-editor"><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'comparison')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">'+(comparison?'Comparison reference':mapped?'Matched · pending review':'Pending review')+'</span></div><p><strong>'+escapeHtml(matchLabel)+'</strong></p>'+actualPackage+'<p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??(meta.price_display||'Not stated'))+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · '+source+'</p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p>'+matchTools+'<div class="plan-editor-foot">'+(comparison?'':'<button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve after verification</button>')+'<button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button></div></article>';
-  }).join('')||'<p class="muted">No AI evidence candidates are awaiting review.</p>';
+   const matchTools=comparison&&x.status==='pending_review'?'<div style="margin-top:12px;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><strong>Match this reference to a catalogue product</strong><div id="manual-ai-match-'+x.id+'" style="margin-top:8px"><button type="button" data-match-load="'+x.id+'">Find matching catalogue packages</button></div></div>':'';
+   const reviewTools=x.status==='pending_review'?'<button type="button" data-review-id="'+x.id+'" data-decision="approved">Approve after verification</button><button type="button" data-review-id="'+x.id+'" data-decision="needs_research">Needs more research</button><button type="button" data-review-id="'+x.id+'" data-decision="rejected">Reject</button>':'<span class="muted">Processed · '+escapeHtml(x.status)+'</span>';
+   return '<article class="plan-editor" style="margin-top:10px"><label style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><input type="checkbox" data-ai-queue-delete value="'+escapeHtml(x.id)+'"> <strong>Select this '+(x.status==='pending_review'?'pending':'processed')+' record for deletion</strong></label><div class="plan-editor-head"><div><div class="eyebrow">'+escapeHtml(x.evidence_type||x.record_type||'comparison')+'</div><h3>'+escapeHtml((x.manufacturer||'')+' '+(x.model||''))+'</h3></div><span class="plan-status">'+escapeHtml(x.status)+'</span></div><p><strong>'+escapeHtml(matchLabel)+'</strong></p>'+actualPackage+'<p><strong>Price:</strong> '+escapeHtml(x.price_currency||'GBP')+' '+escapeHtml(x.observed_price??(meta.price_display||'Not stated'))+' · '+escapeHtml(x.item_condition||'condition unknown')+'</p><p><strong>Source:</strong> '+escapeHtml(x.source_name||'')+' · '+source+'</p><p>'+escapeHtml(x.source_excerpt||'')+'</p><p class="muted">'+escapeHtml(x.research_notes||'')+'</p>'+matchTools+'<div class="plan-editor-foot">'+reviewTools+'</div></article>';
+  };
+  host.innerHTML='<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;padding:10px;border:1px solid var(--border,#ddd);border-radius:8px"><button type="button" data-ai-queue-select-all>Select all AI research records</button><button type="button" data-ai-queue-delete-selected disabled>Delete selected (0)</button><span class="muted">Deletes research queue records only. Imported catalogue evidence is kept.</span></div><h3>Awaiting review ('+pending.length+')</h3>'+pending.map(renderItem).join('')+'<details style="margin-top:18px"><summary><strong>Processed research history ('+processed.length+')</strong> · select old queue records to delete</summary>'+processed.map(renderItem).join('')+'</details>';
+  const update=()=>{const boxes=[...host.querySelectorAll('[data-ai-queue-delete]')],selected=boxes.filter(b=>b.checked),del=host.querySelector('[data-ai-queue-delete-selected]'),all=host.querySelector('[data-ai-queue-select-all]');if(del){del.disabled=!selected.length;del.textContent='Delete selected ('+selected.length+')';}if(all)all.textContent=boxes.length&&selected.length===boxes.length?'Clear all selections':'Select all AI research records';};
+  host.querySelectorAll('[data-ai-queue-delete]').forEach(b=>b.addEventListener('change',update));
+  host.querySelector('[data-ai-queue-select-all]')?.addEventListener('click',()=>{const boxes=[...host.querySelectorAll('[data-ai-queue-delete]')],select=boxes.some(b=>!b.checked);boxes.forEach(b=>{b.checked=select});update();});
+  host.querySelector('[data-ai-queue-delete-selected]')?.addEventListener('click',async()=>{
+   const ids=[...host.querySelectorAll('[data-ai-queue-delete]:checked')].map(b=>b.value);if(!ids.length)return;
+   if(!window.confirm('Delete '+ids.length+' selected AI research queue record(s)? This removes queue/history rows only. Imported catalogue evidence will not be deleted.'))return;
+   const btn=host.querySelector('[data-ai-queue-delete-selected]');btn.disabled=true;
+   try{const result=await request('/rest/v1/rpc/platform_owner_delete_catalogue_research_queue_items',{method:'POST',body:JSON.stringify({p_ids:ids})});alert('Deleted '+Number(result.deleted_queue_records||ids.length)+' queue record(s). Catalogue evidence was preserved.');await loadCloudAiReviewQueue();}
+   catch(err){alert(err.message||String(err));btn.disabled=false;}
+  });
   host.querySelectorAll('[data-match-load]').forEach(b=>b.addEventListener('click',()=>loadManualAiComparisonMatches(b.dataset.matchLoad,b)));
   host.querySelectorAll('[data-match-save]').forEach(b=>b.addEventListener('click',()=>matchManualAiComparison(b.dataset.matchSave,b)));
   host.querySelectorAll('[data-review-id]').forEach(b=>b.addEventListener('click',()=>reviewCloudAiCandidate(b.dataset.reviewId,b.dataset.decision,b)));

@@ -5704,3 +5704,13 @@ In the product picker, use the three checkboxes under “Filter products by miss
 - Products with no evidence at all
 
 Leave all three unchecked to show all products. Select one or more to show products matching any selected condition. “No evidence at all” means both active UK new and active UK used evidence counts are zero. “No used evidence” and “No new evidence” each mean the named evidence count is zero, even if the other evidence type exists. Filter totals and pagination are calculated server-side.
+
+
+## Selective manual research prompt deletion — 11 November 2026
+
+- Each generated prompt now has a selection checkbox, including completed prompts inside the collapsed submitted-report history. Each batch has **Select all prompts**, **Delete selected (count)** and **Delete all prompts in this batch** controls. The owner can keep any prompt by leaving its checkbox clear and remove one, several or all prompts in that batch.
+- Deletion requires a browser confirmation. It permanently removes the selected prompt records, including their saved response drafts and submitted report text. It does **not** delete evidence candidates already created in Evidence Awaiting Review, nor does it delete shared market evidence. The dashboard explains this before deletion.
+- Owner-only RPC: `platform_owner_delete_manual_ai_research_prompts(uuid[])`. It checks platform-owner access and the authenticated batch owner, deletes only selected prompt IDs belonging to that owner, updates remaining batch prompt/product counters and status, and removes empty batch shells. Anonymous execution is revoked; authenticated execution is granted. It does not touch the research queue, catalogue or evidence tables.
+- Migrations: `20261111000004_manual_ai_research_selective_prompt_deletion` and `20261111000005_manual_ai_prompt_delete_updates_batch_counters`.
+- Dashboard JavaScript syntax and control wiring were checked; the LIVE database function and execute grants were read back. Asset cache reference advanced to v56. No prompt records were deleted during implementation; no existing batch, report, evidence candidate or catalogue row was changed.
+- The Manual AI Research Centre remains LIVE-only; TEST branch `main` and the TEST Supabase project were not changed.

@@ -5060,3 +5060,16 @@ Migration: supabase/migrations/20261111000300_cloud_ai_catalogue_manufacturer_ev
 ### Follow-up: refreshed prompts use the same simplified rules — 11 November 2026
 
 The dashboard's **Regenerate with improved research rules** action uses a separate owner-only RPC. That RPC was also updated in migration `20261111000003_manual_ai_refresh_uses_simplified_research_prompt` so an unstarted saved prompt regenerated from the dashboard receives the same coverage-first instructions and JSON-only output as a newly created prompt. Existing saved drafts and submitted responses remain protected by the RPC's original status checks. The category-specific source-directory trigger continues to append the relevant UK sources after either create or refresh.
+
+## Manual AI Research evidence checkboxes — 11 November 2026
+
+The Owner Dashboard → AI Research Centre uses three simple independent checkboxes instead of an evidence dropdown:
+- Products with no used evidence
+- Products with no new evidence
+- Products with no evidence at all (both counts zero)
+
+No boxes selected means all products. If multiple boxes are selected, products matching any selected condition are shown. The no-evidence option specifically requires zero active UK new and zero active UK used evidence. The two individual missing-evidence options include products with the other evidence type present.
+
+The browser maps the checkbox selection to the server-side evidence filter and resets pagination on changes. The database RPC supports all, no_evidence, missing_new, missing_used and missing_any. Existing category, branch, manufacturer filters and product selection remain unchanged.
+
+Frontend asset: platform-owner-dashboard.js?v=55. Migration: 20261111000301_simplify_manual_research_evidence_checkbox_filters.sql. Verification on Cameras → Photography Cameras → Nikon returned: all 205; no evidence 109; missing new 189; missing used 111; missing either type 191. Verification ran in a rolled-back transaction; no product/evidence rows were changed.

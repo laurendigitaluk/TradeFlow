@@ -46,3 +46,12 @@ Increase manual AI research batches beyond ten products and simplify the generat
 - Deleting a submitted prompt removes the saved report text from this dashboard. Evidence candidates already sent to the review queue and shared market evidence are preserved. No prompt records were deleted during implementation.
 - Verified the function definition, authenticated EXECUTE grant and anon denial; JavaScript parses successfully; dashboard controls are present; asset cache is v56.
 - Manuals updated. TEST remains untouched because this workspace is not present in TEST.
+
+
+## Global prompt selection and processed queue cleanup — 11 November 2026
+
+- Replaced batch-local prompt deletion controls with one global toolbar. Select all prompts across all batches now selects every prompt checkbox in the loaded batch list, including checkboxes inside collapsed completed-report history. Delete selected removes only checked prompt IDs across batches.
+- Evidence review loader now retrieves AI queue records across statuses and separates 13 pending_review items from 75 processed records in a collapsed history. Reviewing an item moves it out of the active pending list. Processed history remains inspectable and has checkboxes for manual queue-row deletion.
+- Added owner-gated RPC `platform_owner_delete_catalogue_research_queue_items(uuid[])` in migration `20261111000006_manual_ai_queue_selective_cleanup`. It only deletes queue rows for Cloud AI Research Manager and Manual AI Research agents. It never deletes shared_market_evidence rows or imported catalogue evidence.
+- LIVE queue count at inspection: 88 total = 28 imported, 37 rejected, 10 needs_research, 13 pending_review. The user's stated 316 count was not present in this queue table; no bulk deletion was performed. Need identify which other list/table contains the 316 before clearing it.
+- JS syntax passed; HTML cache reference v57. Manuals updated. TEST untouched. No queue, evidence or prompt records deleted during implementation.

@@ -141,3 +141,33 @@ When a new report arrives:
 - Opened Production Gear's individual Micro Studio Camera 4K G2 product page. It identifies the model and currently displays £744 ex VAT / £892.80 inc VAT. The report recorded £870 inc VAT from a snippet. Do not accept the snippet value without reconciling it against the live page.
 - Wex and MPB sample URLs returned cache misses in this independent check; their prices remain unverified here.
 - These spot checks were for prompt-quality assessment only. No price was submitted to the LIVE queue or imported into shared_market_evidence.
+
+## LIVE inbox audit — 11 November 2026, 20:30 UTC
+
+### Current retrieval result
+- platform_catalogue_research_queue contains zero rows with agent_name beginning 'Manual AI Research ·', and zero rows with a broader Manual AI Research name or raw_payload.research_method of manual_ai_chat/manual_ai_report_table.
+- LIVE has 75 queue rows in total, all from the Gemma lanes: 28 imported, 10 needs_research and 37 rejected. None are Manual AI Research candidates.
+- platform_research_reports is empty. The Bionic Research Inbox Edge Function is a separate workflow and its submit action stores a report only; it does not import evidence.
+- LIVE has two current ChatGPT batches, each with one 20-product prompt, both prompt status ready. Prompt IDs cc5e8462-feda-45f0-b4ba-6f6ae33bbce8 and 4e9d16d5-baae-4fb7-8617-2e3a0a829cb5. Both have null response_text, null response_draft and null response_submitted_at. Their original prompts and 20-product snapshots remain saved; they are not submissions and have no candidates to review.
+- The earlier AKASO batch 1b46e2ba-75ae-499f-83c5-05a07695edba and prompt 3e633e82-d5c1-4804-b6e3-2b37f1ec83fc recorded in the 10 November checkpoint are no longer present in the LIVE batch/prompt tables. The 13 historical candidate IDs documented in that checkpoint are also absent from the current queue. The selective cleanup RPC can delete chosen Manual AI queue rows while preserving already imported evidence; current database state does not retain an audit trail identifying which deletion action removed those historical rows.
+- Active shared evidence currently totals 4,490 rows: 2,157 uk_new and 2,333 uk_used. These are existing catalogue evidence counts, not imports made by this audit.
+
+### Import-path recheck
+- platform_owner_submit_manual_ai_research_response validates the submitted response and stages findings as pending_review queue candidates. It does not insert into shared_market_evidence.
+- platform_owner_stage_manual_ai_report stores the full response and stages extracted report-table references as explicitly unverified comparison candidates. It does not verify or import.
+- platform_owner_match_manual_ai_comparison only assigns a same-manufacturer/model/category catalogue package. platform_owner_verify_manual_ai_comparison stamps source verification metadata after owner checks. Neither writes evidence.
+- platform_owner_review_catalogue_research_item only changes review status and reviewer metadata. Approval is not import.
+- Current public-function inventory has no function inserting into shared_market_evidence for this workflow. No trigger exists on either the queue or shared evidence table. Authenticated has SELECT only on shared_market_evidence; INSERT is granted to service_role/postgres only.
+- The separate tradeflow-research-mcp Edge Function exposes read-only catalogue/evidence/report retrieval and Bionic report submission. Its description and implementation explicitly state it does not create catalogue evidence. tradeflow-cloud-ai-manager stages Cloud AI candidates into the queue, not shared evidence.
+
+### Outcome
+- Candidates reviewed in this run: 0 (none outstanding in LIVE).
+- Source pages opened/verified in this run: 0/0 (no active candidate URLs).
+- Evidence records imported: 0.
+- Duplicates skipped: 0.
+- Candidates rejected: 0.
+- Further research: the two saved 20-product prompts (40 products total) remain unsubmitted; no response is stored.
+- No code or database change and no deployment occurred.
+
+### Exact remaining backend blocker
+A narrow owner-authorised, idempotent import RPC/path is still missing. It must require an approved queue candidate, raw_payload.source_verified=true, a direct supported source type and URL, an exact live_master_product_id including correct package mapping, GBP price, evidence type, condition, availability, observed date and excerpt. It must deduplicate against the existing unique (source_name, source_record_key) constraint and existing product/source/price/type evidence, insert the shared evidence record atomically, then set live_evidence_id and imported_at on the queue row. Used evidence must remain reference-only and excluded from automatic buying valuation. Build and test this path before any deployment; do not write directly to the table or use service-role credentials from the browser.

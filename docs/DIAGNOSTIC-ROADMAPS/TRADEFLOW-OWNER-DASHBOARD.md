@@ -170,3 +170,13 @@ The screenshot shows the old heading “Queued and completed tasks” and proces
 **Failure points:** Empty manufacturer list → inspect the manufacturer RPC and active catalogue_master_products.manufacturer_id links. Incorrect filter totals → inspect shared_market_evidence.is_active, evidence_type, and product linkage via master_product_id. Empty later pages → check p_offset/p_limit and filtered total_count. Permission error → verify owner JWT, active platform membership and RPC grants. Stale UI → verify Worker deployment and HTML JS query version v=53.
 
 **Migration:** 20261111000300_cloud_ai_catalogue_manufacturer_evidence_filters.sql. Existing RPCs remain unchanged for compatibility. No product/evidence rows or TEST/commercial data changed.
+
+## Evidence checkbox filter diagnostic notes — 11 November 2026
+
+**UI:** cloud-ai-evidence-filter select removed. Three checkboxes use data-cloud-ai-evidence-filter values missing_used, missing_new, and no_evidence. Empty selection maps to all; no-evidence only maps to no_evidence; individual checkboxes map to their corresponding filters; selecting both missing-new and missing-used maps to missing_any (OR semantics). Multiple checked conditions show products matching any selected condition.
+
+**Backend:** platform_owner_list_cloud_ai_catalogue_products_filtered accepts all, no_evidence, missing_new, missing_used, and missing_any. missing_any returns products with zero new OR zero used evidence. no_evidence returns products with zero new AND zero used evidence. Pagination and totals are calculated after the evidence predicate.
+
+**Expected UI:** Three plain checkbox lines and one short explanatory note; no dropdown or “complete” option. Script cache reference is platform-owner-dashboard.js?v=55.
+
+**Verification:** Cameras → Photography Cameras → Nikon counts: all 205; no evidence 109; missing new 189; missing used 111; missing either 191. Calls were rolled back. No evidence or catalogue rows changed.

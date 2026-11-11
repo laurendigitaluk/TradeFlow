@@ -270,3 +270,14 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - Final audit found the manual response functions had been duplicated in platform-owner-dashboard.js during iterative edits, with a damaged fragment at the file tail. Removed the duplicate copy and fragment. Clean source is 73,936 characters, has exactly one parseManualAiReportTables function and one submitManualAiResponse handler, and passed JavaScript compilation validation (new Function compile check).
 - Corrected actual source regex escapes: bold Markdown table headers are skipped properly; price-range detection recognises £178.48–£203.98 without inventing a point price; an item price with + delivery extracts the first item price while retaining the full delivery-inclusive display. The report fallback now works against the user's sample table shape.
 - Dashboard HTML asset bumped to v50. Latest production Worker run 42923267785 is the deployment to verify. The prior v49 HTML publish completed successfully, but v50 must be confirmed before asking the user to refresh.
+
+
+## Manual AI Research prompt quality V2 — 11 November 2026
+
+The Manual AI Research Centre now has a dedicated diagnostic roadmap at docs/DIAGNOSTIC-ROADMAPS/TRADEFLOW-MANUAL-AI-RESEARCH.md. Keep its manual prompt/report path separate from the optional Cloud AI provider scheduler and its task queue.
+
+The second Blackmagic camera test returned 38 findings, all comparison_only; 32 were snippet_only and six came from an opened manufacturer product-list page rather than individual product pages. Thirty-five findings contained one search query and three contained two. No source listing page was opened and no candidate was submitted to the LIVE queue. The prompt was plain “json” + raw JSON rather than a fenced block, which conflicts with the LIVE response RPC's report extraction path.
+
+LIVE migration 20261111135455 centralises the V2 instructions in public.platform_manual_ai_research_prompt_instructions(), used by both the create-batch and refresh-prompt RPCs. V2 requires three distinct product-specific searches per product, exact identity/package checks, opened direct pages for catalogue-evidence candidates, truthful source/page-access classifications, condition/VAT/availability separation, duplicate checks and a final fenced JSON block matching the response validator. Existing ready prompts remain unchanged until the owner uses Refresh prompt.
+
+The manual response RPC stages pending_review queue rows only. Queue approval does not write shared_market_evidence. No dedicated Manual AI import RPC exists in the current LIVE public function inventory; a separate authorised idempotent importer is still required.

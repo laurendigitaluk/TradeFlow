@@ -5695,3 +5695,12 @@ Selecting products still uses the existing master product IDs and snapshot workf
 ### Follow-up: refreshed prompts use the same simplified rules — 11 November 2026
 
 The dashboard's **Regenerate with improved research rules** action uses a separate owner-only RPC. That RPC was also updated in migration `20261111000003_manual_ai_refresh_uses_simplified_research_prompt` so an unstarted saved prompt regenerated from the dashboard receives the same coverage-first instructions and JSON-only output as a newly created prompt. Existing saved drafts and submitted responses remain protected by the RPC's original status checks. The category-specific source-directory trigger continues to append the relevant UK sources after either create or refresh.
+
+## Manual Research evidence checkbox filters — 11 November 2026
+
+In the product picker, use the three checkboxes under “Filter products by missing evidence”:
+- Products with no used evidence
+- Products with no new evidence
+- Products with no evidence at all
+
+Leave all three unchecked to show all products. Select one or more to show products matching any selected condition. “No evidence at all” means both active UK new and active UK used evidence counts are zero. “No used evidence” and “No new evidence” each mean the named evidence count is zero, even if the other evidence type exists. Filter totals and pagination are calculated server-side.

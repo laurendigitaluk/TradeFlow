@@ -5752,3 +5752,13 @@ Paste the complete assistant response into the Manual AI response box. TradeFlow
 The submit RPC stages findings for review; it does not import shared evidence. Marketplace shop/search/category URLs remain comparison-only, not verified product-page evidence. The assistant may downgrade a source to comparison-only. Always check source page, current GBP price, model/package, condition and availability, then check existing evidence for duplicates. A queue approval is not an evidence import.
 
 The 11 November AKASO response was accepted: 6 findings and 15 not_found for 20 products. All 6 candidate rows matched existing active evidence on product/source URL/price/type and were rejected with duplicate/source review notes. Zero new evidence rows were imported.
+
+
+## Camera catalogue evidence research — batch 01 (11 November 2026)
+
+- Scope: first 10 active products in the LIVE Cameras category with at least one missing evidence type, ordered by branch/manufacturer/model/package.
+- Research pass found direct UK product-page leads for Pentax 17 new (£499, Hargreaves, available now), Pentax 17 used (£429, MPB, like new), Blackmagic Cinema Camera 6K used (£2,079, MPB, L-Mount/like new), Blackmagic Pocket Cinema Camera 6K G2 new (£1,890 inc VAT, Jigsaw24; £1,744.34 inc VAT, RCB Logic), and Blackmagic Micro Studio Camera 4K G2 used comparison price (£700, PriceSpy aggregator only).
+- Additional unverified/variant leads: CameraWorld Pocket Cinema Camera 6K new £1,929 but awaiting stock; MPB PYXIS 6K EF-fit used £2,279, a mount/package variant; MPB PYXIS 6K L-fit used listing £2,209 but the individual page fetch timed out; CVP PYXIS 12K PL open-box £3,235.50 ex VAT, shipped from EU warehouse and not confirmed as UK VAT-inclusive evidence.
+- No suitable UK direct new listing found in this pass for Aaton 35III 2 Perf or the original Blackmagic Cinema Camera.
+- Research-only: no catalogue product or shared_market_evidence rows changed; no queue candidates staged. All prices/links remain research leads until exact source/product verification and the authorised importer are available. Existing new/used evidence remains unchanged.
+- Batch limit remains 10 products. Continue with the next 10 LIVE Cameras products that are missing new or used evidence; do not reprocess these ten unless new sources appear.

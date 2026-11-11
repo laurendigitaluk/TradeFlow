@@ -133,3 +133,11 @@ When a new report arrives:
 - No new report candidates or evidence were imported.
 - The next useful test is to refresh one ready prompt, run the improved prompt, submit the complete report with the fenced JSON block, then assess whether direct-page evidence improves.
 - A dedicated safe Manual AI evidence importer remains a separate backend requirement; do not infer that review approval performs an import.
+
+
+### Independent source spot-check — 11 November 2026
+
+- Opened Blackmagic's individual Cinema Camera 6K product page. It identifies the exact model and currently displays £2,069; the page footer states MSRP excludes VAT. The second-test report recorded £1,219 ex VAT from the multi-product page. Treat that report value as stale/unconfirmed, not current catalogue evidence.
+- Opened Production Gear's individual Micro Studio Camera 4K G2 product page. It identifies the model and currently displays £744 ex VAT / £892.80 inc VAT. The report recorded £870 inc VAT from a snippet. Do not accept the snippet value without reconciling it against the live page.
+- Wex and MPB sample URLs returned cache misses in this independent check; their prices remain unverified here.
+- These spot checks were for prompt-quality assessment only. No price was submitted to the LIVE queue or imported into shared_market_evidence.

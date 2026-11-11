@@ -487,7 +487,13 @@ async function loadCloudAiCatalogueManufacturers(){
 async function loadCloudAiCatalogueProducts(resetOffset=true){
   const categoryId=$('cloud-ai-category').value,branchId=$('cloud-ai-branch').value||null;
   const manufacturerId=$('cloud-ai-manufacturer')?.value||null;
-  const evidenceFilter=$('cloud-ai-evidence-filter')?.value||'all';
+  const selectedEvidenceFilters=[...document.querySelectorAll('[data-cloud-ai-evidence-filter]:checked')].map(box=>box.dataset.cloudAiEvidenceFilter);
+  let evidenceFilter='all';
+  if(selectedEvidenceFilters.includes('missing_new')&&selectedEvidenceFilters.includes('missing_used'))evidenceFilter='missing_any';
+  else if(selectedEvidenceFilters.includes('missing_new'))evidenceFilter='missing_new';
+  else if(selectedEvidenceFilters.includes('missing_used'))evidenceFilter='missing_used';
+  else if(selectedEvidenceFilters.includes('no_evidence'))evidenceFilter='no_evidence';
+  const evidenceFilterLabel=selectedEvidenceFilters.length?selectedEvidenceFilters.map(value=>({missing_used:'No used evidence',missing_new:'No new evidence',no_evidence:'No evidence at all'}[value])).join(' or '):'All products';
   const host=$('cloud-ai-product-list');
   if(!categoryId){host.innerHTML='<p class="muted">Choose a category to load its products.</p>';return;}
   if(resetOffset)cloudAiCatalogueOffset=0;
@@ -500,8 +506,7 @@ async function loadCloudAiCatalogueProducts(resetOffset=true){
    cloudAiCatalogueProducts=data.products||[];
    cloudAiCatalogueTotal=Number(data.total_count||0);
    const first=cloudAiCatalogueTotal?cloudAiCatalogueOffset+1:0,last=Math.min(cloudAiCatalogueOffset+cloudAiCatalogueProducts.length,cloudAiCatalogueTotal);
-   const filterLabel=$('cloud-ai-evidence-filter')?.selectedOptions[0]?.textContent||'All products';
-   $('cloud-ai-product-list-summary').textContent='Showing '+first+'–'+last+' of '+cloudAiCatalogueTotal.toLocaleString()+' matching active products · '+filterLabel+'. Evidence counts are active UK new and used records.';
+   $('cloud-ai-product-list-summary').textContent='Showing '+first+'–'+last+' of '+cloudAiCatalogueTotal.toLocaleString()+' matching active products · '+evidenceFilterLabel+'. Evidence counts are active UK new and used records.';
    $('cloud-ai-product-prev').disabled=cloudAiCatalogueOffset===0;
    $('cloud-ai-product-next').disabled=cloudAiCatalogueOffset+cloudAiCatalogueProducts.length>=cloudAiCatalogueTotal;
    $('cloud-ai-queue-branch').disabled=!branchId||cloudAiCatalogueTotal===0;
@@ -573,7 +578,7 @@ async function queueCloudAiCatalogueScope(scope){
 $('cloud-ai-category')?.addEventListener('change',onCloudAiCategoryChange);
 $('cloud-ai-branch')?.addEventListener('change',onCloudAiBranchChange);
 $('cloud-ai-manufacturer')?.addEventListener('change',()=>loadCloudAiCatalogueProducts(true));
-$('cloud-ai-evidence-filter')?.addEventListener('change',()=>loadCloudAiCatalogueProducts(true));
+document.querySelectorAll('[data-cloud-ai-evidence-filter]').forEach(box=>box.addEventListener('change',()=>loadCloudAiCatalogueProducts(true)));
 $('cloud-ai-product-prev')?.addEventListener('click',()=>{cloudAiCatalogueOffset=Math.max(0,cloudAiCatalogueOffset-cloudAiCataloguePageSize);loadCloudAiCatalogueProducts(false);});
 $('cloud-ai-product-next')?.addEventListener('click',()=>{cloudAiCatalogueOffset+=cloudAiCataloguePageSize;loadCloudAiCatalogueProducts(false);});
 document.querySelectorAll('[data-cloud-ai-select-count]')?.forEach(button=>button.addEventListener('click',()=>selectCloudAiFirst(Number(button.dataset.cloudAiSelectCount))));

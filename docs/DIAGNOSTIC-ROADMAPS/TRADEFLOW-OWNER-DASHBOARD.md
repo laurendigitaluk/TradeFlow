@@ -154,3 +154,19 @@ Production now contains all-route probing, bounded search/collection pagination,
 
 **Observed deployment mismatch**
 The screenshot shows the old heading “Queued and completed tasks” and processed records. Current production HTML/JS and RPC definitions do not produce that view. The likely first failure is the Cloudflare Worker asset deployment. Worker name from wrangler.jsonc is tradeflow; repository has no GitHub Actions deploy workflow. Verify Cloudflare Workers & Pages > tradeflow > Deployments and deploy the latest production commit. Do not delete queue rows or rewrite statuses to compensate for stale frontend assets. After deployment, hard-refresh the owner dashboard and confirm empty states.
+
+## Manual AI Research catalogue filter diagnostic map — 11 November 2026
+
+**User action:** Owner Dashboard → AI Research Centre → select Category → optional Branch → optional Manufacturer → Evidence required → tick product(s) → Generate research prompts.
+
+**Frontend:** platform-owner-dashboard.html loads platform-owner-dashboard.js?v=53. Picker controls: cloud-ai-category, cloud-ai-branch, cloud-ai-manufacturer, cloud-ai-evidence-filter. Controller functions: loadCloudAiCatalogueTree, loadCloudAiCatalogueCategories, loadCloudAiCatalogueManufacturers, loadCloudAiCatalogueProducts, onCloudAiCategoryChange, onCloudAiBranchChange, and createManualAiResearchBatch. Pagination and checkbox selection remain in the existing picker controller; selection remains keyed by master product_id.
+
+**Database:** platform_owner_list_cloud_ai_catalogue_manufacturers(p_category_id,p_branch_id) returns active manufacturer IDs/names/counts scoped to the chosen category and optional branch. platform_owner_list_cloud_ai_catalogue_products_filtered(p_category_id,p_branch_id,p_manufacturer_id,p_evidence_filter,p_limit,p_offset) applies category, branch, manufacturer and evidence conditions before returning the filtered total and page. Evidence counts come from active public.shared_market_evidence records: uk_new and uk_used. Filter values: all, no_evidence/missing_both, missing_new, missing_used, complete.
+
+**Security:** Both RPCs call public.platform_cloud_ai_owner_check() and revoke execution from public/anon; execution is granted to authenticated. The owner check requires an active platform_memberships row for auth.uid().
+
+**Expected flow:** Category change clears the old product selection, loads branches, loads manufacturers for the category and refreshes products. Branch change clears the old selection, reloads manufacturer options scoped to that branch and refreshes products. Manufacturer/evidence changes reset the result offset and refresh the list while retaining the current product selection map. Previous/Next retains active filters. Manual batch generation still snapshots the selected master product IDs; evidence filters do not write evidence or change review state.
+
+**Failure points:** Empty manufacturer list → inspect the manufacturer RPC and active catalogue_master_products.manufacturer_id links. Incorrect filter totals → inspect shared_market_evidence.is_active, evidence_type, and product linkage via master_product_id. Empty later pages → check p_offset/p_limit and filtered total_count. Permission error → verify owner JWT, active platform membership and RPC grants. Stale UI → verify Worker deployment and HTML JS query version v=53.
+
+**Migration:** 20261111000300_cloud_ai_catalogue_manufacturer_evidence_filters.sql. Existing RPCs remain unchanged for compatibility. No product/evidence rows or TEST/commercial data changed.

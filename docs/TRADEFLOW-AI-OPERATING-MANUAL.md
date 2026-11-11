@@ -5741,3 +5741,6 @@ LIVE verification: migration recorded; prompt helper exists; create-batch and re
 Important workflow boundary: platform_owner_submit_manual_ai_research_response creates pending_review queue candidates; platform_owner_review_catalogue_research_item only changes the queue status. No dedicated Manual AI queue-to-shared_market_evidence import RPC was found in the current LIVE public function inventory. Approval is not import. A separate authorised, idempotent importer and post-write verification are required before any candidate can become shared catalogue evidence.
 
 For existing ready prompts, use the owner-authorised Refresh prompt action to regenerate them with V2. Existing saved prompt rows are intentionally not rewritten directly, and drafts/submitted responses remain protected. The Manual AI workspace is LIVE-only; TEST remains untouched.
+
+
+Independent source spot-check after the report review: the opened Blackmagic Cinema Camera 6K product page currently displays £2,069 and states that MSRP excludes VAT, rather than the report's £1,219 ex-VAT figure. The opened Production Gear Micro Studio Camera 4K G2 page currently displays £892.80 inc VAT (£744 ex VAT), rather than the report's £870 inc VAT. These differences reinforce that snippet-only prices must remain comparisons until the exact page is opened and its current displayed price is read.

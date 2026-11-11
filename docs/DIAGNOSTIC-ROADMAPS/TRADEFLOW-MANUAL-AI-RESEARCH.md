@@ -171,3 +171,38 @@ When a new report arrives:
 
 ### Exact remaining backend blocker
 A narrow owner-authorised, idempotent import RPC/path is still missing. It must require an approved queue candidate, raw_payload.source_verified=true, a direct supported source type and URL, an exact live_master_product_id including correct package mapping, GBP price, evidence type, condition, availability, observed date and excerpt. It must deduplicate against the existing unique (source_name, source_record_key) constraint and existing product/source/price/type evidence, insert the shared evidence record atomically, then set live_evidence_id and imported_at on the queue row. Used evidence must remain reference-only and excluded from automatic buying valuation. Build and test this path before any deployment; do not write directly to the table or use service-role credentials from the browser.
+
+## Raw JSON intake correction and AKASO report processing — 11 November 2026, 21:15 UTC
+
+### Root cause
+- Browser helper tryParseManualAiJsonReply() already finds a raw JSON object embedded in the complete assistant reply.
+- submitManualAiResponse() sent the entire raw textarea value to platform_owner_submit_manual_ai_research_response.
+- The database function only extracted fenced ```json blocks, then cast the full response to jsonb. A readable report followed by raw/unfenced JSON therefore failed with the misleading fenced-code-block error.
+- New helper platform_extract_manual_ai_json_response(text) finds the opening brace immediately before the schema_version marker, scans balanced braces while respecting JSON strings and escapes, and returns the embedded object. The submit RPC uses it and retains the complete submitted response in response_text.
+- Second validation issue: the old role rule forced all opened marketplace_listing sources with exact package matches to catalogue_evidence. That rejected conservative comparison_only results and generic eBay shop/search pages. The revised rule permits a conservative comparison_only label and only treats product-shaped eBay/Amazon listing URLs as direct marketplace product pages. Generic shop/search/category pages stay comparison_only.
+
+### LIVE migrations
+- 20261111210818_manual_ai_accept_embedded_unfenced_json
+- 20261111210908_manual_ai_allow_conservative_comparison_references
+- Both migrations applied to LIVE and stored under supabase/migrations in production.
+
+### Supplied AKASO report submitted
+- Prompt cc5e8462-feda-45f0-b4ba-6f6ae33bbce8, batch 3b8febea-ef87-4158-b2b6-0beab943edf0.
+- The supplied attached JSON was valid raw JSON, 14,484 characters, schema_version tradeflow_manual_research_v1, with 6 findings and 15 not_found entries covering the 20-product prompt.
+- A transaction-only dry run returned submitted=true, 6 candidates created, 0 findings rejected, 15 not_found. It was rolled back.
+- The actual supported owner RPC then submitted the attached JSON. Prompt and batch now completed; full supplied JSON is saved in response_text; 6 pending_review comparison-only queue rows were created.
+- Source verification: 5 pages opened (4 original source URLs plus one related direct eBay listing discovered from results); exact original URL accessibility was partial. The eBay AKASO 360 listing is ended and title is Motorcycle Combo, not Standard Combo. The eBay Brave 4 Pro direct listing found from the search result displayed £116.37 and a damaged-box title, not £94.61. PriceSpy currently displays £140.00, not £95.61. eBay shop/search pages did not substantiate the report's other exact prices/model-package claims. No candidate passed direct source/current-price verification.
+- Existing active evidence lookup found exact product/source URL/price/type duplicates for all six candidate rows:
+  - Brave 4 Pro eBay UK £94.61 uk_new → existing evidence 52f61e1a-5394-483d-88a9-5e1ada1a6ea2
+  - Brave 4 Pro PriceSpy £95.61 uk_new → 00d65c34-8dda-4247-b727-46eeab119bf7
+  - Brave 4 Elite eBay UK £82.86 uk_new → cda65796-15e1-4663-9117-23c8523eaa76
+  - AKASO 360 Standard Combo eBay £378.72 uk_used → 2ba18a7a-2f55-41d1-9c94-17944157640b
+  - Brave 4 Standalone eBay £36.75 uk_used → 1e0d66f9-aa76-4aec-b223-76f7a02d70eb
+  - Brave 7 Motorcycle Bundle eBay £152.95 uk_new → 71b2006b-5cb5-445d-a6ee-416d36f486ac
+- All six candidate rows were reviewed through platform_owner_review_catalogue_research_item and marked rejected with duplicate/source notes. Final queue status: 6 rejected, 0 imported, 0 linked to shared evidence. No new shared_market_evidence rows. Active evidence count remained 4,490 (2,157 uk_new, 2,333 uk_used).
+- The 360 listing may represent an alternative package: catalogue snapshot has an AKASO 360 Motorcycle Combo product. Existing evidence is currently attached to Standard Combo even though the source title says Motorcycle Combo. Flag this for a separate controlled correction; do not duplicate or silently move the evidence.
+
+### Remaining
+- The second saved 20-product AKASO prompt remains ready/unsubmitted.
+- The dedicated authorised queue-to-shared_market_evidence importer remains missing.
+- No customer/tenant/Stripe/subscription, TEST, valuation, or unrelated catalogue data changed.

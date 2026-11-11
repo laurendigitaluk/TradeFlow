@@ -5083,3 +5083,13 @@ Frontend asset: platform-owner-dashboard.js?v=55. Migration: 20261111000301_simp
 - Migrations: `20261111000004_manual_ai_research_selective_prompt_deletion` and `20261111000005_manual_ai_prompt_delete_updates_batch_counters`.
 - Dashboard JavaScript syntax and control wiring were checked; the LIVE database function and execute grants were read back. Asset cache reference advanced to v56. No prompt records were deleted during implementation; no existing batch, report, evidence candidate or catalogue row was changed.
 - The Manual AI Research Centre remains LIVE-only; TEST branch `main` and the TEST Supabase project were not changed.
+
+
+## Global prompt selection and processed research queue cleanup — 11 November 2026
+
+- Corrected prompt selection so **Select all prompts across all batches** selects every prompt checkbox in the loaded research list, including prompts inside collapsed completed-report history. **Delete selected** now sends the complete selected UUID set across batches to the owner-only deletion RPC. The per-batch selector was removed to avoid the earlier misleading one-batch scope.
+- Evidence Awaiting Review now separates active `pending_review` candidates from a collapsed **Processed research history**. Items leave the active list as soon as a review action changes their status; they are not left mixed with pending work. The history is retained separately so the owner can inspect it and selectively clear old queue rows.
+- Added checkboxes and a global select/delete action for both pending and processed AI research queue rows. The new owner-authorised `platform_owner_delete_catalogue_research_queue_items(uuid[])` RPC deletes only selected rows from `platform_catalogue_research_queue` belonging to the Cloud AI Research Manager or Manual AI Research agents. It does not delete or modify `shared_market_evidence`; imported catalogue evidence is explicitly preserved.
+- LIVE database inspection found 88 AI research queue rows: 28 imported, 37 rejected, 10 needs_research and 13 pending_review. The 75 non-pending rows are now in the collapsed processed history rather than the active review list. The figure of 316 mentioned by the owner was not found in this queue table; no records were bulk-deleted. Confirm which other list/table contains the 316 before deleting those records.
+- Migrations: `20261111000006_manual_ai_queue_selective_cleanup`. Dashboard JavaScript syntax check passed; HTML asset cache reference advanced to v57. Database deletion function is owner-gated and restricted to the two AI agent name patterns.
+- TEST remains untouched because this manual research workspace is currently LIVE-only. No research queue rows, evidence records, prompts or reports were deleted during implementation.

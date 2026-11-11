@@ -5028,3 +5028,20 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - Migration files: supabase/migrations/20261111000000_manual_ai_category_specific_source_prompts.sql and supabase/migrations/20261111000001_manual_ai_category_source_prompt_newline_fix.sql. Both migrations were applied to TRADEFLOW LIVE project gxsrajtqzdjvmceqcpgv.
 - Acceptance check: generate one prompt for Action Cameras and inspect for the Action Cameras source list (e.g. DJI/Sony/MPB and universal UK marketplaces); change to Drones and generate another prompt, checking that the drone list (e.g. DJI, Heliguy, Drone Authority and other enabled drone sources) appears instead. Check that no overseas sources appear.
 - No TEST tenant, customer, catalogue, website, domain, Stripe or subscription data was changed. Existing evidence approval/import safeguards are untouched.
+
+## Manual AI Research catalogue filters — 11 November 2026
+
+The LIVE Owner Dashboard → AI Research Centre product picker now supports four-stage narrowing: Category → Branch → Manufacturer → Product. Manufacturer choices are loaded from active master-catalogue products in the selected category and optional branch; counts are shown beside each manufacturer.
+
+An Evidence required filter narrows the server-side product result set:
+- All products
+- No evidence — neither active UK new nor UK used evidence exists
+- Missing UK new evidence
+- Missing UK used evidence
+- Complete — at least one active UK new and one active UK used evidence record exist
+
+The product count and 500-row pagination are calculated after all selected filters. Existing product selection, cross-page selection, 500-product manual batch cap, quick-select controls and category/branch-wide research queue actions remain separate and unchanged.
+
+Implementation: platform-owner-dashboard.html controls; platform-owner-dashboard.js functions loadCloudAiCatalogueManufacturers, loadCloudAiCatalogueProducts, onCloudAiCategoryChange, and onCloudAiBranchChange; LIVE RPCs platform_owner_list_cloud_ai_catalogue_manufacturers(uuid,uuid) and platform_owner_list_cloud_ai_catalogue_products_filtered(uuid,uuid,uuid,text,integer,integer); evidence counts read active shared_market_evidence rows with evidence_type uk_new and uk_used.
+
+Migration: supabase/migrations/20261111000300_cloud_ai_catalogue_manufacturer_evidence_filters.sql. The prior catalogue RPCs remain intact for compatibility. No catalogue rows, evidence records, review states, customer/tenant data, valuation rules, TEST data, Stripe or subscription data were changed. Owner access is checked by platform_cloud_ai_owner_check() and the new RPCs are executable only by authenticated after the explicit owner check.

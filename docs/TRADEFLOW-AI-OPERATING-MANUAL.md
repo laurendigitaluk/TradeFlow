@@ -5690,3 +5690,8 @@ Selecting products still uses the existing master product IDs and snapshot workf
 - Database migration: 20261111000002_manual_ai_research_20_product_default_and_simplified_prompt. The RPC default is now 20. The existing database constraint continues to cap the selectable prompt size at 20; the overall batch selection limit remains 500.
 - Dashboard UI now selects 20 products by default, and its fallback/display values also use 20. Asset cache reference advanced to v54.
 - This Manual AI Research workspace is LIVE-only; the TEST Supabase project does not currently contain its research batch/prompt tables or RPCs, and the TEST dashboard branch does not contain this workspace. Therefore this targeted update was applied to the existing LIVE-only research workflow; TEST business/catalogue data was not changed. No product catalogue, market evidence, customer, tenant, order, payment or Stripe data was changed. Existing saved research batches and responses were preserved.
+
+
+### Follow-up: refreshed prompts use the same simplified rules — 11 November 2026
+
+The dashboard's **Regenerate with improved research rules** action uses a separate owner-only RPC. That RPC was also updated in migration `20261111000003_manual_ai_refresh_uses_simplified_research_prompt` so an unstarted saved prompt regenerated from the dashboard receives the same coverage-first instructions and JSON-only output as a newly created prompt. Existing saved drafts and submitted responses remain protected by the RPC's original status checks. The category-specific source-directory trigger continues to append the relevant UK sources after either create or refresh.

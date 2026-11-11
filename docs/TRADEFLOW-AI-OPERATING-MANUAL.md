@@ -5762,3 +5762,14 @@ The 11 November AKASO response was accepted: 6 findings and 15 not_found for 20 
 - No suitable UK direct new listing found in this pass for Aaton 35III 2 Perf or the original Blackmagic Cinema Camera.
 - Research-only: no catalogue product or shared_market_evidence rows changed; no queue candidates staged. All prices/links remain research leads until exact source/product verification and the authorised importer are available. Existing new/used evidence remains unchanged.
 - Batch limit remains 10 products. Continue with the next 10 LIVE Cameras products that are missing new or used evidence; do not reprocess these ten unless new sources appear.
+
+
+## Camera catalogue evidence research — batch 02 (11 November 2026)
+
+- Scope: next 10 active LIVE Cameras products with at least one missing evidence type, following batch 01. All ten were missing UK used evidence; existing new evidence was left untouched.
+- Direct used UK lead: Blackmagic Studio Camera 6K Pro, CVP ex-showroom listing £1,580.40 ex VAT, excellent condition, in stock. This is a VAT-exclusive price and therefore retained as a comparison lead, not accepted as customer-facing GBP evidence.
+- Direct used UK lead: Blackmagic URSA Cine 12K LF - PL Fit, MPB £5,509, excellent condition, one available. Lens-mount/package detail must be checked against the generic catalogue package before linking.
+- URSA Cine 12K LF additional comparison: UsedLens index shows two UK retailer listings from £5,339 and typical £5,424; it aggregates MPB and eBay and is not itself direct product evidence.
+- No currently available used listing located in this pass for PYXIS 6K PL, Studio Camera 4K Plus G2, Studio Camera 4K Pro G2, URSA Broadcast G2, URSA Cine 12K LF + EVF, URSA Cine 12K LF 100G, URSA Cine 12K LF Body, or URSA Cine 17K 65. CVP pages for the Plus G2 and Pro G2 explicitly reported no used stock; Camera Price Buster also reported no current used copy for Studio Camera 6K Pro, with historic prices only.
+- Foreign-market used listing for URSA Cine 17K 65 and EU used URSA Broadcast G2 listing were excluded. New-price pages and snippets were not treated as used evidence.
+- Research only: no catalogue or shared_market_evidence rows changed; no review-queue candidates staged. No TEST, tenant/customer, Stripe or valuation data changed.

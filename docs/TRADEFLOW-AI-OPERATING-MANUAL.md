@@ -5668,3 +5668,15 @@ LIVE now injects the source directory at the database boundary for every newly i
 The same trigger runs for the refresh RPC because it updates prompt_text. Its marker removal is idempotent, so a refreshed prompt replaces rather than duplicates the injected section. Existing previously saved prompts are not retroactively rewritten; refresh an unstarted prompt to regenerate it with the current category source directory.
 
 Deployment: migrations 20261111000000_manual_ai_category_specific_source_prompts and 20261111000001_manual_ai_category_source_prompt_newline_fix applied to TRADEFLOW LIVE (project gxsrajtqzdjvmceqcpgv). User acceptance test remains: create an Action Cameras prompt, then a Drones prompt, and verify the corresponding website lists differ correctly. No evidence is automatically approved/imported by this change.
+
+## Owner AI Research — manufacturer and evidence-gap filtering (11 November 2026)
+
+When selecting products for Manual AI Research, narrow the master catalogue in this order: Category, optional Branch, optional Manufacturer, then Evidence required. Manufacturer options are dynamic and scoped to the selected category/branch. The evidence filter is applied in the database before pagination, so the displayed total is the total matching the selected filters rather than only the current page.
+
+Evidence filter meanings:
+- No evidence: both active UK new (uk_new) and UK used (uk_used) counts are zero.
+- Missing UK new evidence: no active uk_new evidence exists, whether or not used evidence exists.
+- Missing UK used evidence: no active uk_used evidence exists, whether or not new evidence exists.
+- Complete: at least one active record of each type exists.
+
+Selecting products still uses the existing master product IDs and snapshot workflow. Selections persist when moving between result pages and remain subject to the 500 individual-product manual batch limit. Category/branch queue actions are not narrowed by manufacturer/evidence filters; they intentionally queue their whole selected scope. Evidence is not created, approved or modified by these filters.

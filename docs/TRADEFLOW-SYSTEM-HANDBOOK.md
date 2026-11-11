@@ -5017,3 +5017,14 @@ The corrected Wrangler 4.160.0 command successfully loaded wrangler.jsonc and bu
 - Keep generated research prompt text visible only while the prompt is active. After successful submission, remove its prompt textarea and response controls from the active list and move the completed prompt/report into a collapsed **Completed research** history section. Preserve the original submitted report and metadata; this is a presentation change, not deletion or archival mutation.
 - The dashboard asset cache is v52. This frontend-only change does not alter the evidence approval/import boundary: queue review status is not proof of insertion into `shared_market_evidence`.
 - Deployment and a real signed-in browser test remain the acceptance checks. No Supabase or TEST data was changed by this layout update.
+
+
+## Manual AI Research — category-specific source injection (11 November 2026)
+
+- The Owner Dashboard Manual AI Research category selector scopes the master-catalogue product list. Product selections are cleared when the category changes, so a generated batch should normally contain one selected category.
+- LIVE Supabase now has a BEFORE INSERT / UPDATE OF prompt_text, products_snapshot trigger on public.platform_manual_ai_research_prompts. The trigger reads category_slug/category_name from the saved products_snapshot and injects the enabled UK sources from public.platform_research_sources where category_slugs contains that category or the universal wildcard '*'.
+- Only enabled GB sources are injected; research_scope='overseas' is excluded. Each entry includes source name, source kind, research scope, homepage and optional search_url_template. The prompt tells the assistant to inspect actual product/listing pages, verify exact model/package/condition/GBP price, use templates with encoded search terms, and continue broader discovery.
+- The trigger applies to both newly created and refreshed prompts because both paths write prompt_text. It replaces its own marked block idempotently. Existing saved prompts are not rewritten until refreshed; new batches use it automatically.
+- Migration files: supabase/migrations/20261111000000_manual_ai_category_specific_source_prompts.sql and supabase/migrations/20261111000001_manual_ai_category_source_prompt_newline_fix.sql. Both migrations were applied to TRADEFLOW LIVE project gxsrajtqzdjvmceqcpgv.
+- Acceptance check: generate one prompt for Action Cameras and inspect for the Action Cameras source list (e.g. DJI/Sony/MPB and universal UK marketplaces); change to Drones and generate another prompt, checking that the drone list (e.g. DJI, Heliguy, Drone Authority and other enabled drone sources) appears instead. Check that no overseas sources appear.
+- No TEST tenant, customer, catalogue, website, domain, Stripe or subscription data was changed. Existing evidence approval/import safeguards are untouched.

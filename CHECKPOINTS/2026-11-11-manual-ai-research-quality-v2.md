@@ -84,3 +84,11 @@ Changes:
 
 ## Next step
 Use the owner-authorised Refresh prompt action on one ready prompt, run the new V2 instructions, submit the complete report with its fenced JSON block, then review actual direct pages. Keep the evidence importer as a separate, explicitly tested backend task.
+
+
+## Independent source spot-check after prompt review
+
+- Opened Blackmagic's individual Cinema Camera 6K page. It identifies the exact model and currently displays £2,069; the page footer says MSRP excludes VAT. The report's £1,219 ex-VAT figure from the multi-product page is therefore stale/unconfirmed and must not be imported as current evidence.
+- Opened Production Gear's individual Micro Studio Camera 4K G2 page. It currently displays £744 ex VAT / £892.80 inc VAT, not the report's £870 inc VAT snippet.
+- Wex and MPB sample URLs returned cache misses in this check, so those source prices remain unverified.
+- This was a quality spot-check only. No candidate or shared evidence row was created.

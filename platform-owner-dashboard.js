@@ -468,54 +468,76 @@ async function loadCloudAiCatalogueCategories(){
   $('cloud-ai-catalogue-picker-status').textContent=(data.categories||[]).length+' categories loaded directly from the TradeFlow master catalogue.';
  }catch(err){$('cloud-ai-catalogue-picker-status').textContent='Could not load catalogue categories: '+(err.message||String(err));}
 }
+async function loadCloudAiCatalogueManufacturers(){
+ const categoryId=$('cloud-ai-category')?.value,branchId=$('cloud-ai-branch')?.value||null;
+ const select=$('cloud-ai-manufacturer');
+ if(!select)return;
+ if(!categoryId){select.innerHTML='<option value="">Choose a category first…</option>';select.disabled=true;return;}
+ select.innerHTML='<option value="">Loading manufacturers…</option>';select.disabled=true;
+ try{
+  const data=await request('/rest/v1/rpc/platform_owner_list_cloud_ai_catalogue_manufacturers',{method:'POST',body:JSON.stringify({p_category_id:categoryId,p_branch_id:branchId})});
+  const rows=data.manufacturers||[];
+  select.innerHTML='<option value="">All manufacturers ('+rows.reduce((n,x)=>n+Number(x.product_count||0),0).toLocaleString()+' products)</option>'+rows.map(x=>'<option value="'+escapeHtml(x.id)+'">'+escapeHtml(x.name)+' ('+Number(x.product_count||0).toLocaleString()+')</option>').join('');
+  select.disabled=false;
+ }catch(err){
+  select.innerHTML='<option value="">Could not load manufacturers</option>';
+  $('cloud-ai-catalogue-picker-status').textContent='Could not load manufacturers: '+(err.message||String(err));
+ }
+}
 async function loadCloudAiCatalogueProducts(resetOffset=true){
- const categoryId=$('cloud-ai-category').value,branchId=$('cloud-ai-branch').value||null;
- const host=$('cloud-ai-product-list');
- if(!categoryId){host.innerHTML='<p class="muted">Choose a category to load its products.</p>';return;}
- if(resetOffset)cloudAiCatalogueOffset=0;
- host.innerHTML='<p class="muted">Loading products and existing evidence counts…</p>';
- try{
-  const data=await request('/rest/v1/rpc/platform_owner_list_cloud_ai_catalogue_products',{method:'POST',body:JSON.stringify({
-   p_category_id:categoryId,p_branch_id:branchId,p_limit:cloudAiCataloguePageSize,p_offset:cloudAiCatalogueOffset
-  })});
-  cloudAiCatalogueProducts=data.products||[];
-  cloudAiCatalogueTotal=Number(data.total_count||0);
-  const first=cloudAiCatalogueTotal?cloudAiCatalogueOffset+1:0,last=Math.min(cloudAiCatalogueOffset+cloudAiCatalogueProducts.length,cloudAiCatalogueTotal);
-  $('cloud-ai-product-list-summary').textContent='Showing '+first+'–'+last+' of '+cloudAiCatalogueTotal.toLocaleString()+' active catalogue products. Existing counts include active linked UK evidence only.';
-  $('cloud-ai-product-prev').disabled=cloudAiCatalogueOffset===0;
-  $('cloud-ai-product-next').disabled=cloudAiCatalogueOffset+cloudAiCatalogueProducts.length>=cloudAiCatalogueTotal;
-  $('cloud-ai-queue-branch').disabled=!branchId||cloudAiCatalogueTotal===0;
-  $('cloud-ai-queue-category').disabled=cloudAiCatalogueTotal===0;
-  if(!cloudAiCatalogueProducts.length){host.innerHTML='<p class="muted">No active products found in this selection.</p>';return;}
-  host.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="text-align:left;border-bottom:2px solid var(--border,#ddd)"><th style="padding:8px;width:34px">Pick</th><th style="padding:8px">Manufacturer / model / package</th><th style="padding:8px;text-align:center">New evidence</th><th style="padding:8px;text-align:center">Used evidence</th><th style="padding:8px;text-align:center">Total</th></tr></thead><tbody>'+cloudAiCatalogueProducts.map(p=>'<tr style="border-bottom:1px solid var(--border,#ddd)"><td style="padding:8px"><input type="checkbox" data-catalogue-product="'+escapeHtml(p.product_id)+'" '+(cloudAiCatalogueSelection.has(p.product_id)?'checked':'')+' aria-label="Select '+escapeHtml(p.manufacturer_name+' '+p.model)+'"></td><td style="padding:8px"><strong>'+escapeHtml(p.manufacturer_name)+' | '+escapeHtml(p.model)+'</strong>'+(p.package_name?'<div class="muted">'+escapeHtml(p.package_name)+'</div>':'')+'</td><td style="padding:8px;text-align:center;font-weight:600">'+Number(p.new_evidence_count||0)+'</td><td style="padding:8px;text-align:center;font-weight:600">'+Number(p.used_evidence_count||0)+'</td><td style="padding:8px;text-align:center">'+Number(p.total_evidence_count||0)+'</td></tr>').join('')+'</tbody></table>';
-  host.querySelectorAll('[data-catalogue-product]').forEach(box=>box.addEventListener('change',()=>{
-   const p=cloudAiCatalogueProducts.find(x=>x.product_id===box.dataset.catalogueProduct);
-   if(box.checked&&p){if(cloudAiCatalogueSelection.size>=500){box.checked=false;$('cloud-ai-status').textContent='A maximum of 500 individual products can be selected at once. Use the whole-branch or whole-category action for larger batches.';return;}cloudAiCatalogueSelection.set(p.product_id,p);}
-   else cloudAiCatalogueSelection.delete(box.dataset.catalogueProduct);
-   renderCloudAiCatalogueSelection();
-  }));
- }catch(err){host.innerHTML='<p class="muted">Could not load catalogue products: '+escapeHtml(err.message||String(err))+'</p>';}
-}
-async function onCloudAiCategoryChange(){
- const branch=$('cloud-ai-branch');
- cloudAiCatalogueBranches=[];cloudAiCatalogueProducts=[];
- cloudAiCatalogueSelection.clear();renderCloudAiCatalogueSelection();
- branch.innerHTML='<option value="">Loading branches…</option>';branch.disabled=true;
- $('cloud-ai-queue-branch').disabled=true;$('cloud-ai-queue-category').disabled=true;
- if(!$('cloud-ai-category').value){branch.innerHTML='<option value="">Choose a category first…</option>';loadCloudAiCatalogueProducts();return;}
- try{
-  const data=await loadCloudAiCatalogueTree($('cloud-ai-category').value);
-  cloudAiCatalogueBranches=data.branches||[];
-  branch.innerHTML='<option value="">All branches in category</option>'+cloudAiCatalogueBranches.map(x=>'<option value="'+escapeHtml(x.id)+'">'+escapeHtml(x.name)+' ('+Number(x.product_count||0)+' products)</option>').join('');
-  branch.disabled=false;
+  const categoryId=$('cloud-ai-category').value,branchId=$('cloud-ai-branch').value||null;
+  const manufacturerId=$('cloud-ai-manufacturer')?.value||null;
+  const evidenceFilter=$('cloud-ai-evidence-filter')?.value||'all';
+  const host=$('cloud-ai-product-list');
+  if(!categoryId){host.innerHTML='<p class="muted">Choose a category to load its products.</p>';return;}
+  if(resetOffset)cloudAiCatalogueOffset=0;
+  host.innerHTML='<p class="muted">Loading products and existing evidence counts…</p>';
+  try{
+   const data=await request('/rest/v1/rpc/platform_owner_list_cloud_ai_catalogue_products_filtered',{method:'POST',body:JSON.stringify({
+    p_category_id:categoryId,p_branch_id:branchId,p_manufacturer_id:manufacturerId,p_evidence_filter:evidenceFilter,
+    p_limit:cloudAiCataloguePageSize,p_offset:cloudAiCatalogueOffset
+   })});
+   cloudAiCatalogueProducts=data.products||[];
+   cloudAiCatalogueTotal=Number(data.total_count||0);
+   const first=cloudAiCatalogueTotal?cloudAiCatalogueOffset+1:0,last=Math.min(cloudAiCatalogueOffset+cloudAiCatalogueProducts.length,cloudAiCatalogueTotal);
+   const filterLabel=$('cloud-ai-evidence-filter')?.selectedOptions[0]?.textContent||'All products';
+   $('cloud-ai-product-list-summary').textContent='Showing '+first+'–'+last+' of '+cloudAiCatalogueTotal.toLocaleString()+' matching active products · '+filterLabel+'. Evidence counts are active UK new and used records.';
+   $('cloud-ai-product-prev').disabled=cloudAiCatalogueOffset===0;
+   $('cloud-ai-product-next').disabled=cloudAiCatalogueOffset+cloudAiCatalogueProducts.length>=cloudAiCatalogueTotal;
+   $('cloud-ai-queue-branch').disabled=!branchId||cloudAiCatalogueTotal===0;
+   $('cloud-ai-queue-category').disabled=cloudAiCatalogueTotal===0;
+   if(!cloudAiCatalogueProducts.length){host.innerHTML='<p class="muted">No active products match these filters.</p>';return;}
+   host.innerHTML='<table style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr style="text-align:left;border-bottom:2px solid var(--border,#ddd)"><th style="padding:8px;width:34px">Pick</th><th style="padding:8px">Manufacturer / model / package</th><th style="padding:8px;text-align:center">New evidence</th><th style="padding:8px;text-align:center">Used evidence</th><th style="padding:8px;text-align:center">Total</th></tr></thead><tbody>'+cloudAiCatalogueProducts.map(p=>'<tr style="border-bottom:1px solid var(--border,#ddd)"><td style="padding:8px"><input type="checkbox" data-catalogue-product="'+escapeHtml(p.product_id)+'" '+(cloudAiCatalogueSelection.has(p.product_id)?'checked':'')+' aria-label="Select '+escapeHtml(p.manufacturer_name+' '+p.model)+'"></td><td style="padding:8px"><strong>'+escapeHtml(p.manufacturer_name)+' | '+escapeHtml(p.model)+'</strong>'+(p.package_name?'<div class="muted">'+escapeHtml(p.package_name)+'</div>':'')+'</td><td style="padding:8px;text-align:center;font-weight:600">'+Number(p.new_evidence_count||0)+'</td><td style="padding:8px;text-align:center;font-weight:600">'+Number(p.used_evidence_count||0)+'</td><td style="padding:8px;text-align:center">'+Number(p.total_evidence_count||0)+'</td></tr>').join('')+'</tbody></table>';
+   host.querySelectorAll('[data-catalogue-product]').forEach(box=>box.addEventListener('change',()=>{
+    const p=cloudAiCatalogueProducts.find(x=>x.product_id===box.dataset.catalogueProduct);
+    if(box.checked&&p){if(cloudAiCatalogueSelection.size>=500){box.checked=false;$('cloud-ai-status').textContent='A maximum of 500 individual products can be selected at once. Use the whole-branch or whole-category action for larger batches.';return;}cloudAiCatalogueSelection.set(p.product_id,p);}
+    else cloudAiCatalogueSelection.delete(box.dataset.catalogueProduct);
+    renderCloudAiCatalogueSelection();
+   }));
+  }catch(err){host.innerHTML='<p class="muted">Could not load catalogue products: '+escapeHtml(err.message||String(err))+'</p>';}
+ }
+ async function onCloudAiCategoryChange(){
+  const branch=$('cloud-ai-branch'),manufacturer=$('cloud-ai-manufacturer');
+  cloudAiCatalogueBranches=[];cloudAiCatalogueProducts=[];cloudAiCatalogueSelection.clear();renderCloudAiCatalogueSelection();
+  branch.innerHTML='<option value="">Loading branches…</option>';branch.disabled=true;
+  if(manufacturer){manufacturer.innerHTML='<option value="">Choose a category first…</option>';manufacturer.disabled=true;}
+  $('cloud-ai-queue-branch').disabled=true;$('cloud-ai-queue-category').disabled=true;
+  if(!$('cloud-ai-category').value){branch.innerHTML='<option value="">Choose a category first…</option>';loadCloudAiCatalogueProducts();return;}
+  try{
+   const data=await loadCloudAiCatalogueTree($('cloud-ai-category').value);
+   cloudAiCatalogueBranches=data.branches||[];
+   branch.innerHTML='<option value="">All branches in category</option>'+cloudAiCatalogueBranches.map(x=>'<option value="'+escapeHtml(x.id)+'">'+escapeHtml(x.name)+' ('+Number(x.product_count||0)+' products)</option>').join('');
+   branch.disabled=false;
+   await loadCloudAiCatalogueManufacturers();
+   await loadCloudAiCatalogueProducts(true);
+  }catch(err){branch.innerHTML='<option value="">Could not load branches</option>';$('cloud-ai-catalogue-picker-status').textContent=err.message||String(err);}
+ }
+ async function onCloudAiBranchChange(){
+  cloudAiCatalogueSelection.clear();renderCloudAiCatalogueSelection();
+  await loadCloudAiCatalogueManufacturers();
   await loadCloudAiCatalogueProducts(true);
- }catch(err){branch.innerHTML='<option value="">Could not load branches</option>';$('cloud-ai-catalogue-picker-status').textContent=err.message||String(err);}
-}
-async function onCloudAiBranchChange(){
- cloudAiCatalogueSelection.clear();renderCloudAiCatalogueSelection();
- await loadCloudAiCatalogueProducts(true);
-}
-function renderCloudAiCatalogueSelection(){
+ }
+ function renderCloudAiCatalogueSelection(){
  const count=cloudAiCatalogueSelection.size;
  $('cloud-ai-selected-count').textContent=count.toLocaleString()+' individual product'+(count===1?'':'s')+' selected';
  if($('cloud-ai-queue-selected'))$('cloud-ai-queue-selected').disabled=!count;
@@ -550,6 +572,8 @@ async function queueCloudAiCatalogueScope(scope){
 }
 $('cloud-ai-category')?.addEventListener('change',onCloudAiCategoryChange);
 $('cloud-ai-branch')?.addEventListener('change',onCloudAiBranchChange);
+$('cloud-ai-manufacturer')?.addEventListener('change',()=>loadCloudAiCatalogueProducts(true));
+$('cloud-ai-evidence-filter')?.addEventListener('change',()=>loadCloudAiCatalogueProducts(true));
 $('cloud-ai-product-prev')?.addEventListener('click',()=>{cloudAiCatalogueOffset=Math.max(0,cloudAiCatalogueOffset-cloudAiCataloguePageSize);loadCloudAiCatalogueProducts(false);});
 $('cloud-ai-product-next')?.addEventListener('click',()=>{cloudAiCatalogueOffset+=cloudAiCataloguePageSize;loadCloudAiCatalogueProducts(false);});
 document.querySelectorAll('[data-cloud-ai-select-count]')?.forEach(button=>button.addEventListener('click',()=>selectCloudAiFirst(Number(button.dataset.cloudAiSelectCount))));

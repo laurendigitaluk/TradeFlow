@@ -129,13 +129,13 @@
   <label>Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
   <label>Branch (optional)<select id="cloud-ai-branch" disabled><option value="">Choose a category first…</option></select></label>
   <label>Manufacturer (optional)<select id="cloud-ai-manufacturer" disabled><option value="">Choose a category first…</option></select></label>
-  <label>Evidence required<select id="cloud-ai-evidence-filter">
-   <option value="all">All products</option>
-   <option value="no_evidence">No evidence — missing new and used</option>
-   <option value="missing_new">Missing UK new evidence</option>
-   <option value="missing_used">Missing UK used evidence</option>
-   <option value="complete">Complete — has new and used evidence</option>
-  </select></label>
+  <fieldset style="border:1px solid var(--border,#ddd);border-radius:8px;padding:10px 12px;min-width:240px">
+   <legend style="font-weight:600;padding:0 4px">Filter products by missing evidence</legend>
+   <label style="display:block;margin:5px 0"><input type="checkbox" data-cloud-ai-evidence-filter="missing_used"> Products with no used evidence</label>
+   <label style="display:block;margin:5px 0"><input type="checkbox" data-cloud-ai-evidence-filter="missing_new"> Products with no new evidence</label>
+   <label style="display:block;margin:5px 0"><input type="checkbox" data-cloud-ai-evidence-filter="no_evidence"> Products with no evidence at all</label>
+   <small class="muted">Select one or more. Matching any selected condition will be shown.</small>
+  </fieldset>
  </div>
  <div style="border:1px solid var(--border,#ddd);border-radius:8px;padding:12px;margin-top:12px">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Product checklist and existing evidence</strong><span id="cloud-ai-product-list-summary" class="muted">Choose a category to load products.</span></div>

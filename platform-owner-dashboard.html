@@ -124,10 +124,18 @@
 
 <div class="plan-editor" style="margin-top:16px">
  <h3>2. Select products from the master catalogue</h3>
- <p class="muted">Choose a category and optionally a branch. Each product displays its existing active UK new and used evidence counts. Tick products across pages; your selections remain together. Manual batches support up to 500 selected products.</p>
+ <p class="muted">Narrow the master catalogue by category, branch and manufacturer, then filter by the evidence still needed. Product counts and pagination reflect the selected filters. Tick products across pages; selections remain together. Manual batches support up to 500 selected products.</p>
  <div class="plan-fields">
   <label>Category<select id="cloud-ai-category" required><option value="">Loading catalogue categories…</option></select></label>
   <label>Branch (optional)<select id="cloud-ai-branch" disabled><option value="">Choose a category first…</option></select></label>
+  <label>Manufacturer (optional)<select id="cloud-ai-manufacturer" disabled><option value="">Choose a category first…</option></select></label>
+  <label>Evidence required<select id="cloud-ai-evidence-filter">
+   <option value="all">All products</option>
+   <option value="no_evidence">No evidence — missing new and used</option>
+   <option value="missing_new">Missing UK new evidence</option>
+   <option value="missing_used">Missing UK used evidence</option>
+   <option value="complete">Complete — has new and used evidence</option>
+  </select></label>
  </div>
  <div style="border:1px solid var(--border,#ddd);border-radius:8px;padding:12px;margin-top:12px">
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap"><strong>Product checklist and existing evidence</strong><span id="cloud-ai-product-list-summary" class="muted">Choose a category to load products.</span></div>
@@ -183,7 +191,7 @@
 
 </section>
 </main>
-<script src="platform-owner-dashboard.js?v=52" defer></script>
+<script src="platform-owner-dashboard.js?v=53" defer></script>
 <script src="platform-public-pages-editor.js?v=3" defer></script>
 <script src="platform-public-pages-visual-editor.js?v=2" defer></script>
 </body>

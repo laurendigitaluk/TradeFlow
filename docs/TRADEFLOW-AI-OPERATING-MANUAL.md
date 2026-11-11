@@ -5744,3 +5744,11 @@ For existing ready prompts, use the owner-authorised Refresh prompt action to re
 
 
 Independent source spot-check after the report review: the opened Blackmagic Cinema Camera 6K product page currently displays £2,069 and states that MSRP excludes VAT, rather than the report's £1,219 ex-VAT figure. The opened Production Gear Micro Studio Camera 4K G2 page currently displays £892.80 inc VAT (£744 ex VAT), rather than the report's £870 inc VAT. These differences reinforce that snippet-only prices must remain comparisons until the exact page is opened and its current displayed price is read.
+
+## Manual AI response intake — raw JSON and comparison references — 11 November 2026
+
+Paste the complete assistant response into the Manual AI response box. TradeFlow now accepts a raw JSON object embedded after the readable report or a fenced json block. The response is stored intact, and the parser extracts the object marked with schema_version tradeflow_manual_research_v1. A report does not need Markdown code fences around the JSON.
+
+The submit RPC stages findings for review; it does not import shared evidence. Marketplace shop/search/category URLs remain comparison-only, not verified product-page evidence. The assistant may downgrade a source to comparison-only. Always check source page, current GBP price, model/package, condition and availability, then check existing evidence for duplicates. A queue approval is not an evidence import.
+
+The 11 November AKASO response was accepted: 6 findings and 15 not_found for 20 products. All 6 candidate rows matched existing active evidence on product/source URL/price/type and were rejected with duplicate/source review notes. Zero new evidence rows were imported.

@@ -5107,3 +5107,13 @@ The response RPC stages findings in platform_catalogue_research_queue; the queue
 
 
 Independent source spot-check: the current opened Blackmagic Cinema Camera 6K product page shows £2,069 and notes MSRP excludes VAT; the report had £1,219 ex VAT. Production Gear's opened Micro Studio Camera 4K G2 product page shows £892.80 inc VAT (£744 ex VAT), not the report's £870 inc VAT. This confirms the need for page-level price read-back and VAT-basis capture before catalogue evidence can be accepted.
+
+## Manual AI embedded JSON intake and AKASO review — 11 November 2026
+
+The Manual AI response intake now extracts a balanced JSON object containing the exact "schema_version" marker from a complete response, whether the JSON is raw/unfenced or inside a fenced json block. The complete submitted response text remains stored in platform_manual_ai_research_prompts.response_text. The extraction scanner respects JSON string quoting and escaped characters. Invalid JSON now produces a specific parse error instead of the previous misleading fenced-code-only message.
+
+The submit validator now permits the assistant to conservatively classify an otherwise direct-looking source as comparison_only. Marketplace URLs are considered direct listing pages for catalogue_evidence only when they have a listing/product path such as eBay /itm/, Amazon /dp/ or /gp/product/. Generic shop/search/category pages remain comparison_only. This does not import evidence or bypass the source-verification workflow.
+
+LIVE AKASO prompt cc5e8462-feda-45f0-b4ba-6f6ae33bbce8 was successfully submitted after the fix. It contained 6 findings and 15 not_found entries covering 20 selected products. Six comparison-only candidates were staged, then each was reviewed and rejected as a duplicate of an existing active evidence record. No evidence was imported. Five pages were opened during source checks; no new price/source combination passed verification. The supplied eBay 360 listing is ended and identifies Motorcycle Combo rather than Standard Combo; the Brave 4 Pro eBay listing discovered from the search page showed £116.37 for a damaged-box listing, not the submitted £94.61; PriceSpy currently shows £140.00, not £95.61.
+
+Migrations: 20261111210818_manual_ai_accept_embedded_unfenced_json.sql and 20261111210908_manual_ai_allow_conservative_comparison_references.sql. This change fixes intake and candidate staging only. The separate authorised shared_market_evidence importer remains a backend requirement.

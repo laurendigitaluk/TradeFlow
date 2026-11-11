@@ -1,6 +1,6 @@
 # CURRENT OWNER AND USER GUIDE — 7 NOVEMBER 2026
 
-Last updated: 7 November 2026.
+Last updated: 11 November 2026.
 
 This section is the current user-facing guide and supersedes older conflicting descriptions below.
 
@@ -2601,3 +2601,24 @@ The Platform Owner can retrieve the saved assistant report, inspect each compari
 **Approving a research queue item does not add it to shared catalogue evidence.** The current review action changes the queue status only. Until a dedicated authorised import action is implemented and verified, do not describe an approved candidate as imported or as active shared-market evidence. New and used evidence remain separate; used-market prices are reference-only and do not affect automatic buying valuations.
 
 The AKASO 360 review outcome and current backend limitation are recorded in `CHECKPOINTS/2026-11-10-manual-ai-research-evidence-review.md`.
+
+
+## Manual AI Research — improved research prompt and evidence standards (11 November 2026)
+
+The Manual AI Research workspace is a Platform Owner workflow. Each prompt is tied to the selected catalogue product IDs and a snapshot of manufacturer, model, package and existing evidence references.
+
+The V2 prompt now asks the assistant to:
+- Check the exact manufacturer, model, suffix/revision and requested package before researching prices.
+- Run at least three distinct product-specific UK searches: exact package, UK new retail and UK used. Search same-model alternative packages separately when useful.
+- Open the individual retailer or listing page before treating a price as verified. Search snippets, category pages, aggregators, editorial pages and blocked pages remain comparison_only.
+- Keep the actual package name separate from the selected catalogue package. Never substitute a different model or variant.
+- Keep new, used, refurbished, opened-never-used, sealed, availability and VAT basis distinct.
+- Include the exact source URL, source type, page-access status, displayed GBP price and a source excerpt containing the model and price.
+- Check existing references and avoid duplicate source/price/type findings.
+- Return a readable report followed by exactly one fenced JSON block using the field names expected by TradeFlow.
+
+A comparison reference is useful research, but it is not approved catalogue evidence. A source page must be checked directly before it can be considered for catalogue evidence.
+
+**Important:** submitting a research response creates review-queue candidates; it does not insert evidence into shared_market_evidence. The queue's Approve action changes the review status only. It must not be described as an import. The current LIVE backend does not yet expose a dedicated Manual AI candidate importer. Until that is implemented and verified, do not claim that approved candidates have been added to catalogue evidence.
+
+The second Blackmagic camera test returned 38 findings, all comparison_only. Thirty-two were search-snippet-only; the six marked opened came from the manufacturer's multi-product list page, not individual product pages. No catalogue evidence was imported. The prompt was subsequently improved in LIVE migration manual_ai_research_quality_prompt_v2. Existing ready prompts should be regenerated with the authorised Refresh prompt action to use the new instructions.

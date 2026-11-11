@@ -31,3 +31,9 @@ Increase manual AI research batches beyond ten products and simplify the generat
 - Existing database check constraint still allows only 5/10/15/20.
 - No new research batch was created as a test; owner-created batches and saved work were preserved.
 - Worker deployment and signed-in browser acceptance remain to be confirmed before considering the dashboard update fully visible.
+
+
+## Follow-up correction
+
+- The dashboard has a separate regenerate RPC for unstarted saved prompts. It was also updated and deployed to LIVE in migration 20261111000003_manual_ai_refresh_uses_simplified_research_prompt, so newly generated and regenerated prompts use the same simplified instructions. The existing owner/status checks and draft/submission protection remain.
+- Migration file committed at bdda4bb9a8abf8793d12bc799a3aa19fa7a72a28.

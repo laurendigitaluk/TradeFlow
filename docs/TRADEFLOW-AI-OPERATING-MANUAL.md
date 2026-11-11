@@ -5657,3 +5657,14 @@ Target: LIVE Supabase project `gxsrajtqzdjvmceqcpgv`; repository branch `product
 - No backend importer was added or deployed; no tests or deployment were run because no code/database change was made.
 - LIVE Supabase migration history was inspected through `20261110233048`; current GitHub production dashboard and manuals were inspected. No Supabase project-memory/checkpoint table exists; this GitHub checkpoint is the durable record.
 - Follow-up: implement and test the dedicated owner-authorised importer before any of these references can become shared catalogue evidence. Re-open direct source pages and remap exact packages before import.
+
+
+## Category-driven Manual AI Research prompts — 11 November 2026
+
+When the owner selects a category in AI Research Centre, that category is the context for prompt source selection. The product picker already loads category-scoped products and clears selections when the category changes. The saved product snapshot includes category_slug and category_name.
+
+LIVE now injects the source directory at the database boundary for every newly inserted or refreshed Manual AI Research prompt. A trigger on platform_manual_ai_research_prompts reads category metadata from products_snapshot and appends a clearly marked CATEGORY-SPECIFIC UK RESEARCH SOURCES section. It selects enabled platform_research_sources rows whose category_slugs include the product category or '*'. Only GB sources are included; overseas research_scope rows are excluded. Source names, source kind, scope, homepage and optional search URL template are included. Instructions require the assistant to inspect actual item pages, verify model/package/condition/availability/GBP price, and record the actual page URL. Directory sources are starting points and do not prohibit broader discovery.
+
+The same trigger runs for the refresh RPC because it updates prompt_text. Its marker removal is idempotent, so a refreshed prompt replaces rather than duplicates the injected section. Existing previously saved prompts are not retroactively rewritten; refresh an unstarted prompt to regenerate it with the current category source directory.
+
+Deployment: migrations 20261111000000_manual_ai_category_specific_source_prompts and 20261111000001_manual_ai_category_source_prompt_newline_fix applied to TRADEFLOW LIVE (project gxsrajtqzdjvmceqcpgv). User acceptance test remains: create an Action Cameras prompt, then a Drones prompt, and verify the corresponding website lists differ correctly. No evidence is automatically approved/imported by this change.

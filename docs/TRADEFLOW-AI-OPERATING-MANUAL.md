@@ -6374,3 +6374,10 @@ For supervised ChatGPT evidence work, reuse the established privileged server-si
 Do not confuse this with the Manual AI queue: submit stages pending_review candidates, review changes queue status, verify records source checks; none imports shared_market_evidence. The dedicated owner-authorised queue importer remains missing. Do not set queue status or live_evidence_id through raw SQL; preserve the queue status until the authenticated owner workflow updates it.
 
 Latest LIVE snapshot: global evidence 4,808 total, 4,750 active, 58 inactive; Batches 01–13 263 total, 257 active (139 UK New, 118 UK Used), six inactive. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Sony HDC1500R exact package evidence
+
+Verified and imported one UK used HDC1500R channel at £8,650 from KitPlus/N.I. Broadcast. Exact package: HDC1500R head, HDCU-1000 CCU, HDVF20A viewfinder and RCP750; RCP1500 and 7-inch viewfinder are extra; lens excluded. Listing is older but remains in the dealer's current listings; confirm availability before purchase. LIVE row afd9e40d-fabb-4e28-b797-2e2b8f877948, existing HDC1500R Standard Package master. Full source in Batch 10 checkpoint. UK Used remains reference-only.
+
+Current Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. TEST, Stripe, schema and valuation logic unchanged.

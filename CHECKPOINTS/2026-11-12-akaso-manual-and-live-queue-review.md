@@ -61,3 +61,19 @@ Imported and read back against existing LIVE master Kobra 4 / Standard Printer `
 - source_record_key `manual-ai-queue-kobra4-standard-anycubic-159-20261112`
 
 The evidence import is complete. The original queue candidate remains `needs_research` because changing its workflow status requires the authenticated owner queue-status route; no direct status mutation, RLS bypass or auth impersonation was used. No master/schema/valuation change. TEST and Stripe untouched.
+
+
+## Follow-up: Anycubic Kobra 3 Max V2 and Kobra S1 queue candidates — 12 November 2026
+
+Reopened the current official UK Anycubic product pages and mapped each candidate to an exact existing LIVE master/package. New imports:
+
+1. Queue candidate `4d0b836d-b426-49ad-b08b-becb5862d511` — Kobra 3 Max V2 + ACE 2 Pro Combo. Official UK price £499 inc GB VAT, reduced from £849; Add to Cart, estimated shipping 24 hours, free express delivery, 14-day returns and one-year printer warranty. Packing list explicitly includes one ACE 2 Pro, printer frame, printhead, touchscreen, support rod, cables and spool holder. Specifications state standard 4 colours, expandable up to 8; this is not a four-ACE/16-colour bundle. Imported to existing Kobra 3 Max V2 / 4-Color Combo master `e01ce831-0efa-4923-848e-efd218d72518` as UK New GBP £499. Evidence row `24e67af8-e9bf-44ea-b515-c8226a1dec9e`. Source https://uk.anycubic3d.com/products/kobra-3-max-v2-ace-2-pro-combo.
+2. Queue candidate `80871180-1cf6-4f68-b7ff-98cf459ab287` — Kobra S1 + ACE 2 Pro Combo. Official UK price £409 inc GB VAT, reduced from £599; one ACE 2 Pro, four-colour base package, estimated shipping 24 hours, free express delivery, 14-day returns and one-year printer warranty. Imported to existing Kobra S1 / ACE 2 Pro 4-Color Combo master `c7b0b645-2cc6-4e22-b782-e4f8010d5088` as UK New GBP £409. Evidence row `b10534b7-fd71-493f-89f5-cbeab5c7927b`. Source https://uk.anycubic3d.com/products/kobra-s1-ace-2-pro-combo.
+
+Existing exact evidence rechecked; no duplicate imports:
+- Queue candidate `198d5c55-cf65-4f93-8d2b-675f66325b97` — Kobra 3 Max V2 Standard Printer: current official page £379 inc VAT, standalone printer without ACE 2 Pro, ships in 24 hours. Existing active LIVE row `f2a40d41-73d3-4c5c-8bd6-e2724c80df39` already captures this exact source/price.
+- Queue candidate `54c85f90-d808-401a-85fe-f6b03b20735f` — Kobra 3 Max V2 Combo 4 colours: current official page £519 inc VAT, separate 8-colour option £705. Existing active LIVE row `0c749755-ad08-4a78-8d79-c19aca8deb21` already captures the exact 4-colour offer.
+- Queue candidate `540226bc-ca36-48dd-9591-e07b07427697` — Kobra S1 ACE 2 Pro Combo: current official page £449 inc VAT for 4 colours; separate 8-colour option £635. Existing active LIVE row `746d8f16-8a0f-48dc-9b07-350d74a787ac` already captures this exact offer.
+- Queue candidate `495eaf7f-b6ba-42e7-84b3-04bbe4ab4a5b` — Kobra 3 Max V2 All-in-One Bundle remains unresolved: £641 offer includes additional camera, printhead assembly, adhesives and 4KG filament, so it is not the standard 4-Color Combo. Do not attach it to that master.
+
+All imported rows were read back from LIVE. Queue records remain `needs_research` until the authenticated owner queue-status workflow is available; no direct queue status mutation or RLS bypass was used. Remaining queue candidates: two PlayStation 5 Digital Edition listings and Bambu Lab A1 (no matching master found), plus the Kobra 3 Max V2 all-in-one bundle package mismatch. Global LIVE shared_market_evidence now 4,808 total, 4,750 active, 58 inactive. TEST, Stripe, schema, master catalogue and valuation logic untouched.

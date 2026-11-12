@@ -356,3 +356,14 @@ Batch 06 now has **12 active records: 8 UK New and 4 UK Used; all 12 are GBP**. 
 Unresolved leads remain RED VERIFY and were not promoted: Angenieux EZ-1 has no current sale price (rental rates excluded); Aputure Grelly £849.41 aggregator could not be opened; Bebob V98 has conflicting ProAV stock/backorder wording and a sold-out Production Gear listing; BetaFPV O4 variants require receiver selection; Bright Tangerine and OpenRig listings are sold out/preorder or have stale stock dates; Brinno price is for BCC5000 bundle, not standalone TLC5000; Casio overseas listings remain non-GBP/foreign-seller; DJI Mini 3 Argos title names DJI RC but the full Fly More Combo Plus contents are not established, while SCAN title/specs conflict (DJI RC vs RC-N1); FIMI generic X6 is not verified as FIMI and X8 Pro has no reliable UK GBP source.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. Only evidence rows/status and observation timestamps were updated.
+
+
+## 13. Further RED VERIFY follow-up — 12 November 2026
+
+One additional exact UK New observation was inserted into LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Bebob V98 V-Mount Battery (SKU V98) | CVP | £312.00 inc VAT (£260.00 ex VAT) | Direct CVP page identifies part number V98, one remaining in stock for immediate delivery, confirms UK battery shipping and two-year standard warranty. [Source](https://cvp.com/product/bebob_v98_battery) |
+
+The existing ProAV V98 row remains active but marked backorder due its contradictory “in stock” and backorder wording. The new CVP observation is exact V98, not V98micro/V98microC, and is the latest active UK New observation for this master product. Batch 06 now has 13 active GBP records: 9 UK New and 4 UK Used. UK Used remains reference-only. No master product, schema, valuation function, TEST or Stripe data was changed.

@@ -88,3 +88,10 @@ Resolved the GoPro HERO ambiguity to exact GoPro HERO (2014) using MPB's current
 Also imported exact GoPro HERO Session Cash Converters Redcar item 053000253199 at £54.99, very minor cosmetic wear, good working condition, 12-month warranty, evidence 490f96fe-0cf6-4290-9a94-7e84afdff731. The separate £49.99 Hanley listing was confirmed sold and not imported. Full URLs and notes in Batch 03 checkpoint.
 
 Batch 03 now 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 rows, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Casio EX-FR200 inactive UK price snapshot
+
+A new Gumtree search found an exact EX-FR200BK in Bournemouth at £116, described as like new/great condition, but the direct page returned HTTP 410. Stored only as inactive UK Used historical reference row 0dbc8a9c-a193-4917-bc46-41dd69de214f against existing EX-FR200 master ab146701-f933-4082-aa7d-794b7da5bda9; do not use for current valuation until a live listing is verified. Source https://www.gumtree.com/p/digital-cameras/exilim-casio-digital-camera/1514940284.
+
+Batch 03 now 13 total, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Batches 01–13: 273 total, 265 active (142 UK New, 123 UK Used), eight inactive. No master/schema/valuation changes; TEST and Stripe untouched.

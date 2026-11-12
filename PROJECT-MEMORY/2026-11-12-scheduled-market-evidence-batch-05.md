@@ -68,3 +68,8 @@ Read this file and CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-05.md 
 Nine further exact source observations were imported into LIVE and read back: RØDE Wireless GO Gen 3 — Disc DJ Store £179, Jessops £179, Wex £159 (blue, limited stock), Westend DJ £179.99; Sony FE 24-70mm F2.8 GM II — LCE £1,699 and CameraWorld £1,813; Sony SRG-300H — eBay current listing £567.55 and ended listing £491.34 including £16.34 Buyer Protection (not a confirmed completed sale); Nikon Nikkor-H Auto 50mm f/2 — eBay £71.05, seller in Basingstoke. Exact links, conditions, seller and availability notes are in the paired checkpoint.
 
 Batch 05 now has 18 active GBP rows (10 UK New, 8 UK Used). Nine follow-up rows were added with idempotent source keys. Used evidence remains reference-only and is not selected by LIVE calculate_buying_item_valuation(uuid,uuid). The PPP Cameras £60 lens price remains RED VERIFY because the product page displays GBP while its terms still state prices are in EUR. The LCE Nikon D5000 £49.99 listing remains RED VERIFY because the reopened page did not expose current price/stock. No master data, schema, valuation logic, TEST or Stripe changes.
+
+
+## 12 November 2026 — latest-source order confirmation
+
+The Sony FE 24-70mm F2.8 GM II sources were rechecked in sequence. CameraWorld £1,813 was opened first; London Camera Exchange £1,699 was opened afterwards. The LCE row's observed_at was refreshed to the later recheck time. LIVE read-back confirms LCE £1,699 is the latest active GBP uk_new observation, with CameraWorld £1,813 and Wex £1,699 retained as separate evidence. The valuation implementation remains unchanged.

@@ -6225,3 +6225,10 @@ Current Batches 04–13 total: 240 observations, 236 active (128 UK New, 108 UK 
 The existing PowerDolphin Wizard £1,449 eBay UK observation was reverified against the exact listing model/MPN PDW10 / EAN 6970820830313 and the Wizard manual package list, then reactivated in place. The new, unopened listing is Buy It Now from a Nottingham UK business seller. The manual confirms the Wizard package includes the PowerSeeker sonar, bait container/link, remote controller, battery, charger, propellers, cables and storage bag. Evidence row 6f11ca53-fcc7-4c39-8f3a-ec2aa2aee09e is active UK New GBP/in_stock; no duplicate was created. Full source links are in the Batch 13 checkpoint.
 
 Current Batches 04–13 total: 240 observations, 237 active (129 UK New, 108 UK Used), three inactive. Batch 13: 47 active (29 new, 18 used). Preserve UK Used as reference-only; TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Sony FE 100-400 first-generation match
+
+When reviewing the catalogue lead named “FE 100-400mm F4.5-5.6 GM OSS II”, the exact first-generation source must not be mapped to that II product. Carmarthen Cameras SKU 4548736058422 / SEL100400GM, £2,149 new and in stock, was matched to the existing first-generation FE 100-400mm F4.5-5.6 GM OSS / Lens Only master instead. Evidence row 78d2841a-c109-4933-a786-d5ebe559aaff was read back from LIVE; full package and source notes are in the Batch 10 checkpoint. Keep SEL100400MCW constant-F4.5 separate as well.
+
+Current Batches 04–13: 241 observations, 238 active (130 UK New, 108 UK Used), three inactive. Batch 10: 29 active (14 new, 15 used). Used records remain reference-only. TEST, Stripe, schema and valuation logic unchanged.

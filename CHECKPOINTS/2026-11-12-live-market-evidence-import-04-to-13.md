@@ -357,3 +357,29 @@ Direct LIVE read-back now confirms **226 total evidence rows across Batches 04�
 The four inactive records are one each in Batch 07 (BuzzFlyer DEVO-10 Notify Me/no stock), Batch 08 (NEEWER KM19 seller away), Batch 12 (Sony UK E 35mm £225 price conflict) and Batch 13 (PowerDolphin Wizard new package unverified). UK Used remains reference-only. LIVE valuation selects latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder UK New rows can still influence automatic valuation; no-stock/seller-away rows remain inactive. No schema or valuation logic changed.
 
 This supersedes the prior 220-row / 216-active cumulative snapshot. TEST and Stripe remain untouched.
+
+
+## Reconciliation extension — Batches 01–13 — 12 November 2026
+
+The earlier 04–13-only checkpoint is now extended to cover all 13 camera evidence batches. Current LIVE read-back by source_record_key:
+
+| Batch | Total | Active | UK New | UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 01 | 5 | 5 | 3 | 2 | 0 |
+| 02 | 2 | 2 | 0 | 2 | 0 |
+| 03 | 5 | 5 | 4 | 1 | 0 |
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 15 | 15 | 11 | 4 | 0 |
+| 07 | 15 | 14 | 10 | 4 | 1 |
+| 08 | 17 | 16 | 13 | 3 | 1 |
+| 09 | 23 | 23 | 10 | 13 | 0 |
+| 10 | 29 | 29 | 14 | 15 | 0 |
+| 11 | 32 | 32 | 8 | 24 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 49 | 49 | 29 | 20 | 0 |
+| **Total** | **255** | **252** | **137** | **115** | **3** |
+
+The Batch 01/02 imports and the additional Batch 03 V50 X With SD record are recorded in their individual checkpoints. Batch 03 is 5 active (4 new, 1 used); Batch 01 is 5 active (3 new, 2 used); Batch 02 is 2 active (0 new, 2 used). This supersedes all earlier cumulative counts in this file. These are batch-key-scoped evidence rows, not the full shared_market_evidence table count. Current global LIVE table count at reconciliation: 4,797 total, 4,742 active, 55 inactive.
+
+All 255 batch-keyed rows are GBP; 252 active. UK Used remains reference-only. Three inactive rows remain retained for audit. No TEST, Stripe, schema, master catalogue or valuation changes were made during this extension.

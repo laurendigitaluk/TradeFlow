@@ -219,7 +219,7 @@ Price handling:
 - Observed price: Bristol Cameras £24 used body-only; eBay £28.60; Vinted £49 (or £52.15 incl. buyer fee) with 28–80mm lens and case; Ffordes £59/£69.50 discrepancy; sold-out body-only leads £20–£65.
 - Condition: Used body-only and used kit offers.
 - Availability: Bristol search result says in stock; Vinted active; Ffordes price/stock needs recheck; Vintage Camera Hut and Colins listings sold out.
-- Visible note: RED VERIFY — distinguish body-only from 28–80mm lens kits. Bristol page returned HTTP 520 when opened, but indexed result showed £24 and 3-month guarantee. Ffordes direct page opened but did not expose a current price; search snippets/Shopping cards differed (£59 vs £69.50), so verify checkout. Film Camera Store page opens and title says F55 with 28–80mm lens but URL slug says F50; £165 and backorder are search-result leads, not verified on the opened page. Vinted listing includes lens and case, not body-only.
+- Visible note: RED VERIFY — distinguish body-only from 28–80mm lens kits. Bristol page returned HTTP 520 when opened, but indexed result showed £24 and 3-month guarantee. eBay listing £28.60 is from a UK business seller but displays £35 international postage/import-fee wording; verify shipping to a UK address. Ffordes direct page opened but did not expose a current price; search snippets/Shopping cards differed (£59 vs £69.50), so verify checkout. Film Camera Store page opens and title says F55 with 28–80mm lens but URL slug says F50; £165 and backorder are search-result leads, not verified on the opened page. Vinted listing includes lens and case, not body-only.
 - Source pages:
   - [Bristol Cameras — Nikon F55 body only, £24 used search listing; page failed to open](https://www.bristolcameras.co.uk/product/nikon-f55-body-only-35mm-film-camera-used/)
   - [eBay UK — body only, £28.60, used Very Good](https://www.ebay.co.uk/itm/326836970654)
@@ -288,8 +288,7 @@ Price handling:
 - Source pages:
   - [Google Shopping search for exact Sony HDC-3000](https://www.google.com/search?tbm=shop&q=Sony+HDC-3000+studio+broadcast+camera)
   - [Sony UK HDC-P50A article mentioning HDC-3000 series compatibility; not an HDC-3000 listing](https://www.sony.co.uk/presscentre/sony-introduces-the-hdc-p50a-a-multi-purpose-camera-supporting-smpte-st-2110-ip-transmission-and-camera-control-unit-connection-for-a-simple-and-versatile-system-integration)
-  - [Sony HDCU-3500 CCU page; related system, not the HDC-3000 camera](https://pro.sony/fr_LU/products/camera-control-unit/hdcu-3500)
-- Google Shopping: https://www.google.com/search?tbm=shop&q=Sony%20HDC-3000%20Standard%20UK%20price
+  - Google Shopping: https://www.google.com/search?tbm=shop&q=Sony%20HDC-3000%20Standard%20UK%20price
 
 ### 18. Pentax HD PENTAX-FA 31mm F1.8 Limited
 - Product ID: 72838f15-dd07-43f3-8bae-f7130e83fdce

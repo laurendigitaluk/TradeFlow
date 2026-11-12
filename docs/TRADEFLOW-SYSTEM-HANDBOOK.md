@@ -5676,3 +5676,10 @@ The official AKASO variant selector defines the Diving Bundle as camera + 64GB S
 The two older Blackmagic batches now include four verified UK Used rows in Batch 02: CVP Studio Camera 6K Pro £1,580.40 ex VAT; MPB URSA Cine 12K LF PL Fit £5,509; CVP URSA Cine 12K LF Body £5,987.28 inc VAT, Like New; CVP URSA Cine 17K 65 and EVF £16,199.10 ex VAT, Excellent. The body and EVF bundle are matched to their exact existing masters, not the generic 12K LF or body-only product. Full row IDs and package details are in the Batch 02 checkpoint.
 
 Current Batches 01–13 read-back: 260 batch-keyed rows, 257 active (140 UK New, 117 UK Used), three inactive. Global LIVE shared_market_evidence: 4,802 total, 4,747 active, 55 inactive. Batch 03 has three active UK New Caddx out-of-stock/backorder price references; availability is recorded, but the current valuation path does not filter active UK New by availability. This existing behaviour was not changed. UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Shure GBP evidence correction and current totals
+
+The DigiBroadcast Shure MoveMic Two Receiver Kit £496.80 row was deactivated after direct-page recheck showed the source defaults to EUR (€593.29 / €494.41; RRP €617.65 / €514.71). The prior GBP amount is unsupported. Row dee5cf7a-27cb-4097-84a1-a918764c0cf2 is retained inactive with currency_unverified; use verified Canford GBP evidence instead.
+
+Latest Batches 01–13 read-back: 261 batch-keyed rows, 257 active (140 UK New, 117 UK Used), four inactive. Global LIVE shared_market_evidence: 4,803 total, 4,747 active, 56 inactive. Batch 10: 30 total, 29 active (14 new, 15 used), one inactive. No TEST, Stripe, schema or valuation logic changes.

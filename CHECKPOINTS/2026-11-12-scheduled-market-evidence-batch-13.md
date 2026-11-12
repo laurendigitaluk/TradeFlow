@@ -368,3 +368,11 @@ One additional RED VERIFY lead was resolved and imported:
 - Exact Hubsan Zino Mini Pro Refined three-battery package, H817DR / EAN 6922572413412, Align-Trex UK £485.99 (RRP £539.99), explicitly Out of Stock / Notify Me. The direct page confirms three batteries and 64GB onboard memory. [Source](https://www.align-trex.co.uk/hubsan-zino-mini-pro-refined-h817dr.html). The row was read back successfully and matched to the ZINO MINI PRO REFINED master, not the one-battery standard package. It remains active historical UK New evidence with explicit out_of_stock status.
 
 Cumulative Batches 04–13 now contain **233 GBP observations: 229 active (126 UK New, 103 UK Used) and four inactive retained for audit**. Batch 08 now contains 17 rows: 16 active (13 UK New, 3 UK Used) and one inactive UK New seller-away row. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.
+
+
+## Cumulative LIVE evidence update — 12 November 2026 (Batch 09 continuation)
+
+One additional RED VERIFY lead was resolved and imported:
+- Sony HDC-1500 Standard Package, N.I. Broadcast Ltd (eBay UK), £8,010 or Best Offer, used, 10 available. Each channel includes one HDC-1500 fibre camera head, one HDCU-1500 half-rack CCU with extra HDSDI output board, one tripod plate and one RCP-920 with Ethernet option. Lenses/viewfinders are extra-cost; UK domestic shipping quote remains unconfirmed. [Listing](https://www.ebay.co.uk/itm/198054902757) · [Full seller description](https://itm.ebaydesc.com/itmdesc/198054902757?category=3319&cspheader=1&descgauge=1&domain=ebay.com&excSoj=1&excTrk=1&ittenable=false&lang=en&lsite=3&oneClk=2&secureDesc=1&seller=n.i_broadcast&t=1710364074000&ver=1). The row was read back successfully and is reference-only UK Used evidence.
+
+Cumulative Batches 04–13 now contain **234 GBP observations: 230 active (126 UK New, 104 UK Used) and four inactive retained for audit**. Batch 09 now contains 21 active rows (9 UK New, 12 UK Used). UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.

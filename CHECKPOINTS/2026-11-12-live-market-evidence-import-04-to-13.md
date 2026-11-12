@@ -125,3 +125,25 @@ Batches 09–13 have not yet received the RED VERIFY follow-up pass in this cont
 LIVE calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new observation by observed_at then created_at; it does not filter availability. UK Used is not selected. Active sold-out/backorder UK New observations retain their explicit status and can still affect automatic valuation under the existing function. No-stock Notify Me and seller-away records are retained but inactive until availability returns. No valuation code or schema change was made.
 
 The actual manuals remain docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md, both updated. Dashboard progress is posted to platform_ai_agent_messages on thread tradeflow-research. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — cumulative LIVE reconciliation after Batches 08–09 follow-ups
+
+Current direct LIVE read-back confirms Batches 04–13 contain **138 total GBP evidence rows; 136 active and 2 inactive**. Active evidence is 76 UK New and 60 UK Used. The two inactive rows are BuzzFlyer DEVO-10 (Notify Me/no stock) in Batch 07 and NEEWER KM19 eBay (seller away until 19 November) in Batch 08.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+All rows are GBP. Follow-up additions since the prior 127-row reconciliation: Batch 08 +6 rows (5 active, 1 inactive); Batch 09 +5 active rows. Existing source observations in Batch 09 were also refreshed after direct rechecks. Used rows remain comparison-only; latest active GBP UK New observation remains the automatic shared-market reference under current valuation behaviour. No schema or valuation code was changed.
+
+The two actual manuals are docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md. Both are updated with this continuation. TEST and Stripe remain untouched.

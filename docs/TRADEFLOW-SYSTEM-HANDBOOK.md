@@ -5725,3 +5725,10 @@ Current Batches 01–13: 263 rows, 259 active (141 UK New, 118 UK Used), four in
 ## 12 November 2026 — Batch 13 duplicate evidence cleanup and cumulative count correction
 
 Two exact duplicate source captures were found in Batch 13 and deactivated while preserving the later follow-up records: Wex ECM-B10 duplicate 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (keep f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba); Sony UK FE 12-24mm F2.8 GM duplicate 0c023277-93cd-47bb-8677-4f005693e738 (keep fa2cbd78-e707-481c-be3f-e46aa3cf18d5). Earlier rows remain inactive for audit; active aggregation must not count them. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive. Current Batches 01–13: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Batch 10 HDC-3100 remains active camera-head-only evidence; it excludes CCU, lens and viewfinder. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Batch 13 duplicate deactivation and latest totals
+
+Two duplicate captures were deactivated in Batch 13 and retained for audit: earlier Sony FE 12-24mm F2.8 GM Sony UK row 0c023277-93cd-47bb-8677-4f005693e738, with later same-source row fa2cbd78-e707-481c-be3f-e46aa3cf18d5 retained; earlier Sony ECM-B10 Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564, with later same-source row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba retained. Independent retailer offers remain active. Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive duplicates.
+
+Latest Batches 01–13: 263 rows, 257 active (139 UK New, 118 UK Used), six inactive. Global LIVE shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. No TEST, Stripe, schema or valuation changes.

@@ -76,9 +76,10 @@ Prompt source:
 ## Security and data access
 
 - platform_manual_ai_research_batches and platform_manual_ai_research_prompts are accessed through owner RPCs, not direct browser table access.
-- shared_market_evidence has an authenticated SELECT policy limited to is_active rows. No authenticated INSERT policy was found. service_role has table privileges, but this is not permission to write from the browser or bypass the intended import boundary.
+- shared_market_evidence has an authenticated SELECT policy limited to is_active rows. No authenticated INSERT policy was found. service_role/postgres have table privileges; never expose service-role credentials or write from the browser/client.
 - Candidate review RPC requires an active platform_memberships row and only updates platform_catalogue_research_queue status.
-- Do not write directly to shared_market_evidence or treat queue approval as evidence import.
+- Distinguish two paths: (a) the manual AI queue's owner review/verify RPCs do not import evidence; the dedicated owner-authorised queue importer remains missing; (b) supervised ChatGPT evidence research has an established, user-authorised privileged server-side SQL migration route, recovered from the historical 23 October ingestion checkpoints and reused in LIVE. This is an administrative server-side integration, not a browser/client RLS bypass.
+- The privileged migration route requires exact existing LIVE master/package mapping, opened direct UK source, GBP price, condition, availability and provenance notes; uses a unique source_record_key with ON CONFLICT DO NOTHING; then performs a direct LIVE read-back. Never change queue status with raw SQL or claim a queue candidate is imported merely because a separate evidence row exists.
 - Keep source URL, source name, price, currency, evidence type, condition, availability, observed date, excerpt and original report provenance intact.
 
 ## Quality V2 prompt rules — LIVE migration 20261111135455
@@ -215,3 +216,12 @@ The existing AI Research Centre now includes a **ChatGPT research updates** pane
 ChatGPT can post a progress or completion notice to that existing thread through the connected LIVE Supabase database connection, using `sender_kind='chatgpt_supervisor'`, `sender_key='chatgpt'`, `sender_name='ChatGPT'`, `thread_key='tradeflow-research'`, `recipient_key='platform_owner'`, and `message_type='status_update'`. Each notice should identify its batch scope, verified LIVE evidence imports, comparison-only/unverified references retained, and unresolved items. **Never state a batch is complete or imported until LIVE database read-back confirms the result.** This dashboard message is a status/communication channel; it does not itself import catalogue evidence. The existing evidence verification and authorised import path remains mandatory.
 
 Initial LIVE notice inserted and read back successfully: `f273893d-a387-443f-8a95-1a93e90caca0` (12 November 2026). Front-end files: `platform-owner-dashboard.html` and `platform-owner-dashboard.js` (script cache version 59). TEST was not modified.
+
+
+## Historical ChatGPT evidence import route clarification — 12 November 2026
+
+The established LIVE ChatGPT evidence-import mechanism is a privileged server-side Supabase SQL migration, not a manual queue RPC. Historical checkpoint `CHECKPOINTS/2026-11-12-live-market-evidence-import-04-to-13.md` records the previously proven privileged migration route and its use since the 23 October ingestion work. It is user-directed and executed through the trusted server-side Supabase integration; it does not expose service-role credentials to the browser and is not a client-side RLS bypass. Use idempotent source keys, `ON CONFLICT (source_name, source_record_key) DO NOTHING`, exact existing LIVE master/package mapping, GBP-only amounts, direct opened source URLs, condition/availability/package notes, and immediate LIVE read-back. The unique source-key constraint prevents repeat inserts.
+
+This route is separate from the Manual AI owner queue. `platform_owner_submit_manual_ai_research_response` stages pending_review candidates; `platform_owner_review_catalogue_research_item` updates status; `platform_owner_verify_manual_ai_comparison` records source verification. None of those functions imports to `shared_market_evidence`. Queue rows must remain in their current status until the authenticated owner workflow updates them; do not set `imported` or `live_evidence_id` by raw SQL. The dedicated app-level owner-authorised queue importer remains a separate future requirement.
+
+Latest LIVE evidence snapshot at this checkpoint: 4,808 total, 4,750 active, 58 inactive (one non-GBP/null record); Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Three additional Anycubic queue-linked evidence rows are outside the numbered batch prefixes; the Bambu A1 source was refreshed in place. Queue counts remain 81 total, 28 imported, 43 rejected and 10 needs_research. TEST and Stripe untouched.

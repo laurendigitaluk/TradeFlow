@@ -59,3 +59,8 @@ Only platform-owner RPCs found for this queue were list, review and delete; no a
 Batch 13 must read Batch 02 continuity files and all scheduled checkpoint/project-memory files through Batch 12, exclude every product ID and product identity in all prior batches (including cross-UUID duplicates), outstanding LIVE queue candidates and outstanding manual AI prompts, then dynamically select the next 20 active LIVE master products with no active shared evidence. Do not use SQL OFFSET. Recheck evidence/queue immediately before research. If auth.uid is null or owner check fails, create the next detailed checkpoint and project-memory files instead of writing to the queue.
 
 No master products, evidence, valuation logic, schema, TEST or Stripe data were changed.
+
+
+## 12 November 2026 — Batch 12 RED VERIFY follow-up
+
+Thirteen new GBP observations imported/read back: HVR-HD1000E eBay £312.70 (4 used batteries + shoulder bag); Sony E 35mm F1.8 OSS Cotswold £269 and CameraWorld £319; Sony PXW-FS5 Wex £493 Good/clean sensor and £425 Well Used/sensor dust; Sony FE 100mm F2.8 Macro GM OSS Camix £1,208, LCE £1,399, Campkins £1,399, Wilkinson £1,399; Sony FE 50mm F1.4 GM Sony UK £1,499, LCE £1,499, CameraWorld £1,499 new and £1,425 open-box. Existing Sony UK E35 £225 was deactivated as price_conflict after same page exposed £225 sale context and £325 original/product-page price with no clear checkout selection. HXR-MC2500E eBay £789.99 refreshed with current free-delivery/seller detail. Batch 12 now 25 total GBP rows, 24 active (16 UK New, 8 UK Used), one inactive.

@@ -42,3 +42,9 @@ Therefore the AKASO prompt remains `ready`; the ten queue records remain `needs_
 ## Safeguards and counts
 
 No TEST, Stripe, schema, master-product, tenant/customer or valuation data was changed. Last confirmed cumulative evidence remains **236 GBP observations: 232 active (127 UK New, 105 UK Used), four inactive**. UK Used remains reference-only.
+
+## Validator preflight correction — 12 November 2026
+
+The companion JSON was checked against the current LIVE `platform_owner_submit_manual_ai_research_response` validator and corrected before any submission. The original file lacked `catalogue_package_name`, `source_kind` and `page_access`, and several `package_match` values did not agree with the exact LIVE product snapshot. The corrected file now carries the exact catalogue package for every finding, source-kind/page-access metadata, and conservative source-package names/matches. The EK7000 listing is explicitly recorded as the 60-in-1 accessory-kit package; the Brave 8 Lite sold listing remains package-not-stated. All ten findings remain `comparison_only`; none is promoted to catalogue evidence. All 20 selected products are covered by ten findings and ten not-found entries.
+
+This is a production-branch checkpoint correction only. No Supabase write was made: the prompt remains `ready` because the available SQL session has no authenticated owner JWT. If submitted through the owner-authenticated dashboard, this report will stage comparison references for review; it will **not** import records into `shared_market_evidence`. The ten separate queue records and the Kobra 4 / Hubsan import candidates remain unchanged.

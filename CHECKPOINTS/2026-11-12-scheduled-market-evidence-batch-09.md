@@ -424,3 +424,20 @@ One additional exact UK New source was imported into LIVE and read back:
 - LC means supplied without an XLR cable. The retailer package is the SM81 microphone with supplied accessories, not a cable-included bundle.
 
 The observation is matched to the existing SM81 master and remains active UK New GBP evidence. Batch 09 now has 22 rows, all active: 10 UK New and 12 UK Used. Cumulative Batches 04–13 now contain 235 GBP observations: 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains excluded from automatic valuation. No schema, valuation function, TEST or Stripe changes.
+
+
+## 11. Sony HXC-D70 Standard — exact used channel offer — 12 November 2026
+
+One additional UK Used observation was imported and read back:
+- N.I. Broadcast Ltd product code 9509, £4,000, stock level 3, Add to Basket, fully working and used in one studio from new.
+- One channel includes HXC-D70 camera head, HXCU-D70 CCU (HDMI, 4x HD-SDI/SDI plus composite/component), approx. 25m multicore camera-to-CCU cable, modified Sony DVF-L700 7-inch Full HD monitor/viewfinder and Sony RM-B150 remote RCP.
+- RCP cable, VCT14 tripod plate and lenses are extra-cost items; do not imply they are included.
+- [Direct UK retailer listing](https://www.nibroadcast.com/1x-sony-hxc-d70-hdsdi-high-definition-multicore-camera-channel-with-cable-rcp-ccu-etc..html).
+
+Matched to the existing HXC-D70 Standard master. This is used reference evidence only and does not affect automatic valuation.
+
+## 12. Sony HDC-3000 — remain RED VERIFY
+
+Sony UK support's model list does not identify an exact HDC-3000 camera model. Sony press material uses “HDC-3000 series” wording but enumerates HDC-P50, HDC-3500, HDC-3100 and HDC-3170 as actual models. HDC-3500, HDC-3200, HSC-300 and HDCU-3500 are not interchangeable with an exact HDC-3000 camera listing. No price was imported; exact catalogue identity remains unresolved. [Sony UK model support](https://www.sony.co.uk/electronics/support/professional-cameras-studio-and-broadcast-cameras) · [Sony HDC family announcement](https://www.sony.co.uk/presscentre/unveils-new-generation-live-production-system-cameras).
+
+Batch 09 now has 23 active GBP rows: 10 UK New and 13 UK Used. Cumulative Batches 04–13 now contain 236 GBP observations: 232 active (127 UK New, 105 UK Used), four inactive.

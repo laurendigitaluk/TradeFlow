@@ -54,3 +54,25 @@ The SQL connector session has no authenticated user context (`auth.uid() = NULL`
 
 ## Project memory
 Batch 03 project memory was missing and has now been restored at `PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-03.md`. Batch 04–13 project-memory files already exist.
+
+
+## 12 November 2026 — database import reconciliation
+
+The initial verified import pass for batches 04–13 was 107 GBP evidence rows. Follow-up RED VERIFY reviews in batches 04–07 added 20 more rows. LIVE now contains 127 total rows from these batches: 126 active and one inactive; all 127 use GBP. Active rows comprise 72 UK New and 54 UK Used. The inactive row is the BuzzFlyer DEVO-10 + RX1002 £149.95 listing: current page shows Notify Me/no stock, so it remains stored for audit but is excluded from active evidence.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 8 | 8 | 7 | 1 | 0 |
+| 09 | 11 | 11 | 5 | 6 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+The initial 107 total was correct, but the per-batch breakdown in the earlier status summary misallocated Batches 10–12. Current LIVE counts are Batch 10=12, Batch 11=10, Batch 12=12. Follow-up additions were Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4. Batches 08–13 still have outstanding RED VERIFY leads; the presence of imported rows does not mean all 220 product research records or all source URLs have been resolved.
+
+The working import route is the established idempotent privileged migration path into public.shared_market_evidence, with direct read-back verification. This supersedes the earlier note that database import was outstanding. No manual research queue staging, owner impersonation, auth-context bypass, TEST or Stripe changes. The actual manuals have been located and updated at docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md.

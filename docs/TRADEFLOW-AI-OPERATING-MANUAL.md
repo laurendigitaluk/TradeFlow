@@ -1,3 +1,8 @@
+## 12 November 2026 — Batch 09 follow-up and current LIVE evidence totals
+
+Batch 09 follow-up added Currys PENTAX WG-90 £299 new; eBay Sony FE 28-60mm £141.12 used; MPB Sony FE 35mm GM from £819 used; Park Cameras Sony FE 35mm GM £839 Good and £939 Excellent. Existing Argos WG-90, Peter Rogers Pentax DA*55, Wex Sony FE35, LCE Sony FE28-60, Harrison Nikon MB-N12, Andertons Shure SM81 and DigiBroadcast RED Gemini records were rechecked/refreshed. Batch 09 has 16 active GBP rows: 6 new, 10 used. Check the checkpoint for package/availability caveats; Shure cable variant and RED accessory bundle are not bare standard-package comparables.
+
+Cumulative Batches 04–13: 138 GBP rows, 136 active (76 UK New, 60 UK Used), 2 inactive. Batch totals/active: 04 18/18; 05 18/18; 06 12/12; 07 14/13; 08 14/13; 09 16/16; 10 12/12; 11 10/10; 12 12/12; 13 12/12. Inactive: BuzzFlyer DEVO-10 Notify Me/no stock; NEEWER KM19 eBay seller away. Valuation selects latest active GBP UK New by observed_at/created_at and does not filter availability; UK Used is not selected. No valuation code/schema changes. TEST and Stripe untouched.
 ## 12 November 2026 — Batch 08 evidence follow-up controls
 
 Batch 08 follow-up added six GBP observations: Hubsan H501A £209.99 new/out of stock; H501M £139.99 new/out of stock; Zino Pro £389.99 new/supplier stock; NEEWER NL660 two-pack £75 used; GoPro HERO6 Black £119 used Excellent; NEEWER KM19 £47.94 new but seller-away and inactive. Corrected Nikon COOLPIX P7700 MPB to £229 and HOVERAir X1 PROMAX Very to £609 sale/in stock. Batch 08 now has 14 rows, 13 active (10 new, 3 used), one inactive.

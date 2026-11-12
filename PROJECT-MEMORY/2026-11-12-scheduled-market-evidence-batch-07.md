@@ -99,3 +99,12 @@ Read Batch 07 checkpoint and this project-memory file first. Exclude all 20 Batc
 Continue opening actual manufacturer, retailer and marketplace pages; retain every useful URL even when sold out, seller unverified, price missing or model/package uncertain. Do not invent or convert prices. Prefix uncertainty with RED VERIFY. Stage candidates only through the supported authenticated platform-owner RPC if a real owner-auth context is present. If auth.uid is null or owner check fails, do not write directly; create the next detailed checkpoint and project-memory files instead.
 
 Do not modify master products, schema, valuation logic, TEST or Stripe.
+
+
+## 12 November 2026 — Batch 07 RED VERIFY follow-up
+
+Four additional observations were imported and read back: Hubsan H501S X4 Air / eBay UK sold £67.65 item price (buyer total £70.63 incl £2.98 fee); Sony PMW-F55 / eBay UK £1,099 used body-only; Manfrotto MVK500XAM / Wex £419 new limited stock; Leica M11 Monochrom / Park Cameras £8,500 new in stock. Exact source links and package caveats are in the checkpoint.
+
+Corrected/refreshed existing LIVE evidence: Camera Centre Leica M11 price updated £8,300 → £8,450 and observed_at refreshed after Park, so Camera Centre £8,450 is the latest verified active UK New source; CVP Manfrotto £369 inc VAT rechecked after Wex £419 and remains the latest source for that kit; MPB Nikon 18-55mm used minimum updated £35 → £37 (16 available from £37–£72, grade of lowest unit unspecified). BuzzFlyer DEVO-10 + RX1002 shows Notify Me and no stock; its £149.95 row is retained but inactive.
+
+Batch 07 now has 14 total GBP rows, 13 active (9 UK New, 4 UK Used), and one inactive UK New Notify Me row. Used observations are reference-only. LIVE valuation uses latest active GBP uk_new by observed_at/created_at and does not filter availability; do not leave a no-stock Notify Me price active. No master product, schema, valuation code, TEST or Stripe changes.

@@ -314,3 +314,24 @@ Cumulative Batches 04–13: 220 total GBP rows, 216 active (112 UK New, 104 UK U
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 This supersedes the previous 218 total/214 active snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19, Sony UK E35 £225 price conflict, and one Batch 13 row. Continue RED VERIFY work; remaining model, package and foreign-currency leads are not considered complete. Used evidence remains excluded from automatic valuation. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 13 additional sources and current totals
+
+Batch 13 gained six UK New records: Wex ECM-B10 £175; Sony Centre Direct FE85 GM II £1,799; Sony UK and Sony Centre Direct FE12-24 GM £2,645 each; HOVERAir UK official AQUA Standard £1,129; Park Cameras AQUA Standard £1,129. Corrected Walkera Furious F320 £369 sold-out new retail row from uk_used to uk_new. Batch 13 now 47 total rows, 46 active (28 UK New, 18 UK Used), one inactive package-unverified PowerDolphin Wizard row.
+
+Cumulative Batches 04–13: 226 total GBP rows, 222 active (119 UK New, 103 UK Used), four inactive. Actual per-batch totals:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 47 | 46 | 28 | 18 | 1 |
+
+This supersedes the previous 220 total/216 active snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19, Sony UK E35 £225 price conflict, and PowerDolphin Wizard package unverified. Continue only with unresolved leads where exact UK GBP source/package can be verified; retain all other leads as RED VERIFY. Used evidence remains excluded from automatic valuation. TEST and Stripe untouched.

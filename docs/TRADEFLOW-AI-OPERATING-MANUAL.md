@@ -1,3 +1,8 @@
+## 12 November 2026 — Batch 12 follow-up and cumulative LIVE state
+
+Batch 12 follow-up added 13 GBP observations: HVR-HD1000E £312.70 used bundle; Sony E35 F1.8 £269 Cotswold and £319 CameraWorld new; Sony PXW-FS5 £493 Good/clean sensor and £425 Well Used/sensor dust; Sony FE100 Macro GM £1,208 Camix and £1,399 LCE/Campkins/Wilkinson new; Sony FE50 F1.4 GM £1,499 Sony UK/LCE/CameraWorld new and £1,425 CameraWorld open-box. Deactivated Sony UK E35 £225 as price_conflict because page had ambiguous sale/original price contexts. Batch 12 now 25 total rows, 24 active (16 new, 8 used), one inactive.
+
+Cumulative Batches 04–13: 175 GBP rows, 172 active (94 UK New, 78 UK Used), 3 inactive: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away; Sony E35 price conflict. Per-batch total/active: 04 18/18, 05 18/18, 06 12/12, 07 14/13, 08 14/13, 09 16/16, 10 24/24, 11 22/22, 12 25/24, 13 12/12. Used remains reference-only. No schema/valuation changes; TEST and Stripe untouched.
 ## 12 November 2026 — Batch 11 follow-up and cumulative LIVE evidence
 
 Batch 11 follow-up added 12 GBP records: Nikon P900 MPB £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105 MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 awaiting stock; Panasonic FZ1000 II Kamerastore £709 used with zoom lever fault; Panasonic GM5 Wex £929 used body-only. Batch 11 now 22 active GBP rows (8 new, 14 used). Used is reference-only; faults/condition remain in notes.

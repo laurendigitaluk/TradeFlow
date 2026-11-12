@@ -5720,3 +5720,8 @@ Batches 01–13 now 263 observations, 259 active (141 UK New, 118 UK Used), four
 An exact Sony HDC-3100 Visual Impact source was added to the existing HDC-3100 / Standard master: £25,066.80 inc VAT (£20,889 ex VAT), Available to Order, not held in stock. SKU HDC-3100. In The Box contains instructions/CD-ROM, cable clamp belt, screws and labels only; this is a camera head, not a complete channel (no CCU, lens or viewfinder). Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; source https://www.visuals.co.uk/hdc-3100-camera.html.
 
 Current Batches 01–13: 263 rows, 259 active (141 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,805 total, 4,749 active, 56 inactive. Batch 10: 31 total, 30 active (15 new, 15 used), one inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Batch 13 duplicate evidence cleanup and cumulative count correction
+
+Two exact duplicate source captures were found in Batch 13 and deactivated while preserving the later follow-up records: Wex ECM-B10 duplicate 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (keep f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba); Sony UK FE 12-24mm F2.8 GM duplicate 0c023277-93cd-47bb-8677-4f005693e738 (keep fa2cbd78-e707-481c-be3f-e46aa3cf18d5). Earlier rows remain inactive for audit; active aggregation must not count them. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive. Current Batches 01–13: 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Batch 10 HDC-3100 remains active camera-head-only evidence; it excludes CCU, lens and viewfinder. TEST, Stripe, schema, master data and valuation logic untouched.

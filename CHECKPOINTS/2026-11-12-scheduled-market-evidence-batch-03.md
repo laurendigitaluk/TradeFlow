@@ -323,3 +323,10 @@ The GoPro HERO RED VERIFY item was resolved to the exact original **GoPro HERO (
 The separate GoPro HERO Session master f474b652-b819-4679-9cea-ca16f26b6978 now has one current UK used observation: Cash Converters item 053000253199, £54.99, very minor cosmetic wear, good working condition, Add to Cart and store pickup available at Redcar, 12-month warranty and 14-day online return policy. Evidence row 490f96fe-0cf6-4290-9a94-7e84afdff731. https://www.cashconverters.co.uk/shop/phones-cameras--computers/cameras/waterproof--action-cameras/action-camera/053000253199. The separate £49.99 Hanley listing was checked and is explicitly sold; it was not imported.
 
 All four evidence rows were read back from LIVE and verified against exact master/model. Batch 03 now has 12 active GBP observations (7 UK New, 5 UK Used), zero inactive. Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only and does not affect automatic buying valuation. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Casio EX-FR200 UK price lead retained as inactive historical evidence — 12 November 2026
+
+A fresh UK Gumtree search found an exact Casio Exilim EX-FR200BK listing in Bournemouth, Dorset, asking £116 and described as like new/great condition, water resistant, fisheye 185. The direct listing URL returned HTTP 410 when opened, so current availability and full condition/accessories could not be verified. It was retained as an **inactive UK Used historical price reference only**, not active market evidence and not eligible for valuation. Existing EX-FR200 master: ab146701-f933-4082-aa7d-794b7da5bda9. Evidence row 0dbc8a9c-a193-4917-bc46-41dd69de214f. Source: https://www.gumtree.com/p/digital-cameras/exilim-casio-digital-camera/1514940284.
+
+Batch 03 now has 13 total observations, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Batches 01–13: 273 total, 265 active (142 UK New, 123 UK Used), eight inactive. No master/schema/valuation changes; TEST and Stripe untouched.

@@ -6269,3 +6269,10 @@ Current LIVE batch-keyed reconciliation across Batches 01–13: 255 observations
 Two exact UK Caddx Walnut specialist-retailer pages were imported as UK New price references: FlyingTech £117.90 inc VAT, sold out; Unmanned Tech £129 incl. taxes, sold out/backorder. Keep availability explicitly out_of_stock/backorder; an active evidence row is not a claim that stock is available. Package and direct source details are in the Batch 03 checkpoint. Evidence IDs 3b791f3e-c1ab-455d-946e-add1a4b9e7b8 and 7d57b245-5b93-4c0c-a570-c31639e50c7b.
 
 Current Batches 01–13: 257 observations, 254 active (139 UK New, 115 UK Used), three inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Caddx Peanut source-status handling
+
+An exact UK GBP source for Caddx Peanut / Insta360 Go 2, YourFPV SKU YFPV - CaddX - PNT, £218.99 was imported as a price reference. The direct page explicitly states Out of stock / Join Waitlist. Preserve availability out_of_stock and do not present this as a currently available offer. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577 is matched to the existing master; package and source notes are in the Batch 03 checkpoint.
+
+Current Batches 01–13: 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. TEST, Stripe, schema and valuation logic unchanged.

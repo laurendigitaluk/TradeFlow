@@ -93,3 +93,10 @@ Corrected BuzzFlyer Walkera Furious F320 £369 row from uk_used to uk_new becaus
 Reverified the existing eBay UK £1,449 new offer: exact PowerDolphin Wizard, MPN PDW10 / EAN 6970820830313, unopened original retail packaging, Buy It Now, Nottingham UK business seller. The seller description identifies the Wizard PowerSeeker sonar; the Wizard manual's item list confirms remote controller, PowerSeeker, bait container/link, battery, charger, propellers, cables and storage bag. Sources and full notes are in CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-13.md. Reactivated existing row 6f11ca53-fcc7-4c39-8f3a-ec2aa2aee09e in place (source_record_key batch13-powervision-powerdolphin-wizard-ebay-1449); no duplicate inserted. LIVE read-back confirms active UK New GBP £1,449 and in_stock.
 
 Batch 13 now 47 active (29 UK New, 18 UK Used), zero inactive. Cumulative Batches 04–13: 240 total, 237 active (129 UK New, 108 UK Used), three inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — HVR-Z1E source redirected to correct existing master
+
+A prior HXR-V1E Shopping lead had item specifics identifying HVR-Z1E. Current N.I. Broadcast direct sources were found and matched to existing LIVE HVR-Z1E / Standard Package master ef1447f4-5967-44f8-abc0-282f2ecb40d3. Imported two active UK Used GBP offers: product code 6946 £250, tested but no battery/charger (battery/charger separately £30); product code 6944 £250, tested and includes battery/charger. Both have stock 1. Full URLs, condition and notes in the Batch 13 checkpoint. LIVE evidence IDs 6c7ed3f9-4679-4e3b-98f4-5dcc0f1f7688 and 340ca15f-8d26-4c17-8fb2-46aaecb72b6d; read-back verified. UK Used remains reference-only.
+
+Batch 13 now 49 active (29 UK New, 20 UK Used), zero inactive. Cumulative Batches 04–13: 243 rows, 240 active (130 UK New, 110 UK Used), three inactive. No master/schema/valuation changes; TEST and Stripe untouched.

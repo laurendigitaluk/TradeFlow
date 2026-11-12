@@ -267,3 +267,21 @@ Shopping results for Autel EVO Lite 6K Enterprise, Sony DSR-PD175P, Olympus VF-4
 4. Do not use a fixed OFFSET.
 5. Recheck authenticated owner context. If `auth.uid()` is null or the owner check fails, do not write to the queue; create the next checkpoint and project-memory files instead.
 6. Do not create/alter master products, valuation logic or schema. Do not touch TEST or Stripe.
+
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+The follow-up rechecked the original RED VERIFY leads against direct source pages and current LIVE product/evidence state. Four further exact UK GBP used-market observations were imported into LIVE using the established idempotent migration route and read back successfully:
+
+| Master product | Source | Price | Status / notes |
+|---|---|---:|---|
+| Olympus VF-4 Electronic Viewfinder | MPB UK | £146.00 | Used, Good; five units shown between £146 and £164; 12-month warranty. [Source](https://www.mpb.com/en-uk/product/olympus-vf-4-electronic-viewfinder) |
+| Nikon AF-S DX Nikkor 18-200mm f/3.5-5.6G ED VR II | eBay UK — Fivercam | £170.10 | Used; UK business seller, last item, three sold, free tracked delivery. [Source](https://www.ebay.co.uk/itm/254901977062) |
+| Nikon AF-S DX Nikkor 18-200mm f/3.5-5.6G ED VR II | London Camera Exchange | £149.99 | Used, Good; Guildford stock, next-working-day delivery available. [Source](https://www.lcegroup.co.uk/Used/Nikon-AF-S-18-200mm-f/3.5-5.6G-II-ED-VR-DX-%7C-10119797_496745.html) |
+| RØDE Wireless GO II dual-channel system | eBay UK — DR Beauties | £99.99 | Used Grade B; exact 2 TX + 1 RX kit, out of stock; retained as historical reference. [Source](https://www.ebay.co.uk/itm/366432956788) |
+
+LIVE read-back confirms Batch 04 now has **18 active records: 8 UK New and 10 UK Used; all 18 are GBP**. The four follow-up rows are all UK Used. Current LIVE calculate_buying_item_valuation(uuid,uuid) selects only GBP uk_new research evidence as its shared-market reference; these used observations remain comparison-only and do not alter automatic valuation.
+
+Other leads remain outside active valuation evidence where the source or package is not sufficiently resolved. Examples include the unusually low Cotswold Sony 85mm GM II offer (seller/checkout/price discrepancy remains a verification risk), Production Gear's contradictory Wireless GO II stock message, the imported Ubuy landed-cost uncertainty, the DSR-PD175P on-order offer, package differences on the Matrice 350 RTK, and NEEWER variant pricing/package ambiguity. Foreign-currency-only, overseas-seller, faulty, ended-with-no-bid and unverified close-model references remain in this checkpoint, not promoted to exact UK evidence.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. No queue status or owner-auth context was bypassed.

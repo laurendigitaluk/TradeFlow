@@ -5657,3 +5657,10 @@ Batches 01–13: 257 observations, 254 active (139 UK New, 115 UK Used), three i
 The first two camera evidence batches now have seven verified UK source rows in LIVE. Batch 01: Pentax 17 new £499 Hargreaves; Pentax 17 used MPB SKUs 4112513 £389 Like New and 4266074 £354 Excellent; Blackmagic Pocket Cinema Camera 6K G2 body-only new RCB Logic £1,666.80 inc VAT (one in stock) and Jigsaw24 £1,890 inc VAT (available to order). Batch 02: Blackmagic Studio Camera 6K Pro CVP ex-showroom used £1,580.40 ex VAT, Excellent, in stock; Blackmagic URSA Cine 12K LF MPB PL Fit used £5,509 Excellent, one available. Full row IDs, SKU, package and VAT notes are in the Batch 01 and Batch 02 checkpoints. UK Used observations remain reference-only.
 
 The latest full reconciliation, including the parallel AKASO V50 X With SD import in Batch 03, is 255 batch-keyed rows across Batches 01–13, 252 active (137 UK New, 115 UK Used), three inactive. This is not the global table total; global LIVE shared_market_evidence is 4,797 total, 4,742 active, 55 inactive. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## 12 November 2026 — Caddx Peanut UK price-reference evidence
+
+YourFPV direct page confirms exact Caddx Peanut / Insta360 Go 2 FPV camera, SKU YFPV - CaddX - PNT, £218.99. The page explicitly marks it Out of stock / Join Waitlist; record as UK New price-reference evidence with availability out_of_stock, not current stock. The package list and exact source are documented in the Batch 03 checkpoint. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577 is attached to existing Caddx Peanut master dbf3777c-4f84-4cd1-86db-03d8ed66482f and was read back successfully.
+
+Batches 01–13: 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. Batch 03: 8 active (7 new, 1 used). TEST, Stripe, schema, master data and valuation logic untouched.

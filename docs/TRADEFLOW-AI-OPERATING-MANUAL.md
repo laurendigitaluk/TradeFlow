@@ -6406,3 +6406,10 @@ Package controls from this pass: Kobra 3 Max V2 Standard (£379), 4-Color Combo 
 PS5 Digital Edition 825GB official UK RRP £519.99 is currently out of stock; store that availability explicitly. Do not map the Argos £559.99 two-controller bundle to the standard one-controller package. Leave the older Amazon listing unresolved without a current GBP price/model confirmation.
 
 Batches 01–13: 268 observations, 261 active (142 UK New, 119 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — GoPro HERO generation verification and import
+
+The generic GoPro HERO candidate was checked against MPB's exact model title and item pages and resolved to **GoPro HERO (2014)**. Three UK Used MPB SKUs were imported to the existing HERO master: £45 Excellent (4037958), £41 Good (3962930) and £31 Good (4089283). Keep the accessory differences per SKU; all include battery, USB cable and 12-month warranty. A separate GoPro HERO Session £54.99 used listing was imported against the separate HERO Session master (Cash Converters item 053000253199, Redcar, very minor cosmetic wear, 12-month warranty). A £49.99 alternative was confirmed sold and excluded. Evidence IDs and source URLs are in the Batch 03 checkpoint.
+
+Batch 03: 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

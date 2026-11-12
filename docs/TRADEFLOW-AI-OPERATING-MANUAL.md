@@ -6332,3 +6332,10 @@ Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used),
 Sony HDC-3100 exact UK camera-head source from Visual Impact is now recorded at £25,066.80 inc VAT, Available to Order (not in stock), matched to HDC-3100 Standard master. No CCU, lens or viewfinder included. Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; source/package notes in Batch 10 checkpoint.
 
 Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. Global evidence table: 4,805 total, 4,749 active, 56 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Duplicate source capture handling and count correction
+
+A duplicate audit found two exact same-source Batch 13 captures (Wex ECM-B10 and Sony UK FE 12-24mm F2.8 GM). Earlier copies were deactivated, not deleted; later follow-up rows remain active. Use the inactive rows only for audit and do not double-count them in market evidence. IDs and retained rows are in the Batch 13 checkpoint.
+
+Current Batches 01–13: 263 total observations, 257 active (139 UK New, 118 UK Used), six inactive. Batch 13: 50 total, 48 active (27 new, 21 used), two inactive. TEST, Stripe, schema and valuation logic unchanged.

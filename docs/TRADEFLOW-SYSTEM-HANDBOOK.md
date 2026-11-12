@@ -5504,3 +5504,14 @@ The existing AI Research Centre now includes a **ChatGPT research updates** pane
 ChatGPT can post a progress or completion notice to that existing thread through the connected LIVE Supabase database connection, using `sender_kind='chatgpt_supervisor'`, `sender_key='chatgpt'`, `sender_name='ChatGPT'`, `thread_key='tradeflow-research'`, `recipient_key='platform_owner'`, and `message_type='status_update'`. Each notice should identify its batch scope, verified LIVE evidence imports, comparison-only/unverified references retained, and unresolved items. **Never state a batch is complete or imported until LIVE database read-back confirms the result.** This dashboard message is a status/communication channel; it does not itself import catalogue evidence. The existing evidence verification and authorised import path remains mandatory.
 
 Initial LIVE notice inserted and read back successfully: `f273893d-a387-443f-8a95-1a93e90caca0` (12 November 2026). Front-end files: `platform-owner-dashboard.html` and `platform-owner-dashboard.js` (script cache version 59). TEST was not modified.
+
+
+## 12 November 2026 — UK market-evidence follow-up
+
+TradeFlow LIVE received one additional verified UK New market-evidence observation in Batch 06:
+- Product: Bebob V98 V-Mount Battery, exact SKU V98 (master product `cd3eb6f1-5e74-4403-b905-61803eb7749b`).
+- Source: CVP direct product page, https://cvp.com/product/bebob_v98_battery.
+- Price: £312.00 including VAT (£260.00 ex VAT); one remaining in stock for immediate delivery; UK battery shipping confirmed; two-year standard warranty.
+- The row was inserted through the established idempotent LIVE migration route using a stable `source_record_key`, then read back from `shared_market_evidence`.
+
+Batches 04–13 now reconcile to 227 GBP observations: 223 active (120 UK New, 103 UK Used) and four inactive retained for audit. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST environment and Stripe configuration were not changed. The existing latest-active-UK-New selection continues to use `observed_at` then `created_at`.

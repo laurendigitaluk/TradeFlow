@@ -53,3 +53,14 @@ Batches 01–13 read back as 268 evidence observations: 261 active (142 UK New, 
 - Existing evidence rows updated in place where current source price/availability changed.
 - Duplicate rows deactivated rather than deleted.
 - No foreign currency converted.
+
+
+## Availability versus active evidence / valuation semantics — 12 November 2026
+
+A LIVE code/database check of `calculate_buying_item_valuation(p_tenant_id,p_buying_item_id)` confirmed that the function selects the latest active `uk_new` GBP observation from `shared_market_evidence` when no tenant-specific new research exists. The query filters `is_active=true`, non-null price and GBP currency, but does **not** filter the `availability` field. The buying catalogue RPC similarly returns latest active UK New and UK Used observations separately, without excluding out-of-stock statuses.
+
+This matches the established owner decision from 30 August / 1 September 2026: retain genuine UK GBP asking prices, RRP and sale prices even when a listing is out of stock, sold out, ended or unavailable; record source, availability and observation date so it is clear that the offer is not currently purchasable. Do not automatically deactivate those records merely because they are unavailable. UK Used remains a separate reference-only evidence type and is not selected by the automatic buying valuation function.
+
+No valuation function or existing out-of-stock evidence was changed during this audit. The PlayStation UK £519.99 row remains active with `availability='out_of_stock'` as a historical/current official RRP reference. The duplicate second PlayStation UK row remains inactive because it duplicated the same seller, model, package and price; the retained single source row preserves the observation. The Caddx Peanut and Walnut UK price rows also remain active with their out-of-stock/backorder status recorded, in accordance with the established evidence-retention rule.
+
+Important distinction for future work: `is_active` means the evidence observation is retained as a valid price reference; it does not guarantee the source has stock available now. The `availability` field must be shown/read alongside the price. Do not change valuation logic or bulk-deactivate historical UK New rows without an explicit owner decision.

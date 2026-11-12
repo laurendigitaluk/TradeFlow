@@ -6365,3 +6365,12 @@ Three other queue candidates already matched existing exact evidence and were no
 Bambu Lab A1 candidate matched existing LIVE A1 / Standard Printer master; refresh existing 3D Prima evidence rather than duplicate: £215 GBP incl VAT, delivery excluded, stock 50+, SKU 12558, EAN 6975337039150, MPN PF002-A-EU. AMS Lite is a different package. Evidence row 62ea3f7e-34aa-4f5c-9c3e-fd426ffcc95e. Full source in manual queue checkpoint.
 
 Do not map PS5 Digital Edition 825GB Two DualSense bundle to the single-controller 825GB master. The matching official bundle is out of stock. The older B08H98GVK8 PS5 Digital Edition is the 2020 generation and its current UK price was not verified. Keep PS5 Slim Digital evidence separate. Queue statuses remain needs_research pending authenticated owner workflow; do not bypass RLS.
+
+
+## 12 November 2026 — ChatGPT LIVE import route and queue boundary
+
+For supervised ChatGPT evidence work, reuse the established privileged server-side Supabase SQL migration route (historically used since 23 October). It runs through the trusted server-side integration, not the browser; never expose service-role credentials or bypass RLS from a client. Use idempotent source_record_key values with `ON CONFLICT (source_name, source_record_key) DO NOTHING`, exact LIVE product/package match, GBP, opened direct source URL, condition, availability and full notes, then verify by direct LIVE read-back.
+
+Do not confuse this with the Manual AI queue: submit stages pending_review candidates, review changes queue status, verify records source checks; none imports shared_market_evidence. The dedicated owner-authorised queue importer remains missing. Do not set queue status or live_evidence_id through raw SQL; preserve the queue status until the authenticated owner workflow updates it.
+
+Latest LIVE snapshot: global evidence 4,808 total, 4,750 active, 58 inactive; Batches 01–13 263 total, 257 active (139 UK New, 118 UK Used), six inactive. TEST and Stripe untouched.

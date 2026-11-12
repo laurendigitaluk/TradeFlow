@@ -6302,3 +6302,10 @@ Current Batches 01–13: 261 rows, 257 active (140 UK New, 117 UK Used), four in
 For the exact MoveMic Two Receiver Kit, use verified source currency and package contents. Shure UK confirms £519 RRP and exact receiver-kit contents; £311.40 was only a search result and is not confirmed on the opened page. Canford confirms £431 ex VAT, on demand 3–4 weeks, exact SKU 74-5422 / MV-TWO-KIT-Z6 and complete receiver kit. DigiBroadcast now defaults to EUR; its former £496.80 GBP record was deactivated as currency_unverified. LIVE Canford row 1c662613-7d5f-40e3-84eb-5ed2b84b5962. Full URLs in Batch 10 checkpoint.
 
 Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 02 Blackmagic used-evidence handling
+
+Four UK Used Blackmagic offers from CVP/MPB were verified against exact masters: URSA Cine 12K LF Body CVP Open Box £4,989.40 ex VAT / £5,987.28 inc; Studio Camera 6K Pro CVP £1,580.40 ex VAT; URSA Cine 17K 65 + EVF CVP £16,199.10 ex VAT; URSA Cine 12K LF PL Fit MPB £5,509. Retain ex-VAT basis, condition, accessory and mount differences exactly as documented in the Batch 02 checkpoint. All remain UK Used reference-only.
+
+Current Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.

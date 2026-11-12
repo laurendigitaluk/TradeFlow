@@ -1,3 +1,13 @@
+## 12 November 2026 — Batch 05 market-evidence follow-up controls
+
+The Batch 05 follow-up imported nine further verified direct-source observations and read them back from LIVE: four RØDE Wireless GO Gen 3 UK New listings (Disc DJ, Jessops, Wex blue and Westend DJ), two Sony FE 24-70mm F2.8 GM II UK New listings (LCE and CameraWorld), two Sony SRG-300H UK Used eBay listings (one current, one ended), and one Nikon Nikkor-H Auto 50mm f/2 UK Used eBay listing. Batch 05 now has 18 active GBP rows: 10 UK New and 8 UK Used.
+
+When a marketplace listing has ended, record its actual ended status and do not call it a completed sale unless the source explicitly confirms a sold transaction. If a displayed amount includes Buyer Protection, record the fee and underlying item amount in notes. If a source's product page and terms disagree about currency, keep it RED VERIFY. Check exact package, frequency band, suffix, accessory-versus-product identity and live stock before insertion. A generic series master cannot inherit a price from an unconfirmed edition or bundle.
+
+The LIVE valuation calculation continues to select only GBP UK New evidence for the shared-market fallback. UK Used observations remain reference-only. Use idempotent source keys, read every inserted row back, and update the batch checkpoint, project-memory file, both manuals and the existing tradeflow-research dashboard notification. Do not touch TEST, Stripe, master product identity or valuation logic.
+
+---
+
 ## 12 November 2026 — LIVE market-evidence follow-up controls (Batch 04)
 
 For scheduled market-evidence batches, continue from the production checkpoint and paired project-memory file. Recheck current master-product identity, package, existing evidence, source URL, displayed GBP price, seller/location, condition and availability before inserting. Do not infer an exact match from a family name, suffix, accessory, bundle or Shopping card alone. Keep unresolved sources as RED VERIFY leads in the checkpoint rather than promoting them as active exact evidence.

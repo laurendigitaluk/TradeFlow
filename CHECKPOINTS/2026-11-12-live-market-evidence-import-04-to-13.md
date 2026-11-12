@@ -449,3 +449,10 @@ Latest database read-back: Batches 01–13 = 263 total, 257 active (139 UK New, 
 Added one exact UK Used Sony HDC1500R camera-channel observation from KitPlus/N.I. Broadcast at £8,650; HDC1500R head + HDCU-1000 full-rack CCU + HDVF20A + RCP750, with RCP1500/7-inch viewfinder extra and lens excluded. Matched existing HDC1500R Standard Package master; LIVE row afd9e40d-fabb-4e28-b797-2e2b8f877948. Batch 10 now 32 total, 31 active (15 new, 16 used), one inactive.
 
 Latest Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE shared_market_evidence: 4,809 total, 4,751 active, 58 inactive (one non-GBP/null). Queue counts remain 81 total / 28 imported / 43 rejected / 10 needs_research. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Latest Batch 10 MoveMic standard sources and count reconciliation
+
+Added three exact UK MoveMic Two standard-package sources (two lavaliers + case + USB-C cable, receiver excluded): Shure UK £221 sale / £369 RRP; Canford £305 ex VAT, on demand 3–4 weeks; Clifton £335 displayed, awaiting stock 5–7 days. Evidence IDs 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42, cee333d8-55fe-4536-93f6-a3fe11644744. Old Shure £258.30 observation was deactivated as superseded. This is distinct from the Receiver Kit.
+
+Latest Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE shared_market_evidence: 4,812 total, 4,753 active, 59 inactive (one non-GBP/null). TEST and Stripe untouched.

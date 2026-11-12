@@ -74,3 +74,8 @@ Added YourFPV direct UK listing for exact Caddx Peanut / Insta360 Go 2, SKU YFPV
 ## 12 November 2026 — V50 X Diving Bundle mismatch check
 
 Official Shop-AKASO says Diving Bundle = V50 X Standalone + 64GB SD + Floating Hand Grip. The £119.99 YPC/Amazon-linked floating-grip bundle explicitly excludes microSD, so it is not an exact match and was not imported. Keep RED VERIFY until one UK source confirms both card and grip. See Batch 03 checkpoint for source links. Do not reuse the separate With SD Bundle evidence for this Diving Bundle.
+
+
+## 12 November 2026 — Caddx price references added
+
+Three Caddx UK GBP price references were added and read back: Walnut £117.90 FlyingTech (sold out); Walnut £129 Unmanned Tech (sold out/backorder); Peanut £218.99 YourFPV (out of stock/waitlist). Evidence IDs 3b791f3e-c1ab-455d-946e-add1a4b9e7b8, 7d57b245-5b93-4c0c-a570-c31639e50c7b and 3cf32e49-d7b0-4d30-9851-9da8155e1577. Full source/package notes in Batch 03 checkpoint. All remain active UK New GBP price references with availability recorded. Current valuation does not filter active UK New by availability, so these out-of-stock/backorder references may influence automatic valuation; no valuation logic changed. Batch 03 now 8 active (7 new, 1 used).

@@ -350,3 +350,10 @@ Latest LIVE read-back: numbered Batches 01–13 = 263 total, 257 active (139 UK 
 Added KitPlus/N.I. Broadcast exact HDC1500R used camera channel £8,650, with HDC1500R head, HDCU-1000 CCU, HDVF20A and RCP750; RCP1500/7-inch viewfinder extra, lens excluded. Existing LIVE HDC1500R Standard Package master; evidence row afd9e40d-fabb-4e28-b797-2e2b8f877948. Batch 10: 32 total, 31 active (15 new, 16 used), one inactive.
 
 Latest Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE: 4,809 total, 4,751 active, 58 inactive (one non-GBP/null). Queue: 81 total, 28 imported, 43 rejected, 10 needs_research. TEST and Stripe untouched.
+
+
+## 12 November 2026 — MoveMic standard package and latest counts
+
+Added Shure MoveMic Two standard (no receiver) sources: Shure UK £221 sale, Canford £305 ex VAT on demand, Clifton £335 awaiting stock. Exact IDs, sources and package details in Batch 10 checkpoint. Previous Shure UK £258.30 row deactivated as superseded. Keep standard package distinct from Receiver Kit.
+
+Latest Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE: 4,812 total, 4,753 active, 59 inactive. TEST and Stripe untouched.

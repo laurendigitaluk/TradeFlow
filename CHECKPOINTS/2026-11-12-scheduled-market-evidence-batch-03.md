@@ -311,3 +311,15 @@ A parallel research pass added three exact Caddx UK GBP price references and rea
 - Caddx Peanut / Insta360 Go 2 FPV camera, YourFPV £218.99, UK Stock heading but explicitly Out of Stock / Join Waitlist; box contents and filter/cable set listed. Evidence 3cf32e49-d7b0-4d30-9851-9da8155e1577.
 
 All three are active UK New GBP price references with their out-of-stock/backorder states recorded. Under the current valuation implementation, active UK New records are not filtered by availability; these rows may therefore influence automatic valuation despite not being currently available. This is a known existing behaviour, not changed in this work. Do not describe them as in stock. Batch 03 now has 8 active rows (7 UK New, 1 UK Used).
+
+
+## GoPro exact UK models resolved and imported — 12 November 2026
+
+The GoPro HERO RED VERIFY item was resolved to the exact original **GoPro HERO (2014)** generation. MPB's current UK product page explicitly identifies HERO (2014), shows three used units available and item-specific SKU/condition/accessory details. Three observations were imported against the existing HERO master 42d6393c-8d47-422b-a6db-06ce5f8c4759:
+- MPB SKU 4037958 — £45.00, Excellent; battery door, flat adhesive mount, mounting buckle, rechargeable battery, USB Type-A to Mini Type-B; 12-month warranty; evidence row 27881221-29e8-43a4-bc76-559e8113d34a. https://www.mpb.com/en-uk/product/gopro-hero-2014/sku-4037958
+- MPB SKU 3962930 — £41.00, Good; battery door, curved and flat adhesive mounts, mounting buckle, rechargeable battery, USB Type-A to Mini Type-B; 12-month warranty; evidence row 1c3d3c28-4eac-4415-a4dd-5fbdecb882b3. https://www.mpb.com/en-uk/product/gopro-hero-2014/sku-3962930
+- MPB SKU 4089283 — £31.00, Good; battery door, rechargeable battery and USB Type-A to Mini Type-B; flat mount and buckle not included; 12-month warranty; evidence row f8aa0b22-dddc-46c2-8346-96746432a1ea. https://www.mpb.com/en-uk/product/gopro-hero-2014/sku-4089283
+
+The separate GoPro HERO Session master f474b652-b819-4679-9cea-ca16f26b6978 now has one current UK used observation: Cash Converters item 053000253199, £54.99, very minor cosmetic wear, good working condition, Add to Cart and store pickup available at Redcar, 12-month warranty and 14-day online return policy. Evidence row 490f96fe-0cf6-4290-9a94-7e84afdff731. https://www.cashconverters.co.uk/shop/phones-cameras--computers/cameras/waterproof--action-cameras/action-camera/053000253199. The separate £49.99 Hanley listing was checked and is explicitly sold; it was not imported.
+
+All four evidence rows were read back from LIVE and verified against exact master/model. Batch 03 now has 12 active GBP observations (7 UK New, 5 UK Used), zero inactive. Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only and does not affect automatic buying valuation. No master/schema/valuation change; TEST and Stripe untouched.

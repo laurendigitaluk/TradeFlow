@@ -246,6 +246,18 @@ Therefore, do not attempt direct table writes or invoke the owner RPC without an
 - Google Shopping query: https://www.google.com/search?tbm=shop&q=Shure%20MoveMic%20Two%20Receiver%20Kit%20MoveMic%20Two%20Receiver%20Kit%20UK
 - Source URLs: [Shure UK — MoveMic Two Receiver Kit, £519 RRP; search offer £311.40 not confirmed on opened page](https://www.shure.com/en-GB/products/wireless-systems/movemic-wireless/movemic-two-kit); [DigiBroadcast — MoveMic Two Twin Receiver Kit, £496.80 inc / £414 ex, usually dispatched within 24 hours](https://www.digibroadcast.com/audio-c63/microphones-c90/shure-movemic-two-twin-receiver-kit-p47846); [Canford — MoveMic Two Receiver Kit, £517.20 inc / £431 ex, on demand 3-4 weeks](https://www.canford.co.uk/Products/2031431/74-5422_SHURE-MOVEMIC-TWO-RECEIVER-KIT-2x-lavalier-1x-MoveMic-Receiver-with-charge-case); [Leisuretec — MoveMic Two Receiver Kit, £517.20 inc VAT, currently not in stock](https://leisuretec.co.uk/products/movemic-two-reciever-kit-2-ch-wireless-lav-system-2xmics-reciever); [Bax Music — MoveMic Two Kit, Shopping/search price discrepancy £419-£439; receiver contents need confirmation](https://www.bax-shop.co.uk/wireless-lavalier-microphones/shure-movemic-mv-two-kit-dual-wireless-clip-on-microphone-system); [Clifton Cameras — MoveMic Two Receiver Kit, £474, awaiting stock](https://www.cliftoncameras.co.uk/shure-movemic-two-receiver-kit-two-channel-wireless-lavalier-microphone-system-with-receiver)
 
+### 20. Sony HDC3100 — Standard Package
+- Product ID: 992a246f-db39-44e6-9c07-c25a82175e98
+- Category: Video Cameras / Cinema Camera
+- Date: 2026-11-12
+- GBP price / currency: £25,066.80 inc VAT / £20,889.00 ex VAT at Visual Impact.
+- Condition: New listing.
+- Availability: Available to order; not currently held in stock.
+- Notes: RED VERIFY — exact HDC-3100 SKU and price confirmed. The page's In The Box list only names operating instructions, cable clamp belt, screws and labels; it does not list a CCU, lens or viewfinder. The camera connects to an HDCU-3100/HDCU-2000 series CCU. Check whether the Standard Package is camera head only; do not assume the price includes a complete channel.
+- Google Shopping result notes: Exact HDC-3100 result appeared at Visual Impact for £25,066.80; merchant page opened and verified.
+- Google Shopping query: https://www.google.com/search?tbm=shop&q=Sony%20HDC3100%20Standard%20Package%20UK
+- Source URLs: [Visual Impact — Sony HDC-3100, £25,066.80 inc VAT / £20,889 ex VAT, available to order](https://www.visuals.co.uk/hdc-3100-camera.html)
+
 ## Required next-run handling
 
 - Read batch-10 checkpoint before selecting.

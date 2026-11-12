@@ -273,3 +273,34 @@ Batch 12 therefore has **0 pending-review queue rows staged**. All 20 researched
 6. Research and click through manufacturer, UK retailer, marketplace and Google Shopping links.
 7. Preserve uncertain links with RED VERIFY notes.
 8. Check owner auth first. Only stage through a supported authenticated platform-owner RPC. If auth.uid is null or owner check false, create the next checkpoint and project-memory files instead of writing directly.
+
+
+## 6. RED VERIFY follow-up — 12 November 2026
+
+Thirteen additional source observations were inserted and read back; one earlier price-conflict observation was deactivated.
+
+| Master product | Source | Price | Evidence / status |
+|---|---|---:|---|
+| Sony HVR-HD1000E | eBay UK — saff_19 | £312.70 | Used; plus £12.36 postage; four used batteries and shoulder bag; 100% feedback, no returns. Bundle differs from body-only. [Source](https://www.ebay.co.uk/p/100062910?iid=236300096693) |
+| Sony E 35mm F1.8 OSS | Cotswold Cameras | £269.00 | New; reduced from £325; exact SEL35F18 APS-C E-mount; availability not explicit. [Source](https://www.cotswoldcameras.co.uk/Sony-E-35mm-F18-OSS-Lens-SEL35F18) |
+| Sony E 35mm F1.8 OSS | CameraWorld | £319.00 | New; product code 166936 / EAN 4905524894912; in stock, 3–5 day dispatch. [Source](https://www.cameraworld.co.uk/sony-35mm-f1-8-oss-sel35f18.html) |
+| Sony PXW-FS5 | Wex Photo Video | £493.00 | Used Good; item 3348017; 6,000 shutter count, clean sensor, in stock; accessory contents noted. [Source](https://www.wexphotovideo.com/sony-pxw-fs5-4k-professional-camcorder-used-3348017/) |
+| Sony PXW-FS5 | Wex Photo Video | £425.00 | Used Well Used; item 3348010; 750 shutter count but sensor dust visible from f/10; in stock. Fault retained. [Source](https://www.wexphotovideo.com/sony-pxw-fs5-4k-professional-camcorder-used-3348010/) |
+| Sony FE 100mm F2.8 Macro GM OSS | Camix | £1,208.00 | New; two left, in stock, 1-year warranty, free UK delivery. [Source](https://camix.co.uk/product/sony-fe-100mm-f2-8-macro-gm-oss-lens/) |
+| Sony FE 100mm F2.8 Macro GM OSS | London Camera Exchange | £1,399.00 | New; UK stock, Add to Basket, free delivery. [Source](https://www.lcegroup.co.uk/New/Sony-FE-100mm-F2.8-Macro-GM-OSS-Lens_211626.html) |
+| Sony FE 100mm F2.8 Macro GM OSS | Campkins Cameras | £1,399.00 | New; one in stock, UK stock/warranty, free delivery over £100. [Source](https://www.campkinscameras.com/sony-fe-100mm-f2-8-macro-gm-oss-lens/) |
+| Sony FE 100mm F2.8 Macro GM OSS | Wilkinson Cameras | £1,399.00 | New; stock at Liverpool and Preston branches, UK warranty. [Source](https://www.wilkinson.co.uk/sony-fe-100mm-f2-8-macro-gm-oss-lens/) |
+| Sony FE 50mm F1.4 GM | Sony UK | £1,499.00 | New; official store, one left, Add to Basket. [Source](https://www.sony.co.uk/store/product/sel50f14gm.syx/FE-50-mm-F1-4-GM-G-Master-Full-frame-Standard-Lens) |
+| Sony FE 50mm F1.4 GM | London Camera Exchange | £1,499.00 | New; in stock; £200 cashback after claim (pay £1,499 first). [Source](https://www.lcegroup.co.uk/New/Sony-FE-50mm-F1.4-G-Master-Lens_135488.html) |
+| Sony FE 50mm F1.4 GM | CameraWorld | £1,499.00 | New; one available, 3–5 day dispatch, free UK delivery; £200 cashback claim. [Source](https://www.cameraworld.co.uk/sony-fe-50mm-f14-gm-lens.html?condition=new) |
+| Sony FE 50mm F1.4 GM | CameraWorld | £1,425.00 | Open-box unique item, in stock; recorded separately from new stock. [Source](https://www.cameraworld.co.uk/sony-fe-50mm-f14-gm-lens.html) |
+
+The Sony UK E 35mm F1.8 OSS £225 observation was rechecked. The same page exposed £225 sale-price context and £325 original/product-page price without a clear selectable checkout price; it was retained but marked inactive / price_conflict. This prevents the uncertain £225 from becoming the latest active UK New valuation source. The active CameraWorld £319 and Cotswold £269 observations remain.
+
+The existing HXR-MC2500E eBay £789.99 row was rechecked: current search result confirms free delivery in three days, seller 99.8% positive, 9.1K feedback; E suffix and 32GB internal-memory regional variant caveat remains.
+
+Batch 12 now has **25 total records: 24 active (16 UK New, 8 UK Used) and one inactive price-conflict row; all 25 are GBP**. The inactive row is the ambiguous Sony UK E 35mm F1.8 £225 price. Used rows remain reference-only. The PXW-FS5 sensor-dust listing remains clearly marked as faulty/condition-limited; HVR-HD1000E listing includes a different accessory bundle.
+
+Other RED VERIFY items remain excluded: Skydio X2 enterprise controller/charger has USD-only or consumer 2/2+ mismatches; Yuneec E10Tvx has EUR/PLN only; Walkera Vitus Starlight listing contents say Vitus 320; PXW-Z1500 appears to be a PXW-Z150 typo; HZCU-FZ90 appears to be HXCU-FZ90 CCU; PXW-Z190V seller's GSP UK delivery total not confirmed; Sony NEX-FS100 package contents not confirmed; MKS-R3210 only EUR quote and BKS-R3210 wrong model; SmallRig 3263 no UK GBP price; UHC-8300 CCU is separate; HDC-3200 dual-filter SKU package needs comparison; E-Infinity Sony FE100 macro price needs import/checkout confirmation. No unverified currency, model or package match was promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

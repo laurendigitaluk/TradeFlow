@@ -1,3 +1,13 @@
+## 12 November 2026 — Batch 07 and evidence availability controls
+
+Batch 07 follow-up added Hubsan H501S eBay UK sold £67.65 item price (historical; £70.63 included buyer fee), Sony PMW-F55 eBay UK £1,099 used body-only, Manfrotto MVK500XAM Wex £419 new limited stock and Leica M11 Monochrom Park Cameras £8,500 new in stock. Camera Centre Leica M11 was refreshed to £8,450 in stock; CVP Manfrotto £369 inc VAT was rechecked after Wex; MPB Nikon 18-55mm VR used reference refreshed to £37; BuzzFlyer DEVO-10 £149.95 was changed to Notify Me/inactive due no stock.
+
+Cumulative Batches 04–13 now contain 127 GBP rows: 126 active (72 UK New, 54 UK Used) and one inactive. Per-batch total/active counts: 04 18/18, 05 18/18, 06 12/12, 07 14/13, 08 8/8, 09 11/11, 10 12/12, 11 10/10, 12 12/12, 13 12/12. The original 107 total was correct; earlier per-batch summary values for 10–12 were misallocated.
+
+Availability does not currently filter shared UK New evidence in calculate_buying_item_valuation(uuid,uuid): the function selects the latest active GBP uk_new row by observed_at then created_at. UK Used is not selected. Therefore preserve accurate availability notes on sold-out/backorder/preorder rows and understand they can still affect automatic valuation while active. For a Notify Me/no-stock listing with no current purchasable stock, retain the row and source notes but set is_active=false until availability is confirmed. Do not change the valuation function without explicit approval. Never manipulate observed_at; it must reflect actual source recheck order. TEST and Stripe remain untouched.
+
+---
+
 ## 12 November 2026 — Batch 06 evidence and valuation-source ordering
 
 Batch 06 follow-up added Aputure LS 600d Pro eBay UK £1,225.58 used, Benro GH2N CameraWorld £342 new and Benro GH2N Harrison Cameras £299 new. Clifton Cameras GH2N £289 was re-opened afterwards and its observed_at refreshed, leaving Clifton as the latest verified source. The existing CVP Aputure £1,000 ex-VAT used record was corrected to Coming Soon / Awaiting Grading because the direct page states no unit is currently available.

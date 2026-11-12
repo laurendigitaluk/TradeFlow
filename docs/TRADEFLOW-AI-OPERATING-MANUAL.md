@@ -6126,3 +6126,8 @@ Batch 06 gained three verified UK New observations, Batch 07 gained one and Batc
 Import procedure: use the established LIVE migration path with deterministic `source_record_key` values, preserve GBP inc-VAT observed prices, write source URLs and condition/availability caveats, then read rows back and confirm master-product identity, price, currency, evidence type, active status and observed timestamp. Do not use direct table writes from an unauthenticated owner context. All five imports were read back successfully.
 
 Cumulative Batches 04–13: 231 GBP rows, 227 active (124 UK New, 103 UK Used), four inactive. UK Used remains reference-only and excluded from automatic valuation. Do not change valuation logic or TEST/Stripe for this work. Continue chasing checkpoint RED VERIFY leads; do not promote unresolved package, seller, availability or foreign-currency observations.
+
+
+## 12 November 2026 — PA028E suffix cross-check
+
+Rechecked the existing NEEWER PA028E evidence rather than inserting a duplicate. The UK official page shows £45.99 (was £64.99), SKU 66604178, 3 in stock, Add to Cart and UK warehouse dispatch in 2–5 working days. The product title and SKU identify PA028E; the UK specs field says PA028, but the official Australian NEEWER page for the same SKU explicitly says Model PA028E. Keep the suffix caveat in the evidence notes, but accept the master match on exact title + manufacturer SKU corroborated across official regional pages. Updated the existing row's notes and observed_at; cumulative totals unchanged at 231 / 227 active.

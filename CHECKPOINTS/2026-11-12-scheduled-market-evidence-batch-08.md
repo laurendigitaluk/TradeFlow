@@ -427,3 +427,24 @@ Batch 08 now has **14 database rows: 13 active (10 UK New, 3 UK Used) and one in
 Other leads remain RED VERIFY: official Hubsan /eur pages show GBP prices for MINI and ZINO MINI PRO but the UK delivery region is not confirmed; Hubsan HT55 package contents remain unclear; H109 page suffix does not match the H109 master; Menkind Zino Pro £279 is an old crawl and was superseded by the current Elite Models £389.99 standard package; GoPro HERO6 eBay offers are bundles with differing batteries/accessories; the earlier MPB Good £82 HERO6 listing is no longer visible; NEEWER KM19 seller-away price is inactive; NEEWER PA028E title/spec suffix mismatch remains; NEEWER NL660 official stock wording remains mixed. No unsupported region, package or model match was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+Six additional exact UK GBP observations were imported and read back from LIVE:
+- Hubsan H501A X4 Air Pro — Elite Models Online £209.99, exact model, out of stock.
+- Hubsan H501M X4 — Elite Models Online £139.99, exact model, out of stock.
+- Hubsan Zino Pro — Elite Models Online £389.99, supplier stock; kept separate from battery/bag bundles.
+- NEEWER NL660 2-pack — Gumtree £75 used, opened once; two lights, stands, barn doors and softboxes, battery pack excluded.
+- GoPro HERO6 Black — UsedLens/MPB Excellent £119 used; eBay accessory bundles were not treated as body-only comparisons.
+- NEEWER KM19 — eBay £47.94 new, seller away until 19 Nov; retained inactive until seller returns.
+
+Existing evidence corrections:
+- Nikon COOLPIX P7700 MPB price updated from £239 to £229 after direct page recheck; one Good unit in stock, with EN-EL14 battery, MH-24 charger and 12-month MPB warranty.
+- HOVERAir X1 PROMAX Standard / Very price confirmed at £609 sale (£639 regular), in stock, charger not included.
+
+Batch 08 now has **14 total records: 13 active (10 UK New, 3 UK Used), one inactive UK New seller-away row; all 14 are GBP**. Out-of-stock Hubsan UK New observations remain active as historical UK price observations with explicit status; this follows current LIVE evidence policy. The seller-away KM19 row is inactive so it cannot be selected by the valuation function while the seller cannot fulfil orders.
+
+Exact source URLs and evidence notes are retained in the inserted records and this checkpoint. Unresolved leads remain RED VERIFY: FIMI X8 Mini V2 has no reliable UK GBP exact source; Freefly Flux H1 and Wave lack UK retail pricing; GoPro MISSION 1 PRO Grip Edition package/retailer price needs checkout confirmation; Hubsan H109/HT55/MINI and ZINO MINI PRO lack qualifying UK GBP offers; NEEWER LS-29 PRO and PA028E need exact model/package and current UK pricing; NEEWER RH12C and TP014 retailer pages require price/availability revalidation. These were not promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

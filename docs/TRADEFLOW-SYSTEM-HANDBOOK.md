@@ -5521,3 +5521,12 @@ All five rows were inserted through the established idempotent LIVE migration ro
 ## 12 November 2026 — PA028E source recheck
 
 The existing NEEWER UK PA028E UK New observation was rechecked in place; no duplicate row was created. The direct UK page shows £45.99 (was £64.99), SKU 66604178, 3 in stock, Add to Cart and UK warehouse dispatch normally 2–5 working days after dispatch. The page title and SKU identify PA028E; its UK specifications field omits the E and says PA028, while the official NEEWER Australia page for the same SKU explicitly identifies PA028E. The evidence notes now retain that minor specification-field discrepancy and the confirmed current UK price/availability. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.
+
+
+## 12 November 2026 — NEEWER UK stock rechecks
+
+Two existing Batch 08 UK New observations were refreshed in place, without duplicate rows:
+- NEEWER TP014, SKU 66609186: £102.99, In Stock and Add to Cart, UK warehouse dispatch normally 2–5 working days; package contents confirmed as tripod/monopod, two hex keys, carry bag and manual. The Google Shopping £82.39 variant remains unverified and was not used to overwrite the direct official UK price.
+- NEEWER RH12C, SKU 66607222: £79.99, 3 in stock and Add to Cart, UK warehouse dispatch normally 2–5 working days; complete ring-light kit contents confirmed. “More stock coming soon” is a replenishment notice alongside three currently available units, not a contradictory stock state.
+
+Both existing rows' notes and observed_at values were updated and read back. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.

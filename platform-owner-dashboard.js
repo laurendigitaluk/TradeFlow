@@ -863,6 +863,7 @@ async function submitManualAiResponse(promptId,button){
 $('manual-ai-create-batch')?.addEventListener('click',createManualAiResearchBatch);
 $('manual-ai-refresh')?.addEventListener('click',loadManualAiResearchBatches);
 $('manual-ai-chatgpt-refresh')?.addEventListener('click',loadManualAiChatGptUpdates);
+if($('manual-ai-chatgpt-updates'))setInterval(()=>{if(session?.access_token)loadManualAiChatGptUpdates()},30000);
 
 $('cloud-ai-refresh')?.addEventListener('click',loadCloudAiProviders);
 $('cloud-ai-jobs-refresh')?.addEventListener('click',loadCloudAiJobs);

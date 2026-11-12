@@ -1,3 +1,13 @@
+## 12 November 2026 — Batch 06 evidence and valuation-source ordering
+
+Batch 06 follow-up added Aputure LS 600d Pro eBay UK £1,225.58 used, Benro GH2N CameraWorld £342 new and Benro GH2N Harrison Cameras £299 new. Clifton Cameras GH2N £289 was re-opened afterwards and its observed_at refreshed, leaving Clifton as the latest verified source. The existing CVP Aputure £1,000 ex-VAT used record was corrected to Coming Soon / Awaiting Grading because the direct page states no unit is currently available.
+
+Do not assume the automatic valuation takes the cheapest or averages retailer observations. LIVE calculate_buying_item_valuation(uuid,uuid) uses the latest active GBP uk_new observation by observed_at, then created_at, for its shared-market fallback. UK Used remains reference-only. When multiple retailer pages are rechecked, record the actual sequence accurately in observed_at; never backdate or manipulate it to force a chosen price. Keep all distinct source rows and notes. Re-read the current selected source after inserts and verify the resulting valuation reference is the most recently checked, reliable exact UK offer.
+
+The Batch 06 checkpoint and project memory contain the exact source links, corrections and unresolved RED VERIFY leads. Continue to Batch 07 only after rechecking all prior batch IDs, manual prompts and outstanding research queue candidates. Use the authenticated owner RPC for queue staging only if valid owner auth exists; otherwise do not bypass it. Do not change master products, schema, valuation logic, TEST or Stripe.
+
+---
+
 ## 12 November 2026 — Batch 05 market-evidence follow-up controls
 
 The Batch 05 follow-up imported nine further verified direct-source observations and read them back from LIVE: four RØDE Wireless GO Gen 3 UK New listings (Disc DJ, Jessops, Wex blue and Westend DJ), two Sony FE 24-70mm F2.8 GM II UK New listings (LCE and CameraWorld), two Sony SRG-300H UK Used eBay listings (one current, one ended), and one Nikon Nikkor-H Auto 50mm f/2 UK Used eBay listing. Batch 05 now has 18 active GBP rows: 10 UK New and 8 UK Used.

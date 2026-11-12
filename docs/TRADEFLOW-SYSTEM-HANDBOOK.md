@@ -1,3 +1,25 @@
+## 12 November 2026 — Batch 13 additional evidence and cumulative totals
+
+Batch 13 gained six UK New sources: Wex ECM-B10 £175; Sony Centre Direct FE85 GM II £1,799; Sony UK and Sony Centre Direct FE12-24 GM £2,645 each; HOVERAir UK official AQUA Standard £1,129; Park Cameras AQUA Standard £1,129. BuzzFlyer Walkera Furious F320 £369 was corrected to uk_new because the item is new condition, sold out; it had been incorrectly classified uk_used. Batch 13 now 47 rows, 46 active (28 UK New, 18 UK Used), one inactive PowerDolphin Wizard package-unverified row.
+
+Cumulative batches 04–13 now contain 226 GBP rows, 222 active (119 UK New, 103 UK Used), four inactive. Per-batch total/active/new/used/inactive:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 47 | 46 | 28 | 18 | 1 |
+
+This supersedes the previous 220/216 cumulative snapshot. UK Used remains reference-only. LIVE valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability. No schema/valuation function changes. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 12 additional evidence and cumulative totals
 
 Batch 12 gained Sony NEX-FS100 eBay UK £768.08 used (private UK seller, package unspecified) and Z CAM ExAscend CFast Reader ProAV £51.60 inc VAT (£43 ex), backorder. Walkera Vitus Starlight is now confirmed as exact; Vitus 320 is the underlying aircraft platform on the same Starlight product page. Camix Sony FE 50mm F1.4 GM £1,032 inc VAT was reconfirmed direct, new/in stock, with box contents and warranty stated. Batch 12 now has 27 rows, 26 active (17 UK New, 9 UK Used), one inactive Sony UK E35 £225 price-conflict row.

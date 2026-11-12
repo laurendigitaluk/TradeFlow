@@ -5808,3 +5808,21 @@ The 11 November AKASO response was accepted: 6 findings and 15 not_found for 20 
 - Source checks: PriceSpy UK, eBay UK, E-Catalog UK, Idealo UK, Ubuy UK, NewDealsOnline and AKASO Support. Current UK market comparison pages provide indicative prices, but most results do not establish the exact package or a direct opened seller page.
 - Research only: no catalogue or shared_market_evidence rows changed; no review-queue candidates staged. No TEST, tenant/customer, Stripe or valuation data changed.
 - Continue with the next ten active LIVE Cameras products missing uk_new or uk_used, excluding the 40 products researched in batches 01–04.
+
+
+## Camera catalogue evidence research — batch 05 (12 November 2026)
+
+- Scope: next 10 active LIVE Cameras products with missing UK new/used evidence after batches 01–04. All ten are AKASO Brave 7 / Brave 7 LE packages.
+- Brave 7 Diving Bundle (both missing): E-Catalog comparison shows the Brave 7 camera at £188.43 / OnBuy about £188, but no Diving Bundle-specific listing. Do not assign the base camera price to the bundle.
+- Brave 7 Motorcycle Bundle (used missing; new evidence exists): no exact used Motorcycle Bundle found. eBay search results include used Brave 7 / Brave 7 LE cameras and generic accessory bundles, but no confirmed exact Motorcycle package.
+- Brave 7 Standalone (used missing; new evidence exists): eBay UK search results show pre-owned Brave 7 / Brave 7 LE items, but no individual listing was verified as the exact Brave 7 standalone package. Comparison only.
+- Brave 7 Super Bundle (used missing; new evidence exists): no exact used Super Bundle listing verified. Generic Brave 7 used listings do not establish the Super Bundle contents.
+- Brave 7 Vlog Bundle (both missing): no exact Vlog Bundle listing found. Idealo/E-Catalog show Brave 7 base camera or memory-card packages, not the Vlog bundle.
+- Brave 7 With SD Bundle (both missing): Idealo lists Brave 7 + 64GB microSD at £96.99 and +256GB at £79.99, but package/capacity and seller details need direct page confirmation; these are comparison-only leads and may not match the catalogue's SD bundle.
+- Brave 7 LE Diving Bundle (both missing): no exact Diving Bundle listing verified. Do not substitute Brave 7 LE standalone or general accessory bundle.
+- Brave 7 LE Motorcycle Bundle (used missing; new evidence exists): eBay UK direct listing for Brave 7 LE NEW SEALED Full Accessory Bundle is £145.95, seller located Coventry, 4 available; listing does not identify the catalogue Motorcycle Bundle contents, so retain only as a generic bundle comparison. eBay search results also show pre-owned Brave 7 LE listings (e.g. £94.26 plus postage), but exact package is not confirmed.
+- Brave 7 LE Vlog Bundle (both missing): no exact Vlog Bundle listing found. E-Catalog shows Brave 7 LE from £159.99 but currently expecting restock; general listing is not the Vlog bundle.
+- Brave 7 LE With SD Bundle (both missing): E-Catalog / Idealo / NewDealsOnline show Brave 7 LE memory-card packages, including 64GB and 256GB listings around £149.99–£199.44, but capacities and sellers vary and no direct exact match to the catalogue package was verified. Comparison only.
+- Sources checked: E-Catalog UK, Idealo UK, eBay UK, Kelkoo UK, NewDealsOnline and Supersales UK. UK market pages show general Brave 7/LE prices, but exact bundle identity remains the limiting factor.
+- Research only: no catalogue or shared_market_evidence rows changed; no review-queue candidates staged. No TEST, tenant/customer, Stripe or valuation data changed.
+- Continue with the next ten active LIVE Cameras products missing uk_new or uk_used, excluding the 50 products researched in batches 01–05.

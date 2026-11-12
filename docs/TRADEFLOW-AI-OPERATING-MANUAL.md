@@ -6162,3 +6162,12 @@ Batch 09 now has 21 active GBP rows (9 UK New, 12 UK Used). Cumulative Batches 0
 Resolved the SM81/SM81-LC package ambiguity against Shure's official UK product page and user guide. The catalogue SM81 master maps to manufacturer SKU SM81-LC. LC means supplied without an XLR cable; it does not indicate a different microphone. Shure confirms the SM81 supplied accessories (microphone clip/swivel adapter, attenuator lock, carrying bag and windscreen). Stage Supply lists the exact SM81-LC at £405 inc VAT (£337.50 ex VAT), eight available online, additional supplier stock in 1–3 weeks and a two-year manufacturer warranty. Source: https://stagesupply.co.uk/product/shure-sm81-cardioid-condenser-instrument-microphone/. Imported and read back as UK New against the existing SM81 master.
 
 Batch 09 now has 22 GBP rows: 22 active (10 UK New, 12 UK Used), none inactive. Cumulative Batches 04–13: 235 GBP rows, 231 active (127 UK New, 104 UK Used), four inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Batch 09 HXC-D70 and HDC-3000 follow-up
+
+Imported and read back one UK Used observation for the exact Sony HXC-D70 Standard master: N.I. Broadcast Ltd £4,000, product code 9509, stock level 3, fully working and used in one studio from new. Each channel includes HXC-D70 head, HXCU-D70 CCU, approx. 25m multicore cable, modified DVF-L700 7-inch Full HD monitor/viewfinder and RM-B150 remote RCP. RCP cable, VCT14 tripod plate and lenses are optional extras. [Source](https://www.nibroadcast.com/1x-sony-hxc-d70-hdsdi-high-definition-multicore-camera-channel-with-cable-rcp-ccu-etc..html). Do not describe it as including a lens or tripod plate. UK Used is reference-only and excluded from automatic valuation.
+
+Rechecked the HDC-3000 uncertainty: Sony UK support model listings show current HDC family identifiers such as HDC3500, HDC-2500, HDC-P50 and HDC3200, but not an exact HDC-3000 camera. Sony press material uses “HDC-3000 series” wording while enumerating other actual camera models; this is not proof of an exact HDC-3000 sellable model. Keep RED VERIFY; do not attach HDC-3500/HDC-3200/HSC-300 or HDCU component prices.
+
+Batch 09 now has 23 GBP rows: 23 active (10 UK New, 13 UK Used). Cumulative Batches 04–13: 236 GBP rows, 232 active (127 UK New, 105 UK Used), four inactive.

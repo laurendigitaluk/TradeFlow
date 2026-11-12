@@ -336,3 +336,10 @@ Latest Batches 01–13: 263 total, 259 active (141 UK New, 118 UK Used), four in
 Two duplicate captures in Batch 13 were deactivated and retained for audit: Sony FE 12-24mm earlier Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (later active duplicate fa2cbd78-e707-481c-be3f-e46aa3cf18d5) and Sony ECM-B10 earlier Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (later active duplicate f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba). Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive.
 
 Latest Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Global LIVE shared_market_evidence: 4,805 total, 4,747 active, 58 inactive. This supersedes the prior 263/259 count. UK Used remains reference-only; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Established import route and latest counts
+
+Historical context confirms the established ChatGPT evidence import route is a privileged server-side Supabase SQL migration (used since 23 October), not the manual AI queue RPC. It is user-directed, runs through the trusted server-side integration, uses unique source_record_key + `ON CONFLICT DO NOTHING`, exact LIVE master/package, GBP, direct source and complete condition/availability/provenance notes, then verifies the row by direct LIVE read-back. It is not a browser/client RLS bypass and must never expose service-role credentials to the browser. The manual AI queue submit/review/verify RPCs do not import shared evidence and their statuses are not changed by this path; the dedicated app-level queue importer remains a separate missing feature.
+
+Latest LIVE read-back: numbered Batches 01–13 = 263 total, 257 active (139 UK New, 118 UK Used), six inactive. Global shared_market_evidence = 4,808 total, 4,750 active, 58 inactive (one non-GBP/null). Three queue-linked Anycubic imports are outside numbered batch prefixes: Kobra 4 Standard £159, Kobra 3 Max V2 + ACE2Pro Combo £499, Kobra S1 + ACE2Pro 4-Color Combo £409. Bambu A1 existing 3D Prima row refreshed in place at £215, in stock 50+. Queue remains 81 total / 28 imported / 43 rejected / 10 needs_research. TEST and Stripe untouched.

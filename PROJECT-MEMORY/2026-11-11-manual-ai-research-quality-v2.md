@@ -34,3 +34,9 @@ Migration applied to LIVE and read back. Transaction preflight passed. Helper te
 
 ## Independent page spot-check
 The current Blackmagic Cinema Camera 6K product page displays £2,069 and states MSRP excludes VAT, versus £1,219 ex VAT in the report. Production Gear's Micro Studio Camera 4K G2 page displays £744 ex VAT / £892.80 inc VAT, versus £870 inc VAT in the report snippet. Wex and MPB sample URLs returned cache misses. This validates the V2 rule: snippet-only prices remain comparisons until a direct page is opened and checked. No evidence was imported.
+
+## 12 November 2026 — AKASO legacy-prompt compatibility correction
+
+The AKASO prompt `4e9d16d5-baae-4fb7-8617-2e3a0a829cb5` was created 2026-11-11 13:39 UTC, before the V2 prompt update recorded at 13:54:55 UTC. Read-back confirmed the saved prompt text lacked `catalogue_package_name` and `page_access`; the current validator requires both, as well as `source_kind` and a `package_match` value consistent with the source-observed package. The companion JSON checkpoint was corrected on production: exact catalogue package snapshots added, source package descriptions normalised conservatively, and all ten findings retained as comparison_only. Ten other selected products remain in not_found; all 20 product UUIDs are covered.
+
+This correction changed only two production checkpoint files (the JSON response and its review markdown). It did not submit the prompt, create queue candidates, import shared evidence, or post a dashboard message. The prompt remains ready. LIVE SQL still returns `auth.uid() = NULL` / role `postgres`; no JWT impersonation, RLS bypass or privileged evidence write is permitted. The dashboard submit control uses the signed-in Platform Owner browser session, which is not available to the connected SQL tool. The corrected JSON is ready for that authenticated submission path, but it will stage comparison-only review references only; it is not a shared_market_evidence import.

@@ -6381,3 +6381,10 @@ Latest LIVE snapshot: global evidence 4,808 total, 4,750 active, 58 inactive; Ba
 Verified and imported one UK used HDC1500R channel at £8,650 from KitPlus/N.I. Broadcast. Exact package: HDC1500R head, HDCU-1000 CCU, HDVF20A viewfinder and RCP750; RCP1500 and 7-inch viewfinder are extra; lens excluded. Listing is older but remains in the dealer's current listings; confirm availability before purchase. LIVE row afd9e40d-fabb-4e28-b797-2e2b8f877948, existing HDC1500R Standard Package master. Full source in Batch 10 checkpoint. UK Used remains reference-only.
 
 Current Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — MoveMic Two package separation
+
+Standard MoveMic Two (MV-TWO-Z6) is two lavaliers + charging case + USB-C cable; receiver sold separately. Verified Shure UK £221 sale, Canford £305 ex VAT (on demand), Clifton £335 (awaiting stock). LIVE evidence IDs 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42, cee333d8-55fe-4536-93f6-a3fe11644744. The prior £258.30 Shure row was deactivated as superseded. Do not merge with MoveMic Two Receiver Kit.
+
+Current Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE: 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema and valuation logic unchanged.

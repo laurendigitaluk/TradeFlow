@@ -278,3 +278,10 @@ The previously unverified £117.90 and £129 leads were re-opened at their direc
 Both rows are attached to existing Caddx Walnut / Caddx Walnut Action Camera master a628320d-771b-43f9-8503-206e06221d49, active evidence with availability out_of_stock/backorder. No current-stock or buying recommendation should be inferred from these prices.
 
 Batch 03 now has 7 active rows (6 UK New, 1 UK Used). Batches 01–13 now total 257 observations, 254 active (139 UK New, 115 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Additional AKASO V50 X With SD evidence — 12 November 2026
+
+A further exact UK New source was imported by the parallel research workstream and verified against LIVE: AKASO V50 X-U3 / With 64GB microSDXC bundle, eBay UK Clarkson Direct, £153.99, new, three available, one sold. Seller is a UK business in Beverley HU17 8YA with 95.5% positive feedback and 12K items sold. Listing item specifics confirm MPN/model V50 X-U3 and package “With 64GB microSD Card”; seller description confirms V50 X and two rechargeable 1350mAh batteries. No returns accepted; eBay Money Back Guarantee applies. Listing updated 28 Oct 2026 and rechecked 12 Nov 2026. Direct source https://www.ebay.co.uk/itm/326424455596. Evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d; exact master V50 X / With SD Bundle; source_record_key batch03-followup-akaso-v50x-with-sd-ebay-15399-20261112.
+
+Batch 03 now has five active GBP rows (4 UK New, 1 UK Used). This supersedes the previous four-row count.

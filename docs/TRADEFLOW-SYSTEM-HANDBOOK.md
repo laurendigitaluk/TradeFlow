@@ -5259,3 +5259,17 @@ Migrations: 20261111210818_manual_ai_accept_embedded_unfenced_json.sql and 20261
 - Search method: product-specific shopping search and UK Google Shopping-oriented searches were used for each exact model/package; results were followed to OnBuy, WalkerWarehouse, official AKASO selector, PriceSpy, Kelkoo, Supersales and NewDealsOnline pages. Aggregator, stale, package-ambiguous and USD-only results remain leads, not accepted evidence.
 - Research only: no catalogue or shared_market_evidence rows changed; no review-queue candidates staged. No TEST, tenant/customer, Stripe or valuation data changed.
 - Continue with the next ten active LIVE Cameras products missing uk_new or uk_used, excluding the 70 products researched in batches 01–07.
+
+
+## 12 November 2026 — Scheduled market-evidence backlog reconciliation
+
+- The scheduled LIVE research backlog is preserved on the `production` branch in `CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-03.md` through `...-batch-13.md`.
+- Scope: 11 batches × 20 products = 220 product research records. Checkpoints contain 711 raw URL occurrences; after excluding Google Shopping/search-query URLs, 697 distinct non-search source URLs remain across the batch set.
+- These checkpoint findings were not staged into `platform_catalogue_research_queue` or inserted into `shared_market_evidence`. They must not be described as imported.
+- The missing Batch 03 project-memory record has now been added at `PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-03.md`.
+- A separate AKASO manual research prompt submitted 11 November created six queue candidates; all six were later rejected as duplicates of existing active shared evidence or because the linked page did not support the submitted model/package/price. The rejection notes are preserved in the queue and must not be overwritten or blindly re-imported.
+- A second manual AI research batch remains `in_progress`; its only prompt is still `ready` with no submitted response.
+- The existing manual AI submission RPC requires an existing prompt and authenticated platform-owner context. The SQL connector session reports `auth.uid() = NULL` and `platform_cloud_ai_owner_check() = false`; it cannot be used to stage the scheduled checkpoint batches.
+- Do not bypass RLS, impersonate JWT claims, or insert as the postgres SQL session. Implement an authenticated owner-facing importer with idempotency and human review.
+- Preserve every source and RED VERIFY note, including international currency, unavailable/ended listings, no-price references and comparison-only matches. Do not convert foreign currency to GBP. Only verified exact-match UK GBP evidence may influence valuation; used-market evidence is reference-only.
+- Keep TEST, LIVE tenant/customer data, Stripe and valuation logic isolated. Do not begin additional scheduled research until this backlog is reconciled.

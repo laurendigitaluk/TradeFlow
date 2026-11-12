@@ -416,3 +416,13 @@ Batch 10 now has 29 active GBP rows (14 UK New, 15 UK Used). Cumulative Batches 
 The earlier DigiBroadcast Shure MoveMic Two Receiver Kit £496.80 row was deactivated after reopening the direct page. DigiBroadcast currently defaults to EUR and displays €593.29 / €494.41, with RRP €617.65 / €514.71; the prior £496.80 capture is not supported by the page as currently rendered. Existing row dee5cf7a-27cb-4097-84a1-a918764c0cf2 remains retained but inactive with availability currency_unverified. The exact package contents are confirmed (two MoveMic lavaliers, charging case, receiver, two USB-C cables, 3.5mm cable and roll bag); use separately verified Canford GBP evidence instead. No duplicate or foreign-currency conversion.
 
 Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive currency-unverified record.
+
+
+## Shure MoveMic Two Receiver Kit — verified Canford GBP source and official RRP correction — 12 November 2026
+
+After the DigiBroadcast currency issue was identified, the direct Shure UK page and Canford UK dealer page were reopened:
+- Shure UK exact SKU MV-TWO-KIT-Z6: £519.00 Recommended Retail Price, not the £311.40 offer from the earlier search snippet. Direct page confirms the full receiver kit: two MoveMic wireless lavaliers, charging case, MoveMic Receiver, two USB-C cables, 3.5mm cable and roll bag. Existing LIVE official row b5e0c19c-179a-465e-954c-b1dab8da9286 corrected to £519.00 RRP; the note explicitly says this is not a discounted checkout offer. Source https://www.shure.com/en-GB/products/wireless-systems/movemic-wireless/movemic-two-kit.
+- Canford exact stock code 74-5422 / model MV-TWO-KIT-Z6: £431.00 ex VAT, on demand, available in 3–4 weeks. Page confirms the receiver, two lav transmitters, two windscreens, USB-C cable, charging case and roll bag. Imported as active UK New GBP/backorder against existing MoveMic Two Receiver Kit master 9709e49e-c48a-41b8-abcd-cbf4599d09e9. Evidence row 1c662613-7d5f-40e3-84eb-5ed2b84b5962; source https://www.canford.co.uk/Products/2031431/74-5422_SHURE-MOVEMIC-TWO-RECEIVER-KIT-2x-lavalier-1x-MoveMic-Receiver-with-charge-case.
+- DigiBroadcast row dee5cf7a-27cb-4097-84a1-a918764c0cf2 remains inactive/currency_unverified because the page currently defaults to EUR and no GBP price was confirmed; its former £496.80 is not a valid active GBP observation.
+
+Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive currency-unverified row. LIVE Batches 01–13 now total 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.

@@ -71,13 +71,13 @@ Queue status snapshot after research:
 - Record exact package and condition. Do not assign a bundle price to a body-only product or a standalone component.
 - Prefix uncertain notes with RED VERIFY and state what Gary should check.
 - Shure MV88+ Video Kit has several exact UK retail offers (£233–£259); verify current checkout and stock.
-- Skydio 2+ Sports Kit is discontinued for consumer sale. The $550 USD Sports Upgrade is an accessory upgrade, not the complete kit.
+- Skydio 2+ Sports Kit is discontinued for consumer sale. The $550 USD Sports Upgrade is an accessory upgrade, not the complete kit; the Skydio shop says it sells only in the US and Canada, so there is no verified UK offer. The X10 Ready Case guide confirms contents but no price; Maverick's $17,900 USD Starter Kit is a different package and its direct page fetch returned 404.
 - Sony SRG-XB25 has conflicting UK leads (£1,452 inc VAT on a Converge result whose page is now 410 Gone; £2,799.98 at SCAN awaiting ETA).
-- Hubsan H501S has current/ended/new used-market leads with materially different condition and package; distinguish single unit, range extender and two-drone lot.
+- Hubsan H501S has current/ended/new used-market leads with materially different condition and package; distinguish single unit, range extender and two-drone lot. OnBuy's search result showed £543.15 plus delivery for a new BNF package but the direct page returned 404 and its July delivery estimate is stale.
 - Nikon AF-S DX 18-55mm f/3.5-5.6G VR has exact used UK stock from MPB and LCE; do not mix VR, VR II or AF-P variants.
 - Nikon F2 Photomic SB exact DP-3 listings are mostly Japan-based; UK £660 listing ended with zero bids and is not a completed sale.
 - Skydio X10 Ready Case official contents are documented, but no exact UK price was found; Maverick's $17,900 Starter Kit is a different package.
-- Z CAM E2-M5G Voosestore page is Sweden-facing and displays SEK 58,995; no GBP conversion.
+- Z CAM E2-M5G Voosestore page is Sweden-facing and displays SEK 58,995; no GBP conversion. Current Z CAM About page lists E2 Mark II products but not E2-M5G; do not infer discontinued status solely from that omission.
 - Sony HXC-D70 £4,000 listing is a complete used camera channel, not the camera head alone.
 - Manfrotto MVK500XAM exact kit is £369 inc VAT at CVP, but stock is in the EU warehouse.
 - Walkera DEVO-10 page includes RX1002 and displays £149.95 inc VAT, but current stock is unclear.
@@ -85,7 +85,7 @@ Queue status snapshot after research:
 - ZBlade 4TB exact SKU EXP4M6G004TB is €2,049 incl VAT at Syntex, on request; CVP's default £665.99 is not proven to be the 4TB selector price.
 - Sony PMW-F55 £1,099 body-only eBay and £9,750 ex VAT ES Broadcast leads have package/availability gaps; ES Broadcast page returned 503.
 - Nikon S3M global auction index shows raw EUR sales; do not use its GBP-normalised estimate as a direct UK GBP listing.
-- Z CAM IPMAN Gemini Pro is £47.99 inc VAT at ProAV, backorder around seven working days.
+- Z CAM IPMAN Gemini Pro is £47.99 inc VAT at ProAV, backorder around seven working days. Official Z CAM page gives historical USD $49.90 MSRP and scheduled ship date in September 2021; not a current price.
 - Sony HDCU-3500 is €14,400 ex VAT at Axis-One; UK £31,000 + VAT KitPlus listing is a complete HDC-3500 channel including the CCU.
 - Leica M11 Monochrom UK leads are £8,100–£8,500; The Classic Camera's stock/pre-order messaging conflicts, and Clifton's estimated stock date is stale.
 - Sony HDC-5500RV has no visible price; Teltec says price on request. Visuals' £60,036 inc VAT HDC-5500 is not the RV model.

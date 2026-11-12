@@ -5772,3 +5772,10 @@ Current Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six in
 Three exact UK sources were added for the standard MoveMic Two package (two lavaliers, case and USB-C cable; receiver sold separately): Shure UK £221 sale / £369 RRP; Canford £305 ex VAT, ordered on demand 3–4 weeks; Clifton Cameras £335 displayed, awaiting stock 5–7 days (VAT basis not explicit). LIVE rows 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42 and cee333d8-55fe-4536-93f6-a3fe11644744. Old Shure £258.30 row e8a60443-aef8-4e3f-ada1-ca6183292f05 deactivated as superseded. Keep this package separate from MoveMic Two Receiver Kit.
 
 Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE evidence 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Sony UHC-8300 and HDC-3200 camera-head evidence scope
+
+Existing Visual Impact evidence was reverified: UHC-8300 £396,117.94 inc VAT is the 8K camera head only; the UHCU-8300 CCU is separate, with lens/viewfinder not included. HDC-3200/DF £37,651.84 inc VAT is the camera head with dual-filter option; HDCU-3500/3100 CCU or HDCE extension adaptor are separate, lens/viewfinder not included. Existing rows 1b7ae87f-0944-44d2-ab66-128d462fe934 and 337cdfd8-3967-413b-b61c-7d64c4381df5 were updated in place; no duplicate or master change. Source links and detailed notes are in the Batch 12 checkpoint.
+
+MKS-R3210 remains without an exact UK GBP price; do not map the BKS-R3210 eBay listing to it. Batch 12 counts unchanged. TEST, Stripe, schema and valuation logic untouched.

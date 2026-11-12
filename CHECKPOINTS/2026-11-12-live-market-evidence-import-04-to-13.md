@@ -313,3 +313,25 @@ Direct LIVE read-back now confirms **218 total evidence rows across Batches 04�
 The four inactive records are one each in Batch 07 (BuzzFlyer DEVO-10 Notify Me/no stock), Batch 08 (NEEWER KM19 seller away), Batch 12 and Batch 13. UK Used remains reference-only and does not affect automatic valuation. LIVE valuation selects latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder UK New rows can still influence automatic valuation; no-stock/seller-away rows remain inactive. No schema or valuation logic changed.
 
 This supersedes the prior 211-row / 207-active cumulative snapshot. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — LIVE reconciliation after Batch 12 follow-up
+
+Direct LIVE read-back now confirms **220 total evidence rows across Batches 04–13; 216 active and 4 inactive; all 220 are GBP**. Active evidence comprises **112 UK New and 104 UK Used**. Batch 12 increased from 25 to 27 total rows and from 24 to 26 active after two additional observations; one inactive price-conflict row remains.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+The four inactive records are one each in Batch 07 (BuzzFlyer DEVO-10 Notify Me/no stock), Batch 08 (NEEWER KM19 seller away), Batch 12 (Sony UK E 35mm £225 price conflict) and Batch 13. UK Used remains reference-only. LIVE valuation selects latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder UK New rows can still influence automatic valuation; no-stock/seller-away rows remain inactive. No schema or valuation logic changed.
+
+This supersedes the prior 218-row / 214-active cumulative snapshot. TEST and Stripe remain untouched.

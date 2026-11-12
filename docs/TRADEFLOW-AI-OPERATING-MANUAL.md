@@ -6388,3 +6388,10 @@ Current Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six in
 Standard MoveMic Two (MV-TWO-Z6) is two lavaliers + charging case + USB-C cable; receiver sold separately. Verified Shure UK £221 sale, Canford £305 ex VAT (on demand), Clifton £335 (awaiting stock). LIVE evidence IDs 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42, cee333d8-55fe-4536-93f6-a3fe11644744. The prior £258.30 Shure row was deactivated as superseded. Do not merge with MoveMic Two Receiver Kit.
 
 Current Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE: 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Broadcast camera head versus complete-system evidence
+
+UHC-8300 and HDC-3200 Visual Impact offers are camera-head-only observations, not complete systems. UHC-8300 £396,117.94 inc VAT excludes the separate UHCU-8300 CCU; HDC-3200/DF £37,651.84 inc VAT includes the dual-filter camera-head variant, while HDCU-3500/3100 CCU or HDCE adaptor are separate. Lens/viewfinder are not listed as included. Existing evidence rows were clarified in place; see Batch 12 checkpoint.
+
+MKS-R3210 still has no exact UK GBP offer. eBay's £61.75 listing is BKS-R3210, not MKS-R3210; do not cross-match. No master or valuation changes.

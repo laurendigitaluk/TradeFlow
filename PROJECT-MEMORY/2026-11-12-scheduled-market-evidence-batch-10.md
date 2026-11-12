@@ -318,3 +318,8 @@ Batch 10: 30 total, 29 active (14 new, 15 used), one inactive. Current Batches 0
 ## 12 November 2026 — Sony HDC-3100 camera-head source
 
 Imported Visual Impact exact HDC-3100 SKU at £25,066.80 inc VAT (£20,889 ex), available to order but not held in stock. The In The Box list contains only camera-head accessories; no CCU, lens or viewfinder. Explicitly record as camera head only, with HDCU-3100/HDCU-2000 CCU separate. LIVE row 52a8170b-9521-41f0-9f64-6d172408377e against existing HDC3100 Standard Package master. Full source and notes in Batch 10 checkpoint. Batch 10 now 31 total, 30 active (15 new, 15 used), one inactive. Batches 01–13: 263 total, 259 active (141 UK New, 118 UK Used), four inactive. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Sony HDC-3100 Visual Impact offer
+
+Exact Sony HDC-3100 camera head, Visual Impact SKU HDC-3100, £25,066.80 inc VAT (£20,889 ex VAT), Available to Order (not held in stock). In The Box only instructions/CD-ROM, cable clamp belt, screws and labels; no CCU, lens or viewfinder. Matched to existing HDC-3100 / Standard master 992a246f-db39-44e6-9c07-c25a82175e98. Evidence row 52a8170b-9521-41f0-9f64-6d172408377e. Source https://www.visuals.co.uk/hdc-3100-camera.html. Batch 10 now 31 total, 30 active (15 new, 15 used), one inactive currency-unverified Shure row.

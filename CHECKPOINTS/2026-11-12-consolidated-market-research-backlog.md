@@ -120,3 +120,25 @@ Cumulative Batches 04–13: 138 GBP rows, 136 active (76 UK New, 60 UK Used), 2 
 | 13 | 12 | 12 | 7 | 5 | 0 |
 
 No uncertain currency, seller, model suffix or package mismatch was promoted. Used evidence is reference-only. The LIVE valuation function still selects latest active GBP UK New by observed_at/created_at and does not filter availability; no valuation logic was changed. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — Batch 10 RED VERIFY follow-up and cumulative totals
+
+Batch 10 received 12 further verified GBP observations: Sony LMD-A240 used Visual Impact £1,560 and eBay/N.I. Broadcast £1,150; Shure MV7+ SCAN £259 new; Sony SRG-A40 white Currys Business £3,635.98 and TopAV £5,054.39 new; Sony VG-C3EM Wex £69 and Harrison £70 used; Sony FE PZ 28-135 CameraWorld £1,960 new and MPB £814 used; Sony PDW-U1 eBay £208.70 with PSU and Snet Technologies £1,459.95 with warranty; Shure MoveMic Two Receiver Kit official £311.40 new. Batch 10 now 24 active rows: 12 UK New and 12 UK Used. See batch checkpoint for direct source links and status.
+
+Cumulative Batches 04–13: 150 GBP rows, 148 active (81 UK New, 67 UK Used), 2 inactive (BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 16 | 16 | 6 | 10 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+No master/schema/valuation logic changes. Used evidence remains reference-only; latest active GBP UK New source continues to be the valuation reference. TEST and Stripe untouched.

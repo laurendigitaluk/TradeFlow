@@ -110,3 +110,8 @@ N.I. Broadcast exact Sony RM-BR300 PTZ remote panel, product code 7389, £499, s
 ## 12 November 2026 — Sony RM-BR300 used panel source
 
 Added N.I. Broadcast exact Sony RM-BR300 PTZ remote panel, product code 7389, £499, used, stock 2. Confirmed not RM-BR300H; no accessories listed, so recorded panel-only. Matched to existing RM-BR300 master 2c8b889e-6afc-429c-b8e6-a0d96c426764. LIVE evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31; source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Batch 13 now 50 active (29 new, 21 used), zero inactive. Batches 01–13: 263 total, 259 active (141 UK New, 118 UK Used), four inactive. UK Used reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Duplicate capture cleanup and count correction
+
+Detected two exact duplicate source captures in Batch 13 and deactivated the earlier rows while preserving later follow-up records: Wex ECM-B10 duplicate 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (keep f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba); Sony UK FE 12-24mm F2.8 GM duplicate 0c023277-93cd-47bb-8677-4f005693e738 (keep fa2cbd78-e707-481c-be3f-e46aa3cf18d5). Both duplicates remain in DB inactive for audit. Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive. Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six inactive. No master/schema/valuation changes; TEST and Stripe untouched.

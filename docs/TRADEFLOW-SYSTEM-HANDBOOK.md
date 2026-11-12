@@ -5713,3 +5713,10 @@ Sony HDC-3100 Visual Impact exact SKU HDC-3100 was imported at £25,066.80 inc V
 Sony RM-BR300 exact N.I. Broadcast panel, product code 7389, £499 used, stock 2, was matched to existing RM-BR300 master (not RM-BR300H), panel-only. LIVE row 48d36782-0c1b-42ff-8fd0-938e73779c31. Source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. UK Used remains reference-only.
 
 Batches 01–13 now 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — HDC-3100 UK camera-head evidence
+
+An exact Sony HDC-3100 Visual Impact source was added to the existing HDC-3100 / Standard master: £25,066.80 inc VAT (£20,889 ex VAT), Available to Order, not held in stock. SKU HDC-3100. In The Box contains instructions/CD-ROM, cable clamp belt, screws and labels only; this is a camera head, not a complete channel (no CCU, lens or viewfinder). Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; source https://www.visuals.co.uk/hdc-3100-camera.html.
+
+Current Batches 01–13: 263 rows, 259 active (141 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,805 total, 4,749 active, 56 inactive. Batch 10: 31 total, 30 active (15 new, 15 used), one inactive. TEST, Stripe, schema, master data and valuation logic untouched.

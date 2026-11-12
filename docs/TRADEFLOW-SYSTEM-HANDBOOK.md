@@ -5643,3 +5643,10 @@ Cumulative Batches 03–13: 246 observations, 243 active (133 UK New, 110 UK Use
 A current direct eBay UK listing was verified for the existing AKASO V50 X / With SD Bundle master d763014a-70e2-4a0e-a7ce-bf8e0afdb0e1: Clarkson Direct £153.99, new, two available / one sold; listing title and item specifics identify V50 X-U3 and 64GB microSD card, while seller description confirms V50 X and two 1350mAh batteries. UK business seller in Beverley, 95.5% positive, 11K items sold; no returns, eBay Money Back Guarantee applies. Evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d is active UK New GBP and was read back from LIVE. Source https://www.ebay.co.uk/itm/326424455596. The earlier YPC £109.99 was a dated 22 October snapshot and must not be treated as a current live offer.
 
 Batches 01–13 now total 255 observations, 252 active (137 UK New, 115 UK Used), three inactive. Batch 03: five active (four new, one used). UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Caddx Walnut UK retailer price references
+
+Two direct UK specialist-retailer Caddx Walnut offers were imported against existing master a628320d-771b-43f9-8503-206e06221d49: FlyingTech £117.90 inc VAT (SKU FPV-WALNUTND816, sold out) and Unmanned Tech £129 incl. taxes (CDX-WLNT-AC, sold out/backorder). Package contents are documented in the Batch 03 checkpoint. Evidence rows 3b791f3e-c1ab-455d-946e-add1a4b9e7b8 and 7d57b245-5b93-4c0c-a570-c31639e50c7b were read back from LIVE. Availability is explicitly out_of_stock/backorder; these are price references, not current stock. Do not present them as currently available.
+
+Batches 01–13: 257 observations, 254 active (139 UK New, 115 UK Used), three inactive. Batch 03: 7 active (6 new, 1 used). TEST, Stripe, schema, master data and valuation logic untouched.

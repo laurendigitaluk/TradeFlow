@@ -379,3 +379,24 @@ Batch 09 now has **16 active records: 6 UK New and 10 UK Used; all 16 are GBP**.
 Other leads remain RED VERIFY and were not promoted: Sony RM-BR300H has only base RM-BR300 UK price; PowerDolphin batteries are third-party replacements; HVR-Z5U sources include NTSC/PAL suffix and foreign currency mismatches; Sony NP-FV70 exact A/non-A version unresolved; HDC-F5500V package not enumerated; GF7 body and 12–32mm kit are not interchangeable; Skydio X2E only has a US-dollar offer; Nikon F55 body and lens kit differ; Nikon MB-N12 Jessops is awaiting stock while Harrison is available; SmallRig RC100B ProAV stock wording conflicts; Sony NXLK-IP50Y has only JPY list price; HDC-1500 package contents unclear; HDC-3000 exact product not located; Pentax FA31 colour/version and current prices unresolved; Shure SM81-LC package lacks cable; RED Gemini Japan seller GBP displays are not UK seller evidence. Do not convert foreign currency or promote package mismatches.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 8. Further RED VERIFY review — 12 November 2026
+
+Four further direct UK source observations were added to LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Sony HDC-F5500V 4K Studio Camera | Visuals | £85,619.24 inc VAT (£71,349.37 ex VAT) | Exact SKU HDC-F5500V-4K; available to order from supplier, not held in stock. System configuration/accessories not itemised. [Source](https://www.visuals.co.uk/hdc-f5500/4k-1.html) |
+| SmallRig RC 100B Pro Version UK Standard 5143 | eBay UK — SmallRig Direct UK Store | £242.90 | Exact MPN 5143 / EAN 6941590021577; New; 3 available; UK business seller in Glenfield. [Source](https://www.ebay.co.uk/itm/376205386123) |
+| Nikon F55 35mm SLR body only | eBay UK — ColinsCameras | £28.60 | Used Very Good; Buy It Now; UK business seller in Woodmancote. Listing shows £35 international postage despite UK seller location; price recorded item-only, shipping caveat retained. [Source](https://www.ebay.co.uk/itm/326836970654) |
+| Pentax HD PENTAX-FA 31mm F1.8 Limited, black | Clifton Cameras | £999.00 | Exact MPN 20210 / EAN 027075302839; Orders Accepted, Awaiting Stock, usually 5–7 days. [Source](https://www.cliftoncameras.co.uk/pentax-hd-pentax-fa-31mm-f18-limited-lens/lens-colour/black) |
+
+Previously imported observations were reopened and refreshed:
+- Peter Rogers Pentax smc PENTAX-DA* 55mm F1.4 SDM: exact SKU 21790, £559 reduced from £799, in stock, £9.99 delivery.
+- Andertons Shure SM81: exact SKU SM81, £381 reduced from £398, one unit in off-site warehouse. Confirm included cable/accessories if package completeness is material.
+- Harrison Cameras Nikon MB-N12: exact VFC01001 / EAN 4960759910356, £329, one in stock.
+
+Batch 09 now has **20 active GBP rows: 9 UK New and 11 UK Used**. Four new rows were added to the previously confirmed 16. UK Used records remain comparison-only and do not affect automatic valuation. Existing source caveats remain: RM-BR300 is not the H suffix; PowerDolphin batteries are third-party replacements; HVR-Z5E is PAL and not HVR-Z5U NTSC; NP-FV70A suffix/capacity requires exact match; Shure SM81 cable package details need confirmation; Sony HDC-1500 channel contents are not enumerated; HDC-3000 identity unresolved; Skydio X2E has only foreign USD evidence; NXLK-IP50Y only has JPY list price. Do not convert foreign currency or promote suffix/package mismatches.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

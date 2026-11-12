@@ -252,3 +252,26 @@ For the next scheduled run:
 6. Continue the permissive evidence-capture policy: keep useful URLs even when sold out, unverified, missing price or near-match; prefix uncertainty with RED VERIFY; do not invent or convert non-GBP prices.
 7. Check auth.uid() and platform_cloud_ai_owner_check() before queue staging. Use only the supported authenticated platform-owner RPC. If auth.uid() is null or owner check fails, do not write directly; create the next checkpoint and matching project-memory file.
 8. Do not touch TEST, Stripe, master products, schema or valuation logic.
+
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+The follow-up re-opened the strongest exact UK source pages and compared them with LIVE shared_market_evidence before writing. Nine additional records were imported idempotently and read back:
+
+| Master product | Source | Price | Evidence/status |
+|---|---|---:|---|
+| RØDE Wireless GO Gen 3 | The Disc DJ Store | £179.00 | New; one available; standard dual-channel 1 RX + 2 TX package. [Source](https://www.thediscdjstore.com/products/rode-wireless-go-gen-3) |
+| RØDE Wireless GO Gen 3 | Jessops | £179.00 | New; home delivery in stock; exact standard box contents. [Source](https://www.jessops.com/p/rode/wireless-go-gen-3-microphone-system-211476) |
+| RØDE Wireless GO Gen 3 | Wex Photo Video | £159.00 | New; blue colour variant; limited stock. [Source](https://www.wexphotovideo.com/rode-wireless-go-gen-3-blue-3290918/) |
+| RØDE Wireless GO Gen 3 | Westend DJ | £179.99 | New; fewer than five items left; next-day delivery shown. [Source](https://westenddj.co.uk/products/rode-wireless-go-gen-3) |
+| Sony FE 24-70mm F2.8 GM II | London Camera Exchange | £1,699.00 | New; in stock; £100 cashback after claim. [Source](https://www.lcegroup.co.uk/New/Sony-FE-24-70mm-F2.8-G-Master-II-Lens_112977.html) |
+| Sony FE 24-70mm F2.8 GM II | CameraWorld | £1,813.00 | New; SKU 247022; in stock, two available, 3–5 day dispatch. [Source](https://www.cameraworld.co.uk/sony-fe-24-70mm-f28-gm-ii-lens.html?condition=new) |
+| Sony SRG-300H | eBay UK — Tayo Keyboard | £567.55 | Used; current Buy It Now; seller in Tilbury, UK; no returns. [Source](https://www.ebay.co.uk/itm/266971897618) |
+| Sony SRG-300H | eBay UK — Bargain Buys 247 | £491.34 | Used; ended listing; displayed amount includes £16.34 Buyer Protection fee (base item £475); not confirmed as a completed sale. [Source](https://www.ebay.co.uk/itm/206392614810) |
+| Nikon Nikkor-H Auto 50mm f/2 | eBay UK — rinkumstinkum | £71.05 | Used, described Excellent; seller in Basingstoke, UK; item price only, UK delivery amount not established. [Source](https://www.ebay.co.uk/itm/178553684134) |
+
+LIVE read-back confirms Batch 05 now has **18 active records: 10 UK New and 8 UK Used; all 18 are GBP**. The nine follow-up records comprise six UK New and three UK Used. Used evidence remains reference-only and is not selected by the live automatic valuation calculation.
+
+Remaining RED VERIFY leads were not promoted where exact UK pricing or availability is not established. In particular, the PPP Cameras Nikkor-H Auto page displays £60 but its terms page still states prices are in euros; the LCE Nikon D5000 £49.99 page did not expose a current price/stock state on re-open; the generic Insta360 Flow 2 Series master still spans distinct editions and bundles; Sony UWP-D22 listings are K33-band packages; and Sony HDC-1700 includes a camera control unit not confirmed in the Standard master package. The X10D propeller listing is for Skydio 2/2+, not X10D. Other overseas, suffix, accessory and package mismatches remain outside exact evidence.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. Used records do not affect automatic valuation.

@@ -79,3 +79,12 @@ Official Shop-AKASO says Diving Bundle = V50 X Standalone + 64GB SD + Floating H
 ## 12 November 2026 — Caddx price references added
 
 Three Caddx UK GBP price references were added and read back: Walnut £117.90 FlyingTech (sold out); Walnut £129 Unmanned Tech (sold out/backorder); Peanut £218.99 YourFPV (out of stock/waitlist). Evidence IDs 3b791f3e-c1ab-455d-946e-add1a4b9e7b8, 7d57b245-5b93-4c0c-a570-c31639e50c7b and 3cf32e49-d7b0-4d30-9851-9da8155e1577. Full source/package notes in Batch 03 checkpoint. All remain active UK New GBP price references with availability recorded. Current valuation does not filter active UK New by availability, so these out-of-stock/backorder references may influence automatic valuation; no valuation logic changed. Batch 03 now 8 active (7 new, 1 used).
+
+
+## 12 November 2026 — GoPro exact model source resolution
+
+Resolved the GoPro HERO ambiguity to exact GoPro HERO (2014) using MPB's current UK model page and three individual SKU pages. Imported UK Used observations against existing HERO master 42d6393c-8d47-422b-a6db-06ce5f8c4759: £45 Excellent (SKU 4037958; evidence 27881221-29e8-43a4-bc76-559e8113d34a); £41 Good (SKU 3962930; evidence 1c3d3c28-4eac-4415-a4dd-5fbdecb882b3); £31 Good (SKU 4089283; evidence f8aa0b22-dddc-46c2-8346-96746432a1ea). Each includes a rechargeable battery and USB cable, with accessory differences and MPB 12-month warranty retained.
+
+Also imported exact GoPro HERO Session Cash Converters Redcar item 053000253199 at £54.99, very minor cosmetic wear, good working condition, 12-month warranty, evidence 490f96fe-0cf6-4290-9a94-7e84afdff731. The separate £49.99 Hanley listing was confirmed sold and not imported. Full URLs and notes in Batch 03 checkpoint.
+
+Batch 03 now 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 rows, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.

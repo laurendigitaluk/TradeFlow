@@ -1,3 +1,11 @@
+## 12 November 2026 — second Batch 13 retailer recheck and final totals
+
+A second Batch 13 retailer pass added ECM-B10 CameraWorld £159 new/in stock; FE85 GM II LCE £1,799 and Park £1,799 new/in stock (cashback after claim); FE12-24 GM CameraWorld £2,548 new/two available and £2,548 open-box. Batch 13 now has 41 total GBP rows, 40 active (21 UK New, 19 UK Used), one inactive package-unverified PowerDolphin Wizard listing.
+
+Final cumulative Batches 04–13: 204 GBP rows, 200 active (108 UK New, 92 UK Used), 4 inactive. Inactive: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away; Sony E35 price conflict; PowerDolphin Wizard package unverified. Per-batch total/active: 04 18/18; 05 18/18; 06 12/12; 07 14/13; 08 14/13; 09 16/16; 10 24/24; 11 22/22; 12 25/24; 13 41/40. Used evidence is reference-only. No schema or valuation changes. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 13 LIVE evidence follow-up and cumulative totals
 
 Batch 13 gained 24 source observations: ECM-B10 Park/Bristol/Harrison new £175/£175/£179 and Wex/MPB used £137/£145; FE85 GM II CameraWorld £1,789 new and £1,710 open-box, Wex £1,269 used and LCE £1,249.99 used; FE12-24 GM LCE £2,645 new; Ranger full-size module Flying Tech £99 and 3DXR £99.99; XDCA-FS7 MPB £123/£144, eBay £175 and 3D Broadcast £390 used; SRG-X400 black/white SCAN £3,199.99 each awaiting ETA; HOVERAir AQUA Standard Currys £1,129 and Ballicom £1,113.56; PowerDolphin Wizard sold used £449.99; HXR-MC50E Cash Converters sold £129.99, eBay sold £229.99 and faulty £69.99. The new PowerDolphin Wizard eBay £1,449 row was deactivated pending full Wizard package confirmation. The HVR-V1E eBay offer was excluded because its item specifics identify HVR-Z1E.

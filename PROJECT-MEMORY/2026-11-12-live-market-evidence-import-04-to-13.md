@@ -315,3 +315,10 @@ Batch 03 includes three UK New out-of-stock/backorder Caddx price references; cu
 DigiBroadcast Shure MoveMic Two Receiver Kit row dee5cf7a-27cb-4097-84a1-a918764c0cf2 was deactivated because the direct page currently displays EUR and the earlier £496.80 GBP amount is unsupported. It remains retained inactive with currency_unverified. Batch 10 now 30 total, 29 active, one inactive.
 
 Latest Batches 01–13: 261 total, 257 active (140 UK New, 117 UK Used), four inactive. Global LIVE shared_market_evidence: 4,803 total, 4,747 active, 56 inactive. This supersedes 260/257 and prior global count. UK Used remains reference-only; no TEST, Stripe, schema or valuation changes.
+
+
+## 12 November 2026 — Batch 13 RM-BR300 and latest totals
+
+Added exact Sony RM-BR300 N.I. Broadcast £499 used source against separate RM-BR300 master, not RM-BR300H. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31. Batch 13 now 50 active (29 new, 21 used).
+
+Latest Batches 01–13: 262 total, 258 active (140 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. This supersedes prior 261/257 snapshot. UK Used remains reference-only; TEST and Stripe untouched.

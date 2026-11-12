@@ -50,3 +50,12 @@ No queue write was attempted. No direct table write, impersonated claim, RLS byp
 Read Batch 06 checkpoint and this project-memory file first. Exclude all 20 product UUIDs in Batch 06, all IDs in previous scheduled checkpoints, all outstanding queue candidates and outstanding manual AI prompts. Recheck status immediately before research. Select the next 20 dynamically without SQL OFFSET. Continue the same open-page research and evidence-retention rules. Stage only through the authenticated platform-owner RPC if owner auth is valid; otherwise create the next checkpoint and project-memory files and do not write directly to the queue.
 
 Do not modify master products, schema, valuation logic, TEST or Stripe.
+
+
+## 12 November 2026 — Batch 06 RED VERIFY follow-up
+
+Three additional LIVE observations were added and read back: Aputure LS 600d Pro / eBay UK £1,225.58 used (seller in Edinburgh, accessories not established); Benro GH2N / CameraWorld £342 new (in stock, exact SKU/EAN); Benro GH2N / Harrison Cameras £299 new (two in stock, exact code/barcode). The existing Clifton Cameras GH2N £289 source was re-opened afterwards and its observed_at refreshed. LIVE read-back confirms Clifton £289 is the latest active UK New observation for this product, with Harrison and CameraWorld retained as separate price references.
+
+Corrected the existing CVP Aputure LS 600d Pro used row: the live source says Coming Soon / Awaiting Grading and no unit currently available, not in stock/used-good. Its £1,000 ex-VAT price remains as a coming-soon used reference.
+
+Batch 06 now has 12 active GBP records (8 UK New, 4 UK Used). The valuation function uses the latest active GBP uk_new observation by observed_at (then created_at), not a minimum/average. The order of observation timestamps was checked so the latest source is the actual last rechecked page. Unresolved model, package, stock and currency leads remain RED VERIFY in the checkpoint. No master data, schema, valuation code, TEST or Stripe changes.

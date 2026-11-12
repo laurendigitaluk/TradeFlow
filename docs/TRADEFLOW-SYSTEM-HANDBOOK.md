@@ -5697,3 +5697,10 @@ Batches 01–13: 261 observations, 257 active (140 UK New, 117 UK Used), four in
 Four additional UK Used source observations were verified from direct CVP/MPB pages and read from LIVE: URSA Cine 12K LF Body CVP Open Box £4,989.40 ex VAT / £5,987.28 inc, Like New; Studio Camera 6K Pro CVP £1,580.40 ex VAT, Excellent; URSA Cine 17K 65 + EVF CVP £16,199.10 ex VAT, Excellent, full EVF/8TB package; and URSA Cine 12K LF PL Fit MPB £5,509, Excellent, PL-fit with EF mount included. Exact row IDs, package contents and source URLs are documented in the Batch 02 checkpoint. Preserve ex-VAT basis and package/mount details. UK Used records remain reference-only and do not feed automatic valuation.
 
 Batches 01–13 now total 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## 12 November 2026 — Sony RM-BR300 and current evidence totals
+
+A direct N.I. Broadcast UK Used listing for exact Sony RM-BR300 (not RM-BR300H), £499, stock 2, was matched to the separate existing RM-BR300 / Standard master and imported. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31; source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Do not attach it to the RM-BR300H master. Accessories are not enumerated, so note panel-only.
+
+Latest Batches 01–13: 262 rows, 258 active (140 UK New, 118 UK Used), four inactive. Global LIVE shared_market_evidence: 4,804 total, 4,748 active, 56 inactive. Batch 13: 50 active (29 new, 21 used). TEST, Stripe, schema, master data and valuation logic untouched.

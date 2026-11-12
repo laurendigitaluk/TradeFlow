@@ -424,7 +424,7 @@ Existing evidence was rechecked:
 
 Batch 08 now has **14 database rows: 13 active (10 UK New, 3 UK Used) and one inactive UK New seller-away row; all 14 are GBP**.
 
-Other leads remain RED VERIFY: official Hubsan /eur pages show GBP prices for MINI and ZINO MINI PRO but the UK delivery region is not confirmed; Hubsan HT55 package contents remain unclear; H109 page suffix does not match the H109 master; Menkind Zino Pro £279 is an old crawl and was superseded by the current Elite Models £389.99 standard package; GoPro HERO6 eBay offers are bundles with differing batteries/accessories; the earlier MPB Good £82 HERO6 listing is no longer visible; NEEWER KM19 seller-away price is inactive; NEEWER PA028E title/spec suffix mismatch remains; NEEWER NL660 official stock wording remains mixed. No unsupported region, package or model match was promoted.
+Other leads remain RED VERIFY: official Hubsan /eur pages show GBP prices for MINI and ZINO MINI PRO but the UK delivery region is not confirmed; Hubsan HT55 package contents remain unclear; H109 page suffix does not match the H109 master; Menkind Zino Pro £279 is an old crawl and was superseded by the current Elite Models £389.99 standard package; GoPro HERO6 eBay offers are bundles with differing batteries/accessories; the earlier MPB Good £82 HERO6 listing is no longer visible; NEEWER KM19 seller-away price is inactive; NEEWER PA028E is now cross-checked by exact UK product title/SKU 66604178 and the official Australian page for the same SKU; the UK specs field still says PA028 without E, so retain that caveat in notes; NEEWER NL660 official stock wording remains mixed. No unsupported region, package or model match was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
 
@@ -461,3 +461,8 @@ One further exact UK New observation was imported into LIVE and read back:
 Batch 08 now has 15 database rows: 14 active (11 UK New, 3 UK Used) and one inactive UK New seller-away row; all 15 are GBP. The existing NEEWER RH12C £79.99 row remains active with its stock caveat: the official page simultaneously says “More stock coming soon” and shows two in stock. The TP014 £82.39 Shopping variant remains unverified because the variant page could not be opened; do not replace the official £102.99 observation without confirming that exact variant and its checkout availability.
 
 The NEEWER LS-29 PRO lead is no longer RED VERIFY for model/package/price; availability is still out of stock. PA028E remains RED VERIFY pending exact model/package and current UK price. UK Used remains reference-only and excluded from automatic valuation. No valuation logic, schema, TEST or Stripe data was changed.
+
+
+## 9. PA028E suffix cross-check — 12 November 2026
+
+The existing NEEWER UK PA028E row was rechecked in place, not duplicated. Direct UK page: £45.99 (was £64.99), SKU 66604178, 3 in stock, Add to Cart, UK warehouse dispatch normally 2–5 working days. Product title and SKU identify PA028E; UK specifications field says PA028, while the official NEEWER Australia page for the same SKU explicitly says PA028E. The existing evidence notes and observed_at were updated, preserving the minor UK specs-field suffix caveat. PA028E is no longer RED VERIFY for model/package/price. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.

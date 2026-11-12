@@ -425,3 +425,12 @@ Batch 13 now has 49 active GBP rows (29 UK New, 20 UK Used), zero inactive. Cumu
 A further UK used source was found for the related RM-BR300 model. N.I. Broadcast direct page confirms exact Sony RM-BR300 PTZ camera remote panel (not RM-BR300H), product code 7389, £499, stock level 2, Used. Imported against the separate existing RM-BR300 / Standard master ID 2c8b889e-6afc-429c-b8e6-a0d96c426764; did not attach it to the RM-BR300H master. Page does not enumerate accessories; recorded as panel-only. UK Used reference only. Source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31; source_record_key batch13-followup-sony-rm-br300-nibroadcast-7389-499-20261112.
 
 Batch 13 now has 50 active rows (29 UK New, 21 UK Used), zero inactive.
+
+
+## Sony RM-BR300 — exact used remote panel source matched — 12 November 2026
+
+N.I. Broadcast direct page verifies exact Sony RM-BR300 PTZ camera remote panel, product code 7389, £499, stock level 2, condition Used. This is RM-BR300, not RM-BR300H. The page does not enumerate accessories; record as panel-only. Direct source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html.
+
+The existing LIVE RM-BR300 / Standard master was used (master 2c8b889e-6afc-429c-b8e6-a0d96c426764), not the separate RM-BR300H product. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31, source_record_key batch13-followup-sony-rm-br300-nibroadcast-7389-499-20261112. Direct LIVE read-back confirms £499 GBP, used, in_stock, active and exact RM-BR300 master.
+
+Batch 13 now 50 active rows (29 UK New, 21 UK Used), zero inactive. Batches 01–13 now total 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.

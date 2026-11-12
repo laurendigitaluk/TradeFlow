@@ -285,3 +285,17 @@ LIVE read-back confirms Batch 04 now has **18 active records: 8 UK New and 10 UK
 Other leads remain outside active valuation evidence where the source or package is not sufficiently resolved. Examples include the unusually low Cotswold Sony 85mm GM II offer (seller/checkout/price discrepancy remains a verification risk), Production Gear's contradictory Wireless GO II stock message, the imported Ubuy landed-cost uncertainty, the DSR-PD175P on-order offer, package differences on the Matrice 350 RTK, and NEEWER variant pricing/package ambiguity. Foreign-currency-only, overseas-seller, faulty, ended-with-no-bid and unverified close-model references remain in this checkpoint, not promoted to exact UK evidence.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed. No queue status or owner-auth context was bypassed.
+
+
+## Sony FE 85mm F1.4 GM II — Camix direct UK offer resolved — 12 November 2026
+
+The low Cotswold £1,049 offer was not promoted: its supplied URL redirects to the Cotswold homepage when opened, so the advertised price/stock cannot be confirmed. A separate direct UK source was found and opened at Camix:
+- Exact Sony FE 85mm F1.4 GM II, standalone Lens Only.
+- £1,325 (reduced from £1,849), £1,104.17 ex VAT, brand new, in stock, one-year warranty and free UK delivery.
+- In the box: lens, ALC-F77S front cap, ALC-R1EM rear cap, ALC-SH150 hood and padded lens case.
+- Camix Ltd company no. 12830683, Unit 1 Pennine View, Norquest Industrial Park, Birstall, Batley WF17 9NE; Trustpilot 4.8.
+- Direct source https://camix.co.uk/product/sony-fe-85mm-f1-4-gm-ii-lens/.
+
+Imported as active UK New GBP against existing FE 85mm F1.4 GM II / Lens Only master ca3129be-6d49-4c7b-ba63-007b859ee343; LIVE evidence row e1d4ebb0-ccb2-4a27-b4c7-06b3f9ab32af, source_record_key batch04-followup-sony-fe85gmii-camix-1325-20261112. Read-back confirmed exact master, price, condition, stock and package notes.
+
+Batch 04 now has 19 active rows (9 UK New, 10 UK Used), all GBP. Cumulative Batches 01–13: 268 total, 261 active (142 UK New, 119 UK Used), seven inactive. Global LIVE shared_market_evidence: 4,813 total, 4,754 active, 59 inactive. Other RED VERIFY leads (Production Gear stock conflict, Ubuy landed-cost uncertainty, DSR-PD175P on-order and variant/package mismatches) remain unresolved and were not promoted. TEST, Stripe, schema, master data and valuation logic untouched.

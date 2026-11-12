@@ -377,3 +377,10 @@ Read this checkpoint and PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-bat
 Five additional direct-source observations imported/read back: Currys PENTAX WG-90 £299 new (category listing with Add to Basket, third-party delivery; direct product page price differs); eBay UK Sony FE 28-60mm £141.12 used Good (exact MPN/EAN); MPB Sony FE 35mm GM from £819 used Like New (28 units, aggregate range); Park Cameras Sony FE 35mm GM £839 used Good and £939 used Excellent. Existing Argos WG-90 £299, Peter Rogers Pentax DA*55 £559, Wex Sony FE35 used £728/£829/£835, LCE Sony FE28-60 £149.99, Harrison Nikon MB-N12 £329, Andertons Shure SM81 £381 and DigiBroadcast RED Gemini £7,200 were rechecked and timestamps/notes refreshed.
 
 Batch 09 now has 16 active GBP rows: 6 UK New and 10 UK Used. Used remains reference-only. Shure cable/package detail and RED bundle contents remain important comparison caveats. Other suffix, currency, stock and package mismatch leads remain RED VERIFY. No master data, schema, valuation logic, TEST or Stripe changes.
+
+
+## 12 November 2026 — Batch 09 additional RED VERIFY follow-up
+
+Four further direct UK observations were added and read back: Visuals Sony HDC-F5500V £85,619.24 inc VAT / £71,349.37 ex VAT (exact HDC-F5500V-4K, available to order, not held in stock, system configuration not itemised); SmallRig Direct UK Store eBay RC100B Pro 5143 £242.90 new, three available; ColinsCameras eBay Nikon F55 body-only £28.60 used, £35 international postage shown despite UK seller location; Clifton Cameras Pentax HD PENTAX-FA 31mm F1.8 Limited black £999, awaiting stock 5–7 days.
+
+Refreshed source observations: Peter Rogers Pentax DA* 55mm F1.4 £559 in stock; Andertons Shure SM81 £381, one off-site warehouse unit; Harrison Nikon MB-N12 £329, one in stock. Batch 09 now has 20 active GBP rows (9 UK New, 11 UK Used). Used remains reference-only. Exact links and caveats are in the checkpoint. No master/schema/valuation changes; TEST and Stripe untouched.

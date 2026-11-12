@@ -1,3 +1,8 @@
+## 12 November 2026 — Batch 11 follow-up and cumulative LIVE evidence
+
+Batch 11 follow-up added 12 GBP records: Nikon P900 MPB £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105 MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 awaiting stock; Panasonic FZ1000 II Kamerastore £709 used with zoom lever fault; Panasonic GM5 Wex £929 used body-only. Batch 11 now 22 active GBP rows (8 new, 14 used). Used is reference-only; faults/condition remain in notes.
+
+Cumulative Batches 04–13: 162 GBP rows, 160 active (86 UK New, 74 UK Used), 2 inactive. Batch total/active: 04 18/18; 05 18/18; 06 12/12; 07 14/13; 08 14/13; 09 16/16; 10 24/24; 11 22/22; 12 12/12; 13 12/12. Inactive: BuzzFlyer DEVO-10 no stock; NEEWER KM19 seller away. No schema/valuation changes; TEST and Stripe untouched.
 ## 12 November 2026 — Batch 10 follow-up and cumulative evidence state
 
 Batch 10 follow-up imported 12 further records: LMD-A240 used £1,560 Visual Impact and £1,150 eBay; Shure MV7+ £259 SCAN new; SRG-A40 white £3,635.98 Currys Business and £5,054.39 TopAV new; VG-C3EM used £69 Wex and £70 Harrison; FE PZ 28-135 new £1,960 CameraWorld and used £814 MPB; PDW-U1 used £208.70 eBay with PSU and £1,459.95 Snet Technologies with warranty; MoveMic Two Receiver Kit £311.40 official Shure UK. Batch 10 has 24 active GBP rows: 12 new, 12 used.

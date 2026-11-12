@@ -6112,3 +6112,12 @@ The existing AI Research Centre now includes a **ChatGPT research updates** pane
 ChatGPT can post a progress or completion notice to that existing thread through the connected LIVE Supabase database connection, using `sender_kind='chatgpt_supervisor'`, `sender_key='chatgpt'`, `sender_name='ChatGPT'`, `thread_key='tradeflow-research'`, `recipient_key='platform_owner'`, and `message_type='status_update'`. Each notice should identify its batch scope, verified LIVE evidence imports, comparison-only/unverified references retained, and unresolved items. **Never state a batch is complete or imported until LIVE database read-back confirms the result.** This dashboard message is a status/communication channel; it does not itself import catalogue evidence. The existing evidence verification and authorised import path remains mandatory.
 
 Initial LIVE notice inserted and read back successfully: `f273893d-a387-443f-8a95-1a93e90caca0` (12 November 2026). Front-end files: `platform-owner-dashboard.html` and `platform-owner-dashboard.js` (script cache version 59). TEST was not modified.
+
+
+## 12 November 2026 — RED VERIFY follow-up continuation
+
+Batch 06 gained one verified UK New observation for the exact Bebob V98 V-Mount Battery (SKU V98): CVP, £312.00 inc VAT (£260.00 ex VAT), one remaining in stock for immediate delivery, UK mainland battery shipping supported, two-year standard warranty. Source: https://cvp.com/product/bebob_v98_battery. The source was opened directly and matched to the existing LIVE master product; it is not V98micro or V98microC.
+
+Import procedure: use the established LIVE migration path with a deterministic `source_record_key`, preserve the GBP inc-VAT observed price, write the direct source URL and condition/availability caveats, then read the row back and confirm master-product identity, price, currency, evidence type, active status and observed timestamp. Do not use direct table writes from an unauthenticated owner context. The import was read back successfully.
+
+Cumulative Batches 04–13: 227 GBP rows, 223 active (120 UK New, 103 UK Used), four inactive. UK Used remains reference-only and excluded from automatic valuation. Do not change valuation logic or TEST/Stripe for this work. Continue chasing checkpoint RED VERIFY leads; do not promote unresolved package, seller, availability or foreign-currency observations.

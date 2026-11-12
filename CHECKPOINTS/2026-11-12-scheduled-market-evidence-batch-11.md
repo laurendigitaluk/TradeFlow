@@ -333,3 +333,26 @@ Batch 11 now has **22 active records: 8 UK New and 14 UK Used; all 22 are GBP**.
 Other leads remain RED VERIFY: Nikon S6900 marketplace leads are Japan sellers, including a faulty lens-error listing; Nikon Ai-S 800mm f/8 ED has no fully verified UK exact source; Nikon D60 body-only prices were available from retailer price comparison but no exact product page was opened in this follow-up; Nikon F2 Data back prices are JPY/EUR only; Nikon NIKONOS V Kamerastore item has untested waterproofing; Panasonic Leica 50-200mm Camix page has copied/contradictory product description and stock wording; Pentax Macro 100 Park price requires option/store selection and voucher not confirmed; Potensic Dreamer 1 catalogue identity versus Dreamer 4K still requires confirmation. These were not promoted as exact verified evidence.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 7. Further RED VERIFY review — 12 November 2026
+
+Seven additional exact UK source observations were imported into LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Nikon COOLPIX P900 | Harrison Cameras | £420.00 | Used Very Good; one in stock; fully tested, 12-month warranty, free UK delivery; LCD has light scratches. [Source](https://harrisoncameras.co.uk/products/used-nikon-coolpix-p900-bridge-camera-used-40049503) |
+| Nikon COOLPIX P900 | Wex Photo Video | £449.00 | Used Excellent; in stock; Wex item 3371097; box, manual, lens cap, EH-71P adapter, EN-EL23 battery and USB cable; 12-month warranty. [Source](https://www.wexphotovideo.com/nikon-coolpix-p900-digital-camera-used-3371097/) |
+| Nikon F2AS Data | Grays of Westminster (via UsedLens UK) | £6,500.00 | As New; exact black F2AS Data with MF-10 Data Back. Bundle also includes MD-2/MB-1 motor drive and DS-12 EE aperture-control attachment; not a bare body/data-back price. [Source](https://usedlens.co.uk/product/nikon-f2as) |
+| Panasonic Leica DG Vario-Elmarit 50-200mm f/2.8-4 | Park Cameras | £929.00 | Used Very Good; two units available; 12-month warranty. [Source](https://ufd3h5g456i7uds.parkcameras.com/used/lenses/used-micro-43rds-lenses/used-panasonic-50-200mm-f-2-8-4-micro-four-thirds-lens/) |
+| Panasonic Leica DG Vario-Elmarit 50-200mm f/2.8-4 | MPB UK | £1,009.00 | Used; two available across £1,009–£1,059; individual grades/accessories vary. [Source](https://www.mpb.com/en-uk/category/used-photo-and-video-lenses/mirrorless-lenses/micro-four-thirds-fit-lenses) |
+| Panasonic Lumix DMC-GM5 | MPB UK | £624.00 | Used Good; lowest of eight MPB listings (£624–£769); body comparison, accessory combinations vary. [Source](https://www.mpb.com/en-uk/product/panasonic-lumix-dmc-gm5) |
+| Pentax smc PENTAX-FA 100mm f/2.8 Macro | eBay UK — Fivercam | £234.89 | Used; UK business seller, 99.6% positive, returns accepted; £49.99 UPS postage, recorded separately. [Source](https://www.ebay.co.uk/itm/257096058303) |
+
+All seven records are UK Used and therefore reference-only for automatic valuation. Exact model distinctions are preserved: Nikon F2AS Data with MF-10 is not a standard F2AS body; Pentax older SMC FA 100mm is not D FA/HD D FA; Panasonic 50-200mm is the exact Leica DG Micro Four Thirds lens. The F2AS Data price is a bundled package with significant extras, not directly comparable to a bare standard camera package.
+
+Batch 11 now has **29 active GBP records: 8 UK New and 21 UK Used**. All seven new rows were read back. Their observed_at values were normalized to the actual post-import verification time (not backdated or staggered); timestamps are shared because the observations were verified in the same import/read-back session.
+
+Outstanding leads remain RED VERIFY where no exact UK offer could be verified: Nikon S6900 offers are Japan-based; Nikon Ai-S 800mm f/8 ED remains suffix/identity uncertain; Nikon F2 Data Grays bundle is not a bare package; Nikonos V waterproofing untested; Panasonic 50-200 Camix new-stock wording conflicts and Hong Kong seller offers exclude VAT; Panasonic FZ1000 II Kamerastore zoom lever fault must remain visible; Potensic Dreamer 1 vs Dreamer 4K identity still needs manufacturer/catalogue confirmation. No foreign currency or wrong model price was promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

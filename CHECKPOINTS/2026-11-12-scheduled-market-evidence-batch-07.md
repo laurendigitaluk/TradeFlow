@@ -289,3 +289,27 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 - Google Shopping direct product-card click-through remains a limitation: Google Shopping search pages were inaccessible, so merchant-page leads found through other search/product results were opened where possible.
 
 **Next scheduled run:** Read this Batch 07 checkpoint and PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-07.md first. Exclude all 20 product IDs above, every product ID from scheduled checkpoints 02–07, outstanding LIVE queue candidates and outstanding manual AI prompts. Recheck evidence/queue/prompt status immediately before research. Select the next 20 dynamically without SQL OFFSET. Stage only through the supported authenticated platform-owner RPC if a real owner-auth context is present; otherwise create the next checkpoint and project-memory files and do not write to the queue.
+
+
+## 7. LIVE RED VERIFY follow-up — 12 November 2026
+
+Four additional exact-model source observations were added to LIVE and read back:
+
+| Master product | Source | Price | Evidence/status |
+|---|---|---:|---|
+| Hubsan H501S X4 Air | eBay UK — tosca888 | £67.65 item price | Used, Opened–never used; sold 2 Sep 2026. Displayed buyer total £70.63 includes £2.98 Buyer Protection fee. Seller in Holyhead, UK. Historical single-drone reference; accessories not fully itemised. [Source](https://www.ebay.co.uk/itm/137140926562) |
+| Sony PMW-F55 | eBay UK — Refresh_IT_Store | £1,099.00 | Used body-only; active Buy It Now; UK business seller in Wokingham, 96.6% positive. Accessories and operating hours not specified. [Source](https://www.ebay.co.uk/itm/236722363296) |
+| Manfrotto MVK500XAM tripod + 500X head kit | Wex Photo Video | £419.00 | New; limited stock; exact kit and model number. [Source](https://www.wexphotovideo.com/manfrotto-twin-leg-aluminium-video-tripod-with-500x-fluid-head-mvk500xam-3251865/) |
+| Leica M11 Monochrom | Park Cameras | £8,500.00 | New; category page shows in stock; 2-year warranty; VAT included. [Source](https://www.parkcameras.com/shop/leica-m11-monochrom-camera_l014467e) |
+
+Existing observations were also rechecked and corrected:
+- Camera Centre UK Leica M11 Monochrom changed from £8,300 to £8,450; the current retailer category listing identifies SKU 20208, in stock, free shipping. The direct product URL returned 403 to the web reader; the category listing is the supporting source. Its observed_at was refreshed after Park Cameras, so the latest active UK New reference is Camera Centre £8,450, with Park £8,500 retained.
+- CVP Manfrotto MVK500XAM remains £369 inc VAT (£307.50 ex VAT), in stock in its EU warehouse with expected 2–3 day delivery; page rechecked after Wex £419. CVP says global shipping has no additional tariffs, but UK delivery/checkout should still be confirmed. The CVP observation remains the latest source for this kit.
+- MPB Nikon AF-S DX 18-55mm f/3.5-5.6G VR changed from £35 to £37 after the current result showed 16 used units from £37–£72; lowest grade is not specified.
+- BuzzFlyer DEVO-10 + RX1002 remains £149.95 inc VAT but the page displays Notify Me, not stock. Its row is retained in LIVE with availability notify_me and is_active=false, so it is excluded from active evidence/automatic valuation until availability is confirmed.
+
+Batch 07 now has **14 database rows: 13 active (9 UK New, 4 UK Used) and one inactive UK New Notify Me row; all 14 are GBP**. Used observations remain reference-only. The Hubsan sold listing is historical, not current stock; the PMW-F55 is body-only and must not be compared with a complete accessory package.
+
+Other leads remain RED VERIFY and were not promoted: Hubsan range-extender and two-drone lots are different packages; Gumtree H501S returned 410; Sony SRG-XB25 white suffix/stock/price conflict remains unresolved; Nikon 18-55 Clifton page returned 404; Sony HXC-D70 includes a CCU package; PMW-F55 ES Broadcast page returned 503 and package/condition differs; RedDot Cameras' Leica M11 Monochrom product page displays £6,916.67 while its search snippet says £8,300 inc VAT and the page's VAT wording conflicts, so it was not imported; Park Cameras' Manfrotto page displays £299 while its price-comparison listing says £419, so it remains RED VERIFY. No foreign-currency or package-mismatch leads were promoted as exact new UK evidence.
+
+LIVE calculate_buying_item_valuation(uuid,uuid) selects the latest active GBP uk_new observation by observed_at then created_at. It does not filter by availability. UK Used is not selected. The BuzzFlyer Notify Me record was therefore deactivated to prevent a stale unobtainable price from remaining active; sold_out/backorder UK New observations from other batches remain active with their explicit status notes, as already recorded. No schema or valuation code was changed.

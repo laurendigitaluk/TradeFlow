@@ -426,3 +426,12 @@ After the DigiBroadcast currency issue was identified, the direct Shure UK page 
 - DigiBroadcast row dee5cf7a-27cb-4097-84a1-a918764c0cf2 remains inactive/currency_unverified because the page currently defaults to EUR and no GBP price was confirmed; its former £496.80 is not a valid active GBP observation.
 
 Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive currency-unverified row. LIVE Batches 01–13 now total 261 observations, 257 active (140 UK New, 117 UK Used), four inactive. UK Used remains reference-only. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## Sony HDC-3100 — exact UK camera-head-only source imported — 12 November 2026
+
+Visual Impact direct page verifies exact Sony HDC-3100 SKU HDC-3100, £25,066.80 inc VAT (£20,889.00 ex VAT), available to order from supplier but not held in stock. The listing's In The Box contents are operating instructions/CD-ROM, cable clamp belt, screws and labels only. The HDC-3100 is recorded as the camera head only; no CCU, lens or viewfinder is included. The page states it connects to separately associated HDCU-3100/HDCU-2000 CCUs and separately lists lens/viewfinder connections. Direct source https://www.visuals.co.uk/hdc-3100-camera.html.
+
+Imported as active UK New GBP against existing HDC3100 / Standard Package master 992a246f-db39-44e6-9c07-c25a82175e98; LIVE row 52a8170b-9521-41f0-9f64-6d172408377e, source_record_key batch10-sony-hdc3100-visualimpact-25066-80-camerahead-20261112. Read-back confirmed exact master, price, source, new condition and listed availability. Do not present the price as a complete camera channel with CCU/lens/viewfinder.
+
+Batch 10 now 31 total, 30 active (15 UK New, 15 UK Used), one inactive. Batches 01–13 now 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. TEST, Stripe, schema, master data and valuation logic untouched.

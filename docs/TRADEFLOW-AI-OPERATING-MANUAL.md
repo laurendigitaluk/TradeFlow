@@ -6420,3 +6420,8 @@ Batch 03: 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 obser
 When a search result provides an exact model and GBP asking price but the direct listing has been removed (HTTP 410), retain it only as an inactive historical reference. The Casio EX-FR200BK £116 Gumtree result in Bournemouth is stored as inactive row 0dbc8a9c-a193-4917-bc46-41dd69de214f. Do not treat it as current stock or active valuation evidence until a live source is found. Full details are in the Batch 03 checkpoint.
 
 Batch 03: 13 total, 12 active (7 UK New, 5 UK Used), one inactive. Cumulative Batches 01–13: 273 observations, 265 active (142 UK New, 123 UK Used), eight inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Do not equate active evidence with available stock
+
+LIVE valuation function inspection confirmed that `calculate_buying_item_valuation` selects the latest active UK New GBP evidence row and does not apply an availability filter. The catalogue RPC also displays active UK New and UK Used evidence separately without excluding out-of-stock statuses. This is consistent with the owner's established rule to retain genuine UK GBP prices even when sold out, ended or unavailable, with availability and observation date recorded. Do not deactivate a valid UK New price solely because its availability is out of stock; `is_active` means the price observation is retained, not that the item is purchasable today. UK Used is excluded from automatic buying valuation by the UK New evidence-type filter. Do not change valuation logic or bulk-deactivate historical price observations without explicit owner direction.

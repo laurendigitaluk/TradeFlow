@@ -87,3 +87,10 @@ Six further records were imported and read back: Hubsan H501A X4 Air Pro / Elite
 Updated existing observations: Nikon COOLPIX P7700 MPB is now one Good unit at £229 (replacing the stale £239/£294 range); Very HOVERAir X1 PROMAX Standard is confirmed at £609 sale (£639 regular), charger not included, in stock with 3–5 day delivery. The NEEWER KM19 eBay row is inactive until seller returns; the official NEEWER £39.99 row remains active.
 
 Batch 08 now has 14 total GBP rows: 13 active (10 UK New, 3 UK Used) and one inactive UK New seller-away row. Official Hubsan /eur prices for MINI and ZINO MINI PRO remain RED VERIFY because the UK delivery region is not confirmed. Other unresolved suffix, package and accessory bundles remain in the checkpoint. No master, schema, valuation logic, TEST or Stripe changes.
+
+
+## 12 November 2026 — Batch 08 RED VERIFY follow-up
+
+Six additional GBP observations were added and read back: Hubsan H501A £209.99 new/out of stock; Hubsan H501M £139.99 new/out of stock; Hubsan Zino Pro £389.99 new/supplier stock; NEEWER NL660 two-pack £75 used on Gumtree; GoPro HERO6 Black £119 used Excellent via UsedLens/MPB; NEEWER KM19 £47.94 new via eBay but seller away, so inactive.
+
+Corrected Nikon COOLPIX P7700 MPB from £239 to £229 (Good, in stock, battery and charger included) and confirmed HOVERAir X1 PROMAX Standard / Very at £609 sale, £639 regular, in stock. Batch 08 now has 14 total rows, 13 active (10 UK New, 3 UK Used), one inactive seller-away row, all GBP. Exact details and unresolved leads are in the checkpoint. No master data, schema, valuation logic, TEST or Stripe changes.

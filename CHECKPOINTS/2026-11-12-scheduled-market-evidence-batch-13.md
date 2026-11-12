@@ -1,0 +1,247 @@
+# TradeFlow LIVE — Scheduled Market-Evidence Research Batch 13
+
+**Research date:** 2026-11-12  
+**Environment:** LIVE only  
+**Branch:** production  
+**Scope:** Next 20 active catalogue master products without active shared market evidence, after scheduled-checkpoint, manual-prompt and outstanding-queue exclusions.
+
+## Selection and pre-research checks
+
+- Read production `CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-02.md` and `PROJECT-MEMORY/2026-11-12-scheduled-market-evidence-batch-02.md`, then the scheduled batch checkpoint/project-memory history through batch 12.
+- Excluded product UUIDs in all scheduled checkpoints 02–12.
+- Excluded products in every manual AI research prompt, including completed and outstanding prompt product arrays.
+- Excluded products covered by outstanding LIVE research-queue candidates, including the 10 existing `needs_research` candidates, by linked master ID or exact manufacturer/model/package identity.
+- No fixed SQL OFFSET used. Selection was a dynamic anti-join over active LIVE master products, active evidence, checkpoint UUIDs, manual-prompt product arrays and outstanding queue candidates.
+- Rechecked all 20 selected IDs immediately before research. Each had 0 active `shared_market_evidence`, 0 matching outstanding queue candidates and 0 manual-prompt matches.
+- Excluded known cross-UUID identity duplicates noted in prior project memory, including Nikon Ai-S NIKKOR 28mm f/2 and Skydio 2+ Sports Kit.
+- No master product, valuation, schema, TEST or Stripe changes.
+
+## Research method and evidence rules
+
+Searched manufacturer pages, UK retailers, marketplaces and Google Shopping/product-shopping results. Opened actual product pages where accessible and inspected product identity, package/variant, price, condition and availability. Do not treat a search card as verified when its click-through resolves to a different model, an inaccessible page or a different package. Keep uncertain leads with a `RED VERIFY` note. Non-GBP prices remain in their original currency; no currency conversions have been made.
+
+## Batch 13 — 20 products
+
+### 1. Sony — ECM-B10 Microphone
+- **LIVE master product ID:** `c9c80125-7a21-4730-9413-a30350cc738d`
+- **Package:** Accessory.
+- **Evidence (2026-11-12):**
+  - Wex: £175 new, limited stock / selling fast. Product code 3052619. https://www.wexphotovideo.com/sony-ecm-b10-wireless-shotgun-microphone-3052619/
+  - Park Cameras: £175 new. https://www.parkcamera.live/shop/sony-ecm-b10-wireless-shotgun-microphone_7680123n
+  - Bristol Cameras: £175 inc VAT, available to order, genuine UK stock. https://www.bristolcameras.co.uk/product/sony-ecm-b10-shotgun-microphone/
+  - Harrison Cameras: £179, 1 in stock. https://harrisoncameras.co.uk/products/sony-ecm-b10-shotgun-microphone-ecmb10-ce7
+  - Norwich Cameras: £168, stated stock available with 5–7 day lead; seller is Futronix Electronic Ltd (HK) with no VAT, while Norwich handles payment/customer service/returns. https://norwich-cameras.co.uk/products/sony-ecm-b10-compact-camera-mount-digital-shotgun-microphone
+  - ProAV: £190.92 inc VAT / £159.10 ex VAT; page simultaneously says in stock and backorder, usually within 10 working days. https://proav.co.uk/sony-compact-shotgun-microphone
+- **Condition/package:** New standalone ECM-B10 microphone; cable-free/battery-free shotgun microphone, three pickup patterns.
+- **RED VERIFY:** ProAV stock wording conflicts. Norwich listing is sold by an overseas entity without VAT; verify VAT/import treatment and seller responsibility. Price-comparison page shows £159 at CameraWorld but retailer page not independently opened; do not treat that comparison-only amount as verified.
+
+### 2. Sony — FE 85mm F1.4 GM II
+- **LIVE master product ID:** `ca3129be-6d49-4c7b-ba63-007b859ee343`
+- **Package:** Lens Only.
+- **Evidence:**
+  - Sony UK store: £1,799, page showed only 1 left; product selector/search result also surfaced a £1,599 sale-price card, so checkout price is inconsistent. https://www.sony.co.uk/store/product/sel85f14gm2b.syx/FE-85mm-F1-4-GM-II-Full-Frame-Prime-Lens
+  - Sony Centre Direct: £1,799. https://sonycentresdirect.co.uk/p-55783-fe-85mm-f14-gm-ii.aspx
+  - Sony product page confirms exact GM II identity and 77mm filter thread. https://www.sony.co.uk/electronics/interchangeable-lenses/sel85f14gm2
+- **Condition/package:** New standalone E-mount FE 85mm F1.4 GM II lens.
+- **RED VERIFY:** Confirm Sony checkout price because the page and dynamic selector/search card showed £1,799 and £1,599. Other Shopping leads around £1,199 and £1,049 were unusually low or failed to resolve to a verified matching offer; retain only as leads, not prices.
+
+### 3. Sony — FE 12-24mm F2.8 GM
+- **LIVE master product ID:** `cc1aa201-fee6-43f4-b295-a04a49251b57`
+- **Package:** Standard.
+- **Evidence:**
+  - Sony UK: £2,645, standalone lens. https://www.sony.co.uk/store/product/sel1224gm.syx/buy
+  - Clifton Cameras: £2,645; awaiting stock, orders accepted, usually 5–7 days. Box includes lens hood, front/rear caps and lens case. https://www.cliftoncameras.co.uk/sony-fe-12-24mm-f28-gm-lens
+  - Sony Centre Direct: £2,645. https://sonycentresdirect.co.uk/p-41047-sony-sel1224gm-fe-12-24mm-f28-gm-lens.aspx
+- **Condition/package:** New standard lens package; no additional camera body or accessory bundle identified.
+- **RED VERIFY:** Clifton accepts orders but is awaiting stock. Google Shopping returned lower offers including £1,802 and other unusually low amounts; exact retailer/checkout/stock not confirmed, so do not treat those as verified prices.
+
+### 4. RadioMaster — Ranger 2.4GHz ExpressLRS External Module
+- **LIVE master product ID:** `cd15ac76-7393-43a8-9f68-3da93c1bc851`
+- **Package:** Ranger 2.4GHz ExpressLRS External Module.
+- **Evidence:**
+  - HobbyRC: £99.99 inc VAT, in stock. https://www.hobbyrc.co.uk/radiomaster-ranger-24ghz-elrs-module
+  - Flying Tech: £99 inc VAT, 5 left; page shows next shipping 11/11/2026. https://www.flyingtech.co.uk/product/radiomaster-ranger-2-4ghz-expresslrs-elrs-module/
+  - 3DXR: £99.99 inc VAT / £83.33 ex VAT, 39 in stock. https://www.3dxr.co.uk/products/radiomaster-ranger-2-4ghz-elrs-module-lbt
+- **Condition/package:** New standalone Ranger full-size external module; T antenna and Moxon antenna included by 3DXR/HobbyRC descriptions.
+- **RED VERIFY:** Do not substitute Ranger Micro or Ranger Starter Combo. Starter combo offers £119.99 at Flying Tech and includes three receivers (2x RP1 + 1x RP2); it is a different package. https://www.flyingtech.co.uk/product/radiomaster-ranger-2-4ghz-elrs-module-starter-combo/
+
+### 5. Sony — PDW-F800
+- **LIVE master product ID:** `d4555efd-c678-4f22-b982-06ca8230ea5b`
+- **Package:** Standard.
+- **Evidence:**
+  - Cineworks product page displays £260.00 and describes the exact Sony PDW-F800 XDCAM HD422 camcorder. https://www.cineworks.tv/product/sony-pdw-f800/
+- **Condition/availability:** Not stated. No sale stock indicator, condition grade, included accessories or checkout information found.
+- **RED VERIFY:** Cineworks site navigation includes an Equipment Hire section; the £260 price basis is unclear and may not be a sale price. Ask whether £260 is a hire rate, sale price or another charge, and verify condition, package contents and availability. Do not use as a verified purchase price.
+
+### 6. PowerVision — PowerDolphin Wizard Package
+- **LIVE master product ID:** `d85ca7a7-e811-427a-a23c-d1abe267536a`
+- **Package:** Wizard Package.
+- **Evidence:**
+  - eBay new listing: £1,449, business seller in Nottingham, 100% positive, no returns. Model PowerDolphin Wizard, MPN PDW10. https://www.ebay.co.uk/itm/116741484492
+  - eBay used listing: £449.99, business seller in Dundee, 99.7% positive, no returns; listing page confirms it sold on 2 October 2026. Model PowerDolphin Wizard, MPN PDW10. https://www.ebay.co.uk/itm/147582064972
+  - Kamera Express package contents: PowerDolphin Wizard, base station, controller, handset clip, intelligent charger and cable, 70m communication cable, bait drop, PowerSeeker and charging cable, ZEISS VR ONE Plus goggles and trolley. https://www.kamera-express.be/powervision-powerdolphin-wizard
+  - PowerVision manual identifies Wizard kit components. https://www.manualslib.com/manual/1940291/Powervision-Powerdolphin.html
+- **Condition/package:** One current new listing; one ended used listing. The Wizard package is materially more complete than the standard/Explorer package.
+- **RED VERIFY:** Confirm that the £1,449 seller's actual box contains the Wizard sonar/bait-drop/controller/accessory kit. Used £449.99 is a completed listing, not a current asking price; seller's listing had no returns.
+
+### 7. PowerVision — PowerEgg X Waterproof Case
+- **LIVE master product ID:** `df53bb7c-cbc1-4eed-b114-5cf840ec196c`
+- **Package:** Waterproof Case.
+- **Evidence:**
+  - Wex: £209, RRP £299, limited stock / selling fast. Exact box contents: 1x PowerVision PowerEgg X waterproof case only. https://www.wexphotovideo.com/powervision-poweregg-x-waterproof-case-1735465/
+- **Condition/availability:** New accessory; limited stock.
+- **Notes:** Exact match. Do not confuse the standalone case with the PowerEgg X Wizard drone bundle, which also includes the case.
+
+### 8. Sony — XDCA-FS7 Extension Unit
+- **LIVE master product ID:** `df9f8a4d-8754-44d0-b443-150be2ceb41a`
+- **Package:** Standard.
+- **Evidence:**
+  - Visual Impact: £120 used, 3+ in stock. https://www.visuals.co.uk/sony-xdca-fs7-camera-extension-box-for-pxw-fs7-fs7k-used.html
+  - MPB: 3 used available from £123–£144; Good £123, Excellent £144, standard 12-month warranty. https://www.mpb.com/en-uk/product/sony-xdca-fs7-extension-unit
+  - 3D Broadcast: £390 inc VAT / £325 ex VAT, 2 used units in stock. https://3dbroadcastsales.com/products/sony-xdca-fs7-extension-unit-for-pxw-fs7-and-pxw-fs7k-cameras-used
+  - eBay: £175 used, 3 available, business seller in London, 14-day returns. https://www.ebay.co.uk/itm/147502069035
+- **Condition/package:** Used extension unit; attaches to PXW-FS7/FS7K. Adds ProRes 422, RAW output support, timecode/genlock and V-mount battery interface.
+- **RED VERIFY:** Large used-price spread (£120–£390). Check included plate/attachments, exact condition, warranty and whether all units are the same XDCA-FS7 model.
+
+### 9. Skydio — 2+ Dual Charger
+- **LIVE master product ID:** `e0634f33-3a02-4fe0-9a2d-8705808497d2`
+- **Package:** Standard Item.
+- **Evidence:**
+  - Official Skydio store: $149 USD; charges two batteries; 65W wall adapter sold separately; ships in 3–5 business days. https://shop.skydio.com/products/skydio-2-charger
+  - eBay UK: £72.92 used, private seller in Holyhead, no returns. https://www.ebay.co.uk/itm/187918127220
+- **Condition/package:** Official new product and used UK listing. The charger itself does not include the wall adapter.
+- **RED VERIFY:** Google Shopping card displayed £52.70 for the same eBay link, but the clicked listing displayed £72.92. Retain £72.92 as the opened listing price; flag the Shopping-card discrepancy. Official Skydio store states sales are limited to the US and Canada.
+
+### 10. Sony — HXR-MC50E
+- **LIVE master product ID:** `e4b6f3e4-7592-4551-876b-8b9fe7cd6c4d`
+- **Package:** Standard.
+- **Evidence:**
+  - Cash Converters: historical £129.99, very minor cosmetic wear, 12-month warranty, camera and charger; page now says sold/no longer available and no external microphone or lens guard. https://www.cashconverters.co.uk/shop/phones-cameras--computers/cameras/video-cameras/video-camera/017900194034
+  - eBay sold listing: £229.99, used, fully tested/working, good used condition, battery and new charger included; sold 15 August. https://www.ebay.co.uk/itm/317543403106
+  - eBay faulty listing: £69.99, for parts/not working, London business seller, no returns. https://www.ebay.co.uk/itm/357137612058
+- **Condition/availability:** No currently verified in-stock exact listing. Cash Converters listing sold; £229.99 eBay listing sold; £69.99 is faulty.
+- **RED VERIFY:** Keep working and faulty examples separate. Do not use the faulty £69.99 as a working-camera reference.
+
+### 11. PowerVision — PowerEgg X Wizard Package
+- **LIVE master product ID:** `e6c149dd-1bce-4b5e-9806-0e970e7ce3e5`
+- **Package:** Wizard Package.
+- **Evidence:**
+  - PowerVision launch announcement: historical Wizard package MSRP $1,249 USD; Explorer MSRP $899 USD. Wizard included waterproof accessories. https://www.prnewswire.com/news-releases/poweregg-x-personal-ai-camera---the-ultimate-tool-for-content-creators-301068006.html
+  - Crutchfield Wizard package contents: waterproof casing, pontoons, remote controller, wrist strap, arms/propellers, three spare pairs of propellers, two intelligent batteries and intelligent charger. https://www.crutchfield.com/p_230PXW10/PowerVision-PowerEgg-X-Wizard.html
+  - Kamera Express Wizard package contents and two-year warranty. https://www.kamera-express.nl/powervision-poweregg-x-wizard
+  - Google Shopping/product card showed an eBay lead at £650.64, but the card click-through did not resolve to an accessible product listing. No direct listing URL could be captured.
+- **Condition/availability:** Current UK price not verified. US historical MSRP is not a current UK price.
+- **RED VERIFY:** Check the £650.64 Shopping lead manually; verify seller, model, package and whether waterproof case/pontoons/two batteries/charger are included. Do not use £760 SLRHut Explorer listing as a Wizard match; Explorer is a different package.
+
+### 12. Skydio — Beacon
+- **LIVE master product ID:** `e858c5cf-42fd-409f-93e0-6863c3b41261`
+- **Package:** Standard Item.
+- **Evidence:**
+  - Official Skydio 2+ Beacon: $219 USD, SKU SKYBC350NA, ships within 3–5 business days, 30-day returns. Compatible with Skydio 2 and 2+. https://shop.skydio.com/collections/essential-accessories/products/skydio-2-plus-beacon
+- **Condition/availability:** New official listing; page shows add-to-cart. Skydio states its products are sold only in the United States and Canada.
+- **RED VERIFY:** No UK GBP offer found. Do not convert $219. Confirm whether this catalogue Standard Item is intended to match the 2+ Beacon SKU.
+
+### 13. Z CAM — P2-R1N 24x
+- **LIVE master product ID:** `ef07cfd8-6ce5-425d-8de0-f73ba77beffb`
+- **Package:** Standard Package.
+- **Evidence:**
+  - G&G exact P2-R1N 24X, part number P2R1N0124B: $3,299 USD, special order, expected 1–3 weeks, no returns. https://www.ggvideo.com/zcam_p2-r1n-24x.php
+  - Related but different model P2-R1 24X (no N) is $2,799 USD, part P2R10124B; do not match this price to P2-R1N. https://www.ggvideo.com/zcam_p2-r1-24x.php
+- **Condition/availability:** New special-order listing; no UK GBP price found.
+- **RED VERIFY:** Exact N suffix and P2R1N0124B part number matter. Leave GBP price blank; do not convert USD.
+
+### 14. Sony — HVR-V1E
+- **LIVE master product ID:** `f2b5f83e-680f-49e5-9729-8aebba707850`
+- **Package:** Standard Package.
+- **Evidence:**
+  - Camera City: £399, 1 in stock, used, no charger; includes a non-original battery. https://cameracity.co.uk/product/sony-hvr-v1e-1080i-mini-dv-professional-3cmos-camcorder-no-charger/
+  - eBay UK Plan B Retro: £280 used, working listing; page redirected to a generic product page on open, so current listing availability needs checking. https://www.ebay.co.uk/itm/117069480914
+  - Colin's Cameras: £260, very good, fully tested, supplied with charger, cables, NP-F960 battery and remote; sold out. https://colinscameras.co.uk/products/sony-hvr-v1e
+  - eBay faulty: £170.02, not tested/sold as faulty. https://www.ebay.co.uk/itm/127942911366
+- **RED VERIFY:** Compare package contents carefully: Camera City has no charger; Colin's £260 kit is sold out; faulty £170.02 is not a working unit. Confirm the £280 eBay page's live listing status.
+
+### 15. Sony — SRG-X400
+- **LIVE master product ID:** `f6372983-a0fc-4282-b9af-862f9131d96c`
+- **Package:** Standard Package.
+- **Evidence:**
+  - ProAV black SRG-X400BC: £2,754 inc VAT / £2,295 ex VAT; page says in stock but also backorder, usually 10 working days. Box includes camera, AC adapter, IR remote, two ceiling brackets, wire rope, mounting screws and HDMI clamp. https://proav.co.uk/sony-srg-x400bc-ptz-camera-black
+  - SCAN white SRG-X400WC: £3,199.99, awaiting ETA/pre-order. https://www.scan.co.uk/products/sony-srg-x400-ptz-camera-white-1-25-exmor-r-cmos-1080p60-4k-upgradable-20x-optical-zoom-poeplus-3g-s
+  - SCAN black SRG-X400BC page/search result also showed £3,199.99 awaiting ETA. https://www.scan.co.uk/products/sony-srg-x400-ptz-camera-black-1-25-exmor-r-cmos-1080p60-4k-upgradable-20x-optical-zoom-poeplus-3g-s
+- **Condition/package:** New standalone PTZ camera package; black and white colour SKUs are separate.
+- **RED VERIFY:** The catalogue does not specify colour. ProAV availability wording conflicts. Confirm whether the Standard Package should remain colour-neutral or be split by BC/WC SKU; do not merge SRG-X40UH.
+
+### 16. Sony — PDW-F350
+- **LIVE master product ID:** `f87012b0-edfd-4d16-b694-e00e0e1f1b4b`
+- **Package:** Standard.
+- **Evidence:**
+  - eBay UK: £818.92 used, private seller in Wolverhampton, no returns. https://www.ebay.co.uk/itm/325590169943
+  - eBay US listing: $625 USD + $175 USD postage, used, no returns; eBay page displayed an approximate GBP conversion, but it is not recorded as a GBP price. https://www.ebay.co.uk/p/99934044
+- **Condition/availability:** UK used Buy It Now listing; seller private, no returns.
+- **RED VERIFY:** Confirm included lens, lens model, battery/charger, recording functionality and disc drive operation. The US listing's displayed approximate GBP is not used as a price.
+
+### 17. Walkera — Furious 320
+- **LIVE master product ID:** `fa5170e1-e2bf-47ed-a981-d93fabec232b`
+- **Package:** Standard Item.
+- **Evidence:**
+  - BuzzFlyer UK exact Furious F320: £369 inc VAT / £307.50 ex VAT, previously £449.95; page offers free FPV Goggle 4 and an optional extra-battery selector, but is out of stock. https://www.buzzflyer.co.uk/Walkera-Furious-F320__p-2979.aspx
+  - Related OSD spare part for Furious 320: €26.53, not a drone price. https://www.fpvracer.lt/model/walkera-furious-320-spare-part-osd-furious-320-g-z-08-12337.html
+- **Condition/availability:** Drone listing out of stock; no exact current full-drone used listing verified.
+- **RED VERIFY:** £369 is a historical/out-of-stock asking price, not current availability. Do not use the OSD spare-part price as drone evidence.
+
+### 18. Skydio — X10D Battery
+- **LIVE master product ID:** `0061d7d0-e6c4-478c-880b-52cf31db3802`
+- **Package:** Standard Item.
+- **Evidence:**
+  - Official Skydio X10D technical specifications: flight battery 8,419 mAh, 18.55 V, 156.17 Wh, weight approximately 707.6 g. No standalone battery sale price or availability on the page. https://www.skydio.com/x10d/technical-specs
+- **Condition/availability:** Technical reference only; no retail listing or GBP price found.
+- **RED VERIFY:** Obtain exact replacement battery SKU and UK authorised-distributor quote. Do not substitute Skydio 2/2+ batteries.
+
+### 19. HOVERAir — AQUA
+- **LIVE master product ID:** `01bc2702-9ff1-42c4-bb9a-0b36c2edfaf6`
+- **Package:** Standard Item.
+- **Evidence:**
+  - Official UK HOVERAir store: Standard £1,129; includes AQUA with 1 battery, USB-C cable, Lighthouse with armband, repair kit and waterproof battery bag. Fly More £1,299 includes two extra smart batteries, three waterproof battery bags and charging hub. https://uk.hoverair.com/products/hoverair-aqua
+  - Park Cameras Standard: £1,129. https://www.parkcameras.com/shop/hoverair-x1-aqua-standard_9021170a
+  - Park Cameras Basic Combo: £1,219; separate product code 9021172A. https://www.parkcameras.com/shop/hoverair-x1-aqua-basic-combo_9021172a
+  - Currys Standard Combo: £1,129. https://www.currys.co.uk/products/hoverair-aqua-standard-combo-drone-orange-and-black-10305877.html
+  - Ballicom Standard Combo: £1,113.56 inc VAT / £927.97 ex VAT, 17 immediately available. https://www.ballicom.co.uk/hoverair-sp08h004-aqua-standard-combo.p1724345.html
+  - Selfridges Basic Combo: £1,399. https://www.selfridges.com/GB/en/product/hoverair-hoverair-aqua-basic-combo_R04735656/
+- **Condition/package:** New; Standard, Basic Combo and Fly More are distinct packages.
+- **RED VERIFY:** Do not merge Basic Combo or Fly More with Standard. Selfridges £1,399 is a substantially higher Basic Combo offer; verify contents and seller/fulfilment. Ballicom is the lowest opened retailer price with stock count.
+
+### 20. Yuneec — H850-RTK Hexacopter
+- **LIVE master product ID:** `024f64f2-03b4-46f7-ab85-d1eab4f07f43`
+- **Package:** Hexacopter.
+- **Evidence:**
+  - Official Yuneec German store: €8,099 incl VAT, reduced from €8,999 (10%); shipping extra. Product number YUNH850EUSC_. https://shop.yuneec.com/H850-RTK/YUNH850EUSC
+  - Aerodron Poland: 34,400 PLN gross / 27,967.48 PLN net, 1 in stock, stated 48-hour availability. https://www.aerodron.pl/produkt/yuneec-h850-rtk-dron-yunh850eusc/
+  - Yuneec Poland: €8,232.18 gross / €6,692.83 net. https://yuneec.pl/eng_m_Drones_Yuneec-H850-RTK_Drones-1899.html
+  - Official Yuneec H850 flyer describes the drone with controller, two smart batteries, case and accessories; payloads are separate/optional. https://yuneec.com/wp-content/uploads/2024/02/2023%20Flyer%20H850%20V2.pdf
+- **Condition/availability:** New official store product; German price is not UK GBP. Poland retailer states 1 in stock.
+- **RED VERIFY:** Leave GBP price blank. Confirm UK seller, included T-One controller/charger/hard case, battery count and whether any camera/payload is included. Do not convert EUR or PLN.
+
+## Google Shopping / click-through observations
+
+- Clicked through the available product-shopping cards where a direct page was supplied.
+- Skydio Dual Charger Shopping card displayed £52.70 but its opened eBay page displayed £72.92; record the opened listing price and flag the mismatch.
+- PowerEgg X Wizard Shopping card displayed £650.64 but its click-through did not resolve to an accessible listing. Keep as an unverified lead; no direct listing URL captured.
+- Several related cards were wrong model/package variants (e.g. Ranger Micro/Starter Combo vs full Ranger module; PowerEgg X Explorer vs Wizard; P2-R1 vs P2-R1N; Skydio 2/2+ accessory vs X10D battery). Do not match those prices to the wrong product.
+- Do not discard unresolved or uncertain evidence; retain links and `RED VERIFY` notes.
+
+## Queue staging and owner-auth limitation
+
+Checked LIVE owner context before any write:
+- `auth.uid()`: null
+- `auth.role()`: null
+- `platform_cloud_ai_owner_check()`: false
+
+The public schema exposes owner RPCs for listing, reviewing and deleting research queue items and for manual AI prompts, but no supported authenticated RPC for staging a new market-evidence candidate. Because owner context is absent and the owner check fails:
+- Do not call an insert/staging RPC.
+- Do not write directly to `platform_catalogue_research_queue`.
+- Do not impersonate JWT claims or bypass RLS.
+- **20 candidates researched; 0 staged.**
+- No evidence has been inserted into `shared_market_evidence`; uncertain prices have not entered automatic valuation.
+
+## Next run
+
+Read this batch 13 checkpoint and project memory first. Exclude all 20 product IDs above, all IDs from scheduled checkpoints 02–13, all outstanding LIVE queue candidates and all outstanding manual AI research prompt product IDs. Recheck evidence and queue status immediately before research. Select the next 20 eligible active LIVE master products dynamically without SQL OFFSET. Continue source click-through, variant/package verification and `RED VERIFY` retention. If owner auth remains null or owner check fails, create the next checkpoint and project memory only.

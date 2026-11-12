@@ -418,3 +418,10 @@ Two exact N.I. Broadcast used offers were imported and read back:
 LIVE evidence IDs: 6c7ed3f9-4679-4e3b-98f4-5dcc0f1f7688 and 340ca15f-8d26-4c17-8fb2-46aaecb72b6d. Both are UK Used GBP reference-only, with accessory differences preserved; no valuation effect.
 
 Batch 13 now has 49 active GBP rows (29 UK New, 20 UK Used), zero inactive. Cumulative Batches 04–13 now have 243 observations, 240 active (130 UK New, 110 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Sony RM-BR300 exact model redirected from RM-BR300H lead — 12 November 2026
+
+A further UK used source was found for the related RM-BR300 model. N.I. Broadcast direct page confirms exact Sony RM-BR300 PTZ camera remote panel (not RM-BR300H), product code 7389, £499, stock level 2, Used. Imported against the separate existing RM-BR300 / Standard master ID 2c8b889e-6afc-429c-b8e6-a0d96c426764; did not attach it to the RM-BR300H master. Page does not enumerate accessories; recorded as panel-only. UK Used reference only. Source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31; source_record_key batch13-followup-sony-rm-br300-nibroadcast-7389-499-20261112.
+
+Batch 13 now has 50 active rows (29 UK New, 21 UK Used), zero inactive.

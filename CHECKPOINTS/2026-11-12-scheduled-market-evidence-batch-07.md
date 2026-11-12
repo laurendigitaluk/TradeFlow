@@ -77,7 +77,7 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 
 - [Skydio consumer drone offering FAQ](https://support.skydio.com/hc/en-us/articles/17737443890331-Consumer-Drone-Offering-FAQ) — manufacturer states Skydio 2+ consumer kits, including Sports Kit, have been discontinued. Enterprise kit remains available to Enterprise/Public Sector customers.
 - [Skydio official Sports Upgrade page](https://shop.skydio.com/products/skydio-2-plus-sports-kit-upgrade) — $550 USD. This is an upgrade/accessory kit, not the complete Sports Kit drone package. Contents shown: Skydio 2+ Beacon, two Skydio 2+ batteries, dual charger and SanDisk 128GB Extreme microSD. Page says ships within 3–5 business days.
-- [Skydio UK sales site](https://skydiouk.com/) — UK sales/contact lead; no verifiable GBP price exposed.
+- [Skydio official shop](https://shop.skydio.com/products/skydio-2-plus-sports-kit-upgrade) states the Skydio shop is available for sale only in the United States and Canada. No UK GBP offer was verified.
 
 **RED VERIFY:** Do not attach the $550 USD Sports Upgrade price to the complete Sports Kit. Manufacturer says the consumer Sports Kit is discontinued. Check whether any UK seller has remaining complete-kit stock and capture the full drone/controller/battery package and seller status. GBP price blank.
 
@@ -100,7 +100,7 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 - [eBay UK sold H501S X4 Air standard listing](https://www.ebay.co.uk/itm/137140926562) — £57.42 including buyer-protection fee; sold 2 September 2026; condition Opened – never used; private seller. Historical completed listing, not current stock.
 - [eBay UK H501S X4 Air two-drone lot](https://www.ebay.co.uk/itm/306936247752) — £104.70 or Best Offer for two used H501S X4 Air drones; private seller in Walsall, UK. Package is a two-unit lot, not a single drone.
 - [Gumtree UK new H501S X4 Air listing](https://www.gumtree.com/p/drones/new-hubsan-drone-x4-air-h501s/1507338545) — £139; described as brand new in box, Standard Edition, brushless, 1080p. Listing page returned HTTP 410 when opened; search record was crawled five months ago.
-- [OnBuy Hubsan H501S X4 listing](https://www.onbuy.com/gb/p/hubsan-h501s-x4-58g-fpv-brushless-with-1080p-hd-camera-gps-rc-drone-quadcopter-bnf~p82790489/) — search result lead displayed £543.15 for a new BNF package; direct page returned 404. Seller, availability and bundle contents cannot be checked.
+- [OnBuy Hubsan H501S X4 listing](https://www.onbuy.com/gb/p/hubsan-h501s-x4-58g-fpv-brushless-with-1080p-hd-camera-gps-rc-drone-quadcopter-bnf~p82790489/) — search result showed New, £543.15 plus £3.85 delivery, seller MINI MALL, dispatched from China, 30-day returns and a one-month warranty. Search result described a BNF package containing one H501S aircraft, one battery, charger and four blades. The displayed delivery estimate was in July and is stale; direct page returned 404 when opened. Seller/stock/checkout cannot now be confirmed.
 
 **RED VERIFY:** Retain all leads, but distinguish single drone, range-extender package and two-drone lot. eBay £207.25 is a private-seller used asking price with no returns; Gumtree and OnBuy pages could not be verified directly. Do not treat the ended £57.42 listing as a current offer.
 
@@ -133,7 +133,7 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 **Package:** Ready Case Kit
 
 - [Skydio official X10 kit and case-layout guide](https://support.skydio.com/hc/en-us/articles/20370028789019-What-kits-and-software-bundles-are-available-with-Skydio-X10) — official Ready Case layout lists X10 Dual Charger, X10 Controller, spare propellers, 230W fast power supply, X10 battery, X10 drone, 100W power supply and flex spaces. No price is displayed.
-- [Maverick authorised dealer — X10 Starter Kit VT300-L](https://www.maverickdrone.com/products/skydio-x10-starter-kit-vt300-l) — $17,900 USD; backordered, about three months. Includes X10 aircraft and VT300-L sensor package; mandatory RTK/PPK attachment $920 and Data Management Suite $1,200 are added. This is a Starter Kit with a different sensor/case package, not the catalogue Ready Case Kit.
+- [Maverick authorised dealer — X10 Starter Kit VT300-L](https://www.maverickdrone.com/products/skydio-x10-starter-kit-vt300-l) — search result showed $17,900 USD; backordered about three months. Includes X10 aircraft and VT300-L sensor package; required RTK/PPK attachment $920 and Data Management Suite $1,200 are added. This is a Starter Kit with a different sensor/case package, not the catalogue Ready Case Kit. Direct page fetch returned 404, so treat the search-result price/lead time as unverified.
 
 **RED VERIFY:** Official Ready Case contents are identified, but no exact Ready Case sale price was found. Do not attach Maverick's $17,900 USD Starter Kit price to the Ready Case package. GBP price blank.
 
@@ -144,7 +144,7 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 
 - [B&H eXplora E2-M5G launch article](https://www.bhphotovideo.com/explora/video/news/capture-crisp-action-with-the-z-cam-e2-m5g-global-shutter-cine-camera) — launch coverage for the E2-M5G global-shutter 5K cinema camera; confirms 5K60 and high-speed 4K modes. Article is not a live retail offer and does not provide a verified UK price.
 - [Voosestore E2-M5G product page](https://www.voosestore.com/product/z-cam-e2-m5g-cinema-kamera) — 58,995 SEK incl VAT displayed on the opened Swedish-language page; external warehouse, approximately 3–7 days depending on availability. Article number 4734. Currency is SEK, not GBP.
-- [Z CAM official company/product-line information](https://www.z-cam.com/support/about/) — current brand history/product-line context; page highlights the E2 Mark II series launched in 2025 but does not provide an E2-M5G price.
+- [Z CAM official About Us/current product-line page](https://www.z-cam.com/support/about/) — current navigation lists E2 Mark II cameras and PTZ products; it does not list E2-M5G. This is context only, not proof of discontinuation and not a price source.
 
 **RED VERIFY:** No reliable UK GBP price found. Voosestore page is Sweden-facing and displays SEK 58,995; do not convert. Confirm that the E2-M5G is actually orderable and not a stale catalogue entry before using the external-warehouse estimate.
 
@@ -223,7 +223,7 @@ Searched manufacturer sites, UK retailers, specialist AV/camera retailers, marke
 **Package:** Z CAM IPMAN Gemini Pro Dual HDMI to USB Converter
 
 - [ProAV Z CAM catalogue page](https://proav.co.uk/shop-by-brand/z-cam) — exact IPMAN Gemini Pro listing £39.99 ex VAT / £47.99 inc VAT. Backorder; delivery when in stock, usually within 7 working days, subject to change.
-- [Z CAM official IPMAN Gemini Pro product page](https://www.z-cam.com/products/others/ipman-gemini-pro/ipman-gemini-pro/) — manufacturer page confirms dual HDMI to single USB converter; recommended retail price USD $49.90 and original scheduled ship date September 2021.
+- [Z CAM official IPMAN Gemini Pro product page](https://www.z-cam.com/products/others/ipman-gemini-pro/ipman-gemini-pro/) — manufacturer page confirms dual HDMI to single USB converter; recommended retail price USD $49.90 and original scheduled ship date end of September 2021. Box contents state the main unit only. This is a historical manufacturer MSRP, not a current UK price or current availability confirmation.
 
 **Finding:** Exact product identity and UK GBP price found.  
 **Verification:** ProAV is backorder, not confirmed immediate stock. Manufacturer USD MSRP is historical and not converted.

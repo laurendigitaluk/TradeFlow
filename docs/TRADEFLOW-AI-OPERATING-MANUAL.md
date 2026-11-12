@@ -6288,3 +6288,10 @@ Do not map the UK £119.99 floating-hand-grip listing to the Diving Bundle: the 
 Batch 02 now has four active used rows: CVP Studio Camera 6K Pro, MPB URSA Cine 12K LF PL Fit, CVP URSA Cine 12K LF Body, and CVP URSA Cine 17K 65 with EVF. Keep VAT basis and exact mount/body/EVF package details in evidence notes. Batch 03 now has eight active records (7 UK New, 1 UK Used), including Caddx Walnut and Peanut out-of-stock/backorder price references.
 
 Current LIVE batch-keyed totals for Batches 01–13: 260 rows, 257 active (140 UK New, 117 UK Used), three inactive. Global shared_market_evidence table: 4,802 total, 4,747 active, 55 inactive. The current valuation path does not filter active UK New rows by availability; out-of-stock/backorder price references may therefore influence valuation. This existing behaviour is documented but was not changed. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — Shure currency correction and reconciled counts
+
+DigiBroadcast Shure MoveMic Two Receiver Kit row dee5cf7a-27cb-4097-84a1-a918764c0cf2 is now inactive because the direct page defaults to EUR and the earlier £496.80 GBP capture cannot be verified. Keep the row for audit with currency_unverified; use verified Canford GBP source instead.
+
+Current Batches 01–13: 261 rows, 257 active (140 UK New, 117 UK Used), four inactive. Global LIVE evidence table: 4,803 total, 4,747 active, 56 inactive. Batch 10 has 30 total, 29 active. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

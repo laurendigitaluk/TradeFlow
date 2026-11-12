@@ -273,3 +273,10 @@ Therefore, do not attempt direct table writes or invoke the owner RPC without an
 ## Batch-10 queue limitation
 
 0 records were staged because auth.uid() was null and the platform owner check failed. No direct writes were attempted. The next run must continue from this memory and the detailed checkpoint without repeating these 20 products.
+
+
+## 12 November 2026 — Batch 10 RED VERIFY follow-up
+
+Twelve additional GBP source observations were imported and read back: Sony LMD-A240 used Visual Impact £1,560 and eBay/N.I. Broadcast £1,150; Shure MV7+ new SCAN £259; Sony SRG-A40 white new Currys Business £3,635.98 and TopAV £5,054.39; Sony VG-C3EM used Wex £69 and Harrison £70; Sony FE PZ 28-135mm new CameraWorld £1,960 and used MPB Good £814; Sony PDW-U1 used eBay £208.70 with PSU and Snet Technologies £1,459.95 with warranty; Shure MoveMic Two Receiver Kit official Shure UK £311.40.
+
+Refreshed existing ProAV LMD-A240 £3,030 and explicitly recorded backorder despite conflicting In Stock label; MPB VG-C3EM £68 Good / £77 Excellent; Shure MoveMic Two pair £258.30, receiver sold separately. Batch 10 now has 24 active GBP rows (12 UK New, 12 UK Used). Keep MoveMic Two pair distinct from receiver kit; used observations are reference-only. Exact URLs and notes are in the checkpoint. No master data, schema, valuation logic, TEST or Stripe changes.

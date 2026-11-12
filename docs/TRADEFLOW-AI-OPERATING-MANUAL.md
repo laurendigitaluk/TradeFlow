@@ -1,3 +1,13 @@
+## 12 November 2026 — Batch 08 and current evidence controls
+
+Batch 08 follow-up added Hubsan H501A £209.99 sold out, H501M £139.99 sold out, ZINO Pro £389.99 supplier stock, NEEWER NL660 Gumtree £75 used, GoPro HERO6 Black UsedLens/MPB Excellent £119 used and NEEWER KM19 eBay £47.94 new/seller-away (inactive). Nikon COOLPIX P7700 MPB current unit is £229 Good; Very HOVERAir X1 PROMAX is £609 sale, £639 regular, in stock. Batch 08 total 14 rows, 13 active (10 UK New, 3 UK Used), one inactive.
+
+Cumulative batches 04–13 contain 133 GBP rows, 131 active (75 UK New, 56 UK Used), two inactive. Per-batch totals: 04 18, 05 18, 06 12, 07 14/13 active, 08 14/13 active, 09 11, 10 12, 11 10, 12 12, 13 12. The initial total 107 was correct; the earlier per-batch status summary misallocated 10–12.
+
+Availability does not filter active UK New evidence in calculate_buying_item_valuation(uuid,uuid). The function selects latest active GBP uk_new by observed_at then created_at. UK Used remains reference-only. Sold-out/backorder UK New rows remain active with explicit status/notes and can affect valuation. If a new listing is not currently purchasable because the seller is away or the page says Notify Me, keep it in the database but set is_active=false until stock returns. Do not manipulate observed_at; reflect actual recheck order. Do not change valuation logic without explicit approval. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — Batch 07 and evidence availability controls
 
 Batch 07 follow-up added Hubsan H501S eBay UK sold £67.65 item price (historical; £70.63 included buyer fee), Sony PMW-F55 eBay UK £1,099 used body-only, Manfrotto MVK500XAM Wex £419 new limited stock and Leica M11 Monochrom Park Cameras £8,500 new in stock. Camera Centre Leica M11 was refreshed to £8,450 in stock; CVP Manfrotto £369 inc VAT was rechecked after Wex; MPB Nikon 18-55mm VR used reference refreshed to £37; BuzzFlyer DEVO-10 £149.95 was changed to Notify Me/inactive due no stock.

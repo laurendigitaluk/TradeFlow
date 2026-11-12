@@ -1,0 +1,33 @@
+name: Import TradeFlow background research checkpoints
+
+on:
+  push:
+    branches: [production]
+    paths:
+      - 'CHECKPOINTS/2026-11-12-scheduled-market-evidence-batch-*.md'
+      - 'scripts/import-research-checkpoints.mjs'
+      - '.github/workflows/import-research-checkpoints.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tradeflow-live-research-checkpoint-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out production research checkpoints
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Import checkpoint research into LIVE review queue
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: node scripts/import-research-checkpoints.mjs

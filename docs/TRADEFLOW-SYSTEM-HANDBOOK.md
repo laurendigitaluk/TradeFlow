@@ -5664,3 +5664,8 @@ The latest full reconciliation, including the parallel AKASO V50 X With SD impor
 YourFPV direct page confirms exact Caddx Peanut / Insta360 Go 2 FPV camera, SKU YFPV - CaddX - PNT, £218.99. The page explicitly marks it Out of stock / Join Waitlist; record as UK New price-reference evidence with availability out_of_stock, not current stock. The package list and exact source are documented in the Batch 03 checkpoint. LIVE evidence row 3cf32e49-d7b0-4d30-9851-9da8155e1577 is attached to existing Caddx Peanut master dbf3777c-4f84-4cd1-86db-03d8ed66482f and was read back successfully.
 
 Batches 01–13: 258 observations, 255 active (140 UK New, 115 UK Used), three inactive. Batch 03: 8 active (7 new, 1 used). TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — AKASO V50 X Diving Bundle package control
+
+The official AKASO variant selector defines the Diving Bundle as camera + 64GB SD card + floating hand grip. The UK £119.99 floating-grip bundle explicitly excludes microSD, so it is not an exact Diving Bundle and must not be imported against that master. Keep RED VERIFY until a UK offer confirms both the SD card and floating grip. The separate With SD Bundle has its own evidence and must not be reused. Source and checkpoint references: https://shopakaso.com/products/akaso-v50-x and the Batch 03 research checkpoint.

@@ -301,3 +301,8 @@ Further RED VERIFY outcomes: XVS-G1 C2S £20,765.70 lacks VAT basis and configur
 The ambiguous “FE 100-400mm F4.5-5.6 GM OSS II” lead was not imported to the II master. Carmarthen Cameras direct source verifies first-generation SEL100400GM / SKU 4548736058422 at £2,149, new, one unit in stock, with hood, front/rear caps, case and strap. Matched and imported to existing LIVE FE 100-400mm F4.5-5.6 GM OSS / Lens Only master 69e7a468-cb45-474e-9c28-ca3611514a72. Evidence row 78d2841a-c109-4933-a786-d5ebe559aaff; source key batch10-followup-sony-fe100400gm-firstgen-carmarthen-2149-20261112; source https://carmarthencameras.com/products/sony-fe-100-400mm-f4-5-5-6-gm-oss-super-telephoto-zoom-lens. LIVE read-back verified. Do not map to the separate “II” master or constant-F4.5 SEL100400MCW.
 
 Batch 10 now 29 active (14 UK New, 15 UK Used). Cumulative Batches 04–13: 241 rows, 238 active (130 UK New, 108 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — DigiBroadcast Shure currency correction
+
+Deactivated existing Shure MoveMic Two Receiver Kit DigiBroadcast row dee5cf7a-27cb-4097-84a1-a918764c0cf2. Direct page currently defaults to EUR (€593.29 / €494.41; RRP €617.65 / €514.71), so prior £496.80 is not supported as GBP. Row retained inactive with currency_unverified; package contents confirmed. Use separate Canford GBP evidence. Batch 10 now 30 total, 29 active (14 UK New, 15 UK Used), one inactive.

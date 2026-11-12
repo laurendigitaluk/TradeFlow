@@ -360,11 +360,12 @@ No master product, tenant, customer, schema, valuation function, TEST or Stripe 
 
 ## 13. Further RED VERIFY follow-up — 12 November 2026
 
-Two additional exact UK New observations were inserted into LIVE and read back:
+Three additional exact UK New observations were inserted into LIVE and read back:
 
 | Product | Source | Price | Verification |
 |---|---|---:|---|
 | Bebob V98 V-Mount Battery (SKU V98) | CVP | £312.00 inc VAT (£260.00 ex VAT) | Direct CVP page identifies part number V98, one remaining in stock for immediate delivery, confirms UK battery shipping and two-year standard warranty. [Source](https://cvp.com/product/bebob_v98_battery) |
 | DJI Mini 3 Fly More Combo Plus (DJI RC), SKU CP.MA.00000613.01 | Drone Safe Store | £509.00 inc VAT (was £579.00) | Direct UK retailer page explicitly shows OUT OF STOCK / Notify Me. Package list confirms DJI RC, three flight batteries, two-way charging hub, shoulder bag, spare propellers, screws, screwdriver, gimbal protector and cables. [Source](https://www.dronesafestore.com/products/dji-mini-3-fly-more-combo-dji-rc) |
+| Bright Tangerine OpenRig Base Kit (part B4013.0017) | ProAV | £189.00 inc VAT (£157.50 ex VAT) | ProAV category listing displays the exact package name, Add to Cart and Available to Order. The matching CVP page identifies part B4013.0017 and package contents. [Source](https://proav.co.uk/support/camera-rigging/rigs/kits/) |
 
-The existing ProAV V98 row remains active but marked backorder due its contradictory “in stock” and backorder wording. The new CVP observation is exact V98, not V98micro/V98microC. The DJI record is matched to the existing Fly More Combo Plus (DJI RC) master via SKU CP.MA.00000613.01; it is not the RC-N1 variant. Its out-of-stock status is retained explicitly as historical UK New evidence under the existing policy. Batch 06 now has 14 active GBP records: 10 UK New and 4 UK Used. UK Used remains reference-only. No master product, schema, valuation function, TEST or Stripe data was changed.
+The existing ProAV V98 row remains active but marked backorder due its contradictory “in stock” and backorder wording. The new CVP observation is exact V98, not V98micro/V98microC. The DJI record is matched to the existing Fly More Combo Plus (DJI RC) master via SKU CP.MA.00000613.01; it is not the RC-N1 variant. Its out-of-stock status is retained explicitly as historical UK New evidence under the existing policy. The OpenRig Base Kit now has a separate ProAV Available to Order observation alongside the existing CVP preorder reference. Batch 06 now has 15 active GBP records: 11 UK New and 4 UK Used. UK Used remains reference-only. No master product, schema, valuation function, TEST or Stripe data was changed.

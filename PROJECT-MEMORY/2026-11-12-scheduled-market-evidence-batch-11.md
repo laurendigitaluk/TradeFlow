@@ -45,3 +45,10 @@ Read this checkpoint and the latest production project memory first. Exclude all
 ## 12 November 2026 — Batch 11 RED VERIFY follow-up
 
 Twelve additional GBP rows imported/read back: Nikon P900 MPB from £319 and LCE £349.99 used; Nikon Df LCE £699.99 used; Nikon Z 50mm f/1.4 Nikon UK £449 new; Nikon Z 26mm f/2.8 Nikon UK £449 new; Pentax HD D FA 28-105mm MPB £244 and SRS £209 used; Pentax HD D FA Macro 100mm Carmarthen £699.99 new; Pentax O-RC1 SCAN £29.99 and Clifton £26 new/awaiting stock; Panasonic FZ1000 II Kamerastore £709 used with zoom lever fault; Panasonic GM5 Wex £929 used body-only Excellent. Batch 11 now has 22 active GBP rows: 8 UK New and 14 UK Used. Used observations remain reference-only. Faults and condition caveats remain explicit.
+
+
+## 12 November 2026 — Batch 11 further RED VERIFY follow-up
+
+Seven further UK Used observations were imported/read back: Nikon COOLPIX P900 / Harrison Cameras £420 Very Good, one in stock; Nikon COOLPIX P900 / Wex £449 Excellent, in stock; Nikon F2AS Data / Grays of Westminster via UsedLens UK £6,500 As New with MF-10 data back plus MD-2/MB-1 motor drive and DS-12 aperture attachment (bundle, not bare body); Panasonic Leica DG 50-200mm / Park Cameras £929 Very Good, two available; same lens / MPB UK £1,009, two used units from £1,009–£1,059; Panasonic DMC-GM5 / MPB £624 Good, lowest of eight; Pentax older SMC FA 100mm f/2.8 Macro / Fivercam eBay £234.89 used with £49.99 shipping.
+
+Batch 11 now has 29 active GBP rows: 8 UK New and 21 UK Used. All seven new records are UK Used reference-only. The Nikon F2AS Data price is an accessory-rich bundle; Pentax SMC FA remains separate from D FA/HD D FA; Panasonic 50-200 exact Micro Four Thirds lens. Observed_at values were normalized to the actual read-back time for this single import session; no timestamp staggering/backdating. Remaining uncertainties stay RED VERIFY. No master/schema/valuation changes; TEST and Stripe untouched.

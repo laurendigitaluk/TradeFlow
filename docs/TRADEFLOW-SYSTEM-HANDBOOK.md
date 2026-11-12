@@ -5536,3 +5536,10 @@ Both existing rows' notes and observed_at values were updated and read back. Cum
 ## 12 November 2026 — Batch 08 Hubsan source verification
 
 A further UK New observation was added for the exact Hubsan Zino Mini Pro Refined three-battery package (H817DR / EAN 6922572413412): Align-Trex UK £485.99 (RRP £539.99), explicitly Out of Stock / Notify Me. The page confirms three batteries and 64GB onboard memory. Source: https://www.align-trex.co.uk/hubsan-zino-mini-pro-refined-h817dr.html. It is retained as active historical UK New evidence with `out_of_stock` status. Batch 08 now has 17 rows: 16 active (13 UK New, 3 UK Used) and one inactive. Cumulative Batches 04–13 now contain 233 GBP observations: 229 active (126 UK New, 103 UK Used), four inactive.
+
+
+## 12 November 2026 — Batch 09 Sony HDC-1500 package verification
+
+A further UK Used observation was imported for the Sony HDC-1500 Standard Package: N.I. Broadcast Ltd (eBay UK), £8,010 or Best Offer, 10 available, used and full working order. The seller description confirms one HDC-1500 fibre camera head, one HDCU-1500 half-rack CCU with extra HDSDI output board, one tripod plate and one RCP-920 with Ethernet option per channel. Lenses and viewfinders are extra-cost items; UK domestic shipping quote is not confirmed. Source: https://www.ebay.co.uk/itm/198054902757. The record was read back successfully and remains UK Used reference evidence only.
+
+Batch 09 now has 21 active GBP rows (9 UK New, 12 UK Used). Cumulative Batches 04–13 now contain 234 GBP observations: 230 active (126 UK New, 104 UK Used), four inactive.

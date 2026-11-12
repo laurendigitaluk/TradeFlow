@@ -332,3 +332,31 @@ No price was invented. No non-GBP price was converted to GBP. Where no reliable 
 6. Research actual product pages and variants, preserve all useful URLs and RED VERIFY uncertainties.
 7. Check auth.uid() and platform owner status before staging. If auth.uid is null or owner check fails, do not write; create the next detailed checkpoint and project-memory file instead.
 8. Do not touch TEST, Stripe, master products, valuation logic or schema.
+
+
+## 7. RED VERIFY follow-up — 12 November 2026
+
+Twelve further exact-source observations were imported into LIVE and read back:
+
+| Master product | Source | Price | Evidence / status |
+|---|---|---:|---|
+| Sony LMD-A240 | Visual Impact | £1,560.00 | Used; two in stock; £1,300 ex VAT. [Source](https://www.visuals.co.uk/sony-lmd-a240-24inch-lcd-professional-monitor-used.html) |
+| Sony LMD-A240 | eBay UK — N.I. Broadcast | £1,150.00 | Used Good; UK business seller, 100% feedback; package accessories to confirm. [Source](https://www.ebay.co.uk/itm/127676752525) |
+| Shure MV7+ | SCAN | £259.00 | New, exact MV7+-K, in stock; microphone only, no stand bundle. [Source](https://www.scan.co.uk/products/shure-mv7plus-dynamic-usb-c-and-xlr-microphone-for-podcasters) |
+| Sony SRG-A40 white | Currys Business | £3,635.98 | New, six available; £3,029.99 ex VAT. [Source](https://business.currys.co.uk/catalogue/commercial-appliances-tech/video-conferencing/sony-srg-a40-conference-camera-turret/P309466P) |
+| Sony SRG-A40 white | TopAV | £5,054.39 | New, in stock, UK stock, 2-working-day dispatch; £4,211.99 ex VAT. [Source](https://www.topav.co.uk/products/sony-srg-a40-ptz-camera-white) |
+| Sony VG-C3EM | Wex Photo Video | £69.00 | Used Very Good; in stock; Wex Certified 12-month warranty. [Source](https://www.wexphotovideo.com/sony-vg-c3em-battery-grip-used-3373479/) |
+| Sony VG-C3EM | Harrison Cameras | £70.00 | Used Mint; one in stock; box/instructions, fully tested, 12-month warranty. [Source](https://harrisoncameras.co.uk/products/used-sony-vg-c3em-grip-for-a9-a7-iii-and-a7r-iii-used-3353315) |
+| Sony FE PZ 28-135mm F4 G OSS | CameraWorld | £1,960.00 | New, two available, free UK delivery, 2-year guarantee. [Source](https://www.cameraworld.co.uk/sony-fe-28-135mm-f4-g-pz-oss-lens.html) |
+| Sony FE PZ 28-135mm F4 G OSS | MPB | £814.00 | Used Good, SKU 4275015, caps and hood, 12-month warranty. £514 spares/repairs excluded. [Source](https://www.mpb.com/en-uk/product/sony-fe-pz-28-135mm-f-4-g-oss) |
+| Sony PDW-U1 | eBay UK — jaytomtom | £208.70 | Used, good working order, PSU included; last one, one sold; seller in Godalming. [Source](https://www.ebay.co.uk/itm/156530063005) |
+| Sony PDW-U1 | eBay UK — Snet Technologies | £1,459.95 | Used, business seller in London, two available, warranty; £14.49 postage. High seller/warranty price tier retained separately. [Source](https://www.ebay.co.uk/itm/375841867687) |
+| Shure MoveMic Two Receiver Kit | Shure UK | £311.40 | New official offer against £519 RRP; exact receiver kit SKU MV-TWO-KIT-Z6. [Source](https://www.shure.com/en-GB/products/wireless-systems/movemic-wireless/movemic-two-kit) |
+
+Existing rows were also rechecked: ProAV Sony LMD-A240 £3,030 inc VAT / £2,525 ex VAT now explicitly marked backorder (the page shows an in-stock label but says delivery usually within 10 working days); MPB Sony VG-C3EM confirms two used units £68 Good and £77 Excellent; Shure UK MoveMic Two pair confirms £258.30 sale against £369 RRP, receiver sold separately. The existing Shure MoveMic Two Receiver Kit DigiBroadcast £496.80 remains a separate package/source. Do not merge the pair-only and receiver-kit prices.
+
+Batch 10 now has **24 active records: 12 UK New and 12 UK Used; all 24 are GBP**. Twelve follow-up records were added. Used rows remain reference-only and do not affect automatic valuation.
+
+Other leads remain RED VERIFY and were not promoted: Sony HDC-5500 £60,036 is exact but the page does not enumerate full camera-channel contents; Sony FE 100-400mm F4.5-5.6 GM OSS II could not be verified as a real exact model (first-gen SEL100400GM and current SEL100400MCW are different); Potensic T18 page did not expose price on direct page; EVI-D90 UK page blocked and package uncertain; Tamron G2 prices are mount-specific; SLRHut PMW-160 legacy/new claims and seller reliability need confirmation; Sony XVS-G1 configuration/I/O unclear; Alfatec PMW-150 page returned 403; HDC1500 is not HDC1500R; Shure MoveMic Two receiver kit and pair are distinct; Skydio has USD only. No foreign currency or uncertain package price was promoted.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.

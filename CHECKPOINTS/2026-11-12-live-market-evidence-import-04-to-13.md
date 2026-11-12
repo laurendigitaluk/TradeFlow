@@ -383,3 +383,27 @@ The earlier 04–13-only checkpoint is now extended to cover all 13 camera evide
 The Batch 01/02 imports and the additional Batch 03 V50 X With SD record are recorded in their individual checkpoints. Batch 03 is 5 active (4 new, 1 used); Batch 01 is 5 active (3 new, 2 used); Batch 02 is 2 active (0 new, 2 used). This supersedes all earlier cumulative counts in this file. These are batch-key-scoped evidence rows, not the full shared_market_evidence table count. Current global LIVE table count at reconciliation: 4,797 total, 4,742 active, 55 inactive.
 
 All 255 batch-keyed rows are GBP; 252 active. UK Used remains reference-only. Three inactive rows remain retained for audit. No TEST, Stripe, schema, master catalogue or valuation changes were made during this extension.
+
+
+## Latest LIVE reconciliation — Batches 01–13 — 12 November 2026
+
+A fresh LIVE read-back after the additional Batch 02 CVP imports and parallel Batch 03 Caddx/V50X work gives:
+
+| Batch | Total | Active | UK New | UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 01 | 5 | 5 | 3 | 2 | 0 |
+| 02 | 4 | 4 | 0 | 4 | 0 |
+| 03 | 8 | 8 | 7 | 1 | 0 |
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 15 | 15 | 11 | 4 | 0 |
+| 07 | 15 | 14 | 10 | 4 | 1 |
+| 08 | 17 | 16 | 13 | 3 | 1 |
+| 09 | 23 | 23 | 10 | 13 | 0 |
+| 10 | 29 | 29 | 14 | 15 | 0 |
+| 11 | 32 | 32 | 8 | 24 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 49 | 49 | 29 | 20 | 0 |
+| **Total** | **260** | **257** | **140** | **117** | **3** |
+
+Current global LIVE shared_market_evidence count at this read: 4,802 total, 4,747 active, 55 inactive. These totals are batch-keyed rows for Batches 01–13, not the whole table. The latest per-batch totals supersede the earlier 255/252 snapshot. UK Used remains reference-only. Batch 03 contains three active UK New out-of-stock/backorder price references; current valuation does not filter active UK New by availability, so these may influence valuation. No schema or valuation logic was changed. TEST and Stripe untouched.

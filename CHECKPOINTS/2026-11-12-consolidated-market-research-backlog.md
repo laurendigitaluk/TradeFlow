@@ -293,3 +293,24 @@ Cumulative Batches 04–13: 218 total GBP rows, 214 active (111 UK New, 103 UK U
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 This supersedes the previous 211 total/207 active snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19 and one each in Batches 12 and 13. Continue RED VERIFY work; remaining model, package, stock and foreign-currency leads are not considered complete. Used evidence remains excluded from automatic valuation. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 12 additional evidence and current totals
+
+Batch 12 gained two records: Sony NEX-FS100 eBay UK £768.08 used (Luton private seller, no returns, package unspecified); Z CAM ExAscend CFast Reader ProAV £51.60 inc VAT, backorder. Walkera Vitus Starlight identity was confirmed from the direct page (Vitus 320 is the underlying aircraft platform, not a different model); Sony FE 50mm F1.4 GM Camix £1,032 was reconfirmed direct and in stock. Batch 12 now has 27 total rows, 26 active (17 UK New, 9 UK Used), one inactive price-conflict row.
+
+Cumulative Batches 04–13: 220 total GBP rows, 216 active (112 UK New, 104 UK Used), four inactive. Actual per-batch totals:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 27 | 26 | 17 | 9 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 218 total/214 active snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19, Sony UK E35 £225 price conflict, and one Batch 13 row. Continue RED VERIFY work; remaining model, package and foreign-currency leads are not considered complete. Used evidence remains excluded from automatic valuation. TEST and Stripe untouched.

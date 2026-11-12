@@ -5765,3 +5765,10 @@ Latest LIVE snapshot: global shared_market_evidence 4,808 total, 4,750 active, 5
 KitPlus listing from N.I. Broadcast Ltd confirms one Sony HDC1500R fibre camera channel at £8,650 used. Exact package: HDC1500R camera head, HDCU-1000 full-rack fibre CCU, HDVF20A 2-inch viewfinder and RCP750 remote panel; RCP1500/7-inch viewfinder extra cost, lens not included. Listing published March 2025 but remains in dealer current listings; confirm current availability/terms before purchase. LIVE row afd9e40d-fabb-4e28-b797-2e2b8f877948 against HDC1500R Standard Package master 90917fa8-dbc3-4aed-9650-e73d8e35692f. Source https://kitplus.com/for-sale/studio-40/sony/hdc1500r-fibre-camera-channels-more-than-1/33970. UK Used reference-only.
 
 Current Batches 01–13: 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE evidence: 4,809 total, 4,751 active, 58 inactive. TEST, Stripe, schema, master data and valuation logic untouched.
+
+
+## 12 November 2026 — Shure MoveMic Two standard-package evidence
+
+Three exact UK sources were added for the standard MoveMic Two package (two lavaliers, case and USB-C cable; receiver sold separately): Shure UK £221 sale / £369 RRP; Canford £305 ex VAT, ordered on demand 3–4 weeks; Clifton Cameras £335 displayed, awaiting stock 5–7 days (VAT basis not explicit). LIVE rows 54592afe-1b24-4abf-aee9-8405f95f5ac5, a8eb0b34-4882-471d-88de-1c71ccc7be42 and cee333d8-55fe-4536-93f6-a3fe11644744. Old Shure £258.30 row e8a60443-aef8-4e3f-ada1-ca6183292f05 deactivated as superseded. Keep this package separate from MoveMic Two Receiver Kit.
+
+Batches 01–13: 267 total, 260 active (141 UK New, 119 UK Used), seven inactive. Global LIVE evidence 4,812 total, 4,753 active, 59 inactive. TEST, Stripe, schema, master data and valuation logic untouched.

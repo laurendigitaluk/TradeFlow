@@ -80,3 +80,10 @@ Batch 12 now has 27 total GBP rows, 26 active (17 UK New, 9 UK Used), one inacti
 Existing eBay UK row a92bb4e6-7fb1-436f-bb26-19f4795ed61f (£789.99 used, excellent, fully tested, 32GB, brand-new battery and charger) was incorrectly attached to HXR-MC2500 without the E suffix. LIVE already had exact HXR-MC2500E / Standard master 7c3e5517-1c19-4080-bd65-7cb41a4925f3. Reassigned the existing row to that exact master after opening the current eBay listing and confirming item specifics; no duplicate, price or condition change. Direct source https://www.ebay.co.uk/itm/318668491967. Read-back verified the row now resolves to HXR-MC2500E / Standard.
 
 Batch 12 counts unchanged: 27 total, 26 active (17 new, 9 used), one inactive price conflict. Cumulative Batches 03–13: 246 total, 243 active (133 UK New, 110 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## 12 November 2026 — UHC-8300 / HDC-3200 camera-head scope confirmed
+
+Reopened direct Visual Impact pages and clarified existing active evidence in place: UHC-8300 £396,117.94 inc VAT is camera head only; UHCU-8300 CCU is separate, lens/viewfinder not included. HDC-3200/DF £37,651.84 inc VAT is camera head with dual-filter option; HDCU-3500/3100 CCU or HDCE extension adaptor are separate, lens/viewfinder not included. Evidence IDs 1b7ae87f-0944-44d2-ab66-128d462fe934 and 337cdfd8-3967-413b-b61c-7d64c4381df5; full sources/notes in Batch 12 checkpoint. No duplicate rows or master changes.
+
+MKS-R3210 remains without exact UK GBP evidence; Sony official pages have no price, European dealer prices are EUR, and eBay UK £61.75 is BKS-R3210 (different model). Batch 12 counts unchanged: 27 total, 26 active (17 new, 9 used), one inactive. No TEST/Stripe changes.

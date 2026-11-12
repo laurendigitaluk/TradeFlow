@@ -255,3 +255,15 @@ Four of the outstanding RED VERIFY candidates were resolved to exact existing LI
 All four rows were read back from LIVE and match their exact master/package IDs. Batch 03 now has four active GBP rows (3 UK New, 1 UK Used). Cumulative Batches 03–13 now contain 246 observations: 243 active (133 UK New, 110 UK Used), three inactive.
 
 The remaining Batch 03 RED VERIFY leads are not being forced into mismatched catalogue entries: foreign-currency-only Casio/Sony sources, the Sony TR50 mixed TR50/TR500 seller title, model/package uncertainties in AKASO V50/Brave variants, the original GoPro HERO generation, Freefly US-only prices, ANAFI charger compatibility, ANAFI Extended bundle mismatch, and BVP-9500WSP vs BVP-9500W suffix difference. Keep those source links and notes for follow-up; do not convert foreign currencies or invent a GBP price. No master product, schema or valuation change; TEST and Stripe untouched.
+
+
+## AKASO V50 X With SD Bundle — current UK marketplace source verified — 12 November 2026
+
+The previous YPC snapshot (£109.99, dated 22 October) was not used as a current checkout price. A current direct eBay UK listing was opened and checked instead:
+- LIVE master: AKASO V50 X / V50 X With SD Bundle, ID d763014a-70e2-4a0e-a7ce-bf8e0afdb0e1.
+- Clarkson Direct listing: £153.99, New, 2 available / 1 sold; exact listing title and item specifics identify V50 X-U3 and “With 64GB microSD Card”. Seller description confirms V50 X, two 1350mAh batteries and the model's 4K/EIS features.
+- Seller is a UK business based in Beverley HU17 8YA, 95.5% positive feedback, 11K items sold. Listing last updated 19 August 2026; page was still live with two available when checked 12 November. No returns accepted; eBay Money Back Guarantee applies.
+- Direct listing: https://www.ebay.co.uk/itm/326424455596. Seller description: https://itm.ebaydesc.com/itmdesc/326424455596?category=11724&cspheader=1&descgauge=1&domain=ebay.com&excSoj=1&excTrk=1&ittenable=false&lang=en&lsite=3&oneClk=2&secureDesc=1&seller=95clarksonw&t=0&ver=1.
+- Imported as active UK New GBP £153.99 against exact With SD Bundle master. LIVE evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d; source_record_key batch03-followup-akaso-v50x-with-sd-ebay-15399-20261112. Read-back confirmed exact master/package, source, price, condition, availability and active state.
+
+Batch 03 now has 5 active rows (4 UK New, 1 UK Used). Batches 01–13 now contain 255 observations: 252 active (137 UK New, 115 UK Used), three inactive. The £109.99 YPC snapshot remains a dated comparison lead, not an additional live offer. No master/schema/valuation change; TEST and Stripe untouched.

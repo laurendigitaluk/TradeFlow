@@ -291,3 +291,25 @@ Direct LIVE read-back now confirms **211 total evidence rows across Batches 04�
 The four inactive records are one each in Batch 07 (BuzzFlyer DEVO-10 Notify Me/no stock), Batch 08 (NEEWER KM19 seller away), Batch 12 and Batch 13. UK Used remains comparison-only and does not affect automatic valuation. LIVE valuation selects the latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder UK New rows can still influence automatic valuation; no-stock/seller-away rows are kept inactive. No schema or valuation logic changed.
 
 This supersedes the prior 208-row / 204-active cumulative snapshot. TEST and Stripe remain untouched.
+
+
+## 12 November 2026 — LIVE reconciliation after Batch 11 follow-up
+
+Direct LIVE read-back now confirms **218 total evidence rows across Batches 04–13; 214 active and 4 inactive; all 218 are GBP**. Active evidence comprises **111 UK New and 103 UK Used**. Batch 11 increased from 22 to 29 active rows after seven further observations.
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 29 | 29 | 8 | 21 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+The four inactive records are one each in Batch 07 (BuzzFlyer DEVO-10 Notify Me/no stock), Batch 08 (NEEWER KM19 seller away), Batch 12 and Batch 13. UK Used remains reference-only and does not affect automatic valuation. LIVE valuation selects latest active GBP uk_new by observed_at then created_at and does not filter availability. Sold-out/backorder UK New rows can still influence automatic valuation; no-stock/seller-away rows remain inactive. No schema or valuation logic changed.
+
+This supersedes the prior 211-row / 207-active cumulative snapshot. TEST and Stripe remain untouched.

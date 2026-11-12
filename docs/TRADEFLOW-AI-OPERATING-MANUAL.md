@@ -6325,3 +6325,10 @@ HDC-3100: exact Visual Impact SKU, £25,066.80 inc VAT (£20,889 ex), available 
 RM-BR300: exact N.I. Broadcast product code 7389, £499 used, stock 2; this is RM-BR300, not RM-BR300H, and recorded panel-only. LIVE row 48d36782-0c1b-42ff-8fd0-938e73779c31; full notes in Batch 13 checkpoint. UK Used remains reference-only.
 
 Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. TEST, Stripe, schema and valuation logic unchanged.
+
+
+## 12 November 2026 — HDC-3100 evidence and current counts
+
+Sony HDC-3100 exact UK camera-head source from Visual Impact is now recorded at £25,066.80 inc VAT, Available to Order (not in stock), matched to HDC-3100 Standard master. No CCU, lens or viewfinder included. Evidence row 52a8170b-9521-41f0-9f64-6d172408377e; source/package notes in Batch 10 checkpoint.
+
+Current Batches 01–13: 263 observations, 259 active (141 UK New, 118 UK Used), four inactive. Global evidence table: 4,805 total, 4,749 active, 56 inactive. UK Used remains reference-only. TEST, Stripe, schema and valuation logic unchanged.

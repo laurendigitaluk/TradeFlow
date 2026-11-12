@@ -398,3 +398,14 @@ Additional source rechecks retained as RED VERIFY / no import:
 - Sony HDC-F5500V Visuals £85,619.24 record already exists against the separate HDC-F5500V Standard Package master. The refreshed page confirms SKU HDC-F5500V-4K and Available to Order; no duplicate was inserted.
 
 The Sony HDC-3000 checkpoint remains unresolved: Sony's “HDC-3000 series” wording is a series designation, not proof of a distinct sellable HDC-3000 camera model. Keep related HDC-3500/HDC-3200/HSC-300 and CCU offers separate.
+
+
+## Sony FE 100-400mm — first-generation model matched correctly — 12 November 2026
+
+The RED VERIFY lead named “Sony FE 100-400mm F4.5-5.6 GM OSS II” was not matched to that catalogue row because no exact II model was verified. Instead, the direct source was matched to the existing first-generation master:
+- LIVE master: FE 100-400mm F4.5-5.6 GM OSS / Lens Only, ID 69e7a468-cb45-474e-9c28-ca3611514a72.
+- Carmarthen Cameras exact SKU 4548736058422 / SEL100400GM: £2,149, new, one unit in stock and ready to ship. In the box: lens hood, front/rear caps, case and shoulder strap. Direct page: https://carmarthencameras.com/products/sony-fe-100-400mm-f4-5-5-6-gm-oss-super-telephoto-zoom-lens.
+- Imported as active UK New GBP against the first-generation Lens Only master, not the unverified “II” product and not the newer constant-F4.5 SEL100400MCW.
+- LIVE row ID 78d2841a-c109-4933-a786-d5ebe559aaff; source_record_key batch10-followup-sony-fe100400gm-firstgen-carmarthen-2149-20261112. Direct read-back confirmed exact master/package, source URL, £2,149 GBP, new condition and in_stock.
+
+Batch 10 now has 29 active GBP rows (14 UK New, 15 UK Used). Cumulative Batches 04–13 now contain 241 GBP observations: 238 active (130 UK New, 108 UK Used), three inactive. No catalogue master was changed; the inaccurate “II” catalogue identity remains RED VERIFY for a separate catalogue correction decision. TEST, Stripe, schema and valuation logic untouched.

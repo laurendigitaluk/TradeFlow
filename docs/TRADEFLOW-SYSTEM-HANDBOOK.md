@@ -5531,3 +5531,8 @@ Two existing Batch 08 UK New observations were refreshed in place, without dupli
 - NEEWER RH12C, SKU 66607222: £79.99, 3 in stock and Add to Cart, UK warehouse dispatch normally 2–5 working days; complete ring-light kit contents confirmed. “More stock coming soon” is a replenishment notice alongside three currently available units, not a contradictory stock state.
 
 Both existing rows' notes and observed_at values were updated and read back. Cumulative totals remain 231 GBP observations: 227 active (124 UK New, 103 UK Used), four inactive.
+
+
+## 12 November 2026 — Batch 08 Hubsan source verification
+
+A further UK New observation was added for the exact Hubsan Zino Mini Pro Refined three-battery package (H817DR / EAN 6922572413412): Align-Trex UK £485.99 (RRP £539.99), explicitly Out of Stock / Notify Me. The page confirms three batteries and 64GB onboard memory. Source: https://www.align-trex.co.uk/hubsan-zino-mini-pro-refined-h817dr.html. It is retained as active historical UK New evidence with `out_of_stock` status. Batch 08 now has 17 rows: 16 active (13 UK New, 3 UK Used) and one inactive. Cumulative Batches 04–13 now contain 233 GBP observations: 229 active (126 UK New, 103 UK Used), four inactive.

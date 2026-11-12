@@ -394,3 +394,14 @@ One further UK Used observation was resolved and imported:
 The Sony HDC-3000 exact model remains unresolved after a fresh Sony UK support-catalogue check. Do not substitute HDC-3500, HDC-3200, HSC-300 or CCU prices.
 
 Cumulative Batches 04–13 now contain **236 GBP observations: 232 active (127 UK New, 105 UK Used) and four inactive retained for audit**. Batch 09 now contains 23 active rows (10 UK New, 13 UK Used). UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.
+
+
+## PowerDolphin Wizard package verification — existing row reactivated — 12 November 2026
+
+The previously inactive £1,449 eBay UK offer was rechecked. The listing identifies the exact PowerVision PowerDolphin Wizard, model PowerDolphin Wizard, MPN PDW10 and EAN 6970820830313; condition New, unopened original retail packaging, Buy It Now, UK business seller in Nottingham, 100% positive feedback. Direct listing: https://www.ebay.co.uk/itm/116741484492. The seller's linked description confirms the Wizard-specific PowerSeeker sonar/fish-finder feature and intelligent fishing function: https://itm.ebaydesc.com/itmdesc/116741484492?category=179697&cspheader=1&descgauge=1&domain=ebay.com&excSoj=1&excTrk=1&ittenable=false&lang=en&lsite=3&oneClk=2&secureDesc=1&seller=hp_seller_number1&t=0&ver=1.
+
+The PowerDolphin Wizard user manual item list independently confirms the Wizard package includes PowerDolphin, intelligent battery, AC adapter, two pairs of blades, AC cable, storage bag, fishing bait container and link, remote controller, Micro USB cable, PowerSeeker and PowerSeeker charging cable: https://www.manualslib.com/manual/1940291/Powervision-Powerdolphin.html. This resolves the package-unverified reason for inactivity. The existing evidence row was reactivated in place; no duplicate was inserted.
+
+Existing row ID 6f11ca53-fcc7-4c39-8f3a-ec2aa2aee09e, master PowerDolphin / Wizard Package (d85ca7a7-e811-427a-a23c-d1abe267536a), source_record_key batch13-powervision-powerdolphin-wizard-ebay-1449. Read-back confirms £1,449 GBP, UK New, new condition, in_stock, active.
+
+Batch 13 now has 47 active rows (29 UK New, 18 UK Used), zero inactive. Cumulative Batches 04–13 now have 240 GBP observations, 237 active (129 UK New, 108 UK Used), three inactive. Used evidence remains reference-only. No master product, schema, valuation logic, TEST or Stripe changes.

@@ -347,3 +347,10 @@ Batch 13 now has **47 total GBP rows: 46 active (28 UK New, 18 UK Used) and one 
 Other RED VERIFY leads remain excluded where no exact UK GBP source or package match was established: PDW-F800 £260 basis may be hire rather than sale; Skydio Beacon/X10D battery no UK source; Z CAM P2-R1N no UK GBP price; Yuneec H850-RTK no verified UK seller/package; HXR-V1E search-result listing item specifics identify HVR-Z1E, so not matched; PowerEgg X Wizard Shopping lead did not resolve; HDC/Sony package or seller terms remain uncertain. No foreign-currency conversion or wrong-model match was imported.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## Cumulative LIVE evidence update — 12 November 2026
+
+A further Batch 06 RED VERIFY lead was resolved and imported: exact Bebob V98 V-Mount Battery (SKU V98), CVP £312.00 inc VAT (£260.00 ex VAT), one remaining in stock for immediate delivery, UK battery shipping supported, two-year standard warranty. [Source](https://cvp.com/product/bebob_v98_battery). The LIVE row was read back successfully and remains separate from V98micro/V98microC.
+
+Cumulative Batches 04–13 now contain **227 GBP observations: 223 active (120 UK New, 103 UK Used) and four inactive retained for audit**. Batch 06 now contains 13 active rows (9 UK New, 4 UK Used). UK Used remains excluded from automatic valuation. The valuation function, schema, TEST and Stripe were not changed.

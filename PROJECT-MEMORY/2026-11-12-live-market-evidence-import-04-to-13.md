@@ -50,3 +50,25 @@ Verified per-batch totals:
 The initial overall total of 107 was correct, but the earlier message misallocated the per-batch counts for Batches 10–12. The correct database totals are Batch 10=12, Batch 11=10, Batch 12=12. Follow-up additions were Batch 04 +4, Batch 05 +9, Batch 06 +3, Batch 07 +4.
 
 LIVE valuation uses the latest active GBP uk_new observation by observed_at then created_at, and does not filter availability. UK Used is reference-only. Sold-out/backorder UK New evidence remains active with status/notes under current behaviour; a Notify Me/no-stock row was made inactive. No schema or valuation logic changes. Actual manuals are docs/TRADEFLOW-SYSTEM-HANDBOOK.md and docs/TRADEFLOW-AI-OPERATING-MANUAL.md; both updated. TEST and Stripe untouched.
+
+
+## 12 November 2026 — current verified import state after Batch 08
+
+Initial scheduled import: 107 GBP rows. Additional RED VERIFY follow-up additions in Batches 04–08: 26 rows. Current LIVE state: 133 total GBP rows, 131 active (75 UK New, 56 UK Used), 2 inactive. The inactive rows are BuzzFlyer DEVO-10 (Notify Me/no stock) and NEEWER KM19 eBay (seller away until 19 Nov).
+
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 11 | 11 | 5 | 6 | 0 |
+| 10 | 12 | 12 | 7 | 5 | 0 |
+| 11 | 10 | 10 | 3 | 7 | 0 |
+| 12 | 12 | 12 | 8 | 4 | 0 |
+| 13 | 12 | 12 | 7 | 5 | 0 |
+
+Actual database per-batch counts are Batch 10=12, Batch 11=10, Batch 12=12; the initial total 107 was correct, but the earlier status message misallocated these three batch counts. Follow-up additions: 04 +4, 05 +9, 06 +3, 07 +4, 08 +6. Batches 09–13 still need the RED VERIFY follow-up pass.
+
+LIVE valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability. UK Used remains reference-only. Active sold-out/backorder new rows can still affect valuation under current behaviour; Notify Me and seller-away rows are retained but inactive. No schema/valuation logic change. TEST and Stripe untouched.

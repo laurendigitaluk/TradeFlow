@@ -100,3 +100,8 @@ Batch 13 now 47 active (29 UK New, 18 UK Used), zero inactive. Cumulative Batche
 A prior HXR-V1E Shopping lead had item specifics identifying HVR-Z1E. Current N.I. Broadcast direct sources were found and matched to existing LIVE HVR-Z1E / Standard Package master ef1447f4-5967-44f8-abc0-282f2ecb40d3. Imported two active UK Used GBP offers: product code 6946 £250, tested but no battery/charger (battery/charger separately £30); product code 6944 £250, tested and includes battery/charger. Both have stock 1. Full URLs, condition and notes in the Batch 13 checkpoint. LIVE evidence IDs 6c7ed3f9-4679-4e3b-98f4-5dcc0f1f7688 and 340ca15f-8d26-4c17-8fb2-46aaecb72b6d; read-back verified. UK Used remains reference-only.
 
 Batch 13 now 49 active (29 UK New, 20 UK Used), zero inactive. Cumulative Batches 04–13: 243 rows, 240 active (130 UK New, 110 UK Used), three inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — Sony RM-BR300 source matched to correct master
+
+N.I. Broadcast exact Sony RM-BR300 PTZ remote panel, product code 7389, £499, stock 2, Used, was imported against the existing RM-BR300 / Standard master 2c8b889e-6afc-429c-b8e6-a0d96c426764, not RM-BR300H. No accessories enumerated; record as panel-only. Evidence row 48d36782-0c1b-42ff-8fd0-938e73779c31. Source https://www.nibroadcast.com/sony-rm-br300-ptz-camera-remote-panel.html. Batch 13 now 50 active (29 UK New, 21 UK Used).

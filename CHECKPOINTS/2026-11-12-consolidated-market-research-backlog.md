@@ -251,3 +251,24 @@ Cumulative Batches 04–13: 208 total GBP rows, 204 active (111 UK New, 93 UK Us
 | 13 | 41 | 40 | 21 | 19 | 1 |
 
 This supersedes the previous 204 total/16 Batch 09 snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19 and one each in Batches 12 and 13. Continue working remaining RED VERIFY leads; do not treat checkpoint completion as every lead verified. Used references remain excluded from automatic valuation. TEST and Stripe untouched.
+
+
+## 12 November 2026 — Batch 10 further RED VERIFY review and current totals
+
+Batch 10 gained three further observations: Potensic T18 eBay UK £62.58 used; Tamron SP 15-30mm G2 Nikon fit MPB £624 Like New and £569 Excellent. Batch 10 now has 27 active GBP rows (12 UK New, 15 UK Used). Exact source links and caveats are in the Batch 10 checkpoint.
+
+Cumulative Batches 04–13: 211 total GBP rows, 207 active (111 UK New, 96 UK Used), four inactive. Actual per-batch totals:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 27 | 27 | 12 | 15 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 208 total/204 active snapshot. Four inactive rows are BuzzFlyer DEVO-10, NEEWER KM19 and one each in Batches 12 and 13. Continue RED VERIFY work; the checkpoints still contain unresolved model, package, availability and foreign-currency leads. Used evidence remains excluded from automatic valuation. TEST and Stripe untouched.

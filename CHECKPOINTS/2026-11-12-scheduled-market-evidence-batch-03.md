@@ -267,3 +267,14 @@ The previous YPC snapshot (£109.99, dated 22 October) was not used as a current
 - Imported as active UK New GBP £153.99 against exact With SD Bundle master. LIVE evidence row 8c8b32c5-e38d-4c5c-83f9-a0af9ee3aa3d; source_record_key batch03-followup-akaso-v50x-with-sd-ebay-15399-20261112. Read-back confirmed exact master/package, source, price, condition, availability and active state.
 
 Batch 03 now has 5 active rows (4 UK New, 1 UK Used). Batches 01–13 now contain 255 observations: 252 active (137 UK New, 115 UK Used), three inactive. The £109.99 YPC snapshot remains a dated comparison lead, not an additional live offer. No master/schema/valuation change; TEST and Stripe untouched.
+
+
+## Caddx Walnut — two UK specialist retailer price references — 12 November 2026
+
+The previously unverified £117.90 and £129 leads were re-opened at their direct UK specialist retailer pages. Both are exact Caddx Walnut camera offers and both are explicitly unavailable at the time checked; they are imported as price-reference observations with availability preserved, not as in-stock offers:
+- FlyingTech, SKU FPV-WALNUTND816 — £117.90 inc VAT, explicitly Sold out / Out of stock. Package: camera, adjustable mount, charging cable, thumb screw, camera case, ND8 and ND16 filters, lens cloth and cable set. Source https://www.flyingtech.co.uk/product/caddx-walnut-fpv-action-camera-w-nd8-nd16-filters/. LIVE evidence row 3b791f3e-c1ab-455d-946e-add1a4b9e7b8.
+- Unmanned Tech, product CDX-WLNT-AC — £129.00 GBP, taxes included, explicitly Sale Sold out / Out of stock / Backorder awaiting stock. Package guide lists camera, adjustable mount, charging cable, thumb screw, camera case, ND8/ND16 filters, lens cloth and cable set; supplier says accessories may vary. Source https://www.unmannedtechshop.co.uk/products/caddx-walnut-action-camera. LIVE evidence row 7d57b245-5b93-4c0c-a570-c31639e50c7b.
+
+Both rows are attached to existing Caddx Walnut / Caddx Walnut Action Camera master a628320d-771b-43f9-8503-206e06221d49, active evidence with availability out_of_stock/backorder. No current-stock or buying recommendation should be inferred from these prices.
+
+Batch 03 now has 7 active rows (6 UK New, 1 UK Used). Batches 01–13 now total 257 observations, 254 active (139 UK New, 115 UK Used), three inactive. No master/schema/valuation change; TEST and Stripe untouched.

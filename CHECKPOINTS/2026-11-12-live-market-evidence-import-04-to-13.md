@@ -407,3 +407,10 @@ A fresh LIVE read-back after the additional Batch 02 CVP imports and parallel Ba
 | **Total** | **260** | **257** | **140** | **117** | **3** |
 
 Current global LIVE shared_market_evidence count at this read: 4,802 total, 4,747 active, 55 inactive. These totals are batch-keyed rows for Batches 01–13, not the whole table. The latest per-batch totals supersede the earlier 255/252 snapshot. UK Used remains reference-only. Batch 03 contains three active UK New out-of-stock/backorder price references; current valuation does not filter active UK New by availability, so these may influence valuation. No schema or valuation logic was changed. TEST and Stripe untouched.
+
+
+## Reconciliation correction — Shure currency row deactivated — 12 November 2026
+
+A fresh read-back found one additional inactive Batch 10 row: DigiBroadcast Shure MoveMic Two Receiver Kit £496.80, source_record_key batch10-shure-movemic-two-receiver-digibroadcast-49680. It was deactivated because the direct page currently defaults to EUR and the earlier GBP amount is not supported. The row is retained inactive with availability currency_unverified. Batch 10 therefore has 30 total, 29 active (14 UK New, 15 UK Used), one inactive.
+
+Latest Batches 01–13 totals: 261 rows, 257 active (140 UK New, 117 UK Used), four inactive. Per-batch counts: 01 5/5; 02 4/4; 03 8/8; 04 18/18; 05 18/18; 06 15/15; 07 15/14; 08 17/16; 09 23/23; 10 30/29; 11 32/32; 12 27/26; 13 49/49 (total/active). Current global LIVE shared_market_evidence: 4,803 total, 4,747 active, 56 inactive. This supersedes the previous 260/257 and 4,802/4,747/55 counts.

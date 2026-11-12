@@ -447,3 +447,12 @@ Batch 10 now 31 total, 30 active (15 UK New, 15 UK Used), one inactive currency-
 ## Cumulative batch count correction — 12 November 2026
 
 The Sony HDC-3100 camera-head evidence row 52a8170b-9521-41f0-9f64-6d172408377e remains active and verified. A separate duplicate scan in Batch 13 deactivated two duplicate source captures, so the current Batches 01–13 totals are 263 observations, 257 active (139 UK New, 118 UK Used), six inactive. Batch 10 remains 31 total, 30 active (15 UK New, 15 UK Used), one inactive currency-unverified DigiBroadcast row. Use these latest figures rather than the earlier 263/259 count.
+
+
+## Sony HDC1500R — exact UK used camera channel source imported — 12 November 2026
+
+A direct KitPlus listing from UK premium dealer N.I. Broadcast Ltd verifies the exact Sony HDC1500R fibre camera channel at £8,650 used. Listing ID 33970, published 19 March 2025, remains present in the dealer's current listings page on 12 November 2026. Seller terms state listed items are available direct and in stock, but the buyer should confirm availability/terms before purchase. Direct source https://kitplus.com/for-sale/studio-40/sony/hdc1500r-fibre-camera-channels-more-than-1/33970.
+
+The listing explicitly prices one channel and lists HDC1500R R-series camera head, HDCU-1000 full-rack fibre CCU, HDVF20A 2-inch viewfinder and RCP750 remote panel. RCP1500 is an extra-cost option; 7-inch HDVF-C730/L750 viewfinder is extra cost; lens is not included. Matched to existing LIVE HDC1500R / Standard Package master 90917fa8-dbc3-4aed-9650-e73d8e35692f, not the similar HDC1500 model without R. Imported as UK Used GBP / listed; LIVE evidence row afd9e40d-fabb-4e28-b797-2e2b8f877948. Read-back confirmed exact master/package, price, source and notes.
+
+Batch 10 now 32 total, 31 active (15 UK New, 16 UK Used), one inactive. Batches 01–13 now 264 total, 258 active (139 UK New, 119 UK Used), six inactive. Global LIVE shared_market_evidence 4,809 total, 4,751 active, 58 inactive. UK Used remains reference-only. No master/schema/valuation change; TEST and Stripe untouched.

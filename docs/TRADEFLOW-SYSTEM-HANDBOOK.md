@@ -5797,3 +5797,12 @@ Current direct UK printer source checks: Bambu Lab A1 Standard is £215 inc VAT 
 PlayStation UK still lists PS5 Digital Edition 825GB at £519.99 but the current direct product page explicitly states Out of stock. The official evidence row now records `out_of_stock`; a duplicate official RRP row was deactivated. The separate two-controller bundle at Argos £559.99 is not the standard one-controller package and local stock needs postcode confirmation; do not assign its price to the standard package. Keep older Amazon ASIN B08H98GVK8 unresolved until model generation and current price are verified.
 
 The seven reconciled candidates have corresponding LIVE evidence, but queue statuses were not changed because the owner-review workflow was not invoked. Three candidates remain unresolved. Batches 01–13 total 268 observations, 261 active (142 UK New, 119 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema, master catalogue and valuation logic untouched.
+
+
+## 12 November 2026 — GoPro HERO generation verified and evidence imported
+
+The catalogue's generic GoPro HERO master was confirmed as the original **GoPro HERO (2014)** generation by MPB's direct UK model page and three individual SKU pages. Three active UK Used GBP observations were imported against existing master 42d6393c-8d47-422b-a6db-06ce5f8c4759: MPB SKU 4037958 £45 Excellent (row 27881221-29e8-43a4-bc76-559e8113d34a); SKU 3962930 £41 Good (row 1c3d3c28-4eac-4415-a4dd-5fbdecb882b3); SKU 4089283 £31 Good (row f8aa0b22-dddc-46c2-8346-96746432a1ea). Accessory inclusions and exclusions differ and are recorded in row notes; each includes battery and USB cable and MPB's 12-month warranty.
+
+Exact GoPro HERO Session evidence was also added against its separate master: Cash Converters Redcar item 053000253199, £54.99, very minor cosmetic wear, good working condition, 12-month warranty, row 490f96fe-0cf6-4290-9a94-7e84afdff731. The separate £49.99 Cash Converters listing was confirmed sold and was not imported. Full URLs are in the Batch 03 checkpoint.
+
+Batch 03 now 12 active (7 UK New, 5 UK Used). Cumulative Batches 01–13: 272 observations, 265 active (142 UK New, 123 UK Used), seven inactive. UK Used remains reference-only. TEST, Stripe, schema, master data and valuation logic untouched.

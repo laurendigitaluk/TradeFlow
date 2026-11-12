@@ -206,3 +206,12 @@ A narrow owner-authorised, idempotent import RPC/path is still missing. It must 
 - The second saved 20-product AKASO prompt remains ready/unsubmitted.
 - The dedicated authorised queue-to-shared_market_evidence importer remains missing.
 - No customer/tenant/Stripe/subscription, TEST, valuation, or unrelated catalogue data changed.
+
+
+## 12 November 2026 — ChatGPT-to-dashboard research status updates
+
+The existing AI Research Centre now includes a **ChatGPT research updates** panel. It reads the existing `tradeflow-research` thread through the owner-authenticated `platform_owner_list_ai_agent_messages` RPC and displays messages from `sender_kind='chatgpt_supervisor'` / `sender_key='chatgpt'`. The panel loads at owner-dashboard sign-in, has a manual Refresh updates control, and refreshes every 30 seconds while an owner session is active. Messages are stored in the existing `platform_ai_agent_messages` table; no new notification queue, importer, API key or provider has been added.
+
+ChatGPT can post a progress or completion notice to that existing thread through the connected LIVE Supabase database connection, using `sender_kind='chatgpt_supervisor'`, `sender_key='chatgpt'`, `sender_name='ChatGPT'`, `thread_key='tradeflow-research'`, `recipient_key='platform_owner'`, and `message_type='status_update'`. Each notice should identify its batch scope, verified LIVE evidence imports, comparison-only/unverified references retained, and unresolved items. **Never state a batch is complete or imported until LIVE database read-back confirms the result.** This dashboard message is a status/communication channel; it does not itself import catalogue evidence. The existing evidence verification and authorised import path remains mandatory.
+
+Initial LIVE notice inserted and read back successfully: `f273893d-a387-443f-8a95-1a93e90caca0` (12 November 2026). Front-end files: `platform-owner-dashboard.html` and `platform-owner-dashboard.js` (script cache version 59). TEST was not modified.

@@ -115,3 +115,8 @@ Added N.I. Broadcast exact Sony RM-BR300 PTZ remote panel, product code 7389, £
 ## 12 November 2026 — Duplicate capture cleanup and count correction
 
 Detected two exact duplicate source captures in Batch 13 and deactivated the earlier rows while preserving later follow-up records: Wex ECM-B10 duplicate 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (keep f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba); Sony UK FE 12-24mm F2.8 GM duplicate 0c023277-93cd-47bb-8677-4f005693e738 (keep fa2cbd78-e707-481c-be3f-e46aa3cf18d5). Both duplicates remain in DB inactive for audit. Batch 13 now 50 total, 48 active (27 new, 21 used), two inactive. Batches 01–13: 263 total, 257 active (139 UK New, 118 UK Used), six inactive. No master/schema/valuation changes; TEST and Stripe untouched.
+
+
+## 12 November 2026 — duplicate rows deactivated
+
+Two duplicate captures were deactivated in LIVE and retained for audit: earlier Sony FE 12-24mm F2.8 GM Sony UK row 0c023277-93cd-47bb-8677-4f005693e738 (later same-source active row fa2cbd78-e707-481c-be3f-e46aa3cf18d5); earlier Sony ECM-B10 Wex row 9d7a7b65-8a2a-4a28-90b7-2a1c64e38564 (later same-source active row f9bb53b9-c1a1-4983-b0bd-77bdb4f6ccba). Other retailers remain distinct active offers. Batch 13 now 50 total, 48 active (27 UK New, 21 UK Used), two inactive duplicates.

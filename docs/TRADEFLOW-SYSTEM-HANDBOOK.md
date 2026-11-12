@@ -5508,10 +5508,8 @@ Initial LIVE notice inserted and read back successfully: `f273893d-a387-443f-8a9
 
 ## 12 November 2026 — UK market-evidence follow-up
 
-TradeFlow LIVE received one additional verified UK New market-evidence observation in Batch 06:
-- Product: Bebob V98 V-Mount Battery, exact SKU V98 (master product `cd3eb6f1-5e74-4403-b905-61803eb7749b`).
-- Source: CVP direct product page, https://cvp.com/product/bebob_v98_battery.
-- Price: £312.00 including VAT (£260.00 ex VAT); one remaining in stock for immediate delivery; UK battery shipping confirmed; two-year standard warranty.
-- The row was inserted through the established idempotent LIVE migration route using a stable `source_record_key`, then read back from `shared_market_evidence`.
+TradeFlow LIVE received two additional verified UK New observations in Batch 06:
+- Bebob V98 V-Mount Battery, exact SKU V98 (master product `cd3eb6f1-5e74-4403-b905-61803eb7749b`): CVP £312.00 including VAT (£260.00 ex VAT), one remaining in stock for immediate delivery, UK battery shipping confirmed, two-year standard warranty. Source: https://cvp.com/product/bebob_v98_battery.
+- DJI Mini 3 Fly More Combo Plus (DJI RC), exact SKU CP.MA.00000613.01 (master product `9a112018-4477-4b5f-886b-76e12901f529`): Drone Safe Store £509.00 including VAT, reduced from £579.00. The page is explicitly out of stock; package contents confirm DJI RC, three flight batteries, charging hub, shoulder bag, spare propellers and cables. Source: https://www.dronesafestore.com/products/dji-mini-3-fly-more-combo-dji-rc. Retained as an active historical UK New observation with `out_of_stock` availability under the existing evidence policy.
 
-Batches 04–13 now reconcile to 227 GBP observations: 223 active (120 UK New, 103 UK Used) and four inactive retained for audit. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST environment and Stripe configuration were not changed. The existing latest-active-UK-New selection continues to use `observed_at` then `created_at`.
+Both rows were inserted through the established idempotent LIVE migration route using stable `source_record_key` values and read back from `shared_market_evidence`. Batches 04–13 now reconcile to 228 GBP observations: 224 active (121 UK New, 103 UK Used) and four inactive retained for audit. UK Used remains excluded from automatic valuation. The valuation function, schema, TEST environment and Stripe configuration were not changed. The existing latest-active-UK-New selection continues to use `observed_at` then `created_at`.

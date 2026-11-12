@@ -1,3 +1,25 @@
+## 12 November 2026 — Batch 09 additional evidence and cumulative reconciliation
+
+Batch 09 received four additional LIVE observations: Visuals Sony HDC-F5500V £85,619.24 inc VAT (£71,349.37 ex VAT), available to order but not held in stock; SmallRig Direct UK Store eBay RC100B Pro 5143 £242.90 new/3 available; ColinsCameras eBay Nikon F55 body-only £28.60 used (listing shows £35 international postage despite UK seller location); Clifton Cameras Pentax HD FA31mm F1.8 Limited black £999 awaiting stock 5–7 days. Peter Rogers Pentax DA*55 £559, Andertons Shure SM81 £381 and Harrison Nikon MB-N12 £329 source rows were refreshed. Batch 09 totals 20 active GBP rows (9 UK New, 11 UK Used).
+
+Cumulative batches 04–13 now contain 208 GBP rows, 204 active (111 UK New, 93 UK Used), four inactive. Per-batch total/active/new/used/inactive:
+| Batch | Total rows | Active rows | Active UK New | Active UK Used | Inactive |
+|---|---:|---:|---:|---:|---:|
+| 04 | 18 | 18 | 8 | 10 | 0 |
+| 05 | 18 | 18 | 10 | 8 | 0 |
+| 06 | 12 | 12 | 8 | 4 | 0 |
+| 07 | 14 | 13 | 9 | 4 | 1 |
+| 08 | 14 | 13 | 10 | 3 | 1 |
+| 09 | 20 | 20 | 9 | 11 | 0 |
+| 10 | 24 | 24 | 12 | 12 | 0 |
+| 11 | 22 | 22 | 8 | 14 | 0 |
+| 12 | 25 | 24 | 16 | 8 | 1 |
+| 13 | 41 | 40 | 21 | 19 | 1 |
+
+This supersedes the previous 204-row/16-row Batch 09 snapshot. UK Used is reference-only. LIVE valuation selects latest active GBP uk_new by observed_at/created_at and does not filter availability. No-stock/seller-away rows remain inactive; active sold-out/backorder new observations can still affect valuation. No schema or valuation function changes. TEST and Stripe untouched.
+
+---
+
 ## 12 November 2026 — second Batch 13 retailer recheck and final totals
 
 A second Batch 13 retailer pass added ECM-B10 CameraWorld £159 new/in stock; FE85 GM II LCE £1,799 and Park £1,799 new/in stock (cashback after claim); FE12-24 GM CameraWorld £2,548 new/two available and £2,548 open-box. Batch 13 now has 41 total GBP rows, 40 active (21 UK New, 19 UK Used), one inactive package-unverified PowerDolphin Wizard listing.

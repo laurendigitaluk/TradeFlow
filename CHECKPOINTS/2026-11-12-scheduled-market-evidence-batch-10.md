@@ -360,3 +360,20 @@ Batch 10 now has **24 active records: 12 UK New and 12 UK Used; all 24 are GBP**
 Other leads remain RED VERIFY and were not promoted: Sony HDC-5500 £60,036 is exact but the page does not enumerate full camera-channel contents; Sony FE 100-400mm F4.5-5.6 GM OSS II could not be verified as a real exact model (first-gen SEL100400GM and current SEL100400MCW are different); Potensic T18 page did not expose price on direct page; EVI-D90 UK page blocked and package uncertain; Tamron G2 prices are mount-specific; SLRHut PMW-160 legacy/new claims and seller reliability need confirmation; Sony XVS-G1 configuration/I/O unclear; Alfatec PMW-150 page returned 403; HDC1500 is not HDC1500R; Shure MoveMic Two receiver kit and pair are distinct; Skydio has USD only. No foreign currency or uncertain package price was promoted.
 
 No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
+
+
+## 8. Further RED VERIFY review — 12 November 2026
+
+Three further direct-source observations were added to LIVE and read back:
+
+| Product | Source | Price | Verification |
+|---|---|---:|---|
+| Potensic T18 GPS 1080P camera quadcopter with controller | eBay UK — samgar_8065 | £62.58 | Used; private UK seller in Saltash, 100% positive; no returns; package contents/flight condition not itemised. [Source](https://www.ebay.co.uk/itm/318924343101) |
+| Tamron SP 15-30mm f/2.8 Di VC USD G2 — Nikon F fit | MPB | £624.00 | Used Like New, SKU 4103368; original packaging, front/rear caps, 12-month warranty. [Source](https://www.mpb.com/en-uk/product/tamron-sp-15-30mm-f-2-8-di-vc-usd-g2-nikon-fit) |
+| Tamron SP 15-30mm f/2.8 Di VC USD G2 — Nikon F fit | MPB | £569.00 | Used Excellent, two units at this price; front/rear caps, 12-month warranty. [Source](https://www.mpb.com/en-uk/product/tamron-sp-15-30mm-f-2-8-di-vc-usd-g2-nikon-fit) |
+
+Batch 10 now has **27 active GBP records: 12 UK New and 15 UK Used**. The three additions are used-market reference only. The Tamron master package does not specify a mount; the Nikon F observations are explicitly mount-specific and must not be generalized to Canon EF or other mounts.
+
+Other leads remain RED VERIFY: HDC-5500 KitPlus package contains camera head, HDCU-5500 and installed options, not a bare camera; FE 100-400mm F4.5-5.6 GM OSS II exact identity unresolved; EVI-D90 HSSL result is a system bundle and blocked; PMW-160 SLRHut new/stock claims require seller verification; XVS-G1 configuration and I/O unclear; PMW-150 Alfatec page returned 403; HDC1500 is not HDC1500R; Skydio Controller USD only. No foreign-currency or package-mismatch price was imported.
+
+No master product, tenant, customer, schema, valuation function, TEST or Stripe data was changed.
